@@ -1,0 +1,33 @@
+DIGEST 6fb6e6c3f6ff4e1d4acc19665f0f99ab
+FPlannedAuditResources
+R95:123 simuliris.simulation.language <> <> lib
+R141:175 simuliris.tree_borrows.examples.lib <> <> lib
+R193:236 simuliris.tree_borrows.step_laws.steps_local <> <> lib
+R254:297 simuliris.tree_borrows.step_laws.steps_retag <> <> lib
+R315:356 simuliris.tree_borrows.step_laws.steps_opt <> <> lib
+R374:415 simuliris.tree_borrows.loc_controlled_laws <> <> lib
+R433:468 simuliris.tree_borrows.logical_state <> <> lib
+R504:543 simuliris.simulation.language <> safe_reach def
+R564:603 simuliris.simulation.language <> safe_reach def
+R614:667 simuliris.tree_borrows.examples.lib <> write_entire_range thm
+R688:741 simuliris.tree_borrows.examples.lib <> write_entire_range thm
+R752:806 simuliris.tree_borrows.examples.lib <> sim_new_place_local thm
+R827:881 simuliris.tree_borrows.examples.lib <> sim_new_place_local thm
+R892:947 simuliris.tree_borrows.examples.lib <> new_place_safe_reach thm
+R968:1023 simuliris.tree_borrows.examples.lib <> new_place_safe_reach thm
+R1034:1093 simuliris.tree_borrows.step_laws.steps_local <> sim_alloc_local thm
+R1114:1173 simuliris.tree_borrows.step_laws.steps_local <> sim_alloc_local thm
+R1184:1245 simuliris.tree_borrows.step_laws.steps_retag <> sim_retag_default thm
+R1266:1327 simuliris.tree_borrows.step_laws.steps_retag <> sim_retag_default thm
+R1338:1399 simuliris.tree_borrows.step_laws.steps_retag <> sim_retag_fnentry thm
+R1420:1481 simuliris.tree_borrows.step_laws.steps_retag <> sim_retag_fnentry thm
+R1492:1557 simuliris.tree_borrows.step_laws.steps_opt <> sim_protected_unprotect thm
+R1578:1643 simuliris.tree_borrows.step_laws.steps_opt <> sim_protected_unprotect thm
+R1654:1738 simuliris.tree_borrows.loc_controlled_laws <> loc_controlled_read_after_reborrow_creates thm
+R1759:1843 simuliris.tree_borrows.loc_controlled_laws <> loc_controlled_read_after_reborrow_creates thm
+R1854:1899 simuliris.tree_borrows.logical_state <> array_tag def
+R1920:1965 simuliris.tree_borrows.logical_state <> array_tag def
+R1976:2049 simuliris.tree_borrows.loc_controlled_laws <> pointer_kind_to_tag_unprotected def
+R2070:2143 simuliris.tree_borrows.loc_controlled_laws <> pointer_kind_to_tag_unprotected def
+R2154:2225 simuliris.tree_borrows.loc_controlled_laws <> pointer_kind_to_tag_protected def
+R2246:2317 simuliris.tree_borrows.loc_controlled_laws <> pointer_kind_to_tag_protected def

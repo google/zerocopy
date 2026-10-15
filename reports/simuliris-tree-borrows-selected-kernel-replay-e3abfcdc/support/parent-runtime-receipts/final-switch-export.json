@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "d46d5503dc34302f8be823d721b398aec61ac6028f154f8ce7654a995aa7786d",
+    "opam",
+    "switch",
+    "export",
+    "--switch=4.14",
+    "-"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.08330670799999995
+}

@@ -1,0 +1,38 @@
+{
+  "label": "generate-makefile",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "limit=$1\nshift\nstart=$(du -sb . | cut -f1)\npeak=$start\nstop=none\nbegin=$(date +%s)\ntimeout --signal=TERM --kill-after=5 \"$limit\" \"$@\" &\npid=$!\nwhile kill -0 \"$pid\" 2>/dev/null; do\n size=$(du -sb . | cut -f1)\n if [ \"$size\" -gt \"$peak\" ]; then peak=$size; fi\n if [ \"$peak\" -gt 1076927915 ]; then\n  stop=disk-cap\n  kill -TERM \"$pid\"\n  break\n fi\n sleep 2\ndone\nwait \"$pid\"\nresult=$?\nend=$(date +%s)\nfinal=$(du -sb . | cut -f1)\nprintf 'ANNEAL_PHASE_RESULT returncode=%s stop=%s elapsed_seconds=%s start_bytes=%s peak_bytes=%s final_bytes=%s\\n' \"$result\" \"$stop\" \"$((end-begin))\" \"$start\" \"$peak\" \"$final\"\nexit \"$result\"\n",
+    "anneal-phase",
+    "300",
+    "rocq",
+    "makefile",
+    "-f",
+    "_RocqProject",
+    "-o",
+    "Makefile.rocq",
+    "PlannedAuditFramework.v",
+    "PlannedAuditResources.v",
+    "PlannedAuditExamples.v"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 2.1,
+  "stdout_bytes": 120,
+  "stderr_bytes": 290,
+  "stdout_sha256": "08171d6c2c4b205c90cca69ce2758481c41dd69d929d79d29e0051c7f79f8419",
+  "stderr_sha256": "7a98a7e8e21ad420c84861be0340daa84c482ef80fb5af58574f6b2a2fbbce1e",
+  "allowed_exit_codes": [
+    0
+  ]
+}

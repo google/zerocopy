@@ -1,0 +1,4 @@
+Welcome to Chicken 9.2
+total heap size = 1330296 kbytes
+
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=38 start_bytes=32109248 peak_bytes=32109248 final_bytes=32109248

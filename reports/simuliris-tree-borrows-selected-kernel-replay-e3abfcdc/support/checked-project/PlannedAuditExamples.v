@@ -1,0 +1,22 @@
+(* Proposed observation-only annotation. Not compiled in this planning task. *)
+Require Import simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.
+Require Import simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.
+Require Import simuliris.tree_borrows.read_read_reorder.read_reorder.
+
+Set Printing Width 120.
+
+Check @simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped.
+Print Assumptions simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped.
+
+Check @simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped_ctx.
+Print Assumptions simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped_ctx.
+
+Check @simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper.
+Print Assumptions simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper.
+
+Check @simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper_ctx.
+Print Assumptions simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper_ctx.
+
+Check @simuliris.tree_borrows.read_read_reorder.read_reorder.read_reorder.
+Print Assumptions simuliris.tree_borrows.read_read_reorder.read_reorder.read_reorder.
+

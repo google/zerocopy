@@ -1,0 +1,2511 @@
+DIGEST 904530473b08ea80ee67890f43550825
+Fsimuliris.tree_borrows.tkmap_view
+R34:39 Stdlib.QArith.Qcanon <> <> lib
+R75:78 iris.algebra.view <> <> lib
+R80:83 iris.algebra.gmap <> <> lib
+R85:88 iris.algebra.frac <> <> lib
+R90:94 iris.algebra.dfrac <> <> lib
+R130:142 iris.algebra.local_updates <> <> lib
+R144:160 iris.algebra.proofmode_classes <> <> lib
+R162:167 iris.algebra.big_op <> <> lib
+R203:206 iris.algebra.csum <> <> lib
+R208:211 iris.algebra.excl <> <> lib
+R257:260 simuliris.tree_borrows.defs <> <> lib
+sec 547:554 <> tag_kind
+var  568:569 tag_kind SI
+R573:576 iris.algebra.stepindex <> sidx class
+def 1031:1038 <> tagKindR
+R1043:1047 iris.algebra.csum <> csumR canonstruc
+R1064:1068 iris.algebra.csum <> csumR canonstruc
+R1106:1110 iris.algebra.cmra <> unitR canonstruc
+R1071:1075 iris.algebra.csum <> csumR canonstruc
+R1092:1096 iris.algebra.excl <> exclR canonstruc
+R1098:1102 iris.algebra.ofe <> unitO canonstruc
+R1078:1082 iris.algebra.excl <> exclR canonstruc
+R1084:1088 iris.algebra.ofe <> unitO canonstruc
+R1050:1054 iris.algebra.excl <> exclR canonstruc
+R1056:1060 iris.algebra.ofe <> unitO canonstruc
+def 1137:1145 <> tag_kindO
+R1150:1157 iris.algebra.ofe <> leibnizO abbrev
+R1159:1166 simuliris.tree_borrows.defs <> tag_kind ind
+inst 1188:1204 <> tagKindR_discrete
+R1208:1219 iris.algebra.cmra <> CmraDiscrete class
+R1221:1228 simuliris.tree_borrows.tkmap_view <> tagKindR def
+def 1268:1278 <> to_tgkR_unq
+R1287:1304 simuliris.tree_borrows.defs <> tk_activation_kind ind
+binder 1281:1283 <> act:2
+R1309:1313 iris.algebra.csum <> csumR canonstruc
+R1330:1334 iris.algebra.excl <> exclR canonstruc
+R1336:1340 iris.algebra.ofe <> unitO canonstruc
+R1316:1320 iris.algebra.excl <> exclR canonstruc
+R1322:1326 iris.algebra.ofe <> unitO canonstruc
+R1356:1358 simuliris.tree_borrows.tkmap_view <> act:2 var
+R1371:1376 simuliris.tree_borrows.defs <> tk_res constr
+R1385:1387 stdpp.base <> ::stdpp_scope:x_'$'_x not
+R1388:1391 iris.algebra.excl <> Excl constr
+R1393:1394 Stdlib.Program.Syntax <> :::'()' not
+R1381:1384 iris.algebra.csum <> Cinl constr
+R1402:1407 simuliris.tree_borrows.defs <> tk_act constr
+R1416:1418 stdpp.base <> ::stdpp_scope:x_'$'_x not
+R1419:1422 iris.algebra.excl <> Excl constr
+R1424:1425 Stdlib.Program.Syntax <> :::'()' not
+R1412:1415 iris.algebra.csum <> Cinr constr
+def 1450:1456 <> to_tgkR
+R1463:1470 simuliris.tree_borrows.defs <> tag_kind ind
+binder 1459:1460 <> tk:4
+R1475:1482 simuliris.tree_borrows.tkmap_view <> tagKindR def
+R1497:1498 simuliris.tree_borrows.tkmap_view <> tk:4 var
+R1511:1518 simuliris.tree_borrows.defs <> tk_local constr
+R1527:1529 stdpp.base <> ::stdpp_scope:x_'$'_x not
+R1530:1533 iris.algebra.excl <> Excl constr
+R1535:1536 Stdlib.Program.Syntax <> :::'()' not
+R1523:1526 iris.algebra.csum <> Cinl constr
+R1544:1549 simuliris.tree_borrows.defs <> tk_unq constr
+R1566:1568 stdpp.base <> ::stdpp_scope:x_'$'_x not
+R1573:1575 stdpp.base <> ::stdpp_scope:x_'$'_x not
+R1576:1586 simuliris.tree_borrows.tkmap_view <> to_tgkR_unq def
+R1569:1572 iris.algebra.csum <> Cinl constr
+R1562:1565 iris.algebra.csum <> Cinr constr
+R1602:1607 simuliris.tree_borrows.defs <> tk_pub constr
+R1616:1618 stdpp.base <> ::stdpp_scope:x_'$'_x not
+R1619:1622 iris.algebra.csum <> Cinr constr
+R1624:1625 Stdlib.Program.Syntax <> :::'()' not
+R1612:1615 iris.algebra.csum <> Cinr constr
+prf 1645:1657 <> to_tgkR_valid
+binder 1659:1660 <> tk:6
+R1664:1668 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R1679:1679 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R1669:1675 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R1677:1678 simuliris.tree_borrows.tkmap_view <> tk:6 var
+prf 1733:1746 <> to_tgkR_validN
+binder 1748:1749 <> tk:7
+binder 1751:1751 <> n:8
+R1755:1758 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R1760:1762 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R1773:1773 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R1759:1759 simuliris.tree_borrows.tkmap_view <> n:8 var
+R1763:1769 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R1771:1772 simuliris.tree_borrows.tkmap_view <> tk:7 var
+inst 1838:1848 <> to_tgkR_inj
+binder 1850:1850 <> n:9
+R1854:1856 stdpp.base <> Inj class
+R1871:1877 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R1863:1866 iris.algebra.ofe <> dist def
+R1868:1868 simuliris.tree_borrows.tkmap_view <> n:9 var
+R1858:1860 stdpp.base <> ::stdpp_scope:'(=)' not
+R2012:2016 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2018:2022 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2006:2009 iris.algebra.csum <> Cinl constr
+R2023:2026 iris.algebra.csum <> Cinr constr
+R2066:2070 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2072:2076 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2060:2063 iris.algebra.csum <> Cinr constr
+R2077:2080 iris.algebra.csum <> Cinl constr
+R2151:2155 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2157:2161 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2145:2148 iris.algebra.csum <> Cinl constr
+R2162:2165 iris.algebra.csum <> Cinl constr
+R2214:2218 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2220:2224 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R2208:2211 iris.algebra.csum <> Cinr constr
+R2225:2228 iris.algebra.csum <> Cinr constr
+prf 2286:2300 <> tgkR_validN_inv
+binder 2302:2304 <> tkr:10
+binder 2306:2306 <> n:11
+R2320:2324 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2310:2313 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R2315:2316 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R2314:2314 simuliris.tree_borrows.tkmap_view <> n:11 var
+R2317:2319 simuliris.tree_borrows.tkmap_view <> tkr:10 var
+R2325:2328 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R2331:2332 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 2329:2330 <> tk:12
+R2336:2340 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R2333:2335 simuliris.tree_borrows.tkmap_view <> tkr:10 var
+R2341:2347 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R2349:2350 simuliris.tree_borrows.tkmap_view <> tk:12 var
+R2375:2397 iris.algebra.cmra <> cmra_discrete_valid_iff thm
+R2534:2541 simuliris.tree_borrows.defs <> tk_local constr
+R2621:2626 simuliris.tree_borrows.defs <> tk_unq constr
+R2628:2633 simuliris.tree_borrows.defs <> tk_res constr
+R2714:2719 simuliris.tree_borrows.defs <> tk_unq constr
+R2721:2726 simuliris.tree_borrows.defs <> tk_act constr
+R2769:2774 simuliris.tree_borrows.defs <> tk_pub constr
+inst 2809:2828 <> to_tgkR_unq_res_excl
+R2832:2840 iris.algebra.cmra <> Exclusive class
+R2843:2849 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R2852:2857 simuliris.tree_borrows.defs <> tk_unq constr
+R2859:2864 simuliris.tree_borrows.defs <> tk_res constr
+inst 2954:2973 <> to_tgkR_unq_act_excl
+R2977:2985 iris.algebra.cmra <> Exclusive class
+R2988:2994 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R2997:3002 simuliris.tree_borrows.defs <> tk_unq constr
+R3004:3009 simuliris.tree_borrows.defs <> tk_act constr
+inst 3099:3116 <> to_tgkR_local_excl
+R3120:3128 iris.algebra.cmra <> Exclusive class
+R3131:3137 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R3139:3146 simuliris.tree_borrows.defs <> tk_local constr
+prf 3225:3244 <> to_tgkR_not_pub_excl
+binder 3246:3247 <> tk:13
+R3264:3268 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3253:3257 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R3251:3252 simuliris.tree_borrows.tkmap_view <> tk:13 var
+R3258:3263 simuliris.tree_borrows.defs <> tk_pub constr
+R3269:3277 iris.algebra.cmra <> Exclusive class
+R3280:3286 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R3288:3289 simuliris.tree_borrows.tkmap_view <> tk:13 var
+prf 3351:3367 <> to_tgkR_op_validN
+binder 3369:3369 <> n:14
+binder 3371:3372 <> tk:15
+binder 3374:3376 <> tk':16
+R3415:3419 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3380:3383 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R3385:3387 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R3414:3414 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R3384:3384 simuliris.tree_borrows.tkmap_view <> n:14 var
+R3398:3402 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R3388:3394 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R3396:3397 simuliris.tree_borrows.tkmap_view <> tk:15 var
+R3403:3409 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R3411:3413 simuliris.tree_borrows.tkmap_view <> tk':16 var
+R3431:3435 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3422:3424 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3420:3421 simuliris.tree_borrows.tkmap_view <> tk:15 var
+R3425:3430 simuliris.tree_borrows.defs <> tk_pub constr
+R3439:3441 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3436:3438 simuliris.tree_borrows.tkmap_view <> tk':16 var
+R3442:3447 simuliris.tree_borrows.defs <> tk_pub constr
+prf 3531:3546 <> to_tgkR_op_valid
+binder 3548:3549 <> tk:17
+binder 3551:3553 <> tk':18
+R3589:3593 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3557:3561 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R3588:3588 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R3572:3576 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R3562:3568 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R3570:3571 simuliris.tree_borrows.tkmap_view <> tk:17 var
+R3577:3583 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R3585:3587 simuliris.tree_borrows.tkmap_view <> tk':18 var
+R3605:3609 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3596:3598 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3594:3595 simuliris.tree_borrows.tkmap_view <> tk:17 var
+R3599:3604 simuliris.tree_borrows.defs <> tk_pub constr
+R3613:3615 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3610:3612 simuliris.tree_borrows.tkmap_view <> tk':18 var
+R3616:3621 simuliris.tree_borrows.defs <> tk_pub constr
+prf 3706:3721 <> tagKindR_incl_eq
+R3731:3738 simuliris.tree_borrows.tkmap_view <> tagKindR def
+binder 3724:3725 <> k1:19
+binder 3727:3728 <> k2:20
+R3752:3756 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3746:3749 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R3750:3751 simuliris.tree_borrows.tkmap_view <> k2:20 var
+R3766:3770 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3759:3763 iris.algebra.cmra <> ::stdpp_scope:x_'≼'_x not
+R3757:3758 simuliris.tree_borrows.tkmap_view <> k1:19 var
+R3764:3765 simuliris.tree_borrows.tkmap_view <> k2:20 var
+R3773:3777 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R3771:3772 simuliris.tree_borrows.tkmap_view <> k1:19 var
+R3778:3779 simuliris.tree_borrows.tkmap_view <> k2:20 var
+R3808:3820 iris.algebra.csum <> csum_included thm
+R3919:3936 iris.algebra.cmra <> exclusive_included thm
+R4010:4022 iris.algebra.csum <> csum_included thm
+R4162:4174 iris.algebra.csum <> csum_included thm
+R4276:4293 iris.algebra.cmra <> exclusive_included thm
+R4343:4350 simuliris.tree_borrows.tkmap_view tag_kind <> sec
+def 4371:4387 <> tkmap_view_fragUR
+R4395:4398 iris.algebra.stepindex <> sidx class
+binder 4390:4391 <> SI:21
+binder 4402:4402 <> K:22
+R4414:4422 stdpp.countable <> Countable class
+R4424:4424 simuliris.tree_borrows.tkmap_view <> K:22 var
+binder 4414:4424 <> H:24
+R4432:4434 iris.algebra.ofe <> ofe rec
+binder 4428:4428 <> V:25
+R4439:4443 iris.algebra.cmra <> ucmra rec
+R4450:4455 iris.algebra.gmap <> gmapUR canonstruc
+R4460:4464 iris.algebra.cmra <> prodR canonstruc
+R4476:4481 iris.algebra.agree <> agreeR canonstruc
+R4483:4483 simuliris.tree_borrows.tkmap_view <> V:25 var
+R4466:4473 simuliris.tree_borrows.tkmap_view <> tagKindR def
+R4457:4457 simuliris.tree_borrows.tkmap_view <> K:22 var
+sec 4518:4520 <> rel
+var  4534:4535 rel SI
+var  4546:4546 rel K
+var  4572:4572 rel V
+R4539:4542 iris.algebra.stepindex <> sidx class
+R4558:4566 stdpp.countable <> Countable class
+R4568:4568 simuliris.tree_borrows.tkmap_view <> K:27 var
+R4576:4578 iris.algebra.ofe <> ofe rec
+R4604:4607 stdpp.gmap <> gmap rec
+R4620:4622 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R4612:4619 simuliris.tree_borrows.defs <> tag_kind ind
+R4623:4623 simuliris.tree_borrows.tkmap_view <> rel.V var
+R4609:4609 simuliris.tree_borrows.tkmap_view <> rel.K var
+R4632:4632 simuliris.tree_borrows.tkmap_view <> rel.K var
+R4640:4640 simuliris.tree_borrows.tkmap_view <> rel.V var
+R4648:4649 simuliris.tree_borrows.tkmap_view <> rel.SI var
+R4675:4678 stdpp.gmap <> gmap rec
+R4691:4693 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R4683:4690 simuliris.tree_borrows.tkmap_view <> tagKindR def
+R4694:4698 iris.algebra.agree <> agree rec
+R4700:4700 simuliris.tree_borrows.tkmap_view <> rel.V var
+R4680:4680 simuliris.tree_borrows.tkmap_view <> rel.K var
+def 4725:4742 <> tkmap_view_rel_raw
+binder 4744:4744 <> n:31
+binder 4746:4746 <> m:32
+binder 4748:4748 <> f:33
+R4764:4773 stdpp.fin_maps <> map_Forall def
+R4878:4878 simuliris.tree_borrows.tkmap_view <> f:33 var
+R4776:4778 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R4783:4784 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 4779:4779 <> k:34
+binder 4781:4782 <> dv:35
+R4785:4788 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R4793:4794 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 4789:4789 <> v:36
+binder 4791:4792 <> tk:37
+R4820:4824 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R4799:4803 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R4805:4809 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R4804:4804 simuliris.tree_borrows.tkmap_view <> n:31 var
+R4797:4798 stdpp.base <> :::x_'.2' not
+R4795:4796 simuliris.tree_borrows.tkmap_view <> dv:35 var
+R4810:4817 iris.algebra.agree <> to_agree def
+R4819:4819 simuliris.tree_borrows.tkmap_view <> v:36 var
+R4850:4854 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R4829:4833 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R4835:4839 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R4834:4834 simuliris.tree_borrows.tkmap_view <> n:31 var
+R4827:4828 stdpp.base <> :::x_'.1' not
+R4825:4826 simuliris.tree_borrows.tkmap_view <> dv:35 var
+R4840:4846 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R4848:4849 simuliris.tree_borrows.tkmap_view <> tk:37 var
+R4861:4863 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4856:4859 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R4860:4860 simuliris.tree_borrows.tkmap_view <> k:34 var
+R4855:4855 simuliris.tree_borrows.tkmap_view <> m:32 var
+R4864:4867 Corelib.Init.Datatypes <> Some constr
+R4869:4869 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4872:4873 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4875:4875 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4870:4871 simuliris.tree_borrows.tkmap_view <> tk:37 var
+R4874:4874 simuliris.tree_borrows.tkmap_view <> v:36 var
+prf 4897:4919 <> tkmap_view_rel_raw_mono
+binder 4921:4922 <> n1:38
+binder 4924:4925 <> n2:39
+binder 4927:4928 <> m1:40
+binder 4930:4931 <> m2:41
+binder 4933:4934 <> f1:42
+binder 4936:4937 <> f2:43
+R4972:4980 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4945:4962 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+R4964:4965 simuliris.tree_borrows.tkmap_view <> n1:38 var
+R4967:4968 simuliris.tree_borrows.tkmap_view <> m1:40 var
+R4970:4971 simuliris.tree_borrows.tkmap_view <> f1:42 var
+R4997:5005 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4983:4987 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R4990:4994 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R4988:4989 simuliris.tree_borrows.tkmap_view <> n2:39 var
+R4981:4982 simuliris.tree_borrows.tkmap_view <> m1:40 var
+R4995:4996 simuliris.tree_borrows.tkmap_view <> m2:41 var
+R5019:5027 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5008:5012 iris.algebra.cmra <> ::stdpp_scope:x_'≼{'_x_'}'_x not
+R5015:5016 iris.algebra.cmra <> ::stdpp_scope:x_'≼{'_x_'}'_x not
+R5013:5014 simuliris.tree_borrows.tkmap_view <> n2:39 var
+R5006:5007 simuliris.tree_borrows.tkmap_view <> f2:43 var
+R5017:5018 simuliris.tree_borrows.tkmap_view <> f1:42 var
+R5044:5052 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5031:5035 iris.algebra.stepindex <> ::sidx_scope:x_'≤'_x not
+R5029:5030 simuliris.tree_borrows.tkmap_view <> n2:39 var
+R5036:5037 simuliris.tree_borrows.tkmap_view <> n1:38 var
+R5053:5070 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+R5072:5073 simuliris.tree_borrows.tkmap_view <> n2:39 var
+R5075:5076 simuliris.tree_borrows.tkmap_view <> m2:41 var
+R5078:5079 simuliris.tree_borrows.tkmap_view <> f2:43 var
+R5214:5229 iris.algebra.gmap <> lookup_includedN thm
+R5337:5352 iris.algebra.cmra <> option_includedN thm
+R5543:5557 iris.algebra.ofe <> dist_Some_inv_l thm
+R5676:5680 stdpp.base <> assoc def
+R5771:5784 iris.algebra.cmra <> pair_includedN thm
+R5848:5854 iris.algebra.ofe <> dist_le thm
+R5899:5910 iris.algebra.ofe <> discrete_iff thm
+R5989:5996 iris.algebra.ofe <> dist_le' thm
+R6068:6074 iris.algebra.ofe <> dist_le thm
+R6118:6138 iris.algebra.agree <> agree_valid_includedN thm
+R6167:6180 iris.algebra.cmra <> cmra_validN_le thm
+R6249:6274 iris.algebra.cmra <> cmra_discrete_included_iff thm
+R6373:6379 iris.algebra.ofe <> dist_le thm
+R6404:6415 iris.algebra.ofe <> discrete_iff thm
+R6440:6455 simuliris.tree_borrows.tkmap_view <> tagKindR_incl_eq thm
+R6483:6494 iris.algebra.ofe <> discrete_iff thm
+R6545:6557 simuliris.tree_borrows.tkmap_view <> to_tgkR_valid thm
+prf 6582:6605 <> tkmap_view_rel_raw_valid
+binder 6607:6607 <> n:44
+binder 6609:6609 <> m:45
+binder 6611:6611 <> f:46
+R6643:6647 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6619:6636 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+R6638:6638 simuliris.tree_borrows.tkmap_view <> n:44 var
+R6640:6640 simuliris.tree_borrows.tkmap_view <> m:45 var
+R6642:6642 simuliris.tree_borrows.tkmap_view <> f:46 var
+R6648:6651 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R6653:6654 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R6652:6652 simuliris.tree_borrows.tkmap_view <> n:44 var
+R6655:6655 simuliris.tree_borrows.tkmap_view <> f:46 var
+R6697:6700 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6868:6890 iris.algebra.cmra <> cmra_discrete_valid_iff thm
+prf 6972:6994 <> tkmap_view_rel_raw_unit
+binder 6996:6996 <> n:47
+R7004:7007 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R7009:7010 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 7008:7008 <> m:48
+R7011:7028 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+R7030:7030 simuliris.tree_borrows.tkmap_view <> n:47 var
+R7032:7032 simuliris.tree_borrows.tkmap_view <> m:48 var
+R7034:7035 iris.algebra.cmra <> ε def
+R7054:7056 stdpp.base <> ::stdpp_scope:'∅' not
+R7066:7081 stdpp.fin_maps <> map_Forall_empty thm
+def 7118:7131 <> tkmap_view_rel
+R7135:7142 iris.algebra.view <> view_rel rec
+R7175:7191 simuliris.tree_borrows.tkmap_view <> tkmap_view_fragUR def
+R7195:7195 simuliris.tree_borrows.tkmap_view <> rel.V var
+R7193:7193 simuliris.tree_borrows.tkmap_view <> rel.K var
+R7145:7149 iris.algebra.gmap <> gmapO canonstruc
+R7154:7158 iris.algebra.ofe <> prodO canonstruc
+R7170:7170 simuliris.tree_borrows.tkmap_view <> rel.V var
+R7160:7168 simuliris.tree_borrows.tkmap_view <> tag_kindO canonstruc
+R7151:7151 simuliris.tree_borrows.tkmap_view <> rel.K var
+R7205:7211 iris.algebra.view <> ViewRel constr
+R7293:7315 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw_unit thm
+R7268:7291 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw_valid thm
+R7232:7254 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw_mono thm
+R7213:7230 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+prf 7333:7353 <> tkmap_view_rel_exists
+binder 7355:7355 <> n:49
+R7362:7365 stdpp.gmap <> gmap rec
+R7378:7380 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R7370:7377 simuliris.tree_borrows.tkmap_view <> tagKindR def
+R7381:7386 iris.algebra.agree <> agreeR canonstruc
+R7388:7388 simuliris.tree_borrows.tkmap_view <> rel.V var
+R7367:7367 simuliris.tree_borrows.tkmap_view <> rel.K var
+binder 7358:7358 <> f:50
+R7398:7398 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R7426:7431 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R7399:7402 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R7404:7405 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 7403:7403 <> m:51
+R7406:7419 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R7421:7421 simuliris.tree_borrows.tkmap_view <> n:49 var
+R7423:7423 simuliris.tree_borrows.tkmap_view <> m:51 var
+R7425:7425 simuliris.tree_borrows.tkmap_view <> f:50 var
+R7432:7435 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R7437:7438 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R7436:7436 simuliris.tree_borrows.tkmap_view <> n:49 var
+R7439:7439 simuliris.tree_borrows.tkmap_view <> f:50 var
+R7492:7515 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw_valid thm
+R7550:7553 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R7555:7556 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 7554:7554 <> m:52
+R7577:7581 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R7557:7570 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R7574:7574 simuliris.tree_borrows.tkmap_view <> m:52 var
+R7582:7585 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R7587:7588 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 7586:7586 <> k:53
+R7602:7606 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7595:7597 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7590:7593 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7594:7594 simuliris.tree_borrows.tkmap_view <> k:53 var
+R7598:7601 Corelib.Init.Datatypes <> None constr
+R7613:7615 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7608:7611 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7612:7612 simuliris.tree_borrows.tkmap_view <> k:53 var
+R7607:7607 simuliris.tree_borrows.tkmap_view <> m:52 var
+R7616:7619 Corelib.Init.Datatypes <> None constr
+binder 7554:7554 <> m:54
+R7574:7574 simuliris.tree_borrows.tkmap_view <> m:54 var
+binder 7586:7586 <> k:55
+R7594:7594 simuliris.tree_borrows.tkmap_view <> k:55 var
+R7612:7612 simuliris.tree_borrows.tkmap_view <> k:55 var
+R7607:7607 simuliris.tree_borrows.tkmap_view <> m:54 var
+R7692:7698 stdpp.fin_maps <> map_ind thm
+R7714:7716 stdpp.base <> ::stdpp_scope:'∅' not
+R7742:7757 stdpp.fin_maps <> map_Forall_empty thm
+R7788:7803 stdpp.fin_maps <> lookup_insert_eq thm
+R7833:7847 iris.algebra.agree <> to_agree_uninjN thm
+R7937:7942 stdpp.base <> decide def
+R7946:7948 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8016:8031 stdpp.fin_maps <> lookup_insert_ne thm
+R8046:8060 simuliris.tree_borrows.tkmap_view <> tgkR_validN_inv thm
+R8097:8098 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R8100:8101 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R8110:8113 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R8102:8102 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8106:8107 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8109:8109 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8130:8143 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R8149:8166 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+R8168:8184 stdpp.fin_maps <> map_Forall_insert thm
+R8235:8250 stdpp.fin_maps <> lookup_insert_eq thm
+R8271:8285 stdpp.fin_maps <> map_Forall_impl thm
+R8371:8386 stdpp.fin_maps <> lookup_insert_ne thm
+R8429:8446 stdpp.fin_maps <> lookup_insert_None thm
+prf 8485:8503 <> tkmap_view_rel_unit
+binder 8505:8505 <> n:56
+binder 8507:8507 <> m:57
+R8511:8524 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R8526:8526 simuliris.tree_borrows.tkmap_view <> n:56 var
+R8528:8528 simuliris.tree_borrows.tkmap_view <> m:57 var
+R8530:8531 iris.algebra.cmra <> ε def
+R8550:8565 stdpp.fin_maps <> map_Forall_empty thm
+prf 8588:8610 <> tkmap_view_rel_discrete
+R8631:8635 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8618:8628 iris.algebra.ofe <> OfeDiscrete class
+R8630:8630 simuliris.tree_borrows.tkmap_view <> rel.V var
+R8636:8650 iris.algebra.view <> ViewRelDiscrete class
+R8652:8665 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R8835:8846 iris.algebra.ofe <> discrete_iff thm
+R8880:8891 iris.algebra.ofe <> discrete_iff thm
+R8937:8948 iris.algebra.ofe <> discrete_iff thm
+R8982:8993 iris.algebra.ofe <> discrete_iff thm
+R9037:9039 simuliris.tree_borrows.tkmap_view rel <> sec
+R9067:9089 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_discrete thm
+abbrev 9225:9234 <> tkmap_view
+R9244:9247 iris.algebra.view <> view rec
+R9251:9268 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_raw def
+def 9292:9302 <> tkmap_viewO
+R9310:9313 iris.algebra.stepindex <> sidx class
+binder 9305:9306 <> SI:58
+binder 9317:9317 <> K:59
+R9329:9337 stdpp.countable <> Countable class
+R9339:9339 simuliris.tree_borrows.tkmap_view <> K:59 var
+binder 9329:9339 <> H:61
+R9347:9349 iris.algebra.ofe <> ofe rec
+binder 9343:9343 <> V:62
+R9354:9356 iris.algebra.ofe <> ofe rec
+R9363:9367 iris.algebra.view <> viewO canonstruc
+R9370:9383 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R9387:9387 simuliris.tree_borrows.tkmap_view <> V:62 var
+R9385:9385 simuliris.tree_borrows.tkmap_view <> K:59 var
+def 9402:9412 <> tkmap_viewR
+R9420:9423 iris.algebra.stepindex <> sidx class
+binder 9415:9416 <> SI:63
+binder 9427:9427 <> K:64
+R9439:9447 stdpp.countable <> Countable class
+R9449:9449 simuliris.tree_borrows.tkmap_view <> K:64 var
+binder 9439:9449 <> H:66
+R9457:9459 iris.algebra.ofe <> ofe rec
+binder 9453:9453 <> V:67
+R9464:9467 iris.algebra.cmra <> cmra rec
+R9474:9478 iris.algebra.view <> viewR canonstruc
+R9481:9494 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R9498:9498 simuliris.tree_borrows.tkmap_view <> V:67 var
+R9496:9496 simuliris.tree_borrows.tkmap_view <> K:64 var
+def 9513:9524 <> tkmap_viewUR
+R9532:9535 iris.algebra.stepindex <> sidx class
+binder 9527:9528 <> SI:68
+binder 9539:9539 <> K:69
+R9551:9559 stdpp.countable <> Countable class
+R9561:9561 simuliris.tree_borrows.tkmap_view <> K:69 var
+binder 9551:9561 <> H:71
+R9569:9571 iris.algebra.ofe <> ofe rec
+binder 9565:9565 <> V:72
+R9576:9580 iris.algebra.cmra <> ucmra rec
+R9587:9592 iris.algebra.view <> viewUR canonstruc
+R9595:9608 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R9612:9612 simuliris.tree_borrows.tkmap_view <> V:72 var
+R9610:9610 simuliris.tree_borrows.tkmap_view <> K:69 var
+sec 9625:9635 <> definitions
+var  9649:9650 definitions SI
+var  9661:9661 definitions K
+var  9687:9687 definitions V
+R9654:9657 iris.algebra.stepindex <> sidx class
+R9673:9681 stdpp.countable <> Countable class
+R9683:9683 simuliris.tree_borrows.tkmap_view <> K:74 var
+R9691:9693 iris.algebra.ofe <> ofe rec
+def 9711:9725 <> tkmap_view_auth
+R9732:9735 iris.algebra.frac <> frac abbrev
+binder 9728:9728 <> q:78
+R9743:9746 stdpp.gmap <> gmap rec
+R9759:9761 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R9751:9758 simuliris.tree_borrows.defs <> tag_kind ind
+R9762:9762 simuliris.tree_borrows.tkmap_view <> definitions.V var
+R9748:9748 simuliris.tree_borrows.tkmap_view <> definitions.K var
+binder 9739:9739 <> m:79
+R9768:9778 simuliris.tree_borrows.tkmap_view <> tkmap_viewR def
+R9782:9782 simuliris.tree_borrows.tkmap_view <> definitions.V var
+R9780:9780 simuliris.tree_borrows.tkmap_view <> definitions.K var
+R9791:9794 iris.algebra.view <> :::'●V'_x_x not
+R9799:9799 iris.algebra.view <> :::'●V'_x_x not
+R9795:9796 iris.algebra.dfrac <> :iris.algebra.dfrac.dfrac::'{#'_x_'}' not
+R9798:9798 iris.algebra.dfrac <> :iris.algebra.dfrac.dfrac::'{#'_x_'}' not
+R9797:9797 simuliris.tree_borrows.tkmap_view <> q:78 var
+R9800:9800 simuliris.tree_borrows.tkmap_view <> m:79 var
+def 9816:9830 <> tkmap_view_frag
+R9837:9837 simuliris.tree_borrows.tkmap_view <> definitions.K var
+binder 9833:9833 <> k:80
+R9846:9853 simuliris.tree_borrows.defs <> tag_kind ind
+binder 9841:9842 <> tk:81
+R9861:9861 simuliris.tree_borrows.tkmap_view <> definitions.V var
+binder 9857:9857 <> v:82
+R9866:9876 simuliris.tree_borrows.tkmap_view <> tkmap_viewR def
+R9880:9880 simuliris.tree_borrows.tkmap_view <> definitions.V var
+R9878:9878 simuliris.tree_borrows.tkmap_view <> definitions.K var
+R9889:9893 iris.algebra.view <> :::'◯V'_x not
+R9894:9895 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9897:9900 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9925:9926 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9896:9896 simuliris.tree_borrows.tkmap_view <> k:80 var
+R9901:9901 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9912:9913 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9924:9924 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9902:9908 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R9910:9911 simuliris.tree_borrows.tkmap_view <> tk:81 var
+R9914:9921 iris.algebra.agree <> to_agree def
+R9923:9923 simuliris.tree_borrows.tkmap_view <> v:82 var
+R9933:9943 simuliris.tree_borrows.tkmap_view definitions <> sec
+sec 9955:9960 <> lemmas
+var  9974:9975 lemmas SI
+var  9986:9986 lemmas K
+var  10012:10012 lemmas V
+R9979:9982 iris.algebra.stepindex <> sidx class
+R9998:10006 stdpp.countable <> Countable class
+R10008:10008 simuliris.tree_borrows.tkmap_view <> K:84 var
+R10016:10018 iris.algebra.ofe <> ofe rec
+R10044:10047 stdpp.gmap <> gmap rec
+R10060:10062 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R10052:10059 simuliris.tree_borrows.defs <> tag_kind ind
+R10063:10063 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10049:10049 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R10072:10072 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R10080:10081 stdpp.numbers <> Qp rec
+R10089:10096 simuliris.tree_borrows.defs <> tag_kind ind
+R10104:10104 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10129:10134 Corelib.Classes.Morphisms <> Params class
+R10138:10152 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+inst 10182:10199 <> tkmap_view_auth_ne
+binder 10201:10201 <> q:88
+R10205:10216 iris.algebra.ofe <> NonExpansive abbrev
+R10219:10233 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R10249:10249 simuliris.tree_borrows.tkmap_view <> q:88 var
+R10246:10246 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10239:10239 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+inst 10299:10320 <> tkmap_view_auth_proper
+binder 10322:10322 <> q:89
+R10326:10331 Corelib.Classes.Morphisms <> Proper class
+R10352:10366 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R10382:10382 simuliris.tree_borrows.tkmap_view <> q:89 var
+R10379:10379 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10372:10372 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R10339:10343 Corelib.Classes.Morphisms ProperNotations ::signature_scope:x_'==>'_x not
+R10334:10338 stdpp.base <> ::stdpp_scope:'(≡)' not
+R10344:10348 stdpp.base <> ::stdpp_scope:'(≡)' not
+R10401:10409 iris.algebra.ofe <> ne_proper thm
+R10441:10446 Corelib.Classes.Morphisms <> Params class
+R10450:10464 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+inst 10494:10511 <> tkmap_view_frag_ne
+binder 10513:10513 <> k:90
+binder 10515:10516 <> tk:91
+R10520:10531 iris.algebra.ofe <> NonExpansive abbrev
+R10534:10548 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R10564:10564 simuliris.tree_borrows.tkmap_view <> k:90 var
+R10566:10567 simuliris.tree_borrows.tkmap_view <> tk:91 var
+R10561:10561 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10554:10554 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+inst 10617:10638 <> tkmap_view_frag_proper
+binder 10640:10640 <> k:92
+binder 10642:10643 <> tk:93
+R10647:10652 Corelib.Classes.Morphisms <> Proper class
+R10673:10687 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R10703:10703 simuliris.tree_borrows.tkmap_view <> k:92 var
+R10705:10706 simuliris.tree_borrows.tkmap_view <> tk:93 var
+R10700:10700 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10693:10693 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R10660:10664 Corelib.Classes.Morphisms ProperNotations ::signature_scope:x_'==>'_x not
+R10655:10659 stdpp.base <> ::stdpp_scope:'(≡)' not
+R10665:10669 stdpp.base <> ::stdpp_scope:'(≡)' not
+R10725:10733 iris.algebra.ofe <> ne_proper thm
+prf 10781:10801 <> tkmap_view_rel_lookup
+binder 10803:10803 <> n:94
+binder 10805:10805 <> m:95
+binder 10807:10807 <> k:96
+binder 10809:10810 <> tk:97
+binder 10812:10812 <> v:98
+R10876:10880 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R10820:10833 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel canonstruc
+R10839:10839 simuliris.tree_borrows.tkmap_view <> n:94 var
+R10841:10841 simuliris.tree_borrows.tkmap_view <> m:95 var
+R10843:10844 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R10846:10849 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R10874:10875 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R10845:10845 simuliris.tree_borrows.tkmap_view <> k:96 var
+R10850:10850 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10861:10862 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10873:10873 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10851:10857 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R10859:10860 simuliris.tree_borrows.tkmap_view <> tk:97 var
+R10863:10870 iris.algebra.agree <> to_agree def
+R10872:10872 simuliris.tree_borrows.tkmap_view <> v:98 var
+R10837:10837 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R10835:10835 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R10887:10891 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R10893:10897 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R10892:10892 simuliris.tree_borrows.tkmap_view <> n:94 var
+R10882:10885 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10886:10886 simuliris.tree_borrows.tkmap_view <> k:96 var
+R10881:10881 simuliris.tree_borrows.tkmap_view <> m:95 var
+R10898:10901 Corelib.Init.Datatypes <> Some constr
+R10903:10903 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10906:10907 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10909:10909 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10904:10905 simuliris.tree_borrows.tkmap_view <> tk:97 var
+R10908:10908 simuliris.tree_borrows.tkmap_view <> v:98 var
+R11027:11045 stdpp.fin_maps <> lookup_singleton_eq thm
+R11081:11083 stdpp.base <> inj def
+R11128:11130 stdpp.base <> inj def
+R11208:11223 iris.algebra.ofe <> dist_Some_inv_r' thm
+R11254:11259 stdpp.base <> decide def
+R11263:11265 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11300:11318 stdpp.fin_maps <> lookup_singleton_ne thm
+R11335:11353 stdpp.fin_maps <> lookup_singleton_eq thm
+prf 11491:11513 <> tkmap_view_auth_frac_op
+binder 11515:11515 <> p:99
+binder 11517:11517 <> q:100
+binder 11519:11519 <> m:101
+R11552:11556 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R11527:11541 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11545:11547 stdpp.numbers Qp.notations ::Qp_scope:x_'+'_x not
+R11544:11544 simuliris.tree_borrows.tkmap_view <> p:99 var
+R11548:11548 simuliris.tree_borrows.tkmap_view <> q:100 var
+R11551:11551 simuliris.tree_borrows.tkmap_view <> m:101 var
+R11576:11580 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R11557:11571 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11573:11573 simuliris.tree_borrows.tkmap_view <> p:99 var
+R11575:11575 simuliris.tree_borrows.tkmap_view <> m:101 var
+R11581:11595 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11597:11597 simuliris.tree_borrows.tkmap_view <> q:100 var
+R11599:11599 simuliris.tree_borrows.tkmap_view <> m:101 var
+R11623:11637 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11640:11651 iris.algebra.dfrac <> dfrac_op_own thm
+R11653:11670 iris.algebra.view <> view_auth_dfrac_op thm
+inst 11696:11721 <> tkmap_view_auth_frac_is_op
+binder 11723:11723 <> q:102
+binder 11725:11726 <> q1:103
+binder 11728:11729 <> q2:104
+binder 11731:11731 <> m:105
+R11751:11755 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11739:11742 iris.algebra.proofmode_classes <> IsOp class
+R11749:11750 simuliris.tree_borrows.tkmap_view <> q2:104 var
+R11746:11747 simuliris.tree_borrows.tkmap_view <> q1:103 var
+R11744:11744 simuliris.tree_borrows.tkmap_view <> q:102 var
+R11756:11760 iris.algebra.proofmode_classes <> IsOp' class
+R11808:11822 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11824:11825 simuliris.tree_borrows.tkmap_view <> q2:104 var
+R11827:11827 simuliris.tree_borrows.tkmap_view <> m:105 var
+R11785:11799 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11801:11802 simuliris.tree_borrows.tkmap_view <> q1:103 var
+R11804:11804 simuliris.tree_borrows.tkmap_view <> m:105 var
+R11763:11777 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11779:11779 simuliris.tree_borrows.tkmap_view <> q:102 var
+R11781:11781 simuliris.tree_borrows.tkmap_view <> m:105 var
+R11849:11863 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+prf 11889:11916 <> tkmap_view_auth_frac_op_invN
+binder 11918:11918 <> n:106
+binder 11920:11920 <> p:107
+binder 11922:11923 <> m1:108
+binder 11925:11925 <> q:109
+binder 11927:11928 <> m2:110
+R11990:11994 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11936:11939 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R11941:11943 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R11989:11989 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R11940:11940 simuliris.tree_borrows.tkmap_view <> n:106 var
+R11964:11968 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R11944:11958 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11960:11960 simuliris.tree_borrows.tkmap_view <> p:107 var
+R11962:11963 simuliris.tree_borrows.tkmap_view <> m1:108 var
+R11969:11983 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R11985:11985 simuliris.tree_borrows.tkmap_view <> q:109 var
+R11987:11988 simuliris.tree_borrows.tkmap_view <> m2:110 var
+R11997:12001 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R12003:12007 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R12002:12002 simuliris.tree_borrows.tkmap_view <> n:106 var
+R11995:11996 simuliris.tree_borrows.tkmap_view <> m1:108 var
+R12008:12009 simuliris.tree_borrows.tkmap_view <> m2:110 var
+R12027:12049 iris.algebra.view <> view_auth_dfrac_op_invN thm
+prf 12065:12091 <> tkmap_view_auth_frac_op_inv
+binder 12093:12093 <> p:111
+binder 12095:12096 <> m1:112
+binder 12098:12098 <> q:113
+binder 12100:12101 <> m2:114
+R12160:12164 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12109:12113 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12159:12159 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12134:12138 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R12114:12128 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12130:12130 simuliris.tree_borrows.tkmap_view <> p:111 var
+R12132:12133 simuliris.tree_borrows.tkmap_view <> m1:112 var
+R12139:12153 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12155:12155 simuliris.tree_borrows.tkmap_view <> q:113 var
+R12157:12158 simuliris.tree_borrows.tkmap_view <> m2:114 var
+R12167:12171 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R12165:12166 simuliris.tree_borrows.tkmap_view <> m1:112 var
+R12172:12173 simuliris.tree_borrows.tkmap_view <> m2:114 var
+R12191:12212 iris.algebra.view <> view_auth_dfrac_op_inv thm
+prf 12228:12256 <> tkmap_view_auth_frac_op_inv_L
+R12261:12272 stdpp.base <> LeibnizEquiv class
+R12274:12274 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+binder 12260:12274 <> LeibnizEquiv0:115
+binder 12277:12277 <> q:116
+binder 12279:12280 <> m1:117
+binder 12282:12282 <> p:118
+binder 12284:12285 <> m2:119
+R12344:12348 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12293:12297 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12343:12343 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12318:12322 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R12298:12312 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12314:12314 simuliris.tree_borrows.tkmap_view <> p:118 var
+R12316:12317 simuliris.tree_borrows.tkmap_view <> m1:117 var
+R12323:12337 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12339:12339 simuliris.tree_borrows.tkmap_view <> q:116 var
+R12341:12342 simuliris.tree_borrows.tkmap_view <> m2:119 var
+R12351:12353 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12349:12350 simuliris.tree_borrows.tkmap_view <> m1:117 var
+R12354:12355 simuliris.tree_borrows.tkmap_view <> m2:119 var
+R12373:12396 iris.algebra.view <> view_auth_dfrac_op_inv_L thm
+prf 12416:12441 <> tkmap_view_auth_frac_valid
+binder 12443:12443 <> m:120
+binder 12445:12445 <> q:121
+R12472:12476 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R12449:12452 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12453:12467 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12469:12469 simuliris.tree_borrows.tkmap_view <> q:121 var
+R12471:12471 simuliris.tree_borrows.tkmap_view <> m:120 var
+R12479:12483 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R12478:12478 simuliris.tree_borrows.tkmap_view <> q:121 var
+R12512:12532 iris.algebra.view <> view_auth_dfrac_valid thm
+R12557:12575 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_unit thm
+prf 12593:12613 <> tkmap_view_auth_valid
+binder 12615:12615 <> m:122
+R12619:12622 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12623:12637 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12641:12641 simuliris.tree_borrows.tkmap_view <> m:122 var
+R12661:12686 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth_frac_valid thm
+prf 12709:12738 <> tkmap_view_auth_frac_op_validN
+binder 12740:12740 <> n:123
+binder 12742:12743 <> q1:124
+binder 12745:12746 <> q2:125
+binder 12748:12749 <> m1:126
+binder 12751:12752 <> m2:127
+R12816:12820 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R12760:12763 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R12765:12767 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R12815:12815 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R12764:12764 simuliris.tree_borrows.tkmap_view <> n:123 var
+R12789:12793 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R12768:12782 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12784:12785 simuliris.tree_borrows.tkmap_view <> q1:124 var
+R12787:12788 simuliris.tree_borrows.tkmap_view <> m1:126 var
+R12794:12808 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R12810:12811 simuliris.tree_borrows.tkmap_view <> q2:125 var
+R12813:12814 simuliris.tree_borrows.tkmap_view <> m2:127 var
+R12837:12841 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12821:12824 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R12828:12830 stdpp.numbers Qp.notations ::Qp_scope:x_'+'_x not
+R12826:12827 simuliris.tree_borrows.tkmap_view <> q1:124 var
+R12831:12832 simuliris.tree_borrows.tkmap_view <> q2:125 var
+R12844:12848 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R12850:12854 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R12849:12849 simuliris.tree_borrows.tkmap_view <> n:123 var
+R12842:12843 simuliris.tree_borrows.tkmap_view <> m1:126 var
+R12855:12856 simuliris.tree_borrows.tkmap_view <> m2:127 var
+R12880:12904 iris.algebra.view <> view_auth_dfrac_op_validN thm
+R12929:12947 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_unit thm
+prf 12965:12993 <> tkmap_view_auth_frac_op_valid
+binder 12995:12996 <> q1:128
+binder 12998:12999 <> q2:129
+binder 13001:13002 <> m1:130
+binder 13004:13005 <> m2:131
+R13066:13070 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R13013:13017 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13065:13065 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13039:13043 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R13018:13032 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13034:13035 simuliris.tree_borrows.tkmap_view <> q1:128 var
+R13037:13038 simuliris.tree_borrows.tkmap_view <> m1:130 var
+R13044:13058 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13060:13061 simuliris.tree_borrows.tkmap_view <> q2:129 var
+R13063:13064 simuliris.tree_borrows.tkmap_view <> m2:131 var
+R13089:13093 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R13079:13083 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R13074:13076 stdpp.numbers Qp.notations ::Qp_scope:x_'+'_x not
+R13072:13073 simuliris.tree_borrows.tkmap_view <> q1:128 var
+R13077:13078 simuliris.tree_borrows.tkmap_view <> q2:129 var
+R13096:13100 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R13094:13095 simuliris.tree_borrows.tkmap_view <> m1:130 var
+R13101:13102 simuliris.tree_borrows.tkmap_view <> m2:131 var
+R13126:13149 iris.algebra.view <> view_auth_dfrac_op_valid thm
+R13174:13192 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_unit thm
+prf 13210:13240 <> tkmap_view_auth_frac_op_valid_L
+R13245:13256 stdpp.base <> LeibnizEquiv class
+R13258:13258 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+binder 13244:13258 <> LeibnizEquiv0:132
+binder 13261:13262 <> q1:133
+binder 13264:13265 <> q2:134
+binder 13267:13268 <> m1:135
+binder 13270:13271 <> m2:136
+R13332:13336 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R13279:13283 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13331:13331 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13305:13309 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R13284:13298 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13300:13301 simuliris.tree_borrows.tkmap_view <> q1:133 var
+R13303:13304 simuliris.tree_borrows.tkmap_view <> m1:135 var
+R13310:13324 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13326:13327 simuliris.tree_borrows.tkmap_view <> q2:134 var
+R13329:13330 simuliris.tree_borrows.tkmap_view <> m2:136 var
+R13353:13357 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R13337:13340 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13344:13346 stdpp.numbers Qp.notations ::Qp_scope:x_'+'_x not
+R13342:13343 simuliris.tree_borrows.tkmap_view <> q1:133 var
+R13347:13348 simuliris.tree_borrows.tkmap_view <> q2:134 var
+R13360:13362 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R13358:13359 simuliris.tree_borrows.tkmap_view <> m1:135 var
+R13363:13364 simuliris.tree_borrows.tkmap_view <> m2:136 var
+R13398:13426 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth_frac_op_valid thm
+prf 13443:13467 <> tkmap_view_auth_op_validN
+binder 13469:13469 <> n:137
+binder 13471:13472 <> m1:138
+binder 13474:13475 <> m2:139
+R13537:13541 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R13483:13486 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R13488:13490 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R13536:13536 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R13487:13487 simuliris.tree_borrows.tkmap_view <> n:137 var
+R13511:13515 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R13491:13505 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13509:13510 simuliris.tree_borrows.tkmap_view <> m1:138 var
+R13516:13530 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13534:13535 simuliris.tree_borrows.tkmap_view <> m2:139 var
+R13542:13546 stdpp.base <> ::type_scope:'False' not
+R13564:13582 iris.algebra.view <> view_auth_op_validN thm
+prf 13598:13621 <> tkmap_view_auth_op_valid
+binder 13623:13624 <> m1:140
+binder 13626:13627 <> m2:141
+R13686:13690 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R13635:13639 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13685:13685 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13660:13664 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R13640:13654 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13658:13659 simuliris.tree_borrows.tkmap_view <> m1:140 var
+R13665:13679 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R13683:13684 simuliris.tree_borrows.tkmap_view <> m2:141 var
+R13691:13695 stdpp.base <> ::type_scope:'False' not
+R13713:13730 iris.algebra.view <> view_auth_op_valid thm
+prf 13747:13768 <> tkmap_view_frag_validN
+binder 13770:13770 <> n:142
+binder 13772:13772 <> k:143
+binder 13774:13775 <> tk:144
+binder 13777:13777 <> v:145
+R13781:13784 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R13786:13787 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R13785:13785 simuliris.tree_borrows.tkmap_view <> n:142 var
+R13788:13802 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R13804:13804 simuliris.tree_borrows.tkmap_view <> k:143 var
+R13806:13807 simuliris.tree_borrows.tkmap_view <> tk:144 var
+R13809:13809 simuliris.tree_borrows.tkmap_view <> v:145 var
+R13833:13848 iris.algebra.view <> view_frag_validN thm
+R13850:13870 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_exists thm
+R13872:13887 iris.algebra.gmap <> singleton_validN thm
+R13889:13899 iris.algebra.cmra <> pair_validN thm
+R13930:13943 simuliris.tree_borrows.tkmap_view <> to_tgkR_validN thm
+prf 13961:13981 <> tkmap_view_frag_valid
+binder 13983:13983 <> k:146
+binder 13985:13986 <> tk:147
+binder 13988:13988 <> v:148
+R13992:13995 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R13996:14010 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R14012:14012 simuliris.tree_borrows.tkmap_view <> k:146 var
+R14014:14015 simuliris.tree_borrows.tkmap_view <> tk:147 var
+R14017:14017 simuliris.tree_borrows.tkmap_view <> v:148 var
+R14037:14053 iris.algebra.cmra <> cmra_valid_validN thm
+R14067:14088 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag_validN thm
+prf 14326:14350 <> tkmap_view_frag_op_validN
+binder 14352:14352 <> n:149
+binder 14354:14354 <> k:150
+binder 14356:14358 <> tk1:151
+binder 14360:14362 <> tk2:152
+binder 14364:14365 <> v1:153
+binder 14367:14368 <> v2:154
+R14438:14448 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R14376:14379 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R14381:14383 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R14437:14437 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R14380:14380 simuliris.tree_borrows.tkmap_view <> n:149 var
+R14408:14412 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R14384:14398 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R14400:14400 simuliris.tree_borrows.tkmap_view <> k:150 var
+R14402:14404 simuliris.tree_borrows.tkmap_view <> tk1:151 var
+R14406:14407 simuliris.tree_borrows.tkmap_view <> v1:153 var
+R14413:14427 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R14429:14429 simuliris.tree_borrows.tkmap_view <> k:150 var
+R14431:14433 simuliris.tree_borrows.tkmap_view <> tk2:152 var
+R14435:14436 simuliris.tree_borrows.tkmap_view <> v2:154 var
+R14482:14486 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R14449:14453 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R14481:14481 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R14465:14469 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R14454:14460 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R14462:14464 simuliris.tree_borrows.tkmap_view <> tk1:151 var
+R14470:14476 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R14478:14480 simuliris.tree_borrows.tkmap_view <> tk2:152 var
+R14489:14493 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R14495:14499 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R14494:14494 simuliris.tree_borrows.tkmap_view <> n:149 var
+R14487:14488 simuliris.tree_borrows.tkmap_view <> v1:153 var
+R14500:14501 simuliris.tree_borrows.tkmap_view <> v2:154 var
+R14525:14540 iris.algebra.view <> view_frag_validN thm
+R14542:14562 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_exists thm
+R14564:14575 iris.algebra.gmap <> singleton_op thm
+R14577:14592 iris.algebra.gmap <> singleton_validN thm
+R14611:14617 iris.algebra.cmra <> pair_op thm
+R14619:14629 iris.algebra.cmra <> pair_validN thm
+R14631:14648 iris.algebra.agree <> to_agree_op_validN thm
+prf 14666:14689 <> tkmap_view_frag_op_valid
+binder 14691:14691 <> k:155
+binder 14693:14695 <> tk1:156
+binder 14697:14699 <> tk2:157
+binder 14701:14702 <> v1:158
+binder 14704:14705 <> v2:159
+R14772:14776 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R14713:14717 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R14771:14771 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R14742:14746 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R14718:14732 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R14734:14734 simuliris.tree_borrows.tkmap_view <> k:155 var
+R14736:14738 simuliris.tree_borrows.tkmap_view <> tk1:156 var
+R14740:14741 simuliris.tree_borrows.tkmap_view <> v1:158 var
+R14747:14761 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R14763:14763 simuliris.tree_borrows.tkmap_view <> k:155 var
+R14765:14767 simuliris.tree_borrows.tkmap_view <> tk2:157 var
+R14769:14770 simuliris.tree_borrows.tkmap_view <> v2:159 var
+R14810:14814 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R14777:14781 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R14809:14809 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R14793:14797 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R14782:14788 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R14790:14792 simuliris.tree_borrows.tkmap_view <> tk1:156 var
+R14798:14804 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R14806:14808 simuliris.tree_borrows.tkmap_view <> tk2:157 var
+R14817:14821 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R14815:14816 simuliris.tree_borrows.tkmap_view <> v1:158 var
+R14822:14823 simuliris.tree_borrows.tkmap_view <> v2:159 var
+R14847:14861 iris.algebra.view <> view_frag_valid thm
+R14879:14899 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_exists thm
+R14915:14931 iris.algebra.cmra <> cmra_valid_validN thm
+R14933:14944 iris.algebra.gmap <> singleton_op thm
+R14946:14960 iris.algebra.gmap <> singleton_valid thm
+R14979:14985 iris.algebra.cmra <> pair_op thm
+R14987:14996 iris.algebra.cmra <> pair_valid thm
+R14998:15014 iris.algebra.agree <> to_agree_op_valid thm
+prf 15033:15058 <> tkmap_view_frag_op_valid_L
+R15063:15074 stdpp.base <> LeibnizEquiv class
+R15076:15076 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+binder 15062:15076 <> LeibnizEquiv0:160
+binder 15079:15079 <> k:161
+binder 15081:15083 <> tk1:162
+binder 15085:15087 <> tk2:163
+binder 15089:15090 <> v1:164
+binder 15092:15093 <> v2:165
+R15160:15164 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R15101:15105 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R15159:15159 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R15130:15134 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R15106:15120 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R15122:15122 simuliris.tree_borrows.tkmap_view <> k:161 var
+R15124:15126 simuliris.tree_borrows.tkmap_view <> tk1:162 var
+R15128:15129 simuliris.tree_borrows.tkmap_view <> v1:164 var
+R15135:15149 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R15151:15151 simuliris.tree_borrows.tkmap_view <> k:161 var
+R15153:15155 simuliris.tree_borrows.tkmap_view <> tk2:163 var
+R15157:15158 simuliris.tree_borrows.tkmap_view <> v2:165 var
+R15198:15202 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15165:15169 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R15197:15197 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R15181:15185 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R15170:15176 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R15178:15180 simuliris.tree_borrows.tkmap_view <> tk1:162 var
+R15186:15192 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R15194:15196 simuliris.tree_borrows.tkmap_view <> tk2:163 var
+R15205:15207 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15203:15204 simuliris.tree_borrows.tkmap_view <> v1:164 var
+R15208:15209 simuliris.tree_borrows.tkmap_view <> v2:165 var
+R15243:15266 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag_op_valid thm
+prf 15283:15309 <> tkmap_view_both_frac_validN
+binder 15311:15311 <> n:166
+binder 15313:15313 <> q:167
+binder 15315:15315 <> m:168
+binder 15317:15317 <> k:169
+binder 15319:15320 <> tk:170
+binder 15322:15322 <> v:171
+R15385:15395 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R15330:15333 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R15335:15337 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R15384:15384 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R15334:15334 simuliris.tree_borrows.tkmap_view <> n:166 var
+R15357:15361 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R15338:15352 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R15354:15354 simuliris.tree_borrows.tkmap_view <> q:167 var
+R15356:15356 simuliris.tree_borrows.tkmap_view <> m:168 var
+R15362:15376 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R15378:15378 simuliris.tree_borrows.tkmap_view <> k:169 var
+R15380:15381 simuliris.tree_borrows.tkmap_view <> tk:170 var
+R15383:15383 simuliris.tree_borrows.tkmap_view <> v:171 var
+R15408:15412 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15398:15402 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R15397:15397 simuliris.tree_borrows.tkmap_view <> q:167 var
+R15419:15423 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R15425:15429 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R15424:15424 simuliris.tree_borrows.tkmap_view <> n:166 var
+R15414:15417 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R15418:15418 simuliris.tree_borrows.tkmap_view <> k:169 var
+R15413:15413 simuliris.tree_borrows.tkmap_view <> m:168 var
+R15430:15433 Corelib.Init.Datatypes <> Some constr
+R15435:15435 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15438:15439 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15441:15441 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15436:15437 simuliris.tree_borrows.tkmap_view <> tk:170 var
+R15440:15440 simuliris.tree_borrows.tkmap_view <> v:171 var
+R15466:15480 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R15483:15497 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R15512:15533 iris.algebra.view <> view_both_dfrac_validN thm
+R15535:15555 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_lookup thm
+prf 15591:15612 <> tkmap_view_both_validN
+binder 15614:15614 <> n:172
+binder 15616:15616 <> m:173
+binder 15618:15618 <> k:174
+binder 15620:15621 <> tk:175
+binder 15623:15623 <> v:176
+R15686:15696 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R15631:15634 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R15636:15638 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R15685:15685 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R15635:15635 simuliris.tree_borrows.tkmap_view <> n:172 var
+R15658:15662 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R15639:15653 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R15657:15657 simuliris.tree_borrows.tkmap_view <> m:173 var
+R15663:15677 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R15679:15679 simuliris.tree_borrows.tkmap_view <> k:174 var
+R15681:15682 simuliris.tree_borrows.tkmap_view <> tk:175 var
+R15684:15684 simuliris.tree_borrows.tkmap_view <> v:176 var
+R15703:15707 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R15709:15713 iris.algebra.ofe <> :::x_'≡{'_x_'}≡'_x not
+R15708:15708 simuliris.tree_borrows.tkmap_view <> n:172 var
+R15698:15701 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R15702:15702 simuliris.tree_borrows.tkmap_view <> k:174 var
+R15697:15697 simuliris.tree_borrows.tkmap_view <> m:173 var
+R15714:15717 Corelib.Init.Datatypes <> Some constr
+R15719:15719 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15722:15723 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15725:15725 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15720:15721 simuliris.tree_borrows.tkmap_view <> tk:175 var
+R15724:15724 simuliris.tree_borrows.tkmap_view <> v:176 var
+R15745:15771 simuliris.tree_borrows.tkmap_view <> tkmap_view_both_frac_validN thm
+prf 15806:15831 <> tkmap_view_both_frac_valid
+binder 15833:15833 <> q:177
+binder 15835:15835 <> m:178
+binder 15837:15837 <> k:179
+binder 15839:15840 <> tk:180
+binder 15842:15842 <> v:181
+R15902:15910 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R15850:15854 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R15901:15901 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R15874:15878 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R15855:15869 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R15871:15871 simuliris.tree_borrows.tkmap_view <> q:177 var
+R15873:15873 simuliris.tree_borrows.tkmap_view <> m:178 var
+R15879:15893 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R15895:15895 simuliris.tree_borrows.tkmap_view <> k:179 var
+R15897:15898 simuliris.tree_borrows.tkmap_view <> tk:180 var
+R15900:15900 simuliris.tree_borrows.tkmap_view <> v:181 var
+R15923:15927 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15913:15917 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R15912:15912 simuliris.tree_borrows.tkmap_view <> q:177 var
+R15934:15938 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R15929:15932 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R15933:15933 simuliris.tree_borrows.tkmap_view <> k:179 var
+R15928:15928 simuliris.tree_borrows.tkmap_view <> m:178 var
+R15939:15942 Corelib.Init.Datatypes <> Some constr
+R15944:15944 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15947:15948 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15950:15950 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15945:15946 simuliris.tree_borrows.tkmap_view <> tk:180 var
+R15949:15949 simuliris.tree_borrows.tkmap_view <> v:181 var
+R15975:15989 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R15992:16006 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R16021:16041 iris.algebra.view <> view_both_dfrac_valid thm
+R16059:16079 simuliris.tree_borrows.tkmap_view <> tkmap_view_rel_lookup thm
+R16143:16152 iris.algebra.ofe <> equiv_dist thm
+R16219:16228 iris.algebra.ofe <> equiv_dist thm
+prf 16256:16283 <> tkmap_view_both_frac_valid_L
+R16288:16299 stdpp.base <> LeibnizEquiv class
+R16301:16301 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+binder 16287:16301 <> LeibnizEquiv0:182
+binder 16304:16304 <> q:183
+binder 16306:16306 <> m:184
+binder 16308:16308 <> k:185
+binder 16310:16311 <> tk:186
+binder 16313:16313 <> v:187
+R16373:16381 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R16321:16325 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16372:16372 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16345:16349 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R16326:16340 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R16342:16342 simuliris.tree_borrows.tkmap_view <> q:183 var
+R16344:16344 simuliris.tree_borrows.tkmap_view <> m:184 var
+R16350:16364 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R16366:16366 simuliris.tree_borrows.tkmap_view <> k:185 var
+R16368:16369 simuliris.tree_borrows.tkmap_view <> tk:186 var
+R16371:16371 simuliris.tree_borrows.tkmap_view <> v:187 var
+R16387:16391 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R16382:16385 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16386:16386 simuliris.tree_borrows.tkmap_view <> q:183 var
+R16398:16400 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16393:16396 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16397:16397 simuliris.tree_borrows.tkmap_view <> k:185 var
+R16392:16392 simuliris.tree_borrows.tkmap_view <> m:184 var
+R16401:16404 Corelib.Init.Datatypes <> Some constr
+R16406:16406 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16409:16410 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16412:16412 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16407:16408 simuliris.tree_borrows.tkmap_view <> tk:186 var
+R16411:16411 simuliris.tree_borrows.tkmap_view <> v:187 var
+R16446:16471 simuliris.tree_borrows.tkmap_view <> tkmap_view_both_frac_valid thm
+prf 16487:16507 <> tkmap_view_both_valid
+binder 16509:16509 <> m:188
+binder 16511:16511 <> k:189
+binder 16513:16514 <> tk:190
+binder 16516:16516 <> v:191
+R16576:16580 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R16524:16528 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16575:16575 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16548:16552 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R16529:16543 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R16547:16547 simuliris.tree_borrows.tkmap_view <> m:188 var
+R16553:16567 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R16569:16569 simuliris.tree_borrows.tkmap_view <> k:189 var
+R16571:16572 simuliris.tree_borrows.tkmap_view <> tk:190 var
+R16574:16574 simuliris.tree_borrows.tkmap_view <> v:191 var
+R16587:16591 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R16582:16585 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16586:16586 simuliris.tree_borrows.tkmap_view <> k:189 var
+R16581:16581 simuliris.tree_borrows.tkmap_view <> m:188 var
+R16592:16595 Corelib.Init.Datatypes <> Some constr
+R16597:16597 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16600:16601 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16603:16603 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16598:16599 simuliris.tree_borrows.tkmap_view <> tk:190 var
+R16602:16602 simuliris.tree_borrows.tkmap_view <> v:191 var
+R16623:16648 simuliris.tree_borrows.tkmap_view <> tkmap_view_both_frac_valid thm
+prf 16683:16705 <> tkmap_view_both_valid_L
+R16710:16721 stdpp.base <> LeibnizEquiv class
+R16723:16723 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+binder 16709:16723 <> LeibnizEquiv0:192
+binder 16726:16726 <> m:193
+binder 16728:16728 <> k:194
+binder 16730:16731 <> tk:195
+binder 16733:16733 <> v:196
+R16793:16797 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R16741:16745 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16792:16792 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R16765:16769 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R16746:16760 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R16764:16764 simuliris.tree_borrows.tkmap_view <> m:193 var
+R16770:16784 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R16786:16786 simuliris.tree_borrows.tkmap_view <> k:194 var
+R16788:16789 simuliris.tree_borrows.tkmap_view <> tk:195 var
+R16791:16791 simuliris.tree_borrows.tkmap_view <> v:196 var
+R16804:16806 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16799:16802 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16803:16803 simuliris.tree_borrows.tkmap_view <> k:194 var
+R16798:16798 simuliris.tree_borrows.tkmap_view <> m:193 var
+R16807:16810 Corelib.Init.Datatypes <> Some constr
+R16812:16812 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16815:16816 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16818:16818 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16813:16814 simuliris.tree_borrows.tkmap_view <> tk:195 var
+R16817:16817 simuliris.tree_borrows.tkmap_view <> v:196 var
+R16852:16872 simuliris.tree_borrows.tkmap_view <> tkmap_view_both_valid thm
+prf 16923:16938 <> tkmap_view_alloc
+binder 16940:16940 <> m:197
+binder 16942:16942 <> k:198
+binder 16944:16945 <> tk:199
+binder 16947:16947 <> v:200
+R16968:16976 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16961:16963 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16956:16959 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16960:16960 simuliris.tree_borrows.tkmap_view <> k:198 var
+R16955:16955 simuliris.tree_borrows.tkmap_view <> m:197 var
+R16964:16967 Corelib.Init.Datatypes <> None constr
+R16996:17000 iris.algebra.updates <> :::x_'~~>'_x not
+R16977:16991 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R16995:16995 simuliris.tree_borrows.tkmap_view <> m:197 var
+R17039:17043 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R17001:17015 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R17020:17021 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R17023:17026 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R17034:17037 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R17022:17022 simuliris.tree_borrows.tkmap_view <> k:198 var
+R17027:17027 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R17030:17031 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R17033:17033 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R17028:17029 simuliris.tree_borrows.tkmap_view <> tk:199 var
+R17032:17032 simuliris.tree_borrows.tkmap_view <> v:200 var
+R17037:17037 simuliris.tree_borrows.tkmap_view <> m:197 var
+R17044:17058 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R17060:17060 simuliris.tree_borrows.tkmap_view <> k:198 var
+R17062:17063 simuliris.tree_borrows.tkmap_view <> tk:199 var
+R17065:17065 simuliris.tree_borrows.tkmap_view <> v:200 var
+R17102:17118 iris.algebra.view <> view_update_alloc thm
+R17158:17166 iris.algebra.gmap <> lookup_op thm
+R17179:17184 stdpp.base <> decide def
+R17188:17190 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17229:17231 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17224:17227 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R17232:17235 Corelib.Init.Datatypes <> None constr
+R17266:17269 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R17448:17466 stdpp.fin_maps <> lookup_singleton_eq thm
+R17472:17479 stdpp.base <> right_id def
+R17564:17579 stdpp.fin_maps <> lookup_insert_eq thm
+R17602:17620 stdpp.fin_maps <> lookup_singleton_ne thm
+R17648:17654 stdpp.base <> left_id def
+R17801:17816 stdpp.fin_maps <> lookup_insert_ne thm
+prf 17838:17857 <> tkmap_view_alloc_big
+binder 17859:17859 <> m:201
+binder 17861:17862 <> m':202
+R17880:17888 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17872:17878 stdpp.fin_maps <> ::stdpp_scope:x_'##ₘ'_x not
+R17870:17871 simuliris.tree_borrows.tkmap_view <> m':202 var
+R17879:17879 simuliris.tree_borrows.tkmap_view <> m:201 var
+R17908:17918 iris.algebra.updates <> :::x_'~~>'_x not
+R17889:17903 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R17907:17907 simuliris.tree_borrows.tkmap_view <> m:201 var
+R17947:17952 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R18005:18005 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R17919:17933 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R17940:17944 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R17938:17939 simuliris.tree_borrows.tkmap_view <> m':202 var
+R17945:17945 simuliris.tree_borrows.tkmap_view <> m:201 var
+R17953:17954 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R17957:17962 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R17964:17966 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R17969:17973 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R17976:17977 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R17955:17956 iris.algebra.cmra <> op def
+binder 17963:17963 <> k:203
+binder 17967:17968 <> va:204
+R17978:17992 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R17994:17994 simuliris.tree_borrows.tkmap_view <> k:203 var
+R17998:17999 stdpp.base <> :::x_'.1' not
+R17996:17997 simuliris.tree_borrows.tkmap_view <> va:204 var
+R18003:18004 stdpp.base <> :::x_'.2' not
+R18001:18002 simuliris.tree_borrows.tkmap_view <> va:204 var
+R17974:17975 simuliris.tree_borrows.tkmap_view <> m':202 var
+R18071:18077 stdpp.fin_maps <> map_ind thm
+R18118:18130 iris.algebra.big_op <> big_opM_empty thm
+R18132:18140 stdpp.base <> left_id_L thm
+R18142:18149 stdpp.base <> right_id def
+R18203:18216 iris.algebra.big_op <> big_opM_insert thm
+R18221:18225 stdpp.base <> assoc def
+R18238:18251 iris.algebra.updates <> cmra_update_op thm
+R18278:18291 stdpp.fin_maps <> insert_union_l thm
+R18301:18316 simuliris.tree_borrows.tkmap_view <> tkmap_view_alloc thm
+R18342:18358 stdpp.fin_maps <> lookup_union_None thm
+prf 18377:18393 <> tkmap_view_delete
+binder 18395:18395 <> m:205
+binder 18397:18397 <> k:206
+binder 18399:18399 <> v:207
+binder 18401:18402 <> tk:208
+R18423:18431 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18412:18416 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R18410:18411 simuliris.tree_borrows.tkmap_view <> tk:208 var
+R18417:18422 simuliris.tree_borrows.defs <> tk_pub constr
+R18478:18486 iris.algebra.updates <> :::x_'~~>'_x not
+R18451:18455 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R18432:18446 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R18450:18450 simuliris.tree_borrows.tkmap_view <> m:205 var
+R18456:18470 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R18472:18472 simuliris.tree_borrows.tkmap_view <> k:206 var
+R18474:18475 simuliris.tree_borrows.tkmap_view <> tk:208 var
+R18477:18477 simuliris.tree_borrows.tkmap_view <> v:207 var
+R18487:18501 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R18506:18511 stdpp.base <> delete def
+R18515:18515 simuliris.tree_borrows.tkmap_view <> m:205 var
+R18513:18513 simuliris.tree_borrows.tkmap_view <> k:206 var
+R18557:18575 iris.algebra.view <> view_update_dealloc thm
+R18621:18626 stdpp.base <> decide def
+R18630:18632 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18720:18728 iris.algebra.gmap <> lookup_op thm
+R18734:18752 stdpp.fin_maps <> lookup_singleton_eq thm
+R18755:18761 iris.algebra.cmra <> Some_op def
+R18794:18813 simuliris.tree_borrows.tkmap_view <> to_tgkR_not_pub_excl thm
+R18840:18851 iris.algebra.ofe <> discrete_iff thm
+R18881:18903 iris.algebra.cmra <> cmra_discrete_valid_iff thm
+R18938:18950 simuliris.tree_borrows.tkmap_view <> to_tgkR_valid thm
+R19022:19030 iris.algebra.gmap <> lookup_op thm
+R19032:19050 stdpp.fin_maps <> lookup_singleton_ne thm
+R19130:19145 stdpp.fin_maps <> lookup_delete_ne thm
+prf 19167:19183 <> tkmap_view_update
+binder 19185:19185 <> m:209
+binder 19187:19187 <> k:210
+binder 19189:19190 <> tk:211
+binder 19192:19194 <> tk':212
+binder 19196:19196 <> v:213
+binder 19198:19199 <> v':214
+R19220:19228 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19209:19213 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R19207:19208 simuliris.tree_borrows.tkmap_view <> tk:211 var
+R19214:19219 simuliris.tree_borrows.defs <> tk_pub constr
+R19275:19285 iris.algebra.updates <> :::x_'~~>'_x not
+R19248:19252 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R19229:19243 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R19247:19247 simuliris.tree_borrows.tkmap_view <> m:209 var
+R19253:19267 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R19269:19269 simuliris.tree_borrows.tkmap_view <> k:210 var
+R19271:19272 simuliris.tree_borrows.tkmap_view <> tk:211 var
+R19274:19274 simuliris.tree_borrows.tkmap_view <> v:213 var
+R19326:19330 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R19286:19300 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R19305:19306 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R19308:19311 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R19321:19324 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R19307:19307 simuliris.tree_borrows.tkmap_view <> k:210 var
+R19312:19312 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R19316:19317 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R19320:19320 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R19313:19315 simuliris.tree_borrows.tkmap_view <> tk':212 var
+R19318:19319 simuliris.tree_borrows.tkmap_view <> v':214 var
+R19324:19324 simuliris.tree_borrows.tkmap_view <> m:209 var
+R19331:19345 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R19347:19347 simuliris.tree_borrows.tkmap_view <> k:210 var
+R19349:19351 simuliris.tree_borrows.tkmap_view <> tk':212 var
+R19353:19354 simuliris.tree_borrows.tkmap_view <> v':214 var
+R19391:19401 iris.algebra.view <> view_update thm
+R19441:19449 iris.algebra.gmap <> lookup_op thm
+R19462:19467 stdpp.base <> decide def
+R19471:19473 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19512:19514 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19507:19510 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R19515:19518 Corelib.Init.Datatypes <> None constr
+R19551:19565 iris.algebra.view <> view_rel_validN proj
+R19591:19599 iris.algebra.gmap <> lookup_op thm
+R19601:19619 stdpp.fin_maps <> lookup_singleton_eq thm
+R19642:19645 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R19735:19741 iris.algebra.cmra <> Some_op def
+R19744:19750 iris.algebra.cmra <> pair_op thm
+R19772:19791 simuliris.tree_borrows.tkmap_view <> to_tgkR_not_pub_excl thm
+R19818:19825 stdpp.base <> right_id def
+R19827:19845 stdpp.fin_maps <> lookup_singleton_eq thm
+R19954:19969 stdpp.fin_maps <> lookup_insert_eq thm
+R19992:20010 stdpp.fin_maps <> lookup_singleton_ne thm
+R20038:20044 stdpp.base <> left_id def
+R20123:20131 iris.algebra.gmap <> lookup_op thm
+R20133:20151 stdpp.fin_maps <> lookup_singleton_ne thm
+R20156:20162 stdpp.base <> left_id def
+R20253:20268 stdpp.fin_maps <> lookup_insert_ne thm
+inst 21651:21673 <> tkmap_view_frag_core_id
+binder 21675:21675 <> k:215
+binder 21677:21677 <> v:216
+R21681:21686 iris.algebra.cmra <> CoreId class
+R21689:21703 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R21705:21705 simuliris.tree_borrows.tkmap_view <> k:215 var
+R21707:21712 simuliris.tree_borrows.defs <> tk_pub constr
+R21714:21714 simuliris.tree_borrows.tkmap_view <> v:216 var
+inst 21759:21782 <> tkmap_view_cmra_discrete
+R21799:21803 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21786:21796 iris.algebra.ofe <> OfeDiscrete class
+R21798:21798 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R21804:21815 iris.algebra.cmra <> CmraDiscrete class
+R21818:21828 simuliris.tree_borrows.tkmap_view <> tkmap_viewR def
+R21832:21832 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R21830:21830 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R21863:21868 simuliris.tree_borrows.tkmap_view lemmas <> sec
+R25200:25208 iris.proofmode.proofmode <> <> lib
+R25251:25253 iris.base_logic.lib.own <> <> lib
+R25288:25297 iris.bi.lib.fractional <> <> lib
+rec 25419:25424 <> tkmapG
+proj 25471:25479 <> tkmap_inG
+binder 25426:25427 <> Σ:217
+binder 25430:25430 <> K:218
+binder 25432:25432 <> V:219
+R25444:25452 stdpp.countable <> Countable class
+R25454:25454 simuliris.tree_borrows.tkmap_view <> K:218 var
+binder 25444:25454 <> H:221
+R25484:25486 iris.base_logic.lib.own <> inG class
+R25488:25489 simuliris.tree_borrows.tkmap_view <> Σ:217 var
+R25492:25502 simuliris.tree_borrows.tkmap_view <> tkmap_viewR def
+R25507:25514 iris.algebra.ofe <> leibnizO abbrev
+R25516:25516 simuliris.tree_borrows.tkmap_view <> V:219 var
+R25504:25504 simuliris.tree_borrows.tkmap_view <> K:218 var
+def 25535:25541 <> tkmapΣ
+binder 25544:25544 <> K:224
+binder 25546:25546 <> V:225
+R25558:25566 stdpp.countable <> Countable class
+R25568:25568 simuliris.tree_borrows.tkmap_view <> K:224 var
+binder 25558:25568 <> H:227
+R25573:25581 iris.base_logic.lib.iprop <> gFunctors rec
+R25588:25590 iris.base_logic.lib.iprop <> :::'#['_x_';'_'..'_';'_x_']' not
+R25628:25629 iris.base_logic.lib.iprop <> :::'#['_x_';'_'..'_';'_x_']' not
+R25591:25598 iris.base_logic.lib.iprop <> GFunctor constr
+R25601:25611 simuliris.tree_borrows.tkmap_view <> tkmap_viewR def
+R25616:25623 iris.algebra.ofe <> leibnizO abbrev
+R25625:25625 simuliris.tree_borrows.tkmap_view <> V:225 var
+R25613:25613 simuliris.tree_borrows.tkmap_view <> K:224 var
+inst 25649:25660 <> subG_tkmapΣ
+binder 25662:25663 <> Σ:228
+binder 25666:25666 <> K:229
+binder 25668:25668 <> V:230
+R25680:25688 stdpp.countable <> Countable class
+R25690:25690 simuliris.tree_borrows.tkmap_view <> K:229 var
+binder 25680:25690 <> H:232
+R25718:25722 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R25697:25700 iris.base_logic.lib.iprop <> subG class
+R25716:25717 simuliris.tree_borrows.tkmap_view <> Σ:228 var
+R25703:25709 simuliris.tree_borrows.tkmap_view <> tkmapΣ def
+R25713:25713 simuliris.tree_borrows.tkmap_view <> V:230 var
+R25711:25711 simuliris.tree_borrows.tkmap_view <> K:229 var
+R25723:25728 simuliris.tree_borrows.tkmap_view <> tkmapG class
+R25735:25735 simuliris.tree_borrows.tkmap_view <> V:230 var
+R25733:25733 simuliris.tree_borrows.tkmap_view <> K:229 var
+R25730:25731 simuliris.tree_borrows.tkmap_view <> Σ:228 var
+sec 25770:25780 <> definitions
+R25795:25800 simuliris.tree_borrows.tkmap_view <> tkmapG class
+def 25825:25838 <> tkmap_auth_def
+R25846:25850 iris.base_logic.lib.iprop <> gname def
+binder 25841:25842 <> γ:239
+R25858:25859 stdpp.numbers <> Qp rec
+binder 25854:25854 <> q:240
+R25867:25870 stdpp.gmap <> gmap rec
+R25883:25885 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R25875:25882 simuliris.tree_borrows.defs <> tag_kind ind
+R25886:25886 simuliris.tree_borrows.tkmap_view <> definitions.V var
+R25872:25872 simuliris.tree_borrows.tkmap_view <> definitions.K var
+binder 25863:25863 <> m:241
+R25892:25896 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R25898:25899 simuliris.tree_borrows.tkmap_view <> definitions.Σ var
+R25908:25910 iris.base_logic.lib.own <> own def
+R25916:25930 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R25948:25948 simuliris.tree_borrows.tkmap_view <> q:240 var
+R25950:25950 simuliris.tree_borrows.tkmap_view <> m:241 var
+R25936:25943 iris.algebra.ofe <> leibnizO abbrev
+R25945:25945 simuliris.tree_borrows.tkmap_view <> definitions.V var
+R25912:25913 simuliris.tree_borrows.tkmap_view <> γ:239 var
+def 25967:25980 <> tkmap_auth_aux
+R25984:25987 stdpp.base <> seal rec
+R25991:26004 simuliris.tree_borrows.tkmap_view <> tkmap_auth_def def
+def 26045:26054 <> tkmap_auth
+R26075:26080 stdpp.base <> unseal proj
+R26059:26072 simuliris.tree_borrows.tkmap_view <> tkmap_auth_aux def
+def 26097:26109 <> tkmap_auth_eq
+R26124:26126 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R26114:26123 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R26128:26141 simuliris.tree_borrows.tkmap_view <> tkmap_auth_def def
+R26162:26168 stdpp.base <> seal_eq proj
+R26146:26159 simuliris.tree_borrows.tkmap_view <> tkmap_auth_aux def
+def 26186:26199 <> tkmap_elem_def
+R26207:26211 iris.base_logic.lib.iprop <> gname def
+binder 26202:26203 <> γ:242
+R26219:26219 simuliris.tree_borrows.tkmap_view <> definitions.K var
+binder 26215:26215 <> k:243
+R26228:26235 simuliris.tree_borrows.defs <> tag_kind ind
+binder 26223:26224 <> tk:244
+R26243:26243 simuliris.tree_borrows.tkmap_view <> definitions.V var
+binder 26239:26239 <> v:245
+R26248:26252 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R26254:26255 simuliris.tree_borrows.tkmap_view <> definitions.Σ var
+R26264:26266 iris.base_logic.lib.own <> own def
+R26272:26286 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R26304:26304 simuliris.tree_borrows.tkmap_view <> k:243 var
+R26306:26307 simuliris.tree_borrows.tkmap_view <> tk:244 var
+R26309:26309 simuliris.tree_borrows.tkmap_view <> v:245 var
+R26292:26299 iris.algebra.ofe <> leibnizO abbrev
+R26301:26301 simuliris.tree_borrows.tkmap_view <> definitions.V var
+R26268:26269 simuliris.tree_borrows.tkmap_view <> γ:242 var
+def 26326:26339 <> tkmap_elem_aux
+R26343:26346 stdpp.base <> seal rec
+R26350:26363 simuliris.tree_borrows.tkmap_view <> tkmap_elem_def def
+def 26404:26413 <> tkmap_elem
+R26434:26439 stdpp.base <> unseal proj
+R26418:26431 simuliris.tree_borrows.tkmap_view <> tkmap_elem_aux def
+def 26456:26468 <> tkmap_elem_eq
+R26483:26485 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R26473:26482 simuliris.tree_borrows.tkmap_view <> tkmap_elem def
+R26487:26500 simuliris.tree_borrows.tkmap_view <> tkmap_elem_def def
+R26521:26527 stdpp.base <> seal_eq proj
+R26505:26518 simuliris.tree_borrows.tkmap_view <> tkmap_elem_aux def
+R26535:26545 simuliris.tree_borrows.tkmap_view definitions <> sec
+R26680:26689 simuliris.tree_borrows.tkmap_view <> tkmap_elem def
+not 26654:26654 <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x
+R26827:26839 simuliris.tree_borrows.tkmap_view <> tkmap_auth_eq def
+R26842:26855 simuliris.tree_borrows.tkmap_view <> tkmap_auth_def def
+R26860:26872 simuliris.tree_borrows.tkmap_view <> tkmap_elem_eq def
+R26875:26888 simuliris.tree_borrows.tkmap_view <> tkmap_elem_def def
+sec 26900:26905 <> lemmas
+R26920:26925 simuliris.tree_borrows.tkmap_view <> tkmapG class
+R26958:26958 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R26966:26966 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R26975:26982 simuliris.tree_borrows.defs <> tag_kind ind
+R26990:26991 stdpp.numbers <> Qp rec
+R26999:27002 stdpp.gmap <> gmap rec
+R27015:27017 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R27007:27014 simuliris.tree_borrows.defs <> tag_kind ind
+R27018:27018 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R27004:27004 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+inst 27083:27101 <> tkmap_elem_timeless
+binder 27103:27103 <> k:252
+binder 27105:27106 <> γ:253
+binder 27108:27109 <> tk:254
+binder 27111:27111 <> v:255
+R27115:27122 iris.bi.derived_connectives <> Timeless class
+R27126:27130 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27133:27134 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27137:27138 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27131:27132 simuliris.tree_borrows.tkmap_view <> γ:253 var
+R27125:27125 simuliris.tree_borrows.tkmap_view <> k:252 var
+R27135:27136 simuliris.tree_borrows.tkmap_view <> tk:254 var
+R27139:27139 simuliris.tree_borrows.tkmap_view <> v:255 var
+prf 27191:27208 <> tkmap_elems_unseal
+binder 27210:27211 <> γ:256
+binder 27213:27213 <> m:257
+R27221:27221 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R27274:27285 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R27222:27231 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27233:27237 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27246:27250 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27252:27253 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 27232:27232 <> k:258
+binder 27232:27232 <> k:259
+R27243:27243 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+binder 27239:27240 <> v':260
+binder 27238:27245 <> v':261
+R27255:27259 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27262:27263 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27268:27269 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27260:27261 simuliris.tree_borrows.tkmap_view <> γ:256 var
+R27254:27254 simuliris.tree_borrows.tkmap_view <> k:258 var
+R27266:27267 stdpp.base <> :::x_'.1' not
+R27264:27265 simuliris.tree_borrows.tkmap_view <> v':260 var
+R27272:27273 stdpp.base <> :::x_'.2' not
+R27270:27271 simuliris.tree_borrows.tkmap_view <> v':260 var
+R27251:27251 simuliris.tree_borrows.tkmap_view <> m:257 var
+R27286:27288 iris.base_logic.lib.own <> own def
+R27294:27295 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27298:27303 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27305:27307 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27310:27314 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27316:27317 iris.algebra.big_op <> ::stdpp_scope:'[^'_x_'map]'_x_'↦'_x_'∈'_x_','_x not
+R27296:27297 iris.algebra.cmra <> op def
+binder 27304:27304 <> k:262
+binder 27308:27309 <> v':263
+R27318:27332 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag def
+R27350:27350 simuliris.tree_borrows.tkmap_view <> k:262 var
+R27354:27355 stdpp.base <> :::x_'.1' not
+R27352:27353 simuliris.tree_borrows.tkmap_view <> v':263 var
+R27359:27360 stdpp.base <> :::x_'.2' not
+R27357:27358 simuliris.tree_borrows.tkmap_view <> v':263 var
+R27338:27345 iris.algebra.ofe <> leibnizO abbrev
+R27347:27347 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R27315:27315 simuliris.tree_borrows.tkmap_view <> m:257 var
+R27290:27291 simuliris.tree_borrows.tkmap_view <> γ:256 var
+R27395:27400 stdpp.base <> decide def
+R27404:27406 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27407:27409 stdpp.base <> ::stdpp_scope:'∅' not
+R27441:27453 iris.algebra.big_op <> big_opM_empty thm
+R27476:27483 iris.base_logic.lib.own <> own_unit thm
+R27500:27510 iris.base_logic.lib.own <> big_opM_own thm
+inst 27561:27588 <> tkmap_elem_combine_sep_gives
+binder 27590:27590 <> k:264
+binder 27592:27593 <> γ:265
+binder 27595:27597 <> tk1:266
+binder 27599:27601 <> tk2:267
+binder 27603:27604 <> v1:268
+binder 27606:27607 <> v2:269
+R27615:27629 iris.proofmode.classes <> CombineSepGives class
+R27677:27679 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R27725:27727 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R27713:27717 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R27680:27684 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R27712:27712 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R27696:27700 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R27685:27691 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R27693:27695 simuliris.tree_borrows.tkmap_view <> tk1:266 var
+R27701:27707 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R27709:27711 simuliris.tree_borrows.tkmap_view <> tk2:267 var
+R27720:27722 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27718:27719 simuliris.tree_borrows.tkmap_view <> v1:268 var
+R27723:27724 simuliris.tree_borrows.tkmap_view <> v2:269 var
+R27653:27657 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27660:27661 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27665:27666 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27658:27659 simuliris.tree_borrows.tkmap_view <> γ:265 var
+R27652:27652 simuliris.tree_borrows.tkmap_view <> k:264 var
+R27662:27664 simuliris.tree_borrows.tkmap_view <> tk2:267 var
+R27667:27668 simuliris.tree_borrows.tkmap_view <> v2:269 var
+R27633:27637 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27640:27641 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27645:27646 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27638:27639 simuliris.tree_borrows.tkmap_view <> γ:265 var
+R27632:27632 simuliris.tree_borrows.tkmap_view <> k:264 var
+R27642:27644 simuliris.tree_borrows.tkmap_view <> tk1:266 var
+R27647:27648 simuliris.tree_borrows.tkmap_view <> v1:268 var
+R27752:27766 iris.proofmode.classes <> CombineSepGives class
+R27829:27854 simuliris.tree_borrows.tkmap_view <> tkmap_view_frag_op_valid_L thm
+prf 27878:27895 <> tkmap_elem_valid_2
+binder 27897:27897 <> k:270
+binder 27899:27900 <> γ:271
+binder 27902:27904 <> tk1:272
+binder 27906:27908 <> tk2:273
+binder 27910:27911 <> v1:274
+binder 27913:27914 <> v2:275
+R27939:27944 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R27923:27927 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27930:27931 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27935:27936 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27928:27929 simuliris.tree_borrows.tkmap_view <> γ:271 var
+R27922:27922 simuliris.tree_borrows.tkmap_view <> k:270 var
+R27932:27934 simuliris.tree_borrows.tkmap_view <> tk1:272 var
+R27937:27938 simuliris.tree_borrows.tkmap_view <> v1:274 var
+R27962:27967 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R27946:27950 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27953:27954 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27958:27959 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R27951:27952 simuliris.tree_borrows.tkmap_view <> γ:271 var
+R27945:27945 simuliris.tree_borrows.tkmap_view <> k:270 var
+R27955:27957 simuliris.tree_borrows.tkmap_view <> tk2:273 var
+R27960:27961 simuliris.tree_borrows.tkmap_view <> v2:275 var
+R27968:27970 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28016:28018 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28004:28008 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R27971:27975 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R28003:28003 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R27987:27991 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R27976:27982 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R27984:27986 simuliris.tree_borrows.tkmap_view <> tk1:272 var
+R27992:27998 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R28000:28002 simuliris.tree_borrows.tkmap_view <> tk2:273 var
+R28011:28013 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R28009:28010 simuliris.tree_borrows.tkmap_view <> v1:274 var
+R28014:28015 simuliris.tree_borrows.tkmap_view <> v2:275 var
+prf 28107:28122 <> tkmap_elem_agree
+binder 28124:28124 <> k:276
+binder 28126:28127 <> γ:277
+binder 28129:28131 <> tk1:278
+binder 28133:28135 <> tk2:279
+binder 28137:28138 <> v1:280
+binder 28140:28141 <> v2:281
+R28166:28171 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R28150:28154 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28157:28158 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28162:28163 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28155:28156 simuliris.tree_borrows.tkmap_view <> γ:277 var
+R28149:28149 simuliris.tree_borrows.tkmap_view <> k:276 var
+R28159:28161 simuliris.tree_borrows.tkmap_view <> tk1:278 var
+R28164:28165 simuliris.tree_borrows.tkmap_view <> v1:280 var
+R28189:28194 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R28173:28177 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28180:28181 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28185:28186 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28178:28179 simuliris.tree_borrows.tkmap_view <> γ:277 var
+R28172:28172 simuliris.tree_borrows.tkmap_view <> k:276 var
+R28182:28184 simuliris.tree_borrows.tkmap_view <> tk2:279 var
+R28187:28188 simuliris.tree_borrows.tkmap_view <> v2:281 var
+R28195:28197 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28205:28207 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28200:28202 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R28198:28199 simuliris.tree_borrows.tkmap_view <> v1:280 var
+R28203:28204 simuliris.tree_borrows.tkmap_view <> v2:281 var
+prf 28300:28315 <> tkmap_elem_tk_ne
+binder 28317:28318 <> γ:282
+binder 28320:28321 <> k1:283
+binder 28323:28324 <> k2:284
+binder 28326:28328 <> tk1:285
+binder 28330:28332 <> tk2:286
+binder 28334:28335 <> v1:287
+binder 28337:28338 <> v2:288
+R28382:28386 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R28346:28348 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R28349:28353 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R28381:28381 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R28365:28369 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R28354:28360 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R28362:28364 simuliris.tree_borrows.tkmap_view <> tk1:285 var
+R28370:28376 simuliris.tree_borrows.tkmap_view <> to_tgkR def
+R28378:28380 simuliris.tree_borrows.tkmap_view <> tk2:286 var
+R28405:28410 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R28389:28393 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28396:28397 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28401:28402 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28394:28395 simuliris.tree_borrows.tkmap_view <> γ:282 var
+R28387:28388 simuliris.tree_borrows.tkmap_view <> k1:283 var
+R28398:28400 simuliris.tree_borrows.tkmap_view <> tk1:285 var
+R28403:28404 simuliris.tree_borrows.tkmap_view <> v1:287 var
+R28429:28434 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R28413:28417 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28420:28421 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28425:28426 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28418:28419 simuliris.tree_borrows.tkmap_view <> γ:282 var
+R28411:28412 simuliris.tree_borrows.tkmap_view <> k2:284 var
+R28422:28424 simuliris.tree_borrows.tkmap_view <> tk2:286 var
+R28427:28428 simuliris.tree_borrows.tkmap_view <> v2:288 var
+R28435:28437 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28447:28449 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28440:28444 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R28438:28439 simuliris.tree_borrows.tkmap_view <> k1:283 var
+R28445:28446 simuliris.tree_borrows.tkmap_view <> k2:284 var
+prf 28552:28568 <> tkmap_elem_ne_res
+binder 28570:28571 <> γ:289
+binder 28573:28574 <> k1:290
+binder 28576:28577 <> k2:291
+binder 28579:28581 <> tk2:292
+binder 28583:28584 <> v1:293
+binder 28586:28587 <> v2:294
+R28623:28628 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R28597:28601 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28604:28605 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28619:28620 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28602:28603 simuliris.tree_borrows.tkmap_view <> γ:289 var
+R28595:28596 simuliris.tree_borrows.tkmap_view <> k1:290 var
+R28606:28611 simuliris.tree_borrows.defs <> tk_unq constr
+R28613:28618 simuliris.tree_borrows.defs <> tk_res constr
+R28621:28622 simuliris.tree_borrows.tkmap_view <> v1:293 var
+R28647:28652 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R28631:28635 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28638:28639 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28643:28644 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28636:28637 simuliris.tree_borrows.tkmap_view <> γ:289 var
+R28629:28630 simuliris.tree_borrows.tkmap_view <> k2:291 var
+R28640:28642 simuliris.tree_borrows.tkmap_view <> tk2:292 var
+R28645:28646 simuliris.tree_borrows.tkmap_view <> v2:294 var
+R28653:28655 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28665:28667 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28658:28662 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R28656:28657 simuliris.tree_borrows.tkmap_view <> k1:290 var
+R28663:28664 simuliris.tree_borrows.tkmap_view <> k2:291 var
+R28685:28700 simuliris.tree_borrows.tkmap_view <> tkmap_elem_tk_ne thm
+R28710:28720 iris.algebra.cmra <> exclusive_l thm
+prf 28736:28752 <> tkmap_elem_ne_act
+binder 28754:28755 <> γ:295
+binder 28757:28758 <> k1:296
+binder 28760:28761 <> k2:297
+binder 28763:28765 <> tk2:298
+binder 28767:28768 <> v1:299
+binder 28770:28771 <> v2:300
+R28807:28812 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R28781:28785 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28788:28789 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28803:28804 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28786:28787 simuliris.tree_borrows.tkmap_view <> γ:295 var
+R28779:28780 simuliris.tree_borrows.tkmap_view <> k1:296 var
+R28790:28795 simuliris.tree_borrows.defs <> tk_unq constr
+R28797:28802 simuliris.tree_borrows.defs <> tk_act constr
+R28805:28806 simuliris.tree_borrows.tkmap_view <> v1:299 var
+R28831:28836 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R28815:28819 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28822:28823 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28827:28828 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28820:28821 simuliris.tree_borrows.tkmap_view <> γ:295 var
+R28813:28814 simuliris.tree_borrows.tkmap_view <> k2:297 var
+R28824:28826 simuliris.tree_borrows.tkmap_view <> tk2:298 var
+R28829:28830 simuliris.tree_borrows.tkmap_view <> v2:300 var
+R28837:28839 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28849:28851 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R28842:28846 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R28840:28841 simuliris.tree_borrows.tkmap_view <> k1:296 var
+R28847:28848 simuliris.tree_borrows.tkmap_view <> k2:297 var
+R28869:28884 simuliris.tree_borrows.tkmap_view <> tkmap_elem_tk_ne thm
+R28894:28904 iris.algebra.cmra <> exclusive_l thm
+inst 28931:28949 <> tkmap_elem_pub_pers
+binder 28951:28952 <> γ:301
+binder 28954:28954 <> k:302
+binder 28956:28956 <> v:303
+R28960:28969 iris.bi.derived_connectives <> Persistent class
+R28973:28977 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28980:28981 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28988:28989 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R28978:28979 simuliris.tree_borrows.tkmap_view <> γ:301 var
+R28972:28972 simuliris.tree_borrows.tkmap_view <> k:302 var
+R28982:28987 simuliris.tree_borrows.defs <> tk_pub constr
+R28990:28990 simuliris.tree_borrows.tkmap_view <> v:303 var
+prf 29259:29276 <> tkmap_alloc_strong
+binder 29278:29278 <> P:304
+binder 29280:29280 <> m:305
+R29303:29311 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R29288:29300 stdpp.sets <> pred_infinite def
+R29302:29302 simuliris.tree_borrows.tkmap_view <> P:304 var
+R29312:29315 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R29316:29320 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R29321:29324 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R29327:29328 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 29325:29326 <> γ:306
+R29339:29343 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R29329:29331 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R29336:29338 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R29332:29332 simuliris.tree_borrows.tkmap_view <> P:304 var
+R29334:29335 simuliris.tree_borrows.tkmap_view <> γ:306 var
+R29361:29365 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R29344:29353 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R29355:29356 simuliris.tree_borrows.tkmap_view <> γ:306 var
+R29360:29360 simuliris.tree_borrows.tkmap_view <> m:305 var
+R29366:29375 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R29377:29381 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R29390:29394 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R29396:29397 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 29376:29376 <> k:307
+binder 29376:29376 <> k:308
+R29387:29387 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+binder 29383:29384 <> v':309
+binder 29382:29389 <> v':310
+R29399:29403 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R29406:29407 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R29412:29413 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R29404:29405 simuliris.tree_borrows.tkmap_view <> γ:306 var
+R29398:29398 simuliris.tree_borrows.tkmap_view <> k:307 var
+R29410:29411 stdpp.base <> :::x_'.1' not
+R29408:29409 simuliris.tree_borrows.tkmap_view <> v':309 var
+R29416:29417 stdpp.base <> :::x_'.2' not
+R29414:29415 simuliris.tree_borrows.tkmap_view <> v':309 var
+R29395:29395 simuliris.tree_borrows.tkmap_view <> m:305 var
+R29459:29474 iris.base_logic.lib.own <> own_alloc_strong thm
+R29477:29491 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth def
+R29511:29513 stdpp.base <> ::stdpp_scope:'∅' not
+R29497:29504 iris.algebra.ofe <> leibnizO abbrev
+R29506:29506 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R29570:29590 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth_valid thm
+R29645:29657 iris.base_logic.lib.own <> big_opM_own_1 thm
+R29660:29665 iris.base_logic.lib.own <> own_op thm
+R29675:29675 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R29686:29691 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R29699:29699 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R29676:29685 iris.base_logic.lib.own <> own_update thm
+R29728:29747 simuliris.tree_borrows.tkmap_view <> tkmap_view_alloc_big thm
+R29753:29760 iris.algebra.ofe <> leibnizO abbrev
+R29762:29762 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R29783:29802 stdpp.fin_maps <> map_disjoint_empty_r thm
+R29819:29826 stdpp.base <> right_id def
+prf 29850:29873 <> tkmap_alloc_strong_empty
+binder 29875:29875 <> P:311
+R29898:29906 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R29883:29895 stdpp.sets <> pred_infinite def
+R29897:29897 simuliris.tree_borrows.tkmap_view <> P:311 var
+R29907:29910 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R29911:29915 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R29916:29919 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R29922:29923 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 29920:29921 <> γ:312
+R29934:29938 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R29924:29926 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R29931:29933 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R29927:29927 simuliris.tree_borrows.tkmap_view <> P:311 var
+R29929:29930 simuliris.tree_borrows.tkmap_view <> γ:312 var
+R29939:29948 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R29950:29951 simuliris.tree_borrows.tkmap_view <> γ:312 var
+R29962:29965 stdpp.gmap <> gmap rec
+R29978:29980 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R29970:29977 simuliris.tree_borrows.defs <> tag_kind ind
+R29981:29981 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R29967:29967 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R29956:29958 stdpp.base <> ::stdpp_scope:'∅' not
+R30013:30030 simuliris.tree_borrows.tkmap_view <> tkmap_alloc_strong thm
+R30034:30036 stdpp.base <> ::stdpp_scope:'∅' not
+prf 30088:30098 <> tkmap_alloc
+binder 30100:30100 <> m:313
+R30108:30111 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R30112:30116 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R30117:30120 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R30123:30124 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 30121:30122 <> γ:314
+R30142:30146 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R30125:30134 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30136:30137 simuliris.tree_borrows.tkmap_view <> γ:314 var
+R30141:30141 simuliris.tree_borrows.tkmap_view <> m:313 var
+R30147:30156 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R30158:30162 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R30171:30175 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R30177:30178 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 30157:30157 <> k:315
+binder 30157:30157 <> k:316
+R30168:30168 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+binder 30164:30165 <> v':317
+binder 30163:30170 <> v':318
+R30180:30184 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R30187:30188 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R30193:30194 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R30185:30186 simuliris.tree_borrows.tkmap_view <> γ:314 var
+R30179:30179 simuliris.tree_borrows.tkmap_view <> k:315 var
+R30191:30192 stdpp.base <> :::x_'.1' not
+R30189:30190 simuliris.tree_borrows.tkmap_view <> v':317 var
+R30197:30198 stdpp.base <> :::x_'.2' not
+R30195:30196 simuliris.tree_borrows.tkmap_view <> v':317 var
+R30176:30176 simuliris.tree_borrows.tkmap_view <> m:313 var
+R30220:30237 simuliris.tree_borrows.tkmap_view <> tkmap_alloc_strong thm
+R30240:30242 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R30244:30245 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R30246:30249 stdpp.base <> ::type_scope:'True' not
+R30290:30307 stdpp.sets <> pred_infinite_True thm
+prf 30338:30354 <> tkmap_alloc_empty
+R30362:30365 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R30366:30370 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R30371:30374 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R30377:30378 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 30375:30376 <> γ:319
+R30379:30388 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30390:30391 simuliris.tree_borrows.tkmap_view <> γ:319 var
+R30402:30405 stdpp.gmap <> gmap rec
+R30418:30420 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R30410:30417 simuliris.tree_borrows.defs <> tag_kind ind
+R30421:30421 simuliris.tree_borrows.tkmap_view <> lemmas.V var
+R30407:30407 simuliris.tree_borrows.tkmap_view <> lemmas.K var
+R30396:30398 stdpp.base <> ::stdpp_scope:'∅' not
+R30453:30463 simuliris.tree_borrows.tkmap_view <> tkmap_alloc thm
+R30465:30467 stdpp.base <> ::stdpp_scope:'∅' not
+inst 30526:30544 <> tkmap_auth_timeless
+binder 30546:30547 <> γ:320
+binder 30549:30549 <> q:321
+binder 30551:30551 <> m:322
+R30555:30562 iris.bi.derived_connectives <> Timeless class
+R30565:30574 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30576:30577 simuliris.tree_borrows.tkmap_view <> γ:320 var
+R30579:30579 simuliris.tree_borrows.tkmap_view <> q:321 var
+R30581:30581 simuliris.tree_borrows.tkmap_view <> m:322 var
+inst 30634:30654 <> tkmap_auth_fractional
+binder 30656:30657 <> γ:323
+binder 30659:30659 <> m:324
+R30663:30672 iris.bi.lib.fractional <> Fractional class
+R30675:30677 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R30679:30680 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 30678:30678 <> q:325
+R30681:30690 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30692:30693 simuliris.tree_borrows.tkmap_view <> γ:323 var
+R30695:30695 simuliris.tree_borrows.tkmap_view <> q:325 var
+R30697:30697 simuliris.tree_borrows.tkmap_view <> m:324 var
+R30741:30746 iris.base_logic.lib.own <> own_op thm
+R30748:30770 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth_frac_op thm
+inst 30799:30822 <> tkmap_auth_as_fractional
+binder 30824:30825 <> γ:326
+binder 30827:30827 <> q:327
+binder 30829:30829 <> m:328
+R30837:30848 iris.bi.lib.fractional <> AsFractional class
+R30898:30898 simuliris.tree_borrows.tkmap_view <> q:327 var
+R30871:30873 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R30875:30876 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 30874:30874 <> q:329
+R30877:30886 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30888:30889 simuliris.tree_borrows.tkmap_view <> γ:326 var
+R30891:30891 simuliris.tree_borrows.tkmap_view <> q:329 var
+R30893:30893 simuliris.tree_borrows.tkmap_view <> m:328 var
+R30851:30860 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30862:30863 simuliris.tree_borrows.tkmap_view <> γ:326 var
+R30865:30865 simuliris.tree_borrows.tkmap_view <> q:327 var
+R30867:30867 simuliris.tree_borrows.tkmap_view <> m:328 var
+prf 30952:30967 <> tkmap_auth_valid
+binder 30969:30970 <> γ:330
+binder 30972:30972 <> q:331
+binder 30974:30974 <> m:332
+R30995:31000 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R30978:30987 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R30989:30990 simuliris.tree_borrows.tkmap_view <> γ:330 var
+R30992:30992 simuliris.tree_borrows.tkmap_view <> q:331 var
+R30994:30994 simuliris.tree_borrows.tkmap_view <> m:332 var
+R31001:31003 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31011:31013 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31005:31009 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R31004:31004 simuliris.tree_borrows.tkmap_view <> q:331 var
+R31071:31071 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R31081:31086 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R31094:31094 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R31072:31080 iris.base_logic.lib.own <> own_valid thm
+R31102:31127 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth_frac_valid thm
+inst 31165:31192 <> tkmap_auth_combine_sep_gives
+binder 31194:31195 <> γ:333
+binder 31197:31198 <> q1:334
+binder 31200:31201 <> q2:335
+binder 31203:31204 <> m1:336
+binder 31206:31207 <> m2:337
+R31215:31229 iris.proofmode.classes <> CombineSepGives class
+R31281:31283 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31314:31316 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31302:31306 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R31292:31296 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R31287:31289 stdpp.numbers Qp.notations ::Qp_scope:x_'+'_x not
+R31285:31286 simuliris.tree_borrows.tkmap_view <> q1:334 var
+R31290:31291 simuliris.tree_borrows.tkmap_view <> q2:335 var
+R31309:31311 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R31307:31308 simuliris.tree_borrows.tkmap_view <> m1:336 var
+R31312:31313 simuliris.tree_borrows.tkmap_view <> m2:337 var
+R31254:31263 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31265:31266 simuliris.tree_borrows.tkmap_view <> γ:333 var
+R31268:31269 simuliris.tree_borrows.tkmap_view <> q2:335 var
+R31271:31272 simuliris.tree_borrows.tkmap_view <> m2:337 var
+R31232:31241 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31243:31244 simuliris.tree_borrows.tkmap_view <> γ:333 var
+R31246:31247 simuliris.tree_borrows.tkmap_view <> q1:334 var
+R31249:31250 simuliris.tree_borrows.tkmap_view <> m1:336 var
+R31341:31355 iris.proofmode.classes <> CombineSepGives class
+R31418:31448 simuliris.tree_borrows.tkmap_view <> tkmap_view_auth_frac_op_valid_L thm
+prf 31472:31489 <> tkmap_auth_valid_2
+binder 31491:31492 <> γ:338
+binder 31494:31495 <> q1:339
+binder 31497:31498 <> q2:340
+binder 31500:31501 <> m1:341
+binder 31503:31504 <> m2:342
+R31531:31536 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R31512:31521 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31523:31524 simuliris.tree_borrows.tkmap_view <> γ:338 var
+R31526:31527 simuliris.tree_borrows.tkmap_view <> q1:339 var
+R31529:31530 simuliris.tree_borrows.tkmap_view <> m1:341 var
+R31556:31561 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R31537:31546 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31548:31549 simuliris.tree_borrows.tkmap_view <> γ:338 var
+R31551:31552 simuliris.tree_borrows.tkmap_view <> q2:340 var
+R31554:31555 simuliris.tree_borrows.tkmap_view <> m2:342 var
+R31562:31564 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31595:31597 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31583:31587 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R31573:31577 stdpp.numbers Qp.notations ::Qp_scope:x_'≤'_x not
+R31568:31570 stdpp.numbers Qp.notations ::Qp_scope:x_'+'_x not
+R31566:31567 simuliris.tree_borrows.tkmap_view <> q1:339 var
+R31571:31572 simuliris.tree_borrows.tkmap_view <> q2:340 var
+R31590:31592 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R31588:31589 simuliris.tree_borrows.tkmap_view <> m1:341 var
+R31593:31594 simuliris.tree_borrows.tkmap_view <> m2:342 var
+prf 31672:31687 <> tkmap_auth_agree
+binder 31689:31690 <> γ:343
+binder 31692:31693 <> q1:344
+binder 31695:31696 <> q2:345
+binder 31698:31699 <> m1:346
+binder 31701:31702 <> m2:347
+R31729:31734 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R31710:31719 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31721:31722 simuliris.tree_borrows.tkmap_view <> γ:343 var
+R31724:31725 simuliris.tree_borrows.tkmap_view <> q1:344 var
+R31727:31728 simuliris.tree_borrows.tkmap_view <> m1:346 var
+R31754:31759 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R31735:31744 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31746:31747 simuliris.tree_borrows.tkmap_view <> γ:343 var
+R31749:31750 simuliris.tree_borrows.tkmap_view <> q2:345 var
+R31752:31753 simuliris.tree_borrows.tkmap_view <> m2:347 var
+R31760:31762 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31770:31772 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R31765:31767 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R31763:31764 simuliris.tree_borrows.tkmap_view <> m1:346 var
+R31768:31769 simuliris.tree_borrows.tkmap_view <> m2:347 var
+prf 31922:31933 <> tkmap_lookup
+binder 31936:31937 <> γ:348
+binder 31939:31939 <> q:349
+binder 31941:31941 <> m:350
+binder 31943:31943 <> k:351
+binder 31945:31946 <> tk:352
+binder 31948:31948 <> v:353
+R31974:31979 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R31957:31966 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R31968:31969 simuliris.tree_borrows.tkmap_view <> γ:348 var
+R31971:31971 simuliris.tree_borrows.tkmap_view <> q:349 var
+R31973:31973 simuliris.tree_borrows.tkmap_view <> m:350 var
+R31995:32000 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R31981:31985 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R31988:31989 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R31992:31993 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R31986:31987 simuliris.tree_borrows.tkmap_view <> γ:348 var
+R31980:31980 simuliris.tree_borrows.tkmap_view <> k:351 var
+R31990:31991 simuliris.tree_borrows.tkmap_view <> tk:352 var
+R31994:31994 simuliris.tree_borrows.tkmap_view <> v:353 var
+R32001:32003 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R32025:32027 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R32010:32012 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R32005:32008 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R32009:32009 simuliris.tree_borrows.tkmap_view <> k:351 var
+R32004:32004 simuliris.tree_borrows.tkmap_view <> m:350 var
+R32013:32016 Corelib.Init.Datatypes <> Some constr
+R32018:32018 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32021:32022 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32024:32024 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32019:32020 simuliris.tree_borrows.tkmap_view <> tk:352 var
+R32023:32023 simuliris.tree_borrows.tkmap_view <> v:353 var
+R32109:32136 simuliris.tree_borrows.tkmap_view <> tkmap_view_both_frac_valid_L thm
+prf 32166:32177 <> tkmap_insert
+binder 32180:32181 <> γ:354
+binder 32183:32183 <> m:355
+binder 32186:32187 <> tk:356
+binder 32189:32189 <> k:357
+binder 32191:32191 <> v:358
+R32212:32220 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R32205:32207 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R32200:32203 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R32204:32204 simuliris.tree_borrows.tkmap_view <> k:357 var
+R32199:32199 simuliris.tree_borrows.tkmap_view <> m:355 var
+R32208:32211 Corelib.Init.Datatypes <> None constr
+R32238:32244 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R32221:32230 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R32232:32233 simuliris.tree_borrows.tkmap_view <> γ:354 var
+R32237:32237 simuliris.tree_borrows.tkmap_view <> m:355 var
+R32281:32285 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R32245:32254 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R32256:32257 simuliris.tree_borrows.tkmap_view <> γ:354 var
+R32262:32263 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32265:32268 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32276:32279 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32264:32264 simuliris.tree_borrows.tkmap_view <> k:357 var
+R32269:32269 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32272:32273 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32275:32275 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32270:32271 simuliris.tree_borrows.tkmap_view <> tk:356 var
+R32274:32274 simuliris.tree_borrows.tkmap_view <> v:358 var
+R32279:32279 simuliris.tree_borrows.tkmap_view <> m:355 var
+R32287:32291 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32294:32295 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32298:32299 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32292:32293 simuliris.tree_borrows.tkmap_view <> γ:354 var
+R32286:32286 simuliris.tree_borrows.tkmap_view <> k:357 var
+R32296:32297 simuliris.tree_borrows.tkmap_view <> tk:356 var
+R32300:32300 simuliris.tree_borrows.tkmap_view <> v:358 var
+R32343:32348 iris.base_logic.lib.own <> own_op thm
+R32362:32371 iris.base_logic.lib.own <> own_update thm
+R32381:32396 simuliris.tree_borrows.tkmap_view <> tkmap_view_alloc thm
+prf 32420:32439 <> tkmap_insert_unq_res
+binder 32442:32443 <> γ:359
+binder 32445:32445 <> m:360
+binder 32448:32448 <> k:361
+binder 32450:32450 <> v:362
+R32471:32479 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R32464:32466 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R32459:32462 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R32463:32463 simuliris.tree_borrows.tkmap_view <> k:361 var
+R32458:32458 simuliris.tree_borrows.tkmap_view <> m:360 var
+R32467:32470 Corelib.Init.Datatypes <> None constr
+R32497:32503 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R32480:32489 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R32491:32492 simuliris.tree_borrows.tkmap_view <> γ:359 var
+R32496:32496 simuliris.tree_borrows.tkmap_view <> m:360 var
+R32551:32555 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R32504:32513 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R32515:32516 simuliris.tree_borrows.tkmap_view <> γ:359 var
+R32521:32522 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32524:32527 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32546:32549 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32523:32523 simuliris.tree_borrows.tkmap_view <> k:361 var
+R32528:32528 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32542:32543 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32545:32545 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32529:32534 simuliris.tree_borrows.defs <> tk_unq constr
+R32536:32541 simuliris.tree_borrows.defs <> tk_res constr
+R32544:32544 simuliris.tree_borrows.tkmap_view <> v:362 var
+R32549:32549 simuliris.tree_borrows.tkmap_view <> m:360 var
+R32557:32561 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32564:32565 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32579:32580 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32562:32563 simuliris.tree_borrows.tkmap_view <> γ:359 var
+R32556:32556 simuliris.tree_borrows.tkmap_view <> k:361 var
+R32566:32571 simuliris.tree_borrows.defs <> tk_unq constr
+R32573:32578 simuliris.tree_borrows.defs <> tk_res constr
+R32581:32581 simuliris.tree_borrows.tkmap_view <> v:362 var
+R32627:32627 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R32644:32649 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R32657:32657 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R32628:32639 simuliris.tree_borrows.tkmap_view <> tkmap_insert thm
+prf 32696:32715 <> tkmap_insert_unq_act
+binder 32718:32719 <> γ:363
+binder 32721:32721 <> m:364
+binder 32724:32724 <> k:365
+binder 32726:32726 <> v:366
+R32747:32755 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R32740:32742 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R32735:32738 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R32739:32739 simuliris.tree_borrows.tkmap_view <> k:365 var
+R32734:32734 simuliris.tree_borrows.tkmap_view <> m:364 var
+R32743:32746 Corelib.Init.Datatypes <> None constr
+R32773:32779 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R32756:32765 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R32767:32768 simuliris.tree_borrows.tkmap_view <> γ:363 var
+R32772:32772 simuliris.tree_borrows.tkmap_view <> m:364 var
+R32827:32831 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R32780:32789 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R32791:32792 simuliris.tree_borrows.tkmap_view <> γ:363 var
+R32797:32798 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32800:32803 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32822:32825 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R32799:32799 simuliris.tree_borrows.tkmap_view <> k:365 var
+R32804:32804 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32818:32819 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32821:32821 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R32805:32810 simuliris.tree_borrows.defs <> tk_unq constr
+R32812:32817 simuliris.tree_borrows.defs <> tk_act constr
+R32820:32820 simuliris.tree_borrows.tkmap_view <> v:366 var
+R32825:32825 simuliris.tree_borrows.tkmap_view <> m:364 var
+R32833:32837 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32840:32841 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32855:32856 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R32838:32839 simuliris.tree_borrows.tkmap_view <> γ:363 var
+R32832:32832 simuliris.tree_borrows.tkmap_view <> k:365 var
+R32842:32847 simuliris.tree_borrows.defs <> tk_unq constr
+R32849:32854 simuliris.tree_borrows.defs <> tk_act constr
+R32857:32857 simuliris.tree_borrows.tkmap_view <> v:366 var
+R32903:32903 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R32920:32925 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R32933:32933 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R32904:32915 simuliris.tree_borrows.tkmap_view <> tkmap_insert thm
+prf 32972:32987 <> tkmap_insert_pub
+binder 32990:32991 <> γ:367
+binder 32993:32993 <> m:368
+binder 32996:32996 <> k:369
+binder 32998:32998 <> v:370
+R33019:33027 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R33012:33014 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R33007:33010 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R33011:33011 simuliris.tree_borrows.tkmap_view <> k:369 var
+R33006:33006 simuliris.tree_borrows.tkmap_view <> m:368 var
+R33015:33018 Corelib.Init.Datatypes <> None constr
+R33045:33051 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R33028:33037 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33039:33040 simuliris.tree_borrows.tkmap_view <> γ:367 var
+R33044:33044 simuliris.tree_borrows.tkmap_view <> m:368 var
+R33092:33096 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R33052:33061 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33063:33064 simuliris.tree_borrows.tkmap_view <> γ:367 var
+R33069:33070 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33072:33075 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33087:33090 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33071:33071 simuliris.tree_borrows.tkmap_view <> k:369 var
+R33076:33076 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33083:33084 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33086:33086 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33077:33082 simuliris.tree_borrows.defs <> tk_pub constr
+R33085:33085 simuliris.tree_borrows.tkmap_view <> v:370 var
+R33090:33090 simuliris.tree_borrows.tkmap_view <> m:368 var
+R33098:33102 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33105:33106 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33113:33114 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33103:33104 simuliris.tree_borrows.tkmap_view <> γ:367 var
+R33097:33097 simuliris.tree_borrows.tkmap_view <> k:369 var
+R33107:33112 simuliris.tree_borrows.defs <> tk_pub constr
+R33115:33115 simuliris.tree_borrows.tkmap_view <> v:370 var
+R33161:33161 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R33178:33183 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R33191:33191 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R33162:33173 simuliris.tree_borrows.tkmap_view <> tkmap_insert thm
+prf 33231:33242 <> tkmap_delete
+binder 33245:33246 <> γ:371
+binder 33248:33248 <> m:372
+binder 33250:33251 <> tk:373
+binder 33253:33253 <> k:374
+binder 33255:33255 <> v:375
+R33277:33285 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R33266:33270 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R33264:33265 simuliris.tree_borrows.tkmap_view <> tk:373 var
+R33271:33276 simuliris.tree_borrows.defs <> tk_pub constr
+R33303:33308 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R33286:33295 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33297:33298 simuliris.tree_borrows.tkmap_view <> γ:371 var
+R33302:33302 simuliris.tree_borrows.tkmap_view <> m:372 var
+R33324:33330 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R33310:33314 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33317:33318 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33321:33322 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33315:33316 simuliris.tree_borrows.tkmap_view <> γ:371 var
+R33309:33309 simuliris.tree_borrows.tkmap_view <> k:374 var
+R33319:33320 simuliris.tree_borrows.tkmap_view <> tk:373 var
+R33323:33323 simuliris.tree_borrows.tkmap_view <> v:375 var
+R33331:33340 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33342:33343 simuliris.tree_borrows.tkmap_view <> γ:371 var
+R33348:33353 stdpp.base <> delete def
+R33357:33357 simuliris.tree_borrows.tkmap_view <> m:372 var
+R33355:33355 simuliris.tree_borrows.tkmap_view <> k:374 var
+R33395:33409 iris.bi.derived_laws bi entails_wand thm
+R33412:33426 iris.bi.interface bi wand_intro_r thm
+R33438:33443 iris.base_logic.lib.own <> own_op thm
+R33457:33466 iris.base_logic.lib.own <> own_update thm
+R33479:33495 simuliris.tree_borrows.tkmap_view <> tkmap_view_delete thm
+prf 33514:33525 <> tkmap_update
+binder 33528:33529 <> γ:376
+binder 33531:33531 <> m:377
+binder 33533:33534 <> tk:378
+binder 33536:33536 <> k:379
+binder 33538:33538 <> v:380
+binder 33541:33541 <> w:381
+R33562:33570 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R33551:33555 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R33549:33550 simuliris.tree_borrows.tkmap_view <> tk:378 var
+R33556:33561 simuliris.tree_borrows.defs <> tk_pub constr
+R33588:33593 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R33571:33580 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33582:33583 simuliris.tree_borrows.tkmap_view <> γ:376 var
+R33587:33587 simuliris.tree_borrows.tkmap_view <> m:377 var
+R33609:33615 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R33595:33599 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33602:33603 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33606:33607 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33600:33601 simuliris.tree_borrows.tkmap_view <> γ:376 var
+R33594:33594 simuliris.tree_borrows.tkmap_view <> k:379 var
+R33604:33605 simuliris.tree_borrows.tkmap_view <> tk:378 var
+R33608:33608 simuliris.tree_borrows.tkmap_view <> v:380 var
+R33652:33656 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R33616:33625 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33627:33628 simuliris.tree_borrows.tkmap_view <> γ:376 var
+R33633:33634 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33636:33639 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33647:33650 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33635:33635 simuliris.tree_borrows.tkmap_view <> k:379 var
+R33640:33640 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33643:33644 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33646:33646 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33641:33642 simuliris.tree_borrows.tkmap_view <> tk:378 var
+R33645:33645 simuliris.tree_borrows.tkmap_view <> w:381 var
+R33650:33650 simuliris.tree_borrows.tkmap_view <> m:377 var
+R33658:33662 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33665:33666 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33669:33670 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33663:33664 simuliris.tree_borrows.tkmap_view <> γ:376 var
+R33657:33657 simuliris.tree_borrows.tkmap_view <> k:379 var
+R33667:33668 simuliris.tree_borrows.tkmap_view <> tk:378 var
+R33671:33671 simuliris.tree_borrows.tkmap_view <> w:381 var
+R33708:33722 iris.bi.derived_laws bi entails_wand thm
+R33725:33739 iris.bi.interface bi wand_intro_r thm
+R33752:33757 iris.base_logic.lib.own <> own_op thm
+R33770:33779 iris.base_logic.lib.own <> own_update thm
+R33792:33808 simuliris.tree_borrows.tkmap_view <> tkmap_view_update thm
+prf 33827:33845 <> tkmap_update_strong
+binder 33848:33849 <> γ:382
+binder 33851:33851 <> m:383
+binder 33853:33854 <> tk:384
+binder 33856:33856 <> k:385
+binder 33858:33858 <> v:386
+binder 33861:33863 <> tk':387
+binder 33865:33865 <> w:388
+R33886:33894 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R33875:33879 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R33873:33874 simuliris.tree_borrows.tkmap_view <> tk:384 var
+R33880:33885 simuliris.tree_borrows.defs <> tk_pub constr
+R33912:33917 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R33895:33904 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33906:33907 simuliris.tree_borrows.tkmap_view <> γ:382 var
+R33911:33911 simuliris.tree_borrows.tkmap_view <> m:383 var
+R33933:33939 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R33919:33923 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33926:33927 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33930:33931 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33924:33925 simuliris.tree_borrows.tkmap_view <> γ:382 var
+R33918:33918 simuliris.tree_borrows.tkmap_view <> k:385 var
+R33928:33929 simuliris.tree_borrows.tkmap_view <> tk:384 var
+R33932:33932 simuliris.tree_borrows.tkmap_view <> v:386 var
+R33977:33981 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R33940:33949 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R33951:33952 simuliris.tree_borrows.tkmap_view <> γ:382 var
+R33957:33958 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33960:33963 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33972:33975 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R33959:33959 simuliris.tree_borrows.tkmap_view <> k:385 var
+R33964:33964 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33968:33969 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33971:33971 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R33965:33967 simuliris.tree_borrows.tkmap_view <> tk':387 var
+R33970:33970 simuliris.tree_borrows.tkmap_view <> w:388 var
+R33975:33975 simuliris.tree_borrows.tkmap_view <> m:383 var
+R33983:33987 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33990:33991 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33995:33996 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R33988:33989 simuliris.tree_borrows.tkmap_view <> γ:382 var
+R33982:33982 simuliris.tree_borrows.tkmap_view <> k:385 var
+R33992:33994 simuliris.tree_borrows.tkmap_view <> tk':387 var
+R33997:33997 simuliris.tree_borrows.tkmap_view <> w:388 var
+R34034:34048 iris.bi.derived_laws bi entails_wand thm
+R34051:34065 iris.bi.interface bi wand_intro_r thm
+R34078:34083 iris.base_logic.lib.own <> own_op thm
+R34096:34105 iris.base_logic.lib.own <> own_update thm
+R34118:34134 simuliris.tree_borrows.tkmap_view <> tkmap_view_update thm
+prf 34194:34209 <> tkmap_lookup_big
+binder 34212:34213 <> γ:389
+binder 34215:34215 <> q:390
+binder 34217:34217 <> m:391
+binder 34220:34221 <> m0:392
+R34246:34255 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R34229:34238 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R34240:34241 simuliris.tree_borrows.tkmap_view <> γ:389 var
+R34243:34243 simuliris.tree_borrows.tkmap_view <> q:390 var
+R34245:34245 simuliris.tree_borrows.tkmap_view <> m:391 var
+R34256:34256 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R34308:34318 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R34257:34266 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R34268:34270 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R34279:34283 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R34286:34287 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 34267:34267 <> k:393
+binder 34267:34267 <> k:394
+R34276:34276 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+binder 34272:34273 <> v':395
+binder 34271:34278 <> v':396
+R34289:34293 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R34296:34297 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R34302:34303 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R34294:34295 simuliris.tree_borrows.tkmap_view <> γ:389 var
+R34288:34288 simuliris.tree_borrows.tkmap_view <> k:393 var
+R34300:34301 stdpp.base <> :::x_'.1' not
+R34298:34299 simuliris.tree_borrows.tkmap_view <> v':395 var
+R34306:34307 stdpp.base <> :::x_'.2' not
+R34304:34305 simuliris.tree_borrows.tkmap_view <> v':395 var
+R34284:34285 simuliris.tree_borrows.tkmap_view <> m0:392 var
+R34319:34321 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R34330:34332 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R34324:34328 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R34322:34323 simuliris.tree_borrows.tkmap_view <> m0:392 var
+R34329:34329 simuliris.tree_borrows.tkmap_view <> m:391 var
+R34379:34395 stdpp.fin_maps <> map_subseteq_spec thm
+R34432:34432 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R34445:34450 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R34466:34466 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R34433:34444 simuliris.tree_borrows.tkmap_view <> tkmap_lookup thm
+R34490:34504 iris.bi.big_op <> big_sepM_lookup thm
+prf 34541:34556 <> tkmap_insert_big
+binder 34559:34560 <> γ:397
+binder 34562:34562 <> m:398
+binder 34565:34566 <> m':399
+R34584:34592 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R34576:34582 stdpp.fin_maps <> ::stdpp_scope:x_'##ₘ'_x not
+R34574:34575 simuliris.tree_borrows.tkmap_view <> m':399 var
+R34583:34583 simuliris.tree_borrows.tkmap_view <> m:398 var
+R34610:34620 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R34593:34602 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R34604:34605 simuliris.tree_borrows.tkmap_view <> γ:397 var
+R34609:34609 simuliris.tree_borrows.tkmap_view <> m:398 var
+R34647:34652 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R34706:34706 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R34621:34630 simuliris.tree_borrows.tkmap_view <> tkmap_auth def
+R34632:34633 simuliris.tree_borrows.tkmap_view <> γ:397 var
+R34640:34644 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R34638:34639 simuliris.tree_borrows.tkmap_view <> m':399 var
+R34645:34645 simuliris.tree_borrows.tkmap_view <> m:398 var
+R34653:34662 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R34664:34668 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R34677:34681 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R34684:34685 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 34663:34663 <> k:400
+binder 34663:34663 <> k:401
+R34674:34674 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+binder 34670:34671 <> v':402
+binder 34669:34676 <> v':403
+R34687:34691 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R34694:34695 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R34700:34701 simuliris.tree_borrows.tkmap_view <> ::bi_scope:x_'↪['_x_']{'_x_'}'_x not
+R34692:34693 simuliris.tree_borrows.tkmap_view <> γ:397 var
+R34686:34686 simuliris.tree_borrows.tkmap_view <> k:400 var
+R34698:34699 stdpp.base <> :::x_'.1' not
+R34696:34697 simuliris.tree_borrows.tkmap_view <> v':402 var
+R34704:34705 stdpp.base <> :::x_'.2' not
+R34702:34703 simuliris.tree_borrows.tkmap_view <> v':402 var
+R34682:34683 simuliris.tree_borrows.tkmap_view <> m':399 var
+R34749:34761 iris.base_logic.lib.own <> big_opM_own_1 thm
+R34764:34769 iris.base_logic.lib.own <> own_op thm
+R34782:34796 iris.bi.derived_laws bi entails_wand thm
+R34799:34808 iris.base_logic.lib.own <> own_update thm
+R34818:34837 simuliris.tree_borrows.tkmap_view <> tkmap_view_alloc_big thm
+R35714:35719 simuliris.tree_borrows.tkmap_view lemmas <> sec

@@ -1,0 +1,16 @@
+*.vo
+*.vos
+*.vok
+*.vio
+*.glob
+*.cache
+*.aux
+\#*\#
+.\#*
+*~
+*.bak
+Makefile.rocq
+Makefile.rocq.conf
+.Makefile.rocq.d
+builddep
+_opam

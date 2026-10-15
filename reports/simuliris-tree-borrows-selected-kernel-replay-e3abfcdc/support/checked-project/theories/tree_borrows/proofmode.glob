@@ -1,0 +1,5 @@
+DIGEST e48adc8b57f8f22db62b3aa4f75c4d9a
+Fsimuliris.tree_borrows.proofmode
+R43:56 simuliris.tree_borrows.primitive_laws <> <> lib
+R58:72 simuliris.tree_borrows.early_proofmode <> <> lib
+R83:84 iris.bi.bi bi <> mod

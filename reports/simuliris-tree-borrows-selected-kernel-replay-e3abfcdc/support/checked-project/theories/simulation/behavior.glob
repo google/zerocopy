@@ -1,0 +1,481 @@
+DIGEST 48fb3a70f312e4ef4bf60aeeb51b5a96
+Fsimuliris.simulation.behavior
+R33:41 Stdlib.Logic.Classical <> <> lib
+R70:76 stdpp.strings <> <> lib
+R120:127 simuliris.simulation.fairness <> <> lib
+R129:136 simuliris.simulation.language <> <> lib
+sec 148:150 <> beh
+var  164:165 beh Λ
+R169:176 simuliris.simulation.language <> language rec
+var 241:241 beh I
+R252:256 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R244:248 simuliris.simulation.language <> state proj
+R250:251 simuliris.simulation.behavior <> beh.Λ var
+R265:269 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R257:261 simuliris.simulation.language <> state proj
+R263:264 simuliris.simulation.behavior <> beh.Λ var
+var 289:292 beh main
+var 304:304 beh u
+R295:300 Stdlib.Strings.String <> string ind
+R307:309 simuliris.simulation.language <> val proj
+R311:312 simuliris.simulation.behavior <> beh.Λ var
+var 387:387 beh O
+R396:400 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R390:392 simuliris.simulation.language <> val proj
+R394:395 simuliris.simulation.behavior <> beh.Λ var
+R407:411 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R401:403 simuliris.simulation.language <> val proj
+R405:406 simuliris.simulation.behavior <> beh.Λ var
+def 502:509 <> prog_ref
+R522:525 simuliris.simulation.language <> prog abbrev
+R527:528 simuliris.simulation.behavior <> beh.Λ var
+binder 512:514 <> p_t:10
+binder 516:518 <> p_s:11
+R538:541 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R551:552 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 542:545 <> σ_t:12
+binder 547:550 <> σ_s:13
+R564:568 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R553:553 simuliris.simulation.behavior <> beh.I var
+R555:558 simuliris.simulation.behavior <> σ_t:12 var
+R560:563 simuliris.simulation.behavior <> σ_s:13 var
+R599:632 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R569:572 simuliris.simulation.language <> safe def
+R574:576 simuliris.simulation.behavior <> p_s:11 var
+R579:585 simuliris.simulation.language <> of_call def
+R592:592 simuliris.simulation.behavior <> beh.u var
+R587:590 simuliris.simulation.behavior <> beh.main var
+R595:598 simuliris.simulation.behavior <> σ_s:13 var
+R633:633 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R707:760 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R668:672 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R634:641 simuliris.simulation.fairness <> fair_div def
+R643:645 simuliris.simulation.behavior <> p_t:10 var
+R647:647 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R662:662 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R648:654 simuliris.simulation.language <> of_call def
+R661:661 simuliris.simulation.behavior <> beh.u var
+R656:659 simuliris.simulation.behavior <> beh.main var
+R664:667 simuliris.simulation.behavior <> σ_t:12 var
+R673:680 simuliris.simulation.fairness <> fair_div def
+R682:684 simuliris.simulation.behavior <> p_s:11 var
+R686:686 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R701:701 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R687:693 simuliris.simulation.language <> of_call def
+R700:700 simuliris.simulation.behavior <> beh.u var
+R695:698 simuliris.simulation.behavior <> beh.main var
+R703:706 simuliris.simulation.behavior <> σ_s:13 var
+R761:761 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R965:992 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1023:1023 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R762:765 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R781:782 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 766:768 <> v_t:14
+binder 770:772 <> T_t:15
+binder 774:778 <> σ_t':16
+binder 780:780 <> I:17
+R847:857 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R783:792 simuliris.simulation.language <> pool_steps ind
+R794:796 simuliris.simulation.behavior <> p_t:10 var
+R798:798 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R813:813 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R799:805 simuliris.simulation.language <> of_call def
+R812:812 simuliris.simulation.behavior <> beh.u var
+R807:810 simuliris.simulation.behavior <> beh.main var
+R815:818 simuliris.simulation.behavior <> σ_t:12 var
+R820:820 simuliris.simulation.behavior <> I:17 var
+R833:836 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R823:828 simuliris.simulation.language <> of_val def
+R830:832 simuliris.simulation.behavior <> v_t:14 var
+R837:839 simuliris.simulation.behavior <> T_t:15 var
+R842:846 simuliris.simulation.behavior <> σ_t':16 var
+R858:861 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R877:878 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 862:864 <> v_s:18
+binder 866:868 <> T_s:19
+binder 870:874 <> σ_s':20
+binder 876:876 <> J:21
+R943:955 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R879:888 simuliris.simulation.language <> pool_steps ind
+R890:892 simuliris.simulation.behavior <> p_s:11 var
+R894:894 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R909:909 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R895:901 simuliris.simulation.language <> of_call def
+R908:908 simuliris.simulation.behavior <> beh.u var
+R903:906 simuliris.simulation.behavior <> beh.main var
+R911:914 simuliris.simulation.behavior <> σ_s:13 var
+R916:916 simuliris.simulation.behavior <> J:21 var
+R929:932 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R919:924 simuliris.simulation.language <> of_val def
+R926:928 simuliris.simulation.behavior <> v_s:18 var
+R933:935 simuliris.simulation.behavior <> T_s:19 var
+R938:942 simuliris.simulation.behavior <> σ_s':20 var
+R956:956 simuliris.simulation.behavior <> beh.O var
+R958:960 simuliris.simulation.behavior <> v_t:14 var
+R962:964 simuliris.simulation.behavior <> v_s:18 var
+R993:996 simuliris.simulation.language <> safe def
+R998:1000 simuliris.simulation.behavior <> p_t:10 var
+R1003:1009 simuliris.simulation.language <> of_call def
+R1016:1016 simuliris.simulation.behavior <> beh.u var
+R1011:1014 simuliris.simulation.behavior <> beh.main var
+R1019:1022 simuliris.simulation.behavior <> σ_t:12 var
+ind 1515:1517 <> beh
+constr 1522:1530 <> BehReturn
+constr 1547:1556 <> BehDiverge
+constr 1560:1571 <> BehUndefined
+R1537:1539 simuliris.simulation.language <> val proj
+R1541:1542 simuliris.simulation.behavior <> beh.Λ var
+binder 1533:1533 <> v:24
+scheme 1515:1517 <> beh_rect
+scheme 1515:1517 <> beh_ind
+scheme 1515:1517 <> beh_rec
+scheme 1515:1517 <> beh_sind
+ind 1586:1592 <> beh_ref
+constr 1624:1632 <> ObsBehVal
+constr 1717:1725 <> ObsBehDiv
+constr 1767:1781 <> ObsBehUndefined
+R1599:1603 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1596:1598 simuliris.simulation.behavior <> beh ind
+R1607:1611 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1604:1606 simuliris.simulation.behavior <> beh ind
+R1645:1647 simuliris.simulation.language <> val proj
+R1649:1650 simuliris.simulation.behavior <> beh.Λ var
+binder 1635:1637 <> v_t:27
+binder 1639:1641 <> v_s:28
+R1668:1672 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1659:1659 simuliris.simulation.behavior <> beh.O var
+R1661:1663 simuliris.simulation.behavior <> v_t:27 var
+R1665:1667 simuliris.simulation.behavior <> v_s:28 var
+R1673:1679 simuliris.simulation.behavior <> beh_ref:25 ind
+R1698:1706 simuliris.simulation.behavior <> BehReturn constr
+R1708:1710 simuliris.simulation.behavior <> v_s:28 var
+R1682:1690 simuliris.simulation.behavior <> BehReturn constr
+R1692:1694 simuliris.simulation.behavior <> v_t:27 var
+R1733:1739 simuliris.simulation.behavior <> beh_ref:25 ind
+R1752:1761 simuliris.simulation.behavior <> BehDiverge constr
+R1741:1750 simuliris.simulation.behavior <> BehDiverge constr
+binder 1783:1783 <> b:29
+R1791:1797 simuliris.simulation.behavior <> beh_ref:25 ind
+R1801:1812 simuliris.simulation.behavior <> BehUndefined constr
+R1799:1799 simuliris.simulation.behavior <> b:29 var
+scheme 1586:1592 <> beh_ref_ind
+scheme 1586:1592 <> beh_ref_sind
+ind 1894:1900 <> has_beh
+constr 1964:1974 <> HasBehStuck
+constr 2041:2049 <> HasBehDiv
+constr 2112:2120 <> HasBehRet
+constr 2184:2193 <> HasBehStep
+R1907:1910 simuliris.simulation.language <> prog abbrev
+R1912:1913 simuliris.simulation.behavior <> beh.Λ var
+binder 1903:1903 <> p:30
+R1926:1930 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1918:1922 simuliris.simulation.language <> tpool def
+R1924:1925 simuliris.simulation.behavior <> beh.Λ var
+R1939:1943 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1931:1935 simuliris.simulation.language <> state proj
+R1937:1938 simuliris.simulation.behavior <> beh.Λ var
+R1947:1951 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1944:1946 simuliris.simulation.behavior <> beh ind
+binder 1976:1976 <> T:33
+binder 1978:1979 <> σ:34
+R2004:2008 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1987:1996 simuliris.simulation.language <> stuck_pool def
+R1998:1998 simuliris.simulation.behavior <> p:30 var
+R2000:2000 simuliris.simulation.behavior <> T:33 var
+R2002:2003 simuliris.simulation.behavior <> σ:34 var
+R2009:2015 simuliris.simulation.behavior <> has_beh:31 ind
+R2024:2035 simuliris.simulation.behavior <> BehUndefined constr
+R2021:2022 simuliris.simulation.behavior <> σ:34 var
+R2019:2019 simuliris.simulation.behavior <> T:33 var
+R2017:2017 simuliris.simulation.behavior <> p:30 var
+binder 2051:2051 <> T:35
+binder 2053:2054 <> σ:36
+R2077:2081 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2062:2069 simuliris.simulation.fairness <> fair_div def
+R2071:2071 simuliris.simulation.behavior <> p:30 var
+R2073:2073 simuliris.simulation.behavior <> T:35 var
+R2075:2076 simuliris.simulation.behavior <> σ:36 var
+R2082:2088 simuliris.simulation.behavior <> has_beh:31 ind
+R2097:2106 simuliris.simulation.behavior <> BehDiverge constr
+R2094:2095 simuliris.simulation.behavior <> σ:36 var
+R2092:2092 simuliris.simulation.behavior <> T:35 var
+R2090:2090 simuliris.simulation.behavior <> p:30 var
+binder 2122:2122 <> v:37
+binder 2124:2124 <> T:38
+binder 2126:2127 <> σ:39
+R2137:2143 simuliris.simulation.behavior <> has_beh:31 ind
+R2167:2175 simuliris.simulation.behavior <> BehReturn constr
+R2177:2177 simuliris.simulation.behavior <> v:37 var
+R2163:2164 simuliris.simulation.behavior <> σ:39 var
+R2156:2159 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2148:2153 simuliris.simulation.language <> of_val def
+R2155:2155 simuliris.simulation.behavior <> v:37 var
+R2160:2160 simuliris.simulation.behavior <> T:38 var
+R2145:2145 simuliris.simulation.behavior <> p:30 var
+binder 2195:2195 <> T:40
+binder 2197:2198 <> σ:41
+binder 2200:2200 <> i:42
+binder 2202:2203 <> T':43
+binder 2205:2207 <> σ':44
+binder 2209:2209 <> b:45
+R2237:2247 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2219:2225 simuliris.simulation.behavior <> has_beh:31 ind
+R2236:2236 simuliris.simulation.behavior <> b:45 var
+R2232:2234 simuliris.simulation.behavior <> σ':44 var
+R2229:2230 simuliris.simulation.behavior <> T':43 var
+R2227:2227 simuliris.simulation.behavior <> p:30 var
+R2273:2283 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2248:2256 simuliris.simulation.language <> pool_step ind
+R2258:2258 simuliris.simulation.behavior <> p:30 var
+R2260:2260 simuliris.simulation.behavior <> T:40 var
+R2262:2263 simuliris.simulation.behavior <> σ:41 var
+R2265:2265 simuliris.simulation.behavior <> i:42 var
+R2267:2268 simuliris.simulation.behavior <> T':43 var
+R2270:2272 simuliris.simulation.behavior <> σ':44 var
+R2284:2290 simuliris.simulation.behavior <> has_beh:31 ind
+R2299:2299 simuliris.simulation.behavior <> b:45 var
+R2296:2297 simuliris.simulation.behavior <> σ:41 var
+R2294:2294 simuliris.simulation.behavior <> T:40 var
+R2292:2292 simuliris.simulation.behavior <> p:30 var
+scheme 1894:1900 <> has_beh_ind
+scheme 1894:1900 <> has_beh_sind
+def 2524:2535 <> prog_ref_alt
+R2548:2551 simuliris.simulation.language <> prog abbrev
+R2553:2554 simuliris.simulation.behavior <> beh.Λ var
+binder 2538:2540 <> p_t:46
+binder 2542:2544 <> p_s:47
+R2564:2567 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R2581:2588 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 2568:2571 <> σ_t:48
+binder 2573:2576 <> σ_s:49
+binder 2578:2580 <> b_t:50
+R2600:2610 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2589:2589 simuliris.simulation.behavior <> beh.I var
+R2591:2594 simuliris.simulation.behavior <> σ_t:48 var
+R2596:2599 simuliris.simulation.behavior <> σ_s:49 var
+R2648:2658 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2611:2617 simuliris.simulation.behavior <> has_beh ind
+R2619:2621 simuliris.simulation.behavior <> p_t:46 var
+R2623:2623 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2638:2638 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2624:2630 simuliris.simulation.language <> of_call def
+R2637:2637 simuliris.simulation.behavior <> beh.u var
+R2632:2635 simuliris.simulation.behavior <> beh.main var
+R2640:2643 simuliris.simulation.behavior <> σ_t:48 var
+R2645:2647 simuliris.simulation.behavior <> b_t:50 var
+R2659:2662 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R2666:2667 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 2663:2665 <> b_s:51
+R2705:2709 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2668:2674 simuliris.simulation.behavior <> has_beh ind
+R2676:2678 simuliris.simulation.behavior <> p_s:47 var
+R2680:2680 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2695:2695 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2681:2687 simuliris.simulation.language <> of_call def
+R2694:2694 simuliris.simulation.behavior <> beh.u var
+R2689:2692 simuliris.simulation.behavior <> beh.main var
+R2697:2700 simuliris.simulation.behavior <> σ_s:49 var
+R2702:2704 simuliris.simulation.behavior <> b_s:51 var
+R2710:2716 simuliris.simulation.behavior <> beh_ref ind
+R2718:2720 simuliris.simulation.behavior <> b_t:50 var
+R2722:2724 simuliris.simulation.behavior <> b_s:51 var
+prf 2812:2821 <> has_beh_ub
+binder 2823:2823 <> p:52
+binder 2825:2825 <> T:53
+binder 2827:2828 <> σ:54
+R2863:2867 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2836:2842 simuliris.simulation.behavior <> has_beh ind
+R2844:2844 simuliris.simulation.behavior <> p:52 var
+R2846:2846 simuliris.simulation.behavior <> T:53 var
+R2848:2849 simuliris.simulation.behavior <> σ:54 var
+R2851:2862 simuliris.simulation.behavior <> BehUndefined constr
+R2868:2883 simuliris.simulation.language <> pool_reach_stuck def
+R2885:2885 simuliris.simulation.behavior <> p:52 var
+R2887:2887 simuliris.simulation.behavior <> T:53 var
+R2889:2890 simuliris.simulation.behavior <> σ:54 var
+R2928:2939 simuliris.simulation.behavior <> BehUndefined constr
+R3087:3093 Corelib.Init.Logic <> eq_refl constr
+R3110:3131 simuliris.simulation.language <> pool_steps_reach_stuck thm
+R3158:3174 simuliris.simulation.language <> pool_steps_single thm
+R3267:3273 simuliris.simulation.behavior <> has_beh ind
+prf 3292:3302 <> has_beh_div
+binder 3304:3304 <> p:55
+binder 3306:3306 <> T:56
+binder 3308:3309 <> σ:57
+R3342:3346 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R3317:3323 simuliris.simulation.behavior <> has_beh ind
+R3325:3325 simuliris.simulation.behavior <> p:55 var
+R3327:3327 simuliris.simulation.behavior <> T:56 var
+R3329:3330 simuliris.simulation.behavior <> σ:57 var
+R3332:3341 simuliris.simulation.behavior <> BehDiverge constr
+R3347:3354 simuliris.simulation.fairness <> fair_div def
+R3356:3356 simuliris.simulation.behavior <> p:55 var
+R3358:3358 simuliris.simulation.behavior <> T:56 var
+R3360:3361 simuliris.simulation.behavior <> σ:57 var
+R3399:3408 simuliris.simulation.behavior <> BehDiverge constr
+R3477:3489 simuliris.simulation.fairness <> fair_div_step thm
+prf 3548:3558 <> has_beh_ret
+binder 3560:3560 <> p:58
+binder 3562:3562 <> T:59
+binder 3564:3565 <> σ:60
+binder 3567:3567 <> v:61
+R3603:3611 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R3575:3581 simuliris.simulation.behavior <> has_beh ind
+R3583:3583 simuliris.simulation.behavior <> p:58 var
+R3585:3585 simuliris.simulation.behavior <> T:59 var
+R3587:3588 simuliris.simulation.behavior <> σ:60 var
+R3591:3599 simuliris.simulation.behavior <> BehReturn constr
+R3601:3601 simuliris.simulation.behavior <> v:61 var
+R3612:3615 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R3624:3625 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 3616:3617 <> T':62
+binder 3619:3621 <> σ':63
+binder 3623:3623 <> I:64
+R3626:3635 simuliris.simulation.language <> pool_steps ind
+R3637:3637 simuliris.simulation.behavior <> p:58 var
+R3639:3639 simuliris.simulation.behavior <> T:59 var
+R3641:3642 simuliris.simulation.behavior <> σ:60 var
+R3644:3644 simuliris.simulation.behavior <> I:64 var
+R3655:3658 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3647:3652 simuliris.simulation.language <> of_val def
+R3654:3654 simuliris.simulation.behavior <> v:61 var
+R3659:3660 simuliris.simulation.behavior <> T':62 var
+R3663:3665 simuliris.simulation.behavior <> σ':63 var
+R3704:3712 simuliris.simulation.behavior <> BehReturn constr
+R3855:3861 Corelib.Init.Logic <> eq_refl constr
+R3945:3960 simuliris.simulation.language <> pool_steps_trans thm
+R3987:4003 simuliris.simulation.language <> pool_steps_single thm
+R4075:4078 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R4067:4072 simuliris.simulation.language <> of_val def
+R4127:4133 simuliris.simulation.behavior <> has_beh ind
+prf 4283:4312 <> not_pool_reach_stuck_pool_safe
+binder 4314:4314 <> p:65
+binder 4316:4316 <> T:66
+binder 4318:4319 <> σ:67
+R4353:4357 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4327:4329 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R4330:4345 simuliris.simulation.language <> pool_reach_stuck def
+R4347:4347 simuliris.simulation.behavior <> p:65 var
+R4349:4349 simuliris.simulation.behavior <> T:66 var
+R4351:4352 simuliris.simulation.behavior <> σ:67 var
+R4358:4366 simuliris.simulation.language <> pool_safe def
+R4379:4379 simuliris.simulation.behavior <> p:65 var
+R4381:4381 simuliris.simulation.behavior <> T:66 var
+R4383:4384 simuliris.simulation.behavior <> σ:67 var
+R4375:4376 simuliris.simulation.behavior <> beh.Λ var
+R4453:4458 simuliris.simulation.language <> to_val def
+R4539:4545 Stdlib.Logic.Classical_Prop <> classic prfax
+R4548:4556 simuliris.simulation.language <> reducible def
+R4724:4736 simuliris.simulation.language <> not_reducible thm
+prf 4755:4769 <> prog_ref_to_alt
+binder 4771:4773 <> p_t:68
+binder 4775:4777 <> p_s:69
+R4801:4805 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4785:4792 simuliris.simulation.behavior <> prog_ref def
+R4794:4796 simuliris.simulation.behavior <> p_t:68 var
+R4798:4800 simuliris.simulation.behavior <> p_s:69 var
+R4806:4817 simuliris.simulation.behavior <> prog_ref_alt def
+R4819:4821 simuliris.simulation.behavior <> p_t:68 var
+R4823:4825 simuliris.simulation.behavior <> p_s:69 var
+R4886:4892 Stdlib.Logic.Classical_Prop <> classic prfax
+R4895:4905 simuliris.simulation.language <> reach_stuck def
+R4912:4918 simuliris.simulation.language <> of_call def
+R4925:4925 simuliris.simulation.behavior <> beh.u var
+R4920:4923 simuliris.simulation.behavior <> beh.main var
+R4966:4977 simuliris.simulation.behavior <> BehUndefined constr
+R5020:5029 simuliris.simulation.behavior <> has_beh_ub thm
+R5050:5079 simuliris.simulation.behavior <> not_pool_reach_stuck_pool_safe thm
+R5204:5214 simuliris.simulation.behavior <> has_beh_ret thm
+R5359:5367 simuliris.simulation.behavior <> BehReturn constr
+R5416:5426 simuliris.simulation.behavior <> has_beh_ret thm
+R5449:5458 simuliris.simulation.behavior <> BehDiverge constr
+R5501:5511 simuliris.simulation.behavior <> has_beh_div thm
+R5520:5530 simuliris.simulation.behavior <> has_beh_div thm
+R5560:5569 simuliris.simulation.behavior <> has_beh_ub thm
+R5591:5615 simuliris.simulation.language <> pool_reach_stuck_not_safe thm
+prf 5640:5656 <> prog_ref_from_alt
+binder 5658:5660 <> p_t:70
+binder 5662:5664 <> p_s:71
+R5692:5696 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5672:5683 simuliris.simulation.behavior <> prog_ref_alt def
+R5685:5687 simuliris.simulation.behavior <> p_t:70 var
+R5689:5691 simuliris.simulation.behavior <> p_s:71 var
+R5697:5704 simuliris.simulation.behavior <> prog_ref def
+R5706:5708 simuliris.simulation.behavior <> p_t:70 var
+R5710:5712 simuliris.simulation.behavior <> p_s:71 var
+R5778:5780 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R5781:5787 simuliris.simulation.behavior <> has_beh ind
+R5793:5793 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5808:5808 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5794:5800 simuliris.simulation.language <> of_call def
+R5807:5807 simuliris.simulation.behavior <> beh.u var
+R5802:5805 simuliris.simulation.behavior <> beh.main var
+R5815:5826 simuliris.simulation.behavior <> BehUndefined constr
+R5856:5880 simuliris.simulation.language <> pool_reach_stuck_not_safe thm
+R5845:5854 simuliris.simulation.behavior <> has_beh_ub thm
+R5956:5965 simuliris.simulation.behavior <> BehDiverge constr
+R6011:6021 simuliris.simulation.behavior <> has_beh_div thm
+R6091:6101 simuliris.simulation.behavior <> has_beh_div thm
+R6173:6181 simuliris.simulation.behavior <> BehReturn constr
+R6232:6242 simuliris.simulation.behavior <> has_beh_ret thm
+R6312:6322 simuliris.simulation.behavior <> has_beh_ret thm
+R6365:6371 Stdlib.Logic.Classical_Prop <> classic prfax
+R6374:6377 simuliris.simulation.language <> safe def
+R6384:6390 simuliris.simulation.language <> of_call def
+R6397:6397 simuliris.simulation.behavior <> beh.u var
+R6392:6395 simuliris.simulation.behavior <> beh.main var
+R6486:6497 simuliris.simulation.behavior <> BehUndefined constr
+R6543:6552 simuliris.simulation.behavior <> has_beh_ub thm
+R6561:6564 Stdlib.Logic.Classical_Prop <> NNPP thm
+R6582:6611 simuliris.simulation.behavior <> not_pool_reach_stuck_pool_safe thm
+prf 6679:6692 <> prog_ref_equiv
+binder 6694:6696 <> p_t:72
+binder 6698:6700 <> p_s:73
+R6724:6728 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R6708:6715 simuliris.simulation.behavior <> prog_ref def
+R6717:6719 simuliris.simulation.behavior <> p_t:72 var
+R6721:6723 simuliris.simulation.behavior <> p_s:73 var
+R6729:6740 simuliris.simulation.behavior <> prog_ref_alt def
+R6742:6744 simuliris.simulation.behavior <> p_t:72 var
+R6746:6748 simuliris.simulation.behavior <> p_s:73 var
+R6783:6797 simuliris.simulation.behavior <> prog_ref_to_alt thm
+R6800:6816 simuliris.simulation.behavior <> prog_ref_from_alt thm
+prf 6835:6847 <> prog_ref_refl
+R6855:6855 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6892:6901 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6856:6859 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R6867:6868 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 6860:6862 <> σ1:74
+binder 6864:6866 <> σ2:75
+R6878:6882 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6869:6869 simuliris.simulation.behavior <> beh.I var
+R6871:6873 simuliris.simulation.behavior <> σ1:74 var
+R6875:6877 simuliris.simulation.behavior <> σ2:75 var
+R6886:6888 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6883:6885 simuliris.simulation.behavior <> σ1:74 var
+R6889:6891 simuliris.simulation.behavior <> σ2:75 var
+R6913:6921 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6902:6910 Corelib.Classes.RelationClasses <> Reflexive class
+R6912:6912 simuliris.simulation.behavior <> beh.O var
+R6922:6930 Corelib.Classes.RelationClasses <> Reflexive class
+R6932:6939 simuliris.simulation.behavior <> prog_ref def
+prf 7177:7190 <> prog_ref_trans
+R7198:7198 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7235:7244 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7199:7202 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R7210:7211 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 7203:7205 <> σ1:76
+binder 7207:7209 <> σ2:77
+R7221:7225 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7212:7212 simuliris.simulation.behavior <> beh.I var
+R7214:7216 simuliris.simulation.behavior <> σ1:76 var
+R7218:7220 simuliris.simulation.behavior <> σ2:77 var
+R7229:7231 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7226:7228 simuliris.simulation.behavior <> σ1:76 var
+R7232:7234 simuliris.simulation.behavior <> σ2:77 var
+R7257:7265 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7245:7254 Corelib.Classes.RelationClasses <> Transitive class
+R7256:7256 simuliris.simulation.behavior <> beh.O var
+R7266:7275 Corelib.Classes.RelationClasses <> Transitive class
+R7277:7284 simuliris.simulation.behavior <> prog_ref def
+R7765:7767 simuliris.simulation.behavior beh <> sec

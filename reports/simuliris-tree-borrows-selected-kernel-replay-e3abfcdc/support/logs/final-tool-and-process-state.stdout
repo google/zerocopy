@@ -1,0 +1,10 @@
+Linux aarch64
+4e6d8ff576dc552db019358196ffecf16a0fc3104735c9a354da33392fd2db1f  /home/opam/.opam/4.14/bin/rocq
+d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9  /home/opam/.opam/4.14/bin/rocqchk
+6eed5b35e376e7b4254f445ffd73348b12e0b1e11922ccc9a2d2516b7880642b  /home/opam/.opam/4.14/bin/ocamlc
+819d50d3e3578ec35dca3404018f2b8fa1f584d33d267a9943e3446b9102f330  /home/opam/.opam/4.14/bin/dune
+    PID    PPID     ELAPSED COMMAND
+      1       0       28:28 /bin/sleep infinity
+  33272       0       00:00 /bin/sh -c uname -sm; for n in rocq rocqchk ocamlc dune; do p=$(command -v "$n") || exit 2; sha256sum "$p"; done; ps -eo pid,ppid,etime,args; du -sb .
+  33300   33272       00:00 ps -eo pid,ppid,etime,args
+32109248	.

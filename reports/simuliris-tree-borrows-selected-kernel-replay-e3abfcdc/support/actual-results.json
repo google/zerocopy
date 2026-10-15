@@ -1,0 +1,455 @@
+{
+  "subject_revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
+  "selected_original_seeds": 6,
+  "observation_audits": 3,
+  "selected_constants": [
+    {
+      "constant": "simuliris.simulation.adequacy.slsls_adequacy",
+      "source": "theories/simulation/adequacy.v",
+      "line": 310,
+      "source_sha256": "11041805a4bbf2fadab7cc5c773dd999abb22febc7a8f3904f300ce3ec890ff5",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@slsls_adequacy\n     : ∀ (PROP : interface.bi) (BiBUpd0 : updates.BiBUpd PROP) (BiAffine0 : extensions.BiAffine PROP) \n         (BiPureForall0 : extensions.BiPureForall PROP),\n         extensions.BiPersistentlyForall PROP\n         → ∀ (Λ : language.language) (sat : interface.bi_car PROP → Prop),\n             satisfiable.Satisfiable sat\n             → ∀ (I : language.state Λ → language.state Λ → Prop) (main : String.string) (u : language.val Λ) \n                 (O0 : language.val Λ → language.val Λ → Prop) (p_t p_s : gmap.gmap String.string (language.func Λ)),\n                 sat\n                   (interface.bi_forall\n                      (λ σ_t : language.state Λ,\n                         interface.bi_forall\n                           (λ σ_s : language.state Λ,\n                              interface.bi_wand (interface.bi_pure (I σ_t σ_s))\n                                (updates.bupd\n                                   (interface.bi_exist\n                                      (λ H : simulirisGS PROP Λ,\n                                         interface.bi_sep (prog_rel p_t p_s)\n                                           (interface.bi_sep (state_interp p_t σ_t p_s σ_s [language.of_call main u])\n                                              (interface.bi_sep (progs_are p_t p_s)\n                                                 (interface.bi_sep (ext_rel 0 u u)\n                                                    (interface.bi_forall\n                                                       (λ v_s : language.val Λ,\n                                                          interface.bi_forall\n                                                            (λ v_t : language.val Λ,\n                                                               interface.bi_wand (ext_rel 0 v_t v_s)\n                                                                 (interface.bi_pure (O0 v_t v_s))))))))))))))\n                 → simulation.behavior.prog_ref I main u O0 p_t p_s",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "raw_assumption_text": "IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}\nClassical_Prop.classic : ∀ P : Prop, P ∨ ¬ P",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.simulation.fairness_adequacy.sim_pool_preserves_fair_termination",
+      "source": "theories/simulation/fairness_adequacy.v",
+      "line": 678,
+      "source_sha256": "291759957d01b6f9fe214c9afc83c447a96530fa5dc98897c76c8ca021a3074a",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sim_pool_preserves_fair_termination\n     : ∀ (PROP : interface.bi) (BiBUpd0 : updates.BiBUpd PROP),\n         extensions.BiAffine PROP\n         → extensions.BiPureForall PROP\n           → extensions.BiPersistentlyForall PROP\n             → ∀ (Λ : language.language) (s : simulirisGS PROP Λ) (sat : interface.bi_car PROP → Prop),\n                 satisfiable.Satisfiable sat\n                 → ∀ (p_s p_t : gmap.gmap String.string (language.func Λ)) (P : list\n                                                                                  (language.expr Λ * language.expr Λ)) \n                     (D : gmap.gmap nat nat) (σ_s σ_t : language.state Λ),\n                     fairness.fair_div_delay p_t P.*1 D σ_t\n                     → language.pool_safe p_s P.*2 σ_s\n                       → sat (interface.bi_sep (state_interp p_t σ_t p_s σ_s P.*2) (sim_pool P))\n                         → fairness.fair_div_coind p_s P.*2 σ_s",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.adequacy.prog_rel_adequacy",
+      "source": "theories/tree_borrows/adequacy.v",
+      "line": 30,
+      "source_sha256": "66655cea3943f18fa3ab5f8d02f6d096a4568b521a4db0b4eff1296249cf7f11",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "prog_rel_adequacy\n     : ∀ Σ : iprop.gFunctors,\n         logical_state.sborGpreS Σ\n         → ∀ p_t p_s : expr_semantics.prog,\n             satisfiable.isat\n               (interface.bi_forall\n                  (λ H : logical_state.sborGS Σ,\n                     interface.bi_wand\n                       (big_op.big_opM interface.bi_sep\n                          (λ (f : String.string) (K : expr_semantics.func), gen_sim_prog.has_fun f K) p_t)\n                       (interface.bi_wand\n                          (big_op.big_opM interface.bi_sep\n                             (λ (f : String.string) (K : expr_semantics.func), gen_sim_prog.has_fun f K) p_s)\n                          (updates.bupd (prog_rel p_t p_s)))))\n             → prog_ref p_t p_s",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "raw_assumption_text": "IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}\nClassical_Prop.classic : ∀ P : Prop, P ∨ ¬ P",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.adequacy.log_rel_adequacy",
+      "source": "theories/tree_borrows/adequacy.v",
+      "line": 50,
+      "source_sha256": "66655cea3943f18fa3ab5f8d02f6d096a4568b521a4db0b4eff1296249cf7f11",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "log_rel_adequacy\n     : ∀ Σ : iprop.gFunctors,\n         logical_state.sborGpreS Σ\n         → ∀ e_t e_s : language.expr lang.bor_lang,\n             (∀ H : logical_state.sborGS Σ,\n                interface.bi_emp_valid\n                  (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True) e_t e_s))\n             → ctx_ref e_t e_s",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "raw_assumption_text": "IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}\nClassical_Prop.classic : ∀ P : Prop, P ∨ ¬ P",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.sb_log_rel_structural",
+      "source": "theories/tree_borrows/refl.v",
+      "line": 471,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sb_log_rel_structural\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : logical_state.sborGS Σ), log_rel_structural.log_rel_structural treeborrows_wf",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.log_rel_refl",
+      "source": "theories/tree_borrows/refl.v",
+      "line": 517,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@log_rel_refl\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : logical_state.sborGS Σ) (e : lang_base.expr),\n         expr_wf e\n         → interface.bi_emp_valid\n             (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True) e e)",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.log_rel_ctx",
+      "source": "theories/tree_borrows/refl.v",
+      "line": 524,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@log_rel_ctx\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : logical_state.sborGS Σ) (C : expr_semantics.ctx) \n         (e_t e_s : language.expr lang.bor_lang),\n         ctx_wf C\n         → interface.bi_emp_valid\n             (interface.bi_wand\n                (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True) e_t e_s)\n                (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True)\n                   (expr_semantics.fill_ctx C e_t) (expr_semantics.fill_ctx C e_s)))",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.simulation.language.safe_reach",
+      "source": "theories/simulation/language.v",
+      "line": 1056,
+      "source_sha256": "f6db07e6cf6f4266a6869008912f742ec3fb76a12d0b98355ccd8fdc508b4f3e",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@safe_reach\n     : ∀ Λ : language,\n         language.prog Λ → language.expr Λ → language.state Λ → (language.expr Λ → language.state Λ → Prop) → Prop",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.write_entire_range",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "line": 22,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@write_entire_range\n     : ∀ (T : Type) (l : Z) (sz : nat) (v v' : list T), length v = sz → length v' = sz → write_range l l v' v = Some v'",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.sim_new_place_local",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "line": 35,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sim_new_place_local\n     : ∀ (Σ : iprop.gFunctors) (H : sborGS Σ) (sz : nat) (v_t v_s : list scalar) (π : thread_id) \n         (Φ : language.expr bor_lang → language.expr bor_lang → bi.uPredI (iprop.iProp_solution.iResUR Σ)),\n         ⌜length v_t = length v_s⌝ -∗\n         (∀ (t : nat) (l : loc),\n            ⌜length v_s = sz⌝ -∗\n            ⌜length v_t = sz⌝ -∗\n            t $$ tk_local -∗\n            l ↦t∗[tk_local]{t} v_t -∗ l ↦s∗[tk_local]{t} v_s -∗ PlaceR l t sz ⪯{π} PlaceR l t sz [{ Φ }]) -∗\n         new_place sz #v_t ⪯{π} new_place sz #v_s [{ Φ }]",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.new_place_safe_reach",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "line": 67,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "new_place_safe_reach\n     : ∀ (P : language.prog bor_lang) (σ : language.state bor_lang) (sz : nat) (r : result),\n         safe_reach P (new_place sz r) σ\n           (λ (_ : language.expr bor_lang) (_ : language.state bor_lang), ∃ v : value, r = (#v)%R ∧ length v = sz)",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_local.sim_alloc_local",
+      "source": "theories/tree_borrows/step_laws/steps_local.v",
+      "line": 322,
+      "source_sha256": "b4d192b6cef1480fa39c8048fe761938ab9e61605d8a0ba72f93d230551be8bd",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sim_alloc_local\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (sz : nat) (Φ : expr\n                                                                    → expr\n                                                                      → upred.uPred (iprop.iProp_solution.iResUR Σ)) \n         (π : thread_id),\n         (∀ (t : nat) (l : loc),\n            t $$ tk_local -∗\n            l ↦t∗[tk_local]{t} replicate sz ☠%S -∗\n            l ↦s∗[tk_local]{t} replicate sz ☠%S -∗ Place l t sz ⪯{π} Place l t sz [{ Φ }]) -∗\n         Alloc sz ⪯{π} Alloc sz [{ Φ }]",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_retag.sim_retag_default",
+      "source": "theories/tree_borrows/step_laws/steps_retag.v",
+      "line": 67,
+      "source_sha256": "51976c67c24f7d326f549e76da05b06fe121ead49e95b681c315686e7d756977",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sim_retag_default\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (sz : nat) (l_t l_s : loc) (ot c : nat) \n         (pk : pointer_kind) (tk : tag_kind) (im : interior_mut) (π : thread_id) (Φ : expr\n                                                                                      → expr\n                                                                                        → upred.uPred\n                                                                                          (iprop.iProp_solution.iResUR\n                                                                                          Σ)),\n         pointer_kind_to_tag_unprotected pk im = Some tk\n         → sc_rel (ScPtr l_t ot) (ScPtr l_s ot) -∗\n           (∀ (nt : nat) (v_t v_s : list scalar),\n              ⌜length v_t = sz⌝ -∗\n              ⌜length v_s = sz⌝ -∗\n              value_rel v_t v_s -∗\n              nt $$ tk -∗\n              l_t ↦t∗[tk]{nt} v_t -∗ l_s ↦s∗[tk]{nt} v_s -∗ #[ ScPtr l_t nt]%V ⪯{π} #[ ScPtr l_s nt]%V [{ Φ }]) -∗\n           Retag #[ ScPtr l_t ot]%V #[ ScCallId c]%V pk im sz Default\n           ⪯{π}\n           Retag #[ ScPtr l_s ot]%V #[ ScCallId c]%V pk im sz Default\n           [{ Φ }]",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_retag.sim_retag_fnentry",
+      "source": "theories/tree_borrows/step_laws/steps_retag.v",
+      "line": 304,
+      "source_sha256": "51976c67c24f7d326f549e76da05b06fe121ead49e95b681c315686e7d756977",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sim_retag_fnentry\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (sz : nat) (l_t l_s : loc) (ot c : nat) \n         (pk : pointer_kind) (im : interior_mut) (tk : tag_kind) (M : gmap nat (gmap loc logical_protector)) \n         (π : thread_id) (Φ : expr → expr → upred.uPred (iprop.iProp_solution.iResUR Σ)),\n         pointer_kind_to_tag_protected pk im = Some tk\n         → sc_rel (ScPtr l_t ot) (ScPtr l_s ot) -∗\n           c @@ M -∗\n           (∀ (nt : nat) (v_t v_s : list scalar),\n              ⌜l_t = l_s⌝ -∗\n              ⌜length v_t = sz⌝ -∗\n              ⌜length v_s = sz⌝ -∗\n              c @@ <[nt:=seq_loc_map l_t sz (EnsuringAccess (pointer_kind_to_access_ensuring pk))]> M -∗\n              value_rel v_t v_s -∗\n              nt $$ tk -∗\n              l_t ↦t∗[tk]{nt} v_t -∗ l_s ↦s∗[tk]{nt} v_s -∗ #[ ScPtr l_t nt]%V ⪯{π} #[ ScPtr l_s nt]%V [{ Φ }]) -∗\n           Retag #[ ScPtr l_t ot]%V #[ ScCallId c]%V pk im sz FnEntry\n           ⪯{π}\n           Retag #[ ScPtr l_s ot]%V #[ ScCallId c]%V pk im sz FnEntry\n           [{ Φ }]",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_opt.sim_protected_unprotect",
+      "source": "theories/tree_borrows/step_laws/steps_opt.v",
+      "line": 310,
+      "source_sha256": "dc26fca5c03e01e84a33984b45776280f235305cd2d908330c4a5f2c1b99845e",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@sim_protected_unprotect\n     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (M : gmap nat (gmap loc logical_protector)) \n         (L : gmap loc logical_protector) (l : loc) (c t : nat) (tk : tag_kind) (v_t v_s : list scalar) \n         (π : thread_id) (Φ : expr → expr → upred.uPred (iprop.iProp_solution.iResUR Σ)) (e_t\n                                                                                          e_s : \n                                                                                          language.expr bor_lang),\n         (∀ i : nat, (i < length v_t)%nat → l +ₗ i ∈ dom L)\n         → M !! t = Some L\n           → c @@ M -∗\n             t $$ tk -∗\n             (⌜tk = tk_unq tk_act⌝ -∗ l ↦t∗[tk]{t} v_t ∗ l ↦s∗[tk]{t} v_s ∗ value_rel v_t v_s) -∗\n             (c @@ delete t M -∗\n              t $$ tk -∗ (⌜tk = tk_unq tk_act⌝ -∗ l ↦t∗[tk]{t} v_t ∗ l ↦s∗[tk]{t} v_s) -∗ e_t ⪯{π} e_s [{ Φ }]) -∗\n             e_t ⪯{π} e_s [{ Φ }]",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.loc_controlled_read_after_reborrow_creates",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "line": 380,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "loc_controlled_read_after_reborrow_creates\n     : ∀ (cids : call_id_set) (l : block * Z) (sc : scalar) (tg_cld tg_par : nat) (tk : tag_kind) \n         (σ σ' : state) (pk : pointer_kind) (im : interior_mut) (rk : retag_kind) (trs1 : trees) \n         (cc : nat) (blk : block) (off1 : Z) (sz : nat),\n         apply_within_trees (create_child cids tg_par tg_cld pk im rk cc) blk (strs σ) = Some trs1\n         → apply_within_trees (memory_access AccessRead cids tg_cld (off1, sz)) blk trs1 = Some (strs σ')\n           → state_wf σ\n             → wf_trees trs1\n               → l.1 = blk\n                 → trees_contain tg_par (strs σ) blk\n                   → ¬ trees_contain tg_cld (strs σ) blk\n                     → shp σ' !! l = Some sc\n                       → off1 ≤ l.2 < off1 + sz\n                         → cc ∈ scs σ'\n                           → pointer_kind_to_tag_maybe_protected pk im rk = Some tk → loc_controlled l tg_cld tk sc σ'",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.logical_state.array_tag",
+      "source": "theories/tree_borrows/logical_state.v",
+      "line": 856,
+      "source_sha256": "e9442959032f040c9c7a3e44e699791113973811d4491ac15087af6facb30b23",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@array_tag\n     : ∀ Σ : iprop.gFunctors,\n         bor_stateGS Σ\n         → iprop.gname → nat → loc → dfrac.dfrac → list scalar → upred.uPred (iprop.iProp_solution.iResUR Σ)",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.pointer_kind_to_tag_unprotected",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "line": 356,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "pointer_kind_to_tag_unprotected\n     : pointer_kind → interior_mut → option tag_kind",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.pointer_kind_to_tag_protected",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "line": 360,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "annotation": "PlannedAuditResources.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "pointer_kind_to_tag_protected\n     : pointer_kind → interior_mut → option tag_kind",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped",
+      "source": "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v",
+      "line": 44,
+      "source_sha256": "98d8261461e943848de6039847eb345511efa415d9ff87fe2c7e2a7e35d8588b",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@unprot_shared_delete_read_escaped\n     : ∀ (Σ : iprop.gFunctors) (H : logical_state.sborGS Σ),\n         interface.bi_emp_valid\n           (gen_log_rel.gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True)\n              unprot_shared_delete_read_escaped_opt unprot_shared_delete_read_escaped_unopt)",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped_ctx",
+      "source": "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v",
+      "line": 132,
+      "source_sha256": "98d8261461e943848de6039847eb345511efa415d9ff87fe2c7e2a7e35d8588b",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "unprot_shared_delete_read_escaped_ctx\n     : behavior.ctx_ref unprot_shared_delete_read_escaped_opt unprot_shared_delete_read_escaped_unopt",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "raw_assumption_text": "IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}\nClassical_Prop.classic : ∀ P : Prop, P ∨ ¬ P",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper",
+      "source": "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v",
+      "line": 50,
+      "source_sha256": "f2287e8a8d89883b5e625bd7dd33d0826c6cf486a4dd166a4a2f098b5062e7f5",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "@prot_mutable_reorder_write_up_activated_paper\n     : ∀ (Σ : iprop.gFunctors) (H : logical_state.sborGS Σ),\n         interface.bi_emp_valid\n           (gen_log_rel.gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True)\n              prot_mutable_reorder_write_up_activated_paper_opt prot_mutable_reorder_write_up_activated_paper_unopt)",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper_ctx",
+      "source": "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v",
+      "line": 140,
+      "source_sha256": "f2287e8a8d89883b5e625bd7dd33d0826c6cf486a4dd166a4a2f098b5062e7f5",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "prot_mutable_reorder_write_up_activated_paper_ctx\n     : behavior.ctx_ref prot_mutable_reorder_write_up_activated_paper_opt\n         prot_mutable_reorder_write_up_activated_paper_unopt",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "raw_assumption_text": "IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}\nClassical_Prop.classic : ∀ P : Prop, P ∨ ¬ P",
+      "recursive_checker_constant_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.read_read_reorder.read_reorder.read_reorder",
+      "source": "theories/tree_borrows/read_read_reorder/read_reorder.v",
+      "line": 218,
+      "source_sha256": "e9e8e666a9a00a89e10d03832a0a270f3f1ee22d4b4b575f4abefac8e8dfb8b0",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "actual Check and Print Assumptions passed; body recursively kernel checked",
+      "printed_type": "read_reorder\n     : ∀ (x1 x2 : String.string) (l1 : locations.loc) (tg1 sz1 : nat) (l2 : locations.loc) \n         (tg2 sz2 : nat) (erest : lang_base.expr) (P : gmap String.string (language.func lang.bor_lang)),\n         x1 ≠ x2\n         → equivalence_def.eventually_equal P (source x1 x2 l1 tg1 sz1 l2 tg2 sz2 erest)\n             (target x1 x2 l1 tg1 sz1 l2 tg2 sz2 erest)",
+      "axioms": [],
+      "raw_assumption_text": "Closed under the global context",
+      "recursive_checker_constant_seen": true
+    }
+  ],
+  "assumption_groups": {
+    "closed": 19,
+    "classic_and_indefinite_description": 5
+  },
+  "recursive_checker": {
+    "exit_code": 0,
+    "libraries_loaded_and_checked": 517,
+    "original_simuliris_libraries": 78,
+    "observation_libraries": 3,
+    "global_axioms": [
+      "Stdlib.Logic.IndefiniteDescription.constructive_indefinite_description",
+      "Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep",
+      "Stdlib.Logic.Classical_Prop.classic"
+    ],
+    "context_summary": "CONTEXT SUMMARY\n===============\n\n* Theory: Set is predicative\n  \n* Theory: Rewrite rules are not allowed\n  \n* Axioms:\n    Stdlib.Logic.IndefiniteDescription.constructive_indefinite_description\n    Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep\n    Stdlib.Logic.Classical_Prop.classic\n  \n* Constants/Inductives relying on type-in-type: <none>\n  \n* Constants/Inductives relying on unsafe (co)fixpoints: <none>\n  \n* Inductives whose positivity is assumed: <none>\n  \n",
+    "max_heap_kbytes": 1330296,
+    "no_admit_or_norec": true,
+    "every_selected_constant_seen": true,
+    "loaded_objects_sha256_stable": true
+  },
+  "phases": [
+    {
+      "label": "generic-build",
+      "exit_code": 2,
+      "wall_seconds": 2.138,
+      "phase_receipt": {
+        "returncode": "2",
+        "stop": "none",
+        "elapsed_seconds": "2",
+        "start_bytes": "3234169",
+        "peak_bytes": "3234169",
+        "final_bytes": "4033540"
+      }
+    },
+    {
+      "label": "generic-corrected",
+      "exit_code": 0,
+      "wall_seconds": 30.245,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "30",
+        "start_bytes": "4033280",
+        "peak_bytes": "7985840",
+        "final_bytes": "8282057"
+      }
+    },
+    {
+      "label": "tree-borrows-core",
+      "exit_code": 0,
+      "wall_seconds": 124.776,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "125",
+        "start_bytes": "8282057",
+        "peak_bytes": "30736913",
+        "final_bytes": "30800885"
+      }
+    },
+    {
+      "label": "protected-and-unprotected-examples",
+      "exit_code": 0,
+      "wall_seconds": 6.194,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "6",
+        "start_bytes": "30800885",
+        "peak_bytes": "31096803",
+        "final_bytes": "31312537"
+      }
+    },
+    {
+      "label": "sequential-read-reordering",
+      "exit_code": 0,
+      "wall_seconds": 4.189,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "4",
+        "start_bytes": "31312537",
+        "peak_bytes": "31794709",
+        "final_bytes": "32100806"
+      }
+    },
+    {
+      "label": "audit-PlannedAuditFramework",
+      "exit_code": 0,
+      "wall_seconds": 10.198,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "10",
+        "start_bytes": "32100806",
+        "peak_bytes": "32100910",
+        "final_bytes": "32102964"
+      }
+    },
+    {
+      "label": "audit-PlannedAuditResources",
+      "exit_code": 0,
+      "wall_seconds": 6.171,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "6",
+        "start_bytes": "32102964",
+        "peak_bytes": "32103068",
+        "final_bytes": "32106313"
+      }
+    },
+    {
+      "label": "audit-PlannedAuditExamples",
+      "exit_code": 0,
+      "wall_seconds": 10.182,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "10",
+        "start_bytes": "32106313",
+        "peak_bytes": "32106413",
+        "final_bytes": "32109248"
+      }
+    },
+    {
+      "label": "recursive-native-checker",
+      "exit_code": 0,
+      "wall_seconds": 38.249,
+      "phase_receipt": {
+        "returncode": "0",
+        "stop": "none",
+        "elapsed_seconds": "38",
+        "start_bytes": "32109248",
+        "peak_bytes": "32109248",
+        "final_bytes": "32109248"
+      }
+    }
+  ],
+  "source_identity": {
+    "original_files": 185,
+    "all_original_bytes_unchanged": true,
+    "copied_project_files": 591,
+    "copied_project_files_sha256_verified": true
+  }
+}

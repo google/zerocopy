@@ -1,0 +1,3 @@
+ROCQ compile theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v
+ROCQ compile theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=6 start_bytes=30800885 peak_bytes=31096803 final_bytes=31312537

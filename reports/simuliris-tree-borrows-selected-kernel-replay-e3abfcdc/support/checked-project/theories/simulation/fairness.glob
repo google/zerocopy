@@ -1,0 +1,2532 @@
+DIGEST 283b89c8e494f268186d0510f806ce1c
+Fsimuliris.simulation.fairness
+R33:41 Stdlib.Logic.Classical <> <> lib
+R43:63 Stdlib.Logic.IndefiniteDescription <> <> lib
+R92:95 stdpp.gmap <> <> lib
+R97:105 stdpp.relations <> <> lib
+R141:147 iris.prelude.prelude <> <> lib
+R191:198 simuliris.simulation.language <> <> lib
+sec 210:217 <> fairness
+var  229:230 fairness Λ
+R233:240 simuliris.simulation.language <> language rec
+R264:266 simuliris.simulation.language <> val proj
+R268:269 simuliris.simulation.fairness <> fairness.Λ var
+R291:294 simuliris.simulation.language <> expr proj
+R296:297 simuliris.simulation.fairness <> fairness.Λ var
+R319:328 simuliris.simulation.language <> expr_class def
+R330:331 simuliris.simulation.fairness <> fairness.Λ var
+R353:356 simuliris.simulation.language <> ectx proj
+R358:359 simuliris.simulation.fairness <> fairness.Λ var
+R381:384 simuliris.simulation.language <> prog abbrev
+R386:387 simuliris.simulation.fairness <> fairness.Λ var
+R413:416 Corelib.Init.Datatypes <> list ind
+R419:422 simuliris.simulation.language <> expr proj
+R424:425 simuliris.simulation.fairness <> fairness.Λ var
+def 441:447 <> enabled
+binder 449:449 <> p:2
+binder 451:451 <> i:3
+binder 453:453 <> T:4
+binder 455:456 <> σ:5
+R463:466 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R468:469 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 467:467 <> e:6
+R485:489 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R476:478 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R471:474 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R475:475 simuliris.simulation.fairness <> i:3 var
+R470:470 simuliris.simulation.fairness <> T:4 var
+R479:482 Corelib.Init.Datatypes <> Some constr
+R484:484 simuliris.simulation.fairness <> e:6 var
+R490:498 simuliris.simulation.language <> reducible def
+R500:500 simuliris.simulation.fairness <> p:2 var
+R502:502 simuliris.simulation.fairness <> e:6 var
+R504:505 simuliris.simulation.fairness <> σ:5 var
+def 520:523 <> exec
+R537:541 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R534:536 Corelib.Init.Datatypes <> nat ind
+R567:569 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R556:558 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R542:545 Corelib.Init.Datatypes <> list ind
+R548:551 simuliris.simulation.language <> expr proj
+R553:554 simuliris.simulation.fairness <> fairness.Λ var
+R559:563 simuliris.simulation.language <> state proj
+R565:566 simuliris.simulation.fairness <> fairness.Λ var
+R570:572 Corelib.Init.Datatypes <> nat ind
+R603:605 Corelib.Init.Datatypes <> fst def
+R608:610 Corelib.Init.Datatypes <> fst def
+not 585:585 fairness :::x_'.(pool)'
+R658:660 Corelib.Init.Datatypes <> snd def
+R663:665 Corelib.Init.Datatypes <> fst def
+not 639:639 fairness :::x_'.(state)'
+R710:712 Corelib.Init.Datatypes <> snd def
+not 694:694 fairness :::x_'.(id)'
+def 744:751 <> diverges
+binder 753:753 <> p:7
+R759:762 simuliris.simulation.fairness <> exec def
+binder 756:756 <> f:8
+binder 765:765 <> T:9
+binder 767:768 <> σ:10
+R775:775 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R792:799 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R788:790 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R776:776 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R780:787 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R777:777 simuliris.simulation.fairness <> f:8 var
+R791:791 simuliris.simulation.fairness <> T:9 var
+R800:800 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R819:827 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R919:919 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R814:816 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R801:801 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R805:813 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R802:802 simuliris.simulation.fairness <> f:8 var
+R817:818 simuliris.simulation.fairness <> σ:10 var
+R828:831 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R833:834 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 832:832 <> n:11
+R835:843 simuliris.simulation.language <> pool_step ind
+R845:845 simuliris.simulation.fairness <> p:7 var
+R847:847 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R851:858 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R848:848 simuliris.simulation.fairness <> f:8 var
+R850:850 simuliris.simulation.fairness <> n:11 var
+R860:860 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R864:872 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R861:861 simuliris.simulation.fairness <> f:8 var
+R863:863 simuliris.simulation.fairness <> n:11 var
+R874:874 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R878:883 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R875:875 simuliris.simulation.fairness <> f:8 var
+R877:877 simuliris.simulation.fairness <> n:11 var
+R885:885 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R893:900 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R886:886 simuliris.simulation.fairness <> f:8 var
+R889:889 Corelib.Init.Datatypes <> S constr
+R891:891 simuliris.simulation.fairness <> n:11 var
+R902:902 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R910:918 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R903:903 simuliris.simulation.fairness <> f:8 var
+R906:906 Corelib.Init.Datatypes <> S constr
+R908:908 simuliris.simulation.fairness <> n:11 var
+rec 930:937 <> div_exec
+proj 959:966 <> the_exec
+proj 1014:1026 <> exec_diverges
+binder 939:939 <> p:12
+binder 941:941 <> T:13
+binder 943:944 <> σ:14
+R974:978 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R971:973 Corelib.Init.Datatypes <> nat ind
+R1004:1006 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R993:995 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R979:982 Corelib.Init.Datatypes <> list ind
+R985:988 simuliris.simulation.language <> expr proj
+R990:991 simuliris.simulation.fairness <> fairness.Λ var
+R996:1000 simuliris.simulation.language <> state proj
+R1002:1003 simuliris.simulation.fairness <> fairness.Λ var
+R1007:1009 Corelib.Init.Datatypes <> nat ind
+R1029:1036 simuliris.simulation.fairness <> diverges def
+R1038:1038 simuliris.simulation.fairness <> p:12 var
+R1040:1047 simuliris.simulation.fairness <> the_exec:16 meth
+R1049:1049 simuliris.simulation.fairness <> T:13 var
+R1051:1052 simuliris.simulation.fairness <> σ:14 var
+def 1069:1093 <> eventually_always_enabled
+binder 1096:1096 <> p:18
+binder 1098:1098 <> T:19
+binder 1100:1101 <> σ:20
+binder 1104:1104 <> i:21
+R1110:1117 simuliris.simulation.fairness <> div_exec rec
+R1119:1119 simuliris.simulation.fairness <> p:18 var
+R1121:1121 simuliris.simulation.fairness <> T:19 var
+R1123:1124 simuliris.simulation.fairness <> σ:20 var
+binder 1107:1107 <> f:22
+R1133:1136 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1138:1139 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 1137:1137 <> m:23
+R1140:1143 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1145:1146 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1144:1144 <> n:24
+R1154:1158 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1148:1152 Stdlib.Unicode.Utf8 <> :::x_'≤'_x not
+R1147:1147 simuliris.simulation.fairness <> m:23 var
+R1153:1153 simuliris.simulation.fairness <> n:24 var
+R1159:1165 simuliris.simulation.fairness <> enabled def
+R1167:1167 simuliris.simulation.fairness <> p:18 var
+R1169:1169 simuliris.simulation.fairness <> i:21 var
+R1172:1172 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R1176:1183 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R1173:1173 simuliris.simulation.fairness <> f:22 var
+R1175:1175 simuliris.simulation.fairness <> n:24 var
+R1187:1187 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R1191:1199 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R1188:1188 simuliris.simulation.fairness <> f:22 var
+R1190:1190 simuliris.simulation.fairness <> n:24 var
+def 1215:1237 <> always_eventually_steps
+binder 1240:1240 <> p:25
+binder 1242:1242 <> T:26
+binder 1244:1245 <> σ:27
+binder 1248:1248 <> i:28
+R1254:1261 simuliris.simulation.fairness <> div_exec rec
+R1263:1263 simuliris.simulation.fairness <> p:25 var
+R1265:1265 simuliris.simulation.fairness <> T:26 var
+R1267:1268 simuliris.simulation.fairness <> σ:27 var
+binder 1251:1251 <> f:29
+R1277:1280 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1282:1283 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1281:1281 <> m:30
+R1284:1287 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1289:1290 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 1288:1288 <> n:31
+R1298:1302 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1292:1296 Stdlib.Unicode.Utf8 <> :::x_'≤'_x not
+R1291:1291 simuliris.simulation.fairness <> m:30 var
+R1297:1297 simuliris.simulation.fairness <> n:31 var
+R1313:1315 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1303:1303 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R1307:1312 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R1304:1304 simuliris.simulation.fairness <> f:29 var
+R1306:1306 simuliris.simulation.fairness <> n:31 var
+R1316:1316 simuliris.simulation.fairness <> i:28 var
+def 1331:1334 <> fair
+binder 1337:1337 <> p:32
+binder 1339:1339 <> T:33
+binder 1341:1342 <> σ:34
+R1349:1356 simuliris.simulation.fairness <> div_exec rec
+R1358:1358 simuliris.simulation.fairness <> p:32 var
+R1360:1360 simuliris.simulation.fairness <> T:33 var
+R1362:1363 simuliris.simulation.fairness <> σ:34 var
+binder 1346:1346 <> f:35
+R1371:1374 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1376:1377 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1375:1375 <> i:36
+R1407:1411 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1378:1402 simuliris.simulation.fairness <> eventually_always_enabled def
+R1406:1406 simuliris.simulation.fairness <> f:35 var
+R1404:1404 simuliris.simulation.fairness <> i:36 var
+R1412:1434 simuliris.simulation.fairness <> always_eventually_steps def
+R1438:1438 simuliris.simulation.fairness <> f:35 var
+R1436:1436 simuliris.simulation.fairness <> i:36 var
+def 1453:1460 <> fair_div
+binder 1462:1462 <> p:37
+binder 1464:1464 <> T:38
+binder 1466:1467 <> σ:39
+R1472:1475 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1494:1495 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1479:1486 simuliris.simulation.fairness <> div_exec rec
+R1488:1488 simuliris.simulation.fairness <> p:37 var
+R1490:1490 simuliris.simulation.fairness <> T:38 var
+R1492:1493 simuliris.simulation.fairness <> σ:39 var
+binder 1476:1476 <> f:40
+R1496:1499 simuliris.simulation.fairness <> fair def
+R1501:1501 simuliris.simulation.fairness <> f:40 var
+def 1572:1587 <> div_exec_advance
+binder 1590:1590 <> p:41
+binder 1592:1592 <> T:42
+binder 1594:1595 <> σ:43
+R1602:1609 simuliris.simulation.fairness <> div_exec rec
+R1611:1611 simuliris.simulation.fairness <> p:41 var
+R1613:1613 simuliris.simulation.fairness <> T:42 var
+R1615:1616 simuliris.simulation.fairness <> σ:43 var
+binder 1599:1599 <> f:44
+binder 1619:1619 <> n:45
+R1627:1634 simuliris.simulation.fairness <> div_exec rec
+R1636:1636 simuliris.simulation.fairness <> p:41 var
+R1638:1638 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R1642:1649 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R1639:1639 simuliris.simulation.fairness <> f:44 var
+R1641:1641 simuliris.simulation.fairness <> n:45 var
+R1651:1651 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R1655:1663 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R1652:1652 simuliris.simulation.fairness <> f:44 var
+R1654:1654 simuliris.simulation.fairness <> n:45 var
+R1673:1680 simuliris.simulation.fairness <> the_exec proj
+binder 1682:1682 <> m:46
+R1687:1687 simuliris.simulation.fairness <> f:44 var
+R1691:1693 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R1690:1690 simuliris.simulation.fairness <> n:45 var
+R1694:1694 simuliris.simulation.fairness <> m:46 var
+R1748:1755 simuliris.simulation.fairness <> diverges def
+R1770:1772 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R1846:1859 Stdlib.Arith.PeanoNat Nat add_succ_r thm
+R1871:1883 simuliris.simulation.fairness <> exec_diverges proj
+def 1911:1925 <> div_exec_extend
+binder 1928:1928 <> p:47
+binder 1930:1930 <> T:48
+binder 1932:1933 <> σ:49
+binder 1935:1935 <> i:50
+binder 1937:1938 <> T':51
+binder 1940:1942 <> σ':52
+R1949:1956 simuliris.simulation.fairness <> div_exec rec
+R1958:1958 simuliris.simulation.fairness <> p:47 var
+R1960:1961 simuliris.simulation.fairness <> T':51 var
+R1963:1965 simuliris.simulation.fairness <> σ':52 var
+binder 1946:1946 <> f:53
+R1979:1987 simuliris.simulation.language <> pool_step ind
+R1989:1989 simuliris.simulation.fairness <> p:47 var
+R1991:1991 simuliris.simulation.fairness <> T:48 var
+R1993:1994 simuliris.simulation.fairness <> σ:49 var
+R1996:1996 simuliris.simulation.fairness <> i:50 var
+R1998:1999 simuliris.simulation.fairness <> T':51 var
+R2001:2003 simuliris.simulation.fairness <> σ':52 var
+binder 1971:1975 <> Hstep:54
+R2008:2015 simuliris.simulation.fairness <> div_exec rec
+R2017:2017 simuliris.simulation.fairness <> p:47 var
+R2019:2019 simuliris.simulation.fairness <> T:48 var
+R2021:2022 simuliris.simulation.fairness <> σ:49 var
+R2032:2039 simuliris.simulation.fairness <> the_exec proj
+binder 2041:2041 <> n:55
+R2052:2052 simuliris.simulation.fairness <> n:55 var
+R2073:2073 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2075:2076 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2079:2080 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2082:2082 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2074:2074 simuliris.simulation.fairness <> T:48 var
+R2077:2078 simuliris.simulation.fairness <> σ:49 var
+R2081:2081 simuliris.simulation.fairness <> i:50 var
+R2086:2086 Corelib.Init.Datatypes <> S constr
+R2093:2093 simuliris.simulation.fairness <> f:53 var
+R2095:2095 simuliris.simulation.fairness <> n:55 var
+R2224:2236 simuliris.simulation.fairness <> exec_diverges proj
+R2290:2302 simuliris.simulation.fairness <> exec_diverges proj
+def 2322:2334 <> div_exec_next
+binder 2337:2337 <> p:57
+binder 2339:2339 <> T:58
+binder 2341:2342 <> σ:59
+R2349:2356 simuliris.simulation.fairness <> div_exec rec
+R2358:2358 simuliris.simulation.fairness <> p:57 var
+R2360:2360 simuliris.simulation.fairness <> T:58 var
+R2362:2363 simuliris.simulation.fairness <> σ:59 var
+binder 2346:2346 <> f:60
+R2368:2375 simuliris.simulation.fairness <> div_exec rec
+R2377:2377 simuliris.simulation.fairness <> p:57 var
+R2379:2379 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R2383:2390 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R2380:2380 simuliris.simulation.fairness <> f:60 var
+R2392:2392 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R2396:2404 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R2393:2393 simuliris.simulation.fairness <> f:60 var
+R2409:2424 simuliris.simulation.fairness <> div_exec_advance def
+R2426:2426 simuliris.simulation.fairness <> f:60 var
+def 2443:2456 <> div_exec_trace
+binder 2459:2459 <> p:61
+binder 2461:2461 <> T:62
+binder 2463:2464 <> σ:63
+R2471:2478 simuliris.simulation.fairness <> div_exec rec
+R2480:2480 simuliris.simulation.fairness <> p:61 var
+R2482:2482 simuliris.simulation.fairness <> T:62 var
+R2484:2485 simuliris.simulation.fairness <> σ:63 var
+binder 2468:2468 <> f:64
+binder 2488:2488 <> n:65
+R2495:2498 stdpp.base <> fmap def
+R2520:2522 Corelib.Lists.ListDef <> seq def
+R2526:2526 simuliris.simulation.fairness <> n:65 var
+R2501:2503 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R2505:2506 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 2504:2504 <> i:66
+R2507:2507 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R2511:2516 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R2508:2508 simuliris.simulation.fairness <> f:64 var
+R2510:2510 simuliris.simulation.fairness <> i:66 var
+prf 2538:2556 <> div_exec_trace_spec
+binder 2559:2559 <> p:67
+binder 2561:2561 <> T:68
+binder 2563:2564 <> σ:69
+R2571:2578 simuliris.simulation.fairness <> div_exec rec
+R2580:2580 simuliris.simulation.fairness <> p:67 var
+R2582:2582 simuliris.simulation.fairness <> T:68 var
+R2584:2585 simuliris.simulation.fairness <> σ:69 var
+binder 2568:2568 <> f:70
+binder 2588:2588 <> n:71
+binder 2590:2590 <> i:72
+R2619:2624 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2656:2656 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2596:2600 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R2595:2595 simuliris.simulation.fairness <> i:72 var
+R2601:2614 simuliris.simulation.fairness <> div_exec_trace def
+R2618:2618 simuliris.simulation.fairness <> n:71 var
+R2616:2616 simuliris.simulation.fairness <> f:70 var
+R2625:2628 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R2630:2631 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 2629:2629 <> m:73
+R2646:2650 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2642:2644 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2632:2632 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R2636:2641 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R2633:2633 simuliris.simulation.fairness <> f:70 var
+R2635:2635 simuliris.simulation.fairness <> m:73 var
+R2645:2645 simuliris.simulation.fairness <> i:72 var
+R2652:2654 Corelib.Init.Peano <> ::nat_scope:x_'<'_x not
+R2651:2651 simuliris.simulation.fairness <> m:73 var
+R2655:2655 simuliris.simulation.fairness <> n:71 var
+R2677:2690 simuliris.simulation.fairness <> div_exec_trace def
+R2692:2708 stdpp.list_monad list list_elem_of_fmap thm
+R2786:2796 stdpp.list_numbers list elem_of_seq thm
+R2822:2832 stdpp.list_numbers list elem_of_seq thm
+prf 2852:2870 <> div_exec_trace_zero
+binder 2873:2873 <> p:74
+binder 2875:2875 <> T:75
+binder 2877:2878 <> σ:76
+R2885:2892 simuliris.simulation.fairness <> div_exec rec
+R2894:2894 simuliris.simulation.fairness <> p:74 var
+R2896:2896 simuliris.simulation.fairness <> T:75 var
+R2898:2899 simuliris.simulation.fairness <> σ:76 var
+binder 2882:2882 <> f:77
+R2923:2925 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2905:2918 simuliris.simulation.fairness <> div_exec_trace def
+R2920:2920 simuliris.simulation.fairness <> f:77 var
+R2926:2927 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+prf 2964:2982 <> div_exec_trace_succ
+binder 2985:2985 <> p:78
+binder 2987:2987 <> T:79
+binder 2989:2990 <> σ:80
+R2997:3004 simuliris.simulation.fairness <> div_exec rec
+R3006:3006 simuliris.simulation.fairness <> p:78 var
+R3008:3008 simuliris.simulation.fairness <> T:79 var
+R3010:3011 simuliris.simulation.fairness <> σ:80 var
+binder 2994:2994 <> f:81
+binder 3014:3014 <> n:82
+R3041:3043 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3019:3032 simuliris.simulation.fairness <> div_exec_trace def
+R3037:3037 Corelib.Init.Datatypes <> S constr
+R3039:3039 simuliris.simulation.fairness <> n:82 var
+R3034:3034 simuliris.simulation.fairness <> f:81 var
+R3054:3057 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3044:3044 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3048:3053 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3045:3045 simuliris.simulation.fairness <> f:81 var
+R3058:3071 simuliris.simulation.fairness <> div_exec_trace def
+R3091:3091 simuliris.simulation.fairness <> n:82 var
+R3074:3086 simuliris.simulation.fairness <> div_exec_next def
+R3088:3088 simuliris.simulation.fairness <> f:81 var
+R3111:3124 simuliris.simulation.fairness <> div_exec_trace def
+R3129:3129 Corelib.Init.Datatypes <> S constr
+R3151:3155 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3186:3186 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3141:3141 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3145:3150 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3156:3156 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R3173:3178 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R3157:3159 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R3161:3162 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 3160:3160 <> i:83
+R3163:3163 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3167:3172 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3166:3166 simuliris.simulation.fairness <> i:83 var
+R3179:3181 Corelib.Lists.ListDef <> seq def
+binder 3160:3160 <> i:84
+R3166:3166 simuliris.simulation.fairness <> i:84 var
+R3210:3223 simuliris.simulation.fairness <> div_exec_trace def
+R3226:3235 stdpp.list_numbers list fmap_S_seq thm
+R3238:3254 stdpp.list_monad list list_fmap_compose thm
+prf 3272:3289 <> div_exec_next_step
+binder 3291:3291 <> p:85
+binder 3293:3293 <> T:86
+binder 3295:3296 <> σ:87
+R3302:3309 simuliris.simulation.fairness <> div_exec rec
+R3311:3311 simuliris.simulation.fairness <> p:85 var
+R3313:3313 simuliris.simulation.fairness <> T:86 var
+R3315:3316 simuliris.simulation.fairness <> σ:87 var
+binder 3299:3299 <> f:88
+R3322:3330 simuliris.simulation.language <> pool_step ind
+R3332:3332 simuliris.simulation.fairness <> p:85 var
+R3334:3334 simuliris.simulation.fairness <> T:86 var
+R3336:3337 simuliris.simulation.fairness <> σ:87 var
+R3339:3339 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3343:3348 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R3340:3340 simuliris.simulation.fairness <> f:88 var
+R3350:3350 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R3368:3375 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R3351:3363 simuliris.simulation.fairness <> div_exec_next def
+R3365:3365 simuliris.simulation.fairness <> f:88 var
+R3377:3377 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R3395:3403 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R3378:3390 simuliris.simulation.fairness <> div_exec_next def
+R3392:3392 simuliris.simulation.fairness <> f:88 var
+R3425:3437 simuliris.simulation.fairness <> exec_diverges proj
+R3446:3458 simuliris.simulation.fairness <> div_exec_next def
+R3493:3505 simuliris.simulation.fairness <> exec_diverges proj
+prf 3604:3617 <> div_exec_steps
+binder 3620:3620 <> p:89
+binder 3622:3622 <> T:90
+binder 3624:3625 <> σ:91
+R3632:3639 simuliris.simulation.fairness <> div_exec rec
+R3641:3641 simuliris.simulation.fairness <> p:89 var
+R3643:3643 simuliris.simulation.fairness <> T:90 var
+R3645:3646 simuliris.simulation.fairness <> σ:91 var
+binder 3629:3629 <> f:92
+binder 3649:3649 <> n:93
+R3654:3663 simuliris.simulation.language <> pool_steps ind
+R3665:3665 simuliris.simulation.fairness <> p:89 var
+R3667:3667 simuliris.simulation.fairness <> T:90 var
+R3669:3670 simuliris.simulation.fairness <> σ:91 var
+R3673:3686 simuliris.simulation.fairness <> div_exec_trace def
+R3690:3690 simuliris.simulation.fairness <> n:93 var
+R3688:3688 simuliris.simulation.fairness <> f:92 var
+R3693:3693 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R3697:3704 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R3694:3694 simuliris.simulation.fairness <> f:92 var
+R3696:3696 simuliris.simulation.fairness <> n:93 var
+R3706:3706 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R3710:3718 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R3707:3707 simuliris.simulation.fairness <> f:92 var
+R3709:3709 simuliris.simulation.fairness <> n:93 var
+R3802:3814 simuliris.simulation.fairness <> exec_diverges proj
+R3868:3886 simuliris.simulation.fairness <> div_exec_trace_succ thm
+R3916:3933 simuliris.simulation.fairness <> div_exec_next_step thm
+def 4149:4162 <> active_threads
+binder 4164:4164 <> T:94
+R4171:4181 stdpp.base <> list_to_set def
+R4200:4203 stdpp.base <> fmap def
+R4210:4215 stdpp.base <> filter def
+R4248:4251 stdpp.list_monad list imap def
+R4258:4258 simuliris.simulation.fairness <> T:94 var
+R4253:4256 Corelib.Init.Datatypes <> pair constr
+R4218:4221 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R4228:4229 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R4222:4222 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4224:4225 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4227:4227 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+binder 4226:4226 <> e:95
+binder 4223:4223 <> i:96
+binder 4222:4227 <> pat:97
+R4238:4240 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4230:4235 simuliris.simulation.language <> to_val def
+R4237:4237 simuliris.simulation.fairness <> e:95 var
+R4241:4244 Corelib.Init.Datatypes <> None constr
+R4205:4207 Corelib.Init.Datatypes <> fst def
+R4189:4192 stdpp.gmap <> gset def
+R4194:4196 Corelib.Init.Datatypes <> nat ind
+prf 4271:4289 <> active_threads_spec
+binder 4291:4291 <> T:98
+binder 4293:4293 <> i:99
+R4320:4324 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R4299:4303 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R4298:4298 simuliris.simulation.fairness <> i:99 var
+R4304:4317 simuliris.simulation.fairness <> active_threads def
+R4319:4319 simuliris.simulation.fairness <> T:98 var
+R4325:4328 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R4330:4331 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 4329:4329 <> e:100
+R4347:4351 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R4338:4340 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4333:4336 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R4337:4337 simuliris.simulation.fairness <> i:99 var
+R4332:4332 simuliris.simulation.fairness <> T:98 var
+R4341:4344 Corelib.Init.Datatypes <> Some constr
+R4346:4346 simuliris.simulation.fairness <> e:100 var
+R4360:4362 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4352:4357 simuliris.simulation.language <> to_val def
+R4359:4359 simuliris.simulation.fairness <> e:100 var
+R4363:4366 Corelib.Init.Datatypes <> None constr
+R4387:4400 simuliris.simulation.fairness <> active_threads def
+R4403:4409 simuliris.simulation.fairness <> enabled def
+R4411:4429 stdpp.sets <> elem_of_list_to_set thm
+R4431:4447 stdpp.list_monad list list_elem_of_fmap thm
+R4509:4527 stdpp.list_basics list list_elem_of_filter thm
+R4563:4581 stdpp.list_monad list elem_of_lookup_imap thm
+R4705:4705 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4707:4708 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4710:4710 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4743:4761 stdpp.list_basics list list_elem_of_filter thm
+R4794:4812 stdpp.list_monad list elem_of_lookup_imap thm
+prf 4858:4876 <> active_threads_step
+binder 4878:4878 <> p:101
+binder 4880:4880 <> T:102
+binder 4882:4883 <> σ:103
+binder 4885:4885 <> i:104
+binder 4887:4888 <> T':105
+binder 4890:4892 <> σ':106
+R4923:4927 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4897:4905 simuliris.simulation.language <> pool_step ind
+R4907:4907 simuliris.simulation.fairness <> p:101 var
+R4909:4909 simuliris.simulation.fairness <> T:102 var
+R4911:4912 simuliris.simulation.fairness <> σ:103 var
+R4915:4915 simuliris.simulation.fairness <> i:104 var
+R4917:4918 simuliris.simulation.fairness <> T':105 var
+R4920:4922 simuliris.simulation.fairness <> σ':106 var
+R4954:4958 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R4944:4948 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R4928:4941 simuliris.simulation.fairness <> active_threads def
+R4943:4943 simuliris.simulation.fairness <> T:102 var
+R4949:4950 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4952:4953 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4951:4951 simuliris.simulation.fairness <> i:104 var
+R4959:4972 simuliris.simulation.fairness <> active_threads def
+R4974:4975 simuliris.simulation.fairness <> T':105 var
+R5030:5042 simuliris.simulation.language <> pool_step_iff thm
+R5067:5084 stdpp.base <> elem_of_difference meth
+R5096:5114 simuliris.simulation.fairness <> active_threads_spec thm
+R5162:5166 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R5194:5212 simuliris.simulation.fairness <> active_threads_spec thm
+R5254:5270 stdpp.list_basics list lookup_app_l_Some thm
+R5281:5301 stdpp.list_basics list list_lookup_insert_ne thm
+prf 5319:5338 <> active_threads_steps
+binder 5340:5340 <> p:107
+binder 5342:5342 <> T:108
+binder 5344:5345 <> σ:109
+binder 5347:5347 <> I:110
+binder 5349:5350 <> T':111
+binder 5352:5354 <> σ':112
+R5385:5389 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5359:5368 simuliris.simulation.language <> pool_steps ind
+R5370:5370 simuliris.simulation.fairness <> p:107 var
+R5372:5372 simuliris.simulation.fairness <> T:108 var
+R5374:5375 simuliris.simulation.fairness <> σ:109 var
+R5377:5377 simuliris.simulation.fairness <> I:110 var
+R5379:5380 simuliris.simulation.fairness <> T':111 var
+R5382:5384 simuliris.simulation.fairness <> σ':112 var
+R5424:5428 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R5406:5410 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R5390:5403 simuliris.simulation.fairness <> active_threads def
+R5405:5405 simuliris.simulation.fairness <> T:108 var
+R5411:5421 stdpp.base <> list_to_set def
+R5423:5423 simuliris.simulation.fairness <> I:110 var
+R5429:5442 simuliris.simulation.fairness <> active_threads def
+R5444:5445 simuliris.simulation.fairness <> T':111 var
+R5548:5566 simuliris.simulation.fairness <> active_threads_step thm
+prf 5602:5620 <> active_safe_enabled
+binder 5622:5622 <> i:113
+binder 5624:5624 <> p:114
+binder 5626:5626 <> T:115
+binder 5628:5629 <> σ:116
+R5650:5656 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5634:5642 simuliris.simulation.language <> pool_safe def
+R5644:5644 simuliris.simulation.fairness <> p:114 var
+R5646:5646 simuliris.simulation.fairness <> T:115 var
+R5648:5649 simuliris.simulation.fairness <> σ:116 var
+R5679:5685 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5658:5662 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R5657:5657 simuliris.simulation.fairness <> i:113 var
+R5663:5676 simuliris.simulation.fairness <> active_threads def
+R5678:5678 simuliris.simulation.fairness <> T:115 var
+R5686:5692 simuliris.simulation.fairness <> enabled def
+R5694:5694 simuliris.simulation.fairness <> p:114 var
+R5696:5696 simuliris.simulation.fairness <> i:113 var
+R5698:5698 simuliris.simulation.fairness <> T:115 var
+R5700:5701 simuliris.simulation.fairness <> σ:116 var
+R5721:5739 simuliris.simulation.fairness <> active_threads_spec thm
+R5816:5837 simuliris.simulation.language <> pool_safe_threads_safe thm
+R5878:5878 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5880:5880 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5885:5886 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+prf 6037:6059 <> active_eventually_steps
+binder 6061:6061 <> p:117
+binder 6063:6063 <> T:118
+binder 6065:6066 <> σ:119
+R6072:6079 simuliris.simulation.fairness <> div_exec rec
+R6081:6081 simuliris.simulation.fairness <> p:117 var
+R6083:6083 simuliris.simulation.fairness <> T:118 var
+R6085:6086 simuliris.simulation.fairness <> σ:119 var
+binder 6069:6069 <> f:120
+binder 6089:6089 <> i:121
+R6101:6107 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6095:6098 simuliris.simulation.fairness <> fair def
+R6100:6100 simuliris.simulation.fairness <> f:120 var
+R6124:6130 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6108:6116 simuliris.simulation.language <> pool_safe def
+R6118:6118 simuliris.simulation.fairness <> p:117 var
+R6120:6120 simuliris.simulation.fairness <> T:118 var
+R6122:6123 simuliris.simulation.fairness <> σ:119 var
+R6153:6159 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6132:6136 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R6131:6131 simuliris.simulation.fairness <> i:121 var
+R6137:6150 simuliris.simulation.fairness <> active_threads def
+R6152:6152 simuliris.simulation.fairness <> T:118 var
+R6160:6163 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R6165:6166 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 6164:6164 <> n:122
+R6177:6179 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6167:6167 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R6171:6176 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R6168:6168 simuliris.simulation.fairness <> f:120 var
+R6170:6170 simuliris.simulation.fairness <> n:122 var
+R6180:6180 simuliris.simulation.fairness <> i:121 var
+R6229:6235 Stdlib.Logic.Classical_Prop <> classic prfax
+R6238:6241 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R6243:6244 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 6242:6242 <> n:123
+R6255:6257 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6245:6245 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R6249:6254 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R6248:6248 simuliris.simulation.fairness <> n:123 var
+binder 6242:6242 <> n:124
+R6248:6248 simuliris.simulation.fairness <> n:124 var
+R6356:6378 simuliris.simulation.fairness <> always_eventually_steps def
+R6473:6486 simuliris.simulation.fairness <> div_exec_steps thm
+R6513:6532 simuliris.simulation.fairness <> active_threads_steps thm
+R6552:6570 simuliris.simulation.fairness <> active_safe_enabled thm
+R6584:6598 simuliris.simulation.language <> pool_steps_safe thm
+R6615:6628 simuliris.simulation.fairness <> div_exec_steps thm
+R6650:6667 stdpp.base <> elem_of_difference meth
+R6701:6719 stdpp.sets <> elem_of_list_to_set thm
+R6743:6761 simuliris.simulation.fairness <> div_exec_trace_spec thm
+sec 6928:6957 fairness coinductive_inductive_fairness
+ind 6975:6988 <> fair_div_coind
+constr 7011:7029 <> fair_div_coind_step
+binder 6990:6990 <> p:125
+binder 6992:6992 <> T:126
+binder 6994:6995 <> σ:127
+binder 7031:7032 <> T':130
+binder 7034:7036 <> σ':131
+binder 7038:7038 <> I:132
+R7073:7083 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7047:7056 simuliris.simulation.language <> pool_steps ind
+R7058:7058 simuliris.simulation.fairness <> p:125 var
+R7060:7060 simuliris.simulation.fairness <> T:126 var
+R7062:7063 simuliris.simulation.fairness <> σ:127 var
+R7065:7065 simuliris.simulation.fairness <> I:132 var
+R7067:7068 simuliris.simulation.fairness <> T':130 var
+R7070:7072 simuliris.simulation.fairness <> σ':131 var
+R7126:7136 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7087:7091 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R7108:7112 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R7084:7086 stdpp.base <> ::stdpp_scope:'∅' not
+R7092:7105 simuliris.simulation.fairness <> active_threads def
+R7107:7107 simuliris.simulation.fairness <> T:126 var
+R7113:7123 stdpp.base <> list_to_set def
+R7125:7125 simuliris.simulation.fairness <> I:132 var
+R7160:7170 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7137:7150 simuliris.simulation.fairness <> fair_div_coind:128 ind
+R7157:7159 simuliris.simulation.fairness <> σ':131 var
+R7154:7155 simuliris.simulation.fairness <> T':130 var
+R7152:7152 simuliris.simulation.fairness <> p:125 var
+R7171:7184 simuliris.simulation.fairness <> fair_div_coind:128 ind
+R7190:7191 simuliris.simulation.fairness <> σ:127 var
+R7188:7188 simuliris.simulation.fairness <> T:126 var
+R7186:7186 simuliris.simulation.fairness <> p:125 var
+prf 7204:7229 <> all_active_eventually_step
+binder 7231:7231 <> p:133
+binder 7233:7233 <> T:134
+binder 7235:7236 <> σ:135
+R7242:7249 simuliris.simulation.fairness <> div_exec rec
+R7251:7251 simuliris.simulation.fairness <> p:133 var
+R7253:7253 simuliris.simulation.fairness <> T:134 var
+R7255:7256 simuliris.simulation.fairness <> σ:135 var
+binder 7239:7239 <> f:136
+R7271:7279 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7265:7268 simuliris.simulation.fairness <> fair def
+R7270:7270 simuliris.simulation.fairness <> f:136 var
+R7296:7304 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7280:7288 simuliris.simulation.language <> pool_safe def
+R7290:7290 simuliris.simulation.fairness <> p:133 var
+R7292:7292 simuliris.simulation.fairness <> T:134 var
+R7294:7295 simuliris.simulation.fairness <> σ:135 var
+R7305:7308 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R7310:7311 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 7309:7309 <> n:137
+R7328:7332 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R7312:7325 simuliris.simulation.fairness <> active_threads def
+R7327:7327 simuliris.simulation.fairness <> T:134 var
+R7333:7343 stdpp.base <> list_to_set def
+R7346:7359 simuliris.simulation.fairness <> div_exec_trace def
+R7363:7363 simuliris.simulation.fairness <> n:137 var
+R7361:7361 simuliris.simulation.fairness <> f:136 var
+R7412:7415 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R7417:7418 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 7416:7416 <> O:138
+R7441:7445 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7420:7424 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R7419:7419 simuliris.simulation.fairness <> O:138 var
+R7425:7438 simuliris.simulation.fairness <> active_threads def
+R7446:7449 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R7451:7452 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 7450:7450 <> n:139
+R7454:7458 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R7453:7453 simuliris.simulation.fairness <> O:138 var
+R7459:7469 stdpp.base <> list_to_set def
+R7472:7485 simuliris.simulation.fairness <> div_exec_trace def
+R7489:7489 simuliris.simulation.fairness <> n:139 var
+binder 7416:7416 <> O:140
+R7419:7419 simuliris.simulation.fairness <> O:140 var
+binder 7450:7450 <> n:141
+R7453:7453 simuliris.simulation.fairness <> O:140 var
+R7489:7489 simuliris.simulation.fairness <> n:141 var
+R7528:7533 stdpp.fin_sets <> set_wf thm
+R7606:7618 stdpp.base <> leibniz_equiv def
+R7627:7636 stdpp.fin_sets <> set_choose thm
+R7579:7584 stdpp.base <> decide def
+R7588:7592 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R7593:7595 stdpp.base <> ::stdpp_scope:'∅' not
+R7708:7730 simuliris.simulation.fairness <> active_eventually_steps thm
+R7787:7791 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R7792:7793 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R7795:7796 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R7858:7860 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R7849:7851 Corelib.Init.Peano <> max abbrev
+R7885:7903 stdpp.sets <> elem_of_list_to_set thm
+R7906:7924 simuliris.simulation.fairness <> div_exec_trace_spec thm
+R7943:7948 stdpp.base <> decide def
+R7952:7954 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8027:8031 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R8032:8045 simuliris.simulation.fairness <> div_exec_trace def
+R8072:8090 stdpp.sets <> elem_of_list_to_set thm
+R8096:8099 stdpp.gmap <> gset def
+R8101:8103 Corelib.Init.Datatypes <> nat ind
+R8136:8154 simuliris.simulation.fairness <> div_exec_trace_spec thm
+prf 8237:8256 <> div_exec_some_active
+binder 8258:8258 <> p:142
+binder 8260:8260 <> T:143
+binder 8262:8263 <> σ:144
+R8269:8276 simuliris.simulation.fairness <> div_exec rec
+R8278:8278 simuliris.simulation.fairness <> p:142 var
+R8280:8280 simuliris.simulation.fairness <> T:143 var
+R8282:8283 simuliris.simulation.fairness <> σ:144 var
+binder 8266:8266 <> f:145
+R8292:8295 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R8297:8298 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 8296:8296 <> i:146
+R8300:8304 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R8299:8299 simuliris.simulation.fairness <> i:146 var
+R8305:8318 simuliris.simulation.fairness <> active_threads def
+R8320:8320 simuliris.simulation.fairness <> T:143 var
+R8343:8343 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R8347:8352 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R8362:8380 simuliris.simulation.fairness <> active_threads_spec thm
+R8399:8416 simuliris.simulation.fairness <> div_exec_next_step thm
+R8448:8460 simuliris.simulation.language <> pool_step_iff thm
+R8553:8561 simuliris.simulation.language <> val_stuck thm
+prf 8580:8600 <> fair_div_exec_advance
+binder 8602:8602 <> p:147
+binder 8604:8604 <> T:148
+binder 8606:8607 <> σ:149
+R8613:8620 simuliris.simulation.fairness <> div_exec rec
+R8622:8622 simuliris.simulation.fairness <> p:147 var
+R8624:8624 simuliris.simulation.fairness <> T:148 var
+R8626:8627 simuliris.simulation.fairness <> σ:149 var
+binder 8610:8610 <> f:150
+binder 8630:8630 <> n:151
+R8644:8648 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8638:8641 simuliris.simulation.fairness <> fair def
+R8643:8643 simuliris.simulation.fairness <> f:150 var
+R8649:8652 simuliris.simulation.fairness <> fair def
+R8655:8670 simuliris.simulation.fairness <> div_exec_advance def
+R8674:8674 simuliris.simulation.fairness <> n:151 var
+R8672:8672 simuliris.simulation.fairness <> f:150 var
+R8802:8804 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R8836:8845 stdpp.numbers Nat le_sum thm
+R8873:8875 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R8940:8942 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R8936:8938 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R8955:8958 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R8966:8966 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R8960:8962 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9037:9046 stdpp.numbers Nat le_sum thm
+R9012:9014 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9073:9075 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9124:9127 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9133:9133 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9129:9131 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9147:9149 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R9143:9145 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+prf 9178:9200 <> fair_div_post_fix_coind
+binder 9202:9202 <> p:152
+binder 9204:9204 <> T:153
+binder 9206:9207 <> σ:154
+R9229:9237 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9214:9221 simuliris.simulation.fairness <> fair_div def
+R9223:9223 simuliris.simulation.fairness <> p:152 var
+R9225:9225 simuliris.simulation.fairness <> T:153 var
+R9227:9228 simuliris.simulation.fairness <> σ:154 var
+R9254:9262 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9238:9246 simuliris.simulation.language <> pool_safe def
+R9248:9248 simuliris.simulation.fairness <> p:152 var
+R9250:9250 simuliris.simulation.fairness <> T:153 var
+R9252:9253 simuliris.simulation.fairness <> σ:154 var
+R9263:9266 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R9275:9276 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 9267:9267 <> I:155
+binder 9269:9270 <> T':156
+binder 9272:9274 <> σ':157
+R9294:9302 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R9277:9284 simuliris.simulation.fairness <> fair_div def
+R9286:9286 simuliris.simulation.fairness <> p:152 var
+R9288:9289 simuliris.simulation.fairness <> T':156 var
+R9291:9293 simuliris.simulation.fairness <> σ':157 var
+R9321:9329 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R9303:9311 simuliris.simulation.language <> pool_safe def
+R9313:9313 simuliris.simulation.fairness <> p:152 var
+R9315:9316 simuliris.simulation.fairness <> T':156 var
+R9318:9320 simuliris.simulation.fairness <> σ':157 var
+R9356:9364 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R9330:9339 simuliris.simulation.language <> pool_steps ind
+R9341:9341 simuliris.simulation.fairness <> p:152 var
+R9343:9343 simuliris.simulation.fairness <> T:153 var
+R9345:9346 simuliris.simulation.fairness <> σ:154 var
+R9348:9348 simuliris.simulation.fairness <> I:155 var
+R9350:9351 simuliris.simulation.fairness <> T':156 var
+R9353:9355 simuliris.simulation.fairness <> σ':157 var
+R9368:9372 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R9389:9393 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R9365:9367 stdpp.base <> ::stdpp_scope:'∅' not
+R9373:9386 simuliris.simulation.fairness <> active_threads def
+R9388:9388 simuliris.simulation.fairness <> T:153 var
+R9394:9404 stdpp.base <> list_to_set def
+R9406:9406 simuliris.simulation.fairness <> I:155 var
+R9460:9485 simuliris.simulation.fairness <> all_active_eventually_step thm
+R9537:9556 simuliris.simulation.fairness <> div_exec_some_active thm
+R9594:9607 simuliris.simulation.fairness <> div_exec_trace def
+R9615:9615 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R9619:9626 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R9629:9629 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R9633:9641 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R9693:9708 simuliris.simulation.fairness <> div_exec_advance def
+R9723:9743 simuliris.simulation.fairness <> fair_div_exec_advance thm
+R9766:9780 simuliris.simulation.language <> pool_steps_safe thm
+R9795:9808 simuliris.simulation.fairness <> div_exec_steps thm
+R9824:9837 simuliris.simulation.fairness <> div_exec_steps thm
+prf 9881:9906 <> fair_div_to_fair_div_coind
+binder 9908:9908 <> p:158
+binder 9910:9910 <> T:159
+binder 9912:9913 <> σ:160
+R9935:9943 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9920:9927 simuliris.simulation.fairness <> fair_div def
+R9929:9929 simuliris.simulation.fairness <> p:158 var
+R9931:9931 simuliris.simulation.fairness <> T:159 var
+R9933:9934 simuliris.simulation.fairness <> σ:160 var
+R9960:9968 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9944:9952 simuliris.simulation.language <> pool_safe def
+R9954:9954 simuliris.simulation.fairness <> p:158 var
+R9956:9956 simuliris.simulation.fairness <> T:159 var
+R9958:9959 simuliris.simulation.fairness <> σ:160 var
+R9969:9982 simuliris.simulation.fairness <> fair_div_coind coind
+R9984:9984 simuliris.simulation.fairness <> p:158 var
+R9986:9986 simuliris.simulation.fairness <> T:159 var
+R9988:9989 simuliris.simulation.fairness <> σ:160 var
+R10071:10093 simuliris.simulation.fairness <> fair_div_post_fix_coind thm
+prf 10208:10220 <> fair_div_step
+binder 10222:10222 <> p:161
+binder 10224:10224 <> T:162
+binder 10226:10227 <> σ:163
+binder 10229:10229 <> i:164
+binder 10231:10232 <> T':165
+binder 10234:10236 <> σ':166
+R10260:10268 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10243:10250 simuliris.simulation.fairness <> fair_div def
+R10252:10252 simuliris.simulation.fairness <> p:161 var
+R10254:10255 simuliris.simulation.fairness <> T':165 var
+R10257:10259 simuliris.simulation.fairness <> σ':166 var
+R10294:10302 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10269:10277 simuliris.simulation.language <> pool_step ind
+R10279:10279 simuliris.simulation.fairness <> p:161 var
+R10281:10281 simuliris.simulation.fairness <> T:162 var
+R10283:10284 simuliris.simulation.fairness <> σ:163 var
+R10286:10286 simuliris.simulation.fairness <> i:164 var
+R10288:10289 simuliris.simulation.fairness <> T':165 var
+R10291:10293 simuliris.simulation.fairness <> σ':166 var
+R10303:10310 simuliris.simulation.fairness <> fair_div def
+R10312:10312 simuliris.simulation.fairness <> p:161 var
+R10314:10314 simuliris.simulation.fairness <> T:162 var
+R10316:10317 simuliris.simulation.fairness <> σ:163 var
+R10372:10386 simuliris.simulation.fairness <> div_exec_extend def
+R10533:10536 Corelib.Init.Peano <> pred abbrev
+R10579:10579 Corelib.Init.Datatypes <> S constr
+R10605:10605 Corelib.Init.Datatypes <> S constr
+R10640:10655 Stdlib.Arith.PeanoNat Nat le_le_succ_r thm
+R10681:10710 simuliris.simulation.fairness fairness.coinductive_inductive_fairness <> sec
+sec 10724:10743 fairness delay_based_fairness
+R10767:10770 stdpp.gmap <> gmap rec
+R10776:10778 Corelib.Init.Datatypes <> nat ind
+R10772:10774 Corelib.Init.Datatypes <> nat ind
+def 10795:10804 <> delays_for
+binder 10806:10806 <> T:167
+binder 10808:10808 <> D:168
+R10817:10820 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R10822:10823 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 10821:10821 <> i:169
+R10846:10850 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10825:10829 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R10824:10824 simuliris.simulation.fairness <> i:169 var
+R10830:10843 simuliris.simulation.fairness <> active_threads def
+R10845:10845 simuliris.simulation.fairness <> T:167 var
+R10851:10857 stdpp.base <> is_Some def
+R10861:10864 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10865:10865 simuliris.simulation.fairness <> i:169 var
+R10860:10860 simuliris.simulation.fairness <> D:168 var
+def 10883:10891 <> step_decr
+binder 10893:10893 <> i:170
+binder 10895:10895 <> D:171
+binder 10897:10898 <> D':172
+R10908:10911 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R10915:10916 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 10912:10912 <> j:173
+binder 10914:10914 <> n:174
+R10924:10928 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10918:10922 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R10917:10917 simuliris.simulation.fairness <> j:173 var
+R10923:10923 simuliris.simulation.fairness <> i:170 var
+R10944:10948 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10935:10937 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10930:10933 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10934:10934 simuliris.simulation.fairness <> j:173 var
+R10929:10929 simuliris.simulation.fairness <> D:171 var
+R10938:10941 Corelib.Init.Datatypes <> Some constr
+R10943:10943 simuliris.simulation.fairness <> n:174 var
+R10949:10952 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R10955:10956 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 10953:10954 <> n':175
+R10965:10969 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R10958:10960 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10957:10957 simuliris.simulation.fairness <> n:174 var
+R10961:10961 Corelib.Init.Datatypes <> S constr
+R10963:10964 simuliris.simulation.fairness <> n':175 var
+R10977:10979 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10972:10975 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10976:10976 simuliris.simulation.fairness <> j:173 var
+R10970:10971 simuliris.simulation.fairness <> D':172 var
+R10980:10983 Corelib.Init.Datatypes <> Some constr
+R10985:10986 simuliris.simulation.fairness <> n':175 var
+ind 11003:11016 <> fair_pool_step
+constr 11158:11171 <> take_fair_step
+R11022:11025 simuliris.simulation.language <> prog abbrev
+R11027:11028 simuliris.simulation.fairness <> fairness.Λ var
+binder 11019:11019 <> p:176
+R11050:11054 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11036:11039 Corelib.Init.Datatypes <> list ind
+R11042:11045 simuliris.simulation.language <> expr proj
+R11047:11048 simuliris.simulation.fairness <> fairness.Λ var
+R11067:11071 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11055:11058 stdpp.gmap <> gmap rec
+R11064:11066 Corelib.Init.Datatypes <> nat ind
+R11060:11062 Corelib.Init.Datatypes <> nat ind
+R11080:11084 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11072:11076 simuliris.simulation.language <> state proj
+R11078:11079 simuliris.simulation.fairness <> fairness.Λ var
+R11088:11096 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11085:11087 Corelib.Init.Datatypes <> nat ind
+R11111:11115 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11097:11100 Corelib.Init.Datatypes <> list ind
+R11103:11106 simuliris.simulation.language <> expr proj
+R11108:11109 simuliris.simulation.fairness <> fairness.Λ var
+R11128:11132 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11116:11119 stdpp.gmap <> gmap rec
+R11125:11127 Corelib.Init.Datatypes <> nat ind
+R11121:11123 Corelib.Init.Datatypes <> nat ind
+R11141:11145 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11133:11137 simuliris.simulation.language <> state proj
+R11139:11140 simuliris.simulation.fairness <> fairness.Λ var
+binder 11173:11173 <> i:179
+binder 11175:11175 <> T:180
+binder 11177:11178 <> T':181
+binder 11180:11181 <> σ:182
+binder 11183:11185 <> σ':183
+binder 11187:11187 <> D:184
+binder 11189:11190 <> D':185
+R11224:11234 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11199:11207 simuliris.simulation.language <> pool_step ind
+R11209:11209 simuliris.simulation.fairness <> p:176 var
+R11211:11211 simuliris.simulation.fairness <> T:180 var
+R11213:11214 simuliris.simulation.fairness <> σ:182 var
+R11216:11216 simuliris.simulation.fairness <> i:179 var
+R11218:11219 simuliris.simulation.fairness <> T':181 var
+R11221:11223 simuliris.simulation.fairness <> σ':183 var
+R11251:11261 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11235:11243 simuliris.simulation.fairness <> step_decr def
+R11245:11245 simuliris.simulation.fairness <> i:179 var
+R11247:11247 simuliris.simulation.fairness <> D:184 var
+R11249:11250 simuliris.simulation.fairness <> D':185 var
+R11262:11275 simuliris.simulation.fairness <> fair_pool_step:177 ind
+R11294:11296 simuliris.simulation.fairness <> σ':183 var
+R11291:11292 simuliris.simulation.fairness <> D':185 var
+R11288:11289 simuliris.simulation.fairness <> T':181 var
+R11286:11286 simuliris.simulation.fairness <> i:179 var
+R11283:11284 simuliris.simulation.fairness <> σ:182 var
+R11281:11281 simuliris.simulation.fairness <> D:184 var
+R11279:11279 simuliris.simulation.fairness <> T:180 var
+R11277:11277 simuliris.simulation.fairness <> p:176 var
+scheme 11003:11016 <> fair_pool_step_ind
+scheme 11003:11016 <> fair_pool_step_sind
+ind 11312:11326 <> fair_pool_steps
+constr 11475:11492 <> fair_pool_no_steps
+constr 11585:11602 <> fair_pool_do_steps
+R11332:11335 simuliris.simulation.language <> prog abbrev
+R11337:11338 simuliris.simulation.fairness <> fairness.Λ var
+binder 11329:11329 <> p:186
+R11360:11364 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11346:11349 Corelib.Init.Datatypes <> list ind
+R11352:11355 simuliris.simulation.language <> expr proj
+R11357:11358 simuliris.simulation.fairness <> fairness.Λ var
+R11377:11381 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11365:11368 stdpp.gmap <> gmap rec
+R11374:11376 Corelib.Init.Datatypes <> nat ind
+R11370:11372 Corelib.Init.Datatypes <> nat ind
+R11390:11394 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11382:11386 simuliris.simulation.language <> state proj
+R11388:11389 simuliris.simulation.fairness <> fairness.Λ var
+R11403:11411 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11395:11398 Corelib.Init.Datatypes <> list ind
+R11400:11402 Corelib.Init.Datatypes <> nat ind
+R11426:11430 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11412:11415 Corelib.Init.Datatypes <> list ind
+R11418:11421 simuliris.simulation.language <> expr proj
+R11423:11424 simuliris.simulation.fairness <> fairness.Λ var
+R11443:11447 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11431:11434 stdpp.gmap <> gmap rec
+R11440:11442 Corelib.Init.Datatypes <> nat ind
+R11436:11438 Corelib.Init.Datatypes <> nat ind
+R11456:11460 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11448:11452 simuliris.simulation.language <> state proj
+R11454:11455 simuliris.simulation.fairness <> fairness.Λ var
+binder 11494:11494 <> T:189
+binder 11496:11497 <> σ:190
+R11503:11506 stdpp.gmap <> gmap rec
+R11512:11514 Corelib.Init.Datatypes <> nat ind
+R11508:11510 Corelib.Init.Datatypes <> nat ind
+binder 11500:11500 <> D:191
+R11539:11543 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11525:11534 simuliris.simulation.fairness <> delays_for def
+R11536:11536 simuliris.simulation.fairness <> T:189 var
+R11538:11538 simuliris.simulation.fairness <> D:191 var
+R11544:11558 simuliris.simulation.fairness <> fair_pool_steps:187 ind
+R11576:11577 simuliris.simulation.fairness <> σ:190 var
+R11574:11574 simuliris.simulation.fairness <> D:191 var
+R11572:11572 simuliris.simulation.fairness <> T:189 var
+R11569:11570 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R11566:11567 simuliris.simulation.fairness <> σ:190 var
+R11564:11564 simuliris.simulation.fairness <> D:191 var
+R11562:11562 simuliris.simulation.fairness <> T:189 var
+R11560:11560 simuliris.simulation.fairness <> p:186 var
+binder 11604:11604 <> T:192
+binder 11606:11607 <> T':193
+binder 11609:11611 <> T'':194
+R11624:11627 stdpp.gmap <> gmap rec
+R11633:11635 Corelib.Init.Datatypes <> nat ind
+R11629:11631 Corelib.Init.Datatypes <> nat ind
+binder 11614:11614 <> D:195
+binder 11616:11617 <> D':196
+binder 11619:11621 <> D'':197
+R11652:11656 simuliris.simulation.language <> state proj
+R11658:11659 simuliris.simulation.fairness <> fairness.Λ var
+binder 11639:11640 <> σ:198
+binder 11642:11644 <> σ':199
+binder 11646:11649 <> σ'':200
+binder 11662:11662 <> i:201
+binder 11664:11664 <> I:202
+R11687:11697 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11673:11682 simuliris.simulation.fairness <> delays_for def
+R11684:11684 simuliris.simulation.fairness <> T:192 var
+R11686:11686 simuliris.simulation.fairness <> D:195 var
+R11733:11743 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11698:11711 simuliris.simulation.fairness <> fair_pool_step ind
+R11713:11713 simuliris.simulation.fairness <> p:186 var
+R11715:11715 simuliris.simulation.fairness <> T:192 var
+R11717:11717 simuliris.simulation.fairness <> D:195 var
+R11719:11720 simuliris.simulation.fairness <> σ:198 var
+R11722:11722 simuliris.simulation.fairness <> i:201 var
+R11724:11725 simuliris.simulation.fairness <> T':193 var
+R11727:11728 simuliris.simulation.fairness <> D':196 var
+R11730:11732 simuliris.simulation.fairness <> σ':199 var
+R11786:11796 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11744:11758 simuliris.simulation.fairness <> fair_pool_steps:187 ind
+R11782:11785 simuliris.simulation.fairness <> σ'':200 var
+R11778:11780 simuliris.simulation.fairness <> D'':197 var
+R11774:11776 simuliris.simulation.fairness <> T'':194 var
+R11772:11772 simuliris.simulation.fairness <> I:202 var
+R11768:11770 simuliris.simulation.fairness <> σ':199 var
+R11765:11766 simuliris.simulation.fairness <> D':196 var
+R11762:11763 simuliris.simulation.fairness <> T':193 var
+R11760:11760 simuliris.simulation.fairness <> p:186 var
+R11797:11811 simuliris.simulation.fairness <> fair_pool_steps:187 ind
+R11839:11842 simuliris.simulation.fairness <> σ'':200 var
+R11835:11837 simuliris.simulation.fairness <> D'':197 var
+R11831:11833 simuliris.simulation.fairness <> T'':194 var
+R11824:11827 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11823:11823 simuliris.simulation.fairness <> i:201 var
+R11828:11828 simuliris.simulation.fairness <> I:202 var
+R11819:11820 simuliris.simulation.fairness <> σ:198 var
+R11817:11817 simuliris.simulation.fairness <> D:195 var
+R11815:11815 simuliris.simulation.fairness <> T:192 var
+R11813:11813 simuliris.simulation.fairness <> p:186 var
+scheme 11312:11326 <> fair_pool_steps_ind
+scheme 11312:11326 <> fair_pool_steps_sind
+ind 11860:11873 <> fair_div_delay
+constr 11898:11916 <> fair_div_delay_step
+binder 11875:11875 <> p:203
+binder 11877:11877 <> T:204
+binder 11879:11879 <> D:205
+binder 11881:11882 <> σ:206
+binder 11918:11918 <> i:209
+binder 11920:11921 <> T':210
+binder 11923:11924 <> D':211
+binder 11926:11928 <> σ':212
+R11970:11978 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11935:11948 simuliris.simulation.fairness <> fair_pool_step ind
+R11950:11950 simuliris.simulation.fairness <> p:203 var
+R11952:11952 simuliris.simulation.fairness <> T:204 var
+R11954:11954 simuliris.simulation.fairness <> D:205 var
+R11956:11957 simuliris.simulation.fairness <> σ:206 var
+R11959:11959 simuliris.simulation.fairness <> i:209 var
+R11961:11962 simuliris.simulation.fairness <> T':210 var
+R11964:11965 simuliris.simulation.fairness <> D':211 var
+R11967:11969 simuliris.simulation.fairness <> σ':212 var
+R11993:12001 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11979:11988 simuliris.simulation.fairness <> delays_for def
+R11990:11990 simuliris.simulation.fairness <> T:204 var
+R11992:11992 simuliris.simulation.fairness <> D:205 var
+R12028:12036 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12002:12015 simuliris.simulation.fairness <> fair_div_delay:207 ind
+R12025:12027 simuliris.simulation.fairness <> σ':212 var
+R12022:12023 simuliris.simulation.fairness <> D':211 var
+R12019:12020 simuliris.simulation.fairness <> T':210 var
+R12017:12017 simuliris.simulation.fairness <> p:203 var
+R12037:12050 simuliris.simulation.fairness <> fair_div_delay:207 ind
+R12058:12059 simuliris.simulation.fairness <> σ:206 var
+R12056:12056 simuliris.simulation.fairness <> D:205 var
+R12054:12054 simuliris.simulation.fairness <> T:204 var
+R12052:12052 simuliris.simulation.fairness <> p:203 var
+ind 12077:12093 <> fair_div_delay_tc
+constr 12118:12139 <> fair_div_delay_tc_step
+binder 12095:12095 <> p:213
+binder 12097:12097 <> T:214
+binder 12099:12099 <> D:215
+binder 12101:12102 <> σ:216
+binder 12141:12141 <> I:219
+binder 12143:12144 <> T':220
+binder 12146:12148 <> σ':221
+binder 12150:12151 <> D':222
+R12166:12174 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12159:12163 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R12158:12158 simuliris.simulation.fairness <> I:219 var
+R12164:12165 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R12211:12219 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12175:12189 simuliris.simulation.fairness <> fair_pool_steps ind
+R12191:12191 simuliris.simulation.fairness <> p:213 var
+R12193:12193 simuliris.simulation.fairness <> T:214 var
+R12195:12195 simuliris.simulation.fairness <> D:215 var
+R12197:12198 simuliris.simulation.fairness <> σ:216 var
+R12200:12200 simuliris.simulation.fairness <> I:219 var
+R12202:12203 simuliris.simulation.fairness <> T':220 var
+R12205:12206 simuliris.simulation.fairness <> D':222 var
+R12208:12210 simuliris.simulation.fairness <> σ':221 var
+R12249:12257 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12220:12236 simuliris.simulation.fairness <> fair_div_delay_tc:217 ind
+R12246:12248 simuliris.simulation.fairness <> σ':221 var
+R12243:12244 simuliris.simulation.fairness <> D':222 var
+R12240:12241 simuliris.simulation.fairness <> T':220 var
+R12238:12238 simuliris.simulation.fairness <> p:213 var
+R12258:12274 simuliris.simulation.fairness <> fair_div_delay_tc:217 ind
+R12282:12283 simuliris.simulation.fairness <> σ:216 var
+R12280:12280 simuliris.simulation.fairness <> D:215 var
+R12278:12278 simuliris.simulation.fairness <> T:214 var
+R12276:12276 simuliris.simulation.fairness <> p:213 var
+prf 12325:12342 <> fair_pool_step_iff
+binder 12344:12344 <> p:223
+binder 12346:12346 <> T:224
+binder 12348:12348 <> D:225
+binder 12350:12351 <> σ:226
+binder 12353:12353 <> i:227
+binder 12355:12356 <> T':228
+binder 12358:12359 <> D':229
+binder 12361:12363 <> σ':230
+R12405:12415 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R12370:12383 simuliris.simulation.fairness <> fair_pool_step ind
+R12385:12385 simuliris.simulation.fairness <> p:223 var
+R12387:12387 simuliris.simulation.fairness <> T:224 var
+R12389:12389 simuliris.simulation.fairness <> D:225 var
+R12391:12392 simuliris.simulation.fairness <> σ:226 var
+R12394:12394 simuliris.simulation.fairness <> i:227 var
+R12396:12397 simuliris.simulation.fairness <> T':228 var
+R12399:12400 simuliris.simulation.fairness <> D':229 var
+R12402:12404 simuliris.simulation.fairness <> σ':230 var
+R12441:12445 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12416:12424 simuliris.simulation.language <> pool_step ind
+R12426:12426 simuliris.simulation.fairness <> p:223 var
+R12428:12428 simuliris.simulation.fairness <> T:224 var
+R12430:12431 simuliris.simulation.fairness <> σ:226 var
+R12433:12433 simuliris.simulation.fairness <> i:227 var
+R12435:12436 simuliris.simulation.fairness <> T':228 var
+R12438:12440 simuliris.simulation.fairness <> σ':230 var
+R12446:12454 simuliris.simulation.fairness <> step_decr def
+R12456:12456 simuliris.simulation.fairness <> i:227 var
+R12458:12458 simuliris.simulation.fairness <> D:225 var
+R12460:12461 simuliris.simulation.fairness <> D':229 var
+R12511:12524 simuliris.simulation.fairness <> take_fair_step constr
+prf 12543:12560 <> fair_pool_step_inv
+binder 12562:12562 <> p:231
+binder 12564:12564 <> T:232
+binder 12566:12567 <> σ:233
+binder 12569:12569 <> D:234
+binder 12571:12571 <> i:235
+binder 12573:12574 <> T':236
+binder 12576:12578 <> σ':237
+binder 12580:12581 <> D':238
+R12623:12633 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12588:12601 simuliris.simulation.fairness <> fair_pool_step ind
+R12603:12603 simuliris.simulation.fairness <> p:231 var
+R12605:12605 simuliris.simulation.fairness <> T:232 var
+R12607:12607 simuliris.simulation.fairness <> D:234 var
+R12609:12610 simuliris.simulation.fairness <> σ:233 var
+R12612:12612 simuliris.simulation.fairness <> i:235 var
+R12614:12615 simuliris.simulation.fairness <> T':236 var
+R12617:12618 simuliris.simulation.fairness <> D':238 var
+R12620:12622 simuliris.simulation.fairness <> σ':237 var
+R12634:12637 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R12646:12647 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 12638:12638 <> e:239
+binder 12640:12641 <> e':240
+binder 12643:12645 <> efs:241
+R12675:12685 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12648:12656 simuliris.simulation.language <> prim_step ind
+R12658:12658 simuliris.simulation.fairness <> p:231 var
+R12660:12660 simuliris.simulation.fairness <> e:239 var
+R12662:12663 simuliris.simulation.fairness <> σ:233 var
+R12665:12666 simuliris.simulation.fairness <> e':240 var
+R12668:12670 simuliris.simulation.fairness <> σ':237 var
+R12672:12674 simuliris.simulation.fairness <> efs:241 var
+R12701:12711 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12692:12694 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12687:12690 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R12691:12691 simuliris.simulation.fairness <> i:235 var
+R12686:12686 simuliris.simulation.fairness <> T:232 var
+R12695:12698 Corelib.Init.Datatypes <> Some constr
+R12700:12700 simuliris.simulation.fairness <> e:239 var
+R12737:12747 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12714:12716 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12712:12713 simuliris.simulation.fairness <> T':236 var
+R12730:12733 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R12717:12718 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R12720:12723 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R12726:12729 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R12719:12719 simuliris.simulation.fairness <> i:235 var
+R12724:12725 simuliris.simulation.fairness <> e':240 var
+R12729:12729 simuliris.simulation.fairness <> T:232 var
+R12734:12736 simuliris.simulation.fairness <> efs:241 var
+R12748:12756 simuliris.simulation.fairness <> step_decr def
+R12758:12758 simuliris.simulation.fairness <> i:235 var
+R12760:12760 simuliris.simulation.fairness <> D:234 var
+R12762:12763 simuliris.simulation.fairness <> D':238 var
+R12837:12849 simuliris.simulation.language <> pool_step_iff thm
+prf 12931:12952 <> fair_pool_steps_concat
+binder 12954:12954 <> p:242
+binder 12956:12956 <> T:243
+binder 12958:12958 <> D:244
+binder 12960:12961 <> σ:245
+binder 12963:12963 <> I:246
+binder 12965:12966 <> T':247
+binder 12968:12969 <> D':248
+binder 12971:12973 <> σ':249
+binder 12975:12975 <> J:250
+binder 12977:12980 <> T''':251
+binder 12982:12985 <> D''':252
+binder 12987:12991 <> σ''':253
+R13034:13038 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12998:13012 simuliris.simulation.fairness <> fair_pool_steps ind
+R13014:13014 simuliris.simulation.fairness <> p:242 var
+R13016:13016 simuliris.simulation.fairness <> T:243 var
+R13018:13018 simuliris.simulation.fairness <> D:244 var
+R13020:13021 simuliris.simulation.fairness <> σ:245 var
+R13023:13023 simuliris.simulation.fairness <> I:246 var
+R13025:13026 simuliris.simulation.fairness <> T':247 var
+R13028:13029 simuliris.simulation.fairness <> D':248 var
+R13031:13033 simuliris.simulation.fairness <> σ':249 var
+R13084:13089 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13039:13053 simuliris.simulation.fairness <> fair_pool_steps ind
+R13055:13055 simuliris.simulation.fairness <> p:242 var
+R13057:13058 simuliris.simulation.fairness <> T':247 var
+R13060:13061 simuliris.simulation.fairness <> D':248 var
+R13063:13065 simuliris.simulation.fairness <> σ':249 var
+R13067:13067 simuliris.simulation.fairness <> J:250 var
+R13069:13072 simuliris.simulation.fairness <> T''':251 var
+R13074:13077 simuliris.simulation.fairness <> D''':252 var
+R13079:13083 simuliris.simulation.fairness <> σ''':253 var
+R13090:13104 simuliris.simulation.fairness <> fair_pool_steps ind
+R13106:13106 simuliris.simulation.fairness <> p:242 var
+R13108:13108 simuliris.simulation.fairness <> T:243 var
+R13110:13110 simuliris.simulation.fairness <> D:244 var
+R13112:13113 simuliris.simulation.fairness <> σ:245 var
+R13117:13120 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13116:13116 simuliris.simulation.fairness <> I:246 var
+R13121:13121 simuliris.simulation.fairness <> J:250 var
+R13124:13127 simuliris.simulation.fairness <> T''':251 var
+R13129:13132 simuliris.simulation.fairness <> D''':252 var
+R13134:13138 simuliris.simulation.fairness <> σ''':253 var
+prf 13306:13337 <> fair_pool_steps_delays_for_start
+binder 13339:13339 <> p:254
+binder 13341:13341 <> T:255
+binder 13343:13343 <> D:256
+binder 13345:13346 <> σ:257
+binder 13348:13348 <> I:258
+binder 13350:13351 <> T':259
+binder 13353:13354 <> D':260
+binder 13356:13358 <> σ':261
+R13401:13405 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13365:13379 simuliris.simulation.fairness <> fair_pool_steps ind
+R13381:13381 simuliris.simulation.fairness <> p:254 var
+R13383:13383 simuliris.simulation.fairness <> T:255 var
+R13385:13385 simuliris.simulation.fairness <> D:256 var
+R13387:13388 simuliris.simulation.fairness <> σ:257 var
+R13390:13390 simuliris.simulation.fairness <> I:258 var
+R13392:13393 simuliris.simulation.fairness <> T':259 var
+R13395:13396 simuliris.simulation.fairness <> D':260 var
+R13398:13400 simuliris.simulation.fairness <> σ':261 var
+R13406:13415 simuliris.simulation.fairness <> delays_for def
+R13417:13417 simuliris.simulation.fairness <> T:255 var
+R13419:13419 simuliris.simulation.fairness <> D:256 var
+prf 13469:13498 <> fair_pool_steps_delays_for_end
+binder 13500:13500 <> p:262
+binder 13502:13502 <> T:263
+binder 13504:13504 <> D:264
+binder 13506:13507 <> σ:265
+binder 13509:13509 <> I:266
+binder 13511:13512 <> T':267
+binder 13514:13515 <> D':268
+binder 13517:13519 <> σ':269
+R13562:13566 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13526:13540 simuliris.simulation.fairness <> fair_pool_steps ind
+R13542:13542 simuliris.simulation.fairness <> p:262 var
+R13544:13544 simuliris.simulation.fairness <> T:263 var
+R13546:13546 simuliris.simulation.fairness <> D:264 var
+R13548:13549 simuliris.simulation.fairness <> σ:265 var
+R13551:13551 simuliris.simulation.fairness <> I:266 var
+R13553:13554 simuliris.simulation.fairness <> T':267 var
+R13556:13557 simuliris.simulation.fairness <> D':268 var
+R13559:13561 simuliris.simulation.fairness <> σ':269 var
+R13567:13576 simuliris.simulation.fairness <> delays_for def
+R13578:13579 simuliris.simulation.fairness <> T':267 var
+R13581:13582 simuliris.simulation.fairness <> D':268 var
+prf 13736:13754 <> fair_div_delays_for
+binder 13756:13756 <> p:270
+binder 13758:13758 <> T:271
+binder 13760:13760 <> D:272
+binder 13762:13763 <> σ:273
+R13794:13798 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13771:13784 simuliris.simulation.fairness <> fair_div_delay coind
+R13786:13786 simuliris.simulation.fairness <> p:270 var
+R13788:13788 simuliris.simulation.fairness <> T:271 var
+R13790:13790 simuliris.simulation.fairness <> D:272 var
+R13792:13793 simuliris.simulation.fairness <> σ:273 var
+R13799:13808 simuliris.simulation.fairness <> delays_for def
+R13810:13810 simuliris.simulation.fairness <> T:271 var
+R13812:13812 simuliris.simulation.fairness <> D:272 var
+prf 13853:13882 <> fair_div_delay_tc_insert_steps
+binder 13884:13884 <> p:274
+binder 13886:13886 <> T:275
+binder 13888:13888 <> D:276
+binder 13890:13891 <> σ:277
+binder 13893:13893 <> I:278
+binder 13895:13896 <> T':279
+binder 13898:13899 <> D':280
+binder 13901:13903 <> σ':281
+R13946:13950 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13910:13924 simuliris.simulation.fairness <> fair_pool_steps ind
+R13926:13926 simuliris.simulation.fairness <> p:274 var
+R13928:13928 simuliris.simulation.fairness <> T:275 var
+R13930:13930 simuliris.simulation.fairness <> D:276 var
+R13932:13933 simuliris.simulation.fairness <> σ:277 var
+R13935:13935 simuliris.simulation.fairness <> I:278 var
+R13937:13938 simuliris.simulation.fairness <> T':279 var
+R13940:13941 simuliris.simulation.fairness <> D':280 var
+R13943:13945 simuliris.simulation.fairness <> σ':281 var
+R13980:13984 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13951:13967 simuliris.simulation.fairness <> fair_div_delay_tc coind
+R13969:13969 simuliris.simulation.fairness <> p:274 var
+R13971:13972 simuliris.simulation.fairness <> T':279 var
+R13974:13975 simuliris.simulation.fairness <> D':280 var
+R13977:13979 simuliris.simulation.fairness <> σ':281 var
+R13985:14001 simuliris.simulation.fairness <> fair_div_delay_tc coind
+R14003:14003 simuliris.simulation.fairness <> p:274 var
+R14005:14005 simuliris.simulation.fairness <> T:275 var
+R14007:14007 simuliris.simulation.fairness <> D:276 var
+R14009:14010 simuliris.simulation.fairness <> σ:277 var
+R14120:14141 simuliris.simulation.fairness <> fair_pool_steps_concat thm
+prf 14203:14234 <> fair_div_delay_tc_fair_div_delay
+binder 14236:14236 <> p:282
+binder 14238:14238 <> T:283
+binder 14240:14240 <> D:284
+binder 14242:14243 <> σ:285
+R14276:14280 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14250:14266 simuliris.simulation.fairness <> fair_div_delay_tc coind
+R14268:14268 simuliris.simulation.fairness <> p:282 var
+R14270:14270 simuliris.simulation.fairness <> T:283 var
+R14272:14272 simuliris.simulation.fairness <> D:284 var
+R14274:14275 simuliris.simulation.fairness <> σ:285 var
+R14281:14294 simuliris.simulation.fairness <> fair_div_delay coind
+R14296:14296 simuliris.simulation.fairness <> p:282 var
+R14298:14298 simuliris.simulation.fairness <> T:283 var
+R14300:14300 simuliris.simulation.fairness <> D:284 var
+R14302:14303 simuliris.simulation.fairness <> σ:285 var
+R14543:14572 simuliris.simulation.fairness <> fair_div_delay_tc_insert_steps thm
+prf 14603:14634 <> fair_div_delay_fair_div_delay_tc
+binder 14636:14636 <> p:286
+binder 14638:14638 <> T:287
+binder 14640:14640 <> D:288
+binder 14642:14643 <> σ:289
+R14673:14677 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14650:14663 simuliris.simulation.fairness <> fair_div_delay coind
+R14665:14665 simuliris.simulation.fairness <> p:286 var
+R14667:14667 simuliris.simulation.fairness <> T:287 var
+R14669:14669 simuliris.simulation.fairness <> D:288 var
+R14671:14672 simuliris.simulation.fairness <> σ:289 var
+R14678:14694 simuliris.simulation.fairness <> fair_div_delay_tc coind
+R14696:14696 simuliris.simulation.fairness <> p:286 var
+R14698:14698 simuliris.simulation.fairness <> T:287 var
+R14700:14700 simuliris.simulation.fairness <> D:288 var
+R14702:14703 simuliris.simulation.fairness <> σ:289 var
+R14820:14841 simuliris.simulation.fairness <> fair_div_delay_tc_step constr
+R14852:14852 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R14854:14854 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R14910:14928 simuliris.simulation.fairness <> fair_div_delays_for thm
+prf 15021:15055 <> fair_div_delay_active_threads_steps
+binder 15057:15057 <> p:290
+binder 15059:15059 <> T:291
+binder 15061:15061 <> D:292
+binder 15063:15064 <> σ:293
+R15094:15098 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R15071:15084 simuliris.simulation.fairness <> fair_div_delay coind
+R15086:15086 simuliris.simulation.fairness <> p:290 var
+R15088:15088 simuliris.simulation.fairness <> T:291 var
+R15090:15090 simuliris.simulation.fairness <> D:292 var
+R15092:15093 simuliris.simulation.fairness <> σ:293 var
+R15099:15102 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R15114:15115 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 15103:15104 <> T':294
+binder 15106:15107 <> D':295
+binder 15109:15111 <> σ':296
+binder 15113:15113 <> I:297
+R15150:15154 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15132:15136 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R15116:15129 simuliris.simulation.fairness <> active_threads def
+R15131:15131 simuliris.simulation.fairness <> T:291 var
+R15137:15147 stdpp.base <> list_to_set def
+R15149:15149 simuliris.simulation.fairness <> I:297 var
+R15181:15185 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15155:15168 simuliris.simulation.fairness <> fair_div_delay coind
+R15170:15170 simuliris.simulation.fairness <> p:290 var
+R15172:15173 simuliris.simulation.fairness <> T':294 var
+R15175:15176 simuliris.simulation.fairness <> D':295 var
+R15178:15180 simuliris.simulation.fairness <> σ':296 var
+R15186:15195 simuliris.simulation.language <> pool_steps ind
+R15197:15197 simuliris.simulation.fairness <> p:290 var
+R15199:15199 simuliris.simulation.fairness <> T:291 var
+R15201:15202 simuliris.simulation.fairness <> σ:293 var
+R15204:15204 simuliris.simulation.fairness <> I:297 var
+R15206:15207 simuliris.simulation.fairness <> T':294 var
+R15209:15211 simuliris.simulation.fairness <> σ':296 var
+R15235:15238 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R15247:15248 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 15239:15239 <> O:298
+binder 15241:15241 <> T:299
+binder 15243:15243 <> D:300
+binder 15245:15246 <> σ:301
+R15271:15275 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R15250:15254 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R15249:15249 simuliris.simulation.fairness <> O:298 var
+R15255:15268 simuliris.simulation.fairness <> active_threads def
+R15270:15270 simuliris.simulation.fairness <> T:299 var
+R15299:15303 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R15276:15289 simuliris.simulation.fairness <> fair_div_delay coind
+R15293:15293 simuliris.simulation.fairness <> T:299 var
+R15295:15295 simuliris.simulation.fairness <> D:300 var
+R15297:15298 simuliris.simulation.fairness <> σ:301 var
+R15304:15307 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R15319:15320 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 15308:15309 <> T':302
+binder 15311:15312 <> D':303
+binder 15314:15316 <> σ':304
+binder 15318:15318 <> I:305
+R15340:15344 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15322:15326 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R15321:15321 simuliris.simulation.fairness <> O:298 var
+R15327:15337 stdpp.base <> list_to_set def
+R15339:15339 simuliris.simulation.fairness <> I:305 var
+R15371:15375 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R15345:15358 simuliris.simulation.fairness <> fair_div_delay coind
+R15362:15363 simuliris.simulation.fairness <> T':302 var
+R15365:15366 simuliris.simulation.fairness <> D':303 var
+R15368:15370 simuliris.simulation.fairness <> σ':304 var
+R15376:15385 simuliris.simulation.language <> pool_steps ind
+R15389:15389 simuliris.simulation.fairness <> T:299 var
+R15391:15392 simuliris.simulation.fairness <> σ:301 var
+R15394:15394 simuliris.simulation.fairness <> I:305 var
+R15396:15397 simuliris.simulation.fairness <> T':302 var
+R15399:15401 simuliris.simulation.fairness <> σ':304 var
+binder 15239:15239 <> O:306
+binder 15241:15241 <> T:307
+binder 15243:15243 <> D:308
+binder 15245:15246 <> σ:309
+R15249:15249 simuliris.simulation.fairness <> O:306 var
+R15270:15270 simuliris.simulation.fairness <> T:307 var
+R15293:15293 simuliris.simulation.fairness <> T:307 var
+R15295:15295 simuliris.simulation.fairness <> D:308 var
+R15297:15298 simuliris.simulation.fairness <> σ:309 var
+binder 15308:15309 <> T':310
+binder 15311:15312 <> D':311
+binder 15314:15316 <> σ':312
+binder 15318:15318 <> I:313
+R15321:15321 simuliris.simulation.fairness <> O:306 var
+R15339:15339 simuliris.simulation.fairness <> I:313 var
+R15362:15363 simuliris.simulation.fairness <> T':310 var
+R15365:15366 simuliris.simulation.fairness <> D':311 var
+R15368:15370 simuliris.simulation.fairness <> σ':312 var
+R15389:15389 simuliris.simulation.fairness <> T:307 var
+R15391:15392 simuliris.simulation.fairness <> σ:309 var
+R15394:15394 simuliris.simulation.fairness <> I:313 var
+R15396:15397 simuliris.simulation.fairness <> T':310 var
+R15399:15401 simuliris.simulation.fairness <> σ':312 var
+R15453:15458 stdpp.fin_sets <> set_wf thm
+R15544:15556 stdpp.base <> leibniz_equiv def
+R15565:15574 stdpp.fin_sets <> set_choose thm
+R15517:15522 stdpp.base <> decide def
+R15526:15530 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R15531:15533 stdpp.base <> ::stdpp_scope:'∅' not
+R15601:15602 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R15658:15667 simuliris.simulation.fairness <> delays_for def
+R15718:15724 stdpp.base <> is_Some def
+R15728:15731 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R15823:15827 Stdlib.Arith.Wf_nat <> lt_wf thm
+R15946:15963 simuliris.simulation.fairness <> fair_pool_step_iff thm
+R16008:16013 stdpp.base <> decide def
+R16017:16021 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R16052:16056 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R16057:16058 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R16060:16061 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R16173:16191 simuliris.simulation.fairness <> active_threads_step thm
+R16264:16267 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R16313:16318 stdpp.base <> decide def
+R16322:16324 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16421:16425 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R16630:16648 simuliris.simulation.fairness <> active_threads_step thm
+R16700:16718 simuliris.simulation.fairness <> fair_div_delays_for thm
+R16772:16775 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R16822:16827 stdpp.base <> decide def
+R16831:16833 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+prf 16929:16953 <> fair_div_delay_has_active
+binder 16955:16955 <> p:314
+binder 16957:16957 <> T:315
+binder 16959:16959 <> D:316
+binder 16961:16962 <> σ:317
+R16992:16996 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16969:16982 simuliris.simulation.fairness <> fair_div_delay coind
+R16984:16984 simuliris.simulation.fairness <> p:314 var
+R16986:16986 simuliris.simulation.fairness <> T:315 var
+R16988:16988 simuliris.simulation.fairness <> D:316 var
+R16990:16991 simuliris.simulation.fairness <> σ:317 var
+R17000:17004 stdpp.base <> ::stdpp_scope:x_'⊂'_x not
+R16997:16999 stdpp.base <> ::stdpp_scope:'∅' not
+R17005:17018 simuliris.simulation.fairness <> active_threads def
+R17020:17020 simuliris.simulation.fairness <> T:315 var
+R17091:17095 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R17096:17109 simuliris.simulation.fairness <> active_threads def
+R17140:17157 simuliris.simulation.fairness <> fair_pool_step_inv thm
+R17231:17249 simuliris.simulation.fairness <> active_threads_spec thm
+R17295:17303 simuliris.simulation.language <> val_stuck thm
+prf 17322:17350 <> fair_div_delay_fair_div_coind
+binder 17352:17352 <> p:318
+binder 17354:17354 <> T:319
+binder 17356:17356 <> D:320
+binder 17358:17359 <> σ:321
+R17389:17393 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17366:17379 simuliris.simulation.fairness <> fair_div_delay coind
+R17381:17381 simuliris.simulation.fairness <> p:318 var
+R17383:17383 simuliris.simulation.fairness <> T:319 var
+R17385:17385 simuliris.simulation.fairness <> D:320 var
+R17387:17388 simuliris.simulation.fairness <> σ:321 var
+R17394:17407 simuliris.simulation.fairness <> fair_div_coind coind
+R17409:17409 simuliris.simulation.fairness <> p:318 var
+R17411:17411 simuliris.simulation.fairness <> T:319 var
+R17413:17414 simuliris.simulation.fairness <> σ:321 var
+R17487:17511 simuliris.simulation.fairness <> fair_div_delay_has_active thm
+R17542:17576 simuliris.simulation.fairness <> fair_div_delay_active_threads_steps thm
+R17647:17665 simuliris.simulation.fairness <> fair_div_coind_step constr
+def 17772:17787 <> delays_for_trace
+binder 17789:17789 <> I:322
+binder 17791:17791 <> D:323
+R17806:17806 simuliris.simulation.fairness <> I:322 var
+R17819:17821 Corelib.Init.Datatypes <> nil constr
+R17826:17826 simuliris.simulation.fairness <> D:323 var
+R17835:17838 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R17845:17846 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R17848:17851 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R17853:17884 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R17858:17862 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R17857:17857 Corelib.Init.Datatypes <> S constr
+R17863:17878 simuliris.simulation.fairness <> delays_for_trace:324 def
+R17883:17883 simuliris.simulation.fairness <> D:323 var
+def 17909:17919 <> active_only
+binder 17921:17921 <> T:326
+binder 17923:17923 <> D:327
+R17928:17933 stdpp.base <> filter def
+R17972:17972 simuliris.simulation.fairness <> D:327 var
+R17936:17939 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R17946:17947 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R17940:17940 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R17942:17943 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R17945:17945 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+binder 17944:17944 <> n:328
+binder 17941:17941 <> i:329
+binder 17940:17945 <> pat:330
+R17949:17953 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R17948:17948 simuliris.simulation.fairness <> i:329 var
+R17954:17967 simuliris.simulation.fairness <> active_threads def
+R17969:17969 simuliris.simulation.fairness <> T:326 var
+abbrev 17987:17998 <> trace_delays
+R18010:18020 simuliris.simulation.fairness <> active_only def
+R18025:18040 simuliris.simulation.fairness <> delays_for_trace def
+prf 18058:18084 <> pool_step_to_fair_pool_step
+binder 18086:18086 <> p:331
+binder 18088:18088 <> T:332
+binder 18090:18091 <> σ:333
+binder 18093:18093 <> i:334
+binder 18095:18096 <> T':335
+binder 18098:18100 <> σ':336
+binder 18102:18102 <> D:337
+R18134:18138 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18109:18117 simuliris.simulation.language <> pool_step ind
+R18119:18119 simuliris.simulation.fairness <> p:331 var
+R18121:18121 simuliris.simulation.fairness <> T:332 var
+R18123:18124 simuliris.simulation.fairness <> σ:333 var
+R18126:18126 simuliris.simulation.fairness <> i:334 var
+R18128:18129 simuliris.simulation.fairness <> T':335 var
+R18131:18133 simuliris.simulation.fairness <> σ':336 var
+R18139:18152 simuliris.simulation.fairness <> fair_pool_step ind
+R18154:18154 simuliris.simulation.fairness <> p:331 var
+R18156:18156 simuliris.simulation.fairness <> T:332 var
+R18159:18160 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R18162:18163 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R18165:18176 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R18161:18161 simuliris.simulation.fairness <> i:334 var
+R18170:18174 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R18169:18169 Corelib.Init.Datatypes <> S constr
+R18175:18175 simuliris.simulation.fairness <> D:337 var
+R18179:18180 simuliris.simulation.fairness <> σ:333 var
+R18182:18182 simuliris.simulation.fairness <> i:334 var
+R18184:18185 simuliris.simulation.fairness <> T':335 var
+R18187:18187 simuliris.simulation.fairness <> D:337 var
+R18189:18191 simuliris.simulation.fairness <> σ':336 var
+R18228:18245 simuliris.simulation.fairness <> fair_pool_step_iff thm
+R18299:18314 stdpp.fin_maps <> lookup_insert_ne thm
+R18319:18329 stdpp.fin_maps <> lookup_fmap meth
+R18347:18350 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+prf 18393:18425 <> delays_for_trace_oblivious_single
+binder 18427:18427 <> i:338
+binder 18429:18429 <> I:339
+binder 18431:18432 <> D1:340
+binder 18434:18435 <> D2:341
+R18449:18453 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18443:18447 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R18442:18442 simuliris.simulation.fairness <> i:338 var
+R18448:18448 simuliris.simulation.fairness <> I:339 var
+R18480:18482 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18475:18478 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R18479:18479 simuliris.simulation.fairness <> i:338 var
+R18454:18469 simuliris.simulation.fairness <> delays_for_trace def
+R18471:18471 simuliris.simulation.fairness <> I:339 var
+R18473:18474 simuliris.simulation.fairness <> D1:340 var
+R18504:18507 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R18508:18508 simuliris.simulation.fairness <> i:338 var
+R18483:18498 simuliris.simulation.fairness <> delays_for_trace def
+R18500:18500 simuliris.simulation.fairness <> I:339 var
+R18502:18503 simuliris.simulation.fairness <> D2:341 var
+R18582:18597 stdpp.fin_maps <> lookup_insert_eq thm
+R18616:18621 stdpp.base <> decide def
+R18625:18627 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18659:18674 stdpp.fin_maps <> lookup_insert_eq thm
+R18696:18711 stdpp.fin_maps <> lookup_insert_ne thm
+R18718:18728 stdpp.fin_maps <> lookup_fmap meth
+prf 18751:18776 <> delays_for_trace_oblivious
+binder 18778:18778 <> T:342
+binder 18780:18780 <> I:343
+binder 18782:18783 <> D1:344
+binder 18785:18786 <> D2:345
+R18827:18831 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18809:18813 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R18793:18806 simuliris.simulation.fairness <> active_threads def
+R18808:18808 simuliris.simulation.fairness <> T:342 var
+R18814:18824 stdpp.base <> list_to_set def
+R18826:18826 simuliris.simulation.fairness <> I:343 var
+R18851:18853 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18832:18843 simuliris.simulation.fairness <> trace_delays abbrev
+R18845:18845 simuliris.simulation.fairness <> T:342 var
+R18847:18847 simuliris.simulation.fairness <> I:343 var
+R18849:18850 simuliris.simulation.fairness <> D1:344 var
+R18854:18865 simuliris.simulation.fairness <> trace_delays abbrev
+R18867:18867 simuliris.simulation.fairness <> T:342 var
+R18869:18869 simuliris.simulation.fairness <> I:343 var
+R18871:18872 simuliris.simulation.fairness <> D2:345 var
+R18908:18928 stdpp.fin_maps <> map_filter_strong_ext thm
+R19013:19045 simuliris.simulation.fairness <> delays_for_trace_oblivious_single thm
+prf 19077:19098 <> delays_for_active_only
+binder 19100:19100 <> T:346
+binder 19102:19102 <> D:347
+R19139:19143 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R19109:19118 simuliris.simulation.fairness <> delays_for def
+R19120:19120 simuliris.simulation.fairness <> T:346 var
+R19123:19133 simuliris.simulation.fairness <> active_only def
+R19135:19135 simuliris.simulation.fairness <> T:346 var
+R19137:19137 simuliris.simulation.fairness <> D:347 var
+R19144:19153 simuliris.simulation.fairness <> delays_for def
+R19155:19155 simuliris.simulation.fairness <> T:346 var
+R19157:19157 simuliris.simulation.fairness <> D:347 var
+R19259:19284 stdpp.fin_maps <> map_lookup_filter_Some_1_1 thm
+R19304:19325 stdpp.fin_maps <> map_lookup_filter_Some thm
+prf 19351:19377 <> pool_step_delays_for_update
+binder 19379:19379 <> p:348
+binder 19381:19381 <> T:349
+binder 19383:19384 <> σ:350
+binder 19386:19386 <> i:351
+binder 19388:19389 <> T':352
+binder 19391:19393 <> σ':353
+binder 19395:19395 <> D:354
+R19427:19435 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19402:19410 simuliris.simulation.language <> pool_step ind
+R19412:19412 simuliris.simulation.fairness <> p:348 var
+R19414:19414 simuliris.simulation.fairness <> T:349 var
+R19416:19417 simuliris.simulation.fairness <> σ:350 var
+R19419:19419 simuliris.simulation.fairness <> i:351 var
+R19421:19422 simuliris.simulation.fairness <> T':352 var
+R19424:19426 simuliris.simulation.fairness <> σ':353 var
+R19451:19459 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19436:19445 simuliris.simulation.fairness <> delays_for def
+R19447:19448 simuliris.simulation.fairness <> T':352 var
+R19450:19450 simuliris.simulation.fairness <> D:354 var
+R19460:19469 simuliris.simulation.fairness <> delays_for def
+R19471:19471 simuliris.simulation.fairness <> T:349 var
+R19474:19475 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R19477:19480 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R19482:19493 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R19476:19476 simuliris.simulation.fairness <> i:351 var
+R19487:19491 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R19486:19486 Corelib.Init.Datatypes <> S constr
+R19492:19492 simuliris.simulation.fairness <> D:354 var
+R19552:19557 stdpp.base <> decide def
+R19561:19563 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19590:19605 stdpp.fin_maps <> lookup_insert_eq thm
+R19629:19644 stdpp.fin_maps <> lookup_insert_ne thm
+R19649:19659 stdpp.fin_maps <> lookup_fmap meth
+R19661:19672 stdpp.option <> fmap_is_Some thm
+R19692:19710 simuliris.simulation.fairness <> active_threads_step thm
+prf 19752:19779 <> pool_steps_delays_for_update
+binder 19781:19781 <> p:355
+binder 19783:19783 <> T:356
+binder 19785:19786 <> σ:357
+binder 19788:19788 <> I:358
+binder 19790:19791 <> T':359
+binder 19793:19795 <> σ':360
+binder 19797:19797 <> D:361
+R19830:19838 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19804:19813 simuliris.simulation.language <> pool_steps ind
+R19815:19815 simuliris.simulation.fairness <> p:355 var
+R19817:19817 simuliris.simulation.fairness <> T:356 var
+R19819:19820 simuliris.simulation.fairness <> σ:357 var
+R19822:19822 simuliris.simulation.fairness <> I:358 var
+R19824:19825 simuliris.simulation.fairness <> T':359 var
+R19827:19829 simuliris.simulation.fairness <> σ':360 var
+R19854:19862 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19839:19848 simuliris.simulation.fairness <> delays_for def
+R19850:19851 simuliris.simulation.fairness <> T':359 var
+R19853:19853 simuliris.simulation.fairness <> D:361 var
+R19863:19872 simuliris.simulation.fairness <> delays_for def
+R19874:19874 simuliris.simulation.fairness <> T:356 var
+R19877:19892 simuliris.simulation.fairness <> delays_for_trace def
+R19894:19894 simuliris.simulation.fairness <> I:358 var
+R19896:19896 simuliris.simulation.fairness <> D:361 var
+R19999:20025 simuliris.simulation.fairness <> pool_step_delays_for_update thm
+prf 20044:20072 <> pool_steps_to_fair_pool_steps
+binder 20074:20074 <> p:362
+binder 20076:20076 <> T:363
+binder 20078:20079 <> σ:364
+binder 20081:20081 <> I:365
+binder 20083:20084 <> T':366
+binder 20086:20088 <> σ':367
+binder 20090:20090 <> D:368
+R20123:20131 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20097:20106 simuliris.simulation.language <> pool_steps ind
+R20108:20108 simuliris.simulation.fairness <> p:362 var
+R20110:20110 simuliris.simulation.fairness <> T:363 var
+R20112:20113 simuliris.simulation.fairness <> σ:364 var
+R20115:20115 simuliris.simulation.fairness <> I:365 var
+R20117:20118 simuliris.simulation.fairness <> T':366 var
+R20120:20122 simuliris.simulation.fairness <> σ':367 var
+R20147:20155 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20132:20141 simuliris.simulation.fairness <> delays_for def
+R20143:20144 simuliris.simulation.fairness <> T':366 var
+R20146:20146 simuliris.simulation.fairness <> D:368 var
+R20156:20170 simuliris.simulation.fairness <> fair_pool_steps ind
+R20172:20172 simuliris.simulation.fairness <> p:362 var
+R20174:20174 simuliris.simulation.fairness <> T:363 var
+R20177:20192 simuliris.simulation.fairness <> delays_for_trace def
+R20194:20194 simuliris.simulation.fairness <> I:365 var
+R20196:20196 simuliris.simulation.fairness <> D:368 var
+R20199:20200 simuliris.simulation.fairness <> σ:364 var
+R20202:20202 simuliris.simulation.fairness <> I:365 var
+R20204:20205 simuliris.simulation.fairness <> T':366 var
+R20207:20207 simuliris.simulation.fairness <> D:368 var
+R20209:20211 simuliris.simulation.fairness <> σ':367 var
+R20355:20381 simuliris.simulation.fairness <> pool_step_to_fair_pool_step thm
+R20384:20410 simuliris.simulation.fairness <> pool_step_delays_for_update thm
+R20413:20440 simuliris.simulation.fairness <> pool_steps_delays_for_update thm
+prf 20459:20479 <> fair_pool_active_only
+binder 20481:20481 <> p:369
+binder 20483:20483 <> T:370
+binder 20485:20485 <> D:371
+binder 20487:20488 <> σ:372
+binder 20490:20490 <> i:373
+binder 20492:20493 <> T':374
+binder 20495:20496 <> D':375
+binder 20498:20500 <> σ':376
+R20542:20550 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20507:20520 simuliris.simulation.fairness <> fair_pool_step ind
+R20522:20522 simuliris.simulation.fairness <> p:369 var
+R20524:20524 simuliris.simulation.fairness <> T:370 var
+R20526:20526 simuliris.simulation.fairness <> D:371 var
+R20528:20529 simuliris.simulation.fairness <> σ:372 var
+R20531:20531 simuliris.simulation.fairness <> i:373 var
+R20533:20534 simuliris.simulation.fairness <> T':374 var
+R20536:20537 simuliris.simulation.fairness <> D':375 var
+R20539:20541 simuliris.simulation.fairness <> σ':376 var
+R20551:20564 simuliris.simulation.fairness <> fair_pool_step ind
+R20566:20566 simuliris.simulation.fairness <> p:369 var
+R20568:20568 simuliris.simulation.fairness <> T:370 var
+R20571:20581 simuliris.simulation.fairness <> active_only def
+R20583:20583 simuliris.simulation.fairness <> T:370 var
+R20585:20585 simuliris.simulation.fairness <> D:371 var
+R20588:20589 simuliris.simulation.fairness <> σ:372 var
+R20591:20591 simuliris.simulation.fairness <> i:373 var
+R20593:20594 simuliris.simulation.fairness <> T':374 var
+R20597:20607 simuliris.simulation.fairness <> active_only def
+R20609:20610 simuliris.simulation.fairness <> T':374 var
+R20612:20613 simuliris.simulation.fairness <> D':375 var
+R20616:20618 simuliris.simulation.fairness <> σ':376 var
+R20747:20768 stdpp.fin_maps <> map_lookup_filter_Some thm
+R20893:20914 stdpp.fin_maps <> map_lookup_filter_Some thm
+R20947:20965 simuliris.simulation.fairness <> active_threads_step thm
+prf 21007:21033 <> fair_pool_steps_active_only
+binder 21035:21035 <> p:377
+binder 21037:21037 <> T:378
+binder 21039:21039 <> D:379
+binder 21041:21042 <> σ:380
+binder 21044:21044 <> I:381
+binder 21046:21047 <> T':382
+binder 21049:21050 <> D':383
+binder 21052:21054 <> σ':384
+R21097:21105 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21061:21075 simuliris.simulation.fairness <> fair_pool_steps ind
+R21077:21077 simuliris.simulation.fairness <> p:377 var
+R21079:21079 simuliris.simulation.fairness <> T:378 var
+R21081:21081 simuliris.simulation.fairness <> D:379 var
+R21083:21084 simuliris.simulation.fairness <> σ:380 var
+R21086:21086 simuliris.simulation.fairness <> I:381 var
+R21088:21089 simuliris.simulation.fairness <> T':382 var
+R21091:21092 simuliris.simulation.fairness <> D':383 var
+R21094:21096 simuliris.simulation.fairness <> σ':384 var
+R21106:21120 simuliris.simulation.fairness <> fair_pool_steps ind
+R21122:21122 simuliris.simulation.fairness <> p:377 var
+R21124:21124 simuliris.simulation.fairness <> T:378 var
+R21127:21137 simuliris.simulation.fairness <> active_only def
+R21139:21139 simuliris.simulation.fairness <> T:378 var
+R21141:21141 simuliris.simulation.fairness <> D:379 var
+R21144:21145 simuliris.simulation.fairness <> σ:380 var
+R21147:21147 simuliris.simulation.fairness <> I:381 var
+R21149:21150 simuliris.simulation.fairness <> T':382 var
+R21153:21163 simuliris.simulation.fairness <> active_only def
+R21165:21166 simuliris.simulation.fairness <> T':382 var
+R21168:21169 simuliris.simulation.fairness <> D':383 var
+R21172:21174 simuliris.simulation.fairness <> σ':384 var
+R21296:21317 simuliris.simulation.fairness <> delays_for_active_only thm
+R21352:21372 simuliris.simulation.fairness <> fair_pool_active_only thm
+R21391:21412 simuliris.simulation.fairness <> delays_for_active_only thm
+prf 21431:21450 <> fair_div_coind_trace
+binder 21452:21452 <> p:385
+binder 21454:21454 <> T:386
+binder 21456:21457 <> σ:387
+R21485:21489 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21464:21477 simuliris.simulation.fairness <> fair_div_coind coind
+R21479:21479 simuliris.simulation.fairness <> p:385 var
+R21481:21481 simuliris.simulation.fairness <> T:386 var
+R21483:21484 simuliris.simulation.fairness <> σ:387 var
+R21490:21493 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R21502:21503 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 21494:21494 <> I:388
+binder 21496:21497 <> T':389
+binder 21499:21501 <> σ':390
+R21546:21550 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R21507:21511 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R21528:21532 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R21504:21506 stdpp.base <> ::stdpp_scope:'∅' not
+R21512:21525 simuliris.simulation.fairness <> active_threads def
+R21527:21527 simuliris.simulation.fairness <> T:386 var
+R21533:21543 stdpp.base <> list_to_set def
+R21545:21545 simuliris.simulation.fairness <> I:388 var
+R21577:21581 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R21551:21560 simuliris.simulation.language <> pool_steps ind
+R21562:21562 simuliris.simulation.fairness <> p:385 var
+R21564:21564 simuliris.simulation.fairness <> T:386 var
+R21566:21567 simuliris.simulation.fairness <> σ:387 var
+R21569:21569 simuliris.simulation.fairness <> I:388 var
+R21571:21572 simuliris.simulation.fairness <> T':389 var
+R21574:21576 simuliris.simulation.fairness <> σ':390 var
+R21582:21595 simuliris.simulation.fairness <> fair_div_coind coind
+R21597:21597 simuliris.simulation.fairness <> p:385 var
+R21599:21600 simuliris.simulation.fairness <> T':389 var
+R21602:21604 simuliris.simulation.fairness <> σ':390 var
+prf 21689:21715 <> fair_div_coind_trace_strong
+binder 21718:21718 <> p:391
+binder 21720:21720 <> T:392
+binder 21722:21723 <> σ:393
+R21732:21745 simuliris.simulation.fairness <> fair_div_coind coind
+R21747:21747 simuliris.simulation.fairness <> p:391 var
+R21749:21749 simuliris.simulation.fairness <> T:392 var
+R21751:21752 simuliris.simulation.fairness <> σ:393 var
+binder 21727:21729 <> Div:394
+R21761:21762 Corelib.Init.Specif <> ::type_scope:'{'_x_'|'_x_'}' not
+R21764:21766 Corelib.Init.Specif <> ::type_scope:'{'_x_'|'_x_'}' not
+R21880:21881 Corelib.Init.Specif <> ::type_scope:'{'_x_'|'_x_'}' not
+binder 21763:21763 <> I:395
+R21767:21770 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R21777:21778 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 21771:21772 <> T':396
+binder 21774:21776 <> σ':397
+R21821:21825 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R21782:21786 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R21803:21807 stdpp.base <> ::stdpp_scope:x_'⊂'_x_'⊆'_x not
+R21779:21781 stdpp.base <> ::stdpp_scope:'∅' not
+R21787:21800 simuliris.simulation.fairness <> active_threads def
+R21802:21802 simuliris.simulation.fairness <> T:392 var
+R21808:21818 stdpp.base <> list_to_set def
+R21820:21820 simuliris.simulation.fairness <> I:395 var
+R21852:21856 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R21826:21835 simuliris.simulation.language <> pool_steps ind
+R21837:21837 simuliris.simulation.fairness <> p:391 var
+R21839:21839 simuliris.simulation.fairness <> T:392 var
+R21841:21842 simuliris.simulation.fairness <> σ:393 var
+R21844:21844 simuliris.simulation.fairness <> I:395 var
+R21846:21847 simuliris.simulation.fairness <> T':396 var
+R21849:21851 simuliris.simulation.fairness <> σ':397 var
+R21857:21870 simuliris.simulation.fairness <> fair_div_coind coind
+R21872:21872 simuliris.simulation.fairness <> p:391 var
+R21874:21875 simuliris.simulation.fairness <> T':396 var
+R21877:21879 simuliris.simulation.fairness <> σ':397 var
+R21904:21938 Stdlib.Logic.IndefiniteDescription <> constructive_indefinite_description prfax
+R21941:21960 simuliris.simulation.fairness <> fair_div_coind_trace thm
+def 21989:22009 <> fair_div_coind_delays
+binder 22012:22012 <> p:398
+binder 22014:22014 <> T:399
+binder 22016:22017 <> σ:400
+R22026:22039 simuliris.simulation.fairness <> fair_div_coind coind
+R22041:22041 simuliris.simulation.fairness <> p:398 var
+R22043:22043 simuliris.simulation.fairness <> T:399 var
+R22045:22046 simuliris.simulation.fairness <> σ:400 var
+binder 22021:22023 <> Div:401
+R22058:22068 simuliris.simulation.fairness <> active_only def
+R22070:22070 simuliris.simulation.fairness <> T:399 var
+R22073:22088 simuliris.simulation.fairness <> delays_for_trace def
+R22091:22099 Corelib.Init.Specif <> proj1_sig def
+R22102:22128 simuliris.simulation.fairness <> fair_div_coind_trace_strong thm
+R22130:22132 simuliris.simulation.fairness <> Div:401 var
+R22136:22138 stdpp.base <> ::stdpp_scope:'∅' not
+prf 22151:22177 <> delays_for_delays_for_trace
+binder 22179:22179 <> p:402
+binder 22181:22181 <> T:403
+binder 22183:22184 <> σ:404
+binder 22186:22187 <> T':405
+binder 22189:22191 <> σ':406
+binder 22193:22193 <> I:407
+binder 22195:22195 <> D:408
+R22236:22240 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R22218:22222 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R22202:22215 simuliris.simulation.fairness <> active_threads def
+R22217:22217 simuliris.simulation.fairness <> T:403 var
+R22223:22233 stdpp.base <> list_to_set def
+R22235:22235 simuliris.simulation.fairness <> I:407 var
+R22267:22271 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R22241:22250 simuliris.simulation.language <> pool_steps ind
+R22252:22252 simuliris.simulation.fairness <> p:402 var
+R22254:22254 simuliris.simulation.fairness <> T:403 var
+R22256:22257 simuliris.simulation.fairness <> σ:404 var
+R22259:22259 simuliris.simulation.fairness <> I:407 var
+R22261:22262 simuliris.simulation.fairness <> T':405 var
+R22264:22266 simuliris.simulation.fairness <> σ':406 var
+R22272:22281 simuliris.simulation.fairness <> delays_for def
+R22283:22283 simuliris.simulation.fairness <> T:403 var
+R22286:22301 simuliris.simulation.fairness <> delays_for_trace def
+R22303:22303 simuliris.simulation.fairness <> I:407 var
+R22305:22305 simuliris.simulation.fairness <> D:408 var
+R22349:22370 simuliris.simulation.fairness <> delays_for_active_only thm
+R22386:22411 simuliris.simulation.fairness <> delays_for_trace_oblivious thm
+R22420:22431 stdpp.gmap <> gset_to_gmap def
+R22436:22442 simuliris.simulation.language <> threads def
+R22473:22494 simuliris.simulation.fairness <> delays_for_active_only thm
+R22497:22524 simuliris.simulation.fairness <> pool_steps_delays_for_update thm
+R22563:22581 simuliris.simulation.fairness <> active_threads_spec thm
+R22630:22653 stdpp.gmap <> lookup_gset_to_gmap_Some thm
+R22685:22696 simuliris.simulation.language <> threads_spec thm
+prf 22722:22742 <> fair_div_coind_unfold
+binder 22744:22744 <> p:409
+binder 22746:22746 <> T:410
+binder 22748:22749 <> σ:411
+R22757:22770 simuliris.simulation.fairness <> fair_div_coind coind
+R22772:22772 simuliris.simulation.fairness <> p:409 var
+R22774:22774 simuliris.simulation.fairness <> T:410 var
+R22776:22777 simuliris.simulation.fairness <> σ:411 var
+binder 22752:22754 <> Div:412
+R22785:22788 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R22829:22836 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 22789:22790 <> T':413
+binder 22792:22794 <> σ':414
+R22803:22816 simuliris.simulation.fairness <> fair_div_coind coind
+R22818:22818 simuliris.simulation.fairness <> p:409 var
+R22820:22821 simuliris.simulation.fairness <> T':413 var
+R22823:22825 simuliris.simulation.fairness <> σ':414 var
+binder 22797:22800 <> Div':415
+binder 22828:22828 <> I:416
+R22845:22855 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R22838:22842 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R22837:22837 simuliris.simulation.fairness <> I:416 var
+R22843:22844 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R22856:22870 simuliris.simulation.fairness <> fair_pool_steps ind
+R22872:22872 simuliris.simulation.fairness <> p:409 var
+R22874:22874 simuliris.simulation.fairness <> T:410 var
+R22877:22897 simuliris.simulation.fairness <> fair_div_coind_delays def
+R22899:22901 simuliris.simulation.fairness <> Div:412 var
+R22904:22905 simuliris.simulation.fairness <> σ:411 var
+R22907:22907 simuliris.simulation.fairness <> I:416 var
+R22909:22910 simuliris.simulation.fairness <> T':413 var
+R22913:22933 simuliris.simulation.fairness <> fair_div_coind_delays def
+R22935:22938 simuliris.simulation.fairness <> Div':415 var
+R22941:22943 simuliris.simulation.fairness <> σ':414 var
+R22968:22988 simuliris.simulation.fairness <> fair_div_coind_delays def
+R23005:23031 simuliris.simulation.fairness <> fair_div_coind_trace_strong thm
+R23168:23183 simuliris.simulation.fairness <> delays_for_trace def
+R23186:23194 Corelib.Init.Specif <> proj1_sig def
+R23197:23223 simuliris.simulation.fairness <> fair_div_coind_trace_strong thm
+R23232:23234 stdpp.base <> ::stdpp_scope:'∅' not
+R23259:23284 simuliris.simulation.fairness <> delays_for_trace_oblivious thm
+R23290:23292 stdpp.base <> ::stdpp_scope:'∅' not
+R23329:23355 simuliris.simulation.fairness <> fair_pool_steps_active_only thm
+R23358:23386 simuliris.simulation.fairness <> pool_steps_to_fair_pool_steps thm
+R23515:23541 simuliris.simulation.fairness <> fair_div_coind_trace_strong thm
+R23617:23643 simuliris.simulation.fairness <> delays_for_delays_for_trace thm
+prf 23682:23713 <> fair_div_coind_fair_div_delay_tc
+binder 23715:23715 <> p:417
+binder 23717:23717 <> T:418
+binder 23719:23720 <> σ:419
+R23748:23752 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R23727:23740 simuliris.simulation.fairness <> fair_div_coind coind
+R23742:23742 simuliris.simulation.fairness <> p:417 var
+R23744:23744 simuliris.simulation.fairness <> T:418 var
+R23746:23747 simuliris.simulation.fairness <> σ:419 var
+R23753:23756 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R23758:23759 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 23757:23757 <> D:420
+R23760:23776 simuliris.simulation.fairness <> fair_div_delay_tc coind
+R23778:23778 simuliris.simulation.fairness <> p:417 var
+R23780:23780 simuliris.simulation.fairness <> T:418 var
+R23782:23782 simuliris.simulation.fairness <> D:420 var
+R23784:23785 simuliris.simulation.fairness <> σ:419 var
+R23821:23841 simuliris.simulation.fairness <> fair_div_coind_delays def
+R23911:23931 simuliris.simulation.fairness <> fair_div_coind_unfold thm
+prf 24279:24301 <> fair_div_delay_step_inv
+binder 24303:24303 <> p:421
+binder 24305:24305 <> T:422
+binder 24307:24307 <> D:423
+binder 24309:24310 <> σ:424
+R24340:24348 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R24317:24330 simuliris.simulation.fairness <> fair_div_delay coind
+R24332:24332 simuliris.simulation.fairness <> p:421 var
+R24334:24334 simuliris.simulation.fairness <> T:422 var
+R24336:24336 simuliris.simulation.fairness <> D:423 var
+R24338:24339 simuliris.simulation.fairness <> σ:424 var
+R24349:24352 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R24364:24365 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 24353:24353 <> i:425
+binder 24355:24356 <> T':426
+binder 24358:24359 <> D':427
+binder 24361:24363 <> σ':428
+R24391:24395 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R24366:24374 simuliris.simulation.language <> pool_step ind
+R24376:24376 simuliris.simulation.fairness <> p:421 var
+R24378:24378 simuliris.simulation.fairness <> T:422 var
+R24380:24381 simuliris.simulation.fairness <> σ:424 var
+R24383:24383 simuliris.simulation.fairness <> i:425 var
+R24385:24386 simuliris.simulation.fairness <> T':426 var
+R24388:24390 simuliris.simulation.fairness <> σ':428 var
+R24412:24416 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R24396:24404 simuliris.simulation.fairness <> step_decr def
+R24406:24406 simuliris.simulation.fairness <> i:425 var
+R24408:24408 simuliris.simulation.fairness <> D:423 var
+R24410:24411 simuliris.simulation.fairness <> D':427 var
+R24431:24435 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R24417:24426 simuliris.simulation.fairness <> delays_for def
+R24428:24428 simuliris.simulation.fairness <> T:422 var
+R24430:24430 simuliris.simulation.fairness <> D:423 var
+R24436:24449 simuliris.simulation.fairness <> fair_div_delay coind
+R24451:24451 simuliris.simulation.fairness <> p:421 var
+R24453:24454 simuliris.simulation.fairness <> T':426 var
+R24456:24457 simuliris.simulation.fairness <> D':427 var
+R24459:24461 simuliris.simulation.fairness <> σ':428 var
+R24530:24547 simuliris.simulation.fairness <> fair_pool_step_iff thm
+prf 24602:24631 <> fair_div_delay_step_inv_strong
+binder 24634:24634 <> p:429
+binder 24636:24636 <> T:430
+binder 24638:24638 <> D:431
+binder 24640:24641 <> σ:432
+R24651:24664 simuliris.simulation.fairness <> fair_div_delay coind
+R24666:24666 simuliris.simulation.fairness <> p:429 var
+R24668:24668 simuliris.simulation.fairness <> T:430 var
+R24670:24670 simuliris.simulation.fairness <> D:431 var
+R24672:24673 simuliris.simulation.fairness <> σ:432 var
+binder 24645:24648 <> Fair:433
+R24681:24683 Corelib.Init.Specif <> ::type_scope:'{'_''''_x_'|'_x_'}' not
+R24700:24702 Corelib.Init.Specif <> ::type_scope:'{'_''''_x_'|'_x_'}' not
+R24799:24800 Corelib.Init.Specif <> ::type_scope:'{'_''''_x_'|'_x_'}' not
+R24684:24684 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R24687:24688 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R24692:24693 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R24695:24696 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R24699:24699 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+binder 24697:24698 <> D':434
+binder 24694:24694 <> i:435
+binder 24689:24691 <> σ':436
+binder 24685:24686 <> T':437
+binder 24684:24699 <> pat:438
+R24729:24733 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R24703:24716 simuliris.simulation.fairness <> fair_div_delay coind
+R24718:24718 simuliris.simulation.fairness <> p:429 var
+R24720:24721 simuliris.simulation.fairness <> T':437 var
+R24723:24724 simuliris.simulation.fairness <> D':434 var
+R24726:24728 simuliris.simulation.fairness <> σ':436 var
+R24759:24763 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R24734:24742 simuliris.simulation.language <> pool_step ind
+R24744:24744 simuliris.simulation.fairness <> p:429 var
+R24746:24746 simuliris.simulation.fairness <> T:430 var
+R24748:24749 simuliris.simulation.fairness <> σ:432 var
+R24751:24751 simuliris.simulation.fairness <> i:435 var
+R24753:24754 simuliris.simulation.fairness <> T':437 var
+R24756:24758 simuliris.simulation.fairness <> σ':436 var
+R24780:24784 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R24764:24772 simuliris.simulation.fairness <> step_decr def
+R24774:24774 simuliris.simulation.fairness <> i:435 var
+R24776:24776 simuliris.simulation.fairness <> D:431 var
+R24778:24779 simuliris.simulation.fairness <> D':434 var
+R24785:24794 simuliris.simulation.fairness <> delays_for def
+R24796:24796 simuliris.simulation.fairness <> T:430 var
+R24798:24798 simuliris.simulation.fairness <> D:431 var
+R24823:24845 simuliris.simulation.fairness <> fair_div_delay_step_inv thm
+R24867:24901 Stdlib.Logic.IndefiniteDescription <> constructive_indefinite_description prfax
+R24935:24969 Stdlib.Logic.IndefiniteDescription <> constructive_indefinite_description prfax
+R25004:25038 Stdlib.Logic.IndefiniteDescription <> constructive_indefinite_description prfax
+R25073:25107 Stdlib.Logic.IndefiniteDescription <> constructive_indefinite_description prfax
+R25143:25143 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25146:25147 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25151:25152 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25154:25155 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25158:25158 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+def 25221:25242 <> fair_div_delay_to_exec
+binder 25245:25245 <> p:439
+binder 25247:25247 <> T:440
+binder 25249:25249 <> D:441
+binder 25251:25252 <> σ:442
+R25262:25275 simuliris.simulation.fairness <> fair_div_delay coind
+R25277:25277 simuliris.simulation.fairness <> p:439 var
+R25279:25279 simuliris.simulation.fairness <> T:440 var
+R25281:25281 simuliris.simulation.fairness <> D:441 var
+R25283:25284 simuliris.simulation.fairness <> σ:442 var
+binder 25256:25259 <> Fair:443
+R25291:25293 Corelib.Init.Datatypes <> nat ind
+binder 25288:25288 <> n:444
+R25323:25325 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R25312:25314 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R25298:25301 Corelib.Init.Datatypes <> list ind
+R25304:25307 simuliris.simulation.language <> expr proj
+R25309:25310 simuliris.simulation.fairness <> fairness.Λ var
+R25315:25319 simuliris.simulation.language <> state proj
+R25321:25322 simuliris.simulation.fairness <> fairness.Λ var
+R25326:25328 Corelib.Init.Datatypes <> nat ind
+R25343:25343 simuliris.simulation.fairness <> n:444 var
+R25361:25361 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25363:25364 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25367:25368 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25429:25429 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25362:25362 simuliris.simulation.fairness <> T:440 var
+R25365:25366 simuliris.simulation.fairness <> σ:442 var
+R25369:25369 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R25423:25428 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R25370:25372 Corelib.Init.Datatypes <> fst def
+R25375:25383 Corelib.Init.Specif <> proj1_sig def
+R25386:25415 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+R25417:25420 simuliris.simulation.fairness <> Fair:443 var
+R25437:25437 Corelib.Init.Datatypes <> S constr
+R25456:25485 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+R25487:25490 simuliris.simulation.fairness <> Fair:443 var
+R25505:25509 Corelib.Init.Specif <> exist constr
+R25513:25513 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25516:25517 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25521:25522 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25524:25525 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25528:25528 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25543:25564 simuliris.simulation.fairness <> fair_div_delay_to_exec:445 def
+R25580:25583 Corelib.Init.Logic <> conj constr
+prf 25637:25663 <> fair_div_delay_to_exec_succ
+binder 25666:25666 <> p:448
+binder 25668:25668 <> T:449
+binder 25670:25670 <> D:450
+binder 25672:25673 <> σ:451
+R25683:25696 simuliris.simulation.fairness <> fair_div_delay coind
+R25698:25698 simuliris.simulation.fairness <> p:448 var
+R25700:25700 simuliris.simulation.fairness <> T:449 var
+R25702:25702 simuliris.simulation.fairness <> D:450 var
+R25704:25705 simuliris.simulation.fairness <> σ:451 var
+binder 25677:25680 <> Fair:452
+R25712:25714 Corelib.Init.Datatypes <> nat ind
+binder 25709:25709 <> n:453
+R25756:25764 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R25723:25744 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R25752:25752 Corelib.Init.Datatypes <> S constr
+R25754:25754 simuliris.simulation.fairness <> n:453 var
+R25746:25749 simuliris.simulation.fairness <> Fair:452 var
+R25771:25800 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+R25802:25805 simuliris.simulation.fairness <> Fair:452 var
+R25820:25824 Corelib.Init.Specif <> exist constr
+R25828:25828 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25831:25832 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25836:25837 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25839:25840 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25843:25843 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R25858:25879 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R25922:25922 simuliris.simulation.fairness <> n:453 var
+R25895:25898 Corelib.Init.Logic <> conj constr
+prf 25971:25997 <> fair_div_delay_to_exec_step
+binder 26000:26000 <> p:455
+binder 26002:26002 <> T:456
+binder 26004:26004 <> D:457
+binder 26006:26007 <> σ:458
+R26017:26030 simuliris.simulation.fairness <> fair_div_delay coind
+R26032:26032 simuliris.simulation.fairness <> p:455 var
+R26034:26034 simuliris.simulation.fairness <> T:456 var
+R26036:26036 simuliris.simulation.fairness <> D:457 var
+R26038:26039 simuliris.simulation.fairness <> σ:458 var
+binder 26011:26014 <> Fair:459
+binder 26042:26042 <> n:460
+R26049:26057 simuliris.simulation.language <> pool_step ind
+R26059:26059 simuliris.simulation.fairness <> p:455 var
+R26061:26061 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R26091:26098 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R26062:26083 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R26090:26090 simuliris.simulation.fairness <> n:460 var
+R26085:26088 simuliris.simulation.fairness <> Fair:459 var
+R26106:26106 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R26136:26144 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R26107:26128 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R26135:26135 simuliris.simulation.fairness <> n:460 var
+R26130:26133 simuliris.simulation.fairness <> Fair:459 var
+R26152:26152 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R26182:26187 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R26153:26174 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R26181:26181 simuliris.simulation.fairness <> n:460 var
+R26176:26179 simuliris.simulation.fairness <> Fair:459 var
+R26195:26195 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R26229:26236 simuliris.simulation.fairness fairness :::x_'.(pool)' not
+R26196:26217 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R26225:26225 Corelib.Init.Datatypes <> S constr
+R26227:26227 simuliris.simulation.fairness <> n:460 var
+R26219:26222 simuliris.simulation.fairness <> Fair:459 var
+R26244:26244 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R26278:26286 simuliris.simulation.fairness fairness :::x_'.(state)' not
+R26245:26266 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R26274:26274 Corelib.Init.Datatypes <> S constr
+R26276:26276 simuliris.simulation.fairness <> n:460 var
+R26268:26271 simuliris.simulation.fairness <> Fair:459 var
+R26393:26422 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+R26512:26538 simuliris.simulation.fairness <> fair_div_delay_to_exec_succ thm
+R26549:26575 simuliris.simulation.fairness <> fair_div_delay_to_exec_succ thm
+R26594:26623 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+def 26733:26758 <> fair_div_delay_to_div_exec
+binder 26761:26761 <> p:461
+binder 26763:26763 <> T:462
+binder 26765:26765 <> D:463
+binder 26767:26768 <> σ:464
+R26778:26791 simuliris.simulation.fairness <> fair_div_delay coind
+R26793:26793 simuliris.simulation.fairness <> p:461 var
+R26795:26795 simuliris.simulation.fairness <> T:462 var
+R26797:26797 simuliris.simulation.fairness <> D:463 var
+R26799:26800 simuliris.simulation.fairness <> σ:464 var
+binder 26772:26775 <> Fair:465
+R26805:26812 simuliris.simulation.fairness <> div_exec rec
+R26814:26814 simuliris.simulation.fairness <> p:461 var
+R26816:26816 simuliris.simulation.fairness <> T:462 var
+R26818:26819 simuliris.simulation.fairness <> σ:464 var
+R26831:26838 simuliris.simulation.fairness <> the_exec proj
+binder 26840:26840 <> n:466
+R26845:26866 simuliris.simulation.fairness <> fair_div_delay_to_exec def
+R26873:26873 simuliris.simulation.fairness <> n:466 var
+R26868:26871 simuliris.simulation.fairness <> Fair:465 var
+R26933:26940 simuliris.simulation.fairness <> diverges def
+R27010:27036 simuliris.simulation.fairness <> fair_div_delay_to_exec_step thm
+prf 27055:27082 <> fair_div_delay_to_exec_steps
+binder 27085:27085 <> p:467
+binder 27087:27087 <> T:468
+binder 27089:27089 <> D:469
+binder 27091:27092 <> σ:470
+R27102:27115 simuliris.simulation.fairness <> fair_div_delay coind
+R27117:27117 simuliris.simulation.fairness <> p:467 var
+R27119:27119 simuliris.simulation.fairness <> T:468 var
+R27121:27121 simuliris.simulation.fairness <> D:469 var
+R27123:27124 simuliris.simulation.fairness <> σ:470 var
+binder 27096:27099 <> Fair:471
+binder 27127:27127 <> i:472
+binder 27129:27129 <> n:473
+R27151:27155 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R27142:27144 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27137:27140 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R27141:27141 simuliris.simulation.fairness <> i:472 var
+R27136:27136 simuliris.simulation.fairness <> D:469 var
+R27145:27148 Corelib.Init.Datatypes <> Some constr
+R27150:27150 simuliris.simulation.fairness <> n:473 var
+R27156:27159 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R27161:27162 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 27160:27160 <> m:474
+R27170:27174 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R27164:27168 Stdlib.Unicode.Utf8 <> :::x_'≤'_x not
+R27163:27163 simuliris.simulation.fairness <> m:474 var
+R27169:27169 simuliris.simulation.fairness <> n:473 var
+R27215:27217 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27175:27175 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R27209:27214 simuliris.simulation.fairness fairness :::x_'.(id)' not
+R27176:27201 simuliris.simulation.fairness <> fair_div_delay_to_div_exec def
+R27208:27208 simuliris.simulation.fairness <> m:474 var
+R27203:27206 simuliris.simulation.fairness <> Fair:471 var
+R27218:27218 simuliris.simulation.fairness <> i:472 var
+R27362:27391 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+R27477:27482 stdpp.base <> decide def
+R27486:27488 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27599:27628 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+R27716:27721 stdpp.base <> decide def
+R27725:27727 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27889:27891 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R27998:27998 Corelib.Init.Datatypes <> S constr
+prf 28062:28091 <> fair_div_delay_to_exec_advance
+binder 28094:28094 <> p:475
+binder 28096:28096 <> T:476
+binder 28098:28098 <> D:477
+binder 28100:28101 <> σ:478
+R28111:28124 simuliris.simulation.fairness <> fair_div_delay coind
+R28126:28126 simuliris.simulation.fairness <> p:475 var
+R28128:28128 simuliris.simulation.fairness <> T:476 var
+R28130:28130 simuliris.simulation.fairness <> D:477 var
+R28132:28133 simuliris.simulation.fairness <> σ:478 var
+binder 28105:28108 <> Fair:479
+binder 28136:28136 <> m:480
+R28143:28146 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R28191:28193 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 28147:28148 <> T':481
+binder 28150:28151 <> D':482
+binder 28153:28155 <> σ':483
+R28165:28178 simuliris.simulation.fairness <> fair_div_delay coind
+R28180:28180 simuliris.simulation.fairness <> p:475 var
+R28182:28183 simuliris.simulation.fairness <> T':481 var
+R28185:28186 simuliris.simulation.fairness <> D':482 var
+R28188:28190 simuliris.simulation.fairness <> σ':483 var
+binder 28158:28162 <> Fair':484
+R28194:28197 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R28199:28200 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 28198:28198 <> n:485
+R28235:28237 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R28201:28226 simuliris.simulation.fairness <> fair_div_delay_to_div_exec def
+R28234:28234 simuliris.simulation.fairness <> n:485 var
+R28228:28232 simuliris.simulation.fairness <> Fair':484 var
+R28238:28263 simuliris.simulation.fairness <> fair_div_delay_to_div_exec def
+R28272:28274 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R28271:28271 simuliris.simulation.fairness <> m:480 var
+R28275:28275 simuliris.simulation.fairness <> n:485 var
+R28265:28268 simuliris.simulation.fairness <> Fair:479 var
+R28384:28413 simuliris.simulation.fairness <> fair_div_delay_step_inv_strong thm
+prf 28516:28542 <> fair_div_delay_to_exec_fair
+binder 28545:28545 <> p:486
+binder 28547:28547 <> T:487
+binder 28549:28549 <> D:488
+binder 28551:28552 <> σ:489
+R28562:28575 simuliris.simulation.fairness <> fair_div_delay coind
+R28577:28577 simuliris.simulation.fairness <> p:486 var
+R28579:28579 simuliris.simulation.fairness <> T:487 var
+R28581:28581 simuliris.simulation.fairness <> D:488 var
+R28583:28584 simuliris.simulation.fairness <> σ:489 var
+binder 28556:28559 <> Fair:490
+R28592:28595 simuliris.simulation.fairness <> fair def
+R28598:28623 simuliris.simulation.fairness <> fair_div_delay_to_div_exec def
+R28625:28628 simuliris.simulation.fairness <> Fair:490 var
+R28689:28718 simuliris.simulation.fairness <> fair_div_delay_to_exec_advance thm
+R28727:28729 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R28780:28786 stdpp.base <> is_Some def
+R28791:28794 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R28823:28841 simuliris.simulation.fairness <> fair_div_delays_for thm
+R28887:28905 simuliris.simulation.fairness <> active_threads_spec thm
+R28931:28933 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R28927:28929 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R29127:29135 simuliris.simulation.language <> val_stuck thm
+R29152:29179 simuliris.simulation.fairness <> fair_div_delay_to_exec_steps thm
+R29255:29257 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R29251:29253 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+prf 29373:29396 <> fair_div_coind_delay_iff
+binder 29398:29398 <> p:491
+binder 29400:29400 <> T:492
+binder 29402:29403 <> σ:493
+R29431:29436 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R29467:29467 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R29410:29423 simuliris.simulation.fairness <> fair_div_coind coind
+R29425:29425 simuliris.simulation.fairness <> p:491 var
+R29427:29427 simuliris.simulation.fairness <> T:492 var
+R29429:29430 simuliris.simulation.fairness <> σ:493 var
+R29437:29440 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R29442:29443 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 29441:29441 <> D:494
+R29444:29457 simuliris.simulation.fairness <> fair_div_delay coind
+R29459:29459 simuliris.simulation.fairness <> p:491 var
+R29461:29461 simuliris.simulation.fairness <> T:492 var
+R29463:29463 simuliris.simulation.fairness <> D:494 var
+R29465:29466 simuliris.simulation.fairness <> σ:493 var
+R29510:29541 simuliris.simulation.fairness <> fair_div_coind_fair_div_delay_tc thm
+R29557:29588 simuliris.simulation.fairness <> fair_div_delay_tc_fair_div_delay thm
+R29641:29669 simuliris.simulation.fairness <> fair_div_delay_fair_div_coind thm
+prf 29690:29715 <> fair_div_delay_traditional
+binder 29717:29717 <> p:495
+binder 29719:29719 <> T:496
+binder 29721:29721 <> D:497
+binder 29723:29724 <> σ:498
+R29754:29758 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R29731:29744 simuliris.simulation.fairness <> fair_div_delay coind
+R29746:29746 simuliris.simulation.fairness <> p:495 var
+R29748:29748 simuliris.simulation.fairness <> T:496 var
+R29750:29750 simuliris.simulation.fairness <> D:497 var
+R29752:29753 simuliris.simulation.fairness <> σ:498 var
+R29759:29766 simuliris.simulation.fairness <> fair_div def
+R29768:29768 simuliris.simulation.fairness <> p:495 var
+R29770:29770 simuliris.simulation.fairness <> T:496 var
+R29772:29773 simuliris.simulation.fairness <> σ:498 var
+R29810:29835 simuliris.simulation.fairness <> fair_div_delay_to_div_exec def
+R29855:29881 simuliris.simulation.fairness <> fair_div_delay_to_exec_fair thm
+prf 29904:29929 <> fair_div_coind_traditional
+binder 29931:29931 <> p:499
+binder 29933:29933 <> T:500
+binder 29935:29936 <> σ:501
+R29964:29968 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R29943:29956 simuliris.simulation.fairness <> fair_div_coind coind
+R29958:29958 simuliris.simulation.fairness <> p:499 var
+R29960:29960 simuliris.simulation.fairness <> T:500 var
+R29962:29963 simuliris.simulation.fairness <> σ:501 var
+R29969:29976 simuliris.simulation.fairness <> fair_div def
+R29978:29978 simuliris.simulation.fairness <> p:499 var
+R29980:29980 simuliris.simulation.fairness <> T:500 var
+R29982:29983 simuliris.simulation.fairness <> σ:501 var
+R30007:30030 simuliris.simulation.fairness <> fair_div_coind_delay_iff thm
+R30064:30089 simuliris.simulation.fairness <> fair_div_delay_traditional thm
+prf 30112:30137 <> fair_div_traditional_coind
+binder 30139:30139 <> p:502
+binder 30141:30141 <> T:503
+binder 30143:30144 <> σ:504
+R30167:30176 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R30218:30218 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R30151:30159 simuliris.simulation.language <> pool_safe def
+R30161:30161 simuliris.simulation.fairness <> p:502 var
+R30163:30163 simuliris.simulation.fairness <> T:503 var
+R30165:30166 simuliris.simulation.fairness <> σ:504 var
+R30192:30196 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R30177:30184 simuliris.simulation.fairness <> fair_div def
+R30186:30186 simuliris.simulation.fairness <> p:502 var
+R30188:30188 simuliris.simulation.fairness <> T:503 var
+R30190:30191 simuliris.simulation.fairness <> σ:504 var
+R30197:30210 simuliris.simulation.fairness <> fair_div_coind coind
+R30212:30212 simuliris.simulation.fairness <> p:502 var
+R30214:30214 simuliris.simulation.fairness <> T:503 var
+R30216:30217 simuliris.simulation.fairness <> σ:504 var
+R30281:30306 simuliris.simulation.fairness <> fair_div_to_fair_div_coind thm
+R30322:30347 simuliris.simulation.fairness <> fair_div_coind_traditional thm
+R30363:30382 simuliris.simulation.fairness fairness.delay_based_fairness <> sec
+R30389:30396 simuliris.simulation.fairness fairness <> sec

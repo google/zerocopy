@@ -1,0 +1,1344 @@
+DIGEST 14e7f7a4423a12deb3035cd2db9581fb
+Fsimuliris.tree_borrows.early_proofmode
+R28:29 iris.bi.bi <> <> lib
+R67:78 iris.proofmode.rocq_tactics <> <> lib
+R80:88 iris.proofmode.reduction <> <> lib
+R126:134 iris.proofmode.proofmode <> <> lib
+R178:182 simuliris.simulation.slsls <> <> lib
+R184:190 simuliris.simulation.lifting <> <> lib
+R192:199 simuliris.simulation.language <> <> lib
+R243:254 simuliris.base_logic.gen_sim_heap <> <> lib
+R256:267 simuliris.base_logic.gen_sim_prog <> <> lib
+R311:315 simuliris.simulation.slsls <> <> lib
+R361:367 simuliris.tree_borrows.tactics <> <> lib
+R369:383 simuliris.tree_borrows.class_instances <> <> lib
+R429:436 simuliris.tree_borrows.notation <> <> lib
+R438:441 simuliris.tree_borrows.defs <> <> lib
+R443:455 simuliris.tree_borrows.logical_state <> <> lib
+R466:467 iris.bi.bi bi <> mod
+sec 479:481 <> sim
+R495:500 simuliris.tree_borrows.logical_state <> sborGS class
+prf 514:529 <> sim_value_result
+binder 531:533 <> v_t:3
+binder 535:537 <> v_s:4
+R551:555 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R545:550 simuliris.tree_borrows.lang_base <> result ind
+R562:566 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R556:561 simuliris.tree_borrows.lang_base <> result ind
+R567:571 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R573:574 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+binder 540:541 <> Φ:5
+binder 577:578 <> π:6
+R608:613 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R584:585 simuliris.tree_borrows.early_proofmode <> Φ:5 var
+R599:602 simuliris.tree_borrows.lang_base <> ValR constr
+R604:606 simuliris.tree_borrows.early_proofmode <> v_s:4 var
+R588:591 simuliris.tree_borrows.lang_base <> ValR constr
+R593:595 simuliris.tree_borrows.early_proofmode <> v_t:3 var
+R618:622 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R625:626 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R631:634 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R637:639 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R635:636 simuliris.tree_borrows.early_proofmode <> Φ:5 var
+R623:624 simuliris.tree_borrows.early_proofmode <> π:6 var
+R614:614 simuliris.tree_borrows.notation <> ::expr_scope:'#'_x not
+R615:617 simuliris.tree_borrows.early_proofmode <> v_t:3 var
+R627:627 simuliris.tree_borrows.notation <> ::expr_scope:'#'_x not
+R628:630 simuliris.tree_borrows.early_proofmode <> v_s:4 var
+R669:681 simuliris.simulation.slsls <> sim_expr_base thm
+R693:696 simuliris.tree_borrows.lang_base <> ValR constr
+R705:708 simuliris.tree_borrows.lang_base <> ValR constr
+prf 735:750 <> sim_place_result
+binder 752:754 <> l_t:7
+binder 756:758 <> t_t:8
+binder 760:762 <> T_t:9
+binder 764:766 <> l_s:10
+binder 768:770 <> t_s:11
+binder 772:774 <> T_s:12
+R788:792 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R782:787 simuliris.tree_borrows.lang_base <> result ind
+R799:803 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R793:798 simuliris.tree_borrows.lang_base <> result ind
+R804:808 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R810:811 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+binder 777:778 <> Φ:13
+binder 814:815 <> π:14
+R865:870 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R821:822 simuliris.tree_borrows.early_proofmode <> Φ:13 var
+R846:851 simuliris.tree_borrows.lang_base <> PlaceR constr
+R853:855 simuliris.tree_borrows.early_proofmode <> l_s:10 var
+R857:859 simuliris.tree_borrows.early_proofmode <> t_s:11 var
+R861:863 simuliris.tree_borrows.early_proofmode <> T_s:12 var
+R825:830 simuliris.tree_borrows.lang_base <> PlaceR constr
+R832:834 simuliris.tree_borrows.early_proofmode <> l_t:7 var
+R836:838 simuliris.tree_borrows.early_proofmode <> t_t:8 var
+R840:842 simuliris.tree_borrows.early_proofmode <> T_t:9 var
+R888:892 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R895:896 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R914:917 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R920:922 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R918:919 simuliris.tree_borrows.early_proofmode <> Φ:13 var
+R893:894 simuliris.tree_borrows.early_proofmode <> π:14 var
+R871:875 simuliris.tree_borrows.lang_base <> Place constr
+R877:879 simuliris.tree_borrows.early_proofmode <> l_t:7 var
+R881:883 simuliris.tree_borrows.early_proofmode <> t_t:8 var
+R885:887 simuliris.tree_borrows.early_proofmode <> T_t:9 var
+R897:901 simuliris.tree_borrows.lang_base <> Place constr
+R903:905 simuliris.tree_borrows.early_proofmode <> l_s:10 var
+R907:909 simuliris.tree_borrows.early_proofmode <> t_s:11 var
+R911:913 simuliris.tree_borrows.early_proofmode <> T_s:12 var
+R952:964 simuliris.simulation.slsls <> sim_expr_base thm
+R976:981 simuliris.tree_borrows.lang_base <> PlaceR constr
+R992:997 simuliris.tree_borrows.lang_base <> PlaceR constr
+prf 1026:1035 <> sim_result
+binder 1037:1039 <> r_t:15
+binder 1041:1043 <> r_s:16
+R1057:1061 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1051:1056 simuliris.tree_borrows.lang_base <> result ind
+R1068:1072 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1062:1067 simuliris.tree_borrows.lang_base <> result ind
+R1073:1077 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R1079:1080 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+binder 1046:1047 <> Φ:17
+binder 1083:1084 <> π:18
+R1100:1105 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R1090:1091 simuliris.tree_borrows.early_proofmode <> Φ:17 var
+R1097:1099 simuliris.tree_borrows.early_proofmode <> r_s:16 var
+R1093:1095 simuliris.tree_borrows.early_proofmode <> r_t:15 var
+R1119:1123 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R1126:1127 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R1141:1144 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R1147:1149 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R1145:1146 simuliris.tree_borrows.early_proofmode <> Φ:17 var
+R1124:1125 simuliris.tree_borrows.early_proofmode <> π:18 var
+R1106:1114 simuliris.tree_borrows.lang_base <> of_result def
+R1116:1118 simuliris.tree_borrows.early_proofmode <> r_t:15 var
+R1128:1136 simuliris.tree_borrows.lang_base <> of_result def
+R1138:1140 simuliris.tree_borrows.early_proofmode <> r_s:16 var
+R1179:1191 simuliris.simulation.slsls <> sim_expr_base thm
+R1204:1216 simuliris.simulation.slsls <> lift_post_val thm
+prf 1231:1247 <> tac_sim_expr_eval
+binder 1249:1250 <> Δ:19
+binder 1252:1253 <> Φ:20
+binder 1255:1257 <> e_t:21
+binder 1259:1262 <> e_t':22
+binder 1264:1266 <> e_s:23
+binder 1268:1271 <> e_s':24
+binder 1273:1274 <> π:25
+R1280:1280 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1311:1318 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1281:1285 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1297:1299 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1293:1296 simuliris.tree_borrows.early_proofmode <> e_t':22 var
+binder 1286:1290 <> e_t'':26
+R1303:1305 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1300:1302 simuliris.tree_borrows.early_proofmode <> e_t:21 var
+R1306:1310 simuliris.tree_borrows.early_proofmode <> e_t'':26 var
+R1319:1319 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1350:1357 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1320:1324 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1336:1338 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1332:1335 simuliris.tree_borrows.early_proofmode <> e_s':24 var
+binder 1325:1329 <> e_s'':27
+R1342:1344 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1339:1341 simuliris.tree_borrows.early_proofmode <> e_s:23 var
+R1345:1349 simuliris.tree_borrows.early_proofmode <> e_s'':27 var
+R1402:1406 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1358:1369 iris.proofmode.environments <> envs_entails def
+R1379:1383 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1386:1387 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1392:1395 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1398:1400 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1396:1397 simuliris.tree_borrows.early_proofmode <> Φ:20 var
+R1384:1385 simuliris.tree_borrows.early_proofmode <> π:25 var
+R1375:1378 simuliris.tree_borrows.early_proofmode <> e_t':22 var
+R1388:1391 simuliris.tree_borrows.early_proofmode <> e_s':24 var
+R1371:1372 simuliris.tree_borrows.early_proofmode <> Δ:19 var
+R1407:1418 iris.proofmode.environments <> envs_entails def
+R1427:1431 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1434:1435 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1439:1442 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1445:1447 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R1443:1444 simuliris.tree_borrows.early_proofmode <> Φ:20 var
+R1432:1433 simuliris.tree_borrows.early_proofmode <> π:25 var
+R1424:1426 simuliris.tree_borrows.early_proofmode <> e_t:21 var
+R1436:1438 simuliris.tree_borrows.early_proofmode <> e_s:23 var
+R1420:1421 simuliris.tree_borrows.early_proofmode <> Δ:19 var
+prf 1487:1510 <> tac_target_red_expr_eval
+binder 1512:1513 <> Δ:28
+binder 1515:1516 <> Ψ:29
+binder 1518:1520 <> e_t:30
+binder 1522:1525 <> e_t':31
+R1531:1531 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1562:1569 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1532:1536 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1548:1550 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1544:1547 simuliris.tree_borrows.early_proofmode <> e_t':31 var
+binder 1537:1541 <> e_t'':32
+R1554:1556 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1551:1553 simuliris.tree_borrows.early_proofmode <> e_t:30 var
+R1557:1561 simuliris.tree_borrows.early_proofmode <> e_t'':32 var
+R1617:1623 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1570:1581 iris.proofmode.environments <> envs_entails def
+R1608:1612 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R1614:1615 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R1587:1596 simuliris.simulation.slsls <> target_red def
+R1598:1601 simuliris.tree_borrows.early_proofmode <> e_t':31 var
+R1603:1604 simuliris.tree_borrows.early_proofmode <> Ψ:29 var
+R1583:1584 simuliris.tree_borrows.early_proofmode <> Δ:28 var
+R1624:1635 iris.proofmode.environments <> envs_entails def
+R1641:1650 simuliris.simulation.slsls <> target_red def
+R1652:1654 simuliris.tree_borrows.early_proofmode <> e_t:30 var
+R1656:1657 simuliris.tree_borrows.early_proofmode <> Ψ:29 var
+R1637:1638 simuliris.tree_borrows.early_proofmode <> Δ:28 var
+prf 1694:1717 <> tac_source_red_expr_eval
+binder 1719:1720 <> Δ:33
+binder 1722:1723 <> Ψ:34
+binder 1725:1727 <> e_s:35
+binder 1729:1732 <> e_s':36
+binder 1734:1735 <> π:37
+R1741:1741 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1772:1779 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1742:1746 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1758:1760 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1754:1757 simuliris.tree_borrows.early_proofmode <> e_s':36 var
+binder 1747:1751 <> e_s'':38
+R1764:1766 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1761:1763 simuliris.tree_borrows.early_proofmode <> e_s:35 var
+R1767:1771 simuliris.tree_borrows.early_proofmode <> e_s'':38 var
+R1830:1836 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1780:1791 iris.proofmode.environments <> envs_entails def
+R1821:1825 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R1827:1828 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R1797:1806 simuliris.simulation.slsls <> source_red def
+R1808:1811 simuliris.tree_borrows.early_proofmode <> e_s':36 var
+R1813:1814 simuliris.tree_borrows.early_proofmode <> π:37 var
+R1816:1817 simuliris.tree_borrows.early_proofmode <> Ψ:34 var
+R1793:1794 simuliris.tree_borrows.early_proofmode <> Δ:33 var
+R1837:1848 iris.proofmode.environments <> envs_entails def
+R1854:1863 simuliris.simulation.slsls <> source_red def
+R1865:1867 simuliris.tree_borrows.early_proofmode <> e_s:35 var
+R1869:1870 simuliris.tree_borrows.early_proofmode <> π:37 var
+R1872:1873 simuliris.tree_borrows.early_proofmode <> Ψ:34 var
+R1850:1851 simuliris.tree_borrows.early_proofmode <> Δ:33 var
+prf 1910:1928 <> tac_target_red_pure
+binder 1930:1931 <> Δ:39
+binder 1933:1933 <> n:40
+binder 1935:1937 <> e_t:41
+binder 1939:1942 <> e_t':42
+binder 1944:1946 <> K_t:43
+binder 1948:1949 <> Ψ:44
+binder 1952:1953 <> ϕ:45
+R1992:1998 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1966:1973 simuliris.simulation.lifting <> PureExec class
+R1987:1990 simuliris.tree_borrows.early_proofmode <> e_t':42 var
+R1981:1983 simuliris.tree_borrows.early_proofmode <> e_t:41 var
+R1978:1978 simuliris.tree_borrows.early_proofmode <> n:40 var
+R1975:1976 simuliris.tree_borrows.early_proofmode <> ϕ:45 var
+R2001:2007 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1999:2000 simuliris.tree_borrows.early_proofmode <> ϕ:45 var
+R2066:2072 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2008:2019 iris.proofmode.environments <> envs_entails def
+R2057:2061 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2063:2064 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R2025:2034 simuliris.simulation.slsls <> target_red def
+R2037:2040 simuliris.tree_borrows.expr_semantics <> fill def
+R2042:2044 simuliris.tree_borrows.early_proofmode <> K_t:43 var
+R2046:2049 simuliris.tree_borrows.early_proofmode <> e_t':42 var
+R2052:2053 simuliris.tree_borrows.early_proofmode <> Ψ:44 var
+R2021:2022 simuliris.tree_borrows.early_proofmode <> Δ:39 var
+R2073:2084 iris.proofmode.environments <> envs_entails def
+R2090:2099 simuliris.simulation.slsls <> target_red def
+R2102:2105 simuliris.tree_borrows.expr_semantics <> fill def
+R2107:2109 simuliris.tree_borrows.early_proofmode <> K_t:43 var
+R2111:2113 simuliris.tree_borrows.early_proofmode <> e_t:41 var
+R2116:2117 simuliris.tree_borrows.early_proofmode <> Ψ:44 var
+R2086:2087 simuliris.tree_borrows.early_proofmode <> Δ:39 var
+R2150:2168 iris.proofmode.environments <> envs_entails_unseal def
+R2267:2279 simuliris.simulation.lifting <> pure_exec_ctx thm
+R2291:2310 simuliris.simulation.lifting <> target_red_lift_pure thm
+prf 2331:2349 <> tac_source_red_pure
+binder 2351:2352 <> Δ:46
+binder 2354:2354 <> n:47
+binder 2356:2358 <> e_s:48
+binder 2360:2363 <> e_s':49
+binder 2365:2367 <> K_s:50
+binder 2369:2370 <> Ψ:51
+binder 2372:2373 <> π:52
+binder 2376:2377 <> ϕ:53
+R2412:2418 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2390:2397 simuliris.simulation.lifting <> PureExec class
+R2408:2411 simuliris.tree_borrows.early_proofmode <> e_s':49 var
+R2404:2406 simuliris.tree_borrows.early_proofmode <> e_s:48 var
+R2402:2402 simuliris.tree_borrows.early_proofmode <> n:47 var
+R2399:2400 simuliris.tree_borrows.early_proofmode <> ϕ:53 var
+R2421:2427 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2419:2420 simuliris.tree_borrows.early_proofmode <> ϕ:53 var
+R2489:2495 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2428:2439 iris.proofmode.environments <> envs_entails def
+R2480:2484 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2486:2487 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R2445:2454 simuliris.simulation.slsls <> source_red def
+R2457:2460 simuliris.tree_borrows.expr_semantics <> fill def
+R2462:2464 simuliris.tree_borrows.early_proofmode <> K_s:50 var
+R2466:2469 simuliris.tree_borrows.early_proofmode <> e_s':49 var
+R2472:2473 simuliris.tree_borrows.early_proofmode <> π:52 var
+R2475:2476 simuliris.tree_borrows.early_proofmode <> Ψ:51 var
+R2441:2442 simuliris.tree_borrows.early_proofmode <> Δ:46 var
+R2496:2507 iris.proofmode.environments <> envs_entails def
+R2513:2522 simuliris.simulation.slsls <> source_red def
+R2525:2528 simuliris.tree_borrows.expr_semantics <> fill def
+R2530:2532 simuliris.tree_borrows.early_proofmode <> K_s:50 var
+R2534:2536 simuliris.tree_borrows.early_proofmode <> e_s:48 var
+R2539:2540 simuliris.tree_borrows.early_proofmode <> π:52 var
+R2542:2543 simuliris.tree_borrows.early_proofmode <> Ψ:51 var
+R2509:2510 simuliris.tree_borrows.early_proofmode <> Δ:46 var
+R2576:2594 iris.proofmode.environments <> envs_entails_unseal def
+R2693:2705 simuliris.simulation.lifting <> pure_exec_ctx thm
+R2717:2736 simuliris.simulation.lifting <> source_red_lift_pure thm
+prf 2757:2775 <> tac_target_red_base
+binder 2777:2779 <> e_t:54
+binder 2781:2782 <> Ψ:55
+binder 2784:2785 <> Δ:56
+R2831:2835 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2791:2802 iris.proofmode.environments <> envs_entails def
+R2808:2812 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R2822:2826 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2828:2829 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R2813:2814 simuliris.tree_borrows.early_proofmode <> Ψ:55 var
+R2816:2818 simuliris.tree_borrows.early_proofmode <> e_t:54 var
+R2804:2805 simuliris.tree_borrows.early_proofmode <> Δ:56 var
+R2836:2847 iris.proofmode.environments <> envs_entails def
+R2853:2862 simuliris.simulation.slsls <> target_red def
+R2864:2866 simuliris.tree_borrows.early_proofmode <> e_t:54 var
+R2868:2869 simuliris.tree_borrows.early_proofmode <> Ψ:55 var
+R2849:2850 simuliris.tree_borrows.early_proofmode <> Δ:56 var
+R2890:2908 iris.proofmode.environments <> envs_entails_unseal def
+R2940:2954 simuliris.simulation.slsls <> target_red_base thm
+prf 2968:2994 <> tac_target_red_base_no_bupd
+binder 2996:2998 <> e_t:57
+binder 3000:3001 <> Ψ:58
+binder 3003:3004 <> Δ:59
+R3045:3049 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3010:3021 iris.proofmode.environments <> envs_entails def
+R3036:3040 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3042:3043 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R3027:3028 simuliris.tree_borrows.early_proofmode <> Ψ:58 var
+R3030:3032 simuliris.tree_borrows.early_proofmode <> e_t:57 var
+R3023:3024 simuliris.tree_borrows.early_proofmode <> Δ:59 var
+R3050:3061 iris.proofmode.environments <> envs_entails def
+R3067:3076 simuliris.simulation.slsls <> target_red def
+R3078:3080 simuliris.tree_borrows.early_proofmode <> e_t:57 var
+R3082:3083 simuliris.tree_borrows.early_proofmode <> Ψ:58 var
+R3063:3064 simuliris.tree_borrows.early_proofmode <> Δ:59 var
+R3104:3122 iris.proofmode.environments <> envs_entails_unseal def
+R3154:3168 simuliris.simulation.slsls <> target_red_base thm
+prf 3183:3201 <> tac_source_red_base
+binder 3203:3205 <> e_s:60
+binder 3207:3208 <> Ψ:61
+binder 3210:3211 <> Δ:62
+binder 3213:3214 <> π:63
+R3260:3264 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3220:3231 iris.proofmode.environments <> envs_entails def
+R3237:3241 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R3251:3255 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3257:3258 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R3242:3243 simuliris.tree_borrows.early_proofmode <> Ψ:61 var
+R3245:3247 simuliris.tree_borrows.early_proofmode <> e_s:60 var
+R3233:3234 simuliris.tree_borrows.early_proofmode <> Δ:62 var
+R3265:3276 iris.proofmode.environments <> envs_entails def
+R3282:3291 simuliris.simulation.slsls <> source_red def
+R3293:3295 simuliris.tree_borrows.early_proofmode <> e_s:60 var
+R3297:3298 simuliris.tree_borrows.early_proofmode <> π:63 var
+R3300:3301 simuliris.tree_borrows.early_proofmode <> Ψ:61 var
+R3278:3279 simuliris.tree_borrows.early_proofmode <> Δ:62 var
+R3322:3340 iris.proofmode.environments <> envs_entails_unseal def
+R3359:3373 simuliris.simulation.slsls <> source_red_base thm
+prf 3387:3413 <> tac_source_red_base_no_bupd
+binder 3415:3417 <> e_s:64
+binder 3419:3420 <> Ψ:65
+binder 3422:3423 <> Δ:66
+binder 3425:3426 <> π:67
+R3467:3471 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3432:3443 iris.proofmode.environments <> envs_entails def
+R3458:3462 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3464:3465 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R3449:3450 simuliris.tree_borrows.early_proofmode <> Ψ:65 var
+R3452:3454 simuliris.tree_borrows.early_proofmode <> e_s:64 var
+R3445:3446 simuliris.tree_borrows.early_proofmode <> Δ:66 var
+R3472:3483 iris.proofmode.environments <> envs_entails def
+R3489:3498 simuliris.simulation.slsls <> source_red def
+R3500:3502 simuliris.tree_borrows.early_proofmode <> e_s:64 var
+R3504:3505 simuliris.tree_borrows.early_proofmode <> π:67 var
+R3507:3508 simuliris.tree_borrows.early_proofmode <> Ψ:65 var
+R3485:3486 simuliris.tree_borrows.early_proofmode <> Δ:66 var
+R3529:3547 iris.proofmode.environments <> envs_entails_unseal def
+R3579:3593 simuliris.simulation.slsls <> source_red_base thm
+prf 3608:3620 <> tac_sim_value
+binder 3622:3624 <> v_t:68
+binder 3626:3628 <> v_s:69
+R3642:3646 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3636:3641 simuliris.tree_borrows.lang_base <> result ind
+R3653:3657 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3647:3652 simuliris.tree_borrows.lang_base <> result ind
+R3658:3662 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3664:3665 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+binder 3631:3632 <> Φ:70
+binder 3668:3669 <> Δ:71
+binder 3671:3672 <> π:72
+R3725:3729 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3678:3689 iris.proofmode.environments <> envs_entails def
+R3695:3699 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R3700:3701 simuliris.tree_borrows.early_proofmode <> Φ:70 var
+R3715:3718 simuliris.tree_borrows.lang_base <> ValR constr
+R3720:3722 simuliris.tree_borrows.early_proofmode <> v_s:69 var
+R3704:3707 simuliris.tree_borrows.lang_base <> ValR constr
+R3709:3711 simuliris.tree_borrows.early_proofmode <> v_t:68 var
+R3691:3692 simuliris.tree_borrows.early_proofmode <> Δ:71 var
+R3730:3741 iris.proofmode.environments <> envs_entails def
+R3754:3758 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R3761:3762 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R3770:3773 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R3776:3778 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R3774:3775 simuliris.tree_borrows.early_proofmode <> Φ:70 var
+R3759:3760 simuliris.tree_borrows.early_proofmode <> π:72 var
+R3747:3749 simuliris.tree_borrows.lang_base <> Val constr
+R3751:3753 simuliris.tree_borrows.early_proofmode <> v_t:68 var
+R3763:3765 simuliris.tree_borrows.lang_base <> Val constr
+R3767:3769 simuliris.tree_borrows.early_proofmode <> v_s:69 var
+R3743:3744 simuliris.tree_borrows.early_proofmode <> Δ:71 var
+R3799:3817 iris.proofmode.environments <> envs_entails_unseal def
+R3846:3853 simuliris.simulation.slsls <> sim_bupd thm
+R3866:3881 simuliris.tree_borrows.early_proofmode <> sim_value_result thm
+prf 3895:3915 <> tac_sim_value_no_bupd
+binder 3917:3919 <> v_t:73
+binder 3921:3923 <> v_s:74
+binder 3925:3926 <> Φ:75
+binder 3928:3929 <> Δ:76
+binder 3931:3932 <> π:77
+R3980:3984 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3938:3949 iris.proofmode.environments <> envs_entails def
+R3955:3956 simuliris.tree_borrows.early_proofmode <> Φ:75 var
+R3959:3962 simuliris.tree_borrows.lang_base <> ValR constr
+R3964:3966 simuliris.tree_borrows.early_proofmode <> v_t:73 var
+R3970:3973 simuliris.tree_borrows.lang_base <> ValR constr
+R3975:3977 simuliris.tree_borrows.early_proofmode <> v_s:74 var
+R3951:3952 simuliris.tree_borrows.early_proofmode <> Δ:76 var
+R3985:3996 iris.proofmode.environments <> envs_entails def
+R4009:4013 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4016:4017 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4025:4028 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4031:4033 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4029:4030 simuliris.tree_borrows.early_proofmode <> Φ:75 var
+R4014:4015 simuliris.tree_borrows.early_proofmode <> π:77 var
+R4002:4004 simuliris.tree_borrows.lang_base <> Val constr
+R4006:4008 simuliris.tree_borrows.early_proofmode <> v_t:73 var
+R4018:4020 simuliris.tree_borrows.lang_base <> Val constr
+R4022:4024 simuliris.tree_borrows.early_proofmode <> v_s:74 var
+R3998:3999 simuliris.tree_borrows.early_proofmode <> Δ:76 var
+R4052:4070 iris.proofmode.environments <> envs_entails_unseal def
+R4089:4104 simuliris.tree_borrows.early_proofmode <> sim_value_result thm
+prf 4119:4131 <> tac_sim_place
+binder 4133:4135 <> l_t:78
+binder 4137:4139 <> l_s:79
+binder 4141:4143 <> t_t:80
+binder 4145:4147 <> t_s:81
+binder 4149:4151 <> T_t:82
+binder 4153:4155 <> T_s:83
+R4169:4173 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4163:4168 simuliris.tree_borrows.lang_base <> result ind
+R4180:4184 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4174:4179 simuliris.tree_borrows.lang_base <> result ind
+R4185:4189 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R4191:4192 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+binder 4158:4159 <> Φ:84
+binder 4195:4196 <> Δ:85
+binder 4198:4199 <> π:86
+R4272:4278 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4205:4216 iris.proofmode.environments <> envs_entails def
+R4222:4226 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R4227:4228 simuliris.tree_borrows.early_proofmode <> Φ:84 var
+R4252:4257 simuliris.tree_borrows.lang_base <> PlaceR constr
+R4259:4261 simuliris.tree_borrows.early_proofmode <> l_s:79 var
+R4263:4265 simuliris.tree_borrows.early_proofmode <> t_s:81 var
+R4267:4269 simuliris.tree_borrows.early_proofmode <> T_s:83 var
+R4231:4236 simuliris.tree_borrows.lang_base <> PlaceR constr
+R4238:4240 simuliris.tree_borrows.early_proofmode <> l_t:78 var
+R4242:4244 simuliris.tree_borrows.early_proofmode <> t_t:80 var
+R4246:4248 simuliris.tree_borrows.early_proofmode <> T_t:82 var
+R4218:4219 simuliris.tree_borrows.early_proofmode <> Δ:85 var
+R4279:4290 iris.proofmode.environments <> envs_entails def
+R4313:4317 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4320:4321 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4339:4342 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4345:4347 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4343:4344 simuliris.tree_borrows.early_proofmode <> Φ:84 var
+R4318:4319 simuliris.tree_borrows.early_proofmode <> π:86 var
+R4296:4300 simuliris.tree_borrows.lang_base <> Place constr
+R4302:4304 simuliris.tree_borrows.early_proofmode <> l_t:78 var
+R4306:4308 simuliris.tree_borrows.early_proofmode <> t_t:80 var
+R4310:4312 simuliris.tree_borrows.early_proofmode <> T_t:82 var
+R4322:4326 simuliris.tree_borrows.lang_base <> Place constr
+R4328:4330 simuliris.tree_borrows.early_proofmode <> l_s:79 var
+R4332:4334 simuliris.tree_borrows.early_proofmode <> t_s:81 var
+R4336:4338 simuliris.tree_borrows.early_proofmode <> T_s:83 var
+R4292:4293 simuliris.tree_borrows.early_proofmode <> Δ:85 var
+R4366:4384 iris.proofmode.environments <> envs_entails_unseal def
+R4413:4420 simuliris.simulation.slsls <> sim_bupd thm
+R4433:4448 simuliris.tree_borrows.early_proofmode <> sim_place_result thm
+prf 4462:4482 <> tac_sim_place_no_bupd
+binder 4484:4486 <> l_t:87
+binder 4488:4490 <> l_s:88
+binder 4492:4494 <> t_t:89
+binder 4496:4498 <> t_s:90
+binder 4500:4502 <> T_t:91
+binder 4504:4506 <> T_s:92
+binder 4508:4509 <> Φ:93
+binder 4511:4512 <> Δ:94
+binder 4514:4515 <> π:95
+R4583:4589 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4521:4532 iris.proofmode.environments <> envs_entails def
+R4538:4539 simuliris.tree_borrows.early_proofmode <> Φ:93 var
+R4542:4547 simuliris.tree_borrows.lang_base <> PlaceR constr
+R4549:4551 simuliris.tree_borrows.early_proofmode <> l_t:87 var
+R4553:4555 simuliris.tree_borrows.early_proofmode <> t_t:89 var
+R4557:4559 simuliris.tree_borrows.early_proofmode <> T_t:91 var
+R4563:4568 simuliris.tree_borrows.lang_base <> PlaceR constr
+R4570:4572 simuliris.tree_borrows.early_proofmode <> l_s:88 var
+R4574:4576 simuliris.tree_borrows.early_proofmode <> t_s:90 var
+R4578:4580 simuliris.tree_borrows.early_proofmode <> T_s:92 var
+R4534:4535 simuliris.tree_borrows.early_proofmode <> Δ:94 var
+R4590:4601 iris.proofmode.environments <> envs_entails def
+R4624:4628 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4631:4632 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4650:4653 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4656:4658 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4654:4655 simuliris.tree_borrows.early_proofmode <> Φ:93 var
+R4629:4630 simuliris.tree_borrows.early_proofmode <> π:95 var
+R4607:4611 simuliris.tree_borrows.lang_base <> Place constr
+R4613:4615 simuliris.tree_borrows.early_proofmode <> l_t:87 var
+R4617:4619 simuliris.tree_borrows.early_proofmode <> t_t:89 var
+R4621:4623 simuliris.tree_borrows.early_proofmode <> T_t:91 var
+R4633:4637 simuliris.tree_borrows.lang_base <> Place constr
+R4639:4641 simuliris.tree_borrows.early_proofmode <> l_s:88 var
+R4643:4645 simuliris.tree_borrows.early_proofmode <> t_s:90 var
+R4647:4649 simuliris.tree_borrows.early_proofmode <> T_s:92 var
+R4603:4604 simuliris.tree_borrows.early_proofmode <> Δ:94 var
+R4677:4695 iris.proofmode.environments <> envs_entails_unseal def
+R4727:4742 simuliris.tree_borrows.early_proofmode <> sim_place_result thm
+prf 4757:4770 <> tac_sim_result
+binder 4772:4774 <> v_t:96
+binder 4776:4778 <> v_s:97
+R4792:4796 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4786:4791 simuliris.tree_borrows.lang_base <> result ind
+R4803:4807 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4797:4802 simuliris.tree_borrows.lang_base <> result ind
+R4808:4812 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R4814:4815 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+binder 4781:4782 <> Φ:98
+binder 4818:4819 <> Δ:99
+binder 4821:4822 <> π:100
+R4861:4865 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4828:4839 iris.proofmode.environments <> envs_entails def
+R4845:4849 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R4850:4851 simuliris.tree_borrows.early_proofmode <> Φ:98 var
+R4857:4859 simuliris.tree_borrows.early_proofmode <> v_s:97 var
+R4853:4855 simuliris.tree_borrows.early_proofmode <> v_t:96 var
+R4841:4842 simuliris.tree_borrows.early_proofmode <> Δ:99 var
+R4866:4877 iris.proofmode.environments <> envs_entails def
+R4896:4900 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4903:4904 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4918:4921 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4924:4926 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R4922:4923 simuliris.tree_borrows.early_proofmode <> Φ:98 var
+R4901:4902 simuliris.tree_borrows.early_proofmode <> π:100 var
+R4883:4891 simuliris.tree_borrows.lang_base <> of_result def
+R4893:4895 simuliris.tree_borrows.early_proofmode <> v_t:96 var
+R4905:4913 simuliris.tree_borrows.lang_base <> of_result def
+R4915:4917 simuliris.tree_borrows.early_proofmode <> v_s:97 var
+R4879:4880 simuliris.tree_borrows.early_proofmode <> Δ:99 var
+R4947:4965 iris.proofmode.environments <> envs_entails_unseal def
+R4994:5001 simuliris.simulation.slsls <> sim_bupd thm
+R5014:5023 simuliris.tree_borrows.early_proofmode <> sim_result thm
+prf 5037:5058 <> tac_sim_result_no_bupd
+binder 5060:5062 <> v_t:101
+binder 5064:5066 <> v_s:102
+binder 5068:5069 <> Φ:103
+binder 5071:5072 <> Δ:104
+binder 5074:5075 <> π:105
+R5109:5113 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5081:5092 iris.proofmode.environments <> envs_entails def
+R5098:5099 simuliris.tree_borrows.early_proofmode <> Φ:103 var
+R5101:5103 simuliris.tree_borrows.early_proofmode <> v_t:101 var
+R5105:5107 simuliris.tree_borrows.early_proofmode <> v_s:102 var
+R5094:5095 simuliris.tree_borrows.early_proofmode <> Δ:104 var
+R5114:5125 iris.proofmode.environments <> envs_entails def
+R5144:5148 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5151:5152 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5166:5169 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5172:5174 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5170:5171 simuliris.tree_borrows.early_proofmode <> Φ:103 var
+R5149:5150 simuliris.tree_borrows.early_proofmode <> π:105 var
+R5131:5139 simuliris.tree_borrows.lang_base <> of_result def
+R5141:5143 simuliris.tree_borrows.early_proofmode <> v_t:101 var
+R5153:5161 simuliris.tree_borrows.lang_base <> of_result def
+R5163:5165 simuliris.tree_borrows.early_proofmode <> v_s:102 var
+R5127:5128 simuliris.tree_borrows.early_proofmode <> Δ:104 var
+R5193:5211 iris.proofmode.environments <> envs_entails_unseal def
+R5230:5239 simuliris.tree_borrows.early_proofmode <> sim_result thm
+prf 5254:5269 <> tac_sim_bind_val
+binder 5271:5273 <> K_t:106
+binder 5275:5277 <> K_s:107
+binder 5279:5280 <> Δ:108
+binder 5282:5283 <> Φ:109
+binder 5285:5287 <> e_t:110
+binder 5289:5291 <> f_t:111
+binder 5293:5295 <> e_s:112
+binder 5297:5299 <> f_s:113
+binder 5301:5302 <> π:114
+R5336:5404 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5311:5314 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5335:5335 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5308:5310 simuliris.tree_borrows.early_proofmode <> f_t:111 var
+R5315:5317 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5321:5322 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5318:5320 <> e_t:115
+R5323:5326 simuliris.tree_borrows.expr_semantics <> fill def
+R5328:5330 simuliris.tree_borrows.early_proofmode <> K_t:106 var
+R5332:5334 simuliris.tree_borrows.early_proofmode <> e_t:115 var
+R5433:5439 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5408:5411 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5432:5432 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5405:5407 simuliris.tree_borrows.early_proofmode <> f_s:113 var
+R5412:5414 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5418:5419 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5415:5417 <> e_s:116
+R5420:5423 simuliris.tree_borrows.expr_semantics <> fill def
+R5425:5427 simuliris.tree_borrows.early_proofmode <> K_s:107 var
+R5429:5431 simuliris.tree_borrows.early_proofmode <> e_s:116 var
+R5530:5536 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5440:5451 iris.proofmode.environments <> envs_entails def
+R5460:5464 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5467:5468 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5472:5475 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5524:5526 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R5476:5478 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5488:5489 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5479:5482 <> e_t':117
+binder 5484:5487 <> e_s':118
+R5498:5502 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5505:5506 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5515:5518 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5521:5523 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5519:5520 simuliris.tree_borrows.early_proofmode <> Φ:109 var
+R5503:5504 simuliris.tree_borrows.early_proofmode <> π:114 var
+R5490:5492 simuliris.tree_borrows.early_proofmode <> f_t:111 var
+R5494:5497 simuliris.tree_borrows.early_proofmode <> e_t':117 var
+R5507:5509 simuliris.tree_borrows.early_proofmode <> f_s:113 var
+R5511:5514 simuliris.tree_borrows.early_proofmode <> e_s':118 var
+R5465:5466 simuliris.tree_borrows.early_proofmode <> π:114 var
+R5457:5459 simuliris.tree_borrows.early_proofmode <> e_t:110 var
+R5469:5471 simuliris.tree_borrows.early_proofmode <> e_s:112 var
+R5453:5454 simuliris.tree_borrows.early_proofmode <> Δ:108 var
+R5537:5548 iris.proofmode.environments <> envs_entails def
+R5566:5570 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5573:5574 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5587:5590 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5593:5595 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5591:5592 simuliris.tree_borrows.early_proofmode <> Φ:109 var
+R5571:5572 simuliris.tree_borrows.early_proofmode <> π:114 var
+R5554:5557 simuliris.tree_borrows.expr_semantics <> fill def
+R5559:5561 simuliris.tree_borrows.early_proofmode <> K_t:106 var
+R5563:5565 simuliris.tree_borrows.early_proofmode <> e_t:110 var
+R5575:5578 simuliris.tree_borrows.expr_semantics <> fill def
+R5580:5582 simuliris.tree_borrows.early_proofmode <> K_s:107 var
+R5584:5586 simuliris.tree_borrows.early_proofmode <> e_s:112 var
+R5550:5551 simuliris.tree_borrows.early_proofmode <> Δ:108 var
+R5616:5634 iris.proofmode.environments <> envs_entails_unseal def
+R5679:5686 simuliris.simulation.slsls <> sim_bind thm
+prf 5735:5746 <> tac_sim_bind
+binder 5748:5750 <> K_t:119
+binder 5752:5754 <> K_s:120
+binder 5756:5757 <> Δ:121
+binder 5759:5760 <> Φ:122
+binder 5762:5764 <> e_t:123
+binder 5766:5768 <> f_t:124
+binder 5770:5772 <> e_s:125
+binder 5774:5776 <> f_s:126
+binder 5778:5779 <> π:127
+R5813:5881 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5788:5791 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5812:5812 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5785:5787 simuliris.tree_borrows.early_proofmode <> f_t:124 var
+R5792:5794 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5798:5799 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5795:5797 <> e_t:128
+R5800:5803 simuliris.tree_borrows.expr_semantics <> fill def
+R5805:5807 simuliris.tree_borrows.early_proofmode <> K_t:119 var
+R5809:5811 simuliris.tree_borrows.early_proofmode <> e_t:128 var
+R5910:5916 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5885:5888 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5909:5909 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5882:5884 simuliris.tree_borrows.early_proofmode <> f_s:126 var
+R5889:5891 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5895:5896 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5892:5894 <> e_s:129
+R5897:5900 simuliris.tree_borrows.expr_semantics <> fill def
+R5902:5904 simuliris.tree_borrows.early_proofmode <> K_s:120 var
+R5906:5908 simuliris.tree_borrows.early_proofmode <> e_s:129 var
+R6007:6013 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5917:5928 iris.proofmode.environments <> envs_entails def
+R5937:5941 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5944:5945 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5949:5952 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R6001:6003 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5953:5955 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5965:5966 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5956:5959 <> e_t':130
+binder 5961:5964 <> e_s':131
+R5975:5979 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5982:5983 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5992:5995 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5998:6000 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R5996:5997 simuliris.tree_borrows.early_proofmode <> Φ:122 var
+R5980:5981 simuliris.tree_borrows.early_proofmode <> π:127 var
+R5967:5969 simuliris.tree_borrows.early_proofmode <> f_t:124 var
+R5971:5974 simuliris.tree_borrows.early_proofmode <> e_t':130 var
+R5984:5986 simuliris.tree_borrows.early_proofmode <> f_s:126 var
+R5988:5991 simuliris.tree_borrows.early_proofmode <> e_s':131 var
+R5942:5943 simuliris.tree_borrows.early_proofmode <> π:127 var
+R5934:5936 simuliris.tree_borrows.early_proofmode <> e_t:123 var
+R5946:5948 simuliris.tree_borrows.early_proofmode <> e_s:125 var
+R5930:5931 simuliris.tree_borrows.early_proofmode <> Δ:121 var
+R6014:6025 iris.proofmode.environments <> envs_entails def
+R6043:6047 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R6050:6051 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R6064:6067 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R6070:6072 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R6068:6069 simuliris.tree_borrows.early_proofmode <> Φ:122 var
+R6048:6049 simuliris.tree_borrows.early_proofmode <> π:127 var
+R6031:6034 simuliris.tree_borrows.expr_semantics <> fill def
+R6036:6038 simuliris.tree_borrows.early_proofmode <> K_t:119 var
+R6040:6042 simuliris.tree_borrows.early_proofmode <> e_t:123 var
+R6052:6055 simuliris.tree_borrows.expr_semantics <> fill def
+R6057:6059 simuliris.tree_borrows.early_proofmode <> K_s:120 var
+R6061:6063 simuliris.tree_borrows.early_proofmode <> e_s:125 var
+R6027:6028 simuliris.tree_borrows.early_proofmode <> Δ:121 var
+R6093:6111 iris.proofmode.environments <> envs_entails_unseal def
+R6156:6168 simuliris.simulation.slsls <> sim_expr_bind thm
+prf 6217:6235 <> tac_target_red_bind
+binder 6237:6239 <> K_t:132
+binder 6241:6243 <> e_t:133
+binder 6245:6247 <> f_t:134
+binder 6249:6250 <> Ψ:135
+binder 6252:6253 <> Δ:136
+R6287:6293 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6262:6265 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6286:6286 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6259:6261 simuliris.tree_borrows.early_proofmode <> f_t:134 var
+R6266:6268 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6272:6273 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6269:6271 <> e_t:137
+R6274:6277 simuliris.tree_borrows.expr_semantics <> fill def
+R6279:6281 simuliris.tree_borrows.early_proofmode <> K_t:132 var
+R6283:6285 simuliris.tree_borrows.early_proofmode <> e_t:137 var
+R6373:6379 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6294:6305 iris.proofmode.environments <> envs_entails def
+R6364:6368 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R6370:6371 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R6311:6320 simuliris.simulation.slsls <> target_red def
+R6322:6324 simuliris.tree_borrows.early_proofmode <> e_t:133 var
+R6327:6329 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6334:6335 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6330:6333 <> e_t':138
+R6336:6345 simuliris.simulation.slsls <> target_red def
+R6348:6350 simuliris.tree_borrows.early_proofmode <> f_t:134 var
+R6352:6355 simuliris.tree_borrows.early_proofmode <> e_t':138 var
+R6358:6359 simuliris.tree_borrows.early_proofmode <> Ψ:135 var
+R6307:6308 simuliris.tree_borrows.early_proofmode <> Δ:136 var
+R6380:6391 iris.proofmode.environments <> envs_entails def
+R6397:6406 simuliris.simulation.slsls <> target_red def
+R6409:6412 simuliris.tree_borrows.expr_semantics <> fill def
+R6414:6416 simuliris.tree_borrows.early_proofmode <> K_t:132 var
+R6418:6420 simuliris.tree_borrows.early_proofmode <> e_t:133 var
+R6423:6424 simuliris.tree_borrows.early_proofmode <> Ψ:135 var
+R6393:6394 simuliris.tree_borrows.early_proofmode <> Δ:136 var
+R6445:6463 iris.proofmode.environments <> envs_entails_unseal def
+R6504:6518 simuliris.simulation.slsls <> target_red_bind thm
+prf 6547:6565 <> tac_source_red_bind
+binder 6567:6569 <> K_s:139
+binder 6571:6573 <> e_s:140
+binder 6575:6577 <> f_s:141
+binder 6579:6580 <> Ψ:142
+binder 6582:6583 <> Δ:143
+binder 6585:6586 <> π:144
+R6620:6626 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6595:6598 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6619:6619 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6592:6594 simuliris.tree_borrows.early_proofmode <> f_s:141 var
+R6599:6601 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6605:6606 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6602:6604 <> e_s:145
+R6607:6610 simuliris.tree_borrows.expr_semantics <> fill def
+R6612:6614 simuliris.tree_borrows.early_proofmode <> K_s:139 var
+R6616:6618 simuliris.tree_borrows.early_proofmode <> e_s:145 var
+R6712:6718 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6627:6638 iris.proofmode.environments <> envs_entails def
+R6703:6707 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R6709:6710 simuliris.tree_borrows.early_proofmode <> sim.Σ var
+R6644:6653 simuliris.simulation.slsls <> source_red def
+R6655:6657 simuliris.tree_borrows.early_proofmode <> e_s:140 var
+R6659:6660 simuliris.tree_borrows.early_proofmode <> π:144 var
+R6663:6665 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6670:6671 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6666:6669 <> e_s':146
+R6672:6681 simuliris.simulation.slsls <> source_red def
+R6684:6686 simuliris.tree_borrows.early_proofmode <> f_s:141 var
+R6688:6691 simuliris.tree_borrows.early_proofmode <> e_s':146 var
+R6694:6695 simuliris.tree_borrows.early_proofmode <> π:144 var
+R6697:6698 simuliris.tree_borrows.early_proofmode <> Ψ:142 var
+R6640:6641 simuliris.tree_borrows.early_proofmode <> Δ:143 var
+R6719:6730 iris.proofmode.environments <> envs_entails def
+R6736:6745 simuliris.simulation.slsls <> source_red def
+R6748:6751 simuliris.tree_borrows.expr_semantics <> fill def
+R6753:6755 simuliris.tree_borrows.early_proofmode <> K_s:139 var
+R6757:6759 simuliris.tree_borrows.early_proofmode <> e_s:140 var
+R6762:6763 simuliris.tree_borrows.early_proofmode <> π:144 var
+R6765:6766 simuliris.tree_borrows.early_proofmode <> Ψ:142 var
+R6732:6733 simuliris.tree_borrows.early_proofmode <> Δ:143 var
+R6787:6805 iris.proofmode.environments <> envs_entails_unseal def
+R6846:6860 simuliris.simulation.slsls <> source_red_bind thm
+prf 6925:6937 <> tac_to_target
+binder 6939:6940 <> Δ:147
+binder 6942:6944 <> e_t:148
+binder 6946:6948 <> e_s:149
+binder 6950:6951 <> Φ:150
+binder 6953:6954 <> π:151
+R7031:7037 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6960:6971 iris.proofmode.environments <> envs_entails def
+R6977:6986 simuliris.simulation.slsls <> target_red def
+R6988:6990 simuliris.tree_borrows.early_proofmode <> e_t:148 var
+R6993:6995 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R7000:7001 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6996:6999 <> e_t':152
+R7006:7010 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7013:7014 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7018:7021 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7024:7026 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7022:7023 simuliris.tree_borrows.early_proofmode <> Φ:150 var
+R7011:7012 simuliris.tree_borrows.early_proofmode <> π:151 var
+R7002:7005 simuliris.tree_borrows.early_proofmode <> e_t':152 var
+R7015:7017 simuliris.tree_borrows.early_proofmode <> e_s:149 var
+R6973:6974 simuliris.tree_borrows.early_proofmode <> Δ:147 var
+R7038:7049 iris.proofmode.environments <> envs_entails def
+R7058:7062 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7065:7066 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7070:7073 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7076:7078 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7074:7075 simuliris.tree_borrows.early_proofmode <> Φ:150 var
+R7063:7064 simuliris.tree_borrows.early_proofmode <> π:151 var
+R7055:7057 simuliris.tree_borrows.early_proofmode <> e_t:148 var
+R7067:7069 simuliris.tree_borrows.early_proofmode <> e_s:149 var
+R7051:7052 simuliris.tree_borrows.early_proofmode <> Δ:147 var
+R7097:7115 iris.proofmode.environments <> envs_entails_unseal def
+R7135:7153 simuliris.simulation.slsls <> target_red_sim_expr thm
+prf 7168:7180 <> tac_to_source
+binder 7182:7183 <> Δ:153
+binder 7185:7187 <> e_t:154
+binder 7189:7191 <> e_s:155
+binder 7193:7194 <> Φ:156
+binder 7196:7197 <> π:157
+R7277:7283 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7203:7214 iris.proofmode.environments <> envs_entails def
+R7220:7229 simuliris.simulation.slsls <> source_red def
+R7231:7233 simuliris.tree_borrows.early_proofmode <> e_s:155 var
+R7235:7236 simuliris.tree_borrows.early_proofmode <> π:157 var
+R7239:7241 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R7246:7247 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 7242:7245 <> e_s':158
+R7251:7255 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7258:7259 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7264:7267 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7270:7272 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7268:7269 simuliris.tree_borrows.early_proofmode <> Φ:156 var
+R7256:7257 simuliris.tree_borrows.early_proofmode <> π:157 var
+R7248:7250 simuliris.tree_borrows.early_proofmode <> e_t:154 var
+R7260:7263 simuliris.tree_borrows.early_proofmode <> e_s':158 var
+R7216:7217 simuliris.tree_borrows.early_proofmode <> Δ:153 var
+R7284:7295 iris.proofmode.environments <> envs_entails def
+R7304:7308 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7311:7312 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7316:7319 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7322:7324 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7320:7321 simuliris.tree_borrows.early_proofmode <> Φ:156 var
+R7309:7310 simuliris.tree_borrows.early_proofmode <> π:157 var
+R7301:7303 simuliris.tree_borrows.early_proofmode <> e_t:154 var
+R7313:7315 simuliris.tree_borrows.early_proofmode <> e_s:155 var
+R7297:7298 simuliris.tree_borrows.early_proofmode <> Δ:153 var
+R7343:7361 iris.proofmode.environments <> envs_entails_unseal def
+R7381:7399 simuliris.simulation.slsls <> source_red_sim_expr thm
+prf 7414:7430 <> tac_target_to_sim
+binder 7432:7433 <> Δ:159
+binder 7435:7437 <> e_t:160
+binder 7439:7441 <> e_s:161
+binder 7443:7444 <> Φ:162
+binder 7446:7447 <> π:163
+R7495:7501 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7453:7464 iris.proofmode.environments <> envs_entails def
+R7473:7477 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7480:7481 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7485:7488 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7491:7493 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7489:7490 simuliris.tree_borrows.early_proofmode <> Φ:162 var
+R7478:7479 simuliris.tree_borrows.early_proofmode <> π:163 var
+R7470:7472 simuliris.tree_borrows.early_proofmode <> e_t:160 var
+R7482:7484 simuliris.tree_borrows.early_proofmode <> e_s:161 var
+R7466:7467 simuliris.tree_borrows.early_proofmode <> Δ:159 var
+R7502:7513 iris.proofmode.environments <> envs_entails def
+R7519:7528 simuliris.simulation.slsls <> target_red def
+R7530:7532 simuliris.tree_borrows.early_proofmode <> e_t:160 var
+R7535:7537 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R7542:7543 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 7538:7541 <> e_t':164
+R7548:7552 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7555:7556 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7560:7563 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7566:7568 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7564:7565 simuliris.tree_borrows.early_proofmode <> Φ:162 var
+R7553:7554 simuliris.tree_borrows.early_proofmode <> π:163 var
+R7544:7547 simuliris.tree_borrows.early_proofmode <> e_t':164 var
+R7557:7559 simuliris.tree_borrows.early_proofmode <> e_s:161 var
+R7515:7516 simuliris.tree_borrows.early_proofmode <> Δ:159 var
+R7592:7610 iris.proofmode.environments <> envs_entails_unseal def
+R7627:7641 simuliris.simulation.slsls <> target_red_base thm
+prf 7697:7713 <> tac_source_to_sim
+binder 7715:7716 <> Δ:165
+binder 7718:7720 <> e_t:166
+binder 7722:7724 <> e_s:167
+binder 7726:7727 <> Φ:168
+binder 7729:7730 <> π:169
+R7778:7784 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7736:7747 iris.proofmode.environments <> envs_entails def
+R7756:7760 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7763:7764 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7768:7771 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7774:7776 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7772:7773 simuliris.tree_borrows.early_proofmode <> Φ:168 var
+R7761:7762 simuliris.tree_borrows.early_proofmode <> π:169 var
+R7753:7755 simuliris.tree_borrows.early_proofmode <> e_t:166 var
+R7765:7767 simuliris.tree_borrows.early_proofmode <> e_s:167 var
+R7749:7750 simuliris.tree_borrows.early_proofmode <> Δ:165 var
+R7785:7796 iris.proofmode.environments <> envs_entails def
+R7802:7811 simuliris.simulation.slsls <> source_red def
+R7813:7815 simuliris.tree_borrows.early_proofmode <> e_s:167 var
+R7817:7818 simuliris.tree_borrows.early_proofmode <> π:169 var
+R7821:7823 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R7828:7829 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 7824:7827 <> e_s':170
+R7833:7837 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7840:7841 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7846:7849 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7852:7854 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7850:7851 simuliris.tree_borrows.early_proofmode <> Φ:168 var
+R7838:7839 simuliris.tree_borrows.early_proofmode <> π:169 var
+R7830:7832 simuliris.tree_borrows.early_proofmode <> e_t:166 var
+R7842:7845 simuliris.tree_borrows.early_proofmode <> e_s':170 var
+R7798:7799 simuliris.tree_borrows.early_proofmode <> Δ:165 var
+R7878:7896 iris.proofmode.environments <> envs_entails_unseal def
+R7913:7927 simuliris.simulation.slsls <> source_red_base thm
+prf 7983:8001 <> tac_sim_expr_to_sim
+binder 8003:8004 <> Δ:171
+binder 8006:8008 <> e_t:172
+binder 8010:8012 <> e_s:173
+binder 8014:8015 <> Φ:174
+binder 8017:8018 <> π:175
+R8066:8072 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8024:8035 iris.proofmode.environments <> envs_entails def
+R8044:8048 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8051:8052 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8056:8059 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8062:8064 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8060:8061 simuliris.tree_borrows.early_proofmode <> Φ:174 var
+R8049:8050 simuliris.tree_borrows.early_proofmode <> π:175 var
+R8041:8043 simuliris.tree_borrows.early_proofmode <> e_t:172 var
+R8053:8055 simuliris.tree_borrows.early_proofmode <> e_s:173 var
+R8037:8038 simuliris.tree_borrows.early_proofmode <> Δ:171 var
+R8073:8084 iris.proofmode.environments <> envs_entails def
+R8093:8097 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8100:8101 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8105:8108 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8121:8123 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8109:8117 simuliris.simulation.slsls <> lift_post def
+R8119:8120 simuliris.tree_borrows.early_proofmode <> Φ:174 var
+R8098:8099 simuliris.tree_borrows.early_proofmode <> π:175 var
+R8090:8092 simuliris.tree_borrows.early_proofmode <> e_t:172 var
+R8102:8104 simuliris.tree_borrows.early_proofmode <> e_s:173 var
+R8086:8087 simuliris.tree_borrows.early_proofmode <> Δ:171 var
+prf 8154:8172 <> tac_sim_to_sim_expr
+binder 8174:8175 <> Δ:176
+binder 8177:8179 <> e_t:177
+binder 8181:8183 <> e_s:178
+binder 8185:8186 <> Φ:179
+binder 8188:8189 <> π:180
+R8247:8253 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8195:8206 iris.proofmode.environments <> envs_entails def
+R8215:8219 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8222:8223 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8227:8230 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8243:8245 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8231:8239 simuliris.simulation.slsls <> lift_post def
+R8241:8242 simuliris.tree_borrows.early_proofmode <> Φ:179 var
+R8220:8221 simuliris.tree_borrows.early_proofmode <> π:180 var
+R8212:8214 simuliris.tree_borrows.early_proofmode <> e_t:177 var
+R8224:8226 simuliris.tree_borrows.early_proofmode <> e_s:178 var
+R8208:8209 simuliris.tree_borrows.early_proofmode <> Δ:176 var
+R8254:8265 iris.proofmode.environments <> envs_entails def
+R8274:8278 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8281:8282 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8286:8289 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8292:8294 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R8290:8291 simuliris.tree_borrows.early_proofmode <> Φ:179 var
+R8279:8280 simuliris.tree_borrows.early_proofmode <> π:180 var
+R8271:8273 simuliris.tree_borrows.early_proofmode <> e_t:177 var
+R8283:8285 simuliris.tree_borrows.early_proofmode <> e_s:178 var
+R8267:8268 simuliris.tree_borrows.early_proofmode <> Δ:176 var
+R8323:8325 simuliris.tree_borrows.early_proofmode sim <> sec
+R8489:8500 iris.proofmode.environments <> envs_entails def
+R8505:8512 simuliris.simulation.simulation <> sim_expr def
+R8539:8550 iris.proofmode.environments <> envs_entails def
+R8555:8557 simuliris.simulation.simulation <> sim def
+R8649:8660 iris.proofmode.environments <> envs_entails def
+R8665:8674 simuliris.simulation.slsls <> target_red def
+R8682:8684 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R8686:8687 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R8688:8695 simuliris.simulation.simulation <> sim_expr def
+R8779:8790 iris.proofmode.environments <> envs_entails def
+R8795:8804 simuliris.simulation.slsls <> source_red def
+R8814:8816 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R8818:8819 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R8820:8827 simuliris.simulation.simulation <> sim_expr def
+R8870:8886 simuliris.tree_borrows.early_proofmode <> tac_source_to_sim thm
+R8739:8755 simuliris.tree_borrows.early_proofmode <> tac_target_to_sim thm
+R8605:8623 simuliris.tree_borrows.early_proofmode <> tac_sim_to_sim_expr thm
+R9038:9049 iris.proofmode.environments <> envs_entails def
+R9054:9063 simuliris.simulation.slsls <> target_red def
+R9133:9144 iris.proofmode.environments <> envs_entails def
+R9149:9156 simuliris.simulation.simulation <> sim_expr def
+R9210:9222 simuliris.tree_borrows.early_proofmode <> tac_to_target thm
+R9360:9371 iris.proofmode.environments <> envs_entails def
+R9376:9385 simuliris.simulation.slsls <> source_red def
+R9457:9468 iris.proofmode.environments <> envs_entails def
+R9473:9480 simuliris.simulation.simulation <> sim_expr def
+R9534:9546 simuliris.tree_borrows.early_proofmode <> tac_to_source thm
+R9984:9995 iris.proofmode.environments <> envs_entails def
+R10000:10002 simuliris.simulation.simulation <> sim def
+R10032:10034 simuliris.tree_borrows.lang_base <> Val constr
+R10024:10026 simuliris.tree_borrows.lang_base <> Val constr
+R10005:10007 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10011:10012 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10013:10016 iris.bi.updates <> bupd def
+R10085:10096 iris.proofmode.environments <> envs_entails def
+R10101:10103 simuliris.simulation.simulation <> sim def
+R10143:10145 simuliris.tree_borrows.lang_base <> Val constr
+R10135:10137 simuliris.tree_borrows.lang_base <> Val constr
+R10106:10108 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10112:10113 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10114:10121 simuliris.simulation.simulation <> sim_expr def
+R10196:10207 iris.proofmode.environments <> envs_entails def
+R10212:10214 simuliris.simulation.simulation <> sim def
+R10249:10251 simuliris.tree_borrows.lang_base <> Val constr
+R10241:10243 simuliris.tree_borrows.lang_base <> Val constr
+R10217:10219 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10223:10224 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10225:10227 simuliris.simulation.simulation <> sim def
+R10302:10313 iris.proofmode.environments <> envs_entails def
+R10318:10320 simuliris.simulation.simulation <> sim def
+R10335:10337 simuliris.tree_borrows.lang_base <> Val constr
+R10327:10329 simuliris.tree_borrows.lang_base <> Val constr
+R10380:10391 iris.proofmode.environments <> envs_entails def
+R10396:10398 simuliris.simulation.simulation <> sim def
+R10434:10438 simuliris.tree_borrows.lang_base <> Place constr
+R10420:10424 simuliris.tree_borrows.lang_base <> Place constr
+R10401:10403 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10407:10408 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10409:10412 iris.bi.updates <> bupd def
+R10493:10504 iris.proofmode.environments <> envs_entails def
+R10509:10511 simuliris.simulation.simulation <> sim def
+R10557:10561 simuliris.tree_borrows.lang_base <> Place constr
+R10543:10547 simuliris.tree_borrows.lang_base <> Place constr
+R10514:10516 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10520:10521 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10522:10529 simuliris.simulation.simulation <> sim_expr def
+R10616:10627 iris.proofmode.environments <> envs_entails def
+R10632:10634 simuliris.simulation.simulation <> sim def
+R10675:10679 simuliris.tree_borrows.lang_base <> Place constr
+R10661:10665 simuliris.tree_borrows.lang_base <> Place constr
+R10637:10639 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10643:10644 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10645:10647 simuliris.simulation.simulation <> sim def
+R10734:10745 iris.proofmode.environments <> envs_entails def
+R10750:10752 simuliris.simulation.simulation <> sim def
+R10773:10777 simuliris.tree_borrows.lang_base <> Place constr
+R10759:10763 simuliris.tree_borrows.lang_base <> Place constr
+R10825:10836 iris.proofmode.environments <> envs_entails def
+R10841:10843 simuliris.simulation.simulation <> sim def
+R10879:10887 simuliris.tree_borrows.lang_base <> of_result def
+R10865:10873 simuliris.tree_borrows.lang_base <> of_result def
+R10846:10848 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10852:10853 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10854:10857 iris.bi.updates <> bupd def
+R10939:10950 iris.proofmode.environments <> envs_entails def
+R10955:10957 simuliris.simulation.simulation <> sim def
+R11003:11011 simuliris.tree_borrows.lang_base <> of_result def
+R10989:10997 simuliris.tree_borrows.lang_base <> of_result def
+R10960:10962 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10966:10967 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R10968:10975 simuliris.simulation.simulation <> sim_expr def
+R11063:11074 iris.proofmode.environments <> envs_entails def
+R11079:11081 simuliris.simulation.simulation <> sim def
+R11122:11130 simuliris.tree_borrows.lang_base <> of_result def
+R11108:11116 simuliris.tree_borrows.lang_base <> of_result def
+R11084:11086 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R11090:11091 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R11092:11094 simuliris.simulation.simulation <> sim def
+R11182:11193 iris.proofmode.environments <> envs_entails def
+R11198:11200 simuliris.simulation.simulation <> sim def
+R11221:11229 simuliris.tree_borrows.lang_base <> of_result def
+R11207:11215 simuliris.tree_borrows.lang_base <> of_result def
+R11251:11264 simuliris.tree_borrows.early_proofmode <> tac_sim_result thm
+R11152:11173 simuliris.tree_borrows.early_proofmode <> tac_sim_result_no_bupd thm
+R11033:11054 simuliris.tree_borrows.early_proofmode <> tac_sim_result_no_bupd thm
+R10909:10930 simuliris.tree_borrows.early_proofmode <> tac_sim_result_no_bupd thm
+R10803:10815 simuliris.tree_borrows.early_proofmode <> tac_sim_place thm
+R10705:10725 simuliris.tree_borrows.early_proofmode <> tac_sim_place_no_bupd thm
+R10587:10607 simuliris.tree_borrows.early_proofmode <> tac_sim_place_no_bupd thm
+R10464:10484 simuliris.tree_borrows.early_proofmode <> tac_sim_place_no_bupd thm
+R10359:10371 simuliris.tree_borrows.early_proofmode <> tac_sim_value thm
+R10273:10293 simuliris.tree_borrows.early_proofmode <> tac_sim_value_no_bupd thm
+R10167:10187 simuliris.tree_borrows.early_proofmode <> tac_sim_value_no_bupd thm
+R10056:10076 simuliris.tree_borrows.early_proofmode <> tac_sim_value_no_bupd thm
+R11364:11375 iris.proofmode.environments <> envs_entails def
+R11380:11387 simuliris.simulation.simulation <> sim_expr def
+R11437:11453 simuliris.tree_borrows.early_proofmode <> tac_sim_expr_eval thm
+R11551:11557 Corelib.Init.Logic <> eq_refl constr
+R11621:11627 Corelib.Init.Logic <> eq_refl constr
+R11889:11900 iris.proofmode.environments <> envs_entails def
+R11905:11912 simuliris.simulation.simulation <> sim_expr def
+R11915:11923 simuliris.simulation.slsls <> lift_post def
+R12016:12027 iris.proofmode.environments <> envs_entails def
+R12032:12039 simuliris.simulation.simulation <> sim_expr def
+R12066:12077 iris.proofmode.environments <> envs_entails def
+R12082:12084 simuliris.simulation.simulation <> sim def
+R11972:11990 simuliris.tree_borrows.early_proofmode <> tac_sim_expr_to_sim thm
+R12242:12253 iris.proofmode.environments <> envs_entails def
+R12258:12267 simuliris.simulation.slsls <> target_red def
+R12308:12331 simuliris.tree_borrows.early_proofmode <> tac_target_red_expr_eval thm
+R12418:12424 Corelib.Init.Logic <> eq_refl constr
+R12603:12614 iris.proofmode.environments <> envs_entails def
+R12619:12628 simuliris.simulation.slsls <> target_red def
+R12631:12633 simuliris.tree_borrows.lang_base <> Val constr
+R12639:12641 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12643:12644 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12645:12648 iris.bi.updates <> bupd def
+R12705:12716 iris.proofmode.environments <> envs_entails def
+R12721:12730 simuliris.simulation.slsls <> target_red def
+R12733:12735 simuliris.tree_borrows.lang_base <> Val constr
+R12741:12743 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12745:12746 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12747:12754 simuliris.simulation.simulation <> sim_expr def
+R12817:12828 iris.proofmode.environments <> envs_entails def
+R12833:12842 simuliris.simulation.slsls <> target_red def
+R12845:12847 simuliris.tree_borrows.lang_base <> Val constr
+R12853:12855 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12857:12858 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12859:12861 simuliris.simulation.simulation <> sim def
+R12925:12936 iris.proofmode.environments <> envs_entails def
+R12941:12950 simuliris.simulation.slsls <> target_red def
+R12953:12955 simuliris.tree_borrows.lang_base <> Val constr
+R12961:12963 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12965:12966 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12967:12976 simuliris.simulation.slsls <> target_red def
+R13035:13046 iris.proofmode.environments <> envs_entails def
+R13051:13060 simuliris.simulation.slsls <> target_red def
+R13063:13065 simuliris.tree_borrows.lang_base <> Val constr
+R13116:13127 iris.proofmode.environments <> envs_entails def
+R13132:13141 simuliris.simulation.slsls <> target_red def
+R13144:13148 simuliris.tree_borrows.lang_base <> Place constr
+R13158:13160 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13162:13163 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13164:13167 iris.bi.updates <> bupd def
+R13224:13235 iris.proofmode.environments <> envs_entails def
+R13240:13249 simuliris.simulation.slsls <> target_red def
+R13252:13256 simuliris.tree_borrows.lang_base <> Place constr
+R13266:13268 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13270:13271 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13272:13279 simuliris.simulation.simulation <> sim_expr def
+R13342:13353 iris.proofmode.environments <> envs_entails def
+R13358:13367 simuliris.simulation.slsls <> target_red def
+R13370:13374 simuliris.tree_borrows.lang_base <> Place constr
+R13384:13386 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13388:13389 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13390:13392 simuliris.simulation.simulation <> sim def
+R13455:13466 iris.proofmode.environments <> envs_entails def
+R13471:13480 simuliris.simulation.slsls <> target_red def
+R13483:13487 simuliris.tree_borrows.lang_base <> Place constr
+R13497:13499 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13501:13502 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R13503:13512 simuliris.simulation.slsls <> target_red def
+R13571:13582 iris.proofmode.environments <> envs_entails def
+R13587:13596 simuliris.simulation.slsls <> target_red def
+R13599:13603 simuliris.tree_borrows.lang_base <> Place constr
+R13631:13649 simuliris.tree_borrows.early_proofmode <> tac_target_red_base thm
+R13536:13562 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R13420:13446 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R13307:13333 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R13189:13215 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R13089:13107 simuliris.tree_borrows.early_proofmode <> tac_target_red_base thm
+R13000:13026 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R12890:12916 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R12782:12808 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R12670:12696 simuliris.tree_borrows.early_proofmode <> tac_target_red_base_no_bupd thm
+R13923:13934 iris.proofmode.environments <> envs_entails def
+R13939:13948 simuliris.simulation.slsls <> source_red def
+R13993:14016 simuliris.tree_borrows.early_proofmode <> tac_source_red_expr_eval thm
+R14106:14112 Corelib.Init.Logic <> eq_refl constr
+R14291:14302 iris.proofmode.environments <> envs_entails def
+R14307:14316 simuliris.simulation.slsls <> source_red def
+R14319:14321 simuliris.tree_borrows.lang_base <> Val constr
+R14329:14331 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14333:14334 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14335:14338 iris.bi.updates <> bupd def
+R14395:14406 iris.proofmode.environments <> envs_entails def
+R14411:14420 simuliris.simulation.slsls <> source_red def
+R14423:14425 simuliris.tree_borrows.lang_base <> Val constr
+R14433:14435 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14437:14438 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14439:14446 simuliris.simulation.simulation <> sim_expr def
+R14509:14520 iris.proofmode.environments <> envs_entails def
+R14525:14534 simuliris.simulation.slsls <> source_red def
+R14537:14539 simuliris.tree_borrows.lang_base <> Val constr
+R14547:14549 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14551:14552 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14553:14555 simuliris.simulation.simulation <> sim def
+R14618:14629 iris.proofmode.environments <> envs_entails def
+R14634:14643 simuliris.simulation.slsls <> source_red def
+R14646:14648 simuliris.tree_borrows.lang_base <> Val constr
+R14656:14658 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14660:14661 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14662:14671 simuliris.simulation.slsls <> source_red def
+R14732:14743 iris.proofmode.environments <> envs_entails def
+R14748:14757 simuliris.simulation.slsls <> source_red def
+R14760:14762 simuliris.tree_borrows.lang_base <> Val constr
+R14834:14845 iris.proofmode.environments <> envs_entails def
+R14850:14859 simuliris.simulation.slsls <> source_red def
+R14862:14866 simuliris.tree_borrows.lang_base <> Place constr
+R14878:14880 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14882:14883 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14884:14887 iris.bi.updates <> bupd def
+R14944:14955 iris.proofmode.environments <> envs_entails def
+R14960:14969 simuliris.simulation.slsls <> source_red def
+R14972:14976 simuliris.tree_borrows.lang_base <> Place constr
+R14988:14990 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14992:14993 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R14994:15001 simuliris.simulation.simulation <> sim_expr def
+R15064:15075 iris.proofmode.environments <> envs_entails def
+R15080:15089 simuliris.simulation.slsls <> source_red def
+R15092:15096 simuliris.tree_borrows.lang_base <> Place constr
+R15108:15110 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R15112:15113 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R15114:15116 simuliris.simulation.simulation <> sim def
+R15179:15190 iris.proofmode.environments <> envs_entails def
+R15195:15204 simuliris.simulation.slsls <> source_red def
+R15207:15211 simuliris.tree_borrows.lang_base <> Place constr
+R15223:15225 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R15227:15228 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R15229:15238 simuliris.simulation.slsls <> source_red def
+R15299:15310 iris.proofmode.environments <> envs_entails def
+R15315:15324 simuliris.simulation.slsls <> source_red def
+R15327:15331 simuliris.tree_borrows.lang_base <> Place constr
+R15361:15379 simuliris.tree_borrows.early_proofmode <> tac_source_red_base thm
+R15264:15290 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R15144:15170 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R15029:15055 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R14909:14935 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R14788:14806 simuliris.tree_borrows.early_proofmode <> tac_source_red_base thm
+R14697:14723 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R14583:14609 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R14474:14500 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R14360:14386 simuliris.tree_borrows.early_proofmode <> tac_source_red_base_no_bupd thm
+R16501:16512 iris.proofmode.environments <> envs_entails def
+R16517:16526 simuliris.simulation.slsls <> target_red def
+R16655:16673 simuliris.tree_borrows.early_proofmode <> tac_target_red_pure thm
+R17657:17659 simuliris.tree_borrows.lang_base <> Let constr
+R17662:17667 stdpp.binders <> BNamed constr
+R17723:17725 simuliris.tree_borrows.lang_base <> Let constr
+R17727:17731 stdpp.binders <> BAnon constr
+R17785:17788 simuliris.tree_borrows.lang_base <> Proj constr
+R17842:17845 simuliris.tree_borrows.lang_base <> Case constr
+R18228:18237 simuliris.tree_borrows.class_instances <> pure_while thm
+R18256:18260 simuliris.tree_borrows.lang_base <> While constr
+R18660:18671 iris.proofmode.environments <> envs_entails def
+R18676:18685 simuliris.simulation.slsls <> source_red def
+R18816:18834 simuliris.tree_borrows.early_proofmode <> tac_source_red_pure thm
+R19654:19656 simuliris.tree_borrows.lang_base <> Let constr
+R19659:19664 stdpp.binders <> BNamed constr
+R19720:19722 simuliris.tree_borrows.lang_base <> Let constr
+R19724:19728 stdpp.binders <> BAnon constr
+R19782:19785 simuliris.tree_borrows.lang_base <> Proj constr
+R19839:19842 simuliris.tree_borrows.lang_base <> Case constr
+R20225:20234 simuliris.tree_borrows.class_instances <> pure_while thm
+R20253:20257 simuliris.tree_borrows.lang_base <> While constr
+R20816:20817 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R20865:20866 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R21225:21236 iris.proofmode.environments <> envs_entails def
+R21241:21248 simuliris.simulation.simulation <> sim_expr def
+R21875:21886 simuliris.tree_borrows.early_proofmode <> tac_sim_bind thm
+R21993:22008 simuliris.tree_borrows.early_proofmode <> tac_sim_bind_val thm
+R22092:22093 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R22121:22139 simuliris.tree_borrows.early_proofmode <> tac_target_red_bind thm
+R22309:22320 iris.proofmode.environments <> envs_entails def
+R22325:22334 simuliris.simulation.slsls <> target_red def
+R22698:22699 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R22727:22745 simuliris.tree_borrows.early_proofmode <> tac_source_red_bind thm
+R22915:22926 iris.proofmode.environments <> envs_entails def
+R22931:22940 simuliris.simulation.slsls <> source_red def
+R23448:23460 simuliris.simulation.slsls <> sim_expr_base thm
+R23945:23949 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R23989:23993 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R24032:24035 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R24037:24038 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R24110:24121 iris.proofmode.environments <> envs_entails def
+R24126:24135 simuliris.simulation.slsls <> source_red def
+R24195:24206 iris.proofmode.environments <> envs_entails def
+R24211:24218 simuliris.simulation.simulation <> sim_expr def
+R24275:24286 iris.proofmode.environments <> envs_entails def
+R24291:24293 simuliris.simulation.simulation <> sim def
+R24314:24329 simuliris.simulation.lifting <> sim_safe_implies thm
+R24239:24254 simuliris.simulation.lifting <> sim_safe_implies thm
+R24152:24174 simuliris.simulation.lifting <> source_red_safe_implies thm
+R24642:24651 simuliris.simulation.language <> safe_reach def
+R24779:24793 simuliris.simulation.language <> safe_reach_bind thm
+R25204:25213 simuliris.simulation.language <> safe_reach def
+R25341:25355 simuliris.simulation.language <> fill_safe_reach thm
+R25648:25650 Corelib.Init.Datatypes <> nil constr
+R25669:25672 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R25690:25690 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R25733:25738 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R25743:25743 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R25691:25707 simuliris.simulation.gen_log_rel <> gen_log_rel_subst thm
+R25720:25723 simuliris.tree_borrows.lang_base <> ValR constr
+R25725:25725 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R25731:25731 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R25726:25728 simuliris.tree_borrows.notation <> ::sc_scope:'☠' not
+R25762:25777 simuliris.tree_borrows.logical_state <> value_rel_poison thm
+R25959:25988 iris.proofmode.intro_patterns <> IIntuitionistic constr
+R25991:26011 iris.proofmode.intro_patterns <> IIdent constr
+R26056:26074 simuliris.tree_borrows.parallel_subst <> subst_map_singleton thm
+R26342:26376 iris.proofmode.environments <> envs_entails def
+R26381:26391 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R26458:26465 stdpp.base <> elements def
+R26481:26485 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R26468:26476 simuliris.tree_borrows.parallel_subst <> free_vars def
+R26486:26494 simuliris.tree_borrows.parallel_subst <> free_vars def
+R26560:26577 simuliris.simulation.gen_log_rel <> gen_log_rel_closed thm
+R26670:26675 simuliris.tree_borrows.lang_base <> result ind

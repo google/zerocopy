@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "<MAY1_TOOLCHAIN>/bin/rustc",
+    "<CAPTURE_SCRATCH>/capture_observer.rs",
+    "--sysroot",
+    "<MAY1_TOOLCHAIN>",
+    "--edition=2021",
+    "-C",
+    "opt-level=0",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "rpath",
+    "-o",
+    "<CAPTURE_SCRATCH>/observer"
+  ],
+  "exit": 0,
+  "elapsed_ns": 502937000,
+  "source_sha256": "59a998fb395374b810e3e0a04884e0a5c6382ea06b951fda6f8aec5cf3b87f35",
+  "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988"
+}

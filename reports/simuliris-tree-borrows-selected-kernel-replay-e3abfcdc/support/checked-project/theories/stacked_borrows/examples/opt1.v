@@ -1,0 +1,198 @@
+(** This file has been adapted from the Stacked Borrows development, available at 
+  https://gitlab.mpi-sws.org/FP/stacked-borrows
+*)
+
+From simuliris.simulation Require Import lifting.
+From simuliris.stacked_borrows Require Import primitive_laws proofmode adequacy examples.lib.
+
+
+(** Moving read of mutable reference up across code not using that ref. *)
+
+(* Assuming x : &mut i32 *)
+Definition ex1_unopt : expr :=
+    (* get related values i*)
+    (* "x" is the local variable that stores the pointer value "i" *)
+    let: "x" := new_place (&mut int) "i" in
+
+    (* retag_place reborrows the pointer value stored in "x" (which is "i"),
+      then updates "x" with the new pointer value.
+    *)
+    retag_place "x" (RefPtr Mutable) int Default #[ScCallId 0];;
+
+    (* The unknown code is represented by a call to an unknown function "f" or
+      "g". *)
+    Call #[ScFnPtr "f"] #[] ;;
+
+    (* Write 42 to the cell pointed to by the pointer in "x" *)
+    *{int} "x" <- #[42] ;;
+
+    Call #[ScFnPtr "g"] #[] ;;
+
+    (* Read the value "v" from the cell pointed to by the pointer in "x" *)
+    let: "v" := Copy *{int} "x" in
+
+    (* Free the local variable *)
+    Free "x" ;;
+
+    (* Finally, return the read value *)
+    "v"
+  .
+
+Definition ex1_opt : expr :=
+    let: "x" := new_place (&mut int) "i" in
+    retag_place "x" (RefPtr Mutable) int Default #[ScCallId 0];;
+    Call #[ScFnPtr "f"] #[] ;;
+    *{int} "x" <- #[42] ;;
+    (* Turn v into a constant. That is actually easier than loading it
+    here since doing such a load would have to be justified. *)
+    let: "v" := #[42] in
+    Call #[ScFnPtr "g"] #[] ;;
+    Free "x" ;;
+    "v".
+
+Lemma sim_opt1 `{sborGS Σ} :
+  ⊢ log_rel ex1_opt ex1_unopt.
+Proof.
+  log_rel.
+  iIntros "%r_t %r_s #Hrel !# %π _".
+  (* new place *)
+  simpl. source_bind (new_place _ _).
+  iApply source_red_safe_reach; [ | ].
+  { intros. eapply new_place_safe_reach. }
+  simpl. iIntros "(%v_s & -> & %Hsize)".
+  iPoseProof (rrel_value_source with "Hrel") as (v_t) "(-> & #Hv)".
+  iPoseProof (value_rel_length with "Hv") as "%Hlen".
+  iApply source_red_base. iModIntro. to_sim.
+  sim_apply (new_place _ _) (new_place _ _) sim_new_place_local "%t %l % % Htag Ht Hs"; first done.
+  sim_pures.
+
+  target_apply (Copy _) (target_copy_local with "Htag Ht") "Ht Htag"; first lia.
+  source_apply (Copy _) (source_copy_local with "Htag Hs") "Hs Htag"; first lia.
+
+  (* do the retag *)
+  sim_bind (Retag _ _ _ _ _) (Retag _ _ _ _ _).
+  iApply sim_safe_implies.
+  iIntros ((_ & ot & i & -> & _)).
+  iPoseProof (value_rel_singleton_source with "Hv") as (sc_t) "[-> Hscrel]".
+  iPoseProof (sc_rel_ptr_source with "Hscrel") as "[-> Htagged]".
+  iApply (sim_retag_default with "Hscrel"); [cbn; lia| done | ].
+  iIntros (t_i v_t v_s Hlen_t Hlen_s) "_ Htag_i Hi_t Hi_s _".
+  iApply sim_expr_base.
+  target_apply (Write _ _) (target_write_local with "Htag Ht") "Ht Htag"; [done | done | ].
+  source_apply (Write _ _) (source_write_local with "Htag Hs") "Hs Htag"; [done | done | ].
+  sim_pures.
+
+  sim_apply (Call _ _) (Call _ _) (sim_call _ (ValR []) (ValR [])) ""; first by iApply value_rel_empty.
+  iIntros (r_t r_s) "_". sim_pures.
+
+  target_apply (Copy _) (target_copy_local with "Htag Ht") "Ht Htag"; first done.
+  source_apply (Copy _) (source_copy_local with "Htag Hs") "Hs Htag"; first done.
+  sim_pures.
+
+  (* we need to do the writes symmetrically: we cannot know if the tag is still on top *)
+  sim_apply (Write _ _) (Write _ _) (sim_write_unique_unprotected with "Htag_i Hi_t Hi_s") "Htag_i Hi_t Hi_s"; [ done | done | | ];
+    first by iApply big_sepL2_singleton.
+  sim_pures.
+
+  sim_apply (Call _ _) (Call _ _) (sim_call _ (ValR []) (ValR [])) ""; first by iApply value_rel_empty.
+  iIntros (r_t' r_s') "_". sim_pures.
+
+  source_apply (Copy (Place _ _ _)) (source_copy_local with "Htag Hs") "Hs Htag"; first done.
+  source_pures. source_bind (Copy _).
+  iApply (source_copy_any with "Htag_i Hi_s"); first done. iIntros (v_s') "%Hv_s' Hi_s Htag_i". source_finish.
+  sim_pures.
+
+  sim_apply (Free _) (Free _) (sim_free_local with "Htag Ht Hs") "Htag"; [done..|]. sim_pures.
+  sim_val. iModIntro.
+  iSplit; first done.
+  destruct Hv_s' as [-> | ->]; iApply big_sepL2_singleton; done.
+Qed.
+
+
+(** A variant of this optimization (actually the one from the original formalization)
+  which uses deferred UB. We move up the read of x but do not yet replace it by a constant. *)
+Definition ex1_opt' : expr :=
+    let: "x" := new_place (&mut int) "i" in
+    retag_place "x" (RefPtr Mutable) int Default #[ScCallId 0];;
+    Call #[ScFnPtr "f"] #[] ;;
+    *{int} "x" <- #[42] ;;
+    (* using a read here: requires to use LLVM semantics for reads *)
+    let: "v" := Copy *{int} "x" in
+    Call #[ScFnPtr "g"] #[] ;;
+    Free "x" ;;
+    "v".
+
+Lemma sim_opt1' `{sborGS Σ} :
+  ⊢ log_rel ex1_opt' ex1_unopt.
+Proof.
+  log_rel.
+  iIntros "%r_t %r_s #Hrel !# %π _".
+  (* new place *)
+  simpl. source_bind (new_place _ _).
+  iApply source_red_safe_reach.
+  { intros. eapply new_place_safe_reach. }
+  simpl. iIntros "(%v_s & -> & %Hsize)".
+  iPoseProof (rrel_value_source with "Hrel") as (v_t) "(-> & #Hv)".
+  iPoseProof (value_rel_length with "Hv") as "%Hlen".
+  iApply source_red_base. iModIntro. to_sim.
+  sim_apply (new_place _ _) (new_place _ _) sim_new_place_local "%t %l % % Htag Ht Hs"; first done.
+  sim_pures.
+
+  target_apply (Copy _) (target_copy_local with "Htag Ht") "Ht Htag"; first lia.
+  source_apply (Copy _) (source_copy_local with "Htag Hs") "Hs Htag"; first lia.
+
+  (* do the retag *)
+  sim_bind (Retag _ _ _ _ _) (Retag _ _ _ _ _).
+  iApply sim_safe_implies.
+  iIntros ((_ & ot & i & -> & _)).
+  iPoseProof (value_rel_singleton_source with "Hv") as (sc_t) "[-> Hscrel]".
+  iPoseProof (sc_rel_ptr_source with "Hscrel") as "[-> Htagged]".
+  iApply (sim_retag_default with "Hscrel"); [cbn; lia| done | ].
+  iIntros (t_i v_t v_s Hlen_t Hlen_s) "_ Htag_i Hi_t Hi_s _".
+  iApply sim_expr_base.
+  target_apply (Write _ _) (target_write_local with "Htag Ht") "Ht Htag"; [done | done | ].
+  source_apply (Write _ _) (source_write_local with "Htag Hs") "Hs Htag"; [done | done | ].
+  sim_pures.
+
+  sim_apply (Call _ _) (Call _ _) (sim_call _ (ValR []) (ValR [])) ""; first by iApply value_rel_empty.
+  iIntros (r_t r_s) "_". sim_pures.
+
+  target_apply (Copy _) (target_copy_local with "Htag Ht") "Ht Htag"; first done.
+  source_apply (Copy _) (source_copy_local with "Htag Hs") "Hs Htag"; first done.
+  sim_pures.
+
+  (* we need to do the writes symmetrically: we cannot know if the tag is still on top *)
+  sim_apply (Write _ _) (Write _ _) (sim_write_unique_unprotected with "Htag_i Hi_t Hi_s") "Htag_i Hi_t Hi_s"; [done | done | ..];
+    first by iApply big_sepL2_singleton.
+  sim_pures.
+
+  (* deferred read in the target *)
+  target_apply (Copy (Place _ _ _)) (target_copy_local with "Htag Ht") "Ht Htag"; first done.
+  target_pures. target_bind (Copy _).
+  iApply (target_copy_deferred with "Htag_i Hi_t"); first done. iIntros (v_t') "Hdeferred Hi_t Htag_i". target_finish.
+  sim_pures.
+
+  sim_apply (Call _ _) (Call _ _) (sim_call _ (ValR []) (ValR [])) ""; first by iApply value_rel_empty.
+  iIntros (r_t' r_s') "_". sim_pures.
+
+  (* resolve the deferred read in the source *)
+  source_apply (Copy (Place _ _ _)) (source_copy_local with "Htag Hs") "Hs Htag"; first done.
+  source_pures. source_bind (Copy _).
+  iApply (source_copy_resolve_deferred with "Htag_i Hi_s Hdeferred"); first done.
+  { iApply big_sepL2_singleton. done. }
+  iIntros (v_s') "Hv' Hi_s Htag_i". source_finish.
+  sim_pures.
+
+  sim_apply (Free _) (Free _) (sim_free_local with "Htag Ht Hs") "Htag"; [done..|]. sim_pures.
+  sim_val. eauto.
+Qed.
+
+Section closed.
+  (** Obtain a closed proof of [ctx_ref]. *)
+  Lemma sim_opt1'_ctx : ctx_ref ex1_opt' ex1_unopt.
+  Proof.
+    set Σ := #[sborΣ].
+    apply (log_rel_adequacy Σ)=>?.
+    apply sim_opt1'.
+  Qed.
+End closed.

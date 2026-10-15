@@ -1,0 +1,763 @@
+DIGEST 9d9dc5a295b1adbdc260da69b9ed6fab
+Fsimuliris.simulation.gen_log_rel
+R27:33 stdpp.binders <> <> lib
+R64:65 iris.bi.bi <> <> lib
+R103:111 iris.proofmode.proofmode <> <> lib
+R155:162 simuliris.simulation.language <> <> lib
+R206:215 simuliris.simulation.simulation <> <> lib
+R217:221 simuliris.simulation.slsls <> <> lib
+R231:232 iris.bi.bi bi <> mod
+sec 450:457 <> fix_lang
+var  471:474 fix_lang PROP
+R478:479 iris.bi.interface <> bi rec
+R485:490 iris.bi.updates <> BiBUpd class
+R492:495 simuliris.simulation.gen_log_rel <> PROP:1 var
+R499:506 iris.bi.extensions <> BiAffine class
+R508:511 simuliris.simulation.gen_log_rel <> PROP:1 var
+R515:526 iris.bi.extensions <> BiPureForall class
+R528:531 simuliris.simulation.gen_log_rel <> PROP:1 var
+R535:554 iris.bi.extensions <> BiPersistentlyForall class
+R556:559 simuliris.simulation.gen_log_rel <> PROP:1 var
+var  574:575 fix_lang Λ
+R579:586 simuliris.simulation.language <> language rec
+R603:613 simuliris.simulation.slsls <> simulirisGS class
+R615:618 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+R620:621 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R695:698 simuliris.simulation.language <> expr proj
+R700:701 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R720:723 simuliris.simulation.language <> prog abbrev
+R725:726 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R749:753 simuliris.simulation.language <> state proj
+R755:756 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+def 814:821 <> func_rel
+R836:839 simuliris.simulation.language <> func proj
+R841:842 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+binder 824:827 <> fn_t:8
+binder 829:832 <> fn_s:9
+R847:850 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+R859:862 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R873:874 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 863:865 <> v_t:10
+binder 867:869 <> v_s:11
+binder 871:872 <> π:12
+R893:904 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R875:881 simuliris.simulation.slsls <> ext_rel meth
+R890:892 simuliris.simulation.gen_log_rel <> v_s:11 var
+R886:888 simuliris.simulation.gen_log_rel <> v_t:10 var
+R883:884 simuliris.simulation.gen_log_rel <> π:12 var
+R905:905 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R925:930 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R933:935 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R955:959 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R970:972 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R960:966 simuliris.simulation.slsls <> ext_rel meth
+R968:969 simuliris.simulation.gen_log_rel <> π:12 var
+R931:932 simuliris.simulation.gen_log_rel <> π:12 var
+R906:915 simuliris.simulation.language <> apply_func proj
+R922:924 simuliris.simulation.gen_log_rel <> v_t:10 var
+R917:920 simuliris.simulation.gen_log_rel <> fn_t:8 var
+R936:945 simuliris.simulation.language <> apply_func proj
+R952:954 simuliris.simulation.gen_log_rel <> v_s:11 var
+R947:950 simuliris.simulation.gen_log_rel <> fn_s:9 var
+def 988:995 <> prog_rel
+binder 997:999 <> P_t:13
+binder 1001:1003 <> P_s:14
+R1007:1010 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+R1019:1022 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R1023:1026 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1033:1034 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 1027:1027 <> f:15
+binder 1029:1032 <> fn_s:16
+R1061:1072 iris.bi.interface <> ::bi_scope:x_'→'_x not
+R1035:1037 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1058:1060 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1046:1048 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1041:1044 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1045:1045 simuliris.simulation.gen_log_rel <> f:15 var
+R1038:1040 simuliris.simulation.gen_log_rel <> P_s:14 var
+R1049:1052 Corelib.Init.Datatypes <> Some constr
+R1054:1057 simuliris.simulation.gen_log_rel <> fn_s:16 var
+R1073:1076 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R1081:1082 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 1077:1080 <> fn_t:17
+R1109:1113 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1083:1085 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1106:1108 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1094:1096 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1089:1092 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1093:1093 simuliris.simulation.gen_log_rel <> f:15 var
+R1086:1088 simuliris.simulation.gen_log_rel <> P_t:13 var
+R1097:1100 Corelib.Init.Datatypes <> Some constr
+R1102:1105 simuliris.simulation.gen_log_rel <> fn_t:17 var
+R1114:1121 simuliris.simulation.gen_log_rel <> func_rel def
+R1123:1126 simuliris.simulation.gen_log_rel <> fn_t:17 var
+R1128:1131 simuliris.simulation.gen_log_rel <> fn_s:16 var
+inst 1191:1209 <> prog_rel_persistent
+binder 1211:1213 <> P_t:18
+binder 1215:1217 <> P_s:19
+R1221:1230 iris.bi.derived_connectives <> Persistent class
+R1233:1240 simuliris.simulation.gen_log_rel <> prog_rel def
+R1242:1244 simuliris.simulation.gen_log_rel <> P_t:18 var
+R1246:1248 simuliris.simulation.gen_log_rel <> P_s:19 var
+R1270:1277 simuliris.simulation.gen_log_rel <> prog_rel def
+prf 1363:1376 <> prog_rel_union
+binder 1378:1381 <> P_t1:20
+binder 1383:1386 <> P_t2:21
+binder 1388:1391 <> P_s1:22
+binder 1393:1396 <> P_s2:23
+R1419:1427 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1408:1414 stdpp.fin_maps <> ::stdpp_scope:x_'##ₘ'_x not
+R1404:1407 simuliris.simulation.gen_log_rel <> P_t1:20 var
+R1415:1418 simuliris.simulation.gen_log_rel <> P_t2:21 var
+R1446:1455 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R1428:1435 simuliris.simulation.gen_log_rel <> prog_rel def
+R1437:1440 simuliris.simulation.gen_log_rel <> P_t1:20 var
+R1442:1445 simuliris.simulation.gen_log_rel <> P_s1:22 var
+R1474:1483 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R1456:1463 simuliris.simulation.gen_log_rel <> prog_rel def
+R1465:1468 simuliris.simulation.gen_log_rel <> P_t2:21 var
+R1470:1473 simuliris.simulation.gen_log_rel <> P_s2:23 var
+R1484:1491 simuliris.simulation.gen_log_rel <> prog_rel def
+R1498:1502 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R1494:1497 simuliris.simulation.gen_log_rel <> P_t1:20 var
+R1503:1506 simuliris.simulation.gen_log_rel <> P_t2:21 var
+R1514:1518 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R1510:1513 simuliris.simulation.gen_log_rel <> P_s1:22 var
+R1519:1522 simuliris.simulation.gen_log_rel <> P_s2:23 var
+R1548:1555 simuliris.simulation.gen_log_rel <> prog_rel def
+R1611:1611 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1617:1620 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1622:1622 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1627:1627 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1648:1651 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1692:1710 stdpp.fin_maps <> lookup_union_Some_l thm
+R1763:1763 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1769:1772 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1780:1780 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R1773:1779 Corelib.Init.Logic <> eq_refl constr
+R1849:1867 stdpp.fin_maps <> lookup_union_Some_l thm
+R1899:1912 stdpp.fin_maps <> lookup_union_r thm
+R1965:1965 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R1971:1974 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R1976:1976 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R1981:1986 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R1993:1993 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R2075:2093 stdpp.fin_maps <> lookup_union_Some_r thm
+prf 2173:2192 <> prog_rel_refl_insert
+binder 2194:2194 <> P:24
+R2205:2210 Stdlib.Strings.String <> string ind
+binder 2197:2201 <> fname:25
+R2226:2229 simuliris.simulation.language <> func proj
+R2231:2232 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+binder 2214:2217 <> fn_t:26
+binder 2219:2222 <> fn_s:27
+R2263:2272 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R2241:2244 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R2245:2252 simuliris.simulation.gen_log_rel <> func_rel def
+R2254:2257 simuliris.simulation.gen_log_rel <> fn_t:26 var
+R2259:2262 simuliris.simulation.gen_log_rel <> fn_s:27 var
+R2331:2340 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2273:2277 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R2330:2330 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R2278:2281 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R2286:2287 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 2282:2282 <> f:28
+binder 2284:2285 <> fn:29
+R2310:2315 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2288:2290 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2307:2309 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2297:2299 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2292:2295 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R2296:2296 simuliris.simulation.gen_log_rel <> f:28 var
+R2291:2291 simuliris.simulation.gen_log_rel <> P:24 var
+R2300:2303 Corelib.Init.Datatypes <> Some constr
+R2305:2306 simuliris.simulation.gen_log_rel <> fn:29 var
+R2316:2323 simuliris.simulation.gen_log_rel <> func_rel def
+R2325:2326 simuliris.simulation.gen_log_rel <> fn:29 var
+R2328:2329 simuliris.simulation.gen_log_rel <> fn:29 var
+R2341:2348 simuliris.simulation.gen_log_rel <> prog_rel def
+R2351:2352 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2358:2359 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2364:2367 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2353:2357 simuliris.simulation.gen_log_rel <> fname:25 var
+R2360:2363 simuliris.simulation.gen_log_rel <> fn_t:26 var
+R2367:2367 simuliris.simulation.gen_log_rel <> P:24 var
+R2371:2372 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2378:2379 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2384:2387 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2373:2377 simuliris.simulation.gen_log_rel <> fname:25 var
+R2380:2383 simuliris.simulation.gen_log_rel <> fn_s:27 var
+R2387:2387 simuliris.simulation.gen_log_rel <> P:24 var
+R2413:2420 simuliris.simulation.gen_log_rel <> prog_rel def
+R2470:2475 stdpp.base <> decide def
+R2479:2481 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2518:2533 stdpp.fin_maps <> lookup_insert_eq thm
+R2601:2616 stdpp.fin_maps <> lookup_insert_ne thm
+var  2882:2888 fix_lang val_rel
+R2898:2902 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2892:2894 simuliris.simulation.language <> val proj
+R2896:2897 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R2909:2913 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2903:2905 simuliris.simulation.language <> val proj
+R2907:2908 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R2914:2917 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+def 2935:2947 <> subst_map_rel
+R2954:2957 stdpp.gmap <> gset def
+R2959:2964 Stdlib.Strings.String <> string ind
+binder 2950:2950 <> X:31
+R2974:2977 stdpp.gmap <> gmap rec
+R2993:2995 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R2987:2989 simuliris.simulation.language <> val proj
+R2991:2992 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R2996:2998 simuliris.simulation.language <> val proj
+R3000:3001 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R2979:2984 Stdlib.Strings.String <> string ind
+binder 2968:2970 <> map:32
+R3007:3010 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+R3019:3028 iris.bi.big_op <> ::bi_scope:'[∗'_'set]'_x_'∈'_x_','_x not
+R3030:3034 iris.bi.big_op <> ::bi_scope:'[∗'_'set]'_x_'∈'_x_','_x not
+R3036:3043 iris.bi.big_op <> ::bi_scope:'[∗'_'set]'_x_'∈'_x_','_x not
+binder 3029:3029 <> x:33
+binder 3029:3029 <> x:34
+R3053:3056 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R3057:3057 simuliris.simulation.gen_log_rel <> x:33 var
+R3050:3052 simuliris.simulation.gen_log_rel <> map:32 var
+R3072:3075 Corelib.Init.Datatypes <> Some constr
+R3077:3077 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R3081:3082 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R3086:3086 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R3091:3097 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R3115:3118 Corelib.Init.Datatypes <> None constr
+R3123:3127 iris.bi.interface <> ::bi_scope:'False' not
+R3035:3035 simuliris.simulation.gen_log_rel <> X:31 var
+inst 3159:3176 <> subst_map_rel_pers
+binder 3178:3178 <> X:35
+binder 3180:3182 <> map:36
+R3187:3190 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R3196:3197 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 3191:3192 <> vt:37
+binder 3194:3195 <> vs:38
+R3198:3207 iris.bi.derived_connectives <> Persistent class
+R3210:3216 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R3218:3219 simuliris.simulation.gen_log_rel <> vt:37 var
+R3221:3222 simuliris.simulation.gen_log_rel <> vs:38 var
+binder 3186:3223 <> H:39
+R3232:3241 iris.bi.derived_connectives <> Persistent class
+R3244:3256 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R3258:3258 simuliris.simulation.gen_log_rel <> X:35 var
+R3260:3262 simuliris.simulation.gen_log_rel <> map:36 var
+R3288:3300 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R3309:3327 iris.bi.big_op <> big_sepS_persistent thm
+R3350:3353 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+prf 3399:3418 <> subst_map_rel_lookup
+binder 3421:3421 <> X:40
+binder 3423:3425 <> map:41
+binder 3428:3428 <> x:42
+R3443:3451 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3437:3441 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R3436:3436 simuliris.simulation.gen_log_rel <> x:42 var
+R3442:3442 simuliris.simulation.gen_log_rel <> X:40 var
+R3471:3480 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R3452:3464 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R3466:3466 simuliris.simulation.gen_log_rel <> X:40 var
+R3468:3470 simuliris.simulation.gen_log_rel <> map:41 var
+R3481:3484 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3492:3493 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 3485:3487 <> v_t:43
+binder 3489:3491 <> v_s:44
+R3526:3530 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3494:3496 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3523:3525 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3505:3507 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3500:3503 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R3504:3504 simuliris.simulation.gen_log_rel <> x:42 var
+R3497:3499 simuliris.simulation.gen_log_rel <> map:41 var
+R3508:3511 Corelib.Init.Datatypes <> Some constr
+R3513:3513 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R3517:3518 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R3522:3522 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R3514:3516 simuliris.simulation.gen_log_rel <> v_t:43 var
+R3519:3521 simuliris.simulation.gen_log_rel <> v_s:44 var
+R3531:3537 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R3539:3541 simuliris.simulation.gen_log_rel <> v_t:43 var
+R3543:3545 simuliris.simulation.gen_log_rel <> v_s:44 var
+R3596:3596 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3619:3624 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3631:3631 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3597:3612 iris.bi.big_op <> big_sepS_elem_of thm
+R3673:3676 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+prf 3812:3828 <> subst_map_rel_dom
+R3833:3836 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R3842:3843 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 3837:3838 <> vt:45
+binder 3840:3841 <> vs:46
+R3844:3853 iris.bi.derived_connectives <> Persistent class
+R3856:3862 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R3864:3865 simuliris.simulation.gen_log_rel <> vt:45 var
+R3867:3868 simuliris.simulation.gen_log_rel <> vs:46 var
+binder 3832:3869 <> H:47
+binder 3872:3872 <> X:48
+binder 3874:3876 <> map:49
+R3903:3908 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R3884:3896 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R3898:3898 simuliris.simulation.gen_log_rel <> X:48 var
+R3900:3902 simuliris.simulation.gen_log_rel <> map:49 var
+R3909:3911 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3925:3927 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R3913:3917 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R3912:3912 simuliris.simulation.gen_log_rel <> X:48 var
+R3918:3920 stdpp.base <> dom def
+R3922:3924 simuliris.simulation.gen_log_rel <> map:49 var
+R3952:3964 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R3976:3990 iris.bi.big_op <> big_sepS_forall thm
+R4021:4024 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R4075:4090 stdpp.sets <> elem_of_subseteq thm
+R4125:4125 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R4130:4133 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R4135:4135 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R4138:4138 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R4153:4163 stdpp.fin_map_dom <> elem_of_dom meth
+R4177:4180 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+prf 4208:4227 <> subst_map_rel_weaken
+binder 4229:4230 <> X1:50
+binder 4232:4233 <> X2:51
+binder 4235:4237 <> map:52
+R4254:4262 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4247:4251 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R4245:4246 simuliris.simulation.gen_log_rel <> X2:51 var
+R4252:4253 simuliris.simulation.gen_log_rel <> X1:50 var
+R4283:4288 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R4263:4275 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R4277:4278 simuliris.simulation.gen_log_rel <> X1:50 var
+R4280:4282 simuliris.simulation.gen_log_rel <> map:52 var
+R4289:4301 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R4303:4304 simuliris.simulation.gen_log_rel <> X2:51 var
+R4306:4308 simuliris.simulation.gen_log_rel <> map:52 var
+R4341:4357 iris.bi.big_op <> big_sepS_subseteq thm
+prf 4380:4402 <> subst_map_rel_singleton
+binder 4404:4404 <> X:53
+binder 4406:4406 <> x:54
+binder 4408:4410 <> v_t:55
+binder 4412:4414 <> v_s:56
+R4433:4441 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4423:4427 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R4422:4422 simuliris.simulation.gen_log_rel <> X:53 var
+R4428:4429 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4431:4432 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4430:4430 simuliris.simulation.gen_log_rel <> x:54 var
+R4457:4466 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R4442:4448 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R4450:4452 simuliris.simulation.gen_log_rel <> v_t:55 var
+R4454:4456 simuliris.simulation.gen_log_rel <> v_s:56 var
+R4467:4479 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R4481:4481 simuliris.simulation.gen_log_rel <> X:53 var
+R4483:4484 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R4486:4487 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R4498:4499 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R4485:4485 simuliris.simulation.gen_log_rel <> x:54 var
+R4488:4488 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4492:4493 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4497:4497 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4489:4491 simuliris.simulation.gen_log_rel <> v_t:55 var
+R4494:4496 simuliris.simulation.gen_log_rel <> v_s:56 var
+R4547:4566 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R4568:4569 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4571:4572 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4601:4613 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R4615:4632 iris.bi.big_op <> big_sepS_singleton thm
+R4634:4652 stdpp.fin_maps <> lookup_singleton_eq thm
+def 4749:4766 <> binder_delete_gset
+R4773:4778 stdpp.binders <> binder ind
+binder 4769:4769 <> b:57
+R4786:4789 stdpp.gmap <> gset def
+R4791:4796 Stdlib.Strings.String <> string ind
+binder 4782:4782 <> X:58
+R4812:4812 simuliris.simulation.gen_log_rel <> b:57 var
+R4819:4823 stdpp.binders <> BAnon constr
+R4828:4828 simuliris.simulation.gen_log_rel <> X:58 var
+R4832:4837 stdpp.binders <> BNamed constr
+R4845:4849 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R4844:4844 simuliris.simulation.gen_log_rel <> X:58 var
+R4850:4851 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R4853:4854 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+prf 4870:4889 <> subst_map_rel_insert
+binder 4891:4891 <> X:60
+binder 4893:4893 <> x:61
+binder 4895:4897 <> v_t:62
+binder 4899:4901 <> v_s:63
+binder 4903:4905 <> map:64
+R4955:4964 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R4913:4925 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R4928:4945 simuliris.simulation.gen_log_rel <> binder_delete_gset def
+R4947:4947 simuliris.simulation.gen_log_rel <> x:61 var
+R4949:4949 simuliris.simulation.gen_log_rel <> X:60 var
+R4952:4954 simuliris.simulation.gen_log_rel <> map:64 var
+R4980:4989 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R4965:4971 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R4973:4975 simuliris.simulation.gen_log_rel <> v_t:62 var
+R4977:4979 simuliris.simulation.gen_log_rel <> v_s:63 var
+R4990:5002 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R5004:5004 simuliris.simulation.gen_log_rel <> X:60 var
+R5007:5019 stdpp.binders <> binder_insert def
+R5034:5036 simuliris.simulation.gen_log_rel <> map:64 var
+R5023:5023 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5027:5028 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5032:5032 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R5024:5026 simuliris.simulation.gen_log_rel <> v_t:62 var
+R5029:5031 simuliris.simulation.gen_log_rel <> v_s:63 var
+R5021:5021 simuliris.simulation.gen_log_rel <> x:61 var
+R5126:5138 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R5148:5148 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5168:5173 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5182:5182 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5149:5165 iris.bi.big_op <> big_sepS_delete_2 thm
+R5202:5217 stdpp.fin_maps <> lookup_insert_eq thm
+R5239:5239 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5253:5258 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5265:5265 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5240:5252 iris.bi.big_op <> big_sepS_impl thm
+R5313:5318 stdpp.base <> decide def
+R5322:5324 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5378:5393 stdpp.fin_maps <> lookup_insert_ne thm
+prf 5421:5439 <> subst_map_rel_empty
+binder 5441:5443 <> map:65
+R5451:5454 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R5455:5467 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R5469:5471 stdpp.base <> ::stdpp_scope:'∅' not
+R5473:5475 simuliris.simulation.gen_log_rel <> map:65 var
+R5494:5507 iris.bi.big_op <> big_sepS_empty thm
+var  6071:6080 fix_lang thread_own
+R6093:6097 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6084:6092 simuliris.simulation.language <> thread_id def
+R6098:6101 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+def 6119:6129 <> gen_log_rel
+binder 6131:6133 <> e_t:67
+binder 6135:6137 <> e_s:68
+R6141:6144 simuliris.simulation.gen_log_rel <> fix_lang.PROP var
+R6153:6156 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R6157:6160 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R6200:6208 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 6161:6162 <> π:69
+R6171:6174 stdpp.gmap <> gmap rec
+R6190:6192 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R6184:6186 simuliris.simulation.language <> val proj
+R6188:6189 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R6193:6195 simuliris.simulation.language <> val proj
+R6197:6198 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+R6176:6181 Stdlib.Strings.String <> string ind
+binder 6165:6167 <> map:70
+R6260:6271 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6209:6221 simuliris.simulation.gen_log_rel <> subst_map_rel def
+R6237:6241 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6224:6232 simuliris.simulation.language <> free_vars proj
+R6234:6236 simuliris.simulation.gen_log_rel <> e_t:67 var
+R6242:6250 simuliris.simulation.language <> free_vars proj
+R6252:6254 simuliris.simulation.gen_log_rel <> e_s:68 var
+R6257:6259 simuliris.simulation.gen_log_rel <> map:70 var
+R6285:6296 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6272:6281 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R6283:6284 simuliris.simulation.gen_log_rel <> π:69 var
+R6324:6328 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6331:6332 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6360:6371 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6417:6419 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6372:6374 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6382:6383 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6375:6377 <> v_t:71
+binder 6379:6381 <> v_s:72
+R6397:6401 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R6384:6393 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R6395:6396 simuliris.simulation.gen_log_rel <> π:69 var
+R6402:6408 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R6410:6412 simuliris.simulation.gen_log_rel <> v_t:71 var
+R6414:6416 simuliris.simulation.gen_log_rel <> v_s:72 var
+R6329:6330 simuliris.simulation.gen_log_rel <> π:69 var
+R6297:6305 simuliris.simulation.language <> subst_map proj
+R6321:6323 simuliris.simulation.gen_log_rel <> e_t:67 var
+R6311:6315 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R6308:6310 Corelib.Init.Datatypes <> fst def
+R6316:6318 simuliris.simulation.gen_log_rel <> map:70 var
+R6333:6341 simuliris.simulation.language <> subst_map proj
+R6357:6359 simuliris.simulation.gen_log_rel <> e_s:68 var
+R6347:6351 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R6344:6346 Corelib.Init.Datatypes <> snd def
+R6352:6354 simuliris.simulation.gen_log_rel <> map:70 var
+inst 6441:6462 <> gen_log_rel_persistent
+binder 6464:6466 <> e_t:73
+binder 6468:6470 <> e_s:74
+R6474:6483 iris.bi.derived_connectives <> Persistent class
+R6486:6496 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R6498:6500 simuliris.simulation.gen_log_rel <> e_t:73 var
+R6502:6504 simuliris.simulation.gen_log_rel <> e_s:74 var
+R6526:6536 simuliris.simulation.gen_log_rel <> gen_log_rel def
+prf 6562:6581 <> gen_log_rel_closed_1
+binder 6583:6585 <> e_t:75
+binder 6587:6589 <> e_s:76
+binder 6591:6592 <> π:77
+R6637:6645 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6631:6633 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6613:6617 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6600:6608 simuliris.simulation.language <> free_vars proj
+R6610:6612 simuliris.simulation.gen_log_rel <> e_t:75 var
+R6618:6626 simuliris.simulation.language <> free_vars proj
+R6628:6630 simuliris.simulation.gen_log_rel <> e_s:76 var
+R6634:6636 stdpp.base <> ::stdpp_scope:'∅' not
+R6665:6675 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R6646:6656 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R6658:6660 simuliris.simulation.gen_log_rel <> e_t:75 var
+R6662:6664 simuliris.simulation.gen_log_rel <> e_s:76 var
+R6689:6694 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6676:6685 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R6687:6688 simuliris.simulation.gen_log_rel <> π:77 var
+R6698:6702 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6705:6706 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6710:6713 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6759:6761 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R6714:6716 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6724:6725 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6717:6719 <> v_t:78
+binder 6721:6723 <> v_s:79
+R6739:6743 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R6726:6735 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R6737:6738 simuliris.simulation.gen_log_rel <> π:77 var
+R6744:6750 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R6752:6754 simuliris.simulation.gen_log_rel <> v_t:78 var
+R6756:6758 simuliris.simulation.gen_log_rel <> v_s:79 var
+R6703:6704 simuliris.simulation.gen_log_rel <> π:77 var
+R6695:6697 simuliris.simulation.gen_log_rel <> e_t:75 var
+R6707:6709 simuliris.simulation.gen_log_rel <> e_s:76 var
+R6816:6816 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R6823:6826 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R6829:6829 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R6833:6833 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R6830:6832 stdpp.base <> ::stdpp_scope:'∅' not
+R6851:6860 stdpp.fin_maps <> fmap_empty thm
+R6866:6880 simuliris.simulation.language <> subst_map_empty thm
+R6929:6947 simuliris.simulation.gen_log_rel <> subst_map_rel_empty thm
+prf 6966:6983 <> gen_log_rel_closed
+binder 6985:6987 <> e_t:80
+binder 6989:6991 <> e_s:81
+R7036:7044 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7030:7032 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7012:7016 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6999:7007 simuliris.simulation.language <> free_vars proj
+R7009:7011 simuliris.simulation.gen_log_rel <> e_t:80 var
+R7017:7025 simuliris.simulation.language <> free_vars proj
+R7027:7029 simuliris.simulation.gen_log_rel <> e_s:81 var
+R7033:7035 stdpp.base <> ::stdpp_scope:'∅' not
+R7064:7078 iris.bi.interface <> ::stdpp_scope:x_'⊣⊢'_x not
+R7185:7185 iris.bi.interface <> ::stdpp_scope:x_'⊣⊢'_x not
+R7045:7055 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R7057:7059 simuliris.simulation.gen_log_rel <> e_t:80 var
+R7061:7063 simuliris.simulation.gen_log_rel <> e_s:81 var
+R7079:7082 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R7083:7086 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R7089:7090 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 7087:7088 <> π:82
+R7104:7117 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7091:7100 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R7102:7103 simuliris.simulation.gen_log_rel <> π:82 var
+R7121:7125 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7128:7129 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7133:7136 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7182:7184 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7137:7139 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R7147:7148 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 7140:7142 <> v_t:83
+binder 7144:7146 <> v_s:84
+R7162:7166 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7149:7158 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R7160:7161 simuliris.simulation.gen_log_rel <> π:82 var
+R7167:7173 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R7175:7177 simuliris.simulation.gen_log_rel <> v_t:83 var
+R7179:7181 simuliris.simulation.gen_log_rel <> v_s:84 var
+R7126:7127 simuliris.simulation.gen_log_rel <> π:82 var
+R7118:7120 simuliris.simulation.gen_log_rel <> e_t:80 var
+R7130:7132 simuliris.simulation.gen_log_rel <> e_s:81 var
+R7263:7282 simuliris.simulation.gen_log_rel <> gen_log_rel_closed_1 thm
+R7344:7359 simuliris.simulation.language <> subst_map_closed thm
+prf 7393:7413 <> gen_log_rel_singleton
+binder 7415:7417 <> e_t:85
+binder 7419:7421 <> e_s:86
+binder 7423:7425 <> v_t:87
+binder 7427:7429 <> v_s:88
+binder 7431:7433 <> arg:89
+binder 7435:7436 <> π:90
+R7489:7497 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7475:7479 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R7457:7461 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R7444:7452 simuliris.simulation.language <> free_vars proj
+R7454:7456 simuliris.simulation.gen_log_rel <> e_t:85 var
+R7462:7470 simuliris.simulation.language <> free_vars proj
+R7472:7474 simuliris.simulation.gen_log_rel <> e_s:86 var
+R7480:7482 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R7486:7488 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R7483:7485 simuliris.simulation.gen_log_rel <> arg:89 var
+R7517:7526 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R7498:7508 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R7510:7512 simuliris.simulation.gen_log_rel <> e_t:85 var
+R7514:7516 simuliris.simulation.gen_log_rel <> e_s:86 var
+R7542:7551 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7527:7533 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R7535:7537 simuliris.simulation.gen_log_rel <> v_t:87 var
+R7539:7541 simuliris.simulation.gen_log_rel <> v_s:88 var
+R7565:7574 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7552:7561 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R7563:7564 simuliris.simulation.gen_log_rel <> π:90 var
+R7603:7607 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7610:7611 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7640:7649 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7695:7697 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R7650:7652 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R7660:7661 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 7653:7655 <> v_t:91
+binder 7657:7659 <> v_s:92
+R7675:7679 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7662:7671 simuliris.simulation.gen_log_rel <> fix_lang.thread_own var
+R7673:7674 simuliris.simulation.gen_log_rel <> π:90 var
+R7680:7686 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R7688:7690 simuliris.simulation.gen_log_rel <> v_t:91 var
+R7692:7694 simuliris.simulation.gen_log_rel <> v_s:92 var
+R7608:7609 simuliris.simulation.gen_log_rel <> π:90 var
+R7575:7583 simuliris.simulation.language <> subst_map proj
+R7600:7602 simuliris.simulation.gen_log_rel <> e_t:85 var
+R7585:7586 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7590:7593 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7597:7598 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7587:7589 simuliris.simulation.gen_log_rel <> arg:89 var
+R7594:7596 simuliris.simulation.gen_log_rel <> v_t:87 var
+R7612:7620 simuliris.simulation.language <> subst_map proj
+R7637:7639 simuliris.simulation.gen_log_rel <> e_s:86 var
+R7622:7623 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7627:7630 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7634:7635 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7624:7626 simuliris.simulation.gen_log_rel <> arg:89 var
+R7631:7633 simuliris.simulation.gen_log_rel <> v_s:88 var
+R7756:7756 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7763:7766 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7768:7768 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7790:7795 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7808:7808 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7769:7770 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7774:7777 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7788:7789 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R7778:7778 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7782:7783 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7787:7787 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7837:7859 simuliris.simulation.gen_log_rel <> subst_map_rel_singleton thm
+R7877:7894 stdpp.fin_maps <> map_fmap_singleton thm
+prf 7988:8004 <> gen_log_rel_subst
+binder 8006:8006 <> x:93
+binder 8008:8010 <> e_t:94
+binder 8012:8014 <> e_s:95
+binder 8016:8020 <> dummy:96
+R8031:8034 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R8040:8041 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 8035:8036 <> vt:97
+binder 8038:8039 <> vs:98
+R8042:8051 iris.bi.derived_connectives <> Persistent class
+R8054:8060 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R8062:8063 simuliris.simulation.gen_log_rel <> vt:97 var
+R8065:8066 simuliris.simulation.gen_log_rel <> vs:98 var
+binder 8023:8027 <> HPers:99
+R8361:8370 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R8338:8341 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R8342:8348 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R8350:8354 simuliris.simulation.gen_log_rel <> dummy:96 var
+R8356:8360 simuliris.simulation.gen_log_rel <> dummy:96 var
+R8371:8371 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R8492:8502 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R8372:8375 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R8376:8380 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R8397:8399 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R8391:8393 simuliris.simulation.language <> val proj
+R8395:8396 simuliris.simulation.gen_log_rel <> fix_lang.Λ var
+binder 8381:8383 <> v_t:100
+binder 8385:8387 <> v_s:101
+R8415:8426 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R8400:8406 simuliris.simulation.gen_log_rel <> fix_lang.val_rel var
+R8408:8410 simuliris.simulation.gen_log_rel <> v_t:100 var
+R8412:8414 simuliris.simulation.gen_log_rel <> v_s:101 var
+R8427:8437 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R8440:8448 simuliris.simulation.language <> subst_map proj
+R8461:8463 simuliris.simulation.gen_log_rel <> e_t:94 var
+R8450:8451 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R8453:8454 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R8458:8459 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R8452:8452 simuliris.simulation.gen_log_rel <> x:93 var
+R8455:8457 simuliris.simulation.gen_log_rel <> v_t:100 var
+R8467:8475 simuliris.simulation.language <> subst_map proj
+R8488:8490 simuliris.simulation.gen_log_rel <> e_s:95 var
+R8477:8478 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R8480:8481 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R8485:8486 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R8479:8479 simuliris.simulation.gen_log_rel <> x:93 var
+R8482:8484 simuliris.simulation.gen_log_rel <> v_s:101 var
+R8503:8513 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R8515:8517 simuliris.simulation.gen_log_rel <> e_t:94 var
+R8519:8521 simuliris.simulation.gen_log_rel <> e_s:95 var
+R8596:8601 stdpp.base <> decide def
+R8605:8609 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R8623:8627 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R8610:8618 simuliris.simulation.language <> free_vars proj
+R8628:8636 simuliris.simulation.language <> free_vars proj
+R8691:8691 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R8698:8701 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R8707:8707 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R8713:8713 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_')' not
+R8733:8751 simuliris.simulation.language <> subst_map_free_vars thm
+R8755:8757 stdpp.base <> ::stdpp_scope:'∅' not
+R8807:8811 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R8847:8865 stdpp.fin_maps <> lookup_singleton_ne thm
+R8890:8908 simuliris.simulation.language <> subst_map_free_vars thm
+R8912:8914 stdpp.base <> ::stdpp_scope:'∅' not
+R8964:8968 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R9004:9022 stdpp.fin_maps <> lookup_singleton_ne thm
+R9045:9059 simuliris.simulation.language <> subst_map_empty thm
+R9106:9106 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9129:9134 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9140:9140 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9107:9126 simuliris.simulation.gen_log_rel <> subst_map_rel_lookup thm
+R9194:9194 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9201:9204 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9208:9208 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9212:9217 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9224:9224 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9243:9243 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9250:9253 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9256:9256 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9259:9264 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9272:9272 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R9288:9288 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9309:9314 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9320:9320 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9289:9308 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R9338:9356 simuliris.simulation.language <> free_vars_subst_map thm
+R9386:9404 simuliris.simulation.language <> subst_map_subst_map thm
+R9432:9437 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R9448:9448 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R9420:9421 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9423:9426 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9430:9431 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9441:9445 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R9438:9440 Corelib.Init.Datatypes <> fst def
+R9460:9464 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R9457:9459 Corelib.Init.Datatypes <> fst def
+R9497:9520 stdpp.fin_maps <> insert_union_singleton_l thm
+R9522:9530 stdpp.fin_maps <> insert_id thm
+R9550:9560 stdpp.fin_maps <> lookup_fmap meth
+R9596:9601 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R9612:9612 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R9584:9585 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9587:9590 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9594:9595 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R9605:9609 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R9602:9604 Corelib.Init.Datatypes <> snd def
+R9624:9628 stdpp.base <> ::stdpp_scope:x_'<$>'_x not
+R9621:9623 Corelib.Init.Datatypes <> snd def
+R9661:9684 stdpp.fin_maps <> insert_union_singleton_l thm
+R9686:9694 stdpp.fin_maps <> insert_id thm
+R9714:9724 stdpp.fin_maps <> lookup_fmap meth
+R9773:9780 simuliris.simulation.gen_log_rel fix_lang <> sec
+R9794:9801 simuliris.simulation.gen_log_rel <> prog_rel def
+R9828:9838 simuliris.simulation.gen_log_rel <> gen_log_rel def

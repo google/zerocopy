@@ -1,0 +1,14 @@
+[
+  {
+    "source_object": "theories/logic/satisfiable.vo",
+    "failed_mapping_sha256": "aa908cd97af5d8faf40c323e99ad29bb00b66a2998180337de86f67b3ee6a764",
+    "corrected_mapping_sha256": "94fd05d90d3045955a474196c0df46fe1705774abbb211258f97ed8757743e88",
+    "forced_rebuild": true
+  },
+  {
+    "source_object": "theories/simulation/language.vo",
+    "failed_mapping_sha256": "5cbbd2995dbe615c65336ae7b6a5e25e510b33aa34632ef33b4d08189c3976cb",
+    "corrected_mapping_sha256": "3ca0e86ac2190f4c07eb635af5ef6b65da31d9a3df6b7cf65bbf7fe05c7da6e3",
+    "forced_rebuild": true
+  }
+]

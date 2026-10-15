@@ -1,0 +1,17 @@
+
+<><> Synchronising pinned packages ><><><><><><><><><><><><><><><><><><><><><><>
+[rocq-iris.dev.2026-09-10.3.b3495ef9] synchronised (no changes)
+[rocq-stdpp.dev.2026-09-09.1.c3186aad] synchronised (no changes)
+
+The following actions will be performed:
+  - install rocq-stdpp dev.2026-09-09.1.c3186aad*
+  - install rocq-iris  dev.2026-09-10.3.b3495ef9*
+===== 2 to install =====
+
+<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+-> retrieved rocq-iris.dev.2026-09-10.3.b3495ef9  (no changes)
+-> retrieved rocq-stdpp.dev.2026-09-09.1.c3186aad  (no changes)
+-> installed rocq-stdpp.dev.2026-09-09.1.c3186aad
+-> installed rocq-iris.dev.2026-09-10.3.b3495ef9
+Done.
+# Run eval $(opam env) to update the current shell environment

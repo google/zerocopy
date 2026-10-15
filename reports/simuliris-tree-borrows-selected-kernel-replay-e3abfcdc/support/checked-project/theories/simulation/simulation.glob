@@ -1,0 +1,65 @@
+DIGEST 2c3d999279b42ff3c7aef4683c25f573
+Fsimuliris.simulation.simulation
+R85:86 iris.bi.bi <> <> lib
+R130:137 simuliris.simulation.language <> <> lib
+R147:148 iris.bi.bi bi <> mod
+ind 309:311 <> Sim
+constr 358:360 <> sim
+rec 309:311 <> Sim
+proj 358:360 <> sim
+R319:322 iris.algebra.stepindex <> sidx class
+binder 314:315 <> SI:1
+R333:334 iris.bi.interface <> bi rec
+binder 326:329 <> PROP:2
+R343:350 simuliris.simulation.language <> language rec
+binder 338:339 <> Λ:3
+R364:364 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R391:396 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R371:375 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R365:367 simuliris.simulation.language <> val proj
+R369:370 simuliris.simulation.simulation <> Λ:3 var
+R382:386 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R376:378 simuliris.simulation.language <> val proj
+R380:381 simuliris.simulation.simulation <> Λ:3 var
+R387:390 simuliris.simulation.simulation <> PROP:2 var
+R406:410 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R397:405 simuliris.simulation.language <> thread_id def
+R418:422 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R411:414 simuliris.simulation.language <> expr proj
+R416:417 simuliris.simulation.simulation <> Λ:3 var
+R430:434 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R423:426 simuliris.simulation.language <> expr proj
+R428:429 simuliris.simulation.simulation <> Λ:3 var
+R435:438 simuliris.simulation.simulation <> PROP:2 var
+ind 514:517 <> SimE
+constr 564:571 <> sim_expr
+rec 514:517 <> SimE
+proj 564:571 <> sim_expr
+R525:528 iris.algebra.stepindex <> sidx class
+binder 520:521 <> SI:6
+R539:540 iris.bi.interface <> bi rec
+binder 532:535 <> PROP:7
+R549:556 simuliris.simulation.language <> language rec
+binder 544:545 <> Λ:8
+R575:575 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R604:609 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R583:587 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R576:579 simuliris.simulation.language <> expr proj
+R581:582 simuliris.simulation.simulation <> Λ:8 var
+R595:599 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R588:591 simuliris.simulation.language <> expr proj
+R593:594 simuliris.simulation.simulation <> Λ:8 var
+R600:603 simuliris.simulation.simulation <> PROP:7 var
+R619:623 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R610:618 simuliris.simulation.language <> thread_id def
+R631:635 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R624:627 simuliris.simulation.language <> expr proj
+R629:630 simuliris.simulation.simulation <> Λ:8 var
+R643:647 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R636:639 simuliris.simulation.language <> expr proj
+R641:642 simuliris.simulation.simulation <> Λ:8 var
+R648:651 simuliris.simulation.simulation <> PROP:7 var
+R915:917 simuliris.simulation.simulation <> sim def
+not 880:880 <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}'
+R1427:1434 simuliris.simulation.simulation <> sim_expr def
+not 1392:1392 <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]'

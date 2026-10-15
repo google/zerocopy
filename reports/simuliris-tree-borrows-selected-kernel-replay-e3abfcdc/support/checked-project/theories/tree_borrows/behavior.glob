@@ -1,0 +1,162 @@
+DIGEST 3b05cda7913420bcd3cda86e41bd6564
+Fsimuliris.tree_borrows.behavior
+R26:29 stdpp.gmap <> <> lib
+R65:71 iris.prelude.prelude <> <> lib
+R115:122 simuliris.simulation.behavior <> <> lib
+R168:171 simuliris.tree_borrows.defs <> <> lib
+R173:174 simuliris.tree_borrows.wf <> <> lib
+def 292:301 <> init_state
+R316:320 simuliris.tree_borrows.lang bor_lang state rec
+binder 304:307 <> σ_t:1
+binder 309:312 <> σ_s:2
+R352:356 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R339:341 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R335:338 simuliris.tree_borrows.behavior <> σ_t:1 var
+R342:351 simuliris.tree_borrows.defs <> init_state def
+R361:363 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R357:360 simuliris.tree_borrows.behavior <> σ_s:2 var
+R364:373 simuliris.tree_borrows.defs <> init_state def
+def 388:397 <> obs_scalar
+R412:417 simuliris.tree_borrows.lang_base <> scalar ind
+binder 400:403 <> sc_t:3
+binder 405:408 <> sc_s:4
+R437:440 simuliris.tree_borrows.behavior <> sc_s:4 var
+R431:434 simuliris.tree_borrows.behavior <> sc_t:3 var
+R451:455 simuliris.tree_borrows.lang_base <> ScPtr constr
+R464:468 simuliris.tree_borrows.lang_base <> ScPtr constr
+R479:482 stdpp.base <> ::type_scope:'True' not
+R538:542 simuliris.tree_borrows.lang_base <> ScInt constr
+R548:552 simuliris.tree_borrows.lang_base <> ScInt constr
+R562:564 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R572:578 simuliris.tree_borrows.lang_base <> ScFnPtr constr
+R584:590 simuliris.tree_borrows.lang_base <> ScFnPtr constr
+R600:601 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R609:616 simuliris.tree_borrows.lang_base <> ScCallId constr
+R622:629 simuliris.tree_borrows.lang_base <> ScCallId constr
+R639:641 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R652:659 simuliris.tree_borrows.lang_base <> ScPoison constr
+R664:667 stdpp.base <> ::type_scope:'True' not
+R737:741 stdpp.base <> ::type_scope:'False' not
+def 763:771 <> obs_value
+R784:788 simuliris.tree_borrows.lang_base <> value def
+binder 774:776 <> v_t:7
+binder 778:780 <> v_s:8
+R801:807 Stdlib.Lists.List <> Forall2 ind
+R824:826 simuliris.tree_borrows.behavior <> v_s:8 var
+R820:822 simuliris.tree_borrows.behavior <> v_t:7 var
+R809:818 simuliris.tree_borrows.behavior <> obs_scalar def
+def 840:849 <> obs_result
+R862:864 simuliris.simulation.language <> val proj
+R866:873 simuliris.tree_borrows.lang <> bor_lang canonstruc
+binder 852:854 <> r_t:9
+binder 856:858 <> r_s:10
+R899:901 simuliris.tree_borrows.behavior <> r_s:10 var
+R894:896 simuliris.tree_borrows.behavior <> r_t:9 var
+R912:917 simuliris.tree_borrows.lang_base <> PlaceR constr
+R926:931 simuliris.tree_borrows.lang_base <> PlaceR constr
+R946:949 stdpp.base <> ::type_scope:'True' not
+R1005:1008 simuliris.tree_borrows.lang_base <> ValR constr
+R1015:1018 simuliris.tree_borrows.lang_base <> ValR constr
+R1027:1035 simuliris.tree_borrows.behavior <> obs_value def
+R1057:1061 stdpp.base <> ::type_scope:'False' not
+def 1133:1140 <> prog_ref
+R1145:1152 simuliris.simulation.behavior <> prog_ref def
+R1190:1199 simuliris.tree_borrows.behavior <> obs_result def
+R1173:1176 simuliris.tree_borrows.lang_base <> ValR constr
+R1178:1178 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R1187:1187 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R1179:1186 simuliris.tree_borrows.lang_base <> ScPoison constr
+R1154:1163 simuliris.tree_borrows.behavior <> init_state def
+def 1262:1275 <> treeborrows_wf
+R1282:1290 simuliris.tree_borrows.expr_semantics <> expr_head ind
+binder 1278:1278 <> e:13
+R1311:1311 simuliris.tree_borrows.behavior <> e:13 var
+R1322:1328 simuliris.tree_borrows.expr_semantics <> ValHead constr
+R1335:1342 simuliris.tree_borrows.wf <> value_wf def
+R1350:1358 simuliris.tree_borrows.expr_semantics <> PlaceHead constr
+R1369:1373 stdpp.base <> ::type_scope:'False' not
+R1410:1413 stdpp.base <> ::type_scope:'True' not
+abbrev 1432:1438 <> expr_wf
+R1444:1454 simuliris.tree_borrows.wf <> gen_expr_wf def
+R1456:1469 simuliris.tree_borrows.behavior <> treeborrows_wf def
+abbrev 1482:1488 <> ectx_wf
+R1494:1504 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R1506:1519 simuliris.tree_borrows.behavior <> treeborrows_wf def
+abbrev 1532:1537 <> ctx_wf
+R1543:1552 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R1554:1567 simuliris.tree_borrows.behavior <> treeborrows_wf def
+def 1612:1618 <> ctx_ref
+R1631:1634 simuliris.tree_borrows.lang_base <> expr ind
+binder 1621:1623 <> e_t:15
+binder 1625:1627 <> e_s:16
+R1642:1646 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1684:1754 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1651:1653 simuliris.tree_borrows.expr_semantics <> ctx def
+binder 1647:1647 <> C:17
+R1667:1672 Stdlib.Strings.String <> string ind
+binder 1657:1661 <> fname:18
+binder 1663:1663 <> x:19
+R1680:1683 simuliris.tree_borrows.expr_semantics <> prog def
+binder 1676:1676 <> p:20
+R1832:1886 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1755:1764 stdpp.fin_maps <> map_Forall def
+R1831:1831 simuliris.tree_borrows.behavior <> p:20 var
+R1767:1769 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R1784:1785 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R1773:1773 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1777:1778 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1783:1783 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+binder 1779:1782 <> body:21
+binder 1774:1776 <> arg:22
+binder 1773:1783 <> pat:23
+R1798:1802 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1786:1792 simuliris.tree_borrows.behavior <> expr_wf abbrev
+R1794:1797 simuliris.tree_borrows.behavior <> body:21 var
+R1817:1821 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R1803:1811 simuliris.tree_borrows.parallel_subst <> free_vars def
+R1813:1816 simuliris.tree_borrows.behavior <> body:21 var
+R1822:1823 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R1827:1828 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R1824:1826 simuliris.tree_borrows.behavior <> arg:22 var
+R1895:1956 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1887:1892 simuliris.tree_borrows.behavior <> ctx_wf abbrev
+R1894:1894 simuliris.tree_borrows.behavior <> C:17 var
+R2024:2177 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2014:2018 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R1983:1987 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R1957:1965 simuliris.tree_borrows.parallel_subst <> free_vars def
+R1968:1975 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R1977:1977 simuliris.tree_borrows.behavior <> C:17 var
+R1979:1981 simuliris.tree_borrows.behavior <> e_t:15 var
+R1988:1996 simuliris.tree_borrows.parallel_subst <> free_vars def
+R1999:2006 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R2008:2008 simuliris.tree_borrows.behavior <> C:17 var
+R2010:2012 simuliris.tree_borrows.behavior <> e_s:16 var
+R2019:2020 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R2022:2023 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R2021:2021 simuliris.tree_borrows.behavior <> x:19 var
+R2178:2185 simuliris.tree_borrows.behavior <> prog_ref def
+R2188:2189 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2195:2198 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2218:2221 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2190:2194 simuliris.tree_borrows.behavior <> fname:18 var
+R2199:2199 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2201:2202 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2217:2217 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2200:2200 simuliris.tree_borrows.behavior <> x:19 var
+R2203:2210 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R2212:2212 simuliris.tree_borrows.behavior <> C:17 var
+R2214:2216 simuliris.tree_borrows.behavior <> e_t:15 var
+R2221:2221 simuliris.tree_borrows.behavior <> p:20 var
+R2225:2226 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2232:2235 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2255:2258 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2227:2231 simuliris.tree_borrows.behavior <> fname:18 var
+R2236:2236 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2238:2239 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2254:2254 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2237:2237 simuliris.tree_borrows.behavior <> x:19 var
+R2240:2247 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R2249:2249 simuliris.tree_borrows.behavior <> C:17 var
+R2251:2253 simuliris.tree_borrows.behavior <> e_s:16 var
+R2258:2258 simuliris.tree_borrows.behavior <> p:20 var

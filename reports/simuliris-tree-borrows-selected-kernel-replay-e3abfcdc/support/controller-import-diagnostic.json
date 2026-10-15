@@ -1,0 +1,1 @@
+{"failed_operation": "exec controller definitions without __file__", "exception": "NameError: __file__ is not defined", "effect": "before copy/build/source check; no container action", "correction": "supply actual controller file identity in execution namespace"}

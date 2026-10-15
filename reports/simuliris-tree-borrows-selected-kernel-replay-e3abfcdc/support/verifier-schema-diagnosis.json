@@ -1,0 +1,41 @@
+{
+  "failure": "KeyError stdout_bytes in read-only package verifier",
+  "effect": "No proof tool or source mutation; verifier stopped",
+  "cause": "One pre-existing diagnosis receipt used a distinct metadata schema",
+  "records": [
+    {
+      "file": "binding-failure-diagnosis.json",
+      "keys": [
+        "argv",
+        "exit_code",
+        "elapsed_seconds",
+        "stdout_sha256",
+        "stderr_sha256"
+      ],
+      "metadata": {
+        "argv": [
+          "docker",
+          "exec",
+          "--workdir",
+          "/home/opam/anneal-simuliris-sources/simuliris",
+          "anneal-simuliris-20261014",
+          "opam",
+          "exec",
+          "--switch=4.14",
+          "--",
+          "/bin/sh",
+          "-c",
+          "cat Makefile.rocq.conf; find . -name \"*.vo\" -exec sha256sum {} +; ps -eo pid,ppid,etime,args"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.08997074999999999,
+        "stdout_sha256": "4313a6bce0cf1fdcc4d15519d0edb22cbe650c1fe1945f3e9a808fec905d2e4d",
+        "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+      }
+    }
+  ],
+  "planned_correction": "Validate common stream hash keys when present; for differently-shaped receipt validate its preserved stream files and record schema explicitly",
+  "original_verifier_sha256": "d741a39adc830cced6805f64dbc76fe73370bcfdcdabf660769c0959b18795a0",
+  "corrected_verifier_sha256": "62241bcaf463e5e5e08b2716091583b5351d81b48678dea0773a97bfe22049d2",
+  "correction": "Always validate stdout/stderr SHA256. Validate byte counts when represented; explicitly recognize only the preserved binding-failure diagnosis receipt without byte counts. Unknown schemas fail."
+}

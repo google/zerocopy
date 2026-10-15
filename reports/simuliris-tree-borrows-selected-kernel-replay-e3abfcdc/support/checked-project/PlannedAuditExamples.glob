@@ -1,0 +1,15 @@
+DIGEST d542ae001e3565a1987601cdf32e3e93
+FPlannedAuditExamples
+R95:164 simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped <> <> lib
+R182:263 simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper <> <> lib
+R281:333 simuliris.tree_borrows.read_read_reorder.read_reorder <> <> lib
+R369:472 simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped <> unprot_shared_delete_read_escaped thm
+R493:596 simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped <> unprot_shared_delete_read_escaped thm
+R607:714 simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped <> unprot_shared_delete_read_escaped_ctx thm
+R735:842 simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped <> unprot_shared_delete_read_escaped_ctx thm
+R853:980 simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper <> prot_mutable_reorder_write_up_activated_paper thm
+R1001:1128 simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper <> prot_mutable_reorder_write_up_activated_paper thm
+R1139:1270 simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper <> prot_mutable_reorder_write_up_activated_paper_ctx thm
+R1291:1422 simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper <> prot_mutable_reorder_write_up_activated_paper_ctx thm
+R1433:1498 simuliris.tree_borrows.read_read_reorder.read_reorder <> read_reorder thm
+R1519:1584 simuliris.tree_borrows.read_read_reorder.read_reorder <> read_reorder thm

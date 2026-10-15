@@ -1,0 +1,34 @@
+{
+  "label": "sequential-read-reordering",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "limit=$1\nshift\nstart=$(du -sb . | cut -f1)\npeak=$start\nstop=none\nbegin=$(date +%s)\ntimeout --signal=TERM --kill-after=5 \"$limit\" \"$@\" &\npid=$!\nwhile kill -0 \"$pid\" 2>/dev/null; do\n size=$(du -sb . | cut -f1)\n if [ \"$size\" -gt \"$peak\" ]; then peak=$size; fi\n if [ \"$peak\" -gt 1076927915 ]; then\n  stop=disk-cap\n  kill -TERM \"$pid\"\n  break\n fi\n sleep 2\ndone\nwait \"$pid\"\nresult=$?\nend=$(date +%s)\nfinal=$(du -sb . | cut -f1)\nprintf 'ANNEAL_PHASE_RESULT returncode=%s stop=%s elapsed_seconds=%s start_bytes=%s peak_bytes=%s final_bytes=%s\\n' \"$result\" \"$stop\" \"$((end-begin))\" \"$start\" \"$peak\" \"$final\"\nexit \"$result\"\n",
+    "anneal-phase",
+    "600",
+    "make",
+    "-f",
+    "Makefile.rocq",
+    "-j1",
+    "theories/tree_borrows/read_read_reorder/read_reorder.vo"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 4.189,
+  "stdout_bytes": 327,
+  "stderr_bytes": 45,
+  "stdout_sha256": "07baa27102c63895e671a1b30c96e51db4657935d761478bb8e1b972c76b2dd7",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "label": "rocq-help",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "rocq",
+    "--help"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.073,
+  "stdout_bytes": 1432,
+  "stderr_bytes": 45,
+  "stdout_sha256": "dc48e2547dc3c0485db3e6e8df0276b87e2d6bbf3d38fe14825cafc3d485c3d0",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0,
+    1
+  ]
+}

@@ -1,0 +1,302 @@
+DIGEST b6f6bd36494b10612a14ab7c19b85a41
+Fsimuliris.logic.satisfiable
+R25:29 iris.base_logic.upred <> <> lib
+R31:43 iris.base_logic.bi <> <> lib
+R45:49 iris.bi.bi <> <> lib
+R87:95 iris.proofmode.proofmode <> <> lib
+R105:106 iris.bi.bi bi <> mod
+sec 139:149 <> satisfiable
+var  164:167 satisfiable PROP
+R171:172 iris.bi.interface <> bi rec
+var  187:195 satisfiable PROP_bupd
+R199:204 iris.bi.updates <> BiBUpd class
+R206:209 simuliris.logic.satisfiable <> satisfiable.PROP var
+var  224:234 satisfiable PROP_affine
+R238:245 iris.bi.extensions <> BiAffine class
+R247:250 simuliris.logic.satisfiable <> satisfiable.PROP var
+R277:280 simuliris.logic.satisfiable <> satisfiable.PROP var
+rec 293:303 <> Satisfiable
+proj 335:342 <> sat_mono
+proj 384:391 <> sat_elim
+proj 426:433 <> sat_bupd
+proj 468:477 <> sat_exists
+R315:319 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R311:314 simuliris.logic.satisfiable <> satisfiable.PROP var
+binder 306:308 <> sat:4
+binder 344:344 <> P:6
+binder 346:346 <> Q:7
+R349:349 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R357:362 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R351:355 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R350:350 simuliris.logic.satisfiable <> P:6 var
+R356:356 simuliris.logic.satisfiable <> Q:7 var
+R368:372 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R363:365 simuliris.logic.satisfiable <> sat:4 var
+R367:367 simuliris.logic.satisfiable <> P:6 var
+R373:375 simuliris.logic.satisfiable <> sat:4 var
+R377:377 simuliris.logic.satisfiable <> Q:7 var
+binder 393:394 <> φ:9
+R413:417 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R397:399 simuliris.logic.satisfiable <> sat:4 var
+R402:404 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R407:409 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R405:406 simuliris.logic.satisfiable <> φ:9 var
+R418:419 simuliris.logic.satisfiable <> φ:9 var
+binder 435:435 <> P:11
+R452:456 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R438:440 simuliris.logic.satisfiable <> sat:4 var
+R443:447 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R448:448 simuliris.logic.satisfiable <> P:11 var
+R457:459 simuliris.logic.satisfiable <> sat:4 var
+R461:461 simuliris.logic.satisfiable <> P:11 var
+binder 480:480 <> X:13
+binder 483:484 <> Φ:14
+R509:513 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R487:489 simuliris.logic.satisfiable <> sat:4 var
+R492:495 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R500:501 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R499:499 simuliris.logic.satisfiable <> X:13 var
+binder 496:496 <> x:15
+R502:503 simuliris.logic.satisfiable <> Φ:14 var
+R505:505 simuliris.logic.satisfiable <> x:15 var
+R514:517 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R522:523 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R521:521 simuliris.logic.satisfiable <> X:13 var
+binder 518:518 <> x:16
+R524:526 simuliris.logic.satisfiable <> sat:4 var
+R529:530 simuliris.logic.satisfiable <> Φ:14 var
+R532:532 simuliris.logic.satisfiable <> x:16 var
+sec 552:565 satisfiable derived_lemmas
+var  581:583 satisfiable.derived_lemmas sat
+R590:594 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R586:589 simuliris.logic.satisfiable <> satisfiable.PROP var
+R603:613 simuliris.logic.satisfiable <> Satisfiable class
+R615:617 simuliris.logic.satisfiable <> sat:18 var
+R635:637 simuliris.logic.satisfiable <> sat varprfax
+inst 722:727 <> sat_if
+R730:735 Corelib.Classes.Morphisms <> Proper class
+R754:756 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R743:747 Corelib.Classes.Morphisms ProperNotations ::signature_scope:x_'==>'_x not
+R738:742 iris.bi.interface <> ::stdpp_scope:'(⊢)' not
+R748:751 Corelib.Program.Basics <> impl def
+R802:809 simuliris.logic.satisfiable <> sat_mono meth
+inst 838:846 <> sat_equiv
+R849:854 Corelib.Classes.Morphisms <> Proper class
+R872:874 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R862:866 Corelib.Classes.Morphisms ProperNotations ::signature_scope:x_'==>'_x not
+R857:861 stdpp.base <> ::stdpp_scope:'(≡)' not
+R867:869 Corelib.Init.Logic <> iff def
+R938:945 simuliris.logic.satisfiable <> sat_mono meth
+R972:988 iris.bi.derived_laws bi equiv_entails_1_1 thm
+R991:1007 iris.bi.derived_laws bi equiv_entails_1_2 thm
+prf 1030:1036 <> sat_sep
+binder 1038:1038 <> P:20
+binder 1040:1040 <> Q:21
+R1056:1060 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1043:1045 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1049:1053 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1048:1048 simuliris.logic.satisfiable <> P:20 var
+R1054:1054 simuliris.logic.satisfiable <> Q:21 var
+R1066:1070 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1061:1063 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1065:1065 simuliris.logic.satisfiable <> P:20 var
+R1071:1073 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1075:1075 simuliris.logic.satisfiable <> Q:21 var
+R1122:1129 simuliris.logic.satisfiable <> sat_mono meth
+prf 1177:1183 <> sat_and
+binder 1185:1185 <> P:22
+binder 1187:1187 <> Q:23
+R1203:1207 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1190:1192 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1196:1200 iris.bi.interface <> ::bi_scope:x_'∧'_x not
+R1195:1195 simuliris.logic.satisfiable <> P:22 var
+R1201:1201 simuliris.logic.satisfiable <> Q:23 var
+R1213:1217 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1208:1210 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1212:1212 simuliris.logic.satisfiable <> P:22 var
+R1218:1220 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1222:1222 simuliris.logic.satisfiable <> Q:23 var
+R1269:1276 simuliris.logic.satisfiable <> sat_mono meth
+R1303:1315 iris.bi.interface bi and_elim_l thm
+R1318:1330 iris.bi.interface bi and_elim_r thm
+prf 1352:1357 <> sat_or
+binder 1359:1359 <> P:24
+binder 1361:1361 <> Q:25
+R1377:1381 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1364:1366 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1370:1374 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R1369:1369 simuliris.logic.satisfiable <> P:24 var
+R1375:1375 simuliris.logic.satisfiable <> Q:25 var
+R1387:1391 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R1382:1384 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1386:1386 simuliris.logic.satisfiable <> P:24 var
+R1392:1394 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1396:1396 simuliris.logic.satisfiable <> Q:25 var
+R1424:1429 iris.bi.derived_laws bi or_alt thm
+R1451:1460 simuliris.logic.satisfiable <> sat_exists meth
+prf 1489:1498 <> sat_forall
+binder 1501:1501 <> X:26
+binder 1504:1505 <> Φ:27
+binder 1507:1507 <> x:28
+R1530:1534 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1510:1512 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1515:1518 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1523:1524 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R1522:1522 simuliris.logic.satisfiable <> X:26 var
+binder 1519:1519 <> x:29
+R1525:1526 simuliris.logic.satisfiable <> Φ:27 var
+R1528:1528 simuliris.logic.satisfiable <> x:29 var
+R1535:1537 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1540:1541 simuliris.logic.satisfiable <> Φ:27 var
+R1543:1543 simuliris.logic.satisfiable <> x:28 var
+R1571:1578 simuliris.logic.satisfiable <> sat_mono meth
+prf 1607:1614 <> sat_pers
+binder 1616:1616 <> P:30
+R1633:1637 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1619:1621 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1624:1630 iris.bi.interface <> ::bi_scope:'<pers>'_x not
+R1631:1631 simuliris.logic.satisfiable <> P:30 var
+R1638:1640 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1642:1642 simuliris.logic.satisfiable <> P:30 var
+R1669:1676 simuliris.logic.satisfiable <> sat_mono meth
+prf 1705:1722 <> sat_intuitionistic
+binder 1724:1724 <> P:31
+R1738:1742 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1727:1729 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1732:1735 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R1736:1736 simuliris.logic.satisfiable <> P:31 var
+R1743:1745 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1747:1747 simuliris.logic.satisfiable <> P:31 var
+R1774:1781 simuliris.logic.satisfiable <> sat_mono meth
+prf 1810:1817 <> sat_impl
+binder 1819:1819 <> P:32
+binder 1821:1821 <> Q:33
+R1824:1824 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1830:1835 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1825:1828 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R1829:1829 simuliris.logic.satisfiable <> P:32 var
+R1849:1854 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1836:1838 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1842:1846 iris.bi.interface <> ::bi_scope:x_'→'_x not
+R1841:1841 simuliris.logic.satisfiable <> P:32 var
+R1847:1847 simuliris.logic.satisfiable <> Q:33 var
+R1855:1857 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R1859:1859 simuliris.logic.satisfiable <> Q:33 var
+R1904:1911 simuliris.logic.satisfiable <> sat_mono meth
+R1946:1956 iris.bi.derived_laws bi impl_elim_r thm
+prf 2012:2019 <> sat_wand
+binder 2021:2021 <> P:34
+binder 2023:2023 <> Q:35
+R2026:2026 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2032:2037 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2027:2030 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R2031:2031 simuliris.logic.satisfiable <> P:34 var
+R2052:2056 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2038:2040 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R2044:2049 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R2043:2043 simuliris.logic.satisfiable <> P:34 var
+R2050:2050 simuliris.logic.satisfiable <> Q:35 var
+R2057:2059 simuliris.logic.satisfiable <> satisfiable.derived_lemmas.sat var
+R2061:2061 simuliris.logic.satisfiable <> Q:35 var
+R2106:2113 simuliris.logic.satisfiable <> sat_mono meth
+R2185:2198 simuliris.logic.satisfiable satisfiable.derived_lemmas <> sec
+sec 2212:2220 satisfiable sat_frame
+var  2236:2238 satisfiable.sat_frame sat
+R2245:2249 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2241:2244 simuliris.logic.satisfiable <> satisfiable.PROP var
+R2258:2268 simuliris.logic.satisfiable <> Satisfiable class
+R2270:2272 simuliris.logic.satisfiable <> sat:36 var
+R2290:2292 simuliris.logic.satisfiable <> sat varprfax
+def 2316:2324 <> sat_frame
+R2332:2335 simuliris.logic.satisfiable <> satisfiable.PROP var
+binder 2327:2327 <> F:38
+binder 2329:2329 <> P:39
+R2341:2343 simuliris.logic.satisfiable <> satisfiable.sat_frame.sat var
+R2347:2351 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2346:2346 simuliris.logic.satisfiable <> F:38 var
+R2352:2352 simuliris.logic.satisfiable <> P:39 var
+inst 2377:2397 <> sat_frame_satisfiable
+binder 2399:2399 <> F:40
+R2402:2412 simuliris.logic.satisfiable <> Satisfiable class
+R2415:2423 simuliris.logic.satisfiable <> sat_frame def
+R2425:2425 simuliris.logic.satisfiable <> F:40 var
+R2460:2468 simuliris.logic.satisfiable <> sat_frame def
+R2507:2514 simuliris.logic.satisfiable <> sat_mono meth
+R2596:2603 simuliris.logic.satisfiable <> sat_elim meth
+R2606:2613 simuliris.logic.satisfiable <> sat_mono meth
+R2679:2686 simuliris.logic.satisfiable <> sat_bupd meth
+R2689:2696 simuliris.logic.satisfiable <> sat_mono meth
+R2765:2774 simuliris.logic.satisfiable <> sat_exists meth
+R2777:2784 simuliris.logic.satisfiable <> sat_mono meth
+prf 2840:2854 <> sat_frame_intro
+binder 2856:2856 <> P:41
+binder 2858:2858 <> F:42
+binder 2860:2860 <> Q:43
+R2869:2869 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2883:2888 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2871:2875 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R2870:2870 simuliris.logic.satisfiable <> P:41 var
+R2877:2881 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2876:2876 simuliris.logic.satisfiable <> F:42 var
+R2882:2882 simuliris.logic.satisfiable <> Q:43 var
+R2894:2898 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2889:2891 simuliris.logic.satisfiable <> satisfiable.sat_frame.sat var
+R2893:2893 simuliris.logic.satisfiable <> P:41 var
+R2899:2907 simuliris.logic.satisfiable <> sat_frame def
+R2909:2909 simuliris.logic.satisfiable <> F:42 var
+R2911:2911 simuliris.logic.satisfiable <> Q:43 var
+R2938:2946 simuliris.logic.satisfiable <> sat_frame def
+R2956:2963 simuliris.logic.satisfiable <> sat_mono meth
+R2982:2990 simuliris.logic.satisfiable satisfiable.sat_frame <> sec
+R2998:3008 simuliris.logic.satisfiable satisfiable <> sec
+R3021:3029 simuliris.logic.satisfiable <> sat_frame def
+R3111:3115 iris.base_logic.upred <> <> mod
+def 3129:3132 <> isat
+binder 3135:3135 <> M:44
+R3142:3146 iris.base_logic.upred <> uPred rec
+R3148:3148 simuliris.logic.satisfiable <> M:44 var
+binder 3139:3139 <> P:45
+R3154:3157 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R3162:3163 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R3161:3161 simuliris.logic.satisfiable <> M:44 var
+binder 3158:3158 <> x:46
+R3172:3176 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3164:3167 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R3169:3170 iris.algebra.cmra <> :::'✓{'_x_'}'_x not
+R3171:3171 simuliris.logic.satisfiable <> x:46 var
+R3177:3187 iris.base_logic.upred <> uPred_holds proj
+R3193:3193 simuliris.logic.satisfiable <> x:46 var
+R3189:3189 simuliris.logic.satisfiable <> P:45 var
+inst 3213:3228 <> isat_satisfiable
+binder 3231:3231 <> M:47
+R3235:3245 simuliris.logic.satisfiable <> Satisfiable class
+R3249:3252 simuliris.logic.satisfiable <> isat def
+R3254:3254 simuliris.logic.satisfiable <> M:47 var
+R3281:3284 simuliris.logic.satisfiable <> isat def
+R3430:3431 iris.algebra.cmra <> ε def
+R3463:3470 stdpp.base <> right_id def
+R3499:3506 stdpp.base <> right_id def
+prf 3569:3578 <> isat_intro
+binder 3581:3581 <> M:48
+R3589:3593 iris.base_logic.upred <> uPred rec
+R3595:3595 simuliris.logic.satisfiable <> M:48 var
+binder 3585:3585 <> P:49
+R3600:3600 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3606:3611 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3601:3604 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R3605:3605 simuliris.logic.satisfiable <> P:49 var
+R3612:3615 simuliris.logic.satisfiable <> isat def
+R3617:3617 simuliris.logic.satisfiable <> P:49 var
+R3647:3648 iris.algebra.cmra <> ε def
+R3673:3689 iris.algebra.cmra <> ucmra_unit_validN thm
+R3719:3735 iris.algebra.cmra <> ucmra_unit_validN thm
+prf 3813:3828 <> isat_later_false
+binder 3831:3831 <> M:50
+R3835:3838 simuliris.logic.satisfiable <> isat def
+R3856:3860 iris.base_logic.upred <> uPred rec
+R3862:3862 simuliris.logic.satisfiable <> M:50 var
+R3842:3845 iris.bi.interface <> ::bi_scope:'▷'_x not
+R3846:3850 iris.bi.interface <> ::bi_scope:'False' not
+R3882:3885 simuliris.logic.satisfiable <> isat def
+R3909:3910 iris.algebra.cmra <> ε def
+R3942:3958 iris.algebra.cmra <> ucmra_unit_validN thm

@@ -1,0 +1,65 @@
+image: ralfjung/opam-ci:opam2
+
+stages:
+  - build
+  - notify
+
+variables:
+  CPU_CORES: "10"
+  OCAML: "ocaml-base-compiler.4.14.0"
+
+.template: &template
+  stage: build
+  tags:
+  - fp
+  script:
+  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.mpi-sws.org/iris/ci.git ci -b opam2
+  - ci/buildjob
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+    - _opam/
+  only:
+  - master@iris/simuliris
+  - /^ci/@iris/simuliris
+  except:
+  - triggers
+  - schedules
+  - api
+
+## Build jobs
+
+build-rocq.9.2.0:
+  <<: *template
+  variables:
+    OPAM_PINS: "rocq-core version 9.2.0"
+    MANGLE_NAMES: "1"
+    DENY_WARNINGS: "1"
+
+trigger-iris.dev:
+  <<: *template
+  variables:
+    STDPP_REPO: "iris/stdpp"
+    IRIS_REPO: "iris/iris"
+    # overwriting NIGHTLY_COQ since Equations does not have branches for Rocq pre-releases
+    OPAM_PINS: "rocq-core version 9.2.dev   git+https://gitlab.mpi-sws.org/$STDPP_REPO#$STDPP_REV   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
+  except:
+  only:
+  - triggers
+  - schedules
+  - api
+
+notify_on_schedule_failure:
+  stage: notify
+  needs: [ trigger-iris.dev ]
+  tags:
+  - fp
+  variables:
+    MATTERMOST_NOTIFICATION_USERS: "@johannes @lgaeher @jung"
+    NOTIFICATION_MESSAGE: "❌ **Nightly CI failed**"
+  script:
+    - git clone https://gitlab.mpi-sws.org/iris/ci.git ci -b opam2
+    - ci/send-notification.sh
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_failure

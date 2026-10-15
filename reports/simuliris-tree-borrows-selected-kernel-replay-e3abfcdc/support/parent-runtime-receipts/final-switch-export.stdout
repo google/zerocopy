@@ -1,0 +1,186 @@
+opam-version: "2.0"
+compiler: ["ocaml-base-compiler.4.14.4"]
+roots: [
+  "atd.3.0.1"
+  "atdgen.3.0.1"
+  "atdgen-runtime.3.0.1"
+  "atdts.3.0.1"
+  "base.v0.16.5"
+  "biniou.1.2.2"
+  "camlp-streams.5.0.1"
+  "cmdliner.2.1.1"
+  "conf-gmp.5"
+  "conf-linux-libc-dev.0"
+  "conf-pkg-config.5"
+  "coq-core.9.2.0"
+  "cppo.1.8.0"
+  "csexp.1.5.2"
+  "dune.3.17.2"
+  "dune-configurator.3.18.2"
+  "easy-format.1.3.4"
+  "elpi.3.7.3"
+  "menhir.20260209"
+  "menhirCST.20260209"
+  "menhirGLR.20260209"
+  "menhirLib.20260209"
+  "menhirSdk.20260209"
+  "ocaml-base-compiler.4.14.4"
+  "ocaml-compiler-libs.v0.12.4"
+  "ocamlfind.1.9.8"
+  "opam-depext.1.2.3"
+  "ppx_derivers.1.2.1"
+  "ppx_deriving.6.0.3"
+  "ppx_optcomp.v0.16.0"
+  "ppxlib.0.35.0"
+  "re.1.14.0"
+  "rocq-core.9.2.0"
+  "rocq-elpi.3.5.1"
+  "rocq-equations.1.3.2+9.2"
+  "rocq-iris.dev.2026-09-10.3.b3495ef9"
+  "rocq-runtime.9.2.0"
+  "rocq-stdlib.9.2.0"
+  "rocq-stdpp.dev.2026-09-09.1.c3186aad"
+  "sexplib0.v0.16.0"
+  "stdio.v0.16.0"
+  "stdlib-shims.0.3.0"
+  "yojson.3.0.0"
+  "zarith.1.14"
+]
+installed: [
+  "atd.3.0.1"
+  "atdgen.3.0.1"
+  "atdgen-runtime.3.0.1"
+  "atdts.3.0.1"
+  "base.v0.16.5"
+  "base-bigarray.base"
+  "base-threads.base"
+  "base-unix.base"
+  "biniou.1.2.2"
+  "camlp-streams.5.0.1"
+  "cmdliner.2.1.1"
+  "conf-gmp.5"
+  "conf-linux-libc-dev.0"
+  "conf-pkg-config.5"
+  "coq-core.9.2.0"
+  "cppo.1.8.0"
+  "csexp.1.5.2"
+  "dune.3.17.2"
+  "dune-configurator.3.18.2"
+  "easy-format.1.3.4"
+  "elpi.3.7.3"
+  "menhir.20260209"
+  "menhirCST.20260209"
+  "menhirGLR.20260209"
+  "menhirLib.20260209"
+  "menhirSdk.20260209"
+  "ocaml.4.14.4"
+  "ocaml-base-compiler.4.14.4"
+  "ocaml-compiler-libs.v0.12.4"
+  "ocaml-config.2"
+  "ocaml-options-vanilla.1"
+  "ocamlfind.1.9.8"
+  "opam-depext.1.2.3"
+  "ppx_derivers.1.2.1"
+  "ppx_deriving.6.0.3"
+  "ppx_optcomp.v0.16.0"
+  "ppxlib.0.35.0"
+  "re.1.14.0"
+  "rocq-core.9.2.0"
+  "rocq-elpi.3.5.1"
+  "rocq-equations.1.3.2+9.2"
+  "rocq-iris.dev.2026-09-10.3.b3495ef9"
+  "rocq-runtime.9.2.0"
+  "rocq-stdlib.9.2.0"
+  "rocq-stdpp.dev.2026-09-09.1.c3186aad"
+  "sexplib0.v0.16.0"
+  "stdio.v0.16.0"
+  "stdlib-shims.0.3.0"
+  "yojson.3.0.0"
+  "zarith.1.14"
+]
+pinned: [
+  "ocaml-base-compiler.4.14.4"
+  "rocq-iris.dev.2026-09-10.3.b3495ef9"
+  "rocq-stdpp.dev.2026-09-09.1.c3186aad"
+]
+package "rocq-iris" {
+  opam-version: "2.0"
+  version: "dev.2026-09-10.3.b3495ef9"
+  synopsis:
+    "A Higher-Order Concurrent Separation Logic Framework with support for interactive proofs"
+  description: """\
+Iris is a framework for reasoning about the safety of concurrent programs using
+concurrent separation logic. It can be used to develop a program logic, for
+defining logical relations, and for reasoning about type systems, among other
+applications. This package includes the base logic, Iris Proof Mode (IPM) /
+MoSeL, and a general language-independent program logic; see rocq-iris-heap-lang
+for an instantiation of the program logic to a particular programming language."""
+  maintainer: "Ralf Jung <jung@mpi-sws.org>"
+  authors: "The Iris Team"
+  license: "BSD-3-Clause"
+  tags: [
+    "logpath:iris.prelude"
+    "logpath:iris.algebra"
+    "logpath:iris.si_logic"
+    "logpath:iris.bi"
+    "logpath:iris.proofmode"
+    "logpath:iris.base_logic"
+    "logpath:iris.program_logic"
+  ]
+  homepage: "https://iris-project.org/"
+  bug-reports: "https://gitlab.mpi-sws.org/iris/iris/issues"
+  depends: [
+    "rocq-core" {(>= "9.0" & < "9.4~") | (= "dev")}
+    "rocq-stdlib" {(>= "9.0") | (= "dev")}
+    "rocq-stdpp" {(= "dev.2026-09-09.1.c3186aad") | (= "dev")}
+    "rocq-elpi" {(>= "3")}
+  ]
+  conflicts: ["coq-iris"]
+  build: ["./make-package" "iris" "-j%{jobs}%"]
+  install: ["./make-package" "iris" "install"]
+  dev-repo: "git+https://gitlab.mpi-sws.org/iris/iris.git"
+  url {
+    src: "file:///home/opam/anneal-simuliris-sources/iris"
+  }
+}
+package "rocq-stdpp" {
+  opam-version: "2.0"
+  version: "dev.2026-09-09.1.c3186aad"
+  synopsis: "An extended \"Standard Library\" for Rocq"
+  description: """\
+The key features of this library are as follows:
+
+- It provides a great number of definitions and lemmas for common data
+  structures such as lists, finite maps, finite sets, and finite multisets.
+- It uses type classes for common notations (like `∅`, `∪`, and Haskell-style
+  monad notations) so that these can be overloaded for different data structures.
+- It uses type classes to keep track of common properties of types, like it
+  having decidable equality or being countable or finite.
+- Most data structures are represented in canonical ways so that Leibniz
+  equality can be used as much as possible (for example, for maps we have
+  `m1 = m2` iff `∀ i, m1 !! i = m2 !! i`). On top of that, the library provides
+  setoid instances for most types and operations.
+- It provides various tactics for common tasks, like an ssreflect inspired
+  `done` tactic for finishing trivial goals, a simple breadth-first solver
+  `naive_solver`, an equality simplifier `simplify_eq`, a solver `solve_proper`
+  for proving compatibility of functions with respect to relations, and a solver
+  `set_solver` for goals involving set operations.
+- It is entirely dependency- and axiom-free."""
+  maintainer: "Ralf Jung <jung@mpi-sws.org>"
+  authors: "The std++ team"
+  license: "BSD-3-Clause"
+  tags: "logpath:stdpp"
+  homepage: "https://gitlab.mpi-sws.org/iris/stdpp"
+  bug-reports: "https://gitlab.mpi-sws.org/iris/stdpp/issues"
+  depends: [
+    "rocq-core" {(>= "9.0" & < "9.4~") | (= "dev")}
+    "rocq-stdlib" {(>= "9.0") | (= "dev")}
+  ]
+  conflicts: ["coq-stdpp"]
+  build: ["./make-package" "stdpp" "-j%{jobs}%"]
+  install: ["./make-package" "stdpp" "install"]
+  dev-repo: "git+https://gitlab.mpi-sws.org/iris/stdpp.git"
+  url {
+    src: "file:///home/opam/anneal-simuliris-sources/stdpp"
+  }
+}

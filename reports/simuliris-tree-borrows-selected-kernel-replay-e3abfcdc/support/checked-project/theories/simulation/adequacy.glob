@@ -1,0 +1,995 @@
+DIGEST 5d8103d435c62a7d1cd9c26035842aad
+Fsimuliris.simulation.adequacy
+R28:29 iris.bi.bi <> <> lib
+R67:75 iris.proofmode.proofmode <> <> lib
+R114:124 simuliris.logic.satisfiable <> <> lib
+R170:177 simuliris.simulation.fairness <> <> lib
+R179:186 simuliris.simulation.language <> <> lib
+R188:195 simuliris.simulation.behavior <> <> lib
+R197:206 simuliris.simulation.closed_sim <> <> lib
+R208:224 simuliris.simulation.fairness_adequacy <> <> lib
+R234:235 iris.base_logic.bi <> <> mod
+sec 343:363 <> meta_level_simulation
+var  378:381 meta_level_simulation PROP
+R385:386 iris.bi.interface <> bi rec
+var  401:402 meta_level_simulation Λ
+R406:413 simuliris.simulation.language <> language rec
+var  428:428 meta_level_simulation s
+R432:442 simuliris.simulation.slsls <> simulirisGS class
+R444:447 simuliris.simulation.adequacy <> meta_level_simulation.PROP var
+R449:450 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+var  465:473 meta_level_simulation PROP_bupd
+R477:482 iris.bi.updates <> BiBUpd class
+R484:487 simuliris.simulation.adequacy <> meta_level_simulation.PROP var
+var  502:512 meta_level_simulation PROP_affine
+R516:523 iris.bi.extensions <> BiAffine class
+R525:528 simuliris.simulation.adequacy <> meta_level_simulation.PROP var
+var  543:558 meta_level_simulation PROP_pure_forall
+R562:573 iris.bi.extensions <> BiPureForall class
+R575:578 simuliris.simulation.adequacy <> meta_level_simulation.PROP var
+var  593:608 meta_level_simulation PROP_pers_forall
+R612:631 iris.bi.extensions <> BiPersistentlyForall class
+R633:636 simuliris.simulation.adequacy <> meta_level_simulation.PROP var
+var  651:653 meta_level_simulation sat
+var  672:674 meta_level_simulation Sat
+R660:664 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R656:659 simuliris.simulation.adequacy <> meta_level_simulation.PROP var
+R677:687 simuliris.logic.satisfiable <> Satisfiable class
+R689:691 simuliris.simulation.adequacy <> sat:8 var
+R707:709 simuliris.simulation.adequacy <> sat varprfax
+var  729:731 meta_level_simulation p_t
+var  733:735 meta_level_simulation p_s
+R738:741 simuliris.simulation.language <> prog abbrev
+R743:744 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+def 906:909 <> msim
+R917:921 simuliris.simulation.language <> tpool def
+R923:924 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 912:914 <> T_t:12
+R934:938 simuliris.simulation.language <> state proj
+R940:941 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 928:931 <> σ_t:13
+R951:955 simuliris.simulation.language <> tpool def
+R957:958 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 946:948 <> T_s:14
+R968:972 simuliris.simulation.language <> state proj
+R974:975 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 962:965 <> σ_s:15
+R982:985 stdpp.gmap <> gset def
+R987:989 Corelib.Init.Datatypes <> nat ind
+binder 979:979 <> V:16
+R999:1001 simuliris.simulation.adequacy <> meta_level_simulation.sat var
+R1038:1042 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1004:1015 simuliris.simulation.slsls <> state_interp meth
+R1035:1037 simuliris.simulation.adequacy <> T_s:14 var
+R1030:1033 simuliris.simulation.adequacy <> σ_s:15 var
+R1026:1028 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R1021:1024 simuliris.simulation.adequacy <> σ_t:13 var
+R1017:1019 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R1142:1146 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R1043:1045 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1139:1141 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R1046:1049 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1051:1052 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1050:1050 <> i:17
+R1060:1064 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1054:1058 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R1053:1053 simuliris.simulation.adequacy <> i:17 var
+R1059:1059 simuliris.simulation.adequacy <> V:16 var
+R1065:1068 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1076:1077 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 1069:1071 <> v_t:18
+binder 1073:1075 <> v_s:19
+R1106:1110 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1086:1088 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1081:1084 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1085:1085 simuliris.simulation.adequacy <> i:17 var
+R1078:1080 simuliris.simulation.adequacy <> T_t:12 var
+R1089:1092 Corelib.Init.Datatypes <> Some constr
+R1095:1100 simuliris.simulation.language <> of_val def
+R1102:1104 simuliris.simulation.adequacy <> v_t:18 var
+R1119:1121 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1114:1117 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1118:1118 simuliris.simulation.adequacy <> i:17 var
+R1111:1113 simuliris.simulation.adequacy <> T_s:14 var
+R1122:1125 Corelib.Init.Datatypes <> Some constr
+R1128:1133 simuliris.simulation.language <> of_val def
+R1135:1137 simuliris.simulation.adequacy <> v_s:19 var
+R1147:1157 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R1159:1161 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R1165:1166 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R1170:1174 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R1178:1178 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R1182:1183 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+binder 1158:1158 <> i:20
+binder 1158:1158 <> i:21
+binder 1162:1164 <> e_t:22
+binder 1162:1164 <> e_t:23
+binder 1167:1169 <> e_s:24
+binder 1167:1169 <> e_s:25
+R1184:1192 simuliris.simulation.closed_sim <> csim_expr def
+R1195:1203 simuliris.simulation.slsls <> lift_post def
+R1206:1212 simuliris.simulation.slsls <> ext_rel meth
+R1214:1214 simuliris.simulation.adequacy <> i:20 var
+R1218:1218 simuliris.simulation.adequacy <> i:20 var
+R1220:1222 simuliris.simulation.adequacy <> e_t:22 var
+R1224:1226 simuliris.simulation.adequacy <> e_s:24 var
+R1175:1177 simuliris.simulation.adequacy <> T_t:12 var
+R1179:1181 simuliris.simulation.adequacy <> T_s:14 var
+prf 1239:1249 <> msim_length
+binder 1251:1253 <> T_t:26
+binder 1255:1257 <> T_s:27
+binder 1259:1262 <> σ_t:28
+binder 1264:1267 <> σ_s:29
+binder 1269:1269 <> V:30
+R1300:1304 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1276:1279 simuliris.simulation.adequacy <> msim def
+R1281:1283 simuliris.simulation.adequacy <> T_t:26 var
+R1285:1288 simuliris.simulation.adequacy <> σ_t:28 var
+R1290:1292 simuliris.simulation.adequacy <> T_s:27 var
+R1294:1297 simuliris.simulation.adequacy <> σ_s:29 var
+R1299:1299 simuliris.simulation.adequacy <> V:30 var
+R1315:1317 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1305:1310 Corelib.Init.Datatypes <> length def
+R1312:1314 simuliris.simulation.adequacy <> T_t:26 var
+R1318:1323 Corelib.Init.Datatypes <> length def
+R1325:1327 simuliris.simulation.adequacy <> T_s:27 var
+R1363:1370 simuliris.logic.satisfiable <> sat_elim meth
+R1373:1380 simuliris.logic.satisfiable <> sat_mono meth
+R1428:1440 iris.bi.big_op <> big_sepL2_alt thm
+prf 1493:1504 <> msim_add_val
+R1512:1514 simuliris.simulation.language <> val proj
+R1516:1517 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 1507:1509 <> v_t:31
+R1530:1534 simuliris.simulation.language <> tpool def
+R1536:1537 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 1521:1523 <> T_t:32
+binder 1525:1527 <> T_s:33
+R1552:1556 simuliris.simulation.language <> state proj
+R1558:1559 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 1541:1544 <> σ_t:34
+binder 1546:1549 <> σ_s:35
+binder 1562:1562 <> i:36
+binder 1564:1564 <> V:37
+R1595:1603 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1571:1574 simuliris.simulation.adequacy <> msim def
+R1576:1578 simuliris.simulation.adequacy <> T_t:32 var
+R1580:1583 simuliris.simulation.adequacy <> σ_t:34 var
+R1585:1587 simuliris.simulation.adequacy <> T_s:33 var
+R1589:1592 simuliris.simulation.adequacy <> σ_s:35 var
+R1594:1594 simuliris.simulation.adequacy <> V:37 var
+R1626:1634 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1604:1612 simuliris.simulation.language <> pool_safe def
+R1614:1616 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R1618:1620 simuliris.simulation.adequacy <> T_s:33 var
+R1622:1625 simuliris.simulation.adequacy <> σ_s:35 var
+R1663:1671 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1643:1645 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1638:1641 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1642:1642 simuliris.simulation.adequacy <> i:36 var
+R1635:1637 simuliris.simulation.adequacy <> T_t:32 var
+R1646:1649 Corelib.Init.Datatypes <> Some constr
+R1652:1657 simuliris.simulation.language <> of_val def
+R1659:1661 simuliris.simulation.adequacy <> v_t:31 var
+R1672:1675 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1688:1689 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 1676:1679 <> T_s':38
+binder 1681:1685 <> σ_s':39
+binder 1687:1687 <> I:40
+R1726:1730 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1690:1699 simuliris.simulation.language <> pool_steps ind
+R1701:1703 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R1705:1707 simuliris.simulation.adequacy <> T_s:33 var
+R1709:1712 simuliris.simulation.adequacy <> σ_s:35 var
+R1714:1714 simuliris.simulation.adequacy <> I:40 var
+R1716:1719 simuliris.simulation.adequacy <> T_s':38 var
+R1721:1725 simuliris.simulation.adequacy <> σ_s':39 var
+R1731:1734 simuliris.simulation.adequacy <> msim def
+R1736:1738 simuliris.simulation.adequacy <> T_t:32 var
+R1740:1743 simuliris.simulation.adequacy <> σ_t:34 var
+R1745:1748 simuliris.simulation.adequacy <> T_s':38 var
+R1750:1754 simuliris.simulation.adequacy <> σ_s':39 var
+R1758:1762 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R1757:1757 simuliris.simulation.adequacy <> V:37 var
+R1763:1764 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R1766:1767 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R1765:1765 simuliris.simulation.adequacy <> i:36 var
+R1816:1826 simuliris.simulation.adequacy <> msim_length thm
+R1857:1863 stdpp.base <> is_Some def
+R1869:1872 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R1907:1923 stdpp.list_basics list lookup_lt_is_Some thm
+R1948:1964 stdpp.list_basics list lookup_lt_is_Some thm
+R1989:1992 simuliris.simulation.adequacy <> msim def
+R2010:2017 simuliris.logic.satisfiable <> sat_mono meth
+R2041:2048 simuliris.logic.satisfiable <> sat_bupd meth
+R2072:2081 simuliris.logic.satisfiable <> sat_exists meth
+R2133:2142 simuliris.logic.satisfiable <> sat_exists meth
+R2196:2205 simuliris.logic.satisfiable <> sat_exists meth
+R2251:2257 simuliris.logic.satisfiable <> sat_sep thm
+R2297:2304 simuliris.logic.satisfiable <> sat_elim meth
+R2424:2424 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2445:2450 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2458:2458 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2425:2444 iris.bi.big_op <> big_sepL2_insert_acc thm
+R2500:2515 simuliris.simulation.closed_sim <> csim_expr_unfold thm
+R2523:2523 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2530:2535 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2543:2543 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2594:2603 simuliris.simulation.language <> fill_empty thm
+R2728:2737 simuliris.simulation.language <> fill_empty thm
+R2755:2764 simuliris.simulation.language <> of_val_inj inst
+R2808:2826 simuliris.simulation.language <> no_forks_pool_steps thm
+R2895:2896 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2898:2902 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2913:2919 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R2903:2908 simuliris.simulation.language <> of_val def
+R3019:3024 stdpp.base <> decide def
+R3028:3030 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3115:3135 stdpp.list_basics list list_lookup_insert_eq thm
+R3138:3151 stdpp.list_basics list lookup_lt_Some thm
+R3194:3198 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R3242:3262 stdpp.list_basics list list_lookup_insert_ne thm
+R3298:3311 stdpp.list_basics list list_insert_id thm
+R3320:3325 simuliris.simulation.language <> of_val def
+R3370:3383 simuliris.simulation.closed_sim <> csim_expr_base thm
+R3538:3550 simuliris.simulation.language <> val_prim_step thm
+prf 3569:3581 <> msim_proj_val
+R3593:3597 simuliris.simulation.language <> tpool def
+R3599:3600 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 3584:3586 <> T_t:41
+binder 3588:3590 <> T_s:42
+R3615:3619 simuliris.simulation.language <> state proj
+R3621:3622 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 3604:3607 <> σ_t:43
+binder 3609:3612 <> σ_s:44
+binder 3625:3625 <> i:45
+binder 3627:3627 <> V:46
+R3641:3649 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3635:3639 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R3634:3634 simuliris.simulation.adequacy <> i:45 var
+R3640:3640 simuliris.simulation.adequacy <> V:46 var
+R3672:3680 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3650:3658 simuliris.simulation.language <> pool_safe def
+R3660:3662 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R3664:3666 simuliris.simulation.adequacy <> T_s:42 var
+R3668:3671 simuliris.simulation.adequacy <> σ_s:44 var
+R3705:3713 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3681:3684 simuliris.simulation.adequacy <> msim def
+R3686:3688 simuliris.simulation.adequacy <> T_t:41 var
+R3690:3693 simuliris.simulation.adequacy <> σ_t:43 var
+R3695:3697 simuliris.simulation.adequacy <> T_s:42 var
+R3699:3702 simuliris.simulation.adequacy <> σ_s:44 var
+R3704:3704 simuliris.simulation.adequacy <> V:46 var
+R3714:3717 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R3725:3732 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 3718:3720 <> v_t:47
+binder 3722:3724 <> v_s:48
+R3761:3771 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3741:3743 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3736:3739 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R3740:3740 simuliris.simulation.adequacy <> i:45 var
+R3733:3735 simuliris.simulation.adequacy <> T_t:41 var
+R3744:3747 Corelib.Init.Datatypes <> Some constr
+R3750:3755 simuliris.simulation.language <> of_val def
+R3757:3759 simuliris.simulation.adequacy <> v_t:47 var
+R3800:3810 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3780:3782 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3775:3778 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R3779:3779 simuliris.simulation.adequacy <> i:45 var
+R3772:3774 simuliris.simulation.adequacy <> T_s:42 var
+R3783:3786 Corelib.Init.Datatypes <> Some constr
+R3789:3794 simuliris.simulation.language <> of_val def
+R3796:3798 simuliris.simulation.adequacy <> v_s:48 var
+R3811:3813 simuliris.simulation.adequacy <> meta_level_simulation.sat var
+R3850:3854 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3816:3827 simuliris.simulation.slsls <> state_interp meth
+R3847:3849 simuliris.simulation.adequacy <> T_s:42 var
+R3842:3845 simuliris.simulation.adequacy <> σ_s:44 var
+R3838:3840 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R3833:3836 simuliris.simulation.adequacy <> σ_t:43 var
+R3829:3831 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R3855:3861 simuliris.simulation.slsls <> ext_rel meth
+R3869:3871 simuliris.simulation.adequacy <> v_s:48 var
+R3865:3867 simuliris.simulation.adequacy <> v_t:47 var
+R3863:3863 simuliris.simulation.adequacy <> i:45 var
+R3920:3923 simuliris.simulation.adequacy <> msim def
+R3941:3948 simuliris.logic.satisfiable <> sat_mono meth
+R3972:3979 simuliris.logic.satisfiable <> sat_bupd meth
+R4003:4012 simuliris.logic.satisfiable <> sat_exists meth
+R4062:4071 simuliris.logic.satisfiable <> sat_exists meth
+R4148:4155 simuliris.logic.satisfiable <> sat_elim meth
+R4121:4127 simuliris.logic.satisfiable <> sat_sep thm
+R4237:4244 simuliris.logic.satisfiable <> sat_elim meth
+R4210:4216 simuliris.logic.satisfiable <> sat_sep thm
+R4428:4428 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4449:4454 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4462:4462 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4429:4448 iris.bi.big_op <> big_sepL2_insert_acc thm
+R4500:4515 simuliris.simulation.closed_sim <> csim_expr_unfold thm
+R4523:4523 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4530:4535 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4543:4543 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4594:4603 simuliris.simulation.language <> fill_empty thm
+R4673:4682 simuliris.simulation.language <> fill_empty thm
+R4806:4819 stdpp.list_basics list list_insert_id thm
+R4868:4877 simuliris.simulation.language <> of_val_inj inst
+R4882:4891 simuliris.simulation.language <> of_val_inj inst
+R4928:4940 simuliris.simulation.language <> val_prim_step thm
+R5058:5070 simuliris.simulation.language <> val_prim_step thm
+prf 5090:5098 <> msim_step
+R5115:5119 simuliris.simulation.language <> tpool def
+R5121:5122 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 5101:5103 <> T_t:49
+binder 5105:5108 <> T_t':50
+binder 5110:5112 <> T_s:51
+R5143:5147 simuliris.simulation.language <> state proj
+R5149:5150 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 5126:5129 <> σ_t:52
+binder 5131:5135 <> σ_t':53
+binder 5137:5140 <> σ_s:54
+binder 5153:5153 <> i:55
+binder 5155:5155 <> V:56
+R5186:5194 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5162:5165 simuliris.simulation.adequacy <> msim def
+R5167:5169 simuliris.simulation.adequacy <> T_t:49 var
+R5171:5174 simuliris.simulation.adequacy <> σ_t:52 var
+R5176:5178 simuliris.simulation.adequacy <> T_s:51 var
+R5180:5183 simuliris.simulation.adequacy <> σ_s:54 var
+R5185:5185 simuliris.simulation.adequacy <> V:56 var
+R5217:5225 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5195:5203 simuliris.simulation.language <> pool_safe def
+R5205:5207 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R5209:5211 simuliris.simulation.adequacy <> T_s:51 var
+R5213:5216 simuliris.simulation.adequacy <> σ_s:54 var
+R5261:5269 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5226:5234 simuliris.simulation.language <> pool_step ind
+R5236:5238 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R5240:5242 simuliris.simulation.adequacy <> T_t:49 var
+R5244:5247 simuliris.simulation.adequacy <> σ_t:52 var
+R5249:5249 simuliris.simulation.adequacy <> i:55 var
+R5251:5254 simuliris.simulation.adequacy <> T_t':50 var
+R5256:5260 simuliris.simulation.adequacy <> σ_t':53 var
+R5270:5273 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R5286:5287 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 5274:5277 <> T_s':57
+binder 5279:5283 <> σ_s':58
+binder 5285:5285 <> J:59
+R5324:5328 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5288:5297 simuliris.simulation.language <> pool_steps ind
+R5299:5301 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R5303:5305 simuliris.simulation.adequacy <> T_s:51 var
+R5307:5310 simuliris.simulation.adequacy <> σ_s:54 var
+R5312:5312 simuliris.simulation.adequacy <> J:59 var
+R5314:5317 simuliris.simulation.adequacy <> T_s':57 var
+R5319:5323 simuliris.simulation.adequacy <> σ_s':58 var
+R5329:5332 simuliris.simulation.adequacy <> msim def
+R5334:5337 simuliris.simulation.adequacy <> T_t':50 var
+R5339:5343 simuliris.simulation.adequacy <> σ_t':53 var
+R5345:5348 simuliris.simulation.adequacy <> T_s':57 var
+R5350:5354 simuliris.simulation.adequacy <> σ_s':58 var
+R5356:5356 simuliris.simulation.adequacy <> V:56 var
+R5404:5416 simuliris.simulation.language <> pool_step_iff thm
+R5515:5525 simuliris.simulation.adequacy <> msim_length thm
+R5556:5562 stdpp.base <> is_Some def
+R5568:5571 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R5606:5622 stdpp.list_basics list lookup_lt_is_Some thm
+R5647:5663 stdpp.list_basics list lookup_lt_is_Some thm
+R5688:5691 simuliris.simulation.adequacy <> msim def
+R5709:5716 simuliris.logic.satisfiable <> sat_mono meth
+R5740:5747 simuliris.logic.satisfiable <> sat_bupd meth
+R5771:5780 simuliris.logic.satisfiable <> sat_exists meth
+R5832:5841 simuliris.logic.satisfiable <> sat_exists meth
+R5895:5904 simuliris.logic.satisfiable <> sat_exists meth
+R5950:5956 simuliris.logic.satisfiable <> sat_sep thm
+R5996:6003 simuliris.logic.satisfiable <> sat_elim meth
+R6123:6123 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6144:6149 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6157:6157 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6124:6143 iris.bi.big_op <> big_sepL2_insert_acc thm
+R6199:6214 simuliris.simulation.closed_sim <> csim_expr_unfold thm
+R6222:6222 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6229:6234 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6242:6242 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6293:6302 simuliris.simulation.language <> fill_empty thm
+R6457:6469 simuliris.simulation.language <> val_prim_step thm
+R6525:6525 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6532:6537 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6544:6544 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6623:6624 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R6710:6717 stdpp.base <> right_id def
+R6872:6899 simuliris.simulation.language <> pool_step_value_preservation thm
+R6935:6942 stdpp.base <> right_id def
+R6984:6984 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R6992:6995 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7000:7000 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7004:7009 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7016:7016 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7038:7051 stdpp.list_basics list list_insert_id thm
+R7184:7193 simuliris.simulation.language <> fill_empty thm
+R7213:7246 simuliris.simulation.language <> no_forks_then_prim_step_pool_steps thm
+R7506:7533 simuliris.simulation.language <> pool_step_value_preservation thm
+R7536:7564 simuliris.simulation.language <> pool_steps_value_preservation thm
+R7591:7591 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7599:7602 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7607:7607 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7613:7618 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7625:7625 iris.proofmode.ltac_tactics <> :::'('_x_'$!'_x_'..'_x_'with'_x_')' not
+R7659:7659 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7673:7678 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7695:7695 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7660:7672 iris.bi.big_op <> big_sepL2_app thm
+R7719:7731 stdpp.list_basics list length_insert thm
+prf 7755:7768 <> msim_not_stuck
+R7780:7784 simuliris.simulation.language <> tpool def
+R7786:7787 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 7771:7773 <> T_t:60
+binder 7775:7777 <> T_s:61
+R7802:7806 simuliris.simulation.language <> state proj
+R7808:7809 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 7791:7794 <> σ_t:62
+binder 7796:7799 <> σ_s:63
+binder 7812:7812 <> V:64
+binder 7814:7814 <> i:65
+binder 7816:7818 <> e_t:66
+R7850:7858 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7826:7829 simuliris.simulation.adequacy <> msim def
+R7831:7833 simuliris.simulation.adequacy <> T_t:60 var
+R7835:7838 simuliris.simulation.adequacy <> σ_t:62 var
+R7840:7842 simuliris.simulation.adequacy <> T_s:61 var
+R7844:7847 simuliris.simulation.adequacy <> σ_s:63 var
+R7849:7849 simuliris.simulation.adequacy <> V:64 var
+R7881:7889 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7859:7867 simuliris.simulation.language <> pool_safe def
+R7869:7871 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R7873:7875 simuliris.simulation.adequacy <> T_s:61 var
+R7877:7880 simuliris.simulation.adequacy <> σ_s:63 var
+R7909:7917 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7898:7900 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7893:7896 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7897:7897 simuliris.simulation.adequacy <> i:65 var
+R7890:7892 simuliris.simulation.adequacy <> T_t:60 var
+R7901:7904 Corelib.Init.Datatypes <> Some constr
+R7906:7908 simuliris.simulation.adequacy <> e_t:66 var
+R7918:7926 simuliris.simulation.language <> not_stuck def
+R7928:7930 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R7932:7934 simuliris.simulation.adequacy <> e_t:66 var
+R7936:7939 simuliris.simulation.adequacy <> σ_t:62 var
+R7987:7994 simuliris.logic.satisfiable <> sat_elim meth
+R7997:8004 simuliris.logic.satisfiable <> sat_bupd meth
+R8007:8014 simuliris.logic.satisfiable <> sat_mono meth
+R8034:8044 simuliris.simulation.adequacy <> msim_length thm
+R8075:8081 stdpp.base <> is_Some def
+R8087:8090 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R8125:8141 stdpp.list_basics list lookup_lt_is_Some thm
+R8166:8182 stdpp.list_basics list lookup_lt_is_Some thm
+R8241:8241 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8262:8267 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8275:8275 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8242:8261 iris.bi.big_op <> big_sepL2_insert_acc thm
+R8315:8330 simuliris.simulation.closed_sim <> csim_expr_unfold thm
+R8338:8338 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8345:8350 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8358:8358 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8407:8416 simuliris.simulation.language <> fill_empty thm
+R8583:8591 simuliris.simulation.language <> to_of_val thm
+prf 8702:8714 <> msim_sim_pool
+binder 8716:8718 <> T_t:67
+binder 8720:8723 <> σ_t:68
+binder 8725:8727 <> T_s:69
+binder 8729:8732 <> σ_s:70
+binder 8734:8734 <> V:71
+R8765:8773 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8741:8744 simuliris.simulation.adequacy <> msim def
+R8746:8748 simuliris.simulation.adequacy <> T_t:67 var
+R8750:8753 simuliris.simulation.adequacy <> σ_t:68 var
+R8755:8757 simuliris.simulation.adequacy <> T_s:69 var
+R8759:8762 simuliris.simulation.adequacy <> σ_s:70 var
+R8764:8764 simuliris.simulation.adequacy <> V:71 var
+R8774:8776 simuliris.simulation.adequacy <> meta_level_simulation.sat var
+R8813:8817 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8779:8790 simuliris.simulation.slsls <> state_interp meth
+R8810:8812 simuliris.simulation.adequacy <> T_s:69 var
+R8805:8808 simuliris.simulation.adequacy <> σ_s:70 var
+R8801:8803 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R8796:8799 simuliris.simulation.adequacy <> σ_t:68 var
+R8792:8794 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R8818:8825 simuliris.simulation.fairness_adequacy <> sim_pool def
+R8828:8830 stdpp.base <> zip abbrev
+R8836:8838 simuliris.simulation.adequacy <> T_s:69 var
+R8832:8834 simuliris.simulation.adequacy <> T_t:67 var
+R8880:8887 simuliris.logic.satisfiable <> sat_mono meth
+R8935:8947 iris.bi.big_op <> big_sepL2_alt thm
+R8995:9011 simuliris.simulation.fairness_adequacy <> csim_expr_to_pool thm
+prf 9059:9068 <> msim_steps
+binder 9070:9072 <> T_t:72
+binder 9074:9076 <> T_s:73
+binder 9078:9081 <> σ_t:74
+binder 9083:9086 <> σ_s:75
+binder 9088:9091 <> T_t':76
+binder 9093:9097 <> σ_t':77
+binder 9099:9099 <> I:78
+binder 9101:9101 <> V:79
+R9132:9140 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9108:9111 simuliris.simulation.adequacy <> msim def
+R9113:9115 simuliris.simulation.adequacy <> T_t:72 var
+R9117:9120 simuliris.simulation.adequacy <> σ_t:74 var
+R9122:9124 simuliris.simulation.adequacy <> T_s:73 var
+R9126:9129 simuliris.simulation.adequacy <> σ_s:75 var
+R9131:9131 simuliris.simulation.adequacy <> V:79 var
+R9163:9171 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9141:9149 simuliris.simulation.language <> pool_safe def
+R9151:9153 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R9155:9157 simuliris.simulation.adequacy <> T_s:73 var
+R9159:9162 simuliris.simulation.adequacy <> σ_s:75 var
+R9208:9216 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9172:9181 simuliris.simulation.language <> pool_steps ind
+R9183:9185 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R9187:9189 simuliris.simulation.adequacy <> T_t:72 var
+R9191:9194 simuliris.simulation.adequacy <> σ_t:74 var
+R9196:9196 simuliris.simulation.adequacy <> I:78 var
+R9198:9201 simuliris.simulation.adequacy <> T_t':76 var
+R9203:9207 simuliris.simulation.adequacy <> σ_t':77 var
+R9217:9220 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R9233:9234 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 9221:9224 <> T_s':80
+binder 9226:9230 <> σ_s':81
+binder 9232:9232 <> J:82
+R9271:9279 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R9235:9244 simuliris.simulation.language <> pool_steps ind
+R9246:9248 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R9250:9252 simuliris.simulation.adequacy <> T_s:73 var
+R9254:9257 simuliris.simulation.adequacy <> σ_s:75 var
+R9259:9259 simuliris.simulation.adequacy <> J:82 var
+R9261:9264 simuliris.simulation.adequacy <> T_s':80 var
+R9266:9270 simuliris.simulation.adequacy <> σ_s':81 var
+R9280:9283 simuliris.simulation.adequacy <> msim def
+R9285:9288 simuliris.simulation.adequacy <> T_t':76 var
+R9290:9294 simuliris.simulation.adequacy <> σ_t':77 var
+R9296:9299 simuliris.simulation.adequacy <> T_s':80 var
+R9301:9305 simuliris.simulation.adequacy <> σ_s':81 var
+R9307:9307 simuliris.simulation.adequacy <> V:79 var
+R9472:9473 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R9488:9502 simuliris.simulation.language <> Pool_steps_refl constr
+R9518:9526 simuliris.simulation.adequacy <> msim_step thm
+R9686:9700 simuliris.simulation.language <> pool_steps_safe thm
+R9734:9737 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R9777:9792 simuliris.simulation.language <> pool_steps_trans thm
+prf 9811:9821 <> msim_safety
+binder 9823:9825 <> T_t:83
+binder 9827:9829 <> T_s:84
+binder 9831:9834 <> σ_t:85
+binder 9836:9839 <> σ_s:86
+binder 9841:9841 <> V:87
+R9872:9880 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9848:9851 simuliris.simulation.adequacy <> msim def
+R9853:9855 simuliris.simulation.adequacy <> T_t:83 var
+R9857:9860 simuliris.simulation.adequacy <> σ_t:85 var
+R9862:9864 simuliris.simulation.adequacy <> T_s:84 var
+R9866:9869 simuliris.simulation.adequacy <> σ_s:86 var
+R9871:9871 simuliris.simulation.adequacy <> V:87 var
+R9903:9911 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9881:9889 simuliris.simulation.language <> pool_safe def
+R9891:9893 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R9895:9897 simuliris.simulation.adequacy <> T_s:84 var
+R9899:9902 simuliris.simulation.adequacy <> σ_s:86 var
+R9912:9920 simuliris.simulation.language <> pool_safe def
+R9922:9924 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R9926:9928 simuliris.simulation.adequacy <> T_t:83 var
+R9930:9933 simuliris.simulation.adequacy <> σ_t:85 var
+R10011:10020 simuliris.simulation.adequacy <> msim_steps thm
+R10099:10112 simuliris.simulation.adequacy <> msim_not_stuck thm
+R10127:10141 simuliris.simulation.language <> pool_steps_safe thm
+prf 10160:10179 <> msim_fair_divergence
+binder 10181:10183 <> T_t:88
+binder 10185:10187 <> T_s:89
+binder 10189:10192 <> σ_t:90
+binder 10194:10197 <> σ_s:91
+binder 10199:10199 <> V:92
+R10230:10238 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10206:10209 simuliris.simulation.adequacy <> msim def
+R10211:10213 simuliris.simulation.adequacy <> T_t:88 var
+R10215:10218 simuliris.simulation.adequacy <> σ_t:90 var
+R10220:10222 simuliris.simulation.adequacy <> T_s:89 var
+R10224:10227 simuliris.simulation.adequacy <> σ_s:91 var
+R10229:10229 simuliris.simulation.adequacy <> V:92 var
+R10261:10269 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10239:10247 simuliris.simulation.language <> pool_safe def
+R10249:10251 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R10253:10255 simuliris.simulation.adequacy <> T_s:89 var
+R10257:10260 simuliris.simulation.adequacy <> σ_s:91 var
+R10291:10299 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10270:10277 simuliris.simulation.fairness <> fair_div def
+R10279:10281 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R10283:10285 simuliris.simulation.adequacy <> T_t:88 var
+R10287:10290 simuliris.simulation.adequacy <> σ_t:90 var
+R10300:10307 simuliris.simulation.fairness <> fair_div def
+R10309:10311 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R10313:10315 simuliris.simulation.adequacy <> T_s:89 var
+R10317:10320 simuliris.simulation.adequacy <> σ_s:91 var
+R10372:10382 simuliris.simulation.adequacy <> msim_length thm
+R10412:10437 simuliris.simulation.fairness <> fair_div_traditional_coind thm
+R10468:10478 simuliris.simulation.adequacy <> msim_safety thm
+R10492:10515 simuliris.simulation.fairness <> fair_div_coind_delay_iff thm
+R10551:10563 simuliris.simulation.adequacy <> msim_sim_pool thm
+R10594:10619 simuliris.simulation.fairness <> fair_div_coind_traditional thm
+R10637:10639 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10640:10640 stdpp.base <> :::x_'.*2' not
+R10652:10655 stdpp.base <> :::x_'.*2' not
+R10641:10643 stdpp.base <> zip abbrev
+R10679:10685 stdpp.list_monad list snd_zip thm
+R10712:10746 simuliris.simulation.fairness_adequacy <> sim_pool_preserves_fair_termination thm
+R10763:10769 stdpp.list_monad list fst_zip thm
+R10797:10803 stdpp.list_monad list snd_zip thm
+R10831:10837 stdpp.list_monad list snd_zip thm
+prf 10867:10884 <> msim_finish_source
+R10896:10900 simuliris.simulation.language <> tpool def
+R10902:10903 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 10887:10889 <> T_t:93
+binder 10891:10893 <> T_s:94
+R10918:10922 simuliris.simulation.language <> state proj
+R10924:10925 simuliris.simulation.adequacy <> meta_level_simulation.Λ var
+binder 10907:10910 <> σ_t:95
+binder 10912:10915 <> σ_s:96
+binder 10928:10928 <> U:97
+binder 10930:10930 <> V:98
+R10937:10937 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10994:11003 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10938:10941 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R10943:10944 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 10942:10942 <> i:99
+R10952:10956 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10946:10950 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R10945:10945 simuliris.simulation.adequacy <> i:99 var
+R10951:10951 simuliris.simulation.adequacy <> U:97 var
+R10957:10960 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R10964:10965 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 10961:10963 <> v_t:100
+R10974:10976 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10969:10972 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10973:10973 simuliris.simulation.adequacy <> i:99 var
+R10966:10968 simuliris.simulation.adequacy <> T_t:93 var
+R10977:10980 Corelib.Init.Datatypes <> Some constr
+R10983:10988 simuliris.simulation.language <> of_val def
+R10990:10992 simuliris.simulation.adequacy <> v_t:100 var
+R11028:11036 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11004:11007 simuliris.simulation.adequacy <> msim def
+R11009:11011 simuliris.simulation.adequacy <> T_t:93 var
+R11013:11016 simuliris.simulation.adequacy <> σ_t:95 var
+R11018:11020 simuliris.simulation.adequacy <> T_s:94 var
+R11022:11025 simuliris.simulation.adequacy <> σ_s:96 var
+R11027:11027 simuliris.simulation.adequacy <> V:98 var
+R11059:11067 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11037:11045 simuliris.simulation.language <> pool_safe def
+R11047:11049 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R11051:11053 simuliris.simulation.adequacy <> T_s:94 var
+R11055:11058 simuliris.simulation.adequacy <> σ_s:96 var
+R11068:11071 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R11084:11085 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 11072:11075 <> T_s':101
+binder 11077:11081 <> σ_s':102
+binder 11083:11083 <> I:103
+R11122:11126 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R11086:11095 simuliris.simulation.language <> pool_steps ind
+R11097:11099 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R11101:11103 simuliris.simulation.adequacy <> T_s:94 var
+R11105:11108 simuliris.simulation.adequacy <> σ_s:96 var
+R11110:11110 simuliris.simulation.adequacy <> I:103 var
+R11112:11115 simuliris.simulation.adequacy <> T_s':101 var
+R11117:11121 simuliris.simulation.adequacy <> σ_s':102 var
+R11127:11130 simuliris.simulation.adequacy <> msim def
+R11132:11134 simuliris.simulation.adequacy <> T_t:93 var
+R11136:11139 simuliris.simulation.adequacy <> σ_t:95 var
+R11141:11144 simuliris.simulation.adequacy <> T_s':101 var
+R11146:11150 simuliris.simulation.adequacy <> σ_s':102 var
+R11154:11158 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11153:11153 simuliris.simulation.adequacy <> V:98 var
+R11159:11159 simuliris.simulation.adequacy <> U:97 var
+R11228:11233 stdpp.fin_sets <> set_wf thm
+R11327:11339 stdpp.base <> leibniz_equiv def
+R11348:11357 stdpp.fin_sets <> set_choose thm
+R11300:11305 stdpp.base <> decide def
+R11309:11313 stdpp.base <> ::stdpp_scope:x_'≡'_x not
+R11314:11316 stdpp.base <> ::stdpp_scope:'∅' not
+R11385:11386 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R11434:11438 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11439:11441 stdpp.base <> ::stdpp_scope:'∅' not
+R11538:11549 simuliris.simulation.adequacy <> msim_add_val thm
+R11629:11633 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R11634:11635 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R11637:11638 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R11723:11737 simuliris.simulation.language <> pool_steps_safe thm
+R11812:11815 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11843:11858 simuliris.simulation.language <> pool_steps_trans thm
+R11910:11915 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11927:11927 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11900:11904 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11905:11906 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R11908:11909 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R11917:11921 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R11922:11923 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R11925:11926 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R11937:11941 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11973:11985 stdpp.base <> leibniz_equiv def
+R11997:12007 stdpp.sets <> union_assoc inst
+R12035:12044 stdpp.sets <> union_comm inst
+R12046:12061 stdpp.sets <> difference_union thm
+prf 12092:12102 <> msim_return
+binder 12104:12106 <> T_t:104
+binder 12108:12111 <> T_t':105
+binder 12113:12115 <> T_s:106
+binder 12117:12120 <> σ_t:107
+binder 12122:12125 <> σ_s:108
+binder 12127:12131 <> σ_t':109
+binder 12133:12133 <> I:110
+binder 12135:12135 <> V:111
+R12166:12174 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12142:12145 simuliris.simulation.adequacy <> msim def
+R12147:12149 simuliris.simulation.adequacy <> T_t:104 var
+R12151:12154 simuliris.simulation.adequacy <> σ_t:107 var
+R12156:12158 simuliris.simulation.adequacy <> T_s:106 var
+R12160:12163 simuliris.simulation.adequacy <> σ_s:108 var
+R12165:12165 simuliris.simulation.adequacy <> V:111 var
+R12197:12205 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12175:12183 simuliris.simulation.language <> pool_safe def
+R12185:12187 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R12189:12191 simuliris.simulation.adequacy <> T_s:106 var
+R12193:12196 simuliris.simulation.adequacy <> σ_s:108 var
+R12242:12250 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12206:12215 simuliris.simulation.language <> pool_steps ind
+R12217:12219 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R12221:12223 simuliris.simulation.adequacy <> T_t:104 var
+R12225:12228 simuliris.simulation.adequacy <> σ_t:107 var
+R12230:12230 simuliris.simulation.adequacy <> I:110 var
+R12232:12235 simuliris.simulation.adequacy <> T_t':105 var
+R12237:12241 simuliris.simulation.adequacy <> σ_t':109 var
+R12251:12254 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R12269:12276 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 12255:12258 <> T_s':112
+binder 12260:12264 <> σ_s':113
+binder 12266:12266 <> J:114
+binder 12268:12268 <> U:115
+R12313:12323 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12277:12286 simuliris.simulation.language <> pool_steps ind
+R12288:12290 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R12292:12294 simuliris.simulation.adequacy <> T_s:106 var
+R12296:12299 simuliris.simulation.adequacy <> σ_s:108 var
+R12301:12301 simuliris.simulation.adequacy <> J:114 var
+R12303:12306 simuliris.simulation.adequacy <> T_s':112 var
+R12308:12312 simuliris.simulation.adequacy <> σ_s':113 var
+R12352:12363 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12523:12523 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12324:12327 simuliris.simulation.adequacy <> msim def
+R12329:12332 simuliris.simulation.adequacy <> T_t':105 var
+R12334:12338 simuliris.simulation.adequacy <> σ_t':109 var
+R12340:12343 simuliris.simulation.adequacy <> T_s':112 var
+R12345:12349 simuliris.simulation.adequacy <> σ_s':113 var
+R12351:12351 simuliris.simulation.adequacy <> U:115 var
+R12364:12367 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R12373:12374 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 12368:12368 <> i:116
+binder 12370:12372 <> v_t:117
+R12404:12414 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12384:12386 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12379:12382 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R12383:12383 simuliris.simulation.adequacy <> i:116 var
+R12375:12378 simuliris.simulation.adequacy <> T_t':105 var
+R12387:12390 Corelib.Init.Datatypes <> Some constr
+R12393:12398 simuliris.simulation.language <> of_val def
+R12400:12402 simuliris.simulation.adequacy <> v_t:117 var
+R12415:12418 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R12422:12423 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 12419:12421 <> v_s:118
+R12453:12457 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R12433:12435 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12428:12431 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R12432:12432 simuliris.simulation.adequacy <> i:116 var
+R12424:12427 simuliris.simulation.adequacy <> T_s':112 var
+R12436:12439 Corelib.Init.Datatypes <> Some constr
+R12442:12447 simuliris.simulation.language <> of_val def
+R12449:12451 simuliris.simulation.adequacy <> v_s:118 var
+R12458:12460 simuliris.simulation.adequacy <> meta_level_simulation.sat var
+R12500:12504 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R12463:12474 simuliris.simulation.slsls <> state_interp meth
+R12496:12499 simuliris.simulation.adequacy <> T_s':112 var
+R12490:12494 simuliris.simulation.adequacy <> σ_s':113 var
+R12486:12488 simuliris.simulation.adequacy <> meta_level_simulation.p_s var
+R12480:12484 simuliris.simulation.adequacy <> σ_t':109 var
+R12476:12478 simuliris.simulation.adequacy <> meta_level_simulation.p_t var
+R12505:12511 simuliris.simulation.slsls <> ext_rel meth
+R12519:12521 simuliris.simulation.adequacy <> v_s:118 var
+R12515:12517 simuliris.simulation.adequacy <> v_t:117 var
+R12513:12513 simuliris.simulation.adequacy <> i:116 var
+R12621:12630 simuliris.simulation.adequacy <> msim_steps thm
+R12794:12811 simuliris.simulation.adequacy <> msim_finish_source thm
+R12834:12838 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R12822:12828 simuliris.simulation.language <> threads def
+R12839:12852 simuliris.simulation.fairness <> active_threads def
+R12944:12958 simuliris.simulation.language <> pool_steps_safe thm
+R12986:13003 stdpp.base <> elem_of_difference meth
+R13019:13030 simuliris.simulation.language <> threads_spec thm
+R13068:13073 simuliris.simulation.language <> to_val def
+R13112:13120 simuliris.simulation.language <> of_to_val thm
+R13181:13199 simuliris.simulation.fairness <> active_threads_spec thm
+R13240:13243 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R13251:13255 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R13268:13272 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R13256:13262 simuliris.simulation.language <> threads def
+R13273:13286 simuliris.simulation.fairness <> active_threads def
+R13327:13342 simuliris.simulation.language <> pool_steps_trans thm
+R13385:13397 simuliris.simulation.adequacy <> msim_proj_val thm
+R13478:13492 simuliris.simulation.language <> pool_steps_safe thm
+R13514:13528 simuliris.simulation.language <> pool_steps_safe thm
+R13615:13622 stdpp.option <> Some_inj inst
+R13625:13634 simuliris.simulation.language <> of_val_inj inst
+R13667:13681 stdpp.sets <> elem_of_union_r thm
+R13691:13708 stdpp.base <> elem_of_difference meth
+R13725:13736 simuliris.simulation.language <> threads_spec thm
+R13738:13756 simuliris.simulation.fairness <> active_threads_spec thm
+R13852:13859 stdpp.option <> Some_inj inst
+R13909:13917 simuliris.simulation.language <> to_of_val thm
+R13955:13975 simuliris.simulation.adequacy meta_level_simulation <> sec
+sec 13987:14004 <> adequacy_statement
+var  14019:14022 adequacy_statement PROP
+R14026:14027 iris.bi.interface <> bi rec
+R14033:14038 iris.bi.updates <> BiBUpd class
+R14040:14043 simuliris.simulation.adequacy <> PROP:119 var
+R14047:14054 iris.bi.extensions <> BiAffine class
+R14056:14059 simuliris.simulation.adequacy <> PROP:119 var
+R14063:14074 iris.bi.extensions <> BiPureForall class
+R14076:14079 simuliris.simulation.adequacy <> PROP:119 var
+R14083:14102 iris.bi.extensions <> BiPersistentlyForall class
+R14104:14107 simuliris.simulation.adequacy <> PROP:119 var
+var  14122:14123 adequacy_statement Λ
+R14127:14134 simuliris.simulation.language <> language rec
+var  14149:14151 adequacy_statement sat
+var  14170:14172 adequacy_statement Sat
+R14158:14162 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14154:14157 simuliris.simulation.adequacy <> adequacy_statement.PROP var
+R14175:14185 simuliris.logic.satisfiable <> Satisfiable class
+R14187:14189 simuliris.simulation.adequacy <> sat:125 var
+R14205:14207 simuliris.simulation.adequacy <> sat varprfax
+var 14228:14228 adequacy_statement I
+R14239:14243 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14231:14235 simuliris.simulation.language <> state proj
+R14237:14238 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+R14252:14256 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14244:14248 simuliris.simulation.language <> state proj
+R14250:14251 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+var 14276:14279 adequacy_statement main
+var 14291:14291 adequacy_statement u
+R14282:14287 Stdlib.Strings.String <> string ind
+R14294:14296 simuliris.simulation.language <> val proj
+R14298:14299 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+var 14315:14315 adequacy_statement O
+R14324:14328 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14318:14320 simuliris.simulation.language <> val proj
+R14322:14323 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+R14335:14339 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14329:14331 simuliris.simulation.language <> val proj
+R14333:14334 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+var 14354:14361 adequacy_statement prog_ref
+R14366:14373 simuliris.simulation.behavior <> prog_ref def
+R14384:14384 simuliris.simulation.adequacy <> adequacy_statement.O var
+R14382:14382 simuliris.simulation.adequacy <> adequacy_statement.u var
+R14377:14380 simuliris.simulation.adequacy <> adequacy_statement.main var
+R14375:14375 simuliris.simulation.adequacy <> adequacy_statement.I var
+prf 14396:14409 <> slsls_adequacy
+binder 14411:14413 <> p_t:135
+binder 14415:14417 <> p_s:136
+R15083:15091 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14424:14426 simuliris.simulation.adequacy <> adequacy_statement.sat var
+R14429:14432 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R14442:14508 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 14433:14436 <> σ_t:137
+binder 14438:14441 <> σ_s:138
+R14526:14595 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R14509:14511 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R14523:14525 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R14512:14512 simuliris.simulation.adequacy <> adequacy_statement.I var
+R14514:14517 simuliris.simulation.adequacy <> σ_t:137 var
+R14519:14522 simuliris.simulation.adequacy <> σ_s:138 var
+R14596:14600 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R14601:14606 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R14626:14671 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R14607:14617 simuliris.simulation.slsls <> simulirisGS class
+R14619:14622 simuliris.simulation.adequacy <> adequacy_statement.PROP var
+R14624:14625 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+binder 14607:14625 <> H:139
+R14688:14762 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14672:14679 simuliris.simulation.gen_log_rel <> prog_rel def
+R14681:14683 simuliris.simulation.adequacy <> p_t:135 var
+R14685:14687 simuliris.simulation.adequacy <> p_s:136 var
+R14810:14862 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14763:14774 simuliris.simulation.slsls <> state_interp meth
+R14794:14794 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R14809:14809 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R14795:14801 simuliris.simulation.language <> of_call def
+R14808:14808 simuliris.simulation.adequacy <> adequacy_statement.u var
+R14803:14806 simuliris.simulation.adequacy <> adequacy_statement.main var
+R14789:14792 simuliris.simulation.adequacy <> σ_s:138 var
+R14785:14787 simuliris.simulation.adequacy <> p_s:136 var
+R14780:14783 simuliris.simulation.adequacy <> σ_t:137 var
+R14776:14778 simuliris.simulation.adequacy <> p_t:135 var
+R14880:14941 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14863:14871 simuliris.simulation.slsls <> progs_are def
+R14873:14875 simuliris.simulation.adequacy <> p_t:135 var
+R14877:14879 simuliris.simulation.adequacy <> p_s:136 var
+R14955:15030 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14942:14948 simuliris.simulation.slsls <> ext_rel meth
+R14954:14954 simuliris.simulation.adequacy <> adequacy_statement.u var
+R14952:14952 simuliris.simulation.adequacy <> adequacy_statement.u var
+R15031:15034 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R15042:15043 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 15035:15037 <> v_s:140
+binder 15039:15041 <> v_t:141
+R15061:15066 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15044:15050 simuliris.simulation.slsls <> ext_rel meth
+R15058:15060 simuliris.simulation.adequacy <> v_s:140 var
+R15054:15056 simuliris.simulation.adequacy <> v_t:141 var
+R15067:15069 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R15079:15081 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R15070:15070 simuliris.simulation.adequacy <> adequacy_statement.O var
+R15072:15074 simuliris.simulation.adequacy <> v_t:141 var
+R15076:15078 simuliris.simulation.adequacy <> v_s:140 var
+R15092:15099 simuliris.simulation.adequacy <> adequacy_statement.prog_ref var
+R15101:15103 simuliris.simulation.adequacy <> p_t:135 var
+R15105:15107 simuliris.simulation.adequacy <> p_s:136 var
+R15167:15182 simuliris.simulation.language <> safe_call_in_prg thm
+R15188:15197 simuliris.simulation.language <> empty_ectx proj
+R15205:15208 simuliris.simulation.adequacy <> adequacy_statement.main var
+R15244:15253 simuliris.simulation.language <> fill_empty thm
+R15320:15329 simuliris.logic.satisfiable <> sat_forall thm
+R15360:15369 simuliris.logic.satisfiable <> sat_forall thm
+R15399:15406 simuliris.logic.satisfiable <> sat_wand thm
+R15447:15454 simuliris.logic.satisfiable <> sat_bupd meth
+R15476:15485 simuliris.logic.satisfiable <> sat_exists meth
+R15523:15526 simuliris.simulation.adequacy <> msim def
+R15629:15629 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R15644:15644 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R15630:15636 simuliris.simulation.language <> of_call def
+R15643:15643 simuliris.simulation.adequacy <> adequacy_statement.u var
+R15638:15641 simuliris.simulation.adequacy <> adequacy_statement.main var
+R15651:15651 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R15666:15666 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R15652:15658 simuliris.simulation.language <> of_call def
+R15665:15665 simuliris.simulation.adequacy <> adequacy_statement.u var
+R15660:15663 simuliris.simulation.adequacy <> adequacy_statement.main var
+R15673:15675 stdpp.base <> ::stdpp_scope:'∅' not
+R15534:15542 simuliris.logic.satisfiable <> sat_frame def
+R15557:15560 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R15577:15578 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R15571:15573 simuliris.simulation.language <> val proj
+R15575:15576 simuliris.simulation.adequacy <> adequacy_statement.Λ var
+binder 15561:15563 <> v_s:142
+binder 15565:15567 <> v_t:143
+R15596:15601 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15579:15585 simuliris.simulation.slsls <> ext_rel meth
+R15593:15595 simuliris.simulation.adequacy <> v_s:142 var
+R15589:15591 simuliris.simulation.adequacy <> v_t:143 var
+R15602:15604 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R15614:15616 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R15605:15605 simuliris.simulation.adequacy <> adequacy_statement.O var
+R15607:15609 simuliris.simulation.adequacy <> v_t:143 var
+R15611:15613 simuliris.simulation.adequacy <> v_s:142 var
+R15550:15552 simuliris.simulation.adequacy <> adequacy_statement.sat var
+binder 15561:15563 <> v_s:144
+binder 15565:15567 <> v_t:145
+R15593:15595 simuliris.simulation.adequacy <> v_s:144 var
+R15589:15591 simuliris.simulation.adequacy <> v_t:145 var
+R15607:15609 simuliris.simulation.adequacy <> v_t:145 var
+R15611:15613 simuliris.simulation.adequacy <> v_s:144 var
+R15702:15705 simuliris.simulation.adequacy <> msim def
+R15708:15716 simuliris.logic.satisfiable <> sat_frame def
+R15726:15733 simuliris.logic.satisfiable <> sat_mono meth
+R15903:15903 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15923:15928 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15948:15948 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15904:15922 simuliris.simulation.closed_sim <> open_to_closed_call thm
+R16012:16031 simuliris.simulation.adequacy <> msim_fair_divergence thm
+R16039:16047 simuliris.logic.satisfiable <> sat_frame def
+R16111:16121 simuliris.simulation.adequacy <> msim_return thm
+R16418:16426 simuliris.logic.satisfiable <> sat_frame def
+R16451:16458 simuliris.logic.satisfiable <> sat_mono meth
+R16486:16493 simuliris.logic.satisfiable <> sat_elim meth
+R16558:16568 simuliris.simulation.adequacy <> msim_safety thm
+R16576:16584 simuliris.logic.satisfiable <> sat_frame def
+R16608:16625 simuliris.simulation.adequacy adequacy_statement <> sec

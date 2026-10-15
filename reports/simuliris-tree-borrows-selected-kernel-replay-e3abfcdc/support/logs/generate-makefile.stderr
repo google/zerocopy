@@ -1,0 +1,7 @@
+[WARNING] Running as root is not recommended
+Warning: theories and . overlap (used in -R or -Q)
+
+Warning: No common logical root.
+Warning: In this case the -docroot option should be given.
+Warning: Otherwise the install-doc target is going to install files
+Warning: in orphan_simuliris_Top

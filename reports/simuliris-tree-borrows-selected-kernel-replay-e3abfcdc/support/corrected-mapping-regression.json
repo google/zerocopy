@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "retains_original_Q": true,
+    "no_override_Top": true
+  },
+  "logical_flag_lines": [
+    "COQMF_COQLIBS =  -Q theories simuliris ",
+    "COQMF_COQLIBS_NOML = -Q theories simuliris "
+  ],
+  "forbidden_mapping": "-R . Top"
+}

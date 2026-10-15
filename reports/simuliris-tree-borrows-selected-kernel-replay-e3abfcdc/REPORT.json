@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "rocq",
+    "iris",
+    "simuliris",
+    "tree-borrows",
+    "proof-assumptions",
+    "program-refinement",
+    "memory-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Simuliris",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/simuliris",
+        "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
+        "archive_sha256": "06dbeeb1ddda80ffe93b26fd20d8597f9c9a63767ae2a7e74e4dae696952fb9b"
+      }
+    },
+    {
+      "name": "Iris",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b",
+        "package": "rocq-iris.dev.2026-09-10.3.b3495ef9",
+        "archive_sha256": "3b45252c8b915dcee1149dd0d185391898cc836619b7c4e1fc1f636acb23057b"
+      }
+    },
+    {
+      "name": "stdpp",
+      "identity": {
+        "repository": "rocq-iris/stdpp",
+        "revision": "c3186aad493872e3a9774ac0b42ca2f591b05835",
+        "package": "rocq-stdpp.dev.2026-09-09.1.c3186aad",
+        "archive_sha256": "e9588be3a78ad1b54a045a3237e5ae2ca7e0db8aebf1e0cfe8e90a6a64e0e6f2"
+      }
+    },
+    {
+      "name": "Rocq native checker and compiler",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "version": "9.2.0",
+        "source_archive_sha256": "a45280ab4fbaac7540b136a6b073b4a6db15739ec1e149bded43fa6f4fc25f20",
+        "native_checker_sha256": "d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9"
+      }
+    },
+    {
+      "name": "Owned observation-only audit annotations",
+      "identity": {
+        "artifact": "PlannedAuditFramework.v + PlannedAuditResources.v + PlannedAuditExamples.v, concatenated in that order",
+        "sha256": "d5a95c12243012b279d7f7a8c1d427c297987a09f00754f2c62998e8fd083c54"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

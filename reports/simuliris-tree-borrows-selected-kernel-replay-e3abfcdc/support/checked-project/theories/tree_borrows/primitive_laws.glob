@@ -1,0 +1,12 @@
+DIGEST 9983582b7a2e34506ee748bcf01937d3
+Fsimuliris.tree_borrows.primitive_laws
+R57:65 iris.proofmode.proofmode <> <> lib
+R109:120 simuliris.base_logic.gen_sim_heap <> <> lib
+R122:133 simuliris.base_logic.gen_sim_prog <> <> lib
+R177:181 simuliris.simulation.slsls <> <> lib
+R227:241 simuliris.tree_borrows.class_instances <> <> lib
+R243:249 simuliris.tree_borrows.tactics <> <> lib
+R251:258 simuliris.tree_borrows.notation <> <> lib
+R262:265 simuliris.tree_borrows.defs <> <> lib
+R267:279 simuliris.tree_borrows.logical_state <> <> lib
+R281:289 simuliris.tree_borrows.steps_all <> <> lib

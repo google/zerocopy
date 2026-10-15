@@ -1,0 +1,12 @@
+ROCQ DEP VFILES
+ROCQ compile theories/logic/satisfiable.v
+ROCQ compile theories/simulation/language.v
+ROCQ compile theories/simulation/fairness.v
+ROCQ compile theories/simulation/behavior.v
+ROCQ compile theories/simulation/simulation.v
+ROCQ compile theories/simulation/slsls.v
+ROCQ compile theories/simulation/gen_log_rel.v
+ROCQ compile theories/simulation/closed_sim.v
+ROCQ compile theories/simulation/fairness_adequacy.v
+ROCQ compile theories/simulation/adequacy.v
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=30 start_bytes=4033280 peak_bytes=7985840 final_bytes=8282057

@@ -1,0 +1,27 @@
+Usage: rocq [-debug-shim] {-v|--version|--print-version|--help|SUBCOMMAND} [ARGUMENTS...]
+
+  -v, --version: print human readable version info
+  --print-version: print machine readable version info
+
+Supported subcommands:
+
+    compile             Compile a Rocq source file
+    c                   Alias for compile
+    repl                Interactive read-eval-print loop
+    top                 Alias for repl
+    repl-with-drop      repl with Drop command
+    top-with-drop       Alias for repl-with-drop
+    native-precompile   Preprocess a compiled Rocq file for use by native_compute
+    check               Check a compiled Rocq file (alias for command rocqchk)
+    votour              Low level debugging of compiled files
+    preprocess-mlg      Preprocess Rocq grammar files (.mlg) to produce OCaml sources
+    pp-mlg              Alias for preprocess-mlg
+    dep                 Print dependencies for compiling Rocq files
+    doc                 Generate documentation from a Rocq source file
+    wc                  Count lines of code in a Rocq source file
+    workmgr             Control the number of parallel workers used by Rocq
+    tex                 Process Rocq code in a Latex document
+    makefile            Generate a Makefile to compile a Rocq project
+    timelog2html        Combine timing information and a Rocq source file
+
+Use "rocq subcommand --help" to get more information about a given subcommand.

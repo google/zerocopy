@@ -1,0 +1,32 @@
+{
+  "label": "final-proof-artifact-inventory",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "find",
+    ".",
+    "-type",
+    "f",
+    "-exec",
+    "sha256sum",
+    "{}",
+    "+"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.125,
+  "stdout_bytes": 66090,
+  "stderr_bytes": 45,
+  "stdout_sha256": "78ac1bf63046f4ca7a27df57f5a1b26149e85f69131e5d717e9ebac4404f8810",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

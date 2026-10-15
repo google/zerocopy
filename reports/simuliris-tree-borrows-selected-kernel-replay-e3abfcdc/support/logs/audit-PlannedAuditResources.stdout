@@ -1,0 +1,117 @@
+@safe_reach
+     : ∀ Λ : language,
+         language.prog Λ → language.expr Λ → language.state Λ → (language.expr Λ → language.state Λ → Prop) → Prop
+Closed under the global context
+@write_entire_range
+     : ∀ (T : Type) (l : Z) (sz : nat) (v v' : list T), length v = sz → length v' = sz → write_range l l v' v = Some v'
+Closed under the global context
+@sim_new_place_local
+     : ∀ (Σ : iprop.gFunctors) (H : sborGS Σ) (sz : nat) (v_t v_s : list scalar) (π : thread_id) 
+         (Φ : language.expr bor_lang → language.expr bor_lang → bi.uPredI (iprop.iProp_solution.iResUR Σ)),
+         ⌜length v_t = length v_s⌝ -∗
+         (∀ (t : nat) (l : loc),
+            ⌜length v_s = sz⌝ -∗
+            ⌜length v_t = sz⌝ -∗
+            t $$ tk_local -∗
+            l ↦t∗[tk_local]{t} v_t -∗ l ↦s∗[tk_local]{t} v_s -∗ PlaceR l t sz ⪯{π} PlaceR l t sz [{ Φ }]) -∗
+         new_place sz #v_t ⪯{π} new_place sz #v_s [{ Φ }]
+Closed under the global context
+new_place_safe_reach
+     : ∀ (P : language.prog bor_lang) (σ : language.state bor_lang) (sz : nat) (r : result),
+         safe_reach P (new_place sz r) σ
+           (λ (_ : language.expr bor_lang) (_ : language.state bor_lang), ∃ v : value, r = (#v)%R ∧ length v = sz)
+Closed under the global context
+@sim_alloc_local
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (sz : nat) (Φ : expr
+                                                                    → expr
+                                                                      → upred.uPred (iprop.iProp_solution.iResUR Σ)) 
+         (π : thread_id),
+         (∀ (t : nat) (l : loc),
+            t $$ tk_local -∗
+            l ↦t∗[tk_local]{t} replicate sz ☠%S -∗
+            l ↦s∗[tk_local]{t} replicate sz ☠%S -∗ Place l t sz ⪯{π} Place l t sz [{ Φ }]) -∗
+         Alloc sz ⪯{π} Alloc sz [{ Φ }]
+Closed under the global context
+@sim_retag_default
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (sz : nat) (l_t l_s : loc) (ot c : nat) 
+         (pk : pointer_kind) (tk : tag_kind) (im : interior_mut) (π : thread_id) (Φ : expr
+                                                                                      → expr
+                                                                                        → upred.uPred
+                                                                                          (iprop.iProp_solution.iResUR
+                                                                                          Σ)),
+         pointer_kind_to_tag_unprotected pk im = Some tk
+         → sc_rel (ScPtr l_t ot) (ScPtr l_s ot) -∗
+           (∀ (nt : nat) (v_t v_s : list scalar),
+              ⌜length v_t = sz⌝ -∗
+              ⌜length v_s = sz⌝ -∗
+              value_rel v_t v_s -∗
+              nt $$ tk -∗
+              l_t ↦t∗[tk]{nt} v_t -∗ l_s ↦s∗[tk]{nt} v_s -∗ #[ ScPtr l_t nt]%V ⪯{π} #[ ScPtr l_s nt]%V [{ Φ }]) -∗
+           Retag #[ ScPtr l_t ot]%V #[ ScCallId c]%V pk im sz Default
+           ⪯{π}
+           Retag #[ ScPtr l_s ot]%V #[ ScCallId c]%V pk im sz Default
+           [{ Φ }]
+Closed under the global context
+@sim_retag_fnentry
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (sz : nat) (l_t l_s : loc) (ot c : nat) 
+         (pk : pointer_kind) (im : interior_mut) (tk : tag_kind) (M : gmap nat (gmap loc logical_protector)) 
+         (π : thread_id) (Φ : expr → expr → upred.uPred (iprop.iProp_solution.iResUR Σ)),
+         pointer_kind_to_tag_protected pk im = Some tk
+         → sc_rel (ScPtr l_t ot) (ScPtr l_s ot) -∗
+           c @@ M -∗
+           (∀ (nt : nat) (v_t v_s : list scalar),
+              ⌜l_t = l_s⌝ -∗
+              ⌜length v_t = sz⌝ -∗
+              ⌜length v_s = sz⌝ -∗
+              c @@ <[nt:=seq_loc_map l_t sz (EnsuringAccess (pointer_kind_to_access_ensuring pk))]> M -∗
+              value_rel v_t v_s -∗
+              nt $$ tk -∗
+              l_t ↦t∗[tk]{nt} v_t -∗ l_s ↦s∗[tk]{nt} v_s -∗ #[ ScPtr l_t nt]%V ⪯{π} #[ ScPtr l_s nt]%V [{ Φ }]) -∗
+           Retag #[ ScPtr l_t ot]%V #[ ScCallId c]%V pk im sz FnEntry
+           ⪯{π}
+           Retag #[ ScPtr l_s ot]%V #[ ScCallId c]%V pk im sz FnEntry
+           [{ Φ }]
+Closed under the global context
+@sim_protected_unprotect
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : sborGS Σ) (M : gmap nat (gmap loc logical_protector)) 
+         (L : gmap loc logical_protector) (l : loc) (c t : nat) (tk : tag_kind) (v_t v_s : list scalar) 
+         (π : thread_id) (Φ : expr → expr → upred.uPred (iprop.iProp_solution.iResUR Σ)) (e_t
+                                                                                          e_s : 
+                                                                                          language.expr bor_lang),
+         (∀ i : nat, (i < length v_t)%nat → l +ₗ i ∈ dom L)
+         → M !! t = Some L
+           → c @@ M -∗
+             t $$ tk -∗
+             (⌜tk = tk_unq tk_act⌝ -∗ l ↦t∗[tk]{t} v_t ∗ l ↦s∗[tk]{t} v_s ∗ value_rel v_t v_s) -∗
+             (c @@ delete t M -∗
+              t $$ tk -∗ (⌜tk = tk_unq tk_act⌝ -∗ l ↦t∗[tk]{t} v_t ∗ l ↦s∗[tk]{t} v_s) -∗ e_t ⪯{π} e_s [{ Φ }]) -∗
+             e_t ⪯{π} e_s [{ Φ }]
+Closed under the global context
+loc_controlled_read_after_reborrow_creates
+     : ∀ (cids : call_id_set) (l : block * Z) (sc : scalar) (tg_cld tg_par : nat) (tk : tag_kind) 
+         (σ σ' : state) (pk : pointer_kind) (im : interior_mut) (rk : retag_kind) (trs1 : trees) 
+         (cc : nat) (blk : block) (off1 : Z) (sz : nat),
+         apply_within_trees (create_child cids tg_par tg_cld pk im rk cc) blk (strs σ) = Some trs1
+         → apply_within_trees (memory_access AccessRead cids tg_cld (off1, sz)) blk trs1 = Some (strs σ')
+           → state_wf σ
+             → wf_trees trs1
+               → l.1 = blk
+                 → trees_contain tg_par (strs σ) blk
+                   → ¬ trees_contain tg_cld (strs σ) blk
+                     → shp σ' !! l = Some sc
+                       → off1 ≤ l.2 < off1 + sz
+                         → cc ∈ scs σ'
+                           → pointer_kind_to_tag_maybe_protected pk im rk = Some tk → loc_controlled l tg_cld tk sc σ'
+Closed under the global context
+@array_tag
+     : ∀ Σ : iprop.gFunctors,
+         bor_stateGS Σ
+         → iprop.gname → nat → loc → dfrac.dfrac → list scalar → upred.uPred (iprop.iProp_solution.iResUR Σ)
+Closed under the global context
+pointer_kind_to_tag_unprotected
+     : pointer_kind → interior_mut → option tag_kind
+Closed under the global context
+pointer_kind_to_tag_protected
+     : pointer_kind → interior_mut → option tag_kind
+Closed under the global context
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=6 start_bytes=32102964 peak_bytes=32103068 final_bytes=32106313

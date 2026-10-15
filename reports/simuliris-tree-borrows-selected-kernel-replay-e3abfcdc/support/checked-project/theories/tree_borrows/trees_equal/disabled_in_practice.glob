@@ -1,0 +1,242 @@
+DIGEST 99c4398e090fc5cf610c849f50400656
+Fsimuliris.tree_borrows.trees_equal.disabled_in_practice
+R35:43 iris.proofmode.proofmode <> <> lib
+R78:87 iris.bi.lib.fractional <> <> lib
+R130:138 iris.base_logic.lib.ghost_map <> <> lib
+R182:193 simuliris.base_logic.gen_sim_prog <> <> lib
+R237:241 simuliris.simulation.slsls <> <> lib
+R243:253 simuliris.simulation.gen_log_rel <> <> lib
+R297:303 simuliris.simulation.lifting <> <> lib
+R349:358 simuliris.tree_borrows.tkmap_view <> <> lib
+R404:407 simuliris.tree_borrows.defs <> <> lib
+R453:460 simuliris.tree_borrows.steps_wf <> <> lib
+R506:519 simuliris.tree_borrows.steps_progress <> <> lib
+sec 531:542 <> disabled_tag
+var  558:558 disabled_tag C
+R562:565 stdpp.gmap <> gset def
+R567:573 simuliris.tree_borrows.lang_base <> call_id abbrev
+ind 590:604 <> pseudo_disabled
+constr 696:719 <> pseudo_disabled_disabled
+constr 827:855 <> pseudo_disabled_cousin_active
+R612:615 simuliris.tree_borrows.tree <> tree ind
+R617:620 simuliris.tree_borrows.lang_base <> item rec
+binder 607:608 <> tr:2
+R629:631 simuliris.tree_borrows.lang_base <> tag abbrev
+binder 624:625 <> tg:3
+R639:639 Corelib.Numbers.BinNums <> Z ind
+binder 635:635 <> l:4
+R654:658 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R644:653 simuliris.tree_borrows.lang_base <> permission ind
+R659:659 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R676:681 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R660:665 Corelib.Init.Datatypes <> option ind
+R667:675 simuliris.tree_borrows.lang_base <> protector rec
+binder 721:724 <> prot:7
+R785:799 simuliris.tree_borrows.trees_equal.disabled_in_practice <> pseudo_disabled:5 ind
+R816:819 simuliris.tree_borrows.trees_equal.disabled_in_practice <> prot:7 var
+R807:814 simuliris.tree_borrows.lang_base <> Disabled constr
+binder 857:863 <> tg_cous:8
+binder 865:871 <> it_cous:9
+binder 873:874 <> lp:10
+binder 876:879 <> prot:11
+R929:940 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R912:914 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R891:897 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R899:900 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:2 var
+R902:903 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:3 var
+R905:911 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg_cous:8 var
+R915:921 simuliris.tree_borrows.lang_base <> Foreign constr
+R923:928 simuliris.tree_borrows.lang_base <> Cousin constr
+R971:982 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R941:951 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R953:954 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:2 var
+R956:962 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg_cous:8 var
+R964:970 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it_cous:9 var
+R1020:1031 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R983:1001 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R1012:1016 simuliris.tree_borrows.lang_base <> iprot proj
+R1003:1009 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it_cous:9 var
+R1019:1019 simuliris.tree_borrows.trees_equal.disabled_in_practice <> disabled_tag.C var
+R1080:1169 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R1032:1032 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1054:1057 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1033:1043 simuliris.tree_borrows.lang_base <> item_lookup def
+R1045:1051 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it_cous:9 var
+R1053:1053 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:4 var
+R1058:1063 simuliris.tree_borrows.lang_base <> mkPerm constr
+R1065:1072 simuliris.tree_borrows.lang_base <> PermInit constr
+R1074:1079 simuliris.tree_borrows.lang_base <> Active constr
+R1187:1190 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R1172:1176 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R1170:1171 simuliris.tree_borrows.trees_equal.disabled_in_practice <> lp:10 var
+R1177:1186 simuliris.tree_borrows.lang_base <> ReservedIM constr
+R1202:1213 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R1193:1197 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R1191:1192 simuliris.tree_borrows.trees_equal.disabled_in_practice <> lp:10 var
+R1198:1201 simuliris.tree_borrows.lang_base <> Cell constr
+R1214:1228 simuliris.tree_borrows.trees_equal.disabled_in_practice <> pseudo_disabled:5 ind
+R1239:1242 simuliris.tree_borrows.trees_equal.disabled_in_practice <> prot:11 var
+R1236:1237 simuliris.tree_borrows.trees_equal.disabled_in_practice <> lp:10 var
+scheme 590:604 <> pseudo_disabled_ind
+scheme 590:604 <> pseudo_disabled_sind
+ind 1445:1455 <> is_disabled
+constr 1550:1562 <> disabled_init
+constr 1636:1650 <> disabled_pseudo
+R1463:1466 simuliris.tree_borrows.tree <> tree ind
+R1468:1471 simuliris.tree_borrows.lang_base <> item rec
+binder 1458:1459 <> tr:12
+R1480:1482 simuliris.tree_borrows.lang_base <> tag abbrev
+binder 1475:1476 <> tg:13
+R1490:1490 Corelib.Numbers.BinNums <> Z ind
+binder 1486:1486 <> l:14
+R1510:1514 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1495:1509 simuliris.tree_borrows.lang_base <> lazy_permission rec
+R1531:1535 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1515:1520 Corelib.Init.Datatypes <> option ind
+R1522:1530 simuliris.tree_borrows.lang_base <> protector rec
+binder 1564:1567 <> prot:17
+R1580:1590 simuliris.tree_borrows.trees_equal.disabled_in_practice <> is_disabled:15 ind
+R1625:1628 simuliris.tree_borrows.trees_equal.disabled_in_practice <> prot:17 var
+R1599:1604 simuliris.tree_borrows.lang_base <> mkPerm constr
+R1606:1613 simuliris.tree_borrows.lang_base <> PermInit constr
+R1615:1622 simuliris.tree_borrows.lang_base <> Disabled constr
+binder 1652:1653 <> lp:18
+binder 1655:1658 <> prot:19
+R1701:1713 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1670:1684 simuliris.tree_borrows.trees_equal.disabled_in_practice <> pseudo_disabled ind
+R1686:1687 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:12 var
+R1689:1690 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:13 var
+R1692:1692 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:14 var
+R1694:1695 simuliris.tree_borrows.trees_equal.disabled_in_practice <> lp:18 var
+R1697:1700 simuliris.tree_borrows.trees_equal.disabled_in_practice <> prot:19 var
+R1714:1724 simuliris.tree_borrows.trees_equal.disabled_in_practice <> is_disabled:15 ind
+R1753:1756 simuliris.tree_borrows.trees_equal.disabled_in_practice <> prot:19 var
+R1733:1738 simuliris.tree_borrows.lang_base <> mkPerm constr
+R1740:1747 simuliris.tree_borrows.lang_base <> PermLazy constr
+R1749:1750 simuliris.tree_borrows.trees_equal.disabled_in_practice <> lp:18 var
+scheme 1445:1455 <> is_disabled_ind
+scheme 1445:1455 <> is_disabled_sind
+ind 1772:1791 <> disabled_in_practice
+constr 1865:1879 <> disabled_parent
+R1799:1802 simuliris.tree_borrows.tree <> tree ind
+R1804:1807 simuliris.tree_borrows.lang_base <> item rec
+binder 1794:1795 <> tr:20
+R1816:1818 simuliris.tree_borrows.lang_base <> tag abbrev
+binder 1811:1812 <> tg:21
+R1832:1834 simuliris.tree_borrows.lang_base <> tag abbrev
+binder 1822:1828 <> witness:22
+R1842:1842 Corelib.Numbers.BinNums <> Z ind
+binder 1838:1838 <> l:23
+binder 1881:1890 <> it_witness:26
+binder 1892:1900 <> inclusive:27
+R2019:2028 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R2001:2003 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1980:1986 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R1988:1989 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:20 var
+R1991:1992 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:21 var
+R1994:2000 simuliris.tree_borrows.trees_equal.disabled_in_practice <> witness:22 var
+R2004:2008 simuliris.tree_borrows.lang_base <> Child constr
+R2010:2018 simuliris.tree_borrows.trees_equal.disabled_in_practice <> inclusive:27 var
+R2062:2071 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R2029:2039 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R2041:2042 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:20 var
+R2044:2050 simuliris.tree_borrows.trees_equal.disabled_in_practice <> witness:22 var
+R2052:2061 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it_witness:26 var
+R2142:2151 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R2072:2082 simuliris.tree_borrows.trees_equal.disabled_in_practice <> is_disabled ind
+R2084:2085 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:20 var
+R2087:2093 simuliris.tree_borrows.trees_equal.disabled_in_practice <> witness:22 var
+R2095:2095 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:23 var
+R2098:2108 simuliris.tree_borrows.lang_base <> item_lookup def
+R2110:2119 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it_witness:26 var
+R2121:2121 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:23 var
+R2125:2129 simuliris.tree_borrows.lang_base <> iprot proj
+R2131:2140 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it_witness:26 var
+R2152:2171 simuliris.tree_borrows.trees_equal.disabled_in_practice <> disabled_in_practice:24 ind
+R2187:2187 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:23 var
+R2179:2185 simuliris.tree_borrows.trees_equal.disabled_in_practice <> witness:22 var
+R2176:2177 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:21 var
+R2173:2174 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:20 var
+scheme 1772:1791 <> disabled_in_practice_ind
+scheme 1772:1791 <> disabled_in_practice_sind
+def 2209:2223 <> disabled_tag_at
+R2230:2233 simuliris.tree_borrows.tree <> tree ind
+R2235:2238 simuliris.tree_borrows.lang_base <> item rec
+binder 2226:2227 <> tr:28
+R2247:2249 simuliris.tree_borrows.lang_base <> tag abbrev
+binder 2242:2243 <> tg:29
+R2257:2257 Corelib.Numbers.BinNums <> Z ind
+binder 2253:2253 <> l:30
+R2263:2266 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R2274:2275 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 2267:2273 <> witness:31
+R2276:2295 simuliris.tree_borrows.trees_equal.disabled_in_practice <> disabled_in_practice ind
+R2297:2298 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:28 var
+R2300:2301 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:29 var
+R2303:2309 simuliris.tree_borrows.trees_equal.disabled_in_practice <> witness:31 var
+R2311:2311 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:30 var
+def 2328:2339 <> disabled_tag
+R2348:2352 simuliris.tree_borrows.lang_base <> trees def
+binder 2342:2344 <> trs:32
+binder 2355:2358 <> nxtp:33
+R2366:2368 simuliris.tree_borrows.lang_base <> tag abbrev
+binder 2361:2362 <> tg:34
+R2376:2378 simuliris.tree_borrows.locations <> loc def
+binder 2372:2372 <> l:35
+R2393:2398 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2503:2503 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2386:2388 Stdlib.ZArith.BinInt <> ::Z_scope:x_'<'_x not
+R2384:2385 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:34 var
+R2389:2392 simuliris.tree_borrows.trees_equal.disabled_in_practice <> nxtp:33 var
+R2408:2411 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R2413:2414 stdpp.base <> :::x_'.1' not
+R2412:2412 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:35 var
+R2405:2407 simuliris.tree_borrows.trees_equal.disabled_in_practice <> trs:32 var
+R2421:2424 Corelib.Init.Datatypes <> Some constr
+R2457:2461 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R2432:2446 simuliris.tree_borrows.trees_equal.disabled_in_practice <> disabled_tag_at def
+R2451:2452 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:34 var
+R2455:2456 stdpp.base <> :::x_'.2' not
+R2454:2454 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:35 var
+R2462:2464 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R2465:2477 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R2479:2480 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:34 var
+R2487:2490 Corelib.Init.Datatypes <> None constr
+R2495:2498 stdpp.base <> ::type_scope:'True' not
+def 2520:2531 <> active_child
+binder 2533:2534 <> tr:36
+binder 2536:2537 <> tg:37
+binder 2539:2539 <> l:38
+R2548:2551 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R2557:2558 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 2552:2553 <> it:39
+binder 2555:2556 <> ii:40
+R2586:2590 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2559:2569 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R2571:2572 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:36 var
+R2575:2578 simuliris.tree_borrows.lang_base <> itag proj
+R2580:2581 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it:39 var
+R2584:2585 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it:39 var
+R2634:2638 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2614:2616 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2591:2597 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R2599:2600 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tr:36 var
+R2603:2606 simuliris.tree_borrows.lang_base <> itag proj
+R2608:2609 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it:39 var
+R2612:2613 simuliris.tree_borrows.trees_equal.disabled_in_practice <> tg:37 var
+R2617:2621 simuliris.tree_borrows.lang_base <> Child constr
+R2624:2629 simuliris.tree_borrows.lang_base <> Strict constr
+R2631:2632 simuliris.tree_borrows.trees_equal.disabled_in_practice <> ii:40 var
+R2680:2684 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2655:2657 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2639:2649 simuliris.tree_borrows.lang_base <> item_lookup def
+R2651:2652 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it:39 var
+R2654:2654 simuliris.tree_borrows.trees_equal.disabled_in_practice <> l:38 var
+R2658:2663 simuliris.tree_borrows.lang_base <> mkPerm constr
+R2665:2672 simuliris.tree_borrows.lang_base <> PermInit constr
+R2674:2679 simuliris.tree_borrows.lang_base <> Active constr
+R2685:2703 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R2706:2710 simuliris.tree_borrows.lang_base <> iprot proj
+R2712:2713 simuliris.tree_borrows.trees_equal.disabled_in_practice <> it:39 var
+R2716:2716 simuliris.tree_borrows.trees_equal.disabled_in_practice <> disabled_tag.C var
+R2724:2735 simuliris.tree_borrows.trees_equal.disabled_in_practice disabled_tag <> sec

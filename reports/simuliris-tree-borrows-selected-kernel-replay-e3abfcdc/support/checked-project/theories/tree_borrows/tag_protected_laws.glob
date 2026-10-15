@@ -1,0 +1,1459 @@
+DIGEST ebb9e3135e2b4f1c37815912b2150f80
+Fsimuliris.tree_borrows.tag_protected_laws
+R35:43 iris.proofmode.proofmode <> <> lib
+R86:94 iris.base_logic.lib.ghost_map <> <> lib
+R138:149 simuliris.base_logic.gen_sim_prog <> <> lib
+R193:197 simuliris.simulation.slsls <> <> lib
+R241:247 simuliris.simulation.lifting <> <> lib
+R293:302 simuliris.tree_borrows.tkmap_view <> <> lib
+R348:351 simuliris.tree_borrows.defs <> <> lib
+R353:367 simuliris.tree_borrows.class_instances <> <> lib
+R413:426 simuliris.tree_borrows.steps_progress <> <> lib
+R428:436 simuliris.tree_borrows.steps_inv <> <> lib
+R482:497 simuliris.tree_borrows.tree_access_laws <> <> lib
+R499:511 simuliris.tree_borrows.logical_state <> <> lib
+R513:525 simuliris.tree_borrows.inv_accessors <> <> lib
+R583:598 simuliris.tree_borrows.trees_equal.trees_equal_base <> <> lib
+R600:612 simuliris.tree_borrows.trees_equal.random_lemmas <> <> lib
+def 628:652 <> item_protected_for_noinit
+binder 655:655 <> P:1
+R691:695 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R688:690 simuliris.tree_borrows.lang_base <> tag abbrev
+R699:703 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R696:698 simuliris.tree_borrows.locations <> loc def
+binder 666:684 <> no_children_pred_on:2
+binder 710:710 <> c:3
+binder 712:713 <> it:4
+binder 715:717 <> blk:5
+binder 719:721 <> off:6
+R727:743 simuliris.tree_borrows.logical_state <> logical_protector ind
+binder 724:725 <> ps:7
+R789:797 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R755:775 simuliris.tree_borrows.bor_semantics <> protector_is_for_call def
+R777:777 simuliris.tree_borrows.tag_protected_laws <> c:3 var
+R783:787 simuliris.tree_borrows.lang_base <> iprot proj
+R779:780 simuliris.tree_borrows.tag_protected_laws <> it:4 var
+R838:846 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R798:823 simuliris.tree_borrows.logical_state <> protector_matches_strength def
+R825:826 simuliris.tree_borrows.tag_protected_laws <> ps:7 var
+R832:836 simuliris.tree_borrows.lang_base <> iprot proj
+R828:829 simuliris.tree_borrows.tag_protected_laws <> it:4 var
+R847:847 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R929:1012 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R884:888 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R850:852 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R848:849 simuliris.tree_borrows.tag_protected_laws <> ps:7 var
+R853:866 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R868:883 simuliris.tree_borrows.logical_state <> WeaklyNoChildren constr
+R889:907 simuliris.tree_borrows.tag_protected_laws <> no_children_pred_on:2 var
+R919:919 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R923:924 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R928:928 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R920:922 simuliris.tree_borrows.tag_protected_laws <> blk:5 var
+R925:927 simuliris.tree_borrows.tag_protected_laws <> off:6 var
+R913:916 simuliris.tree_borrows.lang_base <> itag proj
+R909:910 simuliris.tree_borrows.tag_protected_laws <> it:4 var
+R1013:1013 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1065:1132 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1015:1019 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1014:1014 simuliris.tree_borrows.tag_protected_laws <> P:1 var
+R1054:1056 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1042:1052 simuliris.tree_borrows.lang_base <> initialized proj
+R1021:1031 simuliris.tree_borrows.lang_base <> item_lookup def
+R1033:1034 simuliris.tree_borrows.tag_protected_laws <> it:4 var
+R1036:1038 simuliris.tree_borrows.tag_protected_laws <> off:6 var
+R1057:1064 simuliris.tree_borrows.lang_base <> PermInit constr
+R1173:1279 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1160:1164 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R1155:1158 simuliris.tree_borrows.lang_base <> perm proj
+R1134:1144 simuliris.tree_borrows.lang_base <> item_lookup def
+R1146:1147 simuliris.tree_borrows.tag_protected_laws <> it:4 var
+R1149:1151 simuliris.tree_borrows.tag_protected_laws <> off:6 var
+R1165:1172 simuliris.tree_borrows.lang_base <> Disabled constr
+R1307:1311 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R1302:1305 simuliris.tree_borrows.lang_base <> perm proj
+R1281:1291 simuliris.tree_borrows.lang_base <> item_lookup def
+R1293:1294 simuliris.tree_borrows.tag_protected_laws <> it:4 var
+R1296:1298 simuliris.tree_borrows.tag_protected_laws <> off:6 var
+R1312:1315 simuliris.tree_borrows.lang_base <> Cell constr
+def 1330:1353 <> tag_protected_for_noinit
+binder 1356:1356 <> P:8
+R1374:1378 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1371:1373 simuliris.tree_borrows.lang_base <> tag abbrev
+R1382:1386 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1379:1381 simuliris.tree_borrows.locations <> loc def
+binder 1367:1367 <> Q:9
+binder 1393:1393 <> c:10
+binder 1395:1397 <> trs:11
+binder 1399:1399 <> l:12
+binder 1401:1401 <> t:13
+binder 1403:1404 <> ps:14
+R1415:1416 simuliris.tree_borrows.tag_protected_laws <> ps:14 var
+R1425:1438 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R1446:1449 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1452:1453 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 1450:1451 <> it:16
+R1479:1483 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1454:1465 simuliris.tree_borrows.bor_lemmas <> trees_lookup def
+R1467:1469 simuliris.tree_borrows.tag_protected_laws <> trs:11 var
+R1472:1473 stdpp.base <> :::x_'.1' not
+R1471:1471 simuliris.tree_borrows.tag_protected_laws <> l:12 var
+R1475:1475 simuliris.tree_borrows.tag_protected_laws <> t:13 var
+R1477:1478 simuliris.tree_borrows.tag_protected_laws <> it:16 var
+R1484:1508 simuliris.tree_borrows.tag_protected_laws <> item_protected_for_noinit def
+R1510:1510 simuliris.tree_borrows.tag_protected_laws <> P:8 var
+R1512:1512 simuliris.tree_borrows.tag_protected_laws <> Q:9 var
+R1514:1514 simuliris.tree_borrows.tag_protected_laws <> c:10 var
+R1516:1517 simuliris.tree_borrows.tag_protected_laws <> it:16 var
+R1520:1521 stdpp.base <> :::x_'.1' not
+R1519:1519 simuliris.tree_borrows.tag_protected_laws <> l:12 var
+R1524:1525 stdpp.base <> :::x_'.2' not
+R1523:1523 simuliris.tree_borrows.tag_protected_laws <> l:12 var
+R1527:1528 simuliris.tree_borrows.tag_protected_laws <> ps:14 var
+R1532:1542 simuliris.tree_borrows.logical_state <> Deallocable constr
+R1549:1552 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1555:1556 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1553:1554 <> it:17
+R1582:1586 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1557:1568 simuliris.tree_borrows.bor_lemmas <> trees_lookup def
+R1570:1572 simuliris.tree_borrows.tag_protected_laws <> trs:11 var
+R1575:1576 stdpp.base <> :::x_'.1' not
+R1574:1574 simuliris.tree_borrows.tag_protected_laws <> l:12 var
+R1578:1578 simuliris.tree_borrows.tag_protected_laws <> t:13 var
+R1580:1581 simuliris.tree_borrows.tag_protected_laws <> it:17 var
+R1587:1611 simuliris.tree_borrows.tag_protected_laws <> item_protected_for_noinit def
+R1613:1613 simuliris.tree_borrows.tag_protected_laws <> P:8 var
+R1615:1615 simuliris.tree_borrows.tag_protected_laws <> Q:9 var
+R1617:1617 simuliris.tree_borrows.tag_protected_laws <> c:10 var
+R1619:1620 simuliris.tree_borrows.tag_protected_laws <> it:17 var
+R1623:1624 stdpp.base <> :::x_'.1' not
+R1622:1622 simuliris.tree_borrows.tag_protected_laws <> l:12 var
+R1627:1628 stdpp.base <> :::x_'.2' not
+R1626:1626 simuliris.tree_borrows.tag_protected_laws <> l:12 var
+R1630:1631 simuliris.tree_borrows.tag_protected_laws <> ps:14 var
+prf 1645:1673 <> into_tag_protected_for_noinit
+binder 1675:1675 <> P:18
+binder 1677:1677 <> Q:19
+binder 1679:1679 <> c:20
+binder 1681:1683 <> trs:21
+binder 1685:1685 <> l:22
+binder 1687:1687 <> t:23
+binder 1689:1690 <> ps:24
+R1729:1733 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1697:1713 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R1717:1717 simuliris.tree_borrows.tag_protected_laws <> c:20 var
+R1719:1721 simuliris.tree_borrows.tag_protected_laws <> trs:21 var
+R1723:1723 simuliris.tree_borrows.tag_protected_laws <> l:22 var
+R1725:1725 simuliris.tree_borrows.tag_protected_laws <> t:23 var
+R1727:1728 simuliris.tree_borrows.tag_protected_laws <> ps:24 var
+R1715:1715 simuliris.tree_borrows.tag_protected_laws <> Q:19 var
+R1734:1757 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_noinit def
+R1759:1759 simuliris.tree_borrows.tag_protected_laws <> P:18 var
+R1761:1761 simuliris.tree_borrows.tag_protected_laws <> Q:19 var
+R1763:1763 simuliris.tree_borrows.tag_protected_laws <> c:20 var
+R1765:1767 simuliris.tree_borrows.tag_protected_laws <> trs:21 var
+R1769:1769 simuliris.tree_borrows.tag_protected_laws <> l:22 var
+R1771:1771 simuliris.tree_borrows.tag_protected_laws <> t:23 var
+R1773:1774 simuliris.tree_borrows.tag_protected_laws <> ps:24 var
+prf 2009:2048 <> tag_protected_preserved_by_access_strong
+binder 2050:2055 <> tg_acc:25
+binder 2057:2062 <> tg_prs:26
+binder 2064:2064 <> l:27
+binder 2066:2066 <> C:28
+binder 2068:2068 <> c:29
+binder 2070:2072 <> trs:30
+binder 2074:2077 <> trs':31
+binder 2079:2081 <> acc:32
+binder 2083:2085 <> blk:33
+binder 2087:2089 <> off:34
+binder 2091:2092 <> sz:35
+binder 2094:2094 <> b:36
+binder 2096:2096 <> P:37
+binder 2098:2099 <> ae:38
+R2116:2122 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2104:2111 simuliris.tree_borrows.defs <> wf_trees def
+R2113:2115 simuliris.tree_borrows.tag_protected_laws <> trs:30 var
+R2225:2231 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2213:2215 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2123:2140 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R2143:2178 simuliris.tree_borrows.bor_semantics <> memory_access_maybe_nonchildren_only def
+R2180:2180 simuliris.tree_borrows.tag_protected_laws <> b:36 var
+R2182:2184 simuliris.tree_borrows.tag_protected_laws <> acc:32 var
+R2186:2186 simuliris.tree_borrows.tag_protected_laws <> C:28 var
+R2188:2193 simuliris.tree_borrows.tag_protected_laws <> tg_acc:25 var
+R2195:2195 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2199:2200 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2203:2203 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2196:2198 simuliris.tree_borrows.tag_protected_laws <> off:34 var
+R2201:2202 simuliris.tree_borrows.tag_protected_laws <> sz:35 var
+R2206:2208 simuliris.tree_borrows.tag_protected_laws <> blk:33 var
+R2210:2212 simuliris.tree_borrows.tag_protected_laws <> trs:30 var
+R2216:2219 Corelib.Init.Datatypes <> Some constr
+R2221:2224 simuliris.tree_borrows.tag_protected_laws <> trs':31 var
+R2250:2256 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2232:2245 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R2247:2247 simuliris.tree_borrows.tag_protected_laws <> c:29 var
+R2249:2249 simuliris.tree_borrows.tag_protected_laws <> C:28 var
+R2383:2389 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2257:2280 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_noinit def
+R2283:2286 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R2343:2343 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R2296:2300 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2290:2292 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2287:2289 simuliris.tree_borrows.tag_protected_laws <> blk:33 var
+R2294:2295 stdpp.base <> :::x_'.1' not
+R2293:2293 simuliris.tree_borrows.tag_protected_laws <> l:27 var
+R2316:2320 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2307:2309 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2301:2306 simuliris.tree_borrows.tag_protected_laws <> tg_prs:26 var
+R2310:2315 simuliris.tree_borrows.tag_protected_laws <> tg_acc:25 var
+R2324:2328 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R2332:2334 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R2321:2323 simuliris.tree_borrows.tag_protected_laws <> off:34 var
+R2330:2331 stdpp.base <> :::x_'.2' not
+R2329:2329 simuliris.tree_borrows.tag_protected_laws <> l:27 var
+R2338:2340 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R2335:2337 simuliris.tree_borrows.tag_protected_laws <> off:34 var
+R2341:2342 simuliris.tree_borrows.tag_protected_laws <> sz:35 var
+R2346:2346 simuliris.tree_borrows.tag_protected_laws <> P:37 var
+R2348:2348 simuliris.tree_borrows.tag_protected_laws <> c:29 var
+R2350:2352 simuliris.tree_borrows.tag_protected_laws <> trs:30 var
+R2355:2355 simuliris.tree_borrows.tag_protected_laws <> l:27 var
+R2357:2362 simuliris.tree_borrows.tag_protected_laws <> tg_prs:26 var
+R2365:2378 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R2380:2381 simuliris.tree_borrows.tag_protected_laws <> ae:38 var
+R2390:2406 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R2410:2410 simuliris.tree_borrows.tag_protected_laws <> c:29 var
+R2412:2415 simuliris.tree_borrows.tag_protected_laws <> trs':31 var
+R2417:2417 simuliris.tree_borrows.tag_protected_laws <> l:27 var
+R2419:2424 simuliris.tree_borrows.tag_protected_laws <> tg_prs:26 var
+R2427:2440 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R2442:2443 simuliris.tree_borrows.tag_protected_laws <> ae:38 var
+R2408:2408 simuliris.tree_borrows.tag_protected_laws <> P:37 var
+R2555:2560 stdpp.base <> decide def
+R2572:2577 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2600:2600 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2566:2568 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2564:2565 stdpp.base <> :::x_'.1' not
+R2581:2585 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R2589:2591 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R2587:2588 stdpp.base <> :::x_'.2' not
+R2595:2597 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R2663:2695 simuliris.tree_borrows.tree_access_laws <> apply_trees_access_lookup_general thm
+R2810:2827 simuliris.tree_borrows.logical_state <> item_protected_for def
+R2858:2860 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2851:2854 simuliris.tree_borrows.lang_base <> itag proj
+R2861:2864 simuliris.tree_borrows.lang_base <> itag proj
+R2906:2929 simuliris.tree_borrows.bor_lemmas <> trees_lookup_correct_tag thm
+R2997:3015 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R3018:3022 simuliris.tree_borrows.lang_base <> iprot proj
+R3102:3145 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop_strong thm
+R3308:3325 simuliris.tree_borrows.tree_access_laws <> trees_rel_dec_refl thm
+R3473:3481 stdpp.option <> bind_Some thm
+R3403:3411 stdpp.option <> bind_Some thm
+R3498:3518 stdpp.decidable <> bool_decide_eq_true_2 thm
+R3566:3588 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R3646:3648 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3611:3621 simuliris.tree_borrows.lang_base <> initialized proj
+R3624:3634 simuliris.tree_borrows.lang_base <> item_lookup def
+R3643:3644 stdpp.base <> :::x_'.2' not
+R3649:3656 simuliris.tree_borrows.lang_base <> PermInit constr
+R3706:3711 stdpp.base <> decide def
+R3720:3722 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3761:3778 simuliris.tree_borrows.tree_access_laws <> trees_rel_dec_refl thm
+R3780:3793 simuliris.tree_borrows.trees_equal.random_lemmas <> most_init_comm thm
+R4086:4088 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4089:4092 simuliris.tree_borrows.lang_base <> Cell constr
+R4212:4214 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4187:4190 simuliris.tree_borrows.lang_base <> perm proj
+R4193:4203 simuliris.tree_borrows.lang_base <> item_lookup def
+R4209:4210 stdpp.base <> :::x_'.2' not
+R4215:4218 simuliris.tree_borrows.lang_base <> Cell constr
+R4310:4342 simuliris.tree_borrows.tree_access_laws <> apply_trees_access_lookup_outside thm
+R4483:4500 simuliris.tree_borrows.logical_state <> item_protected_for def
+R4531:4533 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4524:4527 simuliris.tree_borrows.lang_base <> itag proj
+R4534:4537 simuliris.tree_borrows.lang_base <> itag proj
+R4579:4602 simuliris.tree_borrows.bor_lemmas <> trees_lookup_correct_tag thm
+prf 4767:4804 <> tag_protected_preserved_by_access_weak
+binder 4806:4811 <> tg_acc:39
+binder 4813:4818 <> tg_prs:40
+binder 4820:4820 <> l:41
+binder 4822:4822 <> C:42
+binder 4824:4824 <> c:43
+binder 4826:4828 <> trs:44
+binder 4830:4833 <> trs':45
+binder 4835:4837 <> acc:46
+binder 4839:4841 <> blk:47
+binder 4843:4845 <> off:48
+binder 4847:4848 <> sz:49
+binder 4850:4850 <> b:50
+binder 4852:4852 <> P:51
+R4870:4876 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4858:4865 simuliris.tree_borrows.defs <> wf_trees def
+R4867:4869 simuliris.tree_borrows.tag_protected_laws <> trs:44 var
+R4979:4985 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4967:4969 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4877:4894 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R4897:4932 simuliris.tree_borrows.bor_semantics <> memory_access_maybe_nonchildren_only def
+R4934:4934 simuliris.tree_borrows.tag_protected_laws <> b:50 var
+R4936:4938 simuliris.tree_borrows.tag_protected_laws <> acc:46 var
+R4940:4940 simuliris.tree_borrows.tag_protected_laws <> C:42 var
+R4942:4947 simuliris.tree_borrows.tag_protected_laws <> tg_acc:39 var
+R4949:4949 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4953:4954 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4957:4957 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4950:4952 simuliris.tree_borrows.tag_protected_laws <> off:48 var
+R4955:4956 simuliris.tree_borrows.tag_protected_laws <> sz:49 var
+R4960:4962 simuliris.tree_borrows.tag_protected_laws <> blk:47 var
+R4964:4966 simuliris.tree_borrows.tag_protected_laws <> trs:44 var
+R4970:4973 Corelib.Init.Datatypes <> Some constr
+R4975:4978 simuliris.tree_borrows.tag_protected_laws <> trs':45 var
+R5004:5010 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4986:4999 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R5001:5001 simuliris.tree_borrows.tag_protected_laws <> c:43 var
+R5003:5003 simuliris.tree_borrows.tag_protected_laws <> C:42 var
+R5129:5135 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5011:5034 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_noinit def
+R5037:5040 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R5097:5097 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R5050:5054 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5044:5046 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5041:5043 simuliris.tree_borrows.tag_protected_laws <> blk:47 var
+R5048:5049 stdpp.base <> :::x_'.1' not
+R5047:5047 simuliris.tree_borrows.tag_protected_laws <> l:41 var
+R5070:5074 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5061:5063 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5055:5060 simuliris.tree_borrows.tag_protected_laws <> tg_prs:40 var
+R5064:5069 simuliris.tree_borrows.tag_protected_laws <> tg_acc:39 var
+R5078:5082 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R5086:5088 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R5075:5077 simuliris.tree_borrows.tag_protected_laws <> off:48 var
+R5084:5085 stdpp.base <> :::x_'.2' not
+R5083:5083 simuliris.tree_borrows.tag_protected_laws <> l:41 var
+R5092:5094 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R5089:5091 simuliris.tree_borrows.tag_protected_laws <> off:48 var
+R5095:5096 simuliris.tree_borrows.tag_protected_laws <> sz:49 var
+R5100:5100 simuliris.tree_borrows.tag_protected_laws <> P:51 var
+R5102:5102 simuliris.tree_borrows.tag_protected_laws <> c:43 var
+R5104:5106 simuliris.tree_borrows.tag_protected_laws <> trs:44 var
+R5109:5109 simuliris.tree_borrows.tag_protected_laws <> l:41 var
+R5111:5116 simuliris.tree_borrows.tag_protected_laws <> tg_prs:40 var
+R5118:5128 simuliris.tree_borrows.logical_state <> Deallocable constr
+R5136:5152 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R5156:5156 simuliris.tree_borrows.tag_protected_laws <> c:43 var
+R5158:5161 simuliris.tree_borrows.tag_protected_laws <> trs':45 var
+R5163:5163 simuliris.tree_borrows.tag_protected_laws <> l:41 var
+R5165:5170 simuliris.tree_borrows.tag_protected_laws <> tg_prs:40 var
+R5172:5182 simuliris.tree_borrows.logical_state <> Deallocable constr
+R5154:5154 simuliris.tree_borrows.tag_protected_laws <> P:51 var
+R5237:5242 stdpp.base <> decide def
+R5254:5259 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5282:5282 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5248:5250 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5246:5247 stdpp.base <> :::x_'.1' not
+R5263:5267 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R5271:5273 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R5269:5270 stdpp.base <> :::x_'.2' not
+R5277:5279 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R5340:5376 simuliris.tree_borrows.tree_access_laws <> apply_trees_access_lookup_general_rev thm
+R5543:5560 simuliris.tree_borrows.logical_state <> item_protected_for def
+R5614:5632 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R5635:5639 simuliris.tree_borrows.lang_base <> iprot proj
+R5716:5759 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop_strong thm
+R5922:5939 simuliris.tree_borrows.tree_access_laws <> trees_rel_dec_refl thm
+R6087:6095 stdpp.option <> bind_Some thm
+R6017:6025 stdpp.option <> bind_Some thm
+R6112:6132 stdpp.decidable <> bool_decide_eq_true_2 thm
+R6180:6202 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R6257:6259 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6225:6235 simuliris.tree_borrows.lang_base <> initialized proj
+R6238:6248 simuliris.tree_borrows.lang_base <> item_lookup def
+R6254:6255 stdpp.base <> :::x_'.2' not
+R6260:6267 simuliris.tree_borrows.lang_base <> PermInit constr
+R6317:6322 stdpp.base <> decide def
+R6331:6333 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6372:6389 simuliris.tree_borrows.tree_access_laws <> trees_rel_dec_refl thm
+R6391:6404 simuliris.tree_borrows.trees_equal.random_lemmas <> most_init_comm thm
+R6693:6695 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6696:6699 simuliris.tree_borrows.lang_base <> Cell constr
+R6822:6824 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6794:6797 simuliris.tree_borrows.lang_base <> perm proj
+R6800:6810 simuliris.tree_borrows.lang_base <> item_lookup def
+R6819:6820 stdpp.base <> :::x_'.2' not
+R6825:6828 simuliris.tree_borrows.lang_base <> Cell constr
+R6939:6975 simuliris.tree_borrows.tree_access_laws <> apply_trees_access_lookup_outside_rev thm
+R7133:7150 simuliris.tree_borrows.logical_state <> item_protected_for def
+prf 7300:7337 <> tag_protected_preserved_by_access_init
+binder 7339:7344 <> tg_acc:52
+binder 7346:7351 <> tg_prs:53
+binder 7353:7353 <> l:54
+binder 7355:7355 <> C:55
+binder 7357:7357 <> c:56
+binder 7359:7361 <> trs:57
+binder 7363:7366 <> trs':58
+binder 7368:7370 <> acc:59
+binder 7372:7374 <> blk:60
+binder 7376:7378 <> off:61
+binder 7380:7381 <> sz:62
+binder 7383:7383 <> b:63
+binder 7385:7386 <> ps:64
+binder 7388:7388 <> P:65
+R7405:7411 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7393:7400 simuliris.tree_borrows.defs <> wf_trees def
+R7402:7404 simuliris.tree_borrows.tag_protected_laws <> trs:57 var
+R7514:7520 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7502:7504 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7412:7429 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R7432:7467 simuliris.tree_borrows.bor_semantics <> memory_access_maybe_nonchildren_only def
+R7469:7469 simuliris.tree_borrows.tag_protected_laws <> b:63 var
+R7471:7473 simuliris.tree_borrows.tag_protected_laws <> acc:59 var
+R7475:7475 simuliris.tree_borrows.tag_protected_laws <> C:55 var
+R7477:7482 simuliris.tree_borrows.tag_protected_laws <> tg_acc:52 var
+R7484:7484 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7488:7489 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7492:7492 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7485:7487 simuliris.tree_borrows.tag_protected_laws <> off:61 var
+R7490:7491 simuliris.tree_borrows.tag_protected_laws <> sz:62 var
+R7495:7497 simuliris.tree_borrows.tag_protected_laws <> blk:60 var
+R7499:7501 simuliris.tree_borrows.tag_protected_laws <> trs:57 var
+R7505:7508 Corelib.Init.Datatypes <> Some constr
+R7510:7513 simuliris.tree_borrows.tag_protected_laws <> trs':58 var
+R7539:7545 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7521:7534 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R7536:7536 simuliris.tree_borrows.tag_protected_laws <> c:56 var
+R7538:7538 simuliris.tree_borrows.tag_protected_laws <> C:55 var
+R7655:7661 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7546:7569 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_noinit def
+R7572:7575 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R7632:7632 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R7585:7589 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R7579:7581 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7576:7578 simuliris.tree_borrows.tag_protected_laws <> blk:60 var
+R7583:7584 stdpp.base <> :::x_'.1' not
+R7582:7582 simuliris.tree_borrows.tag_protected_laws <> l:54 var
+R7605:7609 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R7596:7598 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7590:7595 simuliris.tree_borrows.tag_protected_laws <> tg_prs:53 var
+R7599:7604 simuliris.tree_borrows.tag_protected_laws <> tg_acc:52 var
+R7613:7617 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R7621:7623 stdpp.numbers <> ::Z_scope:x_'≤'_x_'<'_x not
+R7610:7612 simuliris.tree_borrows.tag_protected_laws <> off:61 var
+R7619:7620 stdpp.base <> :::x_'.2' not
+R7618:7618 simuliris.tree_borrows.tag_protected_laws <> l:54 var
+R7627:7629 Stdlib.ZArith.BinInt <> ::Z_scope:x_'+'_x not
+R7624:7626 simuliris.tree_borrows.tag_protected_laws <> off:61 var
+R7630:7631 simuliris.tree_borrows.tag_protected_laws <> sz:62 var
+R7635:7635 simuliris.tree_borrows.tag_protected_laws <> P:65 var
+R7637:7637 simuliris.tree_borrows.tag_protected_laws <> c:56 var
+R7639:7641 simuliris.tree_borrows.tag_protected_laws <> trs:57 var
+R7644:7644 simuliris.tree_borrows.tag_protected_laws <> l:54 var
+R7646:7651 simuliris.tree_borrows.tag_protected_laws <> tg_prs:53 var
+R7653:7654 simuliris.tree_borrows.tag_protected_laws <> ps:64 var
+R7662:7678 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R7682:7682 simuliris.tree_borrows.tag_protected_laws <> c:56 var
+R7684:7687 simuliris.tree_borrows.tag_protected_laws <> trs':58 var
+R7689:7689 simuliris.tree_borrows.tag_protected_laws <> l:54 var
+R7691:7696 simuliris.tree_borrows.tag_protected_laws <> tg_prs:53 var
+R7698:7699 simuliris.tree_borrows.tag_protected_laws <> ps:64 var
+R7680:7680 simuliris.tree_borrows.tag_protected_laws <> P:65 var
+R7735:7772 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_access_weak thm
+R7786:7825 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_access_strong thm
+prf 7839:7871 <> tag_protected_preserved_by_access
+binder 7873:7878 <> tg_acc:66
+binder 7880:7885 <> tg_prs:67
+binder 7887:7887 <> l:68
+binder 7889:7889 <> C:69
+binder 7891:7891 <> c:70
+binder 7893:7895 <> trs:71
+binder 7897:7900 <> trs':72
+binder 7902:7904 <> acc:73
+binder 7906:7908 <> blk:74
+binder 7910:7912 <> off:75
+binder 7914:7915 <> sz:76
+binder 7917:7917 <> b:77
+binder 7919:7920 <> ps:78
+binder 7922:7922 <> P:79
+R7939:7945 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7927:7934 simuliris.tree_borrows.defs <> wf_trees def
+R7936:7938 simuliris.tree_borrows.tag_protected_laws <> trs:71 var
+R8048:8054 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8036:8038 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7946:7963 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R7966:8001 simuliris.tree_borrows.bor_semantics <> memory_access_maybe_nonchildren_only def
+R8003:8003 simuliris.tree_borrows.tag_protected_laws <> b:77 var
+R8005:8007 simuliris.tree_borrows.tag_protected_laws <> acc:73 var
+R8009:8009 simuliris.tree_borrows.tag_protected_laws <> C:69 var
+R8011:8016 simuliris.tree_borrows.tag_protected_laws <> tg_acc:66 var
+R8018:8018 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8022:8023 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8026:8026 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8019:8021 simuliris.tree_borrows.tag_protected_laws <> off:75 var
+R8024:8025 simuliris.tree_borrows.tag_protected_laws <> sz:76 var
+R8029:8031 simuliris.tree_borrows.tag_protected_laws <> blk:74 var
+R8033:8035 simuliris.tree_borrows.tag_protected_laws <> trs:71 var
+R8039:8042 Corelib.Init.Datatypes <> Some constr
+R8044:8047 simuliris.tree_borrows.tag_protected_laws <> trs':72 var
+R8073:8079 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8055:8068 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R8070:8070 simuliris.tree_borrows.tag_protected_laws <> c:70 var
+R8072:8072 simuliris.tree_borrows.tag_protected_laws <> C:69 var
+R8118:8124 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8080:8096 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R8100:8100 simuliris.tree_borrows.tag_protected_laws <> c:70 var
+R8102:8104 simuliris.tree_borrows.tag_protected_laws <> trs:71 var
+R8107:8107 simuliris.tree_borrows.tag_protected_laws <> l:68 var
+R8109:8114 simuliris.tree_borrows.tag_protected_laws <> tg_prs:67 var
+R8116:8117 simuliris.tree_borrows.tag_protected_laws <> ps:78 var
+R8098:8098 simuliris.tree_borrows.tag_protected_laws <> P:79 var
+R8125:8141 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R8145:8145 simuliris.tree_borrows.tag_protected_laws <> c:70 var
+R8147:8150 simuliris.tree_borrows.tag_protected_laws <> trs':72 var
+R8152:8152 simuliris.tree_borrows.tag_protected_laws <> l:68 var
+R8154:8159 simuliris.tree_borrows.tag_protected_laws <> tg_prs:67 var
+R8161:8162 simuliris.tree_borrows.tag_protected_laws <> ps:78 var
+R8143:8143 simuliris.tree_borrows.tag_protected_laws <> P:79 var
+R8194:8231 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_access_init thm
+R8254:8282 simuliris.tree_borrows.tag_protected_laws <> into_tag_protected_for_noinit thm
+prf 8334:8366 <> tag_protected_preserved_by_delete
+binder 8368:8373 <> tg_acc:80
+binder 8375:8380 <> tg_prs:81
+binder 8382:8382 <> l:82
+binder 8384:8384 <> C:83
+binder 8386:8386 <> c:84
+binder 8388:8390 <> trs:85
+binder 8392:8395 <> trs':86
+binder 8397:8399 <> blk:87
+binder 8401:8403 <> off:88
+binder 8405:8406 <> sz:89
+binder 8408:8409 <> ps:90
+binder 8411:8411 <> P:91
+R8429:8435 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8417:8424 simuliris.tree_borrows.defs <> wf_trees def
+R8426:8428 simuliris.tree_borrows.tag_protected_laws <> trs:85 var
+R8513:8519 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8501:8503 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8436:8453 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R8456:8472 simuliris.tree_borrows.bor_semantics <> memory_deallocate def
+R8474:8474 simuliris.tree_borrows.tag_protected_laws <> C:83 var
+R8476:8481 simuliris.tree_borrows.tag_protected_laws <> tg_acc:80 var
+R8483:8483 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8487:8488 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8491:8491 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8484:8486 simuliris.tree_borrows.tag_protected_laws <> off:88 var
+R8489:8490 simuliris.tree_borrows.tag_protected_laws <> sz:89 var
+R8494:8496 simuliris.tree_borrows.tag_protected_laws <> blk:87 var
+R8498:8500 simuliris.tree_borrows.tag_protected_laws <> trs:85 var
+R8504:8507 Corelib.Init.Datatypes <> Some constr
+R8509:8512 simuliris.tree_borrows.tag_protected_laws <> trs':86 var
+R8538:8544 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8520:8533 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R8535:8535 simuliris.tree_borrows.tag_protected_laws <> c:84 var
+R8537:8537 simuliris.tree_borrows.tag_protected_laws <> C:83 var
+R8545:8545 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8796:8803 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8546:8549 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R8552:8553 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 8550:8551 <> it:92
+R8590:8594 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8556:8558 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8554:8555 simuliris.tree_borrows.tag_protected_laws <> ps:90 var
+R8559:8572 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R8574:8589 simuliris.tree_borrows.logical_state <> WeaklyNoChildren constr
+R8604:8608 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8598:8600 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8596:8597 stdpp.base <> :::x_'.1' not
+R8595:8595 simuliris.tree_borrows.tag_protected_laws <> l:82 var
+R8601:8603 simuliris.tree_borrows.tag_protected_laws <> blk:87 var
+R8639:8643 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8609:8620 simuliris.tree_borrows.bor_lemmas <> trees_lookup def
+R8622:8624 simuliris.tree_borrows.tag_protected_laws <> trs:85 var
+R8626:8628 simuliris.tree_borrows.tag_protected_laws <> blk:87 var
+R8630:8635 simuliris.tree_borrows.tag_protected_laws <> tg_prs:81 var
+R8637:8638 simuliris.tree_borrows.tag_protected_laws <> it:92 var
+R8654:8658 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8644:8644 simuliris.tree_borrows.tag_protected_laws <> P:91 var
+R8646:8651 simuliris.tree_borrows.tag_protected_laws <> tg_prs:81 var
+R8653:8653 simuliris.tree_borrows.tag_protected_laws <> l:82 var
+R8693:8697 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8659:8679 simuliris.tree_borrows.bor_semantics <> protector_is_for_call def
+R8681:8681 simuliris.tree_borrows.tag_protected_laws <> c:84 var
+R8684:8688 simuliris.tree_borrows.lang_base <> iprot proj
+R8690:8691 simuliris.tree_borrows.tag_protected_laws <> it:92 var
+R8698:8698 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8785:8790 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8742:8746 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8731:8733 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8699:8709 simuliris.tree_borrows.lang_base <> initialized proj
+R8712:8722 simuliris.tree_borrows.lang_base <> item_lookup def
+R8724:8725 simuliris.tree_borrows.tag_protected_laws <> it:92 var
+R8728:8729 stdpp.base <> :::x_'.2' not
+R8727:8727 simuliris.tree_borrows.tag_protected_laws <> l:82 var
+R8734:8741 simuliris.tree_borrows.lang_base <> PermInit constr
+R8772:8776 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R8747:8750 simuliris.tree_borrows.lang_base <> perm proj
+R8753:8763 simuliris.tree_borrows.lang_base <> item_lookup def
+R8765:8766 simuliris.tree_borrows.tag_protected_laws <> it:92 var
+R8769:8770 stdpp.base <> :::x_'.2' not
+R8768:8768 simuliris.tree_borrows.tag_protected_laws <> l:82 var
+R8777:8784 simuliris.tree_borrows.lang_base <> Disabled constr
+R8791:8795 stdpp.base <> ::type_scope:'False' not
+R8841:8847 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8804:8820 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R8824:8824 simuliris.tree_borrows.tag_protected_laws <> c:84 var
+R8826:8828 simuliris.tree_borrows.tag_protected_laws <> trs:85 var
+R8830:8830 simuliris.tree_borrows.tag_protected_laws <> l:82 var
+R8832:8837 simuliris.tree_borrows.tag_protected_laws <> tg_prs:81 var
+R8839:8840 simuliris.tree_borrows.tag_protected_laws <> ps:90 var
+R8822:8822 simuliris.tree_borrows.tag_protected_laws <> P:91 var
+R8848:8864 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R8868:8868 simuliris.tree_borrows.tag_protected_laws <> c:84 var
+R8871:8876 stdpp.base <> delete def
+R8882:8885 simuliris.tree_borrows.tag_protected_laws <> trs':86 var
+R8878:8880 simuliris.tree_borrows.tag_protected_laws <> blk:87 var
+R8888:8888 simuliris.tree_borrows.tag_protected_laws <> l:82 var
+R8890:8895 simuliris.tree_borrows.tag_protected_laws <> tg_prs:81 var
+R8897:8898 simuliris.tree_borrows.tag_protected_laws <> ps:90 var
+R8866:8866 simuliris.tree_borrows.tag_protected_laws <> P:91 var
+R8965:8987 simuliris.tree_borrows.steps_wf <> apply_within_trees_bind thm
+R9051:9059 stdpp.option <> bind_Some thm
+R9071:9103 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_access thm
+R9144:9149 stdpp.base <> decide def
+R9155:9157 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9153:9154 stdpp.base <> :::x_'.1' not
+R9240:9255 stdpp.fin_maps <> lookup_delete_eq thm
+R9520:9542 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R9720:9737 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R9802:9811 stdpp.option <> mk_is_Some thm
+R9821:9829 stdpp.option <> bind_Some thm
+R9860:9881 simuliris.tree_borrows.tree_lemmas <> join_success_condition thm
+R9883:9896 simuliris.tree_borrows.tree_lemmas <> every_node_map thm
+R9898:9921 simuliris.tree_borrows.tree_lemmas <> every_node_eqv_universal thm
+R9953:9975 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R10036:10061 simuliris.tree_borrows.bor_lemmas <> tree_lookup_to_exists_node thm
+R10075:10088 simuliris.tree_borrows.trees_equal.random_lemmas <> is_Some_if_neg thm
+R10114:10134 stdpp.decidable <> bool_decide_eq_true_2 thm
+R10171:10175 simuliris.tree_borrows.lang_base <> iprot proj
+R10204:10224 stdpp.decidable <> bool_decide_eq_true_2 thm
+R10275:10294 stdpp.decidable <> bool_decide_eq_false thm
+R10339:10349 simuliris.tree_borrows.lang_base <> item_lookup def
+R10369:10370 stdpp.base <> :::x_'.2' not
+R10395:10398 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10400:10401 stdpp.base <> :::x_'.2' not
+R10387:10391 simuliris.tree_borrows.lang_base <> iperm proj
+R10546:10565 simuliris.tree_borrows.bor_semantics <> protector_end_action def
+R10582:10585 simuliris.tree_borrows.lang_base <> perm proj
+R10626:10643 stdpp.fin_maps <> lookup_delete_Some thm
+R10760:10768 stdpp.option <> bind_Some thm
+R10706:10714 stdpp.option <> bind_Some thm
+R10789:10804 stdpp.fin_maps <> lookup_insert_ne thm
+R10961:10976 stdpp.fin_maps <> lookup_delete_ne thm
+R11027:11035 stdpp.option <> bind_Some thm
+R11038:11046 stdpp.option <> bind_Some thm
+R11064:11079 stdpp.fin_maps <> lookup_insert_ne thm
+prf 11094:11133 <> tag_protected_preserved_by_create_strong
+binder 11135:11140 <> tg_par:93
+binder 11142:11147 <> tg_cld:94
+binder 11149:11150 <> pk:95
+binder 11152:11153 <> im:96
+binder 11155:11156 <> rk:97
+binder 11158:11158 <> C:98
+binder 11160:11161 <> cc:99
+binder 11163:11163 <> c:100
+binder 11165:11167 <> trs:101
+binder 11169:11172 <> trs':102
+binder 11174:11176 <> blk:103
+binder 11178:11178 <> l:104
+binder 11180:11185 <> tg_prs:105
+binder 11187:11187 <> P:106
+binder 11189:11190 <> ae:107
+R11207:11211 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11195:11202 simuliris.tree_borrows.defs <> wf_trees def
+R11204:11206 simuliris.tree_borrows.tag_protected_laws <> trs:101 var
+R11229:11235 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11218:11222 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R11212:11217 simuliris.tree_borrows.tag_protected_laws <> tg_cld:94 var
+R11223:11228 simuliris.tree_borrows.tag_protected_laws <> tg_prs:105 var
+R11317:11323 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11305:11307 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11236:11253 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R11256:11267 simuliris.tree_borrows.bor_semantics <> create_child def
+R11269:11269 simuliris.tree_borrows.tag_protected_laws <> C:98 var
+R11271:11276 simuliris.tree_borrows.tag_protected_laws <> tg_par:93 var
+R11278:11283 simuliris.tree_borrows.tag_protected_laws <> tg_cld:94 var
+R11285:11286 simuliris.tree_borrows.tag_protected_laws <> pk:95 var
+R11288:11289 simuliris.tree_borrows.tag_protected_laws <> im:96 var
+R11291:11292 simuliris.tree_borrows.tag_protected_laws <> rk:97 var
+R11294:11295 simuliris.tree_borrows.tag_protected_laws <> cc:99 var
+R11298:11300 simuliris.tree_borrows.tag_protected_laws <> blk:103 var
+R11302:11304 simuliris.tree_borrows.tag_protected_laws <> trs:101 var
+R11308:11311 Corelib.Init.Datatypes <> Some constr
+R11313:11316 simuliris.tree_borrows.tag_protected_laws <> trs':102 var
+R11379:11385 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R11324:11340 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R11344:11344 simuliris.tree_borrows.tag_protected_laws <> c:100 var
+R11346:11348 simuliris.tree_borrows.tag_protected_laws <> trs:101 var
+R11351:11351 simuliris.tree_borrows.tag_protected_laws <> l:104 var
+R11353:11358 simuliris.tree_borrows.tag_protected_laws <> tg_prs:105 var
+R11361:11374 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R11376:11377 simuliris.tree_borrows.tag_protected_laws <> ae:107 var
+R11342:11342 simuliris.tree_borrows.tag_protected_laws <> P:106 var
+R11386:11402 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R11406:11406 simuliris.tree_borrows.tag_protected_laws <> c:100 var
+R11408:11411 simuliris.tree_borrows.tag_protected_laws <> trs':102 var
+R11413:11413 simuliris.tree_borrows.tag_protected_laws <> l:104 var
+R11415:11420 simuliris.tree_borrows.tag_protected_laws <> tg_prs:105 var
+R11423:11436 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R11438:11439 simuliris.tree_borrows.tag_protected_laws <> ae:107 var
+R11404:11404 simuliris.tree_borrows.tag_protected_laws <> P:106 var
+R11502:11510 stdpp.option <> bind_Some thm
+R11513:11521 stdpp.option <> bind_Some thm
+R11634:11639 stdpp.base <> decide def
+R11645:11647 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11643:11644 stdpp.base <> :::x_'.1' not
+R11730:11745 stdpp.fin_maps <> lookup_insert_ne thm
+R11762:11764 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11828:11843 stdpp.fin_maps <> lookup_insert_eq thm
+R11893:11916 simuliris.tree_borrows.steps_preserve <> insertion_preserves_tags thm
+R11945:11977 simuliris.tree_borrows.bor_lemmas <> create_child_preserves_determined thm
+prf 12042:12079 <> tag_protected_preserved_by_create_weak
+binder 12081:12086 <> tg_par:108
+binder 12088:12093 <> tg_cld:109
+binder 12095:12096 <> pk:110
+binder 12098:12099 <> im:111
+binder 12101:12102 <> rk:112
+binder 12104:12104 <> C:113
+binder 12106:12107 <> cc:114
+binder 12109:12109 <> c:115
+binder 12111:12113 <> trs:116
+binder 12115:12118 <> trs':117
+binder 12120:12122 <> blk:118
+binder 12124:12124 <> l:119
+binder 12126:12131 <> tg_prs:120
+binder 12133:12133 <> P:121
+R12150:12154 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12138:12145 simuliris.tree_borrows.defs <> wf_trees def
+R12147:12149 simuliris.tree_borrows.tag_protected_laws <> trs:116 var
+R12172:12178 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12161:12165 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R12155:12160 simuliris.tree_borrows.tag_protected_laws <> tg_cld:109 var
+R12166:12171 simuliris.tree_borrows.tag_protected_laws <> tg_prs:120 var
+R12260:12266 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12248:12250 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12179:12196 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R12199:12210 simuliris.tree_borrows.bor_semantics <> create_child def
+R12212:12212 simuliris.tree_borrows.tag_protected_laws <> C:113 var
+R12214:12219 simuliris.tree_borrows.tag_protected_laws <> tg_par:108 var
+R12221:12226 simuliris.tree_borrows.tag_protected_laws <> tg_cld:109 var
+R12228:12229 simuliris.tree_borrows.tag_protected_laws <> pk:110 var
+R12231:12232 simuliris.tree_borrows.tag_protected_laws <> im:111 var
+R12234:12235 simuliris.tree_borrows.tag_protected_laws <> rk:112 var
+R12237:12238 simuliris.tree_borrows.tag_protected_laws <> cc:114 var
+R12241:12243 simuliris.tree_borrows.tag_protected_laws <> blk:118 var
+R12245:12247 simuliris.tree_borrows.tag_protected_laws <> trs:116 var
+R12251:12254 Corelib.Init.Datatypes <> Some constr
+R12256:12259 simuliris.tree_borrows.tag_protected_laws <> trs':117 var
+R12314:12320 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12267:12283 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R12287:12287 simuliris.tree_borrows.tag_protected_laws <> c:115 var
+R12289:12291 simuliris.tree_borrows.tag_protected_laws <> trs:116 var
+R12294:12294 simuliris.tree_borrows.tag_protected_laws <> l:119 var
+R12296:12301 simuliris.tree_borrows.tag_protected_laws <> tg_prs:120 var
+R12303:12313 simuliris.tree_borrows.logical_state <> Deallocable constr
+R12285:12285 simuliris.tree_borrows.tag_protected_laws <> P:121 var
+R12321:12337 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R12341:12341 simuliris.tree_borrows.tag_protected_laws <> c:115 var
+R12343:12346 simuliris.tree_borrows.tag_protected_laws <> trs':117 var
+R12348:12348 simuliris.tree_borrows.tag_protected_laws <> l:119 var
+R12350:12355 simuliris.tree_borrows.tag_protected_laws <> tg_prs:120 var
+R12357:12367 simuliris.tree_borrows.logical_state <> Deallocable constr
+R12339:12339 simuliris.tree_borrows.tag_protected_laws <> P:121 var
+R12429:12437 stdpp.option <> bind_Some thm
+R12440:12448 stdpp.option <> bind_Some thm
+R12522:12527 stdpp.base <> decide def
+R12533:12535 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12531:12532 stdpp.base <> :::x_'.1' not
+R12618:12633 stdpp.fin_maps <> lookup_insert_ne thm
+R12655:12670 stdpp.fin_maps <> lookup_insert_eq thm
+R12692:12694 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R12800:12821 simuliris.tree_borrows.steps_preserve <> insertion_minimal_tags thm
+R12867:12875 stdpp.option <> bind_Some thm
+R12919:12945 simuliris.tree_borrows.tree_lemmas <> insert_true_preserves_every thm
+R12991:13006 simuliris.tree_borrows.bor_lemmas <> new_item_has_tag thm
+prf 13039:13071 <> tag_protected_preserved_by_create
+binder 13073:13074 <> ps:122
+binder 13076:13081 <> tg_par:123
+binder 13083:13088 <> tg_cld:124
+binder 13090:13091 <> pk:125
+binder 13093:13094 <> im:126
+binder 13096:13097 <> rk:127
+binder 13099:13099 <> C:128
+binder 13101:13102 <> cc:129
+binder 13104:13104 <> c:130
+binder 13106:13108 <> trs:131
+binder 13110:13113 <> trs':132
+binder 13115:13117 <> blk:133
+binder 13119:13119 <> l:134
+binder 13121:13126 <> tg_prs:135
+binder 13128:13128 <> P:136
+R13145:13149 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13133:13140 simuliris.tree_borrows.defs <> wf_trees def
+R13142:13144 simuliris.tree_borrows.tag_protected_laws <> trs:131 var
+R13167:13173 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13156:13160 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R13150:13155 simuliris.tree_borrows.tag_protected_laws <> tg_cld:124 var
+R13161:13166 simuliris.tree_borrows.tag_protected_laws <> tg_prs:135 var
+R13255:13261 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13243:13245 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R13174:13191 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R13194:13205 simuliris.tree_borrows.bor_semantics <> create_child def
+R13207:13207 simuliris.tree_borrows.tag_protected_laws <> C:128 var
+R13209:13214 simuliris.tree_borrows.tag_protected_laws <> tg_par:123 var
+R13216:13221 simuliris.tree_borrows.tag_protected_laws <> tg_cld:124 var
+R13223:13224 simuliris.tree_borrows.tag_protected_laws <> pk:125 var
+R13226:13227 simuliris.tree_borrows.tag_protected_laws <> im:126 var
+R13229:13230 simuliris.tree_borrows.tag_protected_laws <> rk:127 var
+R13232:13233 simuliris.tree_borrows.tag_protected_laws <> cc:129 var
+R13236:13238 simuliris.tree_borrows.tag_protected_laws <> blk:133 var
+R13240:13242 simuliris.tree_borrows.tag_protected_laws <> trs:131 var
+R13246:13249 Corelib.Init.Datatypes <> Some constr
+R13251:13254 simuliris.tree_borrows.tag_protected_laws <> trs':132 var
+R13300:13306 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13262:13278 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R13282:13282 simuliris.tree_borrows.tag_protected_laws <> c:130 var
+R13284:13286 simuliris.tree_borrows.tag_protected_laws <> trs:131 var
+R13289:13289 simuliris.tree_borrows.tag_protected_laws <> l:134 var
+R13291:13296 simuliris.tree_borrows.tag_protected_laws <> tg_prs:135 var
+R13298:13299 simuliris.tree_borrows.tag_protected_laws <> ps:122 var
+R13280:13280 simuliris.tree_borrows.tag_protected_laws <> P:136 var
+R13307:13323 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R13327:13327 simuliris.tree_borrows.tag_protected_laws <> c:130 var
+R13329:13332 simuliris.tree_borrows.tag_protected_laws <> trs':132 var
+R13334:13334 simuliris.tree_borrows.tag_protected_laws <> l:134 var
+R13336:13341 simuliris.tree_borrows.tag_protected_laws <> tg_prs:135 var
+R13343:13344 simuliris.tree_borrows.tag_protected_laws <> ps:122 var
+R13325:13325 simuliris.tree_borrows.tag_protected_laws <> P:136 var
+R13380:13417 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_create_weak thm
+R13431:13470 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_create_strong thm
+def 13491:13512 <> tag_protected_for_tree
+binder 13514:13514 <> P:137
+binder 13516:13516 <> c:138
+binder 13518:13519 <> tr:139
+binder 13521:13521 <> l:140
+binder 13523:13523 <> t:141
+binder 13525:13526 <> ps:142
+R13537:13538 simuliris.tree_borrows.tag_protected_laws <> ps:142 var
+R13549:13559 simuliris.tree_borrows.logical_state <> Deallocable constr
+R13566:13569 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R13572:13573 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 13570:13571 <> it:144
+R13593:13597 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13574:13584 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R13586:13587 simuliris.tree_borrows.tag_protected_laws <> tr:139 var
+R13589:13589 simuliris.tree_borrows.tag_protected_laws <> t:141 var
+R13591:13592 simuliris.tree_borrows.tag_protected_laws <> it:144 var
+R13598:13615 simuliris.tree_borrows.logical_state <> item_protected_for def
+R13619:13619 simuliris.tree_borrows.tag_protected_laws <> c:138 var
+R13621:13622 simuliris.tree_borrows.tag_protected_laws <> it:144 var
+R13625:13626 stdpp.base <> :::x_'.1' not
+R13624:13624 simuliris.tree_borrows.tag_protected_laws <> l:140 var
+R13629:13630 stdpp.base <> :::x_'.2' not
+R13628:13628 simuliris.tree_borrows.tag_protected_laws <> l:140 var
+R13632:13633 simuliris.tree_borrows.tag_protected_laws <> ps:142 var
+R13617:13617 simuliris.tree_borrows.tag_protected_laws <> P:137 var
+R13639:13652 simuliris.tree_borrows.logical_state <> EnsuringAccess constr
+R13659:13662 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R13665:13666 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 13663:13664 <> it:145
+R13686:13690 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R13667:13677 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R13679:13680 simuliris.tree_borrows.tag_protected_laws <> tr:139 var
+R13682:13682 simuliris.tree_borrows.tag_protected_laws <> t:141 var
+R13684:13685 simuliris.tree_borrows.tag_protected_laws <> it:145 var
+R13691:13708 simuliris.tree_borrows.logical_state <> item_protected_for def
+R13712:13712 simuliris.tree_borrows.tag_protected_laws <> c:138 var
+R13714:13715 simuliris.tree_borrows.tag_protected_laws <> it:145 var
+R13718:13719 stdpp.base <> :::x_'.1' not
+R13717:13717 simuliris.tree_borrows.tag_protected_laws <> l:140 var
+R13722:13723 stdpp.base <> :::x_'.2' not
+R13721:13721 simuliris.tree_borrows.tag_protected_laws <> l:140 var
+R13725:13726 simuliris.tree_borrows.tag_protected_laws <> ps:142 var
+R13710:13710 simuliris.tree_borrows.tag_protected_laws <> P:137 var
+prf 13740:13766 <> tag_protected_for_tree_spec
+binder 13768:13770 <> trs:146
+binder 13772:13773 <> tr:147
+binder 13775:13775 <> c:148
+binder 13777:13777 <> l:149
+binder 13779:13779 <> t:150
+binder 13781:13782 <> ps:151
+binder 13784:13784 <> P:152
+R13810:13816 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13800:13802 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R13793:13796 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R13798:13799 stdpp.base <> :::x_'.1' not
+R13797:13797 simuliris.tree_borrows.tag_protected_laws <> l:149 var
+R13790:13792 simuliris.tree_borrows.tag_protected_laws <> trs:146 var
+R13803:13806 Corelib.Init.Datatypes <> Some constr
+R13808:13809 simuliris.tree_borrows.tag_protected_laws <> tr:147 var
+R13853:13857 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R13817:13838 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R13840:13840 simuliris.tree_borrows.tag_protected_laws <> P:152 var
+R13842:13842 simuliris.tree_borrows.tag_protected_laws <> c:148 var
+R13844:13845 simuliris.tree_borrows.tag_protected_laws <> tr:147 var
+R13847:13847 simuliris.tree_borrows.tag_protected_laws <> l:149 var
+R13849:13849 simuliris.tree_borrows.tag_protected_laws <> t:150 var
+R13851:13852 simuliris.tree_borrows.tag_protected_laws <> ps:151 var
+R13858:13874 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R13878:13878 simuliris.tree_borrows.tag_protected_laws <> c:148 var
+R13880:13882 simuliris.tree_borrows.tag_protected_laws <> trs:146 var
+R13884:13884 simuliris.tree_borrows.tag_protected_laws <> l:149 var
+R13886:13886 simuliris.tree_borrows.tag_protected_laws <> t:150 var
+R13888:13889 simuliris.tree_borrows.tag_protected_laws <> ps:151 var
+R13876:13876 simuliris.tree_borrows.tag_protected_laws <> P:152 var
+prf 14256:14293 <> tag_protected_preserved_by_access_tree
+binder 14295:14300 <> tg_acc:153
+binder 14302:14307 <> tg_prs:154
+binder 14309:14312 <> loff:155
+binder 14314:14314 <> C:156
+binder 14316:14316 <> c:157
+binder 14318:14319 <> tr:158
+binder 14321:14323 <> tr':159
+binder 14325:14327 <> acc:160
+binder 14329:14331 <> off:161
+binder 14333:14334 <> sz:162
+binder 14336:14336 <> b:163
+binder 14338:14339 <> ps:164
+binder 14341:14341 <> P:165
+R14357:14363 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14347:14353 simuliris.tree_borrows.defs <> wf_tree def
+R14355:14356 simuliris.tree_borrows.tag_protected_laws <> tr:158 var
+R14439:14445 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14428:14430 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R14364:14399 simuliris.tree_borrows.bor_semantics <> memory_access_maybe_nonchildren_only def
+R14401:14401 simuliris.tree_borrows.tag_protected_laws <> b:163 var
+R14403:14405 simuliris.tree_borrows.tag_protected_laws <> acc:160 var
+R14407:14407 simuliris.tree_borrows.tag_protected_laws <> C:156 var
+R14409:14414 simuliris.tree_borrows.tag_protected_laws <> tg_acc:153 var
+R14416:14416 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R14420:14421 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R14424:14424 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R14417:14419 simuliris.tree_borrows.tag_protected_laws <> off:161 var
+R14422:14423 simuliris.tree_borrows.tag_protected_laws <> sz:162 var
+R14426:14427 simuliris.tree_borrows.tag_protected_laws <> tr:158 var
+R14431:14434 Corelib.Init.Datatypes <> Some constr
+R14436:14438 simuliris.tree_borrows.tag_protected_laws <> tr':159 var
+R14464:14470 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14446:14459 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R14461:14461 simuliris.tree_borrows.tag_protected_laws <> c:157 var
+R14463:14463 simuliris.tree_borrows.tag_protected_laws <> C:156 var
+R14515:14521 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R14471:14492 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R14494:14494 simuliris.tree_borrows.tag_protected_laws <> P:165 var
+R14496:14496 simuliris.tree_borrows.tag_protected_laws <> c:157 var
+R14498:14499 simuliris.tree_borrows.tag_protected_laws <> tr:158 var
+R14501:14504 simuliris.tree_borrows.tag_protected_laws <> loff:155 var
+R14506:14511 simuliris.tree_borrows.tag_protected_laws <> tg_prs:154 var
+R14513:14514 simuliris.tree_borrows.tag_protected_laws <> ps:164 var
+R14522:14543 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R14545:14545 simuliris.tree_borrows.tag_protected_laws <> P:165 var
+R14547:14547 simuliris.tree_borrows.tag_protected_laws <> c:157 var
+R14549:14551 simuliris.tree_borrows.tag_protected_laws <> tr':159 var
+R14553:14556 simuliris.tree_borrows.tag_protected_laws <> loff:155 var
+R14558:14563 simuliris.tree_borrows.tag_protected_laws <> tg_prs:154 var
+R14565:14566 simuliris.tree_borrows.tag_protected_laws <> ps:164 var
+R14607:14630 simuliris.tree_borrows.tree_access_laws <> wf_tree_wf_singleton_any thm
+R14671:14673 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R14666:14669 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R14650:14651 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R14658:14661 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R14664:14665 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R14656:14657 stdpp.base <> :::x_'.1' not
+R14674:14677 Corelib.Init.Datatypes <> Some constr
+R14700:14718 stdpp.fin_maps <> lookup_singleton_eq thm
+R14754:14756 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R14749:14752 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R14732:14733 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R14740:14743 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R14747:14748 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R14738:14739 stdpp.base <> :::x_'.1' not
+R14757:14760 Corelib.Init.Datatypes <> Some constr
+R14785:14803 stdpp.fin_maps <> lookup_singleton_eq thm
+R14823:14849 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree_spec thm
+R14872:14904 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_access thm
+R14938:14955 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R15021:15039 stdpp.fin_maps <> insert_singleton_eq thm
+R15056:15082 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree_spec thm
+prf 15103:15147 <> tree_access_many_preserve_tag_protected_for_2
+binder 15149:15149 <> C:166
+binder 15151:15156 <> tg_acc:167
+R15163:15166 stdpp.gmap <> gmap rec
+R15168:15168 Corelib.Numbers.BinNums <> Z ind
+binder 15159:15159 <> L:168
+binder 15173:15175 <> tr1:169
+binder 15177:15179 <> trL:170
+binder 15181:15181 <> c:171
+binder 15183:15186 <> offp:172
+binder 15188:15193 <> tg_prs:173
+binder 15195:15196 <> ps:174
+binder 15198:15198 <> P:175
+R15210:15216 simuliris.tree_borrows.defs <> wf_tree def
+R15218:15220 simuliris.tree_borrows.tag_protected_laws <> tr1:169 var
+binder 15203:15206 <> Hwf1:176
+R15245:15251 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R15227:15240 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R15242:15242 simuliris.tree_borrows.tag_protected_laws <> c:171 var
+R15244:15244 simuliris.tree_borrows.tag_protected_laws <> C:166 var
+R15263:15265 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R15270:15271 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 15266:15266 <> L:177
+binder 15268:15269 <> tr:178
+R15272:15279 stdpp.fin_maps <> map_fold def
+R15367:15367 simuliris.tree_borrows.tag_protected_laws <> L:177 var
+R15358:15361 Corelib.Init.Datatypes <> Some constr
+R15363:15364 simuliris.tree_borrows.tag_protected_laws <> tr:178 var
+R15282:15284 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R15292:15293 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 15285:15285 <> l:179
+binder 15287:15287 <> v:180
+binder 15289:15291 <> tr2:181
+R15297:15302 stdpp.base <> ::stdpp_scope:x_'≫='_x not
+R15303:15332 simuliris.tree_borrows.bor_semantics <> memory_access_nonchildren_only def
+R15334:15334 simuliris.tree_borrows.tag_protected_laws <> v:180 var
+R15336:15336 simuliris.tree_borrows.tag_protected_laws <> C:166 var
+R15338:15343 simuliris.tree_borrows.tag_protected_laws <> tg_acc:167 var
+R15345:15345 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15347:15348 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15354:15354 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R15346:15346 simuliris.tree_borrows.tag_protected_laws <> l:179 var
+R15294:15296 simuliris.tree_borrows.tag_protected_laws <> tr2:181 var
+binder 15256:15257 <> fn:182
+R15394:15400 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R15383:15385 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R15375:15376 simuliris.tree_borrows.tag_protected_laws <> fn:182 var
+R15380:15382 simuliris.tree_borrows.tag_protected_laws <> tr1:169 var
+R15378:15378 simuliris.tree_borrows.tag_protected_laws <> L:168 var
+R15386:15389 Corelib.Init.Datatypes <> Some constr
+R15391:15393 simuliris.tree_borrows.tag_protected_laws <> trL:170 var
+R15446:15452 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R15401:15422 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R15424:15424 simuliris.tree_borrows.tag_protected_laws <> P:175 var
+R15426:15426 simuliris.tree_borrows.tag_protected_laws <> c:171 var
+R15428:15430 simuliris.tree_borrows.tag_protected_laws <> tr1:169 var
+R15432:15435 simuliris.tree_borrows.tag_protected_laws <> offp:172 var
+R15437:15442 simuliris.tree_borrows.tag_protected_laws <> tg_prs:173 var
+R15444:15445 simuliris.tree_borrows.tag_protected_laws <> ps:174 var
+R15453:15474 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R15476:15476 simuliris.tree_borrows.tag_protected_laws <> P:175 var
+R15478:15478 simuliris.tree_borrows.tag_protected_laws <> c:171 var
+R15480:15482 simuliris.tree_borrows.tag_protected_laws <> trL:170 var
+R15484:15487 simuliris.tree_borrows.tag_protected_laws <> offp:172 var
+R15489:15494 simuliris.tree_borrows.tag_protected_laws <> tg_prs:173 var
+R15496:15497 simuliris.tree_borrows.tag_protected_laws <> ps:174 var
+R15640:15648 stdpp.option <> bind_Some thm
+R15687:15693 simuliris.tree_borrows.defs <> wf_tree def
+R15720:15740 simuliris.tree_borrows.steps_wf <> preserve_tag_count_wf thm
+R15753:15777 simuliris.tree_borrows.steps_wf <> tree_access_many_helper_2 thm
+R15835:15872 simuliris.tree_borrows.tag_protected_laws <> tag_protected_preserved_by_access_tree thm
+prf 15942:15986 <> tree_access_many_preserve_tag_protected_for_1
+binder 15988:15988 <> C:183
+R15995:15998 Corelib.Init.Datatypes <> list ind
+R16004:16006 Corelib.Init.Datatypes <> ::type_scope:x_'*'_x not
+R16001:16003 simuliris.tree_borrows.lang_base <> tag abbrev
+R16007:16010 stdpp.gmap <> gmap rec
+R16012:16012 Corelib.Numbers.BinNums <> Z ind
+binder 15991:15991 <> L:184
+binder 16018:16020 <> tr1:185
+binder 16022:16024 <> trL:186
+binder 16026:16026 <> c:187
+binder 16028:16031 <> offp:188
+binder 16033:16038 <> tg_prs:189
+binder 16040:16041 <> ps:190
+binder 16043:16043 <> P:191
+R16055:16061 simuliris.tree_borrows.defs <> wf_tree def
+R16063:16065 simuliris.tree_borrows.tag_protected_laws <> tr1:185 var
+binder 16048:16051 <> Hwf1:192
+R16090:16096 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16072:16085 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R16087:16087 simuliris.tree_borrows.tag_protected_laws <> c:187 var
+R16089:16089 simuliris.tree_borrows.tag_protected_laws <> C:183 var
+R16108:16110 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R16115:16116 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 16111:16111 <> E:193
+binder 16113:16114 <> tr:194
+R16117:16121 stdpp.list_basics list foldr abbrev
+R16263:16263 simuliris.tree_borrows.tag_protected_laws <> E:193 var
+R16254:16257 Corelib.Init.Datatypes <> Some constr
+R16259:16260 simuliris.tree_borrows.tag_protected_laws <> tr:194 var
+R16124:16127 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R16138:16139 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R16128:16128 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16131:16132 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16134:16134 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+binder 16133:16133 <> L:195
+binder 16129:16130 <> tg:196
+binder 16128:16134 <> pat:197
+binder 16136:16137 <> tr:198
+R16142:16147 stdpp.base <> ::stdpp_scope:x_'≫='_x not
+R16148:16150 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R16154:16155 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 16151:16153 <> tr1:199
+R16156:16163 stdpp.fin_maps <> map_fold def
+R16249:16249 simuliris.tree_borrows.tag_protected_laws <> L:195 var
+R16238:16241 Corelib.Init.Datatypes <> Some constr
+R16243:16245 simuliris.tree_borrows.tag_protected_laws <> tr1:199 var
+R16166:16168 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R16176:16177 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 16169:16169 <> l:200
+binder 16171:16171 <> v:201
+binder 16173:16175 <> tr2:202
+R16181:16186 stdpp.base <> ::stdpp_scope:x_'≫='_x not
+R16187:16216 simuliris.tree_borrows.bor_semantics <> memory_access_nonchildren_only def
+R16218:16218 simuliris.tree_borrows.tag_protected_laws <> v:201 var
+R16220:16220 simuliris.tree_borrows.tag_protected_laws <> C:183 var
+R16222:16223 simuliris.tree_borrows.tag_protected_laws <> tg:196 var
+R16225:16225 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16227:16228 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16234:16234 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R16226:16226 simuliris.tree_borrows.tag_protected_laws <> l:200 var
+R16178:16180 simuliris.tree_borrows.tag_protected_laws <> tr2:202 var
+R16140:16141 simuliris.tree_borrows.tag_protected_laws <> tr:198 var
+binder 16101:16102 <> fn:203
+R16290:16296 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16279:16281 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16271:16272 simuliris.tree_borrows.tag_protected_laws <> fn:203 var
+R16276:16278 simuliris.tree_borrows.tag_protected_laws <> tr1:185 var
+R16274:16274 simuliris.tree_borrows.tag_protected_laws <> L:184 var
+R16282:16285 Corelib.Init.Datatypes <> Some constr
+R16287:16289 simuliris.tree_borrows.tag_protected_laws <> trL:186 var
+R16342:16348 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16297:16318 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R16320:16320 simuliris.tree_borrows.tag_protected_laws <> P:191 var
+R16322:16322 simuliris.tree_borrows.tag_protected_laws <> c:187 var
+R16324:16326 simuliris.tree_borrows.tag_protected_laws <> tr1:185 var
+R16328:16331 simuliris.tree_borrows.tag_protected_laws <> offp:188 var
+R16333:16338 simuliris.tree_borrows.tag_protected_laws <> tg_prs:189 var
+R16340:16341 simuliris.tree_borrows.tag_protected_laws <> ps:190 var
+R16349:16370 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R16372:16372 simuliris.tree_borrows.tag_protected_laws <> P:191 var
+R16374:16374 simuliris.tree_borrows.tag_protected_laws <> c:187 var
+R16376:16378 simuliris.tree_borrows.tag_protected_laws <> trL:186 var
+R16380:16383 simuliris.tree_borrows.tag_protected_laws <> offp:188 var
+R16385:16390 simuliris.tree_borrows.tag_protected_laws <> tg_prs:189 var
+R16392:16393 simuliris.tree_borrows.tag_protected_laws <> ps:190 var
+R16525:16533 stdpp.option <> bind_Some thm
+R16572:16578 simuliris.tree_borrows.defs <> wf_tree def
+R16605:16625 simuliris.tree_borrows.steps_wf <> preserve_tag_count_wf thm
+R16638:16662 simuliris.tree_borrows.steps_wf <> tree_access_many_helper_1 thm
+R16720:16764 simuliris.tree_borrows.tag_protected_laws <> tree_access_many_preserve_tag_protected_for_2 thm
+prf 16834:16876 <> tree_access_many_preserve_tag_protected_for
+binder 16878:16878 <> C:204
+binder 16880:16882 <> cid:205
+binder 16884:16886 <> tr1:206
+binder 16888:16890 <> trL:207
+binder 16892:16892 <> c:208
+binder 16894:16897 <> offp:209
+binder 16899:16904 <> tg_prs:210
+binder 16906:16907 <> ps:211
+binder 16909:16909 <> P:212
+R16921:16927 simuliris.tree_borrows.defs <> wf_tree def
+R16929:16931 simuliris.tree_borrows.tag_protected_laws <> tr1:206 var
+binder 16914:16917 <> Hwf1:213
+R16956:16962 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16938:16951 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R16953:16953 simuliris.tree_borrows.tag_protected_laws <> c:208 var
+R16955:16955 simuliris.tree_borrows.tag_protected_laws <> C:204 var
+R17021:17027 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17010:17012 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16963:16999 simuliris.tree_borrows.bor_semantics <> tree_access_all_protected_initialized def
+R17001:17001 simuliris.tree_borrows.tag_protected_laws <> C:204 var
+R17003:17005 simuliris.tree_borrows.tag_protected_laws <> cid:205 var
+R17007:17009 simuliris.tree_borrows.tag_protected_laws <> tr1:206 var
+R17013:17016 Corelib.Init.Datatypes <> Some constr
+R17018:17020 simuliris.tree_borrows.tag_protected_laws <> trL:207 var
+R17073:17079 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17028:17049 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R17051:17051 simuliris.tree_borrows.tag_protected_laws <> P:212 var
+R17053:17053 simuliris.tree_borrows.tag_protected_laws <> c:208 var
+R17055:17057 simuliris.tree_borrows.tag_protected_laws <> tr1:206 var
+R17059:17062 simuliris.tree_borrows.tag_protected_laws <> offp:209 var
+R17064:17069 simuliris.tree_borrows.tag_protected_laws <> tg_prs:210 var
+R17071:17072 simuliris.tree_borrows.tag_protected_laws <> ps:211 var
+R17080:17101 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree def
+R17103:17103 simuliris.tree_borrows.tag_protected_laws <> P:212 var
+R17105:17105 simuliris.tree_borrows.tag_protected_laws <> c:208 var
+R17107:17109 simuliris.tree_borrows.tag_protected_laws <> trL:207 var
+R17111:17114 simuliris.tree_borrows.tag_protected_laws <> offp:209 var
+R17116:17121 simuliris.tree_borrows.tag_protected_laws <> tg_prs:210 var
+R17123:17124 simuliris.tree_borrows.tag_protected_laws <> ps:211 var
+R17145:17181 simuliris.tree_borrows.bor_semantics <> tree_access_all_protected_initialized def
+R17195:17202 stdpp.fin_sets <> set_fold def
+R17215:17259 simuliris.tree_borrows.tag_protected_laws <> tree_access_many_preserve_tag_protected_for_1 thm
+prf 17280:17323 <> trees_access_many_preserve_tag_protected_for
+binder 17325:17325 <> C:214
+binder 17327:17329 <> cid:215
+binder 17331:17334 <> trs1:216
+binder 17336:17339 <> trsL:217
+binder 17341:17341 <> c:218
+binder 17343:17343 <> l:219
+binder 17345:17350 <> tg_prs:220
+binder 17352:17353 <> ps:221
+binder 17355:17355 <> P:222
+R17367:17374 simuliris.tree_borrows.defs <> wf_trees def
+R17376:17379 simuliris.tree_borrows.tag_protected_laws <> trs1:216 var
+binder 17360:17363 <> Hwf1:223
+R17404:17410 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17386:17399 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R17401:17401 simuliris.tree_borrows.tag_protected_laws <> c:218 var
+R17403:17403 simuliris.tree_borrows.tag_protected_laws <> C:214 var
+R17472:17478 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17460:17462 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17411:17448 simuliris.tree_borrows.bor_semantics <> trees_access_all_protected_initialized def
+R17450:17450 simuliris.tree_borrows.tag_protected_laws <> C:214 var
+R17452:17454 simuliris.tree_borrows.tag_protected_laws <> cid:215 var
+R17456:17459 simuliris.tree_borrows.tag_protected_laws <> trs1:216 var
+R17463:17466 Corelib.Init.Datatypes <> Some constr
+R17468:17471 simuliris.tree_borrows.tag_protected_laws <> trsL:217 var
+R17517:17523 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17479:17495 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R17499:17499 simuliris.tree_borrows.tag_protected_laws <> c:218 var
+R17501:17504 simuliris.tree_borrows.tag_protected_laws <> trs1:216 var
+R17506:17506 simuliris.tree_borrows.tag_protected_laws <> l:219 var
+R17508:17513 simuliris.tree_borrows.tag_protected_laws <> tg_prs:220 var
+R17515:17516 simuliris.tree_borrows.tag_protected_laws <> ps:221 var
+R17497:17497 simuliris.tree_borrows.tag_protected_laws <> P:222 var
+R17524:17540 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R17544:17544 simuliris.tree_borrows.tag_protected_laws <> c:218 var
+R17546:17549 simuliris.tree_borrows.tag_protected_laws <> trsL:217 var
+R17551:17551 simuliris.tree_borrows.tag_protected_laws <> l:219 var
+R17553:17558 simuliris.tree_borrows.tag_protected_laws <> tg_prs:220 var
+R17560:17561 simuliris.tree_borrows.tag_protected_laws <> ps:221 var
+R17542:17542 simuliris.tree_borrows.tag_protected_laws <> P:222 var
+R17679:17682 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R17685:17686 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 17683:17684 <> tr:224
+R17698:17700 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17691:17694 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R17701:17704 Corelib.Init.Datatypes <> Some constr
+R17706:17707 simuliris.tree_borrows.tag_protected_laws <> tr:224 var
+binder 17683:17684 <> tr:225
+R17706:17707 simuliris.tree_borrows.tag_protected_laws <> tr:225 var
+R17736:17785 simuliris.tree_borrows.steps_wf <> trees_access_all_protected_initialized_pointwise_1 thm
+R17825:17828 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R17914:17963 simuliris.tree_borrows.steps_wf <> trees_access_all_protected_initialized_pointwise_1 thm
+R18040:18042 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18087:18129 simuliris.tree_borrows.tag_protected_laws <> tree_access_many_preserve_tag_protected_for thm
+R18195:18221 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree_spec thm
+R18293:18296 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R18299:18300 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 18297:18298 <> tr:226
+R18312:18314 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18305:18308 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R18315:18318 Corelib.Init.Datatypes <> Some constr
+R18320:18321 simuliris.tree_borrows.tag_protected_laws <> tr:226 var
+binder 18297:18298 <> tr:227
+R18320:18321 simuliris.tree_borrows.tag_protected_laws <> tr:227 var
+R18401:18450 simuliris.tree_borrows.steps_wf <> trees_access_all_protected_initialized_pointwise_1 thm
+R18527:18553 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree_spec thm
+R18576:18618 simuliris.tree_borrows.tag_protected_laws <> tree_access_many_preserve_tag_protected_for thm
+R18669:18695 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_tree_spec thm
+prf 18721:18742 <> call_set_interp_remove
+binder 18744:18744 <> c:228
+binder 18746:18746 <> M:229
+binder 18748:18749 <> σ:230
+binder 18751:18753 <> σ':231
+binder 18755:18755 <> P:232
+R18777:18783 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18767:18769 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18761:18763 simuliris.tree_borrows.lang bor_lang snc proj
+R18765:18766 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18770:18772 simuliris.tree_borrows.lang bor_lang snc proj
+R18774:18776 simuliris.tree_borrows.tag_protected_laws <> σ':231 var
+R18800:18806 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18790:18792 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18784:18786 simuliris.tree_borrows.lang bor_lang snp proj
+R18788:18789 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18793:18795 simuliris.tree_borrows.lang bor_lang snp proj
+R18797:18799 simuliris.tree_borrows.tag_protected_laws <> σ':231 var
+R18833:18839 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18823:18825 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18813:18817 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R18807:18809 simuliris.tree_borrows.lang bor_lang scs proj
+R18811:18812 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18818:18819 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R18821:18822 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R18820:18820 simuliris.tree_borrows.tag_protected_laws <> c:228 var
+R18826:18828 simuliris.tree_borrows.lang bor_lang scs proj
+R18830:18832 simuliris.tree_borrows.tag_protected_laws <> σ':231 var
+R18856:18862 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18846:18848 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18840:18842 simuliris.tree_borrows.lang bor_lang shp proj
+R18844:18845 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18849:18851 simuliris.tree_borrows.lang bor_lang shp proj
+R18853:18855 simuliris.tree_borrows.tag_protected_laws <> σ':231 var
+R18874:18880 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18863:18870 simuliris.tree_borrows.defs <> state_wf rec
+R18872:18873 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18958:18964 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18940:18942 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18881:18918 simuliris.tree_borrows.bor_semantics <> trees_access_all_protected_initialized def
+R18921:18923 simuliris.tree_borrows.lang bor_lang scs proj
+R18925:18926 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18929:18929 simuliris.tree_borrows.tag_protected_laws <> c:228 var
+R18932:18935 simuliris.tree_borrows.lang bor_lang strs proj
+R18937:18938 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18943:18946 Corelib.Init.Datatypes <> Some constr
+R18949:18952 simuliris.tree_borrows.lang bor_lang strs proj
+R18954:18956 simuliris.tree_borrows.tag_protected_laws <> σ':231 var
+R18987:18993 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R18965:18979 simuliris.tree_borrows.logical_state <> call_set_interp def
+R18983:18983 simuliris.tree_borrows.tag_protected_laws <> M:229 var
+R18985:18986 simuliris.tree_borrows.tag_protected_laws <> σ:230 var
+R18981:18981 simuliris.tree_borrows.tag_protected_laws <> P:232 var
+R18994:19008 simuliris.tree_borrows.logical_state <> call_set_interp def
+R19013:19018 stdpp.base <> delete def
+R19022:19022 simuliris.tree_borrows.tag_protected_laws <> M:229 var
+R19020:19020 simuliris.tree_borrows.tag_protected_laws <> c:228 var
+R19025:19027 simuliris.tree_borrows.tag_protected_laws <> σ':231 var
+R19010:19010 simuliris.tree_borrows.tag_protected_laws <> P:232 var
+R19143:19160 stdpp.fin_maps <> lookup_delete_Some thm
+R19168:19185 stdpp.fin_maps <> lookup_delete_Some thm
+R19238:19243 stdpp.base <> decide def
+R19248:19250 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19283:19298 stdpp.fin_maps <> lookup_delete_eq thm
+R19328:19343 stdpp.fin_maps <> lookup_delete_ne thm
+R19562:19605 simuliris.tree_borrows.tag_protected_laws <> trees_access_many_preserve_tag_protected_for thm
+R19654:19670 simuliris.tree_borrows.defs <> state_wf_tree_unq proj
+prf 19702:19723 <> tag_protected_for_mono
+binder 19725:19726 <> P1:233
+binder 19728:19729 <> P2:234
+binder 19731:19731 <> c:235
+binder 19733:19735 <> trs:236
+binder 19737:19737 <> l:237
+binder 19739:19740 <> tg:238
+binder 19742:19743 <> ps:239
+R19749:19749 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19956:19963 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19750:19753 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R19758:19759 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 19754:19754 <> l:240
+binder 19756:19757 <> it:241
+R19786:19790 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19760:19771 simuliris.tree_borrows.bor_lemmas <> trees_lookup def
+R19773:19775 simuliris.tree_borrows.tag_protected_laws <> trs:236 var
+R19778:19779 stdpp.base <> :::x_'.1' not
+R19777:19777 simuliris.tree_borrows.tag_protected_laws <> l:240 var
+R19781:19782 simuliris.tree_borrows.tag_protected_laws <> tg:238 var
+R19784:19785 simuliris.tree_borrows.tag_protected_laws <> it:241 var
+R19825:19829 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19791:19811 simuliris.tree_borrows.bor_semantics <> protector_is_for_call def
+R19813:19813 simuliris.tree_borrows.tag_protected_laws <> c:235 var
+R19816:19820 simuliris.tree_borrows.lang_base <> iprot proj
+R19822:19823 simuliris.tree_borrows.tag_protected_laws <> it:241 var
+R19830:19830 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19917:19922 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19874:19878 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19863:19865 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19831:19841 simuliris.tree_borrows.lang_base <> initialized proj
+R19844:19854 simuliris.tree_borrows.lang_base <> item_lookup def
+R19856:19857 simuliris.tree_borrows.tag_protected_laws <> it:241 var
+R19860:19861 stdpp.base <> :::x_'.2' not
+R19859:19859 simuliris.tree_borrows.tag_protected_laws <> l:240 var
+R19866:19873 simuliris.tree_borrows.lang_base <> PermInit constr
+R19904:19908 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R19879:19882 simuliris.tree_borrows.lang_base <> perm proj
+R19885:19895 simuliris.tree_borrows.lang_base <> item_lookup def
+R19897:19898 simuliris.tree_borrows.tag_protected_laws <> it:241 var
+R19901:19902 stdpp.base <> :::x_'.2' not
+R19900:19900 simuliris.tree_borrows.tag_protected_laws <> l:240 var
+R19909:19916 simuliris.tree_borrows.lang_base <> Disabled constr
+R19937:19941 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19923:19924 simuliris.tree_borrows.tag_protected_laws <> P1:233 var
+R19927:19930 simuliris.tree_borrows.lang_base <> itag proj
+R19932:19933 simuliris.tree_borrows.tag_protected_laws <> it:241 var
+R19936:19936 simuliris.tree_borrows.tag_protected_laws <> l:240 var
+R19942:19943 simuliris.tree_borrows.tag_protected_laws <> P2:234 var
+R19946:19949 simuliris.tree_borrows.lang_base <> itag proj
+R19951:19952 simuliris.tree_borrows.tag_protected_laws <> it:241 var
+R19955:19955 simuliris.tree_borrows.tag_protected_laws <> l:240 var
+R19998:20004 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19964:19980 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R19985:19985 simuliris.tree_borrows.tag_protected_laws <> c:235 var
+R19987:19989 simuliris.tree_borrows.tag_protected_laws <> trs:236 var
+R19991:19991 simuliris.tree_borrows.tag_protected_laws <> l:237 var
+R19993:19994 simuliris.tree_borrows.tag_protected_laws <> tg:238 var
+R19996:19997 simuliris.tree_borrows.tag_protected_laws <> ps:239 var
+R19982:19983 simuliris.tree_borrows.tag_protected_laws <> P1:233 var
+R20005:20021 simuliris.tree_borrows.logical_state <> tag_protected_for def
+R20026:20026 simuliris.tree_borrows.tag_protected_laws <> c:235 var
+R20028:20030 simuliris.tree_borrows.tag_protected_laws <> trs:236 var
+R20032:20032 simuliris.tree_borrows.tag_protected_laws <> l:237 var
+R20034:20035 simuliris.tree_borrows.tag_protected_laws <> tg:238 var
+R20037:20038 simuliris.tree_borrows.tag_protected_laws <> ps:239 var
+R20023:20024 simuliris.tree_borrows.tag_protected_laws <> P2:234 var
+prf 20418:20437 <> call_set_interp_mono
+binder 20439:20439 <> M:242
+binder 20441:20442 <> σ:243
+binder 20444:20445 <> P1:244
+binder 20447:20448 <> P2:245
+R20454:20454 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20702:20709 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20455:20458 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R20468:20469 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 20459:20460 <> tg:246
+binder 20462:20462 <> c:247
+binder 20464:20464 <> l:248
+binder 20466:20467 <> it:249
+R20495:20499 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20470:20483 simuliris.tree_borrows.bor_semantics <> call_is_active def
+R20485:20485 simuliris.tree_borrows.tag_protected_laws <> c:247 var
+R20491:20493 simuliris.tree_borrows.lang bor_lang scs proj
+R20487:20488 simuliris.tree_borrows.tag_protected_laws <> σ:243 var
+R20532:20536 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20500:20511 simuliris.tree_borrows.bor_lemmas <> trees_lookup def
+R20517:20520 simuliris.tree_borrows.lang bor_lang strs proj
+R20513:20514 simuliris.tree_borrows.tag_protected_laws <> σ:243 var
+R20524:20525 stdpp.base <> :::x_'.1' not
+R20523:20523 simuliris.tree_borrows.tag_protected_laws <> l:248 var
+R20527:20528 simuliris.tree_borrows.tag_protected_laws <> tg:246 var
+R20530:20531 simuliris.tree_borrows.tag_protected_laws <> it:249 var
+R20571:20575 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20537:20557 simuliris.tree_borrows.bor_semantics <> protector_is_for_call def
+R20559:20559 simuliris.tree_borrows.tag_protected_laws <> c:247 var
+R20562:20566 simuliris.tree_borrows.lang_base <> iprot proj
+R20568:20569 simuliris.tree_borrows.tag_protected_laws <> it:249 var
+R20576:20576 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20663:20668 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20620:20624 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20609:20611 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R20577:20587 simuliris.tree_borrows.lang_base <> initialized proj
+R20590:20600 simuliris.tree_borrows.lang_base <> item_lookup def
+R20602:20603 simuliris.tree_borrows.tag_protected_laws <> it:249 var
+R20606:20607 stdpp.base <> :::x_'.2' not
+R20605:20605 simuliris.tree_borrows.tag_protected_laws <> l:248 var
+R20612:20619 simuliris.tree_borrows.lang_base <> PermInit constr
+R20650:20654 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R20625:20628 simuliris.tree_borrows.lang_base <> perm proj
+R20631:20641 simuliris.tree_borrows.lang_base <> item_lookup def
+R20643:20644 simuliris.tree_borrows.tag_protected_laws <> it:249 var
+R20647:20648 stdpp.base <> :::x_'.2' not
+R20646:20646 simuliris.tree_borrows.tag_protected_laws <> l:248 var
+R20655:20662 simuliris.tree_borrows.lang_base <> Disabled constr
+R20683:20687 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20669:20670 simuliris.tree_borrows.tag_protected_laws <> P1:244 var
+R20673:20676 simuliris.tree_borrows.lang_base <> itag proj
+R20678:20679 simuliris.tree_borrows.tag_protected_laws <> it:249 var
+R20682:20682 simuliris.tree_borrows.tag_protected_laws <> l:248 var
+R20688:20689 simuliris.tree_borrows.tag_protected_laws <> P2:245 var
+R20692:20695 simuliris.tree_borrows.lang_base <> itag proj
+R20697:20698 simuliris.tree_borrows.tag_protected_laws <> it:249 var
+R20701:20701 simuliris.tree_borrows.tag_protected_laws <> l:248 var
+R20733:20739 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20710:20724 simuliris.tree_borrows.logical_state <> call_set_interp def
+R20729:20729 simuliris.tree_borrows.tag_protected_laws <> M:242 var
+R20731:20732 simuliris.tree_borrows.tag_protected_laws <> σ:243 var
+R20726:20727 simuliris.tree_borrows.tag_protected_laws <> P1:244 var
+R20740:20754 simuliris.tree_borrows.logical_state <> call_set_interp def
+R20759:20759 simuliris.tree_borrows.tag_protected_laws <> M:242 var
+R20761:20762 simuliris.tree_borrows.tag_protected_laws <> σ:243 var
+R20756:20757 simuliris.tree_borrows.tag_protected_laws <> P2:245 var
+R20983:21004 simuliris.tree_borrows.tag_protected_laws <> tag_protected_for_mono thm

@@ -14417,6 +14417,45 @@
         "certificates/aggregation"
       ]
     },
+    "configured-rust-capture-instances-and-generated-owners-2026": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+            "repository": "rust-lang/rust",
+            "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+            "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+            "version": "1.97.0-nightly (2026-04-30)"
+          },
+          "name": "Rust nightly compiler and source"
+        },
+        {
+          "identity": {
+            "binary_sha256": "656fb5eaac61cecbed4b59b90ff5842cf2594551310084d599d66c9af817f636",
+            "consumer_sha256": "0b1fc20394b64cbc84e2f4323301dad10f9334d2205952c6882dd81875b73382",
+            "schema_sha256": "6cb6da673ed91009ca3b64ee2df6628897a692dcd7ceffcc52aa09d7995bbb62",
+            "source_sha256": "59a998fb395374b810e3e0a04884e0a5c6382ea06b951fda6f8aec5cf3b87f35"
+          },
+          "name": "Owned configured capture observer"
+        },
+        {
+          "identity": {
+            "raw_accepted_packet_sha256": "83482423f40d6a6130d5190ae502a4c0913fe6fadd943f0a49f8f32702d9e6bc",
+            "request_sha256": "3e7417e8628320f96a8acb71de0e8814d0f473a706afc7b5127c05e15c78d38d",
+            "source_sha256": "36ef34350f5fb2e659e72c49a3078db1f7b624999b93c83260729866c8ec36e8"
+          },
+          "name": "Caller-selected baseline Rust subject"
+        }
+      ],
+      "topics": [
+        "rust/source-capture",
+        "rust/compiler",
+        "rust/mir",
+        "anneal/execution",
+        "certificates/subject-binding"
+      ]
+    },
     "constructive-imperative-refinement-memory-bridges": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -26568,6 +26607,62 @@
         "verified-compilation",
         "compcert",
         "cakeml"
+      ]
+    },
+    "simuliris-tree-borrows-selected-kernel-replay-e3abfcdc": {
+      "observed_at": "2026-10-14",
+      "subjects": [
+        {
+          "identity": {
+            "archive_sha256": "06dbeeb1ddda80ffe93b26fd20d8597f9c9a63767ae2a7e74e4dae696952fb9b",
+            "repository": "https://gitlab.mpi-sws.org/iris/simuliris",
+            "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982"
+          },
+          "name": "Simuliris"
+        },
+        {
+          "identity": {
+            "archive_sha256": "3b45252c8b915dcee1149dd0d185391898cc836619b7c4e1fc1f636acb23057b",
+            "package": "rocq-iris.dev.2026-09-10.3.b3495ef9",
+            "repository": "rocq-iris/iris",
+            "revision": "b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b"
+          },
+          "name": "Iris"
+        },
+        {
+          "identity": {
+            "archive_sha256": "e9588be3a78ad1b54a045a3237e5ae2ca7e0db8aebf1e0cfe8e90a6a64e0e6f2",
+            "package": "rocq-stdpp.dev.2026-09-09.1.c3186aad",
+            "repository": "rocq-iris/stdpp",
+            "revision": "c3186aad493872e3a9774ac0b42ca2f591b05835"
+          },
+          "name": "stdpp"
+        },
+        {
+          "identity": {
+            "native_checker_sha256": "d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9",
+            "repository": "rocq-prover/rocq",
+            "source_archive_sha256": "a45280ab4fbaac7540b136a6b073b4a6db15739ec1e149bded43fa6f4fc25f20",
+            "version": "9.2.0"
+          },
+          "name": "Rocq native checker and compiler"
+        },
+        {
+          "identity": {
+            "artifact": "PlannedAuditFramework.v + PlannedAuditResources.v + PlannedAuditExamples.v, concatenated in that order",
+            "sha256": "d5a95c12243012b279d7f7a8c1d427c297987a09f00754f2c62998e8fd083c54"
+          },
+          "name": "Owned observation-only audit annotations"
+        }
+      ],
+      "topics": [
+        "rocq",
+        "iris",
+        "simuliris",
+        "tree-borrows",
+        "proof-assumptions",
+        "program-refinement",
+        "memory-logic"
       ]
     },
     "smt-certificates-reconstruction-and-root-binding-2026-10-14": {

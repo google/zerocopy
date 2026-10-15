@@ -1,0 +1,35 @@
+{
+  "label": "protected-and-unprotected-examples",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "limit=$1\nshift\nstart=$(du -sb . | cut -f1)\npeak=$start\nstop=none\nbegin=$(date +%s)\ntimeout --signal=TERM --kill-after=5 \"$limit\" \"$@\" &\npid=$!\nwhile kill -0 \"$pid\" 2>/dev/null; do\n size=$(du -sb . | cut -f1)\n if [ \"$size\" -gt \"$peak\" ]; then peak=$size; fi\n if [ \"$peak\" -gt 1076927915 ]; then\n  stop=disk-cap\n  kill -TERM \"$pid\"\n  break\n fi\n sleep 2\ndone\nwait \"$pid\"\nresult=$?\nend=$(date +%s)\nfinal=$(du -sb . | cut -f1)\nprintf 'ANNEAL_PHASE_RESULT returncode=%s stop=%s elapsed_seconds=%s start_bytes=%s peak_bytes=%s final_bytes=%s\\n' \"$result\" \"$stop\" \"$((end-begin))\" \"$start\" \"$peak\" \"$final\"\nexit \"$result\"\n",
+    "anneal-phase",
+    "900",
+    "make",
+    "-f",
+    "Makefile.rocq",
+    "-j1",
+    "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.vo",
+    "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.vo"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 6.194,
+  "stdout_bytes": 305,
+  "stderr_bytes": 45,
+  "stdout_sha256": "90a87919983493d5056b02e435d9032e7d8bf2f6829bf0b6b0379d9dd1da80b6",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

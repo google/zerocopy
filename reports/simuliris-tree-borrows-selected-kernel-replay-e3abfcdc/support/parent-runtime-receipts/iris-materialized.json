@@ -1,0 +1,1921 @@
+{
+  "subject": "iris",
+  "revision": "b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b",
+  "archive_sha256": "3b45252c8b915dcee1149dd0d185391898cc836619b7c4e1fc1f636acb23057b",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 135,
+      "mode": "0o664",
+      "sha256": "c2fcf73f589f06f7083fc393021725f041aaeb5b9c8bf23f29829d4f07e6d971"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 293,
+      "mode": "0o664",
+      "sha256": "030abe4784de5eaa1d60c63fb48f6640b4892699cef226b790df33dafe5ed92d"
+    },
+    {
+      "path": ".gitlab-ci.yml",
+      "bytes": 3865,
+      "mode": "0o664",
+      "sha256": "df4133394b142ace68a12ae5a37d5e8f96ee1c090efbdfe825292882e5d9dee1"
+    },
+    {
+      "path": ".gitlab/issue_templates/Bug.md",
+      "bytes": 194,
+      "mode": "0o664",
+      "sha256": "fa6deac5824779e680eda9b26860712c35f6f2a53bccc37aedccdcc4e6a8ff03"
+    },
+    {
+      "path": ".gitlab/merge_request_templates/Default.md",
+      "bytes": 753,
+      "mode": "0o664",
+      "sha256": "4976d607fe449e9da89133b439abc1133cbe7cade32ebacd15780294d2cebac2"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 143245,
+      "mode": "0o664",
+      "sha256": "1041492a1d81b0f4967ae0e14e4950ceb3d1a151b7ddbe6d4ae7db877ad28a91"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 7448,
+      "mode": "0o664",
+      "sha256": "21e4c5e744d5eb0e1bfd26782ffab9d1e8197f010673a20ee93cca44ce645ec3"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 352,
+      "mode": "0o664",
+      "sha256": "b8db39b9a49ba7a283437f8b63d35903ad7169f824af10763e9b4cb6ddf70486"
+    },
+    {
+      "path": "LICENSE-CODE",
+      "bytes": 1780,
+      "mode": "0o664",
+      "sha256": "33a506f1d35644a275cd3e04045d67e87087ae700a6ccd9e7d468f9525a38f71"
+    },
+    {
+      "path": "LICENSE-DOCS",
+      "bytes": 18975,
+      "mode": "0o664",
+      "sha256": "68391acad70d88fe498384dd67da5b07ad151ae45b496031daef5fcd9f3ed3bb"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 2502,
+      "mode": "0o664",
+      "sha256": "c6a52a20a818316bc9cdebf17d7a1c272572fb3742beb0ea5e8fb5a47d2a5b42"
+    },
+    {
+      "path": "Makefile.rocq.local",
+      "bytes": 2319,
+      "mode": "0o664",
+      "sha256": "e4d59b6038ff4bd22477c806d901cc20e775d85fae48cae01934ea42ab58ac74"
+    },
+    {
+      "path": "README.md",
+      "bytes": 9316,
+      "mode": "0o664",
+      "sha256": "551bd6fa42e39b98f9f6917b57448e4ea8b7f5ae5bf96e6f3f37dc4731041063"
+    },
+    {
+      "path": "bin/iris-bot",
+      "bytes": 11507,
+      "mode": "0o775",
+      "sha256": "28b60bead9ca55bfd360e5d8239d7c9f35f28c5d6f6cccba80a99140faecff89"
+    },
+    {
+      "path": "bin/iris-release.sh",
+      "bytes": 3799,
+      "mode": "0o775",
+      "sha256": "6a52834d331a0564cfa33851c0de6930ec98e477b08d94f362bbf31166b5db51"
+    },
+    {
+      "path": "config/flags",
+      "bytes": 1171,
+      "mode": "0o664",
+      "sha256": "fe1dca59cdf3fa900b114a32051fc0deff351c56810f7576b252b26433d3800f"
+    },
+    {
+      "path": "config/paths",
+      "bytes": 287,
+      "mode": "0o664",
+      "sha256": "b38f68f0011dfeafca1bf59565cc1ea3c9b00fea2d83378885badc069a19b13b"
+    },
+    {
+      "path": "config/source-list",
+      "bytes": 5122,
+      "mode": "0o664",
+      "sha256": "db7aedb37ce980c6b18d5fc8eb00df690c77f9ecf33683c36bf638b3fe35158c"
+    },
+    {
+      "path": "docs/dune.md",
+      "bytes": 1621,
+      "mode": "0o664",
+      "sha256": "93f7d4384f06a2581da3bc4ed385c40519df0c1109cee54bc12f789822b51df4"
+    },
+    {
+      "path": "docs/editor.md",
+      "bytes": 13033,
+      "mode": "0o664",
+      "sha256": "09ab61c4c22d2ecd862f937585b9a800f4af5304d49d4dd99b351da407c67f09"
+    },
+    {
+      "path": "docs/equalities_and_entailments.md",
+      "bytes": 11230,
+      "mode": "0o664",
+      "sha256": "fe4ccc3f8a31e5eb6178a13e5c8ce2921be222bc55f4167473c8cba66f1deb83"
+    },
+    {
+      "path": "docs/heap_lang.md",
+      "bytes": 8407,
+      "mode": "0o664",
+      "sha256": "0277946bb019d35624b0fcafbbe2d5d4b48c7831bdcd034fe43ed93bd5a64933"
+    },
+    {
+      "path": "docs/ibus",
+      "bytes": 3860,
+      "mode": "0o664",
+      "sha256": "712f2c49349d5dd2a5a6c9285c48d676aa2f9a43366effb4b634f88bb6ea1168"
+    },
+    {
+      "path": "docs/proof_guide.md",
+      "bytes": 8144,
+      "mode": "0o664",
+      "sha256": "c8c53a2b4895ae889f7e3a0b6f248ee232c0be3278219d4b66ac94c0bfa37910"
+    },
+    {
+      "path": "docs/proof_mode.md",
+      "bytes": 28250,
+      "mode": "0o664",
+      "sha256": "9aabd520caa4c7d7e8d611a510a1686fb770ea95785fb3b4ee7295cb379443fb"
+    },
+    {
+      "path": "docs/resource_algebras.md",
+      "bytes": 13896,
+      "mode": "0o664",
+      "sha256": "f36d0e0d4947b0ca67300139a1ec16dac38d0ed552df0215fba2aabb5e38f22a"
+    },
+    {
+      "path": "docs/style_guide.md",
+      "bytes": 9486,
+      "mode": "0o664",
+      "sha256": "bd6bf2d3ee472b979d08317df92966df449284c5e1859faf9f28341bea94c95e"
+    },
+    {
+      "path": "docs/vim_ultisnips",
+      "bytes": 5793,
+      "mode": "0o664",
+      "sha256": "9f4b031d5f73ac3b8e56bb052ce44cd7090f42fe825fc476061b6f43e87ee782"
+    },
+    {
+      "path": "docs/vscode",
+      "bytes": 12020,
+      "mode": "0o664",
+      "sha256": "814d6f4423554f4480fc6b9e99956ff095bb3d644f4d9457ce82de1ec9c772a1"
+    },
+    {
+      "path": "dune",
+      "bytes": 259,
+      "mode": "0o664",
+      "sha256": "9533a39203aafc4eb4e7df9521b8fab879248ebefb439408e2fa154e2e0d496c"
+    },
+    {
+      "path": "dune-project",
+      "bytes": 35,
+      "mode": "0o664",
+      "sha256": "e7aaecaee57119d6aca893ab4344190971e3d8be00553a41bf0a56c720b04723"
+    },
+    {
+      "path": "gen_RocqProject.sh",
+      "bytes": 672,
+      "mode": "0o775",
+      "sha256": "5c51c044221062aa2fe3d3ccd2ea3a6407c045ad55938b08915d6a7761142444"
+    },
+    {
+      "path": "iris/algebra/agree.v",
+      "bytes": 13671,
+      "mode": "0o664",
+      "sha256": "d6dc5c9a17f82e3b97688d5bc3c540806e768cd93d69b2009e83aa49f531f3ca"
+    },
+    {
+      "path": "iris/algebra/auth.v",
+      "bytes": 18281,
+      "mode": "0o664",
+      "sha256": "228e10f8f2f1d8158e65ed556ec7a55ed6a34d42090b06645e1e54967cc88408"
+    },
+    {
+      "path": "iris/algebra/big_op.v",
+      "bytes": 45795,
+      "mode": "0o664",
+      "sha256": "a756f0ef6094d8c79edb5fb361e64e73448e72086b709592ca7c820752916bb7"
+    },
+    {
+      "path": "iris/algebra/chain.v",
+      "bytes": 4672,
+      "mode": "0o664",
+      "sha256": "5d0ecbfdb119ccf8a9cb86e6ef7444e8c8e7ffc7c1a5ff00b2b8530edd680db3"
+    },
+    {
+      "path": "iris/algebra/cmra.v",
+      "bytes": 89597,
+      "mode": "0o664",
+      "sha256": "ff2b9c25e30cb7cd41e8bd223303a2a4e337dfc21e37ce71b4c27e6844a5af87"
+    },
+    {
+      "path": "iris/algebra/cmra_big_op.v",
+      "bytes": 1685,
+      "mode": "0o664",
+      "sha256": "cbf378fb8ce60175fda6d0e090d5184c9bee2f4f73c5e6d5f9c4718045f9235f"
+    },
+    {
+      "path": "iris/algebra/coPset.v",
+      "bytes": 4552,
+      "mode": "0o664",
+      "sha256": "fe109a3ac292b1e42c2e8b98d152c900dda428f0ce1fb228bd903c0d16da01cd"
+    },
+    {
+      "path": "iris/algebra/cofe_solver.v",
+      "bytes": 11177,
+      "mode": "0o664",
+      "sha256": "d28fb69da341c2404e94eecb77a15e7a474dcfd9ec700de873b4bfa794f33212"
+    },
+    {
+      "path": "iris/algebra/csum.v",
+      "bytes": 18310,
+      "mode": "0o664",
+      "sha256": "a636227963bb3acc2534115fd6edbe695547b85e077750c9a5d878b2108e12c8"
+    },
+    {
+      "path": "iris/algebra/dfrac.v",
+      "bytes": 9042,
+      "mode": "0o664",
+      "sha256": "b8a10f2d16342990791fb880c2e6911ab2b2efe3bd1d600cef1d5033364c1407"
+    },
+    {
+      "path": "iris/algebra/dyn_reservation_map.v",
+      "bytes": 17107,
+      "mode": "0o664",
+      "sha256": "852f1b62f30ab2cf4d628072b0da5a15c69f39b038ba4b41f525a099a2f3c22c"
+    },
+    {
+      "path": "iris/algebra/excl.v",
+      "bytes": 6886,
+      "mode": "0o664",
+      "sha256": "fd4b510d5171b9d15caaaaa54c139b52d533ff1eab6cf966dfb486ec2b8e40ea"
+    },
+    {
+      "path": "iris/algebra/frac.v",
+      "bytes": 2276,
+      "mode": "0o664",
+      "sha256": "c7dea5d26e6b3432109be66df5d08f12044fb3185e669aee020e1a00724a8866"
+    },
+    {
+      "path": "iris/algebra/functions.v",
+      "bytes": 8624,
+      "mode": "0o664",
+      "sha256": "4e1799b0fac3548229fd07df0e17d962608c41e6e1ed8c8affad04f15c053e2d"
+    },
+    {
+      "path": "iris/algebra/gmap.v",
+      "bytes": 35599,
+      "mode": "0o664",
+      "sha256": "4af13d762e0fa7f26dabf334be877781202a1661e54177a1d5288294b56170b4"
+    },
+    {
+      "path": "iris/algebra/gmultiset.v",
+      "bytes": 3632,
+      "mode": "0o664",
+      "sha256": "c1aa6097770da2a3e03395ca69aee00b0dbb4b88f010f06a5930c8188e0b668f"
+    },
+    {
+      "path": "iris/algebra/gset.v",
+      "bytes": 10210,
+      "mode": "0o664",
+      "sha256": "07c4b7100e15ef99eb4694a8efe08cbf53d40235f1f78b0974f774234fa1dfc1"
+    },
+    {
+      "path": "iris/algebra/lib/dfrac_agree.v",
+      "bytes": 6057,
+      "mode": "0o664",
+      "sha256": "c1cee016ef4df6be7fd2c585ed9b4793737ce74e1d86ec0c897278183f8dfdb5"
+    },
+    {
+      "path": "iris/algebra/lib/excl_auth.v",
+      "bytes": 3681,
+      "mode": "0o664",
+      "sha256": "672897efef501c7e8bd18784aaa59cd9eb139c80de51b7af5baacc142015e5b0"
+    },
+    {
+      "path": "iris/algebra/lib/frac_auth.v",
+      "bytes": 8894,
+      "mode": "0o664",
+      "sha256": "5938d635baab644ff7b7ed45d2eacf921635f2480d492b144ba74cc42dce0aed"
+    },
+    {
+      "path": "iris/algebra/lib/gmap_view.v",
+      "bytes": 31142,
+      "mode": "0o664",
+      "sha256": "4aa1d38844c21625edee3dd6a53da482d09af0698da5a960252c51bc0d03f88b"
+    },
+    {
+      "path": "iris/algebra/lib/gset_bij.v",
+      "bytes": 7983,
+      "mode": "0o664",
+      "sha256": "79516c991918f9439cf0ecbaf6c342ee4ce26204b45b9ea45ca3d36ba29e6393"
+    },
+    {
+      "path": "iris/algebra/lib/mono_Z.v",
+      "bytes": 4687,
+      "mode": "0o664",
+      "sha256": "ce47313ab93e1a749fcd3cc35859900ea74ea22854f57a59cd8ecc5380549833"
+    },
+    {
+      "path": "iris/algebra/lib/mono_list.v",
+      "bytes": 9217,
+      "mode": "0o664",
+      "sha256": "41b45e1b97bf70981c83aecfd1db33dc713feb132eda176457b0cf70906da68d"
+    },
+    {
+      "path": "iris/algebra/lib/mono_nat.v",
+      "bytes": 4665,
+      "mode": "0o664",
+      "sha256": "6c2122eaa160c38a3e5daa68eceb0ee852595150f9508e92385a8486b04377fa"
+    },
+    {
+      "path": "iris/algebra/lib/time_receipts.v",
+      "bytes": 7830,
+      "mode": "0o664",
+      "sha256": "df2ff1636b09ca32814d3750193bb4b6d758bf093dfa7693de52bb55605ae6d2"
+    },
+    {
+      "path": "iris/algebra/lib/ufrac_auth.v",
+      "bytes": 8208,
+      "mode": "0o664",
+      "sha256": "cae4a3a3dfb97335dc1415d6fc142fc33bb451e33dd0d4cb07111568ef999c86"
+    },
+    {
+      "path": "iris/algebra/list.v",
+      "bytes": 10553,
+      "mode": "0o664",
+      "sha256": "501b745229932e642f9734804145759458a93c5c9814beffb10efad482c1a9ab"
+    },
+    {
+      "path": "iris/algebra/local_updates.v",
+      "bytes": 8743,
+      "mode": "0o664",
+      "sha256": "6872b34fdd66c0d78c2dc2fb365fad6087cac2ac208c768c91bec1b30deb37f2"
+    },
+    {
+      "path": "iris/algebra/max_prefix_list.v",
+      "bytes": 8284,
+      "mode": "0o664",
+      "sha256": "bc8e8349ca9f2c2a227ee815bf2aea73456687602b5938cb0e32edb3da25034c"
+    },
+    {
+      "path": "iris/algebra/monoid.v",
+      "bytes": 3460,
+      "mode": "0o664",
+      "sha256": "1a0e66ef4e7b4a83876ba2bbf512facf74b62c8ad7ffc1e2eb67ed258b12179a"
+    },
+    {
+      "path": "iris/algebra/mra.v",
+      "bytes": 6455,
+      "mode": "0o664",
+      "sha256": "0ae3a02184ae02bd3a191d67844a38ce087757193f07a9686378677eb394d9f9"
+    },
+    {
+      "path": "iris/algebra/numbers.v",
+      "bytes": 11237,
+      "mode": "0o664",
+      "sha256": "f596a9024b3078d19f813137469f24423fb5466a66e98d2b6b11db1ce4e50af4"
+    },
+    {
+      "path": "iris/algebra/ofe.v",
+      "bytes": 102389,
+      "mode": "0o664",
+      "sha256": "fb6a13d23303d7c04bfa6b7845913af98fd36f0310b1a03a7fd4bd17b7ecbd18"
+    },
+    {
+      "path": "iris/algebra/proofmode_classes.v",
+      "bytes": 3190,
+      "mode": "0o664",
+      "sha256": "23d3854a289dabfb6dd586a42677e6dcb8ce8f336c8287af795543bde443e9c9"
+    },
+    {
+      "path": "iris/algebra/reservation_map.v",
+      "bytes": 14097,
+      "mode": "0o664",
+      "sha256": "3d84f1a2b678954ee73f6290ee8ea859250ca42bbcfa5815763e3315f543d8b3"
+    },
+    {
+      "path": "iris/algebra/stepindex.v",
+      "bytes": 16183,
+      "mode": "0o664",
+      "sha256": "2bf03c825af8610036cf706bc1b3f15f8ec9cf734d7371374989f23103f24d95"
+    },
+    {
+      "path": "iris/algebra/stepindex_finite.v",
+      "bytes": 5298,
+      "mode": "0o664",
+      "sha256": "0669246f53509f0ce96fb502e399f82a7cc8e69fe75a5e3f66330b809f7980f6"
+    },
+    {
+      "path": "iris/algebra/sts.v",
+      "bytes": 27669,
+      "mode": "0o664",
+      "sha256": "207c77f350e33683258888c1c94a44df8d2f41df7d7b11a0acf31222bc99509c"
+    },
+    {
+      "path": "iris/algebra/ufrac.v",
+      "bytes": 1665,
+      "mode": "0o664",
+      "sha256": "523929ec817cf978655c352ea225901ea093a1f6e229ac68ad5e81d0dc6e72fb"
+    },
+    {
+      "path": "iris/algebra/updates.v",
+      "bytes": 10199,
+      "mode": "0o664",
+      "sha256": "224bf785071f9cdbe66a7653e6010f133d97c31c5c2f6fdde9c5ba11b2f27e5b"
+    },
+    {
+      "path": "iris/algebra/vector.v",
+      "bytes": 4432,
+      "mode": "0o664",
+      "sha256": "5e5153c8150a0442e20bef9bd6ab94ace5fb0ee0c78649d1e1e8e05e26b786a5"
+    },
+    {
+      "path": "iris/algebra/view.v",
+      "bytes": 30876,
+      "mode": "0o664",
+      "sha256": "d0e9ef01b11b91592691efc2f76870ce64c83dd7b63b19c897d8b0938a689026"
+    },
+    {
+      "path": "iris/base_logic/base_logic.v",
+      "bytes": 391,
+      "mode": "0o664",
+      "sha256": "fabdc6167daf03b8e33f109ac29aa3fc5e831f96a1ccb523140fbc24e253d175"
+    },
+    {
+      "path": "iris/base_logic/bi.v",
+      "bytes": 11015,
+      "mode": "0o664",
+      "sha256": "f726a1a2413a8d7fd3ce7821c7416ded2e26e2c7dc53a23a562a51b020495654"
+    },
+    {
+      "path": "iris/base_logic/bupd_alt.v",
+      "bytes": 4514,
+      "mode": "0o664",
+      "sha256": "9b5325d4fe48fcee2534d30d2b2c6f516f97806430e03f630bb96ec1861ba226"
+    },
+    {
+      "path": "iris/base_logic/derived.v",
+      "bytes": 4248,
+      "mode": "0o664",
+      "sha256": "5c9087d8135ed5182c5a85e892c0e0c2fecd01c541697e0586882eb4f678cf41"
+    },
+    {
+      "path": "iris/base_logic/lib/boxes.v",
+      "bytes": 13354,
+      "mode": "0o664",
+      "sha256": "7f27641d377242800b599352cbd781462357cf1373a0624e73366713986a9461"
+    },
+    {
+      "path": "iris/base_logic/lib/cancelable_invariants.v",
+      "bytes": 7832,
+      "mode": "0o664",
+      "sha256": "a8beaafec03a9e8f4d98cb71c36d45369f5cc7bb71e39e5395b63a698452ae81"
+    },
+    {
+      "path": "iris/base_logic/lib/fancy_updates.v",
+      "bytes": 23300,
+      "mode": "0o664",
+      "sha256": "75287304b41df25856a58f6c671232c1aeed4a7d97f69097e60a95f02702ff25"
+    },
+    {
+      "path": "iris/base_logic/lib/fancy_updates_from_vs.v",
+      "bytes": 2748,
+      "mode": "0o664",
+      "sha256": "443580dcc99d5414329ca407d619c91e393627bcb67e130593ec76df6051de4c"
+    },
+    {
+      "path": "iris/base_logic/lib/gen_heap.v",
+      "bytes": 18007,
+      "mode": "0o664",
+      "sha256": "8946645db0012269e70378b3fc300abf29e3d299a7d51885469414c5583f0bd7"
+    },
+    {
+      "path": "iris/base_logic/lib/gen_inv_heap.v",
+      "bytes": 11976,
+      "mode": "0o664",
+      "sha256": "3f6fac91f017a74a85f022c087bebf1be17603cfd9b3b1d6ee1a8fd9bfcac236"
+    },
+    {
+      "path": "iris/base_logic/lib/ghost_map.v",
+      "bytes": 14722,
+      "mode": "0o664",
+      "sha256": "0e3b8dd9e44aac154f169cf0b30580bad41d4d21474feab0f45c30a0dff995b3"
+    },
+    {
+      "path": "iris/base_logic/lib/ghost_var.v",
+      "bytes": 5362,
+      "mode": "0o664",
+      "sha256": "2a4927860030d7e776be68da3853c8d9548967a61e13ace027926b7897b23ea5"
+    },
+    {
+      "path": "iris/base_logic/lib/gset_bij.v",
+      "bytes": 7566,
+      "mode": "0o664",
+      "sha256": "419f0dac37c78b9e8b2a1309509f4fb39f64bb3e2ec9e3e61488b74cee6759ce"
+    },
+    {
+      "path": "iris/base_logic/lib/invariants.v",
+      "bytes": 8100,
+      "mode": "0o664",
+      "sha256": "6a832f2f9051426232d8c7266788997088550ae7e2a6df78ac5e8b2c574bc032"
+    },
+    {
+      "path": "iris/base_logic/lib/iprop.v",
+      "bytes": 7084,
+      "mode": "0o664",
+      "sha256": "26347ed9a0eab2dce0868026d19c65f5f6c837460111cbb0310289fcae19d8dc"
+    },
+    {
+      "path": "iris/base_logic/lib/later_credits.v",
+      "bytes": 21334,
+      "mode": "0o664",
+      "sha256": "1bde66a95e48e6f2663eea3d671ea78c0fc3253534c24a2003c06682d84927fb"
+    },
+    {
+      "path": "iris/base_logic/lib/mono_Z.v",
+      "bytes": 6292,
+      "mode": "0o664",
+      "sha256": "5f3e67ea5b1055596135ceca7a38fe17d55a3ca770eed49c1491f2e01945c893"
+    },
+    {
+      "path": "iris/base_logic/lib/mono_list.v",
+      "bytes": 7625,
+      "mode": "0o664",
+      "sha256": "39325969f99c524a58a573ecd025e5123fe0acbf32b70e3afe4ffaf0f7913aaa"
+    },
+    {
+      "path": "iris/base_logic/lib/mono_nat.v",
+      "bytes": 6072,
+      "mode": "0o664",
+      "sha256": "a13d6c8826dc1940917ef2d5d2d68d5b2410061a80c686d829b244164087e531"
+    },
+    {
+      "path": "iris/base_logic/lib/na_invariants.v",
+      "bytes": 4921,
+      "mode": "0o664",
+      "sha256": "d9372be6ba42b6735bf539f8fe9bcd29fe65b9a41029f8b1c1179a47ee248bac"
+    },
+    {
+      "path": "iris/base_logic/lib/own.v",
+      "bytes": 24467,
+      "mode": "0o664",
+      "sha256": "46e9e074253497ea6c60b8e615d46ac93b04a8e64b4e404d712f2267fe45198b"
+    },
+    {
+      "path": "iris/base_logic/lib/proph_map.v",
+      "bytes": 5571,
+      "mode": "0o664",
+      "sha256": "e2c69125aa90bfaac3c468945e75c684a2963be020480a656d1543eeafb19309"
+    },
+    {
+      "path": "iris/base_logic/lib/saved_prop.v",
+      "bytes": 12112,
+      "mode": "0o664",
+      "sha256": "1892fdf461d723e31ed8acd802dfac46a8bcff563fd482b69ae42ba39e186bdf"
+    },
+    {
+      "path": "iris/base_logic/lib/time_receipts.v",
+      "bytes": 9157,
+      "mode": "0o664",
+      "sha256": "3320e05fb59146cdf864e7af0ac5300bcad14b0a07171da216affc854f2b63cb"
+    },
+    {
+      "path": "iris/base_logic/lib/token.v",
+      "bytes": 1815,
+      "mode": "0o664",
+      "sha256": "e95ab10d5c802cfe8a50bc5282d2ac1b811c756d58eebf9522e271679694e1a7"
+    },
+    {
+      "path": "iris/base_logic/lib/wsat.v",
+      "bytes": 8602,
+      "mode": "0o664",
+      "sha256": "7d0a4972087b24b9d070b0151110198458ba17fd560ac1d53b45e9c6ff5cc1cd"
+    },
+    {
+      "path": "iris/base_logic/proofmode.v",
+      "bytes": 2013,
+      "mode": "0o664",
+      "sha256": "7e7693123157ab78aac88c768de76cec1c01754751bc9e784d087ddd02672121"
+    },
+    {
+      "path": "iris/base_logic/upred.v",
+      "bytes": 34510,
+      "mode": "0o664",
+      "sha256": "a7bee108fc0978eecdc174da6db95ff6ab03ecb176135c2ef8e5a77e53a5a2ed"
+    },
+    {
+      "path": "iris/bi/algebra.v",
+      "bytes": 15187,
+      "mode": "0o664",
+      "sha256": "c8f79e79c5e7ae78227fa15c6a61ad0ec3a154aa4756cd6bbaa08eb397db5118"
+    },
+    {
+      "path": "iris/bi/ascii.v",
+      "bytes": 4956,
+      "mode": "0o664",
+      "sha256": "19ccd6248c9c784e1e13cdbe2d31db353a66813eca2e3b4e902fe3f88b5112c1"
+    },
+    {
+      "path": "iris/bi/bi.v",
+      "bytes": 543,
+      "mode": "0o664",
+      "sha256": "3ce4ee8f0ae668c9c759dde4af9be16aaefb86f2ebfbb5fd44968f9a99ec9211"
+    },
+    {
+      "path": "iris/bi/big_op.v",
+      "bytes": 150847,
+      "mode": "0o664",
+      "sha256": "22f5d4358587636a150bb9e608401c3f9fe76610fc77bb7f0f60df97644d42a4"
+    },
+    {
+      "path": "iris/bi/cmra.v",
+      "bytes": 6894,
+      "mode": "0o664",
+      "sha256": "d478da2dd98dad5bc3eec276ced0c811ab2736fc4d33fdd9f05a0fdca1349983"
+    },
+    {
+      "path": "iris/bi/derived_connectives.v",
+      "bytes": 7187,
+      "mode": "0o664",
+      "sha256": "a8b679dfef624f8addb4886f6aca28171f878f30ca3a754e7719200fb3aa5246"
+    },
+    {
+      "path": "iris/bi/derived_laws.v",
+      "bytes": 75459,
+      "mode": "0o664",
+      "sha256": "6ec0d4efd67798145143eeeaf8e90dec709094367a5f8be9258fee12503fcf69"
+    },
+    {
+      "path": "iris/bi/derived_laws_later.v",
+      "bytes": 29999,
+      "mode": "0o664",
+      "sha256": "d1f988d1e77cbc9fb4b8e461e5f1c8380bbfa5ad36efcde620d1d60a92633e99"
+    },
+    {
+      "path": "iris/bi/embedding.v",
+      "bytes": 17247,
+      "mode": "0o664",
+      "sha256": "979df9048e1413cc6edd91abee10c519a76737249787cf0a032a3f40fb2f343d"
+    },
+    {
+      "path": "iris/bi/extensions.v",
+      "bytes": 3386,
+      "mode": "0o664",
+      "sha256": "d5e789f4b2144b22f454a83b4fa632472c0b4ecfe8b09a8e96394826ca7c682f"
+    },
+    {
+      "path": "iris/bi/interface.v",
+      "bytes": 23885,
+      "mode": "0o664",
+      "sha256": "5f2e438e196909214df7e15b41f3eec145c5d7f593eab36f5b4d7bcaf48bfffb"
+    },
+    {
+      "path": "iris/bi/internal_eq.v",
+      "bytes": 15548,
+      "mode": "0o664",
+      "sha256": "bac3057c878844279fad24182deefc8192e6e217f4bce8916297bbdab9813345"
+    },
+    {
+      "path": "iris/bi/lib/atomic.v",
+      "bytes": 20524,
+      "mode": "0o664",
+      "sha256": "94b99fc6fd30d0e5ff7429bf137b7c85bee7cae2f7209095a7ea613626d71fc2"
+    },
+    {
+      "path": "iris/bi/lib/core.v",
+      "bytes": 3391,
+      "mode": "0o664",
+      "sha256": "16ff49187bc899ce2a608e0e5c19fce0ed612034c56523996f30334c77aebff1"
+    },
+    {
+      "path": "iris/bi/lib/counterexamples.v",
+      "bytes": 19588,
+      "mode": "0o664",
+      "sha256": "7652c1cd6cfff22d423cb37be6c888d088b94638b08254b1e8781066f4f655d7"
+    },
+    {
+      "path": "iris/bi/lib/fixpoint_banach.v",
+      "bytes": 4711,
+      "mode": "0o664",
+      "sha256": "6ef8334e4250caa56f949c7ceaac7e2334285dcfab6a0650fea54c797d9b434b"
+    },
+    {
+      "path": "iris/bi/lib/fixpoint_mono.v",
+      "bytes": 15359,
+      "mode": "0o664",
+      "sha256": "822f61e64c052c9af49685e8fb374dec647ac9ad8fca35a700b66d2ddbb65bc7"
+    },
+    {
+      "path": "iris/bi/lib/fractional.v",
+      "bytes": 11647,
+      "mode": "0o664",
+      "sha256": "8c39392916897589f56c7823c55f2ef2b27763547d6b2071f1dc12c4ede22cdf"
+    },
+    {
+      "path": "iris/bi/lib/laterable.v",
+      "bytes": 9376,
+      "mode": "0o664",
+      "sha256": "6e6c3a4d187ec39f75e79fd8234d4065cab1e58739d83366815366fe420e9458"
+    },
+    {
+      "path": "iris/bi/lib/relations.v",
+      "bytes": 14006,
+      "mode": "0o664",
+      "sha256": "d060599f7b3dce0d1b64a0b0a7535b761d40b33ca22b07dc92b289c71b5076b0"
+    },
+    {
+      "path": "iris/bi/monpred.v",
+      "bytes": 57824,
+      "mode": "0o664",
+      "sha256": "7fb0bde6fca7c3c4a623247be726848d5dd64231af49f4f124299c261b94cf0c"
+    },
+    {
+      "path": "iris/bi/notation.v",
+      "bytes": 8449,
+      "mode": "0o664",
+      "sha256": "a638ffc3fba0d648b2ac5a2f23cbfe117d70df74626169b784e1971935e56720"
+    },
+    {
+      "path": "iris/bi/plainly.v",
+      "bytes": 28442,
+      "mode": "0o664",
+      "sha256": "077a0e4121629d744c24cb096925db09a0a2ec7160c85e94fb73ccb263e6e23b"
+    },
+    {
+      "path": "iris/bi/sbi.v",
+      "bytes": 27198,
+      "mode": "0o664",
+      "sha256": "a82d21f87e9ee7a94c5eecbd3c6a8bd344aa78d607dbb830248678a29dc3d48e"
+    },
+    {
+      "path": "iris/bi/sbi_unfold.v",
+      "bytes": 13376,
+      "mode": "0o664",
+      "sha256": "8d9acf633f4902f6369257bdc8a29e460d310bd4a1bb6a143229edde75638c12"
+    },
+    {
+      "path": "iris/bi/telescopes.v",
+      "bytes": 3829,
+      "mode": "0o664",
+      "sha256": "323a29f00f50d1e5fac1b66932cba3eb8575ded72bd0f5af7d27ae2ac4659276"
+    },
+    {
+      "path": "iris/bi/updates.v",
+      "bytes": 31893,
+      "mode": "0o664",
+      "sha256": "8651ceb4987cc292750336a5dd2a3ead34a535ae1bc472c8d2c261b8d01272e5"
+    },
+    {
+      "path": "iris/bi/weakestpre.v",
+      "bytes": 15306,
+      "mode": "0o664",
+      "sha256": "a5ee50a2adce7f96ccacb82e04529911e55499b792bba91a6e81d068a8bd9d75"
+    },
+    {
+      "path": "iris/dune",
+      "bytes": 132,
+      "mode": "0o664",
+      "sha256": "88ce0665d2677ed2cde4e4a73c11060981d03417808cfa79497a194aa174d810"
+    },
+    {
+      "path": "iris/prelude/options.v",
+      "bytes": 791,
+      "mode": "0o664",
+      "sha256": "bc5dda99815508ae91b4d4b5cff9b85ea4f473a5ae0d3eeceb4a10f94de33b75"
+    },
+    {
+      "path": "iris/prelude/prelude.v",
+      "bytes": 139,
+      "mode": "0o664",
+      "sha256": "6c8fe23755158dd234ca2a4b5830a9d739e2c66043dae1e650b0b94d19a7ec59"
+    },
+    {
+      "path": "iris/program_logic/adequacy.v",
+      "bytes": 12823,
+      "mode": "0o664",
+      "sha256": "3427a834233bbfe0eea26fa3443c8822d092629d095df640669e014eeceaf203"
+    },
+    {
+      "path": "iris/program_logic/atomic.v",
+      "bytes": 15903,
+      "mode": "0o664",
+      "sha256": "c39e7016e23070a0a01541ec36273266371bcfa2190350263f34c4d7b7ff861d"
+    },
+    {
+      "path": "iris/program_logic/ectx_language.v",
+      "bytes": 14051,
+      "mode": "0o664",
+      "sha256": "19dcd8134deb3ac7945b9194a22d458287536cdf5042e907ab8b98e50ea4b0ba"
+    },
+    {
+      "path": "iris/program_logic/ectx_lifting.v",
+      "bytes": 6340,
+      "mode": "0o664",
+      "sha256": "95f549b8baf4ee17d7dea1b955a97f2b59b0f1ad8305d01e08f020b0c8961a44"
+    },
+    {
+      "path": "iris/program_logic/ectxi_language.v",
+      "bytes": 7230,
+      "mode": "0o664",
+      "sha256": "dc64098b60f75f1b5e6fcd34e7f66bd37ec13f3553cbc58d7e926239884497ad"
+    },
+    {
+      "path": "iris/program_logic/language.v",
+      "bytes": 14077,
+      "mode": "0o664",
+      "sha256": "230b083330d0d3b0e85bebb325445ef9a3046a225f98506bf963d232d01740ac"
+    },
+    {
+      "path": "iris/program_logic/lifting.v",
+      "bytes": 7736,
+      "mode": "0o664",
+      "sha256": "30c784e860ace7854dd1d6f3e0cc72fddcd298c9dd2f3ef1ccd40fb72b6407d4"
+    },
+    {
+      "path": "iris/program_logic/ownp.v",
+      "bytes": 12754,
+      "mode": "0o664",
+      "sha256": "552c9b3260f2cc5cdf0c9259757c4308af2b1afb11ffcd509ab1dd4d889c471c"
+    },
+    {
+      "path": "iris/program_logic/total_adequacy.v",
+      "bytes": 6403,
+      "mode": "0o664",
+      "sha256": "2fa76aa54638aa409437601dac212667af99130490006607f739f787d2ef75c3"
+    },
+    {
+      "path": "iris/program_logic/total_ectx_lifting.v",
+      "bytes": 3421,
+      "mode": "0o664",
+      "sha256": "152d774733d52d87b3adbd66c90165dd63846265fa77f26bd6d03131627c0ffb"
+    },
+    {
+      "path": "iris/program_logic/total_lifting.v",
+      "bytes": 3696,
+      "mode": "0o664",
+      "sha256": "373b746ece61413fd8434e22e1598aeaf95a89571383b1da991227d82e1a25b8"
+    },
+    {
+      "path": "iris/program_logic/total_weakestpre.v",
+      "bytes": 17693,
+      "mode": "0o664",
+      "sha256": "9f6008fc94474d93826444a30c60737e7dced6e66ec352d8bd679248d868ba52"
+    },
+    {
+      "path": "iris/program_logic/weakestpre.v",
+      "bytes": 22866,
+      "mode": "0o664",
+      "sha256": "8244dd8ec31a43cdd1200168432a5c00478964bb169a99c0e75bea7d388078a9"
+    },
+    {
+      "path": "iris/proofmode/base.v",
+      "bytes": 8231,
+      "mode": "0o664",
+      "sha256": "8be14141c31cd4e34f16e323cfb609ec3dd3548c07b9bb4ca181fb9796d73528"
+    },
+    {
+      "path": "iris/proofmode/class_instances.v",
+      "bytes": 54623,
+      "mode": "0o664",
+      "sha256": "02942e720e93ccc8d1c48d0fa872a5d790dde61a41476108e4082415474e49d9"
+    },
+    {
+      "path": "iris/proofmode/class_instances_cmra.v",
+      "bytes": 1350,
+      "mode": "0o664",
+      "sha256": "6f902d0190e02e691b62c5bc4081488e97fb4cd1bfc9f59979ecdf8ecf6ba42e"
+    },
+    {
+      "path": "iris/proofmode/class_instances_embedding.v",
+      "bytes": 10080,
+      "mode": "0o664",
+      "sha256": "d26577abdbd2fa8041f41b2cacf4bbc2aacce90637858ec77e85986af15fcc80"
+    },
+    {
+      "path": "iris/proofmode/class_instances_frame.v",
+      "bytes": 22572,
+      "mode": "0o664",
+      "sha256": "1a891b512e675991c4a96f48b3c87652d5386308a3fc0aa658279f564f8a4002"
+    },
+    {
+      "path": "iris/proofmode/class_instances_internal_eq.v",
+      "bytes": 3352,
+      "mode": "0o664",
+      "sha256": "79a1fa1507f8f2f1909b4e68d539361963c0a1e32b3943a8687d0dac5e0a4d77"
+    },
+    {
+      "path": "iris/proofmode/class_instances_later.v",
+      "bytes": 20921,
+      "mode": "0o664",
+      "sha256": "bcdc9b61467bba35794a5fad092271519d428cfda4cfe8ce8eea0eb3866390fa"
+    },
+    {
+      "path": "iris/proofmode/class_instances_make.v",
+      "bytes": 8922,
+      "mode": "0o664",
+      "sha256": "25024176661257f44c15a83336d9238f89afa22ad530afd1dd4b7a4b353d2bff"
+    },
+    {
+      "path": "iris/proofmode/class_instances_plainly.v",
+      "bytes": 4223,
+      "mode": "0o664",
+      "sha256": "fdfe69879a91ef7b8f6d3aea38840ecfc1380b43cda1851dcf9c0b446e1075b7"
+    },
+    {
+      "path": "iris/proofmode/class_instances_updates.v",
+      "bytes": 9260,
+      "mode": "0o664",
+      "sha256": "0f602a98e214ddb0ccbe61dca73e549524343837493123b79477e4c82d44afc4"
+    },
+    {
+      "path": "iris/proofmode/classes.v",
+      "bytes": 36077,
+      "mode": "0o664",
+      "sha256": "cb74ea22dba29b67e2b043954d4fedf1c957785d28b7bd4b2dba95a9f50c1ec1"
+    },
+    {
+      "path": "iris/proofmode/classes_make.v",
+      "bytes": 8249,
+      "mode": "0o664",
+      "sha256": "c314969de0529deae7f63ce3d6743264ab27ed6a2e029c956512f5902dccef15"
+    },
+    {
+      "path": "iris/proofmode/environments.v",
+      "bytes": 38265,
+      "mode": "0o664",
+      "sha256": "3ccb6c56b372388c2f3430acc4f5a0e769885c5162e68d2c267b60d65543e306"
+    },
+    {
+      "path": "iris/proofmode/ident_name.v",
+      "bytes": 1869,
+      "mode": "0o664",
+      "sha256": "b339a44b9be429d0f4e3f43a826a0b5bbc26ff4e917050460764b8f25c1ba448"
+    },
+    {
+      "path": "iris/proofmode/intro_patterns.v",
+      "bytes": 7253,
+      "mode": "0o664",
+      "sha256": "132789b992ab0d8b5e1a6f5daf19e1a615c21c2b55cc24dbf7022effdcefbaea"
+    },
+    {
+      "path": "iris/proofmode/ltac_tactics.v",
+      "bytes": 91928,
+      "mode": "0o664",
+      "sha256": "f4850c973b73be221ab631b38cdaa63d17f1525f17fc313a6013c7dbeef434d8"
+    },
+    {
+      "path": "iris/proofmode/modalities.v",
+      "bytes": 9247,
+      "mode": "0o664",
+      "sha256": "3b30ee4e32e1861ee93c4fe8e8edf796128ec9e61f909675276496c00d70fdec"
+    },
+    {
+      "path": "iris/proofmode/modality_instances.v",
+      "bytes": 2579,
+      "mode": "0o664",
+      "sha256": "da307298822f94b94f5bbbe3b5155cc569cf1274064f795f82ec2b2138edf8b0"
+    },
+    {
+      "path": "iris/proofmode/monpred.v",
+      "bytes": 31508,
+      "mode": "0o664",
+      "sha256": "aa5e9d5f415825ae92299ea4daaad9faa69032018bad16216aa03cd13c64fa62"
+    },
+    {
+      "path": "iris/proofmode/notation.v",
+      "bytes": 1956,
+      "mode": "0o664",
+      "sha256": "6bd14b87e3b51a445d0142435c350f13ddcd6b3f81e3ba197032bd9e7fbf8a8b"
+    },
+    {
+      "path": "iris/proofmode/proofmode.v",
+      "bytes": 639,
+      "mode": "0o664",
+      "sha256": "5dbfdea4907783d1bdbde9b9e5ef1875d74e281576317ca69f9e177e838bc487"
+    },
+    {
+      "path": "iris/proofmode/reduction.v",
+      "bytes": 3666,
+      "mode": "0o664",
+      "sha256": "d8b97ad55fc8664ccb49f9d1729bc91343445ccf40418b4d1e6739edb791e4cd"
+    },
+    {
+      "path": "iris/proofmode/rocq_tactics.v",
+      "bytes": 54637,
+      "mode": "0o664",
+      "sha256": "aa15a5f055dc1936515702d6eed55c2b19c43354ddf39eff716c20206dcb115c"
+    },
+    {
+      "path": "iris/proofmode/sel_patterns.v",
+      "bytes": 1390,
+      "mode": "0o664",
+      "sha256": "5e71589e2b9cafc182e23f80a3a2b8946c43a82fa465fc22fa784c0078c18e3d"
+    },
+    {
+      "path": "iris/proofmode/spec_patterns.v",
+      "bytes": 3767,
+      "mode": "0o664",
+      "sha256": "04249a2ce108bfa4b333a124403c36262f8ae42039fe9f8069e62c34c6cc494b"
+    },
+    {
+      "path": "iris/proofmode/string_ident.v",
+      "bytes": 7244,
+      "mode": "0o664",
+      "sha256": "8c95c2d35e134cc2968509a84216596a41575cf59d8b05b4435d670061974f3e"
+    },
+    {
+      "path": "iris/proofmode/tokens.v",
+      "bytes": 4016,
+      "mode": "0o664",
+      "sha256": "e4077e901bc65dd746710663e55ffb91c7680324191e6efb56c7f0bd940dcd6c"
+    },
+    {
+      "path": "iris/si_logic/bi.v",
+      "bytes": 7575,
+      "mode": "0o664",
+      "sha256": "54997ab68210d07e70669dc7d6c34f2edf0db525fb16a8f665f1316a51fd8c16"
+    },
+    {
+      "path": "iris/si_logic/siprop.v",
+      "bytes": 17997,
+      "mode": "0o664",
+      "sha256": "0b7460fc467c015d1fc3f69d3d1fb8fa5a790d8e21b870fedba061c2eb2891f0"
+    },
+    {
+      "path": "iris_deprecated/.keep",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "iris_deprecated/base_logic/auth.v",
+      "bytes": 9101,
+      "mode": "0o664",
+      "sha256": "0633bb70b0b7bbce507e819d5091f52091539ca8c2b453cfcc277f165909b539"
+    },
+    {
+      "path": "iris_deprecated/base_logic/sts.v",
+      "bytes": 7683,
+      "mode": "0o664",
+      "sha256": "8a8a1daa4b5d6b31f8c8f90fbcc65930334a999a8963c65085598dc8d4879530"
+    },
+    {
+      "path": "iris_deprecated/base_logic/viewshifts.v",
+      "bytes": 3812,
+      "mode": "0o664",
+      "sha256": "d563f75fa25f0817069aa685ff2f418aa8bb0961e8b0ce82f1374c70e9783607"
+    },
+    {
+      "path": "iris_deprecated/dune",
+      "bytes": 153,
+      "mode": "0o664",
+      "sha256": "0c7c079ee9967d892230ee730318fa320f75b42d548f396154100492d1d4bcf9"
+    },
+    {
+      "path": "iris_deprecated/program_logic/hoare.v",
+      "bytes": 7120,
+      "mode": "0o664",
+      "sha256": "ceac068bd8ff3158f753eb53f01e49198992af1618218d36506d93ce6fb9261c"
+    },
+    {
+      "path": "iris_heap_lang/adequacy.v",
+      "bytes": 2273,
+      "mode": "0o664",
+      "sha256": "34b970be34b655c996e9e6a8de622944810c04964474517165ad7cb0b3a79e58"
+    },
+    {
+      "path": "iris_heap_lang/class_instances.v",
+      "bytes": 7462,
+      "mode": "0o664",
+      "sha256": "28b7fefdd82ecc7f77767cca5d86cc325fa269a031a0ff2cac63ba173a26fff4"
+    },
+    {
+      "path": "iris_heap_lang/derived_laws.v",
+      "bytes": 16080,
+      "mode": "0o664",
+      "sha256": "1d1a8e0eac2699f1b4fc0c45a07f9bc11bd6cb1957ab889bb79ed21b9c3edfc2"
+    },
+    {
+      "path": "iris_heap_lang/dune",
+      "bytes": 151,
+      "mode": "0o664",
+      "sha256": "6af4aafab18874e329a64501c195fdf982290c7acb0ccc03d3147b959093f7f9"
+    },
+    {
+      "path": "iris_heap_lang/lang.v",
+      "bytes": 34613,
+      "mode": "0o664",
+      "sha256": "061791a0501e5647838922c75a18f482d90d97f0e5e637c623fafc4cff25516e"
+    },
+    {
+      "path": "iris_heap_lang/lib/arith.v",
+      "bytes": 1522,
+      "mode": "0o664",
+      "sha256": "e3f4fac98e3c3195c8719a68ac740d97663025662e3e01d0506c38b27b135dcd"
+    },
+    {
+      "path": "iris_heap_lang/lib/array.v",
+      "bytes": 10660,
+      "mode": "0o664",
+      "sha256": "f3b628878ad43b8da94e1c3ee3135ad8e2f3cf05f5d0f700b301e412eab8e0b8"
+    },
+    {
+      "path": "iris_heap_lang/lib/assert.v",
+      "bytes": 956,
+      "mode": "0o664",
+      "sha256": "e815cd968e218784e468ab71d562a071c07d8ecbcc7c8237b42f5b12c2c93dd5"
+    },
+    {
+      "path": "iris_heap_lang/lib/atomic_heap.v",
+      "bytes": 11496,
+      "mode": "0o664",
+      "sha256": "dcfdca31126fe1181bd0545957de6ae56223105450984d417755bc478db9e266"
+    },
+    {
+      "path": "iris_heap_lang/lib/clairvoyant_coin.v",
+      "bytes": 2759,
+      "mode": "0o664",
+      "sha256": "d844763aac1ad9d60bcc874b479c5018da1b2b37fbb9119bae832f5c1c1806ae"
+    },
+    {
+      "path": "iris_heap_lang/lib/counter.v",
+      "bytes": 6754,
+      "mode": "0o664",
+      "sha256": "3d147b896c574534000555fa7a4eee31fad3cc263513ce81f240e690d204949c"
+    },
+    {
+      "path": "iris_heap_lang/lib/diverge.v",
+      "bytes": 1138,
+      "mode": "0o664",
+      "sha256": "301488b0966b3de24ad43ca6d8906d17532429d8bacb44450b01a91af061b958"
+    },
+    {
+      "path": "iris_heap_lang/lib/increment.v",
+      "bytes": 8108,
+      "mode": "0o664",
+      "sha256": "6d18f23c064d67b8ceaf6241516f43287db3c6a181ae856d2b787003920d3276"
+    },
+    {
+      "path": "iris_heap_lang/lib/lazy_coin.v",
+      "bytes": 2095,
+      "mode": "0o664",
+      "sha256": "72318a50f40e7a52a90ad402344a940d2e928aaca442b5d95d2c412e726c8e94"
+    },
+    {
+      "path": "iris_heap_lang/lib/lock.v",
+      "bytes": 3731,
+      "mode": "0o664",
+      "sha256": "f23bfa829aa4584379335b4c97a37f3c1f7a56ec0c3931fd8ee801b9ec4d8730"
+    },
+    {
+      "path": "iris_heap_lang/lib/logatom_lock.v",
+      "bytes": 3928,
+      "mode": "0o664",
+      "sha256": "85e54f785393a09e384d15b5a3d219c24b9339260e0d61bbab75cc636ddeeddd"
+    },
+    {
+      "path": "iris_heap_lang/lib/nondet_bool.v",
+      "bytes": 834,
+      "mode": "0o664",
+      "sha256": "569d3537ca357cd02bd3242468280635ff7b52db29c1f110fe0027bac04a8c28"
+    },
+    {
+      "path": "iris_heap_lang/lib/par.v",
+      "bytes": 1712,
+      "mode": "0o664",
+      "sha256": "8296906a184eea17ac4f978f3f3e7ee421cdcc8df8a4044581a35bf7011c57df"
+    },
+    {
+      "path": "iris_heap_lang/lib/rw_lock.v",
+      "bytes": 5028,
+      "mode": "0o664",
+      "sha256": "3e03dd14ec9cd1ceabd9847b6547fa3d914f2e92123dbe7c1ab41504802c6f9d"
+    },
+    {
+      "path": "iris_heap_lang/lib/rw_spin_lock.v",
+      "bytes": 13003,
+      "mode": "0o664",
+      "sha256": "c0ace554ddd2bfe81f6c78512a311118da507c1f033dbb7a6c327f8b95b73cca"
+    },
+    {
+      "path": "iris_heap_lang/lib/spawn.v",
+      "bytes": 2866,
+      "mode": "0o664",
+      "sha256": "a332ba073bdf561d51d32c3738dd3acfc1dcc225e7ac2cb5707ca6481ede56d3"
+    },
+    {
+      "path": "iris_heap_lang/lib/spin_lock.v",
+      "bytes": 4070,
+      "mode": "0o664",
+      "sha256": "9be51aaeac2da83da6cfbde85f973cfee740e214103f0f7bf42792749e30aea5"
+    },
+    {
+      "path": "iris_heap_lang/lib/ticket_lock.v",
+      "bytes": 6629,
+      "mode": "0o664",
+      "sha256": "1f9cffd36d59cda41b3dff251e60848263cf0a2a0ad1a0ffd1b0b98fd062cc43"
+    },
+    {
+      "path": "iris_heap_lang/lib/unwrap.v",
+      "bytes": 549,
+      "mode": "0o664",
+      "sha256": "195464d369a16f82d0418459ebedf385847c920a28fa07ab72e1df1077a0ae28"
+    },
+    {
+      "path": "iris_heap_lang/locations.v",
+      "bytes": 2780,
+      "mode": "0o664",
+      "sha256": "1698c36caf6c5d173f22208212688c6b9a508ebe505c32f3b4108127554886cf"
+    },
+    {
+      "path": "iris_heap_lang/metatheory.v",
+      "bytes": 10023,
+      "mode": "0o664",
+      "sha256": "088339d2775a2c097d6c89de60cf18abdaab3a57704422d23dee53fa5cf5c642"
+    },
+    {
+      "path": "iris_heap_lang/notation.v",
+      "bytes": 7657,
+      "mode": "0o664",
+      "sha256": "1523be7e09196218f94aeb18603b7186fa08f0378154813ec2550c8ebc71104a"
+    },
+    {
+      "path": "iris_heap_lang/pretty.v",
+      "bytes": 1789,
+      "mode": "0o664",
+      "sha256": "f9c196bac6ed1b79719b278078d539e83dd956b9b90270d6419516b02d75d880"
+    },
+    {
+      "path": "iris_heap_lang/primitive_laws.v",
+      "bytes": 33100,
+      "mode": "0o664",
+      "sha256": "5580069d8d3f8af6262cb188d724b270f28c066791e3732e5a0a7ece052c709d"
+    },
+    {
+      "path": "iris_heap_lang/proofmode.v",
+      "bytes": 43812,
+      "mode": "0o664",
+      "sha256": "175e1b3934384ce24018a10ef5c1fc317c8eab188cb44865a449978355cc29a2"
+    },
+    {
+      "path": "iris_heap_lang/proph_erasure.v",
+      "bytes": 34868,
+      "mode": "0o664",
+      "sha256": "2bf045f48c59f1fa4b241d82d2864d680dc217142ec10130de129dcf5dcd19df"
+    },
+    {
+      "path": "iris_heap_lang/tactics.v",
+      "bytes": 4666,
+      "mode": "0o664",
+      "sha256": "47289c777c64d611fe350251e23683f1392556d46599c22a6ff7430bd38add5f"
+    },
+    {
+      "path": "iris_heap_lang/total_adequacy.v",
+      "bytes": 942,
+      "mode": "0o664",
+      "sha256": "0ccb15eabae83d74b10b9693a36a1cb2da7539fbd5d24afa99ed954d509868ed"
+    },
+    {
+      "path": "iris_unstable/.keep",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "iris_unstable/algebra/list.v",
+      "bytes": 23195,
+      "mode": "0o664",
+      "sha256": "029f4da14ff55309108415ef296092df04512d41278903aa524a15411f235c6c"
+    },
+    {
+      "path": "iris_unstable/bi/algebra.v",
+      "bytes": 663,
+      "mode": "0o664",
+      "sha256": "9f483c88f2623ed2310552a050f17a7cc3cdbdcf297aa354abb779ff66155566"
+    },
+    {
+      "path": "iris_unstable/dune",
+      "bytes": 164,
+      "mode": "0o664",
+      "sha256": "73c3bb1f55df5790b3224d6bd4520a3c3c54a5d21b7140c9f7cb42af43ff3ae0"
+    },
+    {
+      "path": "iris_unstable/heap_lang/interpreter.v",
+      "bytes": 36059,
+      "mode": "0o664",
+      "sha256": "d5031393ad3fd791ce3b007d99ff21857b7d5d0e37cc557bb0a530b22eb13b7c"
+    },
+    {
+      "path": "make-package",
+      "bytes": 1292,
+      "mode": "0o775",
+      "sha256": "0ad8ff276481ebe0fee46dc0ed9857054b6dd62dba8eeb2120975c9f5d5ddf78"
+    },
+    {
+      "path": "rocq-iris-deprecated.opam",
+      "bytes": 618,
+      "mode": "0o664",
+      "sha256": "ea4259fabd207c6147e9ee0dbcfb6595e8b1ee1619b9b775705089ba99c38755"
+    },
+    {
+      "path": "rocq-iris-heap-lang.opam",
+      "bytes": 683,
+      "mode": "0o664",
+      "sha256": "6759af2c8d8de7e8c2189e4cb3e36d5f7e653d9aff18fc8aa322b21a475d5533"
+    },
+    {
+      "path": "rocq-iris-unstable.opam",
+      "bytes": 662,
+      "mode": "0o664",
+      "sha256": "cd17f5c86c07bbd4ff7782c50ca7c7c05299ea97ae78d74a0ddcd31a3585ae35"
+    },
+    {
+      "path": "rocq-iris.opam",
+      "bytes": 1386,
+      "mode": "0o664",
+      "sha256": "8076d3be7e63106e6fd4176918bbe09b01ec436c60d81475af4c6d667af7dc59"
+    },
+    {
+      "path": "rocq-lint.sh",
+      "bytes": 548,
+      "mode": "0o775",
+      "sha256": "669e10be0b3dbf4ef41bb7f4d4fffba3910cbab0d0458b870071920b09b86380"
+    },
+    {
+      "path": "test-normalizer.sed",
+      "bytes": 190,
+      "mode": "0o664",
+      "sha256": "861291e0521e8e0c6256a6295b185739ecb5c6eab473280248a5d40e73289034"
+    },
+    {
+      "path": "tests/algebra.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/algebra.v",
+      "bytes": 4985,
+      "mode": "0o664",
+      "sha256": "03ee76145dd706f58b31b288dc8edac4c3875116a5ada25bddde12d6e445cba5"
+    },
+    {
+      "path": "tests/algebra_finite.ref",
+      "bytes": 98,
+      "mode": "0o664",
+      "sha256": "dde63f6f9382cf411dd923344bdd46fabdd01aed5ddb07ace640d346968ee659"
+    },
+    {
+      "path": "tests/algebra_finite.v",
+      "bytes": 414,
+      "mode": "0o664",
+      "sha256": "04c4c51d4c246407e92f868796ce2c37072cc0d7c264a2be480fede66373d1f7"
+    },
+    {
+      "path": "tests/atomic.ref",
+      "bytes": 11021,
+      "mode": "0o664",
+      "sha256": "f32e226d06026e476143dadc64c32e724f2230d2a63802fa7243fe9fa6e65215"
+    },
+    {
+      "path": "tests/atomic.v",
+      "bytes": 5509,
+      "mode": "0o664",
+      "sha256": "913c1a4b8c79f0d91526c08704baf6c019855d7d7d139c2aa06060279208846a"
+    },
+    {
+      "path": "tests/bi.ref",
+      "bytes": 751,
+      "mode": "0o664",
+      "sha256": "138b6a2a24ac06c1f62b245cad4529acab1f4c6b221dc360c9eb6981bdd57d98"
+    },
+    {
+      "path": "tests/bi.v",
+      "bytes": 5622,
+      "mode": "0o664",
+      "sha256": "b713f989435b32fee7df400049ca3d27e65cdfd44c60f12831ad08890d94b1c7"
+    },
+    {
+      "path": "tests/bi_ascii_parsing.ref",
+      "bytes": 94,
+      "mode": "0o664",
+      "sha256": "0726e4f27b69215c6e62b8f2a18f6e89cf3b40f46adb1ac8b9b0e7adedbb7240"
+    },
+    {
+      "path": "tests/bi_ascii_parsing.v",
+      "bytes": 735,
+      "mode": "0o664",
+      "sha256": "62cd4f26a28fbb3048699891706cc06b2f95d67e28487ca00e758e8947470b60"
+    },
+    {
+      "path": "tests/fixpoint.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/fixpoint.v",
+      "bytes": 947,
+      "mode": "0o664",
+      "sha256": "17f5240f66a89cf73e194930d6e0948753f56a0b365e162b3a207d5d109b3b89"
+    },
+    {
+      "path": "tests/gset.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/gset.v",
+      "bytes": 662,
+      "mode": "0o664",
+      "sha256": "b0f46116cf995261c5896ed1d2f95713f089e8d903af96a22cf4f7ade5a2bed2"
+    },
+    {
+      "path": "tests/heap_lang.ref",
+      "bytes": 8208,
+      "mode": "0o664",
+      "sha256": "1b77c72b097684e6a04e442d4be1a925e0a0a2afc0ed9d633e243772b5e15e4a"
+    },
+    {
+      "path": "tests/heap_lang.v",
+      "bytes": 17729,
+      "mode": "0o664",
+      "sha256": "00ac2ada3849f8407eade2025f16d49661da5a536c22eaa16f1a423511c36785"
+    },
+    {
+      "path": "tests/heap_lang_interpreter.ref",
+      "bytes": 998,
+      "mode": "0o664",
+      "sha256": "a7953d23c4f12206505f9446d0683285e8518128db4f0f5677f1245a141d45ab"
+    },
+    {
+      "path": "tests/heap_lang_interpreter.v",
+      "bytes": 1674,
+      "mode": "0o664",
+      "sha256": "4754a29cdcef904035fab5b3f69621fd6cd94e581e2f3e7274aa6ee74f332ac4"
+    },
+    {
+      "path": "tests/heap_lang_printing.ref",
+      "bytes": 4486,
+      "mode": "0o664",
+      "sha256": "3e51ec79982c1139384beb63bde94f1cd8cce8656f669eeb626ce72eef694bcd"
+    },
+    {
+      "path": "tests/heap_lang_printing.v",
+      "bytes": 3025,
+      "mode": "0o664",
+      "sha256": "9266ab0f6d5cd411a76f63f55c84088e8a6649ce871f9ecc6774bb80056fdea7"
+    },
+    {
+      "path": "tests/heap_lang_printing2.ref",
+      "bytes": 741,
+      "mode": "0o664",
+      "sha256": "dad25b211d403a7c9d40c6b93774bb9d2ced1f4e885e4fbe95519b16a477f9ff"
+    },
+    {
+      "path": "tests/heap_lang_printing2.v",
+      "bytes": 1003,
+      "mode": "0o664",
+      "sha256": "d66c231c38430285d591b886298acaf5b7791ff472a68fe93c03522b31b5d320"
+    },
+    {
+      "path": "tests/heap_lang_proph.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/heap_lang_proph.v",
+      "bytes": 3268,
+      "mode": "0o664",
+      "sha256": "ada4d33ef971dcc37e84dd200447acf51c4c56511809d4dee9e41d87b5f34cb6"
+    },
+    {
+      "path": "tests/heapprop.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/heapprop.v",
+      "bytes": 11154,
+      "mode": "0o664",
+      "sha256": "fbcde2553b84e8e8b8318bc02b1acd597b11240b452b2a8bfad5b163c598120d"
+    },
+    {
+      "path": "tests/heapprop_affine.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/heapprop_affine.v",
+      "bytes": 12697,
+      "mode": "0o664",
+      "sha256": "ccd3a18a54a8abd6c19bf64551f701a143831d03d5f474a99835b7268ddd0ce9"
+    },
+    {
+      "path": "tests/ipm_paper.ref",
+      "bytes": 1644,
+      "mode": "0o664",
+      "sha256": "69322e70f164b99d2741a82055f0c2824ba134b68fad5963ce23517cd00837ca"
+    },
+    {
+      "path": "tests/ipm_paper.v",
+      "bytes": 8827,
+      "mode": "0o664",
+      "sha256": "2388c07aa5a30f91be469d7052b6eb417560d9c8cf35857a0719ca0a18d0d630"
+    },
+    {
+      "path": "tests/iprop.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/iprop.v",
+      "bytes": 880,
+      "mode": "0o664",
+      "sha256": "891af9bc097bd698f099b2f86d77698b9d4e83c0255e0b600f7511a1bf9a17ab"
+    },
+    {
+      "path": "tests/iris_notation.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/iris_notation.v",
+      "bytes": 1702,
+      "mode": "0o664",
+      "sha256": "f59c6a0dde3f37cdea30e25e9b72fdfdee2fea6a4402eb3a8594dfb483623594"
+    },
+    {
+      "path": "tests/later_credits_paper.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/later_credits_paper.v",
+      "bytes": 5850,
+      "mode": "0o664",
+      "sha256": "8320bbef59a4245b477a484a81b427c74abde04ccaaca7a8385e87cb5800a141"
+    },
+    {
+      "path": "tests/list_reverse.ref",
+      "bytes": 790,
+      "mode": "0o664",
+      "sha256": "84d53bdf9e3519c00f402f48192869dea416d3619f17204c87b811cb457d8af3"
+    },
+    {
+      "path": "tests/list_reverse.v",
+      "bytes": 1619,
+      "mode": "0o664",
+      "sha256": "7fededf3d25675ca651ef24c96df5c65c153bf6a88c611082a37896764c55c60"
+    },
+    {
+      "path": "tests/lock.ref",
+      "bytes": 285,
+      "mode": "0o664",
+      "sha256": "5c6cfd5db2de30e052d0daba719352166dc96e7b712430487a37277fd3b38f7a"
+    },
+    {
+      "path": "tests/lock.v",
+      "bytes": 2645,
+      "mode": "0o664",
+      "sha256": "3a1240abcc718ba3ce12af8c93a6559868377d479ec93dcf6caf734b24651318"
+    },
+    {
+      "path": "tests/monpred.ref",
+      "bytes": 368,
+      "mode": "0o664",
+      "sha256": "6a3c65057bb97f9e16a58c79b4ea7801ce24ec6a5603bececad38ba157247bbb"
+    },
+    {
+      "path": "tests/monpred.v",
+      "bytes": 720,
+      "mode": "0o664",
+      "sha256": "76b0e96af2de3b5179206cbeb612ff65397d670ce322b9c1393fec47b93ec1e4"
+    },
+    {
+      "path": "tests/mosel_paper.ref",
+      "bytes": 3028,
+      "mode": "0o664",
+      "sha256": "53f5c7bb268661a218c999009d55d5de57a87e742791f1287a5eb27878479546"
+    },
+    {
+      "path": "tests/mosel_paper.v",
+      "bytes": 2304,
+      "mode": "0o664",
+      "sha256": "9cd34dd64facf3cec70b74e183b2ae7baa3dce001949f7e7b5119fd526f9dc7e"
+    },
+    {
+      "path": "tests/mra.ref",
+      "bytes": 119,
+      "mode": "0o664",
+      "sha256": "ed06ee442f20730149ea1e790a08faf81c99cc876d3363eae026755a97219959"
+    },
+    {
+      "path": "tests/mra.v",
+      "bytes": 559,
+      "mode": "0o664",
+      "sha256": "d9b0730d914433681e51dd759f5646b153bab98d09c75c1143d7f291f6aa88ce"
+    },
+    {
+      "path": "tests/one_shot.ref",
+      "bytes": 1053,
+      "mode": "0o664",
+      "sha256": "d208e11dd8205e3f482f81dba2a78c29ff6088e0760298cb366973022e58b39e"
+    },
+    {
+      "path": "tests/one_shot.v",
+      "bytes": 5490,
+      "mode": "0o664",
+      "sha256": "5f8a725be021d49174372192f017ddf17bc664cc98b1a9c50f178d7a8b934dd4"
+    },
+    {
+      "path": "tests/one_shot_once.ref",
+      "bytes": 1087,
+      "mode": "0o664",
+      "sha256": "b605542782601ad3a80cecff93708dfa8a739b9434ab89ba91f176cd43f1839f"
+    },
+    {
+      "path": "tests/one_shot_once.v",
+      "bytes": 5835,
+      "mode": "0o664",
+      "sha256": "7ce9fdeb4c8ad8a140adeae5347d8163344c2233bf3bdf7f03507cfeae7a19cd"
+    },
+    {
+      "path": "tests/proofmode.ref",
+      "bytes": 38089,
+      "mode": "0o664",
+      "sha256": "3b42a3afbd51b2281012de1b10e1ed37ae1e4addc90ff731766c84a81920a537"
+    },
+    {
+      "path": "tests/proofmode.v",
+      "bytes": 88456,
+      "mode": "0o664",
+      "sha256": "1cb54a7f74be16e1acd4f0fb062e71d927d3971f3f9f0fcad8437d63facbfbc2"
+    },
+    {
+      "path": "tests/proofmode_ascii.ref",
+      "bytes": 5119,
+      "mode": "0o664",
+      "sha256": "d324a571bfc4b57d8a3f4effe953d31f6116ad14f81ab1aeaec1c3f4be2cda55"
+    },
+    {
+      "path": "tests/proofmode_ascii.v",
+      "bytes": 11200,
+      "mode": "0o664",
+      "sha256": "1d220a799e636862f6fd5cc3c6ca55d5cde427a46cbd7c68e1c692d077773d86"
+    },
+    {
+      "path": "tests/proofmode_iris.ref",
+      "bytes": 10024,
+      "mode": "0o664",
+      "sha256": "c9f71f0b8fef9b1ae87d1588a0443aade0379c8a33e368064c6e132f86e6eef5"
+    },
+    {
+      "path": "tests/proofmode_iris.v",
+      "bytes": 13731,
+      "mode": "0o664",
+      "sha256": "cdfb1b7f4c74b13b8fa9269e84cd08ccdc33fccf7994b61ca9d89e2496648970"
+    },
+    {
+      "path": "tests/proofmode_monpred.ref",
+      "bytes": 1808,
+      "mode": "0o664",
+      "sha256": "4e417291f0971b94d422ea2eee9d81c76f1a6da11697b836bd0842bdc785268d"
+    },
+    {
+      "path": "tests/proofmode_monpred.v",
+      "bytes": 7874,
+      "mode": "0o664",
+      "sha256": "387920975ed92e1801a928b17901e78cd346e78d879546104f492fc4787e311b"
+    },
+    {
+      "path": "tests/proofmode_siprop.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/proofmode_siprop.v",
+      "bytes": 681,
+      "mode": "0o664",
+      "sha256": "48307b588f4bf3b6df56c8e77d661ef777914d49f6d212bedce16193804f41f4"
+    },
+    {
+      "path": "tests/sbi_unfold.ref",
+      "bytes": 3075,
+      "mode": "0o664",
+      "sha256": "8dbbe64553d2fab0dceab37e507b3790ad52219e50f21bc42a7304caa70c7832"
+    },
+    {
+      "path": "tests/sbi_unfold.v",
+      "bytes": 2151,
+      "mode": "0o664",
+      "sha256": "a14a114d92929ebe6814705023a1e987391ca7d0977226c1ae1163dd74426070"
+    },
+    {
+      "path": "tests/siprop.ref",
+      "bytes": 706,
+      "mode": "0o664",
+      "sha256": "8a376427a4b41edc94045fe1784482ad7131d186d3368002e4a35d24e1d6248f"
+    },
+    {
+      "path": "tests/siprop.v",
+      "bytes": 819,
+      "mode": "0o664",
+      "sha256": "95dd1818dd8f800fec4af8afd323a5c43a55c0ae96051b34dc564425d5fa75c8"
+    },
+    {
+      "path": "tests/string_ident.ref",
+      "bytes": 482,
+      "mode": "0o664",
+      "sha256": "08496d24b69e8c77f059ab7ed914a90afc1722e36d1f21ed65bfd87df991e308"
+    },
+    {
+      "path": "tests/string_ident.v",
+      "bytes": 1031,
+      "mode": "0o664",
+      "sha256": "b553836c4ac02e24a82dc62d687fa013dc307ed928920f3e6bb225496231b6ed"
+    },
+    {
+      "path": "tests/telescopes.ref",
+      "bytes": 2648,
+      "mode": "0o664",
+      "sha256": "23692e5b54dbaa31dbd107e48bd5963bdecc87f4244d9194bd29d73069479cce"
+    },
+    {
+      "path": "tests/telescopes.v",
+      "bytes": 7160,
+      "mode": "0o664",
+      "sha256": "6ba442dd3879993264b15e46f3b8ecd526fc91787a7f47585e209999dada0d83"
+    },
+    {
+      "path": "tests/tree_sum.ref",
+      "bytes": 0,
+      "mode": "0o664",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "tests/tree_sum.v",
+      "bytes": 1975,
+      "mode": "0o664",
+      "sha256": "c71c2c3086d56bc4e2103024cf2715887ccde5c79420df7dd23dbc9598412fb5"
+    },
+    {
+      "path": "tex/.gitignore",
+      "bytes": 138,
+      "mode": "0o664",
+      "sha256": "7c458575eb5aee21bde7db8b21f79ced6bb6e0196b80f43d6b3c432edd494965"
+    },
+    {
+      "path": "tex/Makefile",
+      "bytes": 75,
+      "mode": "0o664",
+      "sha256": "3a9dee3c345a4b4e7e523bde385ac32072d10b1adaaed79e8944c916fcc8c314"
+    },
+    {
+      "path": "tex/algebra.tex",
+      "bytes": 16558,
+      "mode": "0o664",
+      "sha256": "dd573ef8ad8f9e7d3f626a6e90de73a79b4f3171a4ff085cd29894168d1130df"
+    },
+    {
+      "path": "tex/base-logic.tex",
+      "bytes": 15962,
+      "mode": "0o664",
+      "sha256": "a060a405ff838994bad28b85862296cb7b04f556fbdb5e5be33f4a1973f3a72f"
+    },
+    {
+      "path": "tex/bib.bib",
+      "bytes": 116476,
+      "mode": "0o664",
+      "sha256": "cc09ff40114261e9b4291a58fb124fb43bee94d489c224656a3b3910a5955ea4"
+    },
+    {
+      "path": "tex/constructions.tex",
+      "bytes": 17381,
+      "mode": "0o664",
+      "sha256": "eef11a65691b225e10573b99c772d2a34f86faef3e4b678b2a4520bbd67d85a9"
+    },
+    {
+      "path": "tex/derived.tex",
+      "bytes": 19939,
+      "mode": "0o664",
+      "sha256": "4c177734e13ceb6d1149bdb119508bc2a2250febff3d28b8a20af2f24d1701d7"
+    },
+    {
+      "path": "tex/extended-logic.tex",
+      "bytes": 20613,
+      "mode": "0o664",
+      "sha256": "6c498830d4fd5b0bd5fd229f378f0b616ead80348e70493838104cdd2a85a275"
+    },
+    {
+      "path": "tex/heaplang.sty",
+      "bytes": 3649,
+      "mode": "0o664",
+      "sha256": "5fccf24af6482ab0693fd1ee8dd02341b88f79471f1bab3b2e9a8f62e18065f1"
+    },
+    {
+      "path": "tex/heaplang.tex",
+      "bytes": 12856,
+      "mode": "0o664",
+      "sha256": "162feae14225553c4eb605e14327fc6c9adcc6b98a17a23c0dff5359335e8bcf"
+    },
+    {
+      "path": "tex/iris.sty",
+      "bytes": 16980,
+      "mode": "0o664",
+      "sha256": "c0e1067c4e3d2223ef9327f5411bed07fa31200bc77159fd023bc16424ceab71"
+    },
+    {
+      "path": "tex/iris.tex",
+      "bytes": 1889,
+      "mode": "0o664",
+      "sha256": "c3329f4c57f08f477d9cae1057312b7b2bc7cd873c5ebceb79fbc54dee8d961c"
+    },
+    {
+      "path": "tex/language.tex",
+      "bytes": 4385,
+      "mode": "0o664",
+      "sha256": "3cfc62c64aa13c7a8742888fc35a098af377fc4fd5d2fa6f35038b25e60827c3"
+    },
+    {
+      "path": "tex/listproc.sty",
+      "bytes": 10344,
+      "mode": "0o664",
+      "sha256": "0ca2165cb977a558a804a9c72ab4cc5a41543bb3fcbc7cb2381ef464b46f87a8"
+    },
+    {
+      "path": "tex/locallabel.sty",
+      "bytes": 4405,
+      "mode": "0o664",
+      "sha256": "9a544909b5e3105fffe78217747913ef7e6bd39a83a2a130a36f656d8867e04c"
+    },
+    {
+      "path": "tex/model.tex",
+      "bytes": 8218,
+      "mode": "0o664",
+      "sha256": "70b6c27efb30c45ae2a0473637d328b43e9499d180a27fc6a3b572a81ec6d96a"
+    },
+    {
+      "path": "tex/paradoxes.tex",
+      "bytes": 14508,
+      "mode": "0o664",
+      "sha256": "1ef6d4cbfb891fcd72129e3baa445352409b690eb6508facd5a39acaf9f516e9"
+    },
+    {
+      "path": "tex/pftools.sty",
+      "bytes": 5226,
+      "mode": "0o664",
+      "sha256": "5e648faebf97833d965c75c76d3b9a81c0b4fa18f4296ee48dd9c5c7c1e786d9"
+    },
+    {
+      "path": "tex/program-logic.tex",
+      "bytes": 37850,
+      "mode": "0o664",
+      "sha256": "aab11db874089db80095fcd3a42eeb1cf057300acaa1e69d0fc1792aa5a989bd"
+    },
+    {
+      "path": "tex/setup.tex",
+      "bytes": 3720,
+      "mode": "0o664",
+      "sha256": "d53f52109b8e21cec4c5ec5553da518ac2ddffcd89a84d5588f43c9f72c15cc7"
+    },
+    {
+      "path": "tex/test.tex",
+      "bytes": 4718,
+      "mode": "0o664",
+      "sha256": "ea394e593db32a6c307e50113c195f718b0fdd93ff48d95330e57c24a54a6149"
+    },
+    {
+      "path": "tex/upload",
+      "bytes": 138,
+      "mode": "0o775",
+      "sha256": "8c5ca8ec8788a37d01027d65eef6a4b03d3dc5c561c9591de46f7f792351f26c"
+    }
+  ]
+}

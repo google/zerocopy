@@ -1,0 +1,50 @@
+{
+  "milestones": [
+    {
+      "id": "E04",
+      "assessment": "Actual bounded prototype and negative controls completed for the explicitly admitted examples; parent owns review/completion/publication.",
+      "performed": [
+        "Caller-owned source/root/configuration/tool request and actual rustc_driver capture after normal analysis",
+        "24-owner baseline census with macro expansion, selected cfg body, full typed MIR projection, generic/trait/constant/closure/Drop instance graph",
+        "Positive independent consumer reobservation on six caller selections including a two-file source graph",
+        "Final 34-control matrix with exact statuses: 5 captures, 6 accepted checks, 23 rejections",
+        "Same-label body mutation, coherent Drop erasure, wrong item/config/instance/target and omitted source/owner/edge controls",
+        "Five valid Rust native all-u8 controls; 1280 results match expected source variants"
+      ],
+      "trust_frontier": "Caller source selection, rustc/private query semantics and imported metadata/runtime, owned observer and reader; cooperative filesystem/process assumptions",
+      "not_claimed": [
+        "General Rust/Cargo/procedural-macro frontend or all configuration/target/generated-owner completeness",
+        "A verified parser/serializer for rustc debug-rendered payload fields",
+        "Rust-to-model or first-bad-prefix source-safety theorem",
+        "Proof-producing native binary or verified compiler",
+        "OS isolation or authenticated producer-stage execution/provenance"
+      ]
+    },
+    {
+      "id": "E10",
+      "assessment": "Unestablished; no proof attempted in this E04 wave",
+      "remaining": "Actual Rust source-to-model correspondence, safety reflection/first bad prefix and exact theorem/claim binding require separate work."
+    }
+  ],
+  "source_questions": [
+    "MR05",
+    "MR21",
+    "MR22",
+    "AS06",
+    "AS12",
+    "AS24"
+  ],
+  "scope": "Prototype execution evidence, not checkbox authority or a universal frontend theorem.",
+  "related_research_questions": [
+    {
+      "id": "P127",
+      "answered_scope": "Actual caller-selected source/configuration/owner/instance binding with complete admitted MIR payload and negative controls.",
+      "not_closed": "No end-to-end pre-optimization Rust-to-model certificate or source-semantics theorem."
+    },
+    {
+      "id": "P131",
+      "answered_scope": "None of the requested memory-to-bytes/initialization correspondence theorem.",
+      "not_closed": "Local Guard/destructor capture and native return controls do not establish runtime bytes/storage correspondence."
+    }
+  ]
+}

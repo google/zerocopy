@@ -1,0 +1,2302 @@
+DIGEST 34176fc1072ff28499c452db978dbbae
+Fsimuliris.simulation.lifting
+R41:48 simuliris.simulation.language <> <> lib
+R50:54 simuliris.simulation.slsls <> <> lib
+R82:86 iris.bi.bi <> <> lib
+R88:107 iris.bi.lib.fixpoint_mono <> <> lib
+R145:153 iris.proofmode.proofmode <> <> lib
+R164:165 iris.bi.bi bi <> mod
+sec 177:180 <> lang
+var  194:195 lang Λ
+R199:206 simuliris.simulation.language <> language rec
+R232:235 simuliris.simulation.language <> expr proj
+R237:238 simuliris.simulation.lifting <> lang.Λ var
+R246:249 simuliris.simulation.language <> prog abbrev
+R251:252 simuliris.simulation.lifting <> lang.Λ var
+rec 267:275 <> pure_step
+proj 306:319 <> pure_step_safe
+proj 355:367 <> pure_step_det
+R286:289 simuliris.simulation.language <> expr proj
+R291:292 simuliris.simulation.lifting <> lang.Λ var
+binder 278:279 <> e1:2
+binder 281:282 <> e2:3
+binder 321:321 <> P:5
+binder 323:325 <> σ1:6
+R329:337 simuliris.simulation.language <> reducible def
+R339:339 simuliris.simulation.lifting <> P:5 var
+R341:342 simuliris.simulation.lifting <> e1:2 var
+R344:346 simuliris.simulation.lifting <> σ1:6 var
+binder 369:369 <> P:8
+binder 371:373 <> σ1:9
+binder 375:377 <> e2':10
+binder 379:381 <> σ2:11
+binder 383:385 <> efs:12
+R426:430 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R396:404 simuliris.simulation.language <> prim_step ind
+R406:406 simuliris.simulation.lifting <> P:8 var
+R408:409 simuliris.simulation.lifting <> e1:2 var
+R411:413 simuliris.simulation.lifting <> σ1:9 var
+R415:417 simuliris.simulation.lifting <> e2':10 var
+R419:421 simuliris.simulation.lifting <> σ2:11 var
+R423:425 simuliris.simulation.lifting <> efs:12 var
+R440:444 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R434:436 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R431:433 simuliris.simulation.lifting <> σ2:11 var
+R437:439 simuliris.simulation.lifting <> σ1:9 var
+R453:457 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R448:450 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R445:447 simuliris.simulation.lifting <> e2':10 var
+R451:452 simuliris.simulation.lifting <> e2:3 var
+R461:463 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R458:460 simuliris.simulation.lifting <> efs:12 var
+R464:465 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+abbrev 486:498 <> pure_steps_tp
+R504:510 Stdlib.Lists.List <> Forall2 ind
+R513:515 stdpp.relations <> rtc ind
+R517:525 simuliris.simulation.lifting <> pure_step rec
+ind 672:679 <> PureExec
+constr 728:736 <> pure_exec
+rec 672:679 <> PureExec
+proj 728:736 <> pure_exec
+binder 682:683 <> φ:14
+R698:700 Corelib.Init.Datatypes <> nat ind
+binder 694:694 <> n:15
+R712:715 simuliris.simulation.language <> expr proj
+R717:718 simuliris.simulation.lifting <> lang.Λ var
+binder 704:705 <> e1:16
+binder 707:708 <> e2:17
+R742:746 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R740:741 simuliris.simulation.lifting <> φ:14 var
+R747:752 stdpp.relations <> nsteps ind
+R764:764 simuliris.simulation.lifting <> n:15 var
+R766:767 simuliris.simulation.lifting <> e1:16 var
+R769:770 simuliris.simulation.lifting <> e2:17 var
+R754:762 simuliris.simulation.lifting <> pure_step rec
+R792:799 simuliris.simulation.lifting <> PureExec class
+R835:867 simuliris.simulation.language <> fill proj
+prf 878:890 <> pure_step_ctx
+R897:900 simuliris.simulation.language <> ectx proj
+R902:903 simuliris.simulation.lifting <> lang.Λ var
+binder 893:893 <> K:20
+binder 906:907 <> e1:21
+binder 909:910 <> e2:22
+R933:941 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R918:926 simuliris.simulation.lifting <> pure_step rec
+R928:929 simuliris.simulation.lifting <> e1:21 var
+R931:932 simuliris.simulation.lifting <> e2:22 var
+R942:950 simuliris.simulation.lifting <> pure_step rec
+R953:953 simuliris.simulation.lifting <> K:20 var
+R955:956 simuliris.simulation.lifting <> e1:21 var
+R960:960 simuliris.simulation.lifting <> K:20 var
+R962:963 simuliris.simulation.lifting <> e2:22 var
+R1021:1029 simuliris.simulation.language <> reducible def
+R1062:1075 simuliris.simulation.language <> fill_prim_step thm
+R1136:1159 simuliris.simulation.language <> fill_reducible_prim_step thm
+prf 1259:1278 <> pure_step_nsteps_ctx
+R1285:1288 simuliris.simulation.language <> ectx proj
+R1290:1291 simuliris.simulation.lifting <> lang.Λ var
+binder 1281:1281 <> K:23
+binder 1294:1294 <> n:24
+binder 1296:1297 <> e1:25
+binder 1299:1300 <> e2:26
+R1332:1340 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1308:1313 stdpp.relations <> nsteps ind
+R1325:1325 simuliris.simulation.lifting <> n:24 var
+R1327:1328 simuliris.simulation.lifting <> e1:25 var
+R1330:1331 simuliris.simulation.lifting <> e2:26 var
+R1315:1323 simuliris.simulation.lifting <> pure_step rec
+R1341:1346 stdpp.relations <> nsteps ind
+R1358:1358 simuliris.simulation.lifting <> n:24 var
+R1361:1361 simuliris.simulation.lifting <> K:23 var
+R1363:1364 simuliris.simulation.lifting <> e1:25 var
+R1368:1368 simuliris.simulation.lifting <> K:23 var
+R1370:1371 simuliris.simulation.lifting <> e2:26 var
+R1348:1356 simuliris.simulation.lifting <> pure_step rec
+R1396:1408 simuliris.simulation.lifting <> pure_step_ctx thm
+R1411:1427 stdpp.relations <> nsteps_congruence thm
+prf 1444:1460 <> rtc_pure_step_ctx
+R1467:1470 simuliris.simulation.language <> ectx proj
+R1472:1473 simuliris.simulation.lifting <> lang.Λ var
+binder 1463:1463 <> K:27
+binder 1476:1477 <> e1:28
+binder 1479:1480 <> e2:29
+R1507:1511 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1488:1490 stdpp.relations <> rtc ind
+R1502:1503 simuliris.simulation.lifting <> e1:28 var
+R1505:1506 simuliris.simulation.lifting <> e2:29 var
+R1492:1500 simuliris.simulation.lifting <> pure_step rec
+R1512:1514 stdpp.relations <> rtc ind
+R1527:1527 simuliris.simulation.lifting <> K:27 var
+R1529:1530 simuliris.simulation.lifting <> e1:28 var
+R1534:1534 simuliris.simulation.lifting <> K:27 var
+R1536:1537 simuliris.simulation.lifting <> e2:29 var
+R1516:1524 simuliris.simulation.lifting <> pure_step rec
+R1562:1575 stdpp.relations <> rtc_congruence thm
+R1578:1590 simuliris.simulation.lifting <> pure_step_ctx thm
+prf 1678:1690 <> pure_exec_ctx
+R1697:1700 simuliris.simulation.language <> ectx proj
+R1702:1703 simuliris.simulation.lifting <> lang.Λ var
+binder 1693:1693 <> K:30
+binder 1706:1707 <> φ:31
+binder 1709:1709 <> n:32
+binder 1711:1712 <> e1:33
+binder 1714:1715 <> e2:34
+R1742:1750 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1723:1730 simuliris.simulation.lifting <> PureExec class
+R1740:1741 simuliris.simulation.lifting <> e2:34 var
+R1737:1738 simuliris.simulation.lifting <> e1:33 var
+R1735:1735 simuliris.simulation.lifting <> n:32 var
+R1732:1733 simuliris.simulation.lifting <> φ:31 var
+R1751:1758 simuliris.simulation.lifting <> PureExec class
+R1773:1773 simuliris.simulation.lifting <> K:30 var
+R1775:1776 simuliris.simulation.lifting <> e2:34 var
+R1766:1766 simuliris.simulation.lifting <> K:30 var
+R1768:1769 simuliris.simulation.lifting <> e1:33 var
+R1763:1763 simuliris.simulation.lifting <> n:32 var
+R1760:1761 simuliris.simulation.lifting <> φ:31 var
+R1798:1805 simuliris.simulation.lifting <> PureExec class
+R1820:1839 simuliris.simulation.lifting <> pure_step_nsteps_ctx thm
+rec 1857:1870 <> pure_base_step
+proj 1899:1917 <> pure_base_step_safe
+proj 1956:1973 <> pure_base_step_det
+R1881:1884 simuliris.simulation.language <> expr proj
+R1886:1887 simuliris.simulation.lifting <> lang.Λ var
+binder 1873:1874 <> e1:35
+binder 1876:1877 <> e2:36
+binder 1919:1919 <> P:38
+binder 1921:1923 <> σ1:39
+R1927:1940 simuliris.simulation.language <> base_reducible def
+R1942:1942 simuliris.simulation.lifting <> P:38 var
+R1944:1945 simuliris.simulation.lifting <> e1:35 var
+R1947:1949 simuliris.simulation.lifting <> σ1:39 var
+binder 1975:1975 <> P:41
+binder 1977:1979 <> σ1:42
+binder 1981:1983 <> e2':43
+binder 1985:1987 <> σ2:44
+binder 1989:1991 <> efs:45
+R2031:2035 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2001:2009 simuliris.simulation.language <> base_step proj
+R2028:2030 simuliris.simulation.lifting <> efs:45 var
+R2024:2026 simuliris.simulation.lifting <> σ2:44 var
+R2020:2022 simuliris.simulation.lifting <> e2':43 var
+R2016:2018 simuliris.simulation.lifting <> σ1:42 var
+R2013:2014 simuliris.simulation.lifting <> e1:35 var
+R2011:2011 simuliris.simulation.lifting <> P:41 var
+R2045:2049 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2039:2041 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2036:2038 simuliris.simulation.lifting <> σ2:44 var
+R2042:2044 simuliris.simulation.lifting <> σ1:42 var
+R2058:2062 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2053:2055 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2050:2052 simuliris.simulation.lifting <> e2':43 var
+R2056:2057 simuliris.simulation.lifting <> e2:36 var
+R2066:2068 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2063:2065 simuliris.simulation.lifting <> efs:45 var
+R2069:2070 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+prf 2086:2109 <> pure_base_step_pure_step
+binder 2111:2112 <> e1:47
+binder 2114:2115 <> e2:48
+R2139:2143 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2119:2132 simuliris.simulation.lifting <> pure_base_step rec
+R2134:2135 simuliris.simulation.lifting <> e1:47 var
+R2137:2138 simuliris.simulation.lifting <> e2:48 var
+R2144:2152 simuliris.simulation.lifting <> pure_step rec
+R2154:2155 simuliris.simulation.lifting <> e1:47 var
+R2157:2158 simuliris.simulation.lifting <> e2:48 var
+R2302:2315 simuliris.simulation.language <> base_prim_step thm
+R2351:2374 simuliris.simulation.language <> base_reducible_prim_step thm
+ind 2491:2501 <> SafeImplies
+constr 2541:2552 <> safe_implies
+rec 2491:2501 <> SafeImplies
+proj 2541:2552 <> safe_implies
+binder 2504:2505 <> ϕ:49
+binder 2515:2515 <> P:50
+R2522:2525 simuliris.simulation.language <> expr proj
+R2527:2528 simuliris.simulation.lifting <> lang.Λ var
+binder 2518:2518 <> e:51
+binder 2531:2532 <> σ:52
+R2567:2571 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2556:2559 simuliris.simulation.language <> safe def
+R2561:2561 simuliris.simulation.lifting <> P:50 var
+R2563:2563 simuliris.simulation.lifting <> e:51 var
+R2565:2566 simuliris.simulation.lifting <> σ:52 var
+R2572:2573 simuliris.simulation.lifting <> ϕ:49 var
+prf 2585:2603 <> safe_implies_weaken
+binder 2605:2605 <> P:55
+binder 2607:2607 <> e:56
+binder 2609:2610 <> σ:57
+binder 2613:2614 <> ϕ:58
+binder 2616:2617 <> ψ:59
+R2634:2634 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2644:2653 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2637:2641 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2635:2636 simuliris.simulation.lifting <> ϕ:58 var
+R2642:2643 simuliris.simulation.lifting <> ψ:59 var
+R2675:2679 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2654:2664 simuliris.simulation.lifting <> SafeImplies class
+R2673:2674 simuliris.simulation.lifting <> σ:57 var
+R2671:2671 simuliris.simulation.lifting <> e:56 var
+R2669:2669 simuliris.simulation.lifting <> P:55 var
+R2666:2667 simuliris.simulation.lifting <> ϕ:58 var
+R2680:2690 simuliris.simulation.lifting <> SafeImplies class
+R2699:2700 simuliris.simulation.lifting <> σ:57 var
+R2697:2697 simuliris.simulation.lifting <> e:56 var
+R2695:2695 simuliris.simulation.lifting <> P:55 var
+R2692:2693 simuliris.simulation.lifting <> ψ:59 var
+prf 2762:2775 <> safe_prim_step
+binder 2777:2777 <> P:60
+R2784:2787 simuliris.simulation.language <> expr proj
+R2789:2790 simuliris.simulation.lifting <> lang.Λ var
+binder 2780:2780 <> e:61
+binder 2793:2794 <> σ:62
+R2813:2817 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2802:2805 simuliris.simulation.language <> safe def
+R2807:2807 simuliris.simulation.lifting <> P:60 var
+R2809:2809 simuliris.simulation.lifting <> e:61 var
+R2811:2812 simuliris.simulation.lifting <> σ:62 var
+R2818:2821 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R2828:2829 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 2822:2823 <> e':63
+binder 2825:2827 <> σ':64
+R2856:2860 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2830:2838 simuliris.simulation.language <> prim_step ind
+R2840:2840 simuliris.simulation.lifting <> P:60 var
+R2842:2842 simuliris.simulation.lifting <> e:61 var
+R2844:2845 simuliris.simulation.lifting <> σ:62 var
+R2847:2848 simuliris.simulation.lifting <> e':63 var
+R2850:2852 simuliris.simulation.lifting <> σ':64 var
+R2854:2855 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R2861:2864 simuliris.simulation.language <> safe def
+R2866:2866 simuliris.simulation.lifting <> P:60 var
+R2868:2869 simuliris.simulation.lifting <> e':63 var
+R2871:2873 simuliris.simulation.lifting <> σ':64 var
+R2927:2941 simuliris.simulation.language <> pool_steps_safe thm
+R3004:3012 simuliris.simulation.language <> Pool_step constr
+R3018:3019 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R3025:3026 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R3028:3029 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+prf 3055:3077 <> irreducible_reach_stuck
+binder 3079:3079 <> P:65
+binder 3081:3081 <> e:66
+binder 3083:3084 <> σ:67
+R3107:3111 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3100:3102 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3092:3097 simuliris.simulation.language <> to_val def
+R3099:3099 simuliris.simulation.lifting <> e:66 var
+R3103:3106 Corelib.Init.Datatypes <> None constr
+R3130:3134 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3112:3122 simuliris.simulation.language <> irreducible def
+R3124:3124 simuliris.simulation.lifting <> P:65 var
+R3126:3126 simuliris.simulation.lifting <> e:66 var
+R3128:3129 simuliris.simulation.lifting <> σ:67 var
+R3135:3145 simuliris.simulation.language <> reach_stuck def
+R3147:3147 simuliris.simulation.lifting <> P:65 var
+R3149:3149 simuliris.simulation.lifting <> e:66 var
+R3151:3152 simuliris.simulation.lifting <> σ:67 var
+R3195:3195 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3197:3197 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3204:3205 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+prf 3303:3319 <> pool_safe_implies
+binder 3322:3322 <> P:68
+binder 3324:3324 <> e:69
+binder 3326:3327 <> σ:70
+binder 3329:3330 <> ϕ:71
+binder 3332:3332 <> T:72
+binder 3334:3335 <> π:73
+binder 3337:3337 <> K:74
+R3349:3359 simuliris.simulation.lifting <> SafeImplies class
+R3368:3369 simuliris.simulation.lifting <> σ:70 var
+R3366:3366 simuliris.simulation.lifting <> e:69 var
+R3364:3364 simuliris.simulation.lifting <> P:68 var
+R3361:3362 simuliris.simulation.lifting <> ϕ:71 var
+binder 3341:3346 <> Hsafei:75
+R3393:3397 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3377:3385 simuliris.simulation.language <> pool_safe def
+R3387:3387 simuliris.simulation.lifting <> P:68 var
+R3389:3389 simuliris.simulation.lifting <> T:72 var
+R3391:3392 simuliris.simulation.lifting <> σ:70 var
+R3423:3427 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3405:3407 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3399:3402 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R3403:3404 simuliris.simulation.lifting <> π:73 var
+R3398:3398 simuliris.simulation.lifting <> T:72 var
+R3408:3411 Corelib.Init.Datatypes <> Some constr
+R3414:3417 simuliris.simulation.language <> fill proj
+R3421:3421 simuliris.simulation.lifting <> e:69 var
+R3419:3419 simuliris.simulation.lifting <> K:74 var
+R3428:3429 simuliris.simulation.lifting <> ϕ:71 var
+R3487:3495 simuliris.simulation.language <> fill_safe thm
+R3505:3526 simuliris.simulation.language <> pool_safe_threads_safe thm
+prf 3551:3573 <> safe_reach_safe_implies
+binder 3575:3575 <> e:76
+binder 3577:3578 <> σ:77
+binder 3580:3581 <> Φ:78
+binder 3583:3583 <> P:79
+binder 3585:3586 <> ϕ:80
+R3595:3605 simuliris.simulation.lifting <> SafeImplies class
+R3614:3615 simuliris.simulation.lifting <> σ:77 var
+R3612:3612 simuliris.simulation.lifting <> e:76 var
+R3610:3610 simuliris.simulation.lifting <> P:79 var
+R3607:3608 simuliris.simulation.lifting <> ϕ:80 var
+binder 3589:3591 <> Him:81
+R3623:3623 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3651:3656 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3626:3630 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3624:3625 simuliris.simulation.lifting <> ϕ:80 var
+R3631:3640 simuliris.simulation.language <> safe_reach def
+R3642:3642 simuliris.simulation.lifting <> P:79 var
+R3644:3644 simuliris.simulation.lifting <> e:76 var
+R3646:3647 simuliris.simulation.lifting <> σ:77 var
+R3649:3650 simuliris.simulation.lifting <> Φ:78 var
+R3657:3666 simuliris.simulation.language <> safe_reach def
+R3668:3668 simuliris.simulation.lifting <> P:79 var
+R3670:3670 simuliris.simulation.lifting <> e:76 var
+R3672:3673 simuliris.simulation.lifting <> σ:77 var
+R3675:3676 simuliris.simulation.lifting <> Φ:78 var
+prf 3904:3924 <> pool_safe_implies_app
+binder 3926:3926 <> e:82
+binder 3928:3928 <> T:83
+binder 3930:3931 <> π:84
+binder 3933:3933 <> K:85
+binder 3935:3936 <> σ:86
+binder 3938:3938 <> P:87
+binder 3940:3941 <> ϕ:88
+binder 3943:3943 <> Q:89
+R3952:3962 simuliris.simulation.lifting <> SafeImplies class
+R3971:3972 simuliris.simulation.lifting <> σ:86 var
+R3969:3969 simuliris.simulation.lifting <> e:82 var
+R3967:3967 simuliris.simulation.lifting <> P:87 var
+R3964:3965 simuliris.simulation.lifting <> ϕ:88 var
+binder 3946:3948 <> Him:90
+R4006:4014 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R3988:3990 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3982:3985 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R3986:3987 simuliris.simulation.lifting <> π:84 var
+R3981:3981 simuliris.simulation.lifting <> T:83 var
+R3991:3994 Corelib.Init.Datatypes <> Some constr
+R3997:4000 simuliris.simulation.language <> fill proj
+R4004:4004 simuliris.simulation.lifting <> e:82 var
+R4002:4002 simuliris.simulation.lifting <> K:85 var
+R4031:4039 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4015:4023 simuliris.simulation.language <> pool_safe def
+R4025:4025 simuliris.simulation.lifting <> P:87 var
+R4027:4027 simuliris.simulation.lifting <> T:83 var
+R4029:4030 simuliris.simulation.lifting <> σ:86 var
+R4040:4040 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4049:4054 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4043:4047 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4041:4042 simuliris.simulation.lifting <> ϕ:88 var
+R4048:4048 simuliris.simulation.lifting <> Q:89 var
+R4055:4055 simuliris.simulation.lifting <> Q:89 var
+R4100:4116 simuliris.simulation.lifting <> pool_safe_implies thm
+prf 4159:4173 <> safe_reach_pure
+binder 4175:4175 <> e:91
+binder 4177:4178 <> e':92
+binder 4180:4180 <> n:93
+binder 4182:4183 <> σ:94
+binder 4185:4185 <> p:95
+binder 4187:4188 <> ϕ:96
+binder 4190:4191 <> Φ:97
+R4202:4209 simuliris.simulation.lifting <> PureExec class
+R4218:4219 simuliris.simulation.lifting <> e':92 var
+R4216:4216 simuliris.simulation.lifting <> e:91 var
+R4214:4214 simuliris.simulation.lifting <> n:93 var
+R4211:4212 simuliris.simulation.lifting <> ϕ:96 var
+binder 4194:4198 <> Hpure:98
+R4229:4233 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4227:4228 simuliris.simulation.lifting <> ϕ:96 var
+R4255:4259 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4234:4243 simuliris.simulation.language <> safe_reach def
+R4245:4245 simuliris.simulation.lifting <> p:95 var
+R4247:4248 simuliris.simulation.lifting <> e':92 var
+R4250:4251 simuliris.simulation.lifting <> σ:94 var
+R4253:4254 simuliris.simulation.lifting <> Φ:97 var
+R4260:4269 simuliris.simulation.language <> safe_reach def
+R4271:4271 simuliris.simulation.lifting <> p:95 var
+R4273:4273 simuliris.simulation.lifting <> e:91 var
+R4275:4276 simuliris.simulation.lifting <> σ:94 var
+R4278:4279 simuliris.simulation.lifting <> Φ:97 var
+R4573:4587 simuliris.simulation.language <> safe_reach_step thm
+R4626:4629 simuliris.simulation.lifting lang <> sec
+R4653:4663 simuliris.simulation.lifting <> SafeImplies class
+R4703:4710 simuliris.simulation.lifting <> PureExec class
+sec 4739:4745 <> fix_sim
+var  4759:4762 fix_sim PROP
+R4766:4767 iris.bi.interface <> bi rec
+R4773:4778 iris.bi.updates <> BiBUpd class
+R4780:4783 simuliris.simulation.lifting <> PROP:99 var
+R4787:4794 iris.bi.extensions <> BiAffine class
+R4796:4799 simuliris.simulation.lifting <> PROP:99 var
+R4803:4814 iris.bi.extensions <> BiPureForall class
+R4816:4819 simuliris.simulation.lifting <> PROP:99 var
+var  4834:4835 fix_sim Λ
+var  4850:4850 fix_sim s
+R4839:4846 simuliris.simulation.language <> language rec
+R4854:4864 simuliris.simulation.slsls <> simulirisGS class
+R4866:4869 simuliris.simulation.lifting <> fix_sim.PROP var
+R4871:4872 simuliris.simulation.lifting <> Λ:103 var
+R4910:4913 simuliris.simulation.language <> expr proj
+R4915:4916 simuliris.simulation.lifting <> fix_sim.Λ var
+R4935:4938 simuliris.simulation.language <> prog abbrev
+R4940:4941 simuliris.simulation.lifting <> fix_sim.Λ var
+R4964:4968 simuliris.simulation.language <> state proj
+R4970:4971 simuliris.simulation.lifting <> fix_sim.Λ var
+prf 4984:5005 <> state_interp_pure_step
+binder 5007:5009 <> P_t:105
+binder 5011:5014 <> σ_t:106
+binder 5016:5018 <> P_s:107
+binder 5020:5023 <> σ_s:108
+binder 5025:5027 <> e_s:109
+binder 5029:5029 <> T:110
+binder 5031:5034 <> e_s':111
+binder 5036:5038 <> K_s:112
+binder 5040:5041 <> π:113
+R5066:5074 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5048:5056 simuliris.simulation.lifting <> pure_step rec
+R5058:5060 simuliris.simulation.lifting <> e_s:109 var
+R5062:5065 simuliris.simulation.lifting <> e_s':111 var
+R5104:5112 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5082:5084 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5076:5079 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R5080:5081 simuliris.simulation.lifting <> π:113 var
+R5075:5075 simuliris.simulation.lifting <> T:110 var
+R5085:5088 Corelib.Init.Datatypes <> Some constr
+R5091:5094 simuliris.simulation.language <> fill proj
+R5100:5102 simuliris.simulation.lifting <> e_s:109 var
+R5096:5098 simuliris.simulation.lifting <> K_s:112 var
+R5160:5169 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R5113:5124 simuliris.simulation.slsls <> state_interp meth
+R5159:5159 simuliris.simulation.lifting <> T:110 var
+R5154:5157 simuliris.simulation.lifting <> σ_s:108 var
+R5150:5152 simuliris.simulation.lifting <> P_s:107 var
+R5145:5148 simuliris.simulation.lifting <> σ_t:106 var
+R5141:5143 simuliris.simulation.lifting <> P_t:105 var
+R5135:5138 simuliris.simulation.lifting <> fix_sim.PROP var
+R5170:5181 simuliris.simulation.slsls <> state_interp meth
+R5202:5203 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R5206:5207 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R5221:5223 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R5204:5205 simuliris.simulation.lifting <> π:113 var
+R5208:5211 simuliris.simulation.language <> fill proj
+R5217:5220 simuliris.simulation.lifting <> e_s':111 var
+R5213:5215 simuliris.simulation.lifting <> K_s:112 var
+R5223:5223 simuliris.simulation.lifting <> T:110 var
+R5196:5199 simuliris.simulation.lifting <> σ_s:108 var
+R5192:5194 simuliris.simulation.lifting <> P_s:107 var
+R5187:5190 simuliris.simulation.lifting <> σ_t:106 var
+R5183:5185 simuliris.simulation.lifting <> P_t:105 var
+R5270:5296 simuliris.simulation.slsls <> state_interp_pure_prim_step meth
+R5330:5343 simuliris.simulation.language <> fill_prim_step thm
+prf 5491:5510 <> source_red_lift_pure
+binder 5512:5513 <> π:114
+binder 5515:5516 <> Ψ:115
+binder 5518:5518 <> m:116
+binder 5520:5523 <> e_s1:117
+binder 5525:5528 <> e_s2:118
+binder 5530:5531 <> ϕ:119
+R5562:5570 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5539:5546 simuliris.simulation.lifting <> PureExec class
+R5558:5561 simuliris.simulation.lifting <> e_s2:118 var
+R5553:5556 simuliris.simulation.lifting <> e_s1:117 var
+R5551:5551 simuliris.simulation.lifting <> m:116 var
+R5548:5549 simuliris.simulation.lifting <> ϕ:119 var
+R5573:5577 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5571:5572 simuliris.simulation.lifting <> ϕ:119 var
+R5599:5603 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R5578:5587 simuliris.simulation.slsls <> source_red def
+R5589:5592 simuliris.simulation.lifting <> e_s2:118 var
+R5594:5595 simuliris.simulation.lifting <> π:114 var
+R5597:5598 simuliris.simulation.lifting <> Ψ:115 var
+R5604:5613 simuliris.simulation.slsls <> source_red def
+R5615:5618 simuliris.simulation.lifting <> e_s1:117 var
+R5620:5621 simuliris.simulation.lifting <> π:114 var
+R5623:5624 simuliris.simulation.lifting <> Ψ:115 var
+R5784:5798 simuliris.simulation.slsls <> source_red_step thm
+R6069:6081 simuliris.simulation.language <> no_forks_step constr
+R6100:6112 simuliris.simulation.language <> no_forks_refl constr
+R6131:6152 simuliris.simulation.lifting <> state_interp_pure_step thm
+prf 6171:6190 <> target_red_lift_pure
+binder 6192:6193 <> Ψ:120
+binder 6195:6195 <> n:121
+binder 6197:6198 <> e1:122
+binder 6200:6201 <> e2:123
+binder 6203:6204 <> ϕ:124
+R6231:6239 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6212:6219 simuliris.simulation.lifting <> PureExec class
+R6229:6230 simuliris.simulation.lifting <> e2:123 var
+R6226:6227 simuliris.simulation.lifting <> e1:122 var
+R6224:6224 simuliris.simulation.lifting <> n:121 var
+R6221:6222 simuliris.simulation.lifting <> ϕ:124 var
+R6242:6246 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6240:6241 simuliris.simulation.lifting <> ϕ:124 var
+R6263:6267 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R6247:6256 simuliris.simulation.slsls <> target_red def
+R6258:6259 simuliris.simulation.lifting <> e2:123 var
+R6261:6262 simuliris.simulation.lifting <> Ψ:120 var
+R6268:6277 simuliris.simulation.slsls <> target_red def
+R6279:6280 simuliris.simulation.lifting <> e1:122 var
+R6282:6283 simuliris.simulation.lifting <> Ψ:120 var
+R6444:6458 simuliris.simulation.slsls <> target_red_step thm
+prf 6675:6697 <> sim_lift_prim_step_both
+binder 6699:6700 <> π:125
+binder 6702:6704 <> e_t:126
+binder 6706:6708 <> e_s:127
+binder 6710:6711 <> Φ:128
+R6718:6718 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R7319:7330 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R6719:6722 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R6748:6749 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 6723:6725 <> P_t:129
+binder 6727:6729 <> P_s:130
+binder 6731:6734 <> σ_t:131
+binder 6736:6739 <> σ_s:132
+binder 6741:6743 <> T_s:133
+binder 6745:6747 <> K_s:134
+R6861:6873 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R6784:6788 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R6750:6761 simuliris.simulation.slsls <> state_interp meth
+R6781:6783 simuliris.simulation.lifting <> T_s:133 var
+R6776:6779 simuliris.simulation.lifting <> σ_s:132 var
+R6772:6774 simuliris.simulation.lifting <> P_s:130 var
+R6767:6770 simuliris.simulation.lifting <> σ_t:131 var
+R6763:6765 simuliris.simulation.lifting <> P_t:129 var
+R6789:6791 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6858:6860 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6823:6835 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R6801:6803 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6795:6798 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6799:6800 simuliris.simulation.lifting <> π:125 var
+R6792:6794 simuliris.simulation.lifting <> T_s:133 var
+R6804:6807 Corelib.Init.Datatypes <> Some constr
+R6810:6813 simuliris.simulation.language <> fill proj
+R6819:6821 simuliris.simulation.lifting <> e_s:127 var
+R6815:6817 simuliris.simulation.lifting <> K_s:134 var
+R6836:6844 simuliris.simulation.language <> pool_safe def
+R6846:6848 simuliris.simulation.lifting <> P_s:130 var
+R6850:6852 simuliris.simulation.lifting <> T_s:133 var
+R6854:6857 simuliris.simulation.lifting <> σ_s:132 var
+R6902:6912 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R6874:6876 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6899:6901 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6877:6885 simuliris.simulation.language <> reducible def
+R6887:6889 simuliris.simulation.lifting <> P_t:129 var
+R6891:6893 simuliris.simulation.lifting <> e_t:126 var
+R6895:6898 simuliris.simulation.lifting <> σ_t:131 var
+R6913:6916 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R6933:6942 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 6917:6920 <> e_t':135
+binder 6922:6926 <> efs_t:136
+binder 6928:6932 <> σ_t':137
+R6988:7003 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R6943:6945 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6985:6987 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6946:6954 simuliris.simulation.language <> prim_step ind
+R6956:6958 simuliris.simulation.lifting <> P_t:129 var
+R6960:6962 simuliris.simulation.lifting <> e_t:126 var
+R6964:6967 simuliris.simulation.lifting <> σ_t:131 var
+R6969:6972 simuliris.simulation.lifting <> e_t':135 var
+R6974:6978 simuliris.simulation.lifting <> σ_t':137 var
+R6980:6984 simuliris.simulation.lifting <> efs_t:136 var
+R7004:7007 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R7024:7025 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 7008:7011 <> e_s':138
+binder 7013:7017 <> efs_s:139
+binder 7019:7023 <> σ_s':140
+R7071:7087 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7026:7028 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7068:7070 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7029:7037 simuliris.simulation.language <> prim_step ind
+R7039:7041 simuliris.simulation.lifting <> P_s:130 var
+R7043:7045 simuliris.simulation.lifting <> e_s:127 var
+R7047:7050 simuliris.simulation.lifting <> σ_s:132 var
+R7052:7055 simuliris.simulation.lifting <> e_s':138 var
+R7057:7061 simuliris.simulation.lifting <> σ_s':140 var
+R7063:7067 simuliris.simulation.lifting <> efs_s:139 var
+R7151:7155 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7088:7099 simuliris.simulation.slsls <> state_interp meth
+R7141:7144 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R7122:7123 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R7126:7127 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R7136:7140 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R7124:7125 simuliris.simulation.lifting <> π:125 var
+R7128:7130 simuliris.simulation.lifting <> K_s:134 var
+R7132:7135 simuliris.simulation.lifting <> e_s':138 var
+R7138:7140 simuliris.simulation.lifting <> T_s:133 var
+R7145:7149 simuliris.simulation.lifting <> efs_s:139 var
+R7115:7119 simuliris.simulation.lifting <> σ_s':140 var
+R7111:7113 simuliris.simulation.lifting <> P_s:130 var
+R7105:7109 simuliris.simulation.lifting <> σ_t':137 var
+R7101:7103 simuliris.simulation.lifting <> P_t:129 var
+R7182:7199 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7318:7318 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7160:7164 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7167:7168 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7173:7176 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7179:7181 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7177:7178 simuliris.simulation.lifting <> Φ:128 var
+R7165:7166 simuliris.simulation.lifting <> π:125 var
+R7156:7159 simuliris.simulation.lifting <> e_t':135 var
+R7169:7172 simuliris.simulation.lifting <> e_s':138 var
+R7200:7210 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R7214:7216 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R7221:7221 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R7226:7230 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R7236:7236 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R7242:7243 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+binder 7211:7213 <> π':141
+binder 7211:7213 <> π':142
+binder 7217:7220 <> e_t0:143
+binder 7217:7220 <> e_t0:144
+binder 7222:7225 <> e_s0:145
+binder 7222:7225 <> e_s0:146
+R7248:7252 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7269:7270 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7275:7277 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7316:7317 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7278:7286 simuliris.simulation.slsls <> lift_post def
+R7289:7295 simuliris.simulation.slsls <> ext_rel meth
+R7308:7310 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R7298:7303 Corelib.Init.Datatypes <> length def
+R7305:7307 simuliris.simulation.lifting <> T_s:133 var
+R7311:7313 simuliris.simulation.lifting <> π':141 var
+R7263:7265 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R7253:7258 Corelib.Init.Datatypes <> length def
+R7260:7262 simuliris.simulation.lifting <> T_s:133 var
+R7266:7268 simuliris.simulation.lifting <> π':141 var
+R7244:7247 simuliris.simulation.lifting <> e_t0:143 var
+R7271:7274 simuliris.simulation.lifting <> e_s0:145 var
+R7231:7235 simuliris.simulation.lifting <> efs_t:136 var
+R7237:7241 simuliris.simulation.lifting <> efs_s:139 var
+R7334:7338 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7341:7342 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7346:7349 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7352:7354 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7350:7351 simuliris.simulation.lifting <> Φ:128 var
+R7339:7340 simuliris.simulation.lifting <> π:125 var
+R7331:7333 simuliris.simulation.lifting <> e_t:126 var
+R7343:7345 simuliris.simulation.lifting <> e_s:127 var
+R7398:7412 simuliris.simulation.slsls <> sim_expr_unfold thm
+R7459:7459 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7466:7471 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7484:7484 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7599:7599 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7606:7611 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R7619:7619 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+prf 7761:7785 <> sim_lift_prim_step_target
+binder 7787:7789 <> e_t:147
+binder 7791:7793 <> e_s:148
+binder 7795:7796 <> Φ:149
+binder 7798:7799 <> π:150
+R7807:7807 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R8200:8210 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R7808:7811 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R7837:7838 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 7812:7814 <> P_t:151
+binder 7816:7818 <> P_s:152
+binder 7820:7823 <> σ_t:153
+binder 7825:7828 <> σ_s:154
+binder 7830:7832 <> T_s:155
+binder 7834:7836 <> K_s:156
+R7950:7962 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R7873:7877 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7839:7850 simuliris.simulation.slsls <> state_interp meth
+R7870:7872 simuliris.simulation.lifting <> T_s:155 var
+R7865:7868 simuliris.simulation.lifting <> σ_s:154 var
+R7861:7863 simuliris.simulation.lifting <> P_s:152 var
+R7856:7859 simuliris.simulation.lifting <> σ_t:153 var
+R7852:7854 simuliris.simulation.lifting <> P_t:151 var
+R7878:7880 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7947:7949 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7912:7924 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R7890:7892 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7884:7887 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7888:7889 simuliris.simulation.lifting <> π:150 var
+R7881:7883 simuliris.simulation.lifting <> T_s:155 var
+R7893:7896 Corelib.Init.Datatypes <> Some constr
+R7899:7902 simuliris.simulation.language <> fill proj
+R7908:7910 simuliris.simulation.lifting <> e_s:148 var
+R7904:7906 simuliris.simulation.lifting <> K_s:156 var
+R7925:7933 simuliris.simulation.language <> pool_safe def
+R7935:7937 simuliris.simulation.lifting <> P_s:152 var
+R7939:7941 simuliris.simulation.lifting <> T_s:155 var
+R7943:7946 simuliris.simulation.lifting <> σ_s:154 var
+R7991:8001 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R7963:7965 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7988:7990 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7966:7974 simuliris.simulation.language <> reducible def
+R7976:7978 simuliris.simulation.lifting <> P_t:151 var
+R7980:7982 simuliris.simulation.lifting <> e_t:147 var
+R7984:7987 simuliris.simulation.lifting <> σ_t:153 var
+R8002:8005 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R8022:8031 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 8006:8009 <> e_t':157
+binder 8011:8015 <> efs_t:158
+binder 8017:8021 <> σ_t':159
+R8077:8093 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R8032:8034 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8074:8076 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8035:8043 simuliris.simulation.language <> prim_step ind
+R8045:8047 simuliris.simulation.lifting <> P_t:151 var
+R8049:8051 simuliris.simulation.lifting <> e_t:147 var
+R8053:8056 simuliris.simulation.lifting <> σ_t:153 var
+R8058:8061 simuliris.simulation.lifting <> e_t':157 var
+R8063:8067 simuliris.simulation.lifting <> σ_t':159 var
+R8069:8073 simuliris.simulation.lifting <> efs_t:158 var
+R8110:8124 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8094:8096 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8107:8109 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8102:8104 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8097:8101 simuliris.simulation.lifting <> efs_t:158 var
+R8105:8106 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R8160:8174 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8125:8136 simuliris.simulation.slsls <> state_interp meth
+R8157:8159 simuliris.simulation.lifting <> T_s:155 var
+R8152:8155 simuliris.simulation.lifting <> σ_s:154 var
+R8148:8150 simuliris.simulation.lifting <> P_s:152 var
+R8142:8146 simuliris.simulation.lifting <> σ_t':159 var
+R8138:8140 simuliris.simulation.lifting <> P_t:151 var
+R8179:8183 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8186:8187 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8191:8194 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8197:8199 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8195:8196 simuliris.simulation.lifting <> Φ:149 var
+R8184:8185 simuliris.simulation.lifting <> π:150 var
+R8175:8178 simuliris.simulation.lifting <> e_t':157 var
+R8188:8190 simuliris.simulation.lifting <> e_s:148 var
+R8214:8218 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8221:8222 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8226:8229 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8232:8234 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8230:8231 simuliris.simulation.lifting <> Φ:149 var
+R8219:8220 simuliris.simulation.lifting <> π:150 var
+R8211:8213 simuliris.simulation.lifting <> e_t:147 var
+R8223:8225 simuliris.simulation.lifting <> e_s:148 var
+R8275:8289 simuliris.simulation.slsls <> sim_step_target thm
+R8336:8336 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8341:8346 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8360:8360 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8445:8445 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8451:8456 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8466:8466 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8526:8539 stdpp.list_basics list list_insert_id thm
+prf 8594:8618 <> sim_lift_prim_step_source
+binder 8620:8622 <> e_t:160
+binder 8624:8626 <> e_s:161
+binder 8628:8629 <> Φ:162
+binder 8631:8632 <> π:163
+R8640:8640 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R8977:8987 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R8641:8644 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R8670:8671 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 8645:8647 <> P_t:164
+binder 8649:8651 <> P_s:165
+binder 8653:8656 <> σ_t:166
+binder 8658:8661 <> σ_s:167
+binder 8663:8665 <> T_s:168
+binder 8667:8669 <> K_s:169
+R8783:8795 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R8706:8710 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8672:8683 simuliris.simulation.slsls <> state_interp meth
+R8703:8705 simuliris.simulation.lifting <> T_s:168 var
+R8698:8701 simuliris.simulation.lifting <> σ_s:167 var
+R8694:8696 simuliris.simulation.lifting <> P_s:165 var
+R8689:8692 simuliris.simulation.lifting <> σ_t:166 var
+R8685:8687 simuliris.simulation.lifting <> P_t:164 var
+R8711:8713 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8780:8782 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8745:8757 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R8723:8725 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8717:8720 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R8721:8722 simuliris.simulation.lifting <> π:163 var
+R8714:8716 simuliris.simulation.lifting <> T_s:168 var
+R8726:8729 Corelib.Init.Datatypes <> Some constr
+R8732:8735 simuliris.simulation.language <> fill proj
+R8741:8743 simuliris.simulation.lifting <> e_s:161 var
+R8737:8739 simuliris.simulation.lifting <> K_s:169 var
+R8758:8766 simuliris.simulation.language <> pool_safe def
+R8768:8770 simuliris.simulation.lifting <> P_s:165 var
+R8772:8774 simuliris.simulation.lifting <> T_s:168 var
+R8776:8779 simuliris.simulation.lifting <> σ_s:167 var
+R8796:8799 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R8810:8819 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 8800:8803 <> e_s':170
+binder 8805:8809 <> σ_s':171
+R8862:8876 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8820:8822 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8859:8861 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R8823:8831 simuliris.simulation.language <> prim_step ind
+R8833:8835 simuliris.simulation.lifting <> P_s:165 var
+R8837:8839 simuliris.simulation.lifting <> e_s:161 var
+R8841:8844 simuliris.simulation.lifting <> σ_s:167 var
+R8846:8849 simuliris.simulation.lifting <> e_s':170 var
+R8851:8855 simuliris.simulation.lifting <> σ_s':171 var
+R8857:8858 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R8937:8951 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8877:8888 simuliris.simulation.slsls <> state_interp meth
+R8910:8911 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R8914:8917 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R8931:8935 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R8912:8913 simuliris.simulation.lifting <> π:163 var
+R8918:8921 simuliris.simulation.language <> fill proj
+R8927:8930 simuliris.simulation.lifting <> e_s':170 var
+R8923:8925 simuliris.simulation.lifting <> K_s:169 var
+R8933:8935 simuliris.simulation.lifting <> T_s:168 var
+R8903:8907 simuliris.simulation.lifting <> σ_s':171 var
+R8899:8901 simuliris.simulation.lifting <> P_s:165 var
+R8894:8897 simuliris.simulation.lifting <> σ_t:166 var
+R8890:8892 simuliris.simulation.lifting <> P_t:164 var
+R8955:8959 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8962:8963 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8968:8971 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8974:8976 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8972:8973 simuliris.simulation.lifting <> Φ:162 var
+R8960:8961 simuliris.simulation.lifting <> π:163 var
+R8952:8954 simuliris.simulation.lifting <> e_t:160 var
+R8964:8967 simuliris.simulation.lifting <> e_s':170 var
+R8991:8995 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8998:8999 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9003:9006 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9009:9011 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9007:9008 simuliris.simulation.lifting <> Φ:162 var
+R8996:8997 simuliris.simulation.lifting <> π:163 var
+R8988:8990 simuliris.simulation.lifting <> e_t:160 var
+R9000:9002 simuliris.simulation.lifting <> e_s:161 var
+R9053:9067 simuliris.simulation.slsls <> sim_step_source thm
+R9118:9118 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9128:9133 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9147:9147 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9246:9258 simuliris.simulation.language <> no_forks_step constr
+R9280:9292 simuliris.simulation.language <> no_forks_refl constr
+prf 9335:9359 <> sim_lift_base_step_target
+binder 9361:9363 <> e_t:172
+binder 9365:9367 <> e_s:173
+binder 9369:9370 <> Φ:174
+binder 9372:9373 <> π:175
+R9381:9381 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R9779:9789 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R9382:9385 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R9411:9412 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 9386:9388 <> P_t:176
+binder 9390:9392 <> P_s:177
+binder 9394:9397 <> σ_t:178
+binder 9399:9402 <> σ_s:179
+binder 9404:9406 <> T_s:180
+binder 9408:9410 <> K_s:181
+R9524:9536 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R9447:9451 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R9413:9424 simuliris.simulation.slsls <> state_interp meth
+R9444:9446 simuliris.simulation.lifting <> T_s:180 var
+R9439:9442 simuliris.simulation.lifting <> σ_s:179 var
+R9435:9437 simuliris.simulation.lifting <> P_s:177 var
+R9430:9433 simuliris.simulation.lifting <> σ_t:178 var
+R9426:9428 simuliris.simulation.lifting <> P_t:176 var
+R9452:9454 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9521:9523 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9486:9498 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R9464:9466 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9458:9461 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R9462:9463 simuliris.simulation.lifting <> π:175 var
+R9455:9457 simuliris.simulation.lifting <> T_s:180 var
+R9467:9470 Corelib.Init.Datatypes <> Some constr
+R9473:9476 simuliris.simulation.language <> fill proj
+R9482:9484 simuliris.simulation.lifting <> e_s:173 var
+R9478:9480 simuliris.simulation.lifting <> K_s:181 var
+R9499:9507 simuliris.simulation.language <> pool_safe def
+R9509:9511 simuliris.simulation.lifting <> P_s:177 var
+R9513:9515 simuliris.simulation.lifting <> T_s:180 var
+R9517:9520 simuliris.simulation.lifting <> σ_s:179 var
+R9570:9580 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R9537:9539 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9567:9569 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9540:9553 simuliris.simulation.language <> base_reducible def
+R9555:9557 simuliris.simulation.lifting <> P_t:176 var
+R9559:9561 simuliris.simulation.lifting <> e_t:172 var
+R9563:9566 simuliris.simulation.lifting <> σ_t:178 var
+R9581:9584 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R9601:9610 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 9585:9588 <> e_t':182
+binder 9590:9594 <> efs_t:183
+binder 9596:9600 <> σ_t':184
+R9656:9672 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R9611:9613 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9653:9655 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9614:9622 simuliris.simulation.language <> base_step proj
+R9648:9652 simuliris.simulation.lifting <> efs_t:183 var
+R9642:9646 simuliris.simulation.lifting <> σ_t':184 var
+R9637:9640 simuliris.simulation.lifting <> e_t':182 var
+R9632:9635 simuliris.simulation.lifting <> σ_t:178 var
+R9628:9630 simuliris.simulation.lifting <> e_t:172 var
+R9624:9626 simuliris.simulation.lifting <> P_t:176 var
+R9689:9703 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R9673:9675 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9686:9688 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9681:9683 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9676:9680 simuliris.simulation.lifting <> efs_t:183 var
+R9684:9685 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R9739:9753 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R9704:9715 simuliris.simulation.slsls <> state_interp meth
+R9736:9738 simuliris.simulation.lifting <> T_s:180 var
+R9731:9734 simuliris.simulation.lifting <> σ_s:179 var
+R9727:9729 simuliris.simulation.lifting <> P_s:177 var
+R9721:9725 simuliris.simulation.lifting <> σ_t':184 var
+R9717:9719 simuliris.simulation.lifting <> P_t:176 var
+R9758:9762 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9765:9766 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9770:9773 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9776:9778 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9774:9775 simuliris.simulation.lifting <> Φ:174 var
+R9763:9764 simuliris.simulation.lifting <> π:175 var
+R9754:9757 simuliris.simulation.lifting <> e_t':182 var
+R9767:9769 simuliris.simulation.lifting <> e_s:173 var
+R9793:9797 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9800:9801 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9805:9808 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9811:9813 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R9809:9810 simuliris.simulation.lifting <> Φ:174 var
+R9798:9799 simuliris.simulation.lifting <> π:175 var
+R9790:9792 simuliris.simulation.lifting <> e_t:172 var
+R9802:9804 simuliris.simulation.lifting <> e_s:173 var
+R9855:9879 simuliris.simulation.lifting <> sim_lift_prim_step_target thm
+R9926:9926 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9936:9941 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9955:9955 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10026:10044 simuliris.simulation.language <> base_prim_reducible thm
+R10131:10154 simuliris.simulation.language <> base_reducible_prim_step thm
+prf 10234:10258 <> sim_lift_base_step_source
+binder 10260:10262 <> e_t:185
+binder 10264:10266 <> e_s:186
+binder 10268:10269 <> Φ:187
+binder 10271:10272 <> π:188
+R10280:10280 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R10623:10633 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R10281:10284 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R10310:10311 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 10285:10287 <> P_t:189
+binder 10289:10291 <> P_s:190
+binder 10293:10296 <> σ_t:191
+binder 10298:10301 <> σ_s:192
+binder 10303:10305 <> T_s:193
+binder 10307:10309 <> K_s:194
+R10423:10435 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R10346:10350 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R10312:10323 simuliris.simulation.slsls <> state_interp meth
+R10343:10345 simuliris.simulation.lifting <> T_s:193 var
+R10338:10341 simuliris.simulation.lifting <> σ_s:192 var
+R10334:10336 simuliris.simulation.lifting <> P_s:190 var
+R10329:10332 simuliris.simulation.lifting <> σ_t:191 var
+R10325:10327 simuliris.simulation.lifting <> P_t:189 var
+R10351:10353 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R10420:10422 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R10385:10397 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R10363:10365 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10357:10360 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10361:10362 simuliris.simulation.lifting <> π:188 var
+R10354:10356 simuliris.simulation.lifting <> T_s:193 var
+R10366:10369 Corelib.Init.Datatypes <> Some constr
+R10372:10375 simuliris.simulation.language <> fill proj
+R10381:10383 simuliris.simulation.lifting <> e_s:186 var
+R10377:10379 simuliris.simulation.lifting <> K_s:194 var
+R10398:10406 simuliris.simulation.language <> pool_safe def
+R10408:10410 simuliris.simulation.lifting <> P_s:190 var
+R10412:10414 simuliris.simulation.lifting <> T_s:193 var
+R10416:10419 simuliris.simulation.lifting <> σ_s:192 var
+R10436:10439 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R10450:10459 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 10440:10443 <> e_s':195
+binder 10445:10449 <> σ_s':196
+R10502:10506 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R10460:10462 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R10499:10501 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R10463:10471 simuliris.simulation.language <> base_step proj
+R10497:10498 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R10491:10495 simuliris.simulation.lifting <> σ_s':196 var
+R10486:10489 simuliris.simulation.lifting <> e_s':195 var
+R10481:10484 simuliris.simulation.lifting <> σ_s:192 var
+R10477:10479 simuliris.simulation.lifting <> e_s:186 var
+R10473:10475 simuliris.simulation.lifting <> P_s:190 var
+R10507:10522 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R10622:10622 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R10582:10596 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R10523:10534 simuliris.simulation.slsls <> state_interp meth
+R10556:10557 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10560:10562 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10576:10580 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10558:10559 simuliris.simulation.lifting <> π:188 var
+R10563:10566 simuliris.simulation.language <> fill proj
+R10572:10575 simuliris.simulation.lifting <> e_s':195 var
+R10568:10570 simuliris.simulation.lifting <> K_s:194 var
+R10578:10580 simuliris.simulation.lifting <> T_s:193 var
+R10549:10553 simuliris.simulation.lifting <> σ_s':196 var
+R10545:10547 simuliris.simulation.lifting <> P_s:190 var
+R10540:10543 simuliris.simulation.lifting <> σ_t:191 var
+R10536:10538 simuliris.simulation.lifting <> P_t:189 var
+R10600:10604 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10607:10608 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10613:10616 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10619:10621 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10617:10618 simuliris.simulation.lifting <> Φ:187 var
+R10605:10606 simuliris.simulation.lifting <> π:188 var
+R10597:10599 simuliris.simulation.lifting <> e_t:185 var
+R10609:10612 simuliris.simulation.lifting <> e_s':195 var
+R10637:10641 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10644:10645 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10649:10652 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10655:10657 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R10653:10654 simuliris.simulation.lifting <> Φ:187 var
+R10642:10643 simuliris.simulation.lifting <> π:188 var
+R10634:10636 simuliris.simulation.lifting <> e_t:185 var
+R10646:10648 simuliris.simulation.lifting <> e_s:186 var
+R10699:10723 simuliris.simulation.lifting <> sim_lift_prim_step_source thm
+R10766:10766 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10776:10781 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10795:10795 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10893:10906 simuliris.simulation.language <> base_prim_step thm
+prf 10925:10947 <> sim_lift_base_step_both
+binder 10949:10951 <> e_t:197
+binder 10953:10955 <> e_s:198
+binder 10957:10958 <> Φ:199
+binder 10960:10961 <> π:200
+R10968:10968 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R11576:11586 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R10969:10972 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R10998:10999 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 10973:10975 <> P_t:201
+binder 10977:10979 <> P_s:202
+binder 10981:10984 <> σ_t:203
+binder 10986:10989 <> σ_s:204
+binder 10991:10993 <> T_s:205
+binder 10995:10997 <> K_s:206
+R11111:11123 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R11034:11038 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11000:11011 simuliris.simulation.slsls <> state_interp meth
+R11031:11033 simuliris.simulation.lifting <> T_s:205 var
+R11026:11029 simuliris.simulation.lifting <> σ_s:204 var
+R11022:11024 simuliris.simulation.lifting <> P_s:202 var
+R11017:11020 simuliris.simulation.lifting <> σ_t:203 var
+R11013:11015 simuliris.simulation.lifting <> P_t:201 var
+R11039:11041 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11108:11110 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11073:11085 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R11051:11053 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11045:11048 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R11049:11050 simuliris.simulation.lifting <> π:200 var
+R11042:11044 simuliris.simulation.lifting <> T_s:205 var
+R11054:11057 Corelib.Init.Datatypes <> Some constr
+R11060:11063 simuliris.simulation.language <> fill proj
+R11069:11071 simuliris.simulation.lifting <> e_s:198 var
+R11065:11067 simuliris.simulation.lifting <> K_s:206 var
+R11086:11094 simuliris.simulation.language <> pool_safe def
+R11096:11098 simuliris.simulation.lifting <> P_s:202 var
+R11100:11102 simuliris.simulation.lifting <> T_s:205 var
+R11104:11107 simuliris.simulation.lifting <> σ_s:204 var
+R11157:11167 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11124:11126 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11154:11156 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11127:11140 simuliris.simulation.language <> base_reducible def
+R11142:11144 simuliris.simulation.lifting <> P_t:201 var
+R11146:11148 simuliris.simulation.lifting <> e_t:197 var
+R11150:11153 simuliris.simulation.lifting <> σ_t:203 var
+R11168:11171 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R11188:11197 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 11172:11175 <> e_t':207
+binder 11177:11181 <> efs_t:208
+binder 11183:11187 <> σ_t':209
+R11243:11259 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R11198:11200 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11240:11242 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11201:11209 simuliris.simulation.language <> base_step proj
+R11235:11239 simuliris.simulation.lifting <> efs_t:208 var
+R11229:11233 simuliris.simulation.lifting <> σ_t':209 var
+R11224:11227 simuliris.simulation.lifting <> e_t':207 var
+R11219:11222 simuliris.simulation.lifting <> σ_t:203 var
+R11215:11217 simuliris.simulation.lifting <> e_t:197 var
+R11211:11213 simuliris.simulation.lifting <> P_t:201 var
+R11260:11263 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R11280:11281 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 11264:11267 <> e_s':210
+binder 11269:11273 <> efs_s:211
+binder 11275:11279 <> σ_s':212
+R11327:11341 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11282:11284 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11324:11326 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11285:11293 simuliris.simulation.language <> base_step proj
+R11319:11323 simuliris.simulation.lifting <> efs_s:211 var
+R11313:11317 simuliris.simulation.lifting <> σ_s':212 var
+R11308:11311 simuliris.simulation.lifting <> e_s':210 var
+R11303:11306 simuliris.simulation.lifting <> σ_s:204 var
+R11299:11301 simuliris.simulation.lifting <> e_s:198 var
+R11295:11297 simuliris.simulation.lifting <> P_s:202 var
+R11410:11414 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11342:11353 simuliris.simulation.slsls <> state_interp meth
+R11400:11403 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R11376:11377 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R11380:11381 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R11395:11399 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R11378:11379 simuliris.simulation.lifting <> π:200 var
+R11382:11385 simuliris.simulation.language <> fill proj
+R11391:11394 simuliris.simulation.lifting <> e_s':210 var
+R11387:11389 simuliris.simulation.lifting <> K_s:206 var
+R11397:11399 simuliris.simulation.lifting <> T_s:205 var
+R11404:11408 simuliris.simulation.lifting <> efs_s:211 var
+R11369:11373 simuliris.simulation.lifting <> σ_s':212 var
+R11365:11367 simuliris.simulation.lifting <> P_s:202 var
+R11359:11363 simuliris.simulation.lifting <> σ_t':209 var
+R11355:11357 simuliris.simulation.lifting <> P_t:201 var
+R11441:11456 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11575:11575 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11419:11423 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11426:11427 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11432:11435 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11438:11440 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11436:11437 simuliris.simulation.lifting <> Φ:199 var
+R11424:11425 simuliris.simulation.lifting <> π:200 var
+R11415:11418 simuliris.simulation.lifting <> e_t':207 var
+R11428:11431 simuliris.simulation.lifting <> e_s':210 var
+R11457:11467 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R11471:11473 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R11478:11478 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R11483:11487 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R11493:11493 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+R11499:11500 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_'↦'_x_';'_x_'∈'_x_';'_x_','_x not
+binder 11468:11470 <> π':213
+binder 11468:11470 <> π':214
+binder 11474:11477 <> e_t0:215
+binder 11474:11477 <> e_t0:216
+binder 11479:11482 <> e_s0:217
+binder 11479:11482 <> e_s0:218
+R11505:11509 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11526:11527 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11532:11534 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11573:11574 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11535:11543 simuliris.simulation.slsls <> lift_post def
+R11546:11552 simuliris.simulation.slsls <> ext_rel meth
+R11565:11567 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R11555:11560 Corelib.Init.Datatypes <> length def
+R11562:11564 simuliris.simulation.lifting <> T_s:205 var
+R11568:11570 simuliris.simulation.lifting <> π':213 var
+R11520:11522 Corelib.Init.Peano <> ::nat_scope:x_'+'_x not
+R11510:11515 Corelib.Init.Datatypes <> length def
+R11517:11519 simuliris.simulation.lifting <> T_s:205 var
+R11523:11525 simuliris.simulation.lifting <> π':213 var
+R11501:11504 simuliris.simulation.lifting <> e_t0:215 var
+R11528:11531 simuliris.simulation.lifting <> e_s0:217 var
+R11488:11492 simuliris.simulation.lifting <> efs_t:208 var
+R11494:11498 simuliris.simulation.lifting <> efs_s:211 var
+R11590:11594 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11597:11598 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11602:11605 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11608:11610 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R11606:11607 simuliris.simulation.lifting <> Φ:199 var
+R11595:11596 simuliris.simulation.lifting <> π:200 var
+R11587:11589 simuliris.simulation.lifting <> e_t:197 var
+R11599:11601 simuliris.simulation.lifting <> e_s:198 var
+R11649:11671 simuliris.simulation.lifting <> sim_lift_prim_step_both thm
+R11721:11721 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11728:11733 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11747:11747 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11815:11833 simuliris.simulation.language <> base_prim_reducible thm
+R11879:11879 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11887:11892 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11897:11897 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11972:11995 simuliris.simulation.language <> base_reducible_prim_step thm
+R12073:12086 simuliris.simulation.language <> base_prim_step thm
+prf 12124:12144 <> source_red_safe_reach
+binder 12146:12147 <> ϕ:219
+binder 12149:12151 <> e_s:220
+binder 12153:12154 <> Ψ:221
+binder 12156:12157 <> π:222
+R12165:12165 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12216:12225 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12166:12169 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R12178:12179 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 12170:12172 <> P_s:223
+binder 12174:12177 <> σ_s:224
+R12180:12189 simuliris.simulation.language <> safe_reach def
+R12191:12193 simuliris.simulation.lifting <> P_s:223 var
+R12195:12197 simuliris.simulation.lifting <> e_s:220 var
+R12199:12202 simuliris.simulation.lifting <> σ_s:224 var
+R12205:12207 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12211:12212 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R12213:12214 simuliris.simulation.lifting <> ϕ:219 var
+R12226:12226 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R12261:12271 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R12235:12240 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R12227:12229 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R12232:12234 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R12230:12231 simuliris.simulation.lifting <> ϕ:219 var
+R12241:12250 simuliris.simulation.slsls <> source_red def
+R12252:12254 simuliris.simulation.lifting <> e_s:220 var
+R12256:12257 simuliris.simulation.lifting <> π:222 var
+R12259:12260 simuliris.simulation.lifting <> Ψ:221 var
+R12272:12281 simuliris.simulation.slsls <> source_red def
+R12283:12285 simuliris.simulation.lifting <> e_s:220 var
+R12287:12288 simuliris.simulation.lifting <> π:222 var
+R12290:12291 simuliris.simulation.lifting <> Ψ:221 var
+R12345:12361 simuliris.simulation.slsls <> source_red_unfold thm
+R12484:12492 simuliris.simulation.language <> fill_safe thm
+R12502:12523 simuliris.simulation.language <> pool_safe_threads_safe thm
+R12543:12543 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12548:12553 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12573:12573 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+prf 12606:12628 <> source_red_safe_implies
+binder 12630:12631 <> ϕ:225
+binder 12633:12635 <> e_s:226
+binder 12637:12638 <> Ψ:227
+binder 12640:12641 <> π:228
+R12649:12649 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12691:12700 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R12650:12653 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R12662:12663 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 12654:12656 <> P_s:229
+binder 12658:12661 <> σ_s:230
+R12664:12674 simuliris.simulation.lifting <> SafeImplies class
+R12687:12690 simuliris.simulation.lifting <> σ_s:230 var
+R12683:12685 simuliris.simulation.lifting <> e_s:226 var
+R12679:12681 simuliris.simulation.lifting <> P_s:229 var
+R12676:12677 simuliris.simulation.lifting <> ϕ:225 var
+R12701:12701 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R12736:12746 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R12710:12715 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R12702:12704 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R12707:12709 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R12705:12706 simuliris.simulation.lifting <> ϕ:225 var
+R12716:12725 simuliris.simulation.slsls <> source_red def
+R12727:12729 simuliris.simulation.lifting <> e_s:226 var
+R12731:12732 simuliris.simulation.lifting <> π:228 var
+R12734:12735 simuliris.simulation.lifting <> Ψ:227 var
+R12747:12756 simuliris.simulation.slsls <> source_red def
+R12758:12760 simuliris.simulation.lifting <> e_s:226 var
+R12762:12763 simuliris.simulation.lifting <> π:228 var
+R12765:12766 simuliris.simulation.lifting <> Ψ:227 var
+R12823:12839 simuliris.simulation.slsls <> source_red_unfold thm
+R12915:12936 simuliris.simulation.language <> pool_safe_threads_safe thm
+R12969:12977 simuliris.simulation.language <> fill_safe thm
+R12996:12996 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13001:13006 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13026:13026 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+prf 13059:13074 <> sim_safe_implies
+binder 13076:13077 <> ϕ:231
+binder 13079:13081 <> e_s:232
+binder 13083:13085 <> e_t:233
+binder 13087:13088 <> Φ:234
+binder 13090:13091 <> π:235
+R13099:13099 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13141:13150 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R13100:13103 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R13112:13113 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 13104:13106 <> P_s:236
+binder 13108:13111 <> σ_s:237
+R13114:13124 simuliris.simulation.lifting <> SafeImplies class
+R13137:13140 simuliris.simulation.lifting <> σ_s:237 var
+R13133:13135 simuliris.simulation.lifting <> e_s:232 var
+R13129:13131 simuliris.simulation.lifting <> P_s:236 var
+R13126:13127 simuliris.simulation.lifting <> ϕ:231 var
+R13151:13151 iris.bi.interface <> ::stdpp_scope:x_'⊢@{'_x_'}'_x not
+R13190:13196 iris.bi.interface <> ::stdpp_scope:x_'⊢@{'_x_'}'_x not
+R13201:13207 iris.bi.interface <> ::stdpp_scope:x_'⊢@{'_x_'}'_x not
+R13197:13200 simuliris.simulation.lifting <> fix_sim.PROP var
+R13160:13165 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R13152:13154 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13157:13159 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13155:13156 simuliris.simulation.lifting <> ϕ:231 var
+R13169:13173 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13176:13177 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13181:13184 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13187:13189 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13185:13186 simuliris.simulation.lifting <> Φ:234 var
+R13174:13175 simuliris.simulation.lifting <> π:235 var
+R13166:13168 simuliris.simulation.lifting <> e_t:233 var
+R13178:13180 simuliris.simulation.lifting <> e_s:232 var
+R13211:13215 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13218:13219 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13223:13226 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13229:13231 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R13227:13228 simuliris.simulation.lifting <> Φ:234 var
+R13216:13217 simuliris.simulation.lifting <> π:235 var
+R13208:13210 simuliris.simulation.lifting <> e_t:233 var
+R13220:13222 simuliris.simulation.lifting <> e_s:232 var
+R13288:13302 simuliris.simulation.slsls <> sim_expr_unfold thm
+R13305:13308 simuliris.simulation.language <> safe def
+R13390:13411 simuliris.simulation.language <> pool_safe_threads_safe thm
+R13444:13452 simuliris.simulation.language <> fill_safe thm
+R13471:13471 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13476:13481 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13501:13501 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+prf 13555:13579 <> target_red_lift_base_step
+binder 13581:13582 <> Ψ:238
+binder 13584:13586 <> e_t:239
+R13594:13597 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R13598:13598 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R13878:13890 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R13599:13602 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R13624:13625 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 13603:13605 <> P_t:240
+binder 13607:13610 <> σ_t:241
+binder 13612:13614 <> P_s:242
+binder 13616:13619 <> σ_s:243
+binder 13621:13623 <> T_s:244
+R13660:13675 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R13877:13877 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R13626:13637 simuliris.simulation.slsls <> state_interp meth
+R13657:13659 simuliris.simulation.lifting <> T_s:244 var
+R13652:13655 simuliris.simulation.lifting <> σ_s:243 var
+R13648:13650 simuliris.simulation.lifting <> P_s:242 var
+R13643:13646 simuliris.simulation.lifting <> σ_t:241 var
+R13639:13641 simuliris.simulation.lifting <> P_t:240 var
+R13709:13713 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13676:13678 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13706:13708 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13679:13692 simuliris.simulation.language <> base_reducible def
+R13694:13696 simuliris.simulation.lifting <> P_t:240 var
+R13698:13700 simuliris.simulation.lifting <> e_t:239 var
+R13702:13705 simuliris.simulation.lifting <> σ_t:241 var
+R13714:13717 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R13734:13735 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 13718:13721 <> e_t':245
+binder 13723:13727 <> efs_t:246
+binder 13729:13733 <> σ_t':247
+R13781:13797 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R13736:13738 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13778:13780 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13739:13747 simuliris.simulation.language <> base_step proj
+R13773:13777 simuliris.simulation.lifting <> efs_t:246 var
+R13767:13771 simuliris.simulation.lifting <> σ_t':247 var
+R13762:13765 simuliris.simulation.lifting <> e_t':245 var
+R13757:13760 simuliris.simulation.lifting <> σ_t:241 var
+R13753:13755 simuliris.simulation.lifting <> e_t:239 var
+R13749:13751 simuliris.simulation.lifting <> P_t:240 var
+R13814:13818 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13798:13800 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13811:13813 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R13806:13808 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R13801:13805 simuliris.simulation.lifting <> efs_t:246 var
+R13809:13810 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R13854:13858 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13819:13830 simuliris.simulation.slsls <> state_interp meth
+R13851:13853 simuliris.simulation.lifting <> T_s:244 var
+R13846:13849 simuliris.simulation.lifting <> σ_s:243 var
+R13842:13844 simuliris.simulation.lifting <> P_s:242 var
+R13836:13840 simuliris.simulation.lifting <> σ_t':247 var
+R13832:13834 simuliris.simulation.lifting <> P_t:240 var
+R13859:13868 simuliris.simulation.slsls <> target_red def
+R13870:13873 simuliris.simulation.lifting <> e_t':245 var
+R13875:13876 simuliris.simulation.lifting <> Ψ:238 var
+R13891:13900 simuliris.simulation.slsls <> target_red def
+R13902:13904 simuliris.simulation.lifting <> e_t:239 var
+R13906:13907 simuliris.simulation.lifting <> Ψ:238 var
+R13949:13963 simuliris.simulation.slsls <> target_red_step thm
+R14001:14001 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14011:14016 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14025:14025 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14096:14114 simuliris.simulation.language <> base_prim_reducible thm
+R14201:14224 simuliris.simulation.language <> base_reducible_prim_step thm
+prf 14264:14288 <> source_red_lift_base_step
+binder 14290:14291 <> Ψ:248
+binder 14293:14295 <> e_s:249
+binder 14297:14298 <> π:250
+R14305:14308 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R14309:14309 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R14634:14646 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R14310:14313 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R14339:14347 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 14314:14316 <> P_t:251
+binder 14318:14321 <> σ_t:252
+binder 14323:14325 <> P_s:253
+binder 14327:14330 <> σ_s:254
+binder 14332:14334 <> T_s:255
+binder 14336:14338 <> K_s:256
+R14451:14465 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R14382:14386 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14348:14359 simuliris.simulation.slsls <> state_interp meth
+R14379:14381 simuliris.simulation.lifting <> T_s:255 var
+R14374:14377 simuliris.simulation.lifting <> σ_s:254 var
+R14370:14372 simuliris.simulation.lifting <> P_s:253 var
+R14365:14368 simuliris.simulation.lifting <> σ_t:252 var
+R14361:14363 simuliris.simulation.lifting <> P_t:251 var
+R14387:14389 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R14448:14450 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R14421:14425 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R14399:14401 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R14393:14396 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R14397:14398 simuliris.simulation.lifting <> π:250 var
+R14390:14392 simuliris.simulation.lifting <> T_s:255 var
+R14402:14405 Corelib.Init.Datatypes <> Some constr
+R14408:14411 simuliris.simulation.language <> fill proj
+R14417:14419 simuliris.simulation.lifting <> e_s:249 var
+R14413:14415 simuliris.simulation.lifting <> K_s:256 var
+R14426:14434 simuliris.simulation.language <> pool_safe def
+R14436:14438 simuliris.simulation.lifting <> P_s:253 var
+R14440:14442 simuliris.simulation.lifting <> T_s:255 var
+R14444:14447 simuliris.simulation.lifting <> σ_s:254 var
+R14466:14469 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R14480:14491 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 14470:14473 <> e_s':257
+binder 14475:14479 <> σ_s':258
+R14534:14548 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14492:14494 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R14531:14533 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R14495:14503 simuliris.simulation.language <> base_step proj
+R14529:14530 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R14523:14527 simuliris.simulation.lifting <> σ_s':258 var
+R14518:14521 simuliris.simulation.lifting <> e_s':257 var
+R14513:14516 simuliris.simulation.lifting <> σ_s:254 var
+R14509:14511 simuliris.simulation.lifting <> e_s:249 var
+R14505:14507 simuliris.simulation.lifting <> P_s:253 var
+R14549:14553 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R14608:14612 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14554:14565 simuliris.simulation.slsls <> state_interp meth
+R14587:14588 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R14591:14592 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R14601:14606 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R14589:14590 simuliris.simulation.lifting <> π:250 var
+R14593:14595 simuliris.simulation.lifting <> K_s:256 var
+R14597:14600 simuliris.simulation.lifting <> e_s':257 var
+R14604:14606 simuliris.simulation.lifting <> T_s:255 var
+R14580:14584 simuliris.simulation.lifting <> σ_s':258 var
+R14576:14578 simuliris.simulation.lifting <> P_s:253 var
+R14571:14574 simuliris.simulation.lifting <> σ_t:252 var
+R14567:14569 simuliris.simulation.lifting <> P_t:251 var
+R14613:14622 simuliris.simulation.slsls <> source_red def
+R14624:14627 simuliris.simulation.lifting <> e_s':257 var
+R14629:14630 simuliris.simulation.lifting <> π:250 var
+R14632:14633 simuliris.simulation.lifting <> Ψ:248 var
+R14647:14656 simuliris.simulation.slsls <> source_red def
+R14658:14660 simuliris.simulation.lifting <> e_s:249 var
+R14662:14663 simuliris.simulation.lifting <> π:250 var
+R14665:14666 simuliris.simulation.lifting <> Ψ:248 var
+R14708:14722 simuliris.simulation.slsls <> source_red_step thm
+R14776:14776 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14786:14791 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14805:14805 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14905:14917 simuliris.simulation.language <> no_forks_step constr
+R14931:14944 simuliris.simulation.language <> base_prim_step thm
+R14954:14966 simuliris.simulation.language <> no_forks_refl constr
+prf 15000:15012 <> sim_lift_call
+binder 15014:15015 <> Φ:259
+binder 15017:15018 <> fn:260
+R15031:15033 simuliris.simulation.language <> val proj
+R15035:15036 simuliris.simulation.lifting <> fix_sim.Λ var
+binder 15021:15023 <> v_t:261
+binder 15025:15027 <> v_s:262
+binder 15039:15040 <> π:263
+R15065:15074 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R15047:15053 simuliris.simulation.slsls <> ext_rel meth
+R15062:15064 simuliris.simulation.lifting <> v_s:262 var
+R15058:15060 simuliris.simulation.lifting <> v_t:261 var
+R15055:15056 simuliris.simulation.lifting <> π:263 var
+R15075:15075 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15141:15151 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15076:15079 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R15087:15088 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 15080:15082 <> v_t:264
+binder 15084:15086 <> v_s:265
+R15107:15112 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15089:15095 simuliris.simulation.slsls <> ext_rel meth
+R15104:15106 simuliris.simulation.lifting <> v_s:265 var
+R15100:15102 simuliris.simulation.lifting <> v_t:264 var
+R15097:15098 simuliris.simulation.lifting <> π:263 var
+R15113:15114 simuliris.simulation.lifting <> Φ:259 var
+R15117:15122 simuliris.simulation.language <> of_val def
+R15124:15126 simuliris.simulation.lifting <> v_t:264 var
+R15130:15135 simuliris.simulation.language <> of_val def
+R15137:15139 simuliris.simulation.lifting <> v_s:265 var
+R15152:15152 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15167:15172 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15175:15177 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15192:15196 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15199:15201 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15197:15198 simuliris.simulation.lifting <> Φ:259 var
+R15173:15174 simuliris.simulation.lifting <> π:263 var
+R15153:15159 simuliris.simulation.language <> of_call def
+R15164:15166 simuliris.simulation.lifting <> v_t:261 var
+R15161:15162 simuliris.simulation.lifting <> fn:260 var
+R15178:15184 simuliris.simulation.language <> of_call def
+R15189:15191 simuliris.simulation.lifting <> v_s:262 var
+R15186:15187 simuliris.simulation.lifting <> fn:260 var
+R15247:15261 simuliris.simulation.slsls <> sim_expr_unfold thm
+R15337:15346 simuliris.simulation.language <> empty_ectx proj
+R15354:15363 simuliris.simulation.language <> empty_ectx proj
+R15387:15396 simuliris.simulation.language <> fill_empty thm
+R15486:15499 stdpp.list_basics list list_insert_id thm
+R15559:15568 simuliris.simulation.language <> fill_empty thm
+R15578:15590 simuliris.simulation.slsls <> sim_expr_base thm
+prf 16381:16394 <> sim_lift_coind
+R16410:16414 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16403:16406 simuliris.simulation.language <> expr proj
+R16408:16409 simuliris.simulation.lifting <> fix_sim.Λ var
+R16422:16426 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R16415:16418 simuliris.simulation.language <> expr proj
+R16420:16421 simuliris.simulation.lifting <> fix_sim.Λ var
+R16427:16430 simuliris.simulation.lifting <> fix_sim.PROP var
+binder 16397:16399 <> inv:266
+binder 16433:16435 <> e_t:267
+binder 16437:16439 <> e_s:268
+binder 16441:16442 <> Φ:269
+binder 16444:16445 <> π:270
+R16453:16453 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R17022:17032 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R16454:16457 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R16458:16461 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R16495:16502 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 16462:16464 <> e_t:271
+binder 16466:16468 <> e_s:272
+binder 16470:16472 <> P_t:273
+binder 16474:16476 <> P_s:274
+binder 16478:16481 <> σ_t:275
+binder 16483:16486 <> σ_s:276
+binder 16488:16490 <> T_s:277
+binder 16492:16494 <> K_s:278
+R16514:16519 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R16503:16505 simuliris.simulation.lifting <> inv:266 var
+R16511:16513 simuliris.simulation.lifting <> e_s:272 var
+R16507:16509 simuliris.simulation.lifting <> e_t:271 var
+R16631:16645 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R16554:16558 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R16520:16531 simuliris.simulation.slsls <> state_interp meth
+R16551:16553 simuliris.simulation.lifting <> T_s:277 var
+R16546:16549 simuliris.simulation.lifting <> σ_s:276 var
+R16542:16544 simuliris.simulation.lifting <> P_s:274 var
+R16537:16540 simuliris.simulation.lifting <> σ_t:275 var
+R16533:16535 simuliris.simulation.lifting <> P_t:273 var
+R16559:16561 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16628:16630 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16593:16605 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R16571:16573 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16565:16568 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16569:16570 simuliris.simulation.lifting <> π:270 var
+R16562:16564 simuliris.simulation.lifting <> T_s:277 var
+R16574:16577 Corelib.Init.Datatypes <> Some constr
+R16580:16583 simuliris.simulation.language <> fill proj
+R16589:16591 simuliris.simulation.lifting <> e_s:272 var
+R16585:16587 simuliris.simulation.lifting <> K_s:278 var
+R16606:16614 simuliris.simulation.language <> pool_safe def
+R16616:16618 simuliris.simulation.lifting <> P_s:274 var
+R16620:16622 simuliris.simulation.lifting <> T_s:277 var
+R16624:16627 simuliris.simulation.lifting <> σ_s:276 var
+R16674:16686 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R16646:16648 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16671:16673 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16649:16657 simuliris.simulation.language <> reducible def
+R16659:16661 simuliris.simulation.lifting <> P_t:273 var
+R16663:16665 simuliris.simulation.lifting <> e_t:271 var
+R16667:16670 simuliris.simulation.lifting <> σ_t:275 var
+R16687:16690 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R16707:16718 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 16691:16694 <> e_t':279
+binder 16696:16700 <> efs_t:280
+binder 16702:16706 <> σ_t':281
+R16764:16780 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R16719:16721 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16761:16763 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16722:16730 simuliris.simulation.language <> prim_step ind
+R16732:16734 simuliris.simulation.lifting <> P_t:273 var
+R16736:16738 simuliris.simulation.lifting <> e_t:271 var
+R16740:16743 simuliris.simulation.lifting <> σ_t:275 var
+R16745:16748 simuliris.simulation.lifting <> e_t':279 var
+R16750:16754 simuliris.simulation.lifting <> σ_t':281 var
+R16756:16760 simuliris.simulation.lifting <> efs_t:280 var
+R16781:16784 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R16795:16796 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 16785:16788 <> e_s':282
+binder 16790:16794 <> σ_s':283
+R16813:16817 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R16797:16799 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16810:16812 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16805:16807 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16800:16804 simuliris.simulation.lifting <> efs_t:280 var
+R16808:16809 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R16860:16876 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R16818:16820 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16857:16859 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R16821:16829 simuliris.simulation.language <> prim_step ind
+R16831:16833 simuliris.simulation.lifting <> P_s:274 var
+R16835:16837 simuliris.simulation.lifting <> e_s:272 var
+R16839:16842 simuliris.simulation.lifting <> σ_s:276 var
+R16844:16847 simuliris.simulation.lifting <> e_s':282 var
+R16849:16853 simuliris.simulation.lifting <> σ_s':283 var
+R16855:16856 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R16931:16947 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R16877:16888 simuliris.simulation.slsls <> state_interp meth
+R16911:16912 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R16915:16916 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R16925:16929 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R16913:16914 simuliris.simulation.lifting <> π:270 var
+R16917:16919 simuliris.simulation.lifting <> K_s:278 var
+R16921:16924 simuliris.simulation.lifting <> e_s':282 var
+R16927:16929 simuliris.simulation.lifting <> T_s:277 var
+R16904:16908 simuliris.simulation.lifting <> σ_s':283 var
+R16900:16902 simuliris.simulation.lifting <> P_s:274 var
+R16894:16898 simuliris.simulation.lifting <> σ_t':281 var
+R16890:16892 simuliris.simulation.lifting <> P_t:273 var
+R16952:16956 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R16959:16960 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R16965:16968 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R17019:17021 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R16969:16971 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R16983:16984 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 16972:16976 <> e_t'':284
+binder 16978:16982 <> e_s'':285
+R16999:17003 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R16985:16986 simuliris.simulation.lifting <> Φ:269 var
+R16988:16992 simuliris.simulation.lifting <> e_t'':284 var
+R16994:16998 simuliris.simulation.lifting <> e_s'':285 var
+R17004:17006 simuliris.simulation.lifting <> inv:266 var
+R17014:17018 simuliris.simulation.lifting <> e_s'':285 var
+R17008:17012 simuliris.simulation.lifting <> e_t'':284 var
+R16957:16958 simuliris.simulation.lifting <> π:270 var
+R16948:16951 simuliris.simulation.lifting <> e_t':279 var
+R16961:16964 simuliris.simulation.lifting <> e_s':282 var
+R17044:17053 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R17033:17035 simuliris.simulation.lifting <> inv:266 var
+R17041:17043 simuliris.simulation.lifting <> e_s:268 var
+R17037:17039 simuliris.simulation.lifting <> e_t:267 var
+R17057:17061 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R17064:17065 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R17069:17072 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R17075:17077 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R17073:17074 simuliris.simulation.lifting <> Φ:269 var
+R17062:17063 simuliris.simulation.lifting <> π:270 var
+R17054:17056 simuliris.simulation.lifting <> e_t:267 var
+R17066:17068 simuliris.simulation.lifting <> e_s:268 var
+R17106:17108 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R17123:17124 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 17109:17110 <> Ψ:286
+binder 17112:17114 <> π':287
+binder 17116:17118 <> e_t:288
+binder 17120:17122 <> e_s:289
+R17125:17125 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R17165:17170 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R17126:17129 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R17137:17138 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 17130:17132 <> e_t:290
+binder 17134:17136 <> e_s:291
+R17149:17154 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R17142:17144 simuliris.simulation.lifting <> e_t:290 var
+R17146:17148 simuliris.simulation.lifting <> e_s:291 var
+R17155:17156 simuliris.simulation.lifting <> Ψ:286 var
+R17158:17160 simuliris.simulation.lifting <> e_t:290 var
+R17162:17164 simuliris.simulation.lifting <> e_s:291 var
+R17185:17189 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R17171:17173 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R17182:17184 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R17176:17178 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R17179:17181 simuliris.simulation.lifting <> π':287 var
+R17194:17196 simuliris.simulation.lifting <> e_t:288 var
+R17198:17200 simuliris.simulation.lifting <> e_s:289 var
+binder 17109:17110 <> Ψ:292
+binder 17112:17114 <> π':293
+binder 17116:17118 <> e_t:294
+binder 17120:17122 <> e_s:295
+binder 17130:17132 <> e_t:296
+binder 17134:17136 <> e_s:297
+R17142:17144 simuliris.simulation.lifting <> e_t:296 var
+R17146:17148 simuliris.simulation.lifting <> e_s:297 var
+R17155:17156 simuliris.simulation.lifting <> Ψ:292 var
+R17158:17160 simuliris.simulation.lifting <> e_t:296 var
+R17162:17164 simuliris.simulation.lifting <> e_s:297 var
+R17179:17181 simuliris.simulation.lifting <> π':293 var
+R17194:17196 simuliris.simulation.lifting <> e_t:294 var
+R17198:17200 simuliris.simulation.lifting <> e_s:295 var
+R17237:17249 simuliris.simulation.slsls <> sim_expr_paco thm
+R17372:17380 simuliris.simulation.slsls <> lock_step def
+R17436:17436 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17440:17445 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17455:17455 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17535:17535 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17543:17548 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17555:17555 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17651:17659 simuliris.simulation.slsls <> join_expr def
+R17678:17678 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17692:17697 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17710:17710 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17679:17691 simuliris.simulation.slsls <> sim_expr_mono thm
+prf 17905:17923 <> sim_lift_base_coind
+R17939:17943 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17932:17935 simuliris.simulation.language <> expr proj
+R17937:17938 simuliris.simulation.lifting <> fix_sim.Λ var
+R17951:17955 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R17944:17947 simuliris.simulation.language <> expr proj
+R17949:17950 simuliris.simulation.lifting <> fix_sim.Λ var
+R17956:17959 simuliris.simulation.lifting <> fix_sim.PROP var
+binder 17926:17928 <> inv:298
+binder 17962:17964 <> e_t:299
+binder 17966:17968 <> e_s:300
+binder 17970:17971 <> Φ:301
+binder 17973:17974 <> π:302
+R17982:17982 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R18557:18567 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R17983:17986 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R17987:17990 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R18024:18031 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 17991:17993 <> e_t:303
+binder 17995:17997 <> e_s:304
+binder 17999:18001 <> P_t:305
+binder 18003:18005 <> P_s:306
+binder 18007:18010 <> σ_t:307
+binder 18012:18015 <> σ_s:308
+binder 18017:18019 <> T_s:309
+binder 18021:18023 <> K_s:310
+R18043:18048 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R18032:18034 simuliris.simulation.lifting <> inv:298 var
+R18040:18042 simuliris.simulation.lifting <> e_s:304 var
+R18036:18038 simuliris.simulation.lifting <> e_t:303 var
+R18160:18174 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R18083:18087 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R18049:18060 simuliris.simulation.slsls <> state_interp meth
+R18080:18082 simuliris.simulation.lifting <> T_s:309 var
+R18075:18078 simuliris.simulation.lifting <> σ_s:308 var
+R18071:18073 simuliris.simulation.lifting <> P_s:306 var
+R18066:18069 simuliris.simulation.lifting <> σ_t:307 var
+R18062:18064 simuliris.simulation.lifting <> P_t:305 var
+R18088:18090 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18157:18159 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18122:18134 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R18100:18102 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18094:18097 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R18098:18099 simuliris.simulation.lifting <> π:302 var
+R18091:18093 simuliris.simulation.lifting <> T_s:309 var
+R18103:18106 Corelib.Init.Datatypes <> Some constr
+R18109:18112 simuliris.simulation.language <> fill proj
+R18118:18120 simuliris.simulation.lifting <> e_s:304 var
+R18114:18116 simuliris.simulation.lifting <> K_s:310 var
+R18135:18143 simuliris.simulation.language <> pool_safe def
+R18145:18147 simuliris.simulation.lifting <> P_s:306 var
+R18149:18151 simuliris.simulation.lifting <> T_s:309 var
+R18153:18156 simuliris.simulation.lifting <> σ_s:308 var
+R18208:18220 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R18175:18177 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18205:18207 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18178:18191 simuliris.simulation.language <> base_reducible def
+R18193:18195 simuliris.simulation.lifting <> P_t:305 var
+R18197:18199 simuliris.simulation.lifting <> e_t:303 var
+R18201:18204 simuliris.simulation.lifting <> σ_t:307 var
+R18221:18224 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R18241:18252 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 18225:18228 <> e_t':311
+binder 18230:18234 <> efs_t:312
+binder 18236:18240 <> σ_t':313
+R18298:18314 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R18253:18255 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18295:18297 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18256:18264 simuliris.simulation.language <> base_step proj
+R18290:18294 simuliris.simulation.lifting <> efs_t:312 var
+R18284:18288 simuliris.simulation.lifting <> σ_t':313 var
+R18279:18282 simuliris.simulation.lifting <> e_t':311 var
+R18274:18277 simuliris.simulation.lifting <> σ_t:307 var
+R18270:18272 simuliris.simulation.lifting <> e_t:303 var
+R18266:18268 simuliris.simulation.lifting <> P_t:305 var
+R18315:18318 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R18329:18330 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 18319:18322 <> e_s':314
+binder 18324:18328 <> σ_s':315
+R18347:18351 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R18331:18333 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18344:18346 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18339:18341 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R18334:18338 simuliris.simulation.lifting <> efs_t:312 var
+R18342:18343 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R18394:18410 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R18352:18354 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18391:18393 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R18355:18363 simuliris.simulation.language <> base_step proj
+R18389:18390 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R18383:18387 simuliris.simulation.lifting <> σ_s':315 var
+R18378:18381 simuliris.simulation.lifting <> e_s':314 var
+R18373:18376 simuliris.simulation.lifting <> σ_s:308 var
+R18369:18371 simuliris.simulation.lifting <> e_s:304 var
+R18365:18367 simuliris.simulation.lifting <> P_s:306 var
+R18466:18482 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R18411:18422 simuliris.simulation.slsls <> state_interp meth
+R18445:18446 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R18449:18450 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R18459:18464 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R18447:18448 simuliris.simulation.lifting <> π:302 var
+R18451:18453 simuliris.simulation.lifting <> K_s:310 var
+R18455:18458 simuliris.simulation.lifting <> e_s':314 var
+R18462:18464 simuliris.simulation.lifting <> T_s:309 var
+R18438:18442 simuliris.simulation.lifting <> σ_s':315 var
+R18434:18436 simuliris.simulation.lifting <> P_s:306 var
+R18428:18432 simuliris.simulation.lifting <> σ_t':313 var
+R18424:18426 simuliris.simulation.lifting <> P_t:305 var
+R18487:18491 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18494:18495 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18500:18503 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18554:18556 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18504:18506 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R18518:18519 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 18507:18511 <> e_t'':316
+binder 18513:18517 <> e_s'':317
+R18534:18538 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R18520:18521 simuliris.simulation.lifting <> Φ:301 var
+R18523:18527 simuliris.simulation.lifting <> e_t'':316 var
+R18529:18533 simuliris.simulation.lifting <> e_s'':317 var
+R18539:18541 simuliris.simulation.lifting <> inv:298 var
+R18549:18553 simuliris.simulation.lifting <> e_s'':317 var
+R18543:18547 simuliris.simulation.lifting <> e_t'':316 var
+R18492:18493 simuliris.simulation.lifting <> π:302 var
+R18483:18486 simuliris.simulation.lifting <> e_t':311 var
+R18496:18499 simuliris.simulation.lifting <> e_s':314 var
+R18579:18588 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R18568:18570 simuliris.simulation.lifting <> inv:298 var
+R18576:18578 simuliris.simulation.lifting <> e_s:300 var
+R18572:18574 simuliris.simulation.lifting <> e_t:299 var
+R18592:18596 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18599:18600 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18604:18607 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18610:18612 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R18608:18609 simuliris.simulation.lifting <> Φ:301 var
+R18597:18598 simuliris.simulation.lifting <> π:302 var
+R18589:18591 simuliris.simulation.lifting <> e_t:299 var
+R18601:18603 simuliris.simulation.lifting <> e_s:300 var
+R18655:18655 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18670:18675 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18685:18685 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18656:18669 simuliris.simulation.lifting <> sim_lift_coind thm
+R18754:18754 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18759:18764 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18783:18783 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18849:18867 simuliris.simulation.language <> base_prim_reducible thm
+R18905:18905 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18910:18915 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18920:18920 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18995:19018 simuliris.simulation.language <> base_reducible_prim_step thm
+R19103:19116 simuliris.simulation.language <> base_prim_step thm
+prf 19392:19410 <> sim_lift_coind_pure
+R19419:19422 simuliris.simulation.lifting <> fix_sim.PROP var
+binder 19413:19415 <> inv:318
+binder 19425:19427 <> e_t:319
+binder 19429:19432 <> e_t':320
+binder 19434:19436 <> e_s:321
+binder 19438:19441 <> e_s':322
+binder 19443:19444 <> Φ:323
+binder 19446:19447 <> π:324
+binder 19450:19451 <> ϕ:325
+binder 19453:19454 <> ψ:326
+R19479:19486 simuliris.simulation.lifting <> PureExec class
+R19497:19500 simuliris.simulation.lifting <> e_t':320 var
+R19493:19495 simuliris.simulation.lifting <> e_t:319 var
+R19488:19489 simuliris.simulation.lifting <> ϕ:325 var
+binder 19469:19475 <> Hpure_t:327
+R19514:19521 simuliris.simulation.lifting <> PureExec class
+R19532:19535 simuliris.simulation.lifting <> e_s':322 var
+R19528:19530 simuliris.simulation.lifting <> e_s:321 var
+R19523:19524 simuliris.simulation.lifting <> ψ:326 var
+binder 19504:19510 <> Hpure_s:328
+R19546:19554 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19544:19545 simuliris.simulation.lifting <> ϕ:325 var
+R19557:19565 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R19555:19556 simuliris.simulation.lifting <> ψ:326 var
+R19689:19698 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R19566:19570 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R19688:19688 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R19574:19579 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R19571:19573 simuliris.simulation.lifting <> inv:318 var
+R19584:19588 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19591:19592 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19597:19600 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19685:19687 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19601:19603 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R19615:19616 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 19604:19608 <> e_t'':329
+binder 19610:19614 <> e_s'':330
+R19631:19636 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R19684:19684 iris.bi.interface <> ::bi_scope:x_'∨'_x not
+R19617:19618 simuliris.simulation.lifting <> Φ:323 var
+R19620:19624 simuliris.simulation.lifting <> e_t'':329 var
+R19626:19630 simuliris.simulation.lifting <> e_s'':330 var
+R19654:19658 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R19637:19639 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19651:19653 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19645:19647 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19640:19644 simuliris.simulation.lifting <> e_t'':329 var
+R19648:19650 simuliris.simulation.lifting <> e_t:319 var
+R19676:19680 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R19659:19661 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19673:19675 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19667:19669 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19662:19666 simuliris.simulation.lifting <> e_s'':330 var
+R19670:19672 simuliris.simulation.lifting <> e_s:321 var
+R19681:19683 simuliris.simulation.lifting <> inv:318 var
+R19589:19590 simuliris.simulation.lifting <> π:324 var
+R19580:19583 simuliris.simulation.lifting <> e_t':320 var
+R19593:19596 simuliris.simulation.lifting <> e_s':322 var
+R19702:19711 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R19699:19701 simuliris.simulation.lifting <> inv:318 var
+R19715:19719 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19722:19723 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19727:19730 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19733:19735 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R19731:19732 simuliris.simulation.lifting <> Φ:323 var
+R19720:19721 simuliris.simulation.lifting <> π:324 var
+R19712:19714 simuliris.simulation.lifting <> e_t:319 var
+R19724:19726 simuliris.simulation.lifting <> e_s:321 var
+R19803:19805 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R19815:19816 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 19806:19809 <> e_t':331
+binder 19811:19814 <> e_s':332
+R19833:19837 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R19817:19819 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19830:19832 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19824:19826 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19820:19823 simuliris.simulation.lifting <> e_t':331 var
+R19854:19858 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R19838:19840 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19851:19853 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R19845:19847 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R19841:19844 simuliris.simulation.lifting <> e_s':332 var
+binder 19806:19809 <> e_t':333
+binder 19811:19814 <> e_s':334
+R19820:19823 simuliris.simulation.lifting <> e_t':333 var
+R19841:19844 simuliris.simulation.lifting <> e_s':334 var
+binder 19806:19809 <> e_t':335
+binder 19811:19814 <> e_s':336
+R19820:19823 simuliris.simulation.lifting <> e_t':335 var
+R19841:19844 simuliris.simulation.lifting <> e_s':336 var
+R19878:19878 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19898:19903 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19919:19919 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19879:19892 simuliris.simulation.lifting <> sim_lift_coind thm
+R20071:20085 stdpp.relations <> nsteps_once_inv thm
+R20147:20161 stdpp.relations <> nsteps_once_inv thm
+R20625:20646 simuliris.simulation.lifting <> state_interp_pure_step thm
+prf 20687:20701 <> sim_lift_coind'
+R20717:20721 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20710:20713 simuliris.simulation.language <> expr proj
+R20715:20716 simuliris.simulation.lifting <> fix_sim.Λ var
+R20729:20733 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20722:20725 simuliris.simulation.language <> expr proj
+R20727:20728 simuliris.simulation.lifting <> fix_sim.Λ var
+R20734:20737 simuliris.simulation.lifting <> fix_sim.PROP var
+binder 20704:20706 <> inv:337
+binder 20740:20742 <> e_t:338
+binder 20744:20746 <> e_s:339
+binder 20748:20749 <> Φ:340
+binder 20751:20752 <> π:341
+R20760:20760 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R21431:21441 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R20761:20764 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R20765:20768 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R20802:20809 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 20769:20771 <> e_t:342
+binder 20773:20775 <> e_s:343
+binder 20777:20779 <> P_t:344
+binder 20781:20783 <> P_s:345
+binder 20785:20788 <> σ_t:346
+binder 20790:20793 <> σ_s:347
+binder 20795:20797 <> T_s:348
+binder 20799:20801 <> K_s:349
+R20821:20826 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R20810:20812 simuliris.simulation.lifting <> inv:337 var
+R20818:20820 simuliris.simulation.lifting <> e_s:343 var
+R20814:20816 simuliris.simulation.lifting <> e_t:342 var
+R20938:20952 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R20861:20865 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R20827:20838 simuliris.simulation.slsls <> state_interp meth
+R20858:20860 simuliris.simulation.lifting <> T_s:348 var
+R20853:20856 simuliris.simulation.lifting <> σ_s:347 var
+R20849:20851 simuliris.simulation.lifting <> P_s:345 var
+R20844:20847 simuliris.simulation.lifting <> σ_t:346 var
+R20840:20842 simuliris.simulation.lifting <> P_t:344 var
+R20866:20868 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R20935:20937 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R20900:20912 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R20878:20880 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R20872:20875 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R20876:20877 simuliris.simulation.lifting <> π:341 var
+R20869:20871 simuliris.simulation.lifting <> T_s:348 var
+R20881:20884 Corelib.Init.Datatypes <> Some constr
+R20887:20890 simuliris.simulation.language <> fill proj
+R20896:20898 simuliris.simulation.lifting <> e_s:343 var
+R20892:20894 simuliris.simulation.lifting <> K_s:349 var
+R20913:20921 simuliris.simulation.language <> pool_safe def
+R20923:20925 simuliris.simulation.lifting <> P_s:345 var
+R20927:20929 simuliris.simulation.lifting <> T_s:348 var
+R20931:20934 simuliris.simulation.lifting <> σ_s:347 var
+R20981:20993 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R20953:20955 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R20978:20980 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R20956:20964 simuliris.simulation.language <> reducible def
+R20966:20968 simuliris.simulation.lifting <> P_t:344 var
+R20970:20972 simuliris.simulation.lifting <> e_t:342 var
+R20974:20977 simuliris.simulation.lifting <> σ_t:346 var
+R20994:20997 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R21014:21025 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 20998:21001 <> e_t':350
+binder 21003:21007 <> efs_t:351
+binder 21009:21013 <> σ_t':352
+R21071:21087 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R21026:21028 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R21068:21070 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R21029:21037 simuliris.simulation.language <> prim_step ind
+R21039:21041 simuliris.simulation.lifting <> P_t:344 var
+R21043:21045 simuliris.simulation.lifting <> e_t:342 var
+R21047:21050 simuliris.simulation.lifting <> σ_t:346 var
+R21052:21055 simuliris.simulation.lifting <> e_t':350 var
+R21057:21061 simuliris.simulation.lifting <> σ_t':352 var
+R21063:21067 simuliris.simulation.lifting <> efs_t:351 var
+R21088:21091 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R21102:21103 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 21092:21095 <> e_s':353
+binder 21097:21101 <> σ_s':354
+R21120:21124 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R21104:21106 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R21117:21119 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R21112:21114 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R21107:21111 simuliris.simulation.lifting <> efs_t:351 var
+R21115:21116 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R21167:21183 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R21125:21127 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R21164:21166 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R21128:21136 simuliris.simulation.language <> prim_step ind
+R21138:21140 simuliris.simulation.lifting <> P_s:345 var
+R21142:21144 simuliris.simulation.lifting <> e_s:343 var
+R21146:21149 simuliris.simulation.lifting <> σ_s:347 var
+R21151:21154 simuliris.simulation.lifting <> e_s':353 var
+R21156:21160 simuliris.simulation.lifting <> σ_s':354 var
+R21162:21163 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R21239:21256 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R21430:21430 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R21184:21195 simuliris.simulation.slsls <> state_interp meth
+R21218:21219 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R21222:21223 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R21232:21237 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R21220:21221 simuliris.simulation.lifting <> π:341 var
+R21224:21226 simuliris.simulation.lifting <> K_s:349 var
+R21228:21231 simuliris.simulation.lifting <> e_s':353 var
+R21235:21237 simuliris.simulation.lifting <> T_s:348 var
+R21211:21215 simuliris.simulation.lifting <> σ_s':354 var
+R21207:21209 simuliris.simulation.lifting <> P_s:345 var
+R21201:21205 simuliris.simulation.lifting <> σ_t':352 var
+R21197:21199 simuliris.simulation.lifting <> P_t:344 var
+R21257:21260 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R21263:21276 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 21261:21262 <> Ψ:355
+R21323:21340 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R21277:21281 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R21322:21322 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R21282:21285 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R21293:21294 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 21286:21288 <> e_t:356
+binder 21290:21292 <> e_s:357
+R21306:21311 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R21295:21297 simuliris.simulation.lifting <> inv:337 var
+R21303:21305 simuliris.simulation.lifting <> e_s:357 var
+R21299:21301 simuliris.simulation.lifting <> e_t:356 var
+R21312:21313 simuliris.simulation.lifting <> Ψ:355 var
+R21315:21317 simuliris.simulation.lifting <> e_t:356 var
+R21319:21321 simuliris.simulation.lifting <> e_s:357 var
+R21386:21403 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R21341:21345 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R21385:21385 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R21346:21349 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R21357:21358 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 21350:21352 <> e_t:358
+binder 21354:21356 <> e_s:359
+R21369:21374 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R21359:21360 simuliris.simulation.lifting <> Φ:340 var
+R21362:21364 simuliris.simulation.lifting <> e_t:358 var
+R21366:21368 simuliris.simulation.lifting <> e_s:359 var
+R21375:21376 simuliris.simulation.lifting <> Ψ:355 var
+R21378:21380 simuliris.simulation.lifting <> e_t:358 var
+R21382:21384 simuliris.simulation.lifting <> e_s:359 var
+R21408:21412 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21415:21416 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21421:21424 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21427:21429 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21425:21426 simuliris.simulation.lifting <> Ψ:355 var
+R21413:21414 simuliris.simulation.lifting <> π:341 var
+R21404:21407 simuliris.simulation.lifting <> e_t':350 var
+R21417:21420 simuliris.simulation.lifting <> e_s':353 var
+R21453:21462 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R21442:21444 simuliris.simulation.lifting <> inv:337 var
+R21450:21452 simuliris.simulation.lifting <> e_s:339 var
+R21446:21448 simuliris.simulation.lifting <> e_t:338 var
+R21466:21470 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21473:21474 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21478:21481 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21484:21486 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R21482:21483 simuliris.simulation.lifting <> Φ:340 var
+R21471:21472 simuliris.simulation.lifting <> π:341 var
+R21463:21465 simuliris.simulation.lifting <> e_t:338 var
+R21475:21477 simuliris.simulation.lifting <> e_s:339 var
+R21527:21527 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21542:21547 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21557:21557 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21528:21541 simuliris.simulation.lifting <> sim_lift_coind thm
+R21610:21610 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21614:21619 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21629:21629 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21687:21687 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21692:21697 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21705:21705 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+prf 21833:21852 <> sim_lift_base_coind'
+R21868:21872 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21861:21864 simuliris.simulation.language <> expr proj
+R21866:21867 simuliris.simulation.lifting <> fix_sim.Λ var
+R21880:21884 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21873:21876 simuliris.simulation.language <> expr proj
+R21878:21879 simuliris.simulation.lifting <> fix_sim.Λ var
+R21885:21888 simuliris.simulation.lifting <> fix_sim.PROP var
+binder 21855:21857 <> inv:360
+binder 21891:21893 <> e_t:361
+binder 21895:21897 <> e_s:362
+binder 21899:21900 <> Φ:363
+binder 21902:21903 <> π:364
+R21910:21910 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R22585:22595 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R21911:21914 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R21915:21918 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R21952:21959 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 21919:21921 <> e_t:365
+binder 21923:21925 <> e_s:366
+binder 21927:21929 <> P_t:367
+binder 21931:21933 <> P_s:368
+binder 21935:21938 <> σ_t:369
+binder 21940:21943 <> σ_s:370
+binder 21945:21947 <> T_s:371
+binder 21949:21951 <> K_s:372
+R21971:21976 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R21960:21962 simuliris.simulation.lifting <> inv:360 var
+R21968:21970 simuliris.simulation.lifting <> e_s:366 var
+R21964:21966 simuliris.simulation.lifting <> e_t:365 var
+R22088:22102 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R22011:22015 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R21977:21988 simuliris.simulation.slsls <> state_interp meth
+R22008:22010 simuliris.simulation.lifting <> T_s:371 var
+R22003:22006 simuliris.simulation.lifting <> σ_s:370 var
+R21999:22001 simuliris.simulation.lifting <> P_s:368 var
+R21994:21997 simuliris.simulation.lifting <> σ_t:369 var
+R21990:21992 simuliris.simulation.lifting <> P_t:367 var
+R22016:22018 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22085:22087 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22050:22062 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R22028:22030 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R22022:22025 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R22026:22027 simuliris.simulation.lifting <> π:364 var
+R22019:22021 simuliris.simulation.lifting <> T_s:371 var
+R22031:22034 Corelib.Init.Datatypes <> Some constr
+R22037:22040 simuliris.simulation.language <> fill proj
+R22046:22048 simuliris.simulation.lifting <> e_s:366 var
+R22042:22044 simuliris.simulation.lifting <> K_s:372 var
+R22063:22071 simuliris.simulation.language <> pool_safe def
+R22073:22075 simuliris.simulation.lifting <> P_s:368 var
+R22077:22079 simuliris.simulation.lifting <> T_s:371 var
+R22081:22084 simuliris.simulation.lifting <> σ_s:370 var
+R22136:22148 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R22103:22105 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22133:22135 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22106:22119 simuliris.simulation.language <> base_reducible def
+R22121:22123 simuliris.simulation.lifting <> P_t:367 var
+R22125:22127 simuliris.simulation.lifting <> e_t:365 var
+R22129:22132 simuliris.simulation.lifting <> σ_t:369 var
+R22149:22152 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R22169:22180 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 22153:22156 <> e_t':373
+binder 22158:22162 <> efs_t:374
+binder 22164:22168 <> σ_t':375
+R22226:22242 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R22181:22183 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22223:22225 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22184:22192 simuliris.simulation.language <> base_step proj
+R22218:22222 simuliris.simulation.lifting <> efs_t:374 var
+R22212:22216 simuliris.simulation.lifting <> σ_t':375 var
+R22207:22210 simuliris.simulation.lifting <> e_t':373 var
+R22202:22205 simuliris.simulation.lifting <> σ_t:369 var
+R22198:22200 simuliris.simulation.lifting <> e_t:365 var
+R22194:22196 simuliris.simulation.lifting <> P_t:367 var
+R22243:22246 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R22257:22258 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 22247:22250 <> e_s':376
+binder 22252:22256 <> σ_s':377
+R22275:22279 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R22259:22261 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22272:22274 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22267:22269 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R22262:22266 simuliris.simulation.lifting <> efs_t:374 var
+R22270:22271 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R22322:22338 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R22280:22282 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22319:22321 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R22283:22291 simuliris.simulation.language <> base_step proj
+R22317:22318 Stdlib.Lists.List ListNotations ::list_scope:'['_']' not
+R22311:22315 simuliris.simulation.lifting <> σ_s':377 var
+R22306:22309 simuliris.simulation.lifting <> e_s':376 var
+R22301:22304 simuliris.simulation.lifting <> σ_s:370 var
+R22297:22299 simuliris.simulation.lifting <> e_s:366 var
+R22293:22295 simuliris.simulation.lifting <> P_s:368 var
+R22393:22410 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R22584:22584 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R22339:22350 simuliris.simulation.slsls <> state_interp meth
+R22373:22374 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R22377:22378 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R22387:22391 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R22375:22376 simuliris.simulation.lifting <> π:364 var
+R22379:22381 simuliris.simulation.lifting <> K_s:372 var
+R22383:22386 simuliris.simulation.lifting <> e_s':376 var
+R22389:22391 simuliris.simulation.lifting <> T_s:371 var
+R22366:22370 simuliris.simulation.lifting <> σ_s':377 var
+R22362:22364 simuliris.simulation.lifting <> P_s:368 var
+R22356:22360 simuliris.simulation.lifting <> σ_t':375 var
+R22352:22354 simuliris.simulation.lifting <> P_t:367 var
+R22411:22414 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R22417:22430 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 22415:22416 <> Ψ:378
+R22477:22494 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R22431:22435 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R22476:22476 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R22436:22439 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R22447:22448 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 22440:22442 <> e_t:379
+binder 22444:22446 <> e_s:380
+R22460:22465 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R22449:22451 simuliris.simulation.lifting <> inv:360 var
+R22457:22459 simuliris.simulation.lifting <> e_s:380 var
+R22453:22455 simuliris.simulation.lifting <> e_t:379 var
+R22466:22467 simuliris.simulation.lifting <> Ψ:378 var
+R22469:22471 simuliris.simulation.lifting <> e_t:379 var
+R22473:22475 simuliris.simulation.lifting <> e_s:380 var
+R22540:22557 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R22495:22499 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R22539:22539 iris.bi.derived_connectives <> ::bi_scope:'□'_x not
+R22500:22503 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R22511:22512 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 22504:22506 <> e_t:381
+binder 22508:22510 <> e_s:382
+R22523:22528 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R22513:22514 simuliris.simulation.lifting <> Φ:363 var
+R22516:22518 simuliris.simulation.lifting <> e_t:381 var
+R22520:22522 simuliris.simulation.lifting <> e_s:382 var
+R22529:22530 simuliris.simulation.lifting <> Ψ:378 var
+R22532:22534 simuliris.simulation.lifting <> e_t:381 var
+R22536:22538 simuliris.simulation.lifting <> e_s:382 var
+R22562:22566 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22569:22570 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22575:22578 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22581:22583 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22579:22580 simuliris.simulation.lifting <> Ψ:378 var
+R22567:22568 simuliris.simulation.lifting <> π:364 var
+R22558:22561 simuliris.simulation.lifting <> e_t':373 var
+R22571:22574 simuliris.simulation.lifting <> e_s':376 var
+R22607:22616 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R22596:22598 simuliris.simulation.lifting <> inv:360 var
+R22604:22606 simuliris.simulation.lifting <> e_s:362 var
+R22600:22602 simuliris.simulation.lifting <> e_t:361 var
+R22620:22624 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22627:22628 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22632:22635 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22638:22640 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R22636:22637 simuliris.simulation.lifting <> Φ:363 var
+R22625:22626 simuliris.simulation.lifting <> π:364 var
+R22617:22619 simuliris.simulation.lifting <> e_t:361 var
+R22629:22631 simuliris.simulation.lifting <> e_s:362 var
+R22681:22681 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22701:22706 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22716:22716 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22682:22700 simuliris.simulation.lifting <> sim_lift_base_coind thm
+R22769:22769 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22773:22778 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22788:22788 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22846:22846 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22851:22856 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22864:22864 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R22987:22993 simuliris.simulation.lifting fix_sim <> sec

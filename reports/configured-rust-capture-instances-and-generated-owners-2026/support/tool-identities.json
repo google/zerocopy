@@ -1,0 +1,8 @@
+{
+  "rustc_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+  "driver_file": "lib/librustc_driver-16d1e96e5b674978.dylib",
+  "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+  "core_file": "lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+  "core_sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90"
+}

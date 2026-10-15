@@ -1,0 +1,1370 @@
+DIGEST 08a6057ac04d29cc4c20d5cd83ef7dae
+Fsimuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access
+R35:43 iris.proofmode.proofmode <> <> lib
+R78:87 iris.bi.lib.fractional <> <> lib
+R130:138 iris.base_logic.lib.ghost_map <> <> lib
+R182:193 simuliris.base_logic.gen_sim_prog <> <> lib
+R237:241 simuliris.simulation.slsls <> <> lib
+R243:253 simuliris.simulation.gen_log_rel <> <> lib
+R297:303 simuliris.simulation.lifting <> <> lib
+R349:358 simuliris.tree_borrows.tkmap_view <> <> lib
+R404:407 simuliris.tree_borrows.defs <> <> lib
+R453:460 simuliris.tree_borrows.steps_wf <> <> lib
+R506:519 simuliris.tree_borrows.steps_progress <> <> lib
+R577:592 simuliris.tree_borrows.trees_equal.trees_equal_base <> <> lib
+R594:606 simuliris.tree_borrows.trees_equal.random_lemmas <> <> lib
+R608:631 simuliris.tree_borrows.trees_equal.trees_equal_transitivity <> <> lib
+R689:724 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> <> lib
+sec 736:740 <> utils
+var  755:755 utils C
+R759:769 simuliris.tree_borrows.lang_base <> call_id_set def
+prf 782:825 <> access_preserves_pseudo_conflicted_activable
+R830:833 Corelib.Init.Datatypes <> bool ind
+binder 828:828 <> b:2
+binder 841:842 <> tr:3
+binder 844:845 <> tg:4
+binder 847:847 <> l:5
+binder 849:852 <> kind:6
+binder 854:859 <> acc_tg:7
+binder 861:865 <> range:8
+binder 867:869 <> tr':9
+R918:925 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R878:894 simuliris.tree_borrows.trees_equal.trees_equal_base <> pseudo_conflicted ind
+R898:899 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:3 var
+R901:902 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:4 var
+R904:904 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:5 var
+R906:917 simuliris.tree_borrows.lang_base <> ResActivable constr
+R896:896 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R1025:1032 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R1014:1016 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R926:942 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R945:967 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R969:969 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:2 var
+R972:988 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R990:993 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:6 var
+R997:997 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R999:1004 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:7 var
+R1006:1010 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:8 var
+R1012:1013 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:3 var
+R1017:1020 Corelib.Init.Datatypes <> Some constr
+R1022:1024 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':9 var
+R1033:1049 simuliris.tree_borrows.trees_equal.trees_equal_base <> pseudo_conflicted ind
+R1053:1055 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':9 var
+R1057:1058 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:4 var
+R1060:1060 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:5 var
+R1062:1073 simuliris.tree_borrows.lang_base <> ResActivable constr
+R1051:1051 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R1241:1266 simuliris.tree_borrows.steps_preserve <> apply_access_spec_per_node thm
+R1388:1396 stdpp.option <> bind_Some thm
+R1555:1575 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R1630:1635 stdpp.base <> decide def
+R1779:1815 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop thm
+R1820:1836 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R1845:1851 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R1864:1867 simuliris.tree_borrows.lang_base <> itag proj
+R1952:1960 stdpp.option <> bind_Some thm
+R2066:2074 stdpp.option <> bind_Some thm
+R2266:2284 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R2360:2370 simuliris.tree_borrows.lang_base <> item_lookup def
+R2409:2419 simuliris.tree_borrows.lang_base <> item_lookup def
+R2466:2469 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R2453:2457 simuliris.tree_borrows.lang_base <> iperm proj
+R2583:2603 stdpp.decidable <> bool_decide_eq_true_2 thm
+R2772:2782 simuliris.tree_borrows.lang_base <> item_lookup def
+R2821:2831 simuliris.tree_borrows.lang_base <> item_lookup def
+R2878:2881 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R2865:2869 simuliris.tree_borrows.lang_base <> iperm proj
+R2970:2980 simuliris.tree_borrows.lang_base <> item_lookup def
+R3051:3061 simuliris.tree_borrows.lang_base <> item_lookup def
+R3087:3089 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3090:3093 simuliris.tree_borrows.lang_base <> Cell constr
+R3225:3247 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R3339:3349 simuliris.tree_borrows.lang_base <> item_lookup def
+R3388:3398 simuliris.tree_borrows.lang_base <> item_lookup def
+R3437:3447 simuliris.tree_borrows.lang_base <> item_lookup def
+R3556:3574 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R3656:3666 simuliris.tree_borrows.lang_base <> item_lookup def
+R3713:3723 simuliris.tree_borrows.lang_base <> item_lookup def
+R3770:3780 simuliris.tree_borrows.lang_base <> item_lookup def
+prf 3826:3859 <> access_preserves_pseudo_conflicted
+R3864:3867 Corelib.Init.Datatypes <> bool ind
+binder 3862:3862 <> b:10
+binder 3875:3876 <> tr:11
+binder 3878:3879 <> tg:12
+binder 3881:3881 <> l:13
+binder 3883:3886 <> kind:14
+binder 3888:3893 <> acc_tg:15
+binder 3895:3899 <> range:16
+binder 3901:3904 <> conf:17
+binder 3906:3908 <> tr':18
+R3949:3956 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R3917:3933 simuliris.tree_borrows.trees_equal.trees_equal_base <> pseudo_conflicted ind
+R3937:3938 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:11 var
+R3940:3941 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:12 var
+R3943:3943 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:13 var
+R3945:3948 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> conf:17 var
+R3935:3935 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R4056:4063 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R4045:4047 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3957:3973 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R3976:3998 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R4000:4000 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:10 var
+R4003:4019 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R4021:4024 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:14 var
+R4028:4028 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R4030:4035 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:15 var
+R4037:4041 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:16 var
+R4043:4044 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:11 var
+R4048:4051 Corelib.Init.Datatypes <> Some constr
+R4053:4055 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':18 var
+R4064:4080 simuliris.tree_borrows.trees_equal.trees_equal_base <> pseudo_conflicted ind
+R4084:4086 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':18 var
+R4088:4089 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:12 var
+R4091:4091 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:13 var
+R4093:4096 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> conf:17 var
+R4082:4082 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R4164:4207 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> access_preserves_pseudo_conflicted_activable thm
+prf 4262:4310 <> frozen_in_practice_tree_apply_access_irreversible
+binder 4317:4318 <> tr:19
+binder 4320:4322 <> tr':20
+binder 4324:4325 <> tg:21
+binder 4327:4332 <> acc_tg:22
+binder 4334:4337 <> kind:23
+binder 4339:4343 <> range:24
+binder 4345:4351 <> witness:25
+binder 4353:4355 <> loc:26
+binder 4357:4357 <> b:27
+R4371:4388 simuliris.tree_borrows.trees_equal.trees_equal_base <> frozen_in_practice def
+R4390:4391 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:19 var
+R4393:4394 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:21 var
+R4396:4402 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:25 var
+R4404:4406 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:26 var
+binder 4365:4367 <> Frz:28
+R4421:4433 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R4435:4440 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:22 var
+R4442:4443 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:19 var
+binder 4414:4417 <> Cont:29
+R4457:4463 simuliris.tree_borrows.defs <> wf_tree def
+R4465:4466 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:19 var
+binder 4451:4453 <> Uni:30
+R4568:4570 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4480:4496 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R4499:4521 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R4523:4523 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:27 var
+R4526:4542 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R4544:4547 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:23 var
+R4551:4551 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R4553:4558 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:22 var
+R4560:4564 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:24 var
+R4566:4567 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:19 var
+R4571:4574 Corelib.Init.Datatypes <> Some constr
+R4576:4578 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':20 var
+binder 4474:4476 <> Acc:31
+R4597:4610 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_frozen def
+R4612:4615 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:23 var
+R4617:4621 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:24 var
+R4623:4625 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:26 var
+R4627:4627 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:27 var
+R4629:4630 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:19 var
+R4632:4637 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:22 var
+R4639:4645 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:25 var
+binder 4591:4592 <> bf:32
+R4666:4681 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_disabled def
+R4683:4686 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:23 var
+R4688:4692 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:24 var
+R4694:4696 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:26 var
+R4698:4698 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:27 var
+R4700:4701 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:19 var
+R4703:4708 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:22 var
+R4710:4716 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:25 var
+binder 4660:4661 <> bd:33
+R4727:4727 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R4772:4778 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R4829:4829 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R4765:4769 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R4728:4745 simuliris.tree_borrows.trees_equal.trees_equal_base <> frozen_in_practice def
+R4747:4749 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':20 var
+R4751:4752 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:21 var
+R4754:4760 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:25 var
+R4762:4764 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:26 var
+R4770:4771 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> bf:32 var
+R4822:4826 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R4779:4793 simuliris.tree_borrows.trees_equal.trees_equal_base <> parent_has_perm ind
+R4795:4802 simuliris.tree_borrows.lang_base <> Disabled constr
+R4804:4806 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':20 var
+R4808:4809 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:21 var
+R4811:4817 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:25 var
+R4819:4821 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:26 var
+R4827:4828 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> bd:33 var
+R4929:4931 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4914:4917 simuliris.tree_borrows.lang_base <> itag proj
+R4960:4982 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R4999:5035 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> frozen_tree_apply_access_irreversible thm
+R5037:5037 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R5186:5204 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R5350:5368 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R5425:5435 simuliris.tree_borrows.lang_base <> item_lookup def
+R5511:5521 simuliris.tree_borrows.lang_base <> item_lookup def
+prf 5595:5628 <> parent_has_perm_similarly_disabled
+binder 5635:5635 <> p:34
+binder 5637:5638 <> tr:35
+binder 5640:5642 <> tr':36
+binder 5644:5645 <> tg:37
+binder 5647:5652 <> acc_tg:38
+binder 5654:5657 <> kind:39
+binder 5659:5663 <> range:40
+binder 5665:5671 <> witness:41
+binder 5673:5675 <> loc:42
+binder 5677:5677 <> b:43
+R5691:5705 simuliris.tree_borrows.trees_equal.trees_equal_base <> parent_has_perm ind
+R5707:5707 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:34 var
+R5709:5710 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:35 var
+R5712:5713 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:37 var
+R5715:5721 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:41 var
+R5723:5725 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:42 var
+binder 5685:5687 <> Frz:44
+R5741:5745 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R5740:5740 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:34 var
+R5746:5755 simuliris.tree_borrows.lang_base <> ReservedIM constr
+binder 5733:5736 <> nRIM:45
+R5772:5776 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R5771:5771 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:34 var
+R5777:5780 simuliris.tree_borrows.lang_base <> Cell constr
+binder 5763:5767 <> nCell:46
+R5795:5807 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R5809:5814 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:38 var
+R5816:5817 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:35 var
+binder 5788:5791 <> Cont:47
+R5831:5837 simuliris.tree_borrows.defs <> wf_tree def
+R5839:5840 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:35 var
+binder 5825:5827 <> Uni:48
+R5942:5944 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5854:5870 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R5873:5895 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R5897:5897 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:43 var
+R5900:5916 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R5918:5921 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:39 var
+R5925:5925 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R5927:5932 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:38 var
+R5934:5938 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:40 var
+R5940:5941 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:35 var
+R5945:5948 Corelib.Init.Datatypes <> Some constr
+R5950:5952 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':36 var
+binder 5848:5850 <> Acc:49
+R5971:5986 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_disabled def
+R5988:5991 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:39 var
+R5993:5997 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:40 var
+R5999:6001 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:42 var
+R6003:6003 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:43 var
+R6005:6006 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr:35 var
+R6008:6013 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:38 var
+R6015:6021 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:41 var
+binder 5965:5966 <> bd:50
+R6034:6038 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6032:6033 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> bd:50 var
+R6039:6053 simuliris.tree_borrows.trees_equal.trees_equal_base <> parent_has_perm ind
+R6055:6062 simuliris.tree_borrows.lang_base <> Disabled constr
+R6064:6066 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr':36 var
+R6068:6069 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:37 var
+R6071:6077 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> witness:41 var
+R6079:6081 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> loc:42 var
+R6181:6183 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6166:6169 simuliris.tree_borrows.lang_base <> itag proj
+R6212:6234 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R6251:6297 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> parent_has_perm_similarly_disabled_after_access thm
+R6299:6299 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R6481:6499 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R6552:6562 simuliris.tree_borrows.lang_base <> item_lookup def
+R6633:6643 simuliris.tree_borrows.lang_base <> item_lookup def
+prf 6714:6752 <> item_apply_access_effect_on_initialized
+binder 6759:6760 <> it:51
+binder 6762:6764 <> it':52
+binder 6766:6766 <> l:53
+binder 6768:6768 <> b:54
+binder 6770:6773 <> kind:55
+binder 6775:6777 <> rel:56
+binder 6779:6783 <> range:57
+R6882:6884 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6797:6813 simuliris.tree_borrows.bor_semantics <> item_apply_access def
+R6816:6838 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R6840:6840 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:54 var
+R6843:6859 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R6861:6864 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:55 var
+R6868:6868 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R6870:6872 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> rel:56 var
+R6874:6878 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:57 var
+R6880:6881 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it:51 var
+R6885:6888 Corelib.Init.Datatypes <> Some constr
+R6890:6892 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it':52 var
+binder 6791:6793 <> Acc:58
+R6932:6938 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6901:6911 simuliris.tree_borrows.lang_base <> initialized proj
+R6914:6924 simuliris.tree_borrows.lang_base <> item_lookup def
+R6926:6928 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it':52 var
+R6930:6930 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:53 var
+R6939:6941 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R6974:6985 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R7048:7060 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R7061:7071 simuliris.tree_borrows.lang_base <> initialized proj
+R7074:7084 simuliris.tree_borrows.lang_base <> item_lookup def
+R7086:7087 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it:51 var
+R7089:7089 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:53 var
+R6986:6994 simuliris.tree_borrows.lang_base <> most_init def
+R6997:7007 simuliris.tree_borrows.lang_base <> initialized proj
+R7010:7020 simuliris.tree_borrows.lang_base <> item_lookup def
+R7022:7023 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it:51 var
+R7025:7025 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:53 var
+R7030:7042 simuliris.tree_borrows.bor_semantics <> requires_init def
+R7044:7046 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> rel:56 var
+R6942:6947 stdpp.base <> decide def
+R6950:6964 simuliris.tree_borrows.bor_semantics <> range'_contains def
+R6966:6970 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:57 var
+R6972:6972 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:53 var
+R7113:7129 simuliris.tree_borrows.bor_semantics <> item_apply_access def
+R7132:7155 simuliris.tree_borrows.bor_semantics <> permissions_apply_range' def
+R7177:7185 stdpp.option <> bind_Some thm
+R7299:7319 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R7391:7401 simuliris.tree_borrows.lang_base <> item_lookup def
+R7504:7514 simuliris.tree_borrows.lang_base <> item_lookup def
+R7719:7741 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R7766:7779 simuliris.tree_borrows.bor_lemmas <> most_init_comm thm
+R7807:7822 simuliris.tree_borrows.bor_semantics <> nonchildren_only def
+R7955:7971 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R8008:8030 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R8091:8093 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8107:8112 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8114:8119 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8094:8102 simuliris.tree_borrows.lang_base <> most_init def
+R8252:8265 simuliris.tree_borrows.trees_equal.random_lemmas <> most_init_noop thm
+R8296:8312 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R8347:8369 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R8428:8430 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8444:8449 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8451:8456 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8431:8439 simuliris.tree_borrows.lang_base <> most_init def
+R8585:8600 simuliris.tree_borrows.trees_equal.random_lemmas <> most_init_absorb thm
+R8629:8645 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R8678:8700 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R8757:8759 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8773:8778 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8780:8785 Corelib.ssr.ssreflect <> ::general_if_scope:'if'_x_'then'_x_'else'_x not
+R8760:8768 simuliris.tree_borrows.lang_base <> most_init def
+R8910:8923 simuliris.tree_borrows.bor_lemmas <> most_init_comm thm
+prf 8956:8990 <> perm_eq_up_to_C_preserved_by_access
+R8995:8998 Corelib.Init.Datatypes <> bool ind
+binder 8993:8993 <> b:59
+binder 9007:9007 <> d:60
+binder 9009:9011 <> tr1:61
+binder 9013:9016 <> tr1':62
+binder 9018:9020 <> tr2:63
+binder 9022:9025 <> tr2':64
+binder 9027:9029 <> it1:65
+binder 9031:9034 <> it1':66
+binder 9036:9038 <> it2:67
+binder 9040:9043 <> it2':68
+binder 9045:9046 <> tg:69
+binder 9048:9048 <> l:70
+binder 9050:9055 <> acc_tg:71
+binder 9057:9060 <> kind:72
+binder 9062:9066 <> range:73
+R9077:9083 simuliris.tree_borrows.defs <> wf_tree def
+R9085:9087 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+binder 9070:9073 <> Hunq:74
+R9115:9117 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9106:9110 simuliris.tree_borrows.lang_base <> iprot proj
+R9112:9114 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R9118:9122 simuliris.tree_borrows.lang_base <> iprot proj
+R9124:9126 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:67 var
+binder 9095:9102 <> SameProt:75
+R9151:9153 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9143:9146 simuliris.tree_borrows.lang_base <> itag proj
+R9148:9150 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R9154:9157 simuliris.tree_borrows.lang_base <> itag proj
+R9159:9161 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:67 var
+binder 9134:9139 <> SameTg:76
+R9201:9207 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R9214:9215 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 9208:9209 <> tg:77
+binder 9211:9213 <> tg':78
+R9234:9236 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9216:9222 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R9224:9226 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9228:9229 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:77 var
+R9231:9233 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg':78 var
+R9237:9243 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R9245:9247 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9249:9250 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:77 var
+R9252:9254 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg':78 var
+binder 9191:9197 <> SameRel:79
+R9269:9275 simuliris.tree_borrows.defs <> wf_tree def
+R9277:9279 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+binder 9262:9265 <> Unq1:80
+R9294:9300 simuliris.tree_borrows.defs <> wf_tree def
+R9302:9304 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+binder 9287:9290 <> Unq2:81
+R9340:9348 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9317:9335 simuliris.tree_borrows.defs <> parents_more_active def
+R9337:9339 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9372:9380 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9349:9365 simuliris.tree_borrows.defs <> no_active_cousins def
+R9367:9367 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R9369:9371 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9404:9412 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9381:9399 simuliris.tree_borrows.defs <> parents_more_active def
+R9401:9403 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9436:9444 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9413:9429 simuliris.tree_borrows.defs <> no_active_cousins def
+R9431:9431 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R9433:9435 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9467:9475 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9445:9454 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R9458:9458 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:60 var
+R9460:9462 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9464:9466 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9456:9456 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R9560:9567 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9476:9490 simuliris.tree_borrows.trees_equal.trees_equal_base <> perm_eq_up_to_C ind
+R9494:9496 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9498:9500 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9502:9503 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:69 var
+R9505:9505 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:70 var
+R9508:9512 simuliris.tree_borrows.lang_base <> iprot proj
+R9514:9516 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R9519:9519 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:60 var
+R9522:9532 simuliris.tree_borrows.lang_base <> item_lookup def
+R9534:9536 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R9538:9538 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:70 var
+R9542:9552 simuliris.tree_borrows.lang_base <> item_lookup def
+R9554:9556 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:67 var
+R9558:9558 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:70 var
+R9492:9492 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R9669:9676 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9657:9659 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9568:9584 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R9587:9609 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R9611:9611 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:59 var
+R9614:9630 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R9632:9635 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:72 var
+R9639:9639 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R9641:9646 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:71 var
+R9648:9652 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:73 var
+R9654:9656 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9660:9663 Corelib.Init.Datatypes <> Some constr
+R9665:9668 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':62 var
+R9778:9785 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9766:9768 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9677:9693 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R9696:9718 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R9720:9720 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:59 var
+R9723:9739 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R9741:9744 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:72 var
+R9748:9748 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R9750:9755 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:71 var
+R9757:9761 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:73 var
+R9763:9765 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9769:9772 Corelib.Init.Datatypes <> Some constr
+R9774:9777 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':64 var
+R9808:9815 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9786:9796 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R9798:9800 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R9802:9803 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:69 var
+R9805:9807 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R9840:9847 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9816:9826 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R9828:9831 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':62 var
+R9833:9834 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:69 var
+R9836:9839 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':66 var
+R9870:9877 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9848:9858 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R9860:9862 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9864:9865 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:69 var
+R9867:9869 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:67 var
+R9902:9909 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9878:9888 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R9890:9893 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':64 var
+R9895:9896 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:69 var
+R9898:9901 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2':68 var
+R9934:9941 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9910:9922 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R9924:9929 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:71 var
+R9931:9933 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R9966:9973 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R9942:9954 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R9956:9961 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:71 var
+R9963:9965 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R10100:10107 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R10088:10090 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9974:9990 simuliris.tree_borrows.bor_semantics <> item_apply_access def
+R9993:10015 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R10017:10017 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:59 var
+R10020:10036 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R10038:10041 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:72 var
+R10045:10045 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R10048:10054 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R10056:10058 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:61 var
+R10060:10065 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:71 var
+R10068:10071 simuliris.tree_borrows.lang_base <> itag proj
+R10073:10075 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R10079:10083 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:73 var
+R10085:10087 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:65 var
+R10091:10094 Corelib.Init.Datatypes <> Some constr
+R10096:10099 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':66 var
+R10234:10241 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R10222:10224 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10108:10124 simuliris.tree_borrows.bor_semantics <> item_apply_access def
+R10127:10149 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R10151:10151 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:59 var
+R10154:10170 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R10172:10175 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:72 var
+R10179:10179 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R10182:10188 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R10190:10192 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:63 var
+R10194:10199 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:71 var
+R10202:10205 simuliris.tree_borrows.lang_base <> itag proj
+R10207:10209 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:67 var
+R10213:10217 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:73 var
+R10219:10221 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:67 var
+R10225:10228 Corelib.Init.Datatypes <> Some constr
+R10230:10233 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2':68 var
+R10242:10256 simuliris.tree_borrows.trees_equal.trees_equal_base <> perm_eq_up_to_C ind
+R10260:10263 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':62 var
+R10265:10268 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':64 var
+R10270:10271 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:69 var
+R10273:10273 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:70 var
+R10276:10280 simuliris.tree_borrows.lang_base <> iprot proj
+R10282:10285 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':66 var
+R10288:10288 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:60 var
+R10291:10301 simuliris.tree_borrows.lang_base <> item_lookup def
+R10303:10306 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':66 var
+R10308:10308 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:70 var
+R10312:10322 simuliris.tree_borrows.lang_base <> item_lookup def
+R10324:10327 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2':68 var
+R10329:10329 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> l:70 var
+R10258:10258 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R10856:10864 stdpp.option <> bind_Some thm
+R10999:11007 stdpp.option <> bind_Some thm
+R11159:11179 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R11236:11256 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R11311:11316 stdpp.base <> decide def
+R11490:11500 simuliris.tree_borrows.lang_base <> item_lookup def
+R11549:11559 simuliris.tree_borrows.lang_base <> item_lookup def
+R11769:11779 simuliris.tree_borrows.lang_base <> item_lookup def
+R11808:11818 simuliris.tree_borrows.lang_base <> item_lookup def
+R12018:12026 stdpp.option <> bind_Some thm
+R12106:12114 stdpp.option <> bind_Some thm
+R12309:12319 simuliris.tree_borrows.lang_base <> item_lookup def
+R12343:12363 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R12440:12460 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R12688:12693 stdpp.base <> decide def
+R12696:12710 simuliris.tree_borrows.bor_semantics <> range'_contains def
+R12807:12817 simuliris.tree_borrows.lang_base <> item_lookup def
+R13006:13049 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> access_preserves_pseudo_conflicted_activable thm
+R13144:13187 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> access_preserves_pseudo_conflicted_activable thm
+R13477:13497 stdpp.decidable <> bool_decide_eq_true_2 thm
+R13543:13563 stdpp.decidable <> bool_decide_eq_true_2 thm
+R13629:13639 simuliris.tree_borrows.lang_base <> item_lookup def
+R13796:13832 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop thm
+R13837:13853 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R13862:13868 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R13882:13885 simuliris.tree_borrows.lang_base <> itag proj
+R14029:14062 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> access_preserves_pseudo_conflicted thm
+R14172:14180 stdpp.option <> bind_Some thm
+R14266:14274 stdpp.option <> bind_Some thm
+R14426:14434 stdpp.option <> bind_Some thm
+R14520:14528 stdpp.option <> bind_Some thm
+R14789:14797 simuliris.tree_borrows.lang_base <> most_init def
+R14984:14990 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R15474:15517 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> access_preserves_pseudo_conflicted_activable thm
+R15695:15703 stdpp.option <> bind_Some thm
+R15783:15791 stdpp.option <> bind_Some thm
+R15986:15996 simuliris.tree_borrows.lang_base <> item_lookup def
+R16020:16040 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R16117:16137 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R16365:16370 stdpp.base <> decide def
+R16373:16387 simuliris.tree_borrows.bor_semantics <> range'_contains def
+R16484:16494 simuliris.tree_borrows.lang_base <> item_lookup def
+R16878:16899 stdpp.decidable <> bool_decide_eq_false_2 thm
+R16945:16966 stdpp.decidable <> bool_decide_eq_false_2 thm
+R17032:17042 simuliris.tree_borrows.lang_base <> item_lookup def
+R17199:17235 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop thm
+R17240:17256 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R17265:17271 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R17285:17288 simuliris.tree_borrows.lang_base <> itag proj
+R17432:17465 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> access_preserves_pseudo_conflicted thm
+R17575:17583 stdpp.option <> bind_Some thm
+R17669:17677 stdpp.option <> bind_Some thm
+R17829:17837 stdpp.option <> bind_Some thm
+R17923:17931 stdpp.option <> bind_Some thm
+R18193:18201 simuliris.tree_borrows.lang_base <> most_init def
+R18392:18398 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R18807:18815 stdpp.option <> bind_Some thm
+R18895:18903 stdpp.option <> bind_Some thm
+R19098:19108 simuliris.tree_borrows.lang_base <> item_lookup def
+R19132:19152 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R19229:19249 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R19477:19482 stdpp.base <> decide def
+R19485:19499 simuliris.tree_borrows.bor_semantics <> range'_contains def
+R19596:19606 simuliris.tree_borrows.lang_base <> item_lookup def
+R19716:19747 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> access_preserves_pseudo_disabled thm
+R20056:20066 simuliris.tree_borrows.lang_base <> item_lookup def
+R20224:20260 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop thm
+R20265:20281 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R20290:20296 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R20310:20313 simuliris.tree_borrows.lang_base <> itag proj
+R20526:20557 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> access_preserves_pseudo_disabled thm
+R20701:20709 stdpp.option <> bind_Some thm
+R20795:20803 stdpp.option <> bind_Some thm
+R20889:20891 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R20892:20904 simuliris.tree_borrows.bor_semantics <> ParentChildIn def
+R20907:20910 simuliris.tree_borrows.lang_base <> itag proj
+R21087:21109 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R21150:21156 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R21158:21168 stdpp.decidable <> decide_True thm
+R21225:21250 simuliris.tree_borrows.steps_preserve <> apply_access_spec_per_node thm
+R21264:21268 Corelib.Init.Logic <> proj2 thm
+R21253:21257 Corelib.Init.Logic <> proj1 thm
+R21390:21398 stdpp.option <> bind_Some thm
+R21569:21589 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R21646:21656 stdpp.decidable <> decide_True thm
+R21763:21773 simuliris.tree_borrows.lang_base <> item_lookup def
+R21824:21839 stdpp.decidable <> bool_decide_true abbrev
+R21886:21888 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R21889:21892 simuliris.tree_borrows.lang_base <> itag proj
+R21931:21953 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R21975:21977 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R21978:21981 simuliris.tree_borrows.lang_base <> itag proj
+R22018:22040 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R22061:22067 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R22069:22080 stdpp.decidable <> decide_False thm
+R22128:22157 simuliris.tree_borrows.bor_lemmas <> cousins_have_disjoint_children thm
+R22278:22289 stdpp.decidable <> decide_False thm
+R22339:22345 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R22376:22381 stdpp.base <> decide def
+R22434:22439 stdpp.base <> decide def
+R22502:22523 simuliris.tree_borrows.bor_lemmas <> ParentChild_transitive thm
+R22566:22598 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_no_effect thm
+R22703:22709 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R22711:22722 stdpp.decidable <> decide_False thm
+R22788:22794 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R22796:22807 stdpp.decidable <> decide_False thm
+R22873:22879 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R22881:22892 stdpp.decidable <> decide_False thm
+R22929:22935 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R22937:22948 stdpp.decidable <> decide_False thm
+R22999:23030 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> access_preserves_pseudo_disabled thm
+R23141:23151 stdpp.decidable <> bool_decide def
+R23304:23314 stdpp.decidable <> bool_decide def
+R23317:23335 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R23338:23342 simuliris.tree_borrows.lang_base <> iprot proj
+R23349:23349 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R23470:23480 stdpp.decidable <> bool_decide def
+R23483:23501 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R23504:23508 simuliris.tree_borrows.lang_base <> iprot proj
+R23515:23515 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R23692:23702 stdpp.decidable <> bool_decide def
+R23855:23865 stdpp.decidable <> bool_decide def
+R23868:23886 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R23889:23893 simuliris.tree_borrows.lang_base <> iprot proj
+R23900:23900 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R24021:24031 stdpp.decidable <> bool_decide def
+R24034:24052 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R24055:24059 simuliris.tree_borrows.lang_base <> iprot proj
+R24066:24066 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R24181:24231 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> disabled_in_practice_tree_apply_access_irreversible thm
+R24299:24349 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> disabled_in_practice_tree_apply_access_irreversible thm
+R24419:24457 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> item_apply_access_effect_on_initialized thm
+R24485:24523 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> item_apply_access_effect_on_initialized thm
+R24674:24708 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> cell_item_apply_access_irreversible thm
+R24742:24776 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> cell_item_apply_access_irreversible thm
+R25499:25506 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R25517:25525 simuliris.tree_borrows.trees_equal.trees_equal_base <> Backwards constr
+R25591:25598 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R25609:25617 simuliris.tree_borrows.trees_equal.trees_equal_base <> Backwards constr
+R25645:25688 simuliris.tree_borrows.trees_equal.trees_equal_transitivity <> trees_equal_transfer_frozen_in_practice_many thm
+R25808:25858 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> disabled_in_practice_tree_apply_access_irreversible thm
+R25940:25953 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal_sym thm
+R25986:26036 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> disabled_in_practice_tree_apply_access_irreversible thm
+R26149:26187 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> item_apply_access_effect_on_initialized thm
+R26220:26258 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> item_apply_access_effect_on_initialized thm
+R26446:26480 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> cell_item_apply_access_irreversible thm
+R26520:26554 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> cell_item_apply_access_irreversible thm
+R26665:26672 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R26749:26762 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal_sym thm
+R26850:26884 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> cell_item_apply_access_irreversible thm
+R26932:26966 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> cell_item_apply_access_irreversible thm
+R27009:27017 stdpp.option <> bind_Some thm
+R27097:27105 stdpp.option <> bind_Some thm
+R27300:27310 simuliris.tree_borrows.lang_base <> item_lookup def
+R27362:27382 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R27459:27479 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R27707:27712 stdpp.base <> decide def
+R27715:27729 simuliris.tree_borrows.bor_semantics <> range'_contains def
+R27840:27850 simuliris.tree_borrows.lang_base <> item_lookup def
+R27969:28017 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> frozen_in_practice_tree_apply_access_irreversible thm
+R28131:28146 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_disabled def
+R28188:28236 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> frozen_in_practice_tree_apply_access_irreversible thm
+R28350:28365 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_disabled def
+R28755:28765 simuliris.tree_borrows.lang_base <> item_lookup def
+R29006:29009 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R29011:29012 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 29010:29010 <> p:84
+R29093:29098 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R29124:29124 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R29013:29027 simuliris.tree_borrows.trees_equal.trees_equal_base <> parent_has_perm ind
+R29029:29029 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:84 var
+R29045:29053 simuliris.tree_borrows.trees_equal.trees_equal_base <> Backwards constr
+R29109:29113 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∨'_x not
+R29100:29102 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R29099:29099 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:84 var
+R29103:29108 simuliris.tree_borrows.lang_base <> Frozen constr
+R29115:29117 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R29114:29114 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:84 var
+R29118:29123 simuliris.tree_borrows.lang_base <> Active constr
+binder 29010:29010 <> p:86
+R29029:29029 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:86 var
+R29099:29099 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:86 var
+R29114:29114 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> p:86 var
+R29326:29333 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R29250:29298 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> frozen_in_practice_tree_apply_access_irreversible thm
+R29491:29527 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop thm
+R29532:29548 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R29557:29563 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R29577:29580 simuliris.tree_borrows.lang_base <> itag proj
+R29806:29813 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R29745:29778 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> parent_has_perm_similarly_disabled thm
+R29944:29959 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_disabled def
+R30240:30282 simuliris.tree_borrows.trees_equal.random_lemmas <> parent_has_disabled_perm_is_pseudo_disabled thm
+R30412:30420 stdpp.option <> bind_Some thm
+R30511:30519 stdpp.option <> bind_Some thm
+R30681:30689 stdpp.option <> bind_Some thm
+R30780:30788 stdpp.option <> bind_Some thm
+R31011:31018 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R30950:30983 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> parent_has_perm_similarly_disabled thm
+R31149:31164 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access_base <> becomes_disabled def
+R31472:31514 simuliris.tree_borrows.trees_equal.random_lemmas <> parent_has_disabled_perm_is_pseudo_disabled thm
+R31699:31707 simuliris.tree_borrows.lang_base <> most_init def
+R31732:31742 stdpp.decidable <> bool_decide def
+R31745:31763 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R31766:31770 simuliris.tree_borrows.lang_base <> iprot proj
+R31777:31777 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R31949:31955 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R32319:32327 stdpp.option <> bind_Some thm
+R32462:32470 stdpp.option <> bind_Some thm
+R32622:32642 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R32699:32719 simuliris.tree_borrows.bor_semantics <> mem_apply_range'_spec thm
+R32773:32783 simuliris.tree_borrows.lang_base <> item_lookup def
+R32828:32833 stdpp.base <> decide def
+R32868:32878 simuliris.tree_borrows.lang_base <> item_lookup def
+R33230:33266 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only_effect_or_nop thm
+R33412:33422 simuliris.tree_borrows.lang_base <> item_lookup def
+R33508:33514 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R33528:33531 simuliris.tree_borrows.lang_base <> itag proj
+R33624:33645 stdpp.decidable <> bool_decide_eq_false_2 thm
+R33692:33712 stdpp.decidable <> bool_decide_eq_true_2 thm
+R33760:33776 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R33779:33801 simuliris.tree_borrows.bor_semantics <> apply_access_perm_inner def
+R33976:33986 simuliris.tree_borrows.lang_base <> item_lookup def
+prf 34122:34156 <> item_eq_up_to_C_preserved_by_access
+R34163:34166 Corelib.Init.Datatypes <> bool ind
+binder 34159:34159 <> b:94
+binder 34174:34174 <> d:95
+binder 34176:34178 <> tr1:96
+binder 34180:34183 <> tr1':97
+binder 34185:34187 <> tr2:98
+binder 34189:34192 <> tr2':99
+binder 34194:34196 <> it1:100
+binder 34198:34201 <> it1':101
+binder 34203:34205 <> it2:102
+binder 34207:34210 <> it2':103
+binder 34212:34213 <> tg:104
+binder 34215:34220 <> acc_tg:105
+binder 34222:34225 <> kind:106
+binder 34227:34231 <> range:107
+R34243:34249 simuliris.tree_borrows.defs <> wf_tree def
+R34251:34253 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+binder 34235:34239 <> Hunq1:108
+R34265:34271 simuliris.tree_borrows.defs <> wf_tree def
+R34273:34275 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+binder 34257:34261 <> Hunq2:109
+R34300:34302 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R34292:34295 simuliris.tree_borrows.lang_base <> itag proj
+R34297:34299 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:100 var
+R34303:34306 simuliris.tree_borrows.lang_base <> itag proj
+R34308:34310 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:102 var
+binder 34283:34288 <> SameTg:110
+R34328:34334 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R34341:34342 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 34335:34336 <> tg:111
+binder 34338:34340 <> tg':112
+R34361:34363 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R34343:34349 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R34351:34353 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34355:34356 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:111 var
+R34358:34360 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg':112 var
+R34364:34370 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R34372:34374 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34376:34377 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:111 var
+R34379:34381 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg':112 var
+binder 34318:34324 <> SameRel:113
+R34417:34425 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R34394:34412 simuliris.tree_borrows.defs <> parents_more_active def
+R34414:34416 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34449:34457 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R34426:34442 simuliris.tree_borrows.defs <> no_active_cousins def
+R34444:34444 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R34446:34448 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34481:34489 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R34458:34476 simuliris.tree_borrows.defs <> parents_more_active def
+R34478:34480 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34513:34521 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R34490:34506 simuliris.tree_borrows.defs <> no_active_cousins def
+R34508:34508 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R34510:34512 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34544:34552 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R34522:34531 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R34535:34535 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:95 var
+R34537:34539 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34541:34543 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34533:34533 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R34591:34598 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34553:34567 simuliris.tree_borrows.trees_equal.trees_equal_base <> item_eq_up_to_C def
+R34571:34573 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34575:34577 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34579:34580 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:104 var
+R34582:34582 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:95 var
+R34584:34586 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:100 var
+R34588:34590 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:102 var
+R34569:34569 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R34700:34707 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34688:34690 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R34599:34615 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R34618:34640 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R34642:34642 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:94 var
+R34645:34661 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R34663:34666 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:106 var
+R34670:34670 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R34672:34677 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:105 var
+R34679:34683 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:107 var
+R34685:34687 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34691:34694 Corelib.Init.Datatypes <> Some constr
+R34696:34699 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':97 var
+R34809:34816 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34797:34799 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R34708:34724 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R34727:34749 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R34751:34751 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:94 var
+R34754:34770 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R34772:34775 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:106 var
+R34779:34779 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R34781:34786 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:105 var
+R34788:34792 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:107 var
+R34794:34796 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34800:34803 Corelib.Init.Datatypes <> Some constr
+R34805:34808 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':99 var
+R34839:34846 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34817:34827 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R34829:34831 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34833:34834 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:104 var
+R34836:34838 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:100 var
+R34871:34878 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34847:34857 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R34859:34862 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':97 var
+R34864:34865 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:104 var
+R34867:34870 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':101 var
+R34901:34908 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34879:34889 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R34891:34893 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R34895:34896 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:104 var
+R34898:34900 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:102 var
+R34933:34940 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34909:34919 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R34921:34924 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':99 var
+R34926:34927 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:104 var
+R34929:34932 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2':103 var
+R34965:34972 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34941:34953 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R34955:34960 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:105 var
+R34962:34964 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R34997:35004 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R34973:34985 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R34987:34992 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:105 var
+R34994:34996 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R35131:35138 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R35119:35121 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R35005:35021 simuliris.tree_borrows.bor_semantics <> item_apply_access def
+R35024:35046 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R35048:35048 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:94 var
+R35051:35067 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R35069:35072 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:106 var
+R35076:35076 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R35079:35085 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R35087:35089 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:96 var
+R35091:35096 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:105 var
+R35099:35102 simuliris.tree_borrows.lang_base <> itag proj
+R35104:35106 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:100 var
+R35110:35114 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:107 var
+R35116:35118 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1:100 var
+R35122:35125 Corelib.Init.Datatypes <> Some constr
+R35127:35130 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':101 var
+R35265:35272 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R35253:35255 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R35139:35155 simuliris.tree_borrows.bor_semantics <> item_apply_access def
+R35158:35180 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R35182:35182 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:94 var
+R35185:35201 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R35203:35206 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:106 var
+R35210:35210 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R35213:35219 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R35221:35223 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:98 var
+R35225:35230 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:105 var
+R35233:35236 simuliris.tree_borrows.lang_base <> itag proj
+R35238:35240 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:102 var
+R35244:35248 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:107 var
+R35250:35252 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2:102 var
+R35256:35259 Corelib.Init.Datatypes <> Some constr
+R35261:35264 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2':103 var
+R35273:35287 simuliris.tree_borrows.trees_equal.trees_equal_base <> item_eq_up_to_C def
+R35291:35294 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':97 var
+R35296:35299 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':99 var
+R35301:35302 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:104 var
+R35304:35304 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:95 var
+R35306:35309 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it1':101 var
+R35311:35314 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> it2':103 var
+R35289:35289 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R35456:35460 Corelib.Init.Logic <> proj1 thm
+R35463:35467 Corelib.Init.Logic <> proj2 thm
+R35470:35505 simuliris.tree_borrows.steps_preserve <> item_apply_access_preserves_metadata thm
+R35540:35544 Corelib.Init.Logic <> proj1 thm
+R35547:35551 Corelib.Init.Logic <> proj2 thm
+R35554:35589 simuliris.tree_borrows.steps_preserve <> item_apply_access_preserves_metadata thm
+R35648:35682 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> perm_eq_up_to_C_preserved_by_access thm
+prf 36167:36219 <> tree_equal_preserved_by_access_maybe_nonchildren_only
+R36226:36229 Corelib.Init.Datatypes <> bool ind
+binder 36222:36222 <> b:114
+binder 36237:36237 <> d:115
+binder 36239:36241 <> tr1:116
+binder 36243:36245 <> tr2:117
+binder 36247:36250 <> tr1':118
+binder 36252:36255 <> tr2':119
+binder 36257:36260 <> kind:120
+binder 36262:36267 <> acc_tg:121
+binder 36269:36273 <> range:122
+R36299:36305 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R36308:36309 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 36306:36307 <> tg:123
+R36330:36333 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R36310:36322 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R36324:36325 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:123 var
+R36327:36329 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+R36334:36344 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R36346:36347 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:123 var
+R36349:36351 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+binder 36281:36295 <> GloballyUnique1:124
+R36377:36383 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R36386:36387 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 36384:36385 <> tg:125
+R36408:36411 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R36388:36400 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R36402:36403 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:125 var
+R36405:36407 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:117 var
+R36412:36422 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R36424:36425 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:125 var
+R36427:36429 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:117 var
+binder 36359:36373 <> GloballyUnique2:126
+R36465:36473 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R36442:36460 simuliris.tree_borrows.defs <> parents_more_active def
+R36462:36464 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+R36497:36505 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R36474:36490 simuliris.tree_borrows.defs <> no_active_cousins def
+R36492:36492 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R36494:36496 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+R36529:36537 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R36506:36524 simuliris.tree_borrows.defs <> parents_more_active def
+R36526:36528 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:117 var
+R36561:36569 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R36538:36554 simuliris.tree_borrows.defs <> no_active_cousins def
+R36556:36556 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R36558:36560 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:117 var
+R36592:36599 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R36570:36579 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R36583:36583 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:115 var
+R36585:36587 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+R36589:36591 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:117 var
+R36581:36581 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R36624:36631 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R36600:36612 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R36614:36619 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:121 var
+R36621:36623 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+R36733:36740 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R36721:36723 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R36632:36648 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R36651:36673 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R36675:36675 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:114 var
+R36678:36694 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R36696:36699 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:120 var
+R36703:36703 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R36705:36710 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:121 var
+R36712:36716 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:122 var
+R36718:36720 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:116 var
+R36724:36727 Corelib.Init.Datatypes <> Some constr
+R36729:36732 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':118 var
+R36842:36849 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R36830:36832 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R36741:36757 simuliris.tree_borrows.bor_semantics <> tree_apply_access def
+R36760:36782 simuliris.tree_borrows.bor_semantics <> maybe_non_children_only def
+R36784:36784 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> b:114 var
+R36787:36803 simuliris.tree_borrows.bor_semantics <> apply_access_perm def
+R36805:36808 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:120 var
+R36812:36812 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R36814:36819 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:121 var
+R36821:36825 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:122 var
+R36827:36829 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:117 var
+R36833:36836 Corelib.Init.Datatypes <> Some constr
+R36838:36841 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':119 var
+R36850:36859 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R36863:36863 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:115 var
+R36865:36868 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':118 var
+R36870:36873 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':119 var
+R36861:36861 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R37028:37048 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R37075:37095 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R37163:37181 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R37208:37226 simuliris.tree_borrows.steps_preserve <> access_same_rel_dec thm
+R37296:37300 Corelib.Init.Logic <> proj2 thm
+R37303:37323 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R37363:37367 Corelib.Init.Logic <> proj1 thm
+R37411:37415 Corelib.Init.Logic <> proj1 thm
+R37418:37438 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R37546:37571 simuliris.tree_borrows.steps_preserve <> apply_access_spec_per_node thm
+R37578:37582 Corelib.Init.Logic <> proj2 thm
+R37650:37675 simuliris.tree_borrows.steps_preserve <> apply_access_spec_per_node thm
+R37682:37686 Corelib.Init.Logic <> proj2 thm
+R37862:37896 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> item_eq_up_to_C_preserved_by_access thm
+R37984:38006 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R38046:38068 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+prf 38556:38592 <> tree_equal_preserved_by_memory_access
+binder 38599:38599 <> d:127
+binder 38601:38603 <> tr1:128
+binder 38605:38607 <> tr2:129
+binder 38609:38612 <> tr1':130
+binder 38614:38617 <> tr2':131
+binder 38619:38622 <> kind:132
+binder 38624:38629 <> acc_tg:133
+binder 38631:38635 <> range:134
+R38661:38667 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R38670:38671 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 38668:38669 <> tg:135
+R38692:38695 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R38672:38684 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R38686:38687 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:135 var
+R38689:38691 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+R38696:38706 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R38708:38709 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:135 var
+R38711:38713 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+binder 38643:38657 <> GloballyUnique1:136
+R38739:38745 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R38748:38749 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 38746:38747 <> tg:137
+R38770:38773 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R38750:38762 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R38764:38765 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:137 var
+R38767:38769 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:129 var
+R38774:38784 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R38786:38787 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:137 var
+R38789:38791 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:129 var
+binder 38721:38735 <> GloballyUnique2:138
+R38827:38835 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R38804:38822 simuliris.tree_borrows.defs <> parents_more_active def
+R38824:38826 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+R38859:38867 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R38836:38852 simuliris.tree_borrows.defs <> no_active_cousins def
+R38854:38854 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R38856:38858 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+R38891:38899 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R38868:38886 simuliris.tree_borrows.defs <> parents_more_active def
+R38888:38890 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:129 var
+R38923:38931 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R38900:38916 simuliris.tree_borrows.defs <> no_active_cousins def
+R38918:38918 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R38920:38922 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:129 var
+R38954:38961 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R38932:38941 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R38945:38945 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:127 var
+R38947:38949 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+R38951:38953 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:129 var
+R38943:38943 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R38986:38993 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R38962:38974 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R38976:38981 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:133 var
+R38983:38985 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+R39043:39050 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39031:39033 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R38994:39006 simuliris.tree_borrows.bor_semantics <> memory_access def
+R39008:39011 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:132 var
+R39013:39013 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39015:39020 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:133 var
+R39022:39026 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:134 var
+R39028:39030 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:128 var
+R39034:39037 Corelib.Init.Datatypes <> Some constr
+R39039:39042 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':130 var
+R39100:39107 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39088:39090 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R39051:39063 simuliris.tree_borrows.bor_semantics <> memory_access def
+R39065:39068 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:132 var
+R39070:39070 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39072:39077 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:133 var
+R39079:39083 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:134 var
+R39085:39087 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:129 var
+R39091:39094 Corelib.Init.Datatypes <> Some constr
+R39096:39099 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':131 var
+R39108:39117 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R39121:39121 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:127 var
+R39123:39126 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':130 var
+R39128:39131 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':131 var
+R39119:39119 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39158:39210 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tree_equal_preserved_by_access_maybe_nonchildren_only thm
+R39212:39216 Corelib.Init.Datatypes <> false constr
+prf 39236:39289 <> tree_equal_preserved_by_memory_access_nonchildren_only
+binder 39296:39296 <> d:139
+binder 39298:39300 <> tr1:140
+binder 39302:39304 <> tr2:141
+binder 39306:39309 <> tr1':142
+binder 39311:39314 <> tr2':143
+binder 39316:39319 <> kind:144
+binder 39321:39326 <> acc_tg:145
+binder 39328:39332 <> range:146
+R39358:39364 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R39367:39368 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 39365:39366 <> tg:147
+R39389:39392 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39369:39381 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R39383:39384 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:147 var
+R39386:39388 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+R39393:39403 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R39405:39406 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:147 var
+R39408:39410 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+binder 39340:39354 <> GloballyUnique1:148
+R39436:39442 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R39445:39446 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 39443:39444 <> tg:149
+R39467:39470 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39447:39459 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R39461:39462 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:149 var
+R39464:39466 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:141 var
+R39471:39481 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R39483:39484 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:149 var
+R39486:39488 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:141 var
+binder 39418:39432 <> GloballyUnique2:150
+R39524:39532 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R39501:39519 simuliris.tree_borrows.defs <> parents_more_active def
+R39521:39523 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+R39556:39564 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R39533:39549 simuliris.tree_borrows.defs <> no_active_cousins def
+R39551:39551 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39553:39555 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+R39588:39596 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R39565:39583 simuliris.tree_borrows.defs <> parents_more_active def
+R39585:39587 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:141 var
+R39620:39628 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R39597:39613 simuliris.tree_borrows.defs <> no_active_cousins def
+R39615:39615 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39617:39619 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:141 var
+R39651:39658 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39629:39638 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R39642:39642 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:139 var
+R39644:39646 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+R39648:39650 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:141 var
+R39640:39640 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39683:39690 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39659:39671 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R39673:39678 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:145 var
+R39680:39682 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+R39757:39764 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39745:39747 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R39691:39720 simuliris.tree_borrows.bor_semantics <> memory_access_nonchildren_only def
+R39722:39725 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:144 var
+R39727:39727 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39729:39734 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:145 var
+R39736:39740 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:146 var
+R39742:39744 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:140 var
+R39748:39751 Corelib.Init.Datatypes <> Some constr
+R39753:39756 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':142 var
+R39831:39838 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R39819:39821 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R39765:39794 simuliris.tree_borrows.bor_semantics <> memory_access_nonchildren_only def
+R39796:39799 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:144 var
+R39801:39801 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39803:39808 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:145 var
+R39810:39814 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:146 var
+R39816:39818 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:141 var
+R39822:39825 Corelib.Init.Datatypes <> Some constr
+R39827:39830 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':143 var
+R39839:39848 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R39852:39852 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:139 var
+R39854:39857 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':142 var
+R39859:39862 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':143 var
+R39850:39850 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R39889:39941 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tree_equal_preserved_by_access_maybe_nonchildren_only thm
+R39943:39946 Corelib.Init.Datatypes <> true constr
+prf 39966:39993 <> tree_equal_memory_deallocate
+binder 40000:40000 <> d:151
+binder 40002:40004 <> tr1:152
+binder 40006:40008 <> tr2:153
+binder 40010:40013 <> tr1':154
+binder 40015:40018 <> tr2':155
+binder 40020:40025 <> acc_tg:156
+binder 40027:40031 <> range:157
+R40057:40063 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R40066:40067 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 40064:40065 <> tg:158
+R40088:40091 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R40068:40080 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R40082:40083 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:158 var
+R40085:40087 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+R40092:40102 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R40104:40105 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:158 var
+R40107:40109 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+binder 40039:40053 <> GloballyUnique1:159
+R40135:40141 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R40144:40145 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 40142:40143 <> tg:160
+R40166:40169 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R40146:40158 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R40160:40161 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:160 var
+R40163:40165 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:153 var
+R40170:40180 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R40182:40183 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tg:160 var
+R40185:40187 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:153 var
+binder 40117:40131 <> GloballyUnique2:161
+R40223:40231 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40200:40218 simuliris.tree_borrows.defs <> parents_more_active def
+R40220:40222 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+R40255:40263 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40232:40248 simuliris.tree_borrows.defs <> no_active_cousins def
+R40250:40250 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R40252:40254 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+R40287:40295 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40264:40282 simuliris.tree_borrows.defs <> parents_more_active def
+R40284:40286 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:153 var
+R40319:40327 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40296:40312 simuliris.tree_borrows.defs <> no_active_cousins def
+R40314:40314 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R40316:40318 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:153 var
+R40350:40357 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R40328:40337 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R40341:40341 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:151 var
+R40343:40345 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+R40347:40349 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:153 var
+R40339:40339 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R40382:40389 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R40358:40370 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R40372:40377 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:156 var
+R40379:40381 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+R40438:40445 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R40426:40428 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R40390:40406 simuliris.tree_borrows.bor_semantics <> memory_deallocate def
+R40408:40408 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R40410:40415 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:156 var
+R40417:40421 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:157 var
+R40423:40425 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:152 var
+R40429:40432 Corelib.Init.Datatypes <> Some constr
+R40434:40437 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':154 var
+R40494:40501 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R40482:40484 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R40446:40462 simuliris.tree_borrows.bor_semantics <> memory_deallocate def
+R40464:40464 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R40466:40471 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:156 var
+R40473:40477 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:157 var
+R40479:40481 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:153 var
+R40485:40488 Corelib.Init.Datatypes <> Some constr
+R40490:40493 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':155 var
+R40502:40511 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R40515:40515 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:151 var
+R40517:40520 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':154 var
+R40522:40525 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':155 var
+R40513:40513 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R40581:40609 simuliris.tree_borrows.steps_wf <> join_map_id_is_Some_identical thm
+R40612:40620 stdpp.option <> bind_Some thm
+R40661:40689 simuliris.tree_borrows.steps_wf <> join_map_id_is_Some_identical thm
+R40692:40700 stdpp.option <> bind_Some thm
+R40719:40755 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tree_equal_preserved_by_memory_access thm
+prf 40786:40816 <> trees_equal_preserved_by_access
+binder 40823:40823 <> d:162
+binder 40825:40827 <> blk:163
+binder 40829:40831 <> tr1:164
+binder 40833:40835 <> tr2:165
+binder 40837:40840 <> tr1':166
+binder 40842:40845 <> tr2':167
+binder 40847:40850 <> kind:168
+binder 40852:40857 <> acc_tg:169
+binder 40859:40863 <> range:170
+R40888:40896 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40876:40883 simuliris.tree_borrows.defs <> wf_trees def
+R40885:40887 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:164 var
+R40909:40917 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40897:40904 simuliris.tree_borrows.defs <> wf_trees def
+R40906:40908 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:165 var
+R40951:40959 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40918:40946 simuliris.tree_borrows.defs <> each_tree_parents_more_active def
+R40948:40950 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:164 var
+R40993:41001 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R40960:40988 simuliris.tree_borrows.defs <> each_tree_parents_more_active def
+R40990:40992 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:165 var
+R41035:41043 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R41002:41028 simuliris.tree_borrows.defs <> each_tree_no_active_cousins def
+R41030:41030 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R41032:41034 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:164 var
+R41077:41085 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R41044:41070 simuliris.tree_borrows.defs <> each_tree_no_active_cousins def
+R41072:41072 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R41074:41076 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:165 var
+R41109:41116 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R41086:41096 simuliris.tree_borrows.trees_equal.trees_equal_base <> trees_equal def
+R41100:41100 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:162 var
+R41102:41104 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:164 var
+R41106:41108 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:165 var
+R41098:41098 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R41145:41152 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R41117:41129 simuliris.tree_borrows.bor_semantics <> trees_contain def
+R41131:41136 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:169 var
+R41138:41140 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:164 var
+R41142:41144 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> blk:163 var
+R41227:41234 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R41215:41217 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R41153:41170 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R41173:41185 simuliris.tree_borrows.bor_semantics <> memory_access def
+R41187:41190 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:168 var
+R41192:41192 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R41194:41199 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:169 var
+R41201:41205 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:170 var
+R41208:41210 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> blk:163 var
+R41212:41214 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1:164 var
+R41218:41221 Corelib.Init.Datatypes <> Some constr
+R41223:41226 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':166 var
+R41309:41316 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R41297:41299 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R41235:41252 simuliris.tree_borrows.bor_semantics <> apply_within_trees def
+R41255:41267 simuliris.tree_borrows.bor_semantics <> memory_access def
+R41269:41272 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> kind:168 var
+R41274:41274 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R41276:41281 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> acc_tg:169 var
+R41283:41287 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> range:170 var
+R41290:41292 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> blk:163 var
+R41294:41296 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2:165 var
+R41300:41303 Corelib.Init.Datatypes <> Some constr
+R41305:41308 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':167 var
+R41317:41327 simuliris.tree_borrows.trees_equal.trees_equal_base <> trees_equal def
+R41331:41331 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> d:162 var
+R41333:41336 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr1':166 var
+R41338:41341 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tr2':167 var
+R41329:41329 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> utils.C var
+R41483:41507 simuliris.tree_borrows.steps_foreach <> apply_within_trees_lookup thm
+R41580:41604 simuliris.tree_borrows.steps_foreach <> apply_within_trees_lookup thm
+R41634:41639 stdpp.base <> decide def
+R41645:41647 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R41891:41927 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tree_equal_preserved_by_memory_access thm
+R41967:41979 simuliris.tree_borrows.bor_semantics <> trees_contain def
+R41982:41995 simuliris.tree_borrows.bor_semantics <> trees_at_block def
+R42113:42131 simuliris.tree_borrows.steps_wf <> wf_tree_tree_unique thm
+R42164:42175 simuliris.tree_borrows.defs <> each_tree_wf def
+R42218:42222 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access utils <> sec

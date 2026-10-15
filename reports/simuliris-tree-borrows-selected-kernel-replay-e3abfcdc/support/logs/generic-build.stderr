@@ -1,0 +1,274 @@
+[WARNING] Running as root is not recommended
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/trees_equal
+was previously bound to simuliris.tree_borrows.trees_equal; it is remapped to
+Top.theories.tree_borrows.trees_equal
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/step_laws
+was previously bound to simuliris.tree_borrows.step_laws; it is remapped to
+Top.theories.tree_borrows.step_laws
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/read_read_reorder
+was previously bound to simuliris.tree_borrows.read_read_reorder; it is
+remapped to Top.theories.tree_borrows.read_read_reorder
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/unprotected
+was previously bound to simuliris.tree_borrows.examples.unprotected; it is
+remapped to Top.theories.tree_borrows.examples.unprotected
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/protected
+was previously bound to simuliris.tree_borrows.examples.protected; it is
+remapped to Top.theories.tree_borrows.examples.protected
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/impossible
+was previously bound to simuliris.tree_borrows.examples.impossible; it is
+remapped to Top.theories.tree_borrows.examples.impossible
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples
+was previously bound to simuliris.tree_borrows.examples; it is remapped to
+Top.theories.tree_borrows.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows
+was previously bound to simuliris.tree_borrows; it is remapped to
+Top.theories.tree_borrows [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/stacked_borrows/examples
+was previously bound to simuliris.stacked_borrows.examples; it is remapped to
+Top.theories.stacked_borrows.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/stacked_borrows was
+previously bound to simuliris.stacked_borrows; it is remapped to
+Top.theories.stacked_borrows [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/simulation
+was previously bound to simuliris.simulation; it is remapped to
+Top.theories.simulation [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/simple_inv/examples
+was previously bound to simuliris.simulang.simple_inv.examples; it is
+remapped to Top.theories.simulang.simple_inv.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/simple_inv
+was previously bound to simuliris.simulang.simple_inv; it is remapped to
+Top.theories.simulang.simple_inv
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/na_inv/examples
+was previously bound to simuliris.simulang.na_inv.examples; it is remapped to
+Top.theories.simulang.na_inv.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/na_inv was
+previously bound to simuliris.simulang.na_inv; it is remapped to
+Top.theories.simulang.na_inv [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/examples was
+previously bound to simuliris.simulang.examples; it is remapped to
+Top.theories.simulang.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/simulang was
+previously bound to simuliris.simulang; it is remapped to
+Top.theories.simulang [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/playground
+was previously bound to simuliris.playground; it is remapped to
+Top.theories.playground [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/logic was
+previously bound to simuliris.logic; it is remapped to Top.theories.logic
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/base_logic
+was previously bound to simuliris.base_logic; it is remapped to
+Top.theories.base_logic [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories was
+previously bound to simuliris; it is remapped to Top.theories
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/trees_equal
+was previously bound to simuliris.tree_borrows.trees_equal; it is remapped to
+Top.theories.tree_borrows.trees_equal
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/step_laws
+was previously bound to simuliris.tree_borrows.step_laws; it is remapped to
+Top.theories.tree_borrows.step_laws
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/read_read_reorder
+was previously bound to simuliris.tree_borrows.read_read_reorder; it is
+remapped to Top.theories.tree_borrows.read_read_reorder
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/unprotected
+was previously bound to simuliris.tree_borrows.examples.unprotected; it is
+remapped to Top.theories.tree_borrows.examples.unprotected
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/protected
+was previously bound to simuliris.tree_borrows.examples.protected; it is
+remapped to Top.theories.tree_borrows.examples.protected
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/impossible
+was previously bound to simuliris.tree_borrows.examples.impossible; it is
+remapped to Top.theories.tree_borrows.examples.impossible
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples
+was previously bound to simuliris.tree_borrows.examples; it is remapped to
+Top.theories.tree_borrows.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows
+was previously bound to simuliris.tree_borrows; it is remapped to
+Top.theories.tree_borrows [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/stacked_borrows/examples
+was previously bound to simuliris.stacked_borrows.examples; it is remapped to
+Top.theories.stacked_borrows.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/stacked_borrows was
+previously bound to simuliris.stacked_borrows; it is remapped to
+Top.theories.stacked_borrows [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/simulation
+was previously bound to simuliris.simulation; it is remapped to
+Top.theories.simulation [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/simple_inv/examples
+was previously bound to simuliris.simulang.simple_inv.examples; it is
+remapped to Top.theories.simulang.simple_inv.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/simple_inv
+was previously bound to simuliris.simulang.simple_inv; it is remapped to
+Top.theories.simulang.simple_inv
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/na_inv/examples
+was previously bound to simuliris.simulang.na_inv.examples; it is remapped to
+Top.theories.simulang.na_inv.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/na_inv was
+previously bound to simuliris.simulang.na_inv; it is remapped to
+Top.theories.simulang.na_inv [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/examples was
+previously bound to simuliris.simulang.examples; it is remapped to
+Top.theories.simulang.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/simulang was
+previously bound to simuliris.simulang; it is remapped to
+Top.theories.simulang [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/playground
+was previously bound to simuliris.playground; it is remapped to
+Top.theories.playground [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/logic was
+previously bound to simuliris.logic; it is remapped to Top.theories.logic
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/base_logic
+was previously bound to simuliris.base_logic; it is remapped to
+Top.theories.base_logic [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories was
+previously bound to simuliris; it is remapped to Top.theories
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/trees_equal
+was previously bound to simuliris.tree_borrows.trees_equal; it is remapped to
+Top.theories.tree_borrows.trees_equal
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/step_laws
+was previously bound to simuliris.tree_borrows.step_laws; it is remapped to
+Top.theories.tree_borrows.step_laws
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/read_read_reorder
+was previously bound to simuliris.tree_borrows.read_read_reorder; it is
+remapped to Top.theories.tree_borrows.read_read_reorder
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/unprotected
+was previously bound to simuliris.tree_borrows.examples.unprotected; it is
+remapped to Top.theories.tree_borrows.examples.unprotected
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/protected
+was previously bound to simuliris.tree_borrows.examples.protected; it is
+remapped to Top.theories.tree_borrows.examples.protected
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples/impossible
+was previously bound to simuliris.tree_borrows.examples.impossible; it is
+remapped to Top.theories.tree_borrows.examples.impossible
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows/examples
+was previously bound to simuliris.tree_borrows.examples; it is remapped to
+Top.theories.tree_borrows.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/tree_borrows
+was previously bound to simuliris.tree_borrows; it is remapped to
+Top.theories.tree_borrows [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/stacked_borrows/examples
+was previously bound to simuliris.stacked_borrows.examples; it is remapped to
+Top.theories.stacked_borrows.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/stacked_borrows was
+previously bound to simuliris.stacked_borrows; it is remapped to
+Top.theories.stacked_borrows [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/simulation
+was previously bound to simuliris.simulation; it is remapped to
+Top.theories.simulation [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/simple_inv/examples
+was previously bound to simuliris.simulang.simple_inv.examples; it is
+remapped to Top.theories.simulang.simple_inv.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/simple_inv
+was previously bound to simuliris.simulang.simple_inv; it is remapped to
+Top.theories.simulang.simple_inv
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/na_inv/examples
+was previously bound to simuliris.simulang.na_inv.examples; it is remapped to
+Top.theories.simulang.na_inv.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/na_inv was
+previously bound to simuliris.simulang.na_inv; it is remapped to
+Top.theories.simulang.na_inv [overriding-logical-loadpath,filesystem,default]
+Warning:
+/home/opam/anneal-simuliris-sources/simuliris/theories/simulang/examples was
+previously bound to simuliris.simulang.examples; it is remapped to
+Top.theories.simulang.examples
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/simulang was
+previously bound to simuliris.simulang; it is remapped to
+Top.theories.simulang [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/playground
+was previously bound to simuliris.playground; it is remapped to
+Top.theories.playground [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/logic was
+previously bound to simuliris.logic; it is remapped to Top.theories.logic
+[overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories/base_logic
+was previously bound to simuliris.base_logic; it is remapped to
+Top.theories.base_logic [overriding-logical-loadpath,filesystem,default]
+Warning: /home/opam/anneal-simuliris-sources/simuliris/theories was
+previously bound to simuliris; it is remapped to Top.theories
+[overriding-logical-loadpath,filesystem,default]
+File "./theories/simulation/fairness.v", line 4, characters 41-49:
+Error: Cannot find a physical path bound to logical path
+language with prefix simuliris.simulation.
+
+make: *** [Makefile.rocq:815: theories/simulation/fairness.vo] Error 1
+make: *** [theories/simulation/fairness.vo] Deleting file 'theories/simulation/fairness.glob'

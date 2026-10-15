@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-i",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/stdpp",
+    "d46d5503dc34302f8be823d721b398aec61ac6028f154f8ce7654a995aa7786d",
+    "sha256sum",
+    "-c",
+    "-"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.046114292
+}

@@ -1,0 +1,95 @@
+@slsls_adequacy
+     : ∀ (PROP : interface.bi) (BiBUpd0 : updates.BiBUpd PROP) (BiAffine0 : extensions.BiAffine PROP) 
+         (BiPureForall0 : extensions.BiPureForall PROP),
+         extensions.BiPersistentlyForall PROP
+         → ∀ (Λ : language.language) (sat : interface.bi_car PROP → Prop),
+             satisfiable.Satisfiable sat
+             → ∀ (I : language.state Λ → language.state Λ → Prop) (main : String.string) (u : language.val Λ) 
+                 (O0 : language.val Λ → language.val Λ → Prop) (p_t p_s : gmap.gmap String.string (language.func Λ)),
+                 sat
+                   (interface.bi_forall
+                      (λ σ_t : language.state Λ,
+                         interface.bi_forall
+                           (λ σ_s : language.state Λ,
+                              interface.bi_wand (interface.bi_pure (I σ_t σ_s))
+                                (updates.bupd
+                                   (interface.bi_exist
+                                      (λ H : simulirisGS PROP Λ,
+                                         interface.bi_sep (prog_rel p_t p_s)
+                                           (interface.bi_sep (state_interp p_t σ_t p_s σ_s [language.of_call main u])
+                                              (interface.bi_sep (progs_are p_t p_s)
+                                                 (interface.bi_sep (ext_rel 0 u u)
+                                                    (interface.bi_forall
+                                                       (λ v_s : language.val Λ,
+                                                          interface.bi_forall
+                                                            (λ v_t : language.val Λ,
+                                                               interface.bi_wand (ext_rel 0 v_t v_s)
+                                                                 (interface.bi_pure (O0 v_t v_s))))))))))))))
+                 → simulation.behavior.prog_ref I main u O0 p_t p_s
+Axioms:
+IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}
+Classical_Prop.classic : ∀ P : Prop, P ∨ ¬ P
+@sim_pool_preserves_fair_termination
+     : ∀ (PROP : interface.bi) (BiBUpd0 : updates.BiBUpd PROP),
+         extensions.BiAffine PROP
+         → extensions.BiPureForall PROP
+           → extensions.BiPersistentlyForall PROP
+             → ∀ (Λ : language.language) (s : simulirisGS PROP Λ) (sat : interface.bi_car PROP → Prop),
+                 satisfiable.Satisfiable sat
+                 → ∀ (p_s p_t : gmap.gmap String.string (language.func Λ)) (P : list
+                                                                                  (language.expr Λ * language.expr Λ)) 
+                     (D : gmap.gmap nat nat) (σ_s σ_t : language.state Λ),
+                     fairness.fair_div_delay p_t P.*1 D σ_t
+                     → language.pool_safe p_s P.*2 σ_s
+                       → sat (interface.bi_sep (state_interp p_t σ_t p_s σ_s P.*2) (sim_pool P))
+                         → fairness.fair_div_coind p_s P.*2 σ_s
+Closed under the global context
+prog_rel_adequacy
+     : ∀ Σ : iprop.gFunctors,
+         logical_state.sborGpreS Σ
+         → ∀ p_t p_s : expr_semantics.prog,
+             satisfiable.isat
+               (interface.bi_forall
+                  (λ H : logical_state.sborGS Σ,
+                     interface.bi_wand
+                       (big_op.big_opM interface.bi_sep
+                          (λ (f : String.string) (K : expr_semantics.func), gen_sim_prog.has_fun f K) p_t)
+                       (interface.bi_wand
+                          (big_op.big_opM interface.bi_sep
+                             (λ (f : String.string) (K : expr_semantics.func), gen_sim_prog.has_fun f K) p_s)
+                          (updates.bupd (prog_rel p_t p_s)))))
+             → prog_ref p_t p_s
+Axioms:
+IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}
+Classical_Prop.classic : ∀ P : Prop, P ∨ ¬ P
+log_rel_adequacy
+     : ∀ Σ : iprop.gFunctors,
+         logical_state.sborGpreS Σ
+         → ∀ e_t e_s : language.expr lang.bor_lang,
+             (∀ H : logical_state.sborGS Σ,
+                interface.bi_emp_valid
+                  (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True) e_t e_s))
+             → ctx_ref e_t e_s
+Axioms:
+IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}
+Classical_Prop.classic : ∀ P : Prop, P ∨ ¬ P
+@sb_log_rel_structural
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : logical_state.sborGS Σ), log_rel_structural.log_rel_structural treeborrows_wf
+Closed under the global context
+@log_rel_refl
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : logical_state.sborGS Σ) (e : lang_base.expr),
+         expr_wf e
+         → interface.bi_emp_valid
+             (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True) e e)
+Closed under the global context
+@log_rel_ctx
+     : ∀ (Σ : iprop.gFunctors) (sborGS0 : logical_state.sborGS Σ) (C : expr_semantics.ctx) 
+         (e_t e_s : language.expr lang.bor_lang),
+         ctx_wf C
+         → interface.bi_emp_valid
+             (interface.bi_wand
+                (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True) e_t e_s)
+                (gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True)
+                   (expr_semantics.fill_ctx C e_t) (expr_semantics.fill_ctx C e_s)))
+Closed under the global context
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=10 start_bytes=32100806 peak_bytes=32100910 final_bytes=32102964

@@ -1,0 +1,4478 @@
+{
+  "schema": "owned-bound-capture-v1",
+  "request": {
+    "schema": "owned-source-request-v1",
+    "files": [
+      {
+        "path": "probe.rs",
+        "sha256": "36ef34350f5fb2e659e72c49a3078db1f7b624999b93c83260729866c8ec36e8"
+      }
+    ],
+    "root_file": "probe.rs",
+    "root_item": "root",
+    "root_signature": {
+      "arguments": [
+        "u8"
+      ],
+      "return": "u8"
+    },
+    "crate_name": "capture",
+    "edition": "2021",
+    "target": "aarch64-apple-darwin",
+    "target_cpu": "apple-m1",
+    "features": [],
+    "source_namespace": "/owned-source",
+    "toolchain": {
+      "rustc_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+      "driver_file": "lib/librustc_driver-16d1e96e5b674978.dylib",
+      "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "core_file": "lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "core_sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90"
+    },
+    "observer_sha256": "656fb5eaac61cecbed4b59b90ff5842cf2594551310084d599d66c9af817f636"
+  },
+  "semantic": {
+    "additional_file_inputs": [],
+    "codegen_target_cpu": "Some(\"apple-m1\")",
+    "codegen_target_features": "\"\"",
+    "crate_name": "capture",
+    "edges": [
+      {
+        "from": "<u8 as Step>::SHIFT|Item(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT))|[]",
+        "kind": "constant",
+        "to": "BIAS|Item(DefId(0:3 ~ capture[9af6]::BIAS))|[]"
+      },
+      {
+        "from": "<u8 as Step>::step|Item(DefId(0:9 ~ capture[9af6]::{impl#0}::step))|[]",
+        "kind": "constant",
+        "to": "<u8 as Step>::SHIFT|Item(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT))|[]"
+      },
+      {
+        "from": "core::ptr::drop_in_place|DropGlue(DefId(1:3258 ~ core[d32d]::ptr::drop_in_place), Some(Guard))|[Guard]",
+        "kind": "call",
+        "to": "<Guard as core::ops::Drop>::drop|Item(DefId(0:18 ~ capture[9af6]::{impl#1}::drop))|[]"
+      },
+      {
+        "from": "generic|Item(DefId(0:10 ~ capture[9af6]::generic))|[u8]",
+        "kind": "call",
+        "to": "<u8 as Step>::step|Item(DefId(0:9 ~ capture[9af6]::{impl#0}::step))|[]"
+      },
+      {
+        "from": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "call",
+        "to": "generated|Item(DefId(0:22 ~ capture[9af6]::generated))|[]"
+      },
+      {
+        "from": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "call",
+        "to": "generic|Item(DefId(0:10 ~ capture[9af6]::generic))|[u8]"
+      },
+      {
+        "from": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "call",
+        "to": "root::{closure#0}|Item(DefId(0:20 ~ capture[9af6]::root::{closure#0}))|[i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]"
+      },
+      {
+        "from": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "call",
+        "to": "selected|Item(DefId(0:13 ~ capture[9af6]::selected))|[]"
+      },
+      {
+        "from": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "closure-construction",
+        "to": "root::{closure#0}|Item(DefId(0:20 ~ capture[9af6]::root::{closure#0}))|[i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]"
+      },
+      {
+        "from": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "drop",
+        "to": "core::ptr::drop_in_place|DropGlue(DefId(1:3258 ~ core[d32d]::ptr::drop_in_place), Some(Guard))|[Guard]"
+      }
+    ],
+    "effective_cfg": [
+      "(\"debug_assertions\", None)",
+      "(\"emscripten_wasm_eh\", None)",
+      "(\"fmt_debug\", Some(\"full\"))",
+      "(\"overflow_checks\", None)",
+      "(\"panic\", Some(\"abort\"))",
+      "(\"relocation_model\", Some(\"pic\"))",
+      "(\"target_abi\", Some(\"\"))",
+      "(\"target_arch\", Some(\"aarch64\"))",
+      "(\"target_endian\", Some(\"little\"))",
+      "(\"target_env\", Some(\"\"))",
+      "(\"target_family\", Some(\"unix\"))",
+      "(\"target_feature\", Some(\"aes\"))",
+      "(\"target_feature\", Some(\"crc\"))",
+      "(\"target_feature\", Some(\"dit\"))",
+      "(\"target_feature\", Some(\"dotprod\"))",
+      "(\"target_feature\", Some(\"dpb\"))",
+      "(\"target_feature\", Some(\"dpb2\"))",
+      "(\"target_feature\", Some(\"fcma\"))",
+      "(\"target_feature\", Some(\"fhm\"))",
+      "(\"target_feature\", Some(\"flagm\"))",
+      "(\"target_feature\", Some(\"flagm2\"))",
+      "(\"target_feature\", Some(\"fp16\"))",
+      "(\"target_feature\", Some(\"frintts\"))",
+      "(\"target_feature\", Some(\"jsconv\"))",
+      "(\"target_feature\", Some(\"lor\"))",
+      "(\"target_feature\", Some(\"lse\"))",
+      "(\"target_feature\", Some(\"lse2\"))",
+      "(\"target_feature\", Some(\"neon\"))",
+      "(\"target_feature\", Some(\"paca\"))",
+      "(\"target_feature\", Some(\"pacg\"))",
+      "(\"target_feature\", Some(\"pan\"))",
+      "(\"target_feature\", Some(\"pmuv3\"))",
+      "(\"target_feature\", Some(\"ras\"))",
+      "(\"target_feature\", Some(\"rcpc\"))",
+      "(\"target_feature\", Some(\"rcpc2\"))",
+      "(\"target_feature\", Some(\"rdm\"))",
+      "(\"target_feature\", Some(\"sb\"))",
+      "(\"target_feature\", Some(\"sha2\"))",
+      "(\"target_feature\", Some(\"sha3\"))",
+      "(\"target_feature\", Some(\"ssbs\"))",
+      "(\"target_feature\", Some(\"v8.1a\"))",
+      "(\"target_feature\", Some(\"v8.2a\"))",
+      "(\"target_feature\", Some(\"v8.3a\"))",
+      "(\"target_feature\", Some(\"v8.4a\"))",
+      "(\"target_feature\", Some(\"vh\"))",
+      "(\"target_has_atomic\", None)",
+      "(\"target_has_atomic\", Some(\"128\"))",
+      "(\"target_has_atomic\", Some(\"16\"))",
+      "(\"target_has_atomic\", Some(\"32\"))",
+      "(\"target_has_atomic\", Some(\"64\"))",
+      "(\"target_has_atomic\", Some(\"8\"))",
+      "(\"target_has_atomic\", Some(\"ptr\"))",
+      "(\"target_has_atomic_equal_alignment\", Some(\"128\"))",
+      "(\"target_has_atomic_equal_alignment\", Some(\"16\"))",
+      "(\"target_has_atomic_equal_alignment\", Some(\"32\"))",
+      "(\"target_has_atomic_equal_alignment\", Some(\"64\"))",
+      "(\"target_has_atomic_equal_alignment\", Some(\"8\"))",
+      "(\"target_has_atomic_equal_alignment\", Some(\"ptr\"))",
+      "(\"target_has_atomic_load_store\", None)",
+      "(\"target_has_atomic_load_store\", Some(\"128\"))",
+      "(\"target_has_atomic_load_store\", Some(\"16\"))",
+      "(\"target_has_atomic_load_store\", Some(\"32\"))",
+      "(\"target_has_atomic_load_store\", Some(\"64\"))",
+      "(\"target_has_atomic_load_store\", Some(\"8\"))",
+      "(\"target_has_atomic_load_store\", Some(\"ptr\"))",
+      "(\"target_has_reliable_f128\", None)",
+      "(\"target_has_reliable_f16\", None)",
+      "(\"target_has_reliable_f16_math\", None)",
+      "(\"target_object_format\", Some(\"mach-o\"))",
+      "(\"target_os\", Some(\"macos\"))",
+      "(\"target_pointer_width\", Some(\"64\"))",
+      "(\"target_thread_local\", None)",
+      "(\"target_vendor\", Some(\"apple\"))",
+      "(\"ub_checks\", None)",
+      "(\"unix\", None)"
+    ],
+    "environment_inputs": [],
+    "external_crate_metadata": [
+      {
+        "crate_hash": "Svh { hash: Fingerprint(14070939730066683188, 12181745681475035602) }",
+        "name": "core"
+      },
+      {
+        "crate_hash": "Svh { hash: Fingerprint(9988166840991882847, 2976996925323005558) }",
+        "name": "compiler_builtins"
+      }
+    ],
+    "instances": [
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:17:57: 17:57",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:17:57: 17:57"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 1,
+                      "projection": [
+                        {
+                          "kind": "deref"
+                        },
+                        {
+                          "index": 0,
+                          "kind": "field",
+                          "type": "u8"
+                        }
+                      ]
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Val(Scalar(0x00), u8)",
+                        "dependency": null,
+                        "evaluated_bits": "0",
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:17:44: 17:54",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:17:44: 17:54"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Val(ZeroSized, ())",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "()"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:17:42: 17:57",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:17:42: 17:57"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Memory { sized: true }",
+                "size_bytes": 0
+              },
+              "mutability": "Mut",
+              "type": "()"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Not",
+              "type": "&'{erased} mut Guard"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:17:23: 17:57",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:17:23: 17:57"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "<Guard as core::ops::Drop>::drop",
+        "id": "<Guard as core::ops::Drop>::drop|Item(DefId(0:18 ~ capture[9af6]::{impl#1}::drop))|[]",
+        "kind": "Item(DefId(0:18 ~ capture[9af6]::{impl#1}::drop))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 0,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:6:5: 6:28",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:6:5: 6:28"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:3 ~ capture[9af6]::BIAS), args: [], promoted: None }, u8)",
+                        "dependency": "BIAS|Item(DefId(0:3 ~ capture[9af6]::BIAS))|[]",
+                        "evaluated_bits": "3",
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:6:23: 6:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:6:23: 6:27"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:6:5: 6:28",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:6:5: 6:28"
+          },
+          "phase": "Runtime(PostCleanup)",
+          "required_constants": [
+            {
+              "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:3 ~ capture[9af6]::BIAS), args: [], promoted: None }, u8)",
+              "dependency": "BIAS|Item(DefId(0:3 ~ capture[9af6]::BIAS))|[]",
+              "evaluated_bits": "3",
+              "kind": "constant",
+              "type": "u8"
+            }
+          ],
+          "spread_argument": null
+        },
+        "definition": "<u8 as Step>::SHIFT",
+        "id": "<u8 as Step>::SHIFT|Item(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT))|[]",
+        "kind": "Item(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:7:47: 7:47",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:7:47: 7:47"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:27: 7:31",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:27: 7:31"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:27: 7:31",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:27: 7:31"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:5 ~ capture[9af6]::Step::SHIFT), args: [u8], promoted: None }, u8)",
+                        "dependency": "<u8 as Step>::SHIFT|Item(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT))|[]",
+                        "evaluated_bits": "3",
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:27: 7:45",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:27: 7:45"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:44: 7:45",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:44: 7:45"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:7:5: 7:47",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:7:5: 7:47"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [
+            {
+              "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:5 ~ capture[9af6]::Step::SHIFT), args: [u8], promoted: None }, u8)",
+              "dependency": "<u8 as Step>::SHIFT|Item(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT))|[]",
+              "evaluated_bits": "3",
+              "kind": "constant",
+              "type": "u8"
+            }
+          ],
+          "spread_argument": null
+        },
+        "definition": "<u8 as Step>::step",
+        "id": "<u8 as Step>::step|Item(DefId(0:9 ~ capture[9af6]::{impl#0}::step))|[]",
+        "kind": "Item(DefId(0:9 ~ capture[9af6]::{impl#0}::step))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 0,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:3:1: 3:24",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:3:1: 3:24"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Val(Scalar(0x03), u8)",
+                        "dependency": null,
+                        "evaluated_bits": "3",
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:3:22: 3:23",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:3:22: 3:23"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:3:1: 3:24",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:3:1: 3:24"
+          },
+          "phase": "Runtime(PostCleanup)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "BIAS",
+        "id": "BIAS|Item(DefId(0:3 ~ capture[9af6]::BIAS))|[]",
+        "kind": "Item(DefId(0:3 ~ capture[9af6]::BIAS))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[Guard]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25",
+                "expansion": [],
+                "span": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "borrow_kind": "Mut { kind: Default }",
+                      "kind": "reference",
+                      "place": {
+                        "local": 1,
+                        "projection": [
+                          {
+                            "kind": "deref"
+                          }
+                        ]
+                      },
+                      "region": "'{erased}"
+                    }
+                  },
+                  "origin": {
+                    "call_site": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25",
+                    "expansion": [],
+                    "span": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 2,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 3,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[Guard]",
+                  "definition": "core::ops::Drop::drop",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": "<Guard as core::ops::Drop>::drop|Item(DefId(0:18 ~ capture[9af6]::{impl#1}::drop))|[]",
+                "target": 1,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 1,
+              "origin": {
+                "call_site": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25",
+                "expansion": [],
+                "span": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25"
+              },
+              "statements": [],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Memory { sized: true }",
+                "size_bytes": 0
+              },
+              "mutability": "Mut",
+              "type": "()"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Not",
+              "type": "*mut Guard"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Mut",
+              "type": "&'{erased} mut Guard"
+            },
+            {
+              "id": 3,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Memory { sized: true }",
+                "size_bytes": 0
+              },
+              "mutability": "Mut",
+              "type": "()"
+            }
+          ],
+          "origin": {
+            "call_site": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25",
+            "expansion": [],
+            "span": "<MAY1_TOOLCHAIN>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:809:1: 811:25"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "core::ptr::drop_in_place",
+        "id": "core::ptr::drop_in_place|DropGlue(DefId(1:3258 ~ core[d32d]::ptr::drop_in_place), Some(Guard))|[Guard]",
+        "kind": "DropGlue(DefId(1:3258 ~ core[d32d]::ptr::drop_in_place), Some(Guard))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                "expansion": [
+                  {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                    "kind": "Macro(Bang, \"make\")",
+                    "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                  }
+                ],
+                "span": "/owned-source/probe.rs:10:88: 10:88"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:77: 10:78"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:77: 10:78"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Val(Scalar(0x05), u8)",
+                        "dependency": null,
+                        "evaluated_bits": "5",
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:77: 10:86"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:85: 10:86"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:11:1: 11:22",
+            "expansion": [
+              {
+                "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                "kind": "Macro(Bang, \"make\")",
+                "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+              }
+            ],
+            "span": "/owned-source/probe.rs:10:52: 10:88"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "generated",
+        "id": "generated|Item(DefId(0:22 ~ capture[9af6]::generated))|[]",
+        "kind": "Item(DefId(0:22 ~ capture[9af6]::generated))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[u8]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:9:39: 9:47",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:9:39: 9:47"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:9:39: 9:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:9:39: 9:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "move",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:9:39: 9:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:9:39: 9:40"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 2,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 0,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[u8]",
+                  "definition": "Step::step",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": "<u8 as Step>::step|Item(DefId(0:9 ~ capture[9af6]::{impl#0}::step))|[]",
+                "target": 1,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 1,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:9:49: 9:49",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:9:49: 9:49"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:9:46: 9:47",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:9:46: 9:47"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": true,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:9:1: 9:49",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:9:1: 9:49"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "generic",
+        "id": "generic|Item(DefId(0:10 ~ capture[9af6]::generic))|[u8]",
+        "kind": "Item(DefId(0:10 ~ capture[9af6]::generic))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]",
+        "body": {
+          "argument_count": 2,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:21:34: 21:34",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:21:34: 21:34"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:26: 21:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:26: 21:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 3,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:26: 21:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:26: 21:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:30: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:30: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 5,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": [
+                            {
+                              "kind": "deref"
+                            },
+                            {
+                              "index": 0,
+                              "kind": "field",
+                              "type": "&'{erased} u8"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:30: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:30: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 4,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 5,
+                          "projection": [
+                            {
+                              "kind": "deref"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:30: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:30: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 3,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "kind": "move",
+                        "place": {
+                          "local": 4,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:26: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:26: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:33: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:33: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:33: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:33: 21:34"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Mut",
+              "type": "&'{erased} Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 3,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 4,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 5,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Mut",
+              "type": "&'{erased} u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:21:19: 21:34",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:21:19: 21:34"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "root::{closure#0}",
+        "id": "root::{closure#0}|Item(DefId(0:20 ~ capture[9af6]::root::{closure#0}))|[i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]",
+        "kind": "Item(DefId(0:20 ~ capture[9af6]::root::{closure#0}))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:20:16: 20:28",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:20:16: 20:28"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:9: 19:15",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:9: 19:15"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:24: 19:25",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:24: 19:25"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 3,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:24: 19:25",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:24: 19:25"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "aggregate_kind": "Adt(DefId(0:14 ~ capture[9af6]::Guard), 0, [], None, None)",
+                      "closure_dependency": null,
+                      "kind": "aggregate",
+                      "operands": [
+                        {
+                          "kind": "move",
+                          "place": {
+                            "local": 3,
+                            "projection": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:18: 19:26",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:18: 19:26"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:25: 19:26",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:25: 19:26"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:9: 20:13",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:9: 20:13"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 5
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:26: 20:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:26: 20:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 5,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:26: 20:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:26: 20:27"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 5,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 4,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[]",
+                  "definition": "generated",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": "generated|Item(DefId(0:22 ~ capture[9af6]::generated))|[]",
+                "target": 1,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 1,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:22:27: 22:38",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:22:27: 22:38"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 5
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:27: 20:28",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:27: 20:28"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 6
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:9: 21:16",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:9: 21:16"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 7
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:19: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:19: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 7,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "borrow_kind": "Shared",
+                      "kind": "reference",
+                      "place": {
+                        "local": 4,
+                        "projection": []
+                      },
+                      "region": "'{erased}"
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:19: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:19: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 6,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "aggregate_kind": "Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])",
+                      "closure_dependency": "root::{closure#0}|Item(DefId(0:20 ~ capture[9af6]::root::{closure#0}))|[i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]",
+                      "kind": "aggregate",
+                      "operands": [
+                        {
+                          "kind": "move",
+                          "place": {
+                            "local": 7,
+                            "projection": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:19: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:19: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 7
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:24: 21:25",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:24: 21:25"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 8
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:12",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:12"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 8,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "borrow_kind": "Shared",
+                      "kind": "reference",
+                      "place": {
+                        "local": 6,
+                        "projection": []
+                      },
+                      "region": "'{erased}"
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:12",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:12"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 9
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 10
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:13: 22:39",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:13: 22:39"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 11
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:27: 22:38",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:27: 22:38"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 12
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:36: 22:37",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:36: 22:37"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 12,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:36: 22:37",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:36: 22:37"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 12,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 11,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[]",
+                  "definition": "selected",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": "selected|Item(DefId(0:13 ~ capture[9af6]::selected))|[]",
+                "target": 2,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 2,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:22:13: 22:39",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:22:13: 22:39"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 12
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:37: 22:38",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:37: 22:38"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 11,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 10,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[u8]",
+                  "definition": "generic",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": "generic|Item(DefId(0:10 ~ capture[9af6]::generic))|[u8]",
+                "target": 3,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 3,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:22:5: 22:40",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:22:5: 22:40"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 11
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:38: 22:39",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:38: 22:39"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 9,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "aggregate_kind": "Tuple",
+                      "closure_dependency": null,
+                      "kind": "aggregate",
+                      "operands": [
+                        {
+                          "kind": "move",
+                          "place": {
+                            "local": 10,
+                            "projection": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:40"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 8,
+                      "projection": []
+                    }
+                  },
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 9,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 0,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]), (u8,)]",
+                  "definition": "core::ops::Fn::call",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": "root::{closure#0}|Item(DefId(0:20 ~ capture[9af6]::root::{closure#0}))|[i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]",
+                "target": 4,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 4,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:23:1: 23:2"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 10
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:39: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:39: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 9
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:39: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:39: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 8
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:39: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:39: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 6
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:23:1: 23:2"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:23:1: 23:2"
+                  }
+                }
+              ],
+              "terminator": {
+                "drop_block": null,
+                "kind": "drop",
+                "place": {
+                  "local": 2,
+                  "projection": []
+                },
+                "replace": false,
+                "resolved_instance": "core::ptr::drop_in_place|DropGlue(DefId(1:3258 ~ core[d32d]::ptr::drop_in_place), Some(Guard))|[Guard]",
+                "target": 5,
+                "type": "Guard",
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 5,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:23:2: 23:2",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:23:2: 23:2"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:23:1: 23:2"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "Guard"
+            },
+            {
+              "id": 3,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 4,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 5,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 6,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Not",
+              "type": "Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])"
+            },
+            {
+              "id": 7,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Mut",
+              "type": "&'{erased} u8"
+            },
+            {
+              "id": 8,
+              "layout": {
+                "align_bytes": 8,
+                "backend_representation": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+                "size_bytes": 8
+              },
+              "mutability": "Mut",
+              "type": "&'{erased} Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])"
+            },
+            {
+              "id": 9,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "(u8,)"
+            },
+            {
+              "id": 10,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 11,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 12,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:18:1: 23:2",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:18:1: 23:2"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "root",
+        "id": "root|Item(DefId(0:19 ~ capture[9af6]::root))|[]",
+        "kind": "Item(DefId(0:19 ~ capture[9af6]::root))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      },
+      {
+        "arguments": "[]",
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:15:36: 15:36",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:15:36: 15:36"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:29: 15:30",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:29: 15:30"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:29: 15:30",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:29: 15:30"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Val(Scalar(0x02), u8)",
+                        "dependency": null,
+                        "evaluated_bits": "2",
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:29: 15:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:29: 15:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:33: 15:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:33: 15:34"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": {
+                "align_bytes": 1,
+                "backend_representation": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })",
+                "size_bytes": 1
+              },
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:15:1: 15:36",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:15:1: 15:36"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "selected",
+        "id": "selected|Item(DefId(0:13 ~ capture[9af6]::selected))|[]",
+        "kind": "Item(DefId(0:13 ~ capture[9af6]::selected))",
+        "query_origin": "TyCtxt::instance_mir + try_instantiate_mir_and_normalize_erasing_regions"
+      }
+    ],
+    "language_features": [],
+    "local_body_templates": [
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:17:57: 17:57",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:17:57: 17:57"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 1,
+                      "projection": [
+                        {
+                          "kind": "deref"
+                        },
+                        {
+                          "index": 0,
+                          "kind": "field",
+                          "type": "u8"
+                        }
+                      ]
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Val(Scalar(0x00), u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:17:44: 17:54",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:17:44: 17:54"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Val(ZeroSized, ())",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "()"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:17:42: 17:57",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:17:42: 17:57"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "()"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "&'{erased} mut Guard"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:17:23: 17:57",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:17:23: 17:57"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "<Guard as core::ops::Drop>::drop",
+        "kind": "AssocFn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 0,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:6:5: 6:28",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:6:5: 6:28"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:3 ~ capture[9af6]::BIAS), args: [], promoted: None }, u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:6:23: 6:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:6:23: 6:27"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:6:5: 6:28",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:6:5: 6:28"
+          },
+          "phase": "Runtime(PostCleanup)",
+          "required_constants": [
+            {
+              "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:3 ~ capture[9af6]::BIAS), args: [], promoted: None }, u8)",
+              "dependency": null,
+              "evaluated_bits": null,
+              "kind": "constant",
+              "type": "u8"
+            }
+          ],
+          "spread_argument": null
+        },
+        "definition": "<u8 as Step>::SHIFT",
+        "kind": "AssocConst { is_type_const: false }",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:7:47: 7:47",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:7:47: 7:47"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:27: 7:31",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:27: 7:31"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:27: 7:31",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:27: 7:31"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:5 ~ capture[9af6]::Step::SHIFT), args: [u8], promoted: None }, u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:27: 7:45",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:27: 7:45"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:7:44: 7:45",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:7:44: 7:45"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:7:5: 7:47",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:7:5: 7:47"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [
+            {
+              "compiler_value": "Unevaluated(UnevaluatedConst { def: DefId(0:5 ~ capture[9af6]::Step::SHIFT), args: [u8], promoted: None }, u8)",
+              "dependency": null,
+              "evaluated_bits": null,
+              "kind": "constant",
+              "type": "u8"
+            }
+          ],
+          "spread_argument": null
+        },
+        "definition": "<u8 as Step>::step",
+        "kind": "AssocFn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 0,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:3:1: 3:24",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:3:1: 3:24"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "compiler_value": "Val(Scalar(0x03), u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:3:22: 3:23",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:3:22: 3:23"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:3:1: 3:24",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:3:1: 3:24"
+          },
+          "phase": "Runtime(PostCleanup)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "BIAS",
+        "kind": "Const { is_type_const: false }",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:24:33: 24:33",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:24:33: 24:33"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:24:26: 24:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:24:26: 24:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:24:26: 24:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:24:26: 24:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Val(Scalar(0x09), u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:24:26: 24:31",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:24:26: 24:31"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:24:30: 24:31",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:24:30: 24:31"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:24:1: 24:33",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:24:1: 24:33"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "decoy",
+        "kind": "Fn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                "expansion": [
+                  {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                    "kind": "Macro(Bang, \"make\")",
+                    "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                  }
+                ],
+                "span": "/owned-source/probe.rs:10:88: 10:88"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:77: 10:78"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:77: 10:78"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Val(Scalar(0x05), u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:77: 10:86"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                    "expansion": [
+                      {
+                        "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                        "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                        "kind": "Macro(Bang, \"make\")",
+                        "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+                      }
+                    ],
+                    "span": "/owned-source/probe.rs:10:85: 10:86"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:11:1: 11:22",
+            "expansion": [
+              {
+                "call_site": "/owned-source/probe.rs:11:1: 11:22",
+                "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+                "kind": "Macro(Bang, \"make\")",
+                "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+              }
+            ],
+            "span": "/owned-source/probe.rs:10:52: 10:88"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "generated",
+        "kind": "Fn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:9:39: 9:47",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:9:39: 9:47"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:9:39: 9:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:9:39: 9:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "move",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:9:39: 9:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:9:39: 9:40"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 2,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 0,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[T/#0]",
+                  "definition": "Step::step",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": null,
+                "target": 1,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 1,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:9:49: 9:49",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:9:49: 9:49"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:9:46: 9:47",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:9:46: 9:47"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": true,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "T/#0"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "T/#0"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:9:1: 9:49",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:9:1: 9:49"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "generic",
+        "kind": "Fn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:20:16: 20:28",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:20:16: 20:28"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:9: 19:15",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:9: 19:15"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:24: 19:25",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:24: 19:25"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 3,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:24: 19:25",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:24: 19:25"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "aggregate_kind": "Adt(DefId(0:14 ~ capture[9af6]::Guard), 0, [], None, None)",
+                      "closure_dependency": null,
+                      "kind": "aggregate",
+                      "operands": [
+                        {
+                          "kind": "move",
+                          "place": {
+                            "local": 3,
+                            "projection": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:18: 19:26",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:18: 19:26"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:19:25: 19:26",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:19:25: 19:26"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:9: 20:13",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:9: 20:13"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 5
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:26: 20:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:26: 20:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 5,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:26: 20:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:26: 20:27"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 5,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 4,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[]",
+                  "definition": "generated",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": null,
+                "target": 1,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 1,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:22:27: 22:38",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:22:27: 22:38"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 5
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:20:27: 20:28",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:20:27: 20:28"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 6
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:9: 21:16",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:9: 21:16"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 7
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:19: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:19: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 7,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "borrow_kind": "Shared",
+                      "kind": "reference",
+                      "place": {
+                        "local": 4,
+                        "projection": []
+                      },
+                      "region": "'{erased}"
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:19: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:19: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 6,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "aggregate_kind": "Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])",
+                      "closure_dependency": null,
+                      "kind": "aggregate",
+                      "operands": [
+                        {
+                          "kind": "move",
+                          "place": {
+                            "local": 7,
+                            "projection": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:19: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:19: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 7
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:24: 21:25",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:24: 21:25"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 8
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:12",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:12"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 8,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "borrow_kind": "Shared",
+                      "kind": "reference",
+                      "place": {
+                        "local": 6,
+                        "projection": []
+                      },
+                      "region": "'{erased}"
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:12",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:12"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 9
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 10
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:13: 22:39",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:13: 22:39"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 11
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:27: 22:38",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:27: 22:38"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 12
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:36: 22:37",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:36: 22:37"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 12,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:36: 22:37",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:36: 22:37"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 12,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 11,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[]",
+                  "definition": "selected",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": null,
+                "target": 2,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 2,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:22:13: 22:39",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:22:13: 22:39"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 12
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:37: 22:38",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:37: 22:38"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 11,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 10,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[u8]",
+                  "definition": "generic",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": null,
+                "target": 3,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 3,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:22:5: 22:40",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:22:5: 22:40"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 11
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:38: 22:39",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:38: 22:39"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 9,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "aggregate_kind": "Tuple",
+                      "closure_dependency": null,
+                      "kind": "aggregate",
+                      "operands": [
+                        {
+                          "kind": "move",
+                          "place": {
+                            "local": 10,
+                            "projection": []
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:5: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:5: 22:40"
+                  }
+                }
+              ],
+              "terminator": {
+                "arguments": [
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 8,
+                      "projection": []
+                    }
+                  },
+                  {
+                    "kind": "move",
+                    "place": {
+                      "local": 9,
+                      "projection": []
+                    }
+                  }
+                ],
+                "destination": {
+                  "local": 0,
+                  "projection": []
+                },
+                "function": {
+                  "arguments": "[Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)]), (u8,)]",
+                  "definition": "core::ops::Fn::call",
+                  "kind": "function"
+                },
+                "kind": "call",
+                "resolved_instance": null,
+                "target": 4,
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 4,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:23:1: 23:2"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 10
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:39: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:39: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 9
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:39: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:39: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 8
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:22:39: 22:40",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:22:39: 22:40"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 6
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:23:1: 23:2"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:23:1: 23:2"
+                  }
+                }
+              ],
+              "terminator": {
+                "drop_block": null,
+                "kind": "drop",
+                "place": {
+                  "local": 2,
+                  "projection": []
+                },
+                "replace": false,
+                "resolved_instance": null,
+                "target": 5,
+                "type": "Guard",
+                "unwind": "Unreachable"
+              }
+            },
+            {
+              "cleanup": false,
+              "id": 5,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:23:2: 23:2",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:23:2: 23:2"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:23:1: 23:2",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:23:1: 23:2"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Not",
+              "type": "Guard"
+            },
+            {
+              "id": 3,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 4,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 5,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 6,
+              "layout": null,
+              "mutability": "Not",
+              "type": "Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])"
+            },
+            {
+              "id": 7,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "&'{erased} u8"
+            },
+            {
+              "id": 8,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "&'{erased} Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])"
+            },
+            {
+              "id": 9,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "(u8,)"
+            },
+            {
+              "id": 10,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 11,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 12,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:18:1: 23:2",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:18:1: 23:2"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "root",
+        "kind": "Fn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 2,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:21:34: 21:34",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:21:34: 21:34"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:26: 21:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:26: 21:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 3,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:26: 21:27",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:26: 21:27"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:30: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:30: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 5,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": [
+                            {
+                              "kind": "deref"
+                            },
+                            {
+                              "index": 0,
+                              "kind": "field",
+                              "type": "&'{erased} u8"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:30: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:30: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 4,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 5,
+                          "projection": [
+                            {
+                              "kind": "deref"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:30: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:30: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 3,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "kind": "move",
+                        "place": {
+                          "local": 4,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:26: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:26: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 4
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:33: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:33: 21:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 3
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:21:33: 21:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:21:33: 21:34"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "&'{erased} Closure(DefId(0:20 ~ capture[9af6]::root::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((u8,)) -> u8, bound_vars: [] }, (&'{erased} u8,)])"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 3,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 4,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 5,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "&'{erased} u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:21:19: 21:34",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:21:19: 21:34"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "root::{closure#0}",
+        "kind": "Closure",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      },
+      {
+        "body": {
+          "argument_count": 1,
+          "blocks": [
+            {
+              "cleanup": false,
+              "id": 0,
+              "origin": {
+                "call_site": "/owned-source/probe.rs:15:36: 15:36",
+                "expansion": [],
+                "span": "/owned-source/probe.rs:15:36: 15:36"
+              },
+              "statements": [
+                {
+                  "operation": {
+                    "kind": "storage_live",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:29: 15:30",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:29: 15:30"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 2,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "use",
+                      "operand": {
+                        "kind": "copy",
+                        "place": {
+                          "local": 1,
+                          "projection": []
+                        }
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:29: 15:30",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:29: 15:30"
+                  }
+                },
+                {
+                  "operation": {
+                    "destination": {
+                      "local": 0,
+                      "projection": []
+                    },
+                    "kind": "assign",
+                    "value": {
+                      "kind": "binary",
+                      "left": {
+                        "kind": "move",
+                        "place": {
+                          "local": 2,
+                          "projection": []
+                        }
+                      },
+                      "operator": "BitXor",
+                      "right": {
+                        "compiler_value": "Val(Scalar(0x02), u8)",
+                        "dependency": null,
+                        "evaluated_bits": null,
+                        "kind": "constant",
+                        "type": "u8"
+                      }
+                    }
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:29: 15:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:29: 15:34"
+                  }
+                },
+                {
+                  "operation": {
+                    "kind": "storage_dead",
+                    "local": 2
+                  },
+                  "origin": {
+                    "call_site": "/owned-source/probe.rs:15:33: 15:34",
+                    "expansion": [],
+                    "span": "/owned-source/probe.rs:15:33: 15:34"
+                  }
+                }
+              ],
+              "terminator": {
+                "kind": "return"
+              }
+            }
+          ],
+          "is_polymorphic": false,
+          "locals": [
+            {
+              "id": 0,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            },
+            {
+              "id": 1,
+              "layout": null,
+              "mutability": "Not",
+              "type": "u8"
+            },
+            {
+              "id": 2,
+              "layout": null,
+              "mutability": "Mut",
+              "type": "u8"
+            }
+          ],
+          "origin": {
+            "call_site": "/owned-source/probe.rs:15:1: 15:36",
+            "expansion": [],
+            "span": "/owned-source/probe.rs:15:1: 15:36"
+          },
+          "phase": "Runtime(Optimized)",
+          "required_constants": [],
+          "spread_argument": null
+        },
+        "definition": "selected",
+        "kind": "Fn",
+        "query_origin": "TyCtxt::instance_mir (uninstantiated local body)"
+      }
+    ],
+    "local_definitions": [
+      {
+        "hir": "Crate(Mod { spans: ModSpans { inner_span: /owned-source/probe.rs:1:1: 24:33 (#0), inject_use_span: /owned-source/probe.rs:3:1: 3:1 (#0) }, item_ids: [ItemId { owner_id: DefId(0:1 ~ capture[9af6]::core) }, ItemId { owner_id: DefId(0:2 ~ capture[9af6]::{use#0}) }, ItemId { owner_id: DefId(0:3 ~ capture[9af6]::BIAS) }, ItemId { owner_id: DefId(0:4 ~ capture[9af6]::Step) }, ItemId { owner_id: DefId(0:7 ~ capture[9af6]::{impl#0}) }, ItemId { owner_id: DefId(0:10 ~ capture[9af6]::generic) }, ItemId { owner_id: DefId(0:12 ~ capture[9af6]::make) }, ItemId { owner_id: DefId(0:22 ~ capture[9af6]::generated) }, ItemId { owner_id: DefId(0:13 ~ capture[9af6]::selected) }, ItemId { owner_id: DefId(0:14 ~ capture[9af6]::Guard) }, ItemId { owner_id: DefId(0:17 ~ capture[9af6]::{impl#1}) }, ItemId { owner_id: DefId(0:19 ~ capture[9af6]::root) }, ItemId { owner_id: DefId(0:21 ~ capture[9af6]::decoy) }] })",
+        "id": "DefId(0:0 ~ capture[9af6])",
+        "kind": "Mod",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:1:1: 24:33",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:1:1: 24:33"
+        },
+        "parent": "None",
+        "path": ""
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:1 ~ capture[9af6]::core), kind: ExternCrate(None, core#1), span: no-location (#1), vis_span: no-location (#1), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:1 ~ capture[9af6]::core)",
+        "kind": "ExternCrate",
+        "origin": {
+          "call_site": "no-location",
+          "expansion": [],
+          "span": "no-location"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "core"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:2 ~ capture[9af6]::{use#0}), kind: Use(Path { span: no-location (#1), res: PerNS { value_ns: Some(Err), type_ns: Some(Err), macro_ns: Some(Err) }, segments: [PathSegment { ident: core#1, hir_id: HirId(DefId(0:2 ~ capture[9af6]::{use#0}).1), res: Err, args: None, infer_args: false }, PathSegment { ident: prelude#1, hir_id: HirId(DefId(0:2 ~ capture[9af6]::{use#0}).2), res: Err, args: None, infer_args: false }, PathSegment { ident: rust_2021#1, hir_id: HirId(DefId(0:2 ~ capture[9af6]::{use#0}).3), res: Err, args: None, infer_args: false }] }, Glob), span: no-location (#1), vis_span: no-location (#1), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:2 ~ capture[9af6]::{use#0})",
+        "kind": "Use",
+        "origin": {
+          "call_site": "no-location",
+          "expansion": [],
+          "span": "no-location"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "{use#0}"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:3 ~ capture[9af6]::BIAS), kind: Const(BIAS#0, Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:3:19: 3:19 (#0), span: /owned-source/probe.rs:3:15: 3:15 (#0) }, Ty { hir_id: HirId(DefId(0:3 ~ capture[9af6]::BIAS).1), span: /owned-source/probe.rs:3:17: 3:19 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:3:17: 3:19 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:3 ~ capture[9af6]::BIAS).2), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, Body(BodyId { hir_id: HirId(DefId(0:3 ~ capture[9af6]::BIAS).3) })), span: /owned-source/probe.rs:3:1: 3:24 (#0), vis_span: /owned-source/probe.rs:3:1: 3:4 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:3 ~ capture[9af6]::BIAS)",
+        "kind": "Const { is_type_const: false }",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:3:1: 3:19",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:3:1: 3:19"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "BIAS"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:4 ~ capture[9af6]::Step), kind: Trait { impl_restriction: ImplRestriction { kind: Unrestricted, span: /owned-source/probe.rs:4:5: 4:5 (#0) }, constness: NotConst, is_auto: No, safety: Safe, ident: Step#0, generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:4:15: 4:15 (#0), span: /owned-source/probe.rs:4:15: 4:15 (#0) }, bounds: [], items: [TraitItemId { owner_id: DefId(0:5 ~ capture[9af6]::Step::SHIFT) }, TraitItemId { owner_id: DefId(0:6 ~ capture[9af6]::Step::step) }] }, span: /owned-source/probe.rs:4:1: 4:57 (#0), vis_span: /owned-source/probe.rs:4:1: 4:4 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:4 ~ capture[9af6]::Step)",
+        "kind": "Trait",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:4:1: 4:15",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:4:1: 4:15"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "Step"
+      },
+      {
+        "hir": "TraitItem(TraitItem { ident: SHIFT#0, owner_id: DefId(0:5 ~ capture[9af6]::Step::SHIFT), generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:4:33: 4:33 (#0), span: /owned-source/probe.rs:4:29: 4:29 (#0) }, kind: Const(Ty { hir_id: HirId(DefId(0:5 ~ capture[9af6]::Step::SHIFT).1), span: /owned-source/probe.rs:4:31: 4:33 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:4:31: 4:33 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:5 ~ capture[9af6]::Step::SHIFT).2), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, None, No), span: /owned-source/probe.rs:4:18: 4:34 (#0), defaultness: Default { has_value: false }, has_delayed_lints: false })",
+        "id": "DefId(0:5 ~ capture[9af6]::Step::SHIFT)",
+        "kind": "AssocConst { is_type_const: false }",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:4:18: 4:33",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:4:18: 4:33"
+        },
+        "parent": "Some(DefId(0:4 ~ capture[9af6]::Step))",
+        "path": "Step::SHIFT"
+      },
+      {
+        "hir": "TraitItem(TraitItem { ident: step#0, owner_id: DefId(0:6 ~ capture[9af6]::Step::step), generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:4:54: 4:54 (#0), span: /owned-source/probe.rs:4:42: 4:42 (#0) }, kind: Fn(FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:6 ~ capture[9af6]::Step::step).2), span: /owned-source/probe.rs:4:43: 4:47 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:4:43: 4:47 (#0), res: SelfTyParam { trait_: DefId(0:4 ~ capture[9af6]::Step) }, segments: [PathSegment { ident: Self#0, hir_id: HirId(DefId(0:6 ~ capture[9af6]::Step::step).1), res: SelfTyParam { trait_: DefId(0:4 ~ capture[9af6]::Step) }, args: None, infer_args: true }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:6 ~ capture[9af6]::Step::step).3), span: /owned-source/probe.rs:4:52: 4:54 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:4:52: 4:54 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:6 ~ capture[9af6]::Step::step).4), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(Imm)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:4:35: 4:55 (#0) }, Required([Some(self#0)])), span: /owned-source/probe.rs:4:35: 4:55 (#0), defaultness: Default { has_value: false }, has_delayed_lints: false })",
+        "id": "DefId(0:6 ~ capture[9af6]::Step::step)",
+        "kind": "AssocFn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:4:35: 4:55",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:4:35: 4:55"
+        },
+        "parent": "Some(DefId(0:4 ~ capture[9af6]::Step))",
+        "path": "Step::step"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:7 ~ capture[9af6]::{impl#0}), kind: Impl(Impl { generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:5:17: 5:17 (#0), span: /owned-source/probe.rs:5:5: 5:5 (#0) }, of_trait: Some(TraitImplHeader { safety: Safe, polarity: \"positive\", defaultness: Final, defaultness_span: None, trait_ref: TraitRef { path: Path { span: /owned-source/probe.rs:5:6: 5:10 (#0), res: Def(Trait, DefId(0:4 ~ capture[9af6]::Step)), segments: [PathSegment { ident: Step#0, hir_id: HirId(DefId(0:7 ~ capture[9af6]::{impl#0}).1), res: Def(Trait, DefId(0:4 ~ capture[9af6]::Step)), args: None, infer_args: false }] }, hir_ref_id: HirId(DefId(0:7 ~ capture[9af6]::{impl#0}).2) } }), self_ty: Ty { hir_id: HirId(DefId(0:7 ~ capture[9af6]::{impl#0}).3), span: /owned-source/probe.rs:5:15: 5:17 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:5:15: 5:17 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:7 ~ capture[9af6]::{impl#0}).4), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, items: [ImplItemId { owner_id: DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT) }, ImplItemId { owner_id: DefId(0:9 ~ capture[9af6]::{impl#0}::step) }], constness: NotConst }), span: /owned-source/probe.rs:5:1: 8:2 (#0), vis_span: /owned-source/probe.rs:5:1: 5:1 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:7 ~ capture[9af6]::{impl#0})",
+        "kind": "Impl { of_trait: true }",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:5:1: 5:17",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:5:1: 5:17"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "<u8 as Step>"
+      },
+      {
+        "hir": "ImplItem(ImplItem { ident: SHIFT#0, owner_id: DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT), generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:6:20: 6:20 (#0), span: /owned-source/probe.rs:6:16: 6:16 (#0) }, kind: Const(Ty { hir_id: HirId(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT).1), span: /owned-source/probe.rs:6:18: 6:20 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:6:18: 6:20 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT).2), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, Body(BodyId { hir_id: HirId(DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT).3) })), impl_kind: Trait { defaultness: Final, trait_item_def_id: Ok(DefId(0:5 ~ capture[9af6]::Step::SHIFT)) }, span: /owned-source/probe.rs:6:5: 6:28 (#0), has_delayed_lints: false })",
+        "id": "DefId(0:8 ~ capture[9af6]::{impl#0}::SHIFT)",
+        "kind": "AssocConst { is_type_const: false }",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:6:5: 6:20",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:6:5: 6:20"
+        },
+        "parent": "Some(DefId(0:7 ~ capture[9af6]::{impl#0}))",
+        "path": "<u8 as Step>::SHIFT"
+      },
+      {
+        "hir": "ImplItem(ImplItem { ident: step#0, owner_id: DefId(0:9 ~ capture[9af6]::{impl#0}::step), generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:7:24: 7:24 (#0), span: /owned-source/probe.rs:7:12: 7:12 (#0) }, kind: Fn(FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:9 ~ capture[9af6]::{impl#0}::step).13), span: /owned-source/probe.rs:7:13: 7:17 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:7:13: 7:17 (#0), res: SelfTyAlias { alias_to: DefId(0:7 ~ capture[9af6]::{impl#0}), is_trait_impl: true }, segments: [PathSegment { ident: Self#0, hir_id: HirId(DefId(0:9 ~ capture[9af6]::{impl#0}::step).12), res: SelfTyAlias { alias_to: DefId(0:7 ~ capture[9af6]::{impl#0}), is_trait_impl: true }, args: None, infer_args: true }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:9 ~ capture[9af6]::{impl#0}::step).14), span: /owned-source/probe.rs:7:22: 7:24 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:7:22: 7:24 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:9 ~ capture[9af6]::{impl#0}::step).15), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(Imm)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:7:5: 7:24 (#0) }, BodyId { hir_id: HirId(DefId(0:9 ~ capture[9af6]::{impl#0}::step).11) }), impl_kind: Trait { defaultness: Final, trait_item_def_id: Ok(DefId(0:6 ~ capture[9af6]::Step::step)) }, span: /owned-source/probe.rs:7:5: 7:47 (#0), has_delayed_lints: false })",
+        "id": "DefId(0:9 ~ capture[9af6]::{impl#0}::step)",
+        "kind": "AssocFn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:7:5: 7:24",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:7:5: 7:24"
+        },
+        "parent": "Some(DefId(0:7 ~ capture[9af6]::{impl#0}))",
+        "path": "<u8 as Step>::step"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:10 ~ capture[9af6]::generic), kind: Fn { sig: FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).15), span: /owned-source/probe.rs:9:28: 9:29 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:9:28: 9:29 (#0), res: Def(TyParam, DefId(0:11 ~ capture[9af6]::generic::T)), segments: [PathSegment { ident: T#0, hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).16), res: Def(TyParam, DefId(0:11 ~ capture[9af6]::generic::T)), args: None, infer_args: false }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).17), span: /owned-source/probe.rs:9:34: 9:36 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:9:34: 9:36 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).18), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(None)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:9:1: 9:36 (#0) }, ident: generic#0, generics: Generics { params: [GenericParam { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).14), def_id: DefId(0:11 ~ capture[9af6]::generic::T), name: Plain(T#0), span: /owned-source/probe.rs:9:16: 9:17 (#0), pure_wrt_drop: false, kind: Type { default: None, synthetic: false }, colon_span: Some(/owned-source/probe.rs:9:17: 9:18 (#0)), source: Generics }], predicates: [WherePredicate { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).11), span: /owned-source/probe.rs:9:17: 9:23 (#0), kind: BoundPredicate(WhereBoundPredicate { origin: GenericParam, bound_generic_params: [], bounded_ty: Ty { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).13), span: /owned-source/probe.rs:9:16: 9:17 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:9:16: 9:17 (#0), res: Def(TyParam, DefId(0:11 ~ capture[9af6]::generic::T)), segments: [PathSegment { ident: T#0, hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).12), res: Def(TyParam, DefId(0:11 ~ capture[9af6]::generic::T)), args: None, infer_args: true }] })) }, bounds: [Trait(PolyTraitRef { bound_generic_params: [], modifiers: TraitBoundModifiers { constness: Never, polarity: Positive }, trait_ref: TraitRef { path: Path { span: /owned-source/probe.rs:9:19: 9:23 (#0), res: Def(Trait, DefId(0:4 ~ capture[9af6]::Step)), segments: [PathSegment { ident: Step#0, hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).9), res: Def(Trait, DefId(0:4 ~ capture[9af6]::Step)), args: None, infer_args: false }] }, hir_ref_id: HirId(DefId(0:10 ~ capture[9af6]::generic).10) }, span: /owned-source/probe.rs:9:19: 9:23 (#0) })] }) }], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:9:36: 9:36 (#0), span: /owned-source/probe.rs:9:15: 9:24 (#0) }, body: BodyId { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).8) }, has_body: true }, span: /owned-source/probe.rs:9:1: 9:49 (#0), vis_span: /owned-source/probe.rs:9:1: 9:4 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:10 ~ capture[9af6]::generic)",
+        "kind": "Fn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:9:1: 9:36",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:9:1: 9:36"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "generic"
+      },
+      {
+        "hir": "GenericParam(GenericParam { hir_id: HirId(DefId(0:10 ~ capture[9af6]::generic).14), def_id: DefId(0:11 ~ capture[9af6]::generic::T), name: Plain(T#0), span: /owned-source/probe.rs:9:16: 9:17 (#0), pure_wrt_drop: false, kind: Type { default: None, synthetic: false }, colon_span: Some(/owned-source/probe.rs:9:17: 9:18 (#0)), source: Generics })",
+        "id": "DefId(0:11 ~ capture[9af6]::generic::T)",
+        "kind": "TyParam",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:9:16: 9:17",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:9:16: 9:17"
+        },
+        "parent": "Some(DefId(0:10 ~ capture[9af6]::generic))",
+        "path": "generic::T"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:12 ~ capture[9af6]::make), kind: Macro(make#0, MacroDef { body: DelimArgs { dspan: DelimSpan { open: /owned-source/probe.rs:10:19: 10:20 (#0), close: /owned-source/probe.rs:10:92: 10:93 (#0) }, delim: Brace, tokens: TokenStream([Delimited(DelimSpan { open: /owned-source/probe.rs:10:21: 10:22 (#0), close: /owned-source/probe.rs:10:45: 10:46 (#0) }, DelimSpacing { open: Joint, close: Alone }, Parenthesis, TokenStream([Token(Token { kind: Dollar, span: /owned-source/probe.rs:10:22: 10:23 (#0) }, JointHidden), Token(Token { kind: Ident(\"name\", No), span: /owned-source/probe.rs:10:23: 10:27 (#0) }, Joint), Token(Token { kind: Colon, span: /owned-source/probe.rs:10:27: 10:28 (#0) }, JointHidden), Token(Token { kind: Ident(\"ident\", No), span: /owned-source/probe.rs:10:28: 10:33 (#0) }, Joint), Token(Token { kind: Comma, span: /owned-source/probe.rs:10:33: 10:34 (#0) }, Alone), Token(Token { kind: Dollar, span: /owned-source/probe.rs:10:35: 10:36 (#0) }, JointHidden), Token(Token { kind: Ident(\"mask\", No), span: /owned-source/probe.rs:10:36: 10:40 (#0) }, Joint), Token(Token { kind: Colon, span: /owned-source/probe.rs:10:40: 10:41 (#0) }, JointHidden), Token(Token { kind: Ident(\"expr\", No), span: /owned-source/probe.rs:10:41: 10:45 (#0) }, JointHidden)])), Token(Token { kind: FatArrow, span: /owned-source/probe.rs:10:47: 10:49 (#0) }, Alone), Delimited(DelimSpan { open: /owned-source/probe.rs:10:50: 10:51 (#0), close: /owned-source/probe.rs:10:89: 10:90 (#0) }, DelimSpacing { open: Alone, close: Joint }, Brace, TokenStream([Token(Token { kind: Ident(\"pub\", No), span: /owned-source/probe.rs:10:52: 10:55 (#0) }, Alone), Token(Token { kind: Ident(\"fn\", No), span: /owned-source/probe.rs:10:56: 10:58 (#0) }, Alone), Token(Token { kind: Dollar, span: /owned-source/probe.rs:10:59: 10:60 (#0) }, JointHidden), Token(Token { kind: Ident(\"name\", No), span: /owned-source/probe.rs:10:60: 10:64 (#0) }, JointHidden), Delimited(DelimSpan { open: /owned-source/probe.rs:10:64: 10:65 (#0), close: /owned-source/probe.rs:10:69: 10:70 (#0) }, DelimSpacing { open: JointHidden, close: Joint }, Parenthesis, TokenStream([Token(Token { kind: Ident(\"x\", No), span: /owned-source/probe.rs:10:65: 10:66 (#0) }, Joint), Token(Token { kind: Colon, span: /owned-source/probe.rs:10:66: 10:67 (#0) }, JointHidden), Token(Token { kind: Ident(\"u8\", No), span: /owned-source/probe.rs:10:67: 10:69 (#0) }, JointHidden)])), Token(Token { kind: RArrow, span: /owned-source/probe.rs:10:70: 10:72 (#0) }, JointHidden), Token(Token { kind: Ident(\"u8\", No), span: /owned-source/probe.rs:10:72: 10:74 (#0) }, Alone), Delimited(DelimSpan { open: /owned-source/probe.rs:10:75: 10:76 (#0), close: /owned-source/probe.rs:10:87: 10:88 (#0) }, DelimSpacing { open: Alone, close: Alone }, Brace, TokenStream([Token(Token { kind: Ident(\"x\", No), span: /owned-source/probe.rs:10:77: 10:78 (#0) }, Alone), Token(Token { kind: Caret, span: /owned-source/probe.rs:10:79: 10:80 (#0) }, Alone), Token(Token { kind: Dollar, span: /owned-source/probe.rs:10:81: 10:82 (#0) }, JointHidden), Token(Token { kind: Ident(\"mask\", No), span: /owned-source/probe.rs:10:82: 10:86 (#0) }, Alone)]))])), Token(Token { kind: Semi, span: /owned-source/probe.rs:10:90: 10:91 (#0) }, Alone)]) }, macro_rules: true, eii_declaration: None }, MacroKinds(1)), span: /owned-source/probe.rs:10:1: 10:93 (#0), vis_span: /owned-source/probe.rs:10:1: 10:1 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:12 ~ capture[9af6]::make)",
+        "kind": "Macro(MacroKinds(1))",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:10:1: 10:18",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:10:1: 10:18"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "make"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:13 ~ capture[9af6]::selected), kind: Fn { sig: FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:13 ~ capture[9af6]::selected).9), span: /owned-source/probe.rs:15:19: 15:21 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:15:19: 15:21 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:13 ~ capture[9af6]::selected).10), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:13 ~ capture[9af6]::selected).11), span: /owned-source/probe.rs:15:24: 15:26 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:15:24: 15:26 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:13 ~ capture[9af6]::selected).12), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(None)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:15:1: 15:26 (#0) }, ident: selected#0, generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:15:26: 15:26 (#0), span: /owned-source/probe.rs:15:16: 15:16 (#0) }, body: BodyId { hir_id: HirId(DefId(0:13 ~ capture[9af6]::selected).8) }, has_body: true }, span: /owned-source/probe.rs:15:1: 15:36 (#0), vis_span: /owned-source/probe.rs:15:1: 15:4 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:13 ~ capture[9af6]::selected)",
+        "kind": "Fn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:15:1: 15:26",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:15:1: 15:26"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "selected"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:14 ~ capture[9af6]::Guard), kind: Struct(Guard#0, Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:16:17: 16:17 (#0), span: /owned-source/probe.rs:16:13: 16:13 (#0) }, Tuple([FieldDef { span: /owned-source/probe.rs:16:14: 16:16 (#0), vis_span: /owned-source/probe.rs:16:14: 16:14 (#0), ident: 0#0, hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).4), def_id: DefId(0:16 ~ capture[9af6]::Guard::0), ty: Ty { hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).2), span: /owned-source/probe.rs:16:14: 16:16 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:16:14: 16:16 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).3), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, safety: Safe, default: None }], HirId(DefId(0:14 ~ capture[9af6]::Guard).1), DefId(0:15 ~ capture[9af6]::Guard::{constructor#0}))), span: /owned-source/probe.rs:16:1: 16:18 (#0), vis_span: /owned-source/probe.rs:16:1: 16:1 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:14 ~ capture[9af6]::Guard)",
+        "kind": "Struct",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:16:1: 16:13",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:16:1: 16:13"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "Guard"
+      },
+      {
+        "hir": "Ctor(Tuple([FieldDef { span: /owned-source/probe.rs:16:14: 16:16 (#0), vis_span: /owned-source/probe.rs:16:14: 16:14 (#0), ident: 0#0, hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).4), def_id: DefId(0:16 ~ capture[9af6]::Guard::0), ty: Ty { hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).2), span: /owned-source/probe.rs:16:14: 16:16 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:16:14: 16:16 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).3), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, safety: Safe, default: None }], HirId(DefId(0:14 ~ capture[9af6]::Guard).1), DefId(0:15 ~ capture[9af6]::Guard::{constructor#0})))",
+        "id": "DefId(0:15 ~ capture[9af6]::Guard::{constructor#0})",
+        "kind": "Ctor(Struct, Fn)",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:16:1: 16:13",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:16:1: 16:13"
+        },
+        "parent": "Some(DefId(0:14 ~ capture[9af6]::Guard))",
+        "path": "Guard"
+      },
+      {
+        "hir": "Field(FieldDef { span: /owned-source/probe.rs:16:14: 16:16 (#0), vis_span: /owned-source/probe.rs:16:14: 16:14 (#0), ident: 0#0, hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).4), def_id: DefId(0:16 ~ capture[9af6]::Guard::0), ty: Ty { hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).2), span: /owned-source/probe.rs:16:14: 16:16 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:16:14: 16:16 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:14 ~ capture[9af6]::Guard).3), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }, safety: Safe, default: None })",
+        "id": "DefId(0:16 ~ capture[9af6]::Guard::0)",
+        "kind": "Field",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:16:14: 16:16",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:16:14: 16:16"
+        },
+        "parent": "Some(DefId(0:14 ~ capture[9af6]::Guard))",
+        "path": "Guard::0"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:17 ~ capture[9af6]::{impl#1}), kind: Impl(Impl { generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:17:20: 17:20 (#0), span: /owned-source/probe.rs:17:5: 17:5 (#0) }, of_trait: Some(TraitImplHeader { safety: Safe, polarity: \"positive\", defaultness: Final, defaultness_span: None, trait_ref: TraitRef { path: Path { span: /owned-source/probe.rs:17:6: 17:10 (#0), res: Def(Trait, DefId(1:4425 ~ core[d32d]::ops::drop::Drop)), segments: [PathSegment { ident: Drop#0, hir_id: HirId(DefId(0:17 ~ capture[9af6]::{impl#1}).1), res: Def(Trait, DefId(1:4425 ~ core[d32d]::ops::drop::Drop)), args: None, infer_args: false }] }, hir_ref_id: HirId(DefId(0:17 ~ capture[9af6]::{impl#1}).2) } }), self_ty: Ty { hir_id: HirId(DefId(0:17 ~ capture[9af6]::{impl#1}).3), span: /owned-source/probe.rs:17:15: 17:20 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:17:15: 17:20 (#0), res: Def(Struct, DefId(0:14 ~ capture[9af6]::Guard)), segments: [PathSegment { ident: Guard#0, hir_id: HirId(DefId(0:17 ~ capture[9af6]::{impl#1}).4), res: Def(Struct, DefId(0:14 ~ capture[9af6]::Guard)), args: None, infer_args: false }] })) }, items: [ImplItemId { owner_id: DefId(0:18 ~ capture[9af6]::{impl#1}::drop) }], constness: NotConst }), span: /owned-source/probe.rs:17:1: 17:59 (#0), vis_span: /owned-source/probe.rs:17:1: 17:1 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:17 ~ capture[9af6]::{impl#1})",
+        "kind": "Impl { of_trait: true }",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:17:1: 17:20",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:17:1: 17:20"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "<Guard as core::ops::Drop>"
+      },
+      {
+        "hir": "ImplItem(ImplItem { ident: drop#0, owner_id: DefId(0:18 ~ capture[9af6]::{impl#1}::drop), generics: Generics { params: [GenericParam { hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).11), def_id: DefId(0:23 ~ capture[9af6]::{impl#1}::drop::'_), name: Fresh, span: /owned-source/probe.rs:17:31: 17:32 (#0), pure_wrt_drop: false, kind: Lifetime { kind: Elided(Ampersand) }, colon_span: None, source: Generics }], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:17:41: 17:41 (#0), span: /owned-source/probe.rs:17:30: 17:30 (#0) }, kind: Fn(FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).15), span: /owned-source/probe.rs:17:31: 17:40 (#0), kind: Ref(Lifetime { hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).12), ident: '_#0, kind: Param(DefId(0:23 ~ capture[9af6]::{impl#1}::drop::'_)), source: Reference, syntax: Implicit }, MutTy { ty: Ty { hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).14), span: /owned-source/probe.rs:17:36: 17:40 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:17:36: 17:40 (#0), res: SelfTyAlias { alias_to: DefId(0:17 ~ capture[9af6]::{impl#1}), is_trait_impl: true }, segments: [PathSegment { ident: Self#0, hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).13), res: SelfTyAlias { alias_to: DefId(0:17 ~ capture[9af6]::{impl#1}), is_trait_impl: true }, args: None, infer_args: true }] })) }, mutbl: Mut }) }], output: DefaultReturn(/owned-source/probe.rs:17:41: 17:41 (#0)), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(RefMut)\", \"LifetimeElisionAllowed\") }, span: /owned-source/probe.rs:17:23: 17:41 (#0) }, BodyId { hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).10) }), impl_kind: Trait { defaultness: Final, trait_item_def_id: Ok(DefId(1:4426 ~ core[d32d]::ops::drop::Drop::drop)) }, span: /owned-source/probe.rs:17:23: 17:57 (#0), has_delayed_lints: false })",
+        "id": "DefId(0:18 ~ capture[9af6]::{impl#1}::drop)",
+        "kind": "AssocFn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:17:23: 17:41",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:17:23: 17:41"
+        },
+        "parent": "Some(DefId(0:17 ~ capture[9af6]::{impl#1}))",
+        "path": "<Guard as core::ops::Drop>::drop"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:19 ~ capture[9af6]::root), kind: Fn { sig: FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).47), span: /owned-source/probe.rs:18:15: 18:17 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:18:15: 18:17 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).48), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).49), span: /owned-source/probe.rs:18:20: 18:22 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:18:20: 18:22 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).50), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(None)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:18:1: 18:22 (#0) }, ident: root#0, generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:18:22: 18:22 (#0), span: /owned-source/probe.rs:18:12: 18:12 (#0) }, body: BodyId { hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).46) }, has_body: true }, span: /owned-source/probe.rs:18:1: 23:2 (#0), vis_span: /owned-source/probe.rs:18:1: 18:4 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:19 ~ capture[9af6]::root)",
+        "kind": "Fn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:18:1: 18:22",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:18:1: 18:22"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "root"
+      },
+      {
+        "hir": "Expr(Expr { hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).21), kind: Closure(Closure { def_id: DefId(0:20 ~ capture[9af6]::root::{closure#0}), binder: Default, constness: NotConst, capture_clause: Ref, bound_generic_params: [], fn_decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).29), span: /owned-source/probe.rs:21:22: 21:24 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:21:22: 21:24 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).30), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }], output: DefaultReturn(/owned-source/probe.rs:21:25: 21:25 (#0)), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(None)\", \"NoLifetimeElision\") }, body: BodyId { hir_id: HirId(DefId(0:19 ~ capture[9af6]::root).24) }, fn_decl_span: /owned-source/probe.rs:21:19: 21:25 (#0), fn_arg_span: Some(/owned-source/probe.rs:21:19: 21:25 (#0)), kind: Closure }), span: /owned-source/probe.rs:21:19: 21:34 (#0) })",
+        "id": "DefId(0:20 ~ capture[9af6]::root::{closure#0})",
+        "kind": "Closure",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:21:19: 21:25",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:21:19: 21:25"
+        },
+        "parent": "Some(DefId(0:19 ~ capture[9af6]::root))",
+        "path": "root::{closure#0}"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:21 ~ capture[9af6]::decoy), kind: Fn { sig: FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:21 ~ capture[9af6]::decoy).9), span: /owned-source/probe.rs:24:16: 24:18 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:24:16: 24:18 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:21 ~ capture[9af6]::decoy).10), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:21 ~ capture[9af6]::decoy).11), span: /owned-source/probe.rs:24:21: 24:23 (#0), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:24:21: 24:23 (#0), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#0, hir_id: HirId(DefId(0:21 ~ capture[9af6]::decoy).12), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(None)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:24:1: 24:23 (#0) }, ident: decoy#0, generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:24:23: 24:23 (#0), span: /owned-source/probe.rs:24:13: 24:13 (#0) }, body: BodyId { hir_id: HirId(DefId(0:21 ~ capture[9af6]::decoy).8) }, has_body: true }, span: /owned-source/probe.rs:24:1: 24:33 (#0), vis_span: /owned-source/probe.rs:24:1: 24:4 (#0), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:21 ~ capture[9af6]::decoy)",
+        "kind": "Fn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:24:1: 24:23",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:24:1: 24:23"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "decoy"
+      },
+      {
+        "hir": "Item(Item { owner_id: DefId(0:22 ~ capture[9af6]::generated), kind: Fn { sig: FnSig { header: FnHeader { safety: Normal(Safe), constness: NotConst, asyncness: NotAsync, abi: Rust }, decl: FnDecl { inputs: [Ty { hir_id: HirId(DefId(0:22 ~ capture[9af6]::generated).9), span: /owned-source/probe.rs:10:67: 10:69 (#3), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:10:67: 10:69 (#3), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#3, hir_id: HirId(DefId(0:22 ~ capture[9af6]::generated).10), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }], output: Return(Ty { hir_id: HirId(DefId(0:22 ~ capture[9af6]::generated).11), span: /owned-source/probe.rs:10:72: 10:74 (#3), kind: Path(Resolved(None, Path { span: /owned-source/probe.rs:10:72: 10:74 (#3), res: PrimTy(Uint(u8)), segments: [PathSegment { ident: u8#3, hir_id: HirId(DefId(0:22 ~ capture[9af6]::generated).12), res: PrimTy(Uint(u8)), args: None, infer_args: false }] })) }), fn_decl_kind: FnDeclFlags(\"ImplicitSelfKind(None)\", \"NoLifetimeElision\") }, span: /owned-source/probe.rs:10:52: 10:74 (#3) }, ident: generated#0, generics: Generics { params: [], predicates: [], has_where_clause_predicates: false, where_clause_span: /owned-source/probe.rs:10:74: 10:74 (#3), span: /owned-source/probe.rs:10:64: 10:64 (#3) }, body: BodyId { hir_id: HirId(DefId(0:22 ~ capture[9af6]::generated).8) }, has_body: true }, span: /owned-source/probe.rs:10:52: 10:88 (#3), vis_span: /owned-source/probe.rs:10:52: 10:55 (#3), has_delayed_lints: false, eii: false })",
+        "id": "DefId(0:22 ~ capture[9af6]::generated)",
+        "kind": "Fn",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:11:1: 11:22",
+          "expansion": [
+            {
+              "call_site": "/owned-source/probe.rs:11:1: 11:22",
+              "definition_site": "/owned-source/probe.rs:10:1: 10:93",
+              "kind": "Macro(Bang, \"make\")",
+              "macro_definition": "Some(DefId(0:12 ~ capture[9af6]::make))"
+            }
+          ],
+          "span": "/owned-source/probe.rs:10:52: 10:74"
+        },
+        "parent": "Some(DefId(0:0 ~ capture[9af6]))",
+        "path": "generated"
+      },
+      {
+        "hir": "GenericParam(GenericParam { hir_id: HirId(DefId(0:18 ~ capture[9af6]::{impl#1}::drop).11), def_id: DefId(0:23 ~ capture[9af6]::{impl#1}::drop::'_), name: Fresh, span: /owned-source/probe.rs:17:31: 17:32 (#0), pure_wrt_drop: false, kind: Lifetime { kind: Elided(Ampersand) }, colon_span: None, source: Generics })",
+        "id": "DefId(0:23 ~ capture[9af6]::{impl#1}::drop::'_)",
+        "kind": "LifetimeParam",
+        "origin": {
+          "call_site": "/owned-source/probe.rs:17:31: 17:32",
+          "expansion": [],
+          "span": "/owned-source/probe.rs:17:31: 17:32"
+        },
+        "parent": "Some(DefId(0:18 ~ capture[9af6]::{impl#1}::drop))",
+        "path": "<Guard as core::ops::Drop>::drop::'_"
+      }
+    ],
+    "root": "root",
+    "schema": "owned-configured-capture-v1",
+    "sources": [
+      {
+        "compiler_source": "#![no_std]\n#![allow(dead_code)]\npub const BIAS: u8 = 3;\npub trait Step { const SHIFT: u8; fn step(self) -> u8; }\nimpl Step for u8 {\n    const SHIFT: u8 = BIAS;\n    fn step(self) -> u8 { self ^ Self::SHIFT }\n}\npub fn generic<T: Step>(x: T) -> u8 { x.step() }\nmacro_rules! make { ($name:ident, $mask:expr) => { pub fn $name(x:u8)->u8 { x ^ $mask } }; }\nmake!(generated, 5u8);\n#[cfg(feature=\"flip\")]\npub fn selected(x:u8)->u8 { x ^ 1 }\n#[cfg(not(feature=\"flip\"))]\npub fn selected(x:u8)->u8 { x ^ 2 }\nstruct Guard(u8);\nimpl Drop for Guard { fn drop(&mut self) { self.0 = 0; } }\npub fn root(x:u8)->u8 {\n    let _guard = Guard(x);\n    let mask = generated(x);\n    let closure = |y:u8| y ^ mask;\n    closure(generic::<u8>(selected(x)))\n}\npub fn decoy(x:u8)->u8 { x ^ 9 }\n",
+        "name": "/owned-source/probe.rs"
+      }
+    ],
+    "target": "Target {\n    llvm_target: \"arm64-apple-macosx\",\n    metadata: TargetMetadata {\n        description: Some(\n            \"ARM64 Apple macOS (11.0+, Big Sur+)\",\n        ),\n        tier: Some(\n            1,\n        ),\n        host_tools: Some(\n            true,\n        ),\n        std: Some(\n            true,\n        ),\n    },\n    pointer_width: 64,\n    arch: AArch64,\n    data_layout: \"e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32\",\n    options: TargetOptions {\n        endian: little,\n        c_int_width: 32,\n        os: MacOs,\n        env: Unspecified,\n        cfg_abi: Unspecified,\n        vendor: \"apple\",\n        linker: None,\n        linker_flavor: Darwin(\n            Yes,\n            No,\n        ),\n        linker_flavor_json: Gcc,\n        lld_flavor_json: Ld,\n        linker_is_gnu_json: true,\n        pre_link_objects: {},\n        post_link_objects: {},\n        pre_link_objects_self_contained: {},\n        post_link_objects_self_contained: {},\n        link_self_contained: False,\n        pre_link_args: {},\n        pre_link_args_json: {},\n        late_link_args: {},\n        late_link_args_json: {},\n        late_link_args_dynamic: {},\n        late_link_args_dynamic_json: {},\n        late_link_args_static: {},\n        late_link_args_static_json: {},\n        post_link_args: {},\n        post_link_args_json: {},\n        link_script: None,\n        link_env: [\n            (\n                \"ZERO_AR_DATE\",\n                \"1\",\n            ),\n        ],\n        link_env_remove: [\n            \"IPHONEOS_DEPLOYMENT_TARGET\",\n            \"TVOS_DEPLOYMENT_TARGET\",\n            \"XROS_DEPLOYMENT_TARGET\",\n        ],\n        asm_args: [],\n        cpu: \"apple-m1\",\n        need_explicit_cpu: false,\n        unsupported_cpus: [],\n        features: \"\",\n        direct_access_external_data: None,\n        dynamic_linking: true,\n        dll_tls_export: true,\n        only_cdylib: false,\n        executables: true,\n        relocation_model: Pic,\n        code_model: None,\n        tls_model: GeneralDynamic,\n        disable_redzone: false,\n        frame_pointer: NonLeaf,\n        function_sections: false,\n        dll_prefix: \"lib\",\n        dll_suffix: \".dylib\",\n        exe_suffix: \"\",\n        staticlib_prefix: \"lib\",\n        staticlib_suffix: \".a\",\n        families: [\n            \"unix\",\n        ],\n        abi_return_struct_as_int: true,\n        is_like_aix: false,\n        is_like_darwin: true,\n        is_like_gpu: false,\n        is_like_solaris: false,\n        is_like_windows: false,\n        is_like_msvc: false,\n        is_like_wasm: false,\n        is_like_android: false,\n        is_like_vexos: false,\n        binary_format: MachO,\n        default_dwarf_version: 4,\n        allows_weak_linkage: true,\n        has_rpath: true,\n        no_default_libraries: true,\n        position_independent_executables: false,\n        static_position_independent_executables: false,\n        plt_by_default: true,\n        relro_level: None,\n        archive_format: \"darwin\",\n        allow_asm: true,\n        static_initializer_must_be_acyclic: false,\n        main_needs_argc_argv: true,\n        has_thread_local: true,\n        obj_is_bitcode: false,\n        min_atomic_width: None,\n        max_atomic_width: Some(\n            128,\n        ),\n        atomic_cas: true,\n        panic_strategy: Unwind,\n        crt_static_allows_dylibs: false,\n        crt_static_default: false,\n        crt_static_respected: false,\n        stack_probes: Inline,\n        min_global_align: None,\n        default_codegen_units: None,\n        default_codegen_backend: None,\n        trap_unreachable: true,\n        requires_lto: false,\n        singlethread: false,\n        no_builtins: false,\n        default_visibility: None,\n        emit_debug_gdb_scripts: false,\n        requires_uwtable: false,\n        default_uwtable: false,\n        simd_types_indirect: true,\n        limit_rdylib_exports: true,\n        override_export_symbols: None,\n        merge_functions: Aliases,\n        mcount: \"\\u{1}mcount\",\n        llvm_mcount_intrinsic: None,\n        llvm_abiname: Unspecified,\n        llvm_floatabi: None,\n        rustc_abi: None,\n        relax_elf_relocations: false,\n        llvm_args: [],\n        use_ctors_section: false,\n        eh_frame_header: false,\n        has_thumb_interworking: false,\n        debuginfo_kind: DwarfDsym,\n        split_debuginfo: Packed,\n        supported_split_debuginfo: [\n            Packed,\n            Unpacked,\n            Off,\n        ],\n        supported_sanitizers: ADDRESS | THREAD | CFI | REALTIME,\n        default_sanitizers: ,\n        c_enum_min_bits: None,\n        generate_arange_section: true,\n        supports_stack_protector: true,\n        entry_name: \"main\",\n        entry_abi: C,\n        supports_xray: true,\n        default_address_space: AddressSpace(\n            0,\n        ),\n        small_data_threshold_support: DefaultForArch,\n    },\n}",
+    "trust_frontier": "rustc parser/analysis/expansion/CTFE/resolution/MIR and this observer; no Rust safety theorem"
+  }
+}

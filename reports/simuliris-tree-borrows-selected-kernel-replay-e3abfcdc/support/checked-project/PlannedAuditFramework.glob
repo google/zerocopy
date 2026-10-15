@@ -1,0 +1,20 @@
+DIGEST eb5b1f7272c87c6fbc339eb76db0ecf8
+FPlannedAuditFramework
+R95:123 simuliris.simulation.adequacy <> <> lib
+R141:178 simuliris.simulation.fairness_adequacy <> <> lib
+R196:226 simuliris.tree_borrows.adequacy <> <> lib
+R244:270 simuliris.tree_borrows.refl <> <> lib
+R306:349 simuliris.simulation.adequacy <> slsls_adequacy thm
+R370:413 simuliris.simulation.adequacy <> slsls_adequacy thm
+R424:497 simuliris.simulation.fairness_adequacy <> sim_pool_preserves_fair_termination thm
+R518:591 simuliris.simulation.fairness_adequacy <> sim_pool_preserves_fair_termination thm
+R602:650 simuliris.tree_borrows.adequacy <> prog_rel_adequacy thm
+R671:719 simuliris.tree_borrows.adequacy <> prog_rel_adequacy thm
+R730:777 simuliris.tree_borrows.adequacy <> log_rel_adequacy thm
+R798:845 simuliris.tree_borrows.adequacy <> log_rel_adequacy thm
+R856:904 simuliris.tree_borrows.refl <> sb_log_rel_structural thm
+R925:973 simuliris.tree_borrows.refl <> sb_log_rel_structural thm
+R984:1023 simuliris.tree_borrows.refl <> log_rel_refl thm
+R1044:1083 simuliris.tree_borrows.refl <> log_rel_refl thm
+R1094:1132 simuliris.tree_borrows.refl <> log_rel_ctx thm
+R1153:1191 simuliris.tree_borrows.refl <> log_rel_ctx thm

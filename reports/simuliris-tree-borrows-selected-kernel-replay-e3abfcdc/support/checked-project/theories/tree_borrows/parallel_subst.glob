@@ -1,0 +1,818 @@
+DIGEST bb166a49c044e5ac8d01504fc2c49bd7
+Fsimuliris.tree_borrows.parallel_subst
+R26:29 stdpp.gmap <> <> lib
+R65:71 iris.prelude.prelude <> <> lib
+R117:130 simuliris.tree_borrows.expr_semantics <> <> lib
+prf 318:325 <> expr_ind
+R336:340 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R332:335 simuliris.tree_borrows.lang_base <> expr ind
+binder 328:328 <> P:1
+R350:350 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R367:374 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R351:354 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R356:357 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 355:355 <> v:2
+R358:358 simuliris.tree_borrows.parallel_subst <> P:1 var
+R361:363 simuliris.tree_borrows.lang_base <> Val constr
+R365:365 simuliris.tree_borrows.parallel_subst <> v:2 var
+R375:375 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R392:399 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R376:379 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R381:382 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 380:380 <> x:3
+R383:383 simuliris.tree_borrows.parallel_subst <> P:1 var
+R386:388 simuliris.tree_borrows.lang_base <> Var constr
+R390:390 simuliris.tree_borrows.parallel_subst <> x:3 var
+R400:400 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R444:451 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R401:404 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R410:411 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 405:406 <> e1:4
+binder 408:409 <> e2:5
+R416:420 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R412:412 simuliris.tree_borrows.parallel_subst <> P:1 var
+R414:415 simuliris.tree_borrows.parallel_subst <> e1:4 var
+R425:429 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R421:421 simuliris.tree_borrows.parallel_subst <> P:1 var
+R423:424 simuliris.tree_borrows.parallel_subst <> e2:5 var
+R430:430 simuliris.tree_borrows.parallel_subst <> P:1 var
+R433:436 simuliris.tree_borrows.lang_base <> Call constr
+R438:439 simuliris.tree_borrows.parallel_subst <> e1:4 var
+R441:442 simuliris.tree_borrows.parallel_subst <> e2:5 var
+R452:452 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R465:472 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R453:453 simuliris.tree_borrows.parallel_subst <> P:1 var
+R456:463 simuliris.tree_borrows.lang_base <> InitCall constr
+R473:473 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R502:509 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R474:477 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R479:480 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 478:478 <> e:6
+R484:488 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R481:481 simuliris.tree_borrows.parallel_subst <> P:1 var
+R483:483 simuliris.tree_borrows.parallel_subst <> e:6 var
+R489:489 simuliris.tree_borrows.parallel_subst <> P:1 var
+R492:498 simuliris.tree_borrows.lang_base <> EndCall constr
+R500:500 simuliris.tree_borrows.parallel_subst <> e:6 var
+R510:510 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R541:548 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R511:514 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R522:523 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 515:515 <> l:7
+binder 517:518 <> tg:8
+binder 520:521 <> ty:9
+R524:524 simuliris.tree_borrows.parallel_subst <> P:1 var
+R527:531 simuliris.tree_borrows.lang_base <> Place constr
+R533:533 simuliris.tree_borrows.parallel_subst <> l:7 var
+R535:536 simuliris.tree_borrows.parallel_subst <> tg:8 var
+R538:539 simuliris.tree_borrows.parallel_subst <> ty:9 var
+R549:549 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R598:605 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R550:553 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R561:562 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 554:554 <> o:10
+binder 556:557 <> e1:11
+binder 559:560 <> e2:12
+R567:571 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R563:563 simuliris.tree_borrows.parallel_subst <> P:1 var
+R565:566 simuliris.tree_borrows.parallel_subst <> e1:11 var
+R576:580 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R572:572 simuliris.tree_borrows.parallel_subst <> P:1 var
+R574:575 simuliris.tree_borrows.parallel_subst <> e2:12 var
+R581:581 simuliris.tree_borrows.parallel_subst <> P:1 var
+R584:588 simuliris.tree_borrows.lang_base <> BinOp constr
+R590:590 simuliris.tree_borrows.parallel_subst <> o:10 var
+R592:593 simuliris.tree_borrows.parallel_subst <> e1:11 var
+R595:596 simuliris.tree_borrows.parallel_subst <> e2:12 var
+R606:606 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R650:657 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R607:610 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R616:617 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 611:612 <> e1:13
+binder 614:615 <> e2:14
+R622:626 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R618:618 simuliris.tree_borrows.parallel_subst <> P:1 var
+R620:621 simuliris.tree_borrows.parallel_subst <> e1:13 var
+R631:635 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R627:627 simuliris.tree_borrows.parallel_subst <> P:1 var
+R629:630 simuliris.tree_borrows.parallel_subst <> e2:14 var
+R636:636 simuliris.tree_borrows.parallel_subst <> P:1 var
+R639:642 simuliris.tree_borrows.lang_base <> Proj constr
+R644:645 simuliris.tree_borrows.parallel_subst <> e1:13 var
+R647:648 simuliris.tree_borrows.parallel_subst <> e2:14 var
+R658:658 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R702:709 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R659:662 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R668:669 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 663:664 <> e1:15
+binder 666:667 <> e2:16
+R674:678 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R670:670 simuliris.tree_borrows.parallel_subst <> P:1 var
+R672:673 simuliris.tree_borrows.parallel_subst <> e1:15 var
+R683:687 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R679:679 simuliris.tree_borrows.parallel_subst <> P:1 var
+R681:682 simuliris.tree_borrows.parallel_subst <> e2:16 var
+R688:688 simuliris.tree_borrows.parallel_subst <> P:1 var
+R691:694 simuliris.tree_borrows.lang_base <> Conc constr
+R696:697 simuliris.tree_borrows.parallel_subst <> e1:15 var
+R699:700 simuliris.tree_borrows.parallel_subst <> e2:16 var
+R710:710 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R743:750 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R711:714 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R719:720 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 715:715 <> e:17
+binder 717:718 <> ty:18
+R724:728 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R721:721 simuliris.tree_borrows.parallel_subst <> P:1 var
+R723:723 simuliris.tree_borrows.parallel_subst <> e:17 var
+R729:729 simuliris.tree_borrows.parallel_subst <> P:1 var
+R732:736 simuliris.tree_borrows.lang_base <> Deref constr
+R738:738 simuliris.tree_borrows.parallel_subst <> e:17 var
+R740:741 simuliris.tree_borrows.parallel_subst <> ty:18 var
+R751:751 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R776:783 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R752:755 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R757:758 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 756:756 <> e:19
+R762:766 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R759:759 simuliris.tree_borrows.parallel_subst <> P:1 var
+R761:761 simuliris.tree_borrows.parallel_subst <> e:19 var
+R767:767 simuliris.tree_borrows.parallel_subst <> P:1 var
+R770:772 simuliris.tree_borrows.lang_base <> Ref constr
+R774:774 simuliris.tree_borrows.parallel_subst <> e:19 var
+R784:784 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R810:817 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R785:788 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R790:791 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 789:789 <> e:20
+R795:799 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R792:792 simuliris.tree_borrows.parallel_subst <> P:1 var
+R794:794 simuliris.tree_borrows.parallel_subst <> e:20 var
+R800:800 simuliris.tree_borrows.parallel_subst <> P:1 var
+R803:806 simuliris.tree_borrows.lang_base <> Copy constr
+R808:808 simuliris.tree_borrows.parallel_subst <> e:20 var
+R818:818 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R863:870 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R819:822 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R828:829 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 823:824 <> e1:21
+binder 826:827 <> e2:22
+R834:838 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R830:830 simuliris.tree_borrows.parallel_subst <> P:1 var
+R832:833 simuliris.tree_borrows.parallel_subst <> e1:21 var
+R843:847 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R839:839 simuliris.tree_borrows.parallel_subst <> P:1 var
+R841:842 simuliris.tree_borrows.parallel_subst <> e2:22 var
+R848:848 simuliris.tree_borrows.parallel_subst <> P:1 var
+R851:855 simuliris.tree_borrows.lang_base <> Write constr
+R857:858 simuliris.tree_borrows.parallel_subst <> e1:21 var
+R860:861 simuliris.tree_borrows.parallel_subst <> e2:22 var
+R871:871 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R892:899 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R872:875 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R878:879 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 876:877 <> ty:23
+R880:880 simuliris.tree_borrows.parallel_subst <> P:1 var
+R883:887 simuliris.tree_borrows.lang_base <> Alloc constr
+R889:890 simuliris.tree_borrows.parallel_subst <> ty:23 var
+R900:900 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R926:933 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R901:904 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R906:907 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 905:905 <> e:24
+R911:915 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R908:908 simuliris.tree_borrows.parallel_subst <> P:1 var
+R910:910 simuliris.tree_borrows.parallel_subst <> e:24 var
+R916:916 simuliris.tree_borrows.parallel_subst <> P:1 var
+R919:922 simuliris.tree_borrows.lang_base <> Free constr
+R924:924 simuliris.tree_borrows.parallel_subst <> e:24 var
+R934:934 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1007:1014 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R935:938 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R958:959 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 939:940 <> e1:25
+binder 942:943 <> e2:26
+binder 945:948 <> newp:27
+binder 950:951 <> im:28
+binder 953:954 <> sz:29
+binder 956:957 <> rk:30
+R964:968 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R960:960 simuliris.tree_borrows.parallel_subst <> P:1 var
+R962:963 simuliris.tree_borrows.parallel_subst <> e1:25 var
+R973:977 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R969:969 simuliris.tree_borrows.parallel_subst <> P:1 var
+R971:972 simuliris.tree_borrows.parallel_subst <> e2:26 var
+R978:978 simuliris.tree_borrows.parallel_subst <> P:1 var
+R981:985 simuliris.tree_borrows.lang_base <> Retag constr
+R987:988 simuliris.tree_borrows.parallel_subst <> e1:25 var
+R990:991 simuliris.tree_borrows.parallel_subst <> e2:26 var
+R993:996 simuliris.tree_borrows.parallel_subst <> newp:27 var
+R998:999 simuliris.tree_borrows.parallel_subst <> im:28 var
+R1001:1002 simuliris.tree_borrows.parallel_subst <> sz:29 var
+R1004:1005 simuliris.tree_borrows.parallel_subst <> rk:30 var
+R1015:1015 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1062:1069 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1016:1019 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1027:1028 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1020:1020 <> b:31
+binder 1022:1023 <> e1:32
+binder 1025:1026 <> e2:33
+R1033:1037 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1029:1029 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1031:1032 simuliris.tree_borrows.parallel_subst <> e1:32 var
+R1042:1046 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1038:1038 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1040:1041 simuliris.tree_borrows.parallel_subst <> e2:33 var
+R1047:1047 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1050:1052 simuliris.tree_borrows.lang_base <> Let constr
+R1054:1054 simuliris.tree_borrows.parallel_subst <> b:31 var
+R1056:1057 simuliris.tree_borrows.parallel_subst <> e1:32 var
+R1059:1060 simuliris.tree_borrows.parallel_subst <> e2:33 var
+R1070:1070 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1118:1125 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1071:1074 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1079:1080 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1075:1075 <> e:34
+binder 1077:1078 <> el:35
+R1084:1088 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1081:1081 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1083:1083 simuliris.tree_borrows.parallel_subst <> e:34 var
+R1100:1104 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1089:1094 Corelib.Lists.ListDef <> Forall ind
+R1098:1099 simuliris.tree_borrows.parallel_subst <> el:35 var
+R1096:1096 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1105:1105 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1108:1111 simuliris.tree_borrows.lang_base <> Case constr
+R1113:1113 simuliris.tree_borrows.parallel_subst <> e:34 var
+R1115:1116 simuliris.tree_borrows.parallel_subst <> el:35 var
+R1126:1126 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1171:1178 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1127:1130 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1136:1137 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1131:1132 <> e1:36
+binder 1134:1135 <> e2:37
+R1142:1146 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1138:1138 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1140:1141 simuliris.tree_borrows.parallel_subst <> e1:36 var
+R1151:1155 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1147:1147 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1149:1150 simuliris.tree_borrows.parallel_subst <> e2:37 var
+R1156:1156 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1159:1163 simuliris.tree_borrows.lang_base <> While constr
+R1165:1166 simuliris.tree_borrows.parallel_subst <> e1:36 var
+R1168:1169 simuliris.tree_borrows.parallel_subst <> e2:37 var
+R1179:1179 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1205:1212 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1180:1183 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1185:1186 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1184:1184 <> e:38
+R1190:1194 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1187:1187 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1189:1189 simuliris.tree_borrows.parallel_subst <> e:38 var
+R1195:1195 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1198:1201 simuliris.tree_borrows.lang_base <> Fork constr
+R1203:1203 simuliris.tree_borrows.parallel_subst <> e:38 var
+R1213:1216 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1218:1219 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1217:1217 <> e:39
+R1220:1220 simuliris.tree_borrows.parallel_subst <> P:1 var
+R1222:1222 simuliris.tree_borrows.parallel_subst <> e:39 var
+R2217:2222 Corelib.Lists.ListDef <> Forall ind
+R2259:2264 Corelib.Lists.ListDef <> Forall ind
+def 2317:2325 <> subst_map
+R2333:2336 stdpp.gmap <> gmap rec
+R2345:2350 simuliris.tree_borrows.lang_base <> result ind
+R2338:2343 Stdlib.Strings.String <> string ind
+binder 2328:2329 <> xs:40
+R2358:2361 simuliris.tree_borrows.lang_base <> expr ind
+binder 2354:2354 <> e:41
+R2366:2369 simuliris.tree_borrows.lang_base <> expr ind
+R2382:2382 simuliris.tree_borrows.parallel_subst <> e:41 var
+R2393:2395 simuliris.tree_borrows.lang_base <> Var constr
+R2407:2410 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R2405:2406 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2416:2419 Corelib.Init.Datatypes <> Some constr
+R2428:2436 simuliris.tree_borrows.lang_base <> of_result def
+R2445:2447 simuliris.tree_borrows.lang_base <> Var constr
+R2455:2457 simuliris.tree_borrows.lang_base <> Val constr
+R2464:2466 simuliris.tree_borrows.lang_base <> Val constr
+R2474:2476 simuliris.tree_borrows.lang_base <> Let constr
+R2490:2492 simuliris.tree_borrows.lang_base <> Let constr
+R2498:2506 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2508:2509 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2516:2524 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2527:2539 stdpp.binders <> binder_delete def
+R2544:2545 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2556:2559 simuliris.tree_borrows.lang_base <> Call constr
+R2570:2573 simuliris.tree_borrows.lang_base <> Call constr
+R2576:2584 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2586:2587 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2594:2602 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2604:2605 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2615:2622 simuliris.tree_borrows.lang_base <> InitCall constr
+R2627:2634 simuliris.tree_borrows.lang_base <> InitCall constr
+R2640:2646 simuliris.tree_borrows.lang_base <> EndCall constr
+R2653:2659 simuliris.tree_borrows.lang_base <> EndCall constr
+R2662:2670 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2675:2675 simuliris.tree_borrows.parallel_subst <> e:41 var
+R2672:2673 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2682:2686 simuliris.tree_borrows.lang_base <> Place constr
+R2699:2703 simuliris.tree_borrows.lang_base <> Place constr
+R2717:2721 simuliris.tree_borrows.lang_base <> BinOp constr
+R2735:2739 simuliris.tree_borrows.lang_base <> BinOp constr
+R2745:2753 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2755:2756 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2763:2771 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2773:2774 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2784:2787 simuliris.tree_borrows.lang_base <> Proj constr
+R2798:2801 simuliris.tree_borrows.lang_base <> Proj constr
+R2804:2812 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2814:2815 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2822:2830 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2832:2833 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2843:2846 simuliris.tree_borrows.lang_base <> Conc constr
+R2857:2860 simuliris.tree_borrows.lang_base <> Conc constr
+R2863:2871 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2873:2874 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2881:2889 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2891:2892 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2902:2905 simuliris.tree_borrows.lang_base <> Copy constr
+R2912:2915 simuliris.tree_borrows.lang_base <> Copy constr
+R2918:2926 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2931:2931 simuliris.tree_borrows.parallel_subst <> e:41 var
+R2928:2929 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2938:2942 simuliris.tree_borrows.lang_base <> Write constr
+R2953:2957 simuliris.tree_borrows.lang_base <> Write constr
+R2960:2968 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2970:2971 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2978:2986 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R2988:2989 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R2999:3003 simuliris.tree_borrows.lang_base <> Alloc constr
+R3010:3014 simuliris.tree_borrows.lang_base <> Alloc constr
+R3022:3025 simuliris.tree_borrows.lang_base <> Free constr
+R3032:3035 simuliris.tree_borrows.lang_base <> Free constr
+R3038:3046 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3051:3051 simuliris.tree_borrows.parallel_subst <> e:41 var
+R3048:3049 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3058:3062 simuliris.tree_borrows.lang_base <> Deref constr
+R3071:3075 simuliris.tree_borrows.lang_base <> Deref constr
+R3078:3086 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3091:3091 simuliris.tree_borrows.parallel_subst <> e:41 var
+R3088:3089 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3100:3102 simuliris.tree_borrows.lang_base <> Ref constr
+R3109:3111 simuliris.tree_borrows.lang_base <> Ref constr
+R3114:3122 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3127:3127 simuliris.tree_borrows.parallel_subst <> e:41 var
+R3124:3125 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3134:3138 simuliris.tree_borrows.lang_base <> Retag constr
+R3165:3169 simuliris.tree_borrows.lang_base <> Retag constr
+R3172:3180 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3182:3183 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3190:3198 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3200:3201 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3227:3230 simuliris.tree_borrows.lang_base <> Case constr
+R3240:3243 simuliris.tree_borrows.lang_base <> Case constr
+R3246:3254 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3259:3259 simuliris.tree_borrows.parallel_subst <> e:41 var
+R3256:3257 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3263:3266 stdpp.base <> fmap def
+R3269:3277 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3279:3280 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3291:3295 simuliris.tree_borrows.lang_base <> While constr
+R3306:3310 simuliris.tree_borrows.lang_base <> While constr
+R3313:3321 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3323:3324 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3331:3339 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3341:3342 simuliris.tree_borrows.parallel_subst <> xs:40 var
+R3352:3355 simuliris.tree_borrows.lang_base <> Fork constr
+R3362:3365 simuliris.tree_borrows.lang_base <> Fork constr
+R3368:3376 simuliris.tree_borrows.parallel_subst <> subst_map:42 def
+R3381:3381 simuliris.tree_borrows.parallel_subst <> e:41 var
+R3378:3379 simuliris.tree_borrows.parallel_subst <> xs:40 var
+prf 3398:3412 <> subst_map_empty
+binder 3414:3414 <> e:44
+R3435:3437 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3420:3428 simuliris.tree_borrows.parallel_subst <> subst_map def
+R3430:3432 stdpp.base <> ::stdpp_scope:'∅' not
+R3434:3434 simuliris.tree_borrows.parallel_subst <> e:44 var
+R3438:3438 simuliris.tree_borrows.parallel_subst <> e:44 var
+R3468:3475 simuliris.tree_borrows.parallel_subst <> expr_ind thm
+R3532:3544 stdpp.binders <> binder_delete def
+R3549:3551 stdpp.base <> ::stdpp_scope:'∅' not
+R3604:3615 stdpp.fin_maps <> delete_empty thm
+R3648:3653 Corelib.Lists.ListDef <> Forall ind
+prf 3737:3751 <> subst_map_subst
+binder 3753:3755 <> map:45
+binder 3757:3757 <> x:46
+R3764:3769 simuliris.tree_borrows.lang_base <> result ind
+binder 3760:3760 <> r:47
+R3777:3780 simuliris.tree_borrows.lang_base <> expr ind
+binder 3773:3773 <> e:48
+R3814:3816 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3787:3795 simuliris.tree_borrows.parallel_subst <> subst_map def
+R3797:3799 simuliris.tree_borrows.parallel_subst <> map:45 var
+R3802:3806 simuliris.tree_borrows.expr_semantics <> subst def
+R3808:3808 simuliris.tree_borrows.parallel_subst <> x:46 var
+R3810:3810 simuliris.tree_borrows.parallel_subst <> r:47 var
+R3812:3812 simuliris.tree_borrows.parallel_subst <> e:48 var
+R3817:3825 simuliris.tree_borrows.parallel_subst <> subst_map def
+R3828:3829 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R3831:3832 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R3834:3838 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R3830:3830 simuliris.tree_borrows.parallel_subst <> x:46 var
+R3833:3833 simuliris.tree_borrows.parallel_subst <> r:47 var
+R3836:3838 simuliris.tree_borrows.parallel_subst <> map:45 var
+R3841:3841 simuliris.tree_borrows.parallel_subst <> e:48 var
+R3887:3894 simuliris.tree_borrows.parallel_subst <> expr_ind thm
+R3996:4011 stdpp.fin_maps <> lookup_insert_eq thm
+R4046:4061 stdpp.fin_maps <> lookup_insert_ne thm
+R4098:4110 stdpp.binders <> binder_delete def
+R4199:4214 stdpp.fin_maps <> delete_insert_ne thm
+R4285:4300 stdpp.fin_maps <> delete_insert_eq thm
+R4330:4335 Corelib.Lists.ListDef <> Forall ind
+prf 4419:4433 <> subst_subst_map
+binder 4435:4435 <> x:49
+R4442:4447 simuliris.tree_borrows.lang_base <> result ind
+binder 4438:4438 <> r:50
+binder 4450:4452 <> map:51
+binder 4454:4454 <> e:52
+R4498:4502 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4460:4464 simuliris.tree_borrows.expr_semantics <> subst def
+R4466:4466 simuliris.tree_borrows.parallel_subst <> x:49 var
+R4468:4468 simuliris.tree_borrows.parallel_subst <> r:50 var
+R4471:4479 simuliris.tree_borrows.parallel_subst <> subst_map def
+R4482:4487 stdpp.base <> delete def
+R4491:4493 simuliris.tree_borrows.parallel_subst <> map:51 var
+R4489:4489 simuliris.tree_borrows.parallel_subst <> x:49 var
+R4496:4496 simuliris.tree_borrows.parallel_subst <> e:52 var
+R4503:4511 simuliris.tree_borrows.parallel_subst <> subst_map def
+R4514:4515 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R4517:4518 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R4520:4524 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R4516:4516 simuliris.tree_borrows.parallel_subst <> x:49 var
+R4519:4519 simuliris.tree_borrows.parallel_subst <> r:50 var
+R4522:4524 simuliris.tree_borrows.parallel_subst <> map:51 var
+R4527:4527 simuliris.tree_borrows.parallel_subst <> e:52 var
+R4573:4580 simuliris.tree_borrows.parallel_subst <> expr_ind thm
+R4673:4676 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R4663:4668 stdpp.base <> delete def
+R4700:4705 stdpp.base <> decide def
+R4710:4710 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R4750:4765 stdpp.fin_maps <> lookup_delete_eq thm
+R4770:4785 stdpp.fin_maps <> lookup_insert_eq thm
+R4812:4827 stdpp.decidable <> bool_decide_true abbrev
+R4847:4862 stdpp.fin_maps <> lookup_delete_ne thm
+R4867:4882 stdpp.fin_maps <> lookup_insert_ne thm
+R4907:4910 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R4971:4987 stdpp.decidable <> bool_decide_false abbrev
+R5024:5036 stdpp.binders <> binder_delete def
+R5121:5136 stdpp.fin_maps <> delete_insert_ne thm
+R5167:5179 stdpp.fin_maps <> delete_delete thm
+R5216:5231 stdpp.fin_maps <> delete_delete_eq thm
+R5233:5248 stdpp.fin_maps <> delete_insert_eq thm
+R5281:5286 Corelib.Lists.ListDef <> Forall ind
+prf 5370:5388 <> subst_map_singleton
+binder 5390:5390 <> x:53
+R5397:5402 simuliris.tree_borrows.lang_base <> result ind
+binder 5393:5393 <> r:54
+binder 5405:5405 <> e:55
+R5431:5433 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5411:5419 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5421:5422 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R5424:5425 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R5427:5428 stdpp.base <> ::stdpp_scope:'{['_x_':='_x_']}' not
+R5423:5423 simuliris.tree_borrows.parallel_subst <> x:53 var
+R5426:5426 simuliris.tree_borrows.parallel_subst <> r:54 var
+R5430:5430 simuliris.tree_borrows.parallel_subst <> e:55 var
+R5434:5438 simuliris.tree_borrows.expr_semantics <> subst def
+R5440:5440 simuliris.tree_borrows.parallel_subst <> x:53 var
+R5442:5442 simuliris.tree_borrows.parallel_subst <> r:54 var
+R5444:5444 simuliris.tree_borrows.parallel_subst <> e:55 var
+R5463:5477 simuliris.tree_borrows.parallel_subst <> subst_map_subst thm
+R5479:5493 simuliris.tree_borrows.parallel_subst <> subst_map_empty thm
+prf 5511:5526 <> subst'_subst_map
+binder 5528:5528 <> b:56
+R5535:5540 simuliris.tree_borrows.lang_base <> result ind
+binder 5531:5531 <> r:57
+binder 5543:5545 <> map:58
+binder 5547:5547 <> e:59
+R5599:5603 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5553:5558 simuliris.tree_borrows.expr_semantics <> subst' def
+R5560:5560 simuliris.tree_borrows.parallel_subst <> b:56 var
+R5562:5562 simuliris.tree_borrows.parallel_subst <> r:57 var
+R5565:5573 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5576:5588 stdpp.binders <> binder_delete def
+R5592:5594 simuliris.tree_borrows.parallel_subst <> map:58 var
+R5590:5590 simuliris.tree_borrows.parallel_subst <> b:56 var
+R5597:5597 simuliris.tree_borrows.parallel_subst <> e:59 var
+R5604:5612 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5615:5627 stdpp.binders <> binder_insert def
+R5633:5635 simuliris.tree_borrows.parallel_subst <> map:58 var
+R5631:5631 simuliris.tree_borrows.parallel_subst <> r:57 var
+R5629:5629 simuliris.tree_borrows.parallel_subst <> b:56 var
+R5638:5638 simuliris.tree_borrows.parallel_subst <> e:59 var
+R5683:5697 simuliris.tree_borrows.parallel_subst <> subst_subst_map thm
+prf 5712:5730 <> subst_map_subst_map
+binder 5732:5733 <> xs:60
+binder 5735:5736 <> ys:61
+binder 5738:5738 <> e:62
+R5773:5775 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5744:5752 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5754:5755 simuliris.tree_borrows.parallel_subst <> xs:60 var
+R5758:5766 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5768:5769 simuliris.tree_borrows.parallel_subst <> ys:61 var
+R5771:5771 simuliris.tree_borrows.parallel_subst <> e:62 var
+R5776:5784 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5789:5793 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R5787:5788 simuliris.tree_borrows.parallel_subst <> ys:61 var
+R5794:5795 simuliris.tree_borrows.parallel_subst <> xs:60 var
+R5798:5798 simuliris.tree_borrows.parallel_subst <> e:62 var
+R5863:5869 stdpp.fin_maps <> map_ind thm
+R5892:5898 stdpp.base <> left_id def
+R5900:5914 simuliris.tree_borrows.parallel_subst <> subst_map_empty thm
+R5933:5946 stdpp.fin_maps <> insert_union_l thm
+R5959:5961 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5964:5978 simuliris.tree_borrows.parallel_subst <> subst_map_subst thm
+R5984:5998 simuliris.tree_borrows.parallel_subst <> subst_map_subst thm
+prf 6013:6031 <> subst_map_of_result
+binder 6033:6035 <> map:63
+R6042:6047 simuliris.tree_borrows.lang_base <> result ind
+binder 6038:6038 <> r:64
+R6081:6083 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6054:6062 simuliris.tree_borrows.parallel_subst <> subst_map def
+R6064:6066 simuliris.tree_borrows.parallel_subst <> map:63 var
+R6069:6077 simuliris.tree_borrows.lang_base <> of_result def
+R6079:6079 simuliris.tree_borrows.parallel_subst <> r:64 var
+R6084:6092 simuliris.tree_borrows.lang_base <> of_result def
+R6094:6094 simuliris.tree_borrows.parallel_subst <> r:64 var
+def 6203:6215 <> binder_to_ctx
+R6222:6227 stdpp.binders <> binder ind
+binder 6218:6218 <> x:65
+R6232:6235 stdpp.gmap <> gset def
+R6237:6242 Stdlib.Strings.String <> string ind
+R6252:6252 simuliris.tree_borrows.parallel_subst <> x:65 var
+R6257:6262 stdpp.binders <> BNamed constr
+R6271:6272 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R6274:6275 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R6282:6284 stdpp.base <> ::stdpp_scope:'∅' not
+def 6297:6305 <> free_vars
+R6312:6315 simuliris.tree_borrows.lang_base <> expr ind
+binder 6308:6308 <> e:67
+R6320:6323 stdpp.gmap <> gset def
+R6325:6330 Stdlib.Strings.String <> string ind
+R6343:6343 simuliris.tree_borrows.parallel_subst <> e:67 var
+R6354:6356 simuliris.tree_borrows.lang_base <> Val constr
+R6363:6365 stdpp.base <> ::stdpp_scope:'∅' not
+R6371:6373 simuliris.tree_borrows.lang_base <> Var constr
+R6380:6381 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R6383:6384 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R6390:6392 simuliris.tree_borrows.lang_base <> Let constr
+R6417:6422 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6455:6455 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6405:6413 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6435:6439 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R6423:6431 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6440:6452 simuliris.tree_borrows.parallel_subst <> binder_to_ctx def
+R6461:6468 simuliris.tree_borrows.lang_base <> InitCall constr
+R6472:6476 simuliris.tree_borrows.lang_base <> Place constr
+R6486:6490 simuliris.tree_borrows.lang_base <> Alloc constr
+R6497:6499 stdpp.base <> ::stdpp_scope:'∅' not
+R6505:6508 simuliris.tree_borrows.lang_base <> Fork constr
+R6514:6517 simuliris.tree_borrows.lang_base <> Copy constr
+R6523:6526 simuliris.tree_borrows.lang_base <> Free constr
+R6532:6536 simuliris.tree_borrows.lang_base <> Deref constr
+R6544:6546 simuliris.tree_borrows.lang_base <> Ref constr
+R6552:6558 simuliris.tree_borrows.lang_base <> EndCall constr
+R6570:6578 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6580:6580 simuliris.tree_borrows.parallel_subst <> e:67 var
+R6586:6589 simuliris.tree_borrows.lang_base <> Call constr
+R6599:6603 simuliris.tree_borrows.lang_base <> While constr
+R6613:6617 simuliris.tree_borrows.lang_base <> BinOp constr
+R6629:6632 simuliris.tree_borrows.lang_base <> Proj constr
+R6642:6645 simuliris.tree_borrows.lang_base <> Conc constr
+R6659:6663 simuliris.tree_borrows.lang_base <> Write constr
+R6673:6677 simuliris.tree_borrows.lang_base <> Retag constr
+R6713:6717 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6701:6709 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6718:6726 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6735:6738 simuliris.tree_borrows.lang_base <> Case constr
+R6752:6752 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6764:6769 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6753:6761 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6763:6763 simuliris.tree_borrows.parallel_subst <> e:67 var
+R6770:6774 stdpp.list_basics list foldr abbrev
+R6806:6808 stdpp.base <> ::stdpp_scope:'∅' not
+R6777:6779 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R6784:6785 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 6780:6781 <> ei:70
+binder 6783:6783 <> s:71
+R6787:6791 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R6786:6786 simuliris.tree_borrows.parallel_subst <> s:71 var
+R6792:6800 simuliris.tree_borrows.parallel_subst <> free_vars:68 def
+R6802:6803 simuliris.tree_borrows.parallel_subst <> ei:70 var
+prf 6833:6848 <> binder_delete_eq
+binder 6850:6850 <> x:72
+binder 6852:6852 <> y:73
+R6865:6868 stdpp.gmap <> gmap rec
+R6877:6882 simuliris.tree_borrows.lang_base <> result ind
+R6870:6875 Stdlib.Strings.String <> string ind
+binder 6855:6857 <> xs1:74
+binder 6859:6861 <> xs2:75
+R6889:6889 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6968:6975 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6893:6893 simuliris.tree_borrows.parallel_subst <> y:73 var
+R6898:6903 stdpp.binders <> BNamed constr
+R6919:6923 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6913:6917 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6918:6918 simuliris.tree_borrows.parallel_subst <> x:72 var
+R6932:6934 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6927:6930 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6931:6931 simuliris.tree_borrows.parallel_subst <> x:72 var
+R6924:6926 simuliris.tree_borrows.parallel_subst <> xs1:74 var
+R6938:6941 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6942:6942 simuliris.tree_borrows.parallel_subst <> x:72 var
+R6935:6937 simuliris.tree_borrows.parallel_subst <> xs2:75 var
+R6957:6959 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6952:6955 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6956:6956 simuliris.tree_borrows.parallel_subst <> x:72 var
+R6949:6951 simuliris.tree_borrows.parallel_subst <> xs1:74 var
+R6963:6966 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6967:6967 simuliris.tree_borrows.parallel_subst <> x:72 var
+R6960:6962 simuliris.tree_borrows.parallel_subst <> xs2:75 var
+R7000:7002 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6995:6998 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R6999:6999 simuliris.tree_borrows.parallel_subst <> x:72 var
+R6976:6988 stdpp.binders <> binder_delete def
+R6992:6994 simuliris.tree_borrows.parallel_subst <> xs1:74 var
+R6990:6990 simuliris.tree_borrows.parallel_subst <> y:73 var
+R7022:7025 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7026:7026 simuliris.tree_borrows.parallel_subst <> x:72 var
+R7003:7015 stdpp.binders <> binder_delete def
+R7019:7021 simuliris.tree_borrows.parallel_subst <> xs2:75 var
+R7017:7017 simuliris.tree_borrows.parallel_subst <> y:73 var
+R7089:7094 stdpp.base <> decide def
+R7098:7100 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7131:7146 stdpp.fin_maps <> lookup_delete_eq thm
+R7165:7180 stdpp.fin_maps <> lookup_delete_ne thm
+prf 7205:7220 <> free_vars_case_1
+binder 7222:7222 <> e:77
+binder 7224:7225 <> el:78
+R7242:7246 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R7231:7239 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7241:7241 simuliris.tree_borrows.parallel_subst <> e:77 var
+R7247:7255 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7258:7261 simuliris.tree_borrows.lang_base <> Case constr
+R7263:7263 simuliris.tree_borrows.parallel_subst <> e:77 var
+R7265:7266 simuliris.tree_borrows.parallel_subst <> el:78 var
+prf 7313:7328 <> free_vars_case_2
+binder 7330:7330 <> e:79
+binder 7332:7333 <> el:80
+binder 7335:7336 <> e':81
+R7351:7355 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7344:7348 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R7342:7343 simuliris.tree_borrows.parallel_subst <> e':81 var
+R7349:7350 simuliris.tree_borrows.parallel_subst <> el:80 var
+R7368:7372 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R7356:7364 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7366:7367 simuliris.tree_borrows.parallel_subst <> e':81 var
+R7373:7381 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7384:7387 simuliris.tree_borrows.lang_base <> Case constr
+R7389:7389 simuliris.tree_borrows.parallel_subst <> e:79 var
+R7391:7392 simuliris.tree_borrows.parallel_subst <> el:80 var
+R7467:7481 stdpp.list_basics list not_elem_of_nil thm
+R7505:7516 stdpp.list_basics list elem_of_cons thm
+R7537:7545 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7549:7557 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7632:7640 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7644:7652 simuliris.tree_borrows.parallel_subst <> free_vars def
+prf 7679:7694 <> free_vars_result
+R7701:7706 simuliris.tree_borrows.lang_base <> result ind
+binder 7697:7697 <> r:82
+R7724:7726 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7713:7721 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7723:7723 simuliris.tree_borrows.parallel_subst <> r:82 var
+R7727:7729 stdpp.base <> ::stdpp_scope:'∅' not
+prf 7766:7784 <> subst_map_free_vars
+R7797:7800 stdpp.gmap <> gmap rec
+R7809:7814 simuliris.tree_borrows.lang_base <> result ind
+R7802:7807 Stdlib.Strings.String <> string ind
+binder 7787:7789 <> xs1:83
+binder 7791:7793 <> xs2:84
+R7822:7825 simuliris.tree_borrows.lang_base <> expr ind
+binder 7818:7818 <> e:85
+R7832:7832 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7881:7888 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7833:7836 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R7838:7839 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 7837:7837 <> x:86
+R7857:7861 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7841:7845 stdpp.base <> ::stdpp_scope:x_'∈'_x not
+R7840:7840 simuliris.tree_borrows.parallel_subst <> x:86 var
+R7846:7854 simuliris.tree_borrows.parallel_subst <> free_vars def
+R7856:7856 simuliris.tree_borrows.parallel_subst <> e:85 var
+R7870:7872 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7865:7868 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7869:7869 simuliris.tree_borrows.parallel_subst <> x:86 var
+R7862:7864 simuliris.tree_borrows.parallel_subst <> xs1:83 var
+R7876:7879 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R7880:7880 simuliris.tree_borrows.parallel_subst <> x:86 var
+R7873:7875 simuliris.tree_borrows.parallel_subst <> xs2:84 var
+R7904:7906 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R7889:7897 simuliris.tree_borrows.parallel_subst <> subst_map def
+R7899:7901 simuliris.tree_borrows.parallel_subst <> xs1:83 var
+R7903:7903 simuliris.tree_borrows.parallel_subst <> e:85 var
+R7907:7915 simuliris.tree_borrows.parallel_subst <> subst_map def
+R7917:7919 simuliris.tree_borrows.parallel_subst <> xs2:84 var
+R7921:7921 simuliris.tree_borrows.parallel_subst <> e:85 var
+R7967:7974 simuliris.tree_borrows.parallel_subst <> expr_ind thm
+R8173:8178 stdpp.binders <> binder ind
+R8230:8245 simuliris.tree_borrows.parallel_subst <> binder_delete_eq thm
+R8304:8307 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R8313:8314 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R8328:8330 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8315:8323 simuliris.tree_borrows.parallel_subst <> subst_map def
+R8430:8435 Corelib.Lists.ListDef <> Forall ind
+prf 8647:8662 <> subst_map_closed
+binder 8664:8665 <> xs:87
+binder 8667:8667 <> e:88
+R8690:8696 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8684:8686 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8673:8681 simuliris.tree_borrows.parallel_subst <> free_vars def
+R8683:8683 simuliris.tree_borrows.parallel_subst <> e:88 var
+R8687:8689 stdpp.base <> ::stdpp_scope:'∅' not
+R8711:8713 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8697:8705 simuliris.tree_borrows.parallel_subst <> subst_map def
+R8707:8708 simuliris.tree_borrows.parallel_subst <> xs:87 var
+R8710:8710 simuliris.tree_borrows.parallel_subst <> e:88 var
+R8714:8714 simuliris.tree_borrows.parallel_subst <> e:88 var
+R8751:8759 simuliris.tree_borrows.parallel_subst <> subst_map def
+R8761:8763 stdpp.base <> ::stdpp_scope:'∅' not
+R8779:8797 simuliris.tree_borrows.parallel_subst <> subst_map_free_vars thm
+R8833:8847 simuliris.tree_borrows.parallel_subst <> subst_map_empty thm
+prf 8862:8876 <> subst_free_vars
+binder 8878:8878 <> x:89
+R8885:8890 simuliris.tree_borrows.lang_base <> result ind
+binder 8881:8881 <> v:90
+binder 8893:8893 <> e:91
+R8916:8922 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8900:8904 stdpp.base <> ::stdpp_scope:x_'∉'_x not
+R8899:8899 simuliris.tree_borrows.parallel_subst <> x:89 var
+R8905:8913 simuliris.tree_borrows.parallel_subst <> free_vars def
+R8915:8915 simuliris.tree_borrows.parallel_subst <> e:91 var
+R8934:8936 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R8923:8927 simuliris.tree_borrows.expr_semantics <> subst def
+R8929:8929 simuliris.tree_borrows.parallel_subst <> x:89 var
+R8931:8931 simuliris.tree_borrows.parallel_subst <> v:90 var
+R8933:8933 simuliris.tree_borrows.parallel_subst <> e:91 var
+R8937:8937 simuliris.tree_borrows.parallel_subst <> e:91 var
+R8975:8989 simuliris.tree_borrows.parallel_subst <> subst_map_empty thm
+R8992:8996 simuliris.tree_borrows.expr_semantics <> subst def
+R9017:9031 simuliris.tree_borrows.parallel_subst <> subst_map_subst thm
+R9045:9063 simuliris.tree_borrows.parallel_subst <> subst_map_free_vars thm
+R9067:9069 stdpp.base <> ::stdpp_scope:'∅' not
+R9088:9102 simuliris.tree_borrows.parallel_subst <> subst_map_empty thm
+R9127:9142 stdpp.fin_maps <> lookup_insert_ne thm
+prf 9172:9186 <> free_vars_subst
+binder 9188:9188 <> x:92
+R9195:9200 simuliris.tree_borrows.lang_base <> result ind
+binder 9191:9191 <> r:93
+binder 9203:9203 <> e:94
+R9232:9234 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9209:9217 simuliris.tree_borrows.parallel_subst <> free_vars def
+R9220:9224 simuliris.tree_borrows.expr_semantics <> subst def
+R9226:9226 simuliris.tree_borrows.parallel_subst <> x:92 var
+R9228:9228 simuliris.tree_borrows.parallel_subst <> r:93 var
+R9230:9230 simuliris.tree_borrows.parallel_subst <> e:94 var
+R9246:9250 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R9235:9243 simuliris.tree_borrows.parallel_subst <> free_vars def
+R9245:9245 simuliris.tree_borrows.parallel_subst <> e:94 var
+R9251:9252 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R9254:9255 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R9253:9253 simuliris.tree_borrows.parallel_subst <> x:92 var
+R9285:9292 simuliris.tree_borrows.parallel_subst <> expr_ind thm
+R9354:9369 stdpp.decidable <> bool_decide_true abbrev
+R9435:9437 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9424:9432 simuliris.tree_borrows.parallel_subst <> free_vars def
+R9459:9484 stdpp.sets <> difference_union_distr_l_L thm
+R9525:9530 Corelib.Lists.ListDef <> Forall ind
+R9591:9599 stdpp.list_monad list fmap_cons def
+R9604:9629 stdpp.sets <> difference_union_distr_l_L thm
+prf 9656:9674 <> free_vars_subst_map
+binder 9676:9677 <> xs:95
+binder 9679:9679 <> e:96
+R9711:9713 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9685:9693 simuliris.tree_borrows.parallel_subst <> free_vars def
+R9696:9704 simuliris.tree_borrows.parallel_subst <> subst_map def
+R9706:9707 simuliris.tree_borrows.parallel_subst <> xs:95 var
+R9709:9709 simuliris.tree_borrows.parallel_subst <> e:96 var
+R9725:9730 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R9737:9737 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R9714:9722 simuliris.tree_borrows.parallel_subst <> free_vars def
+R9724:9724 simuliris.tree_borrows.parallel_subst <> e:96 var
+R9731:9733 stdpp.base <> dom def
+R9735:9736 simuliris.tree_borrows.parallel_subst <> xs:95 var
+R9791:9797 stdpp.fin_maps <> map_ind thm
+R9812:9826 simuliris.tree_borrows.parallel_subst <> subst_map_empty thm
+R9854:9868 simuliris.tree_borrows.parallel_subst <> subst_subst_map thm
+R9870:9878 stdpp.fin_maps <> delete_id thm
+R9883:9897 simuliris.tree_borrows.parallel_subst <> free_vars_subst thm

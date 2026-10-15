@@ -1,0 +1,45 @@
+opam-version: "2.0"
+maintainer: "Ralf Jung <jung@mpi-sws.org>"
+authors: "The std++ team"
+license: "BSD-3-Clause"
+homepage: "https://gitlab.mpi-sws.org/iris/stdpp"
+bug-reports: "https://gitlab.mpi-sws.org/iris/stdpp/issues"
+dev-repo: "git+https://gitlab.mpi-sws.org/iris/stdpp.git"
+version: "dev"
+
+synopsis: "An extended \"Standard Library\" for Rocq"
+description: """
+The key features of this library are as follows:
+
+- It provides a great number of definitions and lemmas for common data
+  structures such as lists, finite maps, finite sets, and finite multisets.
+- It uses type classes for common notations (like `∅`, `∪`, and Haskell-style
+  monad notations) so that these can be overloaded for different data structures.
+- It uses type classes to keep track of common properties of types, like it
+  having decidable equality or being countable or finite.
+- Most data structures are represented in canonical ways so that Leibniz
+  equality can be used as much as possible (for example, for maps we have
+  `m1 = m2` iff `∀ i, m1 !! i = m2 !! i`). On top of that, the library provides
+  setoid instances for most types and operations.
+- It provides various tactics for common tasks, like an ssreflect inspired
+  `done` tactic for finishing trivial goals, a simple breadth-first solver
+  `naive_solver`, an equality simplifier `simplify_eq`, a solver `solve_proper`
+  for proving compatibility of functions with respect to relations, and a solver
+  `set_solver` for goals involving set operations.
+- It is entirely dependency- and axiom-free.
+"""
+tags: [
+  "logpath:stdpp"
+]
+
+depends: [
+  "rocq-core" { (>= "9.0" & < "9.4~") | (= "dev") }
+  "rocq-stdlib" { (>= "9.0") | (= "dev") }
+]
+conflicts: [
+  "coq-stdpp"
+]
+
+build: ["./make-package" "stdpp" "-j%{jobs}%"]
+install: ["./make-package" "stdpp" "install"]
+url { src: "git+https://github.com/rocq-iris/stdpp.git#c3186aad493872e3a9774ac0b42ca2f591b05835" }

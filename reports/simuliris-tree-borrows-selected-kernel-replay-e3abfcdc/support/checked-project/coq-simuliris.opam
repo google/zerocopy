@@ -1,0 +1,16 @@
+opam-version: "2.0"
+maintainer: "Ralf Jung <jung@mpi-sws.org>"
+authors: "Simuliris Authors"
+homepage: "http://iris-project.org/"
+bug-reports: "https://gitlab.mpi-sws.org/iris/simuliris/issues"
+dev-repo: "git+https://gitlab.mpi-sws.org/iris/simuliris.git"
+
+synopsis: "Local Simulation proofs, the Iris style"
+
+depends: [
+  "rocq-iris" { (= "dev.2026-09-10.3.b3495ef9") | (= "dev") }
+  "rocq-equations" { (= "1.3.1+9.1") | (= "1.3.2+9.2") | (= "dev") }
+]
+
+build: [make "-j%{jobs}%"]
+install: [make "install"]

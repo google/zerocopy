@@ -1,0 +1,206 @@
+{
+  "packages": [
+    {
+      "name": "dune",
+      "version": "3.17.2",
+      "metadata_sha256": "09909eb325c04f5672ca316afdf87ce8a0d11ca626105470cbb698663a8f1224"
+    },
+    {
+      "name": "conf-linux-libc-dev",
+      "version": "0",
+      "metadata_sha256": "8eb737b9314a1e16ce2bdb18063cb105c2fb8a61086a88a1c282706ed11357a9"
+    },
+    {
+      "name": "cmdliner",
+      "version": "2.1.1",
+      "metadata_sha256": "1e56ef8dd10b916c374322070f7aabe1d3d255101d31e20be610a8aa5400db9c"
+    },
+    {
+      "name": "conf-gmp",
+      "version": "5",
+      "metadata_sha256": "fa5a99aed98bc2fac1bfcc6faaeeb2dcf1ddc6f69288db82b46f5e55c72ab133"
+    },
+    {
+      "name": "conf-pkg-config",
+      "version": "5",
+      "metadata_sha256": "22d7749f8159cf3890aca86542453c21f8b4bb77d82263b16881b34f8dfeaf03"
+    },
+    {
+      "name": "ocamlfind",
+      "version": "1.9.8",
+      "metadata_sha256": "2e636364764594cb34e1cd45a82c7451c1d2fba8e39639f8a803210d143cf4d1"
+    },
+    {
+      "name": "yojson",
+      "version": "3.0.0",
+      "metadata_sha256": "a5bd2912c0ac30cb0c44bfece72a30f8dad639978ee38e7dbfb9f23fbd2406ac"
+    },
+    {
+      "name": "stdlib-shims",
+      "version": "0.3.0",
+      "metadata_sha256": "f1ac3b7905dd5ff7f7f5fc78f3d7c040b68ad09ab2c6abf08278827d87e76f8e"
+    },
+    {
+      "name": "sexplib0",
+      "version": "v0.16.0",
+      "metadata_sha256": "2e3dc7c394d532acabcfe72e85701546a9061462f135b40b98f41838bc7dd27b"
+    },
+    {
+      "name": "re",
+      "version": "1.14.0",
+      "metadata_sha256": "8cc2bad41d9003263ce360a947076d2e7269c05c431b2c9bee6107fd1675d57c"
+    },
+    {
+      "name": "ppx_derivers",
+      "version": "1.2.1",
+      "metadata_sha256": "19e14fd51829f50fe3b5f1935e7896d5c8fcbe04a417f70d628bcfa01e6dab06"
+    },
+    {
+      "name": "ocaml-compiler-libs",
+      "version": "v0.12.4",
+      "metadata_sha256": "0dfa7802a63f91bc055a64f5efbe9b243965b85ae1689401ed533c39e3ca536f"
+    },
+    {
+      "name": "menhirSdk",
+      "version": "20260209",
+      "metadata_sha256": "cdbfc928a599fdd09413207398794145f5d16a56e587a1f18612b99e2e62864e"
+    },
+    {
+      "name": "menhirLib",
+      "version": "20260209",
+      "metadata_sha256": "008379e8e7a143087f3c31f19294bfdbe8e1e898d0d1a1fa9ffd9a27fe8fc0a6"
+    },
+    {
+      "name": "menhirGLR",
+      "version": "20260209",
+      "metadata_sha256": "7734db0123820d0ffb8d9890ee1343fd0016419108c868989e35e938549551ea"
+    },
+    {
+      "name": "menhirCST",
+      "version": "20260209",
+      "metadata_sha256": "de19400fdccb30b824df5bb8d70a4b611b9ad79f269430e9a2d173258c1db635"
+    },
+    {
+      "name": "easy-format",
+      "version": "1.3.4",
+      "metadata_sha256": "96ac6f7af9e2b089de602eb0731271f32b1bbaa2d74ee1d4abaf99d0bfdf7df3"
+    },
+    {
+      "name": "csexp",
+      "version": "1.5.2",
+      "metadata_sha256": "06aeb45c7ebef91ebded5546153dc44b34a055eadb3dc66dab9759b6d034c62f"
+    },
+    {
+      "name": "cppo",
+      "version": "1.8.0",
+      "metadata_sha256": "bc3db87b7d32fc9887ebdc20b1c8d36a3e34aae49c04316e0fd62d93205f7adf"
+    },
+    {
+      "name": "camlp-streams",
+      "version": "5.0.1",
+      "metadata_sha256": "3462b7c5d7b723db4f5adec97b071c880dd848e9305e822461558ef1037a7edc"
+    },
+    {
+      "name": "zarith",
+      "version": "1.14",
+      "metadata_sha256": "afd6782f14483672c86d87fa4b64dd55744058f978ffee49631f7aa33b57bb81"
+    },
+    {
+      "name": "ppxlib",
+      "version": "0.35.0",
+      "metadata_sha256": "35fb0efa7044c5d786691ed12b6e46e9b0777dc0507b7a3e813a519fb54f116a"
+    },
+    {
+      "name": "menhir",
+      "version": "20260209",
+      "metadata_sha256": "eb862ab077cf137a2b6fcaf5fd76610b8a9604de26194a3c000ba43bbf80ebcf"
+    },
+    {
+      "name": "dune-configurator",
+      "version": "3.18.2",
+      "metadata_sha256": "33c01f5d306dbdcfc33b716a8c43aef309e5285b966628c822343bc45d8708d9"
+    },
+    {
+      "name": "biniou",
+      "version": "1.2.2",
+      "metadata_sha256": "5fb0f2d67ef907113bf426f0ef1c3ef674921127d2724f1be23b07ef4a3d5479"
+    },
+    {
+      "name": "rocq-runtime",
+      "version": "9.2.0",
+      "metadata_sha256": "4d9ff69f9d73f7ccd43b9f1eb992776c5246477b08325f5073f1a1616bcd560d"
+    },
+    {
+      "name": "ppx_deriving",
+      "version": "6.0.3",
+      "metadata_sha256": "5c047fa06dbef8a3f1eac49daf2b5508db76575e408f0a4595d61c67879cb65e"
+    },
+    {
+      "name": "atd",
+      "version": "3.0.1",
+      "metadata_sha256": "36c27ac9c3e708261baf119e2ab30e26b74ef7de0b4ed47ceae0fc9c37769ea9"
+    },
+    {
+      "name": "base",
+      "version": "v0.16.5",
+      "metadata_sha256": "b086f1cfc83445d1289d5f04dcda02dca32e911c40558e19a79010e70461a900"
+    },
+    {
+      "name": "atdgen-runtime",
+      "version": "3.0.1",
+      "metadata_sha256": "c2e5241f60936ccaee39c4887dbd832e671e75cec8943f138eba6c4ba609cd78"
+    },
+    {
+      "name": "rocq-core",
+      "version": "9.2.0",
+      "metadata_sha256": "7dc65c7b1296a7adaa1a4893029b65d00a570be22cf711a3abc0c3f4f02807fc"
+    },
+    {
+      "name": "coq-core",
+      "version": "9.2.0",
+      "metadata_sha256": "5d0af62df016ca3c473a7436deb74eb778a36256b3c36cf1fb878401388f6018"
+    },
+    {
+      "name": "atdts",
+      "version": "3.0.1",
+      "metadata_sha256": "bda4ccdc07e9ad45214ac6f064935c634b3b69a6a4d1746cf8e66abf101c8f6e"
+    },
+    {
+      "name": "stdio",
+      "version": "v0.16.0",
+      "metadata_sha256": "b321ffe512dcd923252105e0b74a2a0250f948f711e6a0a31bfcb60765daaa18"
+    },
+    {
+      "name": "atdgen",
+      "version": "3.0.1",
+      "metadata_sha256": "cbe9720583e49935e348e99611379cf57a130737910f3a982ab5294da7b4392b"
+    },
+    {
+      "name": "rocq-stdlib",
+      "version": "9.2.0",
+      "metadata_sha256": "24f42093be558d40f924006381ee4a80e5caaf092d1c275218aac44d052d14bb"
+    },
+    {
+      "name": "ppx_optcomp",
+      "version": "v0.16.0",
+      "metadata_sha256": "49016d3861fbbaab83aab6c64e7b8174f8538c83e63b1de1abc8588059b79eb6"
+    },
+    {
+      "name": "rocq-equations",
+      "version": "1.3.2+9.2",
+      "metadata_sha256": "3d2ce08210f426417566e9283f98de995869ed43d3d4afec62c352d427f8bd94"
+    },
+    {
+      "name": "elpi",
+      "version": "3.7.3",
+      "metadata_sha256": "07382b9d3b3bf4791396e7d726b3e181fb9d9ededcc7c7397ed453b79bfb0799"
+    },
+    {
+      "name": "rocq-elpi",
+      "version": "3.5.1",
+      "metadata_sha256": "4e3cf97e121a17855d335085859b994d0ce4454dc60475da236c24ac5fd61def"
+    }
+  ],
+  "ocaml": "4.14.4",
+  "command_policy": "All40 solver versions explicit; no source/compiler substitution. Opam enforces retained source checksums; no with-test/doc/dev flags. Runtime CPU2/mem3GiB. Parent accepts bounded conventional dependency builds in this mount-free runtime."
+}

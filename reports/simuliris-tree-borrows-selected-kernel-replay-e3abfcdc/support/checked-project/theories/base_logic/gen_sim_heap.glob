@@ -1,0 +1,1146 @@
+DIGEST 7ee65ba7ac9dce9fc09b74e31b0fa928
+Fsimuliris.base_logic.gen_sim_heap
+R141:150 stdpp.namespaces <> <> lib
+R186:194 iris.algebra.lib.gmap_view <> <> lib
+R196:210 iris.algebra.reservation_map <> <> lib
+R212:216 iris.algebra.agree <> <> lib
+R218:221 iris.algebra.frac <> <> lib
+R257:261 iris.algebra.dfrac <> <> lib
+R296:305 iris.bi.lib.fractional <> <> lib
+R343:351 iris.proofmode.proofmode <> <> lib
+R394:396 iris.base_logic.lib.own <> <> lib
+R439:447 iris.base_logic.lib.ghost_map <> <> lib
+R457:461 iris.base_logic.base_logic uPred <> mod
+rec 873:885 <> gen_heapGpreS
+proj 939:956 <> gen_heap_pre_heapG
+proj 982:999 <> gen_heap_pre_metaG
+proj 1029:1046 <> gen_heap_pre_dataG
+binder 888:888 <> L:1
+binder 890:890 <> V:2
+R906:914 iris.base_logic.lib.iprop <> gFunctors rec
+binder 901:902 <> Σ:3
+R919:927 stdpp.countable <> Countable class
+R929:929 simuliris.base_logic.gen_sim_heap <> L:1 var
+binder 919:929 <> H:5
+R961:970 iris.base_logic.lib.ghost_map <> ghost_mapG class
+R977:977 simuliris.base_logic.gen_sim_heap <> V:2 var
+R975:975 simuliris.base_logic.gen_sim_heap <> L:1 var
+R972:973 simuliris.base_logic.gen_sim_heap <> Σ:3 var
+R1004:1013 iris.base_logic.lib.ghost_map <> ghost_mapG class
+R1020:1024 iris.base_logic.lib.iprop <> gname def
+R1018:1018 simuliris.base_logic.gen_sim_heap <> L:1 var
+R1015:1016 simuliris.base_logic.gen_sim_heap <> Σ:3 var
+R1051:1053 iris.base_logic.lib.own <> inG class
+R1055:1056 simuliris.base_logic.gen_sim_heap <> Σ:3 var
+R1059:1074 iris.algebra.reservation_map <> reservation_mapR canonstruc
+R1077:1082 iris.algebra.agree <> agreeR canonstruc
+R1084:1092 iris.algebra.ofe <> positiveO canonstruc
+rec 1107:1122 <> gen_heapGS_named
+proj 1240:1259 <> gen_heap_named_GpreS
+binder 1125:1125 <> L:10
+binder 1127:1127 <> V:11
+R1143:1151 iris.base_logic.lib.iprop <> gFunctors rec
+binder 1138:1139 <> Σ:12
+R1171:1175 iris.base_logic.lib.iprop <> gname def
+binder 1155:1167 <> gen_heap_name:13
+R1195:1199 iris.base_logic.lib.iprop <> gname def
+binder 1179:1191 <> gen_meta_name:14
+R1205:1213 stdpp.countable <> Countable class
+R1215:1215 simuliris.base_logic.gen_sim_heap <> L:10 var
+binder 1205:1215 <> H:16
+R1264:1276 simuliris.base_logic.gen_sim_heap <> gen_heapGpreS class
+R1282:1283 simuliris.base_logic.gen_sim_heap <> Σ:12 var
+R1280:1280 simuliris.base_logic.gen_sim_heap <> V:11 var
+R1278:1278 simuliris.base_logic.gen_sim_heap <> L:10 var
+rec 1348:1361 <> gen_sim_heapGS
+proj 1457:1476 <> gen_heap_name_target
+proj 1489:1508 <> gen_meta_name_target
+proj 1521:1540 <> gen_heap_name_source
+proj 1553:1572 <> gen_meta_name_source
+proj 1585:1603 <> gen_heap_inG_source
+proj 1681:1699 <> gen_heap_inG_target
+binder 1364:1366 <> L_t:19
+binder 1368:1370 <> L_s:20
+binder 1372:1374 <> V_t:21
+binder 1376:1378 <> V_s:22
+R1394:1402 iris.base_logic.lib.iprop <> gFunctors rec
+binder 1389:1390 <> Σ:23
+R1407:1415 stdpp.countable <> Countable class
+R1417:1419 simuliris.base_logic.gen_sim_heap <> L_s:20 var
+binder 1407:1419 <> H:25
+R1422:1430 stdpp.countable <> Countable class
+R1432:1434 simuliris.base_logic.gen_sim_heap <> L_t:19 var
+binder 1422:1434 <> H0:27
+R1480:1484 iris.base_logic.lib.iprop <> gname def
+R1512:1516 iris.base_logic.lib.iprop <> gname def
+R1544:1548 iris.base_logic.lib.iprop <> gname def
+R1576:1580 iris.base_logic.lib.iprop <> gname def
+R1608:1623 simuliris.base_logic.gen_sim_heap <> gen_heapGS_named class
+R1657:1676 simuliris.base_logic.gen_sim_heap <> gen_meta_name_source:32 meth
+R1636:1655 simuliris.base_logic.gen_sim_heap <> gen_heap_name_source:31 meth
+R1633:1634 simuliris.base_logic.gen_sim_heap <> Σ:23 var
+R1629:1631 simuliris.base_logic.gen_sim_heap <> V_s:22 var
+R1625:1627 simuliris.base_logic.gen_sim_heap <> L_s:20 var
+R1704:1719 simuliris.base_logic.gen_sim_heap <> gen_heapGS_named class
+R1753:1772 simuliris.base_logic.gen_sim_heap <> gen_meta_name_target:30 meth
+R1732:1751 simuliris.base_logic.gen_sim_heap <> gen_heap_name_target:29 meth
+R1729:1730 simuliris.base_logic.gen_sim_heap <> Σ:23 var
+R1725:1727 simuliris.base_logic.gen_sim_heap <> V_t:21 var
+R1721:1723 simuliris.base_logic.gen_sim_heap <> L_t:19 var
+R1795:1806 simuliris.base_logic.gen_sim_heap <> GenSimHeapGS constr
+R1869:1888 simuliris.base_logic.gen_sim_heap <> gen_heap_name_source meth
+R1948:1967 simuliris.base_logic.gen_sim_heap <> gen_meta_name_source meth
+R2027:2046 simuliris.base_logic.gen_sim_heap <> gen_heap_name_target meth
+R2106:2125 simuliris.base_logic.gen_sim_heap <> gen_meta_name_target meth
+sec 2177:2187 <> definitions
+var  2215:2227 definitions gen_heap_name
+var  2238:2250 definitions gen_meta_name
+var  2261:2262 definitions hG
+R2202:2210 stdpp.countable <> Countable class
+R2231:2235 iris.base_logic.lib.iprop <> gname def
+R2254:2258 iris.base_logic.lib.iprop <> gname def
+R2267:2282 simuliris.base_logic.gen_sim_heap <> gen_heapGS_named class
+R2305:2317 simuliris.base_logic.gen_sim_heap <> gen_meta_name:39 var
+R2291:2303 simuliris.base_logic.gen_sim_heap <> gen_heap_name:38 var
+R2284:2284 simuliris.base_logic.gen_sim_heap <> L:35 var
+def 2335:2349 <> gen_heap_interp
+R2357:2360 stdpp.gmap <> gmap rec
+R2364:2364 simuliris.base_logic.gen_sim_heap <> definitions.V var
+R2362:2362 simuliris.base_logic.gen_sim_heap <> definitions.L var
+binder 2352:2353 <> σ:43
+R2369:2373 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2375:2376 simuliris.base_logic.gen_sim_heap <> definitions.Σ var
+R2381:2384 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2401:2535 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R2389:2392 stdpp.gmap <> gmap rec
+R2396:2400 iris.base_logic.lib.iprop <> gname def
+R2394:2394 simuliris.base_logic.gen_sim_heap <> definitions.L var
+binder 2385:2385 <> m:44
+R2560:2568 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2536:2539 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2556:2559 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R2545:2549 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R2540:2542 stdpp.base <> dom def
+R2544:2544 simuliris.base_logic.gen_sim_heap <> m:44 var
+R2550:2552 stdpp.base <> dom def
+R2554:2555 simuliris.base_logic.gen_sim_heap <> σ:43 var
+R2607:2615 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R2569:2587 iris.base_logic.lib.ghost_map <> ghost_map_auth_frac abbrev
+R2589:2601 simuliris.base_logic.gen_sim_heap <> definitions.gen_heap_name var
+R2605:2606 simuliris.base_logic.gen_sim_heap <> σ:43 var
+R2616:2634 iris.base_logic.lib.ghost_map <> ghost_map_auth_frac abbrev
+R2636:2648 simuliris.base_logic.gen_sim_heap <> definitions.gen_meta_name var
+R2652:2652 simuliris.base_logic.gen_sim_heap <> m:44 var
+def 2669:2680 <> pointsto_def
+R2687:2687 simuliris.base_logic.gen_sim_heap <> definitions.L var
+binder 2683:2683 <> l:45
+R2696:2700 iris.algebra.dfrac <> dfrac ind
+binder 2691:2692 <> dq:46
+R2707:2707 simuliris.base_logic.gen_sim_heap <> definitions.V var
+binder 2704:2704 <> v:47
+R2712:2716 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R2718:2719 simuliris.base_logic.gen_sim_heap <> definitions.Σ var
+R2729:2733 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R2747:2747 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R2752:2752 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R2734:2746 simuliris.base_logic.gen_sim_heap <> definitions.gen_heap_name var
+R2728:2728 simuliris.base_logic.gen_sim_heap <> l:45 var
+R2748:2748 iris.algebra.dfrac <> :iris.algebra.dfrac.dfrac::'{'_x_'}' not
+R2751:2751 iris.algebra.dfrac <> :iris.algebra.dfrac.dfrac::'{'_x_'}' not
+R2749:2750 simuliris.base_logic.gen_sim_heap <> dq:46 var
+R2753:2753 simuliris.base_logic.gen_sim_heap <> v:47 var
+def 2769:2780 <> pointsto_aux
+R2784:2787 stdpp.base <> seal rec
+R2791:2802 simuliris.base_logic.gen_sim_heap <> pointsto_def def
+def 2843:2850 <> pointsto
+R2869:2874 stdpp.base <> unseal proj
+R2855:2866 simuliris.base_logic.gen_sim_heap <> pointsto_aux def
+def 2891:2905 <> pointsto_unseal
+R2918:2920 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2910:2917 simuliris.base_logic.gen_sim_heap <> pointsto def
+R2922:2933 simuliris.base_logic.gen_sim_heap <> pointsto_def def
+R2952:2958 stdpp.base <> seal_eq proj
+R2938:2949 simuliris.base_logic.gen_sim_heap <> pointsto_aux def
+def 2976:2989 <> meta_token_def
+R2996:2996 simuliris.base_logic.gen_sim_heap <> definitions.L var
+binder 2992:2992 <> l:48
+R3004:3009 stdpp.coPset <> coPset def
+binder 3000:3000 <> E:49
+R3014:3018 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3020:3021 simuliris.base_logic.gen_sim_heap <> definitions.Σ var
+R3030:3033 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3037:3038 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 3034:3036 <> γm:50
+R3066:3070 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3040:3044 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R3058:3058 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R3062:3062 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R3045:3057 simuliris.base_logic.gen_sim_heap <> definitions.gen_meta_name var
+R3039:3039 simuliris.base_logic.gen_sim_heap <> l:48 var
+R3059:3061 iris.algebra.dfrac <> :iris.algebra.dfrac.dfrac::'□' not
+R3063:3065 simuliris.base_logic.gen_sim_heap <> γm:50 var
+R3071:3073 iris.base_logic.lib.own <> own def
+R3080:3100 iris.algebra.reservation_map <> reservation_map_token def
+R3102:3102 simuliris.base_logic.gen_sim_heap <> E:49 var
+R3075:3077 simuliris.base_logic.gen_sim_heap <> γm:50 var
+def 3119:3132 <> meta_token_aux
+R3136:3139 stdpp.base <> seal rec
+R3143:3156 simuliris.base_logic.gen_sim_heap <> meta_token_def def
+def 3197:3206 <> meta_token
+R3227:3232 stdpp.base <> unseal proj
+R3211:3224 simuliris.base_logic.gen_sim_heap <> meta_token_aux def
+def 3249:3265 <> meta_token_unseal
+R3280:3282 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3270:3279 simuliris.base_logic.gen_sim_heap <> meta_token def
+R3284:3297 simuliris.base_logic.gen_sim_heap <> meta_token_def def
+R3318:3324 stdpp.base <> seal_eq proj
+R3302:3315 simuliris.base_logic.gen_sim_heap <> meta_token_aux def
+def 3342:3349 <> meta_def
+R3353:3361 stdpp.countable <> Countable class
+binder 3363:3363 <> A:51
+binder 3353:3363 <> H0:53
+R3371:3371 simuliris.base_logic.gen_sim_heap <> definitions.L var
+binder 3367:3367 <> l:54
+R3379:3387 stdpp.namespaces <> namespace rec
+binder 3375:3375 <> N:55
+R3395:3395 simuliris.base_logic.gen_sim_heap <> A:51 var
+binder 3391:3391 <> x:56
+R3400:3404 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R3406:3407 simuliris.base_logic.gen_sim_heap <> definitions.Σ var
+R3416:3419 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R3423:3424 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 3420:3422 <> γm:57
+R3452:3466 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R3426:3430 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R3444:3444 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R3448:3448 iris.base_logic.lib.ghost_map <> ::bi_scope:x_'↪['_x_']'_x_x not
+R3431:3443 simuliris.base_logic.gen_sim_heap <> definitions.gen_meta_name var
+R3425:3425 simuliris.base_logic.gen_sim_heap <> l:54 var
+R3445:3447 iris.algebra.dfrac <> :iris.algebra.dfrac.dfrac::'□' not
+R3449:3451 simuliris.base_logic.gen_sim_heap <> γm:57 var
+R3467:3469 iris.base_logic.lib.own <> own def
+R3476:3495 iris.algebra.reservation_map <> reservation_map_data def
+R3516:3523 iris.algebra.agree <> to_agree def
+R3526:3531 stdpp.countable <> encode meth
+R3533:3533 simuliris.base_logic.gen_sim_heap <> x:56 var
+R3498:3504 stdpp.coPset <> coPpick def
+R3507:3510 stdpp.base <> :::'↑'_x not
+R3511:3511 simuliris.base_logic.gen_sim_heap <> N:55 var
+R3471:3473 simuliris.base_logic.gen_sim_heap <> γm:57 var
+def 3552:3559 <> meta_aux
+R3563:3566 stdpp.base <> seal rec
+R3570:3577 simuliris.base_logic.gen_sim_heap <> meta_def def
+def 3618:3621 <> meta
+R3636:3641 stdpp.base <> unseal proj
+R3626:3633 simuliris.base_logic.gen_sim_heap <> meta_aux def
+def 3658:3668 <> meta_unseal
+R3677:3679 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R3673:3676 simuliris.base_logic.gen_sim_heap <> meta def
+R3681:3688 simuliris.base_logic.gen_sim_heap <> meta_def def
+R3703:3709 stdpp.base <> seal_eq proj
+R3693:3700 simuliris.base_logic.gen_sim_heap <> meta_aux def
+R3717:3727 simuliris.base_logic.gen_sim_heap definitions <> sec
+R3747:3750 simuliris.base_logic.gen_sim_heap <> meta def
+R3916:3923 simuliris.base_logic.gen_sim_heap <> pointsto def
+not 3896:3896 <> ::bi_scope:x_'↦{'_x_'}'_x
+R4019:4026 simuliris.base_logic.gen_sim_heap <> pointsto def
+R4030:4043 iris.algebra.dfrac <> DfracDiscarded constr
+not 4002:4002 <> ::bi_scope:x_'↦□'_x
+R4134:4141 simuliris.base_logic.gen_sim_heap <> pointsto def
+R4146:4153 iris.algebra.dfrac <> DfracOwn constr
+not 4114:4114 <> ::bi_scope:x_'↦{#'_x_'}'_x
+R4244:4251 simuliris.base_logic.gen_sim_heap <> pointsto def
+R4256:4263 iris.algebra.dfrac <> DfracOwn constr
+not 4230:4230 <> ::bi_scope:x_'↦'_x
+sec 4328:4335 <> gen_heap
+var  4349:4349 gen_heap L
+var  4351:4351 gen_heap V
+var  4369:4381 gen_heap gen_heap_name
+var  4392:4404 gen_heap gen_meta_name
+R4356:4364 stdpp.countable <> Countable class
+R4366:4366 simuliris.base_logic.gen_sim_heap <> L:58 var
+R4385:4389 iris.base_logic.lib.iprop <> gname def
+R4408:4412 iris.base_logic.lib.iprop <> gname def
+R4416:4431 simuliris.base_logic.gen_sim_heap <> gen_heapGS_named class
+R4454:4466 simuliris.base_logic.gen_sim_heap <> gen_meta_name:63 var
+R4440:4452 simuliris.base_logic.gen_sim_heap <> gen_heap_name:62 var
+R4435:4435 simuliris.base_logic.gen_sim_heap <> V:59 var
+R4433:4433 simuliris.base_logic.gen_sim_heap <> L:58 var
+R4493:4497 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R4499:4500 simuliris.base_logic.gen_sim_heap <> gen_heap.Σ var
+R4526:4530 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R4525:4525 simuliris.base_logic.gen_sim_heap <> gen_heap.V var
+R4531:4535 iris.base_logic.lib.iprop iProp_solution iProp abbrev
+R4537:4538 simuliris.base_logic.gen_sim_heap <> gen_heap.Σ var
+R4563:4566 stdpp.gmap <> gmap rec
+R4570:4570 simuliris.base_logic.gen_sim_heap <> gen_heap.V var
+R4568:4568 simuliris.base_logic.gen_sim_heap <> gen_heap.L var
+R4594:4597 stdpp.gmap <> gmap rec
+R4601:4605 iris.base_logic.lib.iprop <> gname def
+R4599:4599 simuliris.base_logic.gen_sim_heap <> gen_heap.L var
+R4629:4629 simuliris.base_logic.gen_sim_heap <> gen_heap.L var
+R4653:4653 simuliris.base_logic.gen_sim_heap <> gen_heap.V var
+inst 4715:4731 <> pointsto_timeless
+binder 4733:4733 <> l:66
+binder 4735:4736 <> dq:67
+binder 4738:4738 <> v:68
+R4742:4749 iris.bi.derived_connectives <> Timeless class
+R4753:4757 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R4760:4761 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R4752:4752 simuliris.base_logic.gen_sim_heap <> l:66 var
+R4758:4759 simuliris.base_logic.gen_sim_heap <> dq:67 var
+R4762:4762 simuliris.base_logic.gen_sim_heap <> v:68 var
+R4783:4797 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+inst 4832:4850 <> pointsto_fractional
+binder 4852:4852 <> l:69
+binder 4854:4854 <> v:70
+R4858:4867 iris.bi.lib.fractional <> Fractional class
+R4870:4872 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R4874:4875 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 4873:4873 <> q:71
+R4877:4882 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R4884:4885 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R4876:4876 simuliris.base_logic.gen_sim_heap <> l:69 var
+R4883:4883 simuliris.base_logic.gen_sim_heap <> q:71 var
+R4886:4886 simuliris.base_logic.gen_sim_heap <> v:70 var
+R4909:4923 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+inst 4958:4979 <> pointsto_as_fractional
+binder 4981:4981 <> l:72
+binder 4983:4983 <> q:73
+binder 4985:4985 <> v:74
+R4993:5004 iris.bi.lib.fractional <> AsFractional class
+R5042:5042 simuliris.base_logic.gen_sim_heap <> q:73 var
+R5021:5023 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R5025:5026 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 5024:5024 <> q:75
+R5028:5033 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R5035:5036 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R5027:5027 simuliris.base_logic.gen_sim_heap <> l:72 var
+R5034:5034 simuliris.base_logic.gen_sim_heap <> q:75 var
+R5037:5037 simuliris.base_logic.gen_sim_heap <> v:74 var
+R5008:5013 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R5015:5016 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R5007:5007 simuliris.base_logic.gen_sim_heap <> l:72 var
+R5014:5014 simuliris.base_logic.gen_sim_heap <> q:73 var
+R5017:5017 simuliris.base_logic.gen_sim_heap <> v:74 var
+inst 5102:5120 <> pointsto_persistent
+binder 5122:5122 <> l:76
+binder 5124:5124 <> v:77
+R5128:5137 iris.bi.derived_connectives <> Persistent class
+R5141:5148 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦□'_x not
+R5140:5140 simuliris.base_logic.gen_sim_heap <> l:76 var
+R5149:5149 simuliris.base_logic.gen_sim_heap <> v:77 var
+R5170:5184 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+prf 5210:5223 <> pointsto_valid
+binder 5225:5225 <> l:78
+binder 5227:5228 <> dq:79
+binder 5230:5230 <> v:80
+R5245:5250 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R5235:5239 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5242:5243 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5234:5234 simuliris.base_logic.gen_sim_heap <> l:78 var
+R5240:5241 simuliris.base_logic.gen_sim_heap <> dq:79 var
+R5244:5244 simuliris.base_logic.gen_sim_heap <> v:80 var
+R5251:5253 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5260:5262 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5254:5257 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R5258:5259 simuliris.base_logic.gen_sim_heap <> dq:79 var
+R5285:5299 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R5308:5327 iris.base_logic.lib.ghost_map <> ghost_map_elem_valid thm
+prf 5343:5358 <> pointsto_valid_2
+binder 5360:5360 <> l:81
+binder 5362:5364 <> dq1:82
+binder 5366:5368 <> dq2:83
+binder 5370:5371 <> v1:84
+binder 5373:5374 <> v2:85
+R5391:5396 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R5379:5383 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5387:5388 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5378:5378 simuliris.base_logic.gen_sim_heap <> l:81 var
+R5384:5386 simuliris.base_logic.gen_sim_heap <> dq1:82 var
+R5389:5390 simuliris.base_logic.gen_sim_heap <> v1:84 var
+R5410:5415 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R5398:5402 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5406:5407 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5397:5397 simuliris.base_logic.gen_sim_heap <> l:81 var
+R5403:5405 simuliris.base_logic.gen_sim_heap <> dq2:83 var
+R5408:5409 simuliris.base_logic.gen_sim_heap <> v2:85 var
+R5416:5418 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5448:5450 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5436:5440 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5419:5423 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R5435:5435 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R5427:5431 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R5424:5426 simuliris.base_logic.gen_sim_heap <> dq1:82 var
+R5432:5434 simuliris.base_logic.gen_sim_heap <> dq2:83 var
+R5443:5445 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5441:5442 simuliris.base_logic.gen_sim_heap <> v1:84 var
+R5446:5447 simuliris.base_logic.gen_sim_heap <> v2:85 var
+R5470:5484 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R5493:5514 iris.base_logic.lib.ghost_map <> ghost_map_elem_valid_2 thm
+prf 5589:5602 <> pointsto_agree
+binder 5604:5604 <> l:86
+binder 5606:5608 <> dq1:87
+binder 5610:5612 <> dq2:88
+binder 5614:5615 <> v1:89
+binder 5617:5618 <> v2:90
+R5635:5640 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R5623:5627 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5631:5632 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5622:5622 simuliris.base_logic.gen_sim_heap <> l:86 var
+R5628:5630 simuliris.base_logic.gen_sim_heap <> dq1:87 var
+R5633:5634 simuliris.base_logic.gen_sim_heap <> v1:89 var
+R5654:5659 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R5642:5646 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5650:5651 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5641:5641 simuliris.base_logic.gen_sim_heap <> l:86 var
+R5647:5649 simuliris.base_logic.gen_sim_heap <> dq2:88 var
+R5652:5653 simuliris.base_logic.gen_sim_heap <> v2:90 var
+R5660:5662 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5670:5672 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5665:5667 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5663:5664 simuliris.base_logic.gen_sim_heap <> v1:89 var
+R5668:5669 simuliris.base_logic.gen_sim_heap <> v2:90 var
+R5692:5706 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R5715:5734 iris.base_logic.lib.ghost_map <> ghost_map_elem_agree thm
+inst 5761:5786 <> pointsto_combine_sep_gives
+binder 5788:5788 <> l:91
+binder 5790:5792 <> dq1:92
+binder 5794:5796 <> dq2:93
+binder 5798:5799 <> v1:94
+binder 5801:5802 <> v2:95
+R5810:5824 iris.proofmode.classes <> CombineSepGives class
+R5858:5860 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5890:5892 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5878:5882 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R5861:5865 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R5877:5877 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R5869:5873 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R5866:5868 simuliris.base_logic.gen_sim_heap <> dq1:92 var
+R5874:5876 simuliris.base_logic.gen_sim_heap <> dq2:93 var
+R5885:5887 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R5883:5884 simuliris.base_logic.gen_sim_heap <> v1:94 var
+R5888:5889 simuliris.base_logic.gen_sim_heap <> v2:95 var
+R5844:5848 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5852:5853 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5843:5843 simuliris.base_logic.gen_sim_heap <> l:91 var
+R5849:5851 simuliris.base_logic.gen_sim_heap <> dq2:93 var
+R5854:5855 simuliris.base_logic.gen_sim_heap <> v2:95 var
+R5828:5832 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5836:5837 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R5827:5827 simuliris.base_logic.gen_sim_heap <> l:91 var
+R5833:5835 simuliris.base_logic.gen_sim_heap <> dq1:92 var
+R5838:5839 simuliris.base_logic.gen_sim_heap <> v1:94 var
+R5922:5936 iris.proofmode.classes <> CombineSepGives class
+R5972:5972 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5989:5994 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6002:6002 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5973:5988 simuliris.base_logic.gen_sim_heap <> pointsto_valid_2 thm
+prf 6034:6049 <> pointsto_combine
+binder 6051:6051 <> l:96
+binder 6053:6055 <> dq1:97
+binder 6057:6059 <> dq2:98
+binder 6061:6062 <> v1:99
+binder 6064:6065 <> v2:100
+R6086:6091 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R6074:6078 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6082:6083 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6073:6073 simuliris.base_logic.gen_sim_heap <> l:96 var
+R6079:6081 simuliris.base_logic.gen_sim_heap <> dq1:97 var
+R6084:6085 simuliris.base_logic.gen_sim_heap <> v1:99 var
+R6105:6110 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6093:6097 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6101:6102 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6092:6092 simuliris.base_logic.gen_sim_heap <> l:96 var
+R6098:6100 simuliris.base_logic.gen_sim_heap <> dq2:98 var
+R6103:6104 simuliris.base_logic.gen_sim_heap <> v2:100 var
+R6132:6136 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R6112:6116 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6128:6129 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6111:6111 simuliris.base_logic.gen_sim_heap <> l:96 var
+R6120:6124 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R6117:6119 simuliris.base_logic.gen_sim_heap <> dq1:97 var
+R6125:6127 simuliris.base_logic.gen_sim_heap <> dq2:98 var
+R6130:6131 simuliris.base_logic.gen_sim_heap <> v1:99 var
+R6137:6139 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6147:6149 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6142:6144 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6140:6141 simuliris.base_logic.gen_sim_heap <> v1:99 var
+R6145:6146 simuliris.base_logic.gen_sim_heap <> v2:100 var
+R6169:6183 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R6192:6213 iris.base_logic.lib.ghost_map <> ghost_map_elem_combine thm
+inst 6240:6258 <> pointsto_combine_as
+binder 6260:6260 <> l:101
+binder 6262:6264 <> dq1:102
+binder 6266:6268 <> dq2:103
+binder 6270:6271 <> v1:104
+binder 6273:6274 <> v2:105
+R6282:6293 iris.proofmode.classes <> CombineSepAs class
+R6329:6333 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6345:6346 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6328:6328 simuliris.base_logic.gen_sim_heap <> l:101 var
+R6337:6341 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R6334:6336 simuliris.base_logic.gen_sim_heap <> dq1:102 var
+R6342:6344 simuliris.base_logic.gen_sim_heap <> dq2:103 var
+R6347:6348 simuliris.base_logic.gen_sim_heap <> v1:104 var
+R6313:6317 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6321:6322 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6312:6312 simuliris.base_logic.gen_sim_heap <> l:101 var
+R6318:6320 simuliris.base_logic.gen_sim_heap <> dq2:103 var
+R6323:6324 simuliris.base_logic.gen_sim_heap <> v2:105 var
+R6297:6301 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6305:6306 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6296:6296 simuliris.base_logic.gen_sim_heap <> l:101 var
+R6302:6304 simuliris.base_logic.gen_sim_heap <> dq1:102 var
+R6307:6308 simuliris.base_logic.gen_sim_heap <> v1:104 var
+R6454:6465 iris.proofmode.classes <> CombineSepAs class
+R6501:6501 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6518:6523 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6531:6531 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6502:6517 simuliris.base_logic.gen_sim_heap <> pointsto_combine thm
+prf 6561:6576 <> pointsto_frac_ne
+binder 6578:6579 <> l1:106
+binder 6581:6582 <> l2:107
+binder 6584:6586 <> dq1:108
+binder 6588:6590 <> dq2:109
+binder 6592:6593 <> v1:110
+binder 6595:6596 <> v2:111
+R6623:6627 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6604:6606 Stdlib.Unicode.Utf8_core <> ::type_scope:'¬'_x not
+R6607:6610 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R6622:6622 iris.algebra.cmra <> ::stdpp_scope:'✓'_x not
+R6614:6618 iris.algebra.cmra <> ::stdpp_scope:x_'⋅'_x not
+R6611:6613 simuliris.base_logic.gen_sim_heap <> dq1:108 var
+R6619:6621 simuliris.base_logic.gen_sim_heap <> dq2:109 var
+R6642:6647 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R6630:6634 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6638:6639 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6628:6629 simuliris.base_logic.gen_sim_heap <> l1:106 var
+R6635:6637 simuliris.base_logic.gen_sim_heap <> dq1:108 var
+R6640:6641 simuliris.base_logic.gen_sim_heap <> v1:110 var
+R6662:6667 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6650:6654 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6658:6659 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6648:6649 simuliris.base_logic.gen_sim_heap <> l2:107 var
+R6655:6657 simuliris.base_logic.gen_sim_heap <> dq2:109 var
+R6660:6661 simuliris.base_logic.gen_sim_heap <> v2:111 var
+R6668:6670 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6680:6682 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6673:6677 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6671:6672 simuliris.base_logic.gen_sim_heap <> l1:106 var
+R6678:6679 simuliris.base_logic.gen_sim_heap <> l2:107 var
+R6702:6716 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R6725:6746 iris.base_logic.lib.ghost_map <> ghost_map_elem_frac_ne thm
+prf 6762:6772 <> pointsto_ne
+binder 6774:6775 <> l1:112
+binder 6777:6778 <> l2:113
+binder 6780:6782 <> dq2:114
+binder 6784:6785 <> v1:115
+binder 6787:6788 <> v2:116
+R6801:6806 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R6794:6798 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦'_x not
+R6792:6793 simuliris.base_logic.gen_sim_heap <> l1:112 var
+R6799:6800 simuliris.base_logic.gen_sim_heap <> v1:115 var
+R6821:6826 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6809:6813 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6817:6818 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R6807:6808 simuliris.base_logic.gen_sim_heap <> l2:113 var
+R6814:6816 simuliris.base_logic.gen_sim_heap <> dq2:114 var
+R6819:6820 simuliris.base_logic.gen_sim_heap <> v2:116 var
+R6827:6829 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6839:6841 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6832:6836 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6830:6831 simuliris.base_logic.gen_sim_heap <> l1:112 var
+R6837:6838 simuliris.base_logic.gen_sim_heap <> l2:113 var
+R6861:6875 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R6884:6900 iris.base_logic.lib.ghost_map <> ghost_map_elem_ne thm
+prf 7012:7027 <> pointsto_persist
+binder 7029:7029 <> l:117
+binder 7031:7032 <> dq:118
+binder 7034:7034 <> v:119
+R7049:7055 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R7039:7043 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R7046:7047 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R7038:7038 simuliris.base_logic.gen_sim_heap <> l:117 var
+R7044:7045 simuliris.base_logic.gen_sim_heap <> dq:118 var
+R7048:7048 simuliris.base_logic.gen_sim_heap <> v:119 var
+R7057:7064 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦□'_x not
+R7056:7056 simuliris.base_logic.gen_sim_heap <> l:117 var
+R7065:7065 simuliris.base_logic.gen_sim_heap <> v:119 var
+R7085:7099 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R7108:7129 iris.base_logic.lib.ghost_map <> ghost_map_elem_persist thm
+prf 7207:7224 <> pointsto_unpersist
+binder 7226:7226 <> l:120
+binder 7228:7228 <> v:121
+R7246:7252 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R7237:7244 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦□'_x not
+R7236:7236 simuliris.base_logic.gen_sim_heap <> l:120 var
+R7245:7245 simuliris.base_logic.gen_sim_heap <> v:121 var
+R7253:7256 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R7258:7259 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+binder 7257:7257 <> q:122
+R7261:7267 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7269:7270 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7260:7260 simuliris.base_logic.gen_sim_heap <> l:120 var
+R7268:7268 simuliris.base_logic.gen_sim_heap <> q:122 var
+R7271:7271 simuliris.base_logic.gen_sim_heap <> v:121 var
+R7291:7305 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R7314:7337 iris.base_logic.lib.ghost_map <> ghost_map_elem_unpersist thm
+inst 7389:7402 <> frame_pointsto
+binder 7404:7404 <> p:123
+binder 7406:7406 <> l:124
+binder 7408:7408 <> v:125
+binder 7410:7411 <> q1:126
+binder 7413:7414 <> q2:127
+binder 7416:7416 <> q:128
+R7449:7457 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7424:7440 iris.bi.lib.fractional <> FrameFractionalQp class
+R7448:7448 simuliris.base_logic.gen_sim_heap <> q:128 var
+R7445:7446 simuliris.base_logic.gen_sim_heap <> q2:127 var
+R7442:7443 simuliris.base_logic.gen_sim_heap <> q1:126 var
+R7458:7462 iris.proofmode.classes <> Frame class
+R7498:7503 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7505:7506 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7497:7497 simuliris.base_logic.gen_sim_heap <> l:124 var
+R7504:7504 simuliris.base_logic.gen_sim_heap <> q:128 var
+R7507:7507 simuliris.base_logic.gen_sim_heap <> v:125 var
+R7483:7488 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7491:7492 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7482:7482 simuliris.base_logic.gen_sim_heap <> l:124 var
+R7489:7490 simuliris.base_logic.gen_sim_heap <> q2:127 var
+R7493:7493 simuliris.base_logic.gen_sim_heap <> v:125 var
+R7468:7473 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7476:7477 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{#'_x_'}'_x not
+R7467:7467 simuliris.base_logic.gen_sim_heap <> l:124 var
+R7474:7475 simuliris.base_logic.gen_sim_heap <> q1:126 var
+R7478:7478 simuliris.base_logic.gen_sim_heap <> v:125 var
+R7464:7464 simuliris.base_logic.gen_sim_heap <> p:123 var
+R7531:7546 iris.bi.lib.fractional <> frame_fractional thm
+inst 7628:7646 <> meta_token_timeless
+binder 7648:7648 <> l:129
+binder 7650:7650 <> N:130
+R7654:7661 iris.bi.derived_connectives <> Timeless class
+R7664:7673 simuliris.base_logic.gen_sim_heap <> meta_token def
+R7675:7675 simuliris.base_logic.gen_sim_heap <> l:129 var
+R7677:7677 simuliris.base_logic.gen_sim_heap <> N:130 var
+R7698:7714 simuliris.base_logic.gen_sim_heap <> meta_token_unseal def
+inst 7749:7761 <> meta_timeless
+R7765:7773 stdpp.countable <> Countable class
+binder 7775:7775 <> A:131
+binder 7765:7775 <> H0:133
+binder 7778:7778 <> l:134
+binder 7780:7780 <> N:135
+R7787:7787 simuliris.base_logic.gen_sim_heap <> A:131 var
+binder 7783:7783 <> x:136
+R7792:7799 iris.bi.derived_connectives <> Timeless class
+R7802:7805 simuliris.base_logic.gen_sim_heap <> meta def
+R7811:7811 simuliris.base_logic.gen_sim_heap <> x:136 var
+R7809:7809 simuliris.base_logic.gen_sim_heap <> N:135 var
+R7807:7807 simuliris.base_logic.gen_sim_heap <> l:134 var
+R7832:7842 simuliris.base_logic.gen_sim_heap <> meta_unseal def
+inst 7877:7891 <> meta_persistent
+R7895:7903 stdpp.countable <> Countable class
+binder 7905:7905 <> A:137
+binder 7895:7905 <> H0:139
+binder 7908:7908 <> l:140
+binder 7910:7910 <> N:141
+R7917:7917 simuliris.base_logic.gen_sim_heap <> A:137 var
+binder 7913:7913 <> x:142
+R7922:7931 iris.bi.derived_connectives <> Persistent class
+R7934:7937 simuliris.base_logic.gen_sim_heap <> meta def
+R7943:7943 simuliris.base_logic.gen_sim_heap <> x:142 var
+R7941:7941 simuliris.base_logic.gen_sim_heap <> N:141 var
+R7939:7939 simuliris.base_logic.gen_sim_heap <> l:140 var
+R7964:7974 simuliris.base_logic.gen_sim_heap <> meta_unseal def
+prf 8000:8017 <> meta_token_union_1
+binder 8019:8019 <> l:143
+binder 8021:8022 <> E1:144
+binder 8024:8025 <> E2:145
+R8041:8045 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8035:8038 stdpp.base <> ::stdpp_scope:x_'##'_x not
+R8033:8034 simuliris.base_logic.gen_sim_heap <> E1:144 var
+R8039:8040 simuliris.base_logic.gen_sim_heap <> E2:145 var
+R8070:8075 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R8046:8055 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8057:8057 simuliris.base_logic.gen_sim_heap <> l:143 var
+R8062:8066 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R8060:8061 simuliris.base_logic.gen_sim_heap <> E1:144 var
+R8067:8068 simuliris.base_logic.gen_sim_heap <> E2:145 var
+R8091:8095 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8076:8085 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8087:8087 simuliris.base_logic.gen_sim_heap <> l:143 var
+R8089:8090 simuliris.base_logic.gen_sim_heap <> E1:144 var
+R8096:8105 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8107:8107 simuliris.base_logic.gen_sim_heap <> l:143 var
+R8109:8110 simuliris.base_logic.gen_sim_heap <> E2:145 var
+R8134:8150 simuliris.base_logic.gen_sim_heap <> meta_token_unseal def
+R8153:8166 simuliris.base_logic.gen_sim_heap <> meta_token_def def
+R8227:8253 iris.algebra.reservation_map <> reservation_map_token_union thm
+prf 8331:8348 <> meta_token_union_2
+binder 8350:8350 <> l:146
+binder 8352:8353 <> E1:147
+binder 8355:8356 <> E2:148
+R8379:8384 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R8364:8373 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8375:8375 simuliris.base_logic.gen_sim_heap <> l:146 var
+R8377:8378 simuliris.base_logic.gen_sim_heap <> E1:147 var
+R8400:8405 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R8385:8394 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8396:8396 simuliris.base_logic.gen_sim_heap <> l:146 var
+R8398:8399 simuliris.base_logic.gen_sim_heap <> E2:148 var
+R8406:8415 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8417:8417 simuliris.base_logic.gen_sim_heap <> l:146 var
+R8422:8426 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R8420:8421 simuliris.base_logic.gen_sim_heap <> E1:147 var
+R8427:8428 simuliris.base_logic.gen_sim_heap <> E2:148 var
+R8453:8469 simuliris.base_logic.gen_sim_heap <> meta_token_unseal def
+R8472:8485 simuliris.base_logic.gen_sim_heap <> meta_token_def def
+R8623:8652 iris.algebra.reservation_map <> reservation_map_token_valid_op thm
+R8697:8723 iris.algebra.reservation_map <> reservation_map_token_union thm
+prf 8762:8777 <> meta_token_union
+binder 8779:8779 <> l:149
+binder 8781:8782 <> E1:150
+binder 8784:8785 <> E2:151
+R8801:8805 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R8795:8798 stdpp.base <> ::stdpp_scope:x_'##'_x not
+R8793:8794 simuliris.base_logic.gen_sim_heap <> E1:150 var
+R8799:8800 simuliris.base_logic.gen_sim_heap <> E2:151 var
+R8830:8837 iris.bi.interface <> ::stdpp_scope:x_'⊣⊢'_x not
+R8806:8815 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8817:8817 simuliris.base_logic.gen_sim_heap <> l:149 var
+R8822:8826 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R8820:8821 simuliris.base_logic.gen_sim_heap <> E1:150 var
+R8827:8828 simuliris.base_logic.gen_sim_heap <> E2:151 var
+R8853:8857 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R8838:8847 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8849:8849 simuliris.base_logic.gen_sim_heap <> l:149 var
+R8851:8852 simuliris.base_logic.gen_sim_heap <> E1:150 var
+R8858:8867 simuliris.base_logic.gen_sim_heap <> meta_token def
+R8869:8869 simuliris.base_logic.gen_sim_heap <> l:149 var
+R8871:8872 simuliris.base_logic.gen_sim_heap <> E2:151 var
+R8920:8937 simuliris.base_logic.gen_sim_heap <> meta_token_union_1 thm
+R8975:8975 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8994:8999 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9009:9009 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8976:8993 simuliris.base_logic.gen_sim_heap <> meta_token_union_2 thm
+prf 9028:9048 <> meta_token_difference
+binder 9050:9050 <> l:152
+binder 9052:9053 <> E1:153
+binder 9055:9056 <> E2:154
+R9073:9077 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9066:9070 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R9064:9065 simuliris.base_logic.gen_sim_heap <> E1:153 var
+R9071:9072 simuliris.base_logic.gen_sim_heap <> E2:154 var
+R9093:9100 iris.bi.interface <> ::stdpp_scope:x_'⊣⊢'_x not
+R9078:9087 simuliris.base_logic.gen_sim_heap <> meta_token def
+R9089:9089 simuliris.base_logic.gen_sim_heap <> l:152 var
+R9091:9092 simuliris.base_logic.gen_sim_heap <> E2:154 var
+R9116:9120 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R9101:9110 simuliris.base_logic.gen_sim_heap <> meta_token def
+R9112:9112 simuliris.base_logic.gen_sim_heap <> l:152 var
+R9114:9115 simuliris.base_logic.gen_sim_heap <> E1:153 var
+R9121:9130 simuliris.base_logic.gen_sim_heap <> meta_token def
+R9132:9132 simuliris.base_logic.gen_sim_heap <> l:152 var
+R9137:9141 stdpp.base <> ::stdpp_scope:x_'∖'_x not
+R9135:9136 simuliris.base_logic.gen_sim_heap <> E2:154 var
+R9142:9143 simuliris.base_logic.gen_sim_heap <> E1:153 var
+R9180:9197 stdpp.sets <> union_difference_L thm
+R9225:9240 simuliris.base_logic.gen_sim_heap <> meta_token_union thm
+prf 9276:9285 <> meta_agree
+R9289:9297 stdpp.countable <> Countable class
+binder 9299:9299 <> A:155
+binder 9289:9299 <> H0:157
+binder 9302:9302 <> l:158
+binder 9304:9304 <> i:159
+R9315:9315 simuliris.base_logic.gen_sim_heap <> A:155 var
+binder 9307:9308 <> x1:160
+binder 9310:9311 <> x2:161
+R9335:9340 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R9324:9327 simuliris.base_logic.gen_sim_heap <> meta def
+R9333:9334 simuliris.base_logic.gen_sim_heap <> x1:160 var
+R9331:9331 simuliris.base_logic.gen_sim_heap <> i:159 var
+R9329:9329 simuliris.base_logic.gen_sim_heap <> l:158 var
+R9352:9357 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R9341:9344 simuliris.base_logic.gen_sim_heap <> meta def
+R9350:9351 simuliris.base_logic.gen_sim_heap <> x2:161 var
+R9348:9348 simuliris.base_logic.gen_sim_heap <> i:159 var
+R9346:9346 simuliris.base_logic.gen_sim_heap <> l:158 var
+R9358:9360 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9368:9370 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R9363:9365 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R9361:9362 simuliris.base_logic.gen_sim_heap <> x1:160 var
+R9366:9367 simuliris.base_logic.gen_sim_heap <> x2:161 var
+R9394:9404 simuliris.base_logic.gen_sim_heap <> meta_unseal def
+R9407:9414 simuliris.base_logic.gen_sim_heap <> meta_def def
+R9589:9611 iris.algebra.reservation_map <> reservation_map_data_op thm
+R9613:9638 iris.algebra.reservation_map <> reservation_map_data_valid thm
+R9653:9669 iris.algebra.agree <> to_agree_op_inv_L thm
+prf 9701:9708 <> meta_set
+R9712:9720 stdpp.countable <> Countable class
+binder 9722:9722 <> A:162
+binder 9712:9722 <> H0:164
+binder 9725:9725 <> E:165
+binder 9727:9727 <> l:166
+R9734:9734 simuliris.base_logic.gen_sim_heap <> A:162 var
+binder 9730:9730 <> x:167
+binder 9737:9737 <> N:168
+R9756:9760 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R9750:9754 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R9745:9748 stdpp.base <> :::'↑'_x not
+R9749:9749 simuliris.base_logic.gen_sim_heap <> N:168 var
+R9755:9755 simuliris.base_logic.gen_sim_heap <> E:165 var
+R9775:9781 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R9761:9770 simuliris.base_logic.gen_sim_heap <> meta_token def
+R9772:9772 simuliris.base_logic.gen_sim_heap <> l:166 var
+R9774:9774 simuliris.base_logic.gen_sim_heap <> E:165 var
+R9782:9785 simuliris.base_logic.gen_sim_heap <> meta def
+R9791:9791 simuliris.base_logic.gen_sim_heap <> x:167 var
+R9789:9789 simuliris.base_logic.gen_sim_heap <> N:168 var
+R9787:9787 simuliris.base_logic.gen_sim_heap <> l:166 var
+R9815:9831 simuliris.base_logic.gen_sim_heap <> meta_token_unseal def
+R9833:9843 simuliris.base_logic.gen_sim_heap <> meta_unseal def
+R9846:9859 simuliris.base_logic.gen_sim_heap <> meta_token_def def
+R9862:9869 simuliris.base_logic.gen_sim_heap <> meta_def def
+R9949:9949 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9960:9965 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9970:9970 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9950:9959 iris.base_logic.lib.own <> own_update thm
+R9983:10003 iris.algebra.reservation_map <> reservation_map_alloc thm
+R10033:10047 stdpp.coPset <> coPpick_elem_of thm
+R10050:10053 stdpp.base <> :::'↑'_x not
+R10058:10073 stdpp.namespaces <> nclose_non_empty thm
+prf 10131:10144 <> gen_heap_alloc
+binder 10146:10147 <> σ:169
+binder 10149:10149 <> l:170
+binder 10151:10151 <> v:171
+R10173:10181 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10166:10168 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R10161:10164 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R10165:10165 simuliris.base_logic.gen_sim_heap <> l:170 var
+R10159:10160 simuliris.base_logic.gen_sim_heap <> σ:169 var
+R10169:10172 Corelib.Init.Datatypes <> None constr
+R10200:10206 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R10182:10196 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R10198:10199 simuliris.base_logic.gen_sim_heap <> σ:169 var
+R10235:10239 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R10207:10221 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R10224:10225 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10227:10228 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10230:10233 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10226:10226 simuliris.base_logic.gen_sim_heap <> l:170 var
+R10229:10229 simuliris.base_logic.gen_sim_heap <> v:171 var
+R10232:10233 simuliris.base_logic.gen_sim_heap <> σ:169 var
+R10247:10251 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R10241:10245 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦'_x not
+R10240:10240 simuliris.base_logic.gen_sim_heap <> l:170 var
+R10246:10246 simuliris.base_logic.gen_sim_heap <> v:171 var
+R10252:10261 simuliris.base_logic.gen_sim_heap <> meta_token def
+R10263:10263 simuliris.base_logic.gen_sim_heap <> l:170 var
+R10265:10267 stdpp.base <> ::stdpp_scope:'⊤' not
+R10308:10322 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R10324:10338 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R10341:10352 simuliris.base_logic.gen_sim_heap <> pointsto_def def
+R10360:10376 simuliris.base_logic.gen_sim_heap <> meta_token_unseal def
+R10379:10392 simuliris.base_logic.gen_sim_heap <> meta_token_def def
+R10447:10447 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10466:10471 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10477:10477 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10448:10463 iris.base_logic.lib.ghost_map <> ghost_map_insert thm
+R10516:10524 iris.base_logic.lib.own <> own_alloc thm
+R10527:10547 iris.algebra.reservation_map <> reservation_map_token def
+R10549:10551 stdpp.base <> ::stdpp_scope:'⊤' not
+R10584:10610 iris.algebra.reservation_map <> reservation_map_token_valid thm
+R10624:10624 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10651:10656 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10661:10661 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10625:10648 iris.base_logic.lib.ghost_map <> ghost_map_insert_persist thm
+R10706:10720 stdpp.fin_map_dom <> not_elem_of_dom thm
+R10823:10824 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10826:10827 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10831:10834 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R10871:10882 stdpp.fin_map_dom <> dom_insert_L thm
+prf 10913:10930 <> gen_heap_alloc_big
+binder 10932:10933 <> σ:172
+binder 10935:10937 <> σ':173
+R10957:10965 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R10948:10954 stdpp.fin_maps <> ::stdpp_scope:x_'##ₘ'_x not
+R10945:10947 simuliris.base_logic.gen_sim_heap <> σ':173 var
+R10955:10956 simuliris.base_logic.gen_sim_heap <> σ:172 var
+R10984:10994 iris.bi.updates <> ::stdpp_scope:x_'==∗'_x not
+R10966:10980 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R10982:10983 simuliris.base_logic.gen_sim_heap <> σ:172 var
+R11023:11027 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R10995:11009 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R11015:11019 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R11012:11014 simuliris.base_logic.gen_sim_heap <> σ':173 var
+R11020:11021 simuliris.base_logic.gen_sim_heap <> σ:172 var
+R11028:11028 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11063:11069 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11113:11113 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11029:11038 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R11040:11044 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R11046:11050 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R11054:11055 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 11039:11039 <> l:174
+binder 11039:11039 <> l:175
+binder 11045:11045 <> v:176
+binder 11045:11045 <> v:177
+R11057:11061 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦'_x not
+R11056:11056 simuliris.base_logic.gen_sim_heap <> l:174 var
+R11062:11062 simuliris.base_logic.gen_sim_heap <> v:176 var
+R11051:11053 simuliris.base_logic.gen_sim_heap <> σ':173 var
+R11070:11079 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R11081:11085 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R11087:11091 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R11095:11096 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 11080:11080 <> l:178
+binder 11080:11080 <> l:179
+binder 11086:11086 <> pat:180
+R11097:11106 simuliris.base_logic.gen_sim_heap <> meta_token def
+R11108:11108 simuliris.base_logic.gen_sim_heap <> l:178 var
+R11110:11112 stdpp.base <> ::stdpp_scope:'⊤' not
+R11092:11094 simuliris.base_logic.gen_sim_heap <> σ':173 var
+R11181:11187 stdpp.fin_maps <> map_ind thm
+R11230:11238 stdpp.base <> left_id_L thm
+R11258:11258 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11261:11266 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11272:11272 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11310:11330 stdpp.fin_maps <> map_disjoint_insert_l thm
+R11374:11387 iris.algebra.big_op <> big_opM_insert thm
+R11393:11406 stdpp.fin_maps <> insert_union_l thm
+R11424:11424 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11439:11444 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11453:11453 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11425:11438 simuliris.base_logic.gen_sim_heap <> gen_heap_alloc thm
+R11494:11510 stdpp.fin_maps <> lookup_union_None thm
+prf 11529:11542 <> gen_heap_valid
+binder 11544:11545 <> σ:181
+binder 11547:11547 <> l:182
+binder 11549:11550 <> dq:183
+binder 11552:11552 <> v:184
+R11574:11579 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R11556:11570 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R11572:11573 simuliris.base_logic.gen_sim_heap <> σ:181 var
+R11591:11596 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R11581:11585 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R11588:11589 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦{'_x_'}'_x not
+R11580:11580 simuliris.base_logic.gen_sim_heap <> l:182 var
+R11586:11587 simuliris.base_logic.gen_sim_heap <> dq:183 var
+R11590:11590 simuliris.base_logic.gen_sim_heap <> v:184 var
+R11597:11599 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11616:11618 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R11607:11609 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R11602:11605 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R11606:11606 simuliris.base_logic.gen_sim_heap <> l:182 var
+R11600:11601 simuliris.base_logic.gen_sim_heap <> σ:181 var
+R11610:11613 Corelib.Init.Datatypes <> Some constr
+R11615:11615 simuliris.base_logic.gen_sim_heap <> v:184 var
+R11696:11710 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R11712:11726 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+prf 11780:11794 <> gen_heap_update
+binder 11796:11797 <> σ:185
+binder 11799:11799 <> l:186
+binder 11801:11802 <> v1:187
+binder 11804:11805 <> v2:188
+R11831:11836 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R11813:11827 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R11829:11830 simuliris.base_logic.gen_sim_heap <> σ:185 var
+R11845:11851 iris.bi.updates <> ::bi_scope:x_'==∗'_x not
+R11838:11842 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦'_x not
+R11837:11837 simuliris.base_logic.gen_sim_heap <> l:186 var
+R11843:11844 simuliris.base_logic.gen_sim_heap <> v1:187 var
+R11881:11885 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R11852:11866 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R11869:11870 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R11872:11873 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R11876:11879 stdpp.base <> ::stdpp_scope:'<['_x_':='_x_']>' not
+R11871:11871 simuliris.base_logic.gen_sim_heap <> l:186 var
+R11874:11875 simuliris.base_logic.gen_sim_heap <> v2:188 var
+R11878:11879 simuliris.base_logic.gen_sim_heap <> σ:185 var
+R11887:11891 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦'_x not
+R11886:11886 simuliris.base_logic.gen_sim_heap <> l:186 var
+R11892:11893 simuliris.base_logic.gen_sim_heap <> v2:188 var
+R11972:11986 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R11988:12002 simuliris.base_logic.gen_sim_heap <> pointsto_unseal def
+R12005:12016 simuliris.base_logic.gen_sim_heap <> pointsto_def def
+R12061:12061 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12078:12083 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12092:12092 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12062:12077 iris.base_logic.lib.ghost_map <> ghost_map_update thm
+R12178:12190 stdpp.fin_map_dom <> elem_of_dom_2 thm
+R12211:12222 stdpp.fin_map_dom <> dom_insert_L thm
+R12248:12255 simuliris.base_logic.gen_sim_heap gen_heap <> sec
+prf 12554:12572 <> gen_heap_init_names
+R12576:12584 stdpp.countable <> Countable class
+binder 12586:12586 <> L:189
+binder 12576:12586 <> H:191
+R12590:12602 simuliris.base_logic.gen_sim_heap <> gen_heapGpreS class
+R12604:12604 simuliris.base_logic.gen_sim_heap <> L:189 var
+binder 12606:12606 <> V:192
+binder 12608:12609 <> Σ:193
+binder 12589:12609 <> gen_heapGpreS0:194
+binder 12612:12613 <> σ:195
+R12619:12622 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R12623:12627 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R12628:12631 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R12647:12652 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R12642:12646 iris.base_logic.lib.iprop <> gname def
+binder 12632:12634 <> γh:196
+binder 12636:12638 <> γm:197
+R12663:12676 simuliris.base_logic.gen_sim_heap <> GenHeapGSNamed constr
+R12678:12678 simuliris.base_logic.gen_sim_heap <> L:189 var
+R12680:12680 simuliris.base_logic.gen_sim_heap <> V:192 var
+R12682:12683 simuliris.base_logic.gen_sim_heap <> Σ:193 var
+R12685:12687 simuliris.base_logic.gen_sim_heap <> γh:196 var
+R12689:12691 simuliris.base_logic.gen_sim_heap <> γm:197 var
+binder 12657:12658 <> hG:198
+R12718:12722 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R12700:12714 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R12716:12717 simuliris.base_logic.gen_sim_heap <> σ:195 var
+R12723:12723 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R12757:12763 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R12806:12806 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R12724:12733 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R12735:12739 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R12741:12745 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R12748:12749 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 12734:12734 <> l:199
+binder 12734:12734 <> l:200
+binder 12740:12740 <> v:201
+binder 12740:12740 <> v:202
+R12751:12755 simuliris.base_logic.gen_sim_heap <> ::bi_scope:x_'↦'_x not
+R12750:12750 simuliris.base_logic.gen_sim_heap <> l:199 var
+R12756:12756 simuliris.base_logic.gen_sim_heap <> v:201 var
+R12746:12747 simuliris.base_logic.gen_sim_heap <> σ:195 var
+R12764:12773 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R12775:12779 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R12781:12785 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R12788:12789 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 12774:12774 <> l:203
+binder 12774:12774 <> l:204
+binder 12780:12780 <> pat:205
+R12790:12799 simuliris.base_logic.gen_sim_heap <> meta_token def
+R12801:12801 simuliris.base_logic.gen_sim_heap <> l:203 var
+R12803:12805 stdpp.base <> ::stdpp_scope:'⊤' not
+R12786:12787 simuliris.base_logic.gen_sim_heap <> σ:195 var
+R12824:12844 iris.base_logic.lib.ghost_map <> ghost_map_alloc_empty thm
+R12884:12904 iris.base_logic.lib.ghost_map <> ghost_map_alloc_empty thm
+R12917:12921 iris.base_logic.lib.iprop <> gname def
+R12971:12985 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R13028:13030 stdpp.base <> ::stdpp_scope:'∅' not
+R12992:13005 simuliris.base_logic.gen_sim_heap <> GenHeapGSNamed constr
+R13074:13076 stdpp.base <> ::stdpp_scope:'∅' not
+R13113:13123 stdpp.fin_map_dom <> dom_empty_L thm
+R13135:13135 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13154:13159 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13169:13169 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13136:13153 simuliris.base_logic.gen_sim_heap <> gen_heap_alloc_big thm
+R13205:13224 stdpp.fin_maps <> map_disjoint_empty_r thm
+R13239:13248 stdpp.base <> right_id_L thm
+prf 13382:13398 <> gen_sim_heap_init
+R13402:13410 stdpp.countable <> Countable class
+binder 13412:13414 <> L_t:206
+binder 13402:13414 <> H:208
+R13417:13425 stdpp.countable <> Countable class
+binder 13427:13429 <> L_s:209
+binder 13417:13429 <> H0:211
+R13433:13445 simuliris.base_logic.gen_sim_heap <> gen_heapGpreS class
+R13447:13449 simuliris.base_logic.gen_sim_heap <> L_t:206 var
+binder 13451:13453 <> V_t:212
+binder 13455:13456 <> Σ:213
+binder 13432:13456 <> gen_heapGpreS0:214
+R13460:13472 simuliris.base_logic.gen_sim_heap <> gen_heapGpreS class
+R13482:13483 simuliris.base_logic.gen_sim_heap <> Σ:213 var
+R13474:13476 simuliris.base_logic.gen_sim_heap <> L_s:209 var
+binder 13478:13480 <> V_s:215
+binder 13459:13483 <> gen_heapGpreS1:216
+R13494:13497 stdpp.gmap <> gmap rec
+R13503:13505 simuliris.base_logic.gen_sim_heap <> V_t:212 var
+R13499:13501 simuliris.base_logic.gen_sim_heap <> L_t:206 var
+binder 13487:13490 <> σ_t:217
+R13516:13519 stdpp.gmap <> gmap rec
+R13525:13527 simuliris.base_logic.gen_sim_heap <> V_s:215 var
+R13521:13523 simuliris.base_logic.gen_sim_heap <> L_s:209 var
+binder 13509:13512 <> σ_s:218
+R13534:13537 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R13538:13542 iris.bi.updates <> ::bi_scope:'|==>'_x not
+R13543:13546 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R13584:13591 iris.bi.interface <> ::bi_scope:'∃'_x_'..'_x_','_x not
+R13551:13564 simuliris.base_logic.gen_sim_heap <> gen_sim_heapGS class
+R13582:13583 simuliris.base_logic.gen_sim_heap <> Σ:213 var
+R13578:13580 simuliris.base_logic.gen_sim_heap <> V_s:215 var
+R13574:13576 simuliris.base_logic.gen_sim_heap <> V_t:212 var
+R13570:13572 simuliris.base_logic.gen_sim_heap <> L_s:209 var
+R13566:13568 simuliris.base_logic.gen_sim_heap <> L_t:206 var
+R13592:13592 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13820:13832 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14060:14060 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13641:13651 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13593:13607 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R13637:13640 simuliris.base_logic.gen_sim_heap <> σ_t:217 var
+R13616:13634 simuliris.base_logic.gen_sim_heap <> gen_heap_inG_target meth
+R13652:13652 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13734:13746 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13819:13819 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13653:13662 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13664:13668 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13670:13674 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13679:13680 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 13663:13663 <> l:219
+binder 13663:13663 <> l:220
+binder 13669:13669 <> v:221
+binder 13669:13669 <> v:222
+R13681:13688 simuliris.base_logic.gen_sim_heap <> pointsto def
+R13718:13718 simuliris.base_logic.gen_sim_heap <> l:219 var
+R13721:13728 iris.algebra.dfrac <> DfracOwn constr
+R13733:13733 simuliris.base_logic.gen_sim_heap <> v:221 var
+R13697:13715 simuliris.base_logic.gen_sim_heap <> gen_heap_inG_target meth
+R13675:13678 simuliris.base_logic.gen_sim_heap <> σ_t:217 var
+R13747:13756 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13758:13762 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13764:13768 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13773:13774 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 13757:13757 <> l:223
+binder 13757:13757 <> l:224
+binder 13763:13763 <> pat:225
+R13775:13784 simuliris.base_logic.gen_sim_heap <> meta_token def
+R13814:13814 simuliris.base_logic.gen_sim_heap <> l:223 var
+R13816:13818 stdpp.base <> ::stdpp_scope:'⊤' not
+R13793:13811 simuliris.base_logic.gen_sim_heap <> gen_heap_inG_target meth
+R13769:13772 simuliris.base_logic.gen_sim_heap <> σ_t:217 var
+R13881:13891 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13833:13847 simuliris.base_logic.gen_sim_heap <> gen_heap_interp def
+R13877:13880 simuliris.base_logic.gen_sim_heap <> σ_s:218 var
+R13856:13874 simuliris.base_logic.gen_sim_heap <> gen_heap_inG_source meth
+R13892:13892 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13974:13986 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R14059:14059 iris.bi.interface <> ::bi_scope:x_'∗'_x not
+R13893:13902 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13904:13908 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13910:13914 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13919:13920 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 13903:13903 <> l:226
+binder 13903:13903 <> l:227
+binder 13909:13909 <> v:228
+binder 13909:13909 <> v:229
+R13921:13928 simuliris.base_logic.gen_sim_heap <> pointsto def
+R13958:13958 simuliris.base_logic.gen_sim_heap <> l:226 var
+R13961:13968 iris.algebra.dfrac <> DfracOwn constr
+R13973:13973 simuliris.base_logic.gen_sim_heap <> v:228 var
+R13937:13955 simuliris.base_logic.gen_sim_heap <> gen_heap_inG_source meth
+R13915:13918 simuliris.base_logic.gen_sim_heap <> σ_s:218 var
+R13987:13996 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R13998:14002 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R14004:14008 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+R14013:14014 iris.bi.big_op <> ::bi_scope:'[∗'_'map]'_x_'↦'_x_'∈'_x_','_x not
+binder 13997:13997 <> l:230
+binder 13997:13997 <> l:231
+binder 14003:14003 <> pat:232
+R14015:14024 simuliris.base_logic.gen_sim_heap <> meta_token def
+R14054:14054 simuliris.base_logic.gen_sim_heap <> l:230 var
+R14056:14058 stdpp.base <> ::stdpp_scope:'⊤' not
+R14033:14051 simuliris.base_logic.gen_sim_heap <> gen_heap_inG_source meth
+R14009:14012 simuliris.base_logic.gen_sim_heap <> σ_s:218 var
+R14078:14096 simuliris.base_logic.gen_sim_heap <> gen_heap_init_names thm
+R14145:14163 simuliris.base_logic.gen_sim_heap <> gen_heap_init_names thm
+R14215:14226 simuliris.base_logic.gen_sim_heap <> GenSimHeapGS constr

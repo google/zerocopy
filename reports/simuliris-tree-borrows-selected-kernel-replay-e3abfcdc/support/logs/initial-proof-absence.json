@@ -1,0 +1,27 @@
+{
+  "label": "initial-proof-absence",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "find . -type f \\( -name '*.vo' -o -name '*.vos' -o -name '*.vok' -o -name '*.vio' \\) -print"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.083,
+  "stdout_bytes": 0,
+  "stderr_bytes": 45,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

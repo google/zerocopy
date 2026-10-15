@@ -1,0 +1,1196 @@
+DIGEST 75e1a59ef22c8ede2876256014f9b989
+Fsimuliris.tree_borrows.refl
+R41:45 simuliris.simulation.slsls <> <> lib
+R47:53 simuliris.simulation.lifting <> <> lib
+R99:113 simuliris.tree_borrows.early_proofmode <> <> lib
+R115:121 simuliris.tree_borrows.tactics <> <> lib
+R177:186 simuliris.tree_borrows.step_laws.steps_refl <> <> lib
+R188:204 simuliris.tree_borrows.step_laws.steps_refl_delete <> <> lib
+R206:223 simuliris.tree_borrows.step_laws.steps_refl_endcall <> <> lib
+R225:235 simuliris.tree_borrows.step_laws.steps_retag <> <> lib
+R237:259 simuliris.tree_borrows.step_laws.steps_read_write_simple <> <> lib
+R305:318 simuliris.tree_borrows.parallel_subst <> <> lib
+R320:333 simuliris.tree_borrows.primitive_laws <> <> lib
+R335:352 simuliris.tree_borrows.log_rel_structural <> <> lib
+R354:355 simuliris.tree_borrows.wf <> <> lib
+R357:364 simuliris.tree_borrows.behavior <> <> lib
+sec 376:382 <> log_rel
+R398:403 simuliris.tree_borrows.logical_state <> sborGS class
+prf 419:430 <> log_rel_func
+binder 432:432 <> x:3
+binder 434:436 <> e_t:4
+binder 438:440 <> e_s:5
+R489:497 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R479:483 stdpp.base <> ::stdpp_scope:x_'⊆'_x not
+R461:465 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R448:456 simuliris.tree_borrows.parallel_subst <> free_vars def
+R458:460 simuliris.tree_borrows.refl <> e_t:4 var
+R466:474 simuliris.tree_borrows.parallel_subst <> free_vars def
+R476:478 simuliris.tree_borrows.refl <> e_s:5 var
+R484:485 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R487:488 stdpp.base <> ::stdpp_scope:'{['_x_']}' not
+R486:486 simuliris.tree_borrows.refl <> x:3 var
+R513:522 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R498:504 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R506:508 simuliris.tree_borrows.refl <> e_t:4 var
+R510:512 simuliris.tree_borrows.refl <> e_s:5 var
+R523:530 simuliris.simulation.gen_log_rel <> func_rel def
+R532:532 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R534:535 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R539:539 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R533:533 simuliris.tree_borrows.refl <> x:3 var
+R536:538 simuliris.tree_borrows.refl <> e_t:4 var
+R541:541 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R543:544 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R548:548 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R542:542 simuliris.tree_borrows.refl <> x:3 var
+R545:547 simuliris.tree_borrows.refl <> e_s:5 var
+R618:618 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R627:632 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R638:638 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R619:626 simuliris.simulation.slsls <> sim_wand thm
+R659:668 simuliris.tree_borrows.expr_semantics <> apply_func def
+R675:693 simuliris.tree_borrows.parallel_subst <> subst_map_singleton thm
+R709:709 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R731:736 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R751:751 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R710:730 simuliris.simulation.gen_log_rel <> gen_log_rel_singleton thm
+R775:781 simuliris.simulation.slsls <> ext_rel meth
+prf 825:839 <> scalar_wf_sound
+binder 841:842 <> sc:6
+R858:862 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R846:854 simuliris.tree_borrows.wf <> scalar_wf def
+R856:857 simuliris.tree_borrows.refl <> sc:6 var
+R863:866 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R867:872 simuliris.tree_borrows.logical_state <> sc_rel def
+R874:875 simuliris.tree_borrows.refl <> sc:6 var
+R877:878 simuliris.tree_borrows.refl <> sc:6 var
+prf 953:966 <> value_wf_sound
+binder 968:968 <> v:7
+R982:986 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R972:979 simuliris.tree_borrows.wf <> value_wf def
+R981:981 simuliris.tree_borrows.refl <> v:7 var
+R987:990 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R991:999 simuliris.tree_borrows.logical_state <> value_rel def
+R1001:1001 simuliris.tree_borrows.refl <> v:7 var
+R1003:1003 simuliris.tree_borrows.refl <> v:7 var
+R1076:1090 simuliris.tree_borrows.logical_state <> value_rel_empty thm
+R1103:1115 stdpp.list_relations list Forall_cons_1 thm
+R1145:1153 simuliris.tree_borrows.logical_state <> value_rel def
+R1183:1197 simuliris.tree_borrows.refl <> scalar_wf_sound thm
+prf 1238:1248 <> log_rel_var
+binder 1250:1250 <> x:8
+R1254:1257 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R1258:1264 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R1267:1269 simuliris.tree_borrows.lang_base <> Var constr
+R1271:1271 simuliris.tree_borrows.refl <> x:8 var
+R1275:1277 simuliris.tree_borrows.lang_base <> Var constr
+R1279:1279 simuliris.tree_borrows.refl <> x:8 var
+R1305:1315 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R1369:1369 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1394:1399 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1404:1404 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1370:1389 simuliris.simulation.gen_log_rel <> subst_map_rel_lookup thm
+R1461:1471 stdpp.fin_maps <> lookup_fmap meth
+R1635:1635 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1644:1649 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1652:1652 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1636:1643 simuliris.simulation.slsls <> sim_wand thm
+prf 1664:1674 <> log_rel_let
+binder 1676:1676 <> x:9
+binder 1678:1681 <> e1_t:10
+binder 1683:1686 <> e1_s:11
+binder 1688:1691 <> e2_t:12
+binder 1693:1696 <> e2_s:13
+R1721:1726 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R1704:1710 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R1712:1715 simuliris.tree_borrows.refl <> e1_t:10 var
+R1717:1720 simuliris.tree_borrows.refl <> e1_s:11 var
+R1744:1749 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R1727:1733 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R1735:1738 simuliris.tree_borrows.refl <> e2_t:12 var
+R1740:1743 simuliris.tree_borrows.refl <> e2_s:13 var
+R1750:1756 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R1759:1761 simuliris.tree_borrows.lang_base <> Let constr
+R1763:1763 simuliris.tree_borrows.refl <> x:9 var
+R1765:1768 simuliris.tree_borrows.refl <> e1_t:10 var
+R1770:1773 simuliris.tree_borrows.refl <> e2_t:12 var
+R1777:1779 simuliris.tree_borrows.lang_base <> Let constr
+R1781:1781 simuliris.tree_borrows.refl <> x:9 var
+R1783:1786 simuliris.tree_borrows.refl <> e1_s:11 var
+R1788:1791 simuliris.tree_borrows.refl <> e2_s:13 var
+R1817:1827 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R1900:1908 simuliris.tree_borrows.parallel_subst <> subst_map def
+R1916:1924 simuliris.tree_borrows.parallel_subst <> subst_map def
+R1961:1961 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1982:1987 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1993:1993 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R1962:1981 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R2063:2078 simuliris.tree_borrows.parallel_subst <> subst'_subst_map thm
+R2095:2112 stdpp.binders <> binder_insert_fmap thm
+R2118:2118 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2122:2123 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2127:2127 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2114:2116 Corelib.Init.Datatypes <> fst def
+R2145:2162 stdpp.binders <> binder_insert_fmap thm
+R2168:2168 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2172:2173 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2177:2177 Corelib.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R2164:2166 Corelib.Init.Datatypes <> snd def
+R2192:2192 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2198:2203 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2208:2208 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2233:2233 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2254:2259 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2267:2267 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2234:2253 simuliris.simulation.gen_log_rel <> subst_map_rel_insert thm
+R2281:2281 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2302:2307 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2313:2313 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2282:2301 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R2368:2383 stdpp.sets <> elem_of_subseteq thm
+R2404:2409 stdpp.base <> decide def
+R2413:2415 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2516:2522 stdpp.base <> left_id def
+R2524:2527 iris.bi.interface <> ::bi_scope:'True' not
+R2558:2571 simuliris.tree_borrows.logical_state <> rrel_value_rel thm
+R2594:2609 simuliris.tree_borrows.logical_state <> value_rel_poison thm
+R2631:2643 simuliris.tree_borrows.logical_state <> value_rel_int thm
+R2666:2680 simuliris.tree_borrows.logical_state <> value_rel_fnptr thm
+R2703:2718 simuliris.tree_borrows.logical_state <> value_rel_callid thm
+R2741:2753 simuliris.tree_borrows.logical_state <> value_rel_ptr thm
+R2776:2794 simuliris.tree_borrows.logical_state <> value_rel_singleton thm
+R2824:2833 simuliris.tree_borrows.logical_state <> rrel_place thm
+R2925:2925 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2943:2948 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2950:2950 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2926:2942 simuliris.tree_borrows.logical_state <> sc_rel_ptr_target thm
+R2994:2994 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3014:3019 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3021:3021 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R2995:3013 simuliris.tree_borrows.logical_state <> sc_rel_fnptr_target thm
+R3062:3062 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3080:3085 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3087:3087 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3063:3079 simuliris.tree_borrows.logical_state <> sc_rel_int_target thm
+R3128:3128 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3146:3151 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3153:3153 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3129:3145 simuliris.tree_borrows.logical_state <> sc_rel_cid_target thm
+R3199:3199 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3220:3225 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3227:3227 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3200:3219 simuliris.tree_borrows.logical_state <> sc_rel_poison_target thm
+R3323:3323 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3341:3346 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3348:3348 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3324:3340 simuliris.tree_borrows.logical_state <> sc_rel_ptr_source thm
+R3387:3387 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3407:3412 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3414:3414 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3388:3406 simuliris.tree_borrows.logical_state <> sc_rel_fnptr_source thm
+R3449:3449 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3467:3472 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3474:3474 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3450:3466 simuliris.tree_borrows.logical_state <> sc_rel_int_source thm
+R3509:3509 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3527:3532 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3534:3534 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3510:3526 simuliris.tree_borrows.logical_state <> sc_rel_cid_source thm
+R3575:3575 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3596:3601 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3603:3603 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3576:3595 simuliris.tree_borrows.logical_state <> sc_rel_poison_target thm
+R3731:3731 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3753:3758 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3760:3760 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3732:3752 simuliris.tree_borrows.logical_state <> rrel_singleton_source thm
+R3822:3822 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3840:3845 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3847:3847 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3823:3839 simuliris.tree_borrows.logical_state <> rrel_place_source thm
+R3879:3879 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3897:3902 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3904:3904 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R3880:3896 simuliris.tree_borrows.logical_state <> rrel_value_source thm
+prf 3976:3987 <> log_rel_call
+binder 3989:3992 <> e1_t:14
+binder 3994:3997 <> e1_s:15
+binder 3999:4002 <> e2_t:16
+binder 4004:4007 <> e2_s:17
+R4032:4037 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R4015:4021 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R4023:4026 simuliris.tree_borrows.refl <> e1_t:14 var
+R4028:4031 simuliris.tree_borrows.refl <> e1_s:15 var
+R4055:4060 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R4038:4044 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R4046:4049 simuliris.tree_borrows.refl <> e2_t:16 var
+R4051:4054 simuliris.tree_borrows.refl <> e2_s:17 var
+R4061:4067 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R4070:4073 simuliris.tree_borrows.lang_base <> Call constr
+R4075:4078 simuliris.tree_borrows.refl <> e1_t:14 var
+R4080:4083 simuliris.tree_borrows.refl <> e2_t:16 var
+R4087:4090 simuliris.tree_borrows.lang_base <> Call constr
+R4092:4095 simuliris.tree_borrows.refl <> e1_s:15 var
+R4097:4100 simuliris.tree_borrows.refl <> e2_s:17 var
+R4126:4136 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R4218:4226 simuliris.tree_borrows.parallel_subst <> subst_map def
+R4234:4242 simuliris.tree_borrows.parallel_subst <> subst_map def
+R4279:4279 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4300:4305 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4311:4311 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4280:4299 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R4384:4392 simuliris.tree_borrows.parallel_subst <> subst_map def
+R4400:4408 simuliris.tree_borrows.parallel_subst <> subst_map def
+R4445:4445 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4466:4471 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4477:4477 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4446:4465 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R4597:4597 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4606:4611 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4617:4617 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4598:4605 simuliris.tree_borrows.step_laws.steps_refl <> sim_call thm
+R4646:4658 simuliris.simulation.slsls <> lift_post_val thm
+prf 4684:4699 <> log_rel_initcall
+R4707:4710 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R4711:4717 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R4719:4726 simuliris.tree_borrows.lang_base <> InitCall constr
+R4728:4735 simuliris.tree_borrows.lang_base <> InitCall constr
+R4760:4770 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R4822:4834 simuliris.tree_borrows.step_laws.steps_refl <> sim_init_call thm
+R4866:4866 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4886:4891 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4896:4896 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R4867:4885 simuliris.tree_borrows.step_laws.steps_refl <> sim_cid_make_public thm
+prf 4991:5005 <> log_rel_endcall
+binder 5007:5009 <> e_t:18
+binder 5011:5013 <> e_s:19
+R5036:5040 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R5021:5027 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R5029:5031 simuliris.tree_borrows.refl <> e_t:18 var
+R5033:5035 simuliris.tree_borrows.refl <> e_s:19 var
+R5041:5047 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R5050:5056 simuliris.tree_borrows.lang_base <> EndCall constr
+R5058:5060 simuliris.tree_borrows.refl <> e_t:18 var
+R5064:5070 simuliris.tree_borrows.lang_base <> EndCall constr
+R5072:5074 simuliris.tree_borrows.refl <> e_s:19 var
+R5100:5110 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R5177:5185 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5193:5201 simuliris.tree_borrows.parallel_subst <> subst_map def
+R5237:5237 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5258:5263 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5269:5269 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5238:5257 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R5371:5371 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5383:5388 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5393:5393 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5372:5382 simuliris.tree_borrows.step_laws.steps_refl_endcall <> sim_endcall thm
+R5459:5474 simuliris.tree_borrows.logical_state <> value_rel_poison thm
+prf 5526:5552 <> bor_interp_scalar_eq_source
+binder 5554:5557 <> σ_t:20
+binder 5559:5562 <> σ_s:21
+binder 5564:5568 <> sc1_t:22
+binder 5570:5574 <> sc1_s:23
+binder 5576:5580 <> sc2_t:24
+binder 5582:5586 <> sc2_s:25
+R5626:5634 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R5594:5602 simuliris.tree_borrows.expr_semantics <> scalar_eq ind
+R5610:5612 simuliris.tree_borrows.lang bor_lang shp proj
+R5604:5607 simuliris.tree_borrows.refl <> σ_s:21 var
+R5615:5619 simuliris.tree_borrows.refl <> sc1_s:23 var
+R5621:5625 simuliris.tree_borrows.refl <> sc2_s:25 var
+R5653:5662 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R5635:5640 simuliris.tree_borrows.logical_state <> sc_rel def
+R5642:5646 simuliris.tree_borrows.refl <> sc1_t:22 var
+R5648:5652 simuliris.tree_borrows.refl <> sc1_s:23 var
+R5681:5690 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R5663:5668 simuliris.tree_borrows.logical_state <> sc_rel def
+R5670:5674 simuliris.tree_borrows.refl <> sc2_t:24 var
+R5676:5680 simuliris.tree_borrows.refl <> sc2_s:25 var
+R5718:5727 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R5691:5700 simuliris.tree_borrows.logical_state <> bor_interp def
+R5709:5712 simuliris.tree_borrows.refl <> σ_t:20 var
+R5714:5717 simuliris.tree_borrows.refl <> σ_s:21 var
+R5702:5707 simuliris.tree_borrows.logical_state <> sc_rel def
+R5728:5730 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5763:5765 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R5731:5739 simuliris.tree_borrows.expr_semantics <> scalar_eq ind
+R5747:5749 simuliris.tree_borrows.lang bor_lang shp proj
+R5741:5744 simuliris.tree_borrows.refl <> σ_t:20 var
+R5752:5756 simuliris.tree_borrows.refl <> sc1_t:22 var
+R5758:5762 simuliris.tree_borrows.refl <> sc2_t:24 var
+R5831:5831 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5851:5856 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5863:5863 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R5832:5850 simuliris.tree_borrows.logical_state <> bor_interp_get_pure thm
+R6075:6089 stdpp.fin_map_dom <> not_elem_of_dom thm
+R6116:6130 stdpp.fin_map_dom <> not_elem_of_dom thm
+R6184:6198 stdpp.fin_map_dom <> not_elem_of_dom thm
+R6225:6239 stdpp.fin_map_dom <> not_elem_of_dom thm
+prf 6264:6280 <> scalar_neq_source
+binder 6282:6286 <> sc1_t:26
+binder 6288:6292 <> sc1_s:27
+binder 6294:6298 <> sc2_t:28
+binder 6300:6304 <> sc2_s:29
+R6334:6342 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6312:6321 simuliris.tree_borrows.expr_semantics <> scalar_neq ind
+R6323:6327 simuliris.tree_borrows.refl <> sc1_s:27 var
+R6329:6333 simuliris.tree_borrows.refl <> sc2_s:29 var
+R6361:6370 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R6343:6348 simuliris.tree_borrows.logical_state <> sc_rel def
+R6350:6354 simuliris.tree_borrows.refl <> sc1_t:26 var
+R6356:6360 simuliris.tree_borrows.refl <> sc1_s:27 var
+R6389:6398 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6371:6376 simuliris.tree_borrows.logical_state <> sc_rel def
+R6378:6382 simuliris.tree_borrows.refl <> sc2_t:28 var
+R6384:6388 simuliris.tree_borrows.refl <> sc2_s:29 var
+R6399:6401 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6424:6426 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6402:6411 simuliris.tree_borrows.expr_semantics <> scalar_neq ind
+R6413:6417 simuliris.tree_borrows.refl <> sc1_t:26 var
+R6419:6423 simuliris.tree_borrows.refl <> sc2_t:28 var
+prf 6571:6597 <> bor_interp_scalar_eq_target
+binder 6599:6602 <> σ_t:30
+binder 6604:6607 <> σ_s:31
+binder 6609:6613 <> sc1_t:32
+binder 6615:6619 <> sc1_s:33
+binder 6621:6625 <> sc2_t:34
+binder 6627:6631 <> sc2_s:35
+R6657:6665 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6644:6648 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6639:6643 simuliris.tree_borrows.refl <> sc1_s:33 var
+R6649:6656 simuliris.tree_borrows.lang_base <> ScPoison constr
+R6684:6692 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6671:6675 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R6666:6670 simuliris.tree_borrows.refl <> sc2_s:35 var
+R6676:6683 simuliris.tree_borrows.lang_base <> ScPoison constr
+R6725:6733 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R6693:6701 simuliris.tree_borrows.expr_semantics <> scalar_eq ind
+R6709:6711 simuliris.tree_borrows.lang bor_lang shp proj
+R6703:6706 simuliris.tree_borrows.refl <> σ_t:30 var
+R6714:6718 simuliris.tree_borrows.refl <> sc1_t:32 var
+R6720:6724 simuliris.tree_borrows.refl <> sc2_t:34 var
+R6752:6761 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R6734:6739 simuliris.tree_borrows.logical_state <> sc_rel def
+R6741:6745 simuliris.tree_borrows.refl <> sc1_t:32 var
+R6747:6751 simuliris.tree_borrows.refl <> sc1_s:33 var
+R6780:6789 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6762:6767 simuliris.tree_borrows.logical_state <> sc_rel def
+R6769:6773 simuliris.tree_borrows.refl <> sc2_t:34 var
+R6775:6779 simuliris.tree_borrows.refl <> sc2_s:35 var
+R6817:6826 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R6790:6799 simuliris.tree_borrows.logical_state <> bor_interp def
+R6808:6811 simuliris.tree_borrows.refl <> σ_t:30 var
+R6813:6816 simuliris.tree_borrows.refl <> σ_s:31 var
+R6801:6806 simuliris.tree_borrows.logical_state <> sc_rel def
+R6827:6829 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6862:6864 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R6830:6838 simuliris.tree_borrows.expr_semantics <> scalar_eq ind
+R6846:6848 simuliris.tree_borrows.lang bor_lang shp proj
+R6840:6843 simuliris.tree_borrows.refl <> σ_s:31 var
+R6851:6855 simuliris.tree_borrows.refl <> sc1_s:33 var
+R6857:6861 simuliris.tree_borrows.refl <> sc2_s:35 var
+R6934:6934 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6954:6959 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6966:6966 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R6935:6953 simuliris.tree_borrows.logical_state <> bor_interp_get_pure thm
+R7210:7224 stdpp.fin_map_dom <> not_elem_of_dom thm
+R7250:7264 stdpp.fin_map_dom <> not_elem_of_dom thm
+R7318:7332 stdpp.fin_map_dom <> not_elem_of_dom thm
+R7358:7372 stdpp.fin_map_dom <> not_elem_of_dom thm
+prf 7397:7413 <> scalar_neq_target
+binder 7415:7419 <> sc1_t:36
+binder 7421:7425 <> sc1_s:37
+binder 7427:7431 <> sc2_t:38
+binder 7433:7437 <> sc2_s:39
+R7463:7471 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7450:7454 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7445:7449 simuliris.tree_borrows.refl <> sc1_s:37 var
+R7455:7462 simuliris.tree_borrows.lang_base <> ScPoison constr
+R7490:7498 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7477:7481 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R7472:7476 simuliris.tree_borrows.refl <> sc2_s:39 var
+R7482:7489 simuliris.tree_borrows.lang_base <> ScPoison constr
+R7521:7529 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R7499:7508 simuliris.tree_borrows.expr_semantics <> scalar_neq ind
+R7510:7514 simuliris.tree_borrows.refl <> sc1_t:36 var
+R7516:7520 simuliris.tree_borrows.refl <> sc2_t:38 var
+R7548:7557 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R7530:7535 simuliris.tree_borrows.logical_state <> sc_rel def
+R7537:7541 simuliris.tree_borrows.refl <> sc1_t:36 var
+R7543:7547 simuliris.tree_borrows.refl <> sc1_s:37 var
+R7576:7585 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7558:7563 simuliris.tree_borrows.logical_state <> sc_rel def
+R7565:7569 simuliris.tree_borrows.refl <> sc2_t:38 var
+R7571:7575 simuliris.tree_borrows.refl <> sc2_s:39 var
+R7586:7588 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7611:7613 iris.bi.interface <> ::bi_scope:'⌜'_x_'⌝' not
+R7589:7598 simuliris.tree_borrows.expr_semantics <> scalar_neq ind
+R7600:7604 simuliris.tree_borrows.refl <> sc1_s:37 var
+R7606:7610 simuliris.tree_borrows.refl <> sc2_s:39 var
+prf 7803:7811 <> sim_eq_op
+binder 7813:7816 <> r1_t:40
+binder 7818:7821 <> r1_s:41
+binder 7823:7826 <> r2_t:42
+binder 7828:7831 <> r2_s:43
+binder 7833:7834 <> Φ:44
+binder 7836:7837 <> π:45
+R7859:7868 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R7845:7848 simuliris.tree_borrows.logical_state <> rrel def
+R7850:7853 simuliris.tree_borrows.refl <> r1_t:40 var
+R7855:7858 simuliris.tree_borrows.refl <> r1_s:41 var
+R7883:7892 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7869:7872 simuliris.tree_borrows.logical_state <> rrel def
+R7874:7877 simuliris.tree_borrows.refl <> r2_t:42 var
+R7879:7882 simuliris.tree_borrows.refl <> r2_s:43 var
+R7893:7893 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7963:7973 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7894:7897 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+R7907:7908 iris.bi.interface <> ::bi_scope:'∀'_x_'..'_x_','_x not
+binder 7898:7901 <> sc_t:46
+binder 7903:7906 <> sc_s:47
+R7925:7930 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R7909:7914 simuliris.tree_borrows.logical_state <> sc_rel def
+R7916:7919 simuliris.tree_borrows.refl <> sc_t:46 var
+R7921:7924 simuliris.tree_borrows.refl <> sc_s:47 var
+R7938:7942 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7945:7946 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7954:7957 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7960:7962 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7958:7959 simuliris.tree_borrows.refl <> Φ:44 var
+R7943:7944 simuliris.tree_borrows.refl <> π:45 var
+R7931:7932 simuliris.tree_borrows.notation <> ::expr_scope:'#['_x_';'_'..'_';'_x_']' not
+R7937:7937 simuliris.tree_borrows.notation <> ::expr_scope:'#['_x_';'_'..'_';'_x_']' not
+R7933:7936 simuliris.tree_borrows.refl <> sc_t:46 var
+R7947:7948 simuliris.tree_borrows.notation <> ::expr_scope:'#['_x_';'_'..'_';'_x_']' not
+R7953:7953 simuliris.tree_borrows.notation <> ::expr_scope:'#['_x_';'_'..'_';'_x_']' not
+R7949:7952 simuliris.tree_borrows.refl <> sc_s:47 var
+R7989:7993 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R7996:7997 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8013:8016 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8019:8021 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R8017:8018 simuliris.tree_borrows.refl <> Φ:44 var
+R7994:7995 simuliris.tree_borrows.refl <> π:45 var
+R7979:7981 simuliris.tree_borrows.notation <> ::expr_scope:x_'='_x not
+R7975:7978 simuliris.tree_borrows.refl <> r1_t:40 var
+R7982:7985 simuliris.tree_borrows.refl <> r2_t:42 var
+R8003:8005 simuliris.tree_borrows.notation <> ::expr_scope:x_'='_x not
+R7999:8002 simuliris.tree_borrows.refl <> r1_s:41 var
+R8006:8009 simuliris.tree_borrows.refl <> r2_s:43 var
+R8074:8096 simuliris.simulation.lifting <> sim_lift_base_step_both thm
+R8195:8211 simuliris.simulation.lifting <> pool_safe_implies thm
+R8344:8348 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R8331:8335 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R8336:8343 simuliris.tree_borrows.lang_base <> ScPoison constr
+R8354:8358 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'≠'_x not
+R8359:8366 simuliris.tree_borrows.lang_base <> ScPoison constr
+R8487:8487 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8514:8519 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8525:8525 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8488:8513 simuliris.tree_borrows.logical_state <> value_rel_singleton_source thm
+R8566:8566 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8593:8598 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8604:8604 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8567:8592 simuliris.tree_borrows.logical_state <> value_rel_singleton_source thm
+R8720:8720 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8766:8771 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8788:8788 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R8721:8747 simuliris.tree_borrows.refl <> bor_interp_scalar_eq_source thm
+R8881:8891 simuliris.tree_borrows.expr_semantics <> BinOpEqTrue constr
+R9145:9155 simuliris.tree_borrows.expr_semantics <> BinOpEqTrue constr
+R9278:9278 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9296:9301 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9313:9313 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9279:9295 simuliris.tree_borrows.refl <> scalar_neq_target thm
+R9402:9413 simuliris.tree_borrows.expr_semantics <> BinOpEqFalse constr
+R9512:9512 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9530:9535 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9547:9547 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9513:9529 simuliris.tree_borrows.refl <> scalar_neq_source thm
+R9653:9664 simuliris.tree_borrows.expr_semantics <> BinOpEqFalse constr
+R9871:9871 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9899:9904 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9921:9921 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R9872:9898 simuliris.tree_borrows.refl <> bor_interp_scalar_eq_target thm
+R10008:10018 simuliris.tree_borrows.expr_semantics <> BinOpEqTrue constr
+R10188:10199 simuliris.tree_borrows.expr_semantics <> BinOpEqFalse constr
+prf 10280:10292 <> log_rel_binop
+binder 10294:10297 <> e1_t:48
+binder 10299:10302 <> e1_s:49
+binder 10304:10307 <> e2_t:50
+binder 10309:10312 <> e2_s:51
+binder 10314:10314 <> o:52
+R10339:10344 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R10322:10328 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R10330:10333 simuliris.tree_borrows.refl <> e1_t:48 var
+R10335:10338 simuliris.tree_borrows.refl <> e1_s:49 var
+R10362:10367 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R10345:10351 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R10353:10356 simuliris.tree_borrows.refl <> e2_t:50 var
+R10358:10361 simuliris.tree_borrows.refl <> e2_s:51 var
+R10368:10374 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R10377:10381 simuliris.tree_borrows.lang_base <> BinOp constr
+R10383:10383 simuliris.tree_borrows.refl <> o:52 var
+R10385:10388 simuliris.tree_borrows.refl <> e1_t:48 var
+R10390:10393 simuliris.tree_borrows.refl <> e2_t:50 var
+R10397:10401 simuliris.tree_borrows.lang_base <> BinOp constr
+R10403:10403 simuliris.tree_borrows.refl <> o:52 var
+R10405:10408 simuliris.tree_borrows.refl <> e1_s:49 var
+R10410:10413 simuliris.tree_borrows.refl <> e2_s:51 var
+R10439:10449 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R10522:10530 simuliris.tree_borrows.parallel_subst <> subst_map def
+R10541:10549 simuliris.tree_borrows.parallel_subst <> subst_map def
+R10589:10589 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10610:10615 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10621:10621 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10590:10609 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R10693:10701 simuliris.tree_borrows.parallel_subst <> subst_map def
+R10712:10720 simuliris.tree_borrows.parallel_subst <> subst_map def
+R10760:10760 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10781:10786 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10792:10792 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10761:10780 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R10996:10996 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11006:11011 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11021:11021 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R10997:11005 simuliris.tree_borrows.refl <> sim_eq_op thm
+prf 11092:11103 <> log_rel_proj
+binder 11105:11108 <> e1_t:53
+binder 11110:11113 <> e1_s:54
+binder 11115:11118 <> e2_t:55
+binder 11120:11123 <> e2_s:56
+R11148:11153 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R11131:11137 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R11139:11142 simuliris.tree_borrows.refl <> e1_t:53 var
+R11144:11147 simuliris.tree_borrows.refl <> e1_s:54 var
+R11171:11176 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R11154:11160 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R11162:11165 simuliris.tree_borrows.refl <> e2_t:55 var
+R11167:11170 simuliris.tree_borrows.refl <> e2_s:56 var
+R11177:11183 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R11186:11189 simuliris.tree_borrows.lang_base <> Proj constr
+R11191:11194 simuliris.tree_borrows.refl <> e1_t:53 var
+R11196:11199 simuliris.tree_borrows.refl <> e2_t:55 var
+R11203:11206 simuliris.tree_borrows.lang_base <> Proj constr
+R11208:11211 simuliris.tree_borrows.refl <> e1_s:54 var
+R11213:11216 simuliris.tree_borrows.refl <> e2_s:56 var
+R11242:11252 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R11325:11333 simuliris.tree_borrows.parallel_subst <> subst_map def
+R11344:11352 simuliris.tree_borrows.parallel_subst <> subst_map def
+R11392:11392 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11413:11418 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11424:11424 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11393:11412 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R11496:11504 simuliris.tree_borrows.parallel_subst <> subst_map def
+R11515:11523 simuliris.tree_borrows.parallel_subst <> subst_map def
+R11563:11563 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11584:11589 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11595:11595 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11564:11583 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R11727:11727 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11744:11749 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11755:11755 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11728:11743 simuliris.tree_borrows.logical_state <> value_rel_length thm
+R11780:11780 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11797:11802 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11808:11808 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R11781:11796 simuliris.tree_borrows.logical_state <> value_rel_lookup thm
+R11867:11878 Stdlib.ZArith.Znat Nat2Z inj_lt thm
+R11881:11894 stdpp.list_basics list lookup_lt_Some thm
+prf 11987:11998 <> log_rel_conc
+binder 12000:12003 <> e1_t:57
+binder 12005:12008 <> e1_s:58
+binder 12010:12013 <> e2_t:59
+binder 12015:12018 <> e2_s:60
+R12043:12048 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R12026:12032 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R12034:12037 simuliris.tree_borrows.refl <> e1_t:57 var
+R12039:12042 simuliris.tree_borrows.refl <> e1_s:58 var
+R12066:12071 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R12049:12055 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R12057:12060 simuliris.tree_borrows.refl <> e2_t:59 var
+R12062:12065 simuliris.tree_borrows.refl <> e2_s:60 var
+R12072:12078 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R12081:12084 simuliris.tree_borrows.lang_base <> Conc constr
+R12086:12089 simuliris.tree_borrows.refl <> e1_t:57 var
+R12091:12094 simuliris.tree_borrows.refl <> e2_t:59 var
+R12098:12101 simuliris.tree_borrows.lang_base <> Conc constr
+R12103:12106 simuliris.tree_borrows.refl <> e1_s:58 var
+R12108:12111 simuliris.tree_borrows.refl <> e2_s:60 var
+R12137:12147 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R12220:12228 simuliris.tree_borrows.parallel_subst <> subst_map def
+R12239:12247 simuliris.tree_borrows.parallel_subst <> subst_map def
+R12287:12287 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12308:12313 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12319:12319 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12288:12307 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R12391:12399 simuliris.tree_borrows.parallel_subst <> subst_map def
+R12410:12418 simuliris.tree_borrows.parallel_subst <> subst_map def
+R12458:12458 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12479:12484 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12490:12490 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12459:12478 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R12665:12678 simuliris.tree_borrows.logical_state <> rrel_value_rel thm
+R12688:12688 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12702:12707 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12717:12717 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12689:12701 simuliris.tree_borrows.logical_state <> value_rel_app thm
+prf 12736:12748 <> log_rel_deref
+binder 12750:12752 <> e_t:61
+binder 12754:12756 <> e_s:62
+binder 12758:12758 <> T:63
+R12781:12786 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R12766:12772 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R12774:12776 simuliris.tree_borrows.refl <> e_t:61 var
+R12778:12780 simuliris.tree_borrows.refl <> e_s:62 var
+R12787:12793 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R12796:12800 simuliris.tree_borrows.lang_base <> Deref constr
+R12802:12804 simuliris.tree_borrows.refl <> e_t:61 var
+R12806:12806 simuliris.tree_borrows.refl <> T:63 var
+R12810:12814 simuliris.tree_borrows.lang_base <> Deref constr
+R12816:12818 simuliris.tree_borrows.refl <> e_s:62 var
+R12820:12820 simuliris.tree_borrows.refl <> T:63 var
+R12846:12856 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R12923:12931 simuliris.tree_borrows.parallel_subst <> subst_map def
+R12941:12949 simuliris.tree_borrows.parallel_subst <> subst_map def
+R12987:12987 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13008:13013 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13019:13019 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R12988:13007 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+prf 13157:13167 <> log_rel_ref
+binder 13169:13171 <> e_t:64
+binder 13173:13175 <> e_s:65
+R13198:13203 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R13183:13189 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R13191:13193 simuliris.tree_borrows.refl <> e_t:64 var
+R13195:13197 simuliris.tree_borrows.refl <> e_s:65 var
+R13204:13210 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R13213:13215 simuliris.tree_borrows.lang_base <> Ref constr
+R13217:13219 simuliris.tree_borrows.refl <> e_t:64 var
+R13223:13225 simuliris.tree_borrows.lang_base <> Ref constr
+R13227:13229 simuliris.tree_borrows.refl <> e_s:65 var
+R13255:13265 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R13332:13340 simuliris.tree_borrows.parallel_subst <> subst_map def
+R13350:13358 simuliris.tree_borrows.parallel_subst <> subst_map def
+R13396:13396 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13417:13422 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13428:13428 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13397:13416 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+prf 13566:13577 <> log_rel_copy
+binder 13579:13581 <> e_t:66
+binder 13583:13585 <> e_s:67
+R13608:13613 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R13593:13599 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R13601:13603 simuliris.tree_borrows.refl <> e_t:66 var
+R13605:13607 simuliris.tree_borrows.refl <> e_s:67 var
+R13614:13620 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R13623:13626 simuliris.tree_borrows.lang_base <> Copy constr
+R13628:13630 simuliris.tree_borrows.refl <> e_t:66 var
+R13634:13637 simuliris.tree_borrows.lang_base <> Copy constr
+R13639:13641 simuliris.tree_borrows.refl <> e_s:67 var
+R13667:13677 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R13744:13752 simuliris.tree_borrows.parallel_subst <> subst_map def
+R13762:13770 simuliris.tree_borrows.parallel_subst <> subst_map def
+R13808:13808 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13829:13834 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13840:13840 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13809:13828 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R13941:13941 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13957:13962 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13969:13969 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R13942:13956 simuliris.tree_borrows.step_laws.steps_read_write_simple <> sim_copy_public thm
+R13984:13993 simuliris.tree_borrows.logical_state <> rrel_place thm
+prf 14058:14070 <> log_rel_write
+binder 14072:14075 <> e1_t:68
+binder 14077:14080 <> e1_s:69
+binder 14082:14085 <> e2_t:70
+binder 14087:14090 <> e2_s:71
+R14115:14124 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R14098:14104 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R14106:14109 simuliris.tree_borrows.refl <> e1_t:68 var
+R14111:14114 simuliris.tree_borrows.refl <> e1_s:69 var
+R14142:14151 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R14125:14131 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R14133:14136 simuliris.tree_borrows.refl <> e2_t:70 var
+R14138:14141 simuliris.tree_borrows.refl <> e2_s:71 var
+R14152:14158 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R14161:14165 simuliris.tree_borrows.lang_base <> Write constr
+R14167:14170 simuliris.tree_borrows.refl <> e1_t:68 var
+R14172:14175 simuliris.tree_borrows.refl <> e2_t:70 var
+R14179:14183 simuliris.tree_borrows.lang_base <> Write constr
+R14185:14188 simuliris.tree_borrows.refl <> e1_s:69 var
+R14190:14193 simuliris.tree_borrows.refl <> e2_s:71 var
+R14219:14229 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R14302:14310 simuliris.tree_borrows.parallel_subst <> subst_map def
+R14321:14329 simuliris.tree_borrows.parallel_subst <> subst_map def
+R14369:14369 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14390:14395 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14401:14401 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14370:14389 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R14473:14481 simuliris.tree_borrows.parallel_subst <> subst_map def
+R14492:14500 simuliris.tree_borrows.parallel_subst <> subst_map def
+R14540:14540 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14561:14566 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14572:14572 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14541:14560 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R14701:14701 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14718:14723 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14735:14735 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R14702:14717 simuliris.tree_borrows.step_laws.steps_read_write_simple <> sim_write_public thm
+R14750:14759 simuliris.tree_borrows.logical_state <> rrel_place thm
+prf 14803:14815 <> log_rel_retag
+binder 14817:14820 <> e1_t:72
+binder 14822:14825 <> e1_s:73
+binder 14827:14830 <> e2_t:74
+binder 14832:14835 <> e2_s:75
+binder 14837:14838 <> pk:76
+binder 14840:14841 <> im:77
+binder 14843:14843 <> T:78
+binder 14845:14845 <> k:79
+R14870:14879 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R14853:14859 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R14861:14864 simuliris.tree_borrows.refl <> e1_t:72 var
+R14866:14869 simuliris.tree_borrows.refl <> e1_s:73 var
+R14897:14906 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R14880:14886 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R14888:14891 simuliris.tree_borrows.refl <> e2_t:74 var
+R14893:14896 simuliris.tree_borrows.refl <> e2_s:75 var
+R14907:14913 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R14916:14920 simuliris.tree_borrows.lang_base <> Retag constr
+R14922:14925 simuliris.tree_borrows.refl <> e1_t:72 var
+R14927:14930 simuliris.tree_borrows.refl <> e2_t:74 var
+R14932:14933 simuliris.tree_borrows.refl <> pk:76 var
+R14935:14936 simuliris.tree_borrows.refl <> im:77 var
+R14938:14938 simuliris.tree_borrows.refl <> T:78 var
+R14940:14940 simuliris.tree_borrows.refl <> k:79 var
+R14944:14948 simuliris.tree_borrows.lang_base <> Retag constr
+R14950:14953 simuliris.tree_borrows.refl <> e1_s:73 var
+R14955:14958 simuliris.tree_borrows.refl <> e2_s:75 var
+R14960:14961 simuliris.tree_borrows.refl <> pk:76 var
+R14963:14964 simuliris.tree_borrows.refl <> im:77 var
+R14966:14966 simuliris.tree_borrows.refl <> T:78 var
+R14968:14968 simuliris.tree_borrows.refl <> k:79 var
+R14994:15004 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R15077:15085 simuliris.tree_borrows.parallel_subst <> subst_map def
+R15096:15104 simuliris.tree_borrows.parallel_subst <> subst_map def
+R15144:15144 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15165:15170 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15176:15176 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15145:15164 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R15248:15256 simuliris.tree_borrows.parallel_subst <> subst_map def
+R15267:15275 simuliris.tree_borrows.parallel_subst <> subst_map def
+R15315:15315 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15336:15341 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15347:15347 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15316:15335 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R15476:15476 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15493:15498 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15504:15504 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15477:15492 simuliris.tree_borrows.step_laws.steps_retag <> sim_retag_public thm
+R15523:15535 simuliris.tree_borrows.logical_state <> value_rel_ptr thm
+prf 15600:15607 <> sim_case
+binder 15609:15610 <> π:80
+binder 15612:15614 <> e_t:81
+binder 15616:15618 <> e_s:82
+binder 15620:15623 <> el_t:83
+binder 15625:15628 <> el_s:84
+binder 15630:15631 <> Ψ:85
+R15665:15674 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R15642:15646 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R15649:15650 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R15654:15657 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R15662:15664 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R15658:15661 simuliris.tree_borrows.logical_state <> rrel def
+R15647:15648 simuliris.tree_borrows.refl <> π:80 var
+R15639:15641 simuliris.tree_borrows.refl <> e_t:81 var
+R15651:15653 simuliris.tree_borrows.refl <> e_s:82 var
+R15675:15675 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15738:15748 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R15676:15686 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R15691:15691 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R15696:15700 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R15705:15705 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R15710:15711 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+binder 15687:15690 <> e_t':86
+binder 15687:15690 <> e_t':87
+binder 15692:15695 <> e_s':88
+binder 15692:15695 <> e_s':89
+R15716:15720 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15723:15724 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15729:15732 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15735:15737 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15733:15734 simuliris.tree_borrows.refl <> Ψ:85 var
+R15721:15722 simuliris.tree_borrows.refl <> π:80 var
+R15712:15715 simuliris.tree_borrows.refl <> e_t':86 var
+R15725:15728 simuliris.tree_borrows.refl <> e_s':88 var
+R15701:15704 simuliris.tree_borrows.refl <> el_t:83 var
+R15706:15709 simuliris.tree_borrows.refl <> el_s:84 var
+R15762:15766 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15769:15770 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15784:15787 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15790:15792 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'[{'_x_'}]' not
+R15788:15789 simuliris.tree_borrows.refl <> Ψ:85 var
+R15767:15768 simuliris.tree_borrows.refl <> π:80 var
+R15749:15752 simuliris.tree_borrows.lang_base <> Case constr
+R15754:15756 simuliris.tree_borrows.refl <> e_t:81 var
+R15758:15761 simuliris.tree_borrows.refl <> el_t:83 var
+R15771:15774 simuliris.tree_borrows.lang_base <> Case constr
+R15776:15778 simuliris.tree_borrows.refl <> e_s:82 var
+R15780:15783 simuliris.tree_borrows.refl <> el_s:84 var
+R15942:15942 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15959:15964 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15970:15970 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R15943:15958 iris.bi.big_op <> big_sepL2_length thm
+R15999:15999 Corelib.Numbers.BinNums <> Z ind
+R16034:16036 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16029:16032 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16037:16040 Corelib.Init.Datatypes <> Some constr
+R16067:16070 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R16075:16076 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 16071:16074 <> e_t':90
+R16095:16097 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R16081:16084 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R16085:16092 Stdlib.ZArith.BinInt Z to_nat def
+R16098:16101 Corelib.Init.Datatypes <> Some constr
+R16103:16106 simuliris.tree_borrows.refl <> e_t':90 var
+binder 16071:16074 <> e_t':91
+R16103:16106 simuliris.tree_borrows.refl <> e_t':91 var
+R16133:16151 stdpp.list_basics list lookup_lt_is_Some_2 thm
+R16160:16173 stdpp.list_basics list lookup_lt_Some thm
+R16271:16271 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16308:16313 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16319:16319 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16272:16287 iris.bi.big_op <> big_sepL2_lookup thm
+prf 16338:16349 <> log_rel_case
+binder 16351:16353 <> e_t:92
+binder 16355:16357 <> e_s:93
+binder 16359:16362 <> el_t:94
+binder 16364:16367 <> el_s:95
+R16390:16399 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R16375:16381 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R16383:16385 simuliris.tree_borrows.refl <> e_t:92 var
+R16387:16389 simuliris.tree_borrows.refl <> e_s:93 var
+R16400:16400 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R16454:16464 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R16401:16411 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R16416:16416 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R16421:16425 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R16430:16430 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+R16435:16436 iris.bi.big_op <> ::bi_scope:'[∗'_'list]'_x_';'_x_'∈'_x_';'_x_','_x not
+binder 16412:16415 <> e_t':96
+binder 16412:16415 <> e_t':97
+binder 16417:16420 <> e_s':98
+binder 16417:16420 <> e_s':99
+R16437:16443 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R16445:16448 simuliris.tree_borrows.refl <> e_t':96 var
+R16450:16453 simuliris.tree_borrows.refl <> e_s':98 var
+R16426:16429 simuliris.tree_borrows.refl <> el_t:94 var
+R16431:16434 simuliris.tree_borrows.refl <> el_s:95 var
+R16465:16471 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R16474:16477 simuliris.tree_borrows.lang_base <> Case constr
+R16479:16481 simuliris.tree_borrows.refl <> e_t:92 var
+R16483:16486 simuliris.tree_borrows.refl <> el_t:94 var
+R16490:16493 simuliris.tree_borrows.lang_base <> Case constr
+R16495:16497 simuliris.tree_borrows.refl <> e_s:93 var
+R16499:16502 simuliris.tree_borrows.refl <> el_s:95 var
+R16528:16538 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R16590:16598 simuliris.tree_borrows.parallel_subst <> subst_map def
+R16612:16619 simuliris.tree_borrows.refl <> sim_case thm
+R16644:16650 stdpp.base <> left_id def
+R16659:16663 iris.bi.interface <> ::bi_scope:'(∗)' not
+R16652:16655 iris.bi.interface <> ::bi_scope:'True' not
+R16707:16707 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16728:16733 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16739:16739 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16708:16727 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R16768:16783 iris.bi.big_op <> big_sepL2_fmap_l thm
+R16785:16800 iris.bi.big_op <> big_sepL2_fmap_r thm
+R16814:16814 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16829:16834 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16840:16840 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16815:16828 iris.bi.big_op <> big_sepL2_impl thm
+R16922:16922 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16943:16948 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16954:16954 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R16923:16942 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R16967:16987 stdpp.list_basics list list_elem_of_lookup_2 thm
+R17013:17028 simuliris.tree_borrows.parallel_subst <> free_vars_case_2 thm
+R17050:17065 simuliris.tree_borrows.parallel_subst <> free_vars_case_2 thm
+prf 17120:17132 <> log_rel_while
+binder 17134:17137 <> e1_t:100
+binder 17139:17142 <> e1_s:101
+binder 17144:17147 <> e2_t:102
+binder 17149:17152 <> e2_s:103
+R17177:17186 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R17160:17166 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R17168:17171 simuliris.tree_borrows.refl <> e1_t:100 var
+R17173:17176 simuliris.tree_borrows.refl <> e1_s:101 var
+R17204:17213 iris.bi.interface <> ::bi_scope:x_'-∗'_x not
+R17187:17193 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R17195:17198 simuliris.tree_borrows.refl <> e2_t:102 var
+R17200:17203 simuliris.tree_borrows.refl <> e2_s:103 var
+R17214:17220 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R17223:17227 simuliris.tree_borrows.lang_base <> While constr
+R17229:17232 simuliris.tree_borrows.refl <> e1_t:100 var
+R17234:17237 simuliris.tree_borrows.refl <> e2_t:102 var
+R17241:17245 simuliris.tree_borrows.lang_base <> While constr
+R17247:17250 simuliris.tree_borrows.refl <> e1_s:101 var
+R17252:17255 simuliris.tree_borrows.refl <> e2_s:103 var
+R17281:17291 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R17355:17355 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17377:17382 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17389:17389 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17356:17370 simuliris.tree_borrows.step_laws.steps_refl <> sim_while_while thm
+R17372:17374 iris.bi.interface <> ::bi_scope:'emp' not
+R17431:17438 simuliris.tree_borrows.refl <> sim_case thm
+R17463:17469 stdpp.base <> left_id def
+R17478:17482 iris.bi.interface <> ::bi_scope:'(∗)' not
+R17471:17474 iris.bi.interface <> ::bi_scope:'True' not
+R17526:17526 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17547:17552 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17558:17558 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17527:17546 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R17587:17600 iris.bi.big_op <> big_sepL2_cons thm
+R17602:17620 iris.bi.big_op <> big_sepL2_singleton thm
+R17645:17657 simuliris.simulation.slsls <> sim_expr_base thm
+R17675:17687 simuliris.simulation.slsls <> lift_post_val thm
+R17692:17695 simuliris.tree_borrows.lang_base <> ValR constr
+R17697:17697 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R17699:17699 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R17703:17706 simuliris.tree_borrows.lang_base <> ValR constr
+R17708:17708 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R17710:17710 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R17729:17742 simuliris.tree_borrows.logical_state <> rrel_value_rel thm
+R17772:17787 simuliris.tree_borrows.logical_state <> value_rel_poison thm
+R17812:17820 simuliris.tree_borrows.parallel_subst <> subst_map def
+R17831:17839 simuliris.tree_borrows.parallel_subst <> subst_map def
+R17881:17881 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17902:17907 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17913:17913 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R17882:17901 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R17973:17985 simuliris.simulation.slsls <> sim_expr_base thm
+prf 18022:18033 <> log_rel_fork
+binder 18035:18037 <> e_t:104
+binder 18039:18041 <> e_s:105
+R18064:18068 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R18049:18055 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R18057:18059 simuliris.tree_borrows.refl <> e_t:104 var
+R18061:18063 simuliris.tree_borrows.refl <> e_s:105 var
+R18069:18075 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R18078:18081 simuliris.tree_borrows.lang_base <> Fork constr
+R18083:18085 simuliris.tree_borrows.refl <> e_t:104 var
+R18089:18092 simuliris.tree_borrows.lang_base <> Fork constr
+R18094:18096 simuliris.tree_borrows.refl <> e_s:105 var
+R18122:18132 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R18190:18190 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18199:18204 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18209:18209 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18191:18198 simuliris.tree_borrows.step_laws.steps_refl <> sim_fork thm
+R18266:18272 stdpp.base <> left_id def
+R18281:18285 iris.bi.interface <> ::bi_scope:'(∗)' not
+R18274:18277 iris.bi.interface <> ::bi_scope:'True' not
+prf 18323:18335 <> log_rel_alloc
+binder 18337:18337 <> T:106
+R18345:18348 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R18349:18355 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R18358:18362 simuliris.tree_borrows.lang_base <> Alloc constr
+R18364:18364 simuliris.tree_borrows.refl <> T:106 var
+R18368:18372 simuliris.tree_borrows.lang_base <> Alloc constr
+R18374:18374 simuliris.tree_borrows.refl <> T:106 var
+R18400:18410 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R18458:18473 simuliris.tree_borrows.step_laws.steps_refl <> sim_alloc_public thm
+prf 18539:18550 <> log_rel_free
+binder 18552:18554 <> e_t:107
+binder 18556:18558 <> e_s:108
+R18581:18585 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R18566:18572 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R18574:18576 simuliris.tree_borrows.refl <> e_t:107 var
+R18578:18580 simuliris.tree_borrows.refl <> e_s:108 var
+R18586:18592 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R18595:18598 simuliris.tree_borrows.lang_base <> Free constr
+R18600:18602 simuliris.tree_borrows.refl <> e_t:107 var
+R18606:18609 simuliris.tree_borrows.lang_base <> Free constr
+R18611:18613 simuliris.tree_borrows.refl <> e_s:108 var
+R18639:18649 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R18716:18724 simuliris.tree_borrows.parallel_subst <> subst_map def
+R18732:18740 simuliris.tree_borrows.parallel_subst <> subst_map def
+R18776:18776 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18797:18802 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18808:18808 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18777:18796 simuliris.simulation.gen_log_rel <> subst_map_rel_weaken thm
+R18909:18909 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18925:18930 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18937:18937 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R18910:18924 simuliris.tree_borrows.step_laws.steps_refl_delete <> sim_free_public thm
+R18952:18961 simuliris.tree_borrows.logical_state <> rrel_place thm
+prf 19003:19016 <> log_rel_result
+binder 19018:19020 <> v_t:109
+binder 19022:19024 <> v_s:110
+R19044:19048 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R19032:19035 simuliris.tree_borrows.logical_state <> rrel def
+R19037:19039 simuliris.tree_borrows.refl <> v_t:109 var
+R19041:19043 simuliris.tree_borrows.refl <> v_s:110 var
+R19049:19055 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R19058:19066 simuliris.tree_borrows.lang_base <> of_result def
+R19068:19070 simuliris.tree_borrows.refl <> v_t:109 var
+R19074:19082 simuliris.tree_borrows.lang_base <> of_result def
+R19084:19086 simuliris.tree_borrows.refl <> v_s:110 var
+R19112:19122 simuliris.simulation.gen_log_rel <> gen_log_rel def
+R19178:19196 simuliris.tree_borrows.parallel_subst <> subst_map_of_result thm
+R19242:19248 simuliris.tree_borrows.refl log_rel <> sec
+sec 19260:19263 <> refl
+R19279:19284 simuliris.tree_borrows.logical_state <> sborGS class
+prf 19302:19322 <> sb_log_rel_structural
+R19326:19343 simuliris.tree_borrows.log_rel_structural <> log_rel_structural def
+R19345:19358 simuliris.tree_borrows.behavior <> treeborrows_wf def
+R19589:19602 simuliris.tree_borrows.refl <> log_rel_result thm
+R19605:19608 simuliris.tree_borrows.lang_base <> ValR constr
+R19614:19617 simuliris.tree_borrows.lang_base <> ValR constr
+R19634:19647 simuliris.tree_borrows.refl <> value_wf_sound thm
+R19682:19692 simuliris.tree_borrows.refl <> log_rel_var thm
+R19728:19728 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19741:19746 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19755:19755 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19729:19740 simuliris.tree_borrows.refl <> log_rel_call thm
+R19795:19810 simuliris.tree_borrows.refl <> log_rel_initcall thm
+R19849:19849 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19865:19870 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19875:19875 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19850:19864 simuliris.tree_borrows.refl <> log_rel_endcall thm
+R19911:19911 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19924:19929 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19938:19938 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19912:19923 simuliris.tree_borrows.refl <> log_rel_proj thm
+R19974:19974 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19987:19992 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20001:20001 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R19975:19986 simuliris.tree_borrows.refl <> log_rel_conc thm
+R20038:20038 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20052:20057 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20066:20066 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20039:20051 simuliris.tree_borrows.refl <> log_rel_binop thm
+R20103:20103 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20117:20122 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20127:20127 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20104:20116 simuliris.tree_borrows.refl <> log_rel_deref thm
+R20162:20162 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20174:20179 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20184:20184 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20163:20173 simuliris.tree_borrows.refl <> log_rel_ref thm
+R20220:20220 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20233:20238 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20243:20243 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20221:20232 simuliris.tree_borrows.refl <> log_rel_copy thm
+R20280:20280 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20294:20299 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20308:20308 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20281:20293 simuliris.tree_borrows.refl <> log_rel_write thm
+R20345:20357 simuliris.tree_borrows.refl <> log_rel_alloc thm
+R20393:20404 simuliris.tree_borrows.refl <> log_rel_free thm
+R20441:20441 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20455:20460 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20469:20469 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20442:20454 simuliris.tree_borrows.refl <> log_rel_retag thm
+R20504:20504 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20516:20521 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20530:20530 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20505:20515 simuliris.tree_borrows.refl <> log_rel_let thm
+R20566:20566 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20579:20584 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20593:20593 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20567:20578 simuliris.tree_borrows.refl <> log_rel_case thm
+R20629:20629 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20642:20647 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20652:20652 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20630:20641 simuliris.tree_borrows.refl <> log_rel_fork thm
+R20689:20689 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20703:20708 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20717:20717 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R20690:20702 simuliris.tree_borrows.refl <> log_rel_while thm
+prf 20740:20751 <> log_rel_refl
+binder 20753:20753 <> e:113
+R20770:20778 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20761:20767 simuliris.tree_borrows.behavior <> expr_wf abbrev
+R20769:20769 simuliris.tree_borrows.refl <> e:113 var
+R20779:20782 iris.bi.interface <> ::stdpp_scope:'⊢'_x not
+R20783:20789 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R20791:20791 simuliris.tree_borrows.refl <> e:113 var
+R20793:20793 simuliris.tree_borrows.refl <> e:113 var
+R20826:20837 simuliris.tree_borrows.log_rel_structural <> log_rel_refl thm
+R20855:20875 simuliris.tree_borrows.refl <> sb_log_rel_structural thm
+prf 20904:20914 <> log_rel_ctx
+binder 20916:20916 <> C:114
+binder 20918:20920 <> e_t:115
+binder 20922:20924 <> e_s:116
+R20940:20948 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R20932:20937 simuliris.tree_borrows.behavior <> ctx_wf abbrev
+R20939:20939 simuliris.tree_borrows.refl <> C:114 var
+R20964:20969 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R20949:20955 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R20957:20959 simuliris.tree_borrows.refl <> e_t:115 var
+R20961:20963 simuliris.tree_borrows.refl <> e_s:116 var
+R20970:20976 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R20979:20986 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R20988:20988 simuliris.tree_borrows.refl <> C:114 var
+R20990:20992 simuliris.tree_borrows.refl <> e_t:115 var
+R20996:21003 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R21005:21005 simuliris.tree_borrows.refl <> C:114 var
+R21007:21009 simuliris.tree_borrows.refl <> e_s:116 var
+R21043:21053 simuliris.tree_borrows.log_rel_structural <> log_rel_ctx thm
+R21071:21091 simuliris.tree_borrows.refl <> sb_log_rel_structural thm
+prf 21120:21131 <> log_rel_ectx
+binder 21133:21133 <> K:117
+binder 21135:21137 <> e_t:118
+binder 21139:21141 <> e_s:119
+R21158:21166 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21149:21155 simuliris.tree_borrows.behavior <> ectx_wf abbrev
+R21157:21157 simuliris.tree_borrows.refl <> K:117 var
+R21182:21187 iris.bi.interface <> ::stdpp_scope:x_'-∗'_x not
+R21167:21173 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R21175:21177 simuliris.tree_borrows.refl <> e_t:118 var
+R21179:21181 simuliris.tree_borrows.refl <> e_s:119 var
+R21188:21194 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R21197:21200 simuliris.tree_borrows.expr_semantics <> fill def
+R21202:21202 simuliris.tree_borrows.refl <> K:117 var
+R21204:21206 simuliris.tree_borrows.refl <> e_t:118 var
+R21210:21213 simuliris.tree_borrows.expr_semantics <> fill def
+R21215:21215 simuliris.tree_borrows.refl <> K:117 var
+R21217:21219 simuliris.tree_borrows.refl <> e_s:119 var
+R21253:21264 simuliris.tree_borrows.log_rel_structural <> log_rel_ectx thm
+R21282:21302 simuliris.tree_borrows.refl <> sb_log_rel_structural thm
+prf 21327:21342 <> log_rel_closed_1
+binder 21344:21346 <> e_t:120
+binder 21348:21350 <> e_s:121
+binder 21352:21353 <> π:122
+R21398:21406 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R21392:21394 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R21374:21378 stdpp.base <> ::stdpp_scope:x_'∪'_x not
+R21361:21369 simuliris.tree_borrows.parallel_subst <> free_vars def
+R21371:21373 simuliris.tree_borrows.refl <> e_t:120 var
+R21379:21387 simuliris.tree_borrows.parallel_subst <> free_vars def
+R21389:21391 simuliris.tree_borrows.refl <> e_s:121 var
+R21395:21397 stdpp.base <> ::stdpp_scope:'∅' not
+R21422:21426 iris.bi.interface <> ::stdpp_scope:x_'⊢'_x not
+R21407:21413 simuliris.tree_borrows.logical_state <> log_rel abbrev
+R21415:21417 simuliris.tree_borrows.refl <> e_t:120 var
+R21419:21421 simuliris.tree_borrows.refl <> e_s:121 var
+R21430:21434 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R21437:21438 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R21442:21445 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R21470:21472 simuliris.simulation.simulation <> ::bi_scope:x_'⪯{'_x_'}'_x_'{{'_x_'}}' not
+R21446:21448 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+R21456:21457 Stdlib.Unicode.Utf8_core <> :::'λ'_x_'..'_x_','_x not
+binder 21449:21451 <> v_t:123
+binder 21453:21455 <> v_s:124
+R21458:21461 simuliris.tree_borrows.logical_state <> rrel def
+R21463:21465 simuliris.tree_borrows.refl <> v_t:123 var
+R21467:21469 simuliris.tree_borrows.refl <> v_s:124 var
+R21435:21436 simuliris.tree_borrows.refl <> π:122 var
+R21427:21429 simuliris.tree_borrows.refl <> e_t:120 var
+R21439:21441 simuliris.tree_borrows.refl <> e_s:121 var
+R21520:21527 simuliris.simulation.slsls <> sim_mono thm
+R21542:21542 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21563:21568 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21575:21575 iris.proofmode.ltac_tactics <> :::'('_x_'with'_x_')' not
+R21543:21562 simuliris.simulation.gen_log_rel <> gen_log_rel_closed_1 thm
+R21632:21635 simuliris.tree_borrows.refl refl <> sec

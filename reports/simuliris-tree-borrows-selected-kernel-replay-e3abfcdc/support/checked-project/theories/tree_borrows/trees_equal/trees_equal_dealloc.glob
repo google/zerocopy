@@ -1,0 +1,265 @@
+DIGEST 068b1a8712bb3e2984ced39baccf983d
+Fsimuliris.tree_borrows.trees_equal.trees_equal_dealloc
+R35:43 iris.proofmode.proofmode <> <> lib
+R78:87 iris.bi.lib.fractional <> <> lib
+R130:138 iris.base_logic.lib.ghost_map <> <> lib
+R182:193 simuliris.base_logic.gen_sim_prog <> <> lib
+R237:241 simuliris.simulation.slsls <> <> lib
+R243:253 simuliris.simulation.gen_log_rel <> <> lib
+R297:303 simuliris.simulation.lifting <> <> lib
+R349:358 simuliris.tree_borrows.tkmap_view <> <> lib
+R404:407 simuliris.tree_borrows.defs <> <> lib
+R453:460 simuliris.tree_borrows.steps_wf <> <> lib
+R506:519 simuliris.tree_borrows.steps_progress <> <> lib
+R577:592 simuliris.tree_borrows.trees_equal.trees_equal_base <> <> lib
+R594:606 simuliris.tree_borrows.trees_equal.random_lemmas <> <> lib
+R608:630 simuliris.tree_borrows.trees_equal.trees_equal_more_access <> <> lib
+R632:662 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> <> lib
+sec 675:679 <> utils
+var  694:694 utils C
+R698:708 simuliris.tree_borrows.lang_base <> call_id_set def
+prf 721:757 <> trees_equal_same_protector_end_action
+binder 760:762 <> tr1:2
+binder 764:766 <> tr2:3
+binder 768:769 <> tg:4
+binder 771:771 <> d:5
+binder 773:775 <> it1:6
+binder 777:779 <> it2:7
+R805:811 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R814:815 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 812:813 <> tg:8
+R836:839 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R816:828 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R830:831 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:8 var
+R833:835 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:2 var
+R840:850 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R852:853 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:8 var
+R855:857 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:2 var
+binder 787:801 <> GloballyUnique1:9
+R883:889 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R892:893 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 890:891 <> tg:10
+R914:917 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R894:906 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R908:909 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:10 var
+R911:913 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:3 var
+R918:928 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R930:931 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:10 var
+R933:935 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:3 var
+binder 865:879 <> GloballyUnique2:11
+R963:992 simuliris.tree_borrows.defs <> protected_parents_not_disabled def
+R994:994 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R996:998 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:3 var
+binder 943:959 <> ProtParentsNonDis:12
+R1022:1038 simuliris.tree_borrows.defs <> no_active_cousins def
+R1040:1040 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R1042:1044 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:3 var
+binder 1006:1018 <> ActiveCousins:13
+R1075:1083 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1053:1062 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R1066:1066 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> d:5 var
+R1068:1070 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:2 var
+R1072:1074 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:3 var
+R1064:1064 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R1117:1125 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1084:1102 simuliris.tree_borrows.bor_semantics <> protector_is_active def
+R1105:1109 simuliris.tree_borrows.lang_base <> iprot proj
+R1111:1113 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> it1:6 var
+R1116:1116 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R1148:1156 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1126:1136 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R1138:1140 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:2 var
+R1142:1143 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:4 var
+R1145:1147 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> it1:6 var
+R1179:1187 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1157:1167 simuliris.tree_borrows.bor_lemmas <> tree_lookup def
+R1169:1171 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:3 var
+R1173:1174 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:4 var
+R1176:1178 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> it2:7 var
+R1188:1191 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1193:1194 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1192:1192 <> l:14
+R1235:1237 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1195:1214 simuliris.tree_borrows.bor_semantics <> protector_end_action def
+R1217:1227 simuliris.tree_borrows.lang_base <> item_lookup def
+R1229:1231 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> it1:6 var
+R1233:1233 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> l:14 var
+R1238:1257 simuliris.tree_borrows.bor_semantics <> protector_end_action def
+R1260:1270 simuliris.tree_borrows.lang_base <> item_lookup def
+R1272:1274 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> it2:7 var
+R1276:1276 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> l:14 var
+R1423:1440 simuliris.tree_borrows.bor_lemmas <> tree_lookup_unique thm
+R1480:1497 simuliris.tree_borrows.bor_lemmas <> tree_lookup_unique thm
+R1921:1940 simuliris.tree_borrows.bor_semantics <> protector_end_action def
+R1959:1969 simuliris.tree_borrows.lang_base <> initialized proj
+R1972:1982 simuliris.tree_borrows.lang_base <> item_lookup def
+R2031:2036 stdpp.base <> decide def
+R2063:2065 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2039:2042 simuliris.tree_borrows.lang_base <> perm proj
+R2045:2055 simuliris.tree_borrows.lang_base <> item_lookup def
+R2066:2069 simuliris.tree_borrows.lang_base <> Cell constr
+R2243:2248 stdpp.base <> decide def
+R2275:2277 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R2251:2254 simuliris.tree_borrows.lang_base <> perm proj
+R2257:2267 simuliris.tree_borrows.lang_base <> item_lookup def
+R2278:2285 simuliris.tree_borrows.lang_base <> Disabled constr
+R2370:2394 simuliris.tree_borrows.bor_lemmas <> every_child_ParentChildIn thm
+R2537:2543 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R2567:2572 stdpp.base <> decide def
+R2575:2587 simuliris.tree_borrows.bor_semantics <> ParentChildIn def
+R2621:2647 simuliris.tree_borrows.trees_equal.random_lemmas <> every_node_iff_every_lookup thm
+R2720:2732 simuliris.tree_borrows.bor_lemmas <> unique_lookup thm
+R2769:2791 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R2858:2864 Corelib.Init.Logic <> eq_refl constr
+R3359:3365 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R3396:3401 stdpp.base <> decide def
+R3450:3461 stdpp.decidable <> decide_False thm
+R3505:3534 simuliris.tree_borrows.bor_lemmas <> cousins_have_disjoint_children thm
+R3687:3698 stdpp.decidable <> decide_False thm
+R3733:3739 simuliris.tree_borrows.bor_semantics <> rel_dec def
+R3769:3774 stdpp.base <> decide def
+R3826:3831 stdpp.base <> decide def
+R3894:3915 simuliris.tree_borrows.bor_lemmas <> ParentChild_transitive thm
+prf 4046:4080 <> tree_equal_allows_more_deallocation
+binder 4087:4089 <> tr1:15
+binder 4091:4093 <> tr2:16
+binder 4095:4100 <> acc_tg:17
+binder 4102:4106 <> range:18
+R4132:4138 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R4141:4142 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 4139:4140 <> tg:19
+R4163:4166 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R4143:4155 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R4157:4158 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:19 var
+R4160:4162 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+R4167:4177 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R4179:4180 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:19 var
+R4182:4184 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+binder 4114:4128 <> GloballyUnique1:20
+R4210:4216 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+R4219:4220 stdpp.base <> ::type_scope:'forall'_x_'..'_x_','_x not
+binder 4217:4218 <> tg:21
+R4241:4244 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R4221:4233 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R4235:4236 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:21 var
+R4238:4240 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+R4245:4255 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R4257:4258 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tg:21 var
+R4260:4262 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+binder 4192:4206 <> GloballyUnique2:22
+R4290:4319 simuliris.tree_borrows.defs <> protected_parents_not_disabled def
+R4321:4321 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R4323:4325 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+binder 4270:4286 <> ProtParentsNonDis:23
+R4350:4366 simuliris.tree_borrows.defs <> no_active_cousins def
+R4368:4368 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R4370:4372 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+binder 4333:4346 <> ActiveCousins1:24
+R4397:4413 simuliris.tree_borrows.defs <> no_active_cousins def
+R4415:4415 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R4417:4419 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+binder 4380:4393 <> ActiveCousins2:25
+R4444:4462 simuliris.tree_borrows.defs <> parents_more_active def
+R4464:4466 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+binder 4427:4440 <> ActiveParents1:26
+R4491:4509 simuliris.tree_borrows.defs <> parents_more_active def
+R4511:4513 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+binder 4474:4487 <> ActiveParents2:27
+R4527:4543 simuliris.tree_borrows.defs <> parents_more_init def
+R4545:4547 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+binder 4521:4523 <> PMI:28
+R4585:4592 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R4556:4565 simuliris.tree_borrows.trees_equal.trees_equal_base <> tree_equal def
+R4569:4576 simuliris.tree_borrows.trees_equal.trees_equal_base <> Forwards constr
+R4578:4580 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+R4582:4584 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+R4567:4567 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R4615:4622 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R4593:4603 simuliris.tree_borrows.bor_semantics <> tree_unique def
+R4605:4610 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> acc_tg:17 var
+R4612:4614 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+R4669:4676 Corelib.Init.Notations <> ::type_scope:x_'->'_x not
+R4623:4629 stdpp.base <> is_Some def
+R4632:4648 simuliris.tree_borrows.bor_semantics <> memory_deallocate def
+R4650:4650 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R4652:4657 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> acc_tg:17 var
+R4659:4663 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> range:18 var
+R4665:4667 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr1:15 var
+R4677:4683 stdpp.base <> is_Some def
+R4686:4702 simuliris.tree_borrows.bor_semantics <> memory_deallocate def
+R4704:4704 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R4706:4711 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> acc_tg:17 var
+R4713:4717 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> range:18 var
+R4719:4721 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> tr2:16 var
+R4775:4784 stdpp.option <> mk_is_Some thm
+R4787:4795 stdpp.option <> bind_Some thm
+R4837:4846 stdpp.option <> mk_is_Some thm
+R4849:4877 simuliris.tree_borrows.trees_equal.trees_equal_more_access <> tree_equal_allows_more_access thm
+R4923:4929 simuliris.tree_borrows.defs <> wf_tree def
+R4960:4980 simuliris.tree_borrows.steps_wf <> preserve_tag_count_wf thm
+R5014:5036 simuliris.tree_borrows.steps_wf <> memory_access_tag_count thm
+R5053:5059 simuliris.tree_borrows.defs <> wf_tree def
+R5090:5110 simuliris.tree_borrows.steps_wf <> preserve_tag_count_wf thm
+R5144:5166 simuliris.tree_borrows.steps_wf <> memory_access_tag_count thm
+R5188:5224 simuliris.tree_borrows.trees_equal.trees_equal_preserved_by_access <> tree_equal_preserved_by_memory_access thm
+R5293:5305 simuliris.tree_borrows.bor_lemmas <> unique_exists thm
+R5361:5377 simuliris.tree_borrows.defs <> parents_more_init def
+R5398:5435 simuliris.tree_borrows.steps_wf <> memory_access_compat_parents_more_init thm
+R5487:5499 simuliris.tree_borrows.bor_lemmas <> unique_exists thm
+R5522:5551 simuliris.tree_borrows.defs <> protected_parents_not_disabled def
+R5553:5553 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R5574:5614 simuliris.tree_borrows.steps_wf <> memory_access_compat_parents_not_disabled thm
+R5666:5678 simuliris.tree_borrows.bor_lemmas <> unique_exists thm
+R5707:5723 simuliris.tree_borrows.defs <> no_active_cousins def
+R5725:5725 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> utils.C var
+R5746:5783 simuliris.tree_borrows.steps_wf <> memory_access_compat_no_active_cousins thm
+R5835:5847 simuliris.tree_borrows.bor_lemmas <> unique_exists thm
+R5871:5887 simuliris.tree_borrows.bor_semantics <> memory_deallocate def
+R5895:5905 stdpp.option <> option_bind inst
+R5922:5943 simuliris.tree_borrows.tree_lemmas <> join_success_condition thm
+R5946:5959 simuliris.tree_borrows.tree_lemmas <> every_node_map thm
+R5962:5985 simuliris.tree_borrows.tree_lemmas <> every_node_eqv_universal thm
+R6010:6035 simuliris.tree_borrows.trees_equal.random_lemmas <> exists_node_to_tree_lookup thm
+R6081:6101 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R6172:6204 simuliris.tree_borrows.steps_wf <> tree_apply_access_preserve_unique thm
+R6253:6265 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R6268:6271 simuliris.tree_borrows.lang_base <> itag proj
+R6320:6340 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R6532:6534 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6521:6525 simuliris.tree_borrows.lang_base <> iprot proj
+R6535:6539 simuliris.tree_borrows.lang_base <> iprot proj
+R6581:6617 simuliris.tree_borrows.trees_equal.random_lemmas <> tree_apply_access_preserves_protector thm
+R6660:6672 simuliris.tree_borrows.bor_semantics <> tree_contains def
+R6675:6678 simuliris.tree_borrows.lang_base <> itag proj
+R6715:6735 simuliris.tree_borrows.bor_lemmas <> unique_implies_lookup thm
+R6762:6782 simuliris.tree_borrows.steps_preserve <> access_preserves_tags thm
+R6837:6839 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6826:6830 simuliris.tree_borrows.lang_base <> iprot proj
+R6840:6844 simuliris.tree_borrows.lang_base <> iprot proj
+R6887:6923 simuliris.tree_borrows.trees_equal.random_lemmas <> tree_apply_access_preserves_protector thm
+R6975:6977 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R6966:6969 simuliris.tree_borrows.lang_base <> itag proj
+R6978:6981 simuliris.tree_borrows.lang_base <> itag proj
+R7014:7036 simuliris.tree_borrows.bor_lemmas <> tree_lookup_correct_tag thm
+R7058:7079 simuliris.tree_borrows.tree_lemmas <> join_success_condition thm
+R7109:7122 simuliris.tree_borrows.tree_lemmas <> every_node_map thm
+R7144:7167 simuliris.tree_borrows.tree_lemmas <> every_node_eqv_universal thm
+R7194:7219 simuliris.tree_borrows.bor_lemmas <> tree_lookup_to_exists_node thm
+R7281:7294 simuliris.tree_borrows.trees_equal.random_lemmas <> is_Some_if_neg thm
+R7407:7443 simuliris.tree_borrows.trees_equal.trees_equal_dealloc <> trees_equal_same_protector_end_action thm
+R7494:7511 stdpp.decidable <> bool_decide_decide thm
+R7535:7540 stdpp.base <> decide def
+R7580:7596 stdpp.decidable <> bool_decide_false abbrev
+R7614:7629 stdpp.decidable <> bool_decide_true abbrev
+R7651:7656 stdpp.base <> decide def
+R7697:7713 stdpp.decidable <> bool_decide_false abbrev
+R7731:7746 stdpp.decidable <> bool_decide_true abbrev
+R7768:7773 stdpp.base <> decide def
+R7823:7839 stdpp.decidable <> bool_decide_false abbrev
+R7876:7894 stdpp.fin_maps <> map_Exists_lookup_1 thm
+R7978:7988 simuliris.tree_borrows.lang_base <> item_lookup def
+R8061:8064 stdpp.base <> ::stdpp_scope:x_'!!'_x not
+R8051:8055 simuliris.tree_borrows.lang_base <> iperm proj
+R8117:8128 stdpp.option <> is_Some_None thm
+R8173:8191 stdpp.fin_maps <> map_Exists_lookup_2 thm
+R8229:8233 simuliris.tree_borrows.trees_equal.trees_equal_dealloc utils <> sec

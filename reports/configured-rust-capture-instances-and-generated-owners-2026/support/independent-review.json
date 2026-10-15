@@ -1,0 +1,135 @@
+{
+  "verdict": "eligible_bounded_E04_prototype_after_loader_publication_qualification",
+  "E04_acceptance": "Bind source, target, features, resolved implementations/instances, expanded and compiler-generated owners, constants and reachable dependencies; wrong-item/configuration/instance and omitted-owner controls reject.",
+  "original_author_manifest_sha256": "edfd745789a1271196a8121f8f66aebcd6a88e6254f3336a6815407ca921855a",
+  "original_author_REPORT_sha256": "96c06cd86afe8386ebfae06c597dfa307f6d6aee09bd8c35be44057374b34ccf",
+  "corrected_projection_before_review_attachment_manifest_sha256": "59a4628c351eeb163a2a411bcbe947ec1f70c3a41374c9e6aeb8f97e6a5ab71e",
+  "corrected_projection_REPORT_sha256": "111f909398a820a3d252e9443b739edd9ed867fa7e57e2ba596c6056e285ee56",
+  "independent_review_body_sha256": "73e765f26953586137b4d17b1796272e42c0818fa6403fbc4658dfae96bf1cc8",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "source_identities": {
+    "capture_observer.rs": "59a998fb395374b810e3e0a04884e0a5c6382ea06b951fda6f8aec5cf3b87f35",
+    "capture.py": "0b1fc20394b64cbc84e2f4323301dad10f9334d2205952c6882dd81875b73382",
+    "packet_schema.py": "6cb6da673ed91009ca3b64ee2df6628897a692dcd7ceffcc52aa09d7995bbb62",
+    "run_controls.py_historical_unchanged": "c8e95c338fd3b8520bdb93bf0699571d0b75d58ecdd716cee4a7459d181ede4c",
+    "run_controls_explicit_observer.py_source_only": "fc2e0de28986e467bd07d2cc779da8865dc53d97168b7cf927f300379c9c86f4"
+  },
+  "runtime_identities": {
+    "observer_sha256": "656fb5eaac61cecbed4b59b90ff5842cf2594551310084d599d66c9af817f636",
+    "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+    "selected_and_resolved_actual_driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+    "target_core_sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90",
+    "observer_LC_RPATH": "@loader_path/../toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib",
+    "actual_driver_relative_to_toolchain": "lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+    "separately_selected_driver_relative_to_toolchain": "lib/librustc_driver-16d1e96e5b674978.dylib",
+    "system_runtime_dependency_closure_proved": false
+  },
+  "fresh_independent_fixed_matrix": {
+    "harness": "replay_fixed_matrix.py",
+    "harness_sha256": "27cf2e8bdf17f9e1656c31de5b9be76572179badccde624a56c539abca7f4c4a",
+    "calls": 34,
+    "verdicts": {
+      "captured": 5,
+      "accepted": 6,
+      "rejected": 23
+    },
+    "compiler_processes": 27,
+    "compiler_exits": {
+      "0": 22,
+      "65": 5
+    },
+    "one_compiler_serial": true,
+    "all_expected_match": true,
+    "tool_and_actual_runtime_driver_hashes_checked_before_after_each": true,
+    "waited_child_maxrss_Darwin_bytes_observed": 88326144,
+    "matrix_seconds_observed": 22.810006375,
+    "timing_caveat": "Fixed warm-host sample with additional repeated identity hashing; no scaling/benchmark or hard isolation claim"
+  },
+  "new_publication_helper": {
+    "name": "run_controls_explicit_observer.py",
+    "source_reviewed": true,
+    "CLI_checked_by_parent": true,
+    "full_matrix_executed": false,
+    "does_not_own_the_completed_independent_34_replay": true
+  },
+  "native_originals": {
+    "fresh_original_binary_runs": 5,
+    "inputs_per_case": 256,
+    "total_values": 1280,
+    "all_expected_match": true,
+    "per_run_timeout_seconds": 30,
+    "fresh_native_compiler_invocations": 0,
+    "source_wrapper_request_library_binary_identities_checked": true,
+    "binaries_unchanged_after_runs": true,
+    "candidate_or_projected_packet_execution": false
+  },
+  "baseline": {
+    "raw_actually_accepted_and_freshly_reproduced_sha256": "83482423f40d6a6130d5190ae502a4c0913fe6fadd943f0a49f8f32702d9e6bc",
+    "public_display_sha256": "6e4f164071da6e5c1019256fab8d17fa682e1e63408370387337a3495f0740f1",
+    "changed_provenance_strings": 8,
+    "consumer_field_exemptions": false,
+    "exact_restoration_verified": true
+  },
+  "graph": {
+    "definitions": 24,
+    "templates": 10,
+    "instances": 10,
+    "edges": 10,
+    "all_represented_baseline_edges_checked": true,
+    "same_label_operator_change_rejects_after_fresh_compiler": true,
+    "schema_valid_coherent_drop_erasure_rejects_after_fresh_compiler": true,
+    "uncalled_owner_omission_rejects_after_fresh_compiler": true,
+    "function_phase": "Runtime(Optimized)",
+    "constant_phase": "Runtime(PostCleanup)"
+  },
+  "projection": {
+    "raw_public_receipts_verified": 424,
+    "safe_regular_archive_members": 409,
+    "archive_expanded_bytes": 10860239,
+    "ordinary_changed_semantic_display_copies": 51,
+    "separately_invalid_duplicate_display_control": 1,
+    "raw_public_duplicate_control_both_strictly_rejected": true,
+    "all_public_semantic_changes_restricted_to_origin_span_call_site": true,
+    "corrected_parent_projection_static_audit_pass": true,
+    "historical_bytes_unchanged_by_correction": true,
+    "private_prefix_scan_pass": true
+  },
+  "preserved_operational_events": [
+    {
+      "event": "Independent audit reader count error",
+      "diagnosis": "Expected52 while intentionally excluding invalid duplicate display control; actual51+1. Corrected count with separate strict invalid-control rejection before extraction/compiler execution.",
+      "subject_or_schema_changed": false
+    },
+    {
+      "event": "Copied observer dyld abort -6",
+      "diagnosis": "Relative LC_RPATH changed with @loader_path; no analysis/semantic effect. Original immutable observer path then selected explicitly after parent diagnosis/authorization.",
+      "merged_into_the_27_process_semantic_matrix": false,
+      "symlink_patch_rebuild_or_LD_LIBRARY_PATH_used": false
+    }
+  ],
+  "trusted_frontiers": [
+    "caller and cooperative filesystem",
+    "rustc expansion/analysis/CTFE/resolution/MIR/metadata/runtime",
+    "observer/reader and opaque HIR/type/enum rendering interpretation"
+  ],
+  "stronger_goals_not_discharged": [
+    "E10 source-safety theorem",
+    "P127 proved end-to-end pre-optimization source-fragment capture",
+    "P131 actual memory-operation/byte/initialization correspondence"
+  ],
+  "independent_owned_evidence_raw_hashes": {
+    "replay_fixed_matrix.py": "27cf2e8bdf17f9e1656c31de5b9be76572179badccde624a56c539abca7f4c4a",
+    "fixed-matrix-results.json": "359fe8b20fae2ccb7f507b366d36a878e425ee7e5be43237e147bec1e860f9bd",
+    "fixed-matrix-replay.json": "2493b71ea7341215ee3fe7c78ab4a32d3a85aa53a22e3cb978e050f8a1397bf7",
+    "projection-review.json": "b55a5d93ec567a42697fdd17e998928fa727d2b7ca601e4df0bd976a6466d544",
+    "graph-review.json": "1917d07a1808f5f611713442fe8717980c70d678f300761d0dfc6b25e113c5fc",
+    "replay_native_originals.py": "cd1fc2e44b9febb38b414ccf368c07e349e095dd4ffc38d0454544febced42d9",
+    "native-original-results.json": "a927a3e38bba465e02d571e21261830a8c45d788a4cf2760aeeadae2af6775e2",
+    "audit-attempt01-diagnosis.json": "6c5a7b7327882f18bcd19940b5f90afcb23097b3f06e83c1d38c4377576bd461",
+    "dyld-copy-diagnosis.json": "9c2aa4d59c897b1ad0fef9413c10e23ce68d8633ea6955d7c3d50904b859390a",
+    "parent-projection-review.json": "5565268e34e150ecbc8c5f8321951d0f08dd807512788abbe8f735d3ffba410f"
+  },
+  "evidence_hash_qualification": "Raw independent logs/results remain owned observation artifacts; this bounded public review is a privacy-sanitized summary. Hashes identify actual reader/harness/results and are not labels for differently normalized bytes.",
+  "MiniRust_minimize_Miri_E05_operations": false,
+  "publication_authority": "parent; final attachment/manifest delta requires separate review"
+}

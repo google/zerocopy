@@ -1,0 +1,108 @@
+{
+  "excludes": [
+    "plan-manifest.json",
+    "HANDOFF.json"
+  ],
+  "files": [
+    {
+      "path": "BUILD-AND-AUDIT-COMMANDS.md",
+      "bytes": 6901,
+      "sha256": "5a1264aff8af64da96ffbe2a2cba2ff0ef1a1730be94e7f8f4cf4ce11c31c9a1"
+    },
+    {
+      "path": "DEPENDENCIES.json",
+      "bytes": 4405,
+      "sha256": "87d46240e7edebdc2d41572542a04e6424a5a9035067a4240e7bdb64bdce6a58"
+    },
+    {
+      "path": "E23-PORT-PLAN.md",
+      "bytes": 4890,
+      "sha256": "ce9b8dfa2ba63d80b19653198f00ba0512695cfce35475d45f6086144cc484bc"
+    },
+    {
+      "path": "PROPOSAL.json",
+      "bytes": 2375,
+      "sha256": "669eac99064abf5d3ddcb6e3fcedec59215839ccd3ce0c89cfe13d218eeae6a1"
+    },
+    {
+      "path": "PROPOSAL.md",
+      "bytes": 11322,
+      "sha256": "b6d131a37c36e3288c65d4bb2a9a440e083688547f03b98b18694afdc2447760"
+    },
+    {
+      "path": "PlannedAuditExamples.v",
+      "bytes": 1588,
+      "sha256": "62a23c89f8f493b8bff13a01a8bff42e56490cbb031a7c95c8084d320b4d6a66"
+    },
+    {
+      "path": "PlannedAuditFramework.v",
+      "bytes": 1195,
+      "sha256": "e3612a601d0b9230b164cff9091fc74ff4af12a6a94599080bc2c8c65b239d7f"
+    },
+    {
+      "path": "PlannedAuditResources.v",
+      "bytes": 2321,
+      "sha256": "2ccbb0fa485e2c27052c6943da4cd186c79d1a13d25c73196522b457a0bfc6a1"
+    },
+    {
+      "path": "TARGETS.json",
+      "bytes": 9770,
+      "sha256": "f9e38e0f93818e57e16ed8a468cc380dae609041d8f85122d69a33f989dd5910"
+    },
+    {
+      "path": "archive-inventory.json",
+      "bytes": 46651,
+      "sha256": "1c69d48800d47343876a793197d4694ff2ad85d8a17fca369f29351f2634d182"
+    },
+    {
+      "path": "build-and-scope-files.json",
+      "bytes": 44045,
+      "sha256": "db39d74bfb1955318d18aa0e248204a421846afc36a7ca0942bc69b38ff56c23"
+    },
+    {
+      "path": "primary-package-metadata.json",
+      "bytes": 9632,
+      "sha256": "4589929232274166baa6357da7de5dd7820e47328148c678acec8ce0c68653d0"
+    },
+    {
+      "path": "rocq-source-text.json",
+      "bytes": 3346996,
+      "sha256": "85e72d61a9ed2972a06dc3054b074f8ff9435e852a4471918e95a764749ec18d"
+    },
+    {
+      "path": "simuliris-iris-opam.json",
+      "bytes": 602,
+      "sha256": "288fc9bfff2da93850b4a0604cf5807c808c3230dd59b4144329cfa241ae3d9b"
+    },
+    {
+      "path": "simuliris-iris-opam.response",
+      "bytes": 1484,
+      "sha256": "bec95f6c10b8cf47a989e1bf88e35dfe05e2e6979ab57c7c8360689534b2b9d0"
+    },
+    {
+      "path": "simuliris-stdpp-opam.json",
+      "bytes": 613,
+      "sha256": "f0dc6802798e0567dff59c88a91647d0cfbb1687162c32fa9f31912b946a466f"
+    },
+    {
+      "path": "simuliris-stdpp-opam.response",
+      "bytes": 1912,
+      "sha256": "90373147396e6e5645375ac285e2a9739e01c8da7f7227bf04b86593fea58d16"
+    },
+    {
+      "path": "static-import-closure.json",
+      "bytes": 76433,
+      "sha256": "2496209c6f760d48117b3bae2dfa963345ac769e9b519b421a4aa1de28add676"
+    },
+    {
+      "path": "static-plan-validation.json",
+      "bytes": 746,
+      "sha256": "be69fe8a2531ff8d4540f705ac608649eb93a8c45a401a38a39a793c47cb3ea2"
+    },
+    {
+      "path": "web-evidence-summary.json",
+      "bytes": 892,
+      "sha256": "97681b2a50dd5b52fa56d57aaeae3ef51f09eec75fdc1723b90f1c297a08afe9"
+    }
+  ]
+}

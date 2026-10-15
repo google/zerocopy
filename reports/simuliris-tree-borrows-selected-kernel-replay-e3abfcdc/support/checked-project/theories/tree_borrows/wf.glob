@@ -1,0 +1,276 @@
+DIGEST 91409583fc06ba5f57faabb017cf085b
+Fsimuliris.tree_borrows.wf
+R33:39 iris.prelude.prelude <> <> lib
+R85:88 simuliris.tree_borrows.lang <> <> lib
+def 272:280 <> scalar_wf
+R287:292 simuliris.tree_borrows.lang_base <> scalar ind
+binder 283:283 <> s:1
+R313:313 simuliris.tree_borrows.wf <> s:1 var
+R324:331 simuliris.tree_borrows.lang_base <> ScPoison constr
+R335:339 simuliris.tree_borrows.lang_base <> ScInt constr
+R345:351 simuliris.tree_borrows.lang_base <> ScFnPtr constr
+R358:361 stdpp.base <> ::type_scope:'True' not
+R367:371 simuliris.tree_borrows.lang_base <> ScPtr constr
+R380:387 simuliris.tree_borrows.lang_base <> ScCallId constr
+R394:398 stdpp.base <> ::type_scope:'False' not
+def 466:473 <> value_wf
+R480:484 simuliris.tree_borrows.lang_base <> value def
+binder 476:476 <> v:3
+R497:502 Corelib.Lists.ListDef <> Forall ind
+R514:514 simuliris.tree_borrows.wf <> v:3 var
+R504:512 simuliris.tree_borrows.wf <> scalar_wf def
+sec 692:698 <> expr_wf
+var  713:724 expr_wf expr_head_wf
+R737:741 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R728:736 simuliris.tree_borrows.expr_semantics <> expr_head ind
+def 806:816 <> gen_expr_wf
+R823:826 simuliris.tree_borrows.lang_base <> expr ind
+binder 819:819 <> e:5
+R877:885 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R843:854 simuliris.tree_borrows.wf <> expr_wf.expr_head_wf var
+R856:856 stdpp.base <> :::x_'.1' not
+R874:876 stdpp.base <> :::x_'.1' not
+R857:871 simuliris.tree_borrows.expr_semantics <> expr_split_head def
+R873:873 simuliris.tree_borrows.wf <> e:5 var
+R892:892 simuliris.tree_borrows.wf <> e:5 var
+R1042:1044 simuliris.tree_borrows.lang_base <> Val constr
+R1051:1054 stdpp.base <> ::type_scope:'True' not
+R1062:1064 simuliris.tree_borrows.lang_base <> Var constr
+R1071:1074 stdpp.base <> ::type_scope:'True' not
+R1082:1084 simuliris.tree_borrows.lang_base <> Let constr
+R1111:1115 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1097:1107 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1116:1126 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1137:1140 simuliris.tree_borrows.lang_base <> Call constr
+R1165:1169 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1151:1161 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1170:1180 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1191:1195 simuliris.tree_borrows.lang_base <> BinOp constr
+R1223:1227 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1209:1219 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1228:1238 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1249:1252 simuliris.tree_borrows.lang_base <> Proj constr
+R1277:1281 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1263:1273 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1282:1292 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1303:1306 simuliris.tree_borrows.lang_base <> Conc constr
+R1331:1335 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1317:1327 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1336:1346 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1357:1360 simuliris.tree_borrows.lang_base <> Copy constr
+R1367:1377 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1379:1379 simuliris.tree_borrows.wf <> e:5 var
+R1387:1391 simuliris.tree_borrows.lang_base <> Write constr
+R1416:1420 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1402:1412 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1421:1431 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1442:1446 simuliris.tree_borrows.lang_base <> Alloc constr
+R1453:1456 stdpp.base <> ::type_scope:'True' not
+R1464:1467 simuliris.tree_borrows.lang_base <> Free constr
+R1474:1484 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1486:1486 simuliris.tree_borrows.wf <> e:5 var
+R1494:1498 simuliris.tree_borrows.lang_base <> Deref constr
+R1507:1517 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1519:1519 simuliris.tree_borrows.wf <> e:5 var
+R1527:1529 simuliris.tree_borrows.lang_base <> Ref constr
+R1536:1546 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1548:1548 simuliris.tree_borrows.wf <> e:5 var
+R1556:1560 simuliris.tree_borrows.lang_base <> Retag constr
+R1601:1605 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1587:1597 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1606:1616 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1627:1630 simuliris.tree_borrows.lang_base <> Case constr
+R1659:1663 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1646:1656 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1658:1658 simuliris.tree_borrows.wf <> e:5 var
+R1664:1669 Corelib.Lists.ListDef <> Forall ind
+R1675:1678 stdpp.base <> fmap def
+R1680:1690 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1671:1672 Corelib.Init.Datatypes <> id def
+R1708:1712 simuliris.tree_borrows.lang_base <> While constr
+R1737:1741 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1723:1733 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1742:1752 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1763:1766 simuliris.tree_borrows.lang_base <> Fork constr
+R1773:1783 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1785:1785 simuliris.tree_borrows.wf <> e:5 var
+R1863:1869 simuliris.tree_borrows.lang_base <> EndCall constr
+R1876:1886 simuliris.tree_borrows.wf <> gen_expr_wf:6 def
+R1888:1888 simuliris.tree_borrows.wf <> e:5 var
+R1896:1903 simuliris.tree_borrows.lang_base <> InitCall constr
+R1908:1911 stdpp.base <> ::type_scope:'True' not
+R1940:1944 simuliris.tree_borrows.lang_base <> Place constr
+R1955:1958 stdpp.base <> ::type_scope:'True' not
+def 2059:2070 <> gen_ectxi_wf
+R2078:2086 simuliris.tree_borrows.expr_semantics <> ectx_item ind
+binder 2073:2074 <> Ki:8
+R2115:2130 simuliris.tree_borrows.expr_semantics <> ectxi_split_head def
+R2132:2133 simuliris.tree_borrows.wf <> Ki:8 var
+binder 2107:2110 <> head:9
+R2161:2165 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2142:2153 simuliris.tree_borrows.wf <> expr_wf.expr_head_wf var
+R2159:2160 stdpp.base <> :::x_'.1' not
+R2155:2158 simuliris.tree_borrows.wf <> head:9 var
+R2166:2171 Corelib.Lists.ListDef <> Forall ind
+R2189:2190 stdpp.base <> :::x_'.2' not
+R2185:2188 simuliris.tree_borrows.wf <> head:9 var
+R2173:2183 simuliris.tree_borrows.wf <> gen_expr_wf def
+def 2206:2216 <> gen_ectx_wf
+R2224:2228 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2220:2223 simuliris.tree_borrows.expr_semantics <> ectx def
+R2237:2242 Corelib.Lists.ListDef <> Forall ind
+R2244:2255 simuliris.tree_borrows.wf <> gen_ectxi_wf def
+prf 2267:2282 <> gen_ectx_wf_cons
+binder 2284:2284 <> C:10
+binder 2286:2287 <> Ci:11
+R2316:2320 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2295:2305 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2310:2313 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2308:2309 simuliris.tree_borrows.wf <> Ci:11 var
+R2314:2314 simuliris.tree_borrows.wf <> C:10 var
+R2336:2340 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2321:2332 simuliris.tree_borrows.wf <> gen_ectxi_wf def
+R2334:2335 simuliris.tree_borrows.wf <> Ci:11 var
+R2341:2351 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2353:2353 simuliris.tree_borrows.wf <> C:10 var
+R2374:2384 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2386:2396 stdpp.list_relations list Forall_cons thm
+prf 2415:2429 <> gen_ectx_wf_app
+binder 2431:2432 <> C1:12
+binder 2434:2435 <> C2:13
+R2465:2469 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2443:2453 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2458:2461 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2456:2457 simuliris.tree_borrows.wf <> C1:12 var
+R2462:2463 simuliris.tree_borrows.wf <> C2:13 var
+R2484:2488 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2470:2480 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2482:2483 simuliris.tree_borrows.wf <> C1:12 var
+R2489:2499 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2501:2502 simuliris.tree_borrows.wf <> C2:13 var
+R2520:2529 stdpp.list_relations list Forall_app thm
+prf 2545:2560 <> gen_ectx_wf_snoc
+binder 2562:2562 <> C:14
+binder 2564:2565 <> Ci:15
+R2596:2600 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2573:2583 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2587:2590 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2586:2586 simuliris.tree_borrows.wf <> C:14 var
+R2591:2591 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2594:2594 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R2592:2593 simuliris.tree_borrows.wf <> Ci:15 var
+R2614:2618 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2601:2611 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2613:2613 simuliris.tree_borrows.wf <> C:14 var
+R2619:2630 simuliris.tree_borrows.wf <> gen_ectxi_wf def
+R2632:2633 simuliris.tree_borrows.wf <> Ci:15 var
+R2653:2667 simuliris.tree_borrows.wf <> gen_ectx_wf_app thm
+R2670:2680 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R2682:2697 stdpp.list_relations list Forall_singleton thm
+def 2764:2774 <> gen_ctxi_wf
+R2782:2789 simuliris.tree_borrows.expr_semantics <> ctx_item ind
+binder 2777:2778 <> Ci:16
+R2818:2832 simuliris.tree_borrows.expr_semantics <> ctxi_split_head def
+R2834:2835 simuliris.tree_borrows.wf <> Ci:16 var
+binder 2810:2813 <> head:17
+R2863:2867 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R2844:2855 simuliris.tree_borrows.wf <> expr_wf.expr_head_wf var
+R2861:2862 stdpp.base <> :::x_'.1' not
+R2857:2860 simuliris.tree_borrows.wf <> head:17 var
+R2868:2873 Corelib.Lists.ListDef <> Forall ind
+R2891:2892 stdpp.base <> :::x_'.2' not
+R2887:2890 simuliris.tree_borrows.wf <> head:17 var
+R2875:2885 simuliris.tree_borrows.wf <> gen_expr_wf def
+def 2908:2917 <> gen_ctx_wf
+R2924:2928 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R2921:2923 simuliris.tree_borrows.expr_semantics <> ctx def
+R2937:2942 Corelib.Lists.ListDef <> Forall ind
+R2944:2954 simuliris.tree_borrows.wf <> gen_ctxi_wf def
+prf 2966:2980 <> gen_ctx_wf_cons
+binder 2982:2982 <> C:18
+binder 2984:2985 <> Ci:19
+R3013:3017 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R2993:3002 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3007:3010 Corelib.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3005:3006 simuliris.tree_borrows.wf <> Ci:19 var
+R3011:3011 simuliris.tree_borrows.wf <> C:18 var
+R3032:3036 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3018:3028 simuliris.tree_borrows.wf <> gen_ctxi_wf def
+R3030:3031 simuliris.tree_borrows.wf <> Ci:19 var
+R3037:3046 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3048:3048 simuliris.tree_borrows.wf <> C:18 var
+R3069:3078 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3080:3090 stdpp.list_relations list Forall_cons thm
+prf 3109:3122 <> gen_ctx_wf_app
+binder 3124:3125 <> C1:20
+binder 3127:3128 <> C2:21
+R3157:3161 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R3136:3145 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3150:3153 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3148:3149 simuliris.tree_borrows.wf <> C1:20 var
+R3154:3155 simuliris.tree_borrows.wf <> C2:21 var
+R3175:3179 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3162:3171 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3173:3174 simuliris.tree_borrows.wf <> C1:20 var
+R3180:3189 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3191:3192 simuliris.tree_borrows.wf <> C2:21 var
+R3210:3219 stdpp.list_relations list Forall_app thm
+prf 3235:3249 <> gen_ctx_wf_snoc
+binder 3251:3251 <> C:22
+binder 3253:3254 <> Ci:23
+R3284:3288 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R3262:3271 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3275:3278 Corelib.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3274:3274 simuliris.tree_borrows.wf <> C:22 var
+R3279:3279 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3282:3282 Stdlib.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3280:3281 simuliris.tree_borrows.wf <> Ci:23 var
+R3301:3305 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3289:3298 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3300:3300 simuliris.tree_borrows.wf <> C:22 var
+R3306:3316 simuliris.tree_borrows.wf <> gen_ctxi_wf def
+R3318:3319 simuliris.tree_borrows.wf <> Ci:23 var
+R3339:3352 simuliris.tree_borrows.wf <> gen_ctx_wf_app thm
+R3355:3364 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3366:3381 stdpp.list_relations list Forall_singleton thm
+prf 3401:3425 <> expr_gen_egen_ctx_wf_fill
+binder 3427:3427 <> e:24
+binder 3429:3430 <> Ks:25
+R3461:3465 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R3438:3448 simuliris.tree_borrows.wf <> gen_expr_wf def
+R3451:3454 simuliris.tree_borrows.expr_semantics <> fill def
+R3456:3457 simuliris.tree_borrows.wf <> Ks:25 var
+R3459:3459 simuliris.tree_borrows.wf <> e:24 var
+R3479:3483 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3466:3476 simuliris.tree_borrows.wf <> gen_expr_wf def
+R3478:3478 simuliris.tree_borrows.wf <> e:24 var
+R3484:3494 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R3496:3497 simuliris.tree_borrows.wf <> Ks:25 var
+R3544:3554 simuliris.tree_borrows.wf <> gen_ectx_wf def
+R3607:3622 simuliris.tree_borrows.wf <> gen_ectx_wf_cons thm
+R3625:3636 simuliris.tree_borrows.wf <> gen_ectxi_wf def
+R3670:3680 stdpp.list_relations list Forall_cons thm
+R3683:3692 stdpp.list_relations list Forall_nil thm
+R3695:3705 stdpp.list_monad list Forall_fmap thm
+prf 3740:3759 <> expr_gen_ctx_wf_fill
+binder 3761:3761 <> e:26
+binder 3763:3764 <> Cs:27
+R3799:3803 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'↔'_x not
+R3772:3782 simuliris.tree_borrows.wf <> gen_expr_wf def
+R3785:3792 simuliris.tree_borrows.expr_semantics <> fill_ctx def
+R3794:3795 simuliris.tree_borrows.wf <> Cs:27 var
+R3797:3797 simuliris.tree_borrows.wf <> e:26 var
+R3817:3821 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R3804:3814 simuliris.tree_borrows.wf <> gen_expr_wf def
+R3816:3816 simuliris.tree_borrows.wf <> e:26 var
+R3822:3831 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3833:3834 simuliris.tree_borrows.wf <> Cs:27 var
+R3881:3890 simuliris.tree_borrows.wf <> gen_ctx_wf def
+R3943:3957 simuliris.tree_borrows.wf <> gen_ctx_wf_cons thm
+R3960:3970 simuliris.tree_borrows.wf <> gen_ctxi_wf def
+R4004:4014 stdpp.list_relations list Forall_cons thm
+R4017:4026 stdpp.list_relations list Forall_nil thm
+R4029:4039 stdpp.list_monad list Forall_fmap thm
+R4076:4085 stdpp.list_relations list Forall_app thm
+R4088:4098 stdpp.list_relations list Forall_cons thm
+R4126:4132 simuliris.tree_borrows.wf expr_wf <> sec

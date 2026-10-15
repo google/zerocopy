@@ -1,0 +1,164 @@
+DIGEST 1891285c695b0f6cb7b1542be52ef039
+Fsimuliris.tree_borrows.read_read_reorder.equivalence_def
+R33:39 iris.prelude.prelude <> <> lib
+R41:47 iris.prelude.options <> <> lib
+R76:79 stdpp.gmap <> <> lib
+R125:128 simuliris.tree_borrows.defs <> <> lib
+R130:138 simuliris.tree_borrows.lang_base <> <> lib
+R140:143 simuliris.tree_borrows.lang <> <> lib
+R145:152 simuliris.tree_borrows.notation <> <> lib
+R154:166 simuliris.tree_borrows.bor_semantics <> <> lib
+R168:171 simuliris.tree_borrows.tree <> <> lib
+R173:179 simuliris.tree_borrows.tactics <> <> lib
+R181:195 simuliris.tree_borrows.class_instances <> <> lib
+R259:267 simuliris.tree_borrows.read_read_reorder.low_level <> <> lib
+def 490:495 <> nsteps
+binder 497:497 <> P:1
+R504:507 simuliris.tree_borrows.lang_base <> expr ind
+binder 500:500 <> e:2
+binder 510:511 <> σ:3
+binder 513:515 <> e'':4
+binder 517:520 <> σ'':5
+binder 522:522 <> n:6
+R540:540 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:6 var
+R561:565 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R555:557 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R554:554 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e:2 var
+R558:560 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e'':4 var
+R568:570 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R566:567 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:3 var
+R571:574 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ'':5 var
+R578:578 Corelib.Init.Datatypes <> S constr
+R585:588 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R595:596 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 589:590 <> e':9
+binder 592:594 <> σ':10
+R624:628 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R597:605 simuliris.simulation.language <> prim_step ind
+R607:607 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:1 var
+R609:609 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e:2 var
+R611:612 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:3 var
+R614:615 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e':9 var
+R617:619 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ':10 var
+R621:623 Corelib.Init.Datatypes <> nil constr
+R629:634 simuliris.tree_borrows.read_read_reorder.equivalence_def <> nsteps:7 def
+R654:654 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:6 var
+R649:652 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ'':5 var
+R645:647 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e'':4 var
+R641:643 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ':10 var
+R638:639 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e':9 var
+R636:636 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:1 var
+def 884:905 <> identical_states_after
+binder 907:907 <> P:11
+binder 909:910 <> e1:12
+binder 912:913 <> e2:13
+binder 915:916 <> σ:14
+binder 918:918 <> n:15
+R926:929 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R936:937 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 930:931 <> e':16
+binder 933:935 <> σ':17
+R961:965 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R938:943 simuliris.tree_borrows.read_read_reorder.equivalence_def <> nsteps def
+R945:945 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:11 var
+R947:948 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e1:12 var
+R950:951 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:14 var
+R953:954 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e':16 var
+R956:958 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ':17 var
+R960:960 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:15 var
+R966:971 simuliris.tree_borrows.read_read_reorder.equivalence_def <> nsteps def
+R973:973 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:11 var
+R975:976 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e2:13 var
+R978:979 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:14 var
+R981:982 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e':16 var
+R984:986 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ':17 var
+R988:988 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:15 var
+ind 1135:1155 <> no_termination_within
+constr 1201:1213 <> no_steps_left
+constr 1257:1274 <> no_termination_now
+binder 1157:1157 <> P:18
+R1165:1169 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1161:1164 simuliris.tree_borrows.lang_base <> expr ind
+R1175:1179 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1170:1174 simuliris.tree_borrows.lang bor_lang state rec
+R1183:1187 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1180:1182 Corelib.Init.Datatypes <> nat ind
+binder 1215:1215 <> e:21
+binder 1217:1218 <> σ:22
+R1222:1242 simuliris.tree_borrows.read_read_reorder.equivalence_def <> no_termination_within:19 ind
+R1248:1249 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:22 var
+R1246:1246 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e:21 var
+R1244:1244 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:18 var
+binder 1276:1276 <> e:23
+binder 1278:1279 <> σ:24
+binder 1281:1281 <> n:25
+R1308:1316 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1301:1303 Corelib.Init.Logic <> ::type_scope:x_'='_x not
+R1290:1298 simuliris.tree_borrows.lang_base <> to_result def
+R1300:1300 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e:23 var
+R1304:1307 Corelib.Init.Datatypes <> None constr
+R1317:1317 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1394:1403 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1318:1321 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1328:1329 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1322:1323 <> e':26
+binder 1325:1327 <> σ':27
+R1357:1361 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1330:1338 simuliris.simulation.language <> prim_step ind
+R1340:1340 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:18 var
+R1342:1342 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e:23 var
+R1344:1345 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:24 var
+R1347:1348 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e':26 var
+R1350:1352 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ':27 var
+R1354:1356 Corelib.Init.Datatypes <> nil constr
+R1362:1382 simuliris.tree_borrows.read_read_reorder.equivalence_def <> no_termination_within:19 ind
+R1393:1393 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:25 var
+R1389:1391 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ':27 var
+R1386:1387 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e':26 var
+R1384:1384 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:18 var
+R1404:1424 simuliris.tree_borrows.read_read_reorder.equivalence_def <> no_termination_within:19 ind
+R1434:1434 Corelib.Init.Datatypes <> S constr
+R1436:1436 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:25 var
+R1430:1431 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:24 var
+R1428:1428 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e:23 var
+R1426:1426 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:18 var
+scheme 1135:1155 <> no_termination_within_ind
+scheme 1135:1155 <> no_termination_within_sind
+def 1604:1619 <> eventually_equal
+binder 1621:1621 <> P:28
+binder 1623:1624 <> e1:29
+binder 1626:1627 <> e2:30
+R1634:1637 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+R1639:1640 Stdlib.Unicode.Utf8_core <> ::type_scope:'∃'_x_'..'_x_','_x not
+binder 1638:1638 <> n:31
+R1641:1644 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+R1647:1648 Stdlib.Unicode.Utf8_core <> ::type_scope:'∀'_x_'..'_x_','_x not
+binder 1645:1646 <> σ:32
+R1660:1668 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'→'_x not
+R1649:1656 simuliris.tree_borrows.defs <> state_wf rec
+R1658:1659 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:32 var
+R1700:1708 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1669:1689 simuliris.tree_borrows.read_read_reorder.equivalence_def <> no_termination_within ind
+R1691:1691 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:28 var
+R1693:1694 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e1:29 var
+R1696:1697 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:32 var
+R1699:1699 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:31 var
+R1740:1748 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1709:1729 simuliris.tree_borrows.read_read_reorder.equivalence_def <> no_termination_within ind
+R1731:1731 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:28 var
+R1733:1734 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e2:30 var
+R1736:1737 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:32 var
+R1739:1739 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:31 var
+R1784:1792 Stdlib.Unicode.Utf8_core <> ::type_scope:x_'∧'_x not
+R1749:1770 simuliris.tree_borrows.read_read_reorder.equivalence_def <> identical_states_after def
+R1772:1772 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:28 var
+R1774:1775 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e1:29 var
+R1777:1778 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e2:30 var
+R1780:1781 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:32 var
+R1783:1783 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:31 var
+R1793:1814 simuliris.tree_borrows.read_read_reorder.equivalence_def <> identical_states_after def
+R1816:1816 simuliris.tree_borrows.read_read_reorder.equivalence_def <> P:28 var
+R1818:1819 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e2:30 var
+R1821:1822 simuliris.tree_borrows.read_read_reorder.equivalence_def <> e1:29 var
+R1824:1825 simuliris.tree_borrows.read_read_reorder.equivalence_def <> σ:32 var
+R1827:1827 simuliris.tree_borrows.read_read_reorder.equivalence_def <> n:31 var

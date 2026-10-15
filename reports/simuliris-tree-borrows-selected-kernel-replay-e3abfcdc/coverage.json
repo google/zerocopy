@@ -1,0 +1,81 @@
+{
+  "report": "simuliris-tree-borrows-selected-kernel-replay-e3abfcdc",
+  "coverage_kind": "bounded actual replay and source-premise audit; no original question or broad milestone completion inferred",
+  "milestones": {
+    "E03": "selected Simuliris replay slice complete; broader artifact agenda open",
+    "E18": "unconstructed MiniRust/Miri/calculus correspondence",
+    "E20": "unconstructed byte-sensitive MiniRust lifetime logic",
+    "E23": "API ports not attempted; concrete checked prerequisites and missing cases enumerated",
+    "E24": "safe-client and proof-transport theorem unconstructed"
+  },
+  "questions": [
+    {
+      "id": "MR01",
+      "sections": "Findings3\u20134; Boundaries",
+      "scope": "Actual existing calculus allocation resources, source-safety premise and contextual domain; establishes reusable premises, not the RustBelt-to-MiniRust bridge.",
+      "stronger_unestablished_claim": "Port allocation, split_at_mut and interior-mutability implementations with byte/representation counterexamples and operational relation.",
+      "status": "partial bounded evidence; original question not declared done",
+      "remaining_experiments_outside_this_selected_replay": [
+        "Actual implementation-bound allocation/split_at_mut/interior-mutability API ports were not attempted in this replay."
+      ],
+      "genuinely_unexamined_source_or_scope_questions": [],
+      "gap_classification": "The report investigates the selected source/theorem boundary. Unconstructed correspondence/soundness claims are future proof objectives, not undiscovered source facts. Listed API ports remain actual unperformed experiments."
+    },
+    {
+      "id": "MR11",
+      "sections": "Findings3\u20135; Boundaries",
+      "scope": "Fresh checks of selected Tree Borrows calculus adequacy/retag/protector/reordering statements.",
+      "stronger_unestablished_claim": "Unbounded operation-by-operation MiniRust/Miri/calculus simulation, including range and provenance cases.",
+      "status": "partial bounded evidence; original question not declared done",
+      "remaining_experiments_outside_this_selected_replay": [],
+      "genuinely_unexamined_source_or_scope_questions": [],
+      "gap_classification": "The report investigates the selected source/theorem boundary. Unconstructed correspondence/soundness claims are future proof objectives, not undiscovered source facts. Listed API ports remain actual unperformed experiments."
+    },
+    {
+      "id": "MR12",
+      "sections": "Findings2\u20134",
+      "scope": "Actual kernel/assumption audit and whole-heaplet, retag, protector and reborrow resource boundaries.",
+      "stronger_unestablished_claim": "Construct byte-sensitive lifetime logic and actual split/recombine, recursive-reborrow and callback ports.",
+      "status": "partial bounded evidence; original question not declared done",
+      "remaining_experiments_outside_this_selected_replay": [
+        "Concrete split/recombine, recursive-reborrow and sibling-alias callback API proof ports were not attempted."
+      ],
+      "genuinely_unexamined_source_or_scope_questions": [],
+      "gap_classification": "The report investigates the selected source/theorem boundary. Unconstructed correspondence/soundness claims are future proof objectives, not undiscovered source facts. Listed API ports remain actual unperformed experiments."
+    },
+    {
+      "id": "MR13",
+      "sections": "Findings4; Boundaries",
+      "scope": "Checked call-map/range/tag requirements, protected mapping cases and selected interior-mutability exclusions.",
+      "stronger_unestablished_claim": "Mixed-field/nested UnsafeCell masks, callback alias retention, returned references and exceptional-exit restoration contracts.",
+      "status": "partial bounded evidence; original question not declared done",
+      "remaining_experiments_outside_this_selected_replay": [
+        "Concrete Cell/callback and returned-reference proof ports with retained aliases were not attempted."
+      ],
+      "genuinely_unexamined_source_or_scope_questions": [],
+      "gap_classification": "The report investigates the selected source/theorem boundary. Unconstructed correspondence/soundness claims are future proof objectives, not undiscovered source facts. Listed API ports remain actual unperformed experiments."
+    },
+    {
+      "id": "MR18",
+      "sections": "Findings3\u20134; Boundaries",
+      "scope": "Exact logical-to-contextual adequacy premises, source safety, scalar-slot observations and no inferred functional/spatial transport.",
+      "stronger_unestablished_claim": "Link selected functional frontend/storage/alias contracts through an actual operational/resource relation.",
+      "status": "partial bounded evidence; original question not declared done",
+      "remaining_experiments_outside_this_selected_replay": [],
+      "genuinely_unexamined_source_or_scope_questions": [],
+      "gap_classification": "The report investigates the selected source/theorem boundary. Unconstructed correspondence/soundness claims are future proof objectives, not undiscovered source facts. Listed API ports remain actual unperformed experiments."
+    },
+    {
+      "id": "MR22",
+      "sections": "Findings3\u20134; Boundaries",
+      "scope": "Actual calculus closing-context domain and conditional callback/protector ingredients, distinguished from typed Rust clients.",
+      "stronger_unestablished_claim": "Safe-client/lifetime/trait-instance/foreign-caller linking theorem and concrete returned-resource API ports.",
+      "status": "partial bounded evidence; original question not declared done",
+      "remaining_experiments_outside_this_selected_replay": [
+        "Concrete callback/returned-resource API proof ports were not attempted; unsafe-trait/monomorphization controls were not rerun in this selection."
+      ],
+      "genuinely_unexamined_source_or_scope_questions": [],
+      "gap_classification": "The report investigates the selected source/theorem boundary. Unconstructed correspondence/soundness claims are future proof objectives, not undiscovered source facts. Listed API ports remain actual unperformed experiments."
+    }
+  ]
+}
