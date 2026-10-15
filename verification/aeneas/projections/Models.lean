@@ -13,3 +13,18 @@ public import DeriveModels
 
 open Aeneas Aeneas.Std AeneasSpecs
 
+derive_rust_model Zerocopy.byteorder.Order with 0 type parameters
+check_model_binding Zerocopy.byteorder.Order with 0 type parameters
+
+derive_rust_model Zerocopy.byteorder.BigEndian with 0 type parameters
+check_model_binding Zerocopy.byteorder.BigEndian with 0 type parameters
+
+derive_rust_model Zerocopy.byteorder.LittleEndian with 0 type parameters
+check_model_binding Zerocopy.byteorder.LittleEndian with 0 type parameters
+
+derive_rust_model Zerocopy.byteorder.U16 with 1 type parameters
+check_model_binding Zerocopy.byteorder.U16 with 1 type parameters
+
+derive_rust_model Zerocopy.byteorder.U32 with 1 type parameters
+check_model_binding Zerocopy.byteorder.U32 with 1 type parameters
+
