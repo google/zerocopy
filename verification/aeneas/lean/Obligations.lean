@@ -30,6 +30,29 @@ or a second proof that the compiler implements Rust correctly.
 open Aeneas Aeneas.Std AeneasSpecs
 namespace Zerocopy.Obligations
 open Zerocopy.Proofs
+
+def nested_round_up_spec_contract (size align : Usize)
+    (run : Result (Option Usize)) : Prop :=
+  run ⦃ rounded => rounded.map UScalar.val =
+    if align.val = 0 then none
+    else if LayoutMath.roundUp size.val align.val ≤ Usize.max
+      then some (LayoutMath.roundUp size.val align.val) else none ⦄
+
+def nested_round_up_spec : Prop :=
+  ∀ size align, nested_round_up_spec_contract size align
+    (layout.nested_reference.round_up size align)
+
+def nested_reference_size_spec_contract
+    (leading : Slice layout.nested_reference.NestedLayer) (elem_size leaf_align elems : Usize)
+    (run : Result (Option Usize)) : Prop :=
+  run ⦃ result => result.map UScalar.val =
+    NestedReference.checkedSize leading.val elem_size.val leaf_align.val elems.val ⦄
+
+def nested_reference_size_spec : Prop :=
+  ∀ leading elem_size leaf_align elems,
+    nested_reference_size_spec_contract leading elem_size leaf_align elems
+      (layout.nested_reference.size_for_metadata leading elem_size leaf_align elems)
+
 abbrev NonZeroUsize :=
   core.num.nonzero.NonZero Usize core.num.niche_types.NonZeroUsizeInner
 
