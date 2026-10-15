@@ -832,6 +832,14 @@ spec min_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.min_spec for Zerocopy.util.min with 2
 
+check_model_inputs Zerocopy.util.move_checks.move_through_call with 1 type parameters
+aeneas_spec_begin
+spec move_through_call_spec
+  for @Zerocopy.util.move_checks.move_through_call with 1 type parameters
+  ensures(raw) result => result = value
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.move_through_call_spec for Zerocopy.util.move_checks.move_through_call with 2
+
 check_model_inputs Zerocopy.util.owned_transmute.to_bytes with 0 type parameters
 aeneas_spec_begin
 spec owned_transmute_to_bytes_spec

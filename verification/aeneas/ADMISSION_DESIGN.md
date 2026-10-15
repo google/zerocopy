@@ -21,8 +21,8 @@ patch saves its imported unstructured AST *before any Charon transformations*.
 `admission.py` inspects that snapshot and final LLBC. It follows every function
 binding and executable dependency, including original unwind and dead blocks.
 A stock driver cannot silently skip the check: the missing snapshot rejects the
-run. Drop terminators are rejected before drop elaboration or cleanup can erase
-them. During admission, the driver refuses to fall back to optimized MIR for
+run. Before drop elaboration or cleanup can erase a drop, admission either
+proves that it cannot execute a destructor or rejects it. During admission, the driver refuses to fall back to optimized MIR for
 local bodies if their requested MIR was stolen. We deliberately use promoted MIR
 rather than drop-elaborated MIR; no supported execution relies on a destructor's
 effects.
@@ -30,8 +30,8 @@ effects.
 The allowed operations are logical integers, booleans, field records, ordinary
 arrays/slices, supported borrows, checked indexing/arithmetic, branching, and
 loops. Unknown AST constructors and extraction options reject the run. Escaping
-borrows, callbacks, raw pointers, foreign ABIs, statics, assembly, drops, union
-storage, and general memory observations remain unsupported. Valid incoming
+borrows, callbacks, raw pointers, foreign ABIs, statics, assembly, executable
+destruction, union storage, and general memory observations remain unsupported. Valid incoming
 references and Aeneas's reviewed borrow translation are explicit premises.
 
 `external.json` supplies exact reviewed leaves, including standard-library
@@ -419,6 +419,61 @@ The mathematical `RustModel` dictionaries are interpretations of values. They
 are not contracts for arbitrary Rust trait methods and do not establish that
 a Rust type has no destructor. Keep these two uses of dictionaries distinct.
 
+## Conditional drops of empty whole locals
+
+A move transfers a destruction obligation; it does not promise that the old
+storage has been cleared. Early MIR can therefore retain a conditional drop of
+a local after its value has moved elsewhere. Ignoring that drop is justified
+only if the local cannot still carry a destruction obligation. This rule makes
+no assumption about whether the local's type implements `Drop`.
+
+`DropOwnership.lean` checks a finite control-flow graph. Every entry, including
+entries of disconnected components, starts with every local possibly owning an
+obligation. A whole-local move removes that local's obligation. A definition,
+assignment destination, call destination, or storage marker restores uncertainty.
+Right-hand-side effects precede the destination definition. A call defines its
+destination on both normal and unwind successors, conservatively. Joins take
+the union of incoming possibilities. A conditional drop is accepted only when
+its local is absent from that union. The theorem `accepted_drop_empty` proves
+this property for every concrete ownership execution covered by the graph.
+`accepted_drop_noop` then states the explicit semantic bridge: if dropping an
+obligation-free slot is silent, the admitted drop is a no-op.
+
+`DropJson.lean` reads the complete tagged compiler body, including its local
+inventory, all blocks, unwind edges, and disconnected code. It constructs the
+graph in Lean, with strict checks on executable JSON fields and constructors.
+It rejects a candidate slot if it is borrowed, projected, or exposed indirectly.
+Only whole-local conditional drops are candidates. Topological ordering must
+cover every node; any cycle rejects this exemption. This restriction applies
+only to bodies requesting a drop exemption: existing drop-free loops retain
+their existing admission rules. Structured switches and escaping aliases also
+remain outside this first decoder.
+
+`DropAudit.lean` quotes the actual body from a frozen compiler snapshot and
+asks Lean's kernel to establish `DropJson.acceptBody body = true` by reduction.
+Python does not supply an event list or an ownership verdict. Both the original
+ULLBC and final LLBC must obtain their own proofs; local numbers need not agree
+between stages. A hash binds each proof record to the inspected body and exact
+snapshot bytes. The final verification command repeats the entire admission
+traversal and obtains fresh kernel proofs before compiling either the golden
+or live model. Missing, additional, duplicated, or stale records reject the run.
+A previously successful compiled witness never authorizes a later check.
+
+The formal theorem concerns ownership graphs. Relating the strict JSON decoder
+to Charon's documented execution order and relating empty conditional drops to
+Rust remain reviewed compiler correspondence premises. This work does not
+prove rustc, Charon, general drop glue, partial initialization, destructor
+execution, or arbitrary typed-storage semantics. Unknown operations still
+reject admission independently of the ownership proof.
+
+`DropOwnershipTests.lean` checks ownership boundary cases;
+`DropJsonTests.lean` checks raw compiler-schema mutations. Python tests exercise
+the actual snapshot-to-kernel command and reject a move changed to a copy,
+forged identities, unknown executable fields, and missing evidence. The Rust
+`util::move_checks` fixture moves an unrestricted generic value through a call.
+Its value contract is checked against both models, while a native test confirms
+that a destructor stays attached to the returned value.
+
 ## Operation rules for the first supported subset
 
 Start with deterministic integer and initialized-byte computations, ordinary
@@ -431,7 +486,7 @@ rules are release conditions, not exemptions that are already implemented.
 | Copy, move, assignment, arguments, and returns | Interpret logical values only when the state relation justifies erasing physical transfer effects. Exact general typed storage is excluded. |
 | Creation of values from storage or unchecked construction | Require a guarded producer interpretation before the typed carrier is entered. Invalid production remains forbidden even if its value is unused. |
 | `PlaceMention` and projected place formation | Reject unless a reviewed rule proves the projections valid in related states. A count of reference/field projections or absence of raw pointers is insufficient. |
-| Residual `Drop`, including conditional and unwind drops | Reject initially. `-eval-drops` does not execute the destructor. Enabling it is not admission. |
+| Residual `Drop`, including conditional and unwind drops | Require the whole-body empty-slot proof below for conditional drops; reject every other drop. `-eval-drops` does not execute the destructor. |
 | `#[target_feature]`, dispatch variants, unsupported ABIs | Reject initially. Later support must require the real platform/ABI conditions at the call boundary. |
 | Raw pointers, unions, raw-memory constants, transmutation, FFI, assembly | Reject unless a specifically admitted primitive completely interprets the operation; no generic successful placeholder. |
 | Allocation, allocator parameters, interior mutation, atomics, concurrency | Exclude initially; logical return values alone do not describe their effects. |
@@ -448,7 +503,8 @@ Charon removes some proven-trivial drops. That removal is part of the reviewed
 normalization premise. Do not infer that every generic or opaque type has a
 trivial destructor just because no destructor body was imported. A future drop
 implementation must extract precise drop glue, inspect its callees and unwind
-paths, and preserve conditional/uninitialized/packed-place semantics.
+paths, and preserve conditional/uninitialized/packed-place semantics. The
+empty-slot rule below does not implement destruction.
 
 The source state relation must justify ordinary reference dereferences,
 reborrows, retagging, and field projections. For the restricted safe-borrow
@@ -476,7 +532,8 @@ admit a simple exceptional suffix only when it is entered exclusively after an
 already-modeled failure, cannot reenter normal execution, and contains no
 unclassified effects. Existing proofs exclude that failure on admitted inputs.
 `UnwindResume` in such a suffix is not the same as permitting it on a normal
-execution path. Residual destruction remains rejected there as elsewhere.
+execution path. Destruction remains rejected there as elsewhere; only proven
+empty conditional drops may be ignored.
 If the rule cannot establish the connection to modeled failure, reject it.
 
 An external interpretation cannot return `.div` as a placeholder for unsupported
