@@ -79,7 +79,7 @@ def retain_native_models(funs):
     # available. Restrict the extension to the actual primitive's dependency
     # closure so unrelated native proof terms and anonymous arguments retain
     # their ordinary upstream elaboration.
-    dependent = {'core.mem.zeroed'}
+    dependent = {'core.mem.zeroed', 'core.mem.transmute_copy'}
     while True:
         found = {name for name, definition in definitions.items()
                  if any(re.search(r'(?<![A-Za-z_0-9.])(?:Zerocopy\.)?' + re.escape(callee)

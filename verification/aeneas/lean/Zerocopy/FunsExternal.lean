@@ -9,6 +9,7 @@ those terms. -/
 module
 public import Zerocopy.Types
 public import ModelPrelude
+public import TransmuteModel
 @[expose] public section
 open Aeneas Aeneas.Std
 open Zerocopy
@@ -218,3 +219,28 @@ noncomputable def Zerocopy.RustLayout.align (T : Type) : Usize := by
   exact if h : T = Usize then
     if (cast h x : Usize) = 0#usize then forbiddenExecution else .ok ⟨x⟩
   else forbiddenExecution
+
+-- The constructor preserves the stored value and suppresses its automatic
+-- destructor. The separate ownership audit proves that ignored conditional
+-- drops cannot execute glue; this function does not model destructor effects.
+def core.mem.manually_drop.ManuallyDrop.new {T : Type} (src : T) :
+    Result (core.mem.manually_drop.ManuallyDrop T) := .ok ⟨src⟩
+
+-- Only equal-width, numeric-storage conversions are admitted. The provider
+-- suffix is independent of Rust trait dictionaries and retains both endpoints.
+-- A universal coverage theorem accounts for every represented source byte
+-- sequence; the implementation's preferred sequence is not a canonical ABI.
+noncomputable def core.mem.transmute_copy {Src : Type} (Dst : Type) (src : Src)
+    [source : AeneasSpecs.RustModel Src] [destination : AeneasSpecs.RustModel Dst] : Result Dst :=
+  source.transmuteCopyResult destination src
+
+-- These are the physical-model/ABI premises for the generic conversion, not
+-- additional safety obligations on a Rust caller. The compiler checks equality
+-- of actual sizes. Connecting those observations to our byte decoders remains
+-- explicit until a verified type-layout model can provide the correspondence.
+def AeneasSpecs.RustModel.sameSize (Src Dst : Type)
+    [source : AeneasSpecs.RustModel Src] [destination : AeneasSpecs.RustModel Dst] : Prop :=
+  ∃ width : Usize,
+    core.mem.size_of Src = .ok width ∧ core.mem.size_of Dst = .ok width ∧
+    source.representation.map (·.byteSize) = some width.val ∧
+    destination.representation.map (·.byteSize) = some width.val

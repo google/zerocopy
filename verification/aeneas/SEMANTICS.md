@@ -256,3 +256,65 @@ bit pattern, contain no padding or pointers, and have no destructor. The
 promise preservation of padding for general by-value types. The interpretation
 supplies no general pointer, provenance, allocation, borrowing, or generic trait
 law, and proves no production `transmute!` macro expansion.
+
+## Generic owned conversion through `transmute_copy`
+
+The const helper in `util/macro_util.rs` consumes `Src: IntoBytes`, checks equal
+sizes with the real post-monomorphization assertion, wraps the source in
+`ManuallyDrop`, and calls the standard `transmute_copy`. Its independent generic
+caller in `util/generic_transmute.rs` consumes the helper's contract. Both roots
+are extracted and proved in the golden and live builds. The production
+`transmute!` macro does not use this helper yet. Rust versions before 1.74 omit
+the helper, because the standard operation was not const on those versions.
+
+Three different facts support the byte proof. `IntoBytes` establishes that all
+accepted physical representations are initialized. It also establishes source
+realizability: each mathematically admitted source value has some physical
+representation. `FromBytes` establishes that every initialized representation of
+the destination width admits both a language value and a mathematical value.
+Realizability is conditional on a source value, so an uninhabited source remains
+vacuous; it does not acquire an arbitrary value or an `Inhabited` requirement.
+
+`RustModel.sameSize` makes the layout bridge explicit. The ordinary total ABI
+queries must return the same `usize`, and both physical decoder widths must
+equal that observed size. This is the correspondence premise of the Lean model,
+not an additional safety rule imposed on safe Rust callers. The Rust assertion
+checks actual sizes; the byte models still need their documented correspondence
+to Rust. Existing layout proofs retain their original ABI query interpretation.
+
+Physical decoding is a relation from a raw value to its accepted byte strings;
+it need not provide a unique string. A model's `representationChoice` selects a
+preferred string, which is checked before use. Generic contracts universally
+quantify that provider. Coverage theorems then vary its preference while fixing
+its decoders, proving that every permitted representation and decoded outcome
+occurs in the verified family. The public postcondition `byteCast` observes a
+common byte string, independently of the preference. Tests exhibit two distinct
+destination values for the same raw source. This covers ambiguous source
+representations, not nondeterministic decoding of one fixed string.
+
+The admitted fragment permits at most one conversion per execution, including
+unannotated callees and constant initializers. Repeated calls, recursion, loops,
+and concrete forwarding that would fix the source preference are rejected.
+Supporting them requires an explicit extension of the choice semantics. The
+compiled audit checks original type arguments and exact retained providers on
+both direct and forwarded calls. Equal Lean carrier types cannot justify
+substituting another provider. Identical pure size queries may be shared by
+Aeneas; their endpoint bindings remain mandatory, while copy calls retain their
+original multiplicity.
+
+The standard-library boundary supplies `ManuallyDrop`'s layout and bit-validity
+identity, destructor suppression, and the equal-width `transmute_copy` behavior
+on a valid readable reference. It permits different source and destination
+alignments. The ownership checker independently proves all ignored conditional
+drops empty, including unwind paths. No meaningful destructor execution,
+pointer provenance, allocation ownership, or external resource invariant is
+modeled. Destination padding may be forgotten after construction; it is not
+promised to retain its input bytes. General typed-copy storage effects remain
+deferred: [Aeneas issue #1405](https://github.com/AeneasVerif/aeneas/issues/1405).
+
+The underlying contracts are recorded in the pinned standard library and the
+[versioned `ManuallyDrop` documentation](https://doc.rust-lang.org/1.74.0/core/mem/struct.ManuallyDrop.html)
+and [`transmute_copy` documentation](https://doc.rust-lang.org/1.74.0/core/mem/fn.transmute_copy.html).
+The numeric, resource-free representation profiles remain the supported domain;
+this proof does not admit arbitrary downstream representations merely because a
+trait dictionary can be extracted.

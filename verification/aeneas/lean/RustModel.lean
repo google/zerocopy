@@ -38,6 +38,9 @@ class RustModel (Raw : Type u) where
   provider cannot establish byte-validity laws.
   This decoder operates independently of the optional library invariant. -/
   representation : Option (Rust.Storage.BitDecoder Raw) := none
+  /-- A preferred physical representation. Operations check it before use.
+  Universally varying this field retains every accepted representation. -/
+  representationChoice : Raw → List Rust.Storage.AMByte := fun _ => []
 
 -- The associated type is transparent so ordinary rewriting and coercions can
 -- identify a retained provider's Model with its named mathematical carrier.
@@ -70,6 +73,11 @@ def RustModel.realizableRepresentation (Raw : Type u) [m : RustModel Raw] : Prop
   | none => False
   | some decoder => ∀ raw, @isValid Raw m raw →
       ∃ bytes, decoder.run bytes = some raw
+
+/-- Change the operational preference without changing either decoder. -/
+@[reducible] def RustModel.withChoice {Raw : Type u} (m : RustModel Raw)
+    (choose : Raw → List Rust.Storage.AMByte) : RustModel Raw :=
+  { m with representationChoice := choose }
 
 /-- Every initialized representation of the physical width admits a language
 value and a mathematical value through this same provider. Missing physical

@@ -24,7 +24,8 @@ echo "Testing failure controls in $1"
 # suite starts and is removed on exit. Use the same roster for both decisions
 # so cleanup cannot delete a source that belonged to an earlier editor session.
 control_files=(
-    StdTransmuteAuditProbe.lean ZeroedAuditProbe.lean NegativeControl.lean WeakOutcome.lean
+    StdTransmuteAuditProbe.lean ZeroedAuditProbe.lean TransmuteCopyAuditProbe.lean
+    NegativeControl.lean WeakOutcome.lean
     RoundingConstructorControl.lean RoundingDomainControl.lean
     Zerocopy/ScopeControl.lean Zerocopy/ShapeControl.lean Zerocopy/ModelControl.lean
     Proofs/WitnessOwnerControl.lean Proofs/PaddingDependencyControl.lean
@@ -315,6 +316,10 @@ if [[ $AENEAS_CONTROL_FAMILY == unsafe ]]; then
 if has_model FromZeros.new_zeroed.default; then
     python3 -B "$repo/verification/aeneas/tests/zeroed_audit_controls.py" \
         --work "$PWD" --runtime "$tools_dir" --evidence "$backup/zeroed"
+fi
+if has_model util.macro_util.transmute_copy; then
+    python3 -B "$repo/verification/aeneas/tests/transmute_copy_audit_controls.py" \
+        --work "$PWD" --runtime "$tools_dir" --evidence "$backup/transmute-copy"
 fi
 # Successful-input proofs cannot detect changing UB into an ordinary panic.
 # Check the independent primitive interpretation, then directly compile the
