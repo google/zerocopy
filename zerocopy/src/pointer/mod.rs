@@ -15,6 +15,7 @@
 mod inner;
 pub mod invariant;
 mod ptr;
+mod referent_checks;
 pub mod transmute;
 
 pub use inner::PtrInner;

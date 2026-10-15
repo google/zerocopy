@@ -3238,8 +3238,127 @@ def pointer_metadata_usize_size_for_metadata
 native_models def FromZeros.new_zeroed.default (Self : Type) : Result Self := do
   core.mem.zeroed Self
 
+/-- Trait implementation: [zerocopy::pointer::invariant::sealed::{impl zerocopy::pointer::invariant::sealed::Sealed for zerocopy::pointer::invariant::Uninit}]
+    Source: 'src/pointer/invariant.rs', lines 333:4-333:29 -/
+@[reducible]
+def pointer.invariant.Uninit.Insts.ZerocopyPointerInvariantSealedSealed :
+  pointer.invariant.sealed.Sealed pointer.invariant.Uninit := {
+}
+
+/-- [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::Uninit}::KIND]
+    Source: 'src/pointer/invariant.rs', lines 198:4-198:52
+    Visibility: public -/
+@[global_simps, irreducible]
+def pointer.invariant.Uninit.Insts.ZerocopyPointerInvariantValidity.KIND
+  : pointer.invariant.ValidityKind :=
+  pointer.invariant.ValidityKind.Uninit
+
+/-- Trait implementation: [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::Uninit}]
+    Source: 'src/pointer/invariant.rs', lines 197:0-199:1 -/
+@[reducible]
+def pointer.invariant.Uninit.Insts.ZerocopyPointerInvariantValidity :
+  pointer.invariant.Validity pointer.invariant.Uninit := {
+  KIND := ok
+    pointer.invariant.Uninit.Insts.ZerocopyPointerInvariantValidity.KIND
+  sealedSealedInst :=
+    pointer.invariant.Uninit.Insts.ZerocopyPointerInvariantSealedSealed
+}
+
+/-- Trait implementation: [zerocopy::pointer::invariant::sealed::{impl zerocopy::pointer::invariant::sealed::Sealed for zerocopy::pointer::invariant::AsInitialized}]
+    Source: 'src/pointer/invariant.rs', lines 334:4-334:36 -/
+@[reducible]
+def pointer.invariant.AsInitialized.Insts.ZerocopyPointerInvariantSealedSealed
+  : pointer.invariant.sealed.Sealed pointer.invariant.AsInitialized := {
+}
+
+/-- [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::AsInitialized}::KIND]
+    Source: 'src/pointer/invariant.rs', lines 235:4-235:59
+    Visibility: public -/
+@[global_simps, irreducible]
+def pointer.invariant.AsInitialized.Insts.ZerocopyPointerInvariantValidity.KIND
+  : pointer.invariant.ValidityKind :=
+  pointer.invariant.ValidityKind.AsInitialized
+
+/-- Trait implementation: [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::AsInitialized}]
+    Source: 'src/pointer/invariant.rs', lines 234:0-236:1 -/
+@[reducible]
+def pointer.invariant.AsInitialized.Insts.ZerocopyPointerInvariantValidity :
+  pointer.invariant.Validity pointer.invariant.AsInitialized := {
+  KIND := ok
+    pointer.invariant.AsInitialized.Insts.ZerocopyPointerInvariantValidity.KIND
+  sealedSealedInst :=
+    pointer.invariant.AsInitialized.Insts.ZerocopyPointerInvariantSealedSealed
+}
+
+/-- Trait implementation: [zerocopy::pointer::invariant::sealed::{impl zerocopy::pointer::invariant::sealed::Sealed for zerocopy::pointer::invariant::Initialized}]
+    Source: 'src/pointer/invariant.rs', lines 335:4-335:34 -/
+@[reducible]
+def pointer.invariant.Initialized.Insts.ZerocopyPointerInvariantSealedSealed :
+  pointer.invariant.sealed.Sealed pointer.invariant.Initialized := {
+}
+
+/-- [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::Initialized}::KIND]
+    Source: 'src/pointer/invariant.rs', lines 249:4-249:57
+    Visibility: public -/
+@[global_simps, irreducible]
+def pointer.invariant.Initialized.Insts.ZerocopyPointerInvariantValidity.KIND
+  : pointer.invariant.ValidityKind :=
+  pointer.invariant.ValidityKind.Initialized
+
+/-- Trait implementation: [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::Initialized}]
+    Source: 'src/pointer/invariant.rs', lines 248:0-250:1 -/
+@[reducible]
+def pointer.invariant.Initialized.Insts.ZerocopyPointerInvariantValidity :
+  pointer.invariant.Validity pointer.invariant.Initialized := {
+  KIND := ok
+    pointer.invariant.Initialized.Insts.ZerocopyPointerInvariantValidity.KIND
+  sealedSealedInst :=
+    pointer.invariant.Initialized.Insts.ZerocopyPointerInvariantSealedSealed
+}
+
+/-- Trait implementation: [zerocopy::pointer::invariant::sealed::{impl zerocopy::pointer::invariant::sealed::Sealed for zerocopy::pointer::invariant::Safe}]
+    Source: 'src/pointer/invariant.rs', lines 336:4-336:27 -/
+@[reducible]
+def pointer.invariant.Safe.Insts.ZerocopyPointerInvariantSealedSealed :
+  pointer.invariant.sealed.Sealed pointer.invariant.Safe := {
+}
+
+/-- [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::Safe}::KIND]
+    Source: 'src/pointer/invariant.rs', lines 261:4-261:50
+    Visibility: public -/
+@[global_simps, irreducible]
+def pointer.invariant.Safe.Insts.ZerocopyPointerInvariantValidity.KIND
+  : pointer.invariant.ValidityKind :=
+  pointer.invariant.ValidityKind.Safe
+
+/-- Trait implementation: [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::Validity for zerocopy::pointer::invariant::Safe}]
+    Source: 'src/pointer/invariant.rs', lines 260:0-262:1 -/
+@[reducible]
+def pointer.invariant.Safe.Insts.ZerocopyPointerInvariantValidity :
+  pointer.invariant.Validity pointer.invariant.Safe := {
+  KIND := ok pointer.invariant.Safe.Insts.ZerocopyPointerInvariantValidity.KIND
+  sealedSealedInst :=
+    pointer.invariant.Safe.Insts.ZerocopyPointerInvariantSealedSealed
+}
+
+/-- Trait implementation: [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::CastableFrom<ST, zerocopy::pointer::invariant::Uninit, zerocopy::pointer::invariant::Uninit> for DT}]
+    Source: 'src/pointer/invariant.rs', lines 285:0-285:78 -/
+@[reducible]
+def pointer.invariant.CastableFromDTSTUninitUninit.Blanket (ST : Type) (DT :
+  Type) : pointer.invariant.CastableFrom DT ST pointer.invariant.Uninit
+  pointer.invariant.Uninit := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::invariant::{impl zerocopy::pointer::invariant::CastableFrom<ST, zerocopy::pointer::invariant::Initialized, zerocopy::pointer::invariant::Initialized> for DT}]
+    Source: 'src/pointer/invariant.rs', lines 290:0-290:88 -/
+@[reducible]
+def pointer.invariant.CastableFromDTSTInitializedInitialized.Blanket (ST :
+  Type) (DT : Type) : pointer.invariant.CastableFrom DT ST
+  pointer.invariant.Initialized pointer.invariant.Initialized := {
+}
+
 /-- [zerocopy::pointer::cast::cast_unsized_layouts_match]:
-    Source: 'src/pointer/mod.rs', lines 195:4-207:5 -/
+    Source: 'src/pointer/mod.rs', lines 196:4-208:5 -/
 def pointer.cast.cast_unsized_layouts_match
   (src : layout.DstLayout) (dst : layout.DstLayout) : Result Bool := do
   match src.size_info with
@@ -3269,7 +3388,7 @@ def pointer.cast.cast_unsized_layouts_match
       else ok false
 
 /-- [zerocopy::pointer::cast::checks::witness_matches]:
-    Source: 'src/pointer/mod.rs', lines 218:8-225:9 -/
+    Source: 'src/pointer/mod.rs', lines 219:8-226:9 -/
 def pointer.cast.checks.witness_matches
   (runtime_layout : layout.DstLayout)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -3282,7 +3401,7 @@ def pointer.cast.checks.witness_matches
     layout.tail_transform_checks.witness_matches tail align phase
 
 /-- [zerocopy::pointer::cast::checks::reference_size]:
-    Source: 'src/pointer/mod.rs', lines 227:8-239:9 -/
+    Source: 'src/pointer/mod.rs', lines 228:8-240:9 -/
 def pointer.cast.checks.reference_size
   (runtime_layout : layout.DstLayout)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -3296,7 +3415,7 @@ def pointer.cast.checks.reference_size
     layout.tail_checks.reference_size tail align phase metadata
 
 /-- [zerocopy::pointer::cast::checks::assert_cast_unsized]:
-    Source: 'src/pointer/mod.rs', lines 251:8-276:9 -/
+    Source: 'src/pointer/mod.rs', lines 252:8-277:9 -/
 def pointer.cast.checks.assert_cast_unsized
   (src : layout.DstLayout) (dst : layout.DstLayout)
   (src_align : core.num.nonzero.NonZero Std.Usize
@@ -3340,6 +3459,267 @@ def pointer.cast.checks.assert_cast_unsized
       else ok ()
     else ok ()
   else ok ()
+
+/-- [zerocopy::pointer::referent_checks::require_transfer]:
+    Source: 'src/pointer/referent_checks.rs', lines 27:0-31:1 -/
+def pointer.referent_checks.require_transfer
+  {Src : Type} {Dst : Type} {SV : Type} {DV : Type} (transmuteTransmuteFromInst
+  : pointer.transmute.TransmuteFrom Dst Src SV DV) :
+  Result Unit
+  := do
+  ok ()
+
+/-- [zerocopy::pointer::referent_checks::require_type_independent]:
+    Source: 'src/pointer/referent_checks.rs', lines 37:0-41:1 -/
+def pointer.referent_checks.require_type_independent
+  {Src : Type} {Dst : Type} {SV : Type} {DV : Type} (invariantCastableFromInst
+  : pointer.invariant.CastableFrom Dst Src SV DV) :
+  Result Unit
+  := do
+  ok ()
+
+/-- [zerocopy::pointer::referent_checks::compose_safe_transfers]:
+    Source: 'src/pointer/referent_checks.rs', lines 52:0-57:1 -/
+def pointer.referent_checks.compose_safe_transfers
+  {Src : Type} {Mid : Type} {Dst : Type}
+  (transmuteTransmuteFromMidSrcSafeSafeInst : pointer.transmute.TransmuteFrom
+  Mid Src pointer.invariant.Safe pointer.invariant.Safe)
+  (transmuteTransmuteFromDstMidSafeSafeInst : pointer.transmute.TransmuteFrom
+  Dst Mid pointer.invariant.Safe pointer.invariant.Safe) :
+  Result Unit
+  := do
+  ok ()
+
+/-- [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def Bool.Insts.ZerocopyIntoBytes : IntoBytes Bool := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U32.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 165:8-165:62
+    Visibility: public -/
+def U32.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
+    Source: 'src/util/macros.rs', lines 153:8-153:62
+    Visibility: public -/
+def
+  U32.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  : Result Unit := do
+  ok ()
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyTryFromBytes : TryFromBytes Std.U32 := {
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
+  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
+    pointer.invariant.Alignment A) => U32.Insts.ZerocopyTryFromBytes.is_safe
+    pointerinvariantAlignmentInst
+}
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyFromZeros : FromZeros Std.U32 := {
+  TryFromBytesInst := U32.Insts.ZerocopyTryFromBytes
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
+  new_zeroed := FromZeros.new_zeroed.default Std.U32
+}
+
+/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u32}]
+    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
+@[reducible]
+def U32.Insts.ZerocopyFromBytes : FromBytes Std.U32 := {
+  FromZerosInst := U32.Insts.ZerocopyFromZeros
+  only_derive_is_allowed_to_implement_this_trait :=
+    U32.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<core::mem::manually_drop::ManuallyDrop<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for T}]
+    Source: 'src/pointer/transmute.rs', lines 449:0-449:74 -/
+@[reducible]
+def pointer.transmute.TransmuteFromTManuallyDropSafeSafe.Blanket (T : Type) :
+  pointer.transmute.TransmuteFrom T (core.mem.manually_drop.ManuallyDrop T)
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<Src, V, zerocopy::pointer::invariant::Uninit> for Dst}]
+    Source: 'src/pointer/transmute.rs', lines 423:0-429:1 -/
+@[reducible]
+def pointer.transmute.TransmuteFromDstSrcVUninit.Blanket (Src : Type) (Dst :
+  Type) {V : Type} (invariantValidityInst : pointer.invariant.Validity V) :
+  pointer.transmute.TransmuteFrom Dst Src V pointer.invariant.Uninit := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<Src, zerocopy::pointer::invariant::Initialized, zerocopy::pointer::invariant::Safe> for Dst}]
+    Source: 'src/pointer/transmute.rs', lines 389:0-394:1 -/
+@[reducible]
+def pointer.transmute.TransmuteFromDstSrcInitializedSafe.Blanket (Src : Type)
+  {Dst : Type} (FromBytesInst : FromBytes Dst) :
+  pointer.transmute.TransmuteFrom Dst Src pointer.invariant.Initialized
+  pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<Src, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Initialized> for Dst}]
+    Source: 'src/pointer/transmute.rs', lines 376:0-381:1 -/
+@[reducible]
+def pointer.transmute.TransmuteFromDstSrcSafeInitialized.Blanket {Src : Type}
+  (Dst : Type) (IntoBytesInst : IntoBytes Src) :
+  pointer.transmute.TransmuteFrom Dst Src pointer.invariant.Safe
+  pointer.invariant.Initialized := {
+}
+
+/-- [zerocopy::pointer::referent_checks::concrete_transfers]:
+    Source: 'src/pointer/referent_checks.rs', lines 72:0-79:1 -/
+def pointer.referent_checks.concrete_transfers : Result Unit := do
+  pointer.referent_checks.require_transfer
+    (pointer.transmute.TransmuteFromDstSrcSafeInitialized.Blanket Std.U8
+    Bool.Insts.ZerocopyIntoBytes)
+  pointer.referent_checks.require_transfer
+    (pointer.transmute.TransmuteFromDstSrcInitializedSafe.Blanket (Array Std.U8
+    4#usize) U32.Insts.ZerocopyFromBytes)
+  pointer.referent_checks.require_transfer
+    (pointer.transmute.TransmuteFromDstSrcVUninit.Blanket Std.U8 Bool
+    pointer.invariant.Initialized.Insts.ZerocopyPointerInvariantValidity)
+  pointer.referent_checks.require_transfer
+    (pointer.transmute.TransmuteFromTManuallyDropSafeSafe.Blanket Std.U8)
+  pointer.referent_checks.require_type_independent
+    (pointer.invariant.CastableFromDTSTInitializedInitialized.Blanket Std.U8
+    Bool)
+  pointer.referent_checks.require_type_independent
+    (pointer.invariant.CastableFromDTSTUninitUninit.Blanket Bool Std.U32)
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<Src, zerocopy::pointer::invariant::Initialized, zerocopy::pointer::invariant::Initialized> for Dst}]
+    Source: 'src/pointer/transmute.rs', lines 406:0-411:1 -/
+@[reducible]
+def pointer.transmute.TransmuteFromDstSrcInitializedInitialized.Blanket (Src :
+  Type) (Dst : Type) : pointer.transmute.TransmuteFrom Dst Src
+  pointer.invariant.Initialized pointer.invariant.Initialized := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<T, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for core::mem::manually_drop::ManuallyDrop<T>}]
+    Source: 'src/pointer/transmute.rs', lines 442:0-442:74 -/
+@[reducible]
+def
+  core.mem.manually_drop.ManuallyDrop.Insts.ZerocopyPointerTransmuteTransmuteFromTSafeSafe
+  (T : Type) : pointer.transmute.TransmuteFrom
+  (core.mem.manually_drop.ManuallyDrop T) T pointer.invariant.Safe
+  pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<T, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for zerocopy::wrappers::Unalign<T>}]
+    Source: 'src/pointer/transmute.rs', lines 463:0-463:61 -/
+@[reducible]
+def wrappers.Unalign.Insts.ZerocopyPointerTransmuteTransmuteFromTSafeSafe (T :
+  Type) : pointer.transmute.TransmuteFrom (wrappers.Unalign T) T
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<zerocopy::wrappers::Unalign<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for T}]
+    Source: 'src/pointer/transmute.rs', lines 470:0-470:61 -/
+@[reducible]
+def pointer.transmute.TransmuteFromTUnalignSafeSafe.Blanket (T : Type) :
+  pointer.transmute.TransmuteFrom T (wrappers.Unalign T) pointer.invariant.Safe
+  pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<T, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for core::num::wrapping::Wrapping<T>}]
+    Source: 'src/pointer/transmute.rs', lines 510:0-510:62 -/
+@[reducible]
+def
+  core.num.wrapping.Wrapping.Insts.ZerocopyPointerTransmuteTransmuteFromTSafeSafe
+  (T : Type) : pointer.transmute.TransmuteFrom (core.num.wrapping.Wrapping T) T
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<core::num::wrapping::Wrapping<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for T}]
+    Source: 'src/pointer/transmute.rs', lines 517:0-517:62 -/
+@[reducible]
+def pointer.transmute.TransmuteFromTWrappingSafeSafe.Blanket (T : Type) :
+  pointer.transmute.TransmuteFrom T (core.num.wrapping.Wrapping T)
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<T, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for core::cell::UnsafeCell<T>}]
+    Source: 'src/pointer/transmute.rs', lines 546:0-546:72 -/
+@[reducible]
+def core.cell.UnsafeCell.Insts.ZerocopyPointerTransmuteTransmuteFromTSafeSafe
+  (T : Type) : pointer.transmute.TransmuteFrom (core.cell.UnsafeCell T) T
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<core::cell::UnsafeCell<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for T}]
+    Source: 'src/pointer/transmute.rs', lines 553:0-553:72 -/
+@[reducible]
+def pointer.transmute.TransmuteFromTUnsafeCellSafeSafe.Blanket (T : Type) :
+  pointer.transmute.TransmuteFrom T (core.cell.UnsafeCell T)
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<T, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for core::cell::Cell<T>}]
+    Source: 'src/pointer/transmute.rs', lines 583:0-583:66 -/
+@[reducible]
+def core.cell.Cell.Insts.ZerocopyPointerTransmuteTransmuteFromTSafeSafe (T :
+  Type) : pointer.transmute.TransmuteFrom (core.cell.Cell T) T
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<core::cell::Cell<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for T}]
+    Source: 'src/pointer/transmute.rs', lines 590:0-590:66 -/
+@[reducible]
+def pointer.transmute.TransmuteFromTCellSafeSafe.Blanket (T : Type) :
+  pointer.transmute.TransmuteFrom T (core.cell.Cell T) pointer.invariant.Safe
+  pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<core::cell::Cell<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for core::cell::UnsafeCell<T>}]
+    Source: 'src/pointer/transmute.rs', lines 607:0-612:1 -/
+@[reducible]
+def
+  core.cell.UnsafeCell.Insts.ZerocopyPointerTransmuteTransmuteFromCellSafeSafe
+  {T : Type} (TransmuteFromTCellSafeSafeInst : pointer.transmute.TransmuteFrom
+  T (core.cell.Cell T) pointer.invariant.Safe pointer.invariant.Safe)
+  (TransmuteFromUnsafeCellTSafeSafeInst : pointer.transmute.TransmuteFrom
+  (core.cell.UnsafeCell T) T pointer.invariant.Safe pointer.invariant.Safe) :
+  pointer.transmute.TransmuteFrom (core.cell.UnsafeCell T) (core.cell.Cell T)
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::pointer::transmute::{impl zerocopy::pointer::transmute::TransmuteFrom<core::cell::UnsafeCell<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for core::cell::Cell<T>}]
+    Source: 'src/pointer/transmute.rs', lines 623:0-628:1 -/
+@[reducible]
+def
+  core.cell.Cell.Insts.ZerocopyPointerTransmuteTransmuteFromUnsafeCellSafeSafe
+  {T : Type} (TransmuteFromTUnsafeCellSafeSafeInst :
+  pointer.transmute.TransmuteFrom T (core.cell.UnsafeCell T)
+  pointer.invariant.Safe pointer.invariant.Safe)
+  (TransmuteFromCellTSafeSafeInst : pointer.transmute.TransmuteFrom
+  (core.cell.Cell T) T pointer.invariant.Safe pointer.invariant.Safe) :
+  pointer.transmute.TransmuteFrom (core.cell.Cell T) (core.cell.UnsafeCell T)
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
 
 /-- [zerocopy::split_at::split_right_len]:
     Source: 'src/split_at.rs', lines 27:0-29:1 -/
@@ -3582,21 +3962,6 @@ def Array.Insts.ZerocopyIntoBytes {T : Type} (N : Std.Usize) (IntoBytesInst :
   only_derive_is_allowed_to_implement_this_trait :=
     Array.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
     N IntoBytesInst
-}
-
-/-- [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}::only_derive_is_allowed_to_implement_this_trait]:
-    Source: 'src/util/macros.rs', lines 165:8-165:62
-    Visibility: public -/
-def Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
-  : Result Unit := do
-  ok ()
-
-/-- Trait implementation: [zerocopy::impls::_#2::{impl zerocopy::IntoBytes for bool}]
-    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
-@[reducible]
-def Bool.Insts.ZerocopyIntoBytes : IntoBytes Bool := {
-  only_derive_is_allowed_to_implement_this_trait :=
-    Bool.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
 /-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u8}::only_derive_is_allowed_to_implement_this_trait]:
@@ -4003,58 +4368,6 @@ def I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
 def I16.Insts.ZerocopyIntoBytes : IntoBytes Std.I16 := {
   only_derive_is_allowed_to_implement_this_trait :=
     I16.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
-}
-
-/-- [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u32}::only_derive_is_allowed_to_implement_this_trait]:
-    Source: 'src/util/macros.rs', lines 165:8-165:62
-    Visibility: public -/
-def U32.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
-  : Result Unit := do
-  ok ()
-
-/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
-    Source: 'src/util/macros.rs', lines 153:8-153:62
-    Visibility: public -/
-def
-  U32.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
-  : Result Unit := do
-  ok ()
-
-/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}]
-    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
-@[reducible]
-def U32.Insts.ZerocopyTryFromBytes : TryFromBytes Std.U32 := {
-  only_derive_is_allowed_to_implement_this_trait :=
-    U32.Insts.ZerocopyTryFromBytes.only_derive_is_allowed_to_implement_this_trait
-  is_safe := fun {A : Type} (pointerinvariantAlignmentInst :
-    pointer.invariant.Alignment A) => U32.Insts.ZerocopyTryFromBytes.is_safe
-    pointerinvariantAlignmentInst
-}
-
-/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromZeros for u32}]
-    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
-@[reducible]
-def U32.Insts.ZerocopyFromZeros : FromZeros Std.U32 := {
-  TryFromBytesInst := U32.Insts.ZerocopyTryFromBytes
-  only_derive_is_allowed_to_implement_this_trait :=
-    U32.Insts.ZerocopyFromZeros.only_derive_is_allowed_to_implement_this_trait
-  new_zeroed := FromZeros.new_zeroed.default Std.U32
-}
-
-/-- [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
-    Source: 'src/util/macros.rs', lines 165:8-165:62
-    Visibility: public -/
-def U32.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
-  : Result Unit := do
-  ok ()
-
-/-- Trait implementation: [zerocopy::impls::_#1::{impl zerocopy::FromBytes for u32}]
-    Source: 'src/util/macros.rs', lines 30:8-32:9 -/
-@[reducible]
-def U32.Insts.ZerocopyFromBytes : FromBytes Std.U32 := {
-  FromZerosInst := U32.Insts.ZerocopyFromZeros
-  only_derive_is_allowed_to_implement_this_trait :=
-    U32.Insts.ZerocopyFromBytes.only_derive_is_allowed_to_implement_this_trait
 }
 
 /-- [zerocopy::impls::_#1::{impl zerocopy::IntoBytes for u32}::only_derive_is_allowed_to_implement_this_trait]:
@@ -5223,5 +5536,22 @@ def util.safety_checks.bool_slice_valid_loop
 def util.safety_checks.bool_slice_valid
   (bytes : Slice Std.U8) : Result Bool := do
   util.safety_checks.bool_slice_valid_loop bytes 0#usize
+
+/-- Trait implementation: [zerocopy::wrappers::{impl zerocopy::pointer::transmute::TransmuteFrom<T, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for zerocopy::wrappers::read_only_def::ReadOnly<T>}]
+    Source: 'src/wrappers.rs', lines 732:0-732:70 -/
+@[reducible]
+def
+  wrappers.read_only_def.ReadOnly.Insts.ZerocopyPointerTransmuteTransmuteFromTSafeSafe
+  (T : Type) : pointer.transmute.TransmuteFrom (wrappers.read_only_def.ReadOnly
+  T) T pointer.invariant.Safe pointer.invariant.Safe := {
+}
+
+/-- Trait implementation: [zerocopy::wrappers::{impl zerocopy::pointer::transmute::TransmuteFrom<zerocopy::wrappers::read_only_def::ReadOnly<T>, zerocopy::pointer::invariant::Safe, zerocopy::pointer::invariant::Safe> for T}]
+    Source: 'src/wrappers.rs', lines 739:0-739:70 -/
+@[reducible]
+def pointer.transmute.TransmuteFromTReadOnlySafeSafe.Blanket (T : Type) :
+  pointer.transmute.TransmuteFrom T (wrappers.read_only_def.ReadOnly T)
+  pointer.invariant.Safe pointer.invariant.Safe := {
+}
 
 end Zerocopy

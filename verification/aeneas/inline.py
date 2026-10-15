@@ -1163,6 +1163,7 @@ def assemble(root, annotations, work, development=False):
         imports.append('public import TraitLaws')
         law_lines = GeneratedLines([*golden.HEADER.rstrip().splitlines(), '', 'module',
             'public import Zerocopy.Funs', 'public import TraitLawsSupport',
+            *(['public import ReferentValidity'] if (root / 'verification/aeneas/lean/ReferentValidity.lean').exists() else []),
             *[line for line in imports if line in {'public import LayoutModel', 'public import Arithmetic'}],
             '@[expose] public section', 'open Aeneas Aeneas.Std',
             'namespace Zerocopy.TraitLaws', ''])
