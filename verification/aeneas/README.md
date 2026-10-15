@@ -13,6 +13,9 @@ with Charon and Aeneas, compares complete generated Lean goldens, and proves
 the inline Rust specifications against both the checked-in and live models.
 The required `All checks succeeded (ci.yml)` job depends on it. The settled design
 and deferred work are recorded in [DESIGN.md](DESIGN.md).
+The [Aeneas limitations report](AENEAS_LIMITATIONS.md) records encountered
+translation and modeling obstacles, their workarounds, and possible upstream
+improvements, with current and historical findings distinguished.
 
 For application review, start with the ordinary Rust reference calculations and
 assertion harnesses in [`layout/nested_reference.rs`](../../zerocopy/src/layout/nested_reference.rs),
