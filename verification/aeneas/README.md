@@ -14,11 +14,47 @@ the inline Rust specifications against both the checked-in and live models.
 The required `All checks succeeded (ci.yml)` job depends on it. The settled design
 and deferred work are recorded in [DESIGN.md](DESIGN.md).
 
-Application claims can use ordinary Rust assertion harnesses with total
-`ensures _ => True` specifications. Successful termination requires every
-assertion to pass. Review the independent calculation, complete comparisons,
-and early returns together: returning early excludes that input from the
-comparison.
+For application review, start with the ordinary Rust reference calculations and
+assertion harnesses in [`layout/nested_reference.rs`](../../zerocopy/src/layout/nested_reference.rs),
+[`layout/tail_checks.rs`](../../zerocopy/src/layout/tail_checks.rs),
+[`layout/composition_checks.rs`](../../zerocopy/src/layout/composition_checks.rs),
+[`layout/tail_transform_checks.rs`](../../zerocopy/src/layout/tail_transform_checks.rs),
+[`layout/primitive_checks.rs`](../../zerocopy/src/layout/primitive_checks.rs), and
+[`util/checks.rs`](../../zerocopy/src/util/checks.rs). A total `ensures _ => True`
+specification on a harness proves that it terminates without failing any of its
+assertions for every admitted input. The assertions, comparisons, and early
+returns are ordinary Rust, so the reviewer can assess the intended behavior and
+its domain together. In particular, a guard that returns early excludes that
+case from the comparison even though the harness itself still succeeds.
+
+Six concrete wrappers in [`lib.rs`](../../zerocopy/src/lib.rs) call the actual
+`PointerMetadata` implementations for `()` and `usize`. Their contracts check
+element-count conversion, layout-variant handling, and checked metadata sizing.
+Using these results for an arbitrary `KnownLayout` implementation requires
+separate layout correspondence.
+
+The numerical harness in [`split_at.rs`](../../zerocopy/src/split_at.rs) compares
+split sizes with the independent remainder-based reference. It checks physical
+tail containment and the zero-padding gate. The shared length helper also runs
+in the production pointer path. These proofs establish bounds and disjoint byte
+intervals, including empty and zero-sized tails; pointer validity and provenance
+remain separate Rust obligations.
+
+The checks in [`pointer/mod.rs`](../../zerocopy/src/pointer/mod.rs) follow the
+actual `CastUnsized` layout gate. Accepted DST pairs retain alignment, physical
+tail offset, and complete sizes for every metadata count. Sized pairs need only
+equal sizes, including zero-sized layouts with different alignments. Rejection
+does not claim that a cast would be impossible. The proof covers the numerical
+decision and sizing comparison, not the resulting pointer's validity.
+
+The checks in [`util/allocation.rs`](../../zerocopy/src/util/allocation.rs) cover
+actual metadata sizing and exact preparation of allocator arguments. Preparation
+preserves every optional size and the supplied alignment, without adding a
+runtime validity filter. Under explicit correspondence to a valid recursive
+layout, separate lemmas establish complete size and tail containment. Numerical
+allocator admission additionally needs the outer alignment and the signed
+metadata-size bound. Allocator behavior, zeroing, and `Box` validity remain
+separate Rust obligations.
 
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.
@@ -70,8 +106,10 @@ each tool answers a different question:
    from Charon declarations; Lean checks the complete compiled image against
    that roster. Local nominal types additionally need their exact source-bound
    model provider. Macro-generated dependency types can use a structural model
-   only when their inspected source span belongs to an item macro. Literal `invariant_proof` markers in macro input bind through native doc
-   origins; function specs and model declarations still require direct items.
+   only when their inspected source span belongs to an item macro. A literal
+   `invariant_proof` marker in macro input instead binds to its unique compiled
+   trait impl through the compiler's documentation origins. Macro input does
+   not support function specs or mathematical model declarations.
 4. The `spec` command turns the inline requirements and postconditions into a
    transparent proposition in `Specs`. A handwritten Lean theorem proves that
    proposition. The command supplies input decoding and successful-result
@@ -84,8 +122,9 @@ each tool answers a different question:
 
 The extracted model and the mathematical model have different purposes. The
 first represents the computation we prove properties about; the second supplies
-the vocabulary in which we state those properties. For example, a Rust nonzero word
-is interpreted as a natural number with machine bounds and a proof of positivity. Plain clauses use mathematical values; `(raw)`
+the vocabulary in which we state those properties. For example, Rust stores
+rounding alignment and phase in one nonzero word, while its mathematical model
+exposes two natural numbers. Plain clauses use mathematical values; `(raw)`
 clauses use extracted representations. Both execute the same extracted function
 on its original arguments and require the actual returned value to decode.
 
@@ -156,14 +195,15 @@ postconditions could promise less. Passing proofs establish the written claims;
 they do not establish that those claims capture the intended behavior.
 
 The comments in these modules explain their inputs, outputs, and non-obvious
-checks. This integration proves conditional functional
+checks. [SEMANTICS.md](SEMANTICS.md) states the premise connecting the independent
+layout mathematics to Rust. This integration proves conditional functional
 behavior; it does not prove that every caller meets the requirements or that
 zerocopy's unsafe pointer operations are sound.
 
 ## Unsafe boundaries and admission
 
 `external.json` lists exact reviewed Rust identities and signatures, with the
-Lean interpretation used at each boundary. It derives the two local `--opaque`
+Lean interpretation used at each boundary. It derives the local `--opaque`
 selections; arbitrary opaque flags are rejected. A changed local helper body
 requires a fresh review and an updated body digest. Registration is a trusted
 Rust-to-model premise, not a Lean proof of the omitted body. Standard-library
@@ -179,8 +219,24 @@ The first storage examples are in
   entire destination unchanged when the source is too long. Its model returns
   the updated mutable slice explicitly.
 
+The production `IntoBytes` write methods now call the proved
+[`util/bytewrite`](../../zerocopy/src/util/bytewrite/mod.rs) helpers. Their
+contracts cover exact, prefix, and suffix writes, preserved surrounding bytes,
+and unchanged rejection. A concrete big-endian word consumer additionally
+checks the public byteorder constructor/accessor composed with prefix writing.
+Native tests compare that composition with `IntoBytes::write_to_prefix`; the
+`as_bytes` pointer bridge remains the existing Rust safety argument.
+
+[`util/validity`](../../zerocopy/src/util/validity/mod.rs) supplies the Boolean and
+nonzero-word predicates used by the actual scalar `TryFromBytes` implementations.
+The checked conversions retain raw candidates until validation; pair and slice
+contracts cover invalid bytes at every position. The exact byte-read bridge has
+an execution-time bounds guard. These proofs establish conditional behavior for
+initialized byte slices, without claiming the whole generic `Maybe` pointer path
+has been lowered and verified.
+
 The existing production `add_scaled_metadata` exercises guarded unchecked
-addition and multiplication. Each of these four primitive definitions has an
+addition and multiplication. The primitive definitions have an
 independent complete-definition check, including its forbidden branch. Kernel
 controls prove rejection even if an invalid result is discarded or followed by
 divergence. Extraction controls check actual generated callers that discard an
@@ -207,38 +263,92 @@ whole-program unsafe-code certification.
 ## Scope and proofs
 
 Extraction starts from the function and nominal-type owners of every present
-`aeneas` fence in `zerocopy/src`, including their dependencies. Every present
-fence must have a supported Rust owner, exact extraction binding, and the
-corresponding checked Lean declarations. Unannotated functions and impls can be
-added without extending the specification set.
+`aeneas` fence in `zerocopy/src`, including their dependencies. The current
+function specifications cover the layout and arithmetic methods and their Rust
+reference harnesses. Unannotated functions and impls can be added without
+extending the specification set. Every present fence must have a supported Rust
+owner, exact extraction binding, and the corresponding checked Lean declarations.
 
-| Rust function | Checked property |
+| Functions | Checked property |
 | --- | --- |
 | Byteorder U16/U32 read, write, and set (both endiannesses) | Exact integer value, every encoded byte, and setter/getter equality for every typed input. |
-| `max` | Terminates successfully and returns the mathematical maximum. |
-| `min` | Terminates successfully and returns the mathematical minimum. |
-| `padding_needed_for` | For any positive alignment, succeeds with padding strictly below that alignment. |
-| `round_down_to_next_multiple_of_alignment` | For any positive power-of-two alignment, succeeds with a result no larger than the input and divisible by the alignment. |
+| `max`, `min`, padding, round-down | Exact extrema, least padding, greatest aligned predecessor, and bounds. |
+| Alignment/phase encoder and decoders | Power-of-two alignment, bounded phase, and exact encoding round-trip. |
+| Trailing size, padding, capacity, and advancement | Independent unbounded size formulas, exact checked-size overflow, wrapping padding, and byte advancement. |
+| Size-sequence comparison | A positive answer establishes equal sizes for every natural metadata value. |
+| Zero-stride conversion and element capacity | Exact zero handling, preserved representation fields, and greatest fitting element count. |
+| `DstLayout` constructors, extension, and padding | Exact fields, field placement, alignment, flags, and normalized size formulas. The record constructor terminates for arbitrary field lists satisfying the independent construction domain. |
+| Static and dynamic padding queries | Exact flag result and the mathematical condition sufficient to eliminate dynamic padding for all metadata values. |
+| Cast validation and exact-size metadata | Alignment/size error priority, greatest fitting metadata, exact prefix/suffix split, and rejection of unattainable sizes. |
 
-Every registered function uses total `spec`: accepted raw representations,
-supplied mathematical ghosts, and explicit requirements imply successful
-termination, successful output decoding, and the postconditions. These are
-quantified conditional contracts, not finite test inputs. Broader ordinary Raw
-lemmas retain useful representation-level domains.
+All registered specifications use total `spec`: accepted input representations
+and their stated requirements imply successful termination, a valid returned
+value, and their postconditions. Intentional panic for
+casting a zero-stride DST is checked separately. The size-sequence comparison
+is conservative: a negative result does not claim that the sequences differ.
 
-This initial arithmetic scope establishes extrema, padding bounds and an
-aligned result no larger than the input. It does not claim least padding or
-the greatest aligned predecessor.
+`LayoutMath.lean` defines an independent recursive layout semantics and proves
+normalization correct for every nesting depth and metadata value. The extracted
+contracts connect machine arithmetic and control flow to that mathematics.
+`LayoutModel.lean` supplies shared interpretation predicates, without using
+any function proof. `Corollaries.lean` connects checked sizes and physical
+padding to the recursive semantics, proves that outer padding preserves
+complete inner sizes, and connects the record constructor to direct
+per-metadata field placement.
+See [SEMANTICS.md](SEMANTICS.md) for the exact Rust premise and trust boundary.
+
+The nested Rust reference starts with `metadata * element_size`, then places
+each complete inner record at a remainder-based aligned offset and rounds the
+containing size. Its equivalence harness constructs the production layout and
+compares the complete `Option<usize>` result, including overflow. It handles
+arbitrary nesting, zero-size tails, and every machine-word metadata count.
+The construction guards are visible in Rust: invalid descriptors, excessive
+alignment, and static layouts that do not fit return before construction.
+The tail harnesses additionally compare capacity, exact-size metadata, and both
+successful cast splits and alignment/size errors. Their explicit witnesses let
+reviewers read alignment and phase directly instead of decoding a stored word.
+The original mathematical helper theorems retain their broader natural-number
+domains; these Rust harnesses quantify the machine-word arguments Rust receives.
+The composition harnesses compare extension, padding, and arbitrary field-list
+construction, including every stored field and the shallow-padding flag. The
+transformation harnesses compare byte advancement, wrapping padding, dynamic
+padding queries, and checked sizes after a positive size-sequence answer. The
+existing sequence theorem additionally preserves its unbounded size equality;
+equality of checked optional sizes alone would lose differences after overflow.
+
+The inline checks in `layout/cast_from.rs` cover numerical cast composition.
+They select a production `CastPlan`, require the checked metadata calculation
+to succeed, compare it with the actual unchecked conversion, and compare
+complete sizes using the independent remainder-based reference. Metadata
+representability follows from a representable complete source size; it is not
+an assumed harness precondition. The proof covers all three accepted plan
+variants. Rejected plans carry no completeness promise, and the typed pointer
+adapter's provenance and `KnownLayout` obligations remain outside this proof.
+
+The constructor's requirements check field alignment, the independent prefix
+layout's overflow bounds, canonical encodings, and final padding bounds. These
+are predicates over the mathematical construction, not assumptions that the
+Rust constructor returned a correct result. Fragment operations have explicit
+fit requirements; arbitrary malformed internal layout records need not succeed.
+Generic size/alignment reads are explicit external data inputs, never axioms
+asserting layout correctness.
 
 Plain arithmetic clauses use mathematical word values carrying machine bounds
-and NonZero positivity. Their Nat/Int arithmetic does not wrap; explicit raw
-clauses preserve the extracted representation vocabulary while retaining
-automatic input and output decoding.
+and, for NonZero, positivity. They coerce to `Nat` or `Int` without unwrapping
+raw fields. Binding `let N : Nat := n` makes addition and remainder ordinary
+unbounded mathematics. Explicit `(raw)` clauses retain the extracted scalar
+operations, whose checked arithmetic returns execution `Result` values.
+Operation-specific power-of-two alignment and overflow bounds remain explicit
+requirements.
 
-CI uses the default features, debug assertions and the runner's native target.
-Local replay also supports macOS arm64. These conditional contracts do not
-certify other extraction configurations, rustc, zerocopy's pointer safety or
-whole-crate unsafe behavior.
+CI uses the default features, debug assertions, and the runner's native
+`x86_64-unknown-linux-gnu` target. Local replay also supports macOS arm64. The
+proofs cover all registered layout methods under their stated domains;
+they do not certify other extraction configurations, a rustc implementation,
+or zerocopy's pointer safety. The explicit Rust premise connects the recursive
+semantics to an actual type's layout. Compiler regression tests challenge that
+premise independently of the Lean algebra. Aeneas currently targets a safe Rust
+subset; whole-crate unsafe verification is a separate task.
 
 The Rust tests also compare reconstruction with rustc directly at compile
 time. Concrete instantiations of ordinary, aligned, and packed `repr(C)` records
@@ -536,7 +646,7 @@ comparison is part of the automatic-decoding audit.
 Generated modules follow the proof-construction dependency:
 
 ```text
-raw Types + ModelPrelude → ModelShapes → Models → Specs + Proofs
+raw Types + ModelPrelude → ModelShapes → ModelSupport → Models → Specs + Proofs
 ```
 
 `ModelShapes` declares nominal mathematical fields and inline model types in
@@ -555,8 +665,10 @@ These are conditional contracts over accepted representations, supplied ghosts,
 and satisfied requirements. A decoder may intentionally forget observations or
 reject raw values. A ghost with type `False`, or a dependent ghost with an empty
 domain, makes the relevant contract vacuous. Neither the pipeline nor a decoder
-proves that every Rust caller meets the domain. Operation-specific
-alignment and fit conditions remain explicit. The independently written operation expectations check both intended input
+proves that every Rust caller meets the domain. `DstLayout` initially keeps a
+structural mathematical model, including its unpadded flag and decoded rounding
+pair, without imposing a global realizable-layout requirement. Operation-specific
+alignment, fit, and construction conditions remain explicit. The independently written operation expectations check both intended input
 admission and promised behavior. Representation laws can be useful proof helpers;
 they are not an additional universal model-certification requirement.
 
@@ -565,7 +677,7 @@ Rust. Charon's root identity, exact source body, source path, and signature must
 match the annotation, including inherent Self types and inactive `cfg`
 alternatives. Discovery retains exact inspected source snapshots; later digest,
 binding, and assembly steps reject changes to any inspected input. The source
-digest includes unannotated dependency files. Every
+digest includes all inspected crate Rust sources and reserved-fence candidates. Every
 contents-bearing Charon-local file must agree with its inspected snapshot, so an
 unchanged caller cannot hide a changed dependency. Pinned external `/rustc` files
 without source contents remain within the translation premise.
@@ -581,65 +693,96 @@ dictionary is absent from extraction still fails binding. Removing an annotation
 and its associated proof intentionally removes that claim from the checked set;
 the source and generated golden changes make the reduced coverage reviewable.
 There is no separately maintained function or type coverage roster. Nominal
-types are still registered and audited independently from their specifications.
+types used by extracted functions retain their exact source mapping and
+structural model checks, including unannotated dependency types.
 
-Every present function annotation must match its exact extracted function.
-Called functions and constants remain part of the complete dependency model.
-Model
-names, theorem identities, filenames, and dependency edges are derived rather
-than stored as additional synchronized inventory fields. Discovery scans all
-repository Rust sources except generated and vendored directories. A Rust
-lexer distinguishes comments from strings and `syn` establishes ownership
-before conditional compilation.
+Model names, theorem identities, filenames, and dependency edges are derived
+from the present annotations and verified extraction. Discovery inspects all
+`zerocopy/src` Rust sources and reserved-fence candidates elsewhere in the
+repository, except generated and vendored directories. A Rust lexer distinguishes
+comments from strings and `syn` establishes ownership before conditional
+compilation. A present fence on an unsupported owner, including one hidden in a
+macro, fails discovery; unannotated macros and impls keep their ordinary Rust
+meaning. Every function extraction root must match a present function annotation.
 
 No parser can recognize every informal prose claim as a proof. The `aeneas`
-fence is the reserved CI-checked convention. Near-miss guard detection and the
-independent policy protect that convention without treating all mathematical
-prose as annotations.
+fence is the reserved CI-checked convention. Near-miss guard detection protects
+that convention without treating all mathematical prose as annotations. CI
+checks every present specification on both the golden and live models so an
+owned fence cannot escape proof checking or the compiled binding and axiom audits.
 
-## Array `IntoBytes` initialization law
+## `IntoBytes` initialization laws
 
 The `IntoBytes` fence in [`lib.rs`](../../zerocopy/src/lib.rs) requires every
 accepted physical representation byte to be initialized. A byte in
 [`Rust.Storage`](../../anneal/lean/Rust/Storage.lean) is either initialized with
-an eight-bit value or uninitialized. Each physical decoder has a fixed width;
-a successful run must consume exactly that width. The law covers the entire
-accepted byte list, including any padding within an element representation.
+an eight-bit value or uninitialized. A physical decoder has a fixed width and
+a successful run consumes exactly that width. `RustModel.initializedRepresentation`
+requires an available physical decoder and initialization over its entire
+accepted domain. Absence is `False`; rejection by the library's mathematical
+`RustModel.decode` cannot reduce this domain.
 
-This physical decoder is separate from `RustModel.decode`, which interprets a
-typed value for library contracts. `RustModel.initializedRepresentation`
-quantifies over every successful physical decoding, even when the library
-model rejects that value. A missing physical decoder makes the law `False`.
-The current physical models cover `bool`, `u8`, `()`, and arrays recursively
-built from them; other mathematical models do not acquire a byte law by default.
+There are 59 authored implementation markers: `()`, `bool`, `char`; all twelve
+signed/unsigned integer carriers; all twelve corresponding `NonZero` carriers
+and their `Option` forms; `PhantomData`; arrays; `Wrapping`, `ManuallyDrop`,
+`Cell`, `UnsafeCell`, `ReadOnly`, `Unalign`; and all twelve byteorder wrappers.
+[The scope inventory](LOWERING_AUDIT.md#exact-authored-implementation-scope)
+retains their exact generic bounds, configuration branches, and deferred impls.
+The default library build selects the handwritten `Unalign` and byteorder
+implementations; their derive/test alternatives remain deferred. Native floats,
+slices, `str`, atomics, SIMD, and other derive-generated impls remain outside
+this implementation-law scope.
 
-`arrayDecoder_initialized` proves that arrays inherit this law from their
-element decoder for every element count. The decoder splits the representation
-into consecutive chunks of the element width and requires an empty final
-remainder. An empty array accepts only an empty byte list. Zero-sized elements
-use empty chunks, so positive counts of `()` also have no representation bytes.
-The concrete checks in
-[`trait_checks.rs`](../../zerocopy/src/trait_checks.rs) exercise primitive,
-empty, zero-sized, and nested arrays; the extracted generic implementation law
-supplies the result for arbitrary counts under the element's law.
+Integer physical decoders assemble initialized bytes in the extraction target's
+little-endian order, then interpret signed words in two's complement. Admission
+requires a little-endian 64-bit target, so pointer-sized words occupy eight
+bytes. Nonzero decoders reject zero as decoder failure. The specialized
+`Option<NonZero<_>>` decoder admits all initialized underlying integer patterns:
+zero becomes the Rust payload `None`, nonzero becomes `Some`. Outer decoding
+failure stays a failure. The character decoder rejects surrogates and values
+above `0x10ffff`. No general optional-value or struct layout is inferred.
 
-Applying the theorem to Rust requires a correspondence premise for the physical
-decoder. Its width must equal Rust's size, and it must admit every language-valid
-representation. The [Rust Reference array layout rules](https://doc.rust-lang.org/reference/type-layout.html#array-layout)
-give size `N * size_of::<T>()`, alignment equal to `T`'s alignment, and element
-`k` at byte offset `k * size_of::<T>()`. These rules leave no padding between
-complete element representations; padding already included in `size_of::<T>()`
-still needs the element's initialization law. The [validity rules](https://doc.rust-lang.org/reference/behavior-considered-undefined.html#invalid-values)
-require valid array elements, restrict `bool` to zero and one, and require
-initialized integers. The primitive layouts give `bool` and `u8` one byte and
-`()` zero bytes. These language facts justify the current decoder choices;
-Lean checks the initialization and array composition laws within that model.
+Array decoding splits complete element representations into consecutive chunks
+and requires an empty final remainder. `arrayDecoder_initialized` proves the
+law for every count under the actual element decoder's law. Recursion counts
+elements, so the same rule covers empty arrays, positive counts of zero-byte
+elements, and nested arrays. Padding within an element remains the element
+law's obligation. Wrapper decoders preserve the actual child's failures and
+initialization law. Generic `?Sized` impl bounds are retained; a supplied
+physical provider for an unsized value must also carry its applicable metadata
+and representation width. These conditional laws supply no universal DST
+representation model.
 
-This proof establishes the array trait law under those correspondence premises.
-The pure representation model does not track runtime storage, typed transfers,
-or pointer provenance. `IntoBytes::as_bytes` retains its Rust safety argument;
-its pointer implementation is not proved by this array law. See
-[LOWERING_AUDIT.md](LOWERING_AUDIT.md) for the remaining lowering boundaries.
+The byteorder structs have transparent byte-array storage plus an empty
+`PhantomData` field. In particular, `F32` and `F64` use `[u8; 4]` and `[u8; 8]`;
+their initialization laws require no native floating-point representation model.
+`PhantomData<T>` uses its explicit empty raw constructor, without a stored `T`
+or a model of `T`. This differs from inventing a value based on size zero or a
+Lean `Inhabited` instance. Structural mathematical models receive no physical
+decoder by default.
+
+[`EmptyConstructionTests.lean`](lean/EmptyConstructionTests.lean) checks that
+empty-byte construction without a physical provider fails, including for an
+uninhabited raw type. An explicit empty physical decoder can produce a
+unit-like raw token, but its full provider rejects that token when the modeled
+external-state condition is false. Total and partial correctness both reject
+this `.fail .undef` result even with postcondition `True`. Empty storage proves
+neither Rust constructor permission nor an external library invariant.
+
+Applying these Lean laws to Rust requires explicit correspondence: the
+physical decoder has the correct width and admits exactly the applicable
+language-valid representations with their corresponding raw values. The
+[versioned language and standard-library premises](LOWERING_AUDIT.md#decoder-correspondence-premises)
+record what each builtin interpretation consumes and their compatibility trust.
+Initialization theorems alone cannot prove that correspondence: a decoder
+rejecting all inputs also satisfies initialization vacuously.
+
+These are conditional initialization laws for the exact native trait dictionaries.
+They do not prove every method body, runtime storage, typed transfers, aliasing,
+pointer provenance, destruction, or general Rust UB-freedom.
+`IntoBytes::as_bytes` retains its Rust safety argument; its pointer implementation
+is outside these laws. See [LOWERING_AUDIT.md](LOWERING_AUDIT.md) for the remaining
+lowering boundaries.
 
 ## Native Lean proofs and independent checks
 
@@ -696,6 +839,16 @@ audit checks those identities and their generated-module ownership in both
 directions, independently scans raw nominal types, and rejects missing or extra
 provider registrations. This reuses one verified table without another coverage roster.
 
+For cast validation and
+exact-size metadata, the required outcomes spell out error priority, split
+positions, exact size, and greatest-fitting metadata independently of the
+predicates used by the inline specs. `OutcomeTests.lean` pins distinguishing
+fixed-size, suffix-alignment, and padded-size plateau examples.
+`LayoutModelDomainTests.lean` also establishes concrete admitted constructor
+inputs and exact views for an ordinary record and a nested packed DST. These
+bounded examples guard against vacuous preconditions; they do not establish
+that every Rust type meets the construction domain.
+
 `Check.lean` derives dependencies from elaborated theorem types and terms,
 following helpers across handwritten modules, including private helpers, and
 writes `proof-dependencies.json` in each proof workspace. It imports and audits all
@@ -703,6 +856,12 @@ declarations from every handwritten Lean module, including unused auxiliary
 modules, together with the model, vocabulary, obligations, and generated
 specifications. Only `propext`, `Classical.choice`, and `Quot.sound` are
 permitted.
+The explicit data-only Rust layout inputs documented in `SEMANTICS.md`
+are also permitted. Models with generic alignment reads must provide both
+data inputs with their exact signatures; the audit also checks that generic
+size/alignment reads use those inputs and that `Usize` size uses the pointer
+width. These checks pin the declared external interpretation; correspondence
+to the actual Rust ABI remains an explicit premise.
 New axioms, `sorryAx`, and native evaluator proof axioms fail.
 
 Callers reuse ordinary exported theorems, either explicitly with `step with` or
@@ -720,14 +879,17 @@ modules must not create import cycles through generated `Required` or `Check`.
 Model fields declare ordinary Lean constraints. A decoder can supply only its
 data and use native `..` to omit proof fields:
 
-For a hypothetical type with a machine-word field `word`:
-
 ```lean
-model SuccessorValue where
-  value : Nat
-  positive : 0 < value
+model RoundingValue where
+  align : Nat
+  phase : Nat
+  align_pow2 : align.isPowerOfTwo
+  phase_lt : phase < align
+  fits : align + phase ≤ Usize.max
 decode self =>
-  { value := self.word.value + 1, .. }
+  let word := self._0.value
+  let align := 2 ^ Nat.log2 word
+  { align := align, phase := word - align, .. }
 ```
 
 Both `decode` and `decode?` implicitly use `model_value` completion on the whole
@@ -833,7 +995,7 @@ After a Lake build, inspect an effective compiled specification with:
 
 ```sh
 python3 -B verification/aeneas/workspace.py inspect verification/aeneas/lean \
-  --root "$PWD" --spec max_spec
+  --root "$PWD" --spec encoding_components_spec
 ```
 
 This reads compiled declarations without running another build. It displays the
@@ -853,6 +1015,48 @@ Edit a specification in Rust and run the development command again to refresh
 its generated proposition. Edit its proof directly in Lean. No proof copying
 back to Rust is required. This development cache is for iteration; CI always
 regenerates specifications and builds both models in fresh isolated projects.
+
+## Mathematical views and indexed loops
+
+### Arithmetic, mathematical views, and indexed loops
+
+Checked addition, subtraction, and multiplication already have upstream
+`step_pure` specifications. Use `step as ⟨result, facts⟩` and split the `Option`
+result to obtain both the exact successful value and the overflow condition.
+`SupportTests.lean` exercises all inputs, including overflow. Layout proofs use
+these registrations directly, without naming bitvector specification lemmas.
+
+A contract may express equality through a pure mathematical view:
+
+```lean
+theorem operation_spec (input : Input) (h : valid input) :
+    operation input ⦃ result =>
+      view result = mathematicalOperation (view input) ∧ canonical result ⦄ := by
+  ...
+```
+
+This ordinary theorem states the existing total WP postcondition directly.
+A view-only theorem states just the view equality. Partial correctness uses
+`⦄div` in place of `⦄`: it explicitly permits divergence and still excludes
+failure. These are Aeneas's existing specification operators. Use `WP.spec_mono`
+to adapt an existing result specification to a view, and register useful caller
+specifications with `attribute [step] operation_spec`. The existing Aeneas
+registry then lets callers use `step` without specifying the theorem manually.
+
+`AeneasContracts.indexed_loop_spec` specializes Aeneas's `loop.spec_decr_nat`
+to a state and `Usize` index. Supply a view, the mathematical value of each
+prefix, and a representation invariant. Each continuing body step must advance
+the index by
+exactly one and establish the next prefix; a completed step must be at the
+length. The adapter supplies bounds and the decreasing `length - index`
+termination measure. The record constructor instantiates this rule; its body
+proof still establishes the arithmetic bounds needed to avoid Rust overflow.
+`SupportTests.lean` contains a smaller independent example.
+
+The specification syntax, examples, and required-contract proof terms
+participate in the axiom audit. Failure controls challenge an incorrect view,
+divergence under a total view contract, a stationary loop index, an incorrect
+prefix step, and continuing past the loop bound.
 
 ## Updating models and fuzzy comparison
 
@@ -887,7 +1091,7 @@ additional generated files, changes to external-template signatures, and code
 changes fail with a normalized diff and require regeneration.
 
 CI compiles the checked-in model and the unmodified live model in separate fresh
-Lake workspaces. Both must prove all inline specifications and any checked-in composition
+Lake workspaces. Both must prove all inline specifications and composition
 corollaries and pass required checks and the complete axiom audit. The normalized
 text is used only for comparison, never compilation. This independently checks
 that accepted differences preserve the proved properties; it does not by itself
@@ -936,6 +1140,28 @@ records but does not formally prove:
   Rust values by admitting zero; the generated conditional contracts assume
   successful recursive decoding of inputs and prove it for returned values.
   This introduces no axiom asserting that every modeled wrapper is nonzero.
+- The guarded `NonZeroUsize::new_unchecked` interpretation returns its input
+  in the raw wrapper only when that input is nonzero. Zero and unsupported
+  native types produce forbidden execution (`fail undef`), including when the
+  result is ignored. Admission checks the original Rust `usize` instantiation
+  and its lifted `NonZeroUsizeInner` argument; the compiled audit compares the
+  whole definition independently of successful-input proofs. The pinned std
+  contract (`core/src/num/nonzero.rs`, nightly-2026-09-17, lines 394–399) says
+  that zero causes undefined behavior and requires a nonzero argument. Its
+  Rust-to-model correspondence remains a primitive boundary premise. The
+  `divide_by_unaligned` body stays extracted: the exact dictionary's law proves
+  alignment one, hence `1 / alignment = 1`, establishing constructor safety
+  before the final checked division. The concrete `u8` caller discharges its
+  implementation law. These proofs concern values and arithmetic, not memory.
+- The external `usize::unchecked_mul` and `usize::unchecked_add` models
+  return the exact product and sum on non-overflowing inputs. Their Lean
+  definitions use checked arithmetic, and every use proves both results fit.
+  They claim no Rust behavior outside that domain. The cast composition
+  harness derives these bounds from successful plan selection and a
+  representable source size, and compares complete source/destination sizes
+  using the independent remainder-based reference. Pointer provenance,
+  reference validity, and `KnownLayout` implementations remain outside this
+  numerical proof.
 - Lean's kernel, its standard logic axioms, and the imported proof artifacts
   check the encoded propositions correctly. Release checksums establish
   artifact identity, not a proof of compiler or model correctness.
