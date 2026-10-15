@@ -40,10 +40,12 @@ def admission_controls(work, evidence):
         data = json.loads((work / filename).read_text())
         baseline = admission.Admission(data, registry, laws)
         baseline.audit([owner])
+        # These exact compiler paths need no rendering of unrelated opaque
+        # signatures, which may legitimately mention unsupported storage types.
         helper = next(f for f in baseline.functions.values()
-                      if baseline.name(f['item_meta']['name']) == owner + '_native')
+                      if f['item_meta']['name'] == [{'Ident': [part, 0]} for part in (owner + '_native').split('::')])
         intrinsic = next(i for i, f in baseline.functions.items()
-                         if baseline.name(f['item_meta']['name']) == 'core::intrinsics::transmute')
+                         if f['item_meta']['name'] == [{'Ident': [part, 0]} for part in 'core::intrinsics::transmute'.split('::')])
         calls = [node['Regular'] for node in nodes(helper['body'])
                  if node.get('Regular', {}).get('kind', {}).get('Fun') == intrinsic]
         if len(calls) != 1:

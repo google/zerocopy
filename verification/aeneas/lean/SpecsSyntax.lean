@@ -68,8 +68,12 @@ no decoded witness, ghost, or requirement can enter this argument prefix. -/
 private meta partial def withOriginalInputs (carrier : Expr) (inputs : Array Expr)
     (k : Array Expr → Expr → Elab.Term.TermElabM Expr) : Elab.Term.TermElabM Expr := do
   match carrier with
-  | .forallE binderName domain body _ =>
-    Meta.withLocalDeclD binderName.eraseMacroScopes domain fun input => do
+  | .forallE binderName domain body info =>
+    -- Preserve semantic instance arguments so elaboration and the native-input
+    -- audit see the exact provider used by the computation. Source arguments
+    -- remain explicit in the specification as before.
+    let info := if info.isInstImplicit then info else BinderInfo.default
+    Meta.withLocalDecl binderName.eraseMacroScopes info domain fun input => do
       checkFreshNames inputs #[input]
       withOriginalInputs (body.instantiate1 input) (inputs.push input) k
   | _ => k inputs carrier
@@ -191,7 +195,8 @@ private meta def postcondition (posts : Array Syntax) (raws maths : Array Expr)
       | _ => throwErrorAt function "A specification must name a bare extracted function constant"
     let functionName ← Elab.realizeGlobalConstNoOverloadWithInfo id
     let functionExpr ← Meta.mkConstWithFreshMVarLevels functionName
-    withOriginalInputs (← Meta.inferType functionExpr) #[] fun originals returnType => do
+    withOriginalInputs (← Meta.inferType functionExpr) #[] fun allInputs returnType => do
+      let (originals, retained) ← splitNativeModels allInputs
       -- The generated count identifies the source generic prefix. Check both
       -- sides of the boundary: counted parameters must be Type-valued, and
       -- later value arguments must not contain an omitted type parameter.
@@ -214,8 +219,9 @@ private meta def postcondition (posts : Array Syntax) (raws maths : Array Expr)
       let computationalDictionaries := originals.extract count.getNat (count.getNat + traitCount)
       let raws := originals.extract (count.getNat + traitCount) originals.size
       let inputNames ← raws.mapM fun raw => return (← raw.fvarId!.getDecl).userName
-      withModelDictionaries params fun dictionaries =>
-        withTraitLawAssumptions computationalDictionaries params dictionaries fun traitEvidence => do
+      withBoundModelDictionaries params retained fun dictionaries =>
+        withDefaultTraitDictionary functionName params fun enclosing =>
+        withTraitLawAssumptions (computationalDictionaries ++ enclosing) params dictionaries fun traitEvidence => do
           -- Fix all automatic providers before introducing decoded witnesses,
           -- dependent ghosts, requirements, or their local instances.
           let providers ← raws.mapM fun raw => do
@@ -224,7 +230,8 @@ private meta def postcondition (posts : Array Syntax) (raws maths : Array Expr)
           withDecodedInputs raws providers 0 #[] #[] fun maths equations => do
             let decodedPrefix := (maths.zip equations).foldl
               (fun inputs pair => inputs ++ #[pair.1, pair.2]) #[]
-            let boundPrefix := originals ++ dictionaries ++ traitEvidence ++ decodedPrefix
+            let supplemental := dictionaries.filter (!retained.contains ·)
+            let boundPrefix := originals ++ retained ++ supplemental ++ enclosing ++ traitEvidence ++ decodedPrefix
             withClauseScope raws maths false <| Elab.Term.elabBinders ghosts fun ghostInputs => do
               -- Restore raw names as the baseline for each clause-specific scope.
               let mut lctx ← getLCtx
@@ -238,7 +245,7 @@ private meta def postcondition (posts : Array Syntax) (raws maths : Array Expr)
                   -- Execute on the untouched raw prefix. Total WP.spec excludes
                   -- panic and divergence; partial WP.dspec allows divergence but
                   -- still checks every successful return and excludes panic.
-                  let call := mkAppN functionExpr originals
+                  let call := mkAppN functionExpr (originals ++ retained)
                   let wp := if mode.getNat == 0 then ``WP.spec else ``WP.dspec
                   let body ← Meta.mkAppM wp #[call, post]
                   Elab.Term.synthesizeSyntheticMVarsNoPostponing
@@ -306,11 +313,15 @@ meta def specBinding (specName : Name) : MetaM (Name × Nat) := do
     let arguments := call.getAppArgs
     unless inputs.size ≥ arguments.size do
       throwError "Specification {specName} has more model arguments than bound inputs"
-    -- Exact expression identity rejects reordered, replaced, or reconstructed
-    -- arguments, even when a replacement might compute the same value.
+    -- This prefix includes any retained semantic providers because execution
+    -- depends on them. The independent Rust count below excludes that suffix.
     for index in [:arguments.size] do
       unless arguments[index]!.consumeMData == inputs[index]! do
         throwError "Specification {specName} model input {index + 1} is not its original bound variable"
+    forallTelescope (← inferType call.getAppFn) fun native _ => do
+      let _ ← splitNativeModels native
+      unless arguments.size == native.size do
+        throwError "Specification {specName} has a different native argument inventory"
     pure (modelName, arguments.size)
 
 /-- The contract family abstracts only the audited execution node. Original
@@ -326,7 +337,8 @@ meta def abstractSpecContract (specName : Name) : MetaM Expr := do
     let body := body.consumeMData
     let args := body.getAppArgs
     let call := args[1]!
-    -- Keep original arguments outside the outcome binder. All dictionaries,
+    -- Keep the exact execution arguments, including retained semantic providers,
+    -- outside the outcome binder. Additional specification dictionaries,
     -- witnesses, ghosts, and premises belong to the one outcome inside it.
     withLocalDeclD `_executionOutcome (← inferType call) fun outcome => do
       let predicate := mkAppN body.getAppFn #[args[0]!, outcome, args[2]!]
@@ -389,7 +401,10 @@ elab "check_spec_binding " candidate:ident " for " extractedId:ident " with " co
   let (actualModel, inputCount) ← withRef candidate (specBinding specName)
   unless actualModel == modelName do
     throwErrorAt candidate "Specification {specName} does not call the expected model {modelName}"
-  unless inputCount == count.getNat do
+  let semanticCount ← forallTelescope (← getConstInfo modelName).type fun native _ => do
+    let (_, models) ← splitNativeModels native
+    pure models.size
+  unless inputCount == count.getNat + semanticCount do
     throwErrorAt candidate "Specification {specName} does not bind exactly {count.getNat} model inputs"
   checkSpecContract specName
 

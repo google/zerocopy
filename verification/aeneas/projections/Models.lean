@@ -58,6 +58,18 @@ check_model_binding Zerocopy.byteorder.F32 with 1 type parameters
 derive_rust_model Zerocopy.byteorder.F64 with 1 type parameters with_physical 0
 check_model_binding Zerocopy.byteorder.F64 with 1 type parameters
 
+derive_rust_model Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters with_physical 0
+check_model_binding Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
+
+derive_rust_model Zerocopy.pointer.invariant.Initialized with 0 type parameters
+check_model_binding Zerocopy.pointer.invariant.Initialized with 0 type parameters
+
+derive_rust_model Zerocopy.pointer.invariant.Shared with 0 type parameters
+check_model_binding Zerocopy.pointer.invariant.Shared with 0 type parameters
+
+derive_rust_model Zerocopy.pointer.invariant.Safe with 0 type parameters
+check_model_binding Zerocopy.pointer.invariant.Safe with 0 type parameters
+
 derive_rust_model Zerocopy.trait_checks.XorCodec with 0 type parameters
 check_model_binding Zerocopy.trait_checks.XorCodec with 0 type parameters
 
@@ -66,7 +78,4 @@ check_model_binding Zerocopy.trait_checks.Forward with 1 type parameters
 
 derive_rust_model Zerocopy.wrappers.Unalign with 1 type parameters with_physical 0
 check_model_binding Zerocopy.wrappers.Unalign with 1 type parameters
-
-derive_rust_model Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters with_physical 0
-check_model_binding Zerocopy.wrappers.read_only_def.ReadOnly with 1 type parameters
 

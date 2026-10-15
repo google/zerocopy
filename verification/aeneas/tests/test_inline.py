@@ -438,8 +438,9 @@ class InlineTests(unittest.TestCase):
                 with self.subTest(owner=owner, attr=attr):
                     self.assertEqual(self.parse(attr + '\n' + owner), [])
 
-    def test_computed_docs_cannot_mix_with_literal_function_or_type_annotations(self):
-        type_block = '/// ```aeneas\n/// model BoxValue := Fields\\ndecode self => self\n/// ```\n'
+    def test_computed_docs_do_not_hide_literal_function_or_type_annotations(self):
+        type_block = ('/// ```aeneas\n/// model BoxValue := Fields\n'
+                      '/// decode self => self\n/// ```\n')
         for owner, block in (('fn f(x: usize) {}', BLOCK),
                              ('struct Box(usize);', type_block),
                              ('enum Box { Empty }', type_block)):
@@ -447,13 +448,60 @@ class InlineTests(unittest.TestCase):
                          '#[doc = condVersionLink!("version", "link")]',
                          '#[cfg_attr(any(), doc = condVersionLink!("version", "link"))]'):
                 for docs in (attr + '\n' + block, block + attr + '\n'):
-                    with self.subTest(owner=owner, docs=docs), self.assertRaisesRegex(
-                            ValueError, 'Computed doc strings'):
-                        self.parse(docs + owner)
+                    with self.subTest(owner=owner, docs=docs):
+                        self.assertEqual(len(self.parse(docs + owner)), 1)
         # Macro output supplies no source annotation; an empty extraction fails.
         with tempfile.TemporaryDirectory() as tmp, self.assertRaisesRegex(
                 ValueError, 'No Aeneas specifications discovered'):
             fixture(Path(tmp), '#[doc = contract_docs!()]\nfn f(x: usize) {}')
+
+    def test_computed_docs_census_rejects_unowned_expanded_fences(self):
+        attribute = '#[doc = ordinary_docs!()]\n'
+        with tempfile.TemporaryDirectory() as tmp:
+            annotations = fixture(Path(tmp), attribute + BLOCK + 'fn f(x: usize) {}\n')
+            evidence = origins(annotations)
+            computed = {'file': 'src/util/mod.rs', 'begin': 0,
+                        'end': len(attribute) - 1, 'outer': True,
+                        'text': 'ordinary generated documentation'}
+            evidence['nodes'][0]['docs'].insert(0, computed)
+            inline.reconcile_origins(annotations, evidence)
+            for placement in ('same_owner', 'unannotated_owner'):
+                bad = copy.deepcopy(evidence)
+                extra = copy.deepcopy(computed)
+                extra['text'] = '```aeneas\nspec hidden\n ensures r => True\n```'
+                if placement == 'same_owner':
+                    bad['nodes'][0]['docs'][0] = extra
+                else:
+                    bad['nodes'].append({'owner': 'zerocopy::unannotated',
+                        'node_kind': 'function', 'docs': [extra]})
+                with self.subTest(placement=placement), self.assertRaisesRegex(
+                        ValueError, 'lacks an authored source fragment'):
+                    inline.reconcile_origins(annotations, bad)
+
+    def test_original_ast_requires_the_expanded_doc_census(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = '#[doc = ordinary_docs!()]\n' + BLOCK + 'fn f(x: usize) {}\n'
+            annotations = fixture(root, source)
+            data = llbc(annotations[RUST], source)
+            path = root / 'zerocopy.llbc'
+            path.write_text(json.dumps(data))
+            (root / 'zerocopy.before.ullbc').write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'mandatory native annotation origin census'):
+                inline.check_bindings(root, annotations, path)
+
+    def test_provided_method_keeps_implicit_self_and_enclosing_trait(self):
+        source = ('mod nested { unsafe trait Marker {\n'
+                  'fn required();\n'
+                  '/// ```aeneas\n/// spec make_spec\n///   ensures r => r = r\n/// ```\n'
+                  '#[doc = ordinary_docs!()]\n'
+                  'fn make() -> Self where Self: Sized { panic!() }\n'
+                  '} }')
+        [annotation] = self.parse(source)
+        self.assertEqual(annotation['syntax'], 'nested::Marker::make')
+        self.assertEqual(annotation['default_trait'], 'nested::Marker')
+        self.assertEqual(annotation['generics'], ['Self'])
+        self.assertEqual(annotation['trait_bounds'], [{'subject': 'Self', 'trait': 'Sized'}])
 
     def test_literal_docs_are_owned_and_conditional_computed_and_inner_docs_rejected(self):
         source = '#[doc = "```aeneas\\nspec f_spec\\n  ensures r => r = x\\n```"]\nfn f(x: usize) {}'

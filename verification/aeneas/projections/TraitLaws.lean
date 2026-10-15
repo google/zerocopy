@@ -16,6 +16,14 @@ namespace Zerocopy.TraitLaws
 trait_dictionary @Zerocopy.core.num.nonzero.ZeroablePrimitive
 trait_dictionary @Zerocopy.byteorder.private.Sealed
 trait_dictionary @Zerocopy.byteorder.ByteOrder
+trait_dictionary @Zerocopy.pointer.invariant.sealed.Sealed
+trait_dictionary @Zerocopy.pointer.invariant.Aliasing
+trait_dictionary @Zerocopy.pointer.invariant.Read
+trait_dictionary @Zerocopy.pointer.invariant.Reference
+trait_dictionary @Zerocopy.pointer.invariant.Alignment
+trait_dictionary @Zerocopy.TryFromBytes
+trait_dictionary @Zerocopy.FromZeros
+trait_dictionary @Zerocopy.FromBytes
 trait_dictionary @Zerocopy.IntoBytes
 trait_dictionary @Zerocopy.trait_checks.ByteCodec
 trait_invariant byte_roundtrip for @Zerocopy.trait_checks.ByteCodec with 1 type parameters where self =>
@@ -24,5 +32,11 @@ trait_invariant byte_roundtrip for @Zerocopy.trait_checks.ByteCodec with 1 type 
 
 trait_invariant into_bytes_initialized for @Zerocopy.IntoBytes with 1 type parameters where self =>
   AeneasSpecs.RustModel.initializedRepresentation Self
+
+trait_invariant from_zeros_valid for @Zerocopy.FromZeros with 1 type parameters where self =>
+  AeneasSpecs.RustModel.zeroRepresentation Self
+
+trait_invariant from_bytes_valid for @Zerocopy.FromBytes with 1 type parameters where self =>
+  AeneasSpecs.RustModel.completeRepresentation Self
 
 end Zerocopy.TraitLaws
