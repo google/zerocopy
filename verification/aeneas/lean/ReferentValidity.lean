@@ -117,7 +117,7 @@ theorem safe_to_initialized (Src Dst : Type) [source : RustModel Src]
   refine ⟨admitted.1.trans same, ?_⟩
   obtain ⟨decoder, installed, raw, _, physical, _⟩ := admitted.2
   have initializes : decoder.Initialized := by
-    simpa only [RustModel.initializedRepresentation, installed] using initialized
+    exact source.initialized_fixed decoder installed initialized
   exact initializes bytes raw physical
 
 theorem initialized_to_safe (Src Dst : Type) [source : RustModel Src]

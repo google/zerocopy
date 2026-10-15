@@ -476,9 +476,9 @@ private meta def deriveProvider (raw : Name) (count : Nat)
     addDecl (.thmDecl {
       «name» := raw ++ `decode_decompose, levelParams := info.levelParams,
       «type» := (← inferType decomposition), value := decomposition }) (forceExpose := true)
-    let bitDecoderTy ← mkAppM ``Rust.Storage.BitDecoder #[rawTy]
-    let representation ← match physicalPayload with
-      | none => mkAppOptM ``Option.none #[some bitDecoderTy]
+    let storageTy ← mkAppM ``PhysicalStorage #[rawTy]
+    let storage ← match physicalPayload with
+      | none => mkAppOptM ``Option.none #[some storageTy]
       | some payload => do
         -- LLBC validation authorizes only named builtin storage wrappers. Lean
         -- independently checks that reconstruction uses the actual raw fields.
@@ -508,7 +508,15 @@ private meta def deriveProvider (raw : Name) (count : Nat)
                 values := values.push (← mkAppOptM ``Zerocopy.core.marker.PhantomData.mk
                   (ty.getAppArgs.map some))
             mkLambdaFVars #[value] (mkAppN ctor values)
-          mkAppOptM ``wrapperRepresentation #[some fieldTy, some rawTy, some child, some wrap]
+          -- The raw structure's actual payload projection preserves metadata.
+          -- Projecting it from the constructor reduces to the original payload,
+          -- so the kernel checks the inverse without an external wrapper axiom.
+          let unwrap ← withLocalDeclD `raw rawTy fun value =>
+            mkLambdaFVars #[value] (mkProj raw payload value)
+          let inverse ← withLocalDeclD `payload fieldTy fun value => do
+            mkLambdaFVars #[value] (← mkEqRefl value)
+          mkAppOptM ``wrapperStorage #[some fieldTy, some rawTy, some child, some wrap,
+            some unwrap, some inverse]
     -- Constructor application does not insert the defaults used by structure
     -- syntax. Supply the empty preference explicitly so generated providers
     -- contain no unresolved choice metavariable.
@@ -530,7 +538,7 @@ private meta def deriveProvider (raw : Name) (count : Nat)
       | some constructor => mkAppOptM ``Option.some #[some (mkConst ``ValidityMarker),
           some (mkConst constructor)]
     let provider ← mkAppOptM ``RustModel.mk #[some rawTy, some modelTy,
-      some (mkAppN (mkConst b.decoder levels) all), some representation, some choice,
+      some (mkAppN (mkConst b.decoder levels) all), some storage, some choice,
       some markerValue]
     addDefinition b.provider info.levelParams (← mkLambdaFVars all provider)
   setReducibilityStatus b.provider .reducible

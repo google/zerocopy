@@ -107,7 +107,7 @@ theorem RustModel.complete_array (α : Type u) [ma : RustModel α] (n : Usize)
     unfold RustModel.completeRepresentation
     rw [show (@modelArray α n ma).representation = ma.representation.map (fun element =>
       (arrayDecoder element n.val).map
-        (fun values => Aeneas.Std.Array.from values.val values.property)) from rfl]
+        (fun values => Aeneas.Std.Array.from values.val values.property)) from modelArray_representation n]
     rw [available]
     simp only [Option.map_some]
     change ∀ bytes, bytes.length = n.val * decoder.byteSize → Initialized bytes → _
@@ -164,7 +164,7 @@ theorem RustModel.zero_array (α : Type u) [ma : RustModel α] (n : Usize)
     unfold RustModel.zeroRepresentation
     rw [show (@modelArray α n ma).representation = ma.representation.map (fun element =>
       (arrayDecoder element n.val).map
-        (fun values => Aeneas.Std.Array.from values.val values.property)) from rfl]
+        (fun values => Aeneas.Std.Array.from values.val values.property)) from modelArray_representation n]
     rw [available]
     simp only [Option.map_some]
     refine ⟨Aeneas.Std.Array.from raw.val raw.property,

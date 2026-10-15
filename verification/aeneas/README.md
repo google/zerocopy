@@ -735,7 +735,7 @@ mathematical decoder has at least one physical byte representation. Initializati
 alone cannot provide those bytes; an always-rejecting physical decoder would
 satisfy it vacuously. The reusable proofs in
 [`RustRealizability.lean`](lean/RustRealizability.lean) cover the same primitive,
-array, and wrapper families. No default source value, unique encoder, or
+array, slice, and wrapper families. No default source value, unique encoder, or
 inhabitedness assumption is introduced.
 
 There are 59 authored implementation markers: `()`, `bool`, `char`; all twelve
@@ -765,9 +765,9 @@ elements, so the same rule covers empty arrays, positive counts of zero-byte
 elements, and nested arrays. Padding within an element remains the element
 law's obligation. Wrapper decoders preserve the actual child's failures and
 initialization law. Generic `?Sized` impl bounds are retained; a supplied
-physical provider for an unsized value must also carry its applicable metadata
-and representation width. These conditional laws supply no universal DST
-representation model.
+physical profile for an unsized value retains its applicable metadata and
+representation width. Canonical slice profiles use usize element counts;
+other DST families still need explicit physical semantics.
 
 The byteorder structs have transparent byte-array storage plus an empty
 `PhantomData` field. In particular, `F32` and `F64` use `[u8; 4]` and `[u8; 8]`;

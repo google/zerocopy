@@ -7,7 +7,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 module
-public import ModelPrelude
+public import RustRealizability
 @[expose] public section
 
 /-!
@@ -187,13 +187,16 @@ theorem transmuteCopyResult_admitted {Src : Type u} {Dst : Type v}
     ∃ dst value, source.transmuteCopyResult destination src = .ok dst ∧
       destination.decode dst = some value ∧ source.byteCastWith destination src dst := by
   cases hs : source.representation with
-  | none => simp [initializedRepresentation, hs] at initialized
+  | none =>
+    cases hd : destination.representation with
+    | none => simp [completeRepresentation, hd] at complete
+    | some decoder => simp [hs, hd] at sameWidth
   | some sd =>
     cases hd : destination.representation with
     | none => simp [completeRepresentation, hd] at complete
     | some dd =>
-      simp only [initializedRepresentation, hs] at initialized
-      simp only [realizableRepresentation, hs] at realizable
+      have initialized := source.initialized_fixed sd hs initialized
+      have realizable := source.realizable_fixed sd hs realizable
       simp only [completeRepresentation, hd] at complete
       have width : sd.byteSize = dd.byteSize := by simpa [hs, hd] using sameWidth
       obtain ⟨initial, initialAccepted⟩ := realizable src valid
@@ -254,7 +257,9 @@ end RustModel
 
 @[simp] theorem manuallyDrop_representation {T : Type} (m : RustModel T) :
     (modelManuallyDrop T (ma := m)).representation =
-      m.representation.map (·.map core.mem.manually_drop.ManuallyDrop.mk) := rfl
+      m.representation.map (·.map core.mem.manually_drop.ManuallyDrop.mk) := by
+  change (wrapperStorage _ _ _).bind PhysicalStorage.fixed? = _
+  exact wrapperStorage_fixed? _ _ _
 
 theorem manuallyDrop_represented {T : Type} (m : RustModel T) (raw : T) (bytes : List AMByte) :
     (modelManuallyDrop T (ma := m)).represented ⟨raw⟩ bytes ↔ m.represented raw bytes := by
@@ -281,21 +286,13 @@ theorem manuallyDrop_withChoice {T : Type} (m : RustModel T)
 @[simp] theorem manuallyDrop_width {T : Type} (m : RustModel T) :
     (modelManuallyDrop T (ma := m)).representation.map (·.byteSize) =
       m.representation.map (·.byteSize) := by
-  change (m.representation.map (·.map core.mem.manually_drop.ManuallyDrop.mk)).map (·.byteSize) = _
+  rw [manuallyDrop_representation]
   cases h : m.representation <;> simp [BitDecoder.map]
 
 theorem manuallyDrop_realizable {T : Type} (m : RustModel T)
     (realizable : @RustModel.realizableRepresentation T m) :
     @RustModel.realizableRepresentation (core.mem.manually_drop.ManuallyDrop T)
       (modelManuallyDrop T (ma := m)) := by
-  cases h : m.representation with
-  | none => simp [RustModel.realizableRepresentation, h] at realizable
-  | some decoder =>
-    simp only [RustModel.realizableRepresentation, h] at realizable
-    unfold RustModel.realizableRepresentation
-    rw [manuallyDrop_representation, h]
-    intro raw valid
-    obtain ⟨bytes, accepted⟩ := realizable raw.value valid
-    exact ⟨bytes, by simp [BitDecoder.run_map, accepted]⟩
+  exact realizableManuallyDrop T realizable
 
 end AeneasSpecs

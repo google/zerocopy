@@ -65,27 +65,27 @@ theorem safeBytes_wrapper_iff {A B : Type} [ma : RustModel A] [mb : RustModel B]
 theorem safeBytes_manuallyDrop_iff (T : Type) [ma : RustModel T] (bytes : List AMByte) :
     safeBytes (inferInstance : RustModel (core.mem.manually_drop.ManuallyDrop T)) bytes ↔
       safeBytes ma bytes :=
-  safeBytes_wrapper_iff core.mem.manually_drop.ManuallyDrop.mk rfl (fun _ => Iff.rfl) bytes
+  safeBytes_wrapper_iff core.mem.manually_drop.ManuallyDrop.mk (by simp only [RustModel.representation, RustModel.storage, wrapperStorage_fixed?]) (fun _ => Iff.rfl) bytes
 
 theorem safeBytes_cell_iff (T : Type) [ma : RustModel T] (bytes : List AMByte) :
     safeBytes (inferInstance : RustModel (core.cell.Cell T)) bytes ↔ safeBytes ma bytes :=
-  safeBytes_wrapper_iff core.cell.Cell.mk rfl (fun _ => Iff.rfl) bytes
+  safeBytes_wrapper_iff core.cell.Cell.mk (by simp only [RustModel.representation, RustModel.storage, wrapperStorage_fixed?]) (fun _ => Iff.rfl) bytes
 
 theorem safeBytes_unsafeCell_iff (T : Type) [ma : RustModel T] (bytes : List AMByte) :
     safeBytes (inferInstance : RustModel (core.cell.UnsafeCell T)) bytes ↔ safeBytes ma bytes :=
-  safeBytes_wrapper_iff core.cell.UnsafeCell.mk rfl (fun _ => Iff.rfl) bytes
+  safeBytes_wrapper_iff core.cell.UnsafeCell.mk (by simp only [RustModel.representation, RustModel.storage, wrapperStorage_fixed?]) (fun _ => Iff.rfl) bytes
 
 theorem safeBytes_wrapping_iff (T : Type) [ma : RustModel T] (bytes : List AMByte) :
     safeBytes (inferInstance : RustModel (Zerocopy.core.num.wrapping.Wrapping T)) bytes ↔
       safeBytes ma bytes :=
-  safeBytes_wrapper_iff Zerocopy.core.num.wrapping.Wrapping.mk rfl (fun _ => Iff.rfl) bytes
+  safeBytes_wrapper_iff Zerocopy.core.num.wrapping.Wrapping.mk (by simp only [RustModel.representation, RustModel.storage, wrapperStorage_fixed?]) (fun _ => Iff.rfl) bytes
 
 /-- The generated model decodes its child before constructing a wrapper model.
 Its actual definition, rather than its physical layout alone, proves admission. -/
 theorem safeBytes_unalign_iff (T : Type) [ma : RustModel T] (bytes : List AMByte) :
     safeBytes (inferInstance : RustModel (Zerocopy.wrappers.Unalign T)) bytes ↔
       safeBytes ma bytes := by
-  apply safeBytes_wrapper_iff Zerocopy.wrappers.Unalign.mk rfl ?_ bytes
+  apply safeBytes_wrapper_iff Zerocopy.wrappers.Unalign.mk (by simp only [RustModel.representation, RustModel.storage, wrapperStorage_fixed?]) ?_ bytes
   intro raw
   cases decoded : ma.decode raw <;>
     simp [RustModel.decode, Zerocopy.wrappers.Unalign.decode, Zerocopy.wrappers.Unalign.decodeFields, decoded]
@@ -93,7 +93,7 @@ theorem safeBytes_unalign_iff (T : Type) [ma : RustModel T] (bytes : List AMByte
 theorem safeBytes_readOnly_iff (T : Type) [ma : RustModel T] (bytes : List AMByte) :
     safeBytes (inferInstance : RustModel (Zerocopy.wrappers.read_only_def.ReadOnly T)) bytes ↔
       safeBytes ma bytes := by
-  apply safeBytes_wrapper_iff Zerocopy.wrappers.read_only_def.ReadOnly.mk rfl ?_ bytes
+  apply safeBytes_wrapper_iff Zerocopy.wrappers.read_only_def.ReadOnly.mk (by simp only [RustModel.representation, RustModel.storage, wrapperStorage_fixed?]) ?_ bytes
   intro raw
   cases decoded : ma.decode raw <;>
     simp [RustModel.decode, Zerocopy.wrappers.read_only_def.ReadOnly.decode,

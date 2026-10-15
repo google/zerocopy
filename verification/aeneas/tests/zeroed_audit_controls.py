@@ -149,7 +149,7 @@ def main():
         after = '''  core.mem.zeroed Self (model := {
     Model := AeneasSpecs.ModelOf Self,
     decode := fun _ => none,
-    representation := (inferInstance : AeneasSpecs.RustModel Self).representation })
+    storage := (inferInstance : AeneasSpecs.RustModel Self).storage })
 '''
         if text.count(before) != 1:
             raise ValueError('Zeroed native default control boundary changed')

@@ -491,3 +491,40 @@ success remains outside any conditional interpretation of a validity state.
 `AsInitialized` contents and opaque `MaybeUninit` storage remain deferred.
 Pointer casts and projections will additionally need explicit byte-range,
 metadata, access, and resource arguments. These content laws do not grant them.
+
+## Indexed storage and geometric projections
+
+There is one physical profile per retained `RustModel`. A fixed profile uses
+`BitDecoder`; an indexed profile uses `StorageDecoder` and retains its metadata
+type and equality. Ordinary slices use `usize` element counts. Transparent
+wrappers retain those counts. `IntoBytes` initialization covers every accepted
+language representation, and realizability supplies bytes at each admitted raw
+value's actual metadata. Neither law reconstructs metadata from byte length.
+
+Generic Lean providers are more general than Rust's `Sized` parameters. To keep
+array and wrapper laws valid for every supplied provider, indexed children also
+compose as mathematical sequences with an explicit list of child metadata.
+Array sequences check the declared count; slice sequences check the usize
+length bound. This total mathematical extension supplies no Rust ABI for an
+array of unsized elements. A native layout or pointer operation still needs its
+own admitted semantics and correspondence premises.
+
+The fixed-width `representation` API is derived from this profile. Owned zero
+initialization and transmutation require that projection to exist. The current
+native `FromBytes` and `FromZeros` laws retain their fixed-layout scope; indexed
+completeness remains an explicit `StorageDecoder.CompleteWith` proof. Extending
+those native laws requires carrying the `Sized`-related premises needed by
+owned-value methods, rather than silently guessing metadata for them.
+
+Geometric projection requires a bounded forward offset and unchanged opaque
+provenance. `Cast` additionally retains the start; `CastExact` retains the size.
+The shared library proves identity, composition, slice splitting, byte-count
+views, empty-destination bounds, and no-wrap consequences under explicit bounds.
+These numeric theorems grant no access permission or reference validity.
+
+Native pointer execution remains rejected: the unchanged Aeneas pin erases the
+observations these proofs need. Supporting native `Project`, `Cast`, or
+`CastExact` proofs will require a faithful pointer carrier and primitive
+translation. Associated-type equalities and recursive declaration limitations
+also continue to block the richer `KnownLayout` path. No backend overlay or
+assumed model of a local target bypasses those limits.

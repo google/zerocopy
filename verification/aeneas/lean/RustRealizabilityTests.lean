@@ -40,7 +40,7 @@ example (T : Type) : RustModel.realizableRepresentation
 @[reducible] def missingTrue : RustModel Bool where
   Model := Bool
   «decode» := some
-  representation := some (emptyDecoder false)
+  storage := some (.fixed (emptyDecoder false))
 
 example : @RustModel.initializedRepresentation Bool missingTrue := emptyDecoder_initialized false
 example : ¬ @RustModel.realizableRepresentation Bool missingTrue := by
@@ -64,7 +64,7 @@ example : ¬ @RustModel.realizableRepresentation Empty noPhysical := by
 @[reducible] def emptyPhysical : RustModel Empty where
   Model := Empty
   «decode» := some
-  representation := some { byteSize := 0, «decode» := fun _ => none }
+  storage := some (.fixed { byteSize := 0, «decode» := fun _ => none })
 
 theorem emptyRealizable : @RustModel.realizableRepresentation Empty emptyPhysical := by
   intro raw
@@ -79,7 +79,7 @@ example : @RustModel.realizableRepresentation (Aeneas.Std.Array Empty (0#usize))
 @[reducible] def ambiguous : RustModel Bool where
   Model := Unit
   «decode» raw := if raw then none else some ()
-  representation := some ((uScalarBitDecoder .U8).map fun _ => false)
+  storage := some (.fixed ((uScalarBitDecoder .U8).map fun _ => false))
 
 theorem ambiguousRealizable : @RustModel.realizableRepresentation Bool ambiguous := by
   intro raw valid
