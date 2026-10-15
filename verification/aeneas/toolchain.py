@@ -68,7 +68,12 @@ def publish_installation(source, destination):
 
 def build_identity(repo):
     """Bind the archive producer and patched builder, without adding upstream pins."""
-    files = ['anneal/flake.lock', 'anneal/flake.nix', 'anneal/v1/Cargo.toml', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py', 'verification/aeneas/build-aeneas.nix', 'verification/aeneas/build-aeneas.sh', 'verification/aeneas/setup.sh', 'verification/aeneas/toolchain.py', 'verification/aeneas/patches/use-tuple-structs.patch']
+    files = ["anneal/flake.lock", "anneal/flake.nix", "anneal/v1/Cargo.toml",
+             "anneal/rewrite-lake-vendor.py", "anneal/prune-lake-cache.py",
+             "verification/aeneas/build-aeneas.nix", "verification/aeneas/build-aeneas.sh",
+             "verification/aeneas/setup.sh", "verification/aeneas/toolchain.py",
+             "verification/aeneas/patches/use-tuple-structs.patch",
+             "verification/aeneas/patches/admission-snapshot.patch"]
     lean_root = repo / "anneal/lean"
     # The companion manifest is generated with checkout-specific paths. The
     # authoritative top-level manifest remains an archive build input.
@@ -180,7 +185,9 @@ def probe(tools, data, patched):
 def provenance(tools, data, repo=None):
     result = {"metadata": data, "source_rev": data["aeneas-revision"],
             "source_nar_hash": data["aeneas-source-nar-hash"],
-            "patch_sha256": PATCH_SHA256, "version": data["aeneas-release"] + PATCH_SUFFIX,
+            "patch_sha256": PATCH_SHA256,
+            "admission_patch_sha256": digest(Path(__file__).with_name("patches") / "admission-snapshot.patch"),
+            "version": data["aeneas-release"] + PATCH_SUFFIX,
             "binary_sha256": digest(tools / "aeneas"),
             "upstream_binary_sha256": digest(tools / "aeneas-upstream"),
             "runtime_binary_sha256": {name: digest(tools / name) for name in

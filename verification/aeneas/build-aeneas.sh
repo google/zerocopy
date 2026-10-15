@@ -10,7 +10,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 [[ $# == 1 && -d "$1" ]] || { echo "Usage: $0 TOOLCHAIN_DIRECTORY" >&2; exit 1; }
 tools_dir=$(cd "$1" && pwd)
-# Validate the producer archive before applying the consumer's CLI-only patch.
+# Validate the producer archive before applying the consumer's source patches.
 values=$(python3 -B verification/aeneas/toolchain.py shell "$tools_dir" --upstream)
 eval "$values"
 command -v nix >/dev/null || { echo 'Building the patched Aeneas requires Nix.' >&2; exit 1; }
@@ -45,4 +45,11 @@ if [[ -d "$artifact/libs" ]]; then
     # archive's libraries stay untouched in bundle/aeneas/bin/libs.
     cp -f "$artifact/libs/"* "$tools_dir/libs/"
 fi
+# Keep archive executables intact. Admission uses a private driver copy with
+# the pre-transformation snapshot patch, independently of Anneal's archive.
+for name in charon charon-driver; do
+    [[ -L "$tools_dir/$name" ]] || { echo 'Expected fresh archive adapter' >&2; exit 1; }
+    rm "$tools_dir/$name"
+    cp "$artifact/$name" "$tools_dir/$name"
+done
 python3 -B verification/aeneas/toolchain.py record "$tools_dir"

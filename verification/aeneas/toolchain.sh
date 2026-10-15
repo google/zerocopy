@@ -12,6 +12,7 @@ _aeneas_repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 _aeneas_tools=${AENEAS_TOOLCHAIN_DIR:-"$_aeneas_repo/target/aeneas/toolchain"}
 _aeneas_values=$(python3 -B "$_aeneas_repo/verification/aeneas/toolchain.py" shell "$_aeneas_tools") || return 1
 eval "$_aeneas_values"
+export AENEAS_TOOLCHAIN_DIR="$_aeneas_tools"
 export PATH="$_aeneas_tools/rust/bin:$_aeneas_tools/lean/bin:$PATH"
 export LEAN_SYSROOT="$_aeneas_tools/lean"
 export LD_LIBRARY_PATH="$_aeneas_tools/rust/lib:$_aeneas_tools/lean/lib:$_aeneas_tools/lean/lib/lean${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
