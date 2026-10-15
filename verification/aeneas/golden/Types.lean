@@ -99,6 +99,12 @@ structure byteorder.U32 (O : Type) where
   _0 : Array Std.U8 4#usize
   _1 : core.marker.PhantomData O
 
+/-- Trait declaration: [zerocopy::IntoBytes]
+    Source: 'src/lib.rs', lines 5941:0-6446:1
+    Visibility: public -/
+structure IntoBytes (Self : Type) where
+  only_derive_is_allowed_to_implement_this_trait : Result Unit
+
 /-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
     Source: 'src/trait_checks.rs', lines 26:0-29:1 -/
 structure trait_checks.ByteCodec (Self : Type) where

@@ -8,6 +8,7 @@ those terms. -/
 
 module
 public import Aeneas
+public import Rust.Storage
 public meta import Lean
 @[expose] public section
 
@@ -33,6 +34,10 @@ to the same raw value, so contracts retain the actual provider explicitly. -/
 class RustModel (Raw : Type u) where
   Model : Type u
   decode : Raw → Option Model
+  /-- Optional language-level byte interpretation. Absence means that this
+  provider cannot establish byte-validity laws.
+  This decoder operates independently of the optional library invariant. -/
+  representation : Option (Rust.Storage.BitDecoder Raw) := none
 
 -- The associated type is transparent so ordinary rewriting and coercions can
 -- identify a retained provider's Model with its named mathematical carrier.
@@ -49,6 +54,23 @@ def isValid {Raw : Type u} [m : RustModel Raw] (raw : Raw) : Prop :=
 def decoded {Raw : Type u} (m : RustModel Raw) (raw : Raw) (value : m.Model) : Prop :=
   m.decode raw = some value
 
+/-- IntoBytes needs an available physical decoder whose entire language-valid
+representation domain is initialized. A library decoder cannot shrink this
+quantification: even a provider which rejects every mathematical value must
+establish initialization for all bytes accepted by its physical decoder. -/
+def RustModel.initializedRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.representation with
+  | none => False
+  | some decoder => decoder.Initialized
+
+/-- Constructing a typed value from bytes requires language-level decoding.
+The unsupported-model case also fails closed. No invalid Raw is produced. -/
+def RustModel.decodeBitsResult {Raw : Type u} (m : RustModel Raw)
+    (bytes : List Rust.Storage.AMByte) : Result Raw :=
+  match m.representation with
+  | none => .fail .undef
+  | some decoder => Result.ofOption (decoder.asStorageDecoder.run () bytes) .undef
+
 /-- Compose execution with the retained provider's mathematical decoder.
 An earlier execution failure or divergence is preserved. A rejected returned
 value becomes `undef`, marking an unadmitted value of this modeled computation;
@@ -58,6 +80,49 @@ def RustModel.decodeResult {Raw : Type u} (m : RustModel Raw)
     (run : Result Raw) : Result m.Model := do
   let raw ← run
   Result.ofOption (m.decode raw) .undef
+
+/-- Language-level decoding followed by the retained mathematical decoder.
+Failure at either stage is preserved, rather than supplying a default value. -/
+def RustModel.decodeBytesResult {Raw : Type u} (m : RustModel Raw)
+    (bytes : List Rust.Storage.AMByte) : Result m.Model :=
+  m.decodeResult (m.decodeBitsResult bytes)
+
+/-- Explicit metadata-indexed language decoding. No metadata is guessed from
+byte length, and every rejected width, representation, or metadata returns undef. -/
+def RustModel.decodeStorageBitsResult {Raw : Type u} {Metadata : Type v}
+    [DecidableEq Metadata] (physical : Rust.Storage.StorageDecoder Metadata Raw)
+    (metadata : Metadata) (bytes : List Rust.Storage.AMByte) : Result Raw :=
+  Result.ofOption (physical.run metadata bytes) .undef
+
+/-- Apply the retained mathematical provider after checked physical decoding.
+An explicit decoder supplies the layout and language domain; it does not
+supply a Rust ABI or provenance correspondence by virtue of its type. -/
+def RustModel.decodeStorageResult {Raw : Type u} {Metadata : Type v}
+    [DecidableEq Metadata] (m : RustModel Raw)
+    (physical : Rust.Storage.StorageDecoder Metadata Raw)
+    (metadata : Metadata) (bytes : List Rust.Storage.AMByte) : Result m.Model :=
+  m.decodeResult (RustModel.decodeStorageBitsResult physical metadata bytes)
+
+/-- One guarded composition underlies both Option admission and Aeneas failure. -/
+theorem RustModel.decodeStorageResult_as_runWith {Raw : Type u} {Metadata : Type v}
+    [DecidableEq Metadata] (m : RustModel Raw)
+    (physical : Rust.Storage.StorageDecoder Metadata Raw)
+    (metadata : Metadata) (bytes : List Rust.Storage.AMByte) :
+    m.decodeStorageResult physical metadata bytes =
+      Result.ofOption (physical.runWith m.decode metadata bytes) .undef := by
+  cases language : physical.run metadata bytes with
+  | none => simp [RustModel.decodeStorageResult, RustModel.decodeStorageBitsResult,
+      RustModel.decodeResult, Rust.Storage.StorageDecoder.runWith, language]
+  | some raw => simp [RustModel.decodeStorageResult, RustModel.decodeStorageBitsResult,
+      RustModel.decodeResult, Rust.Storage.StorageDecoder.runWith, language]
+
+/-- The fixed representation API is the Unit-metadata specialization. -/
+theorem RustModel.decodeBytesResult_eq_decodeStorageResult {Raw : Type u} (m : RustModel Raw)
+    (physical : Rust.Storage.BitDecoder Raw) (available : m.representation = some physical)
+    (bytes : List Rust.Storage.AMByte) :
+    m.decodeBytesResult bytes = m.decodeStorageResult physical.asStorageDecoder () bytes := by
+  simp [RustModel.decodeBytesResult, RustModel.decodeBitsResult, available,
+    RustModel.decodeStorageResult, RustModel.decodeStorageBitsResult]
 
 @[simp] theorem RustModel.decodeResult_ok {Raw : Type u} (m : RustModel Raw) (raw : Raw) :
     m.decodeResult (.ok raw) = Result.ofOption (m.decode raw) .undef := by
@@ -81,6 +146,18 @@ theorem RustModel.decodeResult_eq_ok_iff {Raw : Type u} (m : RustModel Raw)
   | ret raw => cases decoded : m.decode raw <;> simp [decoded]
   | vis effect continuation => simp [RustModel.decodeResult]
   | div => simp
+
+/-- A composed storage success retains the same physical and mathematical
+providers, with neither admission stage hidden by the other. -/
+theorem RustModel.decodeStorageResult_eq_ok_iff {Raw : Type u} {Metadata : Type v}
+    [DecidableEq Metadata] (m : RustModel Raw)
+    (physical : Rust.Storage.StorageDecoder Metadata Raw)
+    (metadata : Metadata) (bytes : List Rust.Storage.AMByte) (value : m.Model) :
+    m.decodeStorageResult physical metadata bytes = .ok value ↔
+      ∃ raw, physical.run metadata bytes = some raw ∧ m.decode raw = some value := by
+  rw [RustModel.decodeStorageResult_as_runWith,
+    ← Rust.Storage.StorageDecoder.runWith_eq_some_iff]
+  cases physical.runWith m.decode metadata bytes <;> simp
 
 /-- Total correctness for the composition is the existing decoded-result post
 on the original execution, with the provider and postcondition unchanged. -/
@@ -106,10 +183,16 @@ theorem RustModel.dspec_decodeResult_iff {Raw : Type u} (m : RustModel Raw)
     simp only [RustModel.decodeResult_div]
     constructor <;> intro _ <;> exact WP.dspec.div _
 
-@[reducible] instance modelBool : RustModel Bool := { Model := Bool, «decode» := some }
+@[reducible] instance modelBool : RustModel Bool where
+  Model := Bool
+  decode := some
+  representation := some Rust.Storage.boolDecoder
 @[reducible] instance modelNat : RustModel Nat := { Model := Nat, «decode» := some }
 @[reducible] instance modelInt : RustModel Int := { Model := Int, «decode» := some }
-@[reducible] instance modelUnit : RustModel Unit := { Model := Unit, «decode» := some }
+@[reducible] instance modelUnit : RustModel Unit where
+  Model := Unit
+  decode := some
+  representation := some Rust.Storage.unitDecoder
 
 @[reducible] instance modelProd {α : Type u} {β : Type v} [ma : RustModel α] [mb : RustModel β] :
     RustModel (α × β) where
@@ -161,12 +244,75 @@ abbrev ArrayValue (Element : Type u) (n : Usize) :=
     | none => none
     | some values => some ⟨values, (decodeList_length ma.decode h) ▸ raw.property⟩
 
+/-- Explicit physical slice adapter. The caller supplies a usize element count,
+including for zero-sized elements. Its value-level bound is carried by metadata,
+so no count is inferred from byte length and no extra Nat admission guard is needed. -/
+def RustModel.sliceStorageDecoder {α : Type u} (element : Rust.Storage.BitDecoder α) :
+    Rust.Storage.StorageDecoder Usize (Slice α) where
+  byteSize count := count.val * element.byteSize
+  metadata := Slice.len
+  decode count bytes := (Rust.Storage.arrayDecode element count.val bytes).map (fun values =>
+    Slice.from values.val (by rw [values.property]; scalar_tac))
+
+/-- The native slice adapter has exactly the fixed-count array admission domain;
+only its carrier and explicit usize metadata differ. -/
+theorem RustModel.sliceStorageDecoder_run {α : Type u} (element : Rust.Storage.BitDecoder α)
+    (count : Usize) (bytes : List Rust.Storage.AMByte) :
+    (RustModel.sliceStorageDecoder element).run count bytes =
+      ((Rust.Storage.arrayDecoder element count.val).run bytes).map
+        (fun values => Slice.from values.val (by rw [values.property]; scalar_tac)) := by
+  by_cases width : bytes.length = count.val * element.byteSize
+  · simp only [Rust.Storage.StorageDecoder.run, RustModel.sliceStorageDecoder,
+      Rust.Storage.BitDecoder.run, Rust.Storage.arrayDecoder, width, ↓reduceIte]
+    cases language : Rust.Storage.arrayDecode element count.val bytes with
+    | none => rfl
+    | some values =>
+      have agrees : (Slice.from values.val (by rw [values.property]; scalar_tac)).len = count := by
+        apply UScalar.eq_of_val_eq
+        simp only [Slice.len_val, Slice.length, Slice.from_val, values.property]
+      simp [agrees]
+  · simp [Rust.Storage.StorageDecoder.run, RustModel.sliceStorageDecoder,
+      Rust.Storage.BitDecoder.run, Rust.Storage.arrayDecoder, width]
+
+/-- The slice adapter preserves the element initialization law. -/
+theorem RustModel.sliceStorageDecoder_initialized {α : Type u}
+    (element : Rust.Storage.BitDecoder α) (initialized : element.Initialized) :
+    (RustModel.sliceStorageDecoder element).Initialized := by
+  intro count bytes raw accepted
+  have language := ((Rust.Storage.StorageDecoder.run_eq_some_iff _ _ _ _).mp accepted).2.1
+  simp only [RustModel.sliceStorageDecoder] at language
+  cases decoded : Rust.Storage.arrayDecode element count.val bytes with
+  | none => simp [decoded] at language
+  | some values => exact Rust.Storage.arrayDecode_initialized element initialized count.val bytes values decoded
+
 @[reducible] instance modelArray {α : Type u} (n : Usize) [ma : RustModel α] :
     RustModel (Aeneas.Std.Array α n) where
   Model := ArrayValue ma.Model n
   decode raw := match h : decodeList ma.decode raw.val with
     | none => none
     | some values => some ⟨values, (decodeList_length ma.decode h) ▸ raw.property⟩
+  representation := ma.representation.map (fun element =>
+    (Rust.Storage.arrayDecoder element n.val).map
+      (fun values => Aeneas.Std.Array.from values.val values.property))
+
+/-- The language-level array representation concatenates element storage.
+This theorem concerns every accepted representation, including padding bytes;
+it never asks whether the optional library decoder accepts the decoded value. -/
+theorem RustModel.initialized_array (α : Type u) [ma : RustModel α] (n : Usize)
+    (element : RustModel.initializedRepresentation α) :
+    @RustModel.initializedRepresentation (Aeneas.Std.Array α n) (@modelArray α n ma) := by
+  cases representation : ma.representation with
+  | none => simp [RustModel.initializedRepresentation, representation] at element
+  | some decoder =>
+    simp only [RustModel.initializedRepresentation, representation] at element
+    unfold RustModel.initializedRepresentation
+    rw [show (@modelArray α n ma).representation = ma.representation.map (fun element =>
+      (Rust.Storage.arrayDecoder element n.val).map
+        (fun values => Aeneas.Std.Array.from values.val values.property)) from rfl]
+    rw [representation]
+    simp only [Option.map_some]
+    exact Rust.Storage.BitDecoder.map_initialized _ _
+      (Rust.Storage.arrayDecoder_initialized decoder element n.val)
 
 -- This is Rust's Ok/Err payload type. Either constructor is admitted exactly
 -- when its selected child decodes, independently of Aeneas execution Result.
