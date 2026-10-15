@@ -14,6 +14,9 @@ pub(crate) mod macros;
 #[doc(hidden)]
 pub mod macro_util;
 
+#[cfg(target_endian = "little")]
+#[allow(dead_code)]
+mod owned_transmute;
 mod safety_checks;
 
 use core::{

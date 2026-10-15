@@ -28,6 +28,13 @@ set_option maxHeartbeats 1000000
 set_option maxRecDepth 2048
 open Zerocopy
 
+/-- [core::intrinsics::transmute]:
+    Source: '/rustc/library/core/src/intrinsics/mod.rs', lines 898:0-898:57
+    Name pattern: [core::intrinsics::transmute]
+    Visibility: public -/
+@[rust_fun "core::intrinsics::transmute"]
+axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst
+
 /-- [core::num::niche_types::{impl core::clone::Clone for core::num::niche_types::NonZeroUsizeInner}::clone]:
     Source: '/rustc/library/core/src/num/niche_types.rs', lines 17:17-17:22
     Name pattern: [core::num::niche_types::{core::clone::Clone<core::num::niche_types::NonZeroUsizeInner>}::clone]
@@ -51,11 +58,11 @@ axiom core.num.nonzero.NonZero.get
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
 
 /-- [zerocopy::util::copy_unchecked]:
-    Source: 'src/util/mod.rs', lines 310:0-325:1 -/
+    Source: 'src/util/mod.rs', lines 313:0-328:1 -/
 axiom util.copy_unchecked
   : Slice Std.U8 → Slice Std.U8 → Result (Slice Std.U8)
 
 /-- [zerocopy::util::transmute_unchecked]:
-    Source: 'src/util/mod.rs', lines 337:0-366:1 -/
+    Source: 'src/util/mod.rs', lines 340:0-369:1 -/
 axiom util.transmute_unchecked {Src : Type} (Dst : Type) : Src → Result Dst
 
