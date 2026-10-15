@@ -101,6 +101,13 @@ pub trait Alignment: Sealed {
 /// These conditions describe only exact reinterpretations. Shrinking
 /// projections may have validity that depends on the relationship between the
 /// projected region and bytes outside it, and require additional reasoning.
+///
+/// The checked invariant below identifies the state using `KIND` and the
+/// retained type model. It does not yet interpret `AsInitialized` contents.
+///
+/// ```aeneas
+/// invariant validity_kind for self => Referent.kindMatches Self self.KIND
+/// ```
 pub unsafe trait Validity: Sealed {
     const KIND: ValidityKind;
 }
@@ -184,6 +191,9 @@ pub enum Uninit {}
 // function of any property of `T` other than its bit validity (in fact, it's
 // not even a property of `T`'s bit validity, but this is more than we are
 // required to uphold).
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl Validity for Uninit {
     const KIND: ValidityKind = ValidityKind::Uninit;
 }
@@ -218,6 +228,9 @@ unsafe impl Validity for Uninit {
 pub enum AsInitialized {}
 // SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
 // is not a function of any property of `T` other than its bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl Validity for AsInitialized {
     const KIND: ValidityKind = ValidityKind::AsInitialized;
 }
@@ -229,6 +242,9 @@ pub enum Initialized {}
 // not a function of any property of `T` other than its bit validity (in fact,
 // it's not even a property of `T`'s bit validity, but this is more than we are
 // required to uphold).
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl Validity for Initialized {
     const KIND: ValidityKind = ValidityKind::Initialized;
 }
@@ -238,6 +254,9 @@ unsafe impl Validity for Initialized {
 pub enum Safe {}
 // SAFETY: `Safe`'s validity is well-defined for all `T: ?Sized`, and is not a
 // function of any property of `T` other than its bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl Validity for Safe {
     const KIND: ValidityKind = ValidityKind::Safe;
 }
@@ -253,11 +272,21 @@ unsafe impl Validity for Safe {
 ///
 /// `DT: CastableFrom<ST, SV, DV>` is sound if `SV = DV = Uninit` or `SV = DV =
 /// Initialized`.
+///
+/// ```aeneas
+/// invariant castable_from for self => Referent.typeIndependentPair SV DV
+/// ```
 pub unsafe trait CastableFrom<ST: ?Sized, SV, DV> {}
 
 // SAFETY: `SV = DV = Uninit`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Uninit, Uninit> for DT {}
 // SAFETY: `SV = DV = Initialized`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<ST: ?Sized, DT: ?Sized> CastableFrom<ST, Initialized, Initialized> for DT {}
 
 /// [`Ptr`](crate::Ptr) referents that permit unsynchronized read operations.

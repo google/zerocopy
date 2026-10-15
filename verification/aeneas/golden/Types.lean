@@ -269,17 +269,17 @@ structure wrappers.read_only_def.ReadOnly (T : Type) where
   inner : T
 
 /-- [zerocopy::pointer::invariant::Initialized]
-    Source: 'src/pointer/invariant.rs', lines 227:0-227:23
+    Source: 'src/pointer/invariant.rs', lines 240:0-240:23
     Visibility: public -/
 inductive pointer.invariant.Initialized where
 
 /-- [zerocopy::pointer::invariant::Shared]
-    Source: 'src/pointer/invariant.rs', lines 133:0-133:18
+    Source: 'src/pointer/invariant.rs', lines 140:0-140:18
     Visibility: public -/
 inductive pointer.invariant.Shared where
 
 /-- Trait declaration: [zerocopy::pointer::invariant::sealed::Sealed]
-    Source: 'src/pointer/invariant.rs', lines 296:4-296:23
+    Source: 'src/pointer/invariant.rs', lines 325:4-325:23
     Visibility: public -/
 structure pointer.invariant.sealed.Sealed (Self : Type) where
 
@@ -291,18 +291,18 @@ structure pointer.invariant.Aliasing (Self : Type) where
   sealedSealedInst : pointer.invariant.sealed.Sealed Self
 
 /-- Trait declaration: [zerocopy::pointer::invariant::Read]
-    Source: 'src/pointer/invariant.rs', lines 277:0-277:33
+    Source: 'src/pointer/invariant.rs', lines 306:0-306:33
     Visibility: public -/
 structure pointer.invariant.Read (Self : Type) (A : Type) (R : Type) where
   AliasingInst : pointer.invariant.Aliasing A
 
 /-- [zerocopy::pointer::invariant::Safe]
-    Source: 'src/pointer/invariant.rs', lines 238:0-238:16
+    Source: 'src/pointer/invariant.rs', lines 254:0-254:16
     Visibility: public -/
 inductive pointer.invariant.Safe where
 
 /-- Trait declaration: [zerocopy::pointer::invariant::Reference]
-    Source: 'src/pointer/invariant.rs', lines 121:0-121:41
+    Source: 'src/pointer/invariant.rs', lines 128:0-128:41
     Visibility: public -/
 structure pointer.invariant.Reference (Self : Type) where
   AliasingInst : pointer.invariant.Aliasing Self
@@ -357,6 +357,51 @@ structure IntoBytes (Self : Type) where
 structure Unaligned (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
+/-- [zerocopy::pointer::invariant::ValidityKind]
+    Source: 'src/pointer/invariant.rs', lines 115:0-120:1
+    Visibility: public -/
+@[discriminant isize]
+inductive pointer.invariant.ValidityKind where
+| Uninit : pointer.invariant.ValidityKind
+| AsInitialized : pointer.invariant.ValidityKind
+| Initialized : pointer.invariant.ValidityKind
+| Safe : pointer.invariant.ValidityKind
+
+/-- Trait declaration: [zerocopy::pointer::invariant::Validity]
+    Source: 'src/pointer/invariant.rs', lines 111:0-113:1
+    Visibility: public -/
+structure pointer.invariant.Validity (Self : Type) where
+  KIND : Result pointer.invariant.ValidityKind
+  sealedSealedInst : pointer.invariant.sealed.Sealed Self
+
+/-- [zerocopy::pointer::invariant::Uninit]
+    Source: 'src/pointer/invariant.rs', lines 189:0-189:18
+    Visibility: public -/
+inductive pointer.invariant.Uninit where
+
+/-- [zerocopy::pointer::invariant::AsInitialized]
+    Source: 'src/pointer/invariant.rs', lines 228:0-228:25
+    Visibility: public -/
+inductive pointer.invariant.AsInitialized where
+
+/-- Trait declaration: [zerocopy::pointer::invariant::CastableFrom]
+    Source: 'src/pointer/invariant.rs', lines 279:0-279:52
+    Visibility: public -/
+structure pointer.invariant.CastableFrom (Self : Type) (ST : Type) (SV : Type)
+  (DV : Type) where
+
+/-- Trait declaration: [zerocopy::pointer::transmute::TransmuteFrom]
+    Source: 'src/pointer/transmute.rs', lines 345:0-345:54
+    Visibility: public -/
+structure pointer.transmute.TransmuteFrom (Self : Type) (Src : Type) (SV :
+  Type) (DV : Type) where
+
+/-- [zerocopy::wrappers::Unalign]
+    Source: 'src/wrappers.rs', lines 118:0-118:25
+    Visibility: public -/
+structure wrappers.Unalign (T : Type) where
+  _0 : T
+
 /-- Trait declaration: [zerocopy::trait_checks::ByteCodec]
     Source: 'src/trait_checks.rs', lines 97:0-100:1 -/
 structure trait_checks.ByteCodec (Self : Type) where
@@ -371,12 +416,6 @@ structure trait_checks.XorCodec where
     Source: 'src/trait_checks.rs', lines 118:0-118:34 -/
 structure trait_checks.Forward (C : Type) where
   _0 : core.marker.PhantomData C
-
-/-- [zerocopy::wrappers::Unalign]
-    Source: 'src/wrappers.rs', lines 118:0-118:25
-    Visibility: public -/
-structure wrappers.Unalign (T : Type) where
-  _0 : T
 
 /-- Trait declaration: [zerocopy::util::macro_util::transmute_copy::StaticAssert]
     Source: 'src/util/macros.rs', lines 679:8-681:9 -/

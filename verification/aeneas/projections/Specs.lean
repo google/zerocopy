@@ -609,6 +609,46 @@ spec cast_unsized_check_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.cast_unsized_check_spec for Zerocopy.pointer.cast.checks.assert_cast_unsized with 7
 
+check_model_inputs Zerocopy.pointer.referent_checks.require_transfer with 4 type parameters
+aeneas_spec_begin
+spec require_transfer_spec
+  for @Zerocopy.pointer.referent_checks.require_transfer with 4 type parameters
+  ensures(raw) _ => Referent.transmuteFrom Src Dst SV DV
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.require_transfer_spec for Zerocopy.pointer.referent_checks.require_transfer with 5
+
+check_model_inputs Zerocopy.pointer.referent_checks.require_type_independent with 4 type parameters
+aeneas_spec_begin
+spec require_type_independent_spec
+  for @Zerocopy.pointer.referent_checks.require_type_independent with 4 type parameters
+  ensures(raw) _ => Referent.typeIndependentPair SV DV
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.require_type_independent_spec for Zerocopy.pointer.referent_checks.require_type_independent with 5
+
+check_model_inputs Zerocopy.pointer.referent_checks.compose_safe_transfers with 3 type parameters
+aeneas_spec_begin
+spec compose_safe_transfers_spec
+  for @Zerocopy.pointer.referent_checks.compose_safe_transfers with 3 type parameters
+  requires(raw) first_size : AeneasSpecs.RustModel.sameSize Src Mid
+  ensures(raw) _ => Referent.transmuteFrom Src Dst
+    Zerocopy.pointer.invariant.Safe Zerocopy.pointer.invariant.Safe
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.compose_safe_transfers_spec for Zerocopy.pointer.referent_checks.compose_safe_transfers with 5
+
+check_model_inputs Zerocopy.pointer.referent_checks.concrete_transfers with 0 type parameters
+aeneas_spec_begin
+spec concrete_transfers_spec
+  for @Zerocopy.pointer.referent_checks.concrete_transfers with 0 type parameters
+  ensures(raw) _ =>
+    Referent.transmuteFrom Bool U8
+      Zerocopy.pointer.invariant.Safe Zerocopy.pointer.invariant.Initialized ∧
+    Referent.transmuteFrom U8 Bool
+      Zerocopy.pointer.invariant.Initialized Zerocopy.pointer.invariant.Uninit ∧
+    Referent.typeIndependentPair Zerocopy.pointer.invariant.Initialized
+      Zerocopy.pointer.invariant.Initialized
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.concrete_transfers_spec for Zerocopy.pointer.referent_checks.concrete_transfers with 0
+
 check_model_inputs Zerocopy.split_at.split_right_len with 0 type parameters
 aeneas_spec_begin
 spec split_right_len_spec

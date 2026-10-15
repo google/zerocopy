@@ -533,10 +533,12 @@ admitted implementation method body in the original and final ASTs, even when
 only the law refers to the method. Excluded provided methods cannot execute;
 interface-only validators retain their required signatures but cannot be called.
 
-This initial bridge accepts traits with only their `Self` parameter and simple
-generic bounds. It compares compiler-resolved original and final type
-applications, rather than matching clause ordinals. Associated types, higher
-ranked bounds, transformed carrier identities, and bounds on nominal model
+The bridge accepts type-parameterized traits and type-only bounds, including
+`?Sized`. It preserves the complete ordered application: `Self` and every other
+Rust type argument. Source syntax records bound arity; compiler identities
+resolve the arguments. Original and final applications must agree, including
+repeated arguments, rather than merely matching clause ordinals. Associated
+types, higher ranked bounds, transformed carrier identities, and bounds on nominal model
 definitions fail closed. The compiled audit independently enumerates
 implementation dictionaries and
 requires the same complete set of proof obligations. Omitting or swapping a
@@ -1325,3 +1327,42 @@ size guard, providers, trait premises, and destination admission. The exact
 [semantic scope and Rust premises](SEMANTICS.md#generic-owned-conversion-through-transmute_copy)
 exclude pointer provenance, resource ownership, meaningful destructor execution,
 and general storage-copy effects. The production `transmute!` macro is unchanged.
+
+## Referent validity implications
+
+`Rust.Referent` in `anneal/lean` describes three byte-content promises at an
+explicit width: `Uninit` permits any contents, `Initialized` requires initialized
+bytes, and `Safe` requires successful physical and mathematical decoding. An
+uninhabited type can have an empty safe domain. No default value, inhabitedness,
+unique representation, or canonical encoding is required.
+
+The `TransmuteFrom` annotation in `pointer/transmute.rs` checks directional
+inclusion of these domains when widths agree. Four blanket impls use the
+existing `IntoBytes` and `FromBytes` laws or weaken the content promise. Twelve
+wrapper directions compare the actual mapped physical decoder and its retained
+mathematical decoder. The two `Cell`/`UnsafeCell` chains use those same domain
+equivalences. `CastableFrom` has a separate, exact invariant: both states are
+`Uninit`, or both are `Initialized`.
+
+The four empty validity-marker types retain their empty extracted carriers.
+Their generated model providers carry an optional type-level code; the
+`Validity` law checks that code against the actual `KIND` constant. Missing code
+metadata rejects the law. The code identifies `AsInitialized` but supplies no
+interpretation of its contents. Forgetting any state to `Uninit` remains valid
+without that interpretation.
+
+`pointer/referent_checks.rs` consumes the actual Rust bounds, including unused
+bounds, and selects concrete blanket and wrapper dictionaries. Its generic
+composition test requires equal source and intermediate widths. Without that
+premise, two transfers could hold only because their individual width guards
+are false. Independent required contracts restate the byte implications and
+require successful execution even when no modeled state matches a marker.
+Both golden and live builds check every marked impl and discovered spec.
+
+These are conditional facts about contents. Applying them to Rust requires the
+installed physical decoder and mathematical model to describe that referent.
+A missing physical decoder supplies no view from which to reason; it is not an
+empty safe domain. Pointer access, provenance, aliasing, mutation permissions,
+and external resources remain separate obligations. The pinned extractor gives
+`MaybeUninit<T>` an opaque carrier without a byte-storage interpretation, so
+its transitive wrapper impls remain unmarked and deferred.
