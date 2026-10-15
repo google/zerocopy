@@ -94,8 +94,9 @@ export CHARON_ANNOTATION_ORIGINS="$work/annotation-origins.json"
 # FIXME: Typed copies erase storage events (upstream issue #1405):
 # https://github.com/AeneasVerif/aeneas/issues/1405. Neither strict extraction
 # errors nor the downstream forbidden tag can detect an already erased effect.
-# Promoted MIR precedes drop elaboration: residual Drop terminators reject the
-# body rather than relying on destructor desugaring or Aeneas's drop erasure.
+# Promoted MIR precedes drop elaboration. Each retained conditional drop needs
+# a kernel proof that its whole local is empty; all other drops reject the body.
+# Aeneas's erasure cannot establish that a destructor has no effects.
 python3 verification/aeneas/prepare.py llbc "$work/zerocopy.llbc"
 "${inline_cmd[@]}" bindings "${inline_args[@]}" --work "$work"
 "$tools_dir/aeneas" -backend lean -namespace Zerocopy -dest "$work/Zerocopy" \

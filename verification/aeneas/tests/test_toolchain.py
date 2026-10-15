@@ -373,6 +373,7 @@ class InstalledToolchainTests(unittest.TestCase):
         for name in ['anneal/flake.lock', 'verification/aeneas/toolchain.sh',
                      'verification/aeneas/toolchain.py', 'verification/aeneas/admission.py',
                      'verification/aeneas/source_inventory.py',
+                     'verification/aeneas/drop_ownership.py',
                      'verification/aeneas/patches/use-tuple-structs.patch',
                      'verification/aeneas/patches/admission-snapshot.patch']:
             target = root / name

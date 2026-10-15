@@ -86,6 +86,20 @@ def min_spec : Prop :=
   ∀ (a b : NonZeroUsize),
     min_spec_contract a b (util.min a b)
 
+-- The generic fixture must return its original value successfully and retain
+-- that value's accepted decoding. The ownership audit is independent of this
+-- value-level expectation; neither the model provider nor this precondition
+-- promises that the Rust type has no destructor.
+def move_through_call_spec_contract (T : Type) (value : T) (run : Result T) : Prop :=
+  ∀ [provider : RustModel T] (mathematical : provider.Model),
+    provider.decode value = some mathematical →
+      ∃ result, run = .ok result ∧
+        ∃ decoded, provider.decode result = some decoded ∧ result = value
+
+def move_through_call_spec : Prop :=
+  ∀ (T : Type) (value : T), move_through_call_spec_contract T value
+    (util.move_checks.move_through_call value)
+
 def padding_lt_alignment_contract (len : Usize) (align : NonZeroUsize)
     (run : Result Usize) : Prop :=
   ∀ (_valid : 0 < align.val.val) (_h : align.val.val.isPowerOfTwo),
