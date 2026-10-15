@@ -644,7 +644,7 @@ def byteorder.verification.set_u32_be
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
 /-- [zerocopy::FromZeros::new_zeroed]:
-    Source: 'src/lib.rs', lines 3823:4-3829:5
+    Source: 'src/lib.rs', lines 3827:4-3833:5
     Visibility: public -/
 @[trait_default]
 native_models def FromZeros.new_zeroed.default (Self : Type) : Result Self := do

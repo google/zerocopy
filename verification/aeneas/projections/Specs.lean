@@ -122,6 +122,15 @@ spec set_u32_be_spec
 aeneas_spec_end
 check_spec_binding Zerocopy.Specs.set_u32_be_spec for Zerocopy.byteorder.verification.set_u32_be with 2
 
+default_trait_body Zerocopy.FromZeros.new_zeroed.default for Zerocopy.FromZeros with 1 type parameters
+check_model_inputs Zerocopy.FromZeros.new_zeroed.default with 1 type parameters
+aeneas_spec_begin
+spec new_zeroed_spec
+  for @Zerocopy.FromZeros.new_zeroed.default with 1 type parameters
+  ensures(raw) r => AeneasSpecs.RustModel.zeroedValue r
+aeneas_spec_end
+check_spec_binding Zerocopy.Specs.new_zeroed_spec for Zerocopy.FromZeros.new_zeroed.default with 1
+
 check_model_inputs Zerocopy.trait_checks.byte_codec_roundtrip with 1 type parameters
 aeneas_spec_begin
 spec byte_codec_roundtrip_spec

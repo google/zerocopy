@@ -805,6 +805,14 @@ law. Negative Lean examples distinguish Boolean zero validity from Boolean
 validity for every byte, and reject zero construction of nonzero integers or a
 value rejected by its library decoder.
 
+The specification on the existing `FromZeros::new_zeroed` default method proves
+its actual body under the exact enclosing trait's law. Its stdlib boundary,
+`core::mem::zeroed`, decodes zero storage before returning a typed value;
+rejection is forbidden execution, even for a `True` postcondition. The compiled
+audit checks this complete definition, not just successful examples. An
+independent required contract states the physical and mathematical decoding
+facts without using the primitive's implementation.
+
 Aeneas normally has no model dictionary in the computation. The downstream
 `native_models` elaborator retains a provider only in generic definitions
 whose bodies need this boundary. Original Rust arguments remain in their exact
@@ -826,8 +834,8 @@ As with `IntoBytes`, applying these proofs to Rust assumes the physical decoder
 has the correct Rust width and language meaning. The primitive and array
 interpretations have explicit Reference premises; compiler assertions challenge
 the concrete widths. A generic provider is a supplied interpretation, not a
-proof of an arbitrary downstream type's representation. These construction laws
-cover the selected impls; they do not certify pointer access, external-state
+proof of an arbitrary downstream type's representation. This example covers
+resource-free owned zero construction, not pointer access, external-state
 invariants, destructors, or every `FromBytes`/`FromZeros` impl.
 
 ## Native Lean proofs and independent checks

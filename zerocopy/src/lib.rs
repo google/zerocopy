@@ -3820,6 +3820,10 @@ pub unsafe trait FromZeros: TryFromBytes {
     )]
     #[must_use = "has no side effects"]
     #[inline(always)]
+    /// ```aeneas
+    /// spec new_zeroed_spec
+    ///   ensures(raw) r => AeneasSpecs.RustModel.zeroedValue r
+    /// ```
     fn new_zeroed() -> Self
     where
         Self: Sized,
