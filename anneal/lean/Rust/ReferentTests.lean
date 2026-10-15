@@ -96,6 +96,39 @@ theorem no_value_not_complete : ¬noValueDecoder.CompleteWith noValueModel := by
   obtain ⟨value, _⟩ := complete () [] rfl initialized_nil
   exact nomatch value
 
+-- A slice can be empty even though no element can be decoded.
+def emptyElementDecoder : BitDecoder Empty where
+  byteSize := 0
+  decode _ := none
+
+example : Safe (sliceDecoder emptyElementDecoder) some 0 [] :=
+  ⟨[], [], rfl, rfl⟩
+
+example : ¬Safe (sliceDecoder emptyElementDecoder) some 1 [] := by
+  rintro ⟨raw, value, accepted, _⟩
+  have rejected : (sliceDecoder emptyElementDecoder).run 1 [] = none := by decide
+  rw [rejected] at accepted
+  contradiction
+
+-- Language validity at a positive ZST count cannot replace mathematical decoding.
+example : (sliceDecoder unitDecoder).run 2 [] = some [(), ()] := by decide
+example : ¬Safe (sliceDecoder unitDecoder) (fun _ => (none : Option Unit)) 2 [] := by
+  rintro ⟨_, _, _, rejected⟩
+  contradiction
+
+-- The shared completeness law supplies safe admission at every requested byte count.
+theorem sliceByte_complete : (sliceDecoder byteDecoder).CompleteWith some := by
+  intro count bytes width initialized
+  obtain ⟨values, accepted⟩ :=
+    sliceDecoder_complete byteDecoder byteDecoder_complete count bytes width initialized
+  exact ⟨values, by simp [StorageDecoder.runWith, accepted]⟩
+
+example (count : Nat) :
+    Transfer count (fun _ => True) .initialized
+      ((sliceDecoder byteDecoder).byteSize count)
+      (Safe (sliceDecoder byteDecoder) some count) .safe :=
+  initialized_to_safe (sliceDecoder byteDecoder) some sliceByte_complete count count (fun _ => True)
+
 example : Initialized
     (([AMByte.init 0, AMByte.init 1, AMByte.init 2].drop 1).take 1) :=
   initialized_subrange _ (by simp [Initialized]) 1 1

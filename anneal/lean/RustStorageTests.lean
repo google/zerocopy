@@ -187,6 +187,135 @@ example : (sliceDecoder (statefulZstDecoder false)).run 1 [] = none := by decide
 example : (sliceDecoder (statefulZstDecoder false)).run 0 [] = some [] := by decide
 example : (sliceDecoder boolDecoder).Initialized := sliceDecoder_initialized _ boolDecoder_initialized
 
+-- Count remains metadata when the representation has no bytes.
+example : (sliceDecoder unitDecoder).byteSize 1 = (sliceDecoder unitDecoder).byteSize 7 := rfl
+example (count : Nat) (bytes : List AMByte) (values : List Unit)
+    (accepted : (sliceDecoder unitDecoder).run count bytes = some values) :
+    values.length = count := sliceDecoder_run_count unitDecoder count bytes values accepted
+
+def emptyElementDecoder : BitDecoder Empty where
+  byteSize := 0
+  decode _ := none
+
+example : (sliceDecoder emptyElementDecoder).run 0 [] = some [] := rfl
+example : (sliceDecoder emptyElementDecoder).run 1 [] = none := by decide
+
+-- Any decoder of an empty type must reject a positive count, independent of width.
+example (element : BitDecoder Empty) (count : Nat) (bytes : List AMByte) :
+    (sliceDecoder element).run (count + 1) bytes = none := by
+  cases decoded : (sliceDecoder element).run (count + 1) bytes with
+  | none => rfl
+  | some values =>
+    have length := sliceDecoder_run_count element (count + 1) bytes values decoded
+    cases values with
+    | nil => simp at length
+    | cons value _ => exact nomatch value
+
+-- Missing language semantics propagate failure; width and initialization do not supply them.
+def unknownElementDecoder : BitDecoder Unit where
+  byteSize := 0
+  decode _ := none
+
+example : (sliceDecoder unknownElementDecoder).run 1 [] = none := by decide
+example : (sliceDecoder unknownElementDecoder).runWith some 1 [] = none := by decide
+example : ¬ (sliceDecoder unknownElementDecoder).CompleteWith some := by
+  intro complete
+  obtain ⟨value, accepted⟩ := complete 1 [] rfl initialized_nil
+  simp [StorageDecoder.runWith, sliceDecoder_run, BitDecoder.run, arrayDecoder,
+    arrayDecode, unknownElementDecoder] at accepted
+
+-- Realizability accepts the empty slice without an inhabitant of its element type.
+example : ∃ bytes, (sliceDecoder emptyElementDecoder).run 0 bytes = some [] :=
+  sliceDecoder_realizable emptyElementDecoder (fun _ => True)
+    (fun value _ => nomatch value) 0 [] rfl (by simp)
+
+-- Restricted element validity need only realize the values it admits.
+example (values : List Bool) (admitted : ∀ value ∈ values, value = true) : ∃ bytes,
+    (sliceDecoder (boolDecoder.filterMap (fun value => if value then some value else none))).run
+      values.length bytes = some values := by
+  apply sliceDecoder_realizable _ (fun value => value = true) ?_ _ values rfl
+  · exact admitted
+  · intro value valid
+    subst value
+    exact ⟨[AMByte.init 1], by decide⟩
+
+example (count : Nat) (bytes : List AMByte) (width : bytes.length = count)
+    (initialized : Initialized bytes) :
+    ∃ values, (sliceDecoder byteDecoder).run count bytes = some values :=
+  sliceDecoder_complete byteDecoder byteDecoder_complete count bytes (by simpa [byteDecoder] using width) initialized
+
+example (count : Nat) : ∃ values, (sliceDecoder unitDecoder).run count [] = some values :=
+  sliceDecoder_complete unitDecoder
+    (fun bytes width _ => ⟨(), emptyDecoder_complete () bytes width⟩)
+    count [] (by simp [unitDecoder, emptyDecoder]) initialized_nil
+
+-- Returned list length is checked independently of its zero-byte width.
+def wrongSliceCountDecoder : StorageDecoder Nat (List Unit) where
+  byteSize _ := 0
+  metadata := List.length
+  decode _ _ := some []
+
+example : wrongSliceCountDecoder.decode 1 [] = some [] := rfl
+example : wrongSliceCountDecoder.run 0 [] = some [] := by decide
+example : wrongSliceCountDecoder.run 1 [] = none := by decide
+
+-- Nested indexed decoders retain every element's own metadata and byte boundary.
+example : (sliceDecoder boolDecoder).sequence.run [2, 0, 1]
+    [AMByte.init 1, AMByte.init 0, AMByte.init 1] = some [[true, false], [], [true]] := by decide
+example : (sliceDecoder boolDecoder).sequence.run [2, 0, 1]
+    [AMByte.init 1, AMByte.init 0] = none := by decide
+example : (sliceDecoder boolDecoder).sequence.run [2, 0, 1]
+    [AMByte.init 1, AMByte.init 0, AMByte.init 2] = none := by decide
+example : (sliceDecoder boolDecoder).sequence.Initialized :=
+  StorageDecoder.sequence_initialized _ (sliceDecoder_initialized _ boolDecoder_initialized)
+
+-- Equal zero-byte widths preserve both the outer count and each inner count.
+example : (sliceDecoder unitDecoder).sequence.byteSize [0, 2] =
+    (sliceDecoder unitDecoder).sequence.byteSize [2, 0] := rfl
+example : (sliceDecoder unitDecoder).sequence.run [0, 2] [] = some [[], [(), ()]] := by decide
+example : (sliceDecoder unitDecoder).sequence.run [2, 0] [] = some [[(), ()], []] := by decide
+example (metadata : List Nat) (bytes : List AMByte) (raws : List (List Unit))
+    (accepted : (sliceDecoder unitDecoder).sequence.run metadata bytes = some raws) :
+    raws.length = metadata.length := StorageDecoder.sequence_run_count _ metadata bytes raws accepted
+
+-- Empty inner slices require no element; a positive inner count still fails closed.
+example : (sliceDecoder emptyElementDecoder).sequence.run [0, 0] [] = some [[], []] := by decide
+example : (sliceDecoder emptyElementDecoder).sequence.run [0, 1] [] = none := by decide
+example : (sliceDecoder unknownElementDecoder).sequence.run [0, 1] [] = none := by decide
+example : wrongSliceCountDecoder.sequence.run [0] [] = some [[]] := by decide
+example : wrongSliceCountDecoder.sequence.run [1] [] = none := by decide
+
+example (values : List (List Unit)) : ∃ bytes,
+    (sliceDecoder unitDecoder).sequence.run (values.map List.length) bytes = some values := by
+  refine StorageDecoder.sequence_realizable _ (fun _ => True) ?_ _ values rfl (by simp)
+  intro value _
+  refine sliceDecoder_realizable unitDecoder (fun _ => True) ?_ _ value rfl (by simp)
+  intro value _
+  cases value
+  exact ⟨[], rfl⟩
+
+-- Completeness retains both stages of nested decoding, including empty sublists.
+example : (sliceDecoder byteDecoder).sequence.CompleteWith (List.mapM some) :=
+  StorageDecoder.sequence_completeWith _ some (by
+    intro count bytes width initialized
+    obtain ⟨values, accepted⟩ := sliceDecoder_complete byteDecoder byteDecoder_complete count bytes width initialized
+    exact ⟨values, by simp [StorageDecoder.runWith, accepted]⟩)
+
+example : ¬ (sliceDecoder unknownElementDecoder).sequence.CompleteWith (List.mapM some) := by
+  intro complete
+  obtain ⟨value, accepted⟩ := complete [0, 1] [] rfl initialized_nil
+  have rejected : (sliceDecoder unknownElementDecoder).sequence.run [0, 1] [] = none := by decide
+  simp [StorageDecoder.runWith, rejected] at accepted
+
+#print axioms arrayDecoder_realizable
+#print axioms sliceDecoder_realizable
+#print axioms sliceDecoder_complete
+#print axioms sliceDecoder_run_count
+#print axioms StorageDecoder.sequence_run_count
+#print axioms StorageDecoder.sequence_initialized
+#print axioms StorageDecoder.sequence_realizable
+#print axioms StorageDecoder.sequence_completeWith
+
 -- These synthetic layouts share a padded width for multiple metadata values.
 -- The example establishes no Rust representation or ABI for a particular type.
 def plateauDecoder : StorageDecoder Nat Nat where

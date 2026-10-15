@@ -418,6 +418,36 @@ theorem arrayDecoder_complete (element : BitDecoder Raw)
         simp only [arrayDecode, acceptedHead, tailDecode]
         rfl⟩
 
+/-- Realizable elements compose into a representation of the exact list.
+Only elements admitted by `valid` need representations; an empty list therefore
+needs no value or representation of its element type. -/
+theorem arrayDecoder_realizable (element : BitDecoder Raw) (valid : Raw → Prop)
+    (realizable : ∀ raw, valid raw → ∃ bytes, element.run bytes = some raw)
+    (values : List Raw) (admitted : ∀ value ∈ values, valid value) :
+    ∃ bytes, (arrayDecoder element values.length).run bytes = some ⟨values, rfl⟩ := by
+  induction values with
+  | nil => exact ⟨[], by simp [BitDecoder.run, arrayDecoder, arrayDecode]⟩
+  | cons value values ih =>
+    obtain ⟨head, acceptedHead⟩ := realizable value (admitted value (by simp))
+    obtain ⟨tail, acceptedTail⟩ := ih (fun raw member => admitted raw (by simp [member]))
+    have headWidth := element.run_length head value acceptedHead
+    have tailWidth := arrayDecoder_run_length element values.length tail _ acceptedTail
+    have tailDecode : arrayDecode element values.length tail = some ⟨values, rfl⟩ := by
+      simpa [BitDecoder.run, arrayDecoder, tailWidth] using acceptedTail
+    have width : (head ++ tail).length = (values.length + 1) * element.byteSize := by
+      simp only [List.length_append, headWidth, tailWidth, Nat.succ_mul]
+      omega
+    have takeHead : (head ++ tail).take element.byteSize = head := by
+      rw [← headWidth]
+      simp
+    have dropHead : (head ++ tail).drop element.byteSize = tail := by
+      rw [← headWidth]
+      simp
+    refine ⟨head ++ tail, ?_⟩
+    simp only [BitDecoder.run, arrayDecoder, List.length_cons, width, ↓reduceIte]
+    simp only [arrayDecode, takeHead, dropHead, acceptedHead, tailDecode]
+    rfl
+
 /-- A physical decoder at explicit metadata. `metadata` observes the decoded raw
 value; `run` checks that observation against the requested metadata. Size need
 not identify metadata: zero-sized slices and padded layouts may share a width.
@@ -552,6 +582,142 @@ theorem map_initialized [DecidableEq Metadata] (decoder : StorageDecoder Metadat
   | none => simp [language] at accepted
   | some raw => exact initialized metadata bytes raw language
 
+/-- Each metadata entry requests one element, including when its width is zero.
+Every element run checks both its byte width and its returned metadata. -/
+def sequenceDecode [DecidableEq Metadata] (element : StorageDecoder Metadata Raw) :
+    List Metadata → List AMByte → Option (List Raw)
+  | [], bytes => if bytes = [] then some [] else none
+  | metadata :: rest, bytes => do
+      let raw ← element.run metadata (bytes.take (element.byteSize metadata))
+      let raws ← sequenceDecode element rest (bytes.drop (element.byteSize metadata))
+      return raw :: raws
+
+/-- Compose repeated uses of one storage decoder at explicit element metadata.
+The metadata list retains element boundaries when widths coincide or are zero.
+This is a pure byte-domain construction; a Rust layout needs a separate bridge. -/
+def sequence [DecidableEq Metadata] (element : StorageDecoder Metadata Raw) :
+    StorageDecoder (List Metadata) (List Raw) where
+  byteSize metadata := (metadata.map element.byteSize).sum
+  metadata raws := raws.map element.metadata
+  decode := sequenceDecode element
+
+/-- The metadata list retains the number of elements independently of byte width. -/
+theorem sequence_run_count [DecidableEq Metadata] (element : StorageDecoder Metadata Raw)
+    (metadata : List Metadata) (bytes : List AMByte) (raws : List Raw)
+    (accepted : element.sequence.run metadata bytes = some raws) :
+    raws.length = metadata.length := by
+  have sameMetadata := element.sequence.run_metadata metadata bytes raws accepted
+  simpa [sequence] using congrArg List.length sameMetadata
+
+theorem sequenceDecode_initialized [DecidableEq Metadata] (element : StorageDecoder Metadata Raw)
+    (initialized : element.Initialized) (metadata : List Metadata) (bytes : List AMByte)
+    (raws : List Raw) (accepted : sequenceDecode element metadata bytes = some raws) :
+    Rust.Storage.Initialized bytes := by
+  induction metadata generalizing bytes raws with
+  | nil =>
+    simp only [sequenceDecode] at accepted
+    split at accepted
+    · rename_i empty
+      simp [empty]
+    · contradiction
+  | cons metadata rest ih =>
+    simp only [sequenceDecode] at accepted
+    cases first : element.run metadata (bytes.take (element.byteSize metadata)) with
+    | none => simp [first] at accepted
+    | some raw =>
+      cases tail : sequenceDecode element rest (bytes.drop (element.byteSize metadata)) with
+      | none => simp [first, tail] at accepted
+      | some raws =>
+        have both := (initialized_append _ _).mpr
+          ⟨initialized metadata _ raw first, ih _ raws tail⟩
+        simpa using both
+
+/-- Sequence initialization covers every accepted element representation. -/
+theorem sequence_initialized [DecidableEq Metadata] (element : StorageDecoder Metadata Raw)
+    (initialized : element.Initialized) : element.sequence.Initialized := by
+  intro metadata bytes raws accepted
+  exact sequenceDecode_initialized element initialized metadata bytes raws
+    ((element.sequence.run_eq_some_iff metadata bytes raws).mp accepted).2.1
+
+/-- Realizable admitted elements compose at exactly the requested metadata list.
+The empty list needs no element value or element representation. -/
+theorem sequence_realizable [DecidableEq Metadata] (element : StorageDecoder Metadata Raw)
+    (valid : Raw → Prop)
+    (realizable : ∀ raw, valid raw → ∃ bytes, element.run (element.metadata raw) bytes = some raw)
+    (metadata : List Metadata) (raws : List Raw)
+    (sameMetadata : raws.map element.metadata = metadata)
+    (admitted : ∀ raw ∈ raws, valid raw) :
+    ∃ bytes, element.sequence.run metadata bytes = some raws := by
+  subst metadata
+  induction raws with
+  | nil => exact ⟨[], by simp [run, sequence, sequenceDecode]⟩
+  | cons raw raws ih =>
+    obtain ⟨head, acceptedHead⟩ := realizable raw (admitted raw (by simp))
+    obtain ⟨tail, acceptedTail⟩ := ih (fun raw member => admitted raw (by simp [member]))
+    have headWidth := element.run_length _ head raw acceptedHead
+    have tailFacts := (element.sequence.run_eq_some_iff _ tail raws).mp acceptedTail
+    have width : (head ++ tail).length =
+        (raw :: raws |>.map element.metadata |>.map element.byteSize).sum := by
+      simp only [List.length_append, List.map_cons, List.sum_cons]
+      rw [headWidth, tailFacts.1]
+      rfl
+    have takeHead : (head ++ tail).take (element.byteSize (element.metadata raw)) = head := by
+      rw [← headWidth]
+      simp
+    have dropHead : (head ++ tail).drop (element.byteSize (element.metadata raw)) = tail := by
+      rw [← headWidth]
+      simp
+    refine ⟨head ++ tail, (element.sequence.run_eq_some_iff _ _ _).mpr ?_⟩
+    refine ⟨width, ?_, rfl⟩
+    change sequenceDecode element (element.metadata raw :: raws.map element.metadata)
+      (head ++ tail) = some (raw :: raws)
+    simp [sequenceDecode, takeHead, dropHead, acceptedHead,
+      show sequenceDecode element (raws.map element.metadata) tail = some raws from tailFacts.2.1]
+
+/-- Completeness composes both language and mathematical decoding at every
+element's requested metadata. Rejection in either stage remains rejection. -/
+theorem sequence_completeWith [DecidableEq Metadata] (element : StorageDecoder Metadata Raw)
+    (decodeModel : Raw → Option Model) (complete : element.CompleteWith decodeModel) :
+    element.sequence.CompleteWith (List.mapM decodeModel) := by
+  intro metadata bytes width initialized
+  induction metadata generalizing bytes with
+  | nil =>
+    have empty : bytes = [] := List.length_eq_zero_iff.mp (by simpa [sequence] using width)
+    subst bytes
+    exact ⟨[], by simp [runWith, run, sequence, sequenceDecode]⟩
+  | cons metadata rest ih =>
+    have totalWidth : bytes.length =
+        element.byteSize metadata + (rest.map element.byteSize).sum := by
+      simpa [sequence] using width
+    have sizeBound : element.byteSize metadata ≤ bytes.length := by omega
+    have headWidth : (bytes.take (element.byteSize metadata)).length = element.byteSize metadata := by
+      simp [List.length_take, Nat.min_eq_left sizeBound]
+    have tailWidth : (bytes.drop (element.byteSize metadata)).length =
+        element.sequence.byteSize rest := by
+      simp only [List.length_drop, sequence]
+      omega
+    have both : Rust.Storage.Initialized
+        (bytes.take (element.byteSize metadata) ++ bytes.drop (element.byteSize metadata)) := by
+      simpa using initialized
+    obtain ⟨model, acceptedHead⟩ := complete metadata _ headWidth ((initialized_append _ _).mp both).1
+    obtain ⟨models, acceptedTail⟩ := ih _ tailWidth ((initialized_append _ _).mp both).2
+    obtain ⟨raw, headLanguage, headModel⟩ := (element.runWith_eq_some_iff _ _ _ _).mp acceptedHead
+    obtain ⟨raws, tailLanguage, tailModel⟩ :=
+      (element.sequence.runWith_eq_some_iff _ _ _ _).mp acceptedTail
+    have headMetadata := element.run_metadata _ _ _ headLanguage
+    have tailFacts := (element.sequence.run_eq_some_iff _ _ _).mp tailLanguage
+    refine ⟨model :: models, (element.sequence.runWith_eq_some_iff _ _ _ _).mpr ?_⟩
+    refine ⟨raw :: raws, (element.sequence.run_eq_some_iff _ _ _).mpr ?_, ?_⟩
+    · refine ⟨width, ?_, ?_⟩
+      · change sequenceDecode element (metadata :: rest) bytes = some (raw :: raws)
+        simp [sequenceDecode, headLanguage,
+          show sequenceDecode element rest (bytes.drop (element.byteSize metadata)) = some raws from
+            tailFacts.2.1]
+      · change (raw :: raws).map element.metadata = metadata :: rest
+        simp only [List.map_cons, headMetadata]
+        exact congrArg (metadata :: ·) tailFacts.2.2
+    · simp [List.mapM_cons, headModel, tailModel]
+
 end StorageDecoder
 
 /-- Fixed-width decoding is the Unit-metadata case, with no metadata inferred
@@ -597,5 +763,34 @@ theorem sliceDecoder_initialized (element : BitDecoder Raw) (initialized : eleme
   cases language : (arrayDecoder element count).run bytes with
   | none => simp [language] at accepted
   | some values => exact arrayDecoder_initialized element initialized count bytes values language
+
+/-- The requested count remains observable even when all elements have size zero. -/
+theorem sliceDecoder_run_count (element : BitDecoder Raw) (count : Nat) (bytes : List AMByte)
+    (values : List Raw) (accepted : (sliceDecoder element).run count bytes = some values) :
+    values.length = count :=
+  StorageDecoder.run_metadata (sliceDecoder element) count bytes values accepted
+
+/-- Element realizability supplies bytes at this exact count. It does not create
+an element of an uninhabited type, and imposes no element obligation at count zero. -/
+theorem sliceDecoder_realizable (element : BitDecoder Raw) (valid : Raw → Prop)
+    (realizable : ∀ raw, valid raw → ∃ bytes, element.run bytes = some raw)
+    (count : Nat) (values : List Raw) (sameCount : values.length = count)
+    (admitted : ∀ value ∈ values, valid value) :
+    ∃ bytes, (sliceDecoder element).run count bytes = some values := by
+  obtain ⟨bytes, accepted⟩ := arrayDecoder_realizable element valid realizable values admitted
+  refine ⟨bytes, ?_⟩
+  rw [← sameCount, sliceDecoder_run, accepted]
+  rfl
+
+/-- Every initialized representation at the explicit count admits a slice when
+each element decoder is complete. No count is reconstructed from byte width. -/
+theorem sliceDecoder_complete (element : BitDecoder Raw)
+    (complete : ∀ bytes, bytes.length = element.byteSize → Initialized bytes →
+      ∃ raw, element.run bytes = some raw)
+    (count : Nat) (bytes : List AMByte) (width : bytes.length = count * element.byteSize)
+    (initialized : Initialized bytes) :
+    ∃ values, (sliceDecoder element).run count bytes = some values := by
+  obtain ⟨values, accepted⟩ := arrayDecoder_complete element complete count bytes width initialized
+  exact ⟨values.val, by rw [sliceDecoder_run, accepted]; rfl⟩
 
 end Rust.Storage
