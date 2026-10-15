@@ -728,6 +728,14 @@ requires an available physical decoder and initialization over its entire
 accepted domain. Absence is `False`; rejection by the library's mathematical
 `RustModel.decode` cannot reduce this domain.
 
+The law also requires **source realizability**: each raw value admitted by the
+mathematical decoder has at least one physical byte representation. Initialization
+alone cannot provide those bytes; an always-rejecting physical decoder would
+satisfy it vacuously. The reusable proofs in
+[`RustRealizability.lean`](lean/RustRealizability.lean) cover the same primitive,
+array, and wrapper families. No default source value, unique encoder, or
+inhabitedness assumption is introduced.
+
 There are 59 authored implementation markers: `()`, `bool`, `char`; all twelve
 signed/unsigned integer carriers; all twelve corresponding `NonZero` carriers
 and their `Option` forms; `PhantomData`; arrays; `Wrapping`, `ManuallyDrop`,
