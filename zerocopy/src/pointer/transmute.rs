@@ -241,8 +241,35 @@ macro_rules! unsafe_impl_shared_compatible {
     }};
 }
 
-impl_transitive_transmute_from!(T => MaybeUninit<T> => T => Wrapping<T>);
-impl_transitive_transmute_from!(T => Wrapping<T> => T => MaybeUninit<T>);
+impl_transitive_size_eq!(T => MaybeUninit<T> => T => Wrapping<T>);
+
+// FIXME: The pinned extractor makes MaybeUninit opaque without retaining its
+// storage. These two conditional impls need that model before they can carry
+// invariant_proof markers.
+//
+// SAFETY: The standard library guarantees that `MaybeUninit<T>` and
+// `Wrapping<T>` have the same size as `T`. Thus both conditional bounds apply:
+// `T: TransmuteFrom<MaybeUninit<T>, Safe, Safe>` preserves bit validity, and
+// `Wrapping<T>: TransmuteFrom<T, Safe, Safe>` preserves it again.
+unsafe impl<T> TransmuteFrom<MaybeUninit<T>, Safe, Safe> for Wrapping<T>
+where
+    T: TransmuteFrom<MaybeUninit<T>, Safe, Safe>,
+    Wrapping<T>: TransmuteFrom<T, Safe, Safe>,
+{
+}
+
+impl_transitive_size_eq!(T => Wrapping<T> => T => MaybeUninit<T>);
+
+// SAFETY: All three types have the same size, as justified above. Thus both
+// conditional bounds apply: `T: TransmuteFrom<Wrapping<T>, Safe, Safe>` preserves
+// bit validity, and `MaybeUninit<T>: TransmuteFrom<T, Safe, Safe>` preserves it
+// again.
+unsafe impl<T> TransmuteFrom<Wrapping<T>, Safe, Safe> for MaybeUninit<T>
+where
+    T: TransmuteFrom<Wrapping<T>, Safe, Safe>,
+    MaybeUninit<T>: TransmuteFrom<T, Safe, Safe>,
+{
+}
 
 // SAFETY: `ManuallyDrop<T>` has the same size and bit validity as `T` [1], and
 // implements `Deref<Target = T>` [2]. Thus, it is already possible for safe
@@ -336,9 +363,9 @@ impl<T: ?Sized> SizeEq<T> for T {
     type CastFrom = cast::IdCast;
 }
 
-// SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of
-// initialized bit patterns, which is exactly the set allowed in the referent of
-// any `Initialized` `Ptr`.
+// SAFETY: `Src: IntoBytes` guarantees that every valid representation of
+// `Src` is entirely initialized. If the referent widths agree, those same
+// bytes satisfy `Initialized` for `Dst`.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Safe, Initialized> for Dst
 where
     Src: IntoBytes + ?Sized,
@@ -347,8 +374,8 @@ where
 }
 
 // SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
-// referent of a `Ptr<Dst, (_, _, Safe)>`. This is exactly equal to the set of
-// bit patterns which may appear in the referent of any `Initialized` `Ptr`.
+// referent of a `Ptr<Dst, (_, _, Safe)>`. If the referent widths agree,
+// `Initialized` source bytes therefore satisfy `Safe` for `Dst`.
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Safe> for Dst
 where
     Src: ?Sized,
@@ -393,14 +420,31 @@ where
 //
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ManuallyDrop<T> {}
+
+// SAFETY: By the preceding safety proof, `ManuallyDrop<T>` and `T` have the
+// same bit validity.
+unsafe impl<T: ?Sized> TransmuteFrom<ManuallyDrop<T>, Safe, Safe> for T {}
+
+// SAFETY: By the preceding safety proof, `ManuallyDrop<T>` and `T` have the
+// same size in both cast directions.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => ManuallyDrop<T>) };
+const _: () =
+    unsafe { unsafe_impl_transparent_wrapper_casts_and_size_eq!(pub T: ?Sized => ManuallyDrop<T>) };
 
 // SAFETY:
 // - `Unalign<T>` promises to have the same size as `T`.
 // - `Unalign<T>` promises to have the same validity as `T`.
+unsafe impl<T> TransmuteFrom<T, Safe, Safe> for Unalign<T> {}
+
+// SAFETY: By the preceding safety proof, `Unalign<T>` and `T` have the
+// same bit validity.
+unsafe impl<T> TransmuteFrom<Unalign<T>, Safe, Safe> for T {}
+
+// SAFETY: By the preceding safety proof, `Unalign<T>` and `T` have the
+// same size in both cast directions.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Unalign<T>) };
+const _: () = unsafe { unsafe_impl_transparent_wrapper_casts_and_size_eq!(pub T => Unalign<T>) };
 // SAFETY: `Unalign<T>` promises to have the same size and validity as `T`.
 // Given `u: &Unalign<T>`, it is already possible to obtain `let t =
 // u.try_deref().unwrap()`. Because `Unalign<T>` has the same size as `T`, the
@@ -432,8 +476,16 @@ const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Unalign<T>) };
 //   #[repr(transparent)]
 //   pub struct Wrapping<T>(pub T);
 //   ```
+unsafe impl<T> TransmuteFrom<T, Safe, Safe> for Wrapping<T> {}
+
+// SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the
+// same bit validity.
+unsafe impl<T> TransmuteFrom<Wrapping<T>, Safe, Safe> for T {}
+
+// SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the
+// same size in both cast directions.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T => Wrapping<T>) };
+const _: () = unsafe { unsafe_impl_transparent_wrapper_casts_and_size_eq!(pub T => Wrapping<T>) };
 
 // SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the same
 // layout and bit validity. Since a `Wrapping<T>`'s `T` field is `pub`, given
@@ -454,8 +506,17 @@ const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Wrapping<T>) };
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for UnsafeCell<T> {}
+
+// SAFETY: By the preceding safety proof, `UnsafeCell<T>` and `T` have the
+// same bit validity.
+unsafe impl<T: ?Sized> TransmuteFrom<UnsafeCell<T>, Safe, Safe> for T {}
+
+// SAFETY: By the preceding safety proof, `UnsafeCell<T>` and `T` have the
+// same size in both cast directions.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => UnsafeCell<T>) };
+const _: () =
+    unsafe { unsafe_impl_transparent_wrapper_casts_and_size_eq!(pub T: ?Sized => UnsafeCell<T>) };
 
 // SAFETY:
 // - `Cell<T>` has the same size as `T` [1].
@@ -476,11 +537,43 @@ const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => Uns
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
-#[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe { unsafe_impl_for_transparent_wrapper!(pub T: ?Sized => Cell<T>) };
+unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for Cell<T> {}
 
-impl_transitive_transmute_from!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
-impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
+// SAFETY: By the preceding safety proof, `Cell<T>` and `T` have the
+// same bit validity.
+unsafe impl<T: ?Sized> TransmuteFrom<Cell<T>, Safe, Safe> for T {}
+
+// SAFETY: By the preceding safety proof, `Cell<T>` and `T` have the
+// same size in both cast directions.
+#[allow(clippy::multiple_unsafe_ops_per_block)]
+const _: () =
+    unsafe { unsafe_impl_transparent_wrapper_casts_and_size_eq!(pub T: ?Sized => Cell<T>) };
+
+impl_transitive_size_eq!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
+
+// SAFETY: `Cell<T>` and `UnsafeCell<T>` have the same size as `T`, as justified
+// above. Thus both conditional bounds apply: `T: TransmuteFrom<Cell<T>, Safe,
+// Safe>` preserves bit validity, and `UnsafeCell<T>: TransmuteFrom<T, Safe,
+// Safe>` preserves it again.
+unsafe impl<T: ?Sized> TransmuteFrom<Cell<T>, Safe, Safe> for UnsafeCell<T>
+where
+    T: TransmuteFrom<Cell<T>, Safe, Safe>,
+    UnsafeCell<T>: TransmuteFrom<T, Safe, Safe>,
+{
+}
+
+impl_transitive_size_eq!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
+
+// SAFETY: All three types have the same size, as justified above. Thus both
+// conditional bounds apply: `T: TransmuteFrom<UnsafeCell<T>, Safe, Safe>`
+// preserves bit validity, and `Cell<T>: TransmuteFrom<T, Safe, Safe>` preserves
+// it again.
+unsafe impl<T: ?Sized> TransmuteFrom<UnsafeCell<T>, Safe, Safe> for Cell<T>
+where
+    T: TransmuteFrom<UnsafeCell<T>, Safe, Safe>,
+    Cell<T>: TransmuteFrom<T, Safe, Safe>,
+{
+}
 
 // SAFETY: `MaybeUninit<T>` has no validity requirements. Currently this is not
 // explicitly guaranteed, but it's obvious from `MaybeUninit`'s documentation
