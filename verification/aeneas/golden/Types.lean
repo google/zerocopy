@@ -346,13 +346,13 @@ structure FromBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- Trait declaration: [zerocopy::IntoBytes]
-    Source: 'src/lib.rs', lines 6017:0-6490:1
+    Source: 'src/lib.rs', lines 6018:0-6491:1
     Visibility: public -/
 structure IntoBytes (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit
 
 /-- Trait declaration: [zerocopy::Unaligned]
-    Source: 'src/lib.rs', lines 6628:0-6635:1
+    Source: 'src/lib.rs', lines 6629:0-6636:1
     Visibility: public -/
 structure Unaligned (Self : Type) where
   only_derive_is_allowed_to_implement_this_trait : Result Unit

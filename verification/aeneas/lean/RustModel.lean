@@ -63,6 +63,14 @@ def RustModel.initializedRepresentation (Raw : Type u) [m : RustModel Raw] : Pro
   | none => False
   | some decoder => decoder.Initialized
 
+/-- Every admitted source has some physical representation. This is vacuous
+for uninhabited sources and does not require a canonical encoding. -/
+def RustModel.realizableRepresentation (Raw : Type u) [m : RustModel Raw] : Prop :=
+  match m.representation with
+  | none => False
+  | some decoder => ∀ raw, @isValid Raw m raw →
+      ∃ bytes, decoder.run bytes = some raw
+
 /-- Every initialized representation of the physical width admits a language
 value and a mathematical value through this same provider. Missing physical
 semantics fail closed. This law does not establish Rust layout correspondence,

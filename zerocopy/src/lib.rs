@@ -6012,7 +6012,8 @@ pub use zerocopy_derive::IntoBytes;
 )]
 /// ```aeneas
 /// invariant into_bytes_initialized for self =>
-///   AeneasSpecs.RustModel.initializedRepresentation Self
+///   AeneasSpecs.RustModel.initializedRepresentation Self ∧
+///   AeneasSpecs.RustModel.realizableRepresentation Self
 /// ```
 pub unsafe trait IntoBytes {
     // The `Self: Sized` bound makes it so that this function doesn't prevent
