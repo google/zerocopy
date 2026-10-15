@@ -613,7 +613,7 @@ mod _conversions {
             T: Copy,
             T: Read<I::Aliasing, R>,
         {
-            <I::Alignment as Alignment>::read(self)
+            <I::Alignment as Alignment>::read(self.unify_invariants())
         }
 
         /// Views the value as an aligned reference.
