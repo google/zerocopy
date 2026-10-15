@@ -514,8 +514,24 @@ private meta def deriveProvider (raw : Name) (count : Nat)
     -- contain no unresolved choice metavariable.
     let choice := mkLambda `_raw .default rawTy
       (mkApp (mkConst ``List.nil [.zero]) (mkConst ``Rust.Storage.AMByte))
+    -- Marker types have no values from which to recover their type-level
+    -- meaning. Attach the code to their ordinary generated provider. Every
+    -- other type lacks this metadata; absence never means a weak state.
+    let marker ← match raw with
+      | ``Zerocopy.pointer.invariant.Uninit => pure (some ``ValidityMarker.uninit)
+      | ``Zerocopy.pointer.invariant.AsInitialized => pure (some ``ValidityMarker.asInitialized)
+      | ``Zerocopy.pointer.invariant.Initialized => pure (some ``ValidityMarker.initialized)
+      | ``Zerocopy.pointer.invariant.Safe => pure (some ``ValidityMarker.safe)
+      | _ => pure none
+    if marker.isSome && (!info.ctors.isEmpty || count != 0) then
+      throwError "Validity markers must retain their empty nominal carriers: {raw}"
+    let markerValue ← match marker with
+      | none => mkAppOptM ``Option.none #[some (mkConst ``ValidityMarker)]
+      | some constructor => mkAppOptM ``Option.some #[some (mkConst ``ValidityMarker),
+          some (mkConst constructor)]
     let provider ← mkAppOptM ``RustModel.mk #[some rawTy, some modelTy,
-      some (mkAppN (mkConst b.decoder levels) all), some representation, some choice]
+      some (mkAppN (mkConst b.decoder levels) all), some representation, some choice,
+      some markerValue]
     addDefinition b.provider info.levelParams (← mkLambdaFVars all provider)
   setReducibilityStatus b.provider .reducible
   addInstance b.provider .global 1000

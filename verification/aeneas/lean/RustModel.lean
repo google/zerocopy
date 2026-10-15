@@ -28,6 +28,16 @@ transferred from the raw representation without a second runtime check.
 open Lean Lean.Meta Aeneas.Std
 namespace AeneasSpecs
 
+/-- A validity marker describes a referent promise, even though its Rust
+carrier is uninhabited and has no value to decode. AsInitialized is identified
+here without supplying an interpretation of its permitted byte contents. -/
+inductive ValidityMarker where
+  | uninit
+  | asInitialized
+  | initialized
+  | safe
+  deriving DecidableEq, Repr
+
 /-- The provider fixes both the mathematical type and the decoder. Two providers
 may share a Model type while assigning different meanings or admission domains
 to the same raw value, so contracts retain the actual provider explicitly. -/
@@ -41,6 +51,10 @@ class RustModel (Raw : Type u) where
   /-- A preferred physical representation. Operations check it before use.
   Universally varying this field retains every accepted representation. -/
   representationChoice : Raw → List Rust.Storage.AMByte := fun _ => []
+  /-- Optional type-level meaning for pointer validity markers. Ordinary
+  value types leave this absent. A Validity law requires an explicit code and
+  checks it against the actual associated constant; absence never means Uninit. -/
+  validityMarker : Option ValidityMarker := none
 
 -- The associated type is transparent so ordinary rewriting and coercions can
 -- identify a retained provider's Model with its named mathematical carrier.

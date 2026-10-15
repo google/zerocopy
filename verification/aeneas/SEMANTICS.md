@@ -322,3 +322,23 @@ and [`transmute_copy` documentation](https://doc.rust-lang.org/1.74.0/core/mem/f
 The numeric, resource-free representation profiles remain the supported domain;
 this proof does not admit arbitrary downstream representations merely because a
 trait dictionary can be extracted.
+
+## Referent-content boundary
+
+`Rust.Referent.Allowed` combines an explicit byte width with a content promise.
+`Safe` requires a raw value from physical decoding and a mathematical value
+from that same retained model's decoder. An empty safe domain makes a
+safe-source implication vacuous without constructing an impossible value.
+Completeness in the other direction still requires an actual decoded result.
+
+`TransmuteFrom` is conditional on equal widths. Its composition theorem also
+requires the intermediate width to agree; outer equality alone is insufficient.
+Transparent-wrapper proofs compare both decoding stages, so equal layout alone
+cannot erase a library invariant. `CastableFrom` states its two permitted type
+identity pairs directly, rather than accepting coincidentally equal safe domains.
+
+The type-level validity codes identify the four empty Rust markers and agree
+with their actual associated constants. They do not inhabit the marker types
+or interpret `AsInitialized`. The resource-free numeric representation premise
+still governs application to Rust; these laws provide no permission to access
+or mutate memory. Opaque `MaybeUninit` has no admitted storage model here.

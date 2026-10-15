@@ -131,6 +131,17 @@ axiom core.num.Usize.unchecked_add
 axiom core.num.Usize.unchecked_mul
   : Std.Usize → Std.Usize → Result Std.Usize
 
+/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}::is_safe]:
+    Source: 'src/util/macros.rs', lines 155:8-160:9
+    Visibility: public -/
+axiom U32.Insts.ZerocopyTryFromBytes.is_safe
+  {Alignment : Type} (pointerinvariantAlignmentInst :
+  pointer.invariant.Alignment Alignment) :
+  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Std.U32)
+    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
+    Bool
+
 /-- [zerocopy::util::copy_unchecked]:
     Source: 'src/util/mod.rs', lines 334:0-349:1 -/
 axiom util.copy_unchecked
@@ -159,17 +170,6 @@ axiom U8.Insts.ZerocopyTryFromBytes.is_safe
   {Alignment : Type} (pointerinvariantAlignmentInst :
   pointer.invariant.Alignment Alignment) :
   pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Std.U8)
-    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
-    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
-    Bool
-
-/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}::is_safe]:
-    Source: 'src/util/macros.rs', lines 155:8-160:9
-    Visibility: public -/
-axiom U32.Insts.ZerocopyTryFromBytes.is_safe
-  {Alignment : Type} (pointerinvariantAlignmentInst :
-  pointer.invariant.Alignment Alignment) :
-  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Std.U32)
     (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
     pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
     Bool
