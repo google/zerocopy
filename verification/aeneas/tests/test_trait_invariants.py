@@ -296,6 +296,270 @@ class TraitBindingsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 traits.simple_const(value)
 
+    def parameterized_function(self):
+        self.trait['item_meta'] = meta('zerocopy::TransmuteFrom')
+        self.trait['generics'] = generics(names=('Self', 'Src', 'SV', 'DV'))
+        self.function['generics'] = generics([clause(7)], names=('Src', 'Dst', 'SV', 'DV'))
+        self.function['generics']['trait_clauses'][0]['trait_']['skip_binder']['generics'] = args(
+            [{'TypeVar': {'Free': i}} for i in (1, 0, 2, 3)])
+        self.before = copy.deepcopy(self.final)
+        original = self.before['fun_decls'][0]['generics']['trait_clauses'][0]
+        original['clause_id'] = 2
+        original['trait_']['skip_binder']['generics'] = args(
+            [{'TypeVar': {'Bound': [1, i]}} for i in (1, 0, 2, 3)])
+        self.annotation = {'generics': ['Src', 'Dst', 'SV', 'DV'],
+            'trait_bounds': [{'subject': 'Dst', 'trait': 'TransmuteFrom', 'argument_count': 3}]}
+
+        def check():
+            return traits.check_function_bounds(self.annotation, self.function,
+                self.final, self.before, {'zerocopy::TransmuteFrom'})
+        return check
+
+    def test_parameterized_bound_matches_original_self_and_arity(self):
+        check = self.parameterized_function()
+        self.assertEqual(check()[0]['arguments'],
+                         [['parameter', i] for i in (1, 0, 2, 3)])
+        bound = self.annotation['trait_bounds'][0]
+        for key, wrong in [('subject', 'Src'), ('subject', None),
+                           ('argument_count', 2), ('argument_count', 4),
+                           ('argument_count', -1), ('argument_count', True)]:
+            saved = bound[key]
+            bound[key] = wrong
+            with self.subTest(key=key, value=wrong), self.assertRaises(ValueError):
+                check()
+            bound[key] = saved
+        bound.pop('argument_count')
+        with self.assertRaisesRegex(ValueError, 'exact resolved compiler application'):
+            check()
+
+    def test_parameterized_bound_keeps_every_argument_identity_and_order(self):
+        check = self.parameterized_function()
+        application = self.function['generics']['trait_clauses'][0]['trait_']['skip_binder']
+        original = copy.deepcopy(application['generics']['types'])
+        for left in range(4):
+            for right in range(left + 1, 4):
+                changed = copy.deepcopy(original)
+                changed[left], changed[right] = changed[right], changed[left]
+                application['generics']['types'] = changed
+                with self.subTest(swap=(left, right)), self.assertRaisesRegex(
+                        ValueError, 'lost or changed a required source bound'):
+                    check()
+        for changed in [original[:-1], original + original[-1:],
+                        original[:-1] + original[:1]]:
+            application['generics']['types'] = changed
+            with self.assertRaises(ValueError):
+                check()
+        application['generics']['types'] = original
+        self.function['generics']['trait_clauses'].append(copy.deepcopy(
+            self.function['generics']['trait_clauses'][0]))
+        with self.assertRaisesRegex(ValueError, 'lost or changed a required source bound'):
+            check()
+
+    def test_parameterized_trait_declaration_preserves_generic_and_implied_bounds(self):
+        self.parameterized_function()
+        validity = {'def_id': 3, 'item_meta': meta('zerocopy::Validity'),
+                    'generics': generics(names=('Self',)), 'types': []}
+        parent = {'def_id': 4, 'item_meta': meta('zerocopy::Parent'),
+                  'generics': generics(names=('Self',)), 'types': []}
+        for crate in (self.final, self.before):
+            crate['trait_decls'].extend(copy.deepcopy([validity, parent]))
+            for index in (2, 3):
+                bound = clause(index, {'Free': index})
+                bound['trait_']['skip_binder']['id'] = 3
+                crate['trait_decls'][0]['generics']['trait_clauses'].append(bound)
+            implied = clause(0)
+            implied['trait_']['skip_binder']['id'] = 4
+            crate['trait_decls'][0]['implied_clauses'] = [implied]
+        annotations = inline.Annotations()
+        annotations['zerocopy::TransmuteFrom'] = {
+            'kind': 'trait', 'rust': 'zerocopy::TransmuteFrom',
+            'generics': ['Self', 'Src', 'SV', 'DV'],
+            'trait_bounds': [{'subject': 'SV', 'trait': 'Validity'},
+                             {'subject': 'DV', 'trait': 'Validity'},
+                             {'subject': 'Self', 'trait': 'Parent'}],
+            'theorem': 'transmute_from', 'predicate': 'True'}
+        location = {'file': 'src/lib.rs', 'begin_line': 1, 'end_line': 4}
+        native = {'crate': 'zerocopy', 'charon_version': '0.1.276',
+            'aeneas_version': 'nightly-2026.10.01-ca282ec+nominal-tuple-structs.1',
+            'trait_decls': [{'def_id': ident, 'lean_name': 'Zerocopy.' + label,
+                'rust_name': 'zerocopy::' + label, 'is_local': True, 'source': location}
+                for ident, label in [(0, 'TransmuteFrom'), (3, 'Validity'), (4, 'Parent')]],
+            'trait_impls': []}
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            (work / 'Zerocopy').mkdir()
+            (work / 'Zerocopy/translation.json').write_text(json.dumps(native))
+
+            def bind():
+                return traits.bind_laws(annotations, work, self.final, self.before)
+
+            self.assertEqual(bind()[0][0]['generic_count'], 4)
+            # Actual Charon output puts both parameter bounds in implied_clauses.
+            for crate in (self.final, self.before):
+                declaration = crate['trait_decls'][0]
+                declaration['implied_clauses'].extend(declaration['generics']['trait_clauses'])
+                declaration['generics']['trait_clauses'] = []
+            self.assertEqual(bind()[0][0]['generic_count'], 4)
+            for crate in (self.final, self.before):
+                declaration = crate['trait_decls'][0]
+                declaration['generics']['trait_clauses'] = declaration['implied_clauses'][1:]
+                declaration['implied_clauses'] = declaration['implied_clauses'][:1]
+            parameters = self.trait['generics']['types']
+            parameters[2], parameters[3] = parameters[3], parameters[2]
+            with self.assertRaisesRegex(ValueError, 'original type-only parameters'):
+                bind()
+            parameters[2], parameters[3] = parameters[3], parameters[2]
+            # Clause order and ordinals may change; semantic identities may not.
+            self.trait['generics']['trait_clauses'].reverse()
+            self.assertEqual(bind()[0][0]['generic_count'], 4)
+            for field in ('trait_clauses', 'implied_clauses'):
+                container = self.trait['generics'] if field == 'trait_clauses' else self.trait
+                saved = copy.deepcopy(container[field])
+                container[field] = []
+                with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'dictionary law'):
+                    bind()
+                container[field] = saved
+            bound = self.trait['generics']['trait_clauses'][0]
+            application = bound['trait_']['skip_binder']['generics']
+            application['types'][0] = {'TypeVar': {'Free': 1}}
+            with self.assertRaisesRegex(ValueError, 'generic normalization'):
+                bind()
+            application['types'][0] = {'TypeVar': {'Free': 3}}
+            for crate in (self.final, self.before):
+                crate['trait_decls'][0]['generics']['trait_clauses'] = []
+            with self.assertRaisesRegex(ValueError, 'exact resolved compiler application'):
+                bind()
+
+    def test_parameterized_function_cannot_omit_either_stage_bound(self):
+        for crate_name in ('final', 'before'):
+            check = self.parameterized_function()
+            getattr(self, crate_name)['fun_decls'][0]['generics']['trait_clauses'] = []
+            with self.subTest(stage=crate_name), self.assertRaisesRegex(
+                    ValueError, 'lost or changed a required source bound'):
+                check()
+
+    def test_parameterized_impl_preserves_the_complete_native_application(self):
+        self.parameterized_function()
+        annotations = inline.Annotations()
+        annotations['zerocopy::TransmuteFrom'] = {
+            'kind': 'trait', 'rust': 'zerocopy::TransmuteFrom',
+            'generics': ['Self', 'Src', 'SV', 'DV'],
+            'theorem': 'transmute_from', 'predicate': 'True'}
+        implementation = {'def_id': 2, 'item_meta': meta('zerocopy::TransmuteImpl'),
+            'impl_trait': {'id': 0, 'generics': args([
+                {'TypeVar': {'Free': i}} for i in (1, 0, 2, 3)])},
+            'generics': generics(names=('Src', 'Dst', 'SV', 'DV'))}
+        self.final['trait_impls'] = [implementation]
+        self.before['trait_impls'] = [copy.deepcopy(implementation)]
+        location = {'file': 'src/lib.rs', 'begin_line': 1, 'end_line': 4}
+        native = {'crate': 'zerocopy', 'charon_version': '0.1.276',
+            'aeneas_version': 'nightly-2026.10.01-ca282ec+nominal-tuple-structs.1',
+            'trait_decls': [{'def_id': 0, 'lean_name': 'Zerocopy.TransmuteFrom',
+                'rust_name': 'zerocopy::TransmuteFrom', 'is_local': True, 'source': location}],
+            'trait_impls': [{'def_id': 2, 'lean_name': 'Zerocopy.TransmuteImpl',
+                'impl_trait_def_id': 0, 'impl_trait_rust_name': 'zerocopy::TransmuteFrom',
+                'is_local': True, 'source': location}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            (work / 'Zerocopy').mkdir()
+            (work / 'Zerocopy/translation.json').write_text(json.dumps(native))
+
+            def bind():
+                return traits.bind_laws(annotations, work, self.final, self.before)
+
+            self.assertEqual(bind()[1][0]['rust_type'],
+                             [['parameter', i] for i in (1, 0, 2, 3)])
+            for crate_name in ('final', 'before'):
+                application = getattr(self, crate_name)['trait_impls'][0]['impl_trait']['generics']
+                for field in ('regions', 'const_generics', 'trait_refs'):
+                    application[field] = [{}]
+                    try:
+                        with self.subTest(stage=crate_name, field=field), self.assertRaisesRegex(
+                                ValueError, 'Unsupported dependent trait-law arguments'):
+                            bind()
+                    finally:
+                        application[field] = []
+                original = copy.deepcopy(application['types'])
+                for left in range(4):
+                    for right in range(left + 1, 4):
+                        changed = copy.deepcopy(original)
+                        changed[left], changed[right] = changed[right], changed[left]
+                        application['types'] = changed
+                        with self.subTest(stage=crate_name, swap=(left, right)), self.assertRaisesRegex(
+                                ValueError, 'lost its original Rust type application'):
+                            bind()
+                for changed in (original[:-1], original + original[-1:],
+                                original[:-1] + original[:1]):
+                    application['types'] = changed
+                    with self.subTest(stage=crate_name, types=changed), self.assertRaises(ValueError):
+                        bind()
+                application['types'] = original
+            for crate in (self.final, self.before):
+                crate['type_decls'] = [
+                    {'def_id': 5, 'item_meta': meta('zerocopy::Cell')},
+                    {'def_id': 6, 'item_meta': meta('zerocopy::UnsafeCell')}]
+                nominal_bound = clause()
+                nominal_bound['trait_']['skip_binder']['generics'] = args([
+                    {'Adt': {'id': 5, 'builtin': None,
+                             'generics': args([{'TypeVar': {'Free': 0}}])}},
+                    *[{'TypeVar': {'Free': i}} for i in (0, 2, 3)]])
+                crate['trait_impls'][0]['generics']['trait_clauses'] = [nominal_bound]
+            self.assertEqual(bind()[1][0]['dictionary_count'], 1)
+            bound = implementation['generics']['trait_clauses'][0]
+            subject = bound['trait_']['skip_binder']['generics']['types'][0]
+            subject['Adt']['id'] = 6
+            with self.assertRaisesRegex(ValueError, 'changed its required dictionaries'):
+                bind()
+            subject['Adt']['id'] = 5
+            implementation['generics']['trait_clauses'] = []
+            with self.assertRaisesRegex(ValueError, 'changed its required dictionaries'):
+                bind()
+            self.before['trait_impls'][0]['generics']['trait_clauses'] = []
+            # Comparing both stages is insufficient if both have discarded a
+            # required formal argument. Native declaration arity also matters.
+            for crate in (self.final, self.before):
+                crate['trait_impls'][0]['impl_trait']['generics']['types'].pop()
+            with self.assertRaisesRegex(ValueError, 'declared type arity'):
+                bind()
+
+    def test_parameterized_bound_keeps_nominal_argument_identity(self):
+        check = self.parameterized_function()
+        for crate in (self.final, self.before):
+            crate['type_decls'] = [{'def_id': 5, 'item_meta': meta('zerocopy::Cell')},
+                                   {'def_id': 6, 'item_meta': meta('zerocopy::UnsafeCell')}]
+            app = crate['fun_decls'][0]['generics']['trait_clauses'][0]['trait_']['skip_binder']
+            app['generics']['types'][1] = {'Adt': {'id': 5, 'builtin': None,
+                'generics': args([app['generics']['types'][1]])}}
+        self.assertEqual(check()[0]['arguments'][1],
+                         ['nominal', 'zerocopy::Cell', [['parameter', 0]]])
+        app = self.function['generics']['trait_clauses'][0]['trait_']['skip_binder']
+        app['generics']['types'][1]['Adt']['id'] = 6
+        with self.assertRaisesRegex(ValueError, 'lost or changed a required source bound'):
+            check()
+
+    def test_parameterized_bound_rejects_native_equalities_and_lifetimes(self):
+        for field in ('regions', 'trait_type_constraints'):
+            check = self.parameterized_function()
+            for crate in (self.final, self.before):
+                crate['trait_decls'][0]['generics'][field] = [{}]
+            with self.subTest(owner='trait', field=field), self.assertRaises(ValueError):
+                check()
+        for crate_name in ('final', 'before'):
+            check = self.parameterized_function()
+            crate = getattr(self, crate_name)
+            crate['fun_decls'][0]['generics']['trait_type_constraints'] = [{}]
+            with self.subTest(owner=crate_name), self.assertRaisesRegex(ValueError, 'constraints'):
+                check()
+        for binder in (True, False):
+            check = self.parameterized_function()
+            clause_ref = self.function['generics']['trait_clauses'][0]['trait_']
+            if binder:
+                clause_ref['regions'] = [{}]
+            else:
+                clause_ref['skip_binder']['generics']['regions'] = ['Static']
+            with self.subTest(binder=binder), self.assertRaises(ValueError):
+                check()
+
     def test_supertrait_graph_keeps_native_parent_identities(self):
         parent = {'def_id': 3, 'item_meta': meta('zerocopy::Parent'),
                   'generics': generics(names=('Self',)), 'types': []}

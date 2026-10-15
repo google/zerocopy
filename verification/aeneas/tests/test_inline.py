@@ -95,6 +95,31 @@ class InlineTests(unittest.TestCase):
     def parse(self, source):
         return inline.parse_file(source, syntax(source))
 
+    def test_parameterized_trait_declaration_retains_marker_bound_census(self):
+        source = ('/// ```aeneas\n/// invariant law for self => True\n/// ```\n'
+                  'pub unsafe trait TransmuteFrom<Src: ?Sized, SV: Validity, DV: Validity> {}')
+        [annotation] = self.parse(source)
+        self.assertEqual(annotation['generics'], ['Self', 'Src', 'SV', 'DV'])
+        self.assertEqual(annotation['trait_bounds'], [
+            {'subject': 'SV', 'trait': 'Validity'},
+            {'subject': 'DV', 'trait': 'Validity'}])
+
+    def test_parameterized_annotation_syntax_rejects_unsupported_generic_forms(self):
+        law = '/// ```aeneas\n/// invariant law for self => True\n/// ```\n'
+        marker = '/// ```aeneas\n/// invariant_proof\n/// ```\n'
+        for declaration in [
+                "trait Marker<'a, T> {}", 'trait Marker<const N: usize> {}',
+                'trait Marker<T: ?Other> {}',
+                'trait Marker<T> where T: Other<Item = T> {}',
+                "trait Marker<T> where T: for<'a> Other<T> {}",
+                'impl<T> Marker for T where T: Other<Item = T> {}',
+                "impl<T> Marker for T where T: Other<'static> {}",
+                "impl<T> Marker for T where T: for<'a> Other<T> {}"]:
+            prefix = law if declaration.startswith('trait ') else marker
+            with self.subTest(declaration=declaration), self.assertRaisesRegex(
+                    ValueError, 'unsupported Rust owner'):
+                self.parse(prefix + declaration)
+
     def test_unemitted_native_nominal_requires_exact_unannotated_empty_owner(self):
         rust = 'zerocopy::private::Never'
         source = {'file': 'zerocopy/src/private.rs', 'syntax': 'Never',
@@ -371,8 +396,12 @@ class InlineTests(unittest.TestCase):
             declaration = self.parse(BLOCK + signature)[0]
             self.assertEqual(declaration['generics'], ['T'])
             self.assertEqual(declaration['trait_bounds'][0]['subject'], 'T')
-        for signature in ('fn f<T: Marker<u8>>(x: usize) {}',
-                          'fn f<T: ?Sized>(x: usize) {}',
+        parameterized = self.parse(BLOCK + 'fn f<T: Marker<u8>>(x: usize) {}')[0]
+        self.assertEqual(parameterized['trait_bounds'],
+                         [{'subject': 'T', 'trait': 'Marker', 'argument_count': 1}])
+        optional = self.parse(BLOCK + 'fn f<T: ?Sized>(x: usize) {}')[0]
+        self.assertEqual(optional['trait_bounds'], [])
+        for signature in ('fn f<T: ?Other>(x: usize) {}',
                           'fn f<T>(x: usize) where T::Assoc: Marker {}'):
             with self.assertRaisesRegex(ValueError, 'unsupported Rust owner'):
                 self.parse(BLOCK + signature)
