@@ -67,6 +67,8 @@ The shared `Rust.Pointer.Geometry` library proves bounded projections and cast
 composition, including empty destinations and slice splitting. These are
 mathematical foundations. Native pointer operations remain rejected by admission
 because the unchanged Aeneas pointer carrier cannot preserve their geometry.
+`IndexedReferent` similarly provides content laws at an explicit metadata pair;
+it does not prove native pointer execution or resource permissions.
 
 These harnesses use the same annotation and proof rules as every other function.
 There is no root marker or separately maintained list of required functions.

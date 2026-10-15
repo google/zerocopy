@@ -519,6 +519,8 @@ completeness remains an explicit `StorageDecoder.CompleteWith` proof. Extending
 those native laws requires carrying the `Sized`-related premises needed by
 owned-value methods, rather than silently guessing metadata for them.
 
+Content transfer and pointer geometry are separate reusable statements. An
+indexed content transfer names the actual source/destination metadata pair.
 Geometric projection requires a bounded forward offset and unchanged opaque
 provenance. `Cast` additionally retains the start; `CastExact` retains the size.
 The shared library proves identity, composition, slice splitting, byte-count
