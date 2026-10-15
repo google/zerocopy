@@ -41,6 +41,20 @@ if [[ $mode != check ]]; then
 mkdir -p "$work/Controls"
 roots=aeneas_admission_controls::valid,aeneas_admission_controls::ignored,aeneas_admission_controls::before_divergence
 boundary=aeneas_admission_controls::util::transmute_unchecked
+# Admission checks the same interface-only opacity profile for toy crates.
+# The fixture defines none of these types or validator methods.
+opaque_args=(--opaque "$boundary")
+while IFS= read -r selector; do
+    [[ -z "$selector" ]] || opaque_args+=(--opaque "$selector")
+done < <(python3 - "$repo" <<'PYOPAQUE'
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(sys.argv[1]) / 'verification/aeneas'))
+import admission
+print(admission.INTERFACE_ONLY_VALIDATORS)
+print(*admission.INTERFACE_ONLY_TYPES, sep='\n')
+PYOPAQUE
+)
 # These are the same reviewed exclusions as the production extraction. The
 # toy crate defines none of those methods, but admission checks the full profile.
 excluded_args=()
@@ -52,7 +66,7 @@ done < <(python3 -B verification/aeneas/admission.py exclude)
     CHARON_ADMISSION_SNAPSHOT="$work/controls.before.ullbc" \
     CARGO_TARGET_DIR="$work/rust" \
         "$tools_dir/charon" cargo --preset=aeneas --sysroot default \
-        --mir promoted --no-dedup-serialized-ast --opaque "$boundary" \
+        --mir promoted --no-dedup-serialized-ast "${opaque_args[@]}" \
         "${excluded_args[@]}" \
         --start-from "$roots" --dest-file "$work/controls.llbc" \
         --abort-on-error --error-on-warnings -- --lib --locked --offline

@@ -30,7 +30,15 @@ use crate::pointer::cast::{CastSizedExact, CastUnsized};
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(
-        (): Immutable, TryFromBytes, FromZeros, FromBytes,
+        (): Immutable, TryFromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromZeros,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromBytes,
         /// ```aeneas
         /// invariant_proof
         /// ```
@@ -72,7 +80,15 @@ const _: () = unsafe {
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(
-        u8: Immutable, TryFromBytes, FromZeros, FromBytes,
+        u8: Immutable, TryFromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromZeros,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromBytes,
         /// ```aeneas
         /// invariant_proof
         /// ```
@@ -101,7 +117,15 @@ const _: () = unsafe {
         IntoBytes,
     );
     unsafe_impl!(
-        u32: Immutable, TryFromBytes, FromZeros, FromBytes,
+        u32: Immutable, TryFromBytes,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromZeros,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromBytes,
         /// ```aeneas
         /// invariant_proof
         /// ```
@@ -178,7 +202,11 @@ const _: () = unsafe {
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     unsafe_impl!(
-        bool: Immutable, FromZeros,
+        bool: Immutable,
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        FromZeros,
         /// ```aeneas
         /// invariant_proof
         /// ```
@@ -1165,8 +1193,18 @@ const _: () = unsafe {
         // any safety invariants that we must fix before returning.
         <[T] as TryFromBytes>::is_safe(c)
     });
-    unsafe_impl!(const N: usize, T: FromZeros => FromZeros for [T; N]);
-    unsafe_impl!(const N: usize, T: FromBytes => FromBytes for [T; N]);
+    unsafe_impl!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        const N: usize, T: FromZeros => FromZeros for [T; N]
+    );
+    unsafe_impl!(
+        /// ```aeneas
+        /// invariant_proof
+        /// ```
+        const N: usize, T: FromBytes => FromBytes for [T; N]
+    );
     // SAFETY: As shown above, arrays concatenate their elements without extra
     // padding. `T: IntoBytes` guarantees that each element's entire storage is
     // initialized, so every byte of the array is initialized too, including for

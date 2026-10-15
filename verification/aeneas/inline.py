@@ -363,9 +363,10 @@ def parse_file(source, syntax):
         if (owner.get('include_str_docs') and (not owner.get('macro_input')
                 or any(suspicious(doc['text']) for doc in docs))):
             raise ValueError('Direct include_str! in owner doc expressions is unsupported; use literal outer docs')
-        if (owner.get('kind') != 'trait' and owner.get('computed_docs')
-                and any(suspicious(doc['text']) for doc in docs)):
-            raise ValueError('Computed doc strings on function or nominal type owners are unsupported; use literal outer docs')
+        # Ordinary computed documentation may accompany literal annotations
+        # (for example new_zeroed's generated assembly documentation). It is
+        # never an annotation source. The mandatory expanded-origin census
+        # later rejects any additional fence produced by such an expression.
         content, lines, fragments = [], [], []
         for doc in docs:
             owned.add((doc['start'], doc['end']))
@@ -459,6 +460,7 @@ def parse_file(source, syntax):
             found.append({'syntax': owner['path'], 'kind': kind, 'theorem': name,
                           'copy_span': copy_span,
                           'method': bool(owner.get('method')),
+                          'default_trait': owner.get('default_trait'),
                           'declaration_begin': owner.get('declaration_start', owner['start']),
                           'declaration_end': owner['close'],
                           'doc_fragments': [{'begin': d.get('origin_start', d['start']),
@@ -789,7 +791,7 @@ def generated_bindings(source, annotations, types_source=None):
         # Pinned Aeneas marks a wrapper consisting only of a loop call as
         # reducible. Accept that exact attribute; arbitrary declaration prefixes
         # must not conceal a different owner or declaration kind.
-        header = re.match(r'(?:@\[reducible\]\n)?def (' + IDENTIFIER +
+        header = re.match(r'(?:@\[(?:reducible|trait_default)\]\n)?(?:native_models )?def (' + IDENTIFIER +
                           r'(?:\.' + IDENTIFIER + r')*)\b', declaration)
         if not header:
             raise ValueError(f'Unsupported generated root declaration for {rust}')
@@ -1001,6 +1003,7 @@ def save_bindings(root, annotations, work, development=False):
             bindings[rust]['dictionary_count'] = len(getattr(annotations, 'function_dictionaries', {}).get(rust, []))
             bindings[rust]['dictionary_names'] = a.get('dictionary_names', [])
             bindings[rust]['trait_clauses'] = getattr(annotations, 'function_dictionaries', {}).get(rust, [])
+            bindings[rust]['erased_self_bound'] = a.get('erased_self_bound')
     trait_laws, trait_impl_laws, trait_dictionaries = [], [], []
     if (any(a.get('kind') == 'trait' for a in annotations.values())
             or getattr(annotations, 'trait_proofs', [])
@@ -1187,6 +1190,13 @@ def assemble(root, annotations, work, development=False):
         if not re.fullmatch(IDENTIFIER + r'(?:\.' + IDENTIFIER + ')*', model):
             raise ValueError('Invalid verified generated model name')
         lines = a['spec_text'].rstrip('\n').split('\n')
+        erased = bindings[a['rust']].get('erased_self_bound')
+        if erased:
+            matches = [row for row in manifest['trait_dictionaries'] if row['def_id'] == erased['trait_def_id']]
+            if len(matches) != 1:
+                raise ValueError('Erased default-method bound lacks its native trait dictionary')
+            specs.append(f'default_trait_body {model} for {matches[0]["raw"]} '
+                         f'with {len(erased["arguments"])} type parameters')
         clause = a['clause_line']
         application = f'@{model} with {len(a["generics"])} type parameters'
         dictionary_count = bindings[a['rust']].get('dictionary_count', 0)
@@ -1308,6 +1318,19 @@ def check_bindings(root, annotations, llbc):
         annotations.external_type_parameters = None
     source_digest(root, annotations)
     translated = json.loads(llbc.read_text())['translated']
+    # Charon also serializes declarations needed only for pretty printing.
+    # Its ordered groups identify the actual translation dependency closure.
+    # Do not request models for an enum merely mentioned in that extra data.
+    ordered_types = set()
+    for group in translated.get('ordered_decls', []):
+        if 'Type' in group:
+            kind, values = next(iter(group['Type'].items()))
+            if kind == 'NonRec':
+                ordered_types.add(values)
+            elif kind == 'Rec':
+                ordered_types.update(values)
+            else:
+                raise ValueError('Unsupported native type declaration group')
     if [root for root in translated.get('options', {}).get('start_from', [])
             if root.startswith(('@span:', '@doc-origin:'))] != [
                 impl_root(marker) for marker in annotations.trait_proofs]:
@@ -1642,6 +1665,8 @@ def check_bindings(root, annotations, llbc):
         for declaration in translated.get('type_decls', []):
             if not declaration or declaration['item_meta'].get('is_local') is not True:
                 continue
+            if 'ordered_decls' in translated and declaration['def_id'] not in ordered_types:
+                continue
             meta = declaration['item_meta']
             kind = declaration.get('kind')
             if not isinstance(kind, dict) or not (set(kind) <= {'Struct', 'Enum'}):
@@ -1677,6 +1702,8 @@ def check_bindings(root, annotations, llbc):
                     continue
                 meta = declaration.get('item_meta', {})
                 if category is None:
+                    if 'ordered_decls' in translated and declaration['def_id'] not in ordered_types:
+                        continue
                     kind = declaration.get('kind')
                     if not isinstance(kind, dict) or set(kind) not in ({'Struct'}, {'Enum'}):
                         continue

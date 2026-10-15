@@ -35,6 +35,12 @@ open Zerocopy
 @[rust_fun "core::intrinsics::transmute"]
 axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst
 
+/-- [core::mem::zeroed]:
+    Source: '/rustc/library/core/src/mem/mod.rs', lines 755:0-755:36
+    Name pattern: [core::mem::zeroed]
+    Visibility: public -/
+@[rust_fun "core::mem::zeroed"] axiom core.mem.zeroed (T : Type) : Result T
+
 /-- [core::num::niche_types::{impl core::clone::Clone for core::num::niche_types::NonZeroUsizeInner}::clone]:
     Source: '/rustc/library/core/src/num/niche_types.rs', lines 17:17-17:22
     Name pattern: [core::num::niche_types::{core::clone::Clone<core::num::niche_types::NonZeroUsizeInner>}::clone]
@@ -56,6 +62,62 @@ axiom core.num.nonzero.NonZero.get
   {T : Type} {Clause0_NonZeroInner : Type} (ZeroablePrimitiveInst :
   core.num.nonzero.ZeroablePrimitive T Clause0_NonZeroInner) :
   core.num.nonzero.NonZero T Clause0_NonZeroInner → Result T
+
+/-- [zerocopy::impls::_::{impl zerocopy::TryFromBytes for ()}::is_safe]:
+    Source: 'src/util/macros.rs', lines 155:8-160:9
+    Visibility: public -/
+axiom Tuple.Insts.ZerocopyTryFromBytes.is_safe
+  {Alignment : Type} (pointerinvariantAlignmentInst :
+  pointer.invariant.Alignment Alignment) :
+  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Unit)
+    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
+    Bool
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u8}::is_safe]:
+    Source: 'src/util/macros.rs', lines 155:8-160:9
+    Visibility: public -/
+axiom U8.Insts.ZerocopyTryFromBytes.is_safe
+  {Alignment : Type} (pointerinvariantAlignmentInst :
+  pointer.invariant.Alignment Alignment) :
+  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Std.U8)
+    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
+    Bool
+
+/-- [zerocopy::impls::_#1::{impl zerocopy::TryFromBytes for u32}::is_safe]:
+    Source: 'src/util/macros.rs', lines 155:8-160:9
+    Visibility: public -/
+axiom U32.Insts.ZerocopyTryFromBytes.is_safe
+  {Alignment : Type} (pointerinvariantAlignmentInst :
+  pointer.invariant.Alignment Alignment) :
+  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Std.U32)
+    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
+    Bool
+
+/-- [zerocopy::impls::_#3::{impl zerocopy::TryFromBytes for bool}::is_safe]:
+    Source: 'src/util/macros.rs', lines 143:8-148:9
+    Visibility: public -/
+axiom Bool.Insts.ZerocopyTryFromBytes.is_safe
+  {Alignment : Type} (pointerinvariantAlignmentInst :
+  pointer.invariant.Alignment Alignment) :
+  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly Bool)
+    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
+    Bool
+
+/-- [zerocopy::impls::_#23::{impl zerocopy::TryFromBytes for [T; N]}::is_safe]:
+    Source: 'src/util/macros.rs', lines 143:8-148:9
+    Visibility: public -/
+axiom Array.Insts.ZerocopyTryFromBytes.is_safe
+  {T : Type} {Alignment : Type} {N : Std.Usize} (TryFromBytesInst :
+  TryFromBytes T) (pointerinvariantAlignmentInst : pointer.invariant.Alignment
+  Alignment) :
+  pointer.ptr.def.Ptr (wrappers.read_only_def.ReadOnly (Array T N))
+    (pointer.invariant.Shared × Alignment × pointer.invariant.Initialized)
+    pointer.invariant.Shared Alignment pointer.invariant.Initialized → Result
+    Bool
 
 /-- [zerocopy::util::copy_unchecked]:
     Source: 'src/util/mod.rs', lines 313:0-328:1 -/

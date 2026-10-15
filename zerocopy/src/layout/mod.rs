@@ -2049,6 +2049,14 @@ mod tests {
     }
 
     const _: () = {
+        // Challenge the concrete widths used by the byte-decoder models. These
+        // assertions check this compiler and target, not the Reference itself.
+        const_assert!(mem::size_of::<()>() == 0);
+        const_assert!(mem::size_of::<bool>() == 1);
+        const_assert!(mem::size_of::<u8>() == 1);
+        const_assert!(mem::size_of::<u32>() == 4);
+        const_assert!(mem::size_of::<[u32; 3]>() == 12);
+        const_assert!(mem::size_of::<[(); 3]>() == 0);
         const_assert!(mem::align_of::<u8>() == 1);
         const_assert!(mem::align_of::<UnalignedByte>() == 1);
         assert_compiler_layout::<UnalignedByte>(<UnalignedByte as crate::KnownLayout>::LAYOUT);

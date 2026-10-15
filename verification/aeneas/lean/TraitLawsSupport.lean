@@ -72,6 +72,37 @@ meta def withTraitLawAssumptions (dictionaries params models : Array Expr)
     (k : Array Expr → TermElabM α) : TermElabM α :=
   visitDictionaryLaws (dictionaries.toList.map (fun dictionary => (dictionary, []))) params models #[] k
 
+/-- This registry records a compiler-checked Self bound removed from a default
+method's computational arguments. It supplies a specification premise only;
+the dictionary is never passed to the extracted body. -/
+structure DefaultTraitBody where
+  function : Name
+  trait : Name
+  parameterCount : Nat
+
+meta initialize defaultTraitBodyExtension :
+    SimplePersistentEnvExtension DefaultTraitBody (NameMap DefaultTraitBody) ←
+  registerSimplePersistentEnvExtension {
+    addEntryFn := fun state entry => state.insert entry.function entry
+    addImportedFn := fun entries => entries.foldl (fun state rows =>
+      rows.foldl (fun state row => state.insert row.function row) state) {} }
+
+meta def defaultTraitBody? (function : Name) : MetaM (Option DefaultTraitBody) := do
+  return (defaultTraitBodyExtension.getState (← getEnv)).find? function
+
+meta def defaultTraitBodies : MetaM (Array DefaultTraitBody) := do
+  return (defaultTraitBodyExtension.getState (← getEnv)).toArray.map (·.2)
+
+meta def withDefaultTraitDictionary (function : Name) (params : Array Expr)
+    (k : Array Expr → TermElabM α) : TermElabM α := do
+  let some owner ← defaultTraitBody? function | return ← k #[]
+  unless owner.parameterCount ≤ params.size do throwError "Invalid enclosing trait parameter prefix"
+  let carrier := mkAppN (← mkConstWithFreshMVarLevels owner.trait)
+    (params.extract 0 owner.parameterCount)
+  unless (← traitDictionary? carrier).isSome do
+    throwError "Default method's enclosing trait is not a registered dictionary"
+  withLocalDeclD `_enclosingTrait carrier fun dictionary => k #[dictionary]
+
 private meta def bareConstant (stx : Syntax) : TermElabM Name := do
   let id ← match stx with
     | `(@$id:ident) => pure id
@@ -87,6 +118,17 @@ elab "trait_dictionary " raw:term:max : command => Command.liftTermElabM do
     unless result.isSort && result != mkSort .zero do
       throwErrorAt raw "An extracted trait dictionary must produce a Type"
   modifyEnv (traitLawExtension.addEntry · {raw := declName})
+
+elab "default_trait_body " functionId:ident " for " traitId:ident
+    " with " count:num " type " "parameters" : command => Command.liftTermElabM do
+  let function ← realizeGlobalConstNoOverloadWithInfo functionId
+  let trait ← realizeGlobalConstNoOverloadWithInfo traitId
+  if (← defaultTraitBody? function).isSome then
+    throwError "Duplicate enclosing trait bound for {function}"
+  forallTelescope (← getConstInfo trait).type fun params result => do
+    unless params.size == count.getNat && result.isSort do
+      throwError "Default method's enclosing trait has a different parameter count"
+  modifyEnv (defaultTraitBodyExtension.addEntry · {function, trait, parameterCount := count.getNat})
 
 private meta def expressionText (expression : Expr) : TermElabM String := do
   return (← withOptions (fun options => (options.setBool `pp.explicit true)
@@ -180,7 +222,8 @@ meta def checkTraitImplementationNativeParameters (implementation : Name)
     : MetaM Unit := do
   unless constParameters.size == constCount do
     throwError "Trait implementation changed its original const inventory"
-  forallTelescope (← getConstInfo implementation).type fun inputs _ => do
+  forallTelescope (← getConstInfo implementation).type fun allInputs _ => do
+    let (inputs, _) ← splitNativeModels allInputs
     unless inputs.size == typeCount + constCount + dictionaryCount do
       throwError "Trait implementation changed its original native parameter count"
     for input in inputs.extract 0 typeCount do
@@ -207,7 +250,8 @@ cannot acquire an arbitrary extra premise that simply assumes the implementation
 -/
 meta def traitImplementationObligation (law implementation : Name) : TermElabM Expr := do
   let implementationExpr ← mkConstWithFreshMVarLevels implementation
-  forallTelescope (← inferType implementationExpr) fun inputs result => do
+  forallTelescope (← inferType implementationExpr) fun nativeInputs result => do
+    let (inputs, retained) ← splitNativeModels nativeInputs
     let some binding ← traitDictionary? result
       | throwError "Implementation does not return an extracted trait dictionary"
     unless binding.law == some law do
@@ -221,17 +265,17 @@ meta def traitImplementationObligation (law implementation : Name) : TermElabM E
         dictionaries := dictionaries.push input
       else if ← isDefEq carrier (mkConst ``Aeneas.Std.Usize) then pure ()
       else throwError "Unsupported non-dictionary implementation parameter: {carrier}"
-    withModelDictionaries params fun models =>
+    withBoundModelDictionaries params retained fun models =>
       withTraitLawAssumptions dictionaries params models fun evidence => do
-        let dictionary := mkAppN implementationExpr inputs
+        let dictionary := mkAppN implementationExpr nativeInputs
         let target ← traitLawProposition binding result dictionary params models
         -- Only providers actually used by the target or input laws are indices.
         -- In particular, an output law is never introduced as an assumption.
         let evidenceTypes ← evidence.mapM fun e => inferType e
-        let used := models.filter fun provider =>
-          target.containsFVar provider.fvarId! ||
-            evidenceTypes.any (·.containsFVar provider.fvarId!)
-        mkForallFVars (inputs ++ used ++ evidence) target
+        let used := models.filter fun provider => !retained.contains provider &&
+          (target.containsFVar provider.fvarId! ||
+            evidenceTypes.any (·.containsFVar provider.fvarId!))
+        mkForallFVars (nativeInputs ++ used ++ evidence) target
 
 /-- The native implementation determines its witness name; no second roster
 can omit an implementation while retaining its authored proof. -/
@@ -251,6 +295,7 @@ meta def auditTraitImplementationProof (law implementation proof : Name) : TermE
       unless original.size ≤ inputs.size do
         throwError "Trait implementation proof omitted original native inputs"
       let nativeInputs := inputs.extract 0 original.size
+      let (rustInputs, retained) ← splitNativeModels nativeInputs
       let subst (e : Expr) := e.replaceFVars original nativeInputs
       for i in [:original.size] do
         unless ← isDefEq (← inferType nativeInputs[i]!) (subst (← inferType original[i]!)) do
@@ -262,7 +307,7 @@ meta def auditTraitImplementationProof (law implementation proof : Name) : TermE
         throwError "Implementation returns a different annotated trait"
       let mut params := #[]
       let mut pending : List (Expr × List Name) := []
-      for input in nativeInputs do
+      for input in rustInputs do
         let carrier ← inferType input
         if (← whnf carrier).isSort then params := params.push input
         else if (← traitDictionary? carrier).isSome then
@@ -273,9 +318,13 @@ meta def auditTraitImplementationProof (law implementation proof : Name) : TermE
       -- the placeholders referenced by the actual input laws or conclusion.
       let rec providers (index : Nat) (models : Array Expr) : TermElabM Unit := do
         if index < params.size then
-          withLocalDecl (Name.mkSimple s!"_auditModel{index}") .instImplicit
-              (← mkAppM ``RustModel #[params[index]!]) fun provider =>
-            providers (index + 1) (models.push provider)
+          let carrier ← mkAppM ``RustModel #[params[index]!]
+          let matching ← retained.filterM fun provider => do isDefEq (← inferType provider) carrier
+          if matching.size == 1 then
+            providers (index + 1) (models.push matching[0]!)
+          else
+            withLocalDecl (Name.mkSimple s!"_auditModel{index}") .instImplicit
+                carrier fun provider => providers (index + 1) (models.push provider)
         else do
           let inspect (binding : TraitLawBinding) (carrier dictionary : Expr) : MetaM Expr := do
             let some className := binding.law | throwError "Missing annotated law"
@@ -303,8 +352,8 @@ meta def auditTraitImplementationProof (law implementation proof : Name) : TermE
                 if (← traitDictionary? (← inferType parent)).isSome then
                   parents := parents ++ [(parent, binding.raw :: ancestors)]
               queue := parents ++ queue
-          let used := models.filter fun provider =>
-            target.containsFVar provider.fvarId! || laws.any (fun entry => entry.1.containsFVar provider.fvarId!)
+          let used := models.filter fun provider => !retained.contains provider &&
+            (target.containsFVar provider.fvarId! || laws.any (fun entry => entry.1.containsFVar provider.fvarId!))
           unless inputs.size == nativeInputs.size + used.size + laws.size do
             throwError "Trait implementation proof omitted required inputs or added premises"
           let meanings := inputs.extract nativeInputs.size (nativeInputs.size + used.size)
