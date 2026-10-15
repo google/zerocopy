@@ -7,6 +7,9 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 import Rust
+import RustBytesTests
+import RustStorageTests
+import RustPointerTests
 import Lean.Util.CollectAxioms
 import Lean.Elab.Command
 
@@ -17,7 +20,8 @@ check that callers can use the universal lemmas without reproducing their proofs
 Lean checks each `example` as a theorem. `by decide` computes the small concrete
 proposition and supplies a proof; it is not an unchecked runtime assertion.
 
-The final command audits the assumptions of every compiled library declaration.
+The final command audits the assumptions of every compiled library declaration
+and of the imported shared test modules.
 An abstract mathematical library should not acquire a Rust correspondence axiom
 merely because one frontend needs that premise for its own operations.
 -/
@@ -59,12 +63,17 @@ end Compatibility
 -- a previously compiled test module.
 run_cmd do
   let env ← Lean.getEnv
-  -- Select declarations by the module that defined them, not by namespace.
-  -- A helper outside `Rust` still belongs to this library. Keep this roster in
-  -- step with the library modules, and reject a missing import rather than
-  -- accidentally auditing only part of the package.
-  let libraryModules := #[`Rust, `Rust.Layout, `Rust.Memory, `Rust.Pointer, `Rust.Bytes, `Rust.Storage, `Rust.Arithmetic]
-  let owners ← libraryModules.mapM fun moduleName => do
+  -- Select declarations by their defining module, not their namespace. The
+  -- hierarchical `Rust` prefix includes every imported library submodule, even
+  -- when its declarations use other namespaces; it does not match `RustAeneas`.
+  -- The three test roots live outside that hierarchy and are selected explicitly.
+  let testModules := #[`RustBytesTests, `RustStorageTests, `RustPointerTests]
+  for required in #[`Rust] ++ testModules do
+    unless (env.getModuleIdx? required).isSome do
+      throwError "Shared library or test root was not imported: {required}"
+  let auditedModules := env.header.moduleNames.filter fun moduleName =>
+    (`Rust).isPrefixOf moduleName || testModules.contains moduleName
+  let owners ← auditedModules.mapM fun moduleName => do
     let some owner := env.getModuleIdx? moduleName
       | throwError "Shared library module was not imported: {moduleName}"
     pure owner

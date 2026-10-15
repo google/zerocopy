@@ -208,11 +208,39 @@ class AdmissionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.check()
 
-    def test_padding_and_raw_storage_cannot_be_logical_values(self):
-        self.data['translated']['fun_decls'][0]['body']['Unstructured']['locals']['locals'][0]['ty'] = {
-            'Untagged': {'RawPtr': []}}
-        with self.assertRaisesRegex(ValueError, 'raw pointers and storage'):
-            self.check()
+    def test_native_raw_pointer_carriers_cannot_be_logical_values(self):
+        # These shapes occur in the preserved raw-pointers capability probe's
+        # cast, with_len and nonnull signatures, before and after lowering.
+        u8 = {'Untagged': {'Scalar': {'Integer': {'Unsigned': 'U8'}}}}
+        u32 = {'Untagged': {'Scalar': {'Integer': {'Unsigned': 'U32'}}}}
+        pointers = [
+            {'Untagged': {'RawPtr': [u32, 'Shared']}},
+            {'Untagged': {'RawPtr': [u8, 'Shared']}},
+            {'Untagged': {'RawPtr': [u8, 'Mut']}},
+            {'Untagged': {'RawPtr': [
+                {'Untagged': {'Slice': [u8, None]}}, 'Shared']}},
+        ]
+        length = {'Untagged': [
+            {'Integer': {'Unsigned': ['Usize', '1']}},
+            {'Untagged': {'Scalar': {'Integer': {'Unsigned': 'Usize'}}}}]}
+        original = copy.deepcopy(self.data)
+        for pointer in pointers:
+            for carrier in (pointer, {'Untagged': {'Slice': [pointer, None]}},
+                            {'Untagged': {'Array': [pointer, length, None]}},
+                            {'Untagged': {'Ref': [{'Body': 1}, pointer, 'Shared']}},
+                            {'Untagged': {'Ref': [{'Body': 1}, pointer, 'Mut']}}):
+                for site in ('local', 'input', 'output'):
+                    with self.subTest(pointer=pointer, carrier=carrier, site=site):
+                        self.data = copy.deepcopy(original)
+                        function = self.data['translated']['fun_decls'][0]
+                        if site == 'local':
+                            function['body']['Unstructured']['locals']['locals'][0]['ty'] = carrier
+                        elif site == 'input':
+                            function['signature']['inputs'][0] = carrier
+                        else:
+                            function['signature']['output'] = carrier
+                        with self.assertRaisesRegex(ValueError, 'raw pointers and storage'):
+                            self.check()
 
     def test_bit_invalid_production_cannot_be_an_infallible_cast(self):
         self.body()[0]['statements'].append({

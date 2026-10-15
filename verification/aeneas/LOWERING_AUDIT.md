@@ -538,3 +538,20 @@ golden/proof checks provide such a certificate.
 [duplicate-call elimination]: https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/pure/PureMicroPassesGeneral.ml#L607
 [builtin replacements]: https://github.com/AeneasVerif/aeneas/blob/ca282ec2312a96f6a985a4d23a663690816d3f3e/src/extract/ExtractBuiltin.ml#L507
 [borrow-calculus soundness paper]: https://arxiv.org/html/2404.02680v1
+
+## Pointer geometry and its current extraction boundary
+
+`Rust.Pointer.Geometry` states bounded subranges, unchanged-address casts, and
+unchanged-size casts. Bounds constrain even empty destinations: their start must
+lie between the source start and its end, inclusive. The `Project` Rust contract
+states the same requirement; a subset of an empty byte set alone supplies no
+address bound. Composition retains the exact intermediate pointer and extent.
+The mathematical no-wrap lemmas require an explicit target address bound.
+
+These theorems do not interpret native pointer operations. In the unchanged pin,
+Aeneas's `RawPtr` carrier stores a typed value, without an address, metadata, or
+provenance field. It cannot faithfully carry these geometric observations.
+Admission continues to reject raw-pointer carriers, including when nested under
+references, slices, and arrays. The regression inputs use actual native type
+shapes, rather than malformed pointer syntax. No local zerocopy pointer body is
+made opaque to substitute an assumed geometry theorem for its implementation.

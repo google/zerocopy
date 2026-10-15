@@ -66,8 +66,16 @@ pub mod cast {
         ///
         /// # Safety
         ///
-        /// The returned pointer refers to a non-strict subset of the bytes of
-        /// `src`'s referent, and has the same provenance as `src`.
+        /// The returned pointer must have the same provenance as `src`. There
+        /// must be a nonnegative byte offset `offset` such that its address is
+        /// the source address plus `offset`, without wrapping, and
+        /// `offset + destination_size <= source_size`. Each size is the
+        /// referent's actual byte size at that pointer's metadata.
+        ///
+        /// This includes empty referents: an empty destination may start at
+        /// any offset through one-past-the-end of the source, but not outside
+        /// that range. Byte-set inclusion alone would not constrain an empty
+        /// destination's address.
         fn project(src: PtrInner<'_, Src>) -> *mut Dst;
     }
 
@@ -84,7 +92,8 @@ pub mod cast {
     ///
     /// # Safety
     ///
-    /// A `CastExact` projection must preserve the set of referent bytes.
+    /// A `CastExact` projection must preserve the referent's byte size. Since
+    /// `Cast` already preserves its start, it preserves the same byte range.
     pub unsafe trait CastExact<Src: ?Sized, Dst: ?Sized>: Cast<Src, Dst> {}
 
     /// A no-op pointer cast.
@@ -92,9 +101,9 @@ pub mod cast {
     #[allow(missing_debug_implementations)]
     pub struct IdCast;
 
-    // SAFETY: `project` returns its argument unchanged, and so it is a
-    // provenance-preserving projection which preserves the set of referent
-    // bytes.
+    // SAFETY: `project` returns its argument unchanged. Its offset is zero,
+    // its referent size is unchanged, and it preserves provenance. These facts
+    // satisfy the bounded-range requirement even for an empty referent.
     unsafe impl<T: ?Sized> Project<T, T> for IdCast {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut T {
@@ -120,9 +129,9 @@ pub mod cast {
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub enum CastSized {}
 
-    // SAFETY: By the `static_assert!`, `Dst` is no larger than `Src`,
-    // and so all casts preserve or shrink the set of referent bytes. All
-    // operations preserve provenance.
+    // SAFETY: The cast preserves address and provenance. The `static_assert!`
+    // guarantees that `Dst` is no larger than `Src`, so offset zero satisfies
+    // the bounded-range requirement, including for zero-sized referents.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSized {
         #[inline(always)]
         fn project(src: PtrInner<'_, Src>) -> *mut Dst {
@@ -147,9 +156,9 @@ pub mod cast {
     #[allow(missing_debug_implementations, missing_copy_implementations)]
     pub enum CastSizedExact {}
 
-    // SAFETY: By the `static_assert!`, `Dst` has the same size as `Src`,
-    // and so all casts preserve the set of referent bytes. All operations
-    // preserve provenance.
+    // SAFETY: The cast preserves address and provenance. The `static_assert!`
+    // guarantees equal referent sizes, so offset zero satisfies the range
+    // requirement without changing either endpoint, including at size zero.
     unsafe impl<Src, Dst> Project<Src, Dst> for CastSizedExact {
         #[inline(always)]
         fn project(src: PtrInner<'_, Src>) -> *mut Dst {
@@ -455,9 +464,13 @@ pub mod cast {
         _u: PhantomData<U>,
     }
 
-    // SAFETY: Since `TU::project` and `UV::project` are each
-    // provenance-preserving operations which preserve or shrink the set of
-    // referent bytes, so is their composition.
+    // SAFETY: Let the two projections have offsets `a` and `b`, and let
+    // their referents' actual sizes be `t`, `u`, and `v`. Their contracts give
+    // `a + u <= t` and `b + v <= u`, so `(a + b) + v <= t`. Their addresses
+    // therefore compose at the bounded offset `a + b`, including for empty
+    // referents. Both operations preserve the same provenance. The intermediate
+    // pointer and its metadata are exactly the ones returned by the first
+    // projection and passed to the second.
     unsafe impl<T, U, V, TU, UV> Project<T, V> for TransitiveProject<U, TU, UV>
     where
         T: ?Sized,
@@ -536,8 +549,8 @@ pub mod cast {
     #[allow(missing_copy_implementations, missing_debug_implementations)]
     pub struct CastToUnit;
 
-    // SAFETY: The `project` implementation projects to a subset of its
-    // argument's referent using provenance-preserving operations.
+    // SAFETY: The cast keeps the address and provenance. Its zero-sized
+    // destination fits at offset zero, even when the source is also empty.
     unsafe impl<T: ?Sized> Project<T, ()> for CastToUnit {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut () {

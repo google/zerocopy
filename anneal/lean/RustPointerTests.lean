@@ -7,6 +7,7 @@ This file may not be copied, modified, or distributed except according to
 those terms. -/
 
 import Rust.Pointer
+import Rust.Pointer.GeometryTests
 
 open Rust.Pointer
 

@@ -193,9 +193,10 @@ impl<'a, T: ?Sized> PtrInner<'a, T> {
         // contained in it or one-past-the-end of it are null.
         //
         // By invariant on `C: Project`, `C::project` is a provenance-preserving
-        // projection which preserves or shrinks the set of referent bytes, so
-        // `projected_raw` references a subset of `self`'s referent, and so it
-        // cannot be null.
+        // projection whose starting address is within `self`'s referent or
+        // one-past-the-end, including when the destination is empty. Thus its
+        // starting address cannot be null. For an empty destination, byte-set
+        // inclusion alone would not establish this address bound.
         //
         // [1] https://doc.rust-lang.org/1.92.0/std/ptr/index.html#allocation
         let projected_non_null = unsafe { NonNull::new_unchecked(projected_raw) };
