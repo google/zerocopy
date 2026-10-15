@@ -35,6 +35,13 @@ open Zerocopy
 @[rust_fun "core::intrinsics::transmute"]
 axiom core.intrinsics.transmute {Src : Type} (Dst : Type) : Src → Result Dst
 
+/-- [core::mem::size_of]:
+    Source: '/rustc/library/core/src/mem/mod.rs', lines 375:0-375:34
+    Name pattern: [core::mem::size_of]
+    Visibility: public -/
+@[rust_fun "core::mem::size_of"]
+axiom core.mem.size_of (T : Type) : Result Std.Usize
+
 /-- [core::mem::zeroed]:
     Source: '/rustc/library/core/src/mem/mod.rs', lines 755:0-755:36
     Name pattern: [core::mem::zeroed]
