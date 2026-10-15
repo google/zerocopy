@@ -792,7 +792,7 @@ def trait_checks.check_array_into_bytes : Result Unit := do
     (Array.Insts.ZerocopyIntoBytes 2#usize Bool.Insts.ZerocopyIntoBytes))
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 163:0-223:1 -/
+    Source: 'src/util/mod.rs', lines 166:0-226:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -808,7 +808,7 @@ def util.padding_needed_for
   ok (i2 &&& mask)
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 250:0-268:1 -/
+    Source: 'src/util/mod.rs', lines 253:0-271:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -825,7 +825,7 @@ def util.round_down_to_next_multiple_of_alignment
   ok (n &&& mask)
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 277:0-283:1 -/
+    Source: 'src/util/mod.rs', lines 280:0-286:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -845,7 +845,7 @@ def util.max
   else ok a
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 292:0-298:1 -/
+    Source: 'src/util/mod.rs', lines 295:0-301:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -863,6 +863,41 @@ def util.min
   if i > i1
   then ok b
   else ok a
+
+/-- [zerocopy::util::owned_transmute::to_bytes_native]:
+    Source: 'src/util/owned_transmute.rs', lines 29:0-33:1 -/
+def util.owned_transmute.to_bytes_native
+  (value : Std.U32) : Result (Array Std.U8 4#usize) := do
+  core.intrinsics.transmute (Array Std.U8 4#usize) value
+
+/-- [zerocopy::util::owned_transmute::to_bytes]:
+    Source: 'src/util/owned_transmute.rs', lines 22:0-24:1 -/
+def util.owned_transmute.to_bytes
+  (value : Std.U32) : Result (Array Std.U8 4#usize) := do
+  util.owned_transmute.to_bytes_native value
+
+/-- [zerocopy::util::owned_transmute::from_bytes]:
+    Source: 'src/util/owned_transmute.rs', lines 44:0-48:1 -/
+def util.owned_transmute.from_bytes
+  (bytes : Array Std.U8 4#usize) : Result Std.U32 := do
+  core.intrinsics.transmute Std.U32 bytes
+
+/-- [zerocopy::util::owned_transmute::checked_bool]:
+    Source: 'src/util/owned_transmute.rs', lines 59:0-67:1 -/
+def util.owned_transmute.checked_bool
+  (byte : Std.U8) : Result (Option Bool) := do
+  if byte < 2#u8
+  then let b ← core.intrinsics.transmute Bool byte
+       ok (some b)
+  else ok none
+
+/-- [zerocopy::util::owned_transmute::round_trip_checks]:
+    Source: 'src/util/owned_transmute.rs', lines 75:0-79:1 -/
+def util.owned_transmute.round_trip_checks
+  (value : Std.U32) : Result Unit := do
+  let bytes ← util.owned_transmute.to_bytes value
+  let restored ← util.owned_transmute.from_bytes bytes
+  massert (restored = value)
 
 /-- [zerocopy::util::safety_checks::checked_bool]:
     Source: 'src/util/safety_checks/mod.rs', lines 28:0-38:1 -/
