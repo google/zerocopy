@@ -42,13 +42,17 @@ pub trait Aliasing: Sealed {
 
 /// The alignment invariant of a [`Ptr`][super::Ptr].
 pub trait Alignment: Sealed {
+    // Name the aliasing parameter directly rather than quantifying over an
+    // Invariants implementation whose Alignment is Self. Both forms require
+    // the same pointer guarantees; the tuple avoids a recursive dependency
+    // between the Alignment and Invariants trait declarations during extraction.
     #[doc(hidden)]
     #[must_use]
-    fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
+    fn read<T, A, R>(ptr: crate::Ptr<'_, T, (A, Self, Safe)>) -> T
     where
-        T: Copy + Read<I::Aliasing, R>,
-        I: Invariants<Alignment = Self, Validity = Safe>,
-        I::Aliasing: Reference;
+        Self: Sized,
+        T: Copy + Read<A, R>,
+        A: Reference;
 }
 
 /// The validity invariant of a [`Ptr`][super::Ptr].
@@ -148,11 +152,11 @@ pub enum Unaligned {}
 
 impl Alignment for Unaligned {
     #[inline(always)]
-    fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
+    fn read<T, A, R>(ptr: crate::Ptr<'_, T, (A, Self, Safe)>) -> T
     where
-        T: Copy + Read<I::Aliasing, R>,
-        I: Invariants<Alignment = Self, Validity = Safe>,
-        I::Aliasing: Reference,
+        Self: Sized,
+        T: Copy + Read<A, R>,
+        A: Reference,
     {
         (*ptr.into_unalign().as_ref()).into_inner()
     }
@@ -163,11 +167,11 @@ impl Alignment for Unaligned {
 pub enum Aligned {}
 impl Alignment for Aligned {
     #[inline(always)]
-    fn read<T, I, R>(ptr: crate::Ptr<'_, T, I>) -> T
+    fn read<T, A, R>(ptr: crate::Ptr<'_, T, (A, Self, Safe)>) -> T
     where
-        T: Copy + Read<I::Aliasing, R>,
-        I: Invariants<Alignment = Self, Validity = Safe>,
-        I::Aliasing: Reference,
+        Self: Sized,
+        T: Copy + Read<A, R>,
+        A: Reference,
     {
         *ptr.as_ref()
     }
