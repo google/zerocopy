@@ -743,26 +743,20 @@ macro_rules! define_cast {
     };
 }
 
-/// Implements `TransmuteFrom` and `SizeEq` for `T` and `$wrapper<T>`.
+/// Implements casts and `SizeEq` for `T` and `$wrapper<T>`.
 ///
 /// # Safety
 ///
-/// `T` and `$wrapper<T>` must have the same bit validity, and must have the
-/// same size in the sense of `CastExact` (specifically, both a
-/// `T`-to-`$wrapper<T>` cast and a `$wrapper<T>`-to-`T` cast must be
-/// size-preserving).
-macro_rules! unsafe_impl_for_transparent_wrapper {
+/// `T` and `$wrapper<T>` must have the same size in the sense of `CastExact`
+/// (specifically, both a `T`-to-`$wrapper<T>` cast and a `$wrapper<T>`-to-`T`
+/// cast must be size-preserving).
+macro_rules! unsafe_impl_transparent_wrapper_casts_and_size_eq {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
 
-        use crate::pointer::{TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::Safe};
+        use crate::pointer::{cast::{CastExact, TransitiveProject}, SizeEq};
         use crate::wrappers::ReadOnly;
 
-        // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
-        // bit validity.
-        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Safe, Safe> for $wrapper<T> {}
-        // SAFETY: See previous safety comment.
-        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Safe, Safe> for T {}
         // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
         // size-preserving.
         define_cast!(unsafe { $vis CastToWrapper<T $(: ?$optbound)? > = T => $wrapper<T> });
@@ -815,10 +809,10 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
     }};
 }
 
-macro_rules! impl_transitive_transmute_from {
+macro_rules! impl_transitive_size_eq {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Safe};
+            use crate::pointer::SizeEq;
 
             impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
             where
@@ -831,16 +825,6 @@ macro_rules! impl_transitive_transmute_from {
                     <$v as SizeEq<$u>>::CastFrom
                 >;
             }
-
-            // SAFETY: Since `$u: TransmuteFrom<$t, Safe, Safe>`, it is sound to
-            // transmute a bit-valid `$t` to a bit-valid `$u`. Since `$v:
-            // TransmuteFrom<$u, Safe, Safe>`, it is sound to transmute that
-            // bit-valid `$u` to a bit-valid `$v`.
-            unsafe impl<$($tyvar $(: ?$optbound)?)?> TransmuteFrom<$t, Safe, Safe> for $v
-            where
-                $u: TransmuteFrom<$t, Safe, Safe>,
-                $v: TransmuteFrom<$u, Safe, Safe>,
-            {}
         };
     };
 }
