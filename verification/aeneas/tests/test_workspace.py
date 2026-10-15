@@ -160,15 +160,18 @@ class WorkspaceTests(unittest.TestCase):
                 mutants.append(mutant)
             with mock.patch.object(admission, 'input_identity', return_value={'project': 'current'}), \
                     mock.patch.object(admission, 'digest', return_value='registry'), \
+                    mock.patch.object(admission, 'recheck') as recheck, \
                     mock.patch.object(workspace, 'run_checked') as run:
                 for mutant in mutants:
                     (work / 'bindings.json').write_text(json.dumps(mutant))
                     with self.subTest(mutant=mutant), self.assertRaisesRegex(ValueError, 'admission evidence'):
                         workspace.check(root, work)
                     run.assert_not_called()
+                    recheck.assert_not_called()
                 (work / 'bindings.json').write_text(json.dumps(manifest))
                 workspace.check(root, work)
                 self.assertEqual(run.call_count, 3)
+                recheck.assert_called_once_with(root, work, manifest)
                 run.reset_mock()
                 # An editor changing Rust during a successful proof build must
                 # prevent that build from certifying the edited source.

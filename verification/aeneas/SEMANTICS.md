@@ -176,7 +176,11 @@ cannot reveal an operation erased before that model was produced.
 [ADMISSION_DESIGN.md](ADMISSION_DESIGN.md) describes the implemented restricted
 value-and-borrow fragment. CI checks a preserved promoted-MIR import before
 Charon's transformations, final LLBC, and the complete executable dependency
-closure. Unsupported operations and unregistered opaque calls reject the run.
+closure. A retained conditional drop requires a kernel-checked proof that its
+whole local has no destruction obligation, independently for both compiler
+snapshots. Other drops, unsupported operations, and unregistered opaque calls
+reject the run. The ownership proof does not certify compiler translation or
+execute destructor bodies.
 Admission is tied to the compiler inputs and the patched runtime; it is not a
 formal certificate of rustc or Aeneas correctness. Valid incoming references,
 reviewed builtin lowering, and registered external interpretations remain

@@ -17,6 +17,7 @@ pub mod macro_util;
 mod allocation;
 pub(crate) mod bytewrite;
 mod checks;
+mod move_checks;
 #[cfg(target_endian = "little")]
 #[allow(dead_code)]
 mod owned_transmute;

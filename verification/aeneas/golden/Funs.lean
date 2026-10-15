@@ -651,7 +651,7 @@ def byteorder.verification.set_u32_be
   byteorder.U32.get byteorder.BigEndian.Insts.ZerocopyByteorderByteOrder value1
 
 /-- [zerocopy::util::round_down_to_next_multiple_of_alignment]:
-    Source: 'src/util/mod.rs', lines 268:0-286:1 -/
+    Source: 'src/util/mod.rs', lines 269:0-287:1 -/
 def util.round_down_to_next_multiple_of_alignment
   (n : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -752,7 +752,7 @@ def layout.TrailingSliceLayoutUsize.advance
       { self with elem_size, size_base, size_rounding_align_and_phase := raap })
 
 /-- [zerocopy::util::padding_needed_for]:
-    Source: 'src/util/mod.rs', lines 176:0-236:1 -/
+    Source: 'src/util/mod.rs', lines 177:0-237:1 -/
 def util.padding_needed_for
   (len : Std.Usize)
   (align : core.num.nonzero.NonZero Std.Usize
@@ -1684,7 +1684,7 @@ def layout.composition_checks.reference_constructor
   else ok none
 
 /-- [zerocopy::util::min]:
-    Source: 'src/util/mod.rs', lines 312:0-318:1 -/
+    Source: 'src/util/mod.rs', lines 313:0-319:1 -/
 def util.min
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -1704,7 +1704,7 @@ def util.min
   else ok a
 
 /-- [zerocopy::util::max]:
-    Source: 'src/util/mod.rs', lines 296:0-302:1 -/
+    Source: 'src/util/mod.rs', lines 297:0-303:1 -/
 def util.max
   (a : core.num.nonzero.NonZero Std.Usize
   core.num.niche_types.NonZeroUsizeInner)
@@ -5032,6 +5032,16 @@ def core.cell.UnsafeCell.Insts.ZerocopyIntoBytes {T : Type} (IntoBytesInst :
     core.cell.UnsafeCell.Insts.ZerocopyIntoBytes.only_derive_is_allowed_to_implement_this_trait
     IntoBytesInst
 }
+
+/-- [zerocopy::util::move_checks::forward]:
+    Source: 'src/util/move_checks/mod.rs', lines 28:0-30:1 -/
+def util.move_checks.forward {T : Type} (value : T) : Result T := do
+  ok value
+
+/-- [zerocopy::util::move_checks::move_through_call]:
+    Source: 'src/util/move_checks/mod.rs', lines 24:0-26:1 -/
+def util.move_checks.move_through_call {T : Type} (value : T) : Result T := do
+  util.move_checks.forward value
 
 /-- [zerocopy::util::owned_transmute::to_bytes_native]:
     Source: 'src/util/owned_transmute.rs', lines 30:0-34:1 -/
