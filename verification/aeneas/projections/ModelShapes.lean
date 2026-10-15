@@ -81,9 +81,15 @@ derive_model_shape Zerocopy.pointer.invariant.Shared with 0 type parameters
 
 derive_model_shape Zerocopy.pointer.invariant.Safe with 0 type parameters
 
+derive_model_shape Zerocopy.pointer.invariant.ValidityKind with 0 type parameters
+
+derive_model_shape Zerocopy.pointer.invariant.Uninit with 0 type parameters
+
+derive_model_shape Zerocopy.pointer.invariant.AsInitialized with 0 type parameters
+
+derive_model_shape Zerocopy.wrappers.Unalign with 1 type parameters
+
 derive_model_shape Zerocopy.trait_checks.XorCodec with 0 type parameters
 
 derive_model_shape Zerocopy.trait_checks.Forward with 1 type parameters
-
-derive_model_shape Zerocopy.wrappers.Unalign with 1 type parameters
 

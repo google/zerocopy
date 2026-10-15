@@ -338,6 +338,10 @@ where
 ///
 /// If the referents are not the same size, then `Dst: TransmuteFrom<Src, SV,
 /// DV>` conveys no safety guarantee.
+///
+/// ```aeneas
+/// invariant transmute_from for self => Referent.transmuteFrom Src Self SV DV
+/// ```
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV> {}
 
 /// Carries the ability to perform a size-preserving cast or conversion from a
@@ -366,6 +370,9 @@ impl<T: ?Sized> SizeEq<T> for T {
 // SAFETY: `Src: IntoBytes` guarantees that every valid representation of
 // `Src` is entirely initialized. If the referent widths agree, those same
 // bytes satisfy `Initialized` for `Dst`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<Src, Dst> TransmuteFrom<Src, Safe, Initialized> for Dst
 where
     Src: IntoBytes + ?Sized,
@@ -376,6 +383,9 @@ where
 // SAFETY: Since `Dst: FromBytes`, any initialized bit pattern may appear in the
 // referent of a `Ptr<Dst, (_, _, Safe)>`. If the referent widths agree,
 // `Initialized` source bytes therefore satisfy `Safe` for `Dst`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Safe> for Dst
 where
     Src: ?Sized,
@@ -390,6 +400,9 @@ where
 
 // SAFETY: The set of allowed bit patterns in the referent of any `Initialized`
 // `Ptr` is the same regardless of referent type.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<Src, Dst> TransmuteFrom<Src, Initialized, Initialized> for Dst
 where
     Src: ?Sized,
@@ -404,6 +417,9 @@ where
 
 // SAFETY: A `Dst` with validity `Uninit` permits any byte sequence, and
 // therefore can be transmuted from any value.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<Src, Dst, V> TransmuteFrom<Src, V, Uninit> for Dst
 where
     Src: ?Sized,
@@ -420,10 +436,16 @@ where
 //
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ManuallyDrop<T> {}
 
 // SAFETY: By the preceding safety proof, `ManuallyDrop<T>` and `T` have the
 // same bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<ManuallyDrop<T>, Safe, Safe> for T {}
 
 // SAFETY: By the preceding safety proof, `ManuallyDrop<T>` and `T` have the
@@ -435,10 +457,16 @@ const _: () =
 // SAFETY:
 // - `Unalign<T>` promises to have the same size as `T`.
 // - `Unalign<T>` promises to have the same validity as `T`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T> TransmuteFrom<T, Safe, Safe> for Unalign<T> {}
 
 // SAFETY: By the preceding safety proof, `Unalign<T>` and `T` have the
 // same bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T> TransmuteFrom<Unalign<T>, Safe, Safe> for T {}
 
 // SAFETY: By the preceding safety proof, `Unalign<T>` and `T` have the
@@ -476,10 +504,16 @@ const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Unalign<T>) };
 //   #[repr(transparent)]
 //   pub struct Wrapping<T>(pub T);
 //   ```
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T> TransmuteFrom<T, Safe, Safe> for Wrapping<T> {}
 
 // SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the
 // same bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T> TransmuteFrom<Wrapping<T>, Safe, Safe> for T {}
 
 // SAFETY: By the preceding safety proof, `Wrapping<T>` and `T` have the
@@ -506,10 +540,16 @@ const _: () = unsafe { unsafe_impl_shared_compatible!(T => T, Wrapping<T>) };
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for UnsafeCell<T> {}
 
 // SAFETY: By the preceding safety proof, `UnsafeCell<T>` and `T` have the
 // same bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<UnsafeCell<T>, Safe, Safe> for T {}
 
 // SAFETY: By the preceding safety proof, `UnsafeCell<T>` and `T` have the
@@ -537,10 +577,16 @@ const _: () =
 //   `UnsafeCell<T>` has the same in-memory representation as its inner type
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for Cell<T> {}
 
 // SAFETY: By the preceding safety proof, `Cell<T>` and `T` have the
 // same bit validity.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<Cell<T>, Safe, Safe> for T {}
 
 // SAFETY: By the preceding safety proof, `Cell<T>` and `T` have the
@@ -555,6 +601,9 @@ impl_transitive_size_eq!(T: ?Sized => Cell<T> => T => UnsafeCell<T>);
 // above. Thus both conditional bounds apply: `T: TransmuteFrom<Cell<T>, Safe,
 // Safe>` preserves bit validity, and `UnsafeCell<T>: TransmuteFrom<T, Safe,
 // Safe>` preserves it again.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<Cell<T>, Safe, Safe> for UnsafeCell<T>
 where
     T: TransmuteFrom<Cell<T>, Safe, Safe>,
@@ -568,6 +617,9 @@ impl_transitive_size_eq!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 // conditional bounds apply: `T: TransmuteFrom<UnsafeCell<T>, Safe, Safe>`
 // preserves bit validity, and `Cell<T>: TransmuteFrom<T, Safe, Safe>` preserves
 // it again.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<UnsafeCell<T>, Safe, Safe> for Cell<T>
 where
     T: TransmuteFrom<UnsafeCell<T>, Safe, Safe>,

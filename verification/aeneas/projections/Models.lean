@@ -107,12 +107,21 @@ check_model_binding Zerocopy.pointer.invariant.Shared with 0 type parameters
 derive_rust_model Zerocopy.pointer.invariant.Safe with 0 type parameters
 check_model_binding Zerocopy.pointer.invariant.Safe with 0 type parameters
 
+derive_rust_model Zerocopy.pointer.invariant.ValidityKind with 0 type parameters
+check_model_binding Zerocopy.pointer.invariant.ValidityKind with 0 type parameters
+
+derive_rust_model Zerocopy.pointer.invariant.Uninit with 0 type parameters
+check_model_binding Zerocopy.pointer.invariant.Uninit with 0 type parameters
+
+derive_rust_model Zerocopy.pointer.invariant.AsInitialized with 0 type parameters
+check_model_binding Zerocopy.pointer.invariant.AsInitialized with 0 type parameters
+
+derive_rust_model Zerocopy.wrappers.Unalign with 1 type parameters with_physical 0
+check_model_binding Zerocopy.wrappers.Unalign with 1 type parameters
+
 derive_rust_model Zerocopy.trait_checks.XorCodec with 0 type parameters
 check_model_binding Zerocopy.trait_checks.XorCodec with 0 type parameters
 
 derive_rust_model Zerocopy.trait_checks.Forward with 1 type parameters
 check_model_binding Zerocopy.trait_checks.Forward with 1 type parameters
-
-derive_rust_model Zerocopy.wrappers.Unalign with 1 type parameters with_physical 0
-check_model_binding Zerocopy.wrappers.Unalign with 1 type parameters
 

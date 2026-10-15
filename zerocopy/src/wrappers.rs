@@ -726,10 +726,16 @@ const _: () = {
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // it has the same bit validity as `T`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ReadOnly<T> {}
 
 // SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
 // it has the same bit validity as `T`.
+/// ```aeneas
+/// invariant_proof
+/// ```
 unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe> for T {}
 
 impl<T: Default> Default for ReadOnly<T> {

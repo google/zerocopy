@@ -414,11 +414,12 @@ parallel coverage registry or automatic Rust ABI assumptions.
 - **Broader carriers and effects.** Recursive nominal groups, general indexed
   carriers, const generics, associated-type trait laws, higher-ranked bounds, bounded
   nominal models, and escaping borrow reconstruction remain unsupported with
-  explicit errors. The first trait-law bridge supports `Self`-only traits and
-  simple generic bounds, with `Unaligned` and a total byte codec as checked
-  examples. Add semantics and admission checks before accepting
-  them. Stateful or nondeterministic APIs may need observable traces and
-  effects, rather than only result contracts.
+  explicit errors. The trait-law bridge supports type-parameterized traits
+  and type-only bounds, preserving every original argument and native
+  dictionary. `TransmuteFrom` exercises four ordered type arguments and
+  generic state-model providers. Add semantics and admission checks before
+  accepting the remaining carriers. Stateful or nondeterministic APIs may need
+  observable traces and effects, rather than only result contracts.
 - **Abstract storage and bit validity.** Check byte-to-value production before
   entering Aeneas's typed value domain; rejection must remain a forbidden
   execution, independently of ordinary library-model admission. A storage model
@@ -471,3 +472,22 @@ The generic-field staging problem and copy-back gap are resolved. Model proof
 completion is scoped to decoder construction rather than defaults attached to
 the model declaration. Encoders, losslessness, and representation certificates
 remain optional properties justified by particular operation proofs.
+
+## Referent contents: implemented scope
+
+The shared `Rust.Referent` algebra covers uninitialized, initialized, and safe
+byte domains, including empty safe domains. The zerocopy adapter uses the
+retained physical and mathematical decoders. Validity markers carry optional
+type-level codes, checked against their actual `Validity::KIND` dictionaries.
+This uses the existing model-provider binding and audit; it adds no separate
+state-dictionary inference mechanism.
+
+Marked `TransmuteFrom` blanket impls, ordinary wrapper pairs, and the two
+`Cell`/`UnsafeCell` chains have checked native law proofs. `CastableFrom` retains
+its exact two identity pairs. Generic clients consume those laws, while
+independent outcome families state the actual byte implications. Execution
+success remains outside any conditional interpretation of a validity state.
+
+`AsInitialized` contents and opaque `MaybeUninit` storage remain deferred.
+Pointer casts and projections will additionally need explicit byte-range,
+metadata, access, and resource arguments. These content laws do not grant them.

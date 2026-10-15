@@ -95,6 +95,26 @@ class InlineTests(unittest.TestCase):
     def parse(self, source):
         return inline.parse_file(source, syntax(source))
 
+    def test_parameterized_referent_sites_pass_the_source_census(self):
+        source = (ROOT / 'zerocopy/src/pointer/transmute.rs').read_text()
+        annotations = self.parse(source)
+        law = next(row for row in annotations if row['kind'] == 'trait')
+        self.assertEqual(law['syntax'], 'TransmuteFrom')
+        self.assertEqual(law['generics'], ['Self', 'Src', 'SV', 'DV'])
+        markers = [row for row in annotations if row['kind'] == 'trait-impl']
+        self.assertEqual(len(markers), 16)
+        self.assertTrue(all(row['theorem'] is None for row in markers))
+        conditional = [row for row in markers
+                       if any(bound['subject'] is None for bound in row['trait_bounds'])]
+        self.assertEqual(len(conditional), 2)
+        self.assertTrue(all(bound['argument_count'] == 3
+                            for row in conditional for bound in row['trait_bounds']))
+        invariant_source = (ROOT / 'zerocopy/src/pointer/invariant.rs').read_text()
+        invariant_annotations = self.parse(invariant_source)
+        castable = next(row for row in invariant_annotations
+                        if row['kind'] == 'trait' and row['syntax'] == 'CastableFrom')
+        self.assertEqual(castable['generics'], ['Self', 'ST', 'SV', 'DV'])
+
     def test_parameterized_trait_declaration_retains_marker_bound_census(self):
         source = ('/// ```aeneas\n/// invariant law for self => True\n/// ```\n'
                   'pub unsafe trait TransmuteFrom<Src: ?Sized, SV: Validity, DV: Validity> {}')
