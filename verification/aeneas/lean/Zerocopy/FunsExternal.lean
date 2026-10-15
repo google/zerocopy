@@ -54,6 +54,34 @@ noncomputable def util.transmute_unchecked {Src : Type} (Dst : Type)
     else forbiddenExecution
   else forbiddenExecution
 
+-- The standard primitive uses a closed, interpretation-only provider. Original
+-- Rust endpoint admission and compiled call auditing bind every reached use to
+-- one of these fixed providers; no arbitrary dictionary enters a Rust root.
+-- This preserves endpoint identity without testing equality of erased Types.
+class Zerocopy.StdOwnedTransmute (Src Dst : Type) where
+  run : Src → Result Dst
+
+instance Zerocopy.stdTransmuteU32ToBytes :
+    Zerocopy.StdOwnedTransmute U32 (Array U8 4#usize) where
+  run value := .ok (core.num.U32.to_le_bytes value)
+
+instance Zerocopy.stdTransmuteBytesToU32 :
+    Zerocopy.StdOwnedTransmute (Array U8 4#usize) U32 where
+  run bytes := .ok (core.num.U32.from_le_bytes bytes)
+
+instance Zerocopy.stdTransmuteU8ToBool : Zerocopy.StdOwnedTransmute U8 Bool where
+  run byte := if byte.val < 2 then .ok (decide (byte.val = 1)) else forbiddenExecution
+
+-- The additional implicit parameter is explicitly part of the reviewed std
+-- boundary, not a translated Rust trait argument. Other endpoints are rejected
+-- by admission and have no registered provider. The numeric cases require the
+-- independently checked little-endian compiler profile; Boolean validity does
+-- not depend on byte order.
+def core.intrinsics.transmute {Src : Type} (Dst : Type)
+    [provider : Zerocopy.StdOwnedTransmute Src Dst] (src : Src) : Result Dst :=
+  provider.run src
+
+
 @[simp] def core.num.nonzero.NonZero.get
     {T Inner : Type} (_inst : core.num.nonzero.ZeroablePrimitive T Inner)
     (x : core.num.nonzero.NonZero T Inner) : Result T := .ok x.val
