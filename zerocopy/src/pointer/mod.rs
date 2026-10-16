@@ -259,6 +259,8 @@ pub mod cast {
 
     // SAFETY: All `repr(C)` union fields exist at offset 0 within the union [1],
     // and so any union projection is actually a cast (ie, preserves address).
+    // For `Unalign` and `ReadOnly`, `HasField` requires forwarding the inner
+    // projection to the same byte range, so wrapping preserves this address.
     //
     // [1] Per
     //     https://doc.rust-lang.org/1.92.0/reference/type-layout.html#reprc-unions,

@@ -758,7 +758,9 @@ const _: () = {
     pub enum value {}
 
     // SAFETY: See safety comment on `ProjectToTag`.
-    unsafe impl<T: ?Sized, Client> HasTag<Client> for ManuallyDrop<T> {
+    unsafe impl<T: ?Sized, Client, V: crate::invariant::Validity> HasTag<Client, V>
+        for ManuallyDrop<T>
+    {
         #[inline]
         fn only_derive_is_allowed_to_implement_this_trait()
         where
@@ -767,12 +769,12 @@ const _: () = {
         }
 
         type Tag = ();
+        type TagValidity = crate::invariant::Safe;
 
-        // SAFETY: It is trivially sound to project any pointer to a pointer to
-        // a type of size zero and alignment 1 (which `()` is [1]). Such a
-        // pointer will trivially satisfy its aliasing and validity requirements
-        // (since it has a zero-sized referent), and its alignment requirement
-        // (since it is aligned to 1).
+        // SAFETY: `()` has size zero and alignment 1 [1], so the tag satisfies
+        // shared aliasing and either alignment invariant. Unit has no bytes
+        // to initialize and no library safety invariants, so its tag validity
+        // is `Safe` independently of the source validity `V`.
         //
         // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#r-layout.tuple.unit:
         //
@@ -992,23 +994,44 @@ const _: () = unsafe { unsafe_impl!(T: Immutable => Immutable for Option<T>) };
 mod tuples {
     use super::*;
 
+    // We take as a premise that tuples inherit the field-layout guarantees of
+    // anonymous `repr(Rust)` structs.
+    //
+    // For such structs, the Rust 1.99 Reference [1] guarantees that each field's
+    // offset is "divisible by that field’s alignment", the type's alignment is
+    // "at least the maximum alignment of its fields", and "the fields do not
+    // overlap". Alignments are "always a power of 2".
+    //
+    // More precisely, field offsets are multiples of their alignments. Since
+    // all alignments are powers of two and the tuple's alignment is at least
+    // each field's, an aligned tuple address is also a multiple of every field
+    // alignment. Adding a field's offset therefore preserves its alignment.
+    // Non-overlap means writing a field's byte range cannot overwrite another
+    // field's bytes. Zero-sized fields have empty byte ranges, even when their
+    // addresses coincide. No particular field order or offset is assumed.
+    //
+    // We take it as an axiom that these guarantees hold in previous Rust
+    // versions.
+    //
+    // [1] https://doc.rust-lang.org/1.99.0/reference/type-layout.html
+
     /// Generates various trait implementations for tuples.
     ///
     /// # Safety
     ///
-    /// `impl_tuple!` should be provided name-number pairs, where each number is
-    /// the ordinal of the preceding type name.
+    /// `impl_tuple!` should be provided name-validity-number triplets, where
+    /// each number is the ordinal of the triplet.
     macro_rules! impl_tuple {
         // Entry point.
-        ($($T:ident $I:tt),+ $(,)?) => {
+        ($($T:ident $V:ident $I:tt),+ $(,)?) => {
             crate::util::macros::__unsafe();
-            impl_tuple!(@all [] [$($T $I)+]);
+            impl_tuple!(@all [] [$($T $V $I)+]);
         };
 
         // Build up the set of tuple types (i.e., `(A,)`, `(A, B)`, `(A, B, C)`,
         // etc.) Trait implementations that do not depend on field index may be
         // added to this branch.
-        (@all [$($head_T:ident $head_I:tt)*] [$next_T:ident $next_I:tt $($tail:tt)*]) => {
+        (@all [$($head_T:ident $head_V:ident $head_I:tt)*] [$next_T:ident $next_V:ident $next_I:tt $($tail:tt)*]) => {
             // SAFETY: If all fields of the tuple `Self` are `Immutable`, so too is `Self`.
             unsafe_impl!($($head_T: Immutable,)* $next_T: Immutable => Immutable for ($($head_T,)* $next_T,));
 
@@ -1025,8 +1048,24 @@ mod tuples {
             // SAFETY: If all fields in `Self` are `FromBytes`, so too is `Self`.
             unsafe_impl!($($head_T: FromBytes,)* $next_T: FromBytes => FromBytes for ($($head_T,)* $next_T,));
 
+            // SAFETY: Each component's `KIND` describes its allowed referent
+            // states by `Validity`. Listing these kinds in declaration order
+            // therefore describes precisely the field-wise requirements of
+            // this tuple of validities.
+            unsafe impl<$($head_T,)* $next_T> crate::invariant::Validity for ($($head_T,)* $next_T,)
+            where
+                $($head_T: crate::invariant::Validity,)*
+                $next_T: crate::invariant::Validity,
+            {
+                const KIND: crate::invariant::ValidityKind = crate::invariant::ValidityKind::Compound(&[
+                    $($head_T::KIND,)*
+                    $next_T::KIND,
+                ]);
+            }
+            impl<$($head_T,)* $next_T> crate::invariant::sealed::Sealed for ($($head_T,)* $next_T,) {}
+
             // SAFETY: See safety comment on `ProjectToTag`.
-            unsafe impl<Client, $($head_T,)* $next_T> crate::HasTag<Client>
+            unsafe impl<Client, Vld: crate::invariant::Validity, $($head_T,)* $next_T> crate::HasTag<Client, Vld>
                 for ($($head_T,)* $next_T,)
             {
                 #[inline]
@@ -1036,12 +1075,13 @@ mod tuples {
                 {}
 
                 type Tag = ();
+                type TagValidity = crate::invariant::Safe;
 
-                // SAFETY: It is trivially sound to project any pointer to a
-                // pointer to a type of size zero and alignment 1 (which `()` is
-                // [1]). Such a pointer will trivially satisfy its aliasing and
-                // validity requirements (since it has a zero-sized referent),
-                // and its alignment requirement (since it is aligned to 1).
+                // SAFETY: `CastToUnit` projects to zero bytes of alignment 1
+                // [1], so shared aliasing and either alignment invariant hold.
+                // Unit has no bytes to initialize and no library safety
+                // invariants, so the tag is `Safe` independently of `Vld`,
+                // including when `Vld` describes the tuple's individual fields.
                 //
                 // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#r-layout.tuple.unit:
                 //
@@ -1052,24 +1092,24 @@ mod tuples {
 
             // Generate impls that depend on tuple index.
             impl_tuple!(@variants
-                [$($head_T $head_I)* $next_T $next_I]
+                [$($head_T $head_V $head_I)* $next_T $next_V $next_I]
                 []
-                [$($head_T $head_I)* $next_T $next_I]
+                [$($head_T $head_V $head_I)* $next_T $next_V $next_I]
             );
 
             // Recurse to next tuple size
-            impl_tuple!(@all [$($head_T $head_I)* $next_T $next_I] [$($tail)*]);
+            impl_tuple!(@all [$($head_T $head_V $head_I)* $next_T $next_V $next_I] [$($tail)*]);
         };
-        (@all [$($head_T:ident $head_I:tt)*] []) => {};
+        (@all [$($head_T:ident $head_V:ident $head_I:tt)*] []) => {};
 
         // Emit trait implementations that depend on field index.
         (@variants
-            // The full tuple definition in type–index pairs.
-            [$($AllT:ident $AllI:tt)+]
+            // The full tuple definition in type-validity-index triplets.
+            [$($AllT:ident $AllV:ident $AllI:tt)+]
             // Types before the current index.
-            [$($BeforeT:ident)*]
+            [$($BeforeT:ident $BeforeV:ident)*]
             // The types and indices at and after the current index.
-            [$CurrT:ident $CurrI:tt $($AfterT:ident $AfterI:tt)*]
+            [$CurrT:ident $CurrV:ident $CurrI:tt $($AfterT:ident $AfterV:ident $AfterI:tt)*]
         ) => {
             // SAFETY:
             // - `Self` is a struct (albeit anonymous), so `VARIANT_ID` is
@@ -1186,43 +1226,87 @@ mod tuples {
                 type Error = core::convert::Infallible;
             }
 
+            // SAFETY: See comments on items.
+            unsafe impl<Client, Aliasing, Alignment, $($AllT,)+ $($AllV),+> crate::ProjectField<
+                Client,
+                (),
+                (Aliasing, Alignment, ($($AllV,)+)),
+                { crate::STRUCT_VARIANT_ID },
+                { crate::ident_id!($CurrI)}
+            > for ($($AllT,)+)
+            where
+                Aliasing: crate::invariant::Aliasing,
+                Alignment: crate::invariant::Alignment,
+                $($AllV: crate::invariant::Validity,)*
+            {
+                #[inline]
+                fn only_derive_is_allowed_to_implement_this_trait()
+                where
+                    Self: Sized
+                {}
+
+                // SAFETY:
+                // - `HasField::project` selects field `$CurrI`, whose type is
+                //   `$CurrT`. Compound validity requires that field to satisfy
+                //   `$CurrV`, independently of the other fields and padding.
+                // - A tuple's fields are aligned and do not overlap; see the
+                //   layout premise at the start of this module. An aligned
+                //   tuple gives an aligned field. `Unaligned` imposes no
+                //   alignment requirement.
+                // - Moving an exclusive pointer transfers access to this
+                //   field. Shared access permits mutation only through the
+                //   field's own `UnsafeCell`s. Mutating this field while
+                //   preserving `$CurrV` preserves the compound state: the
+                //   other fields are disjoint and retain their requirements.
+                //   Conversely, preserving the compound state preserves the
+                //   field's `$CurrV` requirement. Zero-sized fields address no
+                //   bytes, so shared addresses do not introduce byte overlap.
+                type Invariants = (Aliasing, Alignment, $CurrV);
+
+                // SAFETY: `HasField` uses `STRUCT_VARIANT_ID`, so the default
+                // `is_projectable` returns `Ok(())` without reading a tag.
+                // The compound state supplies the field requirement for every
+                // referent admitted by this implementation.
+                type Error = core::convert::Infallible;
+            }
+
             // Recurse to the next index.
-            impl_tuple!(@variants [$($AllT $AllI)+] [$($BeforeT)* $CurrT] [$($AfterT $AfterI)*]);
+            impl_tuple!(@variants [$($AllT $AllV $AllI)+] [$($BeforeT $BeforeV)* $CurrT $CurrV] [$($AfterT $AfterV $AfterI)*]);
         };
-        (@variants [$($AllT:ident $AllI:tt)+] [$($BeforeT:ident)*] []) => {};
+        (@variants [$($AllT:ident $AllV:ident $AllI:tt)+] [$($BeforeT:ident $BeforeV:ident)*] []) => {};
     }
 
-    // SAFETY: `impl_tuple` is provided name-number pairs, where number is the
-    // ordinal of the name.
+    // SAFETY: `impl_tuple` is provided name-validity-number triplets, where
+    // number is the ordinal of the triplet.
     #[allow(clippy::multiple_unsafe_ops_per_block)]
     const _: () = unsafe {
         impl_tuple! {
-            A 0,
-            B 1,
-            C 2,
-            D 3,
-            E 4,
-            F 5,
-            G 6,
-            H 7,
-            I 8,
-            J 9,
-            K 10,
-            L 11,
-            M 12,
-            N 13,
-            O 14,
-            P 15,
-            Q 16,
-            R 17,
-            S 18,
-            T 19,
-            U 20,
-            V 21,
-            W 22,
-            X 23,
-            Y 24,
-            Z 25,
+            A VA 0,
+            B VB 1,
+            C VC 2,
+            D VD 3,
+            E VE 4,
+            F VF 5,
+            G VG 6,
+            H VH 7,
+            I VI 8,
+            J VJ 9,
+            K VK 10,
+            L VL 11,
+            M VM 12,
+            N VN 13,
+            O VO 14,
+            P VP 15,
+            Q VQ 16,
+            R VR 17,
+            S VS 18,
+            T VT 19,
+            U VU 20,
+            V VV 21,
+            W VW 22,
+            X VX 23,
+            Y VY 24,
+            Z VZ 25,
         };
     };
 }

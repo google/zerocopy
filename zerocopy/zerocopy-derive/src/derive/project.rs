@@ -161,12 +161,27 @@ pub(crate) fn derive_projection_struct_union(
     let variant_id = struct_union_variant_id(ctx);
 
     let core = ctx.core_path();
-    let has_tag = ImplBlockBuilder::new(ctx, data, Trait::HasTag { client }, FieldBounds::None)
-        .inner_extras(quote! {
-            type Tag = ();
-            type ProjectToTag = #zerocopy_crate::pointer::cast::CastToUnit;
-        })
-        .build();
+    // The unit tag has no bytes or library safety invariants, so it is `Safe`
+    // for every source validity. `CastToUnit` preserves the address and
+    // provenance, and unit's size and alignment [1] satisfy shared aliasing
+    // and either alignment invariant.
+    //
+    // [1] Per https://doc.rust-lang.org/1.92.0/reference/type-layout.html#tuple-layout:
+    //
+    //   [Unit tuples] have a size of 0 and an alignment of 1.
+    let has_tag = ImplBlockBuilder::new(
+        ctx,
+        data,
+        Trait::HasTag { client, validity: parse_quote!(___ZcValidity) },
+        FieldBounds::None,
+    )
+    .param_extras(vec![parse_quote!(___ZcValidity: #zerocopy_crate::invariant::Validity)])
+    .inner_extras(quote! {
+        type Tag = ();
+        type TagValidity = #zerocopy_crate::invariant::Safe;
+        type ProjectToTag = #zerocopy_crate::pointer::cast::CastToUnit;
+    })
+    .build();
 
     let has_fields = fields.iter().map(move |(_, ident, ty)| {
         let field_token = ident!(("ẕ{}", ident), ident.span());
@@ -283,8 +298,9 @@ pub(crate) fn derive_enum(
     let zerocopy_crate = &ctx.zerocopy_crate;
     let core = &ctx.core_path();
     let client_path = &client.crate_path(ctx);
-    let has_tag_trait = Trait::HasTag { client };
-    let has_tag_path = &has_tag_trait.crate_path(ctx);
+    let safe_has_tag =
+        Trait::HasTag { client, validity: parse_quote!(#zerocopy_crate::invariant::Safe) };
+    let has_tag_path = &safe_has_tag.crate_path(ctx);
     let infallible =
         quote! { #zerocopy_crate::util::macro_util::core_reexport::convert::Infallible };
     let tag_enum = generate_tag_enum(ctx, &repr, data);
@@ -383,14 +399,38 @@ pub(crate) fn derive_enum(
     // otherwise, `AsInitialized` requires every source byte to be initialized.
     // Either case establishes the tag's `AsInitialized` requirements without
     // requiring a valid discriminant.
+    // Compound validity does not yet admit enum states, so no implementation
+    // is needed for those inputs.
     // The enum layout argument below establishes the tag's position and
     // alignment for `CastSized`.
-    let has_tag = ImplBlockBuilder::new(ctx, data, has_tag_trait, FieldBounds::None)
-        .inner_extras(quote! {
-            type Tag = ___ZerocopyTag;
-            type ProjectToTag = #zerocopy_crate::pointer::cast::CastSized;
-        })
-        .build();
+    let tag_validities: [(Type, Type); 4] = [
+        (
+            parse_quote!(#zerocopy_crate::invariant::Uninit),
+            parse_quote!(#zerocopy_crate::invariant::Uninit),
+        ),
+        (
+            parse_quote!(#zerocopy_crate::invariant::AsInitialized),
+            parse_quote!(#zerocopy_crate::invariant::AsInitialized),
+        ),
+        (
+            parse_quote!(#zerocopy_crate::invariant::Initialized),
+            parse_quote!(#zerocopy_crate::invariant::Initialized),
+        ),
+        (
+            parse_quote!(#zerocopy_crate::invariant::Safe),
+            parse_quote!(#zerocopy_crate::invariant::Safe),
+        ),
+    ];
+    let has_tags = tag_validities.into_iter().map(|(validity, tag_validity)| {
+        let has_tag_trait = Trait::HasTag { client, validity: Box::new(validity) };
+        ImplBlockBuilder::new(ctx, data, has_tag_trait, FieldBounds::None)
+            .inner_extras(quote! {
+                type Tag = ___ZerocopyTag;
+                type TagValidity = #tag_validity;
+                type ProjectToTag = #zerocopy_crate::pointer::cast::CastSized;
+            })
+            .build()
+    });
 
     let aliasing_param: &syn::GenericParam =
         &parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Aliasing);
@@ -557,7 +597,7 @@ pub(crate) fn derive_enum(
         #raw_enum
         #raw_projections
 
-        #has_tag
+            #(#has_tags)*
         #(#has_fields)*
     })
 }
