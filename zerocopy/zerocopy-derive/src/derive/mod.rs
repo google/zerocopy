@@ -143,3 +143,76 @@ pub(crate) fn derive_split_at(ctx: &Ctx, _top_level: Trait) -> Result<TokenStrea
         })
         .build())
 }
+
+pub(crate) fn derive_has_null_pointer_optimization(
+    ctx: &Ctx,
+    _top_level: Trait,
+) -> Result<TokenStream, Error> {
+    let strct = match &ctx.ast.data {
+        Data::Struct(strct) => strct,
+        Data::Enum(_) | Data::Union(_) => {
+            return ctx
+                .error_or_skip(Error::new(Span::call_site(), "can only be applied to structs"));
+        }
+    };
+
+    let repr = StructUnionRepr::from_attrs(&ctx.ast.attrs)?;
+    if !repr.is_transparent() {
+        return ctx.error_or_skip(Error::new(
+            Span::call_site(),
+            "must have #[repr(transparent)] in order to guarantee the null pointer optimization",
+        ));
+    }
+
+    let mut fields = strct.fields.iter();
+    let field_ty = match (fields.next(), fields.next()) {
+        (Some(field), None) => &field.ty,
+        _ => {
+            return ctx.error_or_skip(Error::new(Span::call_site(), "must have exactly one field"))
+        }
+    };
+
+    let zerocopy_crate = &ctx.zerocopy_crate;
+
+    // SAFETY: The checks above require `Self` to be a `repr(transparent)`
+    // struct with exactly one field, and `FieldBounds::ALL_SELF` requires that
+    // field's type, `F`, to be `HasNullPointerOptimization`.
+    // - Safety invariant of `HasNullPointerOptimization`: By that invariant,
+    //   `F` is listed in [1] as a type for which transmuting between `[0u8;
+    //   size_of::<F>()]` and `Option::<F>::None` is sound. `Self` is thus a
+    //   "`#[repr(transparent)]` struct around one of the types in this list",
+    //   for which [1] guarantees the same "when it holds for the inner type",
+    //   which it does.
+    // - `NonZeroValidity`: We use `F`'s `NonZeroValidity`. If its `ALL_VALID`
+    //   is `true`, then by the safety invariant of `NonZeroValidity`, every
+    //   sequence of `size_of::<F>()` initialized bytes other than all zeros is
+    //   a valid `F`. `Self` has the same layout as `F` [2], so it has the same
+    //   size, and its only field spans all of its bytes. A struct is valid if
+    //   all of its fields are valid [3]. Thus, every sequence of
+    //   `size_of::<Self>()` initialized bytes other than all zeros is a valid
+    //   `Self`.
+    //
+    // [1] Per https://doc.rust-lang.org/1.89.0/core/option/index.html#representation:
+    //
+    //   | `T`                                                                 | Transmuting between `[0u8; size_of::<T>()]` and `Option::<T>::None` sound? |
+    //   |---------------------------------------------------------------------|----------------------------------------------------------------------------|
+    //   | ...                                                                 | ...                                                                        |
+    //   | `#[repr(transparent)]` struct around one of the types in this list. | when it holds for the inner type                                           |
+    //
+    // [2] Per https://doc.rust-lang.org/1.89.0/reference/type-layout.html#the-transparent-representation:
+    //
+    //   Structs and enums with this representation have the same layout and
+    //   ABI as the only non-size 0 non-alignment 1 field, if present, or unit
+    //   otherwise.
+    //
+    // [3] Per https://doc.rust-lang.org/1.89.0/reference/behavior-considered-undefined.html#r-undefined.validity.struct:
+    //
+    //   A struct, tuple, and array requires all fields/elements to be valid at
+    //   their respective type.
+    Ok(ImplBlockBuilder::new(ctx, strct, Trait::HasNullPointerOptimization, FieldBounds::ALL_SELF)
+        .inner_extras(quote! {
+            type NonZeroValidity =
+                <#field_ty as #zerocopy_crate::HasNullPointerOptimization>::NonZeroValidity;
+        })
+        .build())
+}
