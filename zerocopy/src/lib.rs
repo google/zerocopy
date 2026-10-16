@@ -1928,6 +1928,16 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized;
 
+    /// The validity of `Self` in an uninitialized state.
+    ///
+    /// # Safety
+    ///
+    /// TODO: The safety condition here should cite the documentation of
+    /// `Validity`. This type should be either `invariant::Uninit` or a
+    /// compound validity.
+    #[doc(hidden)]
+    type Uninit: invariant::Validity;
+
     /// Does a given memory range contain a valid instance of `Self`?
     ///
     /// # Safety
