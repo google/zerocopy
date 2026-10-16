@@ -374,6 +374,17 @@ pub(crate) fn derive_enum(
     let raw_projections =
         derive_projection_struct_union(&ctx.with_input(&raw_enum), &raw_enum.data, client);
 
+    // `Uninit` permits any tag bytes, `Initialized` requires initialized tag
+    // bytes, and `Safe` requires a valid discriminant. The generated tag enum
+    // has no padding or library safety invariants.
+    //
+    // `AsInitialized` also requires initialized tag bytes: if the source enum
+    // is inhabited, a valid instance has an initialized discriminant;
+    // otherwise, `AsInitialized` requires every source byte to be initialized.
+    // Either case establishes the tag's `AsInitialized` requirements without
+    // requiring a valid discriminant.
+    // The enum layout argument below establishes the tag's position and
+    // alignment for `CastSized`.
     let has_tag = ImplBlockBuilder::new(ctx, data, has_tag_trait, FieldBounds::None)
         .inner_extras(quote! {
             type Tag = ___ZerocopyTag;
