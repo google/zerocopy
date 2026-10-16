@@ -16,7 +16,10 @@ use core::{
 };
 
 use super::*;
-use crate::pointer::cast::{CastSizedExact, CastUnsized};
+use crate::{
+    pointer::cast::{CastSizedExact, CastUnsized},
+    util::npo::{AllValid, NonZeroValidity},
+};
 
 // SAFETY: Per the reference [1], "the unit tuple (`()`) ... is guaranteed as a
 // zero-sized type to have a size of 0 and an alignment of 1."
@@ -253,47 +256,6 @@ const _: () = unsafe {
     );
 };
 
-// SAFETY:
-// - `TryFromBytes` (with no validator), `FromZeros`, `FromBytes`, `IntoBytes`:
-//   The Rust compiler reuses `0` value to represent `None`, so
-//   `size_of::<Option<NonZeroXxx>>() == size_of::<xxx>()`; see `NonZeroXxx`
-//   documentation.
-// - `Unaligned`: `NonZeroU8` and `NonZeroI8` document that `Option<NonZeroU8>`
-//   and `Option<NonZeroI8>` both have size 1. [1] [2] This is worded in a way
-//   that makes it unclear whether it's meant as a guarantee, but given the
-//   purpose of those types, it's virtually unthinkable that that would ever
-//   change. The only valid alignment for a 1-byte type is 1.
-//
-// [1] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroU8.html:
-//
-//     `Option<NonZeroU8>` is guaranteed to be compatible with `u8`, including in FFI.
-//
-//     Thanks to the null pointer optimization, `NonZeroU8` and `Option<NonZeroU8>`
-//     are guaranteed to have the same size and alignment:
-//
-// [2] Per https://doc.rust-lang.org/1.81.0/std/num/type.NonZeroI8.html:
-//
-//     `Option<NonZeroI8>` is guaranteed to be compatible with `i8`, including in FFI.
-//
-//     Thanks to the null pointer optimization, `NonZeroI8` and `Option<NonZeroI8>`
-//     are guaranteed to have the same size and alignment:
-#[allow(clippy::multiple_unsafe_ops_per_block)]
-const _: () = unsafe {
-    unsafe_impl!(Option<NonZeroU8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    unsafe_impl!(Option<NonZeroI8>: TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
-    assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
-    unsafe_impl!(Option<NonZeroU16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI16>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI32>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI64>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroU128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroI128>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroUsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-    unsafe_impl!(Option<NonZeroIsize>: TryFromBytes, FromZeros, FromBytes, IntoBytes);
-};
-
 // SAFETY: While it's not fully documented, the consensus is that `Box<T>` does
 // not contain any `UnsafeCell`s for `T: Sized` [1]. This is not a complete
 // proof, but we are accepting this as a known risk per #1358.
@@ -307,72 +269,217 @@ const _: () = unsafe {
     )
 };
 
-// SAFETY: The following types can be transmuted from `[0u8; size_of::<T>()]`. [1]
+// SAFETY: `T: HasNullPointerOptimization` requires that `T` is listed in [1] as
+// a type for which transmuting between `[0u8; size_of::<T>()]` and
+// `Option::<T>::None` is sound. Each of the following types satisfies this:
+// - `Box<T>`, `&T`, `&mut T`, and `NonNull<T>`: [1] guarantees this "when `U:
+//   Sized`". None of these impls relaxes the implicit `Sized` bound on `T` [2],
+//   so `T: Sized`. Our `Box` is `alloc::boxed::Box<T>`, whose allocator
+//   parameter defaults to `Global`, so it is `Box<T, Global>`.
+// - `fn`, `unsafe fn`, `extern "C" fn`, and `unsafe extern "C" fn`: [1]
+//   guarantees this "always", for any argument and return types.
+//
+// `unsafe_impl!` sets `NonZeroValidity` to `MaybeInvalid` for each of these
+// impls, which is always sound.
 //
 // [1] Per https://doc.rust-lang.org/1.89.0/core/option/index.html#representation:
 //
-//   Rust guarantees to optimize the following types `T` such that [`Option<T>`]
-//   has the same size and alignment as `T`. In some of these cases, Rust
-//   further guarantees that `transmute::<_, Option<T>>([0u8; size_of::<T>()])`
-//   is sound and produces `Option::<T>::None`. These cases are identified by
-//   the second column:
+//   Rust guarantees to optimize the following types `T` such that
+//   [`Option<T>`] has the same size, alignment, and [function call ABI] as `T`.
+//   In some of these cases, Rust further guarantees the following:
+//   - `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and produces
+//     `Option::<T>::None`
+//   - `transmute::<_, [u8; size_of::<T>()]>(Option::<T>::None)` is sound and
+//     produces `[0u8; size_of::<T>()]`
 //
-//   | `T`                               | `transmute::<_, Option<T>>([0u8; size_of::<T>()])` sound? |
-//   |-----------------------------------|-----------------------------------------------------------|
-//   | [`Box<U>`]                        | when `U: Sized`                                           |
-//   | `&U`                              | when `U: Sized`                                           |
-//   | `&mut U`                          | when `U: Sized`                                           |
-//   | [`ptr::NonNull<U>`]               | when `U: Sized`                                           |
-//   | `fn`, `extern "C" fn`[^extern_fn] | always                                                    |
+//   These cases are identified by the second column:
+//
+//   | `T`                                                                 | Transmuting between `[0u8; size_of::<T>()]` and `Option::<T>::None` sound? |
+//   |---------------------------------------------------------------------|----------------------------------------------------------------------------|
+//   | [`Box<U>`] (specifically, only `Box<U, Global>`)                    | when `U: Sized`                                                            |
+//   | `&U`                                                                | when `U: Sized`                                                            |
+//   | `&mut U`                                                            | when `U: Sized`                                                            |
+//   | `fn`, `extern "C" fn`[^extern_fn]                                   | always                                                                     |
+//   | [`num::NonZero*`]                                                   | always                                                                     |
+//   | [`ptr::NonNull<U>`]                                                 | when `U: Sized`                                                            |
+//   | `#[repr(transparent)]` struct around one of the types in this list. | when it holds for the inner type                                           |
 //
 //   [^extern_fn]: this remains true for `unsafe` variants, any argument/return
 //     types, and any other ABI: `[unsafe] extern "abi" fn` (_e.g._, `extern
 //     "system" fn`)
+//
+// [2] Per https://doc.rust-lang.org/1.89.0/reference/special-types-and-traits.html#sized:
+//
+//   Type parameters (except `Self` in traits) are `Sized` by default, as are
+//   associated types.
 #[allow(clippy::multiple_unsafe_ops_per_block)]
 const _: () = unsafe {
     #[cfg(feature = "alloc")]
     unsafe_impl!(
         #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T => TryFromBytes for Option<Box<T>>; |c| pointer::is_zeroed(c)
+        T => HasNullPointerOptimization for Box<T>
     );
-    #[cfg(feature = "alloc")]
-    unsafe_impl!(
-        #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc")))]
-        T => FromZeros for Option<Box<T>>
-    );
-    unsafe_impl!(
-        T => TryFromBytes for Option<&'_ T>; |c| pointer::is_zeroed(c)
-    );
-    unsafe_impl!(T => FromZeros for Option<&'_ T>);
-    unsafe_impl!(
-            T => TryFromBytes for Option<&'_ mut T>; |c| pointer::is_zeroed(c)
-    );
-    unsafe_impl!(T => FromZeros for Option<&'_ mut T>);
-    unsafe_impl!(
-        T => TryFromBytes for Option<NonNull<T>>; |c| pointer::is_zeroed(c)
-    );
-    unsafe_impl!(T => FromZeros for Option<NonNull<T>>);
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_fn!(...));
-    unsafe_impl_for_power_set!(
-        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_fn!(...);
-        |c| pointer::is_zeroed(c)
-    );
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_unsafe_fn!(...));
-    unsafe_impl_for_power_set!(
-        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_unsafe_fn!(...);
-        |c| pointer::is_zeroed(c)
-    );
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_extern_c_fn!(...));
-    unsafe_impl_for_power_set!(
-        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_extern_c_fn!(...);
-        |c| pointer::is_zeroed(c)
-    );
-    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => FromZeros for opt_unsafe_extern_c_fn!(...));
-    unsafe_impl_for_power_set!(
-        A, B, C, D, E, F, G, H, I, J, K, L -> M => TryFromBytes for opt_unsafe_extern_c_fn!(...);
-        |c| pointer::is_zeroed(c)
+    unsafe_impl!(T => HasNullPointerOptimization for &'_ T);
+    unsafe_impl!(T => HasNullPointerOptimization for &'_ mut T);
+    unsafe_impl!(T => HasNullPointerOptimization for NonNull<T>);
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => HasNullPointerOptimization for bare_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => HasNullPointerOptimization for bare_unsafe_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => HasNullPointerOptimization for bare_extern_c_fn!(...));
+    unsafe_impl_for_power_set!(A, B, C, D, E, F, G, H, I, J, K, L -> M => HasNullPointerOptimization for bare_unsafe_extern_c_fn!(...));
+};
+
+/// Implements `HasNullPointerOptimization` for `$nonzero` with
+/// `NonZeroValidity = AllValid`.
+///
+/// # Safety
+///
+/// `$nonzero` must satisfy the safety invariant of
+/// `HasNullPointerOptimization`, and every sequence of `size_of::<$nonzero>()`
+/// initialized bytes, other than the all-zeros sequence, must be a valid
+/// `$nonzero`.
+macro_rules! unsafe_impl_has_null_pointer_optimization_for_nonzero {
+    ($($nonzero:ident),*) => {
+        $(
+            crate::util::macros::__unsafe();
+
+            // SAFETY: The caller promises that this is sound.
+            unsafe impl HasNullPointerOptimization for $nonzero {
+                #[allow(clippy::missing_inline_in_public_items, dead_code)]
+                #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+                fn only_derive_is_allowed_to_implement_this_trait() {}
+
+                type NonZeroValidity = crate::util::npo::AllValid;
+            }
+        )*
+    };
+}
+
+// SAFETY:
+// - Safety invariant of `HasNullPointerOptimization`: `NonZeroXxx` is
+//   `NonZero<xxx>` [1], which [2] lists as a type for which transmuting between
+//   `[0u8; size_of::<T>()]` and `Option::<T>::None` is "always" sound.
+// - `NonZeroValidity = AllValid`: `NonZero<xxx>` has the same layout and
+//   bit validity as `xxx`, except that the all-zero bit pattern is invalid
+//   [3]. Every sequence of `size_of::<xxx>()` initialized bytes is a valid
+//   `xxx` [4]. Thus, every such sequence other than the all-zeros sequence is
+//   a valid `NonZeroXxx`.
+//
+// [1] Per https://doc.rust-lang.org/1.89.0/core/num/type.NonZeroU8.html:
+//
+//   pub type NonZeroU8 = NonZero<u8>;
+//
+//   ...and likewise for the other `NonZeroXxx` types.
+//
+// [2] Per https://doc.rust-lang.org/1.89.0/core/option/index.html#representation:
+//
+//   | `T`                 | Transmuting between `[0u8; size_of::<T>()]` and `Option::<T>::None` sound? |
+//   |---------------------|----------------------------------------------------------------------------|
+//   | ...                 | ...                                                                        |
+//   | [`num::NonZero*`]   | always                                                                     |
+//
+// [3] Per https://doc.rust-lang.org/1.89.0/core/num/struct.NonZero.html#layout:
+//
+//   `NonZero<T>` is guaranteed to have the same layout and bit validity as `T`
+//   with the exception that the all-zero bit pattern is invalid.
+//
+// [4] Per https://doc.rust-lang.org/1.81.0/reference/types/numeric.html#bit-validity:
+//
+//   For every numeric type, `T`, the bit validity of `T` is equivalent to the
+//   bit validity of `[u8; size_of::<T>()]`. An uninitialized byte is not a
+//   valid `u8`.
+#[allow(clippy::multiple_unsafe_ops_per_block)]
+const _: () = unsafe {
+    unsafe_impl_has_null_pointer_optimization_for_nonzero!(
+        NonZeroU8,
+        NonZeroI8,
+        NonZeroU16,
+        NonZeroI16,
+        NonZeroU32,
+        NonZeroI32,
+        NonZeroU64,
+        NonZeroI64,
+        NonZeroU128,
+        NonZeroI128,
+        NonZeroUsize,
+        NonZeroIsize
     );
 };
+
+// `Option<NonZeroU8>` and `Option<NonZeroI8>` are `Unaligned` via the blanket
+// impl below. Double-check that they really have alignment 1.
+assert_unaligned!(Option<NonZeroU8>, Option<NonZeroI8>);
+
+// SAFETY: Per the safety invariant of `HasNullPointerOptimization`, for every
+// `T: HasNullPointerOptimization`, `T` is listed in [1]. Thus, `Option<T>` has
+// the same size and alignment as `T`, and `transmute::<_, Option<T>>([0u8;
+// size_of::<T>()])` is sound and produces `Option::<T>::None`. Thus, a
+// sequence of `size_of::<Option<T>>()` zero bytes is a valid `Option<T>`.
+// - `TryFromBytes`: The validator returns `true` in two cases:
+//   - `<T::NonZeroValidity as NonZeroValidity>::ALL_VALID` is `true`. Then, by
+//     the safety invariant of `NonZeroValidity`, every sequence of
+//     `size_of::<T>()` initialized bytes other than all zeros is a valid `T`,
+//     and so can be transmuted to a valid `Option<T>` (namely, `Some`) per
+//     [1]. The all-zeros sequence is a valid `Option<T>` by the preceding
+//     argument. Since `Option<T>` and `T` have the same size, every candidate
+//     `Option<T>` is therefore valid.
+//   - `is_zeroed` returns `true`, which it only does if every byte of the
+//     candidate `Option<T>` is zero. By the preceding argument, such a
+//     candidate refers to a valid `Option<T>`.
+// - `FromZeros`: By the preceding argument, an `Option<T>` whose bytes are all
+//   initialized to zero is valid.
+// - `IntoBytes`: Every valid `Option<T>` is either `None` or `Some`. Per [1],
+//   `None` can be transmuted to `[0u8; size_of::<T>()]`, so all of its bytes
+//   are initialized. Per [1], every `Some` can be transmuted to `T`, so its
+//   bytes are a valid `T`. Since `T: IntoBytes`, every valid `T` can be
+//   treated as a `[u8]`, so all of its bytes are initialized. Since `Option<T>`
+//   and `T` have the same size, every valid `Option<T>` can thus be treated as
+//   a `[u8]` of length `size_of::<Option<T>>()`.
+// - `Unaligned`: `Option<T>` has the same alignment as `T`, which is 1 since
+//   `T: Unaligned`.
+//
+// [1] Per https://doc.rust-lang.org/1.89.0/core/option/index.html#representation:
+//
+//   Rust guarantees to optimize the following types `T` such that
+//   [`Option<T>`] has the same size, alignment, and [function call ABI] as `T`.
+//   In some of these cases, Rust further guarantees the following:
+//   - `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and produces
+//     `Option::<T>::None`
+//   - `transmute::<_, [u8; size_of::<T>()]>(Option::<T>::None)` is sound and
+//     produces `[0u8; size_of::<T>()]`
+//
+//   ...
+//
+//   It is further guaranteed that, for the cases above, one can
+//   [`mem::transmute`] from all valid values of `T` to `Option<T>` and from
+//   `Some::<T>(_)` to `T` (but transmuting `None::<T>` to `T` is undefined
+//   behavior).
+#[allow(clippy::multiple_unsafe_ops_per_block)]
+const _: () = unsafe {
+    unsafe_impl!(
+        T: HasNullPointerOptimization => TryFromBytes for Option<T>;
+        |c| <T::NonZeroValidity as NonZeroValidity>::ALL_VALID || pointer::is_zeroed(c)
+    );
+    unsafe_impl!(T: HasNullPointerOptimization => FromZeros for Option<T>);
+    unsafe_impl!(T: HasNullPointerOptimization + IntoBytes => IntoBytes for Option<T>);
+    unsafe_impl!(T: HasNullPointerOptimization + Unaligned => Unaligned for Option<T>);
+};
+
+// SAFETY: `T::NonZeroValidity` is `AllValid`, whose `ALL_VALID` is `true`. By
+// the safety invariant of `NonZeroValidity`, every sequence of
+// `size_of::<T>()` initialized bytes other than all zeros is thus a valid `T`.
+// By the argument for `TryFromBytes` above, every sequence of
+// `size_of::<Option<T>>()` initialized bytes is therefore a valid `Option<T>`.
+unsafe impl<T> FromBytes for Option<T>
+where
+    T: HasNullPointerOptimization<NonZeroValidity = AllValid>,
+{
+    #[allow(clippy::missing_inline_in_public_items, dead_code)]
+    #[cfg_attr(
+        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+        coverage(off)
+    )]
+    fn only_derive_is_allowed_to_implement_this_trait() {}
+}
 
 // SAFETY: `[unsafe] [extern "C"] fn()` self-evidently do not contain
 // `UnsafeCell`s. This is not a proof, but we are accepting this as a known risk
@@ -1394,6 +1501,55 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_option_has_null_pointer_optimization_new_zeroed() {
+        #[derive(HasNullPointerOptimization)]
+        #[repr(transparent)]
+        struct Wrapper<'a>(&'a mut u8);
+
+        #[derive(HasNullPointerOptimization)]
+        #[repr(transparent)]
+        struct Nested<'a>(Wrapper<'a>);
+
+        #[derive(HasNullPointerOptimization, Immutable, IntoBytes)]
+        #[repr(transparent)]
+        struct NonZeroWrapper(NonZeroU32);
+
+        #[derive(HasNullPointerOptimization, Immutable, IntoBytes)]
+        #[repr(transparent)]
+        struct NonZeroNested(NonZeroWrapper);
+
+        #[cfg(feature = "alloc")]
+        assert!(Option::<Box<u8>>::new_zeroed().is_none());
+        assert!(Option::<&u8>::new_zeroed().is_none());
+        assert!(Option::<&mut u8>::new_zeroed().is_none());
+        assert!(Option::<NonNull<u8>>::new_zeroed().is_none());
+        assert!(Option::<fn(u8) -> u8>::new_zeroed().is_none());
+        assert!(Option::<unsafe extern "C" fn()>::new_zeroed().is_none());
+        assert!(Option::<Wrapper<'_>>::new_zeroed().is_none());
+        assert!(Option::<Nested<'_>>::new_zeroed().is_none());
+        assert!(Option::<NonZeroU32>::new_zeroed().is_none());
+        assert!(Option::<NonZeroWrapper>::new_zeroed().is_none());
+        assert!(Option::<NonZeroNested>::new_zeroed().is_none());
+
+        // Since every non-zero bit pattern is a valid `NonZeroU32`, every bit
+        // pattern is a valid `Option<NonZeroNested>`.
+        let nonzero = Option::<NonZeroNested>::try_read_from_bytes(&[0xFF; 4][..]);
+        assert_eq!(nonzero.ok().map(|o| o.map(|n| (n.0).0.get())), Some(Some(u32::MAX)));
+        let nonzero = Option::<NonZeroNested>::read_from_bytes(&[0xFF; 4][..]);
+        assert_eq!(nonzero.ok().map(|o| o.map(|n| (n.0).0.get())), Some(Some(u32::MAX)));
+        let mut bytes = [0x01, 0x02, 0x03, 0x04];
+        let nonzero = Option::<NonZeroNested>::mut_from_bytes(&mut bytes[..]).unwrap();
+        assert_eq!(nonzero.as_bytes(), [0x01, 0x02, 0x03, 0x04]);
+        *nonzero = None;
+        assert_eq!(bytes, [0; 4]);
+
+        let mut x = 0u8;
+        let mut opt = Some(Nested(Wrapper(&mut x)));
+        opt.zero();
+        assert!(opt.is_none());
+    }
+
+    #[test]
     fn test_impls() {
         // A type that can supply test cases for testing `TryFromBytes::is_safe`.
         // All types passed to `assert_impls!` must implement this trait; that
@@ -1502,7 +1658,8 @@ mod tests {
             fn(),
             FnManyArgs,
             extern "C" fn(),
-            ECFnManyArgs
+            ECFnManyArgs,
+            NpoWrapper
         );
 
         macro_rules! bx {
@@ -1730,6 +1887,7 @@ mod tests {
                             Option<FnManyArgs>,
                             Option<extern "C" fn()>,
                             Option<ECFnManyArgs>,
+                            Option<NpoWrapper>,
                             *const NotZerocopy,
                             *mut NotZerocopy
                         );
@@ -1762,6 +1920,7 @@ mod tests {
                             Option<FnManyArgs>,
                             Option<extern "C" fn()>,
                             Option<ECFnManyArgs>,
+                            Option<NpoWrapper>,
                             CoreMaybeUninit<u8>,
                             CoreMaybeUninit<NotZerocopy>,
                             CoreMaybeUninit<UnsafeCell<()>>,
@@ -2231,6 +2390,80 @@ mod tests {
         assert_impls!(Option<FnManyArgs>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<extern "C" fn()>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
         assert_impls!(Option<ECFnManyArgs>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+
+        // A `repr(transparent)` struct around a `HasNullPointerOptimization`
+        // type is itself `HasNullPointerOptimization`.
+        #[derive(HasNullPointerOptimization, Immutable)]
+        #[repr(transparent)]
+        struct NpoWrapper(&'static UnsafeCell<NotZerocopy>);
+
+        #[derive(HasNullPointerOptimization)]
+        #[repr(transparent)]
+        struct NpoWrapperWrapper(NpoWrapper);
+
+        assert_impls!(Option<NpoWrapper>: KnownLayout, Immutable, TryFromBytes, FromZeros, !FromBytes, !IntoBytes, !Unaligned);
+
+        // Unlike `Option` of a pointer type, `Option` of a wrapper around a
+        // `NonZeroXxx` is `FromBytes`. It is `IntoBytes` and `Unaligned` if
+        // the wrapper is.
+        #[derive(HasNullPointerOptimization, Immutable, IntoBytes)]
+        #[repr(transparent)]
+        struct NpoNonZeroWrapper(NonZeroU32);
+
+        #[derive(HasNullPointerOptimization, Immutable, IntoBytes, Unaligned)]
+        #[repr(transparent)]
+        struct NpoNonZeroU8Wrapper(NonZeroU8);
+
+        #[derive(HasNullPointerOptimization)]
+        #[repr(transparent)]
+        struct NpoNonZeroNotIntoBytes(NonZeroU32);
+
+        assert_impls!(Option<NpoNonZeroWrapper>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, !Unaligned);
+        assert_impls!(Option<NpoNonZeroU8Wrapper>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
+        assert_impls!(Option<NpoNonZeroNotIntoBytes>: KnownLayout, FromZeros, FromBytes, !Immutable, !IntoBytes, !Unaligned);
+        assert_impls!(Option<NpoWrapperWrapper>: KnownLayout, FromZeros, !Immutable, !FromBytes, !IntoBytes, !Unaligned);
+
+        #[cfg(feature = "alloc")]
+        assert_impls!(Box<UnsafeCell<NotZerocopy>>: HasNullPointerOptimization);
+        assert_impls!(&'static UnsafeCell<NotZerocopy>: HasNullPointerOptimization);
+        assert_impls!(&'static mut UnsafeCell<NotZerocopy>: HasNullPointerOptimization);
+        assert_impls!(NonNull<UnsafeCell<NotZerocopy>>: HasNullPointerOptimization);
+        assert_impls!(fn() -> NotZerocopy: HasNullPointerOptimization);
+        assert_impls!(FnManyArgs: HasNullPointerOptimization);
+        assert_impls!(unsafe fn(NotZerocopy) -> u8: HasNullPointerOptimization);
+        assert_impls!(extern "C" fn(u8) -> u8: HasNullPointerOptimization);
+        assert_impls!(ECFnManyArgs: HasNullPointerOptimization);
+        assert_impls!(unsafe extern "C" fn(u8) -> u8: HasNullPointerOptimization);
+        assert_impls!(NpoWrapper: HasNullPointerOptimization);
+        assert_impls!(NpoWrapperWrapper: HasNullPointerOptimization);
+        assert_impls!(NonZeroU8: HasNullPointerOptimization);
+        assert_impls!(NonZeroI8: HasNullPointerOptimization);
+        assert_impls!(NonZeroU16: HasNullPointerOptimization);
+        assert_impls!(NonZeroI16: HasNullPointerOptimization);
+        assert_impls!(NonZeroU32: HasNullPointerOptimization);
+        assert_impls!(NonZeroI32: HasNullPointerOptimization);
+        assert_impls!(NonZeroU64: HasNullPointerOptimization);
+        assert_impls!(NonZeroI64: HasNullPointerOptimization);
+        assert_impls!(NonZeroU128: HasNullPointerOptimization);
+        assert_impls!(NonZeroI128: HasNullPointerOptimization);
+        assert_impls!(NonZeroUsize: HasNullPointerOptimization);
+        assert_impls!(NonZeroIsize: HasNullPointerOptimization);
+        assert_impls!(NpoNonZeroWrapper: HasNullPointerOptimization);
+        assert_impls!(NpoNonZeroU8Wrapper: HasNullPointerOptimization);
+        assert_impls!(NpoNonZeroNotIntoBytes: HasNullPointerOptimization);
+
+        // Rust only guarantees the null pointer optimization for pointers to
+        // `Sized` types.
+        assert_impls!(Box<[UnsafeCell<NotZerocopy>]>: !HasNullPointerOptimization);
+        assert_impls!(&'static [UnsafeCell<NotZerocopy>]: !HasNullPointerOptimization);
+        assert_impls!(&'static mut [UnsafeCell<NotZerocopy>]: !HasNullPointerOptimization);
+        assert_impls!(NonNull<[UnsafeCell<NotZerocopy>]>: !HasNullPointerOptimization);
+        assert_impls!(&'static dyn Debug: !HasNullPointerOptimization);
+        assert_impls!(*const NotZerocopy: !HasNullPointerOptimization);
+        assert_impls!(*mut NotZerocopy: !HasNullPointerOptimization);
+        assert_impls!(Option<&'static UnsafeCell<NotZerocopy>>: !HasNullPointerOptimization);
+        assert_impls!(u8: !HasNullPointerOptimization);
+        assert_impls!(NotZerocopy: !HasNullPointerOptimization);
 
         assert_impls!(PhantomData<NotZerocopy>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);
         assert_impls!(PhantomData<UnsafeCell<()>>: KnownLayout, Immutable, TryFromBytes, FromZeros, FromBytes, IntoBytes, Unaligned);

@@ -473,6 +473,7 @@ pub(crate) enum Trait {
     ByteHash,
     ByteEq,
     SplitAt,
+    HasNullPointerOptimization,
 }
 
 impl ToTokens for Trait {
@@ -502,6 +503,7 @@ impl ToTokens for Trait {
             Trait::ByteHash => "ByteHash",
             Trait::ByteEq => "ByteEq",
             Trait::SplitAt => "SplitAt",
+            Trait::HasNullPointerOptimization => "HasNullPointerOptimization",
         };
         let ident = Ident::new(s, Span::call_site());
         let arguments: Option<syn::AngleBracketedGenericArguments> = match self {
@@ -525,7 +527,8 @@ impl ToTokens for Trait {
             | Trait::Sized
             | Trait::ByteHash
             | Trait::ByteEq
-            | Trait::SplitAt => None,
+            | Trait::SplitAt
+            | Trait::HasNullPointerOptimization => None,
         };
         tokens.extend(quote!(#ident #arguments));
     }

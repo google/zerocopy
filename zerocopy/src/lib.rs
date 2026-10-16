@@ -4063,6 +4063,187 @@ pub unsafe trait FromZeros: TryFromBytes {
     }
 }
 
+/// Analyzes whether a type is [`HasNullPointerOptimization`].
+///
+/// This derive analyzes, at compile time, whether the annotated type satisfies
+/// the [safety conditions] of `HasNullPointerOptimization` and implements
+/// `HasNullPointerOptimization` if it is sound to do so. This derive can be
+/// applied to `#[repr(transparent)]` structs with a single field; e.g.:
+///
+/// ```
+/// # use zerocopy_derive::HasNullPointerOptimization;
+/// #[derive(HasNullPointerOptimization)]
+/// #[repr(transparent)]
+/// struct MyStruct<'a> {
+/// # /*
+///     field: ...,
+/// # */
+/// #   field: &'a u8,
+/// }
+/// ```
+///
+/// [safety conditions]: trait@HasNullPointerOptimization#safety
+///
+/// # Analysis
+///
+/// *This section describes, roughly, the analysis performed by this derive to
+/// determine whether it is sound to implement `HasNullPointerOptimization` for
+/// a given type. Unless you are modifying the implementation of this derive,
+/// you don't need to read this section.*
+///
+/// If a type has the following properties, then this derive can implement
+/// `HasNullPointerOptimization` for that type:
+///
+/// - It must be a struct.
+/// - It must be `repr(transparent)`.
+/// - It must have exactly one field, and that field must be
+///   `HasNullPointerOptimization`.
+///
+/// This analysis is subject to change. Unsafe code may *only* rely on the
+/// documented [safety conditions] of `HasNullPointerOptimization`, and must
+/// *not* rely on the implementation details of this derive.
+///
+/// ## Why isn't `repr(C)` supported?
+///
+/// Rust only [guarantees][option-repr] the null pointer optimization for
+/// `repr(transparent)` structs which wrap a type that is itself guaranteed to
+/// have the null pointer optimization. No such guarantee is made for `repr(C)`
+/// structs, even if they have only a single field.
+///
+/// [option-repr]: core::option#representation
+#[cfg(any(feature = "derive", test))]
+#[cfg_attr(doc_cfg, doc(cfg(feature = "derive")))]
+pub use zerocopy_derive::HasNullPointerOptimization;
+
+/// Types for which `Option<Self>` is guaranteed to use the null pointer
+/// optimization.
+///
+/// If `T: HasNullPointerOptimization`, then `Option<T>` has the same size and
+/// alignment as `T`, and `None::<T>` is represented by a sequence of zero
+/// bytes. Consequently, `Option<T>` implements:
+/// - [`FromZeros`] and [`TryFromBytes`]
+/// - [`FromBytes`] if every non-zero bit pattern is a valid `T`, as is the
+///   case for the `NonZero*` integer types and for `repr(transparent)` structs
+///   which wrap them; otherwise, `TryFromBytes` accepts only the all-zeros byte
+///   sequence (i.e., `None`)
+/// - [`IntoBytes`] if `T: IntoBytes`
+/// - [`Unaligned`] if `T: Unaligned`
+///
+/// For example:
+///
+/// ```
+/// use core::num::NonZeroU32;
+/// use zerocopy::{FromBytes, FromZeros, IntoBytes};
+/// # use zerocopy_derive::*;
+///
+/// #[derive(HasNullPointerOptimization, IntoBytes, Immutable)]
+/// #[repr(transparent)]
+/// struct UserId(NonZeroU32);
+///
+/// let id = Option::<UserId>::read_from_bytes(&[0xFF; 4][..]).ok().flatten();
+/// assert_eq!(id.as_ref().map(|id| id.0.get()), Some(u32::MAX));
+/// assert_eq!(id.as_bytes(), [0xFF; 4]);
+///
+/// assert!(Option::<UserId>::new_zeroed().is_none());
+/// ```
+///
+/// Zerocopy implements `HasNullPointerOptimization` for:
+/// - `&T` and `&mut T` where `T: Sized`
+/// - `Box<T>` where `T: Sized` (requires the `alloc` feature)
+/// - `NonNull<T>` where `T: Sized`
+/// - `fn`, `unsafe fn`, `extern "C" fn`, and `unsafe extern "C" fn` with up to
+///   12 arguments
+/// - the `NonZero*` integer types
+///
+/// # Implementation
+///
+/// **Do not implement this trait yourself!** Instead, use
+/// [`#[derive(HasNullPointerOptimization)]`][derive]; e.g.:
+///
+/// ```
+/// # use zerocopy_derive::HasNullPointerOptimization;
+/// #[derive(HasNullPointerOptimization)]
+/// #[repr(transparent)]
+/// struct MyStruct<'a> {
+/// # /*
+///     field: ...,
+/// # */
+/// #   field: &'a u8,
+/// }
+/// ```
+///
+/// This derive performs a sophisticated, compile-time safety analysis to
+/// determine whether a type is `HasNullPointerOptimization`.
+///
+/// # Safety
+///
+/// *This section describes what is required in order for `T:
+/// HasNullPointerOptimization`, and what unsafe code may assume of such types.
+/// If you don't plan on implementing `HasNullPointerOptimization` manually, and
+/// you don't plan on writing unsafe code that operates on
+/// `HasNullPointerOptimization` types, then you don't need to read this
+/// section.*
+///
+/// If `T: HasNullPointerOptimization`, then `T` is one of the types listed in
+/// the [representation section of the `Option` documentation][option-repr] for
+/// which transmuting between `[0u8; size_of::<T>()]` and `Option::<T>::None` is
+/// guaranteed to be sound. Unsafe code may therefore assume that:
+/// - `Option<T>` has the same size and alignment as `T`
+/// - `transmute::<_, Option<T>>([0u8; size_of::<T>()])` is sound and produces
+///   `Option::<T>::None`
+/// - `transmute::<_, [u8; size_of::<T>()]>(Option::<T>::None)` is sound and
+///   produces `[0u8; size_of::<T>()]`
+///
+/// If a type is marked as `HasNullPointerOptimization` which violates this
+/// contract, it may cause undefined behavior.
+///
+/// `#[derive(HasNullPointerOptimization)]` only permits [types which satisfy
+/// these requirements][derive-analysis].
+///
+/// You must not rely on the `#[doc(hidden)]` internals of
+/// `HasNullPointerOptimization`. Future releases of zerocopy may make
+/// backwards-breaking changes to these items, including changes that only
+/// affect soundness, which may cause code which uses those items to silently
+/// become unsound.
+///
+/// [option-repr]: core::option#representation
+#[cfg_attr(
+    feature = "derive",
+    doc = "[derive]: zerocopy_derive::HasNullPointerOptimization",
+    doc = "[derive-analysis]: zerocopy_derive::HasNullPointerOptimization#analysis"
+)]
+#[cfg_attr(
+    not(feature = "derive"),
+    doc = concat!("[derive]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.HasNullPointerOptimization.html"),
+    doc = concat!("[derive-analysis]: https://docs.rs/zerocopy/", env!("CARGO_PKG_VERSION"), "/zerocopy/derive.HasNullPointerOptimization.html#analysis"),
+)]
+#[cfg_attr(
+    not(no_zerocopy_diagnostic_on_unimplemented_1_78_0),
+    diagnostic::on_unimplemented(
+        note = "Consider adding `#[derive(HasNullPointerOptimization)]` to `{Self}`"
+    )
+)]
+pub unsafe trait HasNullPointerOptimization {
+    // The `Self: Sized` bound makes it so that `HasNullPointerOptimization` is
+    // still object safe.
+    #[doc(hidden)]
+    fn only_derive_is_allowed_to_implement_this_trait()
+    where
+        Self: Sized;
+
+    /// Describes which non-zero bit patterns are valid instances of `Self`.
+    ///
+    /// # Safety (Internal)
+    ///
+    /// If `<Self::NonZeroValidity as NonZeroValidity>::ALL_VALID` is `true`
+    /// (i.e., `Self::NonZeroValidity` is `AllValid`), then unsafe code *inside
+    /// of this crate* may assume that every sequence of `size_of::<Self>()`
+    /// initialized bytes, other than the all-zeros sequence, is a valid
+    /// instance of `Self`. `MaybeInvalid` is always sound.
+    #[doc(hidden)]
+    type NonZeroValidity: util::npo::NonZeroValidity;
+}
+
 /// Analyzes whether a type is [`FromBytes`].
 ///
 /// This derive analyzes, at compile time, whether the annotated type satisfies

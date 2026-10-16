@@ -31,6 +31,7 @@ mod imp {
             convert::TryFrom,
             hash,
             marker::PhantomData,
+            matches,
             mem::{ManuallyDrop, MaybeUninit},
             option::IntoIter,
             prelude::v1::*,

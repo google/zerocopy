@@ -132,3 +132,15 @@ union Unaligned7 {
     foo: i16,
     bar: AU16,
 }
+
+//
+// HasNullPointerOptimization errors
+//
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: can only be applied to structs
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+union HasNullPointerOptimization1 {
+    a: &'static u8,
+}

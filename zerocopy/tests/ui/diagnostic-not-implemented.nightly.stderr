@@ -1,7 +1,7 @@
 error[E0277]: the trait bound `NotZerocopy: FromBytes` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:16:24
+  --> $DIR/diagnostic-not-implemented.rs:19:24
    |
-16 |     takes_from_bytes::<NotZerocopy>();
+19 |     takes_from_bytes::<NotZerocopy>();
    |                        ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromBytes` is not implemented for `NotZerocopy`
@@ -14,15 +14,15 @@ help: the trait `FromBytes` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_from_bytes`
-  --> $DIR/diagnostic-not-implemented.rs:77:24
+  --> $DIR/diagnostic-not-implemented.rs:82:24
    |
-77 | fn takes_from_bytes<T: FromBytes>() {}
+82 | fn takes_from_bytes<T: FromBytes>() {}
    |                        ^^^^^^^^^ required by this bound in `takes_from_bytes`
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:18:24
+  --> $DIR/diagnostic-not-implemented.rs:21:24
    |
-18 |     takes_from_zeros::<NotZerocopy>();
+21 |     takes_from_zeros::<NotZerocopy>();
    |                        ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
@@ -35,17 +35,36 @@ help: the trait `FromZeros` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_from_zeros`
-  --> $DIR/diagnostic-not-implemented.rs:78:24
+  --> $DIR/diagnostic-not-implemented.rs:83:24
    |
-78 | fn takes_from_zeros<T: FromZeros>() {}
+83 | fn takes_from_zeros<T: FromZeros>() {}
    |                        ^^^^^^^^^ required by this bound in `takes_from_zeros`
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0277]: the trait bound `NotZerocopy: HasNullPointerOptimization` is not satisfied
+  --> $DIR/diagnostic-not-implemented.rs:23:43
+   |
+23 |     takes_has_null_pointer_optimization::<NotZerocopy>();
+   |                                           ^^^^^^^^^^^ unsatisfied trait bound
+   |
+help: the trait `HasNullPointerOptimization` is not implemented for `NotZerocopy`
+  --> $DIR/../include.rs:15:5
+   |
+15 |     pub struct NotZerocopy<T = ()>(pub T);
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = note: Consider adding `#[derive(HasNullPointerOptimization)]` to `NotZerocopy`
+   = help: the following other types implement trait `HasNullPointerOptimization`:
+             $IMPLEMENTATION_SAMPLES
+           and $OTHER_TYPES others
+note: required by a bound in `takes_has_null_pointer_optimization`
+  --> $DIR/diagnostic-not-implemented.rs:84:43
+   |
+84 | fn takes_has_null_pointer_optimization<T: HasNullPointerOptimization>() {}
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `takes_has_null_pointer_optimization`
 
 error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:20:23
+  --> $DIR/diagnostic-not-implemented.rs:25:23
    |
-20 |     takes_immutable::<NotZerocopy>();
+25 |     takes_immutable::<NotZerocopy>();
    |                       ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `Immutable` is not implemented for `NotZerocopy`
@@ -58,17 +77,17 @@ help: the trait `Immutable` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_immutable`
-  --> $DIR/diagnostic-not-implemented.rs:79:23
+  --> $DIR/diagnostic-not-implemented.rs:85:23
    |
-79 | fn takes_immutable<T: Immutable>() {}
+85 | fn takes_immutable<T: Immutable>() {}
    |                       ^^^^^^^^^ required by this bound in `takes_immutable`
    = note: the full name for the type has been written to '/long-type-HASH.txt'
    = note: consider using `--verbose` to print the full type name to the console
 
 error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:22:24
+  --> $DIR/diagnostic-not-implemented.rs:27:24
    |
-22 |     takes_into_bytes::<NotZerocopy>();
+27 |     takes_into_bytes::<NotZerocopy>();
    |                        ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `IntoBytes` is not implemented for `NotZerocopy`
@@ -81,15 +100,15 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_into_bytes`
-  --> $DIR/diagnostic-not-implemented.rs:80:24
+  --> $DIR/diagnostic-not-implemented.rs:86:24
    |
-80 | fn takes_into_bytes<T: IntoBytes>() {}
+86 | fn takes_into_bytes<T: IntoBytes>() {}
    |                        ^^^^^^^^^ required by this bound in `takes_into_bytes`
 
 error[E0277]: the trait bound `NotZerocopy: KnownLayout` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:24:26
+  --> $DIR/diagnostic-not-implemented.rs:29:26
    |
-24 |     takes_known_layout::<NotZerocopy>();
+29 |     takes_known_layout::<NotZerocopy>();
    |                          ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `KnownLayout` is not implemented for `NotZerocopy`
@@ -102,15 +121,15 @@ help: the trait `KnownLayout` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_known_layout`
-  --> $DIR/diagnostic-not-implemented.rs:81:26
+  --> $DIR/diagnostic-not-implemented.rs:87:26
    |
-81 | fn takes_known_layout<T: KnownLayout>() {}
+87 | fn takes_known_layout<T: KnownLayout>() {}
    |                          ^^^^^^^^^^^ required by this bound in `takes_known_layout`
 
 error[E0277]: the trait bound `NotZerocopy: TryFromBytes` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:26:28
+  --> $DIR/diagnostic-not-implemented.rs:31:28
    |
-26 |     takes_try_from_bytes::<NotZerocopy>();
+31 |     takes_try_from_bytes::<NotZerocopy>();
    |                            ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
@@ -123,17 +142,15 @@ help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_try_from_bytes`
-  --> $DIR/diagnostic-not-implemented.rs:82:28
+  --> $DIR/diagnostic-not-implemented.rs:88:28
    |
-82 | fn takes_try_from_bytes<T: TryFromBytes>() {}
+88 | fn takes_try_from_bytes<T: TryFromBytes>() {}
    |                            ^^^^^^^^^^^^ required by this bound in `takes_try_from_bytes`
-   = note: the full name for the type has been written to '/long-type-HASH.txt'
-   = note: consider using `--verbose` to print the full type name to the console
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy::Unaligned` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:28:23
+  --> $DIR/diagnostic-not-implemented.rs:33:23
    |
-28 |     takes_unaligned::<NotZerocopy>();
+33 |     takes_unaligned::<NotZerocopy>();
    |                       ^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
@@ -146,36 +163,36 @@ help: the trait `zerocopy::Unaligned` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `takes_unaligned`
-  --> $DIR/diagnostic-not-implemented.rs:83:23
+  --> $DIR/diagnostic-not-implemented.rs:89:23
    |
-83 | fn takes_unaligned<T: Unaligned>() {}
+89 | fn takes_unaligned<T: Unaligned>() {}
    |                       ^^^^^^^^^ required by this bound in `takes_unaligned`
 
 error[E0277]: the trait bound `NotZerocopy: Immutable` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:66:19
+  --> $DIR/diagnostic-not-implemented.rs:71:19
    |
-66 |     Foo.write_obj(NotZerocopy(()));
+71 |     Foo.write_obj(NotZerocopy(()));
    |         --------- ^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `NotZerocopy`
    |         |
    |         required by a bound introduced by this call
    |
 note: required by a bound in `Foo::write_obj`
-  --> $DIR/diagnostic-not-implemented.rs:73:25
+  --> $DIR/diagnostic-not-implemented.rs:78:25
    |
-72 |     impl Foo {
-73 |         fn write_obj<T: Immutable + IntoBytes>(&mut self, _val: T) {}
+77 |     impl Foo {
+78 |         fn write_obj<T: Immutable + IntoBytes>(&mut self, _val: T) {}
    |                         ^^^^^^^^^ required by this bound in `Foo::write_obj`
 help: consider borrowing here
    |
-66 |     Foo.write_obj(&NotZerocopy(()));
+71 |     Foo.write_obj(&NotZerocopy(()));
    |                   +
-66 |     Foo.write_obj(&mut NotZerocopy(()));
+71 |     Foo.write_obj(&mut NotZerocopy(()));
    |                   ++++
 
 error[E0277]: the trait bound `NotZerocopy: IntoBytes` is not satisfied
-  --> $DIR/diagnostic-not-implemented.rs:66:19
+  --> $DIR/diagnostic-not-implemented.rs:71:19
    |
-66 |     Foo.write_obj(NotZerocopy(()));
+71 |     Foo.write_obj(NotZerocopy(()));
    |         --------- ^^^^^^^^^^^^^^^ unsatisfied trait bound
    |         |
    |         required by a bound introduced by this call
@@ -190,12 +207,12 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy`
              $IMPLEMENTATION_SAMPLES
            and $OTHER_TYPES others
 note: required by a bound in `Foo::write_obj`
-  --> $DIR/diagnostic-not-implemented.rs:73:37
+  --> $DIR/diagnostic-not-implemented.rs:78:37
    |
-72 |     impl Foo {
-73 |         fn write_obj<T: Immutable + IntoBytes>(&mut self, _val: T) {}
+77 |     impl Foo {
+78 |         fn write_obj<T: Immutable + IntoBytes>(&mut self, _val: T) {}
    |                                     ^^^^^^^^^ required by this bound in `Foo::write_obj`
 
-error: aborting due to 9 previous errors
+error: aborting due to 10 previous errors
 
 For more information about this error, try `rustc --explain E0277`.

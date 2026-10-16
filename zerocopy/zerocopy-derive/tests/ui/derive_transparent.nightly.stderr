@@ -5,9 +5,9 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::TryFromBytes` is n
     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy_renamed::TryFromBytes` is not implemented for `NotZerocopy`
-   --> $DIR/../include.rs:48:5
+   --> $DIR/../include.rs:49:5
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 49 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(TryFromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::TryFromBytes`:
@@ -19,9 +19,9 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
  24 | #[derive(IntoBytes, FromBytes, Unaligned)]
     |                     ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::TryFromBytes`
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-   --> $DIR/../include.rs:74:17
+   --> $DIR/../include.rs:75:17
     |
- 74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+ 75 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
     |
    ::: $DIR/derive_transparent.rs:35:1
@@ -32,8 +32,6 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    ::: $WORKSPACE/vendor/static_assertions/src/assert_impl.rs:117
     |
 117 |             fn assert_impl_all<T: ?Sized $(+ $trait)+>() {}
-    = note: the full name for the type has been written to '/long-type-HASH.txt'
-    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
@@ -43,9 +41,9 @@ error[E0277]: the trait bound `NotZerocopy: FromZeros` is not satisfied
     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `FromZeros` is not implemented for `NotZerocopy`
-   --> $DIR/../include.rs:48:5
+   --> $DIR/../include.rs:49:5
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 49 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(FromZeros)]` to `NotZerocopy`
     = help: the following other types implement trait `FromZeros`:
@@ -57,9 +55,9 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `FromZeros`
  24 | #[derive(IntoBytes, FromBytes, Unaligned)]
     |                     ^^^^^^^^^ type parameter would need to implement `FromZeros`
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-   --> $DIR/../include.rs:74:17
+   --> $DIR/../include.rs:75:17
     |
- 74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+ 75 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
     |
    ::: $DIR/derive_transparent.rs:38:1
@@ -70,8 +68,6 @@ note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
    ::: $WORKSPACE/vendor/static_assertions/src/assert_impl.rs:117
     |
 117 |             fn assert_impl_all<T: ?Sized $(+ $trait)+>() {}
-    = note: the full name for the type has been written to '/long-type-HASH.txt'
-    = note: consider using `--verbose` to print the full type name to the console
     = note: this error originates in the derive macro `FromBytes` which comes from the expansion of the macro `util_assert_impl_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not satisfied
@@ -81,9 +77,9 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::FromBytes` is not 
     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy_renamed::FromBytes` is not implemented for `NotZerocopy`
-   --> $DIR/../include.rs:48:5
+   --> $DIR/../include.rs:49:5
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 49 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(FromBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::FromBytes`:
@@ -95,9 +91,9 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
  24 | #[derive(IntoBytes, FromBytes, Unaligned)]
     |                     ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::FromBytes`
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-   --> $DIR/../include.rs:74:17
+   --> $DIR/../include.rs:75:17
     |
- 74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+ 75 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
     |
    ::: $DIR/derive_transparent.rs:41:1
@@ -117,9 +113,9 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::IntoBytes` is not 
     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy_renamed::IntoBytes` is not implemented for `NotZerocopy`
-   --> $DIR/../include.rs:48:5
+   --> $DIR/../include.rs:49:5
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 49 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(IntoBytes)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::IntoBytes`:
@@ -131,9 +127,9 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
  24 | #[derive(IntoBytes, FromBytes, Unaligned)]
     |          ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::IntoBytes`
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-   --> $DIR/../include.rs:74:17
+   --> $DIR/../include.rs:75:17
     |
- 74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+ 75 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
     |
    ::: $DIR/derive_transparent.rs:44:1
@@ -153,9 +149,9 @@ error[E0277]: the trait bound `NotZerocopy: zerocopy_renamed::Unaligned` is not 
     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
     |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `NotZerocopy`
-   --> $DIR/../include.rs:48:5
+   --> $DIR/../include.rs:49:5
     |
- 48 |     pub struct NotZerocopy<T = ()>(pub T);
+ 49 |     pub struct NotZerocopy<T = ()>(pub T);
     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     = note: Consider adding `#[derive(Unaligned)]` to `NotZerocopy`
     = help: the following other types implement trait `zerocopy_renamed::Unaligned`:
@@ -167,9 +163,9 @@ note: required for `TransparentStruct<NotZerocopy>` to implement `zerocopy_renam
  24 | #[derive(IntoBytes, FromBytes, Unaligned)]
     |                                ^^^^^^^^^ type parameter would need to implement `zerocopy_renamed::Unaligned`
 note: required by a bound in `_::{closure#0}::_::{closure#0}::assert_impl_all`
-   --> $DIR/../include.rs:74:17
+   --> $DIR/../include.rs:75:17
     |
- 74 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
+ 75 |                 ::static_assertions::assert_impl_all!($type: $($trait),+);
     |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `assert_impl_all`
     |
    ::: $DIR/derive_transparent.rs:47:1

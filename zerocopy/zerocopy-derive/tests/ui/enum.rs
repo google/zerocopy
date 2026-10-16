@@ -688,3 +688,15 @@ enum IntoBytes6<T> {
 enum IntoBytes7 {
     A,
 }
+
+//
+// HasNullPointerOptimization errors
+//
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: can only be applied to structs
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+enum HasNullPointerOptimization1 {
+    A(&'static u8),
+}
