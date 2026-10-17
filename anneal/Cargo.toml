@@ -27,19 +27,27 @@ exclude = [".*", "testdata"]
 # FIXME: Replace these placeholder archive URLs and hashes before publishing
 # this crate; `cargo anneal setup` uses this metadata by default when callers
 # do not provide a local archive.
-[package.metadata.exocrate.linux.x86_64]
+[[package.metadata.exocrate]]
+os = "linux"
+arch = "x86_64"
 sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 url = "https://example.com/linux-x86_64.tar.zst"
 
-[package.metadata.exocrate.macos.x86_64]
+[[package.metadata.exocrate]]
+os = "macos"
+arch = "x86_64"
 sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 url = "https://example.com/macos-x86_64.tar.zst"
 
-[package.metadata.exocrate.linux.aarch64]
+[[package.metadata.exocrate]]
+os = "linux"
+arch = "aarch64"
 sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 url = "https://example.com/linux-aarch64.tar.zst"
 
-[package.metadata.exocrate.macos.aarch64]
+[[package.metadata.exocrate]]
+os = "macos"
+arch = "aarch64"
 sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 url = "https://example.com/macos-aarch64.tar.zst"
 
