@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792409699345,
+  "lastUpdate": 1792416029754,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23701,6 +23701,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1227,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sagartaunk@proton.me",
+            "name": "Sagar Taunk",
+            "username": "Sagartaunk"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "20a6f6f49c9e56292ce86bc1fc2c09812d3f72c6",
+          "message": "[exocrate] Don't require the user to specify os/arch pairs (#3899)\n\nChange the metadata format to an array of tables with explicit\nos` and `arch` keys in the following format:\n\n\t` [[package.metadata.exocrate]]\n\t os = \"linux\"\n\t arch = \"x86_64\"\n\t sha256 = \"...\"\n\t url = \"...\"`\n\nThis allows us to scan these entries at compile time and select\nthe one matching `std::env::consts::{OS, ARCH}` directly. In\ncase of no match, fail the compilation with \"Unsupported Platform\".\n\nThe calling syntax now only requires path to `Cargo.toml`\nas in the following format:\n\t`parse_remote_archive! {\n\t\tpub const REMOTE: RemoteArchive = \"Cargo.toml\";\n\t}`\n\nMoreover, Update `anneal` to the new metadata format and macro syntax.\n\nThis introduces  breaking change to both the macro syntax and the `Cargo.toml`\nmetadata layout.\n\nCloses: #3410\n\nSigned-off-by: Sagar Taunk <sagartaunk@proton.me>",
+          "timestamp": "2026-10-19T12:23:16Z",
+          "tree_id": "28704425f627cfeda3385886e742509a2688d4bf",
+          "url": "https://github.com/google/zerocopy/commit/20a6f6f49c9e56292ce86bc1fc2c09812d3f72c6"
+        },
+        "date": 1792416022700,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1281,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1496,
             "unit": "seconds"
           }
         ]
