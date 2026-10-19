@@ -92,24 +92,29 @@
 //! # `std::env::consts::OS . std::env::consts::ARCH` listed as supported in your invocation of
 //! # `exocrate::parse_remote_archive`.
 //! #
-//! [package.metadata.exocrate.linux.x86_64]
-//! # FIXME: Replace `sha256` with actual linux-x86_64.tar.zst checksum.
-//! sha256 = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+//!
+//! [[package.metadata.exocrate]]
+//! os = "linux"
+//! arch = "x86_64"
+//! sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 //! url = "https://example.com/linux-x86_64.tar.zst"
 //!
-//! [package.metadata.exocrate.macos.x86_64]
-//! # FIXME: Replace `sha256` with actual macos-x86_64.tar.zst checksum.
-//! sha256 = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+//! [[package.metadata.exocrate]]
+//! os = "macos"
+//! arch = "x86_64"
+//! sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 //! url = "https://example.com/macos-x86_64.tar.zst"
 //!
-//! [package.metadata.exocrate.linux.aarch64]
-//! # FIXME: Replace `sha256` with actual linux-aarch64.tar.zst checksum.
-//! sha256 = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+//! [[package.metadata.exocrate]]
+//! os = "linux"
+//! arch = "aarch64"
+//! sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 //! url = "https://example.com/linux-aarch64.tar.zst"
 //!
-//! [package.metadata.exocrate.macos.aarch64]
-//! # FIXME: Replace `sha256` with actual macos-aarch64.tar.zst checksum.
-//! sha256 = "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+//! [[package.metadata.exocrate]]
+//! os = "macos"
+//! arch = "aarch64"
+//! sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 //! url = "https://example.com/macos-aarch64.tar.zst"
 //! ```
 //!
@@ -444,66 +449,57 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
 /// The `Cargo.toml` is expected to have content of the form:
 ///
 /// ```toml
-/// [package.metadata.exocrate.linux.x86_64]
+///
+/// [[package.metadata.exocrate]]
+/// os = "linux"
+/// arch = "x86_64"
 /// sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 /// url = "https://example.com/linux-x86_64.tar.zst"
 ///
-/// [package.metadata.exocrate.macos.x86_64]
+/// [[package.metadata.exocrate]]
+/// os = "macos"
+/// arch = "x86_64"
 /// sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 /// url = "https://example.com/macos-x86_64.tar.zst"
 ///
-/// [package.metadata.exocrate.linux.aarch64]
+/// [[package.metadata.exocrate]]
+/// os = "linux"
+/// arch = "aarch64"
 /// sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 /// url = "https://example.com/linux-aarch64.tar.zst"
 ///
-/// [package.metadata.exocrate.macos.aarch64]
+/// [[package.metadata.exocrate]]
+/// os = "macos"
+/// arch = "aarch64"
 /// sha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 /// url = "https://example.com/macos-aarch64.tar.zst"
 /// ```
-///
-/// The `parse_remote_archive!` invocation must specify the set of OS/Arch
-/// pairs, e.g.:
-///
-/// ```rust,ignore
-/// parse_remote_archive! {
-///     const REMOTE: RemoteArchive = "Cargo.toml" [
-///         (linux, x86_64),
-///         (linux, aarch64),
-///         (macos, aarch64),
-///         (macos, x86_64),
-///     ];
-/// }
-/// ```
-///
-// - FIXME(#3410): Don't require the user to specify os/arch pairs in the macro invocation.
 #[macro_export]
 macro_rules! parse_remote_archive {
-    ($vis:vis const $name:ident: RemoteArchive = $cargo_toml_path:literal [
-        $(($os:ident, $arch:ident)),* $(,)?
-    ];) => {
+    ($vis:vis const $name:ident: RemoteArchive = $cargo_toml_path:literal;) => {
         $vis const $name: $crate::RemoteArchive = {
             $crate::macro_util::toml_const::toml_const!{
                 const MANIFEST: $cargo_toml_path;
             }
+            use std::env::consts::*;
+            use $crate::macro_util::pack;
 
-            let config = {
-                use std::env::consts::*;
-                use $crate::macro_util::pack;
+            let entries = MANIFEST.package.metadata.exocrate;
+            let mut i = 0;
+            let config = loop {
+
+                if i == entries.len() {
+                    panic!("Unsupported Platform");
+                }
+                let entry = &entries[i];
 
                 // NOTE: Rust doesn't support checking `&str`s for equality in a
                 // `const` context. We work around that limitation by packing
                 // their bytes into `u128`s, which can be compared.
-                //
-                // FIXME(#3410): How can we detect if os/arch pairs have been added to
-                // `Cargo.toml` without being added to the macro invocation?
-                match (pack(OS), pack(ARCH)) {
-                    $(
-                        (os, arch) if os == pack(stringify!($os)) && arch == pack(stringify!($arch)) => {
-                            MANIFEST.package.metadata.exocrate.$os.$arch
-                        }
-                    )*
-                    _ => panic!("unsupported platform"),
+                if pack(entry.os) == pack(OS) && pack(entry.arch) == pack(ARCH) {
+                    break entry;
                 }
+                i+=1;
             };
 
             let Some(sha256) = $crate::macro_util::decode_hex(config.sha256) else {
