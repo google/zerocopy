@@ -273,7 +273,7 @@ jobs:
         run: sudo softwareupdate --install-rosetta --agree-to-license
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@d0c908e6cbe9f89f36ed8205a3ab6f092636916a # v3.23.1
+        uses: DeterminateSystems/determinate-nix-action@e847f25223456b3058e12f7fc9d777b6a6f25060 # v3.23.2
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox uses `bubblewrap` for Linux FHS execution, which requires creating a user namespace.
