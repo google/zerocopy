@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792010916704,
+  "lastUpdate": 1792409699345,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23667,6 +23667,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1626,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "49699333+dependabot[bot]@users.noreply.github.com",
+            "name": "dependabot[bot]",
+            "username": "dependabot[bot]"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "99b6de8073b001e5c809266efdaffc8265868c91",
+          "message": "[CI] Bump the all-actions group with 5 updates (#3905)\n\nBumps the all-actions group with 5 updates:\n\n| Package | From | To |\n| --- | --- | --- |\n| [DeterminateSystems/determinate-nix-action](https://github.com/determinatesystems/determinate-nix-action) | `3.23.1` | `3.23.2` |\n| [dtolnay/rust-toolchain](https://github.com/dtolnay/rust-toolchain) | `e2a55d2ffb04f378e9626c28d38b36d230d1e12f` | `683b588c487a69d01f6c6ddf40f036ff682cc2c8` |\n| [zizmorcore/zizmor-action](https://github.com/zizmorcore/zizmor-action) | `0.6.4` | `0.7.1` |\n| [ossf/scorecard-action](https://github.com/ossf/scorecard-action) | `2.4.4` | `2.5.0` |\n| [github/codeql-action/upload-sarif](https://github.com/github/codeql-action) | `4.38.3` | `4.39.0` |\n\n\nUpdates `DeterminateSystems/determinate-nix-action` from 3.23.1 to 3.23.2\n- [Release notes](https://github.com/determinatesystems/determinate-nix-action/releases)\n- [Commits](https://github.com/determinatesystems/determinate-nix-action/compare/d0c908e6cbe9f89f36ed8205a3ab6f092636916a...e847f25223456b3058e12f7fc9d777b6a6f25060)\n\nUpdates `dtolnay/rust-toolchain` from e2a55d2ffb04f378e9626c28d38b36d230d1e12f to 683b588c487a69d01f6c6ddf40f036ff682cc2c8\n- [Release notes](https://github.com/dtolnay/rust-toolchain/releases)\n- [Commits](https://github.com/dtolnay/rust-toolchain/compare/e2a55d2ffb04f378e9626c28d38b36d230d1e12f...683b588c487a69d01f6c6ddf40f036ff682cc2c8)\n\nUpdates `zizmorcore/zizmor-action` from 0.6.4 to 0.7.1\n- [Release notes](https://github.com/zizmorcore/zizmor-action/releases)\n- [Commits](https://github.com/zizmorcore/zizmor-action/compare/cc914d7f3750a2d13d75c7f184a1060aa0e9d482...85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e)\n\nUpdates `ossf/scorecard-action` from 2.4.4 to 2.5.0\n- [Release notes](https://github.com/ossf/scorecard-action/releases)\n- [Changelog](https://github.com/ossf/scorecard-action/blob/main/RELEASE.md)\n- [Commits](https://github.com/ossf/scorecard-action/compare/2d1146689b8cda280b9bc96326124645441f03bc...fa7117db83c52d787ae5a89f350999701505d78e)\n\nUpdates `github/codeql-action/upload-sarif` from 4.38.3 to 4.39.0\n- [Release notes](https://github.com/github/codeql-action/releases)\n- [Changelog](https://github.com/github/codeql-action/blob/main/CHANGELOG.md)\n- [Commits](https://github.com/github/codeql-action/compare/24c54180a607b1449ed407dd24f251e4e9147c8d...6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee)\n\n---\nupdated-dependencies:\n- dependency-name: DeterminateSystems/determinate-nix-action\n  dependency-version: 3.23.2\n  dependency-type: direct:production\n  update-type: version-update:semver-patch\n  dependency-group: all-actions\n- dependency-name: dtolnay/rust-toolchain\n  dependency-version: 683b588c487a69d01f6c6ddf40f036ff682cc2c8\n  dependency-type: direct:production\n  dependency-group: all-actions\n- dependency-name: zizmorcore/zizmor-action\n  dependency-version: 0.7.1\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: all-actions\n- dependency-name: ossf/scorecard-action\n  dependency-version: 2.5.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: all-actions\n- dependency-name: github/codeql-action/upload-sarif\n  dependency-version: 4.39.0\n  dependency-type: direct:production\n  update-type: version-update:semver-minor\n  dependency-group: all-actions\n...\n\nSigned-off-by: dependabot[bot] <support@github.com>\nCo-authored-by: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>",
+          "timestamp": "2026-10-19T10:19:18Z",
+          "tree_id": "e9a3bcb3ac79118bd2fb5de32e127b492d83ba0c",
+          "url": "https://github.com/google/zerocopy/commit/99b6de8073b001e5c809266efdaffc8265868c91"
+        },
+        "date": 1792409695941,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1099,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1227,
             "unit": "seconds"
           }
         ]
