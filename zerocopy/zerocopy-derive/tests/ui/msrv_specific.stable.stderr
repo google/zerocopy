@@ -13,9 +13,9 @@ error[E0277]: the trait bound `AU16: zerocopy_renamed::Unaligned` is not satisfi
    |                           ^^^^^^^^^^^^^^^^ unsatisfied trait bound
    |
 help: the trait `zerocopy_renamed::Unaligned` is not implemented for `AU16`
-  --> $DIR/../include.rs:64:5
+  --> $DIR/../include.rs:65:5
    |
-64 |     pub struct AU16(pub u16);
+65 |     pub struct AU16(pub u16);
    |     ^^^^^^^^^^^^^^^
    = note: Consider adding `#[derive(Unaligned)]` to `AU16`
    = help: the following other types implement trait `zerocopy_renamed::Unaligned`:

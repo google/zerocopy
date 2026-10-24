@@ -14,6 +14,42 @@ pub(crate) mod macros;
 #[doc(hidden)]
 pub mod macro_util;
 
+/// Type-level descriptions of which non-zero bit patterns are valid instances
+/// of a [`HasNullPointerOptimization`] type.
+pub mod npo {
+    use self::sealed::Sealed;
+
+    /// Describes which non-zero bit patterns are valid instances of a type.
+    pub trait NonZeroValidity: Sealed {
+        /// Is every non-zero bit pattern a valid instance?
+        const ALL_VALID: bool;
+    }
+
+    /// Every sequence of initialized bytes, other than the all-zeros sequence,
+    /// is a valid instance.
+    #[derive(Copy, Clone, Debug)]
+    pub enum AllValid {}
+
+    /// Some non-zero bit patterns may not be valid instances.
+    #[derive(Copy, Clone, Debug)]
+    pub enum MaybeInvalid {}
+
+    impl NonZeroValidity for AllValid {
+        const ALL_VALID: bool = true;
+    }
+
+    impl NonZeroValidity for MaybeInvalid {
+        const ALL_VALID: bool = false;
+    }
+
+    mod sealed {
+        pub trait Sealed {}
+
+        impl Sealed for super::AllValid {}
+        impl Sealed for super::MaybeInvalid {}
+    }
+}
+
 use core::{
     marker::PhantomData,
     mem::{self, ManuallyDrop},

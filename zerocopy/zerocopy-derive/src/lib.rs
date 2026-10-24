@@ -138,6 +138,7 @@ derive!(Unaligned => derive_unaligned => crate::derive::unaligned::derive_unalig
 derive!(ByteHash => derive_hash => crate::derive::derive_hash);
 derive!(ByteEq => derive_eq => crate::derive::derive_eq);
 derive!(SplitAt => derive_split_at => crate::derive::derive_split_at);
+derive!(HasNullPointerOptimization => derive_has_null_pointer_optimization => crate::derive::derive_has_null_pointer_optimization);
 
 /// Generates a struct whose two identically-printed field types resolve to
 /// different types. This is used to test that derives preserve type identity

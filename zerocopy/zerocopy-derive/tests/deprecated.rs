@@ -129,3 +129,21 @@ mod split_at_test {
         }
     }
 }
+
+// Tests for HasNullPointerOptimization which requires repr(transparent) and
+// exactly one field
+mod has_null_pointer_optimization_test {
+    mod HasNullPointerOptimization {
+        use super::super::*;
+        #[deprecated = "do not use"]
+        #[derive(imp::HasNullPointerOptimization)]
+        #[zerocopy(crate = "zerocopy_renamed")]
+        #[repr(transparent)]
+        struct Struct(&'static u8);
+
+        #[allow(deprecated)]
+        fn _allow_deprecated() {
+            util_assert_impl_all!(Struct: imp::HasNullPointerOptimization);
+        }
+    }
+}

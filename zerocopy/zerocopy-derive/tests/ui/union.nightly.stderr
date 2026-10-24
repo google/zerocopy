@@ -62,6 +62,14 @@ error: must have #[repr(C)], #[repr(transparent)], or #[repr(packed)] attribute 
     |
     = note: this error originates in the derive macro `Unaligned` (in Nightly builds, run with -Z macro-backtrace for more info)
 
+error: can only be applied to structs
+   --> $DIR/union.rs:140:10
+    |
+140 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
 error[E0277]: the trait bound `UnsafeCell<()>: zerocopy_renamed::Immutable` is not satisfied
   --> $DIR/union.rs:25:10
    |
@@ -105,7 +113,7 @@ error[E0587]: type has conflicting packed and align representation hints
 97 | union Unaligned3 {
    | ^^^^^^^^^^^^^^^^
 
-error: aborting due to 12 previous errors
+error: aborting due to 13 previous errors
 
 Some errors have detailed explanations: E0277, E0587.
 For more information about an error, try `rustc --explain E0277`.
