@@ -1,0 +1,22 @@
+.container {
+  padding: 0.75em 1em 0;
+  width: 27em;
+  line-height: normal;
+
+  &:last-child {
+    padding-bottom: 0.75em;
+  }
+}
+
+.title {
+  margin: 0;
+  border-bottom: 1px solid var(--header-main-border);
+  padding-bottom: 10px;
+  font-weight: 700;
+  font-size: var(--secondary-font-size);
+  text-transform: uppercase;
+}
+
+.content {
+  padding: 1em 0.25em;
+}

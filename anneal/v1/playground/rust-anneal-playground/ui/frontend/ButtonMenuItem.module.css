@@ -1,0 +1,8 @@
+.name {
+  composes: -menuItemTitle from './shared.module.css';
+  margin: 0;
+}
+
+.description {
+  margin: 0;
+}

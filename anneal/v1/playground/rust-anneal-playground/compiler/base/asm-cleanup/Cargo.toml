@@ -1,0 +1,11 @@
+[package]
+name = "asm-cleanup"
+version = "0.1.0"
+edition = "2018"
+
+[workspace]
+
+[dependencies]
+petgraph = "0.8.1"
+regex = "1.0.0"
+rustc-demangle = "0.1.5"
