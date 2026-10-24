@@ -182,15 +182,15 @@ pub(crate) fn derive_is_safe(
             .read::<#zerocopy_crate::BecauseImmutable>();
     };
     let tag_init = if ctx.invariant_span.is_some() {
-        let allow = crate::util::allow_generated_code();
+        let lint_policy = crate::util::generated_code_lints();
         let tag_arms = data.variants.iter().enumerate().map(|(idx, variant)| {
             let tag = tag_ident(&variant.ident);
             quote! { #tag => #core::option::Option::Some(#idx) }
         });
         quote! {
-            // Keep implementation-only items and their lint allowances out
-            // of the scopes containing caller-authored invariant expressions.
-            #allow
+            // Keep implementation-only items and their lint policy out of the
+            // scopes containing caller-authored invariant expressions.
+            #lint_policy
             let #tag = {
                 #projections
                 #read_tag
