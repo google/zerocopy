@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792416029754,
+  "lastUpdate": 1792855762351,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23735,6 +23735,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1496,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "2f71b3b236adc79516538d080e3cff592bafd2f2",
+          "message": "[ci] Audit all commits in origin/main..HEAD for XODO markers (#3906)\n\nOn pull_request triggers, actions/checkout checks out GitHub's synthetic\nmerge ref (refs/remotes/pull/<PR>/merge) with fetch-depth: 1, whose\ncommit message is 'Merge <head> into <base>'. As a result, inspecting\nonly git log -1 --pretty=%B on HEAD missed XODO markers in the PR's own\ncommit messages (and in earlier commits of a multi-commit PR or stack).\n\nFetch full history (fetch-depth: 0) in check-todo and update\nci/check_todo.sh to enumerate all commits in origin/main..HEAD (falling\nback to HEAD when on main itself), auditing both the commit message and\ntracked file tree of each commit. Do not pass --no-merges: on a GitHub\npull_request checkout, HEAD is a synthetic merge of main (HEAD^1) and\nthe PR tip (HEAD^2), so origin/main..HEAD traverses HEAD^2 to audit\nevery commit in the PR (including authored merge commits) as well as the\nmerged tree at HEAD.\n\ngherrit-pr-id: Gqqvieb2pqp2bcmej7ch7x4mwzcdndsdf\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-10-24T14:37:55Z",
+          "tree_id": "fcbe3a568bd3be9565f7a6b4c718f2fc54b72ac3",
+          "url": "https://github.com/google/zerocopy/commit/2f71b3b236adc79516538d080e3cff592bafd2f2"
+        },
+        "date": 1792855759564,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1061,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1168,
             "unit": "seconds"
           }
         ]
