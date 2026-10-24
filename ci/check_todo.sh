@@ -35,15 +35,42 @@ else
   PATHS=("$@")
 fi
 
+# Discover all commits relative to `main` (falling back to `HEAD` when on `main`
+# itself). Do not pass `--no-merges`: on a GitHub `pull_request` checkout,
+# `HEAD` is a synthetic merge of `main` (`HEAD^1`) and the PR tip (`HEAD^2`), so
+# `origin/main..HEAD` traverses `HEAD^2` and audits every commit in the PR
+# (including authored merge commits) as well as the merged tree at `HEAD`.
+base_ref=""
+if git rev-parse --verify --quiet origin/main >/dev/null 2>&1; then
+  base_ref="origin/main"
+elif git rev-parse --verify --quiet main >/dev/null 2>&1; then
+  base_ref="main"
+fi
+
+commits=""
+if [ -n "$base_ref" ]; then
+  commits=$(git rev-list "${base_ref}..HEAD" 2>/dev/null || true)
+fi
+if [ -z "$commits" ]; then
+  commits=$(git rev-list -n 1 HEAD 2>/dev/null || true)
+fi
+
 # Vendored dependencies have their own task-marker norms; enforce this only on
 # code we maintain.
-output=$(rg -H -n -w --glob '!**/vendor/**' "$PATTERN" "${PATHS[@]}" || true)
+output=$({
+  if [ "$#" -gt 0 ] || [ -z "$commits" ] || [ -n "$(git status --porcelain 2>/dev/null || true)" ]; then
+    rg -H -n -w --glob '!**/vendor/**' "$PATTERN" "${PATHS[@]}" || true
+  fi
 
-commit_output=$(git log -1 --pretty=%B 2>/dev/null | rg -n -w "$PATTERN" || true)
-if [ -n "$commit_output" ]; then
-  commit_output=$(echo "$commit_output" | sed "s/^/COMMIT_MESSAGE:/")
-  output="$commit_output${output:+$'\n'$output}"
-fi
+  for commit in $commits; do
+    short_commit=$(git rev-parse --short=12 "$commit")
+    git log -1 --pretty=%B "$commit" 2>/dev/null \
+      | rg -n -w "$PATTERN" \
+      | sed "s/^/COMMIT_MESSAGE(${short_commit}):/" || true
+    git grep -I -n -w -E "$PATTERN" "$short_commit" -- "${PATHS[@]}" ':!**/vendor/**' 2>/dev/null \
+      | sed "s/^${short_commit}:/${short_commit}@/" || true
+  done
+})
 
 if [ -z "$output" ]; then
   exit 0
@@ -53,14 +80,14 @@ fi
 # each file, we can maintain state. However, rg output might interleave files if
 # not sorted, but usually it's grouped. To be safe, we sort the output by
 # filename and line number.
-sorted_output=$(echo "$output" | sort -t: -k1,1 -k2,2n)
+sorted_output=$(echo "$output" | LC_ALL=C sort -t: -k1,1 -k2,2n)
 
 exit_code=0
 current_file=""
 disabled=0
 
 while IFS= read -r line; do
-  if [[ "$line" =~ ^(.*):([0-9]+):(.*)$ ]]; then
+  if [[ "$line" =~ ^([^:]+):([0-9]+):(.*)$ ]]; then
     file="${BASH_REMATCH[1]}"
     content="${BASH_REMATCH[3]}"
   else
