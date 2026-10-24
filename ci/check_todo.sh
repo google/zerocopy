@@ -37,13 +37,49 @@ fi
 
 # Vendored dependencies have their own task-marker norms; enforce this only on
 # code we maintain.
-output=$(rg -H -n -w --glob '!**/vendor/**' "$PATTERN" "${PATHS[@]}" || true)
+output=""
 
-commit_output=$(git log -1 --pretty=%B 2>/dev/null | rg -n -w "$PATTERN" || true)
-if [ -n "$commit_output" ]; then
-  commit_output=$(echo "$commit_output" | sed "s/^/COMMIT_MESSAGE:/")
-  output="$commit_output${output:+$'\n'$output}"
+# Discover non-merge commits relative to `main` (falling back to `HEAD` when on
+# `main` itself). Using `--no-merges` skips GitHub Actions' synthetic pull_request
+# merge commit (`Merge <head> into <base>`) while auditing every commit in a PR
+# or stack.
+base_ref=""
+if git rev-parse --verify --quiet origin/main >/dev/null 2>&1; then
+  base_ref="origin/main"
+elif git rev-parse --verify --quiet main >/dev/null 2>&1; then
+  base_ref="main"
 fi
+
+commits=""
+if [ -n "$base_ref" ]; then
+  commits=$(git rev-list --no-merges "${base_ref}..HEAD" 2>/dev/null || true)
+fi
+if [ -z "$commits" ]; then
+  commits=$(git rev-list --no-merges -n 1 HEAD 2>/dev/null || true)
+fi
+
+if [ "$#" -gt 0 ] || [ -z "$commits" ] || [ -n "$(git status --porcelain 2>/dev/null || true)" ]; then
+  wt_output=$(rg -H -n -w --glob '!**/vendor/**' "$PATTERN" "${PATHS[@]}" || true)
+  if [ -n "$wt_output" ]; then
+    output="$wt_output"
+  fi
+fi
+
+for commit in $commits; do
+  short_commit=$(git rev-parse --short=12 "$commit")
+  commit_msg_output=$(git log -1 --pretty=%B "$commit" 2>/dev/null | rg -n -w "$PATTERN" || true)
+  if [ -n "$commit_msg_output" ]; then
+    commit_msg_output=$(echo "$commit_msg_output" | sed "s/^/COMMIT_MESSAGE(${short_commit}):/")
+    output="${output:+$output$'\n'}$commit_msg_output"
+  fi
+
+  if [ "$#" -eq 0 ]; then
+    commit_tree_output=$(git grep -I -n -w -E "$PATTERN" "$commit" -- "${PATHS[@]}" ':!**/vendor/**' 2>/dev/null | sed "s/^${commit}:/${short_commit}@/" || true)
+    if [ -n "$commit_tree_output" ]; then
+      output="${output:+$output$'\n'}$commit_tree_output"
+    fi
+  fi
+done
 
 if [ -z "$output" ]; then
   exit 0
@@ -60,7 +96,7 @@ current_file=""
 disabled=0
 
 while IFS= read -r line; do
-  if [[ "$line" =~ ^(.*):([0-9]+):(.*)$ ]]; then
+  if [[ "$line" =~ ^([^:]+):([0-9]+):(.*)$ ]]; then
     file="${BASH_REMATCH[1]}"
     content="${BASH_REMATCH[3]}"
   else
