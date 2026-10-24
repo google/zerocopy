@@ -1,0 +1,1293 @@
+{
+  "experiment": "experiments/opsem/cargo-workspace-capture/n5-open-hash-and-rlib-phase",
+  "issue_reference": "joshlf/anneal#68 (\u00a74.6 & \u00a76 N5), joshlf/anneal#89 (R5, R6, R7, R9, R10), and joshlf/anneal#93 (Q3, Q4)",
+  "driver_sha256": "852f991b912baa4f7d6371acfb0f9c03e4428f16bc23fee64bf6cfa439ee86d5",
+  "unseen_identifiers_absent_from_driver_source": {
+    "ring_window_probe": true,
+    "QuotaCell": true,
+    "advance_quota": true,
+    "verify_two_instances": true,
+    "ext_phase_lib": true,
+    "ext_probe_mention_and_storage": true,
+    "client_rlib_vs_sidecar_entry": true,
+    "r5_inner_lib": true,
+    "r5_outer_lib": true,
+    "r5_client_app": true,
+    "WindowSpec": true,
+    "QuotaPair": true,
+    "AuditCounter": true,
+    "ScopedTicket": true,
+    "OptionNonZeroU32": true,
+    "ReprCPaddedHeader": true,
+    "PackedHeader": true,
+    "PacketWithTail": true,
+    "combine_window_total": true,
+    "build_quota_pair": true,
+    "scale_window_aligned": true,
+    "execute_open_hash_pipeline": true,
+    "OverwideRecord": true,
+    "q3_nominal_pair_lib": true,
+    "q3_nominal_pair_client": true,
+    "MeterReading": true,
+    "LimitThreshold": true,
+    "make_meter_reading": true,
+    "make_limit_threshold": true,
+    "evaluate_reading_against_threshold": true,
+    "run_nominal_pair_pipeline": true,
+    "UnsupportedDropPair": true
+  },
+  "runs": [
+    {
+      "run_id": "n5_open_hash_ring_window_probe",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ring_window_probe.rs",
+        "--crate-name",
+        "ring_window_probe",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_n5_ring_window_probe.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_n5_ring_window_probe.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/n5_ring_window_probe.amir",
+        "-o",
+        "/tmp/libn5_ring_window_probe.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 25.29,
+      "max_rss_kib": 101028,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/n5_ring_window_probe.amir",
+          "size_bytes": 391,
+          "sha256": "161494ccd84729b08628408f26419cb924be623d6c9b907a6fe62a0d81db542c"
+        },
+        {
+          "path": "artifacts/out_n5_ring_window_probe.json",
+          "size_bytes": 9339,
+          "sha256": "66b4e79483aa826324b31b072a5cd1566a32a947e77598063af1fa575e27fe4e"
+        },
+        {
+          "path": "artifacts/bodies_n5_ring_window_probe.json",
+          "size_bytes": 50427,
+          "sha256": "ae45175d83221ad9e44ae3035f8b3dec487bb2d1ad23575067801ea61bc40e55"
+        }
+      ]
+    },
+    {
+      "run_id": "n5_open_hash_ring_window_probe_refactored",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ring_window_probe_refactored.rs",
+        "--crate-name",
+        "ring_window_probe",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_n5_ring_window_probe_refactored.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_n5_ring_window_probe_refactored.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/n5_ring_window_probe_refactored.amir",
+        "-o",
+        "/tmp/libn5_ring_window_probe_refactored.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 24.98,
+      "max_rss_kib": 101028,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/n5_ring_window_probe_refactored.amir",
+          "size_bytes": 391,
+          "sha256": "c65e8a8f9ac95a63bb1a570c63776d1df40dd9ee106aa15ae220059ed55d5efa"
+        },
+        {
+          "path": "artifacts/out_n5_ring_window_probe_refactored.json",
+          "size_bytes": 9349,
+          "sha256": "eb909b301f407e2013008e4819ad6a2e9f0ec3d6f5518969cda7a67f373292b9"
+        },
+        {
+          "path": "artifacts/bodies_n5_ring_window_probe_refactored.json",
+          "size_bytes": 51375,
+          "sha256": "e916aadd2c3df11968528c545546949118c41aee7482b6a516376a6b12d52fd0"
+        }
+      ]
+    },
+    {
+      "run_id": "n5_charon_ring_window_probe_strongest",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "rustc",
+        "--ullbc",
+        "--precise-drops",
+        "--mir",
+        "elaborated",
+        "--dest-file",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/n5_ring_window_probe_strongest.ullbc",
+        "--",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ring_window_probe.rs",
+        "--crate-name",
+        "ring_window_probe",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub"
+      ],
+      "exit_code": 0,
+      "wall_ms": 47.0,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/n5_ring_window_probe_strongest.ullbc",
+          "size_bytes": 45247,
+          "sha256": "58ae083b16e10af32cf956838a31e50fbca2324a953d20328f7bc339c10ff9cd"
+        }
+      ]
+    },
+    {
+      "run_id": "n5_ext_phase_lib_postcleanup_sidecar",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_n5_ext_phase_lib_sidecar.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_n5_ext_phase_lib_sidecar.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/n5_ext_phase_lib_sidecar.amir",
+        "-o",
+        "/tmp/libext_phase_lib_preserve_ub.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 22.51,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/n5_ext_phase_lib_sidecar.amir",
+          "size_bytes": 58,
+          "sha256": "3a5a05a63e5de0e02565a3bdd94976f2c51dce6d11100bce45b8fc5ee7578aef"
+        },
+        {
+          "path": "artifacts/out_n5_ext_phase_lib_sidecar.json",
+          "size_bytes": 4175,
+          "sha256": "ef00b3e92e14214e44f14bee90ec782ce19c4af349ca75ba2c3350b23ba08af6"
+        },
+        {
+          "path": "artifacts/bodies_n5_ext_phase_lib_sidecar.json",
+          "size_bytes": 8885,
+          "sha256": "3b1ee0f97db9d5f349414f6347c85b3826fd8146b86e6867496b36304ebde63a"
+        }
+      ]
+    },
+    {
+      "run_id": "n5_ext_phase_lib_default_rlib_build",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_n5_ext_phase_lib_default_rlib.json",
+        "-o",
+        "/tmp/libext_phase_lib_default.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 21.29,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_n5_ext_phase_lib_default_rlib.json",
+          "size_bytes": 3928,
+          "sha256": "6487fa41e8f5376f0cc4c33c65e7ceb05961bfc1eb5dbeb2d002895cd4f484b9"
+        }
+      ]
+    },
+    {
+      "run_id": "n5_ext_phase_client_from_default_rlib",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_client.rs",
+        "--crate-name",
+        "ext_phase_client",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "ext_phase_lib=/tmp/libext_phase_lib_default.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_n5_ext_phase_client_from_default_rlib.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_n5_ext_phase_client_from_default_rlib.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/n5_ext_phase_client_from_default_rlib.amir",
+        "-o",
+        "/tmp/libext_phase_client_default.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 21.67,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/n5_ext_phase_client_from_default_rlib.amir",
+          "size_bytes": 107,
+          "sha256": "f636e4d00a29a545177addfb26f0424d9cb8ebf8396012ef0e26a4032149b286"
+        },
+        {
+          "path": "artifacts/out_n5_ext_phase_client_from_default_rlib.json",
+          "size_bytes": 4745,
+          "sha256": "9afb88c500f8c2c487f1a36af8a5edba2774c98f98b3c653a092d89698308673"
+        },
+        {
+          "path": "artifacts/bodies_n5_ext_phase_client_from_default_rlib.json",
+          "size_bytes": 13608,
+          "sha256": "467dee6d5af7796319acb279f1aaf0c8f5315c926097033d0bee1530f312cb34"
+        }
+      ]
+    },
+    {
+      "run_id": "n5_ext_phase_client_from_preserve_ub_rlib",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_client.rs",
+        "--crate-name",
+        "ext_phase_client",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "ext_phase_lib=/tmp/libext_phase_lib_preserve_ub.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_n5_ext_phase_client_from_preserve_ub_rlib.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_n5_ext_phase_client_from_preserve_ub_rlib.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/n5_ext_phase_client_from_preserve_ub_rlib.amir",
+        "-o",
+        "/tmp/libext_phase_client_preserve.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 22.01,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/n5_ext_phase_client_from_preserve_ub_rlib.amir",
+          "size_bytes": 110,
+          "sha256": "8d417d10f90ec2ce3729a1cc2c2a4528693f84cc68141ceeda666b5aa0969d4d"
+        },
+        {
+          "path": "artifacts/out_n5_ext_phase_client_from_preserve_ub_rlib.json",
+          "size_bytes": 4748,
+          "sha256": "1d1d18bd35e06b1c21e213c4eb6b45f25b17df96cb2d978a32a8ecfd559b2da4"
+        },
+        {
+          "path": "artifacts/bodies_n5_ext_phase_client_from_preserve_ub_rlib.json",
+          "size_bytes": 13660,
+          "sha256": "2242ce889b1dfaa89b682d60362d10839ba56c35d07c630633d7af5958ab10a3"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_inner_lib_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_inner_lib.rs",
+        "--crate-name",
+        "r5_inner_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_inner_lib_open_hash.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_r5_inner_lib_open_hash.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_inner_lib_open_hash.amir",
+        "-o",
+        "/tmp/libr5_inner_lib.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 24.58,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_inner_lib_open_hash.amir",
+          "size_bytes": 224,
+          "sha256": "d103ad7dfbbbf9f3bf8418d0bfc86ca9a35dc4cb4192f8c51a5887ae087c5355"
+        },
+        {
+          "path": "artifacts/out_r5_inner_lib_open_hash.json",
+          "size_bytes": 11690,
+          "sha256": "0bea0f18be6a190e8b8310a7d247d9ebcf5d3266cf24857c1f1daac421705341"
+        },
+        {
+          "path": "artifacts/bodies_r5_inner_lib_open_hash.json",
+          "size_bytes": 33504,
+          "sha256": "6de8b6ec5553bd56bb952c907e326bb3bd332565ec3130fc88c5e4f6175955f5"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_outer_lib_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_outer_lib.rs",
+        "--crate-name",
+        "r5_outer_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_outer_lib_open_hash.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_r5_outer_lib_open_hash.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_outer_lib_open_hash.amir",
+        "-o",
+        "/tmp/libr5_outer_lib.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 23.05,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_outer_lib_open_hash.amir",
+          "size_bytes": 167,
+          "sha256": "efb64c0193a0f77044266b53aebc6fbd91b17b5c4433f044779531124fa5444c"
+        },
+        {
+          "path": "artifacts/out_r5_outer_lib_open_hash.json",
+          "size_bytes": 5455,
+          "sha256": "cfefa07e10adfe75d2e171f4a0e5fbe35e5a03ac94bf6de59128014af503ab97"
+        },
+        {
+          "path": "artifacts/bodies_r5_outer_lib_open_hash.json",
+          "size_bytes": 21518,
+          "sha256": "8dd0d90d055df44082bbac3e0259960d6d17b76dd4f538522b2125fe3d625f63"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_client_app_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_client_app_open_hash.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_r5_client_app_open_hash.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_client_app_open_hash.amir",
+        "-o",
+        "/tmp/libr5_client_app.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 25.57,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_client_app_open_hash.amir",
+          "size_bytes": 784,
+          "sha256": "8dc4b4add49b0c82a227df47c936ca378eafc815d5079dc4267f5ddb52b741e1"
+        },
+        {
+          "path": "artifacts/out_r5_client_app_open_hash.json",
+          "size_bytes": 12800,
+          "sha256": "254a6afcf10f7b4c1721b436f917487c19c9d891ced9eea070404f35812b4e90"
+        },
+        {
+          "path": "artifacts/bodies_r5_client_app_open_hash.json",
+          "size_bytes": 86676,
+          "sha256": "79682f719db5081f08a5ed03b99f19e5becf8c6225f582a544264b9a3492bc6c"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_client_app_refactored_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app_refactored.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_client_app_refactored_open_hash.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_r5_client_app_refactored_open_hash.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_client_app_refactored_open_hash.amir",
+        "-o",
+        "/tmp/libr5_client_app_ref.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 24.98,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_client_app_refactored_open_hash.amir",
+          "size_bytes": 824,
+          "sha256": "82c473db2fd3428e02d9fdc8e169e87ee07c8bca5f60764f1e2c306f5b02417c"
+        },
+        {
+          "path": "artifacts/out_r5_client_app_refactored_open_hash.json",
+          "size_bytes": 12819,
+          "sha256": "c822637082ae38dbb557f8a9a3a72121c4748c08600891adffeacaa954fed496"
+        },
+        {
+          "path": "artifacts/bodies_r5_client_app_refactored_open_hash.json",
+          "size_bytes": 93268,
+          "sha256": "99e568f1bb6ea517a05dc5816715e607b6d4d858657d4ef389e74019d13f4754"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_control_forced_hash_collision_modulus_10",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-hash-bucket-modulus",
+        "10",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_client_app_forced_collision_mod10.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_client_app_forced_collision_mod10.amir",
+        "-o",
+        "/tmp/libr5_client_app_coll.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 26.54,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_client_app_forced_collision_mod10.amir",
+          "size_bytes": 784,
+          "sha256": "a1ba52772f225ba137a4d8250cdbe76b14de9c4542634cdc87ef808f8350e63a"
+        },
+        {
+          "path": "artifacts/out_r5_client_app_forced_collision_mod10.json",
+          "size_bytes": 12792,
+          "sha256": "1500bf192406cbf9cbd3e7f5c3b5644fa3730da5663b50000aed40b5fd58ece4"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_control_hash_table_exhausted_modulus_4_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-hash-bucket-modulus",
+        "4",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_control_exhausted_mod4.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_control_exhausted_mod4_should_not_exist.amir",
+        "-o",
+        "/tmp/libr5_client_app_exhaust.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 23.94,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_r5_control_exhausted_mod4.json",
+          "size_bytes": 10908,
+          "sha256": "76ebfbeb16c05a8fdfab8a43de03eacf18fc05e055fc1360d582c30ed109f8cf"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_control_unclosed_external_cap_2_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-max-external-bodies",
+        "2",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_control_extcap2_reject.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_control_extcap2_should_not_exist.amir",
+        "-o",
+        "/tmp/libr5_client_app_extcap.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 25.1,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_r5_control_extcap2_reject.json",
+          "size_bytes": 12313,
+          "sha256": "2fb5140faadcd194ba84b77aa82b665ed7609fc6aa6fe191bb88bc087f442ef3"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_control_unsupported_adt_arity_4_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_overwide_adt_reject.rs",
+        "--crate-name",
+        "r5_overwide_adt_reject",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_control_overwide_adt_reject.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_control_overwide_should_not_exist.amir",
+        "-o",
+        "/tmp/libr5_overwide.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 18.21,
+      "max_rss_kib": 120396,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_r5_control_overwide_adt_reject.json",
+          "size_bytes": 3788,
+          "sha256": "19da41f6a2af69c908c9182f17deaa99a649b0ffc70d30d92077d8771735b51c"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_charon_client_app_strongest",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "rustc",
+        "--ullbc",
+        "--precise-drops",
+        "--extract-opaque-bodies",
+        "--mir",
+        "elaborated",
+        "--dest-file",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_client_app_strongest.ullbc",
+        "--",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub"
+      ],
+      "exit_code": 0,
+      "wall_ms": 85.23,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_client_app_strongest.ullbc",
+          "size_bytes": 744335,
+          "sha256": "0cc78db36d5dc2ab8be2301ea8bb438832d257715032ae134669f7cd3ec171d2"
+        }
+      ]
+    },
+    {
+      "run_id": "r5_client_app_default_no_preserve_ub",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r5_client_app.rs",
+        "--crate-name",
+        "r5_client_app",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "r5_inner_lib=/tmp/libr5_inner_lib.rlib",
+        "--extern",
+        "r5_outer_lib=/tmp/libr5_outer_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r5_client_app_default_no_preserve_ub.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_r5_client_app_default_no_preserve_ub.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r5_client_app_default_no_preserve_ub.amir",
+        "-o",
+        "/tmp/libr5_client_app_default.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 26.97,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/r5_client_app_default_no_preserve_ub.amir",
+          "size_bytes": 778,
+          "sha256": "9769af119c754fb3bc7436fa489163cc123265b39598ff759f69992e28ecdedb"
+        },
+        {
+          "path": "artifacts/out_r5_client_app_default_no_preserve_ub.json",
+          "size_bytes": 12804,
+          "sha256": "cf8a2a5303da66c5cae3d85f088ee2672cb2fb2775b1304b2dc8c19fe33d34e9"
+        },
+        {
+          "path": "artifacts/bodies_r5_client_app_default_no_preserve_ub.json",
+          "size_bytes": 86412,
+          "sha256": "47f22fa7bad54c1e9ead98ab81cf19e3297f2046f770e931e36281544f1dc2e7"
+        }
+      ]
+    },
+    {
+      "run_id": "r6_control_mir_phase_runtime_initial_0x05_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-test-initial-phase-reject",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r6_control_initial_phase_reject.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r6_control_initial_phase_should_not_exist.amir",
+        "-o",
+        "/tmp/libext_phase_init_reject.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 21.53,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_r6_control_initial_phase_reject.json",
+          "size_bytes": 4028,
+          "sha256": "85b2ddd449ee1bb77cbc4ce5a4c12eb09e1c87cdd5ea9d45490107ceee724d88"
+        }
+      ]
+    },
+    {
+      "run_id": "r6_control_early_compile_error_preremoves_stale_outputs",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r6_early_type_error.rs",
+        "--crate-name",
+        "r6_early_type_error",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r6_control_early_err_stale.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r6_control_early_err_stale.amir",
+        "-o",
+        "/tmp/libr6_early_err.rlib"
+      ],
+      "exit_code": 1,
+      "wall_ms": 15.76,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "mismatched types\n --> /usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/r6_early_type_error.rs:4:19\n  |\n4 |     let y: bool = x;\n  |            ----   ^ expected `bool`, found `usize`\n  |            |\n  |            expected due to this\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+      "outputs": [
+        {
+          "path": "artifacts/out_r6_control_early_err_stale.json",
+          "size_bytes": 306,
+          "sha256": "adb27a0d149d01ef12467b719998a35b7d78260872b68fd3d66270056e86d44e"
+        }
+      ]
+    },
+    {
+      "run_id": "r6_control_interrupted_before_endorsement_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-simulate-interrupted-before-endorsement",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r6_control_interrupted_before_endorsement.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r6_control_interrupted_should_not_exist.amir",
+        "-o",
+        "/tmp/libext_phase_intr.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 20.4,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_r6_control_interrupted_before_endorsement.json",
+          "size_bytes": 4191,
+          "sha256": "971630ff0fc953dbe49aabcbe4872c84d9190f049f15b9c4ea853443c2c7be75"
+        }
+      ]
+    },
+    {
+      "run_id": "r6_control_post_analysis_compiler_error_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-inject-post-analysis-error",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_r6_control_post_analysis_error.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r6_control_post_err_should_not_exist.amir",
+        "-o",
+        "/tmp/libext_phase_post_err.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 21.21,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_r6_control_post_analysis_error.json",
+          "size_bytes": 4240,
+          "sha256": "0b325443e067f8cb0ef54943ddec93de6520f6d60edf39769ed7ee93e045982f"
+        }
+      ]
+    },
+    {
+      "run_id": "r6_control_out_json_write_failure_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/tmp/r6_out_json_is_dir",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/r6_control_json_write_fail_should_not_exist.amir",
+        "-o",
+        "/tmp/libext_phase_json_fail.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 6.57,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": []
+    },
+    {
+      "run_id": "q4_natural_post_analysis_linker_failure_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q4_natural_linker_fail.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--crate-type=cdylib",
+        "--edition=2021",
+        "-C",
+        "linker=/bin/false",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q4_natural_post_analysis_linker_failure.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q4_natural_linker_fail_should_not_exist.amir",
+        "-o",
+        "/tmp/libext_phase_natural_link_fail.so"
+      ],
+      "exit_code": 1,
+      "wall_ms": 26.76,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "_64-unknown-linux-gnu/bin/gcc-ld\" \"-fuse-ld=lld\" \"-Wl,--eh-frame-hdr\" \"-Wl,-z,noexecstack\" \"-L\" \"<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib\" \"-o\" \"/tmp/libext_phase_natural_link_fail.so\" \"-Wl,--gc-sections\" \"-shared\" \"-Wl,-z,relro,-z,now\" \"-nodefaultlibs\"\n  = note: some arguments are omitted. use `--verbose` to show all linker arguments\n  = note: \n\nerror: aborting due to 1 previous error\n\n",
+      "outputs": [
+        {
+          "path": "artifacts/out_q4_natural_post_analysis_linker_failure.json",
+          "size_bytes": 6040,
+          "sha256": "aa6a6cbd3c4b99fd2f54d03e1a75a00fb7c990487780c5667119da0299d8cfd2"
+        }
+      ]
+    },
+    {
+      "run_id": "q4_post_staging_rename_failure_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/ext_phase_lib.rs",
+        "--crate-name",
+        "ext_phase_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q4_post_staging_rename_failure.json",
+        "--driver-emit-amir-v3",
+        "/tmp/q4_final_amir_is_dir",
+        "-o",
+        "/tmp/libext_phase_post_stage_fail.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 20.84,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_q4_post_staging_rename_failure.json",
+          "size_bytes": 4240,
+          "sha256": "0b325443e067f8cb0ef54943ddec93de6520f6d60edf39769ed7ee93e045982f"
+        }
+      ]
+    },
+    {
+      "run_id": "q3_nominal_pair_lib_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q3_nominal_pair_lib.rs",
+        "--crate-name",
+        "q3_nominal_pair_lib",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q3_nominal_pair_lib.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_q3_nominal_pair_lib.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q3_nominal_pair_lib.amir",
+        "-o",
+        "/tmp/libq3_nominal_pair_lib.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 22.43,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/q3_nominal_pair_lib.amir",
+          "size_bytes": 218,
+          "sha256": "6344e8bc3ae3b08e646060e50cb53140654646347646becd1c9b3fe4b7adf00f"
+        },
+        {
+          "path": "artifacts/out_q3_nominal_pair_lib.json",
+          "size_bytes": 10423,
+          "sha256": "11871cc864567029c775e8962f259814b51ce2b4bdc397bf657d56b077731605"
+        },
+        {
+          "path": "artifacts/bodies_q3_nominal_pair_lib.json",
+          "size_bytes": 35217,
+          "sha256": "999c42b4ab1be919228703a5a79ad5bb2db1df1726ee5f6d938a0d78b2e56083"
+        }
+      ]
+    },
+    {
+      "run_id": "q3_nominal_pair_client_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q3_nominal_pair_client.rs",
+        "--crate-name",
+        "q3_nominal_pair_client",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "q3_nominal_pair_lib=/tmp/libq3_nominal_pair_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q3_nominal_pair_client.json",
+        "--driver-dump-bodies",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_q3_nominal_pair_client.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q3_nominal_pair_client.amir",
+        "-o",
+        "/tmp/libq3_nominal_pair_client.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 21.17,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/q3_nominal_pair_client.amir",
+          "size_bytes": 280,
+          "sha256": "099f5cb42277181bac208e65d1220d86381a9da85b56e5edb73f73b6b0a26cb4"
+        },
+        {
+          "path": "artifacts/out_q3_nominal_pair_client.json",
+          "size_bytes": 6263,
+          "sha256": "e74937f39784f3f2162d96a2c70ace7fa29087eedc1509e92b9e4e24608614d5"
+        },
+        {
+          "path": "artifacts/bodies_q3_nominal_pair_client.json",
+          "size_bytes": 30732,
+          "sha256": "8efe8db389067de3427f6d1897a2b2e44ba5d31a74672efdd896b7fe614a05b3"
+        }
+      ]
+    },
+    {
+      "run_id": "q3_nominal_pair_client_refactored_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q3_nominal_pair_client_refactored.rs",
+        "--crate-name",
+        "q3_nominal_pair_client",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "q3_nominal_pair_lib=/tmp/libq3_nominal_pair_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q3_nominal_pair_client_refactored.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q3_nominal_pair_client_refactored.amir",
+        "-o",
+        "/tmp/libq3_nominal_pair_client_ref.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 22.39,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/q3_nominal_pair_client_refactored.amir",
+          "size_bytes": 290,
+          "sha256": "0c042f39062e4bcf4097644d174a7b6e1df12cab41c41ab9bb0012ce2d425a70"
+        },
+        {
+          "path": "artifacts/out_q3_nominal_pair_client_refactored.json",
+          "size_bytes": 6274,
+          "sha256": "8893d22d709f464553ca45dd2177b6c6edbedf41e63c4ec48e8302627ff2b6d6"
+        }
+      ]
+    },
+    {
+      "run_id": "q3_nominal_pair_client_swapped_sig_open_hash",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q3_nominal_pair_client_swapped_sig.rs",
+        "--crate-name",
+        "q3_nominal_pair_client",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "q3_nominal_pair_lib=/tmp/libq3_nominal_pair_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q3_nominal_pair_client_swapped_sig.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q3_nominal_pair_client_swapped_sig.amir",
+        "-o",
+        "/tmp/libq3_nominal_pair_client_swap.rlib"
+      ],
+      "exit_code": 0,
+      "wall_ms": 21.85,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/q3_nominal_pair_client_swapped_sig.amir",
+          "size_bytes": 280,
+          "sha256": "9b11c2f8c2c09fe4d6040d3e0aee847728b7dd6b10c9eb04330a8f7a5fbdbdda"
+        },
+        {
+          "path": "artifacts/out_q3_nominal_pair_client_swapped_sig.json",
+          "size_bytes": 6276,
+          "sha256": "3102750b82deb26f72e867a26fe35ae30aa8b29dcaa179037b66762bd7eda133"
+        }
+      ]
+    },
+    {
+      "run_id": "q3_nominal_pair_rust_type_swap_error_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q3_nominal_pair_client_type_error.rs",
+        "--crate-name",
+        "q3_nominal_pair_client",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "--extern",
+        "q3_nominal_pair_lib=/tmp/libq3_nominal_pair_lib.rlib",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q3_nominal_pair_type_error.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q3_nominal_pair_type_err_should_not_exist.amir",
+        "-o",
+        "/tmp/libq3_nominal_pair_type_err.rlib"
+      ],
+      "exit_code": 1,
+      "wall_ms": 16.99,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "nominal_pair_lib.rs:32:8\n   |\n32 | pub fn evaluate_reading_against_threshold(\n   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nhelp: swap these arguments\n   |\n11 -     evaluate_reading_against_threshold(threshold, reading)\n11 +     evaluate_reading_against_threshold(reading, threshold)\n   |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+      "outputs": [
+        {
+          "path": "artifacts/out_q3_nominal_pair_type_error.json",
+          "size_bytes": 306,
+          "sha256": "adb27a0d149d01ef12467b719998a35b7d78260872b68fd3d66270056e86d44e"
+        }
+      ]
+    },
+    {
+      "run_id": "q3_control_unsupported_two_field_drop_adt_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/n5_probes_src/q3_unsupported_drop_pair_reject.rs",
+        "--crate-name",
+        "q3_unsupported_drop_pair_reject",
+        "--crate-type=rlib",
+        "--edition=2021",
+        "-Z",
+        "always-encode-mir=yes",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-open-hash-mode",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_q3_unsupported_drop_pair_reject.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/q3_unsupported_drop_pair_should_not_exist.amir",
+        "-o",
+        "/tmp/libq3_drop_reject.rlib"
+      ],
+      "exit_code": 2,
+      "wall_ms": 22.85,
+      "max_rss_kib": 141964,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "outputs": [
+        {
+          "path": "artifacts/out_q3_unsupported_drop_pair_reject.json",
+          "size_bytes": 6841,
+          "sha256": "c40b8f5a1106536c7b42fbee7f014ec9fde8b307257257c2a1388d5d8b1d210a"
+        }
+      ]
+    }
+  ]
+}

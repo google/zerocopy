@@ -1,0 +1,311 @@
+{
+  "clause_set_version": 1,
+  "extracted_on": "2026-10-15",
+  "rust_release": "1.99.1",
+  "rust_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "reference_revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+  "reference_selection": "src/doc/reference gitlink at the Rust release revision",
+  "scope": "Downloaded primary documentation source inputs; each clause cites the inspected passage. Not an exhaustive audit of all files or Rust.",
+  "sources": [
+    {
+      "source": "reference/src/behavior-considered-undefined.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "a26328bccccc6d2ae72a940c343b554503df8aa3",
+      "sha256": "9a4b6bae211c60576f22af73d3ea68c43dac5bf828d257e1e3e2a3ff18768537",
+      "bytes": 14974,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/behavior-considered-undefined.md"
+    },
+    {
+      "source": "reference/src/behavior-not-considered-unsafe.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/behavior-not-considered-unsafe.md",
+      "blob": "60f5294578816c3cb62ab3bc10ee5c2e96d1f7e9",
+      "sha256": "e053ce624c44f14e1f83b793e5bf82bf45c4e4975dd56bb30fb593929f57fc2f",
+      "bytes": 2400,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/behavior-not-considered-unsafe.md"
+    },
+    {
+      "source": "reference/src/destructors.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/destructors.md",
+      "blob": "aa27842622f5fe25efb0f1005d8901e6b77a71c7",
+      "sha256": "dc924a9f95b445d080d06c82a0ec3610989beb2b4c72ec1298d8b8fbe6899ef3",
+      "bytes": 27377,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/destructors.md"
+    },
+    {
+      "source": "reference/src/expressions.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/expressions.md",
+      "blob": "9943384dcf46e0090de6a9f1810205d73996e337",
+      "sha256": "e8dbb403137e2debda174d4add7a603c34467de1e36b473f816132a03d380480",
+      "bytes": 18226,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/expressions.md"
+    },
+    {
+      "source": "reference/src/expressions/await-expr.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/expressions/await-expr.md",
+      "blob": "ee6d90f03145bd2cfe34fa859bc696d50eed967c",
+      "sha256": "7e3448a341fa95608d09b2be2578d5faa020ff204516f0bd3e88a974bab0e0f9",
+      "bytes": 3132,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/expressions/await-expr.md"
+    },
+    {
+      "source": "reference/src/expressions/block-expr.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/expressions/block-expr.md",
+      "blob": "52c3050619bf936a193660adfd4531acd88bbf35",
+      "sha256": "dfd73faf7ef7c7c45dc5e0524fee661c641bbb2ea31e531c6a740639e7a6a146",
+      "bytes": 13164,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/expressions/block-expr.md"
+    },
+    {
+      "source": "reference/src/expressions/operator-expr.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/expressions/operator-expr.md",
+      "blob": "c692122bf4c559cf6b67b283566c550c3c1f8c54",
+      "sha256": "a3a37a4182f5993bf20a35eee1e73364f85bf79df189c7b45cab63b258577032",
+      "bytes": 46064,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/expressions/operator-expr.md"
+    },
+    {
+      "source": "reference/src/interior-mutability.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/interior-mutability.md",
+      "blob": "7748ea2080e3228c377020b22e108a04bea9bbbf",
+      "sha256": "e946de4c75ff2703143da5495ee813e906e82f2c4a3009260a5d20479a163d9d",
+      "bytes": 1495,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/interior-mutability.md"
+    },
+    {
+      "source": "reference/src/items/external-blocks.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/items/external-blocks.md",
+      "blob": "9b1c0137969a5ee9a105a1ee666a489533052627",
+      "sha256": "c5f60d301638d4e259eb3a81edd143d9d9d19211074fbf2ccd78c478002d275a",
+      "bytes": 23013,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/items/external-blocks.md"
+    },
+    {
+      "source": "reference/src/items/functions.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/items/functions.md",
+      "blob": "de6c0615d625053634c827a4d59218df540288b8",
+      "sha256": "df0c71ec7ecafb577fabcba69212beb81951cf06ece03a8a40e8b45f56fb2b96",
+      "bytes": 24462,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/items/functions.md"
+    },
+    {
+      "source": "reference/src/memory-model.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/memory-model.md",
+      "blob": "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+      "sha256": "ca20867e9c375dac167cfd8dbb7714c04d319609b75e55b3a292fc0b853908d1",
+      "bytes": 878,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/memory-model.md"
+    },
+    {
+      "source": "reference/src/panic.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/panic.md",
+      "blob": "2be7e42fb2c3d4c752202f87aa07c890d68e437b",
+      "sha256": "a327d969688c61e26888e87a2bb172268b66963208c02a0deb60c8012109b480",
+      "bytes": 7409,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/panic.md"
+    },
+    {
+      "source": "reference/src/type-layout.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/type-layout.md",
+      "blob": "f8768f590938d6b9cdbff559ace85ab51a4bf041",
+      "sha256": "2ce99ed92393576579cce31650327c0e89fba00ac2210b3ef303d787b051bcb2",
+      "bytes": 27769,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/type-layout.md"
+    },
+    {
+      "source": "reference/src/types/closure.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/types/closure.md",
+      "blob": "f66dd1946d43b6ae0749305980efbf9e0de2f2bf",
+      "sha256": "1a93d98070da9f0313b7510760c3dfe9983cf2e2d2f4c486d0510d960495c691",
+      "bytes": 28954,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/types/closure.md"
+    },
+    {
+      "source": "reference/src/types/function-pointer.md",
+      "repository": "rust-lang/reference",
+      "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "path": "src/types/function-pointer.md",
+      "blob": "08dfbbf235d752de592f4bdf79efa3d355c58eb8",
+      "sha256": "80219bfb130e611e963a7cfabc3a65472c18b2d445b3da930f279d9676f7a942",
+      "bytes": 2056,
+      "url": "https://github.com/rust-lang/reference/blob/82da570bafd9efed421bdbae0f8603ede8dd308b/src/types/function-pointer.md"
+    },
+    {
+      "source": "rust/library/core/src/alloc/global.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/alloc/global.rs",
+      "blob": "e1e08ab7a2cb9a2ef20c1616032bce6034677b10",
+      "sha256": "d5eb650234e55742cec9bdff8dad0afe187c71b19dce914e7cd1285649dd78c3",
+      "bytes": 19343,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/alloc/global.rs"
+    },
+    {
+      "source": "rust/library/core/src/cell.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/cell.rs",
+      "blob": "2dc2c5981cafddb5cb7ceeabdadb269d52416ac7",
+      "sha256": "4d3d3c7938a167875ee8979b62bf05cc11ef79d4946c8862753e591d2c82fc86",
+      "bytes": 98346,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/cell.rs"
+    },
+    {
+      "source": "rust/library/core/src/future/future.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/future/future.rs",
+      "blob": "fab13bb7c853586b2d0001e9fbd2e5a7d9379764",
+      "sha256": "0220631d95ab45f4b769911df75da8d5542eae1eacb771aa9164c48ddb452bcf",
+      "bytes": 5908,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/future/future.rs"
+    },
+    {
+      "source": "rust/library/core/src/intrinsics/mod.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/intrinsics/mod.rs",
+      "blob": "4e67199bba8c9c65411d13fdf16026d1ddfea1f7",
+      "sha256": "4e5636408e09e41733b37bb5d9fa2f1c6a12ff60cb46099bc8d04284af427289",
+      "bytes": 147991,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/intrinsics/mod.rs"
+    },
+    {
+      "source": "rust/library/core/src/marker.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/marker.rs",
+      "blob": "1eea7adf1a6d5b0d0b5f64603c3a4029ee41c41d",
+      "sha256": "4ee78584c05376c32368d7d3e83d737671e68d57d63e3850d0ef124812a65d4f",
+      "bytes": 53272,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/marker.rs"
+    },
+    {
+      "source": "rust/library/core/src/mem/manually_drop.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/mem/manually_drop.rs",
+      "blob": "6c2f77a3733935e5433523f7f31227c96b1a25af",
+      "sha256": "7a6244071f4d19d343cd9b9cb2a3f6fe854df943b6c25eb6e10620f4f5bf12a5",
+      "bytes": 12481,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/mem/manually_drop.rs"
+    },
+    {
+      "source": "rust/library/core/src/mem/maybe_uninit.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/mem/maybe_uninit.rs",
+      "blob": "6275d7cd59a2c2fc82514082f4e87bf2cc7990db",
+      "sha256": "816fb088fd7b2fcdcd9ec54a56179926118717a23e5eb1713e553c6768ac8850",
+      "bytes": 66148,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/mem/maybe_uninit.rs"
+    },
+    {
+      "source": "rust/library/core/src/mem/mod.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/mem/mod.rs",
+      "blob": "63d17f28324932a171bf726385ba70aac0421002",
+      "sha256": "b228dd0cf7c720240757e4c67cdf8a3c37d65cb46a198d9b92a559d6a6a98a78",
+      "bytes": 63307,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/mem/mod.rs"
+    },
+    {
+      "source": "rust/library/core/src/ops/drop.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/ops/drop.rs",
+      "blob": "138460d54cf99ee046029da385d9640be7d124f7",
+      "sha256": "1d91c5e4e5868e8d2e6860da6fb5353f69172623a8ea7b9d7969e1ebd0fe7055",
+      "bytes": 11168,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/ops/drop.rs"
+    },
+    {
+      "source": "rust/library/core/src/pin.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/pin.rs",
+      "blob": "52a84082f3b920882b9d567207a8fe191556cec9",
+      "sha256": "7b81af9b7e2ef1f3dabbf2b7aad9bec105c68e1d5f31021d7c786a0eff3b0fae",
+      "bytes": 106924,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/pin.rs"
+    },
+    {
+      "source": "rust/library/core/src/ptr/mod.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "8b8a65d630189dbd98fa8ccfaa54d89665f5e291",
+      "sha256": "26ae83efd6c6a25ded03dcde647502f4a243c0d237a05e0316340b3d3625f8e2",
+      "bytes": 124638,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/ptr/mod.rs"
+    },
+    {
+      "source": "rust/library/core/src/sync/atomic.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/core/src/sync/atomic.rs",
+      "blob": "71502f8d918e739c558710955e3fba31db2ad29e",
+      "sha256": "cec944d1305f81be719caf639e8dce2f8aaba9a3d7751cb48f2bbf22096e4d2e",
+      "bytes": 207552,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/sync/atomic.rs"
+    },
+    {
+      "source": "rust/library/std/src/panic.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/std/src/panic.rs",
+      "blob": "a07a5fb6290ca87c5ed72d605042ff46081b3a96",
+      "sha256": "00957a7722a96c5bacbdd06b9d54761f540b408201475c17709a7e9b8d462a92",
+      "bytes": 19126,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/std/src/panic.rs"
+    },
+    {
+      "source": "rust/library/std/src/thread/join_handle.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/std/src/thread/join_handle.rs",
+      "blob": "93dcc634d2dfa901d196d70a53829177f7b3ba59",
+      "sha256": "6ab7bc0aee8c46aa944315091da9ac8f9c87161391695ce29fab4cc88c96fe61",
+      "bytes": 6362,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/std/src/thread/join_handle.rs"
+    },
+    {
+      "source": "rust/library/std/src/thread/mod.rs",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "path": "library/std/src/thread/mod.rs",
+      "blob": "955d1f61e75356ce2ae746a527c62c055f421c44",
+      "sha256": "0449be955ee28838a82b3c5d941c56eea1b9b8d1decff388ffac74ed40d8b064",
+      "bytes": 10451,
+      "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/std/src/thread/mod.rs"
+    }
+  ]
+}

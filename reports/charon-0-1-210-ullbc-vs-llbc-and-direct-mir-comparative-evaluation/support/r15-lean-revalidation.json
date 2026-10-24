@@ -1,0 +1,119 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "FrontendPipelineTrust",
+    "FrontendPipelineControls",
+    "CharonNativeAndControlsR3R4",
+    "StatefulGenericLibraryH3H7Core",
+    "StatefulGenericLibraryH3H7",
+    "StatefulGenericLibraryH3H7Controls",
+    "CompilerIntegrationDossier",
+    "CompilerIntegrationDossierControls"
+  ],
+  "topological_order": [
+    "Execution",
+    "FrontendPipelineTrust",
+    "FrontendPipelineControls",
+    "SubstantiveMirByteParser",
+    "SemanticVerticalSliceCore",
+    "CargoWorkspaceIntegration",
+    "StatefulGenericLibraryH3H7Core",
+    "StatefulGenericLibraryH3H7",
+    "StatefulGenericLibraryH3H7Controls",
+    "PR86AuditRepairs",
+    "CharonNativeAndControlsR3R4",
+    "CompilerIntegrationDossier",
+    "CompilerIntegrationDossierControls"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.FrontendPipelineTrust",
+      "source_path": "experiments/opsem/AnnealResearch/FrontendPipelineTrust.lean",
+      "source_sha256": "41b701987d8fb897805525e0dd9f2a45f1895439e5d20a92dc052d954cbc3688",
+      "olean_sha256": "ed156d362377a3bbe2bb6d84bc225f87cdce4f40ce23ab435a39d6090aa4adc9",
+      "exit_code": 0,
+      "wall_seconds": 0.5274,
+      "children_maxrss_kb": 794252,
+      "stdout": "'AnnealResearch.FrontendPipelineTrust.complete_five_arrow_chain_transfers_claim' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineTrust.positive_probe_preserved_across_faithful_routes' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineTrust.compiler_pin_compatibility_gate' does not depend on any axioms\n'AnnealResearch.FrontendPipelineTrust.layout_record_without_type_bridge_insufficient' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineTrust.proved_parser_without_exporter_fidelity_insufficient' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineTrust.transformation_contract_necessary_for_erased_pass' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.FrontendPipelineControls",
+      "source_path": "experiments/opsem/AnnealResearch/FrontendPipelineControls.lean",
+      "source_sha256": "c814deccd93fff175b7df2dc86833e17e9601f015f8bc506463204bfd8295d64",
+      "olean_sha256": "379973a369969c950bf6ab86b3bde46179eb949e8df294f0c3b72904af34322c",
+      "exit_code": 0,
+      "wall_seconds": 0.4203,
+      "children_maxrss_kb": 794252,
+      "stdout": "'AnnealResearch.FrontendPipelineControls.wrong_callee_same_scalar_return_control' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineControls.wrong_written_location_same_return_control' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineControls.erased_unwind_edge_hides_exceptional_effect_control' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineControls.typed_copy_padding_loss_control' depends on axioms: [propext]\n'AnnealResearch.FrontendPipelineControls.untracked_trusted_import_dependency_control' does not depend on any axioms\n'AnnealResearch.FrontendPipelineControls.fe01_fe02_complete_discriminator_summary' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.StatefulGenericLibraryH3H7Core",
+      "source_path": "experiments/opsem/AnnealResearch/StatefulGenericLibraryH3H7Core.lean",
+      "source_sha256": "ddcd212ee3175dcad9a1a2a927454806039d10429de44ecf4ebe0f402bd341b0",
+      "olean_sha256": "aa0cc1c3d4ee384a38e52e949b530748f7e4a0c65e99f78e3d9a1b20e52d5e56",
+      "exit_code": 0,
+      "wall_seconds": 22.9508,
+      "children_maxrss_kb": 794252,
+      "stdout": "'AnnealResearch.StatefulGenericLibraryH3H7.h3_three_crate_workspace_bindings_and_admission_verified' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.step_generic_slot_symbolic_summary_matches_runSteps_universal' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.step_generic_slot_stack_machine_agrees_with_symbolic_decoded_eval' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.stateful_generic_lib_satisfies_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.stateful_generic_lib_satisfies_published_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_user_verified_modularly_from_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_oracle_matches_linked_runSteps_universal' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_linked_runSteps_universal' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_user_verified_modularly_from_published_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_direct_mir_inspector_proves_omitted_impl_facts_without_forking' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_packages_admitted_and_closed' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_stateful_generic_lib_satisfies_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_client_contract_user_verified_modularly_and_linked' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_inspector_matches_direct_mir_operational_outcomes' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.StatefulGenericLibraryH3H7",
+      "source_path": "experiments/opsem/AnnealResearch/StatefulGenericLibraryH3H7.lean",
+      "source_sha256": "aae672e87d843818adecb1756f21f0f8be4ef49af3e7538f2801e4f7f94f8b2d",
+      "olean_sha256": "792e16474e60dd4a98ef87a62a75183eb1c0f2074fe34f6cc2ac3500d7cba3e2",
+      "exit_code": 0,
+      "wall_seconds": 4.5339,
+      "children_maxrss_kb": 794252,
+      "stdout": "'AnnealResearch.StatefulGenericLibraryH3H7.h3_three_crate_workspace_bindings_and_admission_verified' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.step_generic_slot_symbolic_summary_matches_runSteps_universal' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.step_generic_slot_stack_machine_agrees_with_symbolic_decoded_eval' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.stateful_generic_lib_satisfies_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.stateful_generic_lib_satisfies_published_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_user_verified_modularly_from_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_oracle_matches_linked_runSteps_universal' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_linked_runSteps_universal' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_contract_user_verified_modularly_from_published_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.client_direct_mir_inspector_proves_omitted_impl_facts_without_forking' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_packages_admitted_and_closed' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_stateful_generic_lib_satisfies_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_client_contract_user_verified_modularly_and_linked' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.charon_h3_inspector_matches_direct_mir_operational_outcomes' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.n3_built_graph_conditional_vs_unconditional_drop_semantics_and_elaboration_agreement' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.h4_h6_built_to_post_cleanup_lowering_validator_accepts_real_package' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.wpStateSteps_sound_on_transactional_step' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7.h5_three_layer_proof_comparison_and_structured_view_correspondence' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.StatefulGenericLibraryH3H7Controls",
+      "source_path": "experiments/opsem/AnnealResearch/StatefulGenericLibraryH3H7Controls.lean",
+      "source_sha256": "8c534c498ae230a8799639c28847ec1a01b0324710a4d274da29553df5a328d0",
+      "olean_sha256": "bcfe449ad4dfc7f2acec88ad8c2960b0e7c0cbdc7463cff9adcaa140dd6433fa",
+      "exit_code": 0,
+      "wall_seconds": 6.7101,
+      "children_maxrss_kb": 794252,
+      "stdout": "'AnnealResearch.StatefulGenericLibraryH3H7Controls.alt_stateful_lib_satisfies_operational_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.alt_stateful_lib_satisfies_published_contract' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.control_h3_1_published_contract_alone_cannot_establish_omitted_impl_fact' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.control_h3_2_missing_non_inline_dependency_body_fails_closed' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.control_n1_contract_breaking_and_missing_callee_mutations' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.control_n2_charon_h3_five_required_controls' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.h6_all_four_lowering_validator_controls_verified' depends on axioms: [propext]\n'AnnealResearch.StatefulGenericLibraryH3H7Controls.control_n6_naive_structured_recognizer_unsound_on_event_mutation_repaired_by_verified_recognizer' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.CharonNativeAndControlsR3R4",
+      "source_path": "experiments/opsem/AnnealResearch/CharonNativeAndControlsR3R4.lean",
+      "source_sha256": "00eeb14c5636bd68eb06d815329b22ef5898383e0484e198fbce4c4efb5e7d6f",
+      "olean_sha256": "7c8268a50be51a4feeaddc3b2933dbd8458f8f0ead8696df6cd127ceb916c045",
+      "exit_code": 0,
+      "wall_seconds": 17.7698,
+      "children_maxrss_kb": 801408,
+      "stdout": "'AnnealResearch.CharonNativeAndControlsR3R4.r3_charon_native_single_artifact_closures_satisfy_contract_and_inspector_endpoints' depends on axioms: [propext]\n'AnnealResearch.CharonNativeAndControlsR3R4.r4_all_seven_charon_generated_amir_controls_connected_and_verified' depends on axioms: [propext]\n'AnnealResearch.CharonNativeAndControlsR3R4.q6_charon_adapter_domain_accepts_native_closure_and_rejects_local_u64_type_mismatch' depends on axioms: [propext]\n'AnnealResearch.CharonNativeAndControlsR3R4.c2_d4_complete_charon_local_domain_gate_rejects_both_ctrl6_and_ctrl7_unchecked_local_mutant' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.CompilerIntegrationDossier",
+      "source_path": "experiments/opsem/AnnealResearch/CompilerIntegrationDossier.lean",
+      "source_sha256": "f5c885d1d5b78cdad9e3f65c88e349c58d7a7b09588122c51272ea0a8fba835e",
+      "olean_sha256": "07314e769df638a90c4d9fa2d8f0fcfdb18866a731b07936da6aa5e6bdaecc4c",
+      "exit_code": 0,
+      "wall_seconds": 1.5972,
+      "children_maxrss_kb": 801408,
+      "stdout": "'AnnealResearch.CompilerIntegrationDossier.recommended_anneal_frontend_satisfies_all_g4_criteria' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossier.dossier_component_maturity_honestly_distinguishes_implemented_from_proposed' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossier.recommended_acquisition_uniquely_satisfies_capture_and_workspace_requirements' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossier.recommended_semantic_boundary_uniquely_satisfies_soundness_and_localization' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossier.recommended_interchange_uniquely_satisfies_fail_closed_and_incremental_reuse' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossier.recommended_proof_rep_uniquely_satisfies_soundness_localization_and_ergonomics' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.CompilerIntegrationDossierControls",
+      "source_path": "experiments/opsem/AnnealResearch/CompilerIntegrationDossierControls.lean",
+      "source_sha256": "457675241f775d8564d2f361861018553b8bbce459d7d97d176e2a393d74bb6b",
+      "olean_sha256": "94f2901fbc7653de278592a17f3a54c9efdb3dbc4e1bb26f973a16911dcbc7de",
+      "exit_code": 0,
+      "wall_seconds": 0.2779,
+      "children_maxrss_kb": 801408,
+      "stdout": "'AnnealResearch.CompilerIntegrationDossierControls.control_charon_llbc_architecture_fails_g4_criteria' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_rustc_public_architecture_fails_g4_criteria' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_anonymous_mir_without_sidecar_fails_g4_criteria' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_lossy_amir_v2_architecture_fails_g4_criteria' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_presenting_proposed_structured_view_as_implemented_rejected' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_external_rlib_optimized_mir_rejected_for_pre_optimization_ub_and_storage_obligations' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_n0_eight_status_taxonomy_never_conflates_meta_or_stopped_with_universal_operational' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_q7_two_body_canonical_recognizer_never_conflated_with_general_safe_structured_view' does not depend on any axioms\n'AnnealResearch.CompilerIntegrationDossierControls.control_c1_boolean_architecture_catalog_classified_as_meta_model_with_explicit_d1_to_d5_residual_premises' does not depend on any axioms",
+      "stderr": ""
+    }
+  ]
+}

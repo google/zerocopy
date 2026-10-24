@@ -1,0 +1,63 @@
+{
+  "cpp_draft": {
+    "repository": "https://github.com/cplusplus/draft",
+    "revision": "1f468a67c67143625d7946cdc4cfc7f7730d9160",
+    "baseline": "N4868; retained editorial relationship to C++20, no ISO equivalence proof",
+    "files": [
+      {
+        "path": "basic.tex",
+        "commit": "1f468a67c67143625d7946cdc4cfc7f7730d9160",
+        "git_blob": "f078e90b7505cad0a51f896b16d12c059aca6330",
+        "bytes": 261954,
+        "sha256": "61ed03143748efdcdad8c5da86d374c35f6ce2c3b17172b6615f311c9fdf2f2a",
+        "url": "https://github.com/cplusplus/draft/blob/1f468a67c67143625d7946cdc4cfc7f7730d9160/source/basic.tex",
+        "endpoint": "repos/cplusplus/draft/contents/source/basic.tex?ref=1f468a67c67143625d7946cdc4cfc7f7730d9160"
+      },
+      {
+        "path": "atomics.tex",
+        "commit": "1f468a67c67143625d7946cdc4cfc7f7730d9160",
+        "git_blob": "5891afba507bda95dad2fe6b2fbe3d3a7f759891",
+        "bytes": 137744,
+        "sha256": "72e815eb5db56ce779ac19aecb4bbdc09b4b7293c7663b0713640937a8fa0186",
+        "url": "https://github.com/cplusplus/draft/blob/1f468a67c67143625d7946cdc4cfc7f7730d9160/source/atomics.tex",
+        "endpoint": "repos/cplusplus/draft/contents/source/atomics.tex?ref=1f468a67c67143625d7946cdc4cfc7f7730d9160"
+      }
+    ]
+  },
+  "rust_atomic": {
+    "repository": "https://github.com/rust-lang/rust",
+    "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "path": "library/core/src/sync/atomic.rs",
+    "git_blob": "71502f8d918e739c558710955e3fba31db2ad29e",
+    "bytes": 207552,
+    "sha256": "cec944d1305f81be719caf639e8dce2f8aaba9a3d7751cb48f2bbf22096e4d2e",
+    "url": "https://github.com/rust-lang/rust/blob/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/sync/atomic.rs"
+  },
+  "minirust_selected_boundary": {
+    "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+    "files": [
+      {
+        "path": "spec/mem/concurrent.md",
+        "bytes": 5864,
+        "sha256": "2b3f928517bed4da43739395656c7e24572dae37cb041fb7b77061c47a8e5816",
+        "git_blob": "4f404d9e1a9d439f4886bf2b353e90358732e927",
+        "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/concurrent.md"
+      },
+      {
+        "path": "spec/mem/interface.md",
+        "bytes": 7541,
+        "sha256": "dfe4e0f504fc8892a520c555cb64b82774973b46f9adcaaaf915f4e5610f4708",
+        "git_blob": "0ede2c2cefdbb2e00ab70cf428e42bb4b1202a4c",
+        "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/interface.md"
+      },
+      {
+        "path": "spec/lang/step/intrinsics.md",
+        "bytes": 20288,
+        "sha256": "261fe197e65556bae74cf209c64c5913fdd713f3a57d2bf56f0b1fb0e3a34be8",
+        "git_blob": "0a2eb8e67affb71bd5b73375c6f9483dae64b469",
+        "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/intrinsics.md"
+      }
+    ]
+  },
+  "interpretation": "manual selected-clause and selected-operation audit; no source import, Rust/C++/hardware adequacy or full weak-memory instance"
+}

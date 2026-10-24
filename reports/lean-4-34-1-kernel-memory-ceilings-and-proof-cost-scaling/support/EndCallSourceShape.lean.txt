@@ -1,0 +1,2557 @@
+import Std
+
+/-!
+Bounded certificate replay for one actual MiniRust Markdown declaration.
+SourceShape is a declarative source/lexeme/group/signature relation, independent
+of check. Certificate production is untrusted; reconstruction, lexical coverage,
+maximality boundaries, balanced groups and unique owner/method are replayed.
+The surrounding Markdown and non-body token context are fixed to the pinned
+snapshot; no general Markdown/CommonMark context theorem is claimed.
+This is neither a general Rust parser nor name/type/SpecR semantic resolution.
+The complete source fixture below retains its upstream MIT permission notice.
+-/
+
+set_option maxRecDepth 40000
+set_option maxHeartbeats 4000000
+
+namespace AnnealResearch.EndCallSourceShape
+
+/-- A finite declarative universal quantifier, with a constructive decider. -/
+inductive Every {A : Type} (P : A → Prop) : List A → Prop where
+  | nil : Every P []
+  | cons {a rest} : P a → Every P rest → Every P (a :: rest)
+
+def everyDecision {A : Type} (P : A → Prop) (decision : ∀ a, Decidable (P a)) :
+    (values : List A) → Decidable (Every P values)
+  | [] => .isTrue .nil
+  | a :: rest =>
+      match decision a, everyDecision P decision rest with
+      | .isTrue head, .isTrue tail => .isTrue (.cons head tail)
+      | .isFalse denied, _ => .isFalse (fun witness => by
+          cases witness with | cons head _ => exact denied head)
+      | _, .isFalse denied => .isFalse (fun witness => by
+          cases witness with | cons _ tail => exact denied tail)
+
+instance {A : Type} (P : A → Prop) [DecidablePred P] (values : List A) :
+    Decidable (Every P values) := everyDecision P (fun a => inferInstance) values
+
+def Ascii (c : Char) : Prop := c.toNat < 128
+def WordStart (c : Char) : Prop :=
+  ('a' ≤ c ∧ c ≤ 'z') ∨ ('A' ≤ c ∧ c ≤ 'Z') ∨ c = '_'
+def WordContinue (c : Char) : Prop := WordStart c ∨ ('0' ≤ c ∧ c ≤ '9')
+def Digit (c : Char) : Prop := '0' ≤ c ∧ c ≤ '9'
+def White (c : Char) : Prop := c = ' ' ∨ c = '\t' ∨ c = '\n' ∨ c = '\r'
+def NotLineEnd (c : Char) : Prop := c ≠ '\n' ∧ c ≠ '\r'
+def QuotedChar (c : Char) : Prop :=
+  c ≠ '"' ∧ c ≠ '\\' ∧ c ≠ '\n' ∧ c ≠ '\r'
+
+instance (c : Char) : Decidable (Ascii c) := by unfold Ascii; infer_instance
+instance (c : Char) : Decidable (WordStart c) := by unfold WordStart; infer_instance
+instance (c : Char) : Decidable (WordContinue c) := by unfold WordContinue; infer_instance
+instance (c : Char) : Decidable (Digit c) := by unfold Digit; infer_instance
+instance (c : Char) : Decidable (White c) := by unfold White; infer_instance
+instance (c : Char) : Decidable (NotLineEnd c) := by unfold NotLineEnd; infer_instance
+instance (c : Char) : Decidable (QuotedChar c) := by unfold QuotedChar; infer_instance
+
+def Identifier (text : String) : Prop :=
+  match text.toList with
+  | [] => False
+  | first :: rest => WordStart first ∧ Every WordContinue rest
+
+instance (text : String) : Decidable (Identifier text) := by
+  unfold Identifier
+  split <;> infer_instance
+
+inductive Mark where
+  | lt | gt | colon | equal | semi | dot | comma | bang | question | bar
+  | plus | minus | hash | star | amp | slash
+  deriving DecidableEq, Repr
+
+def Mark.char : Mark → Char
+  | .lt => '<' | .gt => '>' | .colon => ':' | .equal => '=' | .semi => ';'
+  | .dot => '.' | .comma => ',' | .bang => '!' | .question => '?' | .bar => '|'
+  | .plus => '+' | .minus => '-' | .hash => '#' | .star => '*' | .amp => '&'
+  | .slash => '/'
+
+inductive Bracket where
+  | brace | paren | square
+  deriving DecidableEq, Repr
+
+def Bracket.opening : Bracket → Char
+  | .brace => '{' | .paren => '(' | .square => '['
+def Bracket.closing : Bracket → Char
+  | .brace => '}' | .paren => ')' | .square => ']'
+
+/-- Bracket characters have no atom constructor: tree groups must account for
+them. Unescaped ordinary strings and identifier lifetimes are the supported
+subset; raw/byte/character strings, block comments and escapes are unsupported. -/
+inductive Atom where
+  | word (text : String)
+  | number (text : String)
+  | lifetime (text : String)
+  | quoted (contents : String)
+  | mark (symbol : Mark)
+  deriving DecidableEq, Repr
+
+def Atom.render : Atom → List Char
+  | .word text => text.toList
+  | .number text => text.toList
+  | .lifetime text => '\'' :: text.toList
+  | .quoted text => '"' :: (text.toList ++ ['"'])
+  | .mark symbol => [symbol.char]
+
+def Atom.Valid : Atom → Prop
+  | .word text | .lifetime text => Identifier text
+  | .number text => text.toList ≠ [] ∧ Every Digit text.toList
+  | .quoted text => Every QuotedChar text.toList
+  | .mark _ => True
+
+instance (a : Atom) : Decidable a.Valid := by
+  cases a <;> unfold Atom.Valid <;> infer_instance
+
+inductive Token where
+  | atom (value : Atom)
+  | opening (bracket : Bracket)
+  | closing (bracket : Bracket)
+  deriving DecidableEq, Repr
+
+def Token.render : Token → List Char
+  | .atom a => a.render
+  | .opening b => [b.opening]
+  | .closing b => [b.closing]
+def Token.Valid : Token → Prop
+  | .atom a => a.Valid
+  | .opening _ | .closing _ => True
+instance (t : Token) : Decidable t.Valid := by
+  cases t <;> unfold Token.Valid <;> infer_instance
+
+inductive Lexeme where
+  | trivia (text : String)
+  | lineComment (contents : String)
+  | token (value : Token)
+  deriving DecidableEq, Repr
+
+def Lexeme.render : Lexeme → List Char
+  | .trivia text => text.toList
+  | .lineComment text => '/' :: '/' :: text.toList
+  | .token value => value.render
+
+def Lexeme.Valid : Lexeme → Prop
+  | .trivia text => text.toList ≠ [] ∧ Every White text.toList
+  | .lineComment text => Every NotLineEnd text.toList
+  | .token value => value.Valid
+
+instance (l : Lexeme) : Decidable l.Valid := by
+  cases l <;> unfold Lexeme.Valid <;> infer_instance
+
+def leading : List Lexeme → Option Char
+  | [] => none
+  | first :: _ => first.render.head?
+
+/-- These boundaries enforce identifier maximality, distinguish 'static from a
+character literal, prevent r"..."/r#... raw forms, prevent // or /* being split
+as slash punctuation, and ensure a line comment cannot consume later tokens. -/
+def Lexeme.Boundary : Lexeme → Option Char → Prop
+  | .token (.atom (.word _)), some c
+  | .token (.atom (.number _)), some c
+  | .token (.atom (.lifetime _)), some c =>
+      ¬ WordContinue c ∧ c ≠ '"' ∧ c ≠ '#' ∧ c ≠ '\''
+  | .token (.atom (.mark .slash)), some c => c ≠ '/' ∧ c ≠ '*'
+  | .lineComment _, next => next = none ∨ next = some '\n'
+  | _, _ => True
+
+instance (l : Lexeme) (next : Option Char) : Decidable (l.Boundary next) := by
+  cases l with
+  | trivia text => simp only [Lexeme.Boundary]; infer_instance
+  | lineComment text => simp only [Lexeme.Boundary]; infer_instance
+  | token value =>
+      cases value with
+      | opening b => simp only [Lexeme.Boundary]; infer_instance
+      | closing b => simp only [Lexeme.Boundary]; infer_instance
+      | atom a =>
+          cases a with
+          | word text => cases next <;> simp only [Lexeme.Boundary] <;> infer_instance
+          | number text => cases next <;> simp only [Lexeme.Boundary] <;> infer_instance
+          | lifetime text => cases next <;> simp only [Lexeme.Boundary] <;> infer_instance
+          | quoted text => simp only [Lexeme.Boundary]; infer_instance
+          | mark m => cases m <;> cases next <;> simp only [Lexeme.Boundary] <;> infer_instance
+
+inductive LexicalStream : List Lexeme → Prop where
+  | nil : LexicalStream []
+  | cons {first rest} : first.Valid → first.Boundary (leading rest) →
+      LexicalStream rest → LexicalStream (first :: rest)
+
+def lexicalDecision : (lexemes : List Lexeme) → Decidable (LexicalStream lexemes)
+  | [] => .isTrue .nil
+  | first :: rest =>
+      let _ : Decidable (LexicalStream rest) := lexicalDecision rest
+      decidable_of_iff
+        (first.Valid ∧ first.Boundary (leading rest) ∧ LexicalStream rest)
+        ⟨(fun ⟨a, b, c⟩ => .cons a b c),
+          (fun witness => by cases witness with | cons a b c => exact ⟨a, b, c⟩)⟩
+
+instance (lexemes : List Lexeme) : Decidable (LexicalStream lexemes) :=
+  lexicalDecision lexemes
+
+def renderLex (lexemes : List Lexeme) : List Char := lexemes.flatMap Lexeme.render
+def tokens (lexemes : List Lexeme) : List Token :=
+  lexemes.filterMap (fun l => match l with | .token t => some t | _ => none)
+
+mutual
+  inductive Tree where
+    | atom (value : Atom)
+    | group (kind : Bracket) (children : Forest)
+  inductive Forest where
+    | nil
+    | cons (first : Tree) (rest : Forest)
+end
+
+mutual
+  def flattenTree (tree : Tree) : List Token :=
+    match tree with
+    | .atom a => [.atom a]
+    | .group b children => .opening b :: (flattenForest children ++ [.closing b])
+  termination_by structural tree
+  def flattenForest (forest : Forest) : List Token :=
+    match forest with
+    | .nil => []
+    | .cons first rest => flattenTree first ++ flattenForest rest
+  termination_by structural forest
+end
+
+def forest (trees : List Tree) : Forest :=
+  trees.foldr Forest.cons .nil
+def appendForest : Forest → Forest → Forest
+  | .nil, right => right
+  | .cons first rest, right => .cons first (appendForest rest right)
+def tw (text : String) : Tree := .atom (.word text)
+def tn (text : String) : Tree := .atom (.number text)
+def tm (mark : Mark) : Tree := .atom (.mark mark)
+def tg (kind : Bracket) (children : List Tree) : Tree := .group kind (forest children)
+def lw (text : String) : Lexeme := .token (.atom (.word text))
+def ln (text : String) : Lexeme := .token (.atom (.number text))
+def lm (mark : Mark) : Lexeme := .token (.atom (.mark mark))
+def lo (kind : Bracket) : Lexeme := .token (.opening kind)
+def lc (kind : Bracket) : Lexeme := .token (.closing kind)
+def lq (text : String) : Lexeme := .token (.atom (.quoted text))
+def ll (text : String) : Lexeme := .token (.atom (.lifetime text))
+
+def FencePrefix : List Char → Prop
+  | '`' :: '`' :: '`' :: _ => True
+  | _ => False
+instance (chars : List Char) : Decidable (FencePrefix chars) := by
+  unfold FencePrefix; split <;> infer_instance
+
+/-- No prose/plain-block payload may hide another fence line. -/
+inductive NoFenceLines : Bool → List Char → Prop where
+  | nil (atStart) : NoFenceLines atStart []
+  | cons {atStart c rest} : (atStart = true → ¬ FencePrefix (c :: rest)) →
+      NoFenceLines (decide (c = '\n')) rest → NoFenceLines atStart (c :: rest)
+
+def noFenceDecision (atStart : Bool) : (chars : List Char) →
+    Decidable (NoFenceLines atStart chars)
+  | [] => .isTrue (.nil atStart)
+  | c :: rest =>
+      let _ := noFenceDecision (decide (c = '\n')) rest
+      decidable_of_iff
+        ((atStart = true → ¬ FencePrefix (c :: rest)) ∧
+          NoFenceLines (decide (c = '\n')) rest)
+        ⟨(fun ⟨a, b⟩ => .cons a b),
+          (fun witness => by cases witness with | cons a b => exact ⟨a, b⟩)⟩
+instance (atStart : Bool) (chars : List Char) : Decidable (NoFenceLines atStart chars) :=
+  noFenceDecision atStart chars
+
+def lastChar : List Char → Option Char
+  | [] => none
+  | [c] => some c
+  | _ :: rest => lastChar rest
+def LineEnded (chars : List Char) : Prop := chars = [] ∨ lastChar chars = some '\n'
+instance (chars : List Char) : Decidable (LineEnded chars) := by
+  unfold LineEnded; infer_instance
+
+inductive Piece where
+  | prose (contents : String)
+  | plainFence (contents : String)
+  | rustFence (lexemes : List Lexeme) (trees : Forest)
+
+def Piece.render : Piece → List Char
+  | .prose contents => contents.toList
+  | .plainFence contents => "```\n".toList ++ contents.toList ++ "```\n".toList
+  | .rustFence lexemes _ => "```rust\n".toList ++ renderLex lexemes ++ "```\n".toList
+
+def Piece.Valid : Piece → Prop
+  | .prose contents | .plainFence contents =>
+      NoFenceLines true contents.toList ∧ LineEnded contents.toList
+  | .rustFence lexemes trees =>
+      LexicalStream lexemes ∧ NoFenceLines true (renderLex lexemes) ∧
+      LineEnded (renderLex lexemes) ∧ flattenForest trees = tokens lexemes
+instance (piece : Piece) : Decidable piece.Valid := by
+  cases piece <;> unfold Piece.Valid <;> infer_instance
+
+def renderDocument (pieces : List Piece) : List Char := pieces.flatMap Piece.render
+
+def ownerHeader : List Atom :=
+  [.word "impl", .mark .lt, .word "T", .mark .colon, .word "Target", .mark .gt,
+    .word "Memory", .word "for", .word "TreeBorrowsMemory", .mark .lt, .word "T", .mark .gt]
+
+def stripAtoms : List Atom → Forest → Option Forest
+  | [], rest => some rest
+  | wanted :: suffix, .cons (.atom actual) rest =>
+      if actual = wanted then stripAtoms suffix rest else none
+  | _, _ => none
+
+/-- Only top-level balanced owners in Rust fences are candidates. -/
+def ownerCount : Forest → Nat
+  | .nil => 0
+  | current@(.cons _ rest) =>
+      (match stripAtoms ownerHeader current with
+        | some (.cons (.group .brace _) _) => 1
+        | _ => 0) + ownerCount rest
+
+def documentOwnerCount (pieces : List Piece) : Nat :=
+  (pieces.map (fun piece => match piece with
+    | .rustFence _ trees => ownerCount trees | _ => 0)).foldl (· + ·) 0
+
+def methodCount : Forest → Nat
+  | .nil => 0
+  | current@(.cons _ rest) =>
+      (match stripAtoms [.word "fn", .word "end_call"] current with
+        | some _ => 1 | none => 0) + methodCount rest
+
+structure BodyTerm where
+  field : String
+  mapper : String
+  binder : String
+  callee : String
+  argument : String
+  unitHelper : String
+  propagate : Bool
+  deriving DecidableEq, Repr
+
+def BodyTerm.WellBound (body : BodyTerm) : Prop :=
+  Every Identifier [body.field, body.mapper, body.binder, body.callee,
+    body.argument, body.unitHelper] ∧ body.argument = body.binder
+instance (body : BodyTerm) : Decidable body.WellBound := by
+  unfold BodyTerm.WellBound; infer_instance
+
+/-- The parameter and receiver names are fixed by the checked signature.
+All other names are preserved. This does not resolve their semantic bindings. -/
+def BodyTerm.syntax (body : BodyTerm) : Forest :=
+  appendForest
+    (forest [tw "extra", tm .dot, tw body.field, tm .dot, tw body.mapper,
+      tg .paren [tm .bar, tw body.binder, tm .bar, tw "self", tm .dot,
+        tw body.callee, tg .paren [tw body.argument]]])
+    (appendForest (if body.propagate then forest [tm .question] else .nil)
+      (forest [tm .semi, tw body.unitHelper, tg .paren [tg .paren []]]))
+
+def signatureParameters : Tree :=
+  tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "extra", tm .colon,
+    tw "Self", tm .colon, tm .colon, tw "FrameExtra"]
+
+def declaration (body : BodyTerm) : Forest :=
+  forest [tw "fn", tw "end_call", signatureParameters, tm .minus, tm .gt,
+    tw "Result", .group .brace body.syntax]
+
+structure Span where
+  first : Nat
+  stop : Nat
+  deriving DecidableEq, Repr
+structure Boundaries where
+  fence : Span
+  owner : Span
+  method : Span
+  deriving DecidableEq, Repr
+
+/-- Closed pinned Markdown and non-body token context. These constants are
+untrusted serialized data too: SourceShape checks their reconstruction and
+lexical/group evidence against the supplied full source. Their immutability
+restricts this lane; it does not prove general Markdown/CommonMark adequacy. -/
+def precedingPieces : List Piece := [
+  .prose "# MiniRust Tree Borrows\n\nFor background on Tree Borrows, see:\n\n1. [Neven's posts on Tree Borrows](https://perso.crans.org/vanille/treebor)\n2. [From Stacks to Trees: A new aliasing model for Rust](https://www.ralfj.de/blog/2023/06/02/tree-borrows.html)\n\nSimilar to the [Basic Memory Model](../basic.md), we need to first define some basic data structures:\nthe core date structure managing the tree is defined in [tree.md](tree.md), and the core state machine can be found in [state_machine.md](state_machine.md).\n\nThe model then tracks a tree for each allocation:\n\n",
+  .rustFence [
+    lw "struct",
+    .trivia " ",
+    lw "TreeBorrowsAllocationExtra",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    lw "root",
+    lm .colon,
+    .trivia " ",
+    lw "Node",
+    lm .comma,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n"
+  ] (forest [tw "struct", tw "TreeBorrowsAllocationExtra", tg .brace [tw "root", tm .colon, tw "Node", tm .comma]]),
+  .prose "\nWe use a *path* to identify each node and track its location in the tree. A path is represented as a list of indices $[i_1, i_2, ..., i_k]$, where each index indicates which branch to take next.\nBelow is an illustrated example:\n\n",
+  .plainFence "Consider the following tree\n      A\n     / \\\n    B   C\n   / \\   \\\n  D  E    F\nThe path from A to A is represented as [].\nThe path from A to B is represented as [0]\nThe path from A to C is represented as [1].\nThe path from A to D is represented as [0, 0].\nThe path from A to E is represented as [0, 1].\nThe path from A to F is represented as [1, 1].\n",
+  .prose "\n",
+  .rustFence [
+    .lineComment "/ The index of a child in the list of child nodes.",
+    .trivia "\n",
+    lw "type",
+    .trivia " ",
+    lw "ChildId",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Int",
+    lm .semi,
+    .trivia "\n",
+    .lineComment "/ A path from the root of a tree to some node inside the tree.",
+    .trivia "\n",
+    lw "type",
+    .trivia " ",
+    lw "Path",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "List",
+    lm .lt,
+    lw "ChildId",
+    lm .gt,
+    lm .semi,
+    .trivia "\n"
+  ] (forest [tw "type", tw "ChildId", tm .equal, tw "Int", tm .semi, tw "type", tw "Path", tm .equal, tw "List", tm .lt, tw "ChildId", tm .gt, tm .semi]),
+  .prose "\nThen we can define the provenance of Tree Borrows as a pair consisting of the path and the allocation ID.\n\n",
+  .rustFence [
+    lw "type",
+    .trivia " ",
+    lw "TreeBorrowsProvenance",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lo .paren,
+    lw "AllocId",
+    lm .comma,
+    .trivia " ",
+    lw "Path",
+    lc .paren,
+    lm .semi,
+    .trivia "\n"
+  ] (forest [tw "type", tw "TreeBorrowsProvenance", tm .equal, tg .paren [tw "AllocId", tm .comma, tw "Path"], tm .semi]),
+  .prose "\nThe memory itself largely reuses the basic memory infrastructure, with the tree as extra state.\n\n",
+  .rustFence [
+    .lineComment "/ Global parameters controlling Tree Borrows behavior.",
+    .trivia "\n",
+    lm .hash,
+    lo .square,
+    lw "derive",
+    lo .paren,
+    lw "Default",
+    lc .paren,
+    lc .square,
+    .trivia "\n",
+    lw "pub",
+    .trivia " ",
+    lw "struct",
+    .trivia " ",
+    lw "TreeBorrowsParams",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    .lineComment "/ Whether implicit writes are enabled or not.",
+    .trivia "\n    ",
+    lw "pub",
+    .trivia " ",
+    lw "implicit_writes",
+    lm .colon,
+    .trivia " ",
+    lw "bool",
+    lm .comma,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n"
+  ] (forest [tm .hash, tg .square [tw "derive", tg .paren [tw "Default"]], tw "pub", tw "struct", tw "TreeBorrowsParams", tg .brace [tw "pub", tw "implicit_writes", tm .colon, tw "bool", tm .comma]]),
+  .prose "\n",
+  .rustFence [
+    lw "pub",
+    .trivia " ",
+    lw "struct",
+    .trivia " ",
+    lw "TreeBorrowsMemory",
+    lm .lt,
+    lw "T",
+    lm .colon,
+    .trivia " ",
+    lw "Target",
+    lm .gt,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    lw "params",
+    lm .colon,
+    .trivia " ",
+    lw "TreeBorrowsParams",
+    lm .comma,
+    .trivia "\n    ",
+    lw "mem",
+    lm .colon,
+    .trivia " ",
+    lw "BasicMemory",
+    lm .lt,
+    lw "T",
+    lm .comma,
+    .trivia " ",
+    lw "Path",
+    lm .comma,
+    .trivia " ",
+    lw "TreeBorrowsAllocationExtra",
+    lm .gt,
+    lm .comma,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n\n",
+    lw "pub",
+    .trivia " ",
+    lw "struct",
+    .trivia " ",
+    lw "TreeBorrowsFrameExtra",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    .lineComment "/ Our per-frame state is the list of nodes that are protected by this call.",
+    .trivia "\n    ",
+    lw "protectors",
+    lm .colon,
+    .trivia " ",
+    lw "List",
+    lm .lt,
+    lw "TreeBorrowsProvenance",
+    lm .gt,
+    lm .comma,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n\n",
+    lw "impl",
+    .trivia " ",
+    lw "TreeBorrowsFrameExtra",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "new",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Self",
+    .trivia " ",
+    lo .brace,
+    .trivia " ",
+    lw "Self",
+    .trivia " ",
+    lo .brace,
+    .trivia " ",
+    lw "protectors",
+    lm .colon,
+    .trivia " ",
+    lw "List",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lc .brace,
+    .trivia " ",
+    lc .brace,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n"
+  ] (forest [tw "pub", tw "struct", tw "TreeBorrowsMemory", tm .lt, tw "T", tm .colon, tw "Target", tm .gt, tg .brace [tw "params", tm .colon, tw "TreeBorrowsParams", tm .comma, tw "mem", tm .colon, tw "BasicMemory", tm .lt, tw "T", tm .comma, tw "Path", tm .comma, tw "TreeBorrowsAllocationExtra", tm .gt, tm .comma], tw "pub", tw "struct", tw "TreeBorrowsFrameExtra", tg .brace [tw "protectors", tm .colon, tw "List", tm .lt, tw "TreeBorrowsProvenance", tm .gt, tm .comma], tw "impl", tw "TreeBorrowsFrameExtra", tg .brace [tw "fn", tw "new", tg .paren [], tm .minus, tm .gt, tw "Self", tg .brace [tw "Self", tg .brace [tw "protectors", tm .colon, tw "List", tm .colon, tm .colon, tw "new", tg .paren []]]]]),
+  .prose "\nHere we define some helper methods to implement the memory interface.\n\n",
+  .rustFence [
+    lw "impl",
+    lm .lt,
+    lw "T",
+    lm .colon,
+    .trivia " ",
+    lw "Target",
+    lm .gt,
+    .trivia " ",
+    lw "TreeBorrowsMemory",
+    lm .lt,
+    lw "T",
+    lm .gt,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    .lineComment "/ Create a new node for a pointer (reborrow)",
+    .trivia "\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "reborrow",
+    lo .paren,
+    .trivia "\n        ",
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia "\n        ",
+    lw "ptr",
+    lm .colon,
+    .trivia " ",
+    lw "ThinPointer",
+    lm .lt,
+    lw "TreeBorrowsProvenance",
+    lm .gt,
+    lm .comma,
+    .trivia "\n        ",
+    lw "settings",
+    lm .colon,
+    .trivia " ",
+    lw "ReborrowSettings",
+    lm .comma,
+    .trivia "\n        ",
+    lw "frame_extra",
+    lm .colon,
+    .trivia " ",
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "TreeBorrowsFrameExtra",
+    lm .comma,
+    .trivia "\n    ",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    lm .lt,
+    lw "ThinPointer",
+    lm .lt,
+    lw "TreeBorrowsProvenance",
+    lm .gt,
+    lm .gt,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lw "pointee_size",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Size",
+    lm .colon,
+    lm .colon,
+    lw "from_bytes",
+    lo .paren,
+    lw "settings",
+    lm .dot,
+    lw "inside",
+    lm .dot,
+    lw "len",
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    lm .dot,
+    lw "unwrap",
+    lo .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n\n        ",
+    .lineComment " Make sure the pointer is dereferenceable.",
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "check_ptr",
+    lo .paren,
+    lw "ptr",
+    lm .comma,
+    .trivia " ",
+    lw "pointee_size",
+    lc .paren,
+    lm .question,
+    lm .semi,
+    .trivia "\n        ",
+    .lineComment " However, ignore the result of `check_ptr`: even if pointee_size is 0, we want to create a child pointer.",
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lw "Some",
+    lo .paren,
+    lo .paren,
+    lw "alloc_id",
+    lm .comma,
+    .trivia " ",
+    lw "parent_path",
+    lc .paren,
+    lc .paren,
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "ptr",
+    lm .dot,
+    lw "provenance",
+    .trivia " ",
+    lw "else",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    lw "assert",
+    lm .bang,
+    lo .paren,
+    lw "pointee_size",
+    lm .dot,
+    lw "is_zero",
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n            ",
+    .lineComment " Pointers without provenance cannot access any memory, so giving them a new",
+    .trivia "\n            ",
+    .lineComment " tag makes no sense.",
+    .trivia "\n            ",
+    lw "return",
+    .trivia " ",
+    lw "ret",
+    lo .paren,
+    lw "ptr",
+    lc .paren,
+    lm .semi,
+    .trivia "\n        ",
+    lc .brace,
+    lm .semi,
+    .trivia "\n\n        ",
+    lw "let",
+    .trivia " ",
+    lw "child_path",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "allocations",
+    lm .dot,
+    lw "mutate_at",
+    lo .paren,
+    lw "alloc_id",
+    lm .dot,
+    ln "0",
+    lm .comma,
+    .trivia " ",
+    lm .bar,
+    lw "allocation",
+    lm .bar,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    .lineComment " Prepare `permissions` which covers the *entire allocation*, not just",
+    .trivia "\n            ",
+    .lineComment " the part \"inside\" the pointer. This will initially not be marked as \"accessed\"",
+    .trivia "\n            ",
+    .lineComment " anywhere; we'll then do an access which will set that flag.",
+    .trivia "\n            ",
+    lw "let",
+    .trivia " ",
+    lw "alloc_size",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "allocation",
+    lm .dot,
+    lw "size",
+    lo .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n            ",
+    lw "let",
+    .trivia " ",
+    lw "offset",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Offset",
+    lm .colon,
+    lm .colon,
+    lw "from_bytes",
+    lo .paren,
+    lw "ptr",
+    lm .dot,
+    lw "addr",
+    .trivia " ",
+    lm .minus,
+    .trivia " ",
+    lw "allocation",
+    lm .dot,
+    lw "addr",
+    lc .paren,
+    lm .dot,
+    lw "unwrap",
+    lo .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n\n            ",
+    lw "let",
+    .trivia " ",
+    lw "mut",
+    .trivia " ",
+    lw "permissions",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "list",
+    lm .bang,
+    lo .square,
+    lw "settings",
+    lm .dot,
+    lw "outside",
+    lm .semi,
+    .trivia " ",
+    lw "alloc_size",
+    lm .dot,
+    lw "bytes",
+    lo .paren,
+    lc .paren,
+    lc .square,
+    lm .semi,
+    .trivia "\n            ",
+    lw "if",
+    .trivia " ",
+    lw "settings",
+    lm .dot,
+    lw "inside",
+    lm .dot,
+    lw "len",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lm .gt,
+    .trivia " ",
+    ln "0",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                ",
+    lw "permissions",
+    lm .dot,
+    lw "write_subslice_at_index",
+    lo .paren,
+    .trivia "\n                    ",
+    lw "offset",
+    lm .dot,
+    lw "bytes",
+    lo .paren,
+    lc .paren,
+    lm .comma,
+    .trivia "\n                    ",
+    lw "settings",
+    lm .dot,
+    lw "inside",
+    lm .comma,
+    .trivia "\n                ",
+    lc .paren,
+    lm .semi,
+    .trivia "\n            ",
+    lc .brace,
+    .trivia "\n\n            ",
+    .lineComment " Create the new child node",
+    .trivia "\n            ",
+    lw "let",
+    .trivia " ",
+    lw "child_node",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Node",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                ",
+    lw "children",
+    lm .colon,
+    .trivia " ",
+    lw "List",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lc .paren,
+    lm .comma,
+    .trivia "\n                ",
+    lw "permissions",
+    lm .comma,
+    .trivia "\n                ",
+    lw "protected",
+    lm .colon,
+    .trivia " ",
+    lw "settings",
+    lm .dot,
+    lw "protected",
+    lm .comma,
+    .trivia "\n            ",
+    lc .brace,
+    lm .semi,
+    .trivia "\n\n            ",
+    .lineComment " Assert that the node's internal invariant is upheld.",
+    .trivia "\n            ",
+    lw "assert",
+    lm .bang,
+    lo .paren,
+    lw "child_node",
+    lm .dot,
+    lw "permissions",
+    lm .dot,
+    lw "all",
+    lo .paren,
+    lm .bar,
+    lw "x",
+    lm .bar,
+    .trivia " ",
+    lw "x",
+    lm .dot,
+    lw "matches_protector",
+    lo .paren,
+    lw "child_node",
+    lm .dot,
+    lw "protected",
+    lc .paren,
+    lc .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n\n            ",
+    .lineComment " Add the new node to the tree",
+    .trivia "\n            ",
+    lw "let",
+    .trivia " ",
+    lw "child_path",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "allocation",
+    lm .dot,
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "add_node",
+    lo .paren,
+    lw "parent_path",
+    lm .comma,
+    .trivia " ",
+    lw "child_node",
+    lc .paren,
+    lm .semi,
+    .trivia "\n\n            ",
+    .lineComment " Perform a read or write access on all bytes inside the pointee whose permission requires such an access.",
+    .trivia "\n            ",
+    lw "for",
+    .trivia " ",
+    lo .paren,
+    lw "idx",
+    lm .comma,
+    .trivia " ",
+    lw "perm",
+    lc .paren,
+    .trivia " ",
+    lw "in",
+    .trivia " ",
+    lw "settings",
+    lm .dot,
+    lw "inside",
+    lm .dot,
+    lw "iter",
+    lo .paren,
+    lc .paren,
+    lm .dot,
+    lw "enumerate",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                ",
+    lw "let",
+    .trivia " ",
+    lw "idx",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Int",
+    lm .colon,
+    lm .colon,
+    lw "from",
+    lo .paren,
+    lw "idx",
+    lc .paren,
+    lm .semi,
+    .trivia " ",
+    .lineComment " FIXME: we need a version of `enumerate` that yields `Int`s.",
+    .trivia "\n                ",
+    lw "let",
+    .trivia " ",
+    lw "idx",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Size",
+    lm .colon,
+    lm .colon,
+    lw "from_bytes",
+    lo .paren,
+    lw "idx",
+    lc .paren,
+    lm .dot,
+    lw "unwrap",
+    lo .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n                ",
+    lw "if",
+    .trivia " ",
+    lw "let",
+    .trivia " ",
+    lw "Some",
+    lo .paren,
+    lw "access",
+    lc .paren,
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "perm",
+    lm .dot,
+    lw "init_access",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                    ",
+    lw "allocation",
+    lm .dot,
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "access",
+    lo .paren,
+    lw "Some",
+    lo .paren,
+    lw "child_path",
+    lc .paren,
+    lm .comma,
+    .trivia " ",
+    lw "access",
+    lm .comma,
+    .trivia " ",
+    lw "offset",
+    lm .plus,
+    lw "idx",
+    lm .comma,
+    .trivia " ",
+    lw "Offset",
+    lm .colon,
+    lm .colon,
+    lw "from_bytes_const",
+    lo .paren,
+    ln "1",
+    lc .paren,
+    lc .paren,
+    lm .question,
+    .trivia "\n                ",
+    lc .brace,
+    .trivia "\n            ",
+    lc .brace,
+    .trivia "\n\n            ",
+    lw "ret",
+    lm .colon,
+    lm .colon,
+    lm .lt,
+    lw "Result",
+    lm .lt,
+    lw "Path",
+    lm .gt,
+    lm .gt,
+    lo .paren,
+    lw "child_path",
+    lc .paren,
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    lm .question,
+    lm .semi,
+    .trivia "\n\n        ",
+    .lineComment " Track the new protector",
+    .trivia "\n        ",
+    lw "if",
+    .trivia " ",
+    lw "settings",
+    lm .dot,
+    lw "protected",
+    lm .dot,
+    lw "yes",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lo .brace,
+    .trivia " ",
+    lw "frame_extra",
+    lm .dot,
+    lw "protectors",
+    lm .dot,
+    lw "push",
+    lo .paren,
+    lo .paren,
+    lw "alloc_id",
+    lm .comma,
+    .trivia " ",
+    lw "child_path",
+    lc .paren,
+    lc .paren,
+    lm .semi,
+    .trivia " ",
+    lc .brace,
+    .trivia "\n\n        ",
+    .lineComment " Create the child pointer and return it",
+    .trivia "\n        ",
+    lw "ret",
+    lo .paren,
+    lw "ThinPointer",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    lw "provenance",
+    lm .colon,
+    .trivia " ",
+    lw "Some",
+    lo .paren,
+    lo .paren,
+    lw "alloc_id",
+    lm .comma,
+    .trivia " ",
+    lw "child_path",
+    lc .paren,
+    lc .paren,
+    lm .comma,
+    .trivia "\n            ",
+    lm .dot,
+    lm .dot,
+    lw "ptr",
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    .lineComment "/ Remove the protector.",
+    .trivia "\n    ",
+    .lineComment "/ `provenance` is the provenance of the protector.",
+    .trivia "\n    ",
+    .lineComment "/ Perform a special implicit access on all locations that have been accessed.",
+    .trivia "\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "release_protector",
+    lo .paren,
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "provenance",
+    lm .colon,
+    .trivia " ",
+    lw "TreeBorrowsProvenance",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lo .paren,
+    lw "alloc_id",
+    lm .comma,
+    .trivia " ",
+    lw "path",
+    lc .paren,
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "provenance",
+    lm .semi,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "allocations",
+    lm .dot,
+    lw "mutate_at",
+    lo .paren,
+    lw "alloc_id",
+    lm .dot,
+    ln "0",
+    lm .comma,
+    .trivia " ",
+    lm .bar,
+    lw "allocation",
+    lm .bar,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    lw "let",
+    .trivia " ",
+    lw "protector_accesses",
+    .trivia " ",
+    lm .colon,
+    .trivia " ",
+    lw "List",
+    lm .lt,
+    lw "_",
+    lm .gt,
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "allocation",
+    lm .dot,
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "access_node",
+    lo .paren,
+    lw "path",
+    lm .comma,
+    .trivia " ",
+    lm .bar,
+    lw "node",
+    lm .bar,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                ",
+    lw "assert",
+    lm .bang,
+    lo .paren,
+    lw "node",
+    lm .dot,
+    lw "protected",
+    lm .dot,
+    lw "yes",
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n                ",
+    .lineComment " We get a list of pairs, and need to turn this into a pair of lists.",
+    .trivia "\n                ",
+    lw "let",
+    .trivia " ",
+    lw "list_of_perms_and_accesses",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "node",
+    lm .dot,
+    lw "permissions",
+    lm .dot,
+    lw "map",
+    lo .paren,
+    lm .bar,
+    lw "x",
+    lm .bar,
+    .trivia " ",
+    lw "x",
+    lm .dot,
+    lw "unprotect",
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n                ",
+    .lineComment " The list of unprotected permissions is stored back in the tree.",
+    .trivia "\n                ",
+    lw "node",
+    lm .dot,
+    lw "permissions",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "list_of_perms_and_accesses",
+    lm .dot,
+    lw "map",
+    lo .paren,
+    lm .bar,
+    lo .paren,
+    lw "perm",
+    lm .comma,
+    .trivia " ",
+    lw "_acc",
+    lc .paren,
+    lm .bar,
+    .trivia " ",
+    lw "perm",
+    lc .paren,
+    lm .semi,
+    .trivia "\n                ",
+    .lineComment " The resulting accesses are used further down.",
+    .trivia "\n                ",
+    lw "list_of_perms_and_accesses",
+    lm .dot,
+    lw "map",
+    lo .paren,
+    lm .bar,
+    lo .paren,
+    lw "_perm",
+    lm .comma,
+    .trivia " ",
+    lw "acc",
+    lc .paren,
+    lm .bar,
+    .trivia " ",
+    lw "acc",
+    lc .paren,
+    .trivia "\n            ",
+    lc .brace,
+    lc .paren,
+    lm .semi,
+    .trivia "\n\n            ",
+    lw "if",
+    .trivia " ",
+    lm .bang,
+    lw "allocation",
+    lm .dot,
+    lw "live",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                ",
+    .lineComment " Looks like the protected memory got deallocated already. This is fine,",
+    .trivia "\n                ",
+    .lineComment " and expected for weak allocations. For strong allocations, this can e.g.",
+    .trivia "\n                ",
+    .lineComment " happen if the protector was zero-sized, or on interior mutable data.",
+    .trivia "\n                ",
+    lw "return",
+    .trivia " ",
+    lw "ret",
+    lo .paren,
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n            ",
+    lc .brace,
+    .trivia "\n\n            ",
+    lw "allocation",
+    lm .dot,
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "release_protector",
+    lo .paren,
+    lw "Some",
+    lo .paren,
+    lw "path",
+    lc .paren,
+    lm .comma,
+    .trivia " ",
+    lm .amp,
+    lw "protector_accesses",
+    lc .paren,
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n"
+  ] (forest [tw "impl", tm .lt, tw "T", tm .colon, tw "Target", tm .gt, tw "TreeBorrowsMemory", tm .lt, tw "T", tm .gt, tg .brace [tw "fn", tw "reborrow", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "ptr", tm .colon, tw "ThinPointer", tm .lt, tw "TreeBorrowsProvenance", tm .gt, tm .comma, tw "settings", tm .colon, tw "ReborrowSettings", tm .comma, tw "frame_extra", tm .colon, tm .amp, tw "mut", tw "TreeBorrowsFrameExtra", tm .comma], tm .minus, tm .gt, tw "Result", tm .lt, tw "ThinPointer", tm .lt, tw "TreeBorrowsProvenance", tm .gt, tm .gt, tg .brace [tw "let", tw "pointee_size", tm .equal, tw "Size", tm .colon, tm .colon, tw "from_bytes", tg .paren [tw "settings", tm .dot, tw "inside", tm .dot, tw "len", tg .paren []], tm .dot, tw "unwrap", tg .paren [], tm .semi, tw "self", tm .dot, tw "mem", tm .dot, tw "check_ptr", tg .paren [tw "ptr", tm .comma, tw "pointee_size"], tm .question, tm .semi, tw "let", tw "Some", tg .paren [tg .paren [tw "alloc_id", tm .comma, tw "parent_path"]], tm .equal, tw "ptr", tm .dot, tw "provenance", tw "else", tg .brace [tw "assert", tm .bang, tg .paren [tw "pointee_size", tm .dot, tw "is_zero", tg .paren []], tm .semi, tw "return", tw "ret", tg .paren [tw "ptr"], tm .semi], tm .semi, tw "let", tw "child_path", tm .equal, tw "self", tm .dot, tw "mem", tm .dot, tw "allocations", tm .dot, tw "mutate_at", tg .paren [tw "alloc_id", tm .dot, tn "0", tm .comma, tm .bar, tw "allocation", tm .bar, tg .brace [tw "let", tw "alloc_size", tm .equal, tw "allocation", tm .dot, tw "size", tg .paren [], tm .semi, tw "let", tw "offset", tm .equal, tw "Offset", tm .colon, tm .colon, tw "from_bytes", tg .paren [tw "ptr", tm .dot, tw "addr", tm .minus, tw "allocation", tm .dot, tw "addr"], tm .dot, tw "unwrap", tg .paren [], tm .semi, tw "let", tw "mut", tw "permissions", tm .equal, tw "list", tm .bang, tg .square [tw "settings", tm .dot, tw "outside", tm .semi, tw "alloc_size", tm .dot, tw "bytes", tg .paren []], tm .semi, tw "if", tw "settings", tm .dot, tw "inside", tm .dot, tw "len", tg .paren [], tm .gt, tn "0", tg .brace [tw "permissions", tm .dot, tw "write_subslice_at_index", tg .paren [tw "offset", tm .dot, tw "bytes", tg .paren [], tm .comma, tw "settings", tm .dot, tw "inside", tm .comma], tm .semi], tw "let", tw "child_node", tm .equal, tw "Node", tg .brace [tw "children", tm .colon, tw "List", tm .colon, tm .colon, tw "new", tg .paren [], tm .comma, tw "permissions", tm .comma, tw "protected", tm .colon, tw "settings", tm .dot, tw "protected", tm .comma], tm .semi, tw "assert", tm .bang, tg .paren [tw "child_node", tm .dot, tw "permissions", tm .dot, tw "all", tg .paren [tm .bar, tw "x", tm .bar, tw "x", tm .dot, tw "matches_protector", tg .paren [tw "child_node", tm .dot, tw "protected"]]], tm .semi, tw "let", tw "child_path", tm .equal, tw "allocation", tm .dot, tw "extra", tm .dot, tw "root", tm .dot, tw "add_node", tg .paren [tw "parent_path", tm .comma, tw "child_node"], tm .semi, tw "for", tg .paren [tw "idx", tm .comma, tw "perm"], tw "in", tw "settings", tm .dot, tw "inside", tm .dot, tw "iter", tg .paren [], tm .dot, tw "enumerate", tg .paren [], tg .brace [tw "let", tw "idx", tm .equal, tw "Int", tm .colon, tm .colon, tw "from", tg .paren [tw "idx"], tm .semi, tw "let", tw "idx", tm .equal, tw "Size", tm .colon, tm .colon, tw "from_bytes", tg .paren [tw "idx"], tm .dot, tw "unwrap", tg .paren [], tm .semi, tw "if", tw "let", tw "Some", tg .paren [tw "access"], tm .equal, tw "perm", tm .dot, tw "init_access", tg .paren [], tg .brace [tw "allocation", tm .dot, tw "extra", tm .dot, tw "root", tm .dot, tw "access", tg .paren [tw "Some", tg .paren [tw "child_path"], tm .comma, tw "access", tm .comma, tw "offset", tm .plus, tw "idx", tm .comma, tw "Offset", tm .colon, tm .colon, tw "from_bytes_const", tg .paren [tn "1"]], tm .question]], tw "ret", tm .colon, tm .colon, tm .lt, tw "Result", tm .lt, tw "Path", tm .gt, tm .gt, tg .paren [tw "child_path"]]], tm .question, tm .semi, tw "if", tw "settings", tm .dot, tw "protected", tm .dot, tw "yes", tg .paren [], tg .brace [tw "frame_extra", tm .dot, tw "protectors", tm .dot, tw "push", tg .paren [tg .paren [tw "alloc_id", tm .comma, tw "child_path"]], tm .semi], tw "ret", tg .paren [tw "ThinPointer", tg .brace [tw "provenance", tm .colon, tw "Some", tg .paren [tg .paren [tw "alloc_id", tm .comma, tw "child_path"]], tm .comma, tm .dot, tm .dot, tw "ptr"]]], tw "fn", tw "release_protector", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "provenance", tm .colon, tw "TreeBorrowsProvenance"], tm .minus, tm .gt, tw "Result", tg .brace [tw "let", tg .paren [tw "alloc_id", tm .comma, tw "path"], tm .equal, tw "provenance", tm .semi, tw "self", tm .dot, tw "mem", tm .dot, tw "allocations", tm .dot, tw "mutate_at", tg .paren [tw "alloc_id", tm .dot, tn "0", tm .comma, tm .bar, tw "allocation", tm .bar, tg .brace [tw "let", tw "protector_accesses", tm .colon, tw "List", tm .lt, tw "_", tm .gt, tm .equal, tw "allocation", tm .dot, tw "extra", tm .dot, tw "root", tm .dot, tw "access_node", tg .paren [tw "path", tm .comma, tm .bar, tw "node", tm .bar, tg .brace [tw "assert", tm .bang, tg .paren [tw "node", tm .dot, tw "protected", tm .dot, tw "yes", tg .paren []], tm .semi, tw "let", tw "list_of_perms_and_accesses", tm .equal, tw "node", tm .dot, tw "permissions", tm .dot, tw "map", tg .paren [tm .bar, tw "x", tm .bar, tw "x", tm .dot, tw "unprotect", tg .paren []], tm .semi, tw "node", tm .dot, tw "permissions", tm .equal, tw "list_of_perms_and_accesses", tm .dot, tw "map", tg .paren [tm .bar, tg .paren [tw "perm", tm .comma, tw "_acc"], tm .bar, tw "perm"], tm .semi, tw "list_of_perms_and_accesses", tm .dot, tw "map", tg .paren [tm .bar, tg .paren [tw "_perm", tm .comma, tw "acc"], tm .bar, tw "acc"]]], tm .semi, tw "if", tm .bang, tw "allocation", tm .dot, tw "live", tg .brace [tw "return", tw "ret", tg .paren [tg .paren []], tm .semi], tw "allocation", tm .dot, tw "extra", tm .dot, tw "root", tm .dot, tw "release_protector", tg .paren [tw "Some", tg .paren [tw "path"], tm .comma, tm .amp, tw "protector_accesses"]]]]]]),
+  .prose "\n# Memory Operations\n\nThen we implement the memory model interface for Tree Borrows.\n\n"
+]
+
+def followingPieces : List Piece := [
+
+]
+
+def pinnedBeforeMethod : Forest := forest [tw "type", tw "Provenance", tm .equal, tw "TreeBorrowsProvenance", tm .semi, tw "type", tw "FrameExtra", tm .equal, tw "TreeBorrowsFrameExtra", tm .semi, tw "type", tw "T", tm .equal, tw "T", tm .semi, tw "type", tw "Params", tm .equal, tw "TreeBorrowsParams", tm .semi, tw "fn", tw "new", tg .paren [tw "params", tm .colon, tw "TreeBorrowsParams"], tm .minus, tm .gt, tw "Self", tg .brace [tw "Self", tg .brace [tw "mem", tm .colon, tw "BasicMemory", tm .colon, tm .colon, tw "new", tg .paren [], tm .comma, tw "params"]], tw "fn", tw "allocate", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "kind", tm .colon, tw "AllocationKind", tm .comma, tw "size", tm .colon, tw "Size", tm .comma, tw "align", tm .colon, tw "Align"], tm .minus, tm .gt, tw "NdResult", tm .lt, tw "ThinPointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .gt, tg .brace [tw "let", tw "root", tm .equal, tw "Node", tg .brace [tw "children", tm .colon, tw "List", tm .colon, tm .colon, tw "new", tg .paren [], tm .comma, tw "permissions", tm .colon, tw "list", tm .bang, tg .square [tw "Permission", tm .colon, tm .colon, tw "Unprot", tg .paren [tw "PermissionUnprot", tm .colon, tm .colon, tw "Unique"], tm .semi, tw "size", tm .dot, tw "bytes", tg .paren []], tm .comma, tw "protected", tm .colon, tw "Protected", tm .colon, tm .colon, tw "No", tm .comma], tm .semi, tw "let", tw "path", tm .equal, tw "Path", tm .colon, tm .colon, tw "new", tg .paren [], tm .semi, tw "let", tw "extra", tm .equal, tw "TreeBorrowsAllocationExtra", tg .brace [tw "root"], tm .semi, tw "self", tm .dot, tw "mem", tm .dot, tw "allocate", tg .paren [tw "kind", tm .comma, tw "size", tm .comma, tw "align", tm .comma, tw "path", tm .comma, tw "extra"]], tw "fn", tw "deallocate", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "ptr", tm .colon, tw "ThinPointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .comma, tw "kind", tm .colon, tw "AllocationKind", tm .comma, tw "size", tm .colon, tw "Size", tm .comma, tw "align", tm .colon, tw "Align"], tm .minus, tm .gt, tw "Result", tg .brace [tw "self", tm .dot, tw "mem", tm .dot, tw "deallocate", tg .paren [tw "ptr", tm .comma, tw "kind", tm .comma, tw "size", tm .comma, tw "align", tm .comma, tm .bar, tw "extra", tm .comma, tw "path", tm .bar, tg .brace [tw "extra", tm .dot, tw "root", tm .dot, tw "access", tg .paren [tw "Some", tg .paren [tw "path"], tm .comma, tw "AccessKind", tm .colon, tm .colon, tw "Write", tm .comma, tw "Offset", tm .colon, tm .colon, tw "ZERO", tm .comma, tw "size"], tm .question, tm .semi, tw "if", tw "extra", tm .dot, tw "root", tm .dot, tw "contains_strong_protector_preventing_deallocation", tg .paren [], tg .brace [tw "throw_ub", tm .bang, tg .paren [.atom (.quoted "Tree Borrows: deallocating strongly protected allocation")]], tw "ret", tg .paren [tg .paren []]]]], tw "fn", tw "load", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "ptr", tm .colon, tw "ThinPointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .comma, tw "len", tm .colon, tw "Size", tm .comma, tw "align", tm .colon, tw "Align"], tm .minus, tm .gt, tw "Result", tm .lt, tw "List", tm .lt, tw "AbstractByte", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .gt, tm .gt, tg .brace [tw "self", tm .dot, tw "mem", tm .dot, tw "load", tg .paren [tw "ptr", tm .comma, tw "len", tm .comma, tw "align", tm .comma, tm .bar, tw "extra", tm .comma, tw "path", tm .comma, tw "offset", tm .bar, tg .brace [tw "extra", tm .dot, tw "root", tm .dot, tw "access", tg .paren [tw "Some", tg .paren [tw "path"], tm .comma, tw "AccessKind", tm .colon, tm .colon, tw "Read", tm .comma, tw "offset", tm .comma, tw "len"]]]], tw "fn", tw "store", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "ptr", tm .colon, tw "ThinPointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .comma, tw "bytes", tm .colon, tw "List", tm .lt, tw "AbstractByte", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .gt, tm .comma, tw "align", tm .colon, tw "Align"], tm .minus, tm .gt, tw "Result", tg .brace [tw "let", tw "size", tm .equal, tw "Size", tm .colon, tm .colon, tw "from_bytes", tg .paren [tw "bytes", tm .dot, tw "len", tg .paren []], tm .dot, tw "unwrap", tg .paren [], tm .semi, tw "self", tm .dot, tw "mem", tm .dot, tw "store", tg .paren [tw "ptr", tm .comma, tw "bytes", tm .comma, tw "align", tm .comma, tm .bar, tw "extra", tm .comma, tw "path", tm .comma, tw "offset", tm .bar, tg .brace [tw "extra", tm .dot, tw "root", tm .dot, tw "access", tg .paren [tw "Some", tg .paren [tw "path"], tm .comma, tw "AccessKind", tm .colon, tm .colon, tw "Write", tm .comma, tw "offset", tm .comma, tw "size"]]]], tw "fn", tw "dereferenceable", tg .paren [tm .amp, tw "self", tm .comma, tw "ptr", tm .colon, tw "ThinPointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .comma, tw "len", tm .colon, tw "Size"], tm .minus, tm .gt, tw "Result", tg .brace [tw "self", tm .dot, tw "mem", tm .dot, tw "check_ptr", tg .paren [tw "ptr", tm .comma, tw "len"], tm .question, tm .semi, tw "ret", tg .paren [tg .paren []]], tw "fn", tw "retag_ptr", tg .paren [tm .amp, tw "mut", tw "self", tm .comma, tw "frame_extra", tm .colon, tm .amp, tw "mut", tw "Self", tm .colon, tm .colon, tw "FrameExtra", tm .comma, tw "ptr", tm .colon, tw "Pointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .comma, tw "ptr_type", tm .colon, tw "PtrType", tm .comma, tw "fn_entry", tm .colon, tw "bool", tm .comma, tw "fn_implicit_writes", tm .colon, tw "bool", tm .comma, tw "vtable_lookup", tm .colon, tw "impl", tw "Fn", tg .paren [tw "ThinPointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt], tm .minus, tm .gt, tw "crate", tm .colon, tm .colon, tw "lang", tm .colon, tm .colon, tw "VTable", tm .plus, .atom (.lifetime "static"), tm .comma], tm .minus, tm .gt, tw "Result", tm .lt, tw "Pointer", tm .lt, tw "Self", tm .colon, tm .colon, tw "Provenance", tm .gt, tm .gt, tg .brace [tw "ret", tg .paren [tw "if", tw "let", tw "Some", tg .paren [tw "perms"], tm .equal, tw "ReborrowSettings", tm .colon, tm .colon, tw "new", tg .paren [tw "ptr", tm .comma, tw "ptr_type", tm .comma, tw "fn_entry", tm .comma, tw "self", tm .dot, tw "params", tm .comma, tw "fn_implicit_writes", tm .comma, tw "vtable_lookup"], tg .brace [tw "self", tm .dot, tw "reborrow", tg .paren [tw "ptr", tm .dot, tw "thin_pointer", tm .comma, tw "perms", tm .comma, tw "frame_extra"], tm .question, tm .dot, tw "widen", tg .paren [tw "ptr", tm .dot, tw "metadata"]], tw "else", tg .brace [tw "ptr"]]], tw "fn", tw "new_call", tg .paren [], tm .minus, tm .gt, tw "Self", tm .colon, tm .colon, tw "FrameExtra", tg .brace [tw "Self", tm .colon, tm .colon, tw "FrameExtra", tm .colon, tm .colon, tw "new", tg .paren []]]
+
+def pinnedAfterMethod : Forest := forest [tw "fn", tw "leak_check", tg .paren [tm .amp, tw "self"], tm .minus, tm .gt, tw "Result", tg .brace [tw "self", tm .dot, tw "mem", tm .dot, tw "leak_check", tg .paren []]]
+
+structure Certificate where
+  selectedLexemes : List Lexeme
+  body : BodyTerm
+  boundaries : Boundaries
+
+def Certificate.ownerContents (cert : Certificate) : Forest :=
+  appendForest pinnedBeforeMethod (appendForest (declaration cert.body) pinnedAfterMethod)
+def Certificate.selectedForest (cert : Certificate) : Forest :=
+  appendForest (forest (ownerHeader.map Tree.atom))
+    (.cons (.group .brace cert.ownerContents) .nil)
+def Certificate.document (cert : Certificate) : List Piece :=
+  precedingPieces ++ [.rustFence cert.selectedLexemes cert.selectedForest] ++ followingPieces
+
+structure Located where
+  span : Span
+  token : Token
+
+def locate (cursor : Nat) : List Lexeme → List Located
+  | [] => []
+  | first :: rest =>
+      let after := cursor + first.render.length
+      match first with
+      | .token token => ⟨⟨cursor, after⟩, token⟩ :: locate after rest
+      | _ => locate after rest
+
+def computedBoundaries (cert : Certificate) : Option Boundaries := do
+  let fenceStart := (renderDocument precedingPieces).length
+  let located := locate (fenceStart + 8) cert.selectedLexemes
+  let ownerStart ← located[0]?
+  let ownerLast ← located[(flattenForest cert.selectedForest).length - 1]?
+  let methodIndex := ownerHeader.length + 1 + (flattenForest pinnedBeforeMethod).length
+  let methodStart ← located[methodIndex]?
+  let methodLast ← located[methodIndex + (flattenForest (declaration cert.body)).length - 1]?
+  return
+    { fence := ⟨fenceStart, fenceStart + (Piece.render (.rustFence cert.selectedLexemes cert.selectedForest)).length⟩
+      owner := ⟨ownerStart.span.first, ownerLast.span.stop⟩
+      method := ⟨methodStart.span.first, methodLast.span.stop⟩ }
+
+def documentTokenCount (pieces : List Piece) : Nat :=
+  (pieces.map (fun piece => match piece with
+    | .rustFence lexemes _ => (tokens lexemes).length | _ => 0)).foldl (· + ·) 0
+
+/-- Declarative, independently specified evidence. The checker is absent from
+this relation. The Markdown/non-body context is closed to pinned constants.
+Every source character is reconstructed, every code token is
+lexically validated, bracket groups cannot be hidden in atoms, and the selected
+owner/declaration/body are complete typed certificate constructors. -/
+def SourceShape (source : String) (cert : Certificate) : Prop :=
+  source.toList = renderDocument cert.document ∧
+  Every Ascii source.toList ∧ source.toList.length ≤ 16384 ∧
+  Every Piece.Valid cert.document ∧ documentTokenCount cert.document ≤ 4096 ∧
+  documentOwnerCount cert.document = 1 ∧ methodCount cert.ownerContents = 1 ∧
+  cert.body.WellBound ∧ computedBoundaries cert = some cert.boundaries
+
+instance (source : String) (cert : Certificate) : Decidable (SourceShape source cert) := by
+  unfold SourceShape
+  infer_instance
+
+inductive Rejection where
+  | unsupportedOrInvalidCertificate
+  deriving DecidableEq, Repr
+
+def check (source : String) (cert : Certificate) : Except Rejection BodyTerm :=
+  if SourceShape source cert then .ok cert.body else .error .unsupportedOrInvalidCertificate
+
+theorem check_sound (source : String) (cert : Certificate) (body : BodyTerm)
+    (checked : check source cert = .ok body) :
+    SourceShape source cert ∧ body = cert.body := by
+  by_cases valid : SourceShape source cert
+  · have same : cert.body = body := by simpa [check, valid] using checked
+    exact ⟨valid, same.symm⟩
+  · simp [check, valid] at checked
+
+theorem check_complete (source : String) (cert : Certificate)
+    (shape : SourceShape source cert) : check source cert = .ok cert.body := by
+  simp [check, shape]
+
+theorem check_reconstructs (source : String) (cert : Certificate) (body : BodyTerm)
+    (checked : check source cert = .ok body) :
+    source.toList = renderDocument cert.document := (check_sound source cert body checked).1.1
+
+theorem check_lexical_document (source : String) (cert : Certificate) (body : BodyTerm)
+    (checked : check source cert = .ok body) : Every Piece.Valid cert.document :=
+  (check_sound source cert body checked).1.2.2.2.1
+
+theorem check_unique_owner_method (source : String) (cert : Certificate) (body : BodyTerm)
+    (checked : check source cert = .ok body) :
+    documentOwnerCount cert.document = 1 ∧ methodCount cert.ownerContents = 1 := by
+  rcases (check_sound source cert body checked).1 with
+    ⟨_, _, _, _, _, oneOwner, oneMethod, _, _⟩
+  exact ⟨oneOwner, oneMethod⟩
+
+theorem check_binder (source : String) (cert : Certificate) (body : BodyTerm)
+    (checked : check source cert = .ok body) : body.argument = body.binder := by
+  obtain ⟨shape, same⟩ := check_sound source cert body checked
+  subst body
+  rcases shape with ⟨_, _, _, _, _, _, _, bound, _⟩
+  exact bound.2
+
+theorem check_boundaries (source : String) (cert : Certificate) (body : BodyTerm)
+    (checked : check source cert = .ok body) :
+    computedBoundaries cert = some cert.boundaries := by
+  rcases (check_sound source cert body checked).1 with
+    ⟨_, _, _, _, _, _, _, _, spans⟩
+  exact spans
+
+-- BEGIN LICENSED SOURCE AND UNTRUSTED SERIALIZED CERTIFICATE
+/-
+Reproduced MiniRust source fixture, revision d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed.
+The following is the complete upstream LICENSE-MIT permission notice, verbatim.
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+-/
+
+/-- Complete cached memory.md. Parent compares the decoded ordinary string
+literal with the cached file byte-for-byte; the checker never consults a hash. -/
+def pinnedSource : String := "# MiniRust Tree Borrows\n\nFor background on Tree Borrows, see:\n\n1. [Neven's posts on Tree Borrows](https://perso.crans.org/vanille/treebor)\n2. [From Stacks to Trees: A new aliasing model for Rust](https://www.ralfj.de/blog/2023/06/02/tree-borrows.html)\n\nSimilar to the [Basic Memory Model](../basic.md), we need to first define some basic data structures:\nthe core date structure managing the tree is defined in [tree.md](tree.md), and the core state machine can be found in [state_machine.md](state_machine.md).\n\nThe model then tracks a tree for each allocation:\n\n```rust\nstruct TreeBorrowsAllocationExtra {\n    root: Node,\n}\n```\n\nWe use a *path* to identify each node and track its location in the tree. A path is represented as a list of indices $[i_1, i_2, ..., i_k]$, where each index indicates which branch to take next.\nBelow is an illustrated example:\n\n```\nConsider the following tree\n      A\n     / \\\n    B   C\n   / \\   \\\n  D  E    F\nThe path from A to A is represented as [].\nThe path from A to B is represented as [0]\nThe path from A to C is represented as [1].\nThe path from A to D is represented as [0, 0].\nThe path from A to E is represented as [0, 1].\nThe path from A to F is represented as [1, 1].\n```\n\n```rust\n/// The index of a child in the list of child nodes.\ntype ChildId = Int;\n/// A path from the root of a tree to some node inside the tree.\ntype Path = List<ChildId>;\n```\n\nThen we can define the provenance of Tree Borrows as a pair consisting of the path and the allocation ID.\n\n```rust\ntype TreeBorrowsProvenance = (AllocId, Path);\n```\n\nThe memory itself largely reuses the basic memory infrastructure, with the tree as extra state.\n\n```rust\n/// Global parameters controlling Tree Borrows behavior.\n#[derive(Default)]\npub struct TreeBorrowsParams {\n    /// Whether implicit writes are enabled or not.\n    pub implicit_writes: bool,\n}\n```\n\n```rust\npub struct TreeBorrowsMemory<T: Target> {\n    params: TreeBorrowsParams,\n    mem: BasicMemory<T, Path, TreeBorrowsAllocationExtra>,\n}\n\npub struct TreeBorrowsFrameExtra {\n    /// Our per-frame state is the list of nodes that are protected by this call.\n    protectors: List<TreeBorrowsProvenance>,\n}\n\nimpl TreeBorrowsFrameExtra {\n    fn new() -> Self { Self { protectors: List::new() } }\n}\n```\n\nHere we define some helper methods to implement the memory interface.\n\n```rust\nimpl<T: Target> TreeBorrowsMemory<T> {\n    /// Create a new node for a pointer (reborrow)\n    fn reborrow(\n        &mut self,\n        ptr: ThinPointer<TreeBorrowsProvenance>,\n        settings: ReborrowSettings,\n        frame_extra: &mut TreeBorrowsFrameExtra,\n    ) -> Result<ThinPointer<TreeBorrowsProvenance>> {\n        let pointee_size = Size::from_bytes(settings.inside.len()).unwrap();\n\n        // Make sure the pointer is dereferenceable.\n        self.mem.check_ptr(ptr, pointee_size)?;\n        // However, ignore the result of `check_ptr`: even if pointee_size is 0, we want to create a child pointer.\n        let Some((alloc_id, parent_path)) = ptr.provenance else {\n            assert!(pointee_size.is_zero());\n            // Pointers without provenance cannot access any memory, so giving them a new\n            // tag makes no sense.\n            return ret(ptr);\n        };\n\n        let child_path = self.mem.allocations.mutate_at(alloc_id.0, |allocation| {\n            // Prepare `permissions` which covers the *entire allocation*, not just\n            // the part \"inside\" the pointer. This will initially not be marked as \"accessed\"\n            // anywhere; we'll then do an access which will set that flag.\n            let alloc_size = allocation.size();\n            let offset = Offset::from_bytes(ptr.addr - allocation.addr).unwrap();\n\n            let mut permissions = list![settings.outside; alloc_size.bytes()];\n            if settings.inside.len() > 0 {\n                permissions.write_subslice_at_index(\n                    offset.bytes(),\n                    settings.inside,\n                );\n            }\n\n            // Create the new child node\n            let child_node = Node {\n                children: List::new(),\n                permissions,\n                protected: settings.protected,\n            };\n\n            // Assert that the node's internal invariant is upheld.\n            assert!(child_node.permissions.all(|x| x.matches_protector(child_node.protected)));\n\n            // Add the new node to the tree\n            let child_path = allocation.extra.root.add_node(parent_path, child_node);\n\n            // Perform a read or write access on all bytes inside the pointee whose permission requires such an access.\n            for (idx, perm) in settings.inside.iter().enumerate() {\n                let idx = Int::from(idx); // FIXME: we need a version of `enumerate` that yields `Int`s.\n                let idx = Size::from_bytes(idx).unwrap();\n                if let Some(access) = perm.init_access() {\n                    allocation.extra.root.access(Some(child_path), access, offset+idx, Offset::from_bytes_const(1))?\n                }\n            }\n\n            ret::<Result<Path>>(child_path)\n        })?;\n\n        // Track the new protector\n        if settings.protected.yes() { frame_extra.protectors.push((alloc_id, child_path)); }\n\n        // Create the child pointer and return it\n        ret(ThinPointer {\n            provenance: Some((alloc_id, child_path)),\n            ..ptr\n        })\n    }\n\n    /// Remove the protector.\n    /// `provenance` is the provenance of the protector.\n    /// Perform a special implicit access on all locations that have been accessed.\n    fn release_protector(&mut self, provenance: TreeBorrowsProvenance) -> Result {\n        let (alloc_id, path) = provenance;\n        self.mem.allocations.mutate_at(alloc_id.0, |allocation| {\n            let protector_accesses : List<_> = allocation.extra.root.access_node(path, |node| {\n                assert!(node.protected.yes());\n                // We get a list of pairs, and need to turn this into a pair of lists.\n                let list_of_perms_and_accesses = node.permissions.map(|x| x.unprotect());\n                // The list of unprotected permissions is stored back in the tree.\n                node.permissions = list_of_perms_and_accesses.map(|(perm, _acc)| perm);\n                // The resulting accesses are used further down.\n                list_of_perms_and_accesses.map(|(_perm, acc)| acc)\n            });\n\n            if !allocation.live {\n                // Looks like the protected memory got deallocated already. This is fine,\n                // and expected for weak allocations. For strong allocations, this can e.g.\n                // happen if the protector was zero-sized, or on interior mutable data.\n                return ret(());\n            }\n\n            allocation.extra.root.release_protector(Some(path), &protector_accesses)\n        })\n    }\n}\n```\n\n# Memory Operations\n\nThen we implement the memory model interface for Tree Borrows.\n\n```rust\nimpl<T: Target> Memory for TreeBorrowsMemory<T> {\n    type Provenance = TreeBorrowsProvenance;\n    type FrameExtra = TreeBorrowsFrameExtra;\n    type T = T;\n    type Params = TreeBorrowsParams;\n\n    fn new(params: TreeBorrowsParams) -> Self {\n        Self { mem: BasicMemory::new(), params }\n    }\n\n    fn allocate(&mut self, kind: AllocationKind, size: Size, align: Align) -> NdResult<ThinPointer<Self::Provenance>>  {\n        // Create the root node for the tree.\n        // Initially, we set the permission as `Unique`.\n        let root = Node {\n            children: List::new(),\n            permissions: list![Permission::Unprot(PermissionUnprot::Unique); size.bytes()],\n            protected: Protected::No,\n        };\n        let path = Path::new();\n        let extra = TreeBorrowsAllocationExtra { root };\n        self.mem.allocate(kind, size, align, path, extra)\n    }\n\n    fn deallocate(&mut self, ptr: ThinPointer<Self::Provenance>, kind: AllocationKind, size: Size, align: Align) -> Result {\n        self.mem.deallocate(ptr, kind, size, align, |extra, path| {\n            // Check that ptr has the permission to write the entire allocation.\n            extra.root.access(Some(path), AccessKind::Write, Offset::ZERO, size)?;\n\n            // Check that allocation is not strongly protected.\n            if extra.root.contains_strong_protector_preventing_deallocation() {\n                throw_ub!(\"Tree Borrows: deallocating strongly protected allocation\")\n            }\n\n            ret(())\n        })\n    }\n\n    fn load(&mut self, ptr: ThinPointer<Self::Provenance>, len: Size, align: Align) -> Result<List<AbstractByte<Self::Provenance>>> {\n        self.mem.load(ptr, len, align, |extra, path, offset| {\n            // Check for aliasing violations.\n            extra.root.access(Some(path), AccessKind::Read, offset, len)\n        })\n    }\n\n    fn store(&mut self, ptr: ThinPointer<Self::Provenance>, bytes: List<AbstractByte<Self::Provenance>>, align: Align) -> Result {\n        let size = Size::from_bytes(bytes.len()).unwrap();\n        self.mem.store(ptr, bytes, align, |extra, path, offset| {\n            // Check for aliasing violations.\n            extra.root.access(Some(path), AccessKind::Write, offset, size)\n        })\n    }\n\n    fn dereferenceable(&self, ptr: ThinPointer<Self::Provenance>, len: Size) -> Result {\n        self.mem.check_ptr(ptr, len)?;\n        ret(())\n    }\n\n    fn retag_ptr(\n        &mut self,\n        frame_extra: &mut Self::FrameExtra,\n        ptr: Pointer<Self::Provenance>,\n        ptr_type: PtrType,\n        fn_entry: bool,\n        fn_implicit_writes: bool, // wether implicit_writes are enabled for the currently evaluated function, or not\n        vtable_lookup: impl Fn(ThinPointer<Self::Provenance>) -> crate::lang::VTable + 'static,\n    ) -> Result<Pointer<Self::Provenance>> {\n        ret(if let Some(perms) = ReborrowSettings::new(ptr, ptr_type, fn_entry, self.params, fn_implicit_writes, vtable_lookup) {\n            self.reborrow(ptr.thin_pointer, perms, frame_extra)?.widen(ptr.metadata)\n        } else {\n            ptr\n        })\n    }\n\n    fn new_call() -> Self::FrameExtra {  Self::FrameExtra::new() }\n\n    fn end_call(&mut self, extra: Self::FrameExtra) -> Result {\n        extra.protectors.try_map(|provenance| self.release_protector(provenance))?;\n        ret(())\n    }\n\n    fn leak_check(&self) -> Result {\n        self.mem.leak_check()\n    }\n}\n```\n"
+
+def pinnedLexemes : List Lexeme := [
+    lw "impl",
+    lm .lt,
+    lw "T",
+    lm .colon,
+    .trivia " ",
+    lw "Target",
+    lm .gt,
+    .trivia " ",
+    lw "Memory",
+    .trivia " ",
+    lw "for",
+    .trivia " ",
+    lw "TreeBorrowsMemory",
+    lm .lt,
+    lw "T",
+    lm .gt,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n    ",
+    lw "type",
+    .trivia " ",
+    lw "Provenance",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "TreeBorrowsProvenance",
+    lm .semi,
+    .trivia "\n    ",
+    lw "type",
+    .trivia " ",
+    lw "FrameExtra",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "TreeBorrowsFrameExtra",
+    lm .semi,
+    .trivia "\n    ",
+    lw "type",
+    .trivia " ",
+    lw "T",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "T",
+    lm .semi,
+    .trivia "\n    ",
+    lw "type",
+    .trivia " ",
+    lw "Params",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "TreeBorrowsParams",
+    lm .semi,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "new",
+    lo .paren,
+    lw "params",
+    lm .colon,
+    .trivia " ",
+    lw "TreeBorrowsParams",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Self",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "Self",
+    .trivia " ",
+    lo .brace,
+    .trivia " ",
+    lw "mem",
+    lm .colon,
+    .trivia " ",
+    lw "BasicMemory",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lc .paren,
+    lm .comma,
+    .trivia " ",
+    lw "params",
+    .trivia " ",
+    lc .brace,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "allocate",
+    lo .paren,
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "kind",
+    lm .colon,
+    .trivia " ",
+    lw "AllocationKind",
+    lm .comma,
+    .trivia " ",
+    lw "size",
+    lm .colon,
+    .trivia " ",
+    lw "Size",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .colon,
+    .trivia " ",
+    lw "Align",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "NdResult",
+    lm .lt,
+    lw "ThinPointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .gt,
+    .trivia "  ",
+    lo .brace,
+    .trivia "\n        ",
+    .lineComment " Create the root node for the tree.",
+    .trivia "\n        ",
+    .lineComment " Initially, we set the permission as `Unique`.",
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lw "root",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Node",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    lw "children",
+    lm .colon,
+    .trivia " ",
+    lw "List",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lc .paren,
+    lm .comma,
+    .trivia "\n            ",
+    lw "permissions",
+    lm .colon,
+    .trivia " ",
+    lw "list",
+    lm .bang,
+    lo .square,
+    lw "Permission",
+    lm .colon,
+    lm .colon,
+    lw "Unprot",
+    lo .paren,
+    lw "PermissionUnprot",
+    lm .colon,
+    lm .colon,
+    lw "Unique",
+    lc .paren,
+    lm .semi,
+    .trivia " ",
+    lw "size",
+    lm .dot,
+    lw "bytes",
+    lo .paren,
+    lc .paren,
+    lc .square,
+    lm .comma,
+    .trivia "\n            ",
+    lw "protected",
+    lm .colon,
+    .trivia " ",
+    lw "Protected",
+    lm .colon,
+    lm .colon,
+    lw "No",
+    lm .comma,
+    .trivia "\n        ",
+    lc .brace,
+    lm .semi,
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lw "path",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Path",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lw "extra",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "TreeBorrowsAllocationExtra",
+    .trivia " ",
+    lo .brace,
+    .trivia " ",
+    lw "root",
+    .trivia " ",
+    lc .brace,
+    lm .semi,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "allocate",
+    lo .paren,
+    lw "kind",
+    lm .comma,
+    .trivia " ",
+    lw "size",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .comma,
+    .trivia " ",
+    lw "path",
+    lm .comma,
+    .trivia " ",
+    lw "extra",
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "deallocate",
+    lo .paren,
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "ptr",
+    lm .colon,
+    .trivia " ",
+    lw "ThinPointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .comma,
+    .trivia " ",
+    lw "kind",
+    lm .colon,
+    .trivia " ",
+    lw "AllocationKind",
+    lm .comma,
+    .trivia " ",
+    lw "size",
+    lm .colon,
+    .trivia " ",
+    lw "Size",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .colon,
+    .trivia " ",
+    lw "Align",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "deallocate",
+    lo .paren,
+    lw "ptr",
+    lm .comma,
+    .trivia " ",
+    lw "kind",
+    lm .comma,
+    .trivia " ",
+    lw "size",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .comma,
+    .trivia " ",
+    lm .bar,
+    lw "extra",
+    lm .comma,
+    .trivia " ",
+    lw "path",
+    lm .bar,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    .lineComment " Check that ptr has the permission to write the entire allocation.",
+    .trivia "\n            ",
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "access",
+    lo .paren,
+    lw "Some",
+    lo .paren,
+    lw "path",
+    lc .paren,
+    lm .comma,
+    .trivia " ",
+    lw "AccessKind",
+    lm .colon,
+    lm .colon,
+    lw "Write",
+    lm .comma,
+    .trivia " ",
+    lw "Offset",
+    lm .colon,
+    lm .colon,
+    lw "ZERO",
+    lm .comma,
+    .trivia " ",
+    lw "size",
+    lc .paren,
+    lm .question,
+    lm .semi,
+    .trivia "\n\n            ",
+    .lineComment " Check that allocation is not strongly protected.",
+    .trivia "\n            ",
+    lw "if",
+    .trivia " ",
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "contains_strong_protector_preventing_deallocation",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n                ",
+    lw "throw_ub",
+    lm .bang,
+    lo .paren,
+    lq "Tree Borrows: deallocating strongly protected allocation",
+    lc .paren,
+    .trivia "\n            ",
+    lc .brace,
+    .trivia "\n\n            ",
+    lw "ret",
+    lo .paren,
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "load",
+    lo .paren,
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "ptr",
+    lm .colon,
+    .trivia " ",
+    lw "ThinPointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .comma,
+    .trivia " ",
+    lw "len",
+    lm .colon,
+    .trivia " ",
+    lw "Size",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .colon,
+    .trivia " ",
+    lw "Align",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    lm .lt,
+    lw "List",
+    lm .lt,
+    lw "AbstractByte",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .gt,
+    lm .gt,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "load",
+    lo .paren,
+    lw "ptr",
+    lm .comma,
+    .trivia " ",
+    lw "len",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .comma,
+    .trivia " ",
+    lm .bar,
+    lw "extra",
+    lm .comma,
+    .trivia " ",
+    lw "path",
+    lm .comma,
+    .trivia " ",
+    lw "offset",
+    lm .bar,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    .lineComment " Check for aliasing violations.",
+    .trivia "\n            ",
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "access",
+    lo .paren,
+    lw "Some",
+    lo .paren,
+    lw "path",
+    lc .paren,
+    lm .comma,
+    .trivia " ",
+    lw "AccessKind",
+    lm .colon,
+    lm .colon,
+    lw "Read",
+    lm .comma,
+    .trivia " ",
+    lw "offset",
+    lm .comma,
+    .trivia " ",
+    lw "len",
+    lc .paren,
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "store",
+    lo .paren,
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "ptr",
+    lm .colon,
+    .trivia " ",
+    lw "ThinPointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .comma,
+    .trivia " ",
+    lw "bytes",
+    lm .colon,
+    .trivia " ",
+    lw "List",
+    lm .lt,
+    lw "AbstractByte",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .gt,
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .colon,
+    .trivia " ",
+    lw "Align",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "let",
+    .trivia " ",
+    lw "size",
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "Size",
+    lm .colon,
+    lm .colon,
+    lw "from_bytes",
+    lo .paren,
+    lw "bytes",
+    lm .dot,
+    lw "len",
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    lm .dot,
+    lw "unwrap",
+    lo .paren,
+    lc .paren,
+    lm .semi,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "store",
+    lo .paren,
+    lw "ptr",
+    lm .comma,
+    .trivia " ",
+    lw "bytes",
+    lm .comma,
+    .trivia " ",
+    lw "align",
+    lm .comma,
+    .trivia " ",
+    lm .bar,
+    lw "extra",
+    lm .comma,
+    .trivia " ",
+    lw "path",
+    lm .comma,
+    .trivia " ",
+    lw "offset",
+    lm .bar,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    .lineComment " Check for aliasing violations.",
+    .trivia "\n            ",
+    lw "extra",
+    lm .dot,
+    lw "root",
+    lm .dot,
+    lw "access",
+    lo .paren,
+    lw "Some",
+    lo .paren,
+    lw "path",
+    lc .paren,
+    lm .comma,
+    .trivia " ",
+    lw "AccessKind",
+    lm .colon,
+    lm .colon,
+    lw "Write",
+    lm .comma,
+    .trivia " ",
+    lw "offset",
+    lm .comma,
+    .trivia " ",
+    lw "size",
+    lc .paren,
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "dereferenceable",
+    lo .paren,
+    lm .amp,
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "ptr",
+    lm .colon,
+    .trivia " ",
+    lw "ThinPointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .comma,
+    .trivia " ",
+    lw "len",
+    lm .colon,
+    .trivia " ",
+    lw "Size",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "check_ptr",
+    lo .paren,
+    lw "ptr",
+    lm .comma,
+    .trivia " ",
+    lw "len",
+    lc .paren,
+    lm .question,
+    lm .semi,
+    .trivia "\n        ",
+    lw "ret",
+    lo .paren,
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "retag_ptr",
+    lo .paren,
+    .trivia "\n        ",
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia "\n        ",
+    lw "frame_extra",
+    lm .colon,
+    .trivia " ",
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "FrameExtra",
+    lm .comma,
+    .trivia "\n        ",
+    lw "ptr",
+    lm .colon,
+    .trivia " ",
+    lw "Pointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .comma,
+    .trivia "\n        ",
+    lw "ptr_type",
+    lm .colon,
+    .trivia " ",
+    lw "PtrType",
+    lm .comma,
+    .trivia "\n        ",
+    lw "fn_entry",
+    lm .colon,
+    .trivia " ",
+    lw "bool",
+    lm .comma,
+    .trivia "\n        ",
+    lw "fn_implicit_writes",
+    lm .colon,
+    .trivia " ",
+    lw "bool",
+    lm .comma,
+    .trivia " ",
+    .lineComment " wether implicit_writes are enabled for the currently evaluated function, or not",
+    .trivia "\n        ",
+    lw "vtable_lookup",
+    lm .colon,
+    .trivia " ",
+    lw "impl",
+    .trivia " ",
+    lw "Fn",
+    lo .paren,
+    lw "ThinPointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "crate",
+    lm .colon,
+    lm .colon,
+    lw "lang",
+    lm .colon,
+    lm .colon,
+    lw "VTable",
+    .trivia " ",
+    lm .plus,
+    .trivia " ",
+    ll "static",
+    lm .comma,
+    .trivia "\n    ",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    lm .lt,
+    lw "Pointer",
+    lm .lt,
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "Provenance",
+    lm .gt,
+    lm .gt,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "ret",
+    lo .paren,
+    lw "if",
+    .trivia " ",
+    lw "let",
+    .trivia " ",
+    lw "Some",
+    lo .paren,
+    lw "perms",
+    lc .paren,
+    .trivia " ",
+    lm .equal,
+    .trivia " ",
+    lw "ReborrowSettings",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lw "ptr",
+    lm .comma,
+    .trivia " ",
+    lw "ptr_type",
+    lm .comma,
+    .trivia " ",
+    lw "fn_entry",
+    lm .comma,
+    .trivia " ",
+    lw "self",
+    lm .dot,
+    lw "params",
+    lm .comma,
+    .trivia " ",
+    lw "fn_implicit_writes",
+    lm .comma,
+    .trivia " ",
+    lw "vtable_lookup",
+    lc .paren,
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    lw "self",
+    lm .dot,
+    lw "reborrow",
+    lo .paren,
+    lw "ptr",
+    lm .dot,
+    lw "thin_pointer",
+    lm .comma,
+    .trivia " ",
+    lw "perms",
+    lm .comma,
+    .trivia " ",
+    lw "frame_extra",
+    lc .paren,
+    lm .question,
+    lm .dot,
+    lw "widen",
+    lo .paren,
+    lw "ptr",
+    lm .dot,
+    lw "metadata",
+    lc .paren,
+    .trivia "\n        ",
+    lc .brace,
+    .trivia " ",
+    lw "else",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n            ",
+    lw "ptr",
+    .trivia "\n        ",
+    lc .brace,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "new_call",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "FrameExtra",
+    .trivia " ",
+    lo .brace,
+    .trivia "  ",
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "FrameExtra",
+    lm .colon,
+    lm .colon,
+    lw "new",
+    lo .paren,
+    lc .paren,
+    .trivia " ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "end_call",
+    lo .paren,
+    lm .amp,
+    lw "mut",
+    .trivia " ",
+    lw "self",
+    lm .comma,
+    .trivia " ",
+    lw "extra",
+    lm .colon,
+    .trivia " ",
+    lw "Self",
+    lm .colon,
+    lm .colon,
+    lw "FrameExtra",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "extra",
+    lm .dot,
+    lw "protectors",
+    lm .dot,
+    lw "try_map",
+    lo .paren,
+    lm .bar,
+    lw "provenance",
+    lm .bar,
+    .trivia " ",
+    lw "self",
+    lm .dot,
+    lw "release_protector",
+    lo .paren,
+    lw "provenance",
+    lc .paren,
+    lc .paren,
+    lm .question,
+    lm .semi,
+    .trivia "\n        ",
+    lw "ret",
+    lo .paren,
+    lo .paren,
+    lc .paren,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n\n    ",
+    lw "fn",
+    .trivia " ",
+    lw "leak_check",
+    lo .paren,
+    lm .amp,
+    lw "self",
+    lc .paren,
+    .trivia " ",
+    lm .minus,
+    lm .gt,
+    .trivia " ",
+    lw "Result",
+    .trivia " ",
+    lo .brace,
+    .trivia "\n        ",
+    lw "self",
+    lm .dot,
+    lw "mem",
+    lm .dot,
+    lw "leak_check",
+    lo .paren,
+    lc .paren,
+    .trivia "\n    ",
+    lc .brace,
+    .trivia "\n",
+    lc .brace,
+    .trivia "\n"
+  ]
+
+def pinnedBody : BodyTerm :=
+  { field := "protectors", mapper := "try_map", binder := "provenance",
+    callee := "release_protector", argument := "provenance",
+    unitHelper := "ret", propagate := true }
+
+def pinnedCertificate : Certificate :=
+  { selectedLexemes := pinnedLexemes
+    body := pinnedBody
+    boundaries := { fence := ⟨6945, 10366⟩, owner := ⟨6953, 10361⟩, method := ⟨10120, 10285⟩ } }
+
+-- END LICENSED SOURCE AND UNTRUSTED SERIALIZED CERTIFICATE
+
+/-- One closed replay. Subsequent endpoints share this proof instead of
+repeatedly reducing the complete input/certificate. Parent alone compiles. -/
+theorem pinned_shape : SourceShape pinnedSource pinnedCertificate := by
+  decide
+
+theorem pinned_checked : check pinnedSource pinnedCertificate = .ok pinnedBody :=
+  check_complete pinnedSource pinnedCertificate pinned_shape
+
+theorem pinned_binder : pinnedBody.argument = pinnedBody.binder :=
+  check_binder pinnedSource pinnedCertificate pinnedBody pinned_checked
+
+theorem pinned_spans : computedBoundaries pinnedCertificate = some pinnedCertificate.boundaries :=
+  check_boundaries pinnedSource pinnedCertificate pinnedBody pinned_checked
+
+theorem pinned_owner_method_unique :
+    documentOwnerCount pinnedCertificate.document = 1 ∧
+      methodCount pinnedCertificate.ownerContents = 1 :=
+  check_unique_owner_method pinnedSource pinnedCertificate pinnedBody pinned_checked
+
+theorem pinned_input_bounds :
+    Every Ascii pinnedSource.toList ∧ pinnedSource.toList.length ≤ 16384 ∧
+      documentTokenCount pinnedCertificate.document ≤ 4096 := by
+  rcases pinned_shape with ⟨_, ascii, inputBound, _, tokenBound, _, _, _, _⟩
+  exact ⟨ascii, inputBound, tokenBound⟩
+
+#print axioms check_sound
+#print axioms check_complete
+#print axioms check_reconstructs
+#print axioms check_lexical_document
+#print axioms check_unique_owner_method
+#print axioms check_binder
+#print axioms check_boundaries
+#print axioms pinned_shape
+#print axioms pinned_checked
+#print axioms pinned_binder
+#print axioms pinned_spans
+#print axioms pinned_owner_method_unique
+#print axioms pinned_input_bounds
+
+
+end AnnealResearch.EndCallSourceShape

@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "rust/layout/compiler-queries",
+    "rust/layout/dst-and-packed-extents",
+    "rust/memory-model/sparse-dereferenceability",
+    "rust/opsem/layout-table-binding"
+  ],
+  "subjects": [
+    {
+      "name": "rust",
+      "identity": {
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "rustc-nightly-linux-capture",
+      "identity": {
+        "release": "1.98.0-nightly",
+        "commit": "f8a08b688",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "rustc-nightly-darwin-capture",
+      "identity": {
+        "release": "1.100.0-nightly",
+        "commit": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

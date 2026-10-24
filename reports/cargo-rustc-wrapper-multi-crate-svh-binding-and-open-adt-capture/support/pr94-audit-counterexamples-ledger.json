@@ -1,0 +1,96 @@
+{
+  "replay_probe": {
+    "source_commit": "35bd34bf1fcd1fd77a3b996d7dbf3773d6aa6318",
+    "qualification": "Supplied ULLBC AST mutation, not a new compiled Rust program",
+    "function_index": 4,
+    "local_index": 2,
+    "previous_type": {
+      "Deduplicated": 29
+    },
+    "new_type": {
+      "HashConsedValue": [
+        990002,
+        {
+          "Literal": {
+            "UInt": "U64"
+          }
+        }
+      ]
+    },
+    "baseline_matches_retained": true,
+    "baseline_length": 1019,
+    "mutant_length": 1019,
+    "baseline_sha256": "fafd26afcc9a0f1d7e87a85846cda92edc97d690ee472932d6a49595a43b2c77",
+    "mutant_sha256": "5342601cf574a1aa4dbc93ed73857f63de8d54e9f6ef125506222e2b0922e66a",
+    "export_changed": true,
+    "optional_strict_validator": {
+      "rejected": true,
+      "reason": "ULLBC local type mismatch at fun_decls[4]: actual=[1, 6, 4, 3, 3, 3, 3, 3, 3] != expected=[1, 6, 3, 3, 3, 3, 3, 3, 3]"
+    },
+    "audit_source_sha256": "7339cf960c2e3f25ea2925ff8749a9a8874990ad0652cd1ceefdf02167bae0da"
+  },
+  "audit94_lean_stdout": [
+    "'Audit94.endorsement_still_accepts_inconsistent_header_fingerprint' depends on axioms: [propext]",
+    "'Audit94.charon_gate_accepts_unchecked_local_type_change' depends on axioms: [propext]"
+  ],
+  "portable_pr94_control_py_sha256": "3059e38db2f8f7ae85d366880013239d5559cfc25eb809074d00928690f4b49f",
+  "extract_and_link_charon_h3_py_sha256": "97c35e45121c5695f64e505088686753991c9bab1efc689ea561c8176e500aa7",
+  "ctrl7_unchecked_local_mutant_amir_bytes": 1019,
+  "ctrl7_unchecked_local_mutant_amir_sha256": "5342601cf574a1aa4dbc93ed73857f63de8d54e9f6ef125506222e2b0922e66a",
+  "c2_checked_lean_modules": {
+    "CharonNativeAndControlsR3R4": {
+      "lean_bytes": 56548,
+      "lean_sha256": "00eeb14c5636bd68eb06d815329b22ef5898383e0484e198fbce4c4efb5e7d6f",
+      "olean_bytes": 6842680,
+      "olean_sha256": "7c8268a50be51a4feeaddc3b2933dbd8458f8f0ead8696df6cd127ceb916c045",
+      "elapsed_sec": 18.797,
+      "peak_rss_bytes": 813080576,
+      "exit_code": 0
+    },
+    "OpenHashMultiCrateR5R6R9R10": {
+      "lean_bytes": 71815,
+      "lean_sha256": "1b0440c5b6d9c9c2a394e311c50310028ec6a529673443162b9c6496b36a53b8",
+      "olean_bytes": 6197824,
+      "olean_sha256": "8ccb2ba9ae6cecd1697f18a686a917fa6f12cf4e29f46d1227dea6b142bdb044",
+      "elapsed_sec": 16.762,
+      "peak_rss_bytes": 803393536,
+      "exit_code": 0
+    },
+    "PR92AuditCounterexamples": {
+      "lean_bytes": 12258,
+      "lean_sha256": "0399928eb91fc27d429cf5f5c5c31e47a5ad9c402e63f3d11f2e7be2174191a4",
+      "olean_bytes": 225608,
+      "olean_sha256": "3b8b27782458e4f0e67bb4d15e2e8ad7cd4ef4f7885c427c4a394db7d9fbe8be",
+      "elapsed_sec": 12.549,
+      "peak_rss_bytes": 803393536,
+      "exit_code": 0
+    },
+    "PR94AuditCounterexamples": {
+      "lean_bytes": 6787,
+      "lean_sha256": "128a877aee809c2006fa0088a80e7de288d59829f1048e5cf3106f218d255851",
+      "olean_bytes": 42152,
+      "olean_sha256": "b549ef9262859fc77f03f9d87a8a6133a04bbcbefe13c5ad64eac04ca6a955fa",
+      "elapsed_sec": 1.832,
+      "peak_rss_bytes": 606142464,
+      "exit_code": 0
+    },
+    "CompilerIntegrationDossier": {
+      "lean_bytes": 34065,
+      "lean_sha256": "f5c885d1d5b78cdad9e3f65c88e349c58d7a7b09588122c51272ea0a8fba835e",
+      "olean_bytes": 2622024,
+      "olean_sha256": "0cf8368e329135cb55339289e3b41842ffa545ba1a56835a0765ae7800dc5b10",
+      "elapsed_sec": 1.624,
+      "peak_rss_bytes": 606142464,
+      "exit_code": 0
+    },
+    "CompilerIntegrationDossierControls": {
+      "lean_bytes": 9437,
+      "lean_sha256": "457675241f775d8564d2f361861018553b8bbce459d7d97d176e2a393d74bb6b",
+      "olean_bytes": 53016,
+      "olean_sha256": "24bd368848ebcff0e6ba2e68e118f1bd56bbf4d9756489c3b63bd2b0671f058d",
+      "elapsed_sec": 0.289,
+      "peak_rss_bytes": 606142464,
+      "exit_code": 0
+    }
+  }
+}

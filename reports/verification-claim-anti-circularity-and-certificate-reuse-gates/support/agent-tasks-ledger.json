@@ -1,0 +1,772 @@
+{
+  "milestone": "R5 (Study P2 / FD-05 & Study P3 / FD-06 Live Bounded Agent Tasks)",
+  "driver_v4_bin_sha256": "fb921a0cf4a89ddd3d5f3c2cd04387df7c365070788c056a669c61ae02c922b6",
+  "driver_v4_t_param_patch_sha256": "d8422f9cafb53ca73678e965f95e85e07834d26128b230fba3f7a48a88e5520d",
+  "portable_v4_driver_sha256": "7407dae6c215a57bf5e6258dbed953cedb4d14173f3f954424a58885055b5d5f",
+  "var_debug_local_join_artifact": {
+    "path": "artifacts/var_debug_local_join.json",
+    "sha256": "d3e4634866a4b23a46a8e5e1a397e6f71800bc6baa423147207b60db0c7d5e7d",
+    "highlights": {
+      "align_to": {
+        "_1": {
+          "source_name": "size",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:14:17: 14:21"
+        },
+        "_2": {
+          "source_name": "align",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:14:30: 14:35"
+        },
+        "_8": {
+          "source_name": "rem",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:18:9: 18:12"
+        },
+        "_15": {
+          "source_name": "pad",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:22:13: 22:16"
+        }
+      },
+      "DstLayout::extend": {
+        "_1": {
+          "source_name": "self",
+          "binding_kind": "UniqueUserVar",
+          "ty": "DstLayout",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:29:19: 29:23"
+        },
+        "_2": {
+          "source_name": "next",
+          "binding_kind": "UniqueUserVar",
+          "ty": "DstLayout",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:29:25: 29:29"
+        },
+        "_7": {
+          "source_name": "offset",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:33:13: 33:19"
+        },
+        "_13": {
+          "source_name": "residual",
+          "binding_kind": "UniqueUserVar",
+          "ty": "core::result::Result<core::convert::Infallible, SizeError>",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:33:58: 33:59"
+        },
+        "_16": {
+          "source_name": "val",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:33:22: 33:59"
+        },
+        "_17": {
+          "source_name": "max_align",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:34:13: 34:22"
+        },
+        "_21": {
+          "source_name": "new_size",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:39:13: 39:21"
+        },
+        "_30": {
+          "source_name": "residual",
+          "binding_kind": "UniqueUserVar",
+          "ty": "core::result::Result<core::convert::Infallible, SizeError>",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:42:64: 42:65"
+        },
+        "_33": {
+          "source_name": "val",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "zerocopy_layout_holdout.rs:42:13: 42:65"
+        }
+      },
+      "partial_init_move_cleanup": {
+        "_1": {
+          "source_name": "move_first_early",
+          "binding_kind": "UniqueUserVar",
+          "ty": "bool",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:42:5: 42:21"
+        },
+        "_2": {
+          "source_name": "trigger_panic",
+          "binding_kind": "UniqueUserVar",
+          "ty": "bool",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:43:5: 43:18"
+        },
+        "_3": {
+          "source_name": "log1",
+          "binding_kind": "UniqueUserVar",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:44:5: 44:9"
+        },
+        "_4": {
+          "source_name": "log2",
+          "binding_kind": "UniqueUserVar",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:45:5: 45:9"
+        },
+        "_5": {
+          "source_name": "pair",
+          "binding_kind": "UniqueUserVar",
+          "ty": "PairGuards<'{erased}>",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:47:9: 47:13"
+        },
+        "_12": {
+          "source_name": "moved_first",
+          "binding_kind": "UniqueUserVar",
+          "ty": "Guard<'{erased}>",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:52:13: 52:24"
+        },
+        "_17": {
+          "source_name": "out",
+          "binding_kind": "UniqueUserVar",
+          "ty": "u32",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:56:9: 56:12"
+        },
+        "_19": {
+          "source_name": "_pass_temp_19",
+          "binding_kind": "SynthesizedPassTemp",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        },
+        "_20": {
+          "source_name": "_drop_flag_20",
+          "binding_kind": "SynthesizedDropFlag",
+          "ty": "bool",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        },
+        "_21": {
+          "source_name": "_drop_flag_21",
+          "binding_kind": "SynthesizedDropFlag",
+          "ty": "bool",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        }
+      },
+      "partial_field_reinit_cleanup": {
+        "_1": {
+          "source_name": "trigger_panic",
+          "binding_kind": "UniqueUserVar",
+          "ty": "bool",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:61:5: 61:18"
+        },
+        "_2": {
+          "source_name": "log1",
+          "binding_kind": "UniqueUserVar",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:62:5: 62:9"
+        },
+        "_3": {
+          "source_name": "log2",
+          "binding_kind": "UniqueUserVar",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:63:5: 63:9"
+        },
+        "_4": {
+          "source_name": "pair",
+          "binding_kind": "UniqueUserVar",
+          "ty": "PairGuards<'{erased}>",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:65:9: 65:17"
+        },
+        "_9": {
+          "source_name": "moved_first",
+          "binding_kind": "UniqueUserVar",
+          "ty": "Guard<'{erased}>",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:69:9: 69:20"
+        },
+        "_12": {
+          "source_name": "saved_log1",
+          "binding_kind": "UniqueUserVar",
+          "ty": "*mut EffectLog",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:71:9: 71:19"
+        },
+        "_15": {
+          "source_name": "out",
+          "binding_kind": "UniqueUserVar",
+          "ty": "u32",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "cleanup_subject.rs:76:9: 76:12"
+        },
+        "_21": {
+          "source_name": "_pass_temp_21",
+          "binding_kind": "SynthesizedPassTemp",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        },
+        "_22": {
+          "source_name": "_pass_temp_22",
+          "binding_kind": "SynthesizedPassTemp",
+          "ty": "&'{erased} mut EffectLog",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        },
+        "_23": {
+          "source_name": "_drop_flag_23",
+          "binding_kind": "SynthesizedDropFlag",
+          "ty": "bool",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        }
+      },
+      "dep_inline_align": {
+        "_1": {
+          "source_name": "val",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:22:28: 22:31"
+        },
+        "_2": {
+          "source_name": "a",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:23:9: 23:10"
+        }
+      },
+      "dep_non_inline_check::{closure#0}": {
+        "_1": {
+          "source_name": "align[Field(0, &'{erased} usize), Deref]",
+          "binding_kind": "ProjectedCaptureVar",
+          "ty": "Closure(DefId(0:8 ~ dep_layout_core[c342]::dep_non_inline_check::{closure#0}), [i32, Binder { value: extern \"RustCall\" fn((usize,)) -> usize, bound_vars: [] }, (&'{erased} usize,)])",
+          "built_local_info": "Boring",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:28:42: 28:47"
+        },
+        "_2": {
+          "source_name": "v",
+          "binding_kind": "UniqueUserVar",
+          "ty": "usize",
+          "built_local_info": "User",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:32:38: 32:39"
+        },
+        "_8": {
+          "source_name": "_pass_temp_8",
+          "binding_kind": "SynthesizedPassTemp",
+          "ty": "&'{erased} usize",
+          "built_local_info": "PostBuiltSynthesized",
+          "post_cleanup_local_info": "Cleared",
+          "source_span": ""
+        }
+      }
+    }
+  },
+  "executed_agent_tasks": {
+    "task1_spec_proof_authoring": {
+      "subjects": [
+        "zerocopy_layout_holdout::align_to",
+        "dep_layout_core::dep_inline_align",
+        "dep_layout_core::dep_non_inline_check::{closure#0}"
+      ],
+      "unmodified_driver_v4_diagnostic_on_polymorphic_dep_layout_core": {
+        "exit_code": 2,
+        "error": "UnsupportedCallee(core::mem::align_of with substs [T/#0])",
+        "root_cause_and_fix": "rustc formats ParamTy T in substs as [T/#0]; 1-line fix in driver_v4_t_param_substs_fix.patch maps [T/#0] -> calleeSym 38 alongside concrete [u32] -> calleeSym 39."
+      },
+      "direct_mir_var_debug_mappings": {
+        "align_to": {
+          "_1": "size",
+          "_2": "align",
+          "_8": "rem",
+          "_15": "pad"
+        },
+        "dep_inline_align": {
+          "_1": "val",
+          "_2": "a"
+        },
+        "dep_non_inline_check::{closure#0}": {
+          "_1": "align[Field(0, &'{erased} usize), Deref] (ProjectedCaptureVar)",
+          "_2": "v",
+          "_8": "_pass_temp_8 (SynthesizedPassTemp)"
+        }
+      },
+      "artifacts": {
+        "task1_align_to_amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+        "task1_dep_layout_core_amir_sha256": "31062468c1f07f8f8bd809ae2e6234781581206d08d3e8ddc2c497473eefd30e",
+        "task1_dep_layout_core_u32_amir_sha256": "10d0a48fbb7d9dc2c2c7b50df4f0a71124dc6091a77601dadb38530e7f50c2ad",
+        "task1_zerocopy_ullbc_sha256": "d3e681e5678060910652db088189943234b9a4969d23af83af821b89e4560c47",
+        "task1_zerocopy_llbc_sha256": "7eb86f2018211424a76ac87606da2de56fec5b358e63518be9d0c645e44e6e01",
+        "task1_dep_layout_core_ullbc_sha256": "ad9c53f655163ccdb37d24bf505f31127feba87d0a34fe04e336d8ea30c4fe26",
+        "task1_dep_layout_core_llbc_sha256": "7205a252041a0471863dc95a355c08edcffca18ed292ea38f38d6310daa54d08"
+      },
+      "measurements": {
+        "dep_direct_mir_wall_clock_ms": 31,
+        "dep_direct_mir_max_rss_bytes": 109137920,
+        "charon_ullbc_wall_clock_ms": 82,
+        "charon_ullbc_max_rss_bytes": 141135872,
+        "charon_llbc_wall_clock_ms": 81,
+        "charon_llbc_max_rss_bytes": 142946304
+      }
+    },
+    "task2_seeded_bug_localization_and_repair": {
+      "subject": "zerocopy_layout_holdout::DstLayout::extend",
+      "live_localization_trace_path": "artifacts/task2_live_localization_trace.json",
+      "live_localization_trace_sha256": "8321f1971c8bee6f263aaca7c9800c1b2d3b23d091d161099114c5cc83e43982",
+      "artifacts": {
+        "buggy_rs_sha256": "0fd5b310b863f794fc550d92022e98f5a9d0d812b21446c8934f5885f3ef42f7",
+        "buggy_amir_sha256": "44285675675f29bb44a8409ff22a386b75c16105c33d8b8ac9c1e73531edcb2a",
+        "buggy_amir_size_bytes": 2154,
+        "buggy_ullbc_sha256": "f404e74977e6eafb189c5742e7edb6f69b97cf29d354c0bc01bebc45cfd5af37",
+        "buggy_llbc_sha256": "31c13f45aff9a658bea8986f3357e9fcf5561a8ca32c092cdfeb37e394d4b2eb",
+        "repair_patch_sha256": "1d379223fc605139cdc246c31ced22c0ddc7cc880a5ff221c6e8a77ec19d33bf",
+        "repaired_amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+        "repaired_ullbc_sha256": "b08cd357e74a8030b4fc3a1a49f66717debb889113a49158cfab7cb413f22726",
+        "repaired_llbc_sha256": "3777a2670688139a2e83d02eaec0954d272a1a3db1bec6fa7ff3008760b18289",
+        "repaired_matches_canonical_holdout": true
+      },
+      "measurements": {
+        "buggy_capture_wall_clock_ms": 40,
+        "buggy_capture_max_rss_bytes": 113487872,
+        "buggy_ullbc_wall_clock_ms": 79,
+        "buggy_llbc_wall_clock_ms": 81,
+        "repaired_capture_wall_clock_ms": 39,
+        "repaired_capture_max_rss_bytes": 111415296
+      }
+    },
+    "task3_behavior_preserving_refactor_maintenance": {
+      "subjects": [
+        "zerocopy_layout_holdout::align_to",
+        "cleanup_subject::partial_init_move_cleanup"
+      ],
+      "align_to_local_shift": {
+        "before_locals_count": 23,
+        "after_locals_count": 24,
+        "before_var_debug_map": {
+          "_1": "size",
+          "_2": "align",
+          "_8": "rem",
+          "_15": "pad"
+        },
+        "after_var_debug_map": {
+          "_1": {
+            "source_name": "size",
+            "binding_kind": "UniqueUserVar",
+            "ty": "usize",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:14:17: 14:21"
+          },
+          "_2": {
+            "source_name": "align",
+            "binding_kind": "UniqueUserVar",
+            "ty": "usize",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:14:30: 14:35"
+          },
+          "_8": {
+            "source_name": "aligned_rem",
+            "binding_kind": "UniqueUserVar",
+            "ty": "usize",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:18:9: 18:20"
+          },
+          "_12": {
+            "source_name": "rem",
+            "binding_kind": "UniqueUserVar",
+            "ty": "usize",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:19:9: 19:12"
+          },
+          "_16": {
+            "source_name": "pad",
+            "binding_kind": "UniqueUserVar",
+            "ty": "usize",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:23:13: 23:16"
+          }
+        }
+      },
+      "partial_init_move_cleanup_local_shift": {
+        "before_locals_count": 22,
+        "after_locals_count": 23,
+        "after_var_debug_map": {
+          "_1": {
+            "source_name": "move_first_early",
+            "binding_kind": "UniqueUserVar",
+            "ty": "bool",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:42:5: 42:21"
+          },
+          "_2": {
+            "source_name": "trigger_panic",
+            "binding_kind": "UniqueUserVar",
+            "ty": "bool",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:43:5: 43:18"
+          },
+          "_3": {
+            "source_name": "log1",
+            "binding_kind": "UniqueUserVar",
+            "ty": "&'{erased} mut EffectLog",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:44:5: 44:9"
+          },
+          "_4": {
+            "source_name": "log2",
+            "binding_kind": "UniqueUserVar",
+            "ty": "&'{erased} mut EffectLog",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:45:5: 45:9"
+          },
+          "_5": {
+            "source_name": "pair",
+            "binding_kind": "UniqueUserVar",
+            "ty": "PairGuards<'{erased}>",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:47:9: 47:13"
+          },
+          "_10": {
+            "source_name": "early_flag",
+            "binding_kind": "UniqueUserVar",
+            "ty": "bool",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:51:9: 51:19"
+          },
+          "_13": {
+            "source_name": "moved_first",
+            "binding_kind": "UniqueUserVar",
+            "ty": "Guard<'{erased}>",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:53:13: 53:24"
+          },
+          "_18": {
+            "source_name": "out",
+            "binding_kind": "UniqueUserVar",
+            "ty": "u32",
+            "built_local_info": "User",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:57:9: 57:12"
+          },
+          "_20": {
+            "source_name": "_pass_temp_20",
+            "binding_kind": "SynthesizedPassTemp",
+            "ty": "&'{erased} mut EffectLog",
+            "built_local_info": "PostBuiltSynthesized",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": ""
+          },
+          "_21": {
+            "source_name": "_drop_flag_21",
+            "binding_kind": "SynthesizedDropFlag",
+            "ty": "bool",
+            "built_local_info": "PostBuiltSynthesized",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": ""
+          },
+          "_22": {
+            "source_name": "_drop_flag_22",
+            "binding_kind": "SynthesizedDropFlag",
+            "ty": "bool",
+            "built_local_info": "PostBuiltSynthesized",
+            "post_cleanup_local_info": "Cleared",
+            "source_span": ""
+          }
+        }
+      },
+      "artifacts": {
+        "refactor_patch_sha256": "3c2cd3bdf6e2c987f8e6b175aeb010a0d6175159864dcfe7cd106b187e4653f1",
+        "align_to_refactored_amir_sha256": "9753e81fcc1a3c66b3bfe58e8ca492ee7f7760008caca0cc383b7f3f8069aa4f",
+        "align_to_refactored_amir_size_bytes": 2164,
+        "align_to_refactored_ullbc_sha256": "5151045bf0ef477e4e6eb763fca2edcb44d661ceb37fac1f402974d02f4d39c3",
+        "align_to_refactored_llbc_sha256": "69b6d9a606323bad6a3574b1bea4fdaafed452b43b8e8933c6446ddf6b2eb913",
+        "cleanup_refactored_amir_sha256": "b2390364ebf6bfa0f0f42ff847f35ca541629b9c2a0b18fc4b1d2b4e541ca39a",
+        "cleanup_refactored_amir_size_bytes": 1076,
+        "cleanup_refactored_ullbc_sha256": "dca3fafa600f816b4b705462fd637f101b131b621e9eaa58173501afcccb594f",
+        "cleanup_refactored_llbc_sha256": "ae97822eaa8a9f9385fa392ad5670c3876381d3b418ecdb57724f4234ab3bd2f"
+      },
+      "measurements": {
+        "zc_refactored_capture_ms": 40,
+        "zc_refactored_capture_max_rss_bytes": 113590272,
+        "cs_refactored_capture_ms": 35,
+        "cs_refactored_capture_max_rss_bytes": 108396544
+      }
+    },
+    "task4_weakening_trap_rejection": {
+      "trap_a_postcondition_weakening": {
+        "artifact_sha256": "14777cd0390e15fd1cd6e1078cb4d53f81d81fdb92b6d715695daf55e3d80b84",
+        "verified_in_lean_module": "AnnealResearch/AgentTasksAndCompilerUpgrade.lean & AnnealResearch/AgentTasksAndCompilerUpgradeControls.lean"
+      },
+      "trap_b_dropped_preserve_ub": {
+        "artifact_sha256": "b8ca252c24df2356eca374f992f70c6c8d86b2111e5297c2645abc8b59a2b765",
+        "preserve_ub_header_bit_in_amir": false,
+        "verified_in_lean_module": "AnnealResearch/AgentTasksAndCompilerUpgrade.lean & AnnealResearch/AgentTasksAndCompilerUpgradeControls.lean"
+      },
+      "trap_c_unproved_assumption": {
+        "artifact_sha256": "7ae84665b2e4c0143cc7c99afc8d54b6f5bbff28e4aaf3eaf920d03d52ff2dce",
+        "verified_in_lean_module": "AnnealResearch/AgentTasksAndCompilerUpgrade.lean & AnnealResearch/AgentTasksAndCompilerUpgradeControls.lean"
+      }
+    }
+  },
+  "four_toolchain_amir_v3_upgrade_trial": [
+    {
+      "toolchain_id": "nightly_1_95_2026_02_06",
+      "version_label": "1.95.0-nightly (efc9e1b50 2026-02-06)",
+      "rustc_sha256": "695da1df6ac1e5c463770020c78b218680c1588bfe3c00eff7a3c251f274a0b2",
+      "portable_v4_driver_exit_code": 0,
+      "portable_v4_driver_build_ms": 2133,
+      "portable_v4_driver_build_max_rss_bytes": 540028928,
+      "captures": {
+        "place_mention_probe": {
+          "amir_path": "artifacts/place_mention_probe_nightly_1_95_2026_02_06.amir",
+          "amir_sha256": "7e96e186ff83c62741007819c7429fd22811011a11ac0b5cf00e135c85a8376d",
+          "amir_size_bytes": 194,
+          "opcode_0x10_assign_use_no_retag_count": 0,
+          "opcode_0x11_assign_use_retag_yes_count": 13,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 21,
+          "max_rss_bytes": 86519808
+        },
+        "cleanup_subject": {
+          "amir_path": "artifacts/cleanup_subject_nightly_1_95_2026_02_06.amir",
+          "amir_sha256": "10ba3162279fc1ba250c0c85d1630a05eebce3827d384e6e6dfaf9cc33b91ff3",
+          "amir_size_bytes": 1067,
+          "opcode_0x10_assign_use_no_retag_count": 10,
+          "opcode_0x11_assign_use_retag_yes_count": 52,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 34,
+          "max_rss_bytes": 106598400
+        },
+        "zerocopy_layout_holdout": {
+          "amir_path": "artifacts/zerocopy_layout_holdout_nightly_1_95_2026_02_06.amir",
+          "amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+          "amir_size_bytes": 2154,
+          "opcode_0x10_assign_use_no_retag_count": 25,
+          "opcode_0x11_assign_use_retag_yes_count": 118,
+          "opcode_0x31_retag_stmt_count": 4,
+          "wall_clock_ms": 38,
+          "max_rss_bytes": 111669248
+        }
+      },
+      "mir_emit_retag_probe": {
+        "exit_code": 0,
+        "amir_size_bytes": 1160,
+        "amir_sha256": "fb052b8e66994711ddb286331b85b94bec3b1ca42a5c967bce8b623a0bbea572",
+        "retag_stmt_0x31_count": 20
+      }
+    },
+    {
+      "toolchain_id": "nightly_1_96_2026_04_10",
+      "version_label": "1.96.0-nightly (02c7f9bec 2026-04-10)",
+      "rustc_sha256": "246056779cdc44dff63aa9a0c249bf5c3e1dc90262e27f7bed12f8d1966eeb8f",
+      "portable_v4_driver_exit_code": 0,
+      "portable_v4_driver_build_ms": 2135,
+      "portable_v4_driver_build_max_rss_bytes": 529281024,
+      "captures": {
+        "place_mention_probe": {
+          "amir_path": "artifacts/place_mention_probe_nightly_1_96_2026_04_10.amir",
+          "amir_sha256": "7e96e186ff83c62741007819c7429fd22811011a11ac0b5cf00e135c85a8376d",
+          "amir_size_bytes": 194,
+          "opcode_0x10_assign_use_no_retag_count": 0,
+          "opcode_0x11_assign_use_retag_yes_count": 13,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 23,
+          "max_rss_bytes": 71475200
+        },
+        "cleanup_subject": {
+          "amir_path": "artifacts/cleanup_subject_nightly_1_96_2026_04_10.amir",
+          "amir_sha256": "10ba3162279fc1ba250c0c85d1630a05eebce3827d384e6e6dfaf9cc33b91ff3",
+          "amir_size_bytes": 1067,
+          "opcode_0x10_assign_use_no_retag_count": 10,
+          "opcode_0x11_assign_use_retag_yes_count": 52,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 35,
+          "max_rss_bytes": 94007296
+        },
+        "zerocopy_layout_holdout": {
+          "amir_path": "artifacts/zerocopy_layout_holdout_nightly_1_96_2026_04_10.amir",
+          "amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+          "amir_size_bytes": 2154,
+          "opcode_0x10_assign_use_no_retag_count": 25,
+          "opcode_0x11_assign_use_retag_yes_count": 118,
+          "opcode_0x31_retag_stmt_count": 4,
+          "wall_clock_ms": 39,
+          "max_rss_bytes": 98734080
+        }
+      },
+      "mir_emit_retag_probe": {
+        "exit_code": 0,
+        "amir_size_bytes": 1160,
+        "amir_sha256": "fb052b8e66994711ddb286331b85b94bec3b1ca42a5c967bce8b623a0bbea572",
+        "retag_stmt_0x31_count": 20
+      }
+    },
+    {
+      "toolchain_id": "nightly_1_97_2026_04_11",
+      "version_label": "1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+      "rustc_sha256": "d016bff4364bfd554a6d94aa269f3e5e6a9b65e1bd461a3567e7b26299626eb8",
+      "portable_v4_driver_exit_code": 0,
+      "portable_v4_driver_build_ms": 2149,
+      "portable_v4_driver_build_max_rss_bytes": 539049984,
+      "captures": {
+        "place_mention_probe": {
+          "amir_path": "artifacts/place_mention_probe_nightly_1_97_2026_04_11.amir",
+          "amir_sha256": "7e96e186ff83c62741007819c7429fd22811011a11ac0b5cf00e135c85a8376d",
+          "amir_size_bytes": 194,
+          "opcode_0x10_assign_use_no_retag_count": 0,
+          "opcode_0x11_assign_use_retag_yes_count": 13,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 21,
+          "max_rss_bytes": 88494080
+        },
+        "cleanup_subject": {
+          "amir_path": "artifacts/cleanup_subject_nightly_1_97_2026_04_11.amir",
+          "amir_sha256": "10ba3162279fc1ba250c0c85d1630a05eebce3827d384e6e6dfaf9cc33b91ff3",
+          "amir_size_bytes": 1067,
+          "opcode_0x10_assign_use_no_retag_count": 10,
+          "opcode_0x11_assign_use_retag_yes_count": 52,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 32,
+          "max_rss_bytes": 109088768
+        },
+        "zerocopy_layout_holdout": {
+          "amir_path": "artifacts/zerocopy_layout_holdout_nightly_1_97_2026_04_11.amir",
+          "amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+          "amir_size_bytes": 2154,
+          "opcode_0x10_assign_use_no_retag_count": 25,
+          "opcode_0x11_assign_use_retag_yes_count": 118,
+          "opcode_0x31_retag_stmt_count": 4,
+          "wall_clock_ms": 39,
+          "max_rss_bytes": 113324032
+        }
+      },
+      "mir_emit_retag_probe": {
+        "exit_code": 0,
+        "amir_size_bytes": 1160,
+        "amir_sha256": "fb052b8e66994711ddb286331b85b94bec3b1ca42a5c967bce8b623a0bbea572",
+        "retag_stmt_0x31_count": 20
+      }
+    },
+    {
+      "toolchain_id": "nightly_1_98_2026_05_30",
+      "version_label": "1.98.0-nightly (f8a08b688 2026-05-30)",
+      "rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+      "portable_v4_driver_exit_code": 0,
+      "portable_v4_driver_build_ms": 2105,
+      "portable_v4_driver_build_max_rss_bytes": 552550400,
+      "captures": {
+        "place_mention_probe": {
+          "amir_path": "artifacts/place_mention_probe_nightly_1_98_2026_05_30.amir",
+          "amir_sha256": "7e96e186ff83c62741007819c7429fd22811011a11ac0b5cf00e135c85a8376d",
+          "amir_size_bytes": 194,
+          "opcode_0x10_assign_use_no_retag_count": 0,
+          "opcode_0x11_assign_use_retag_yes_count": 13,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 22,
+          "max_rss_bytes": 89604096
+        },
+        "cleanup_subject": {
+          "amir_path": "artifacts/cleanup_subject_nightly_1_98_2026_05_30.amir",
+          "amir_sha256": "d6244df6c9e113e6e91b520d26425ce55d7d5778bca94f81debf551369eabed2",
+          "amir_size_bytes": 1066,
+          "opcode_0x10_assign_use_no_retag_count": 14,
+          "opcode_0x11_assign_use_retag_yes_count": 49,
+          "opcode_0x31_retag_stmt_count": 0,
+          "wall_clock_ms": 34,
+          "max_rss_bytes": 107786240
+        },
+        "zerocopy_layout_holdout": {
+          "amir_path": "artifacts/zerocopy_layout_holdout_nightly_1_98_2026_05_30.amir",
+          "amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+          "amir_size_bytes": 2154,
+          "opcode_0x10_assign_use_no_retag_count": 25,
+          "opcode_0x11_assign_use_retag_yes_count": 118,
+          "opcode_0x31_retag_stmt_count": 4,
+          "wall_clock_ms": 40,
+          "max_rss_bytes": 111796224
+        }
+      },
+      "mir_emit_retag_probe": {
+        "exit_code": 1,
+        "amir_size_bytes": 0,
+        "amir_sha256": null,
+        "retag_stmt_0x31_count": 0
+      }
+    }
+  ],
+  "r6_upgrade_trial_ledger_sha256": "e96f38ee95d219d91afdb04005f479ba2ff13cb990bf35908aa863e7f4a36943"
+}

@@ -1,0 +1,99 @@
+{
+  "checked_on": "2026-10-15",
+  "baseline_commit": "72906a59cae6cd376ce1415f7f2497638323b458",
+  "kind": "One configured compiler-output/runtime observation and manual source-binding audit; no checked lowering theorem",
+  "compiler": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+  "compile": {
+    "argv": [
+      "rustc",
+      "cleanup.rs",
+      "--crate-name",
+      "cleanup_binding",
+      "--edition=2024",
+      "--target",
+      "aarch64-apple-darwin",
+      "-C",
+      "opt-level=0",
+      "-C",
+      "panic=unwind",
+      "-C",
+      "codegen-units=1",
+      "--emit=mir,link",
+      "--out-dir",
+      "relative-build"
+    ],
+    "cwd": "fixture-directory",
+    "source_sha256": "982e1015fc53150698b1947f79dcb12ad83fa4c3b2dd7069f7dd1b66e0545340",
+    "status": 0,
+    "seconds": 0.141,
+    "peak_rss_bytes": 127057920,
+    "stdout_bytes": 0,
+    "stderr_bytes": 0
+  },
+  "run": {
+    "executable_sha256": "ba847d5f66402f50811f47b67a17da2f5c38cc2754b058c703abb0c32e376eba",
+    "status": 0,
+    "seconds": 0.152,
+    "peak_rss_bytes": 2031616,
+    "stdout_sha256": "0a4ea49e1dc777a4a5b761ed26ea46504a122fabc7ddb2acc2769b33bb085ac5",
+    "stderr_bytes": 0,
+    "stdout_bytes": 660
+  },
+  "wall_time_limit_seconds_per_process": 45,
+  "parallel_compilers": 1,
+  "downloads": false,
+  "source_path_control": "First absolute-path dump equals published relative-path dump after source-path substitution only; both binaries pass identical four-case stdout",
+  "files": [
+    {
+      "path": "cleanup.rs",
+      "sha256": "982e1015fc53150698b1947f79dcb12ad83fa4c3b2dd7069f7dd1b66e0545340",
+      "bytes": 3075
+    },
+    {
+      "path": "protocol.md",
+      "sha256": "2bf5c6dcecae93f0e660ae04fb4a2dae6cdfea93de7b0e064a7bdc107232c47c",
+      "bytes": 1781
+    },
+    {
+      "path": "observed/cleanup_binding.mir",
+      "sha256": "b5fd9b2f30575cfea1c5ecbe73aa2c9e6d8cef284d0d85675547caee1d025237",
+      "bytes": 57370
+    },
+    {
+      "path": "observed/run.stdout",
+      "sha256": "0a4ea49e1dc777a4a5b761ed26ea46504a122fabc7ddb2acc2769b33bb085ac5",
+      "bytes": 660
+    },
+    {
+      "path": "observed/rustc-vV.txt",
+      "sha256": "352d6857968e80a6357a926ac685b9b07f77c479aaafde33e73a53945e802909",
+      "bytes": 192
+    }
+  ],
+  "executed_cases": [
+    "normal",
+    "second_constructor_panics",
+    "forget_second",
+    "first_destructor_panics"
+  ],
+  "negative_controls": "Manual incompatible interpretations of actual MIR edges and runtime traces; no mutant translator or intentionally undefined execution was run",
+  "independent_review": "Independent read-only review confirmed the selected traces and challenged temporary storage, early log markers, implicit drop glue, extra unwind edges and library no-unwind assumptions; these limits are retained in the report",
+  "scope_exclusions": [
+    "all input combinations",
+    "compiler correctness",
+    "verified MIR parser or normalization",
+    "implicit drop-glue implementation",
+    "library/runtime/ABI correctness",
+    "general no-unwind from a false panic flag",
+    "Rust-to-Lean adequacy",
+    "logical/physical cost or security preservation"
+  ],
+  "resource_measurement": "Darwin RUSAGE_CHILDREN.ru_maxrss bytes from separate one-compiler or one-binary Python wrappers; elapsed observations, not architecture benchmarks",
+  "absolute_source_path_control": {
+    "compile_status": 0,
+    "run_status": 0,
+    "mir_sha256": "30ef69e31976a10441f911e73da6fa1af0a52e1e592dd552c646aece7a42aa14",
+    "stdout_sha256": "0a4ea49e1dc777a4a5b761ed26ea46504a122fabc7ddb2acc2769b33bb085ac5",
+    "mir_equal_after_only_source_path_substitution": true
+  }
+}

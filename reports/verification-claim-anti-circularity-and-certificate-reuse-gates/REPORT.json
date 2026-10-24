@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "verification/lean4/specification-validation",
+    "verification/lean4/claim-change-detection",
+    "verification/lean4/design-model-transfer",
+    "verification/lean4/optimization-preservation",
+    "verification/lean4/certificate-reuse",
+    "rust/mir/compiler-upgrade-maintenance"
+  ],
+  "subjects": [
+    {
+      "name": "rustc-1.95-to-1.98-nightly",
+      "identity": {
+        "toolchains": "1.95.0-nightly (efc9e1b50 2026-02-06), 1.96.0-nightly (02c7f9bec 2026-04-10), 1.97.0-nightly (bf4fbfb7a 2026-04-11), 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "primary_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      }
+    },
+    {
+      "name": "charon",
+      "identity": {
+        "versions": "0.1.174 (5096e36339dc62d885fb3b7bf6e1bd98000514e0) and 0.1.210 (1e08453924610c19d74c245a7308f17c1008e2db)",
+        "charon_0_1_174_sha256": "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836",
+        "charon_0_1_210_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

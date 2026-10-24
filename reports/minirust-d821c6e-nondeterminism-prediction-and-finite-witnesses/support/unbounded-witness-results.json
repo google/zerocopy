@@ -1,0 +1,15 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "source_path": "experiments/opsem/proposals/UnboundedWitness.lean",
+  "source_sha256": "48db0320d60dce7dd6536805c0e05dbd3aa76b1ab3e8ec3db9659d219cd817db",
+  "lean_flags": [
+    "-j1",
+    "-M768"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 0.3349,
+  "children_maxrss_kb": 767840,
+  "stdout": "'UnboundedWitness.every_finite_bound_has_witness' does not depend on any axioms\n'UnboundedWitness.no_one_witness_covers_all_prefixes' does not depend on any axioms\n'UnboundedWitness.finite_witnesses_do_not_imply_coherent_witness' does not depend on any axioms",
+  "stderr": ""
+}

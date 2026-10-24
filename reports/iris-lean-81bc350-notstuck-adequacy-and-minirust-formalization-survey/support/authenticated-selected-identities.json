@@ -1,0 +1,57 @@
+{
+  "repository": "leanprover-community/iris-lean",
+  "commit": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+  "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816",
+  "source_response_sha256": "6db2c68ce8c66b3d0d1551696871c8c0566e3548af9c7ec97c33b1dc484472f1",
+  "selected": [
+    {
+      "path": "Iris/Iris/ProgramLogic/Language.lean",
+      "oid": "73baacd35f8c021c30010d617b323377dcfe637b",
+      "size": 19462,
+      "sha256": "7fda08bf7182131414612fbeebe845f225cfc3a7340be4ef9663b9e500ce9338"
+    },
+    {
+      "path": "Iris/Iris/ProgramLogic/WeakestPre.lean",
+      "oid": "340e21c30faca0364498f94fba9b01983461c80e",
+      "size": 28406,
+      "sha256": "7747c351ea9d2e55ab8c664899cad10c01aa8c0521a34dd8f521ba6823077886"
+    },
+    {
+      "path": "Iris/Iris/ProgramLogic/Adequacy.lean",
+      "oid": "0c76491cadff6b5a870df2d9b4930773d0df5623",
+      "size": 16703,
+      "sha256": "78832dc1fb9ea92305840f506f5b7d3d16dbfe053df5c293a2ec3be454681677"
+    },
+    {
+      "path": "Iris/Iris/ProgramLogic/Lifting.lean",
+      "oid": "d9a0abd5eb3a4c7067e3be71eb1d9504c38bd2f2",
+      "size": 9207,
+      "sha256": "4bdcccd15a4dd1baffeb3af318952f05e930ce7e3d6bb4913b7c9c4fce821dcb"
+    },
+    {
+      "path": "Iris/Iris/Examples/ClosedProofs.lean",
+      "oid": "fd8de63733ba9e89796965bc813cfcfb89eb8376",
+      "size": 2545,
+      "sha256": "78bc95f0fa9c645f270ac96d0dc88e9d8d30765f10a1c9202a15eb9fe7acc12d"
+    },
+    {
+      "path": "Iris/Iris/HeapLang/Lib/Diverge.lean",
+      "oid": "cb618b33e06fe139def95bcd09174191f9e04c3b",
+      "size": 861,
+      "sha256": "d8950245b40ae8090ae3ad7b245e112d8bb941cb1f3f1682b20f47ad4aae6518"
+    },
+    {
+      "path": "Iris/lake-manifest.json",
+      "oid": "e295a220facb403c3f5c2db905d29e4efab631cf",
+      "size": 801,
+      "sha256": "823b3e6d396c77a43b901a57d7fe34ba524bd3c2df35e3e1fe20289945fe5259"
+    },
+    {
+      "path": "Iris/lean-toolchain",
+      "oid": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+      "size": 25,
+      "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+    }
+  ],
+  "scope": "Eight exact official Git blobs match current local bytes; no authentication of other manifest members or compiled dependencies."
+}

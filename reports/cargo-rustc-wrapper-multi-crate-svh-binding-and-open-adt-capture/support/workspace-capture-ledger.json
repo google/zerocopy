@@ -1,0 +1,1746 @@
+{
+  "wire_format": "AMIR_v3",
+  "driver_binary": "/tmp/direct_mir_driver_v4_bin",
+  "driver_source": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs",
+  "driver_source_sha256": "0159d185414df33e373d6a8982ef34cfc7af7bc019e2724856830b8c73ae93c8",
+  "pinned_rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+  "pinned_cargo_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
+  "pinned_charon_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+  "feature_toggle_amir_v3_comparison": {
+    "dep_default": {
+      "magic": "AMIR",
+      "version": 3,
+      "rustc_hi": 3,
+      "rustc_lo": 11,
+      "fp16": [
+        71,
+        189
+      ],
+      "payload_fp16": [
+        211,
+        16
+      ],
+      "fp16_matches_payload": false,
+      "body_count": 5,
+      "size_bytes": 448,
+      "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389"
+    },
+    "dep_strict": {
+      "magic": "AMIR",
+      "version": 3,
+      "rustc_hi": 3,
+      "rustc_lo": 11,
+      "fp16": [
+        86,
+        21
+      ],
+      "payload_fp16": [
+        203,
+        8
+      ],
+      "fp16_matches_payload": false,
+      "body_count": 5,
+      "size_bytes": 448,
+      "sha256": "a4a72ca6fd048a2b258779aae36d82594a5021a5fcfcc5283aadaa48c83b7096"
+    },
+    "app_default": {
+      "magic": "AMIR",
+      "version": 3,
+      "rustc_hi": 3,
+      "rustc_lo": 11,
+      "fp16": [
+        191,
+        87
+      ],
+      "payload_fp16": [
+        213,
+        107
+      ],
+      "fp16_matches_payload": false,
+      "body_count": 2,
+      "size_bytes": 172,
+      "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba"
+    },
+    "app_strict": {
+      "magic": "AMIR",
+      "version": 3,
+      "rustc_hi": 3,
+      "rustc_lo": 11,
+      "fp16": [
+        84,
+        39
+      ],
+      "payload_fp16": [
+        181,
+        52
+      ],
+      "fp16_matches_payload": false,
+      "body_count": 2,
+      "size_bytes": 172,
+      "sha256": "b9e18531432e003db8e537df661c96e55cea34fb96006cac0361fb8427965ed6"
+    },
+    "dep_bytes_distinct": true,
+    "app_bytes_distinct": true,
+    "dep_fp16_distinct": true,
+    "app_fp16_distinct": true
+  },
+  "runs": [
+    {
+      "run_id": "cargo_workspace_default_mir_encoding",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "build",
+        "--target-dir",
+        "/tmp/anneal_ws_target_default_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 382,
+      "max_rss_bytes": 196653056,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_dep_layout_core_default.json",
+          "sha256": "aed8b9ea83f4b36820c04213eae1da380b257a27c7de23fea4d326e9982b3430",
+          "size_bytes": 14152
+        },
+        {
+          "path": "artifacts/dep_layout_core_default.amir",
+          "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389",
+          "size_bytes": 448,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              71,
+              189
+            ],
+            "payload_fp16": [
+              211,
+              16
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 5,
+            "size_bytes": 448,
+            "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389"
+          }
+        },
+        {
+          "path": "artifacts/out_app_verifier_subject_default.json",
+          "sha256": "7a394cb45efe3970a660358ba8a853874daa54b989d0bb71c70075c1b0b597d3",
+          "size_bytes": 7574
+        },
+        {
+          "path": "artifacts/app_verifier_subject_default.amir",
+          "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba",
+          "size_bytes": 172,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              191,
+              87
+            ],
+            "payload_fp16": [
+              213,
+              107
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 2,
+            "size_bytes": 172,
+            "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba"
+          }
+        }
+      ],
+      "driver_invocations": [
+        {
+          "tag": "default",
+          "mode": "full",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "default",
+          "mode": "full",
+          "crate_name": "___",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [
+            "bin",
+            "rlib",
+            "dylib",
+            "cdylib",
+            "staticlib",
+            "proc-macro"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "default",
+          "mode": "full",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "default",
+          "mode": "full",
+          "crate_name": "build_script_build",
+          "role": "host_build_script",
+          "is_build_script": true,
+          "edition": "2021",
+          "crate_types": [
+            "bin"
+          ],
+          "cfg_flags": [
+            "feature=\"default\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "default",
+          "mode": "full",
+          "crate_name": "dep_layout_core",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\"",
+            "has_build_script_align"
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "/tmp/anneal_ws_target_default_v3/debug/build/dep_layout_core-c0be248926ed1dc7/out",
+          "generated_out_dir_files": [
+            {
+              "file": "generated_align.rs",
+              "size_bytes": 43,
+              "sha256": "f2addf606b40a9f269a429f56a07398c90fa7c0fffeec0f0837a7463e3ce12e2"
+            }
+          ],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_default.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_default.amir",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_dep_layout_core_default.json",
+          "out_amir": "dep_layout_core_default.amir"
+        },
+        {
+          "tag": "default",
+          "mode": "full",
+          "crate_name": "app_verifier_subject",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "dep_layout_core=/tmp/anneal_ws_target_default_v3/debug/deps/libdep_layout_core-144941decff46881.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_default.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_default.amir",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_app_verifier_subject_default.json",
+          "out_amir": "app_verifier_subject_default.amir"
+        }
+      ]
+    },
+    {
+      "run_id": "cargo_workspace_warm_noop_rebuild",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "build",
+        "--target-dir",
+        "/tmp/anneal_ws_target_default_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 21,
+      "max_rss_bytes": 26726400,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/dep_layout_core_default.amir",
+          "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389",
+          "size_bytes": 448,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              71,
+              189
+            ],
+            "payload_fp16": [
+              211,
+              16
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 5,
+            "size_bytes": 448,
+            "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389"
+          }
+        },
+        {
+          "path": "artifacts/app_verifier_subject_default.amir",
+          "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba",
+          "size_bytes": 172,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              191,
+              87
+            ],
+            "payload_fp16": [
+              213,
+              107
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 2,
+            "size_bytes": 172,
+            "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba"
+          }
+        }
+      ],
+      "driver_invocations": [],
+      "cached_crate_reuse_observed": true
+    },
+    {
+      "run_id": "cargo_workspace_always_encode_mir",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "build",
+        "--target-dir",
+        "/tmp/anneal_ws_target_always_encode_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 374,
+      "max_rss_bytes": 197627904,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_dep_layout_core_always_encode.json",
+          "sha256": "2bb3c653333fb44982a5d5723b0a209dc473ad012e0cbc01b713c2f404a43ca4",
+          "size_bytes": 14156
+        },
+        {
+          "path": "artifacts/dep_layout_core_always_encode.amir",
+          "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389",
+          "size_bytes": 448,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              71,
+              189
+            ],
+            "payload_fp16": [
+              211,
+              16
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 5,
+            "size_bytes": 448,
+            "sha256": "77683ab3fe15819749015ffff790a44843798cc3cde22a4078295f03b54ad389"
+          }
+        },
+        {
+          "path": "artifacts/out_app_verifier_subject_always_encode.json",
+          "sha256": "57d35f7c6fee8389c1e88022485719fba9a749ec234941d5443bbc9d4ca2da09",
+          "size_bytes": 7572
+        },
+        {
+          "path": "artifacts/app_verifier_subject_always_encode.amir",
+          "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba",
+          "size_bytes": 172,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              191,
+              87
+            ],
+            "payload_fp16": [
+              213,
+              107
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 2,
+            "size_bytes": 172,
+            "sha256": "04953d9a05f278fd1f9f0353a62276b34fe0e4be947110608859792c215e92ba"
+          }
+        }
+      ],
+      "driver_invocations": [
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "___",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [
+            "bin",
+            "rlib",
+            "dylib",
+            "cdylib",
+            "staticlib",
+            "proc-macro"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "build_script_build",
+          "role": "host_build_script",
+          "is_build_script": true,
+          "edition": "2021",
+          "crate_types": [
+            "bin"
+          ],
+          "cfg_flags": [
+            "feature=\"default\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "dep_layout_core",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\"",
+            "has_build_script_align"
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "/tmp/anneal_ws_target_always_encode_v3/debug/build/dep_layout_core-c0be248926ed1dc7/out",
+          "generated_out_dir_files": [
+            {
+              "file": "generated_align.rs",
+              "size_bytes": 43,
+              "sha256": "f2addf606b40a9f269a429f56a07398c90fa7c0fffeec0f0837a7463e3ce12e2"
+            }
+          ],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_always_encode.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_always_encode.amir",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_dep_layout_core_always_encode.json",
+          "out_amir": "dep_layout_core_always_encode.amir"
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "app_verifier_subject",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "dep_layout_core=/tmp/anneal_ws_target_always_encode_v3/debug/deps/libdep_layout_core-144941decff46881.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_always_encode.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_always_encode.amir",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_app_verifier_subject_always_encode.json",
+          "out_amir": "app_verifier_subject_always_encode.amir"
+        }
+      ]
+    },
+    {
+      "run_id": "cargo_workspace_strict_align_feature",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "build",
+        "--features",
+        "strict_align",
+        "--target-dir",
+        "/tmp/anneal_ws_target_strict_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 380,
+      "max_rss_bytes": 193568768,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_dep_layout_core_strict_align.json",
+          "sha256": "5ecea4b76aed6384479424115e95880b0e926f88c04034a2b160c98009224d83",
+          "size_bytes": 14151
+        },
+        {
+          "path": "artifacts/dep_layout_core_strict_align.amir",
+          "sha256": "a4a72ca6fd048a2b258779aae36d82594a5021a5fcfcc5283aadaa48c83b7096",
+          "size_bytes": 448,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              86,
+              21
+            ],
+            "payload_fp16": [
+              203,
+              8
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 5,
+            "size_bytes": 448,
+            "sha256": "a4a72ca6fd048a2b258779aae36d82594a5021a5fcfcc5283aadaa48c83b7096"
+          }
+        },
+        {
+          "path": "artifacts/out_app_verifier_subject_strict_align.json",
+          "sha256": "a6d9d056eb882ce1ebbeea38226ba95f404d4398f15e15de4f4c14a8baa4024d",
+          "size_bytes": 7577
+        },
+        {
+          "path": "artifacts/app_verifier_subject_strict_align.amir",
+          "sha256": "b9e18531432e003db8e537df661c96e55cea34fb96006cac0361fb8427965ed6",
+          "size_bytes": 172,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              84,
+              39
+            ],
+            "payload_fp16": [
+              181,
+              52
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 2,
+            "size_bytes": 172,
+            "sha256": "b9e18531432e003db8e537df661c96e55cea34fb96006cac0361fb8427965ed6"
+          }
+        }
+      ],
+      "driver_invocations": [
+        {
+          "tag": "strict_align",
+          "mode": "always_encode",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "strict_align",
+          "mode": "always_encode",
+          "crate_name": "___",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [
+            "bin",
+            "rlib",
+            "dylib",
+            "cdylib",
+            "staticlib",
+            "proc-macro"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "strict_align",
+          "mode": "always_encode",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "strict_align",
+          "mode": "always_encode",
+          "crate_name": "build_script_build",
+          "role": "host_build_script",
+          "is_build_script": true,
+          "edition": "2021",
+          "crate_types": [
+            "bin"
+          ],
+          "cfg_flags": [
+            "feature=\"default\"",
+            "feature=\"strict_align\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "strict_align",
+          "mode": "always_encode",
+          "crate_name": "dep_layout_core",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\"",
+            "feature=\"strict_align\"",
+            "has_build_script_align"
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "/tmp/anneal_ws_target_strict_v3/debug/build/dep_layout_core-e6ca345265258dda/out",
+          "generated_out_dir_files": [
+            {
+              "file": "generated_align.rs",
+              "size_bytes": 43,
+              "sha256": "f2addf606b40a9f269a429f56a07398c90fa7c0fffeec0f0837a7463e3ce12e2"
+            }
+          ],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_strict_align.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_strict_align.amir",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_dep_layout_core_strict_align.json",
+          "out_amir": "dep_layout_core_strict_align.amir"
+        },
+        {
+          "tag": "strict_align",
+          "mode": "always_encode",
+          "crate_name": "app_verifier_subject",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\"",
+            "feature=\"strict_align\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "dep_layout_core=/tmp/anneal_ws_target_strict_v3/debug/deps/libdep_layout_core-4773f89947ed7027.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_strict_align.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_strict_align.amir",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_app_verifier_subject_strict_align.json",
+          "out_amir": "app_verifier_subject_strict_align.amir"
+        }
+      ]
+    },
+    {
+      "run_id": "cargo_workspace_check_fast_mode",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "check",
+        "--target-dir",
+        "/tmp/anneal_ws_target_check_v3"
+      ],
+      "exit_code": 101,
+      "elapsed_ms": 320,
+      "max_rss_bytes": 188342272,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_dep_layout_core_check_fast.json",
+          "sha256": "4d2b2e9bc435b6fbd2568c3890975f005b76b8001323ce6444a6219b30c6978b",
+          "size_bytes": 13382
+        },
+        {
+          "path": "artifacts/out_app_verifier_subject_check_fast.json",
+          "sha256": "c6f156194bb1f4dda2534da35712f39439312539209274cbe4b23bf1b97caf00",
+          "size_bytes": 6034
+        }
+      ],
+      "driver_invocations": [
+        {
+          "tag": "check_fast",
+          "mode": "check",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "check_fast",
+          "mode": "check",
+          "crate_name": "___",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [
+            "bin",
+            "rlib",
+            "dylib",
+            "cdylib",
+            "staticlib",
+            "proc-macro"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "check_fast",
+          "mode": "check",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "check_fast",
+          "mode": "check",
+          "crate_name": "build_script_build",
+          "role": "host_build_script",
+          "is_build_script": true,
+          "edition": "2021",
+          "crate_types": [
+            "bin"
+          ],
+          "cfg_flags": [
+            "feature=\"default\""
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "check_fast",
+          "mode": "check",
+          "crate_name": "dep_layout_core",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [
+            "feature=\"default\"",
+            "has_build_script_align"
+          ],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata"
+          ],
+          "extern_specs": [],
+          "out_dir": "/tmp/anneal_ws_target_check_v3/debug/build/dep_layout_core-c0be248926ed1dc7/out",
+          "generated_out_dir_files": [
+            {
+              "file": "generated_align.rs",
+              "size_bytes": 43,
+              "sha256": "f2addf606b40a9f269a429f56a07398c90fa7c0fffeec0f0837a7463e3ce12e2"
+            }
+          ],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_check_fast.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_check_fast.amir"
+          ],
+          "out_json": "out_dep_layout_core_check_fast.json",
+          "out_amir": "dep_layout_core_check_fast.amir"
+        }
+      ],
+      "mono_collection_completed": false,
+      "has_errors_at_after_analysis": false,
+      "compilation_completeness_status": "rejected_incomplete_compilation"
+    },
+    {
+      "run_id": "post_mono_reachable_const_without_mono_collector",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--crate-name",
+        "post_mono_reachable_fail",
+        "--edition=2021",
+        "--crate-type",
+        "lib",
+        "--emit=metadata",
+        "--out-dir",
+        "/tmp/anneal_ws_post_mono_probes",
+        "--sysroot",
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_reachable_provisional.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_reachable_provisional.amir",
+        "/tmp/anneal_ws_post_mono_probes/post_mono_reachable_fail.rs"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 28,
+      "max_rss_bytes": 109629440,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_post_mono_reachable_provisional.json",
+          "sha256": "d882f1198dcd72e00cc4190a22c278254c7ddb583235dd236f72790c8f06f805",
+          "size_bytes": 11309
+        }
+      ],
+      "amir_v3_status": "rejected_incomplete_compilation",
+      "mono_collection_completed": false,
+      "has_errors_at_after_analysis": false,
+      "compilation_completeness_status": "rejected_incomplete_compilation"
+    },
+    {
+      "run_id": "post_mono_reachable_const_with_mono_collector_fails",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--crate-name",
+        "post_mono_reachable_fail",
+        "--edition=2021",
+        "--crate-type",
+        "lib",
+        "--out-dir",
+        "/tmp/anneal_ws_post_mono_probes",
+        "--sysroot",
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_reachable_full.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_reachable_full.amir",
+        "/tmp/anneal_ws_post_mono_probes/post_mono_reachable_fail.rs"
+      ],
+      "exit_code": 1,
+      "elapsed_ms": 29,
+      "max_rss_bytes": 120737792,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [],
+      "compilation_completeness_status": "rejected_post_mono_const_error"
+    },
+    {
+      "run_id": "post_mono_unused_const_with_mono_collector_accepted",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--crate-name",
+        "post_mono_unreachable_unused",
+        "--edition=2021",
+        "--crate-type",
+        "lib",
+        "--out-dir",
+        "/tmp/anneal_ws_post_mono_probes",
+        "--sysroot",
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_unused_accepted.json",
+        "--driver-emit-amir-v3",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_unused_accepted.amir",
+        "/tmp/anneal_ws_post_mono_probes/post_mono_unreachable_unused.rs"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 30,
+      "max_rss_bytes": 114966528,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_post_mono_unused_accepted.json",
+          "sha256": "30fdbe5f4dbc24ab65e2c7a5cf21d528ffcd3f5bd5b5e0d6eb706a89cae1aa18",
+          "size_bytes": 12518
+        },
+        {
+          "path": "artifacts/post_mono_unused_accepted.amir",
+          "sha256": "db35417c40da8a1bfd9daf56f71aad208f21c02bb07ed764bf2653cf3780dee1",
+          "size_bytes": 118,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              132,
+              198
+            ],
+            "payload_fp16": [
+              60,
+              60
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 3,
+            "size_bytes": 118,
+            "sha256": "db35417c40da8a1bfd9daf56f71aad208f21c02bb07ed764bf2653cf3780dee1"
+          }
+        }
+      ],
+      "amir_v3_status": "accepted_complete",
+      "mono_collection_completed": true,
+      "has_errors_at_after_analysis": false,
+      "compilation_completeness_status": "accepted_complete",
+      "contains_unreferenced_failing_zst_mention": true,
+      "collected_mono_items": [
+        "Fn(Instance { def: Item(DefId(0:14 ~ post_mono_unreachable_unused[dd81]::beta)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:11 ~ post_mono_unreachable_unused[dd81]::alpha)), args: [u64] })",
+        "Fn(Instance { def: Item(DefId(2:37504 ~ core[3475]::num::{impl#11}::wrapping_add)), args: [] })"
+      ]
+    },
+    {
+      "run_id": "charon_cargo_app_verifier_subject",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "cargo",
+        "--ullbc",
+        "--mir",
+        "elaborated",
+        "--dest-file",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject.ullbc",
+        "--",
+        "--package",
+        "app_verifier_subject",
+        "--target-dir",
+        "/tmp/anneal_ws_target_charon_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 229,
+      "max_rss_bytes": 137142272,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/app_verifier_subject.ullbc",
+          "sha256": "96c7c344a774b943ae904ba044a23897e222c80d27d0b196b0da6d5dbd7aa628",
+          "size_bytes": 31127
+        }
+      ]
+    },
+    {
+      "run_id": "cargo_workspace_stateful_lib_always_encode",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "build",
+        "-p",
+        "stateful_generic_lib",
+        "-p",
+        "client_contract_user",
+        "-p",
+        "client_direct_mir_inspector",
+        "--target-dir",
+        "/tmp/anneal_ws_target_stateful_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 263,
+      "max_rss_bytes": 125202432,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_stateful_generic_lib_always_encode.json",
+          "sha256": "bbea393006908f9595c5a4bb86f615a9bd88702bcbb84d3b9723f2f1bc0c7fc7",
+          "size_bytes": 21706
+        },
+        {
+          "path": "artifacts/bodies_stateful_generic_lib_always_encode.json",
+          "sha256": "65ef1814c21ba19f9f8ff00069a595de0e4149d186ce262fb63db7e0e10c76ee",
+          "size_bytes": 115179
+        },
+        {
+          "path": "artifacts/stateful_generic_lib_always_encode.amir",
+          "sha256": "0b6c7557ed39e6dcb33b63257757b778353daea45fa62a64202e632be439d801",
+          "size_bytes": 791,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              153,
+              48
+            ],
+            "payload_fp16": [
+              231,
+              107
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 8,
+            "size_bytes": 791,
+            "sha256": "0b6c7557ed39e6dcb33b63257757b778353daea45fa62a64202e632be439d801"
+          }
+        },
+        {
+          "path": "artifacts/out_client_contract_user_always_encode.json",
+          "sha256": "2f423e57978d974418d7d76b6237592dca6f77993fbe93717a4b05f2932632ce",
+          "size_bytes": 4253
+        },
+        {
+          "path": "artifacts/client_contract_user_always_encode.amir",
+          "sha256": "7caea4010bde9169f7c1ff6cb175d98ae9937f6d0062aa84bb94e3de6dd206d7",
+          "size_bytes": 96,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              154,
+              137
+            ],
+            "payload_fp16": [
+              203,
+              189
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 1,
+            "size_bytes": 96,
+            "sha256": "7caea4010bde9169f7c1ff6cb175d98ae9937f6d0062aa84bb94e3de6dd206d7"
+          }
+        },
+        {
+          "path": "artifacts/out_client_direct_mir_inspector_always_encode.json",
+          "sha256": "662c66e4ec6debea64baf54fc37395ed019032c0b288de209071801db77d2b42",
+          "size_bytes": 4169
+        },
+        {
+          "path": "artifacts/client_direct_mir_inspector_always_encode.amir",
+          "sha256": "f639db57abf8fe21ee06e2982c8e19ba0b73879d286aef8ef3f11e1c62fa3bf9",
+          "size_bytes": 167,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              65,
+              139
+            ],
+            "payload_fp16": [
+              71,
+              153
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 1,
+            "size_bytes": 167,
+            "sha256": "f639db57abf8fe21ee06e2982c8e19ba0b73879d286aef8ef3f11e1c62fa3bf9"
+          }
+        }
+      ],
+      "driver_invocations": [
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "stateful_generic_lib",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_stateful_generic_lib_always_encode.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib_always_encode.amir",
+            "--driver-dump-bodies",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_stateful_generic_lib_always_encode.json",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_stateful_generic_lib_always_encode.json",
+          "out_amir": "stateful_generic_lib_always_encode.amir"
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "client_direct_mir_inspector",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "stateful_generic_lib=/tmp/anneal_ws_target_stateful_v3/debug/deps/libstateful_generic_lib-051955d89eea9a4d.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_direct_mir_inspector_always_encode.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector_always_encode.amir",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_client_direct_mir_inspector_always_encode.json",
+          "out_amir": "client_direct_mir_inspector_always_encode.amir"
+        },
+        {
+          "tag": "always_encode",
+          "mode": "always_encode",
+          "crate_name": "client_contract_user",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "stateful_generic_lib=/tmp/anneal_ws_target_stateful_v3/debug/deps/libstateful_generic_lib-051955d89eea9a4d.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_contract_user_always_encode.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_contract_user_always_encode.amir",
+            "-Z",
+            "always-encode-mir=yes",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_client_contract_user_always_encode.json",
+          "out_amir": "client_contract_user_always_encode.amir"
+        }
+      ]
+    },
+    {
+      "run_id": "cargo_workspace_stateful_lib_default_encoding",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "build",
+        "-p",
+        "stateful_generic_lib",
+        "-p",
+        "client_contract_user",
+        "-p",
+        "client_direct_mir_inspector",
+        "--target-dir",
+        "/tmp/anneal_ws_target_stateful_default_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 261,
+      "max_rss_bytes": 125370368,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/out_stateful_generic_lib_stateful_default.json",
+          "sha256": "0a0220af073aaba1cedc4fca761da71cd1fe37a66eb49c56613317976eac8fff",
+          "size_bytes": 21707
+        },
+        {
+          "path": "artifacts/stateful_generic_lib_stateful_default.amir",
+          "sha256": "0b6c7557ed39e6dcb33b63257757b778353daea45fa62a64202e632be439d801",
+          "size_bytes": 791,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              153,
+              48
+            ],
+            "payload_fp16": [
+              231,
+              107
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 8,
+            "size_bytes": 791,
+            "sha256": "0b6c7557ed39e6dcb33b63257757b778353daea45fa62a64202e632be439d801"
+          }
+        },
+        {
+          "path": "artifacts/out_client_contract_user_stateful_default.json",
+          "sha256": "63815594238c029d2bb07008ff449c1df480c82fb2d40cd1aa1539f1213c0633",
+          "size_bytes": 4256
+        },
+        {
+          "path": "artifacts/client_contract_user_stateful_default.amir",
+          "sha256": "7caea4010bde9169f7c1ff6cb175d98ae9937f6d0062aa84bb94e3de6dd206d7",
+          "size_bytes": 96,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              154,
+              137
+            ],
+            "payload_fp16": [
+              203,
+              189
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 1,
+            "size_bytes": 96,
+            "sha256": "7caea4010bde9169f7c1ff6cb175d98ae9937f6d0062aa84bb94e3de6dd206d7"
+          }
+        },
+        {
+          "path": "artifacts/out_client_direct_mir_inspector_stateful_default.json",
+          "sha256": "7f1591c00243eaab1932484938e36bca8bcf042853aa3f16607a6aaf48c50465",
+          "size_bytes": 4172
+        },
+        {
+          "path": "artifacts/client_direct_mir_inspector_stateful_default.amir",
+          "sha256": "f639db57abf8fe21ee06e2982c8e19ba0b73879d286aef8ef3f11e1c62fa3bf9",
+          "size_bytes": 167,
+          "amir_v3_header": {
+            "magic": "AMIR",
+            "version": 3,
+            "rustc_hi": 3,
+            "rustc_lo": 11,
+            "fp16": [
+              65,
+              139
+            ],
+            "payload_fp16": [
+              71,
+              153
+            ],
+            "fp16_matches_payload": false,
+            "body_count": 1,
+            "size_bytes": 167,
+            "sha256": "f639db57abf8fe21ee06e2982c8e19ba0b73879d286aef8ef3f11e1c62fa3bf9"
+          }
+        }
+      ],
+      "driver_invocations": [
+        {
+          "tag": "stateful_default",
+          "mode": "full",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "stateful_default",
+          "mode": "full",
+          "crate_name": "___",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [
+            "bin",
+            "rlib",
+            "dylib",
+            "cdylib",
+            "staticlib",
+            "proc-macro"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "stateful_default",
+          "mode": "full",
+          "crate_name": null,
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": null,
+          "crate_types": [],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": []
+        },
+        {
+          "tag": "stateful_default",
+          "mode": "full",
+          "crate_name": "stateful_generic_lib",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_stateful_generic_lib_stateful_default.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib_stateful_default.amir",
+            "--driver-dump-bodies",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_stateful_generic_lib_stateful_default.json",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_stateful_generic_lib_stateful_default.json",
+          "out_amir": "stateful_generic_lib_stateful_default.amir"
+        },
+        {
+          "tag": "stateful_default",
+          "mode": "full",
+          "crate_name": "client_direct_mir_inspector",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "stateful_generic_lib=/tmp/anneal_ws_target_stateful_default_v3/debug/deps/libstateful_generic_lib-051955d89eea9a4d.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_direct_mir_inspector_stateful_default.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector_stateful_default.amir",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_client_direct_mir_inspector_stateful_default.json",
+          "out_amir": "client_direct_mir_inspector_stateful_default.amir"
+        },
+        {
+          "tag": "stateful_default",
+          "mode": "full",
+          "crate_name": "client_contract_user",
+          "role": "target_crate",
+          "is_build_script": false,
+          "edition": "2021",
+          "crate_types": [
+            "lib"
+          ],
+          "cfg_flags": [],
+          "cargo_features": [],
+          "emit_kinds": [
+            "dep-info",
+            "metadata",
+            "link"
+          ],
+          "extern_specs": [
+            "stateful_generic_lib=/tmp/anneal_ws_target_stateful_default_v3/debug/deps/libstateful_generic_lib-051955d89eea9a4d.rmeta"
+          ],
+          "out_dir": "",
+          "generated_out_dir_files": [],
+          "driver_flags_injected": [
+            "--sysroot",
+            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "-Z",
+            "mir-preserve-ub",
+            "--driver-include-const-owners",
+            "--driver-out-json",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_contract_user_stateful_default.json",
+            "--driver-emit-amir-v3",
+            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_contract_user_stateful_default.amir",
+            "--driver-run-mono-collector"
+          ],
+          "out_json": "out_client_contract_user_stateful_default.json",
+          "out_amir": "client_contract_user_stateful_default.amir"
+        }
+      ]
+    },
+    {
+      "run_id": "charon_cargo_stateful_generic_lib_ullbc",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "cargo",
+        "--ullbc",
+        "--mir",
+        "elaborated",
+        "--rustc-arg=-Zmir-preserve-ub",
+        "--dest-file",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib.ullbc",
+        "--",
+        "--package",
+        "stateful_generic_lib",
+        "--target-dir",
+        "/tmp/anneal_ws_target_charon_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 85,
+      "max_rss_bytes": 136974336,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/stateful_generic_lib.ullbc",
+          "sha256": "2f27c96b1770af3124db7625b5b775b5ab41f300d197786c09a99e1d34eafab6",
+          "size_bytes": 135870
+        }
+      ]
+    },
+    {
+      "run_id": "charon_cargo_client_direct_mir_inspector_ullbc",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "cargo",
+        "--ullbc",
+        "--mir",
+        "elaborated",
+        "--rustc-arg=-Zmir-preserve-ub",
+        "--dest-file",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector.ullbc",
+        "--",
+        "--package",
+        "client_direct_mir_inspector",
+        "--target-dir",
+        "/tmp/anneal_ws_target_charon_v3"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 94,
+      "max_rss_bytes": 120066048,
+      "rusage_children_ru_maxrss_bytes": 559804416,
+      "rusage_before_kb": 546684,
+      "rusage_after_kb": 546684,
+      "outputs": [
+        {
+          "path": "artifacts/client_direct_mir_inspector.ullbc",
+          "sha256": "94bdc421caf9a60ffa467d6a0fbc831e262f53c18ae250bdf06868e149604fe6",
+          "size_bytes": 23713
+        }
+      ]
+    }
+  ]
+}

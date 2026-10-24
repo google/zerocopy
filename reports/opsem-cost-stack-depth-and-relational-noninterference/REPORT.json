@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "rust/operational-semantics",
+    "minirust/semantics",
+    "lean4/kernel-verification"
+  ],
+  "subjects": [
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "https://github.com/minirust/minirust",
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

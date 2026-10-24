@@ -1,0 +1,61 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "Execution",
+    "FiniteCausalStrategies",
+    "FiniteStrategyDiscriminators"
+  ],
+  "topological_order": [
+    "Execution",
+    "FiniteCausalStrategies",
+    "FiniteStrategyDiscriminators"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.Execution",
+      "source_path": "experiments/opsem/AnnealResearch/Execution.lean",
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_sha256": "80245392778049029caff66583762021428113a0be089311a3843fc03f8c9125",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5981,
+      "children_maxrss_kb": 797804,
+      "stdout": "'AnnealResearch.Execution.invariant_noUB' does not depend on any axioms\n'AnnealResearch.Execution.invariant_verified' does not depend on any axioms\n'AnnealResearch.Execution.NoUB.after_step' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.spin_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.spin_progresses_forever' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_noUB' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_not_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.empty_demonic_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.quantifier_exchange_fails' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.greatestSafety_unfold' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety' depends on axioms: [propext]\n'AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator' does not depend on any axioms\n'AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.FiniteCausalStrategies",
+      "source_path": "experiments/opsem/AnnealResearch/FiniteCausalStrategies.lean",
+      "source_sha256": "f21a7c132251ad53eb7b4ff5a9cc68176dbcaef1888238a37db7620c4f3fca9d",
+      "olean_sha256": "d3bb27282dffd1adb85dc4e92bf7b40371d28353a35f361c31587a60e24595c9",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5572,
+      "children_maxrss_kb": 798040,
+      "stdout": "'AnnealResearch.FiniteCausalStrategies.transformer_mono' does not depend on any axioms\n'AnnealResearch.FiniteCausalStrategies.approximant_down' does not depend on any axioms\n'AnnealResearch.FiniteCausalStrategies.finite_list_intersection' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.winning_postfixed' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.winning_unfold' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_at_allowed' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_at_winning_nonallowed' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_reachable_winning' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_reachable_selection' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_noUB' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_progress' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.extracted_no_successor_at_allowed' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteCausalStrategies.verified_strategy_approximant' does not depend on any axioms\n'AnnealResearch.FiniteCausalStrategies.winning_iff_classified_strategy' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.FiniteStrategyDiscriminators",
+      "source_path": "experiments/opsem/AnnealResearch/FiniteStrategyDiscriminators.lean",
+      "source_sha256": "a35860549a6057db1602256953d808d40eda0640baa76c25d9cc949431449a3e",
+      "olean_sha256": "38de2bbb19ee3f202828bda50df35584ee55566531abff85703175a0861bfd5d",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7064,
+      "children_maxrss_kb": 807144,
+      "stdout": "'AnnealResearch.FiniteStrategyDiscriminators.response_approximants' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.response_extracted_verified' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteStrategyDiscriminators.response_extracted_answer' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteStrategyDiscriminators.response_extracted_step_iff' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteStrategyDiscriminators.response_actual_run' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.FiniteStrategyDiscriminators.always_search_verified' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.always_search_never_commits' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.always_search_actual_run' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.no_verified_countdown' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.classified_policy_cannot_reach_commit' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.artificial_countdown_stop' depends on axioms: [propext]\n'AnnealResearch.FiniteStrategyDiscriminators.finite_search_is_not_an_atomic_witness' depends on axioms: [propext]",
+      "stderr": ""
+    }
+  ]
+}

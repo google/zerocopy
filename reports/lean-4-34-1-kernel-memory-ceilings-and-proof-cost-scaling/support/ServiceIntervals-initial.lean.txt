@@ -1,0 +1,1080 @@
+import AnnealResearch.Execution
+set_option Elab.async false
+
+namespace AnnealResearch.ServiceIntervals
+
+open Execution
+
+abbrev State :=
+  (Nat × Bool × Nat) × Nat × Nat × Nat × Bool × Bool × List (Nat × Nat) × Option Bool × Nat × Nat
+
+noncomputable def baseline (callers : List Nat) : List (Nat × Nat) :=
+  (0, 0) :: callers.map (fun k => (1, k))
+
+noncomputable def initialState (callers : List Nat) : State :=
+  ((0, false, 0), 0, 0, 0, false, false, baseline callers, none, 0, 0)
+
+noncomputable def occupiedCount (s : State) : Nat :=
+  if s.2.2.2.2.1 then 1 else 0
+
+def IsBusy (p : Nat × Bool × Nat) : Prop :=
+  p = (1, false, 0) ∨ p = (2, false, 0) ∨ p = (3, false, 0) ∨
+  (∃ o, p = (4, o, 0)) ∨ (∃ k, p = (5, false, k)) ∨ (∃ o, p = (6, o, 0)) ∨
+  (∃ o, p = (7, o, 0)) ∨ (∃ o, p = (8, o, 0)) ∨ (∃ o, p = (9, o, 0)) ∨
+  (∃ o, p = (10, o, 0))
+
+def Bad (s : State) : Prop :=
+  ∃ reason, s.1 = (11, false, reason)
+
+def ServiceStep (lbl : Nat × Nat × Nat × Bool) (s s' : State) : Prop :=
+  let ph := s.1; let d := s.2.1; let n := s.2.2.1; let rem := s.2.2.2.1
+  let occ := s.2.2.2.2.1; let own := s.2.2.2.2.2.1; let stk := s.2.2.2.2.2.2.1
+  let rep := s.2.2.2.2.2.2.2.1; let wk := s.2.2.2.2.2.2.2.2.1; let el := s.2.2.2.2.2.2.2.2.2
+  (ph = (1, false, 0) ∧ lbl = (3, 0, 0, false) ∧
+    s' = ((2, false, 0), d, n, rem, occ, own, (2, 0) :: stk, rep, wk + 1, el + 1)) ∨
+  (ph = (2, false, 0) ∧ lbl = (4, 0, 0, false) ∧
+    s' = ((3, false, 0), d, n, rem, occ, own, (3, 0) :: stk, rep, wk + 1, el + 1)) ∨
+  ((∃ k, ph = (3, false, 0) ∧ rem = k + 1 ∧ occ = false ∧ lbl = (5, 0, 0, false) ∧
+      s' = ((3, false, 0), d, n, k, true, true, stk, rep, wk + 1, el + 1)) ∨
+    (ph = (3, false, 0) ∧ rem = 0 ∧ lbl = (6, 0, 0, true) ∧
+      s' = ((4, true, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1)) ∨
+    (∃ k, ph = (3, false, 0) ∧ rem = k + 1 ∧ occ = true ∧ lbl = (6, 0, 0, false) ∧
+      s' = ((4, false, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))) ∨
+  ((∃ rest, ph = (4, true, 0) ∧ stk = (3, 0) :: rest ∧ n = 0 ∧ lbl = (7, 0, 0, true) ∧
+      s' = ((6, true, 0), d, n, rem, occ, own, rest, rep, wk + 1, el + 1)) ∨
+    (∃ k rest, ph = (4, true, 0) ∧ stk = (3, 0) :: rest ∧ n = k + 1 ∧ lbl = (7, 0, 0, true) ∧
+      s' = ((5, false, k), d, n, rem, occ, own, rest, rep, wk + 1, el + 1)) ∨
+    (∃ rest, ph = (4, false, 0) ∧ stk = (3, 0) :: rest ∧ lbl = (7, 0, 0, false) ∧
+      s' = ((6, false, 0), d, n, rem, occ, own, rest, rep, wk + 1, el + 1)) ∨
+    (∃ o, ph = (4, o, 0) ∧ stk.head? ≠ some (3, 0) ∧ lbl = (15, 0, 0, false) ∧
+      s' = ((11, false, 2), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))) ∨
+  ((ph = (5, false, 0) ∧ lbl = (8, 0, 0, false) ∧
+      s' = ((6, true, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1)) ∨
+    (∃ k, ph = (5, false, k + 1) ∧ lbl = (8, 0, 0, false) ∧
+      s' = ((5, false, k), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))) ∨
+  ((∃ o, ph = (6, o, 0) ∧ own = true ∧ lbl = (9, 0, 0, o) ∧
+      s' = ((7, o, 0), d, n, rem, occ, own, (4, 0) :: stk, rep, wk + 1, el + 1)) ∨
+    (∃ o, ph = (6, o, 0) ∧ own = false ∧ lbl = (9, 0, 0, o) ∧
+      s' = ((8, o, 0), d, n, rem, occ, own, (4, 0) :: stk, rep, wk + 1, el + 1))) ∨
+  ((∃ o, ph = (7, o, 0) ∧ own = true ∧ occ = true ∧ lbl = (10, 0, 0, o) ∧
+      s' = ((8, o, 0), d, n, rem, false, false, stk, rep, wk + 1, el + 1)) ∨
+    (∃ o, ph = (7, o, 0) ∧ own = false ∧ lbl = (11, 0, 0, o) ∧
+      s' = ((11, false, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1)) ∨
+    (∃ o, ph = (7, o, 0) ∧ own = true ∧ occ = false ∧ lbl = (11, 1, 0, o) ∧
+      s' = ((11, false, 1), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))) ∨
+  ((∃ o rest, ph = (8, o, 0) ∧ stk = (4, 0) :: rest ∧ lbl = (12, 0, 0, o) ∧
+      s' = ((9, o, 0), d, n, rem, occ, own, rest, rep, wk + 1, el + 1)) ∨
+    (∃ o, ph = (8, o, 0) ∧ stk.head? ≠ some (4, 0) ∧ lbl = (15, 0, 0, false) ∧
+      s' = ((11, false, 2), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))) ∨
+  (∃ o, ph = (9, o, 0) ∧ lbl = (13, 0, 0, o) ∧
+    s' = ((10, o, 0), d, n, rem, occ, own, stk, some o, wk + 1, el + 1)) ∨
+  ((∃ o rest, ph = (10, o, 0) ∧ stk = (2, 0) :: rest ∧ lbl = (14, 0, 0, o) ∧
+      s' = ((0, false, 0), d, n, rem, occ, own, rest, rep, wk + 1, el + 1)) ∨
+    (∃ o, ph = (10, o, 0) ∧ stk.head? ≠ some (2, 0) ∧ lbl = (15, 0, 0, false) ∧
+      s' = ((11, false, 2), d, n, rem, occ, own, stk, rep, wk + 1, el + 1)))
+
+def LabeledStep (lbl : Nat × Nat × Nat × Bool) (s s' : State) : Prop :=
+  (∃ d n, lbl = (0, d, n, false) ∧ s.1 = (0, false, 0) ∧
+    s' = ((1, false, 0), d, n, d, s.2.2.2.2.1, s.2.2.2.2.2.1, s.2.2.2.2.2.2.1, none,
+      s.2.2.2.2.2.2.2.2.1, s.2.2.2.2.2.2.2.2.2 + 1)) ∨
+  (lbl = (1, 0, 0, false) ∧ s.1 = (0, false, 0) ∧
+    s' = (s.1, s.2.1, s.2.2.1, s.2.2.2.1, s.2.2.2.2.1, s.2.2.2.2.2.1, s.2.2.2.2.2.2.1,
+      s.2.2.2.2.2.2.2.1, s.2.2.2.2.2.2.2.2.1, s.2.2.2.2.2.2.2.2.2 + 1)) ∨
+  (lbl = (2, 0, 0, false) ∧ IsBusy s.1 ∧
+    s' = (s.1, s.2.1, s.2.2.1, s.2.2.2.1, s.2.2.2.2.1, s.2.2.2.2.2.1, s.2.2.2.2.2.2.1,
+      s.2.2.2.2.2.2.2.1, s.2.2.2.2.2.2.2.2.1, s.2.2.2.2.2.2.2.2.2 + 1)) ∨
+  ServiceStep lbl s s'
+
+def Step (s s' : State) : Prop :=
+  ∃ lbl, LabeledStep lbl s s'
+
+/-- Audit 1: Work/elapsed monotonicity and declared per-edge increments. -/
+theorem global_counter_accounting :
+    (∀ {lbl s s'}, ServiceStep lbl s s' →
+      3 ≤ lbl.1 ∧ ¬(lbl.1 = 1 ∨ lbl.1 = 2) ∧ s.1 ≠ (0, false, 0) ∧
+      s'.2.2.2.2.2.2.2.2.2 = s.2.2.2.2.2.2.2.2.2 + 1 ∧
+      s'.2.2.2.2.2.2.2.2.1 = s.2.2.2.2.2.2.2.2.1 + 1) ∧
+    (∀ {lbl s s'}, LabeledStep lbl s s' →
+      s'.2.2.2.2.2.2.2.2.2 = s.2.2.2.2.2.2.2.2.2 + 1 ∧
+      s'.2.2.2.2.2.2.2.2.1 = s.2.2.2.2.2.2.2.2.1 + (if 3 ≤ lbl.1 then 1 else 0)) ∧
+    (∀ {s s'}, Reach Step s s' →
+      s.2.2.2.2.2.2.2.2.1 ≤ s'.2.2.2.2.2.2.2.2.1 ∧
+      s.2.2.2.2.2.2.2.2.2 ≤ s'.2.2.2.2.2.2.2.2.2) := by
+  have hSvc : ∀ {lbl s s'}, ServiceStep lbl s s' →
+      3 ≤ lbl.1 ∧ ¬(lbl.1 = 1 ∨ lbl.1 = 2) ∧ s.1 ≠ (0, false, 0) ∧
+      s'.2.2.2.2.2.2.2.2.2 = s.2.2.2.2.2.2.2.2.2 + 1 ∧
+      s'.2.2.2.2.2.2.2.2.1 = s.2.2.2.2.2.2.2.2.1 + 1 := by
+    intro lbl s s' h
+    rcases h with ⟨hp, rfl, rfl⟩ | ⟨hp, rfl, rfl⟩ |
+      (⟨_, hp, _, _, rfl, rfl⟩ | ⟨hp, _, rfl, rfl⟩ | ⟨_, hp, _, _, rfl, rfl⟩) |
+      (⟨_, hp, _, _, rfl, rfl⟩ | ⟨_, _, hp, _, _, rfl, rfl⟩ | ⟨_, hp, _, rfl, rfl⟩ | ⟨_, hp, _, rfl, rfl⟩) |
+      (⟨hp, rfl, rfl⟩ | ⟨_, hp, rfl, rfl⟩) |
+      (⟨_, hp, _, rfl, rfl⟩ | ⟨_, hp, _, rfl, rfl⟩) |
+      (⟨_, hp, _, _, rfl, rfl⟩ | ⟨_, hp, _, rfl, rfl⟩ | ⟨_, hp, _, _, rfl, rfl⟩) |
+      (⟨_, _, hp, _, rfl, rfl⟩ | ⟨_, hp, _, rfl, rfl⟩) |
+      ⟨_, hp, rfl, rfl⟩ |
+      (⟨_, _, hp, _, rfl, rfl⟩ | ⟨_, hp, _, rfl, rfl⟩) <;> simp [hp]
+  have hLbl : ∀ {lbl s s'}, LabeledStep lbl s s' →
+      s'.2.2.2.2.2.2.2.2.2 = s.2.2.2.2.2.2.2.2.2 + 1 ∧
+      s'.2.2.2.2.2.2.2.2.1 = s.2.2.2.2.2.2.2.2.1 + (if 3 ≤ lbl.1 then 1 else 0) := by
+    intro lbl s s' edge
+    rcases edge with ⟨_, _, rfl, _, rfl⟩ | ⟨rfl, _, rfl⟩ | ⟨rfl, _, rfl⟩ | hs
+    · simp
+    · simp
+    · simp
+    · rcases hSvc hs with ⟨h3, _, _, he, hw⟩
+      simp [h3, he, hw]
+  refine ⟨hSvc, hLbl, ?_⟩
+  intro s s' path
+  induction path with
+  | refl => exact ⟨Nat.le_refl _, Nat.le_refl _⟩
+  | tail _ edge ih =>
+    rcases edge with ⟨lbl, hEdge⟩
+    have ⟨he, hw⟩ := hLbl hEdge
+    exact ⟨by omega, by omega⟩
+
+def ResourceShape (callers : List Nat) (s : State) : Prop :=
+  let sig := baseline callers
+  let out : Bool := if s.2.1 ≤ 1 then true else false
+  let occCond : Prop := if s.2.1 = 0 then s.2.2.2.2.1 = false else s.2.2.2.2.1 = true
+  if s.1.1 = 0 then
+    s.1 = (0, false, 0) ∧ s.2.2.2.2.1 = false ∧ s.2.2.2.2.2.1 = false ∧ s.2.2.2.2.2.2.1 = sig
+  else if s.1.1 = 1 then
+    s.1 = (1, false, 0) ∧ s.2.2.2.2.1 = false ∧ s.2.2.2.2.2.1 = false ∧
+    s.2.2.2.2.2.2.1 = sig ∧ s.2.2.2.1 = s.2.1 ∧ s.2.2.2.2.2.2.2.1 = none
+  else if s.1.1 = 2 then
+    s.1 = (2, false, 0) ∧ s.2.2.2.2.1 = false ∧ s.2.2.2.2.2.1 = false ∧
+    s.2.2.2.2.2.2.1 = (2, 0) :: sig ∧ s.2.2.2.1 = s.2.1 ∧ s.2.2.2.2.2.2.2.1 = none
+  else if s.1.1 = 3 then
+    s.1 = (3, false, 0) ∧ s.2.2.2.2.2.2.1 = (3, 0) :: (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = s.2.2.2.2.1 ∧ s.2.2.2.2.2.2.2.1 = none ∧
+    ((s.2.2.2.2.1 = false ∧ s.2.2.2.1 = s.2.1) ∨ (s.2.2.2.2.1 = true ∧ s.2.1 = s.2.2.2.1 + 1))
+  else if s.1.1 = 4 then
+    s.1 = (4, s.1.2.1, 0) ∧ s.2.2.2.2.2.2.1 = (3, 0) :: (2, 0) :: sig ∧
+    s.2.2.2.2.2.2.2.1 = none ∧
+    (if s.1.2.1 then
+      s.2.2.2.2.2.1 = s.2.2.2.2.1 ∧ s.2.1 ≤ 1 ∧ s.2.2.2.1 = 0 ∧ occCond
+    else
+      s.2.2.2.2.2.1 = true ∧ s.2.2.2.2.1 = true ∧ 2 ≤ s.2.1 ∧ s.2.1 = s.2.2.2.1 + 1)
+  else if s.1.1 = 5 then
+    s.1 = (5, false, s.1.2.2) ∧ s.2.2.2.2.2.2.1 = (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = s.2.2.2.2.1 ∧ s.2.2.2.2.2.2.2.1 = none ∧
+    s.2.1 ≤ 1 ∧ s.2.2.2.1 = 0 ∧ occCond ∧ s.1.2.2 + 1 ≤ s.2.2.1
+  else if s.1.1 = 6 then
+    s.1 = (6, s.1.2.1, 0) ∧ s.2.2.2.2.2.2.1 = (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = s.2.2.2.2.1 ∧ s.2.2.2.2.2.2.2.1 = none ∧
+    s.1.2.1 = out ∧ occCond
+  else if s.1.1 = 7 then
+    s.1 = (7, s.1.2.1, 0) ∧ s.2.2.2.2.2.2.1 = (4, 0) :: (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = true ∧ s.2.2.2.2.1 = true ∧ s.2.2.2.2.2.2.2.1 = none ∧
+    s.1.2.1 = out ∧ 1 ≤ s.2.1
+  else if s.1.1 = 8 then
+    s.1 = (8, s.1.2.1, 0) ∧ s.2.2.2.2.2.2.1 = (4, 0) :: (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = false ∧ s.2.2.2.2.1 = false ∧ s.2.2.2.2.2.2.2.1 = none ∧
+    s.1.2.1 = out
+  else if s.1.1 = 9 then
+    s.1 = (9, s.1.2.1, 0) ∧ s.2.2.2.2.2.2.1 = (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = false ∧ s.2.2.2.2.1 = false ∧ s.2.2.2.2.2.2.2.1 = none ∧
+    s.1.2.1 = out
+  else
+    s.1 = (10, s.1.2.1, 0) ∧ s.2.2.2.2.2.2.1 = (2, 0) :: sig ∧
+    s.2.2.2.2.2.1 = false ∧ s.2.2.2.2.1 = false ∧ s.2.2.2.2.2.2.2.1 = some s.1.2.1 ∧
+    s.1.2.1 = out
+
+/-- Audit 2: Actual phase/stack/table/handle/remaining-demand invariant from initial state. -/
+theorem reachable_resource_shape (callers : List Nat) :
+    (∀ {lbl s s'}, ResourceShape callers s → LabeledStep lbl s s' → ResourceShape callers s') ∧
+    (∀ {s}, Reach Step (initialState callers) s → ResourceShape callers s) := by
+  have hStep : ∀ {lbl s s'}, ResourceShape callers s → LabeledStep lbl s s' →
+      ResourceShape callers s' := by
+    intro lbl s s' inv edge
+    rcases edge with ⟨d, n, _, hIdle, rfl⟩ | ⟨_, _, rfl⟩ | ⟨_, _, rfl⟩ | hSvc
+    · simp [ResourceShape, hIdle] at inv
+      rcases inv with ⟨hOcc, hOwn, hStk⟩
+      simp [ResourceShape, hOcc, hOwn, hStk]
+    · exact inv
+    · exact inv
+    · rcases hSvc with ⟨hp, _, rfl⟩ | ⟨hp, _, rfl⟩ |
+        (⟨k, hp, hRem, hFree, _, rfl⟩ | ⟨hp, hRem, _, rfl⟩ | ⟨k, hp, hRem, hOcc, _, rfl⟩) |
+        (⟨rest, hp, hStack, hN, _, rfl⟩ | ⟨k, rest, hp, hStack, hN, _, rfl⟩ |
+          ⟨rest, hp, hStack, _, rfl⟩ | ⟨o, hp, hWrong, _, rfl⟩) |
+        (⟨hp, _, rfl⟩ | ⟨k, hp, _, rfl⟩) |
+        (⟨o, hp, hOwned, _, rfl⟩ | ⟨o, hp, hOwned, _, rfl⟩) |
+        (⟨o, hp, _, _, _, rfl⟩ | ⟨o, hp, hOwned, _, rfl⟩ | ⟨o, hp, _, hOcc, _, rfl⟩) |
+        (⟨o, rest, hp, hStack, _, rfl⟩ | ⟨o, hp, hWrong, _, rfl⟩) |
+        ⟨o, hp, _, rfl⟩ |
+        (⟨o, rest, hp, hStack, _, rfl⟩ | ⟨o, hp, hWrong, _, rfl⟩)
+      · simp [ResourceShape, hp] at inv ⊢; exact inv
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hOcc, hOwn, hStk, hRem, hRep⟩
+        exact ⟨hStk, by rw [hOwn, hOcc], hRep, Or.inl ⟨hOcc, hRem⟩⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, _, hRep, ⟨_, hRemEq⟩ | ⟨hOccTrue, _⟩⟩
+        · exact ⟨hStk, hRep, by omega⟩
+        · rw [hFree] at hOccTrue; cases hOccTrue
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwn, hRep, ⟨hOcc, hRemEq⟩ | ⟨hOcc, hRemEq⟩⟩
+        · have hd0 : s.2.1 = 0 := by omega
+          exact ⟨hStk, hRep, hOwn, by omega, hRem, by simp [hd0, hOcc]⟩
+        · have hd1 : s.2.1 = 1 := by omega
+          exact ⟨hStk, hRep, hOwn, by omega, hRem, by simp [hd1, hOcc]⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwn, hRep, ⟨hOccFalse, _⟩ | ⟨_, hRemEq⟩⟩
+        · rw [hOcc] at hOccFalse; cases hOccFalse
+        · exact ⟨hStk, hRep, by rw [hOwn, hOcc], hOcc, by omega, hRemEq⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hRep, hOwn, hdLe, _, hOccIf⟩
+        have hRest : rest = (2, 0) :: baseline callers := congrArg List.tail (hStack.symm.trans hStk)
+        exact ⟨hRest, hOwn, hRep, hdLe, hOccIf⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hRep, hOwn, hdLe, hRem0, hOccIf⟩
+        have hRest : rest = (2, 0) :: baseline callers := congrArg List.tail (hStack.symm.trans hStk)
+        exact ⟨hRest, hOwn, hRep, hdLe, hRem0, hOccIf, by omega⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hRep, hOwn, hOcc, hdGe, _⟩
+        have hRest : rest = (2, 0) :: baseline callers := congrArg List.tail (hStack.symm.trans hStk)
+        have hdNotLe : ¬ s.2.1 ≤ 1 := by omega
+        have hdNe0 : s.2.1 ≠ 0 := by omega
+        exact ⟨hRest, by rw [hOwn, hOcc], hRep, hdNotLe, by simp [hdNe0, hOcc]⟩
+      · simp [ResourceShape, hp] at inv
+        rw [inv.1] at hWrong; exact False.elim (hWrong rfl)
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwn, hRep, hdLe, _, hOccIf, _⟩
+        exact ⟨hStk, hOwn, hRep, hdLe, hOccIf⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwn, hRep, hdLe, hRem0, hOccIf, hkLe⟩
+        exact ⟨hStk, hOwn, hRep, hdLe, hRem0, hOccIf, by omega⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwnEq, hRep, hOut, hOccIf⟩
+        have hOcc : s.2.2.2.2.1 = true := by rw [← hOwnEq, hOwned]
+        have hdGe1 : 1 ≤ s.2.1 := by
+          by_cases hd0 : s.2.1 = 0
+          · simp [hd0, hOcc] at hOccIf
+          · omega
+        exact ⟨hStk, hOwned, hOcc, hRep, hOut, hdGe1⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwnEq, hRep, hOut, _⟩
+        exact ⟨hStk, hOwned, by rw [← hOwnEq, hOwned], hRep, hOut⟩
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, _, _, hRep, hOut, _⟩
+        exact ⟨hStk, hRep, hOut⟩
+      · simp [ResourceShape, hp] at inv
+        rw [hOwned] at inv; cases inv.2.1
+      · simp [ResourceShape, hp] at inv
+        rw [hOcc] at inv; cases inv.2.2.1
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwn, hOcc, hRep, hOut⟩
+        exact ⟨congrArg List.tail (hStack.symm.trans hStk), hOwn, hOcc, hRep, hOut⟩
+      · simp [ResourceShape, hp] at inv
+        rw [inv.1] at hWrong; exact False.elim (hWrong rfl)
+      · simp [ResourceShape, hp] at inv ⊢; exact inv
+      · simp [ResourceShape, hp] at inv ⊢
+        rcases inv with ⟨hStk, hOwn, hOcc, _, _⟩
+        exact ⟨hOcc, hOwn, congrArg List.tail (hStack.symm.trans hStk)⟩
+      · simp [ResourceShape, hp] at inv
+        rw [inv.1] at hWrong; exact False.elim (hWrong rfl)
+  refine ⟨hStep, ?_⟩
+  intro s path
+  refine invariant_reachable (by simp [ResourceShape, initialState]) ?_ path
+  intro u v hInv ⟨lbl, hEdge⟩
+  exact hStep hInv hEdge
+
+/-- Audit 3: Canonical `Execution.NoUB` for the positive global `Step` relation. -/
+theorem service_noUB (callers : List Nat) :
+    NoUB Step Bad (initialState callers) := by
+  intro s path ⟨reason, hBad⟩
+  have inv := (reachable_resource_shape callers).2 path
+  simp [ResourceShape, hBad] at inv
+
+noncomputable def serviceNext (s : State) : (Nat × Nat × Nat × Bool) × State :=
+  let ph := s.1; let d := s.2.1; let n := s.2.2.1; let rem := s.2.2.2.1
+  let occ := s.2.2.2.2.1; let own := s.2.2.2.2.2.1; let stk := s.2.2.2.2.2.2.1
+  let rep := s.2.2.2.2.2.2.2.1; let wk := s.2.2.2.2.2.2.2.2.1; let el := s.2.2.2.2.2.2.2.2.2
+  if ph.1 = 1 then
+    ((3, 0, 0, false), ((2, false, 0), d, n, rem, occ, own, (2, 0) :: stk, rep, wk + 1, el + 1))
+  else if ph.1 = 2 then
+    ((4, 0, 0, false), ((3, false, 0), d, n, rem, occ, own, (3, 0) :: stk, rep, wk + 1, el + 1))
+  else if ph.1 = 3 then
+    if rem = 0 then
+      ((6, 0, 0, true), ((4, true, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+    else if occ = false then
+      ((5, 0, 0, false), ((3, false, 0), d, n, rem - 1, true, true, stk, rep, wk + 1, el + 1))
+    else
+      ((6, 0, 0, false), ((4, false, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+  else if ph.1 = 4 then
+    if stk.head? = some (3, 0) then
+      if ph.2.1 then
+        if n = 0 then
+          ((7, 0, 0, true), ((6, true, 0), d, n, rem, occ, own, stk.tail, rep, wk + 1, el + 1))
+        else
+          ((7, 0, 0, true), ((5, false, n - 1), d, n, rem, occ, own, stk.tail, rep, wk + 1, el + 1))
+      else
+        ((7, 0, 0, false), ((6, false, 0), d, n, rem, occ, own, stk.tail, rep, wk + 1, el + 1))
+    else
+      ((15, 0, 0, false), ((11, false, 2), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+  else if ph.1 = 5 then
+    if ph.2.2 = 0 then
+      ((8, 0, 0, false), ((6, true, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+    else
+      ((8, 0, 0, false), ((5, false, ph.2.2 - 1), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+  else if ph.1 = 6 then
+    if own then
+      ((9, 0, 0, ph.2.1), ((7, ph.2.1, 0), d, n, rem, occ, own, (4, 0) :: stk, rep, wk + 1, el + 1))
+    else
+      ((9, 0, 0, ph.2.1), ((8, ph.2.1, 0), d, n, rem, occ, own, (4, 0) :: stk, rep, wk + 1, el + 1))
+  else if ph.1 = 7 then
+    if own then
+      if occ then
+        ((10, 0, 0, ph.2.1), ((8, ph.2.1, 0), d, n, rem, false, false, stk, rep, wk + 1, el + 1))
+      else
+        ((11, 1, 0, ph.2.1), ((11, false, 1), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+    else
+      ((11, 0, 0, ph.2.1), ((11, false, 0), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+  else if ph.1 = 8 then
+    if stk.head? = some (4, 0) then
+      ((12, 0, 0, ph.2.1), ((9, ph.2.1, 0), d, n, rem, occ, own, stk.tail, rep, wk + 1, el + 1))
+    else
+      ((15, 0, 0, false), ((11, false, 2), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+  else if ph.1 = 9 then
+    ((13, 0, 0, ph.2.1), ((10, ph.2.1, 0), d, n, rem, occ, own, stk, some ph.2.1, wk + 1, el + 1))
+  else if ph.1 = 10 then
+    if stk.head? = some (2, 0) then
+      ((14, 0, 0, ph.2.1), ((0, false, 0), d, n, rem, occ, own, stk.tail, rep, wk + 1, el + 1))
+    else
+      ((15, 0, 0, false), ((11, false, 2), d, n, rem, occ, own, stk, rep, wk + 1, el + 1))
+  else
+    ((1, 0, 0, false), s)
+
+/-- Audit 4: Actual non-delay service successor at every positively reached busy phase. -/
+theorem reached_busy_service_successor (callers : List Nat) :
+    (∀ {s}, ResourceShape callers s → IsBusy s.1 →
+      ServiceStep (serviceNext s).1 s (serviceNext s).2) ∧
+    (∀ {s}, Reach Step (initialState callers) s → IsBusy s.1 →
+      ∃ lbl s', 3 ≤ lbl.1 ∧ LabeledStep lbl s s') := by
+  have hNext : ∀ {s}, ResourceShape callers s → IsBusy s.1 →
+      ServiceStep (serviceNext s).1 s (serviceNext s).2 := by
+    intro s inv busy
+    rcases busy with hp | hp | hp | ⟨o, hp⟩ | ⟨k, hp⟩ | ⟨o, hp⟩ | ⟨o, hp⟩ | ⟨o, hp⟩ | ⟨o, hp⟩ | ⟨o, hp⟩
+    · simp [serviceNext, hp]; exact Or.inl ⟨hp, rfl, rfl⟩
+    · simp [serviceNext, hp]; exact Or.inr (Or.inl ⟨hp, rfl, rfl⟩)
+    · cases hRem : s.2.2.2.1 with
+      | zero =>
+        simp [serviceNext, hp, hRem]
+        exact Or.inr (Or.inr (Or.inl (Or.inr (Or.inl ⟨hp, hRem, rfl, rfl⟩))))
+      | succ k =>
+        cases hOcc : s.2.2.2.2.1 with
+        | false =>
+          simp [serviceNext, hp, hRem, hOcc]
+          exact Or.inr (Or.inr (Or.inl (Or.inl ⟨k, hp, hRem, hOcc, rfl, rfl⟩)))
+        | true =>
+          simp [serviceNext, hp, hRem, hOcc]
+          exact Or.inr (Or.inr (Or.inl (Or.inr (Or.inr ⟨k, hp, hRem, hOcc, rfl, rfl⟩))))
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨hStk, _⟩
+      cases o with
+      | false =>
+        simp [serviceNext, hp, hStk]
+        exact Or.inr (Or.inr (Or.inr (Or.inl (Or.inr (Or.inr (Or.inl ⟨_, hp, hStk, rfl, rfl⟩))))))
+      | true =>
+        cases hN : s.2.2.1 with
+        | zero =>
+          simp [serviceNext, hp, hStk, hN]
+          exact Or.inr (Or.inr (Or.inr (Or.inl (Or.inl ⟨_, hp, hStk, hN, rfl, rfl⟩))))
+        | succ k =>
+          simp [serviceNext, hp, hStk, hN]
+          exact Or.inr (Or.inr (Or.inr (Or.inl (Or.inr (Or.inl ⟨k, _, hp, hStk, hN, rfl, rfl⟩)))))
+    · cases k with
+      | zero =>
+        simp [serviceNext, hp]
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Or.inl ⟨hp, rfl, rfl⟩)))))
+      | succ k' =>
+        simp [serviceNext, hp]
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Or.inr ⟨k', hp, rfl, rfl⟩)))))
+    · cases hOwn : s.2.2.2.2.2.1 with
+      | true =>
+        simp [serviceNext, hp, hOwn]
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Or.inl ⟨o, hp, hOwn, rfl, rfl⟩))))))
+      | false =>
+        simp [serviceNext, hp, hOwn]
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Or.inr ⟨o, hp, hOwn, rfl, rfl⟩))))))
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, hOwn, hOcc, _⟩
+      simp [serviceNext, hp, hOwn, hOcc]
+      exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Or.inl ⟨o, hp, hOwn, hOcc, rfl, rfl⟩)))))))
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨hStk, _⟩
+      simp [serviceNext, hp, hStk]
+      exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (Or.inl ⟨o, _, hp, hStk, rfl, rfl⟩))))))))
+    · simp [serviceNext, hp]
+      exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨o, hp, rfl, rfl⟩))))))))
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨hStk, _⟩
+      simp [serviceNext, hp, hStk]
+      exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨o, _, hp, hStk, rfl, rfl⟩)))))))))
+  refine ⟨hNext, ?_⟩
+  intro s path busy
+  have hSvc := hNext ((reachable_resource_shape callers).2 path) busy
+  exact ⟨(serviceNext s).1, (serviceNext s).2, (global_counter_accounting.1 hSvc).1,
+    Or.inr (Or.inr (Or.inr hSvc))⟩
+
+noncomputable def lastState (s : State) (steps : List ((Nat × Nat × Nat × Bool) × State)) : State :=
+  steps.foldl (fun _ e => e.2) s
+
+def ValidGlobalPath : State → List ((Nat × Nat × Nat × Bool) × State) → Prop
+  | _, [] => True
+  | s, (lbl, s') :: rest => LabeledStep lbl s s' ∧ ValidGlobalPath s' rest
+
+def ValidEntryContext (ctx : List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State) : Prop :=
+  ValidGlobalPath (initialState ctx.1) ctx.2.2.2.1 ∧
+  LabeledStep (0, ctx.2.1, ctx.2.2.1, false)
+    (lastState (initialState ctx.1) ctx.2.2.2.1) ctx.2.2.2.2
+
+/-- Audit 5: Clean post-accept resources derived from global reachability and preserving acceptance. -/
+theorem accepted_entries_clean
+    {ctx : List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State}
+    (hCtx : ValidEntryContext ctx) :
+    let pre := lastState (initialState ctx.1) ctx.2.2.2.1
+    let entry := ctx.2.2.2.2
+    let sig := baseline ctx.1
+    Reach Step (initialState ctx.1) entry ∧
+    pre.1 = (0, false, 0) ∧ pre.2.2.2.2.1 = false ∧ pre.2.2.2.2.2.1 = false ∧
+    pre.2.2.2.2.2.2.1 = sig ∧
+    entry.1 = (1, false, 0) ∧ entry.2.1 = ctx.2.1 ∧ entry.2.2.1 = ctx.2.2.1 ∧
+    entry.2.2.2.1 = ctx.2.1 ∧ entry.2.2.2.2.1 = false ∧ entry.2.2.2.2.2.1 = false ∧
+    entry.2.2.2.2.2.2.1 = sig ∧ entry.2.2.2.2.2.2.2.1 = none ∧
+    entry.2.2.2.2.2.2.2.2.1 = pre.2.2.2.2.2.2.2.2.1 ∧
+    entry.2.2.2.2.2.2.2.2.2 = pre.2.2.2.2.2.2.2.2.2 + 1 := by
+  intro pre entry sig
+  have hReach : ∀ {s steps}, ValidGlobalPath s steps → Reach Step s (lastState s steps) := by
+    intro s steps h
+    induction steps generalizing s with
+    | nil => exact Reach.refl s
+    | cons hd tl ih => exact (Reach.tail (Reach.refl s) ⟨hd.1, h.1⟩).trans (ih h.2)
+  have preReach := hReach hCtx.1
+  have preInv := (reachable_resource_shape ctx.1).2 preReach
+  rcases hCtx.2 with ⟨d', n', hEq, hIdle, hEntryEq⟩ | ⟨hEq, _⟩ | ⟨hEq, _⟩ | hSvc
+  · have hdEq : ctx.2.1 = d' := congrArg (fun x => x.2.1) hEq
+    have hnEq : ctx.2.2.1 = n' := congrArg (fun x => x.2.2.1) hEq
+    subst hdEq; subst hnEq
+    simp [ResourceShape, hIdle] at preInv
+    rcases preInv with ⟨hOcc, hOwn, hStk⟩
+    have entryReach : Reach Step (initialState ctx.1) entry :=
+      Reach.tail preReach ⟨(0, ctx.2.1, ctx.2.2.1, false), hCtx.2⟩
+    dsimp [entry, pre]
+    refine ⟨entryReach, hIdle, hOcc, hOwn, hStk, ?_⟩
+    rw [hEntryEq]
+    exact ⟨rfl, rfl, rfl, rfl, hOcc, hOwn, hStk, rfl, rfl, rfl⟩
+  · cases hEq
+  · cases hEq
+  · have h3 := (global_counter_accounting.1 hSvc).1; simp at h3
+
+def ValidIntervalPrefix : State → List ((Nat × Nat × Nat × Bool) × State) → Prop
+  | _, [] => True
+  | s, (lbl, s') :: rest =>
+      s.1 ≠ (0, false, 0) ∧ LabeledStep lbl s s' ∧ ValidIntervalPrefix s' rest
+
+noncomputable def stateAt (s : State) : List ((Nat × Nat × Nat × Bool) × State) → Nat → State
+  | [], _ => s
+  | (_, _) :: _, 0 => s
+  | (_, s') :: rest, i + 1 => stateAt s' rest i
+
+noncomputable def activeWork (entry : State) (steps : List ((Nat × Nat × Nat × Bool) × State)) : Nat :=
+  (lastState entry steps).2.2.2.2.2.2.2.2.1 - entry.2.2.2.2.2.2.2.2.1
+
+noncomputable def elapsedTicks (entry : State) (steps : List ((Nat × Nat × Nat × Bool) × State)) : Nat :=
+  (lastState entry steps).2.2.2.2.2.2.2.2.2 - entry.2.2.2.2.2.2.2.2.2
+
+noncomputable def delayCount (steps : List ((Nat × Nat × Nat × Bool) × State)) : Nat :=
+  steps.foldr (fun e acc => (if e.1.1 = 1 ∨ e.1.1 = 2 then 1 else 0) + acc) 0
+
+noncomputable def peakHeap (s : State) : List ((Nat × Nat × Nat × Bool) × State) → Nat
+  | [] => occupiedCount s
+  | (_, s') :: rest => max (occupiedCount s) (peakHeap s' rest)
+
+noncomputable def peakStack (s : State) : List ((Nat × Nat × Nat × Bool) × State) → Nat
+  | [] => s.2.2.2.2.2.2.1.length
+  | (_, s') :: rest => max s.2.2.2.2.2.2.1.length (peakStack s' rest)
+
+/-- Audit 6: Interval work/delay/elapsed equation, including horizon 0. -/
+theorem interval_tick_accounting {entry : State}
+    {steps : List ((Nat × Nat × Nat × Bool) × State)}
+    (h : ValidIntervalPrefix entry steps) :
+    let svcCount := steps.foldr (fun e acc => (if 3 ≤ e.1.1 then 1 else 0) + acc) 0
+    (lastState entry steps).2.2.2.2.2.2.2.2.1 = entry.2.2.2.2.2.2.2.2.1 + svcCount ∧
+    (lastState entry steps).2.2.2.2.2.2.2.2.2 = entry.2.2.2.2.2.2.2.2.2 + steps.length ∧
+    activeWork entry steps = svcCount ∧
+    elapsedTicks entry steps = steps.length ∧
+    elapsedTicks entry steps = activeWork entry steps + delayCount steps ∧
+    activeWork entry [] = 0 ∧ elapsedTicks entry [] = 0 ∧ delayCount [] = 0 := by
+  intro svcCount
+  have hExact :
+      (lastState entry steps).2.2.2.2.2.2.2.2.1 = entry.2.2.2.2.2.2.2.2.1 + svcCount ∧
+      (lastState entry steps).2.2.2.2.2.2.2.2.2 = entry.2.2.2.2.2.2.2.2.2 + steps.length ∧
+      svcCount + delayCount steps = steps.length := by
+    induction steps generalizing entry with
+    | nil => simp [lastState, svcCount, delayCount]
+    | cons hd tl ih =>
+      rcases hd with ⟨lbl, s'⟩
+      rcases h with ⟨notIdle, edge, hRest⟩
+      rcases ih hRest with ⟨hWk, hEl, hSum⟩
+      have ⟨hStepEl, hStepWk⟩ := global_counter_accounting.2.1 edge
+      have hPart : (if 3 ≤ lbl.1 then 1 else 0) + (if lbl.1 = 1 ∨ lbl.1 = 2 then 1 else 0) = 1 := by
+        rcases edge with ⟨_, _, _, hIdle, _⟩ | ⟨_, hIdle, _⟩ | ⟨rfl, _⟩ | hSvc
+        · exact False.elim (notIdle hIdle)
+        · exact False.elim (notIdle hIdle)
+        · decide
+        · rcases global_counter_accounting.1 hSvc with ⟨h3, hNotDel, _⟩
+          simp [h3, hNotDel]
+      refine ⟨?_, ?_, ?_⟩
+      · simp [lastState, svcCount] at hWk ⊢; omega
+      · simp [lastState] at hEl ⊢; omega
+      · simp [svcCount, delayCount] at hSum ⊢; omega
+  rcases hExact with ⟨hWk, hEl, hSum⟩
+  refine ⟨hWk, hEl, ?_, ?_, ?_, ?_, ?_, rfl⟩
+  · dsimp [activeWork]; omega
+  · dsimp [elapsedTicks]; omega
+  · dsimp [activeWork, elapsedTicks]; omega
+  · dsimp [activeWork, lastState]; omega
+  · dsimp [elapsedTicks, lastState]; omega
+
+noncomputable def targetL (d n : Nat) : Nat :=
+  2 * min d 1 + (if d ≤ 1 then n else 0) + 8
+
+noncomputable def remainingPotential (s : State) : Nat :=
+  let a := min s.2.1 1
+  let w := if s.2.1 ≤ 1 then s.2.2.1 else 0
+  if s.1.1 = 0 then 0
+  else if s.1.1 = 1 then 2 * a + w + 8
+  else if s.1.1 = 2 then 2 * a + w + 7
+  else if s.1.1 = 3 then (if s.2.2.2.2.1 then a else 2 * a) + w + 6
+  else if s.1.1 = 4 then if s.1.2.1 then a + s.2.2.1 + 5 else 6
+  else if s.1.1 = 5 then a + (s.1.2.2 + 1) + 4
+  else if s.1.1 = 6 then (if s.2.2.2.2.2.1 then 1 else 0) + 4
+  else if s.1.1 = 7 then 4
+  else if s.1.1 = 8 then 3
+  else if s.1.1 = 9 then 2
+  else 1
+
+theorem potential_step {callers : List Nat} {lbl : Nat × Nat × Nat × Bool} {s t : State}
+    (inv : ResourceShape callers s) (notIdle : s.1 ≠ (0, false, 0))
+    (edge : LabeledStep lbl s t) :
+    t.2.1 = s.2.1 ∧ t.2.2.1 = s.2.2.1 ∧
+    t.2.2.2.2.2.2.2.2.1 + remainingPotential t = s.2.2.2.2.2.2.2.2.1 + remainingPotential s := by
+  rcases edge with ⟨_, _, _, hIdle, _⟩ | ⟨_, hIdle, _⟩ | ⟨_, _, rfl⟩ | hSvc
+  · exact False.elim (notIdle hIdle)
+  · exact False.elim (notIdle hIdle)
+  · exact ⟨rfl, rfl, rfl⟩
+  · rcases hSvc with ⟨hp, _, rfl⟩ | ⟨hp, _, rfl⟩ |
+      (⟨k, hp, hRem, hFree, _, rfl⟩ | ⟨hp, hRem, _, rfl⟩ | ⟨k, hp, hRem, hOcc, _, rfl⟩) |
+      (⟨rest, hp, _, hN, _, rfl⟩ | ⟨k, rest, hp, _, hN, _, rfl⟩ |
+        ⟨rest, hp, _, _, rfl⟩ | ⟨o, hp, hWrong, _, rfl⟩) |
+      (⟨hp, _, rfl⟩ | ⟨k, hp, _, rfl⟩) |
+      (⟨o, hp, hOwned, _, rfl⟩ | ⟨o, hp, hOwned, _, rfl⟩) |
+      (⟨o, hp, _, _, _, rfl⟩ | ⟨o, hp, hOwned, _, rfl⟩ | ⟨o, hp, _, hOcc, _, rfl⟩) |
+      (⟨o, rest, hp, _, _, rfl⟩ | ⟨o, hp, hWrong, _, rfl⟩) |
+      ⟨o, hp, _, rfl⟩ |
+      (⟨o, rest, hp, _, _, rfl⟩ | ⟨o, hp, hWrong, _, rfl⟩)
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp]; omega
+    · simp [ResourceShape, hp] at inv
+      refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, inv.1]; omega
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, _, _, ⟨_, hRemEq⟩ | ⟨hOccTrue, _⟩⟩
+      · have ha : min s.2.1 1 = 1 := by omega
+        refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hFree, ha]; omega
+      · rw [hFree] at hOccTrue; cases hOccTrue
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, _, _, ⟨hOcc, hRemEq⟩ | ⟨hOcc, hRemEq⟩⟩
+      · have hd0 : s.2.1 = 0 := by omega
+        refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOcc, hd0]; omega
+      · have hd1 : s.2.1 = 1 := by omega
+        refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOcc, hd1]; omega
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, _, _, ⟨hOccFalse, _⟩ | ⟨_, hRemEq⟩⟩
+      · rw [hOcc] at hOccFalse; cases hOccFalse
+      · have hdNotLe : ¬ s.2.1 ≤ 1 := by omega
+        have ha : min s.2.1 1 = 1 := by omega
+        refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOcc, hdNotLe, ha]; omega
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, _, hOwn, hdLe, _, hOccIf⟩
+      have hOwnEq : (if s.2.2.2.2.2.1 then 1 else 0) = min s.2.1 1 := by
+        rw [hOwn]
+        by_cases hd0 : s.2.1 = 0
+        · simp [hd0] at hOccIf; simp [hd0, hOccIf]
+        · simp [hd0] at hOccIf; simp [hOccIf]; omega
+      refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hN, hOwnEq]; omega
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hN]; omega
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, _, hOwn, _⟩
+      refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOwn]; omega
+    · simp [ResourceShape, hp] at inv; rw [inv.1] at hWrong; exact False.elim (hWrong rfl)
+    · simp [ResourceShape, hp] at inv
+      rcases inv with ⟨_, hOwn, _, hdLe, _, hOccIf, _⟩
+      have hOwnEq : (if s.2.2.2.2.2.1 then 1 else 0) = min s.2.1 1 := by
+        rw [hOwn]
+        by_cases hd0 : s.2.1 = 0
+        · simp [hd0] at hOccIf; simp [hd0, hOccIf]
+        · simp [hd0] at hOccIf; simp [hOccIf]; omega
+      refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOwnEq]; omega
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp]; omega
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOwned]; omega
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp, hOwned]; omega
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp]; omega
+    · simp [ResourceShape, hp] at inv; rw [hOwned] at inv; cases inv.2.1
+    · simp [ResourceShape, hp] at inv; rw [hOcc] at inv; cases inv.2.2.1
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp]; omega
+    · simp [ResourceShape, hp] at inv; rw [inv.1] at hWrong; exact False.elim (hWrong rfl)
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp]; omega
+    · refine ⟨rfl, rfl, ?_⟩; simp [remainingPotential, hp]; omega
+    · simp [ResourceShape, hp] at inv; rw [inv.1] at hWrong; exact False.elim (hWrong rfl)
+
+/-- Audit 7: All actual interval-prefix NoUB, work, heap-peak, and stack-peak bounds. -/
+theorem interval_prefix_bounds
+    {ctx : List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State}
+    (hCtx : ValidEntryContext ctx)
+    {steps : List ((Nat × Nat × Nat × Bool) × State)}
+    (hPrefix : ValidIntervalPrefix ctx.2.2.2.2 steps) :
+    let entry := ctx.2.2.2.2
+    let last := lastState entry steps
+    (∀ i, i ≤ steps.length → ¬ Bad (stateAt entry steps i)) ∧
+    ¬ Bad last ∧
+    activeWork entry steps ≤ targetL ctx.2.1 ctx.2.2.1 ∧
+    peakHeap entry steps ≤ min ctx.2.1 1 ∧
+    min ctx.2.1 1 ≤ 1 ∧
+    peakStack entry steps ≤ (baseline ctx.1).length + 2 ∧
+    (last.1 = (0, false, 0) → occupiedCount last = 0) := by
+  intro entry last
+  have hPhaseCases : ∀ {s}, ResourceShape ctx.1 s →
+      (s.1 = (0, false, 0) → occupiedCount s = 0) ∧
+      (s.1 ≠ (0, false, 0) → occupiedCount s ≤ min s.2.1 1) ∧
+      s.2.2.2.2.2.2.1.length ≤ (baseline ctx.1).length + 2 := by
+    intro s inv
+    rcases (by omega : s.1.1 = 0 ∨ s.1.1 = 1 ∨ s.1.1 = 2 ∨ s.1.1 = 3 ∨ s.1.1 = 4 ∨
+      s.1.1 = 5 ∨ s.1.1 = 6 ∨ s.1.1 = 7 ∨ s.1.1 = 8 ∨ s.1.1 = 9 ∨ 10 ≤ s.1.1) with
+      h | h | h | h | h | h | h | h | h | h | h
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hOcc, _, hStk⟩
+      exact ⟨fun _ => by simp [occupiedCount, hOcc], fun hn => False.elim (hn hp), by simp [hStk]⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hOcc, _, hStk, _⟩
+      exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc], by simp [hStk]⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hOcc, _, hStk, _⟩
+      exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc], by simp [hStk]⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, _, ⟨hOcc, _⟩ | ⟨hOcc, hRem⟩⟩
+      · exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc], by simp [hStk]⟩
+      · exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc]; omega, by simp [hStk]⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, hIf⟩
+      refine ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => ?_, by simp [hStk]⟩
+      split at hIf
+      · rcases hIf with ⟨_, hdLe, _, hOccIf⟩
+        by_cases hd0 : s.2.1 = 0
+        · simp [hd0] at hOccIf; simp [occupiedCount, hOccIf]
+        · simp [hd0] at hOccIf; simp [occupiedCount, hOccIf]; omega
+      · rcases hIf with ⟨_, hOcc, hd2, _⟩
+        simp [occupiedCount, hOcc]; omega
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, _, hdLe, _, hOccIf, _⟩
+      refine ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => ?_, by simp [hStk]⟩
+      by_cases hd0 : s.2.1 = 0
+      · simp [hd0] at hOccIf; simp [occupiedCount, hOccIf]
+      · simp [hd0] at hOccIf; simp [occupiedCount, hOccIf]; omega
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, _, _, hOccIf⟩
+      refine ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => ?_, by simp [hStk]⟩
+      by_cases hd0 : s.2.1 = 0
+      · simp [hd0] at hOccIf; simp [occupiedCount, hOccIf]
+      · simp [hd0] at hOccIf; simp [occupiedCount, hOccIf]; omega
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, hOcc, _, _, hd1⟩
+      exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc]; omega, by simp [hStk]⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, hOcc, _⟩
+      exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc], by simp [hStk]⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, hStk, _, hOcc, _⟩
+      exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc], by simp [hStk]⟩
+    · have h0 : s.1.1 ≠ 0 := by omega
+      have h1 : s.1.1 ≠ 1 := by omega
+      have h2 : s.1.1 ≠ 2 := by omega
+      have h3 : s.1.1 ≠ 3 := by omega
+      have h4 : s.1.1 ≠ 4 := by omega
+      have h5 : s.1.1 ≠ 5 := by omega
+      have h6 : s.1.1 ≠ 6 := by omega
+      have h7 : s.1.1 ≠ 7 := by omega
+      have h8 : s.1.1 ≠ 8 := by omega
+      have h9 : s.1.1 ≠ 9 := by omega
+      simp [ResourceShape, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9] at inv
+      rcases inv with ⟨hp, hStk, _, hOcc, _⟩
+      exact ⟨fun hi => by rw [hp] at hi; cases hi, fun _ => by simp [occupiedCount, hOcc], by simp [hStk]⟩
+  have hRun : ∀ {s steps}, ResourceShape ctx.1 s → ValidIntervalPrefix s steps →
+      ResourceShape ctx.1 (lastState s steps) ∧
+      (lastState s steps).2.1 = s.2.1 ∧
+      (lastState s steps).2.2.1 = s.2.2.1 ∧
+      (lastState s steps).2.2.2.2.2.2.2.2.1 + remainingPotential (lastState s steps) =
+        s.2.2.2.2.2.2.2.2.1 + remainingPotential s ∧
+      peakHeap s steps ≤ min s.2.1 1 ∧
+      peakStack s steps ≤ (baseline ctx.1).length + 2 ∧
+      (∀ i, i ≤ steps.length → ResourceShape ctx.1 (stateAt s steps i)) := by
+    intro s steps inv hPref
+    induction steps generalizing s with
+    | nil =>
+      have ⟨hIdle, hNotIdle, hStk⟩ := hPhaseCases inv
+      have hOcc : occupiedCount s ≤ min s.2.1 1 := by
+        by_cases hi : s.1 = (0, false, 0)
+        · rw [hIdle hi]; exact Nat.zero_le _
+        · exact hNotIdle hi
+      exact ⟨inv, rfl, rfl, rfl, hOcc, hStk, fun _ _ => inv⟩
+    | cons hd tl ih =>
+      rcases hd with ⟨lbl, s'⟩
+      rcases hPref with ⟨notIdle, edge, hRest⟩
+      have inv' := (reachable_resource_shape ctx.1).1 inv edge
+      have ⟨hd', hn', hPot⟩ := potential_step inv notIdle edge
+      have ⟨_, hOccNotIdle, hStkS⟩ := hPhaseCases inv
+      rcases ih inv' hRest with ⟨invLast, hdLast, hnLast, hPotLast, hHeapTl, hStackTl, hAtTl⟩
+      rw [hd'] at hHeapTl
+      refine ⟨invLast, by omega, by omega, by omega,
+        Nat.max_le.mpr ⟨hOccNotIdle notIdle, hHeapTl⟩,
+        Nat.max_le.mpr ⟨hStkS, hStackTl⟩, ?_⟩
+      intro i hi
+      cases i with
+      | zero => exact inv
+      | succ i' => exact hAtTl i' (by simp at hi; omega)
+  have hClean := accepted_entries_clean hCtx
+  rcases hClean with ⟨entryReach, _, _, _, _, hPhase, hd, hn, _⟩
+  have entryInv := (reachable_resource_shape ctx.1).2 entryReach
+  rcases hRun entryInv hPrefix with ⟨invLast, _, _, hPot, hHeap, hStack, hAtInv⟩
+  have hEntryPot : remainingPotential entry = targetL ctx.2.1 ctx.2.2.1 := by
+    simp [remainingPotential, hPhase, hd, hn, targetL]
+  rw [hd] at hHeap
+  refine ⟨?_, ?_, ?_, hHeap, by omega, hStack, (hPhaseCases invLast).1⟩
+  · intro i hi ⟨r, hBad⟩
+    have invI := hAtInv i hi
+    simp [ResourceShape, hBad] at invI
+  · intro ⟨r, hBad⟩
+    simp [ResourceShape, hBad] at invLast
+  · dsimp [activeWork, last]; omega
+
+noncomputable def runServiceSteps : Nat → State → List ((Nat × Nat × Nat × Bool) × State)
+  | 0, _ => []
+  | m + 1, s =>
+      let step := serviceNext s
+      step :: runServiceSteps m step.2
+
+/-- Audit 8: Actual delay-free completing witness with exact `L`/`H`/`S`,
+response/idle cuts, outcome, and full restoration. -/
+theorem exact_interval_completion
+    {ctx : List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State}
+    (hCtx : ValidEntryContext ctx) :
+    let entry := ctx.2.2.2.2
+    let L := targetL ctx.2.1 ctx.2.2.1
+    let H := min ctx.2.1 1
+    let S := (baseline ctx.1).length + 2
+    let out : Bool := if ctx.2.1 ≤ 1 then true else false
+    let steps := runServiceSteps L entry
+    let final := lastState entry steps
+    ValidIntervalPrefix entry steps ∧
+    steps.length = L ∧
+    delayCount steps = 0 ∧
+    activeWork entry steps = L ∧
+    elapsedTicks entry steps = L ∧
+    peakHeap entry steps = H ∧
+    peakStack entry steps = S ∧
+    (stateAt entry steps (L - 2)).1 = (9, out, 0) ∧
+    (stateAt entry steps (L - 1)).1 = (10, out, 0) ∧
+    (stateAt entry steps (L - 1)).2.2.2.2.2.2.2.1 = some out ∧
+    (∀ i, i < L - 1 → (stateAt entry steps i).2.2.2.2.2.2.2.1 = none) ∧
+    (∀ i, i < L → (stateAt entry steps i).1 ≠ (0, false, 0)) ∧
+    final.1 = (0, false, 0) ∧
+    final.2.2.2.2.2.2.2.1 = some out ∧
+    final.2.2.2.2.1 = false ∧
+    final.2.2.2.2.2.1 = false ∧
+    final.2.2.2.2.2.2.1 = baseline ctx.1 := by
+  intro entry L H S out steps final
+  have hPotClass : ∀ {s}, ResourceShape ctx.1 s →
+      (1 ≤ remainingPotential s → IsBusy s.1) ∧
+      (remainingPotential s = 0 → s.1 = (0, false, 0)) ∧
+      (remainingPotential s = 1 →
+        s.1 = (10, if s.2.1 ≤ 1 then true else false, 0) ∧
+        s.2.2.2.2.2.2.2.1 = some (if s.2.1 ≤ 1 then true else false)) ∧
+      (remainingPotential s = 2 →
+        s.1 = (9, if s.2.1 ≤ 1 then true else false, 0)) ∧
+      (2 ≤ remainingPotential s → s.2.2.2.2.2.2.2.1 = none) := by
+    intro s inv
+    rcases (by omega : s.1.1 = 0 ∨ s.1.1 = 1 ∨ s.1.1 = 2 ∨ s.1.1 = 3 ∨ s.1.1 = 4 ∨
+      s.1.1 = 5 ∨ s.1.1 = 6 ∨ s.1.1 = 7 ∨ s.1.1 = 8 ∨ s.1.1 = 9 ∨ 10 ≤ s.1.1) with
+      h | h | h | h | h | h | h | h | h | h | h
+    · simp [ResourceShape, h] at inv
+      have hPot : remainingPotential s = 0 := by simp [remainingPotential, h]
+      refine ⟨fun h1 => by omega, fun _ => inv.1, fun h1 => by omega, fun h2 => by omega, fun h2 => by omega⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : 3 ≤ remainingPotential s := by simp [remainingPotential, h]; omega
+      refine ⟨fun _ => Or.inl inv.1, fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.2.2.2⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : 3 ≤ remainingPotential s := by simp [remainingPotential, h]; omega
+      refine ⟨fun _ => Or.inr (Or.inl inv.1), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.2.2.2⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : 3 ≤ remainingPotential s := by
+        simp [remainingPotential, h]; split <;> omega
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inl inv.1)), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.1⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : 3 ≤ remainingPotential s := by
+        simp [remainingPotential, h]; split <;> omega
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inl ⟨_, inv.1⟩))), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.1⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : 3 ≤ remainingPotential s := by simp [remainingPotential, h]; omega
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨_, inv.1⟩)))), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.1⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : 3 ≤ remainingPotential s := by
+        simp [remainingPotential, h]; split <;> omega
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨_, inv.1⟩))))), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.1⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : remainingPotential s = 4 := by simp [remainingPotential, h]
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨_, inv.1⟩)))))), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.2.1⟩
+    · simp [ResourceShape, h] at inv
+      have hPot : remainingPotential s = 3 := by simp [remainingPotential, h]
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨_, inv.1⟩))))))), fun h0 => by omega, fun h1 => by omega, fun h2 => by omega, fun _ => inv.2.2.2.1⟩
+    · simp [ResourceShape, h] at inv
+      rcases inv with ⟨hp, _, _, _, hRep, hOut⟩
+      have hPot : remainingPotential s = 2 := by simp [remainingPotential, h]
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨_, hp⟩)))))))),
+        fun h0 => by omega, fun h1 => by omega, fun _ => by rwa [← hOut], fun _ => hRep⟩
+    · have h0 : s.1.1 ≠ 0 := by omega
+      have h1 : s.1.1 ≠ 1 := by omega
+      have h2 : s.1.1 ≠ 2 := by omega
+      have h3 : s.1.1 ≠ 3 := by omega
+      have h4 : s.1.1 ≠ 4 := by omega
+      have h5 : s.1.1 ≠ 5 := by omega
+      have h6 : s.1.1 ≠ 6 := by omega
+      have h7 : s.1.1 ≠ 7 := by omega
+      have h8 : s.1.1 ≠ 8 := by omega
+      have h9 : s.1.1 ≠ 9 := by omega
+      simp [ResourceShape, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9] at inv
+      rcases inv with ⟨hp, _, _, _, hRep, hOut⟩
+      have hPot : remainingPotential s = 1 := by simp [remainingPotential, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9]
+      refine ⟨fun _ => Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr ⟨_, hp⟩)))))))),
+        fun h0 => by omega, fun _ => ⟨by rwa [← hOut], by rwa [← hOut]⟩, fun h2 => by omega, fun h2 => by omega⟩
+  have hRunValid : ∀ (m : Nat) {s}, ResourceShape ctx.1 s → m ≤ remainingPotential s →
+      ValidIntervalPrefix s (runServiceSteps m s) ∧
+      (runServiceSteps m s).length = m ∧
+      delayCount (runServiceSteps m s) = 0 ∧
+      ResourceShape ctx.1 (lastState s (runServiceSteps m s)) ∧
+      (lastState s (runServiceSteps m s)).2.1 = s.2.1 ∧
+      remainingPotential (lastState s (runServiceSteps m s)) = remainingPotential s - m := by
+    intro m
+    induction m with
+    | zero =>
+      intro s inv _
+      exact ⟨True.intro, rfl, rfl, inv, rfl, by omega⟩
+    | succ m ih =>
+      intro s inv hm
+      have hBusy := (hPotClass inv).1 (by omega)
+      have hSvc := (reached_busy_service_successor ctx.1).1 inv hBusy
+      have ⟨h3, hNotDel, hNotIdle, _, hWkStep⟩ := global_counter_accounting.1 hSvc
+      have hStep : LabeledStep (serviceNext s).1 s (serviceNext s).2 := Or.inr (Or.inr (Or.inr hSvc))
+      have invNext := (reachable_resource_shape ctx.1).1 inv hStep
+      have ⟨_, _, hPotEq⟩ := potential_step inv hNotIdle hStep
+      have hPotNext : remainingPotential (serviceNext s).2 = remainingPotential s - 1 := by omega
+      rcases ih invNext (by omega) with ⟨hValTl, hLenTl, hDelTl, hInvLast, hdLast, hPotLast⟩
+      refine ⟨⟨hNotIdle, hStep, hValTl⟩, by simp [runServiceSteps, hLenTl], ?_,
+        hInvLast, hdLast, by simp [lastState, runServiceSteps]; omega⟩
+      simp [runServiceSteps, delayCount, hNotDel, hDelTl]
+  have hStateAtEq : ∀ (m : Nat) (s : State) (i : Nat), i ≤ m →
+      stateAt s (runServiceSteps m s) i = lastState s (runServiceSteps i s) := by
+    intro m
+    induction m with
+    | zero =>
+      intro s i hi
+      have hi0 : i = 0 := by omega
+      subst hi0; rfl
+    | succ m ih =>
+      intro s i hi
+      cases i with
+      | zero => rfl
+      | succ i' => exact ih (serviceNext s).2 i' (by omega)
+  have hStateAtSteps : ∀ (i : Nat), i ≤ L →
+      stateAt entry steps i = lastState entry (runServiceSteps i entry) :=
+    fun i hi => hStateAtEq L entry i hi
+  have hPeakGe : ∀ (s : State) (xs : List ((Nat × Nat × Nat × Bool) × State)) (i : Nat),
+      i ≤ xs.length →
+      occupiedCount (stateAt s xs i) ≤ peakHeap s xs ∧
+      (stateAt s xs i).2.2.2.2.2.2.1.length ≤ peakStack s xs := by
+    intro s xs
+    induction xs generalizing s with
+    | nil =>
+      intro _ _; simp [stateAt, peakHeap, peakStack]
+    | cons hd tl ih =>
+      intro i hi
+      cases i with
+      | zero =>
+        exact ⟨Nat.le_max_left _ _, Nat.le_max_left _ _⟩
+      | succ i' =>
+        have ⟨hh, hs⟩ := ih hd.2 i' (by simp at hi; omega)
+        exact ⟨Nat.le_trans hh (Nat.le_max_right _ _), Nat.le_trans hs (Nat.le_max_right _ _)⟩
+  have hLastSucc : ∀ (m : Nat) (s : State),
+      lastState s (runServiceSteps (m + 1) s) = (serviceNext (lastState s (runServiceSteps m s))).2 := by
+    intro m
+    induction m with
+    | zero => intro s; rfl
+    | succ m ih => intro s; exact ih (serviceNext s).2
+  have hClean := accepted_entries_clean hCtx
+  rcases hClean with ⟨entryReach, _, _, _, _, hPhase, hd, hn, hRem, hOcc, _, hStk, _⟩
+  have entryInv := (reachable_resource_shape ctx.1).2 entryReach
+  have hEntryPot : remainingPotential entry = L := by
+    simp [remainingPotential, hPhase, hd, hn, L, targetL]
+  have hLGe8 : 8 ≤ L := by simp [L, targetL]; omega
+  rcases hRunValid L entryInv (by omega) with ⟨hValid, hLen, hDel, hInvL, hdL, hPotL⟩
+  have hTick := interval_tick_accounting hValid
+  have hBounds := interval_prefix_bounds hCtx hValid
+  have hHeapGe : H ≤ peakHeap entry steps := by
+    by_cases hd0 : ctx.2.1 = 0
+    · simp [H, hd0]
+    · have hGe3 := (hPeakGe entry steps 3 (by omega)).1
+      rw [hStateAtSteps 3 (by omega)] at hGe3
+      have hRemPos : entry.2.2.2.1 ≠ 0 := by omega
+      simp [runServiceSteps, lastState, serviceNext, hPhase, hRemPos, hOcc, occupiedCount] at hGe3
+      omega
+  have hStackGe : S ≤ peakStack entry steps := by
+    have hGe2 := (hPeakGe entry steps 2 (by omega)).2
+    rw [hStateAtSteps 2 (by omega)] at hGe2
+    simp [runServiceSteps, lastState, serviceNext, hPhase, hStk, S] at hGe2
+    omega
+  rcases hRunValid (L - 2) entryInv (by omega) with ⟨_, _, _, hInvL2, hdL2, hPotL2⟩
+  have hResp : (stateAt entry steps (L - 2)).1 = (9, out, 0) := by
+    rw [hStateAtSteps (L - 2) (by omega)]
+    have hp := (hPotClass hInvL2).2.2.2.1 (by omega)
+    rwa [hdL2, hd] at hp
+  rcases hRunValid (L - 1) entryInv (by omega) with ⟨_, _, _, hInvL1, hdL1, hPotL1⟩
+  have hHdlRet : (stateAt entry steps (L - 1)).1 = (10, out, 0) ∧
+      (stateAt entry steps (L - 1)).2.2.2.2.2.2.2.1 = some out := by
+    rw [hStateAtSteps (L - 1) (by omega)]
+    have hb := (hPotClass hInvL1).2.2.1 (by omega)
+    rwa [hdL1, hd] at hb
+  have hRepNone : ∀ i, i < L - 1 → (stateAt entry steps i).2.2.2.2.2.2.2.1 = none := by
+    intro i hi
+    rw [hStateAtSteps i (by omega)]
+    rcases hRunValid i entryInv (by omega) with ⟨_, _, _, hInvI, _, hPotI⟩
+    exact (hPotClass hInvI).2.2.2.2 (by omega)
+  have hNotIdleBefore : ∀ i, i < L → (stateAt entry steps i).1 ≠ (0, false, 0) := by
+    intro i hi hIdleI
+    rw [hStateAtSteps i (by omega)] at hIdleI
+    rcases hRunValid i entryInv (by omega) with ⟨_, _, _, hInvI, _, hPotI⟩
+    simp [remainingPotential, hIdleI] at hPotI
+    omega
+  have hFinalIdle : final.1 = (0, false, 0) := (hPotClass hInvL).2.1 (by omega)
+  have hFinalShape := hInvL
+  simp [ResourceShape, hFinalIdle] at hFinalShape
+  rcases hFinalShape with ⟨hFinalOcc, hFinalOwn, hFinalStk⟩
+  have hFinalRep : final.2.2.2.2.2.2.2.1 = some out := by
+    have hEqL : L = (L - 1) + 1 := by omega
+    have hStepFinal : final = (serviceNext (lastState entry (runServiceSteps (L - 1) entry))).2 := by
+      dsimp [final, steps]
+      rw [hEqL, hLastSucc (L - 1) entry]
+    have hL1Eq := hHdlRet
+    rw [hStateAtSteps (L - 1) (by omega)] at hL1Eq
+    have hInvL1' := hInvL1
+    simp [ResourceShape, hL1Eq.1] at hInvL1'
+    rw [hStepFinal]
+    simp [serviceNext, hL1Eq.1, hInvL1'.1, hL1Eq.2]
+  exact ⟨hValid, hLen, hDel, by omega, by omega, by omega, by omega,
+    hResp, hHdlRet.1, hHdlRet.2, hRepNone, hNotIdleBefore,
+    hFinalIdle, hFinalRep, hFinalOcc, hFinalOwn, hFinalStk⟩
+
+/-- Audit 9: Arbitrary mathematical context-dependent bounds transported from
+`L`/`H`/`S`; completed retained occupancy zero. -/
+theorem arbitrary_supplied_bound_transport
+    (Bwork Bheap Bstack Bretained :
+      (List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State) → Nat)
+    {ctx : List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State}
+    (hCtx : ValidEntryContext ctx)
+    (hWorkBound : targetL ctx.2.1 ctx.2.2.1 ≤ Bwork ctx)
+    (hHeapBound : min ctx.2.1 1 ≤ Bheap ctx)
+    (hStackBound : (baseline ctx.1).length + 2 ≤ Bstack ctx) :
+    (∀ steps, ValidIntervalPrefix ctx.2.2.2.2 steps →
+      activeWork ctx.2.2.2.2 steps ≤ Bwork ctx ∧
+      peakHeap ctx.2.2.2.2 steps ≤ Bheap ctx ∧
+      peakStack ctx.2.2.2.2 steps ≤ Bstack ctx) ∧
+    (∀ steps, ValidIntervalPrefix ctx.2.2.2.2 steps →
+      (lastState ctx.2.2.2.2 steps).1 = (0, false, 0) →
+      occupiedCount (lastState ctx.2.2.2.2 steps) = 0 ∧
+      occupiedCount (lastState ctx.2.2.2.2 steps) ≤ Bretained ctx) := by
+  constructor
+  · intro steps hPref
+    have hb := interval_prefix_bounds hCtx hPref
+    exact ⟨Nat.le_trans hb.2.2.1 hWorkBound,
+           Nat.le_trans hb.2.2.2.1 hHeapBound,
+           Nat.le_trans hb.2.2.2.2.2.1 hStackBound⟩
+  · intro steps hPref hIdle
+    have h0 := (interval_prefix_bounds hCtx hPref).2.2.2.2.2.2 hIdle
+    exact ⟨h0, by omega⟩
+
+/-- Audit 10: A completing endpoint followed by actual arbitrary acceptance
+preserves its derived clean resources. -/
+theorem recovery_then_next_entry
+    {ctx : List Nat × Nat × Nat × List ((Nat × Nat × Nat × Bool) × State) × State}
+    (hCtx : ValidEntryContext ctx)
+    {steps : List ((Nat × Nat × Nat × Bool) × State)}
+    (hPrefix : ValidIntervalPrefix ctx.2.2.2.2 steps)
+    (hIdle : (lastState ctx.2.2.2.2 steps).1 = (0, false, 0))
+    (d' n' : Nat) :
+    let completed := lastState ctx.2.2.2.2 steps
+    let nextEntry : State :=
+      ((1, false, 0), d', n', d', completed.2.2.2.2.1, completed.2.2.2.2.2.1,
+        completed.2.2.2.2.2.2.1, none,
+        completed.2.2.2.2.2.2.2.2.1, completed.2.2.2.2.2.2.2.2.2 + 1)
+    let nextCtx :=
+      (ctx.1, d', n',
+        ctx.2.2.2.1 ++ (((0, ctx.2.1, ctx.2.2.1, false), ctx.2.2.2.2) :: steps),
+        nextEntry)
+    LabeledStep (0, d', n', false) completed nextEntry ∧
+    ValidEntryContext nextCtx ∧
+    completed.2.2.2.2.1 = false ∧
+    completed.2.2.2.2.2.1 = false ∧
+    completed.2.2.2.2.2.2.1 = baseline ctx.1 ∧
+    nextEntry.1 = (1, false, 0) ∧
+    nextEntry.2.1 = d' ∧
+    nextEntry.2.2.1 = n' ∧
+    nextEntry.2.2.2.1 = d' ∧
+    nextEntry.2.2.2.2.1 = false ∧
+    nextEntry.2.2.2.2.2.1 = false ∧
+    nextEntry.2.2.2.2.2.2.1 = baseline ctx.1 ∧
+    nextEntry.2.2.2.2.2.2.2.1 = none ∧
+    nextEntry.2.2.2.2.2.2.2.2.1 = completed.2.2.2.2.2.2.2.2.1 ∧
+    nextEntry.2.2.2.2.2.2.2.2.2 = completed.2.2.2.2.2.2.2.2.2 + 1 := by
+  intro completed nextEntry nextCtx
+  have hToGlobal : ∀ {s xs}, ValidIntervalPrefix s xs → ValidGlobalPath s xs := by
+    intro s xs h
+    induction xs generalizing s with
+    | nil => exact True.intro
+    | cons hd tl ih => exact ⟨h.2.1, ih h.2.2⟩
+  have hAppend : ∀ {s xs ys}, ValidGlobalPath s xs → ValidGlobalPath (lastState s xs) ys →
+      ValidGlobalPath s (xs ++ ys) := by
+    intro s xs ys hx hy
+    induction xs generalizing s with
+    | nil => exact hy
+    | cons hd tl ih => exact ⟨hx.1, ih hx.2 hy⟩
+  have hAcc : LabeledStep (0, d', n', false) completed nextEntry :=
+    Or.inl ⟨d', n', rfl, hIdle, rfl⟩
+  have hPreEq : lastState (initialState ctx.1) nextCtx.2.2.2.1 = completed := by
+    simp [nextCtx, lastState, List.foldl_append]
+  have hNextValid : ValidEntryContext nextCtx :=
+    ⟨hAppend hCtx.1 ⟨hCtx.2, hToGlobal hPrefix⟩, by rw [hPreEq]; exact hAcc⟩
+  have hClean := accepted_entries_clean hNextValid
+  dsimp [nextCtx] at hClean
+  rw [hPreEq] at hClean
+  rcases hClean with ⟨_, _, hOccPre, hOwnPre, hStkPre, hPh, hd, hn, hRem, hOcc, hOwn, hStk, hRep, hWk, hEl⟩
+  exact ⟨hAcc, hNextValid, hOccPre, hOwnPre, hStkPre, hPh, hd, hn, hRem, hOcc, hOwn, hStk, hRep, hWk, hEl⟩
+
+#print axioms global_counter_accounting
+#print axioms reachable_resource_shape
+#print axioms service_noUB
+#print axioms reached_busy_service_successor
+#print axioms accepted_entries_clean
+#print axioms interval_tick_accounting
+#print axioms interval_prefix_bounds
+#print axioms exact_interval_completion
+#print axioms arbitrary_supplied_bound_transport
+#print axioms recovery_then_next_entry
+
+end AnnealResearch.ServiceIntervals

@@ -1,0 +1,74 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "MirRepresentationAdmission",
+    "MirRepresentationControls",
+    "RealCaptureAudit",
+    "RealCaptureControls"
+  ],
+  "topological_order": [
+    "Execution",
+    "MirRepresentationAdmission",
+    "MirRepresentationControls",
+    "RealCaptureAudit",
+    "RealCaptureControls"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.Execution",
+      "source_path": "experiments/opsem/AnnealResearch/Execution.lean",
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_sha256": "80245392778049029caff66583762021428113a0be089311a3843fc03f8c9125",
+      "exit_code": 0,
+      "wall_seconds": 0.6002,
+      "children_maxrss_kb": 801844,
+      "stdout": "'AnnealResearch.Execution.invariant_noUB' does not depend on any axioms\n'AnnealResearch.Execution.invariant_verified' does not depend on any axioms\n'AnnealResearch.Execution.NoUB.after_step' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.spin_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.spin_progresses_forever' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_noUB' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_not_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.empty_demonic_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.quantifier_exchange_fails' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.greatestSafety_unfold' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety' depends on axioms: [propext]\n'AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator' does not depend on any axioms\n'AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MirRepresentationAdmission",
+      "source_path": "experiments/opsem/AnnealResearch/MirRepresentationAdmission.lean",
+      "source_sha256": "1488decb26a2764905384453547c2b50f63f9dacf50340c0657c673f4128f75d",
+      "olean_sha256": "60ef32f578afae4949d7054fe3f4ceccb5e148cd1d23c54e6077d7713eef1889",
+      "exit_code": 0,
+      "wall_seconds": 0.4706,
+      "children_maxrss_kb": 801844,
+      "stdout": "'AnnealResearch.MirRepresentationAdmission.repStep_noUB_of_fault_false' does not depend on any axioms\n'AnnealResearch.MirRepresentationAdmission.structural_admission_retains_unsafe_ub_subjects' does not depend on any axioms\n'AnnealResearch.MirRepresentationAdmission.generic_checked_theorem_holds_under_const_premise' does not depend on any axioms\n'AnnealResearch.MirRepresentationAdmission.concrete_entry_admission_accepts_a1_b0_and_unused_b1' does not depend on any axioms\n'AnnealResearch.MirRepresentationAdmission.concrete_entry_admission_rejects_b1' does not depend on any axioms\n'AnnealResearch.MirRepresentationAdmission.two_crate_completeness_transfers_cross_crate_claim' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MirRepresentationControls",
+      "source_path": "experiments/opsem/AnnealResearch/MirRepresentationControls.lean",
+      "source_sha256": "728c7ee1abfc4bf87f096845ff30ce99eb70c12fbc2b7be5ec9564b8929f76bb",
+      "olean_sha256": "e400f7103b61b22ffcf6a2f9f2f10013c1dee48fb8516d4f386fd58d67d96e3c",
+      "exit_code": 0,
+      "wall_seconds": 0.438,
+      "children_maxrss_kb": 801844,
+      "stdout": "'AnnealResearch.MirRepresentationControls.same_name_different_owner_collision_control' depends on axioms: [propext]\n'AnnealResearch.MirRepresentationControls.vacuous_admission_excluding_unsafe_ub_control' does not depend on any axioms\n'AnnealResearch.MirRepresentationControls.generic_mir_text_only_gate_accepts_failing_b1_control' does not depend on any axioms\n'AnnealResearch.MirRepresentationControls.naive_all_mentions_gate_falsely_rejects_unused_b1_control' does not depend on any axioms\n'AnnealResearch.MirRepresentationControls.rmeta_check_only_missing_dep_body_control' does not depend on any axioms\n'AnnealResearch.MirRepresentationControls.host_target_pointer_width_confusion_control' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.RealCaptureAudit",
+      "source_path": "experiments/opsem/AnnealResearch/RealCaptureAudit.lean",
+      "source_sha256": "145fbb9eb8a175b13505cf81a8605f8a7af681c9b1e9286050286f352838137e",
+      "olean_sha256": "2922c01d46360a9550253964d1b391e648348200022135e3f3ddc7337815ca6f",
+      "exit_code": 0,
+      "wall_seconds": 0.6255,
+      "children_maxrss_kb": 801844,
+      "stdout": "'AnnealResearch.RealCaptureAudit.combined_hook_and_demand_captures_all_modes' does not depend on any axioms\n'AnnealResearch.RealCaptureAudit.independent_completion_oracle_sound' does not depend on any axioms\n'AnnealResearch.RealCaptureAudit.unused_failing_mention_excluded_by_mono_reachability' does not depend on any axioms\n'AnnealResearch.RealCaptureAudit.ullbc_elaborated_preserves_unwind_while_llbc_drops_it' does not depend on any axioms\n'AnnealResearch.RealCaptureAudit.crate_svh_binding_distinguishes_substituted_dep' does not depend on any axioms\n'AnnealResearch.RealCaptureAudit.admissible_capture_transfers_entry_safety' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.RealCaptureControls",
+      "source_path": "experiments/opsem/AnnealResearch/RealCaptureControls.lean",
+      "source_sha256": "889db49adc4c4cf4493d5ea758536a8076b7324d98a4b7b83fb7d073101f3637",
+      "olean_sha256": "a1445e0c1cff4954a02354f0fd5845343042af5c8a8c04e42b14024ae379c0c3",
+      "exit_code": 0,
+      "wall_seconds": 0.4851,
+      "children_maxrss_kb": 801844,
+      "stdout": "'AnnealResearch.RealCaptureControls.provisional_flag_or_stop_after_analysis_control' does not depend on any axioms\n'AnnealResearch.RealCaptureControls.charon_associated_const_monomorphize_bypass_control' does not depend on any axioms\n'AnnealResearch.RealCaptureControls.all_owners_const_prerequisite_overapproximation_control' does not depend on any axioms\n'AnnealResearch.RealCaptureControls.def_path_hash_only_dep_binding_control' does not depend on any axioms\n'AnnealResearch.RealCaptureControls.non_inline_external_callee_missing_mir_control' does not depend on any axioms\n'AnnealResearch.RealCaptureControls.cfg_changed_instance_control' does not depend on any axioms",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "aarch64/assembly-verification",
+    "kraken/effects-semantics",
+    "kraken/parser-opacity",
+    "lean4/partial-def-kernel-opacity",
+    "mach-o/aarch64-relocations",
+    "rust/inline-assembly-contracts"
+  ],
+  "subjects": [
+    {
+      "name": "rust-reference",
+      "identity": {
+        "repository": "https://github.com/rust-lang/reference",
+        "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+        "tree": "2f158dd465eb5a755cbbf2d77b6f2db0075498f8"
+      }
+    },
+    {
+      "name": "kraken",
+      "identity": {
+        "repository": "https://github.com/leanprover/kraken",
+        "commit": "8af78062037bc237b341d20252aafd1797c1bcb7",
+        "tree": "e8d44f05dd01f8fc1564f57ef00237d8e1a9d825",
+        "lean_toolchain": "leanprover/lean4:v4.20.1"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4",
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

@@ -1,0 +1,188 @@
+{
+  "reader_sha256": "7a659675dc278e57b6ad6121e734984de08cbdd5a15c06b9742c95876776d678",
+  "boundary_rs_sha256": "e6ea8e1c426d4d88c69e20f3753c35806a41fac76e6ea0ad34d2ce509029e21e",
+  "positive_cell": {
+    "observed_leaf_words_hex": [
+      "0xf9400002",
+      "0xf9000001",
+      "0xaa0203e0",
+      "0xd65f03c0"
+    ],
+    "leaf_bytes_hex": "020040f9010000f9e00302aac0035fd6",
+    "object_call_relocation": {
+      "section": 1,
+      "table_index": 0,
+      "offset": 24,
+      "symbol": 0,
+      "pcrel": 1,
+      "length": 2,
+      "external": 1,
+      "type": 2
+    },
+    "linked_call": {
+      "pc": 4294967552,
+      "word_hex": "97fffffa",
+      "target": 4294967528,
+      "return_pc": 4294967556
+    },
+    "negative_controls": [
+      {
+        "name": "empty",
+        "mode": "raw",
+        "rejected_at": "header-short"
+      },
+      {
+        "name": "short-header",
+        "mode": "raw",
+        "rejected_at": "header-short"
+      },
+      {
+        "name": "short-command-region",
+        "mode": "raw",
+        "rejected_at": "load-command-bounds"
+      },
+      {
+        "name": "short-body",
+        "mode": "record",
+        "rejected_at": "leaf-size16"
+      },
+      {
+        "name": "changed-linked-body",
+        "mode": "record",
+        "rejected_at": "leaf-byte-identity"
+      },
+      {
+        "name": "valid-competing-binding",
+        "mode": "record",
+        "rejected_at": "requested-binding"
+      },
+      {
+        "name": "duplicate-requested-name",
+        "mode": "record",
+        "rejected_at": "requested-name-count"
+      },
+      {
+        "name": "out-of-section-body",
+        "mode": "record",
+        "rejected_at": "selected-range-bounds"
+      },
+      {
+        "name": "invalid-string-index",
+        "mode": "raw",
+        "rejected_at": "string-index"
+      },
+      {
+        "name": "leaf-relocation-overlap",
+        "mode": "record",
+        "rejected_at": "leaf-relocation"
+      },
+      {
+        "name": "redirected-bl",
+        "mode": "record",
+        "rejected_at": "linked-call-target"
+      },
+      {
+        "name": "nonoverlapping-preceding-call-addend",
+        "mode": "record",
+        "rejected_at": "paired-call-addend"
+      },
+      {
+        "name": "contradictory-linked-section-offset",
+        "mode": "record",
+        "rejected_at": "selected-vm-file-mapping"
+      }
+    ]
+  },
+  "control_cell": {
+    "observed_leaf_words_hex": [
+      "0xf9400002",
+      "0xf9000401",
+      "0xaa0203e0",
+      "0xd65f03c0"
+    ],
+    "leaf_bytes_hex": "020040f9010400f9e00302aac0035fd6",
+    "object_call_relocation": {
+      "section": 1,
+      "table_index": 0,
+      "offset": 24,
+      "symbol": 0,
+      "pcrel": 1,
+      "length": 2,
+      "external": 1,
+      "type": 2
+    },
+    "linked_call": {
+      "pc": 4294967552,
+      "word_hex": "97fffffa",
+      "target": 4294967528,
+      "return_pc": 4294967556
+    },
+    "negative_controls": [
+      {
+        "name": "empty",
+        "mode": "raw",
+        "rejected_at": "header-short"
+      },
+      {
+        "name": "short-header",
+        "mode": "raw",
+        "rejected_at": "header-short"
+      },
+      {
+        "name": "short-command-region",
+        "mode": "raw",
+        "rejected_at": "load-command-bounds"
+      },
+      {
+        "name": "short-body",
+        "mode": "record",
+        "rejected_at": "leaf-size16"
+      },
+      {
+        "name": "changed-linked-body",
+        "mode": "record",
+        "rejected_at": "leaf-byte-identity"
+      },
+      {
+        "name": "valid-competing-binding",
+        "mode": "record",
+        "rejected_at": "requested-binding"
+      },
+      {
+        "name": "duplicate-requested-name",
+        "mode": "record",
+        "rejected_at": "requested-name-count"
+      },
+      {
+        "name": "out-of-section-body",
+        "mode": "record",
+        "rejected_at": "selected-range-bounds"
+      },
+      {
+        "name": "invalid-string-index",
+        "mode": "raw",
+        "rejected_at": "string-index"
+      },
+      {
+        "name": "leaf-relocation-overlap",
+        "mode": "record",
+        "rejected_at": "leaf-relocation"
+      },
+      {
+        "name": "redirected-bl",
+        "mode": "record",
+        "rejected_at": "linked-call-target"
+      },
+      {
+        "name": "nonoverlapping-preceding-call-addend",
+        "mode": "record",
+        "rejected_at": "paired-call-addend"
+      },
+      {
+        "name": "stale-positive-in-both-control-ranges",
+        "mode": "record",
+        "rejected_at": "leaf-store-offset"
+      }
+    ]
+  }
+}

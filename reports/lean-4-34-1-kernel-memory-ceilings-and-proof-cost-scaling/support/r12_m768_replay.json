@@ -1,0 +1,137 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "Execution",
+    "MirWireParser",
+    "SubstantiveMirByteParser",
+    "SpecValidation",
+    "SpecChallengeResolution",
+    "ClaimChangeResolution",
+    "ClaimChangeResolutionControls"
+  ],
+  "topological_order": [
+    "Execution",
+    "MirWireParser",
+    "SubstantiveMirByteParser",
+    "HelperValueHeap",
+    "HelperNestedMutation",
+    "HelperValueControls",
+    "SpecValidation",
+    "SpecChallengeResolution",
+    "ClaimChangeResolution",
+    "ClaimChangeResolutionControls"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.Execution",
+      "source_path": "experiments/opsem/AnnealResearch/Execution.lean",
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_sha256": "80245392778049029caff66583762021428113a0be089311a3843fc03f8c9125",
+      "exit_code": 0,
+      "wall_seconds": 0.5951,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.Execution.invariant_noUB' does not depend on any axioms\n'AnnealResearch.Execution.invariant_verified' does not depend on any axioms\n'AnnealResearch.Execution.NoUB.after_step' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.spin_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.spin_progresses_forever' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_noUB' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_not_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.empty_demonic_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.quantifier_exchange_fails' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.greatestSafety_unfold' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety' depends on axioms: [propext]\n'AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator' does not depend on any axioms\n'AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MirWireParser",
+      "source_path": "experiments/opsem/AnnealResearch/MirWireParser.lean",
+      "source_sha256": "9fa2f09b01ac3cc23297431402fc5b24f8fb3930436755354d4947a93f81c34b",
+      "olean_sha256": "2c5f1feb9de36b5c78c970f0b4987848fff7b8cf2d71beaa440547be07ef97d0",
+      "exit_code": 0,
+      "wall_seconds": 0.6248,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.MirWireParser.parsePacket_complete_roundtrip' depends on axioms: [propext]\n'AnnealResearch.MirWireParser.parsePacket_sound_injective' depends on axioms: [propext]\n'AnnealResearch.MirWireParser.parsePacket_deterministic_total' depends on axioms: [propext]\n'AnnealResearch.MirWireParser.positive_valid_packet_decoded_and_safe' depends on axioms: [propext]\n'AnnealResearch.MirWireParser.end_to_end_exporter_plus_proved_parser_transfers_noUB' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.SubstantiveMirByteParser",
+      "source_path": "experiments/opsem/AnnealResearch/SubstantiveMirByteParser.lean",
+      "source_sha256": "9e24337cdf324d6f1d41914a6302b8e72560fd0de1f542da43507dc3b71def7a",
+      "olean_sha256": "77431f3aa31394dfa636e06047781f972d8a8367a1fdf93c6f1569758c095944",
+      "exit_code": 0,
+      "wall_seconds": 7.9373,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.SubstantiveMirByteParser.universal_accepted_byte_soundness' depends on axioms: [propext]\n'AnnealResearch.SubstantiveMirByteParser.universal_accepted_package_canonical_unique' depends on axioms: [propext]\n'AnnealResearch.SubstantiveMirByteParser.real_place_mention_preserve_ub_bytes_accepted_and_preserves_mentions' depends on axioms: [propext]\n'AnnealResearch.SubstantiveMirByteParser.real_place_mention_default_bytes_accepted_and_drops_wildcard_mentions' depends on axioms: [propext]\n'AnnealResearch.SubstantiveMirByteParser.real_cleanup_subject_preserve_ub_bytes_accepted_without_block_truncation' depends on axioms: [propext]\n'AnnealResearch.SubstantiveMirByteParser.real_zerocopy_layout_holdout_bytes_accepted_without_block_truncation' depends on axioms: [propext]\n'AnnealResearch.SubstantiveMirByteParser.real_loop_prefix_probe_preserve_ub_bytes_accepted_and_admitted' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.HelperValueHeap",
+      "source_path": "experiments/opsem/AnnealResearch/HelperValueHeap.lean",
+      "source_sha256": "674c33a9b362f0c8bb1fbfc5c99de3ff3ab96452249f006164056a373291521d",
+      "olean_sha256": "bf6b3124a66b7df4f11115f75d41fdfb0fe415d77d6c9f70c9ca598a35853ac4",
+      "exit_code": 0,
+      "wall_seconds": 0.5906,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.HelperValueHeap.readCell_outside' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.leaf_image_read' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.root_image_read' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.root_image_tags_distinct' does not depend on any axioms\n'AnnealResearch.HelperValueHeap.allocate_index' does not depend on any axioms\n'AnnealResearch.HelperValueHeap.allocate_frontier' does not depend on any axioms\n'AnnealResearch.HelperValueHeap.allocate_new_cell' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.allocate_old_cell' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_old_read' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_leaf_image' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.allocate_preserves_leaf_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_preserves_root_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_preserves_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.empty_frontier_empty' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.HelperNestedMutation",
+      "source_path": "experiments/opsem/AnnealResearch/HelperNestedMutation.lean",
+      "source_sha256": "4f7b070deca233320346fa37015129f52de1c82420b3305d68f849a54839b102",
+      "olean_sha256": "08a7744c704e57f07499a92cae5377e94d50397684cda5d0d5c66c05924239a2",
+      "exit_code": 0,
+      "wall_seconds": 0.5822,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.HelperNestedMutation.expectedHeap_eq_allocations' does not depend on any axioms\n'AnnealResearch.HelperNestedMutation.expectedHeap_frontier' does not depend on any axioms\n'AnnealResearch.HelperNestedMutation.expectedHeap_old_cell' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_root_image' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_active_value' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_leaf_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_root_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_leaf_value' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_root_value' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.mutateLeaf_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.mutateParent_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.nested_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.nested_observations' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperNestedMutation.nested_error_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.nested_error_retains' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.HelperValueControls",
+      "source_path": "experiments/opsem/AnnealResearch/HelperValueControls.lean",
+      "source_sha256": "67bd81860edd448da6d706003d53ff52e3dcd0346e846c659ac341ce6c78aa8b",
+      "olean_sha256": "70640ce0c2626bda313a9d2e07ccf43af0eaf8a0de434a359c4d48fa08dfe197",
+      "exit_code": 0,
+      "wall_seconds": 0.6853,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.HelperValueControls.seed_eq' does not depend on any axioms\n'AnnealResearch.HelperValueControls.fixture_image' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.fixture_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueControls.actual_normal' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.actual_error' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.rollback_normal' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.rollback_error' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.overwrite_error' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.rollback_discriminator' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperValueControls.overwrite_discriminator' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperValueControls.dangling_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueControls.dangling_not_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueControls.dangling_boundary' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.SpecValidation",
+      "source_path": "experiments/opsem/AnnealResearch/SpecValidation.lean",
+      "source_sha256": "e53d94771eb0016bfac5ede8768f664939ade705af411d2653681e533d125913",
+      "olean_sha256": "e99792ee84310c448d9f0526176502fed5b4b65fa5a8c76c2b615e59cf2074e9",
+      "exit_code": 0,
+      "wall_seconds": 0.558,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.SpecValidation.nested_satisfies_weak' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.SpecValidation.commitOnlyOnOk_satisfies_weak' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.SpecValidation.overwriteInPlace_satisfies_weak' depends on axioms: [propext]\n'AnnealResearch.SpecValidation.overwriteInPlace_satisfies_activeStrengthened' depends on axioms: [propext]\n'AnnealResearch.SpecValidation.commitOnlyOnOk_satisfies_aliasStrengthened' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.SpecValidation.nested_satisfies_strong' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.SpecValidation.strong_implies_active_and_alias' depends on axioms: [propext]\n'AnnealResearch.SpecValidation.strong_implies_weak' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.SpecChallengeResolution",
+      "source_path": "experiments/opsem/AnnealResearch/SpecChallengeResolution.lean",
+      "source_sha256": "bb6c49b749f15b489680f49a70bbca29ae46830b9ad97e3dd3eeb73196d5139a",
+      "olean_sha256": "6e3001f1411c42fc9cb2adfb2fc17d621421792c3c031c8d02f084050144a2e1",
+      "exit_code": 0,
+      "wall_seconds": 0.5571,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.SpecChallengeResolution.positive_nonvacuous_witness' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.SpecChallengeResolution.weak_contract_admits_all_three_candidates' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.SpecChallengeResolution.commitOnlyOnOk_violates_errorActiveValue' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.SpecChallengeResolution.overwriteInPlace_violates_closedAliases_on_ok_and_error' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.SpecChallengeResolution.partial_strengthenings_insufficient' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.SpecChallengeResolution.strong_contract_discriminates_exact_reasons' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.SpecChallengeResolution.vacuous_domain_control' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.SpecChallengeResolution.challenge_outcome_distinction' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ClaimChangeResolution",
+      "source_path": "experiments/opsem/AnnealResearch/ClaimChangeResolution.lean",
+      "source_sha256": "b0d63e18438f0f2aa6017d8b19e00e98664536f622af7bf32d9063b2ac80204f",
+      "olean_sha256": "fc84173c0e0722d2eb4c3ed6e3b15cfad0eb978e47373c7bb9f166e068d2d49f",
+      "exit_code": 0,
+      "wall_seconds": 0.636,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.ClaimChangeResolution.reflexive_report_unchanged' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolution.proof_script_only_edit_preserves_claim' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolution.discharged_equivalence_preserves_claim' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolution.unproved_predicate_change_reports_unknown' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolution.subject_mismatch_rejects_preservation' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolution.single_field_weakening_rejects_preservation' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolution.execution_coverage_semantics_bridge' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ClaimChangeResolutionControls",
+      "source_path": "experiments/opsem/AnnealResearch/ClaimChangeResolutionControls.lean",
+      "source_sha256": "f088e1babe42e2b6346cab94e0129ca1c32b344f0d941164a35cbb6a36a5e993",
+      "olean_sha256": "82ca939dc3304b786c99b24ad66e8428213758638dca310102df0fd758e801a0",
+      "exit_code": 0,
+      "wall_seconds": 0.5737,
+      "children_maxrss_kb": 799796,
+      "stdout": "'AnnealResearch.ClaimChangeResolutionControls.independent_suite_matches_expected_diffs' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolutionControls.universal_to_single_execution_admits_unsafe_machine' depends on axioms: [propext]\n'AnnealResearch.ClaimChangeResolutionControls.observation_marginal_weakening_exposed' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolutionControls.omitted_field_generator_control' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolutionControls.self_oracle_circularity_control' does not depend on any axioms\n'AnnealResearch.ClaimChangeResolutionControls.syntax_similarity_control' does not depend on any axioms",
+      "stderr": ""
+    }
+  ]
+}

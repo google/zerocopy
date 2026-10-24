@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "rust/mir/binary-wire-format",
+    "verification/lean4/verified-parsing",
+    "rust/mir/cleanup-cfg",
+    "verification/lean4/structured-proof-views",
+    "rust/opsem/raw-pointer-validity"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "channel": "nightly",
+        "version": "1.98.0-nightly",
+        "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "date": "2026-05-30",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      }
+    },
+    {
+      "name": "charon",
+      "identity": {
+        "version": "0.1.210",
+        "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+        "sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

@@ -1,0 +1,297 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "Memory",
+    "ByteMemory",
+    "MiniRustReference",
+    "ReferenceInvariants",
+    "MiniRustFactored",
+    "MemoryInvariants",
+    "MemoryExecution",
+    "MemoryExamples",
+    "MemoryBoundaryControls",
+    "MemoryWitnesses",
+    "BorrowFrame",
+    "MemoryPermissions",
+    "PermissionCleanup",
+    "PermissionControls",
+    "MemoryPermissionInvariants"
+  ],
+  "topological_order": [
+    "Memory",
+    "ByteMemory",
+    "MiniRustReference",
+    "ReferenceInvariants",
+    "MiniRustFactored",
+    "MemoryInvariants",
+    "Execution",
+    "PrefixTransfer",
+    "MemoryExecution",
+    "MemoryExamples",
+    "MemoryBoundaryControls",
+    "MemoryWitnesses",
+    "BorrowFrame",
+    "MemoryPermissions",
+    "PermissionCleanup",
+    "PermissionControls",
+    "MemoryPermissionInvariants"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.Memory",
+      "source_path": "experiments/opsem/AnnealResearch/Memory.lean",
+      "source_sha256": "5617d5cfc0716b5c666c6ea0784a311ff8a8252f1b8114d5c927e67493a29db9",
+      "olean_sha256": "2d773b5226551767e3e4786f7a4bcfa0b5dcb21836b773bb1987cfa699683286",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.5135,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.Memory.copy_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.concrete_laws' depends on axioms: [propext]\n'AnnealResearch.Memory.copy_family' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.laws_consistent' depends on axioms: [propext]\n'AnnealResearch.Memory.both_scoped_witnesses' depends on axioms: [propext]\n'AnnealResearch.Memory.jobsFrom_length' depends on axioms: [propext]\n'AnnealResearch.Memory.jobsFrom_separated' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.initial_ready' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.initial_destination_uninitialized' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.uninitialized_read_error' depends on axioms: [propext]\n'AnnealResearch.Memory.pointer_slot_byte_read_error' depends on axioms: [propext]\n'AnnealResearch.Memory.out_of_bounds_error' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.uninitialized_copy_error' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.missing_write_authority_error' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.dead_allocation_error' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Memory.policies_distinct' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.codec_laws' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.roundTrip' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.padding_uninitialized' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.rawCopy_exact' does not depend on any axioms\n'AnnealResearch.Memory.PaddedCodec.typedTransfer_encoded' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.typed_transfer_discards_padding' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.raw_copy_preserves_padding' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.pointer_provenance_roundTrip' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.raw_copy_preserves_pointer' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.incoherent_layout_counterexample' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.wrong_type_counterexample' depends on axioms: [propext]\n'AnnealResearch.Memory.PaddedCodec.no_unconditional_roundTrip' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ByteMemory",
+      "source_path": "experiments/opsem/AnnealResearch/ByteMemory.lean",
+      "source_sha256": "71c8d31550da7412a1dfead2e2d64d81b18b527933acde46d81e1ad2de9ec3c0",
+      "olean_sha256": "f4845f3734ed7d9b96102d3a37fbea5ed7ff304043667d46a88f5f14de832f29",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8406,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.ByteMemory.readSnapshot_exact' depends on axioms: [propext]\n'AnnealResearch.ByteMemory.writeBlock_exact' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.ByteMemory.rawCopy_success' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.ByteMemory.afterRead_writeReady_of_disjoint' depends on axioms: [propext]\n'AnnealResearch.ByteMemory.overlap_snapshot' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.ByteMemory.partial_range_overwrite' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.ByteMemory.policies_distinct' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MiniRustReference",
+      "source_path": "experiments/opsem/AnnealResearch/MiniRustReference.lean",
+      "source_sha256": "f2974b04a15b378f930719a0ad8943e3313abccbabf108b6ad0d24a0478fc778",
+      "olean_sha256": "24e56587c8861782f464eceb401f329c86cfa752c3d958d55689253c32fecb4e",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8719,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MiniRustReference.checkPtr_zero' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.load_zero' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.store_empty' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.oversized_allocation' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.append_fresh' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.replace_other' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ReferenceInvariants",
+      "source_path": "experiments/opsem/AnnealResearch/ReferenceInvariants.lean",
+      "source_sha256": "18e7d810df82fe6620fc32bd6a69ad2b9b71b768c1d1baaeeba78086169741ec",
+      "olean_sha256": "90d00226cbb52e895a175b439bc3b68e763f77a5a385058e99570163555b464b",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.2089,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MiniRustReference.emptyStateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.checkPtr_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.load_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.store_not_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.free_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.free_preserves_StateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.store_preserves_StateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.allocateAt_preserves_StateWF' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.MiniRustReference.allocation_fresh_identity' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MiniRustFactored",
+      "source_path": "experiments/opsem/AnnealResearch/MiniRustFactored.lean",
+      "source_sha256": "92eca7fe012cdc43849ab09737fce72c7bbd627ff1776184170af48c2f810c98",
+      "olean_sha256": "b5655dccf7696c10c755cccbd28a2b02e791b4cacdd2e87151282fa1ba3f205c",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.1146,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MiniRustFactored.reify_encode' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustFactored.resolve_reify' depends on axioms: [propext]\n'AnnealResearch.MiniRustFactored.load_reify' depends on axioms: [propext]\n'AnnealResearch.MiniRustFactored.store_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustFactored.free_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustFactored.allocateAt_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustFactored.dereferenceable_reify' depends on axioms: [propext]\n'AnnealResearch.MiniRustFactored.exit_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustFactored.Allocate_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustFactored.Allocate_coverage' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryInvariants",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryInvariants.lean",
+      "source_sha256": "4da8e16c81e9b786eea9df29e436cd9b2e7459e5937d461af3f55ffe626b8225",
+      "olean_sha256": "1c863953c650d04a84b4d23fa798696e98e3b5e894ad39d4ba37e15f677f8d3a",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4055,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MemoryInvariants.encode_targetWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.encode_related' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.targetWF_of_related' does not depend on any axioms\n'AnnealResearch.MemoryInvariants.empty_targetWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.target_load_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MemoryInvariants.target_store_not_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.target_free_not_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.target_store_preserves_WF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.target_free_preserves_WF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryInvariants.target_allocateAt_preserves_WF' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.Execution",
+      "source_path": "experiments/opsem/AnnealResearch/Execution.lean",
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_sha256": "80245392778049029caff66583762021428113a0be089311a3843fc03f8c9125",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5801,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.Execution.invariant_noUB' does not depend on any axioms\n'AnnealResearch.Execution.invariant_verified' does not depend on any axioms\n'AnnealResearch.Execution.NoUB.after_step' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.spin_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.spin_progresses_forever' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_noUB' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_not_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.empty_demonic_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.quantifier_exchange_fails' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.greatestSafety_unfold' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety' depends on axioms: [propext]\n'AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator' does not depend on any axioms\n'AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.PrefixTransfer",
+      "source_path": "experiments/opsem/AnnealResearch/PrefixTransfer.lean",
+      "source_sha256": "764328f9a7dcc13a32ab86f3bdfd3f23194ec95f5982621b21a519b643b360f9",
+      "olean_sha256": "249a7a639c035d52222613f968033383a5364db5080ae28a9df4a05b4ad23c24",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4874,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.PrefixTransfer.reachable_coverage' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.bad_prefix_coverage' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.sourceSafety_of_coverage' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.sourceSafety' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.safety_does_not_establish_progress' depends on axioms: [propext]\n'AnnealResearch.PrefixTransfer.ZeroStep.zero_step_matching_does_not_transfer_termination' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.ZeroStep.source_safe' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.completed_output_agreement' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.hidden_bad_prefix_before_divergence' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.output_agreement_does_not_transfer_safety' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.omitted_bad_boundary_rejects_simulation' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.no_bad_reflecting_cover' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryExecution",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryExecution.lean",
+      "source_sha256": "0caa2ac61c36ab17aa1ce7a7279358830c6f0b1c6acdacb4021908364db2f4e2",
+      "olean_sha256": "57c5a4abb85bbf40657f49bec7109af933b1b0c67f34c2c60244fb67c2bc7eac",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.0859,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MemoryExecution.execute_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExecution.source_simulation' depends on axioms: [propext]\n'AnnealResearch.MemoryExecution.target_simulation' depends on axioms: [propext]\n'AnnealResearch.MemoryExecution.memory_prefix_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExecution.memory_noUB_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExecution.encoded_noUB_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExecution.empty_choice_safe_without_progress' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryExamples",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryExamples.lean",
+      "source_sha256": "b2c5057431b808313da5c4d782d7761f506f2411959b42054bc0c41e05f0f1f6",
+      "olean_sha256": "3341d94fab8d73f409f325f836bbde106a5ca304c4b05b2efd0d689f25d486a2",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.9343,
+      "children_maxrss_kb": 824944,
+      "stdout": "/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/MemoryExamples.lean:62:34: warning: Try `simp at premise` instead of `simpa using premise`\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\n/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/MemoryExamples.lean:65:34: warning: Try `simp at premise` instead of `simpa using premise`\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\n/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/MemoryExamples.lean:142:6: warning: try 'simp' instead of 'simpa'\n\nNote: This linter can be disabled with `set_option linter.unnecessarySimpa false`\n'AnnealResearch.MemoryExamples.fresh_round' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.rounds_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.sequenceRounds_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.sequence_plain_blocks_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.repeated_plain_blocks_spin' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.repeated_plain_blocks_exit' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.actual_reuse_chain' depends on axioms: [propext]\n'AnnealResearch.MemoryExamples.stale_identity_mutation_control' depends on axioms: [propext]\n'AnnealResearch.MemoryExamples.alignment_precedes_zero_length' depends on axioms: [propext]\n'AnnealResearch.MemoryExamples.wrong_free_order_control' does not depend on any axioms\n'AnnealResearch.MemoryExamples.raw_uninit_control' does not depend on any axioms\n'AnnealResearch.MemoryExamples.minted_fragment_admitted' does not depend on any axioms\n'AnnealResearch.MemoryExamples.minted_fragment_roundtrip' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryExamples.leak_is_distinct_from_ub' depends on axioms: [propext]\n'AnnealResearch.MemoryExamples.bad_prefix_before_spin' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryBoundaryControls",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryBoundaryControls.lean",
+      "source_sha256": "9ce36a593859154616f5178fbe38e1e522451f522670b8aae2e229d11296776c",
+      "olean_sha256": "8245ea75fd0ae6ae145ac8baab630d2643a655e130ae4515f82942c6fdcc4719",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4849,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MemoryBoundaryControls.no_candidate_at_address_limit' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryBoundaryControls.impossible_alignment_admitted' does not depend on any axioms\n'AnnealResearch.MemoryBoundaryControls.impossible_alignment_no_choice' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryBoundaryControls.actual_empty_choice_no_progress' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryBoundaryControls.oversized_before_choice' depends on axioms: [propext]\n'AnnealResearch.MemoryBoundaryControls.remaining_free_error_order' does not depend on any axioms\n'AnnealResearch.MemoryBoundaryControls.aligned_zero_length_controls' depends on axioms: [propext]\n'AnnealResearch.MemoryBoundaryControls.mutated_bad_then_spin_safe' depends on axioms: [propext]\n'AnnealResearch.MemoryBoundaryControls.mutation_invalidates_safety_transfer' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryWitnesses",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryWitnesses.lean",
+      "source_sha256": "abd6ab79cece08918c06a9fb3f67c919de0372360b61f26ac0b003537836f1fa",
+      "olean_sha256": "a59847af27853cecdb2b0269b32b7b5e70f97d288224046b80ebc69557b8f9b9",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.0633,
+      "children_maxrss_kb": 824944,
+      "stdout": "/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/MemoryWitnesses.lean:31:18: warning: This simp argument is unused:\n  found\n\nHint: Omit it from the simp argument list.\n  [apply] simp\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/MemoryWitnesses.lean:34:10: warning: This simp argument is unused:\n  found\n\nHint: Omit it from the simp argument list.\n  [apply] simp [notLive]\n\nNote: This linter can be disabled with `set_option linter.unusedSimpArgs false`\n'AnnealResearch.MemoryWitnesses.noLive_candidate_one' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.store_liveBit' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.free_liveBit' depends on axioms: [propext]\n'AnnealResearch.MemoryWitnesses.fresh_round_noLive' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.one_round_reach' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.rounds_reach' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.sequence_reach' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.spinRun_steps' depends on axioms: [propext]\n'AnnealResearch.MemoryWitnesses.empty_rounds_reach_spin' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.empty_sequence_reach_spin' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.noLive_exit' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryWitnesses.empty_sequence_reach_exit' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.BorrowFrame",
+      "source_path": "experiments/opsem/AnnealResearch/BorrowFrame.lean",
+      "source_sha256": "d30344a69080a615ac84f7ee3dedc101cb958d8f8e16360da8fc2b3c66d62c9e",
+      "olean_sha256": "0c9cc6f4ec139a27ed73f2eb4095594caf6e5ad9cb6ff47372e0c431e450362f",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7172,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.BorrowFrame.perform_spatial_frame' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.local_permission_triple' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.frame_triple' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.same_byte_frame_of_stability' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.read_forever_noUB' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.read_forever_with_frame' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.TagCounterexample.disjoint_tags_do_not_frame' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.TagCounterexample.later_local_write_has_UB' depends on axioms: [propext]\n'AnnealResearch.BorrowFrame.protector_end_is_not_pure_erase' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryPermissions",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryPermissions.lean",
+      "source_sha256": "7c0f2822838ac922f97cacc15f3b9584c3d3d06520f8a62f3789d455dfb17777",
+      "olean_sha256": "dafcfe4a8846eab5fd5f30ed95b93caf12b8c04e51a5f9f27cac63376c582b38",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.1206,
+      "children_maxrss_kb": 824944,
+      "stdout": "'AnnealResearch.MemoryPermissions.reify_encode' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.decodeInitialized_map' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.read_reify' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.write_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.run_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.encoded_run' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.Fixtures.stable_raw_read' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.stable_typed_read' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.stable_write' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.alias_raw_read' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.alias_read_freezes' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.alias_typed_read' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.alias_write_fails' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.uninit_typed_read_retains_permissions' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.uninit_later_write_fails' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.basic_alignment_precedes_permission_and_decode' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.permission_precedes_initialized_value_check' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.unsupported_alignment_is_preserved' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.initialized_fragment_is_accepted' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissions.Fixtures.liveMemory_WF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.Fixtures.pointer0_WF' does not depend on any axioms\n'AnnealResearch.MemoryPermissions.Fixtures.pointer1_WF' does not depend on any axioms\n'AnnealResearch.MemoryPermissions.Fixtures.stable_WF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.Fixtures.aliasing_WF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissions.Fixtures.uninit_WF' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.PermissionCleanup",
+      "source_path": "experiments/opsem/AnnealResearch/PermissionCleanup.lean",
+      "source_sha256": "dec79e5020cad153fb38a9c94ba08a437d184b2beda656cd5e297943c53d0621",
+      "olean_sha256": "0cca22e824985ce40aa914b83d09adc39c924600bb6408d584dcc6da376b0cf7",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 3.0638,
+      "children_maxrss_kb": 826672,
+      "stdout": "'AnnealResearch.PermissionCleanup.cleanup_prefix_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.cleanup_noUB_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.encoded_cleanup_prefix_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.encoded_cleanup_noUB_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.map_observations' does not depend on any axioms\n'AnnealResearch.PermissionCleanup.run_to_read' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.run_good' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.run_read_failure' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.run_write_failure' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.read_failure_not_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.write_failure_not_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.consumed_obligation_retains_payload_state' does not depend on any axioms\n'AnnealResearch.PermissionCleanup.kernel_failure_retains_state' does not depend on any axioms\n'AnnealResearch.PermissionCleanup.unsupported_is_separate' does not depend on any axioms\n'AnnealResearch.PermissionCleanup.noChoice_has_no_successor' does not depend on any axioms\n'AnnealResearch.PermissionCleanup.good_cleanup_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.actual_infinite_continuation' depends on axioms: [propext]\n'AnnealResearch.PermissionCleanup.Concrete.initialized_cleanup_run' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.Concrete.initialized_cleanup_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.Concrete.consumed_payload_still_readable' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.Concrete.actual_written_payload' depends on axioms: [propext]\n'AnnealResearch.PermissionCleanup.Concrete.permission_only_write_failure' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.Concrete.uninitialized_cleanup_failure' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.Concrete.bad_before_would_be_spin' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionCleanup.Concrete.initialized_cleanup_has_safe_infinite_continuation' depends on axioms: [propext,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.PermissionControls",
+      "source_path": "experiments/opsem/AnnealResearch/PermissionControls.lean",
+      "source_sha256": "e376b60169beeb7d0a93b17ea8729e14e7d73ca3c37e2b1dea660616a6cabf6a",
+      "olean_sha256": "87ad6235dfcc35210a8ceba40368e172236c13e8b0156685d16602827f0a7ba1",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6723,
+      "children_maxrss_kb": 826672,
+      "stdout": "'AnnealResearch.PermissionControls.AdmittedInputs.fragment_raw_read' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.AdmittedInputs.fragment_initialized_read' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.AdmittedInputs.fragment_memory_WF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.AdmittedInputs.fragment_pointer_WF' does not depend on any axioms\n'AnnealResearch.PermissionControls.AdmittedInputs.onePast_pointer_WF' does not depend on any axioms\n'AnnealResearch.PermissionControls.AdmittedInputs.onePast_bounds_before_permission' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.AdmittedInputs.onePast_admitted_but_access_fails' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.PermissionControls.DisjointCleanup.body_freezes_its_byte_only' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.DisjointCleanup.payload_read' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.DisjointCleanup.payload_write' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.DisjointCleanup.actual_payload_after_write' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.DisjointCleanup.cleanup_run' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.DisjointCleanup.cleanup_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.DisjointCleanup.cleanup_reaches_finish' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.DisjointCleanup.cleanup_has_actual_infinite_continuation' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.discarded_read_memory_projection' does not depend on any axioms\n'AnnealResearch.PermissionControls.ReadMutation.same_command_memory_and_result' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.failure_residual_is_not_discarded' does not depend on any axioms\n'AnnealResearch.PermissionControls.ReadMutation.writes_are_unchanged' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.body_read_discards_freezing' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.payload_read_discards_freezing' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.payload_write_succeeds' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.original_cleanup_fails' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.ReadMutation.original_bad_has_no_continuation' depends on axioms: [propext]\n'AnnealResearch.PermissionControls.ReadMutation.mutant_cleanup_run' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.ReadMutation.mutant_cleanup_safe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PermissionControls.ReadMutation.mutation_invalidates_cleanup_safety' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.PermissionControls.ReadMutation.mutant_has_actual_infinite_continuation' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MemoryPermissionInvariants",
+      "source_path": "experiments/opsem/AnnealResearch/MemoryPermissionInvariants.lean",
+      "source_sha256": "633d5b9a0e99f7e52810de8ea3eb435b0c280f333489f2418adfd8b1ab818243",
+      "olean_sha256": "2d537a14d0348be743a2c04820fc82c0518523cefe2ef988597aff9e407ea5c3",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6081,
+      "children_maxrss_kb": 826672,
+      "stdout": "'AnnealResearch.MemoryPermissionInvariants.load_success_memory' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissionInvariants.read_residual_memory' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissionInvariants.read_preserves_MemoryWF' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissionInvariants.decode_preserves_residual' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissionInvariants.write_preserves_MemoryWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.runCoupled_preserves_MemoryWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.runFactored_preserves_MemoryWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.handle_preserves_property' depends on axioms: [propext]\n'AnnealResearch.MemoryPermissionInvariants.cleanup_step_preserves_MemoryWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.cleanup_reachable_MemoryWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.factored_cleanup_reachable_MemoryWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.admitted_aliasing_cleanup_is_unsafe' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.admitted_uninitialized_cleanup_is_unsafe' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.MemoryPermissionInvariants.aliasing_bad_residual_is_MemoryWF' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    }
+  ]
+}

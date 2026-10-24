@@ -1,0 +1,1006 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "host": "x86_64-unknown-linux-gnu",
+  "command_flags": [
+    "lean",
+    "-j1",
+    "-M2048"
+  ],
+  "target_modules": [
+    "AtomicMessagePassing",
+    "AtomicMessagePassingControls",
+    "AtomicPrefixExecution",
+    "AtomicPrefixRules",
+    "AtomicPrefixCoverage"
+  ],
+  "topological_order": [
+    "MiniRustReference",
+    "AtomicMessagePassing",
+    "AtomicMessagePassingControls",
+    "Execution",
+    "AtomicPrefixExecution",
+    "AtomicPrefixRules",
+    "AtomicPrefixCoverage"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.MiniRustReference",
+      "is_target_module": false,
+      "source_path": "experiments/opsem/AnnealResearch/MiniRustReference.lean",
+      "source_sha256": "f2974b04a15b378f930719a0ad8943e3313abccbabf108b6ad0d24a0478fc778",
+      "olean_sha256": "24e56587c8861782f464eceb401f329c86cfa752c3d958d55689253c32fecb4e",
+      "exit_code": 0,
+      "wall_seconds": 0.8979,
+      "audit_count": 6,
+      "axiom_free_count": 0,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.MiniRustReference.checkPtr_zero",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.MiniRustReference.load_zero",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.MiniRustReference.store_empty",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.MiniRustReference.oversized_allocation",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.MiniRustReference.append_fresh",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.MiniRustReference.replace_other",
+          "axioms": [
+            "propext"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.MiniRustReference.checkPtr_zero' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.load_zero' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.store_empty' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.oversized_allocation' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.append_fresh' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.replace_other' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.AtomicMessagePassing",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/AtomicMessagePassing.lean",
+      "source_sha256": "869ce51f5c4ca92a58015ea5ed1764052f37597e4e0ce6a8ad50e3485abddddd",
+      "olean_sha256": "3ae6ab964c0e498ba436d85f4cd0136be5809267bbc99dc20bfe5a2b665461c2",
+      "exit_code": 0,
+      "wall_seconds": 1.8135,
+      "audit_count": 28,
+      "axiom_free_count": 3,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.mo_irreflexive",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.mo_transitive",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.mo_same_location",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.mo_total_per_location",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.hb_rank",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.hb_acyclic",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.no_read_hb_write",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.relaxed_cut",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.data_hb_read",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.flag_supplier",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.data_supplier",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.flag_one_supplier",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.rules_of_write_read",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.ra_flag_one_data_one",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.both_stores_rules",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.relaxed_stale_rules",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.witness_values",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.latest_flag_one_data_one",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.stale_not_latest",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.sequentialSchedule",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.sequential_both_stores_latest",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.run_candidate_observed",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.run_candidate_ordinary_ub",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.run_candidate_unsupported",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.flag_zero_outside",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.ordinary_ub_mode_independent",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.gates_relabel",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassing.run_candidate_relabel",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.AtomicMessagePassing.mo_irreflexive' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.mo_transitive' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.mo_same_location' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.mo_total_per_location' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.hb_rank' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.hb_acyclic' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.no_read_hb_write' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.relaxed_cut' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassing.data_hb_read' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.flag_supplier' does not depend on any axioms\n'AnnealResearch.AtomicMessagePassing.data_supplier' does not depend on any axioms\n'AnnealResearch.AtomicMessagePassing.flag_one_supplier' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.rules_of_write_read' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.ra_flag_one_data_one' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.both_stores_rules' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.relaxed_stale_rules' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassing.witness_values' does not depend on any axioms\n'AnnealResearch.AtomicMessagePassing.latest_flag_one_data_one' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.stale_not_latest' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.sequentialSchedule' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.sequential_both_stores_latest' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.run_candidate_observed' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicMessagePassing.run_candidate_ordinary_ub' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassing.run_candidate_unsupported' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassing.flag_zero_outside' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicMessagePassing.ordinary_ub_mode_independent' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassing.gates_relabel' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassing.run_candidate_relabel' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.AtomicMessagePassingControls",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/AtomicMessagePassingControls.lean",
+      "source_sha256": "45c01ff675970c43cbd6d76f035ed8f4f7a62b676518d5152114378c24009f76",
+      "olean_sha256": "2067ea0de3e3c6af49542b414e8f71f28b0851375b80e2cacc07438df83645dc",
+      "exit_code": 0,
+      "wall_seconds": 0.7628,
+      "audit_count": 37,
+      "axiom_free_count": 2,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.observed_sound",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.ra_observed_values",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.ra_no_observed_stale",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.initial_StateWF",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.initial_operand_admission",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.initial_initialized",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.selected_shape",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_raw_zero_loads",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_positive_gates",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_ra",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_relaxed_stale",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.wrong_supplier_same_values",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.wrong_supplier_not_valid",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.wrong_supplier_not_rules",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_wrong_supplier",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_pointer",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_handle_distinct",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_actual_location",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_actual_gates",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_substitution",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_rules_substitution",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.alias_selected_graph",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_alias_outcomes",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_no_provenance_load",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_dead_load",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_misalignment_before_bounds",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_no_provenance_gates",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_dead_gates",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_misaligned_gates",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_no_provenance_result",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_dead_result",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.actual_misaligned_result",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.invalid_no_observation",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.invalid_ordering_independent",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.zero_flag_bad_B_outside",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.zero_flag_bad_producer_outside",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicMessagePassingControls.latest_alternative_controls",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.AtomicMessagePassingControls.observed_sound' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.ra_observed_values' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.ra_no_observed_stale' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.initial_StateWF' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.initial_operand_admission' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.initial_initialized' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.selected_shape' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_raw_zero_loads' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_positive_gates' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_ra' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_relaxed_stale' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.wrong_supplier_same_values' does not depend on any axioms\n'AnnealResearch.AtomicMessagePassingControls.wrong_supplier_not_valid' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.wrong_supplier_not_rules' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_wrong_supplier' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.alias_pointer' does not depend on any axioms\n'AnnealResearch.AtomicMessagePassingControls.alias_handle_distinct' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.alias_actual_location' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.alias_actual_gates' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.alias_substitution' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.alias_rules_substitution' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.alias_selected_graph' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_alias_outcomes' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_no_provenance_load' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_dead_load' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_misalignment_before_bounds' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_no_provenance_gates' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_dead_gates' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_misaligned_gates' depends on axioms: [propext]\n'AnnealResearch.AtomicMessagePassingControls.actual_no_provenance_result' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_dead_result' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.actual_misaligned_result' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.invalid_no_observation' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.invalid_ordering_independent' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.zero_flag_bad_B_outside' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.zero_flag_bad_producer_outside' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.AtomicMessagePassingControls.latest_alternative_controls' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.Execution",
+      "is_target_module": false,
+      "source_path": "experiments/opsem/AnnealResearch/Execution.lean",
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_sha256": "80245392778049029caff66583762021428113a0be089311a3843fc03f8c9125",
+      "exit_code": 0,
+      "wall_seconds": 0.5898,
+      "audit_count": 16,
+      "axiom_free_count": 8,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.Execution.invariant_noUB",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.invariant_verified",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.NoUB.after_step",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.spin_verified",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.spin_progresses_forever",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.unsupported_noUB",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.unsupported_not_verified",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.empty_demonic_verified",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.quantifier_exchange_fails",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.greatestSafety_unfold",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction",
+          "axioms": []
+        }
+      ],
+      "stdout": "'AnnealResearch.Execution.invariant_noUB' does not depend on any axioms\n'AnnealResearch.Execution.invariant_verified' does not depend on any axioms\n'AnnealResearch.Execution.NoUB.after_step' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.spin_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.spin_progresses_forever' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_noUB' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_not_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.empty_demonic_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.quantifier_exchange_fails' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.greatestSafety_unfold' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety' depends on axioms: [propext]\n'AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator' does not depend on any axioms\n'AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.AtomicPrefixExecution",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/AtomicPrefixExecution.lean",
+      "source_sha256": "6c612cbd6502fd0c0832b9897d703e7bfff63c79480dac38e294b76aa2f7e50c",
+      "olean_sha256": "3c2cfaff0e039a5215ecd8e1445c739c097467fae38e31782895f244e7bbf2be",
+      "exit_code": 0,
+      "wall_seconds": 1.4983,
+      "audit_count": 13,
+      "axiom_free_count": 1,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.checkPtr_two_not_none",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.store_success_checked",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.load_success_checked",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.scheduled_store_success",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.store_step_threads_raw",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.ub_step_iff",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.unsupported_step_iff",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.noChoice_no_issue",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.terminal_no_step",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.fault_residual",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.badD_first",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.badD_not_noUB",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixExecution.healthyD_actual",
+          "axioms": [
+            "propext"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.AtomicPrefixExecution.checkPtr_two_not_none' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.store_success_checked' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.load_success_checked' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.scheduled_store_success' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.store_step_threads_raw' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.ub_step_iff' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.unsupported_step_iff' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.noChoice_no_issue' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.terminal_no_step' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.fault_residual' does not depend on any axioms\n'AnnealResearch.AtomicPrefixExecution.badD_first' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.badD_not_noUB' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixExecution.healthyD_actual' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.AtomicPrefixRules",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/AtomicPrefixRules.lean",
+      "source_sha256": "121cfcd44d625e4164f80c98869298f6749a617d229f30472eeb4a839ba5dcb4",
+      "olean_sha256": "2095d9fd0c49d08798844f5b29ef6c019cb4daa8924e5462036f2d09b77a244a",
+      "exit_code": 0,
+      "wall_seconds": 1.4781,
+      "audit_count": 20,
+      "axiom_free_count": 0,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.checked_lookup",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.store_preserves_info",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.successful_span",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.issued_unique",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.scheduled_store_fresh",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.scheduled_read_empty",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.pending_reads",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.structure_store",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.structure_read",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.sameGraph_rules",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.rules_from_full",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.store_coherent",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.scheduled_store_coherent",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.root_prefix_invariant",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.root_prefix_coherent",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.complete_hb_iff",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.complete_mo_iff",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.complete_selected_rules",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.completed_operands",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixRules.completed_flag_one_bridge",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.AtomicPrefixRules.checked_lookup' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.store_preserves_info' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.successful_span' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.issued_unique' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.scheduled_store_fresh' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.scheduled_read_empty' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.pending_reads' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.structure_store' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.structure_read' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.sameGraph_rules' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.rules_from_full' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.store_coherent' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.scheduled_store_coherent' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.root_prefix_invariant' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.root_prefix_coherent' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.complete_hb_iff' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.complete_mo_iff' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.complete_selected_rules' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixRules.completed_operands' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixRules.completed_flag_one_bridge' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.AtomicPrefixCoverage",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/AtomicPrefixCoverage.lean",
+      "source_sha256": "25b051bab35d64da7c496b2f074be2a0afeb708888bb3d660eb2fc9063f4976a",
+      "olean_sha256": "caac2bd53a88b4c4ea2aa3309fd0be4cbede45861241e5a6c755cb1e1c37e9ad",
+      "exit_code": 0,
+      "wall_seconds": 1.2861,
+      "audit_count": 15,
+      "axiom_free_count": 0,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.initial_gates_ok",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.project_complete",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.completed_sound",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.projected_sound",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.prepare_read",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.guard_from_full",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.afterDF_raw",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.producer_read_steps",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.producer_first_run",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.producer_first_observations",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.old_observed_facts",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.old_observed_covered",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.ra_completed_values",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.root_trace_history",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.AtomicPrefixCoverage.root_flag_zero_no_B",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.AtomicPrefixCoverage.initial_gates_ok' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.project_complete' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixCoverage.completed_sound' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.projected_sound' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.prepare_read' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.guard_from_full' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.afterDF_raw' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixCoverage.producer_read_steps' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.producer_first_run' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.producer_first_observations' depends on axioms: [propext]\n'AnnealResearch.AtomicPrefixCoverage.old_observed_facts' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.old_observed_covered' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.ra_completed_values' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.root_trace_history' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.AtomicPrefixCoverage.root_flag_zero_no_B' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    }
+  ],
+  "target_summary": {
+    "target_module_count": 5,
+    "total_dependency_and_target_runs": 7,
+    "target_audit_count": 113,
+    "target_axiom_free_count": 6,
+    "target_wall_seconds": 6.8388
+  }
+}

@@ -1,0 +1,1589 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "TreePermissions",
+    "TreeReference",
+    "TreeFactored",
+    "TreeCorrespondence",
+    "TreeQueries",
+    "TreeOperations",
+    "TreeTraversal",
+    "TreeAgreement",
+    "TreeReleaseAgreement",
+    "TreeMemory",
+    "TreeMemoryControls",
+    "TreeExceptions",
+    "TreeExit",
+    "TreePairing",
+    "TreeLookup",
+    "TreeNodeUpdate",
+    "TreeUnprotect",
+    "TreeValidated",
+    "TreeNodePathUpdate",
+    "TreeUnprotectAgreement",
+    "TreeUnprotectTotal",
+    "TreeUnprotectWidths",
+    "TreeFactoredMemory",
+    "TreeMemoryAgreement",
+    "TreeMemoryOperations",
+    "TreeMemoryReleaseAgreement",
+    "TreeMemoryPairing",
+    "TreeMemoryCompositionControls",
+    "TreeRawGeometry",
+    "TreeTraversalGeometry",
+    "TreeTraversalGeometryPublic",
+    "TreeMemoryDomain",
+    "TreeMemoryPreservation",
+    "TreeGeometryControls",
+    "TreeMemoryClient",
+    "TreeMemoryPrefixes",
+    "TreeMemoryPrefixAgreement",
+    "TreeMemoryPrefixControls",
+    "TreeEncoding",
+    "TreeMemoryEncoding",
+    "TreeEncodingNormalization",
+    "TreeEncodingControls",
+    "TreeEncodedPrefixes",
+    "TreeGraft",
+    "TreeKindPreservation",
+    "TreeGraftPaths",
+    "TreeKindAccess",
+    "TreeReleaseKinds",
+    "TreeInsertionAgreement",
+    "TreeLiveKinds",
+    "TreeUnprotectKinds",
+    "TreeInsertionWidths",
+    "TreeLiveKindControls",
+    "TreeLiveMemory",
+    "TreeInitialAgreement",
+    "TreeLiveRelease",
+    "TreeReleaseKindControls",
+    "TreeFactoredReborrow",
+    "TreeInsertionControls",
+    "TreeLivePrefixes",
+    "TreeReborrowKinds",
+    "TreeReborrowAgreement",
+    "TreeReborrowDomain",
+    "TreeReborrowStateControls",
+    "TreeLiveTransfer",
+    "TreeReborrowPairedControls",
+    "TreeReborrowClient",
+    "TreeReborrowLive",
+    "TreeReborrowPrefixes",
+    "TreeReborrowClientControls",
+    "TreeReborrowClientCoverage",
+    "TreeReborrowHistory",
+    "TreeAllocation",
+    "TreeAllocationAdmissionControls",
+    "TreeAllocationDomain",
+    "TreeAllocationFreshness",
+    "TreeAllocationMutationControls",
+    "TreeAllocationChoices",
+    "TreeAllocationControls",
+    "TreeChoiceClient",
+    "TreeChoicePrefixes",
+    "TreeChoiceLive",
+    "TreeChoiceControls",
+    "TreeChoiceCoverage",
+    "TreeEndCall",
+    "TreeEndCallProperties",
+    "TreeEndCallConstructed",
+    "TreeEndCallFailureControls",
+    "HelperValueHeap",
+    "HelperNestedMutation",
+    "HelperValueControls"
+  ],
+  "topological_order": [
+    "TreePermissions",
+    "TreeReference",
+    "TreeFactored",
+    "TreeCorrespondence",
+    "TreeQueries",
+    "TreeOperations",
+    "TreeTraversal",
+    "TreeAgreement",
+    "TreeReleaseAgreement",
+    "MiniRustReference",
+    "TreeMemory",
+    "TreeMemoryControls",
+    "TreeExceptions",
+    "TreeExit",
+    "TreePairing",
+    "TreeLookup",
+    "TreeNodeUpdate",
+    "TreeUnprotect",
+    "TreeValidated",
+    "TreeNodePathUpdate",
+    "TreeUnprotectAgreement",
+    "TreeUnprotectTotal",
+    "TreeUnprotectWidths",
+    "TreeFactoredMemory",
+    "TreeMemoryAgreement",
+    "TreeMemoryOperations",
+    "TreeMemoryReleaseAgreement",
+    "TreeMemoryPairing",
+    "TreeMemoryCompositionControls",
+    "TreeRawGeometry",
+    "TreeTraversalGeometry",
+    "TreeTraversalGeometryPublic",
+    "TreeMemoryDomain",
+    "TreeMemoryPreservation",
+    "TreeGeometryControls",
+    "TreeMemoryClient",
+    "TreeMemoryPrefixes",
+    "TreeMemoryPrefixAgreement",
+    "TreeMemoryPrefixControls",
+    "TreeEncoding",
+    "TreeMemoryEncoding",
+    "TreeEncodingNormalization",
+    "TreeEncodingControls",
+    "TreeEncodedPrefixes",
+    "TreeGraft",
+    "TreeKindPreservation",
+    "TreeGraftPaths",
+    "TreeKindAccess",
+    "TreeReleaseKinds",
+    "TreeInsertionAgreement",
+    "TreeLiveKinds",
+    "TreeUnprotectKinds",
+    "TreeInsertionWidths",
+    "TreeLiveKindControls",
+    "TreeLiveMemory",
+    "TreeInitialAgreement",
+    "TreeLiveRelease",
+    "TreeReleaseKindControls",
+    "TreeFactoredReborrow",
+    "TreeInsertionControls",
+    "TreeLivePrefixes",
+    "TreeReborrowKinds",
+    "TreeReborrowAgreement",
+    "TreeReborrowDomain",
+    "TreeReborrowStateControls",
+    "TreeLiveTransfer",
+    "TreeReborrowPairedControls",
+    "TreeReborrowClient",
+    "TreeReborrowLive",
+    "TreeReborrowPrefixes",
+    "TreeReborrowClientControls",
+    "TreeReborrowClientCoverage",
+    "TreeReborrowHistory",
+    "TreeAllocation",
+    "ReferenceInvariants",
+    "TreeAllocationAdmissionControls",
+    "TreeAllocationDomain",
+    "TreeAllocationFreshness",
+    "TreeAllocationMutationControls",
+    "TreeAllocationChoices",
+    "TreeAllocationControls",
+    "TreeChoiceClient",
+    "TreeChoicePrefixes",
+    "TreeChoiceLive",
+    "TreeChoiceControls",
+    "TreeChoiceCoverage",
+    "TreeEndCall",
+    "TreeEndCallProperties",
+    "TreeEndCallConstructed",
+    "TreeEndCallFailureControls",
+    "HelperValueHeap",
+    "HelperNestedMutation",
+    "HelperValueControls"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.TreePermissions",
+      "source_path": "experiments/opsem/AnnealResearch/TreePermissions.lean",
+      "source_sha256": "fd0ca0946219fabc2f3116d602e2d275e4418050cb228a38d4680700dc041836",
+      "olean_sha256": "36c9035af053405facb3edee66735852fd40b3859d4992c07ef809c1d41cff91",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.9418,
+      "children_maxrss_kb": 812312,
+      "stdout": "'AnnealResearch.TreePermissions.transition_preserves_kind' depends on axioms: [propext]\n'AnnealResearch.TreePermissions.transition_preserves_matching' depends on axioms: [propext]\n'AnnealResearch.TreePermissions.unprotected_foreign_never_UB' depends on axioms: [propext]\n'AnnealResearch.TreePermissions.prevention_iff_protected_foreign_write_UB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreePermissions.protected_history_updates' does not depend on any axioms\n'AnnealResearch.TreePermissions.reservation_foreign_read_blocks_activation' does not depend on any axioms\n'AnnealResearch.TreePermissions.unaccessed_protected_foreign_write' does not depend on any axioms\n'AnnealResearch.TreePermissions.initial_and_end_accesses' depends on axioms: [propext]\n'AnnealResearch.TreePermissions.cell_has_no_initial_end_or_block' depends on axioms: [propext]\n'AnnealResearch.TreePermissions.unprotect_unprotected_is_structurally_unsupported' does not depend on any axioms\n'AnnealResearch.TreePermissions.weak_and_strong_have_same_kind_test' does not depend on any axioms\n'AnnealResearch.TreePermissions.source_unique_write_diagnostic_typo' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReference",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReference.lean",
+      "source_sha256": "3b42ee60259f68a7c08775dd320ff6e3827d5e7e568653e11b4dbed79efd7636",
+      "olean_sha256": "344eda01cd65baebef6dbe25ea1cd60b4a3be9335b35b7899225c3e92c08a18f",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.6234,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeReference.find_root' depends on axioms: [propext]\n'AnnealResearch.TreeReference.modify_root' depends on axioms: [propext]\n'AnnealResearch.TreeReference.selected_children_are_foreign' depends on axioms: [propext]\n'AnnealResearch.TreeReference.selected_path_ancestor_is_local' does not depend on any axioms\n'AnnealResearch.TreeReference.release_selected_stops' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.release_no_flag_assert' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.unprotect_then_flag_still_set' depends on axioms: [propext]\n'AnnealResearch.TreeReference.unprotect_no_flag_unsupported' depends on axioms: [propext]\n'AnnealResearch.TreeReference.unprotect_unprot_unsupported' depends on axioms: [propext]\n'AnnealResearch.TreeReference.byte_prefix_failure_retains_prior_change' depends on axioms: [propext]\n'AnnealResearch.TreeReference.release_access_prefix_failure_retains_prior_change' depends on axioms: [propext]\n'AnnealResearch.TreeReference.ordered_children_failure_retains_trial' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.path_write_visits_grandchild_and_sibling' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.absent_path_is_structural' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReference.mixed_lengths_are_structural' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReference.compatibility_is_not_an_access_guard' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReference.strong_search_reaches_grandchild' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.weak_unique_does_not_block' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.strong_cell_and_empty_do_not_block' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReference.empty_array_matching_is_vacuous' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeFactored",
+      "source_path": "experiments/opsem/AnnealResearch/TreeFactored.lean",
+      "source_sha256": "0f531e1b010ef7be08fa3173159e59ea7d7a139e33e055d0169ba22731bae975",
+      "olean_sha256": "bb3ac3bf5c16d51d474cc7e677d33f67be9d9f6397c79c085d671b2055d50c6c",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.9255,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeFactored.overwrite_same' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.overwrite_other' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.selected_node_children_are_foreign' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.nodeRelation_some' does not depend on any axioms\n'AnnealResearch.TreeFactored.nodeRelation_none' does not depend on any axioms\n'AnnealResearch.TreeFactored.childPath_selected' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.transitionOffsets_zero' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.transitionOffsets_succ' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.releaseOffsets_none' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.releaseTree_selected' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.accessCore_topology' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.releaseCore_topology' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.unprotectAt_converted' depends on axioms: [propext]\n'AnnealResearch.TreeFactored.initialAccesses_nil' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeCorrespondence",
+      "source_path": "experiments/opsem/AnnealResearch/TreeCorrespondence.lean",
+      "source_sha256": "27a5cc0aa1dfa8aaddabe53c8e4784d6d2e07c6a3dee9eabd763f4fda145b0d8",
+      "olean_sha256": "78c6d5c67aadfd29977afa75be1434ec43ae4c2ed4dd252224066de5b2ab6f37",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7241,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeCorrespondence.reifyTree_congr' depends on axioms: [propext]\n'AnnealResearch.TreeCorrespondence.reifyForest_congr' depends on axioms: [propext]\n'AnnealResearch.TreeCorrespondence.reify_congr' depends on axioms: [propext]\n'AnnealResearch.TreeCorrespondence.overwrite_absent_preserves_reify' depends on axioms: [propext]\n'AnnealResearch.TreeCorrespondence.representedTree_length' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeCorrespondence.representedForest_length' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeCorrespondence.parent_absent_from_child_forest' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeCorrespondence.topologyOf_reifyTree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeCorrespondence.forestOf_reifyForest' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeCorrespondence.related_preserves_topology' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeCorrespondence.reified_is_related' does not depend on any axioms\n'AnnealResearch.TreeCorrespondence.resultRel_bind' depends on axioms: [propext]\n'AnnealResearch.TreeCorrespondence.resultRel_mapState' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeQueries",
+      "source_path": "experiments/opsem/AnnealResearch/TreeQueries.lean",
+      "source_sha256": "ecb860083337ac2d17a59c9933ebe61c57205b047c1187b14be216e091775b45",
+      "olean_sha256": "c25cea2a36485b4bf6a6864ecbffda28ca71ed7cb16edf9625a47128e7c4bfdb",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5987,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeQueries.nat_beq_decide' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.reifyTree_permissions' does not depend on any axioms\n'AnnealResearch.TreeQueries.reifyTree_protection' does not depend on any axioms\n'AnnealResearch.TreeQueries.containsStrongTree_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.containsStrongForest_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.arraysSizedTree_reify' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.arraysSizedForest_reify' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.kindsMatchTree_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.kindsMatchForest_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.containsStrong_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.arraysSized_reify' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.arrayLengths_reify_root' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.kindsMatch_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.related_containsStrong' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeQueries.related_arraysSized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.related_arrayLengths_root' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeQueries.related_kindsMatch' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeOperations",
+      "source_path": "experiments/opsem/AnnealResearch/TreeOperations.lean",
+      "source_sha256": "13087d6f9a43eb462a7ebcee2b5dce9bff883d2f05e99ccbc4a0fb846b882029",
+      "olean_sha256": "c188f56ddd07eaaab6d939c1846feef85f1fc0c90ba5cd0db986679e3e723603",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.9517,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeOperations.structural_roundtrip' does not depend on any axioms\n'AnnealResearch.TreeOperations.setPermissions_current' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeOperations.setPermissions_setPermissions' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeOperations.setPermissions_here' depends on axioms: [propext]\n'AnnealResearch.TreeOperations.setPermissions_other' depends on axioms: [propext]\n'AnnealResearch.TreeOperations.liftArray_resultRel' depends on axioms: [propext]\n'AnnealResearch.TreeOperations.transitionOffsets_prefix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeOperations.transitionRange_agrees' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeOperations.releaseOffsets_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeOperations.releaseArray_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeOperations.liftArray_frame' depends on axioms: [propext]\n'AnnealResearch.TreeOperations.transitionOffsets_frame' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeOperations.releaseOffsets_frame' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeTraversal",
+      "source_path": "experiments/opsem/AnnealResearch/TreeTraversal.lean",
+      "source_sha256": "c433d399e98625d370ea875a1b76240575fbe4861676c3aa962b9518af7f12c0",
+      "olean_sha256": "28d3c0d49989242a93f66d63c1041400279614686ef8c21b7bf898d035f401d1",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7301,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeTraversal.bind_preserves_at' does not depend on any axioms\n'AnnealResearch.TreeTraversal.transitionAt_preserves_other' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.transitionOffsets_preserves_other' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.releaseOffsets_preserves_other' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.setProtected_preserves_other' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.accessTree_preserves_outside' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.accessForest_preserves_outside' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.releaseTree_preserves_outside' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.releaseForest_preserves_outside' depends on axioms: [propext]\n'AnnealResearch.TreeTraversal.representedTree_suffix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.representedForest_branch' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.child_disjoint_later_forest' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.reifyForest_overwrite_parent' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.reifyTree_setPermissions' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.reifyTree_setProtected' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.accessChild_preserves_later' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.accessLater_preserves_child' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.releaseChild_preserves_later' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeTraversal.releaseLater_preserves_child' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAgreement.lean",
+      "source_sha256": "7fbd6a228bd085772bdbc34fe558bdeded68ac2bca00522a2ef3739e7caaca7a",
+      "olean_sha256": "f1be7d09d59dc3a63edc817878564d8e0412114b2b6420c786075fd2b16d3306",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6204,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeAgreement.translate_congr' does not depend on any axioms\n'AnnealResearch.TreeAgreement.translate_resultRel' depends on axioms: [propext]\n'AnnealResearch.TreeAgreement.forestArrays_congr' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAgreement.root_update_preserves_forest' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAgreement.accessTree_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAgreement.accessForest_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAgreement.accessCore_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAgreement.accessCore_resultRel' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReleaseAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReleaseAgreement.lean",
+      "source_sha256": "9f7eddf0f48113b9c44ef665184b2bf0413f80741ad52a6e0f91a79144c3a3e5",
+      "olean_sha256": "8b39f283b50117328ba784249e865c6771bc940a3c65c193a6a63d9c22b1603d",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5541,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeReleaseAgreement.releaseSelected_agrees' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseAgreement.releaseTree_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReleaseAgreement.releaseForest_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReleaseAgreement.releaseCore_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReleaseAgreement.releaseCore_resultRel' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MiniRustReference",
+      "source_path": "experiments/opsem/AnnealResearch/MiniRustReference.lean",
+      "source_sha256": "f2974b04a15b378f930719a0ad8943e3313abccbabf108b6ad0d24a0478fc778",
+      "olean_sha256": "24e56587c8861782f464eceb401f329c86cfa752c3d958d55689253c32fecb4e",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8883,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.MiniRustReference.checkPtr_zero' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.load_zero' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.store_empty' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.oversized_allocation' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.append_fresh' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.replace_other' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemory",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemory.lean",
+      "source_sha256": "605c2afead08cfce80995e75277b49e39a1fd566a86269cc53fed6e24fb61b14",
+      "olean_sha256": "36fa41186ed670aeb024a0d5c4ed86ec95ccb596bc303904fc71d445664df3a8",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8538,
+      "children_maxrss_kb": 819496,
+      "stdout": "'AnnealResearch.TreeMemory.zero_load_has_no_tree_hook' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemory.release_does_not_consume_frame' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryControls.lean",
+      "source_sha256": "1854d636ad5370d6b3ac1fe329b4a8fc8e0868e45baf74115b96196ca0113d2a",
+      "olean_sha256": "57981c8b7b6d040409a295154a6656f6a19c22395c59d4bf21872346a04e8ff5",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 2.3038,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryControls.construct_a' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.construct_b' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.construct_t_strong' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.construct_t_weak' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.full_strong_construction' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.full_weak_construction' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.actual_strong_write' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.actual_weak_write' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.strong_grandchild_blocks_free' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.omitted_recursion_changes_outcome' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.successful_live_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.free_after_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryControls.weak_used_grandchild_allows_free' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.successful_dead_weak_release' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryControls.dead_weak_release_refutes_global_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryControls.eager_commit_changes_failure_residual' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.construct_two_byte_history' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.two_byte_trial_retains_earlier_change' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.two_byte_public_store_rolls_back' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.live_failed_release_commits_conversion' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryControls.live_failure_matching_scope' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeExceptions",
+      "source_path": "experiments/opsem/AnnealResearch/TreeExceptions.lean",
+      "source_sha256": "cc15661f33adf1216eb9def69111d93cf963a1a8dc477c8907aa4b07f55da8ca",
+      "olean_sha256": "528a53bfc3dd8276d9590701bb8cc1d49c3121123983b4c9ee224dd4b668edf3",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.0754,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeExceptions.raw_allocate_zero' does not depend on any axioms\n'AnnealResearch.TreeExceptions.raw_allocate_one' does not depend on any axioms\n'AnnealResearch.TreeExceptions.raw_allocate_two' does not depend on any axioms\n'AnnealResearch.TreeExceptions.cell_initial_access_is_none' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExceptions.construct_shared_cell' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExceptions.strong_cell_deallocate' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExceptions.strong_cell_dead_release' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExceptions.strong_cell_matching_boundary' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExceptions.zero_inside_executes_no_initial_access' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExceptions.construct_true_empty' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExceptions.true_empty_deallocate' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExceptions.true_empty_dead_release' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExceptions.true_empty_matching_is_vacuous' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.construct_zero_reference_in_positive_storage' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.zero_reference_outside_is_unused' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExceptions.root_write_disables_unused_zero_reference' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.root_deallocate_allows_unused_zero_reference' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.zero_reference_dead_release' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExceptions.positive_storage_zero_reference_matching_boundary' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.child_write_activates_zero_reference' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.child_deallocate_blocks_zero_reference' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExceptions.deallocation_path_changes_outcome' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeExit",
+      "source_path": "experiments/opsem/AnnealResearch/TreeExit.lean",
+      "source_sha256": "21ead38eb2b2777470cd947bf11d9ff2672a0806c59911034787118231d6eef6",
+      "olean_sha256": "71bc3cb891da2b32bda621236eece2c5d43a2a27081915e1d4f689f0b75e60c5",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.71,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeExit.ub_never_resumes' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExit.detach_retains_obligations' does not depend on any axioms\n'AnnealResearch.TreeExit.successful_release_advances_cursor' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExit.failed_release_keeps_cursor' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExit.release_ignores_frame' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExit.Controls.weak_exit_first_release' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExit.Controls.weak_exit_completes' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeExit.Controls.completed_weak_exit_has_stale_flag' depends on axioms: [propext]\n'AnnealResearch.TreeExit.Controls.strong_exit_first_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExit.Controls.strong_exit_completes' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeExit.Controls.failed_live_exit_is_terminal' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeExit.Controls.failure_keeps_detached_obligation' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreePairing",
+      "source_path": "experiments/opsem/AnnealResearch/TreePairing.lean",
+      "source_sha256": "da5ef936ce9068fe9a1d349bdd37656c2da2ce4f3256f0c50484fdb70e1a59aa",
+      "olean_sha256": "c6560ef7aa7cd4c270d32b1c620fe75da3545ea7c6d61793fd4b2088070ac5b6",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6423,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreePairing.read_reify' depends on axioms: [propext]\n'AnnealResearch.TreePairing.write_reify' depends on axioms: [propext]\n'AnnealResearch.TreePairing.read_related' depends on axioms: [propext]\n'AnnealResearch.TreePairing.write_related' depends on axioms: [propext]\n'AnnealResearch.TreePairing.all_four_paths_present' does not depend on any axioms\n'AnnealResearch.TreePairing.read_uniform_arrays' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.write_uniform_arrays' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.read_public_arrays' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.write_public_arrays' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.read_strong_query' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreePairing.write_strong_query' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreePairing.read_kind_query' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreePairing.write_kind_query' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreePairing.initial_reify' depends on axioms: [propext]\n'AnnealResearch.TreePairing.initial_root_covered' depends on axioms: [propext]\n'AnnealResearch.TreePairing.constructed_strong_read_covered' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.constructed_weak_read_covered' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.actual_strong_write_covered' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.actual_weak_write_covered' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreePairing.absent_two' depends on axioms: [propext]\n'AnnealResearch.TreePairing.read_absent_entry_irrelevant' depends on axioms: [propext]\n'AnnealResearch.TreePairing.write_absent_entry_irrelevant' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLookup",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLookup.lean",
+      "source_sha256": "0c16439b234ab9039e12e6b4dda991d6b40c28197e20d8780f64551a922daf9e",
+      "olean_sha256": "d76e69d3efb8893c5911906354cb59089123a0a83afaa1d7134a6a11694796de",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5914,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLookup.reifyForest_get?' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.findNode_reifyTree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.reifyTree_shift' depends on axioms: [propext]\n'AnnealResearch.TreeLookup.reifyForest_shift' depends on axioms: [propext]\n'AnnealResearch.TreeLookup.findNode_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.findNode_isSome_reifyTree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.pathPresent_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.findNode_missing_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.findNode_found' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLookup.validPath_present' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeNodeUpdate",
+      "source_path": "experiments/opsem/AnnealResearch/TreeNodeUpdate.lean",
+      "source_sha256": "92e5ed1c71c81aaa8d34c322d80e724e897bb3150eefb778b14644e28edaaf30",
+      "olean_sha256": "18a6edea610ac524e45a5af8238e60bfe41a0791fc5a839ac3080fc5bac7e024",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5054,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeNodeUpdate.overwrite_current' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeNodeUpdate.entryOf_reifyTree' depends on axioms: [propext]\n'AnnealResearch.TreeNodeUpdate.reifyTree_overwrite_current' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeNodeUpdate.entryCallback_children' does not depend on any axioms\n'AnnealResearch.TreeNodeUpdate.entryCallback_reifyTree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeNodeUpdate.updateEntryAt_root' does not depend on any axioms\n'AnnealResearch.TreeNodeUpdate.modifyAt_root_agreement' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeUnprotect",
+      "source_path": "experiments/opsem/AnnealResearch/TreeUnprotect.lean",
+      "source_sha256": "340dc80852111f7d0416d31328ba03fa55da47609a459b0b0ba3efd1ec3fb709",
+      "olean_sha256": "1d3203c21e0de70379c7efabffe5f77747301b0e8e7dbd99f6485cf3caaf27af",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5396,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeUnprotect.unprotectPermissions_eq' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotect.unprotectPermissions_lengths' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotect.unprotectPermissions_failure' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotect.unprotectPermissions_success' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotect.unprotectEntry_protection' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeValidated",
+      "source_path": "experiments/opsem/AnnealResearch/TreeValidated.lean",
+      "source_sha256": "18cd6fa7e1c1d8898578c2a58917a62ed2a6daeeceb7899d328e72a8184b8e17",
+      "olean_sha256": "26ad884c89dcc3e1356c85cf6097fb00e3164dc347613ca8e91a6a6e8863956e",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5087,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeValidated.uniform_root_width' depends on axioms: [propext]\n'AnnealResearch.TreeValidated.uniform_arrayLengths' depends on axioms: [propext]\n'AnnealResearch.TreeValidated.access_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeValidated.access_resultRel' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeValidated.related_access' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeValidated.releaseTraverse_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeValidated.releaseTraverse_resultRel' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeValidated.releaseTraverse_at_width' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeValidated.related_releaseTraverse' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeNodePathUpdate",
+      "source_path": "experiments/opsem/AnnealResearch/TreeNodePathUpdate.lean",
+      "source_sha256": "85794c70ac3f8cb2bb4904907eb9a23e9cb8b9641e439069fc8aa221a6de646e",
+      "olean_sha256": "6f682676a8fbee06151f9b9167c186ea88213ed13d76707ad8b39127b94a5e53",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.612,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeNodePathUpdate.reifyTree_overwrite_other_branch' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeNodePathUpdate.reifyForest_overwrite_before' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeNodePathUpdate.reifyForest_replace_descendant' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeNodePathUpdate.reifyTree_modify_child' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeNodePathUpdate.entryCallback_translate' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeNodePathUpdate.modifyAt_reifyTree' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeNodePathUpdate.modifyAt_agreement' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeUnprotectAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeUnprotectAgreement.lean",
+      "source_sha256": "a6789a76e5b9ec674dec2c68210ed07b84715373d7f7dfc927d2eeb1e44c0fd7",
+      "olean_sha256": "0c143c8e505607f16ee098d8293f033b7b8ca3d75b6b68d35eac6a01cfd44b82",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5059,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeUnprotectAgreement.unprotectAt_reference_callback' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectAgreement.unprotectAt_factored_callback' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectAgreement.unprotectAt_agreement' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeUnprotectAgreement.unprotectAt_related' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeUnprotectAgreement.unprotectAt_preserves_flag' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectAgreement.unprotectAt_failed_conversion' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectAgreement.unprotectAt_missing_flag' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeUnprotectTotal",
+      "source_path": "experiments/opsem/AnnealResearch/TreeUnprotectTotal.lean",
+      "source_sha256": "faff83d50fe6d4c2c4775eff524b41ba756f8d924ce5af510b7413d3936367fd",
+      "olean_sha256": "8fa1f3c12b731d7d9bc5b320d2ddea9b96c48d2b387c4981c40a480406e83397",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5035,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeUnprotectTotal.replaceNth_get_self' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectTotal.modifyAt_missing' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectTotal.unprotectAt_missing' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectTotal.unprotectAt_agreement' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeUnprotectTotal.unprotectAt_related' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeUnprotectTotal.unprotectAt_eq_translate' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeUnprotectWidths",
+      "source_path": "experiments/opsem/AnnealResearch/TreeUnprotectWidths.lean",
+      "source_sha256": "61836bf19d6fa8b33f345605d8dad7b58c7381fc31dfb94cecdc35c88ab9a17c",
+      "olean_sha256": "b04c9c0db4f3253fd3cf11e99af4d8c34f458b71410bbd4b67d89d8846edb7f7",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5618,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeUnprotectWidths.arrayLengthsTree_congr_lengths' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectWidths.arrayLengthsForest_congr_lengths' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectWidths.unprotectAt_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectWidths.unprotectAt_arrayLengths' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectWidths.unprotectAt_preserves_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectWidths.uniform_forest_get' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectWidths.uniform_find_entry_width' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectWidths.unprotectAt_success_access_length' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectWidths.unprotectAt_success_uniform' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeFactoredMemory",
+      "source_path": "experiments/opsem/AnnealResearch/TreeFactoredMemory.lean",
+      "source_sha256": "f8d14056c02f03473f9f64b9e2245cb405ad474f432481d558c86ccc49f6da65",
+      "olean_sha256": "3f7a8d64d94a20ae956e1dd43907b0b36bf10e7ed8f2a320ec032f0a661e9efc",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5829,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeFactoredMemory.reify_setTree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeFactoredMemory.reify_with_raw' does not depend on any axioms\n'AnnealResearch.TreeFactoredMemory.reify_with_frame' does not depend on any axioms\n'AnnealResearch.TreeFactoredMemory.reified_related' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryAgreement.lean",
+      "source_sha256": "8fb0588fff0dcf7ccb4ac2fcdfab1fcd9781466359922e82210bdd5f5d9a6f2f",
+      "olean_sha256": "6a6de8cdc05f10365608e05099da367074bd72dd792db7b11c1b794edb608709",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4787,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryAgreement.hookTarget_reify' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryAgreement.hookTarget_fields' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryAgreement.checkPtr_ok_allocation_at' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryAgreement.free_ok_allocation_at' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryAgreement.checked_hook_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryAgreement.freed_hook_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryAgreement.reify_commit' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryOperations",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryOperations.lean",
+      "source_sha256": "13cb805d6ae2e1c01534c582a7c18a528dc75d29a1027de2e7c5a01a6033b952",
+      "olean_sha256": "77f6143249fec410032d6b47e610213d5402b6a09c02e2af9d1a2a9f3185884f",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7793,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryOperations.access_commit_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryOperations.deallocate_commit_agrees' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryOperations.load_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryOperations.store_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryOperations.deallocate_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryReleaseAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryReleaseAgreement.lean",
+      "source_sha256": "842e8cc70187094e49d72e238b5a2375ec0cb989438d8e3d3942778b1dd198d6",
+      "olean_sha256": "c706b0b4ac91e37fd17faf3be114ce2b68a40c946d4251ec9c0a84f230781d6e",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5001,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryReleaseAgreement.release_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryReleaseAgreement.related_release' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryPairing",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryPairing.lean",
+      "source_sha256": "43c71004578f8dbe8126e849ff57cd95a2fa1ab50e664a070f66ad1cf1078952",
+      "olean_sha256": "22b03d38b2e4b5aea479e50d48093eabb19c9c49a5153a5e02637ad29fa838d4",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6114,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryPairing.single_sized' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPairing.read_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.write_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.read_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.write_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.two_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.two_sized' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPairing.dead_weak_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.dead_weak_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.live_failure_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPairing.live_failure_sized' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryCompositionControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryCompositionControls.lean",
+      "source_sha256": "6b5c36283c1ba725fc12dfadeb71760ecd7d616dc7d1879014fbf248f096601d",
+      "olean_sha256": "bb9f54a4125cde168a8212e716d4fb67f6fe6cce73c4b6efa1589bc2ae21a78c",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5778,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryCompositionControls.actual_strong_write' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.actual_weak_write' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.strong_grandchild_blocks_free' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.weak_used_grandchild_allows_free' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.live_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.dead_weak_release' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.two_byte_public_store_rolls_back' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.live_failed_release_commits_conversion' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.missing_tree_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryCompositionControls.metadata_dominates_missing_tree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.valid_raw_missing_tree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.aligned_zero_load_skips_tree' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryCompositionControls.aligned_empty_store_skips_tree' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryCompositionControls.misaligned_zero_load_fails_first' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryCompositionControls.misaligned_empty_store_fails_first' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryCompositionControls.zero_free_checks_metadata' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.zero_free_requires_tree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryCompositionControls.zero_free_checks_path' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeRawGeometry",
+      "source_path": "experiments/opsem/AnnealResearch/TreeRawGeometry.lean",
+      "source_sha256": "395c520c39b98c04c58226023e174d6c4d59a31a7d375ec8d0827a443add90d8",
+      "olean_sha256": "7b529ddaeb503440caaae7cd90815c8af23e369283e60d80fd30a8da0c0b3d09",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7979,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeRawGeometry.sameSizeMap_refl' does not depend on any axioms\n'AnnealResearch.TreeRawGeometry.sameSizeMap_symm' does not depend on any axioms\n'AnnealResearch.TreeRawGeometry.sameSizeMap_trans' does not depend on any axioms\n'AnnealResearch.TreeRawGeometry.sameSizeMap_lookup' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.replace_preserves_sizeMap' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.checkPtr_some_lookup' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.load_success_raw' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.load_preserves_sizeMap' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.store_preserves_sizeMap' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.free_success_shape' depends on axioms: [propext]\n'AnnealResearch.TreeRawGeometry.free_preserves_sizeMap' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeTraversalGeometry",
+      "source_path": "experiments/opsem/AnnealResearch/TreeTraversalGeometry.lean",
+      "source_sha256": "e6e252ae87ce410c5053913482682c8047e31251938304d2455f6803b2bece69",
+      "olean_sha256": "e0ee0840dfded7f7d7789bfdc00581f13d90b548829c357e9672ca8f0b38c217",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4874,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeTraversalGeometry.sameLengths_refl' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.sameLengths_trans' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.geometry_refl' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.geometry_trans' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.replacePermission_length' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.setPermissions_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.setProtected_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.bind_sameLengths' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.transitionAt_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.transitionOffsets_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.releaseOffsets_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.mapStore_geometry' does not depend on any axioms\n'AnnealResearch.TreeTraversalGeometry.unprotectAt_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.geometry_arrayLengths' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeTraversalGeometryPublic",
+      "source_path": "experiments/opsem/AnnealResearch/TreeTraversalGeometryPublic.lean",
+      "source_sha256": "39759dc186bdc3d8c0ad04359acddc72597b54618f6142bf7d4de7c9e529bb33",
+      "olean_sha256": "229506d0aa29760ce892bcb0f0c86d691712378ea32232f8534d00ac6e777cfe",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4914,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeTraversalGeometry.accessTree_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.accessForest_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.releaseTree_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.releaseForest_sameLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.accessCore_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.releaseCore_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.access_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.releaseTraverse_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.access_arrayLengths' depends on axioms: [propext]\n'AnnealResearch.TreeTraversalGeometry.releaseTraverse_arrayLengths' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryDomain",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryDomain.lean",
+      "source_sha256": "5677c68f5ea5ca8052a5fa4c5a71eeafe6c6d9e15a4070e496b65ddd20645d11",
+      "olean_sha256": "bbf930554d2f0b215d45e15fd6591d75e3a4b0fae5b6efd01800db1e9fb7515f",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.438,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeFactoredMemory.Result.residual' does not depend on any axioms\n'AnnealResearch.TreeMemoryDomain.uniform_of_same_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryDomain.wellSized_with_raw' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryDomain.wellSized_setTree' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryDomain.wellSized_replace_tree' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryDomain.wellSized_commit' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryDomain.wellSized_with_frame' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryPreservation",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryPreservation.lean",
+      "source_sha256": "7657410407635941ccfb6c4445f83e0cad274ebf0ace3b002d3d266a38b54893",
+      "olean_sha256": "906a9893615abbd860c86a332270ac28ff048812568513d81b8ac16118004c26",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6216,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryPreservation.access_commit_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPreservation.load_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPreservation.store_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPreservation.deallocate_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPreservation.release_preserves' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeGeometryControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeGeometryControls.lean",
+      "source_sha256": "ce81fdc87df696032e57a6e103069dcbeea112c8e9383398363bc17978552577",
+      "olean_sha256": "f5ecce5d90a7d94f1669b2ee061ca1c7b3bc335148c3b06f9e35d12f2d2abe1a",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5591,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeGeometryControls.converted_payloads' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.actual_unprotect' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.actual_traversal_UB' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.actual_release_UB' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.converted_geometry' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.changed_sized' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.actual_UB_residual_sized' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.changed_state' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGeometryControls.converted_kind_mismatch' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGeometryControls.permission_resize_not_sized' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.allocation_resize_not_sized' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.resized_record_present_zero' depends on axioms: [propext]\n'AnnealResearch.TreeGeometryControls.absent_not_present_zero' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryClient",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryClient.lean",
+      "source_sha256": "5ae67ba193ab01277944865ab61dc96e17d26a90837499e2479a3c1c6ebce71c",
+      "olean_sha256": "b6833b64580269c3a17430a112e6071cab99853c6f1d9cd0c146d39584abd247",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7468,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryClient.map_translate' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.dispatch_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryClient.reify_resume' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.reify_memory' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.reify_isUB' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryClient.iterate_zero' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.iterate_no_successor' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.rResume_noChoice' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.fResume_noChoice' does not depend on any axioms\n'AnnealResearch.TreeMemoryClient.rStep_finished' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryClient.rStep_UB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryClient.rStep_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryClient.fStep_finished' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryClient.fStep_UB' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryClient.fStep_unsupported' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryPrefixes",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryPrefixes.lean",
+      "source_sha256": "636399dab96980acc383cb5a602fcdda0d041177827ee3efcad8dad70f26e840",
+      "olean_sha256": "f1ae1e594b3149164ccbd42e9cae59cbe3f8bf733a72086a4d552068a95eee29",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.523,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryPrefixes.fMap_residual' does not depend on any axioms\n'AnnealResearch.TreeMemoryPrefixes.dispatch_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixes.resume_memory' does not depend on any axioms\n'AnnealResearch.TreeMemoryPrefixes.resume_preserves' does not depend on any axioms\n'AnnealResearch.TreeMemoryPrefixes.step_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixes.step_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryPrefixAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryPrefixAgreement.lean",
+      "source_sha256": "c60007d252443ce509630d37cf9b33c6ee650a749866a0bd1da0fe6a54e429b8",
+      "olean_sha256": "a52279ff443b20569c30a7735f1030d77dd5c320b019dba572aeabd23110b6b8",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.46,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryPrefixAgreement.rIterate_succ' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixAgreement.fIterate_succ' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixAgreement.prefix_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixAgreement.prefix_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixAgreement.related_prefix_agrees' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeMemoryPrefixAgreement.noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixAgreement.related_noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryPrefixControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryPrefixControls.lean",
+      "source_sha256": "41614f3bc53c4f5a5f591a29092642f2557bec06cd716dd003cf958392788cba",
+      "olean_sha256": "f8dd1989d105b5d79f15589409ab53034536c5b83cd8924b76e875c415e55ba1",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5153,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryPrefixControls.floop_prefix' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.rloop_prefix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixControls.floop_NoUB' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.rloop_NoUB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixControls.failed_step' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.failed_prefix' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.failed_not_NoUB' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.failed_no_resumption' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.failed_later_prefix_absent' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.failed_never_finishes' depends on axioms: [propext]\n'AnnealResearch.TreeMemoryPrefixControls.failed_retains_changed_memory' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryPrefixControls.failed_retains_domain' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEncoding",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEncoding.lean",
+      "source_sha256": "8cb251c74c439fa792b672b071735dac4ba6fdbaef3fdaba7394bb28ba21b826",
+      "olean_sha256": "58b6c1e69ba87c89cb9460a873159a1b990b71226aa3f27dd922e253e5bf9d8b",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5571,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeEncoding.lookupEntry_found' depends on axioms: [propext]\n'AnnealResearch.TreeEncoding.lookupEntry_missing' depends on axioms: [propext]\n'AnnealResearch.TreeEncoding.lookupEntry_root' depends on axioms: [propext]\n'AnnealResearch.TreeEncoding.reifyTree_of_entries' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncoding.reifyForest_of_entries' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncoding.encode_entries' depends on axioms: [propext]\n'AnnealResearch.TreeEncoding.reify_encode' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncoding.related_encode' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeMemoryEncoding",
+      "source_path": "experiments/opsem/AnnealResearch/TreeMemoryEncoding.lean",
+      "source_sha256": "ba7c0a542855702f6a63ab5727aad68e8689e57c4c85e5b8e3e48ed44afe3168",
+      "olean_sha256": "fa8bdbe25d4d46ac87697db65371f94e3768773bbfd5ec1e17b7a0f4ddfc6d86",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4369,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeMemoryEncoding.encodeMemory_raw' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryEncoding.encodeMemory_frame' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryEncoding.encodeMemory_tree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryEncoding.reify_encode_memory' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryEncoding.related_encode_memory' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeMemoryEncoding.arraysSized_encode' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeMemoryEncoding.wellSized_encode_iff' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEncodingNormalization",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEncodingNormalization.lean",
+      "source_sha256": "b0e21992e27a0c9a3519b015571caeede2806b3785a5fab880f3b353d9144a52",
+      "olean_sha256": "e5a53e5c928170d0cd981b5bad998e418641864d0d0a59dff9fcf6d0a14688fa",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.427,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeEncodingNormalization.normalize_topology' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_found' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_missing' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_foundEntries' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_idempotent' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_arrayLengthsTree' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_containsStrong' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingNormalization.normalize_matchesProtectors' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEncodingControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEncodingControls.lean",
+      "source_sha256": "52bec9c84c4da2d66f7a165c00a8fa00a7d6543e855843d088caf8495fd9e941",
+      "olean_sha256": "3eed7d56fad69813dd1b8f80a942f5f1d7e83846869ee6adc95ca4bdcaa23235",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5008,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeEncodingControls.missing_child' depends on axioms: [propext]\n'AnnealResearch.TreeEncodingControls.normalized_root' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.normalized_root_value_flag' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.normalized_absent' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.normalization_changes_state' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.reification_same' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.specimen_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeEncodingControls.normalized_uniform' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEncodingControls.not_allQueryGeometry' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.actual_present_records' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.memory_wellSized' depends on axioms: [propext]\n'AnnealResearch.TreeEncodingControls.normalizedMemory_wellSized' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEncodingControls.same_raw_and_frame' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodingControls.memory_reification_same' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEncodedPrefixes",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEncodedPrefixes.lean",
+      "source_sha256": "7c69ecb02c7b361390dff56581c2ac32ac8efb74a692ccfd58a6ee0236415288",
+      "olean_sha256": "45a34d57ec098e8ba8c25241c873baa2c8e5d1d8477df1381c9df6ccec4a2cc2",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.442,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeEncodedPrefixes.encodeConfig_memory' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodedPrefixes.reify_encode_config' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEncodedPrefixes.configWellSized_encode_iff' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEncodedPrefixes.encoded_step_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEncodedPrefixes.encoded_prefix_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEncodedPrefixes.encoded_noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeGraft",
+      "source_path": "experiments/opsem/AnnealResearch/TreeGraft.lean",
+      "source_sha256": "e9b6fe34e6621ef5e98f182022e093c918075ef82de57ce097e0e82d681190a2",
+      "olean_sha256": "5d70ab2a26dc6697abe218028322a2637a0870b63208d2a1d41b39fc82b7a051",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6615,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeGraft.stripPrefix_append' does not depend on any axioms\n'AnnealResearch.TreeGraft.graft_inside' depends on axioms: [propext]\n'AnnealResearch.TreeGraft.graft_outside' depends on axioms: [propext]\n'AnnealResearch.TreeGraft.reifyTree_graft' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraft.reifyTree_graft_other' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraft.reifyForest_graft_after' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraft.reifyForest_length' does not depend on any axioms\n'AnnealResearch.TreeGraft.reifyForest_snoc' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraft.get?_length' does not depend on any axioms\n'AnnealResearch.TreeGraft.appended_path_was_absent' depends on axioms: [propext]\n'AnnealResearch.TreeGraft.addNode_root' does not depend on any axioms\n'AnnealResearch.TreeGraft.graftRoot_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraft.addNode_root_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeKindPreservation",
+      "source_path": "experiments/opsem/AnnealResearch/TreeKindPreservation.lean",
+      "source_sha256": "16b5f73fea91b9666e2f7c95ca9d8f15e6f8b3573eb00ae2a3c3d56cf67a5b62",
+      "olean_sha256": "964f3118fd7b13e10cb232490a0a66c7c5beef289fce7809e1d4fe1493597fbe",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5103,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeKindPreservation.mapState_state' does not depend on any axioms\n'AnnealResearch.TreeKindPreservation.scalar_matching' depends on axioms: [propext]\n'AnnealResearch.TreeKindPreservation.transitionPrefix_matching' depends on axioms: [propext]\n'AnnealResearch.TreeKindPreservation.transitionRange_matching' depends on axioms: [propext]\n'AnnealResearch.TreeKindPreservation.applyAccesses_matching' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeGraftPaths",
+      "source_path": "experiments/opsem/AnnealResearch/TreeGraftPaths.lean",
+      "source_sha256": "f39b04ca201445e84b87a865a6b7dc5ce1ffb7956ff5baa3fa09514a219dd3df",
+      "olean_sha256": "3bb7f7e44f004fc28e57c94c274e309875b1c49a2248d63560ce838cc052a6ce",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6349,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeGraftPaths.stripPrefix_cancel' does not depend on any axioms\n'AnnealResearch.TreeGraftPaths.reifyTree_outside_branch' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraftPaths.reifyForest_outside_later' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraftPaths.reifyForest_replace' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeGraftPaths.modifyAt_replacement' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeKindAccess",
+      "source_path": "experiments/opsem/AnnealResearch/TreeKindAccess.lean",
+      "source_sha256": "87170478878caf8e4512b7980edca29c1e6f074dfad7956ad1e6fa435d5427ef",
+      "olean_sha256": "c088b8f8a8c42f53becd4cad62b75485a630094a852b28854af2afffbe61dc01",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5599,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeKindAccess.accessCore_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeKindAccess.accessChildren_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeKindAccess.access_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeKindAccess.accessCore_preserves_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeKindAccess.access_preserves_matching' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReleaseKinds",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReleaseKinds.lean",
+      "source_sha256": "3e90947b7f48875b2e1c949930b3c3743cb2b01144683c7f8a49c620564f642c",
+      "olean_sha256": "2a2ece348ac01e0348bab7dad7868fa118dd35e827b9515f3d724b56c7bae677",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8807,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReleaseKinds.kindsAfterClear_none' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKinds.childrenAfterClear_none' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKinds.mapState_ok' does not depend on any axioms\n'AnnealResearch.TreeReleaseKinds.releaseCore_node' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKinds.releaseCore_success_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKinds.releaseChildren_success_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKinds.releaseTraverse_success_matching' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeInsertionAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeInsertionAgreement.lean",
+      "source_sha256": "7737778067b362f805397bc761873cbb07aeae07be3189b6506583f1f9dc0931",
+      "olean_sha256": "714eea32380777dcfc85146dca905f75034cfac094b7d0ebb1b17fc67a4c9ee8",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5858,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeInsertionAgreement.stripPrefix_compose' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionAgreement.graft_below_frame' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionAgreement.graft_parent_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionAgreement.modifyTopology_at_found' does not depend on any axioms\n'AnnealResearch.TreeInsertionAgreement.modifyTopology_exists' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionAgreement.modifyAt_congr_found' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionAgreement.insertion_found' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionAgreement.addNode_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLiveKinds",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLiveKinds.lean",
+      "source_sha256": "2363fcf97ebea329fb6bbbd1085e56f9e9207245af233ab6a9d05502e637be73",
+      "olean_sha256": "9efaf2c607f68fc42aebde39ec7b5b518c1624bf7d21458c40a8f90a9638d73c",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5004,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLiveKinds.noNewLive_refl' does not depend on any axioms\n'AnnealResearch.TreeLiveKinds.noNewLive_trans' does not depend on any axioms\n'AnnealResearch.TreeLiveKinds.noNewLive_replace' depends on axioms: [propext]\n'AnnealResearch.TreeLiveKinds.load_noNewLive' depends on axioms: [propext]\n'AnnealResearch.TreeLiveKinds.store_noNewLive' depends on axioms: [propext]\n'AnnealResearch.TreeLiveKinds.free_noNewLive' depends on axioms: [propext]\n'AnnealResearch.TreeLiveKinds.liveKinds_with_raw' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKinds.liveKinds_setTree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKinds.liveKinds_replace_tree' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKinds.liveKinds_commit' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKinds.liveKinds_with_frame' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKinds.liveKinds_access_tree' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeUnprotectKinds",
+      "source_path": "experiments/opsem/AnnealResearch/TreeUnprotectKinds.lean",
+      "source_sha256": "fb9670f7576ffa787a44d4f6d5c0ab0245a98ba786c7da424501ad16cd583da3",
+      "olean_sha256": "4fd44701d68806d31dd2d2163b9b960c725684bdea6f09190e91f8a0c15c39e1",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6852,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeUnprotectKinds.childrenAfterClear_before' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectKinds.childrenAfterClear_replace' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectKinds.modifyAt_restores' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectKinds.unprotectPermissions_kinds' does not depend on any axioms\n'AnnealResearch.TreeUnprotectKinds.unprotect_root_query' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectKinds.unprotectAt_as_modify' depends on axioms: [propext]\n'AnnealResearch.TreeUnprotectKinds.unprotectAt_success_query' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectKinds.unprotect_release_success_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeUnprotectKinds.unprotect_release_preserves_matching' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeInsertionWidths",
+      "source_path": "experiments/opsem/AnnealResearch/TreeInsertionWidths.lean",
+      "source_sha256": "255bf5f3be064c5e9b5757e41484363a79d4efd5eaa2e798962655c85cb650c4",
+      "olean_sha256": "41a103ca3fee4bce42a67f080f3513162c5adacb26726ca52467576189352d66",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5111,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeInsertionWidths.childrenSized_get' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionWidths.childrenSized_replaceNth' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionWidths.childrenSized_snoc' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionWidths.state_mapState' does not depend on any axioms\n'AnnealResearch.TreeInsertionWidths.modifyAt_preserves_uniform' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionWidths.appendCallback_preserves_uniform' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionWidths.reference_addNode_preserves_uniform' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInsertionWidths.translated_state' does not depend on any axioms\n'AnnealResearch.TreeInsertionWidths.addNode_preserves_uniform' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeInsertionWidths.addNode_success_uniform' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLiveKindControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLiveKindControls.lean",
+      "source_sha256": "3cdec98eabd72c66eb52d6ec3b94f9dbf45c6a2d82bf1708b5bc45bff0864f7e",
+      "olean_sha256": "75c84c9dd83ea16dfbe693e0a59f406b646899008d3aa233cb12a8d904f58d0b",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5733,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLiveKindControls.single_tree_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKindControls.read_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKindControls.write_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKindControls.released_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKindControls.constructed_nonempty_live' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeLiveKindControls.actual_successful_live_history' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeLiveKindControls.shape_failure_initially_liveKinds' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeLiveKindControls.failed_release_not_liveKinds' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeLiveKindControls.actual_release_refutes_all_residual_matching' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeLiveKindControls.two_byte_liveKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveKindControls.constructed_store_UB_despite_matching' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLiveMemory",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLiveMemory.lean",
+      "source_sha256": "9df5f625d6fe24de77c7f8f3b5402967424ed77f2c0e84b4893fb8350d7ecb37",
+      "olean_sha256": "27505a7aeb9211714718752633d60837263a166c5fe3464bc992b78907b6ea99",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5743,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLiveMemory.residual' does not depend on any axioms\n'AnnealResearch.TreeLiveMemory.hookTarget_tree' depends on axioms: [propext]\n'AnnealResearch.TreeLiveMemory.access_commit_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveMemory.load_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveMemory.store_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveMemory.deallocate_preserves' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeInitialAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeInitialAgreement.lean",
+      "source_sha256": "ae58d350410297257f76c75e266f9a7a8b9289cf851980eb01048cef1dee5f15",
+      "olean_sha256": "6a8039831c290953f30cf87f468251a34c7b149aac5d4727cfec38a81c291c8c",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5502,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeInitialAgreement.initialAccessLoop_arrayLengths' depends on axioms: [propext]\n'AnnealResearch.TreeInitialAgreement.initialAccessLoop_preserves_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeInitialAgreement.initialAccessLoop_agrees' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeInitialAgreement.initialAccesses_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeInitialAgreement.initialAccesses_arrayLengths' depends on axioms: [propext]\n'AnnealResearch.TreeInitialAgreement.initialAccesses_preserves_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeInitialAgreement.nil_no_validation' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeInitialAgreement.cell_no_validation' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLiveRelease",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLiveRelease.lean",
+      "source_sha256": "97ac7641bf2a1d8f787a2ac28518583a7a318a92a69a007dcfedb28ac3c9a9c7",
+      "olean_sha256": "2254fbebe6b48ef7ad79c554912af63675653a3ffef73bd5b2c01a83646b0dc8",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4293,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLiveRelease.liveKinds_setTree_dead' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveRelease.resultLiveKinds_implies_runningKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveRelease.release_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveRelease.load_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveRelease.store_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveRelease.deallocate_preserves' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReleaseKindControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReleaseKindControls.lean",
+      "source_sha256": "edcf792f35dff8d1f6203934a7783304b1124e4ef91397334643e36cf4bd2686",
+      "olean_sha256": "6a5d1b24273a02735ab3a146f69a99068af1b3201779c3c90c7a8ef9a64165a8",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5317,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReleaseKindControls.dead_weak_liveKinds' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReleaseKindControls.dead_weak_released_liveKinds' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReleaseKindControls.dead_release_keeps_live_scope' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReleaseKindControls.mutant_returns_mismatched_success' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKindControls.mutant_result_not_liveKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReleaseKindControls.constructed_history_detects_omitted_traversal' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeFactoredReborrow",
+      "source_path": "experiments/opsem/AnnealResearch/TreeFactoredReborrow.lean",
+      "source_sha256": "7d5019f4d05e8467fefd8ce281537f13bf0d23a25aa58754743d6d69de666469",
+      "olean_sha256": "8a7c044f501edce962c64198debf063736ff6936e498ffbc78bdc577e90ae0a1",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5196,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeFactoredReborrow.permissions_length' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeFactoredReborrow.child_reify' depends on axioms: [propext]\n'AnnealResearch.TreeFactoredReborrow.child_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeFactoredReborrow.assembled_child_uniform' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeFactoredReborrow.child_matching' depends on axioms: [propext]\n'AnnealResearch.TreeFactoredReborrow.reborrow_basic_ub' depends on axioms: [propext]\n'AnnealResearch.TreeFactoredReborrow.reborrow_no_provenance' depends on axioms: [propext]\n'AnnealResearch.TreeFactoredReborrow.zero_no_provenance' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeInsertionControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeInsertionControls.lean",
+      "source_sha256": "3f4be4ca02566f21842c7aabf2714bf919efedfefc3d8fd7d654e29f83d8d089",
+      "olean_sha256": "606fbfabf3c7764c80abeb8f9c04b198060418809e4d30588af878ee05a31468",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.578,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeInsertionControls.nested_add_actual' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionControls.parent_and_child_uniform' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionControls.poisoned_cells_were_absent' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionControls.complete_child_overwrites_poison' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionControls.ancestors_and_siblings_retained' depends on axioms: [propext]\n'AnnealResearch.TreeInsertionControls.nested_exact_reference_equation' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeInsertionControls.nested_uniform_after' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeInsertionControls.missing_parent_actual' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLivePrefixes",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLivePrefixes.lean",
+      "source_sha256": "11dca9ab3f75edc4e98de21de3a2fb4dc5d6517ca9083ab2179d7a8d56242cae",
+      "olean_sha256": "5432121fe5be1192024399b7ba11efeeb9f9659e10ff34fe7e62f60e9c6b3d57",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4855,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLivePrefixes.map_runningKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLivePrefixes.dispatch_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLivePrefixes.resume_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLivePrefixes.step_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLivePrefixes.prefix_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLivePrefixes.factored_prefix_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowKinds",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowKinds.lean",
+      "source_sha256": "4d27462d3b6501867e1908db683f8d647409c5eb41fd1e7fdd192b19ef44426e",
+      "olean_sha256": "956732f4f156eece0c57f89f36197c00b1c1061458d861339e522a90de011e67",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8667,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowKinds.childrenMatch_replace' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.childrenMatch_append' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.modifyAt_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.addNode_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.initialAccesses_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.leaf_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.reborrow_preserves_all' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowKinds.reborrow_preserves' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowAgreement",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowAgreement.lean",
+      "source_sha256": "7f428e845b1d194264b0212995b734cfd2c0e1b17b693ad2e08064133b8f63cf",
+      "olean_sha256": "6682a88054db1656b00eb9e9bade7cc0d73f95f6091e3ee391f23f276bebf819",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7325,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowAgreement.tree_phase_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowAgreement.reborrow_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowAgreement.related_reborrow' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowDomain",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowDomain.lean",
+      "source_sha256": "a041def444a2ee924abae66933f41ad53d55aac1a1f79f5d3b7292bc12d67796",
+      "olean_sha256": "d8288cc91e4ce9d153ad2e9145ddc403998832aa06bcfdebc3dae2cc6df13ca1",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6334,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowDomain.setTree_preserves_at' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowDomain.treePhase_raw' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowDomain.treePhase_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowDomain.reborrow_raw_and_domain' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowDomain.reborrow_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowDomain.reborrow_raw' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowStateControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowStateControls.lean",
+      "source_sha256": "8125b11f92635ede08473b9c1e64e7aa72dc8232f1b6a4eaacabff7340e74fd3",
+      "olean_sha256": "77f1d36efad491c1c67f3aa3b76616cc35bbae85ffd9fc4be803a8bf0cbec8ca",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5889,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowStateControls.actual_partial_initial_failure' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowStateControls.failed_birth_retains_partial_tree_and_old_frame' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowStateControls.actual_cell_birth_skips_initial_access' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowStateControls.cell_birth_registers_once_after_old_entries' does not depend on any axioms\n'AnnealResearch.TreeReborrowStateControls.settings_rejected_before_missing_parent' depends on axioms: [propext,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeLiveTransfer",
+      "source_path": "experiments/opsem/AnnealResearch/TreeLiveTransfer.lean",
+      "source_sha256": "e65d594829f0bce748fad0cd93d473fae99f19c260ba39ffb6eb19c8aed322b3",
+      "olean_sha256": "38fbda71289dfeb72a324214e2dd5aa1b84e48fc130b9cf5c00b534fe2f39936",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4566,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeLiveTransfer.residual_translate' does not depend on any axioms\n'AnnealResearch.TreeLiveTransfer.resultLiveKinds_translate' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.runningKinds_translate' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.resultLiveKinds_implies_runningKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.load_preserves_all' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.store_preserves_all' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.deallocate_preserves_all' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.reborrow_preserves_all' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeLiveTransfer.release_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowPairedControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowPairedControls.lean",
+      "source_sha256": "73e1a2d3231dbb04d9cb0892617b344ef1f9b708332ceacb3ecece34ecd5db59",
+      "olean_sha256": "05a1043e60427c22db470540212e013d6f20d8fcb0c0a2c24a283f8fc55905b2",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4475,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowPairedControls.before_reifies' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowPairedControls.before_sized' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowPairedControls.actual_factored_partial_failure' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowPairedControls.actual_factored_cell_success' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowPairedControls.actual_factored_settings_order' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowPairedControls.actual_partial_result_witness' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowClient",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowClient.lean",
+      "source_sha256": "8ca2ad3eaba824803e4a03bd82bff0b08fda22124d5bc0fb3c229c8db85a57a5",
+      "olean_sha256": "e6955818e4c90fa178ea8decedb59491368284a608f6a2b224f10d7d647201d9",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5991,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowClient.dispatch_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowClient.dispatch_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowClient.reify_resume' does not depend on any axioms\n'AnnealResearch.TreeReborrowClient.resume_memory' does not depend on any axioms\n'AnnealResearch.TreeReborrowClient.rResume_noChoice' does not depend on any axioms\n'AnnealResearch.TreeReborrowClient.fResume_noChoice' does not depend on any axioms\n'AnnealResearch.TreeReborrowClient.rStep_finished' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClient.rStep_UB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClient.rStep_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClient.fStep_finished' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClient.fStep_UB' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClient.fStep_unsupported' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClient.rIterate_zero' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClient.fIterate_zero' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowLive",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowLive.lean",
+      "source_sha256": "1b76d8bc7334bad867b9d7499afae8f03af8260e3ae529b1bdd7979bbbc065b1",
+      "olean_sha256": "a5891b0f5b4e986e9d568d1da3a957b05a6d1b84f22a3ed03d087041d045d94a",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4823,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowLive.dispatch_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowLive.resume_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowLive.step_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowLive.prefix_preserves' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowPrefixes",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowPrefixes.lean",
+      "source_sha256": "a8b874e21e661136d12b34f648df768f90ca521b73760a7888a5c3028cc9ca18",
+      "olean_sha256": "342d93fd07f4273cc18d19a449f8e6cdb69b763895bbabf8f0a29f0def801225",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5372,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowPrefixes.resume_preserves' does not depend on any axioms\n'AnnealResearch.TreeReborrowPrefixes.step_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.step_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.rIterate_succ' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.fIterate_succ' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowPrefixes.prefix_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.prefix_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.related_prefix_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowPrefixes.related_noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowClientControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowClientControls.lean",
+      "source_sha256": "bae0cf0525664556050b3d170666abed3484d4f744fe2cdd32ff9fbf590cbbb1",
+      "olean_sha256": "dbf6150092c102ac5dec1e05907157026d9dcbca5f40d491765be04bd0825fbc",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6356,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowClientControls.floop_prefix' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.rloop_prefix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.floop_NoUB' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.rloop_NoUB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.initial_sized' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.reference_failed_step' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.reference_failed_prefix' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.reference_not_NoUB' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.reference_no_resumption' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.reference_later_absent' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.reference_never_finishes' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.reference_retained_observations' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.partial_state_changed' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.factored_failed_step' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.factored_failed_prefix' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.factored_no_resumption' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.factored_later_absent' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.factored_never_finishes' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowClientControls.factored_not_NoUB' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowClientControls.actual_factored_terminal_witness' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowClientCoverage",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowClientCoverage.lean",
+      "source_sha256": "07c1e1fa1229631b19c57908e5f391e6a4059398b0c7e13c133acd6917910a83",
+      "olean_sha256": "4f29a7b55a9de4273b7985d9c7521451e5dce89dd02dad8587b99ce56bad50ed",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.3959,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowClientCoverage.configWellSized_encode_iff' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientCoverage.configKinds_encode_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowClientCoverage.factored_prefix_preserves' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientCoverage.encoded_step_agrees' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientCoverage.encoded_prefix_agrees' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowClientCoverage.encoded_noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeReborrowHistory",
+      "source_path": "experiments/opsem/AnnealResearch/TreeReborrowHistory.lean",
+      "source_sha256": "a676d67adbba067449c7e0d143896174b6c1549b074090f6ff885aed0f066f11",
+      "olean_sha256": "72b78fcc2bc9384699f8794a6687567a14e7df058823680f91fc41e243bb6210",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7909,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeReborrowHistory.step0' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.step1' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.step2' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.step3' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.step4' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.step5' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.step6' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.seven_step_history' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.noUB_before_step' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.finished_NoUB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.constructed_history_NoUB' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.initial_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.stable_history_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.initial_reifies' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeReborrowHistory.initial_sized' depends on axioms: [propext]\n'AnnealResearch.TreeReborrowHistory.factored_seven_step_history' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeReborrowHistory.factored_constructed_NoUB' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocation",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocation.lean",
+      "source_sha256": "123cbeadd6c5d328f0072f7acdeffb155235f908885d33cc2d76488f310c41e3",
+      "olean_sha256": "939e2cc98248bda70e4a4bb173352aa267cda0d00bed7ccde3b624a7323a2749",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5437,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocation.rootPointer_basic' does not depend on any axioms\n'AnnealResearch.TreeAllocation.rootPermissions_length' depends on axioms: [propext]\n'AnnealResearch.TreeAllocation.referenceRoot_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocation.referenceRoot_width' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocation.factoredRoot_reify' depends on axioms: [propext]\n'AnnealResearch.TreeAllocation.factoredRoot_width' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocation.factoredRoot_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocation.allocateAt_agrees' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocation.reference_raw' does not depend on any axioms\n'AnnealResearch.TreeAllocation.factored_raw' does not depend on any axioms\n'AnnealResearch.TreeAllocation.reference_frame' does not depend on any axioms\n'AnnealResearch.TreeAllocation.factored_frame' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ReferenceInvariants",
+      "source_path": "experiments/opsem/AnnealResearch/ReferenceInvariants.lean",
+      "source_sha256": "18e7d810df82fe6620fc32bd6a69ad2b9b71b768c1d1baaeeba78086169741ec",
+      "olean_sha256": "90d00226cbb52e895a175b439bc3b68e763f77a5a385058e99570163555b464b",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.2438,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.MiniRustReference.emptyStateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.checkPtr_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.load_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.store_not_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.free_not_unsupported' depends on axioms: [propext]\n'AnnealResearch.MiniRustReference.free_preserves_StateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.store_preserves_StateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.MiniRustReference.allocateAt_preserves_StateWF' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.MiniRustReference.allocation_fresh_identity' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocationAdmissionControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocationAdmissionControls.lean",
+      "source_sha256": "4eb67ea41c29287d1ab4ba906973a84d0c138a486208ed0585dec424a62be568",
+      "olean_sha256": "55be27b8be3b4d3ccbf6c286f1128235309da58a32cef60cab5b44af0e09d2ee",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.585,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocationAdmissionControls.root_width' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.root_reify' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.root_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.oneTree_sized' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.oneTree_liveKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.outsideCount_present_live_overlap' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.outsideCount_scan_omits_record' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.outsideCount_not_StateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.outsideCount_sized' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.outsideCount_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.outsideCount_allocate' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.overwritten_observations' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.overwritten_sized' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.hole_not_StateWF' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.hole_allocate' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.holeAfter_observations' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.holeAfter_not_StateWF' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.holeAfter_sized' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.holeAfter_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.stray_raw_StateWF' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.stray_sized' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationAdmissionControls.stray_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.stray_missing_raw' does not depend on any axioms\n'AnnealResearch.TreeAllocationAdmissionControls.width_and_matching_do_not_imply_rawWF' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.TreeAllocationAdmissionControls.rawWF_width_matching_do_not_imply_tree_presence' depends on axioms: [propext,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocationDomain",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocationDomain.lean",
+      "source_sha256": "f986279d531259805c651986cb59bf301e21c858a20ed4513e3f62ba58ff30c3",
+      "olean_sha256": "684c9d65388be9b0862a30967e5f2c6f118787f7699e6765c3fc3253719258f0",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4884,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocationDomain.reference_append_sized' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationDomain.reference_append_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationDomain.reference_preserves_width' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationDomain.reference_preserves_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationDomain.wellSized_reify_iff' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationDomain.resultWellSized_translate' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationDomain.factored_preserves_width' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationDomain.factored_preserves_live' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocationFreshness",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocationFreshness.lean",
+      "source_sha256": "7574b34bcf550929108efab4226b3976920a1d17be29281f2b4006fb34c81b04",
+      "olean_sha256": "82fef0eb0ebc7763d87b2f956f11d8e90af1caa95c8f77f5469242af16cfb0b5",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5807,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocationFreshness.raw_preserves_StateWF' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationFreshness.reference_preserves_raw_StateWF' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationFreshness.factored_preserves_raw_StateWF' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationFreshness.reference_success_shape' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationFreshness.factored_success_shape' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationFreshness.reference_success_identity' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationFreshness.factored_success_identity' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationFreshness.next_raw_absent' does not depend on any axioms\n'AnnealResearch.TreeAllocationFreshness.append_preserves_old' does not depend on any axioms\n'AnnealResearch.TreeAllocationFreshness.reference_success_preserves_old' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationFreshness.factored_success_preserves_old' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationFreshness.pairedPresence_append' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationFreshness.reference_preserves_pairedPresence' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationFreshness.factored_preserves_pairedPresence' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationFreshness.next_tree_absent' does not depend on any axioms\n'AnnealResearch.TreeAllocationFreshness.reference_fresh_input_pair' does not depend on any axioms\n'AnnealResearch.TreeAllocationFreshness.factored_fresh_input_pair' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocationMutationControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocationMutationControls.lean",
+      "source_sha256": "22e79bf418cc691356b96b80d2b377bf2f77086f332d130df02db1244314eb85",
+      "olean_sha256": "fd75cfbb9a49536ecb5fec3f1e5cea0ec2adbb09b688d5cd0f23d099feaeac58",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6512,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocationMutationControls.actual_birth' does not depend on any axioms\n'AnnealResearch.TreeAllocationMutationControls.mutant_zeroing_birth' does not depend on any axioms\n'AnnealResearch.TreeAllocationMutationControls.actual_Uninit_load' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationMutationControls.mutant_zero_load' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationMutationControls.zeroBorn_width' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationMutationControls.zeroBorn_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationMutationControls.zeroing_survives_tree_invariants' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationMutationControls.wrong_root_path_changes_outcome' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationMutationControls.actual_poison_replacement' does not depend on any axioms\n'AnnealResearch.TreeAllocationMutationControls.replacement_observations' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationMutationControls.poisoned_empty_raw_is_WF' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocationChoices",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocationChoices.lean",
+      "source_sha256": "4c0d495c0356fb7348086590b051975eb5d05abcb7f1e9538bc2c270a5568848",
+      "olean_sha256": "670e2969cafd9379f2f28a0fcad1039c30a0003579697cddc719c87049cfe3d4",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4745,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocationChoices.hasOutcome_translate_iff' does not depend on any axioms\n'AnnealResearch.TreeAllocationChoices.same_candidate' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationChoices.reference_noChoice_excluded' does not depend on any axioms\n'AnnealResearch.TreeAllocationChoices.factored_noChoice_excluded' does not depend on any axioms\n'AnnealResearch.TreeAllocationChoices.factored_to_reference' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationChoices.reference_to_factored' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationChoices.outcome_exact_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationChoices.arbitrary_reference_exact_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationChoices.reference_oversize_outcome' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationChoices.factored_oversize_outcome' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationChoices.reference_zero_align_outcome' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationChoices.factored_zero_align_outcome' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeAllocationControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeAllocationControls.lean",
+      "source_sha256": "30994efb9b161e8a0d0116c76a899703a4b23cc0a7efdd30a1fee08e0973d8d2",
+      "olean_sha256": "a2ee50834d298e80efd31cd2464de649556f6c01719aa93e6ea3e98cbceaa3a2",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.8037,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeAllocationControls.empty_reify' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.empty_sized' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.reference_birth_one' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.factored_birth_one' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationControls.birth_domains' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.initial_set_root' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationControls.initial_load_uninit' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.fChain_sized' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.fChain_agrees' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.reference_born_load' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.factored_born_load' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.constructFrom_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.constructFrom_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.bornConstruct_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.bornConstruct_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.reference_born_strong' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.reference_born_weak' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.factored_born_strong' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.zero_birth' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.factored_zero_birth' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationControls.live_candidate_discriminator' does not depend on any axioms\n'AnnealResearch.TreeAllocationControls.factored_live_candidate_discriminator' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationControls.lifecycle_sized' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationControls.lifecycle_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.weak_lifecycle' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.reallocate_dead' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationControls.reference_weak_reallocation' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationControls.weakReallocate_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.weakReallocate_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.factored_weak_reallocation' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationControls.reused_address_keeps_old' depends on axioms: [propext]\n'AnnealResearch.TreeAllocationControls.stale_root_is_dead' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeAllocationControls.actual_stale_failure' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeAllocationControls.zst_then_nonempty_same_base' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeAllocationControls.nonempty_then_zst_same_base' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeChoiceClient",
+      "source_path": "experiments/opsem/AnnealResearch/TreeChoiceClient.lean",
+      "source_sha256": "76eb1df42146559dd41eb4df702e8d3a3119f3c5805968bddedb12a072ebfbb8",
+      "olean_sha256": "7f4e36cafc555f3e7709872538be63decf9e6506b63ae67201bca4e94d702035",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6845,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeChoiceClient.dispatch_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceClient.dispatch_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceClient.reify_resume' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.resume_memory' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.rResume_ok' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.fResume_ok' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.rResume_noChoice' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.fResume_noChoice' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.next_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceClient.next_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceClient.rNext_call_noChoice' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceClient.fNext_call_noChoice' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceClient.rNext_finished' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceClient.rNext_UB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceClient.rNext_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceClient.fNext_finished' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceClient.fNext_UB' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceClient.fNext_unsupported' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceClient.prefix_zero' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.prefix_succ' does not depend on any axioms\n'AnnealResearch.TreeChoiceClient.rPrefix_zero' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceClient.fPrefix_zero' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeChoicePrefixes",
+      "source_path": "experiments/opsem/AnnealResearch/TreeChoicePrefixes.lean",
+      "source_sha256": "39082bc4d00aab18f50291a777f08808e54401948d02eca902f6220c23de6d66",
+      "olean_sha256": "bbb1ed9b285aff1794dbb5ffdeadaba83bac310d73da9db9aff956f9c7a1898e",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4669,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeChoicePrefixes.step_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.map_step' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.lift_next' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.lift_step' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.prefix_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.map_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.lift_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.prefix_exact_image' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoicePrefixes.noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeChoiceLive",
+      "source_path": "experiments/opsem/AnnealResearch/TreeChoiceLive.lean",
+      "source_sha256": "33e8f55cafa8e6853f411558c474199bdca39abe61aca45c8dc895e6132f2996",
+      "olean_sha256": "eb6e8c0df311d92d715b29154835f5cc3a2065a51e631ecfb3592667ee18f0b3",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.447,
+      "children_maxrss_kb": 826092,
+      "stdout": "'AnnealResearch.TreeChoiceLive.dispatch_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceLive.resume_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceLive.next_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceLive.step_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceLive.prefix_preserves' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeChoiceControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeChoiceControls.lean",
+      "source_sha256": "fb6225d37abc5f0afdc6c7afafa615a052465d8b833efdb7ab888f5c4557a437",
+      "olean_sha256": "11c1d983501033654484983c739c2a9e31716d29a4b2043bed1ff18b7fc20343",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7893,
+      "children_maxrss_kb": 828200,
+      "stdout": "'AnnealResearch.TreeChoiceControls.born_reify' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.candidate_zero_rejected' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.candidate16_actual' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.candidate32_actual' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.candidate32_bounds_load' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_candidate16_actual' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_candidate32_actual' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.prefix_invariant' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.prefix_stopped' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.reference_loop_prefix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_loop_prefix' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceControls.reference_loop_NoUB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_loop_NoUB' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceControls.initial_reify' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.initial_sized' does not depend on any axioms\n'AnnealResearch.TreeChoiceControls.reference_candidates' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.reference_bad_load' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.reference_rejected_but_enabled' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.reference_safe_NoUB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_safe_NoUB' depends on axioms: [propext]\n'AnnealResearch.TreeChoiceControls.reference_alternative_prefixes' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.reference_initial_not_NoUB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.lift_actual_next' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_rejected_but_enabled' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_safe_witness' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_bad_witness' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceControls.factored_initial_not_NoUB' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceControls.actual_unsupported' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.unsupported_reached' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.reference_bad_no_padding' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceControls.actual_factored_bad_no_padding' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeChoiceControls.unsupported_no_padding' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeChoiceCoverage",
+      "source_path": "experiments/opsem/AnnealResearch/TreeChoiceCoverage.lean",
+      "source_sha256": "c9f5754ee9d835dd6dcf89f3351ea3a3e10a5f5c30ac484759899e9715a9bc5a",
+      "olean_sha256": "509d415fdf4ca73c30f265bdc692c1de4f0df38eb6f9ef456f726caebde57646",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.4188,
+      "children_maxrss_kb": 828200,
+      "stdout": "'AnnealResearch.TreeChoiceCoverage.configWidth_encode_iff' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceCoverage.configKinds_encode_iff' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeChoiceCoverage.encoded_next_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceCoverage.encoded_prefix_exact_image' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeChoiceCoverage.encoded_noUB_iff' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeChoiceCoverage.factored_prefix_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEndCall",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEndCall.lean",
+      "source_sha256": "5f4def8b8ad70572fd6ac3503606fdb6b3a18a2069903b6a8bcca6470d38854c",
+      "olean_sha256": "24153d660b31ce2b670f37477a8c9af6f678c8a09b18d6630d3552badd05767b",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.7278,
+      "children_maxrss_kb": 828200,
+      "stdout": "'AnnealResearch.TreeEndCall.rReleaseList_nil' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fReleaseList_nil' depends on axioms: [propext]\n'AnnealResearch.TreeEndCall.rReleaseList_cons' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fReleaseList_cons' depends on axioms: [propext]\n'AnnealResearch.TreeEndCall.rEndCall_eq' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fEndCall_eq' depends on axioms: [propext]\n'AnnealResearch.TreeEndCall.fReleaseList_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fEndCall_preserves' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.releaseList_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCall.endCall_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCall.rRelease_retains' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fRelease_retains' depends on axioms: [propext]\n'AnnealResearch.TreeEndCall.rReleaseList_retains' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fReleaseList_retains' depends on axioms: [propext]\n'AnnealResearch.TreeEndCall.rEndCall_retains' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCall.fEndCall_retains' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEndCallProperties",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEndCallProperties.lean",
+      "source_sha256": "4d855f5fc0afe224d28a701457d4d0a95313fd48428da2c73406a43bb5b94f46",
+      "olean_sha256": "91b582601b4676c5c40690e2258d919846b99d151382907e163b9340f46f4ce6",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5272,
+      "children_maxrss_kb": 828200,
+      "stdout": "'AnnealResearch.TreeEndCallProperties.rReleaseList_append' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.fReleaseList_append' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallProperties.r_ub_suffix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.r_unsupported_suffix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.r_noChoice_suffix' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.f_ub_suffix' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallProperties.f_unsupported_suffix' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallProperties.f_noChoice_suffix' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallProperties.r_success_then_UB' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.f_success_then_UB' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallProperties.rReleaseList_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.rEndCall_preserves' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.rReleaseList_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.rEndCall_matching' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.fReleaseList_matching' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallProperties.fEndCall_matching' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEndCallConstructed",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEndCallConstructed.lean",
+      "source_sha256": "6c1e7f06e86e3b26cda98751564c01fc9a289bceebeda304877d9b1e10d9f3e6",
+      "olean_sha256": "2abe7dd288e15550d4dc9446e89c644fb407d3ac5239e5a887b7e789f9504bca",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 1.0662,
+      "children_maxrss_kb": 831916,
+      "stdout": "'AnnealResearch.TreeEndCallConstructed.first_birth' does not depend on any axioms\n'AnnealResearch.TreeEndCallConstructed.first_reborrow' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.second_birth' does not depend on any axioms\n'AnnealResearch.TreeEndCallConstructed.second_reborrow' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.actual_construction' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.construction_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.construction_sized' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.actual_factored_construction' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.protected_unprotect' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallConstructed.protected_traversal' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.pair_set_first' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.pair_set_second' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.first_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.second_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.pair_sized' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.pair_live' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.all_stage_widths' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.all_stage_liveKinds' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.nonempty_distinct_registered' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallConstructed.releases_change_both' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallConstructed.actual_endCall' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.actual_sequence' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.actual_supplied_registrations' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.releaseChildren_agrees' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.sequence_agrees' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.factored_release_success' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallConstructed.actual_factored_two_releases' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.TreeEndCallFailureControls",
+      "source_path": "experiments/opsem/AnnealResearch/TreeEndCallFailureControls.lean",
+      "source_sha256": "b04d3eed1d3cbcc6f8ebb8de60edaf9bc9e74a335549502cdad6f0dbedcc5980",
+      "olean_sha256": "13bf15fdec099043b39435e91e310515e8e5eb2c3cfb378cec54ad04476c713a",
+      "lean_flags": [
+        "-j1",
+        "-M1024"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.9226,
+      "children_maxrss_kb": 831916,
+      "stdout": "'AnnealResearch.TreeEndCallFailureControls.first_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.middle_release' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.standalone_third_release' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.actual_fold' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.actual_end_call' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.before_width' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.failed_width' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.initial_matching' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.failed_not_matching' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.real_observations' does not depend on any axioms\n'AnnealResearch.TreeEndCallFailureControls.whole_rollback_actual' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.item_rollback_actual' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.continue_actual' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.whole_rollback_observations' does not depend on any axioms\n'AnnealResearch.TreeEndCallFailureControls.item_rollback_observations' does not depend on any axioms\n'AnnealResearch.TreeEndCallFailureControls.continue_observations' does not depend on any axioms\n'AnnealResearch.TreeEndCallFailureControls.first_and_third_really_change' depends on axioms: [propext]\n'AnnealResearch.TreeEndCallFailureControls.whole_rollback_differs' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.item_rollback_differs' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.continue_differs' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.factored_input_width' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.factored_actual_fold' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.TreeEndCallFailureControls.actual_factored_failure_witness' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.HelperValueHeap",
+      "source_path": "experiments/opsem/AnnealResearch/HelperValueHeap.lean",
+      "source_sha256": "674c33a9b362f0c8bb1fbfc5c99de3ff3ab96452249f006164056a373291521d",
+      "olean_sha256": "bf6b3124a66b7df4f11115f75d41fdfb0fe415d77d6c9f70c9ca598a35853ac4",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.589,
+      "children_maxrss_kb": 831916,
+      "stdout": "'AnnealResearch.HelperValueHeap.readCell_outside' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.leaf_image_read' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.root_image_read' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.root_image_tags_distinct' does not depend on any axioms\n'AnnealResearch.HelperValueHeap.allocate_index' does not depend on any axioms\n'AnnealResearch.HelperValueHeap.allocate_frontier' does not depend on any axioms\n'AnnealResearch.HelperValueHeap.allocate_new_cell' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.allocate_old_cell' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_old_read' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_leaf_image' depends on axioms: [propext]\n'AnnealResearch.HelperValueHeap.allocate_preserves_leaf_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_preserves_root_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.allocate_preserves_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueHeap.empty_frontier_empty' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.HelperNestedMutation",
+      "source_path": "experiments/opsem/AnnealResearch/HelperNestedMutation.lean",
+      "source_sha256": "4f7b070deca233320346fa37015129f52de1c82420b3305d68f849a54839b102",
+      "olean_sha256": "08a7744c704e57f07499a92cae5377e94d50397684cda5d0d5c66c05924239a2",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.5805,
+      "children_maxrss_kb": 831916,
+      "stdout": "'AnnealResearch.HelperNestedMutation.expectedHeap_eq_allocations' does not depend on any axioms\n'AnnealResearch.HelperNestedMutation.expectedHeap_frontier' does not depend on any axioms\n'AnnealResearch.HelperNestedMutation.expectedHeap_old_cell' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_root_image' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_active_value' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_leaf_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_root_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_leaf_value' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_root_value' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.expected_preserves_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperNestedMutation.mutateLeaf_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.mutateParent_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.nested_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.nested_observations' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperNestedMutation.nested_error_exact' depends on axioms: [propext]\n'AnnealResearch.HelperNestedMutation.nested_error_retains' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.HelperValueControls",
+      "source_path": "experiments/opsem/AnnealResearch/HelperValueControls.lean",
+      "source_sha256": "67bd81860edd448da6d706003d53ff52e3dcd0346e846c659ac341ce6c78aa8b",
+      "olean_sha256": "70640ce0c2626bda313a9d2e07ccf43af0eaf8a0de434a359c4d48fa08dfe197",
+      "lean_flags": [
+        "-j1",
+        "-M768"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.6729,
+      "children_maxrss_kb": 831916,
+      "stdout": "'AnnealResearch.HelperValueControls.seed_eq' does not depend on any axioms\n'AnnealResearch.HelperValueControls.fixture_image' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.fixture_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueControls.actual_normal' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.actual_error' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.rollback_normal' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.rollback_error' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.overwrite_error' depends on axioms: [propext]\n'AnnealResearch.HelperValueControls.rollback_discriminator' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperValueControls.overwrite_discriminator' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.HelperValueControls.dangling_frontier_empty' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueControls.dangling_not_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.HelperValueControls.dangling_boundary' depends on axioms: [propext]",
+      "stderr": ""
+    }
+  ]
+}

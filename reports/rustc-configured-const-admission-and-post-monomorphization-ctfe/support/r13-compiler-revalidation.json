@@ -1,0 +1,151 @@
+{
+  "toolchain": {
+    "observed_at": "2026-10-24",
+    "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+    "librustc_driver_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+    "charon_version": "0.1.210",
+    "charon_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+    "charon_driver_sha256": "8831ba28df3e3ef594c80adc90fcd9bb5993e23107e739145383159356722363"
+  },
+  "inputs": {
+    "probe.rs": "3ada61fe22ea9ee0047c440d76c3a13564f23026fbfdbe37320f0707e083c3fb",
+    "const_probe.rs": "13a15e1e35b658aafd143b9d77aa16a99a863011807ab42be34f6507983f57f9",
+    "direct_mir_driver.rs": "2b40d990478ee5a385d0b3448a88209b004d8548031db096379f23179d5e7a0d"
+  },
+  "probe_runs": {
+    "a1": {
+      "rustc_emit_exit_code": 0,
+      "stop_after_analysis_exit_code": 0,
+      "full_exit_code": 0,
+      "full_stderr": "",
+      "mir_emitted": true,
+      "mir_line_count": 84,
+      "mir_sha256": "087e80245ef563701b63853df1fe70027f02af56cfd7ed82b9b93139067a6efc",
+      "mir_lines_1_to_70_sha256": "155f0a457e2d9479d6dbe40f41b28cb964b8ec7465246f7476e321f58e61b63b",
+      "llvm_ir_emitted": true,
+      "llvm_ir_sha256": "e68e4f78ccbf71420488e9a60ed0f573418327040d736cb7f5524bd7dbb7d0b6",
+      "provisional_hook_written": true,
+      "mono_collection_completed": true,
+      "hir_owner_names": [
+        "<A as Bound>::LIMIT",
+        "<A as Bound>::marker",
+        "<B as Bound>::LIMIT",
+        "<B as Bound>::marker",
+        "checked",
+        "checked::{constant#0}",
+        "entry"
+      ],
+      "collected_mono_items": [
+        "Fn(Instance { def: Item(DefId(0:16 ~ probe[f5f6]::checked)), args: [A, 1_usize] })",
+        "Fn(Instance { def: Item(DefId(0:21 ~ probe[f5f6]::entry)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:15 ~ probe[f5f6]::{impl#1}::marker)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:12 ~ probe[f5f6]::{impl#0}::marker)), args: [] })"
+      ]
+    },
+    "b0": {
+      "rustc_emit_exit_code": 0,
+      "stop_after_analysis_exit_code": 0,
+      "full_exit_code": 0,
+      "full_stderr": "",
+      "mir_emitted": true,
+      "mir_line_count": 84,
+      "mir_sha256": "40cce4df06db74f7264e087c999dd983fbef1339b98f73d70fb0f5e4e6461aec",
+      "mir_lines_1_to_70_sha256": "155f0a457e2d9479d6dbe40f41b28cb964b8ec7465246f7476e321f58e61b63b",
+      "llvm_ir_emitted": true,
+      "llvm_ir_sha256": "da17913196feb3c9d9f2450c5477197c3b0c79df7f7e53527ae65802e41bf9fa",
+      "provisional_hook_written": true,
+      "mono_collection_completed": true,
+      "hir_owner_names": [
+        "<A as Bound>::LIMIT",
+        "<A as Bound>::marker",
+        "<B as Bound>::LIMIT",
+        "<B as Bound>::marker",
+        "checked",
+        "checked::{constant#0}",
+        "entry"
+      ],
+      "collected_mono_items": [
+        "Fn(Instance { def: Item(DefId(0:21 ~ probe[f5f6]::entry)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:16 ~ probe[f5f6]::checked)), args: [B, 0_usize] })",
+        "Fn(Instance { def: Item(DefId(0:15 ~ probe[f5f6]::{impl#1}::marker)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:12 ~ probe[f5f6]::{impl#0}::marker)), args: [] })"
+      ]
+    },
+    "b1": {
+      "rustc_emit_exit_code": 1,
+      "stop_after_analysis_exit_code": 0,
+      "full_exit_code": 1,
+      "full_stderr": "error[E0080]: evaluation panicked: assertion failed: N <= <T as Bound>::LIMIT\n  --> /usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/configured-admission/probe.rs:33:9\n   |\n33 |         assert!(N <= <T as Bound>::LIMIT);\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `checked::<B, 1>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n  --> /usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/configured-admission/probe.rs:32:5\n   |\n32 | /     const {\n33 | |         assert!(N <= <T as Bound>::LIMIT);\n34 | |     };\n   | |_____^\n\nnote: the above error was encountered while instantiating `fn checked::<B, 1>`\n  --> /usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/configured-admission/probe.rs:50:5\n   |\n50 |     checked::<Selected, 1>()\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`.\n",
+      "mir_emitted": true,
+      "mir_line_count": 84,
+      "mir_sha256": "e35a7dab232b7a2d793f6def42ff3ade6a48eda2a102d6df0fa6ac82e9a59581",
+      "mir_lines_1_to_70_sha256": "155f0a457e2d9479d6dbe40f41b28cb964b8ec7465246f7476e321f58e61b63b",
+      "llvm_ir_emitted": false,
+      "llvm_ir_sha256": null,
+      "provisional_hook_written": true,
+      "mono_collection_completed": false,
+      "hir_owner_names": [
+        "<A as Bound>::LIMIT",
+        "<A as Bound>::marker",
+        "<B as Bound>::LIMIT",
+        "<B as Bound>::marker",
+        "checked",
+        "checked::{constant#0}",
+        "entry"
+      ],
+      "collected_mono_items": []
+    },
+    "unused_b1": {
+      "rustc_emit_exit_code": 0,
+      "stop_after_analysis_exit_code": 0,
+      "full_exit_code": 0,
+      "full_stderr": "",
+      "mir_emitted": true,
+      "mir_line_count": 98,
+      "mir_sha256": "ad45d7ad436a3adfb896c63bfabd9fbbdba0ee6976a7521f30810c6bc8017eab",
+      "mir_lines_1_to_70_sha256": "155f0a457e2d9479d6dbe40f41b28cb964b8ec7465246f7476e321f58e61b63b",
+      "llvm_ir_emitted": true,
+      "llvm_ir_sha256": "da17913196feb3c9d9f2450c5477197c3b0c79df7f7e53527ae65802e41bf9fa",
+      "provisional_hook_written": true,
+      "mono_collection_completed": true,
+      "hir_owner_names": [
+        "<A as Bound>::LIMIT",
+        "<A as Bound>::marker",
+        "<B as Bound>::LIMIT",
+        "<B as Bound>::marker",
+        "checked",
+        "checked::{constant#0}",
+        "entry",
+        "never_instantiated"
+      ],
+      "collected_mono_items": [
+        "Fn(Instance { def: Item(DefId(0:21 ~ probe[f5f6]::entry)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:16 ~ probe[f5f6]::checked)), args: [B, 0_usize] })",
+        "Fn(Instance { def: Item(DefId(0:15 ~ probe[f5f6]::{impl#1}::marker)), args: [] })",
+        "Fn(Instance { def: Item(DefId(0:12 ~ probe[f5f6]::{impl#0}::marker)), args: [] })"
+      ]
+    }
+  },
+  "const_probe_runs": {
+    "case_ok": {
+      "direct_full_exit_code": 0,
+      "direct_full_stderr": "",
+      "direct_mono_collection_completed": true,
+      "charon_mono_exit_code": 0,
+      "charon_mono_ullbc_sha256": "a0eddf6b9c0ee7cf54a88870e624bfe3ab8792926632c5e6f015fc1ffb90421c",
+      "charon_has_errors": false,
+      "charon_ullbc_contains_div_by_zero_assert": true
+    },
+    "case_fail_reachable": {
+      "direct_full_exit_code": 1,
+      "direct_full_stderr": "error[E0080]: attempt to divide `1_usize` by zero\n --> /usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/real-mir-ullbc-capture/const_probe.rs:3:30\n  |\n3 |     pub const VALID: usize = 1 / N;\n  |                              ^^^^^ evaluation of `RequireNonZero::<0>::VALID` failed here\n\nnote: erroneous constant encountered\n --> /usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/real-mir-ullbc-capture/const_probe.rs:7:13\n  |\n7 |     let _ = RequireNonZero::<N>::VALID;\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: the above error was encountered while instantiating `fn checked_kernel::<0>`\n  --> /usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/real-mir-ullbc-capture/const_probe.rs:25:5\n   |\n25 |     checked_kernel::<0>(x)\n   |     ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`.\n",
+      "direct_mono_collection_completed": false,
+      "charon_mono_exit_code": 0,
+      "charon_mono_ullbc_sha256": "a343d809082dc2d7899832385d490a2b50fd956770a4eb7ca85b95c6545ad340",
+      "charon_has_errors": false,
+      "charon_ullbc_contains_div_by_zero_assert": true
+    }
+  },
+  "all_four_mir_lines_1_to_70_identical": true
+}

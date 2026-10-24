@@ -1,0 +1,69 @@
+{
+  "toolchain": {
+    "observed_at": "2026-10-24",
+    "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+    "librustc_driver_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+    "charon_version": "0.1.210",
+    "charon_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+    "charon_driver_sha256": "8831ba28df3e3ef594c80adc90fcd9bb5993e23107e739145383159356722363"
+  },
+  "inputs": {
+    "cleanup_subject.rs": "04b073d7d46ffd95dee0730259844032959160e8fcc8e67565df5c25704f41c5",
+    "extract_and_link_charon_h3.py": "97c35e45121c5695f64e505088686753991c9bab1efc689ea561c8176e500aa7"
+  },
+  "charon_cleanup_comparison": {
+    "ullbc_elaborated_default": {
+      "exit_code": 0,
+      "dest_sha256": "16831117cb9063350a007ead3d4302bc0b8f529d712391ca232e42c7c0875ad5",
+      "dest_size_bytes": 151887
+    },
+    "ullbc_elaborated_strongest": {
+      "exit_code": 0,
+      "dest_sha256": "37085bf4dc5f04ce41103f6c294836acba044540e39da3e119d2b788bdd96392",
+      "dest_size_bytes": 634884
+    },
+    "llbc_elaborated_default": {
+      "exit_code": 0,
+      "dest_sha256": "cac739abd4ce15e8b89dd20bc1eec3120a89e68bbdcf3a3c6a73e1122c96022d",
+      "dest_size_bytes": 146811
+    }
+  },
+  "h3_charon_artifacts_verified": {
+    "stateful_generic_lib_strongest.ullbc": {
+      "exists": true,
+      "sha256": "ebbf8cbdaf030f63e973e838c4d52094c910af15c879a601d784ce89f68a66ed",
+      "size_bytes": 775160
+    },
+    "client_contract_user_strongest.ullbc": {
+      "exists": true,
+      "sha256": "d0e6c2741abceb38099775b07fc0c08c9c0a9cea3317e16b8c4049423e828271",
+      "size_bytes": 674406
+    },
+    "client_direct_mir_inspector_strongest.ullbc": {
+      "exists": true,
+      "sha256": "226b75307521c2b110ccb9a747a8c51f3a540cfa2c179aec08aeec975c0a3081",
+      "size_bytes": 778542
+    },
+    "charon_h3_native_client_inspector_closure.amir": {
+      "exists": true,
+      "sha256": "fafd26afcc9a0f1d7e87a85846cda92edc97d690ee472932d6a49595a43b2c77",
+      "size_bytes": 1019
+    },
+    "charon_h3_native_client_contract_closure.amir": {
+      "exists": true,
+      "sha256": "7a68aab4b07ece253d052f4a864849ad967e321073956aadecd4283cd2998fe2",
+      "size_bytes": 418
+    },
+    "charon_h3_linked_inspector_and_lib.amir": {
+      "exists": true,
+      "sha256": "0204f5a98bdb703b4d84d83244c56f76430c3951f05c61d978eee69d353da9b6",
+      "size_bytes": 1049
+    },
+    "charon_h3_ctrl6_local_u64_type_mismatch.amir": {
+      "exists": true,
+      "sha256": "fc440fdb52e6931ae40f784cde5835789ed770a96cabb88a21e2d2541afa4d25",
+      "size_bytes": 1019
+    }
+  }
+}

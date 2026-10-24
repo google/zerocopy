@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lean4/verification",
+    "minirust/memory",
+    "minirust/operational-semantics",
+    "minirust/tree-borrows",
+    "rust/memory-model",
+    "rust/operational-semantics"
+  ],
+  "subjects": [
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target_triple": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

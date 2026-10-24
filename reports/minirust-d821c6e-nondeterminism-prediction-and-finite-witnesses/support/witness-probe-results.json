@@ -1,0 +1,66 @@
+{
+  "subject": "owned finite byte-machine witness probe",
+  "not_established": [
+    "Lean theorem",
+    "Rust frontend adequacy",
+    "MiniRust correspondence",
+    "Rust alias validity",
+    "full law-class inhabitation theorem"
+  ],
+  "positive_copy_cases": 11310,
+  "executed_primitive_events": 161776,
+  "source_byte_alphabet": [
+    0,
+    1,
+    2,
+    255
+  ],
+  "destination_cell_alphabet": [
+    null,
+    0,
+    255
+  ],
+  "lengths": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "controls": {
+    "HistoryFree": {
+      "uninitialized-source": "uninitialized",
+      "invalid-bool-at-production": "invalid-bool",
+      "out-of-bounds-source": "bounds",
+      "stale-provenance": "pointer-arithmetic",
+      "absent-provenance": "provenance",
+      "missing-destination-authority": "authority"
+    },
+    "AliasSensitive": {
+      "uninitialized-source": "uninitialized",
+      "invalid-bool-at-production": "invalid-bool",
+      "out-of-bounds-source": "bounds",
+      "stale-provenance": "pointer-arithmetic",
+      "absent-provenance": "provenance",
+      "missing-destination-authority": "authority"
+    }
+  },
+  "distinct_model_witness": {
+    "HistoryFree": "success",
+    "AliasSensitive": "authority"
+  },
+  "overlap_functional_counterexample": {
+    "HistoryFree": [
+      1,
+      1,
+      1
+    ],
+    "AliasSensitive": [
+      1,
+      1,
+      1
+    ]
+  },
+  "zero_length_absent_provenance": "success with zero events, both models",
+  "elapsed_seconds": 0.1221105339936912,
+  "peak_rss_bytes_darwin": 14188
+}

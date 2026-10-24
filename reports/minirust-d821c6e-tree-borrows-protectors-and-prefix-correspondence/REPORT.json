@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "lean4/verification",
+    "minirust/memory",
+    "minirust/operational-semantics",
+    "minirust/tree-borrows",
+    "rust/aliasing",
+    "rust/operational-semantics",
+    "specr/libspecr"
+  ],
+  "subjects": [
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "specr",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "version": "0.1.41",
+        "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220",
+        "crate_archive_sha256": "a3c0c46f39513f6c4b533ec6bea7d623f6761fd0a610b1152db7f2e4dd385a61"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target_triple": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

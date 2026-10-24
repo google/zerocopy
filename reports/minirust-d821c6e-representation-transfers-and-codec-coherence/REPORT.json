@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "minirust/representation-transfers",
+    "minirust/pointer-provenance-decoder",
+    "minirust/dead-data-correspondence",
+    "minirust/codec-coherence"
+  ],
+  "subjects": [
+    {
+      "name": "minirust",
+      "identity": {
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "rust",
+      "identity": {
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "rustc-layout-probe",
+      "identity": {
+        "darwin_rustc": "1.99.0 (b940084d7eb6a299eb4bfeb8e34901bc051e7ac4)",
+        "linux_rustc": "1.101.0-nightly (19833af7224424e8b53e288097d56b6af43d5bcf)"
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

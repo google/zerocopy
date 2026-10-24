@@ -1,0 +1,12 @@
+{
+  "observed_at": "2026-10-24",
+  "rust_sources_count": 30,
+  "rust_reference_commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+  "rust_compiler_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "minirust_upstream_revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "minirust_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0",
+  "minirust_archive_verified": true,
+  "minirust_files_verified_count": 28,
+  "clauses_md_sha256": "2d1ea1f668f030b383868d1852aa28d3fb07f065e058c9f4d3b481bb994317a3",
+  "static_premises_md_sha256": "08c78283eaa1de1e2cf30a62c64cd1401e35a59f72a13790ead0b5250ba3c91d"
+}

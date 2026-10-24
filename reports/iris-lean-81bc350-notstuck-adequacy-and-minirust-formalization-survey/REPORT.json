@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "iris-lean/adequacy",
+    "iris-lean/notstuck-ub-detection",
+    "lean4/program-logic",
+    "minirust/formalization-survey",
+    "minirust/operational-semantics",
+    "rust/undefined-behavior-encoding"
+  ],
+  "subjects": [
+    {
+      "name": "iris-lean",
+      "identity": {
+        "repository": "https://github.com/leanprover-community/iris-lean",
+        "commit": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+        "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816",
+        "lean_toolchain": "leanprover/lean4:v4.29.0"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "https://github.com/minirust/minirust",
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "specr",
+      "identity": {
+        "repository": "https://github.com/minirust/specr",
+        "commit": "15200eb5e6"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4",
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

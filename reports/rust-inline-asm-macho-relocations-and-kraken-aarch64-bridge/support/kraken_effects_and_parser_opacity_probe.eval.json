@@ -1,0 +1,17 @@
+{
+  "file": "kraken_effects_and_parser_opacity_probe.lean",
+  "sha256": "c6086d0cbc3d4ec4337558502df878bee4e06fc3ddf6712cdbc9bc3f30436336",
+  "command": [
+    "lean",
+    "-j1",
+    "-M768",
+    "kraken_effects_and_parser_opacity_probe.lean"
+  ],
+  "lean_version": "4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52)",
+  "returncode": 0,
+  "wall_seconds": 1.567,
+  "max_rss_kb": 522904,
+  "max_rss_bytes": 535453696,
+  "stdout": "",
+  "stderr": ""
+}

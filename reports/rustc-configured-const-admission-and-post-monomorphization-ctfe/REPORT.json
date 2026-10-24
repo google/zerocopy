@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "rust/mir",
+    "rust/const-eval",
+    "rust/monomorphization",
+    "charon",
+    "verification/admission",
+    "lean"
+  ],
+  "subjects": [
+    {
+      "name": "rust-reference",
+      "identity": {
+        "repository": "https://github.com/rust-lang/reference",
+        "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "version": "1.98.0-nightly",
+        "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "commit_date": "2026-05-30",
+        "target": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "version": "1.99.0",
+        "commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "commit_date": "2026-07-30",
+        "target": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.1"
+      }
+    },
+    {
+      "name": "charon",
+      "identity": {
+        "version": "0.1.210",
+        "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+        "rustc_nightly": "nightly-2026-05-31",
+        "rustc_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4",
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

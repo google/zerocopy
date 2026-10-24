@@ -1,0 +1,32 @@
+{
+  "topics": [
+    "rust/opsem/normative-clauses",
+    "rust/memory-model/layout-and-validity",
+    "rust/cleanup-and-unwinding",
+    "minirust/static-premises"
+  ],
+  "subjects": [
+    {
+      "name": "rust",
+      "identity": {
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "rust-reference",
+      "identity": {
+        "submodule_commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+        "parent_rust_release": "1.99.1"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

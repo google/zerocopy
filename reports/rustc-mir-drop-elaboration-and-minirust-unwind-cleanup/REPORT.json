@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "rust/mir",
+    "rust/drop-elaboration",
+    "rust/unwind-cleanup",
+    "rust/ownership-and-destruction",
+    "minirust/semantics",
+    "minirust/unwind-elaboration",
+    "minirust/tree-borrows",
+    "lean4/kernel-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "https://github.com/rust-lang/rust",
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "prior_mir_baseline_release": "1.99.0",
+        "prior_mir_baseline_commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "edition": "2024"
+      }
+    },
+    {
+      "name": "rust-reference",
+      "identity": {
+        "repository": "https://github.com/rust-lang/reference",
+        "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "https://github.com/minirust/minirust",
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

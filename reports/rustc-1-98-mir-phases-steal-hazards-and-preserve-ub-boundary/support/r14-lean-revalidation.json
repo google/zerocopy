@@ -1,0 +1,121 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "target_modules": [
+    "MirCaptureDialects",
+    "MirCaptureDialectControls",
+    "MirSemanticBoundary",
+    "MirSemanticBoundaryControls",
+    "ClaimCaptureClosure",
+    "ClaimCaptureClosureControls",
+    "BuiltPhaseControlsR1",
+    "PR86AuditRepairs"
+  ],
+  "topological_order": [
+    "Execution",
+    "MirCaptureDialects",
+    "MirCaptureDialectControls",
+    "MirSemanticBoundary",
+    "MirSemanticBoundaryControls",
+    "ClaimCaptureClosure",
+    "ClaimCaptureClosureControls",
+    "SubstantiveMirByteParser",
+    "SemanticVerticalSliceCore",
+    "CargoWorkspaceIntegration",
+    "StatefulGenericLibraryH3H7Core",
+    "StatefulGenericLibraryH3H7",
+    "StatefulGenericLibraryH3H7Controls",
+    "PR86AuditRepairs",
+    "BuiltPhaseControlsR1"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.MirCaptureDialects",
+      "source_path": "experiments/opsem/AnnealResearch/MirCaptureDialects.lean",
+      "source_sha256": "9e6288f647627f06d4b818510300cf877265f04b9deee9796eed31e321926663",
+      "olean_sha256": "a2e89a802c20e6ff1a483d047f397787f3cc2c4bae2c5e5e7e9edc9ffa109aa1",
+      "exit_code": 0,
+      "wall_seconds": 0.5512,
+      "children_maxrss_kb": 786996,
+      "stdout": "'AnnealResearch.MirCaptureDialects.admissible_capture_requires_exact_post_cleanup_and_all_bodies' does not depend on any axioms\n'AnnealResearch.MirCaptureDialects.post_cleanup_exercise_matches_all_four_observed_cases' does not depend on any axioms\n'AnnealResearch.MirCaptureDialects.post_cleanup_preserves_safe_divergence_and_exposes_unsafe_prefix' does not depend on any axioms\n'AnnealResearch.MirCaptureDialects.post_cleanup_to_analysis_correspondence_requires_drop_flag_invariant' does not depend on any axioms\n'AnnealResearch.MirCaptureDialects.driver_query_hook_captures_without_compiler_fork' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MirCaptureDialectControls",
+      "source_path": "experiments/opsem/AnnealResearch/MirCaptureDialectControls.lean",
+      "source_sha256": "ebbd159fe603f73da7a2f6c41c85464eedb6a81a071dd314a49c88aae8a3ec26",
+      "olean_sha256": "8c51217b36cfd816d52cda13d72ff1c29f9d0bae32c4441a0189fb3e76bdbe51",
+      "exit_code": 0,
+      "wall_seconds": 0.4806,
+      "children_maxrss_kb": 786996,
+      "stdout": "'AnnealResearch.MirCaptureDialectControls.stolen_query_silent_optimized_fallback_control' depends on axioms: [propext]\n'AnnealResearch.MirCaptureDialectControls.optimized_mir_elides_ub_before_divergence_control' does not depend on any axioms\n'AnnealResearch.MirCaptureDialectControls.analysis_mir_unelaborated_drop_misinterprets_partial_move_control' does not depend on any axioms\n'AnnealResearch.MirCaptureDialectControls.early_callback_before_post_mono_const_error_control' does not depend on any axioms\n'AnnealResearch.MirCaptureDialectControls.omitted_promoted_or_closure_body_control' does not depend on any axioms\n'AnnealResearch.MirCaptureDialectControls.mutated_unwind_edge_preserves_normal_return_but_leaks_or_double_drops' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MirSemanticBoundary",
+      "source_path": "experiments/opsem/AnnealResearch/MirSemanticBoundary.lean",
+      "source_sha256": "b03ccc71791b1b5d615502603235713a0ade64f3276aad2ec57c93b8fdc5cb30",
+      "olean_sha256": "dcd262307f0d731696c341b761cdc51576de3af4943fb7e8205dad95939034b7",
+      "exit_code": 0,
+      "wall_seconds": 0.6915,
+      "children_maxrss_kb": 799780,
+      "stdout": "'AnnealResearch.MirSemanticBoundary.analysis_and_elaborated_cleanup_trace_equivalent' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundary.reinit_cleanup_analysis_and_elaborated_equivalent' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundary.safe_divergent_satisfies_noUB_without_terminal_state' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundary.unsafe_prefix_before_divergence_admitted_and_rejected_by_noUB' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundary.preserve_ub_flag_retains_place_mention_and_switch_ub' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundary.four_way_boundary_separation' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.MirSemanticBoundaryControls",
+      "source_path": "experiments/opsem/AnnealResearch/MirSemanticBoundaryControls.lean",
+      "source_sha256": "3d5194b1f51c27c0c5918e9cfd0717a59e924ab391b62414ae605d052628c625",
+      "olean_sha256": "da1a2d22e6290a6f3b02307b8f302a47bc89d4bbc0e378921dfad6f0bdbcbd54",
+      "exit_code": 0,
+      "wall_seconds": 0.5532,
+      "children_maxrss_kb": 799780,
+      "stdout": "'AnnealResearch.MirSemanticBoundaryControls.drop_condition_mutation_preserves_return_but_faults_or_leaks' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundaryControls.unwind_edge_omission_matches_completed_return_but_fails_unwind_trace' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundaryControls.effect_order_swap_preserves_drop_count_but_violates_destruction_order' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundaryControls.default_post_cleanup_without_preserve_ub_loses_place_mention_and_switch_ub' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundaryControls.optimized_mir_strips_storage_liveness_markers' does not depend on any axioms\n'AnnealResearch.MirSemanticBoundaryControls.erased_with_retag_flag_conflates_deref_temp_with_user_copy' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ClaimCaptureClosure",
+      "source_path": "experiments/opsem/AnnealResearch/ClaimCaptureClosure.lean",
+      "source_sha256": "a0332c14209993821b4911887abe1e38dd09a23fdb76689da869e3b7684ff42d",
+      "olean_sha256": "4babf6868d1dbdaf89ee4db3d21af3205fa0bddd1baf5d3ec7822cb89f47f353",
+      "exit_code": 0,
+      "wall_seconds": 0.8225,
+      "children_maxrss_kb": 799780,
+      "stdout": "'AnnealResearch.ClaimCaptureClosure.direct_mir_driver_v3_supports_all_eight_claim_families' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosure.charon_llbc_serves_safe_functional_and_layout_slices_only' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosure.place_mention_discriminator_distinguishes_let_underscore_from_match_and_assign' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosure.local_info_preserved_only_at_mir_built' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosure.rustc_public_default_erases_storage_and_unused_load_checks' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosure.async_coroutine_requires_hook_before_state_transform_and_blocks_charon' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ClaimCaptureClosureControls",
+      "source_path": "experiments/opsem/AnnealResearch/ClaimCaptureClosureControls.lean",
+      "source_sha256": "1549fa743b8482c18bdcc72138c2cc6cdef7d9d693c4e27092d40eb8a22bd27e",
+      "olean_sha256": "1f3f2a832c170c1a9f8560cb08ecbf3ba3c0557422bc2144cf8da7fa7d7f3d7d",
+      "exit_code": 0,
+      "wall_seconds": 0.2305,
+      "children_maxrss_kb": 799780,
+      "stdout": "'AnnealResearch.ClaimCaptureClosureControls.control_unhooked_after_analysis_default_insufficient' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosureControls.control_rustc_public_default_insufficient_for_ub_and_liveness' does not depend on any axioms\n'AnnealResearch.ClaimCaptureClosureControls.control_conflating_let_underscore_with_match_wildcard_refuted' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.PR86AuditRepairs",
+      "source_path": "experiments/opsem/AnnealResearch/PR86AuditRepairs.lean",
+      "source_sha256": "f41bb03bc40b63ecdb27d96b93f59efd5672a5340a91221bb43a66c0c3029cdb",
+      "olean_sha256": "79f609f0aa834b4ad33220d411380af21cc03fa7b7f5d8717945a41604c81bb5",
+      "exit_code": 0,
+      "wall_seconds": 6.7812,
+      "children_maxrss_kb": 799780,
+      "stdout": "'AnnealResearch.PR86AuditRepairs.r7_repr_c_slice_tail_packet_layout_and_controls' does not depend on any axioms\n'AnnealResearch.PR86AuditRepairs.r2_fail_closed_two_sided_validator_accepts_real_package' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.checkBuiltToPostCleanupBehavioralEquivFailClosed_sound' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.PR86AuditRepairs.reconstructVerifiedStructuredViewInEnv_general_step_slot_sound' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.reconstructVerifiedStructuredViewInEnv_general_client_contract_sound' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.encodeLayoutEntryBytes_preserves_size_and_align_when_in_range_q2' depends on axioms: [propext,\n Quot.sound]\n'AnnealResearch.PR86AuditRepairs.q2_full_range_layout_binding_controls_verified' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.validateBuiltToPostCleanupAdmittedQ1_sound' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.PR86AuditRepairs.q1_admitted_validator_accepts_real_package' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.q5_r10_packet_with_tail_repr_c_universal_law' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.q5_r10_packet_with_tail_packed2_universal_law' depends on axioms: [propext]\n'AnnealResearch.PR86AuditRepairs.q5_r10_joined_specimen_and_footprint_boundaries_verified' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.BuiltPhaseControlsR1",
+      "source_path": "experiments/opsem/AnnealResearch/BuiltPhaseControlsR1.lean",
+      "source_sha256": "a097b644ff324b231f984871111b72ed13a37dea51f1535c185f667a6913f3b6",
+      "olean_sha256": "8f02bd4e59ef264dea7fb0d525eed983222e0426d6b72467f3754951857ce975",
+      "exit_code": 0,
+      "wall_seconds": 8.1859,
+      "children_maxrss_kb": 799780,
+      "stdout": "'AnnealResearch.BuiltPhaseControlsR1.r1_all_five_parsed_built_phase_controls_verified' depends on axioms: [propext]",
+      "stderr": ""
+    }
+  ]
+}

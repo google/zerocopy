@@ -1,0 +1,1840 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at cleanup.rs:3:10: 3:15>::clone(_1: &Event) -> Event {
+    debug self => _1;
+    let mut _0: Event;
+    let mut _2: isize;
+    let _3: &u8;
+    let mut _4: u8;
+    let _5: &u8;
+    let mut _6: u8;
+    let _7: &u8;
+    let _8: &u8;
+    let mut _9: u8;
+    let mut _10: u8;
+    let _11: &u8;
+    let _12: &u8;
+    let mut _13: u8;
+    let mut _14: u8;
+    let _15: &u8;
+    let mut _16: u8;
+    scope 1 {
+        debug __self_0 => _3;
+    }
+    scope 2 {
+        debug __self_0 => _5;
+    }
+    scope 3 {
+        debug __self_0 => _7;
+        debug __self_1 => _8;
+    }
+    scope 4 {
+        debug __self_0 => _11;
+        debug __self_1 => _12;
+    }
+    scope 5 {
+        debug __self_0 => _15;
+    }
+
+    bb0: {
+        _2 = discriminant((*_1));
+        switchInt(move _2) -> [0: bb7, 1: bb6, 2: bb5, 3: bb4, 4: bb3, 5: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _0 = Event::AfterScope;
+        goto -> bb8;
+    }
+
+    bb3: {
+        _15 = &(((*_1) as Forgotten).0: u8);
+        _16 = copy (*_15);
+        _0 = Event::Forgotten(move _16);
+        goto -> bb8;
+    }
+
+    bb4: {
+        _11 = &(((*_1) as DropExit).0: u8);
+        _12 = &(((*_1) as DropExit).1: u8);
+        _13 = copy (*_11);
+        _14 = copy (*_12);
+        _0 = Event::DropExit(move _13, move _14);
+        goto -> bb8;
+    }
+
+    bb5: {
+        _7 = &(((*_1) as DropEnter).0: u8);
+        _8 = &(((*_1) as DropEnter).1: u8);
+        _9 = copy (*_7);
+        _10 = copy (*_8);
+        _0 = Event::DropEnter(move _9, move _10);
+        goto -> bb8;
+    }
+
+    bb6: {
+        _5 = &(((*_1) as Constructed).0: u8);
+        _6 = copy (*_5);
+        _0 = Event::Constructed(move _6);
+        goto -> bb8;
+    }
+
+    bb7: {
+        _3 = &(((*_1) as ConstructStart).0: u8);
+        _4 = copy (*_3);
+        _0 = Event::ConstructStart(move _4);
+        goto -> bb8;
+    }
+
+    bb8: {
+        return;
+    }
+}
+
+fn <impl at cleanup.rs:3:17: 3:22>::fmt(_1: &Event, _2: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
+    debug self => _1;
+    debug f => _2;
+    let mut _0: std::result::Result<(), std::fmt::Error>;
+    let mut _3: isize;
+    let _4: &u8;
+    let mut _5: &str;
+    let mut _6: &dyn std::fmt::Debug;
+    let _7: &&u8;
+    let _8: &u8;
+    let mut _9: &str;
+    let mut _10: &dyn std::fmt::Debug;
+    let _11: &&u8;
+    let _12: &u8;
+    let _13: &u8;
+    let mut _14: &str;
+    let mut _15: &dyn std::fmt::Debug;
+    let mut _16: &dyn std::fmt::Debug;
+    let _17: &&u8;
+    let _18: &u8;
+    let _19: &u8;
+    let mut _20: &str;
+    let mut _21: &dyn std::fmt::Debug;
+    let mut _22: &dyn std::fmt::Debug;
+    let _23: &&u8;
+    let _24: &u8;
+    let mut _25: &str;
+    let mut _26: &dyn std::fmt::Debug;
+    let _27: &&u8;
+    let mut _28: &str;
+    scope 1 {
+        debug __self_0 => _4;
+    }
+    scope 2 {
+        debug __self_0 => _8;
+    }
+    scope 3 {
+        debug __self_0 => _12;
+        debug __self_1 => _13;
+    }
+    scope 4 {
+        debug __self_0 => _18;
+        debug __self_1 => _19;
+    }
+    scope 5 {
+        debug __self_0 => _24;
+    }
+
+    bb0: {
+        _3 = discriminant((*_1));
+        switchInt(move _3) -> [0: bb7, 1: bb6, 2: bb5, 3: bb4, 4: bb3, 5: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _28 = const "AfterScope";
+        _0 = Formatter::<'_>::write_str(copy _2, move _28) -> [return: bb8, unwind continue];
+    }
+
+    bb3: {
+        _24 = &(((*_1) as Forgotten).0: u8);
+        _25 = const "Forgotten";
+        _27 = &_24;
+        _26 = copy _27 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _0 = Formatter::<'_>::debug_tuple_field1_finish(copy _2, move _25, move _26) -> [return: bb8, unwind continue];
+    }
+
+    bb4: {
+        _18 = &(((*_1) as DropExit).0: u8);
+        _19 = &(((*_1) as DropExit).1: u8);
+        _20 = const "DropExit";
+        _21 = copy _18 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _23 = &_19;
+        _22 = copy _23 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _0 = Formatter::<'_>::debug_tuple_field2_finish(copy _2, move _20, move _21, move _22) -> [return: bb8, unwind continue];
+    }
+
+    bb5: {
+        _12 = &(((*_1) as DropEnter).0: u8);
+        _13 = &(((*_1) as DropEnter).1: u8);
+        _14 = const "DropEnter";
+        _15 = copy _12 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _17 = &_13;
+        _16 = copy _17 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _0 = Formatter::<'_>::debug_tuple_field2_finish(copy _2, move _14, move _15, move _16) -> [return: bb8, unwind continue];
+    }
+
+    bb6: {
+        _8 = &(((*_1) as Constructed).0: u8);
+        _9 = const "Constructed";
+        _11 = &_8;
+        _10 = copy _11 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _0 = Formatter::<'_>::debug_tuple_field1_finish(copy _2, move _9, move _10) -> [return: bb8, unwind continue];
+    }
+
+    bb7: {
+        _4 = &(((*_1) as ConstructStart).0: u8);
+        _5 = const "ConstructStart";
+        _7 = &_4;
+        _6 = copy _7 as &dyn std::fmt::Debug (PointerCoercion(Unsize, Implicit));
+        _0 = Formatter::<'_>::debug_tuple_field1_finish(copy _2, move _5, move _6) -> [return: bb8, unwind continue];
+    }
+
+    bb8: {
+        return;
+    }
+}
+
+alloc137 (size: 10, align: 1) {
+    41 66 74 65 72 53 63 6f 70 65                   │ AfterScope
+}
+
+alloc136 (size: 9, align: 1) {
+    46 6f 72 67 6f 74 74 65 6e                      │ Forgotten
+}
+
+alloc135 (size: 8, align: 1) {
+    44 72 6f 70 45 78 69 74                         │ DropExit
+}
+
+alloc134 (size: 9, align: 1) {
+    44 72 6f 70 45 6e 74 65 72                      │ DropEnter
+}
+
+alloc133 (size: 11, align: 1) {
+    43 6f 6e 73 74 72 75 63 74 65 64                │ Constructed
+}
+
+alloc132 (size: 14, align: 1) {
+    43 6f 6e 73 74 72 75 63 74 53 74 61 72 74       │ ConstructStart
+}
+
+fn <impl at cleanup.rs:3:24: 3:33>::eq(_1: &Event, _2: &Event) -> bool {
+    debug self => _1;
+    debug other => _2;
+    let mut _0: bool;
+    let _3: isize;
+    let mut _5: bool;
+    let mut _6: (&Event, &Event);
+    let mut _7: isize;
+    let mut _8: isize;
+    let mut _9: isize;
+    let mut _10: isize;
+    let mut _11: isize;
+    let mut _12: isize;
+    let mut _15: &&u8;
+    let mut _16: &&u8;
+    let mut _19: &&u8;
+    let mut _20: &&u8;
+    let mut _25: bool;
+    let mut _26: &&u8;
+    let mut _27: &&u8;
+    let mut _28: &&u8;
+    let mut _29: &&u8;
+    let mut _34: bool;
+    let mut _35: &&u8;
+    let mut _36: &&u8;
+    let mut _37: &&u8;
+    let mut _38: &&u8;
+    let mut _41: &&u8;
+    let mut _42: &&u8;
+    let mut _43: &Event;
+    let mut _44: &Event;
+    let mut _45: &Event;
+    let mut _46: &Event;
+    let mut _47: &Event;
+    let mut _48: &Event;
+    let mut _49: &Event;
+    let mut _50: &Event;
+    let mut _51: &Event;
+    let mut _52: &Event;
+    let mut _53: &Event;
+    let mut _54: &Event;
+    let mut _55: &Event;
+    let mut _56: &Event;
+    let mut _57: &Event;
+    let mut _58: &Event;
+    let mut _59: &Event;
+    let mut _60: &Event;
+    let mut _61: &Event;
+    let mut _62: &Event;
+    scope 1 {
+        debug __self_discr => _3;
+        let _4: isize;
+        scope 2 {
+            debug __arg1_discr => _4;
+            let _13: &u8;
+            let _14: &u8;
+            let _17: &u8;
+            let _18: &u8;
+            let _21: &u8;
+            let _22: &u8;
+            let _23: &u8;
+            let _24: &u8;
+            let _30: &u8;
+            let _31: &u8;
+            let _32: &u8;
+            let _33: &u8;
+            let _39: &u8;
+            let _40: &u8;
+            scope 3 {
+                debug __self_0 => _13;
+                debug __arg1_0 => _14;
+            }
+            scope 4 {
+                debug __self_0 => _17;
+                debug __arg1_0 => _18;
+            }
+            scope 5 {
+                debug __self_0 => _21;
+                debug __self_1 => _22;
+                debug __arg1_0 => _23;
+                debug __arg1_1 => _24;
+            }
+            scope 6 {
+                debug __self_0 => _30;
+                debug __self_1 => _31;
+                debug __arg1_0 => _32;
+                debug __arg1_1 => _33;
+            }
+            scope 7 {
+                debug __self_0 => _39;
+                debug __arg1_0 => _40;
+            }
+        }
+    }
+
+    bb0: {
+        _3 = discriminant((*_1));
+        _4 = discriminant((*_2));
+        _5 = Eq(copy _3, copy _4);
+        switchInt(move _5) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _6 = (copy _1, copy _2);
+        _43 = no_retag copy (_6.0: &Event);
+        _12 = discriminant((*_43));
+        switchInt(move _12) -> [0: bb4, 1: bb5, 2: bb6, 3: bb7, 4: bb8, 5: bb3, otherwise: bb21];
+    }
+
+    bb2: {
+        _0 = const false;
+        goto -> bb20;
+    }
+
+    bb3: {
+        _0 = const true;
+        goto -> bb20;
+    }
+
+    bb4: {
+        _44 = no_retag copy (_6.1: &Event);
+        _7 = discriminant((*_44));
+        switchInt(move _7) -> [0: bb13, otherwise: bb3];
+    }
+
+    bb5: {
+        _45 = no_retag copy (_6.1: &Event);
+        _8 = discriminant((*_45));
+        switchInt(move _8) -> [1: bb12, otherwise: bb3];
+    }
+
+    bb6: {
+        _46 = no_retag copy (_6.1: &Event);
+        _9 = discriminant((*_46));
+        switchInt(move _9) -> [2: bb11, otherwise: bb3];
+    }
+
+    bb7: {
+        _47 = no_retag copy (_6.1: &Event);
+        _10 = discriminant((*_47));
+        switchInt(move _10) -> [3: bb10, otherwise: bb3];
+    }
+
+    bb8: {
+        _48 = no_retag copy (_6.1: &Event);
+        _11 = discriminant((*_48));
+        switchInt(move _11) -> [4: bb9, otherwise: bb3];
+    }
+
+    bb9: {
+        _49 = no_retag copy (_6.0: &Event);
+        _39 = &(((*_49) as Forgotten).0: u8);
+        _50 = no_retag copy (_6.1: &Event);
+        _40 = &(((*_50) as Forgotten).0: u8);
+        _41 = &_39;
+        _42 = &_40;
+        _0 = <&u8 as PartialEq>::eq(move _41, move _42) -> [return: bb20, unwind continue];
+    }
+
+    bb10: {
+        _51 = no_retag copy (_6.0: &Event);
+        _30 = &(((*_51) as DropExit).0: u8);
+        _52 = no_retag copy (_6.0: &Event);
+        _31 = &(((*_52) as DropExit).1: u8);
+        _53 = no_retag copy (_6.1: &Event);
+        _32 = &(((*_53) as DropExit).0: u8);
+        _54 = no_retag copy (_6.1: &Event);
+        _33 = &(((*_54) as DropExit).1: u8);
+        _35 = &_30;
+        _36 = &_32;
+        _34 = <&u8 as PartialEq>::eq(move _35, move _36) -> [return: bb17, unwind continue];
+    }
+
+    bb11: {
+        _55 = no_retag copy (_6.0: &Event);
+        _21 = &(((*_55) as DropEnter).0: u8);
+        _56 = no_retag copy (_6.0: &Event);
+        _22 = &(((*_56) as DropEnter).1: u8);
+        _57 = no_retag copy (_6.1: &Event);
+        _23 = &(((*_57) as DropEnter).0: u8);
+        _58 = no_retag copy (_6.1: &Event);
+        _24 = &(((*_58) as DropEnter).1: u8);
+        _26 = &_21;
+        _27 = &_23;
+        _25 = <&u8 as PartialEq>::eq(move _26, move _27) -> [return: bb14, unwind continue];
+    }
+
+    bb12: {
+        _59 = no_retag copy (_6.0: &Event);
+        _17 = &(((*_59) as Constructed).0: u8);
+        _60 = no_retag copy (_6.1: &Event);
+        _18 = &(((*_60) as Constructed).0: u8);
+        _19 = &_17;
+        _20 = &_18;
+        _0 = <&u8 as PartialEq>::eq(move _19, move _20) -> [return: bb20, unwind continue];
+    }
+
+    bb13: {
+        _61 = no_retag copy (_6.0: &Event);
+        _13 = &(((*_61) as ConstructStart).0: u8);
+        _62 = no_retag copy (_6.1: &Event);
+        _14 = &(((*_62) as ConstructStart).0: u8);
+        _15 = &_13;
+        _16 = &_14;
+        _0 = <&u8 as PartialEq>::eq(move _15, move _16) -> [return: bb20, unwind continue];
+    }
+
+    bb14: {
+        switchInt(move _25) -> [0: bb16, otherwise: bb15];
+    }
+
+    bb15: {
+        _28 = &_22;
+        _29 = &_24;
+        _0 = <&u8 as PartialEq>::eq(move _28, move _29) -> [return: bb20, unwind continue];
+    }
+
+    bb16: {
+        _0 = const false;
+        goto -> bb20;
+    }
+
+    bb17: {
+        switchInt(move _34) -> [0: bb19, otherwise: bb18];
+    }
+
+    bb18: {
+        _37 = &_31;
+        _38 = &_33;
+        _0 = <&u8 as PartialEq>::eq(move _37, move _38) -> [return: bb20, unwind continue];
+    }
+
+    bb19: {
+        _0 = const false;
+        goto -> bb20;
+    }
+
+    bb20: {
+        return;
+    }
+
+    bb21: {
+        unreachable;
+    }
+}
+
+fn <impl at cleanup.rs:3:35: 3:37>::assert_fields_are_eq(_1: &Event) -> () {
+    debug self => _1;
+    let mut _0: ();
+    scope 1 {
+    }
+
+    bb0: {
+        return;
+    }
+}
+
+const EVENTS: LocalKey<RefCell<Vec<Event>>> = {
+    let mut _0: std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+
+    bb0: {
+        ConstEvalCounter;
+        _0 = LocalKey::<RefCell<Vec<Event>>>::new(const EVENTS::{constant#0}) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+const __RUST_STD_INTERNAL_INIT: RefCell<Vec<Event>> = {
+    let mut _0: std::cell::RefCell<std::vec::Vec<Event>>;
+    let mut _1: std::vec::Vec<Event>;
+
+    bb0: {
+        StorageLive(_1);
+        ConstEvalCounter;
+        _1 = Vec::<Event>::new() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        ConstEvalCounter;
+        _0 = RefCell::<Vec<Event>>::new(move _1) -> [return: bb2, unwind: bb3];
+    }
+
+    bb2: {
+        StorageDead(_1);
+        return;
+    }
+
+    bb3 (cleanup): {
+        resume;
+    }
+}
+
+EVENTS::{constant#0}: for<'a> fn(Option<&'a mut Option<RefCell<Vec<Event>>>>) -> *const RefCell<Vec<Event>> = {
+    let mut _0: for<'a> fn(std::option::Option<&'a mut std::option::Option<std::cell::RefCell<std::vec::Vec<Event>>>>) -> *const std::cell::RefCell<std::vec::Vec<Event>>;
+    let mut _1: bool;
+    let mut _2: {closure@/rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread_local/native/mod.rs:63:21: 63:24};
+    let mut _3: {closure@/rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread_local/native/mod.rs:71:21: 71:24};
+
+    bb0: {
+        StorageLive(_1);
+        ConstEvalCounter;
+        _1 = std::mem::needs_drop::<RefCell<Vec<Event>>>() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(move _1) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageLive(_2);
+        _2 = {closure@/rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread_local/native/mod.rs:63:21: 63:24};
+        _0 = move _2 as for<'a> fn(std::option::Option<&'a mut std::option::Option<std::cell::RefCell<std::vec::Vec<Event>>>>) -> *const std::cell::RefCell<std::vec::Vec<Event>> (PointerCoercion(ClosureFnPointer(Safe), Implicit));
+        StorageDead(_2);
+        goto -> bb4;
+    }
+
+    bb3: {
+        StorageLive(_3);
+        _3 = {closure@/rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread_local/native/mod.rs:71:21: 71:24};
+        _0 = move _3 as for<'a> fn(std::option::Option<&'a mut std::option::Option<std::cell::RefCell<std::vec::Vec<Event>>>>) -> *const std::cell::RefCell<std::vec::Vec<Event>> (PointerCoercion(ClosureFnPointer(Safe), Implicit));
+        StorageDead(_3);
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_1);
+        return;
+    }
+}
+
+fn EVENTS::{constant#0}::{closure#0}(_1: &{closure@/rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread_local/native/mod.rs:63:21: 63:24}, _2: Option<&mut Option<RefCell<Vec<Event>>>>) -> *const RefCell<Vec<Event>> {
+    let mut _0: *const std::cell::RefCell<std::vec::Vec<Event>>;
+    let _3: &std::thread::local_impl::EagerStorage<std::cell::RefCell<std::vec::Vec<Event>>>;
+
+    bb0: {
+        _3 = &/*tls*/ EVENTS::{constant#0}::{closure#0}::__RUST_STD_INTERNAL_VAL;
+        _0 = std::thread::local_impl::EagerStorage::<RefCell<Vec<Event>>>::get(copy _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+static EVENTS::{constant#0}::{closure#0}::__RUST_STD_INTERNAL_VAL: std::thread::local_impl::EagerStorage<RefCell<Vec<Event>>> = {
+    let mut _0: std::thread::local_impl::EagerStorage<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _1: std::cell::RefCell<std::vec::Vec<Event>>;
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const EVENTS::__RUST_STD_INTERNAL_INIT;
+        ConstEvalCounter;
+        _0 = std::thread::local_impl::EagerStorage::<RefCell<Vec<Event>>>::new(move _1) -> [return: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        StorageDead(_1);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+}
+
+fn EVENTS::{constant#0}::{closure#1}(_1: &{closure@/rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/std/src/sys/thread_local/native/mod.rs:71:21: 71:24}, _2: Option<&mut Option<RefCell<Vec<Event>>>>) -> *const RefCell<Vec<Event>> {
+    let mut _0: *const std::cell::RefCell<std::vec::Vec<Event>>;
+    let _3: &std::cell::RefCell<std::vec::Vec<Event>>;
+
+    bb0: {
+        _3 = &/*tls*/ EVENTS::{constant#0}::{closure#1}::__RUST_STD_INTERNAL_VAL;
+        _0 = &raw const (*_3);
+        return;
+    }
+}
+
+static EVENTS::{constant#0}::{closure#1}::__RUST_STD_INTERNAL_VAL: RefCell<Vec<Event>> = {
+    let mut _0: std::cell::RefCell<std::vec::Vec<Event>>;
+
+    bb0: {
+        _0 = const EVENTS::__RUST_STD_INTERNAL_INIT;
+        return;
+    }
+}
+
+fn record(_1: Event) -> () {
+    debug event => _1;
+    let mut _0: ();
+    let _2: ();
+    let mut _3: &std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _4: {closure@cleanup.rs:18:17: 18:25};
+
+    bb0: {
+        _3 = const record::promoted[0];
+        _4 = {closure@cleanup.rs:18:17: 18:25} { event: move _1 };
+        _2 = LocalKey::<RefCell<Vec<Event>>>::with::<{closure@cleanup.rs:18:17: 18:25}, ()>(move _3, move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+const record::promoted[0]: &LocalKey<RefCell<Vec<Event>>> = {
+    let mut _0: &std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _1: std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+
+    bb0: {
+        _1 = const EVENTS;
+        _0 = &_1;
+        return;
+    }
+}
+
+fn record::{closure#0}(_1: {closure@cleanup.rs:18:17: 18:25}, _2: &RefCell<Vec<Event>>) -> () {
+    debug events => _2;
+    debug event => (_1.0: Event);
+    let mut _0: ();
+    let mut _3: &mut std::vec::Vec<Event>;
+    let mut _4: &mut std::cell::RefMut<'_, std::vec::Vec<Event>>;
+    let mut _5: std::cell::RefMut<'_, std::vec::Vec<Event>>;
+    let mut _6: Event;
+
+    bb0: {
+        _5 = RefCell::<Vec<Event>>::borrow_mut(copy _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = &mut _5;
+        _3 = <RefMut<'_, Vec<Event>> as DerefMut>::deref_mut(move _4) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        _6 = move (_1.0: Event);
+        _0 = Vec::<Event>::push(copy _3, move _6) -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        drop(_5) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        drop(_5) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}
+
+fn <impl at cleanup.rs:27:1: 27:19>::drop(_1: &mut Leaf) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: ();
+    let mut _3: Event;
+    let mut _4: u8;
+    let mut _5: u8;
+    let mut _6: u8;
+    let mut _7: u8;
+    let mut _8: bool;
+    let _9: !;
+    let mut _10: std::fmt::Arguments<'_>;
+    let _11: ();
+    let mut _12: Event;
+    let mut _13: u8;
+    let mut _14: u8;
+
+    bb0: {
+        _4 = copy ((*_1).0: u8);
+        _5 = copy ((*_1).1: u8);
+        _3 = Event::DropEnter(move _4, move _5);
+        _2 = record(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _7 = copy ((*_1).1: u8);
+        _6 = core::num::<impl u8>::wrapping_add(move _7, const 1_u8) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        ((*_1).1: u8) = move _6;
+        _8 = copy ((*_1).2: bool);
+        switchInt(move _8) -> [0: bb5, otherwise: bb3];
+    }
+
+    bb3: {
+        _10 = Arguments::<'_>::from_str(const "selected destructor failure") -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        _9 = std::rt::panic_fmt(move _10) -> unwind continue;
+    }
+
+    bb5: {
+        _13 = copy ((*_1).0: u8);
+        _14 = copy ((*_1).1: u8);
+        _12 = Event::DropExit(move _13, move _14);
+        _11 = record(move _12) -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+alloc140 (size: 27, align: 1) {
+    0x00 │ 73 65 6c 65 63 74 65 64 20 64 65 73 74 72 75 63 │ selected destruc
+    0x10 │ 74 6f 72 20 66 61 69 6c 75 72 65                │ tor failure
+}
+
+fn make(_1: u8, _2: bool, _3: bool) -> Leaf {
+    debug id => _1;
+    debug panic_on_construct => _2;
+    debug panic_on_drop => _3;
+    let mut _0: Leaf;
+    let _4: ();
+    let mut _5: Event;
+    let _6: !;
+    let mut _7: std::fmt::Arguments<'_>;
+    let _8: ();
+    let mut _9: Event;
+    let mut _10: u8;
+    let mut _11: u8;
+    let mut _12: (u8, bool);
+    let mut _13: (u8, bool);
+
+    bb0: {
+        _5 = Event::ConstructStart(copy _1);
+        _4 = record(move _5) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        switchInt(copy _2) -> [0: bb4, otherwise: bb2];
+    }
+
+    bb2: {
+        _7 = Arguments::<'_>::from_str(const "selected constructor failure") -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        _6 = std::rt::panic_fmt(move _7) -> unwind continue;
+    }
+
+    bb4: {
+        _9 = Event::Constructed(copy _1);
+        _8 = record(move _9) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        _12 = MulWithOverflow(copy _1, const 20_u8);
+        assert(!move (_12.1: bool), "attempt to compute `{} * {}`, which would overflow", copy _1, const 20_u8) -> [success: bb6, unwind continue];
+    }
+
+    bb6: {
+        _11 = move (_12.0: u8);
+        _13 = AddWithOverflow(copy _11, const 1_u8);
+        assert(!move (_13.1: bool), "attempt to compute `{} + {}`, which would overflow", move _11, const 1_u8) -> [success: bb7, unwind continue];
+    }
+
+    bb7: {
+        _10 = move (_13.0: u8);
+        _0 = Leaf { id: copy _1, payload: move _10, panic_on_drop: copy _3 };
+        return;
+    }
+}
+
+alloc141 (size: 28, align: 1) {
+    0x00 │ 73 65 6c 65 63 74 65 64 20 63 6f 6e 73 74 72 75 │ selected constru
+    0x10 │ 63 74 6f 72 20 66 61 69 6c 75 72 65             │ ctor failure
+}
+
+fn exercise(_1: bool, _2: bool, _3: bool) -> () {
+    debug second_panics => _1;
+    debug forget_second => _2;
+    debug first_drop_panics => _3;
+    let mut _0: ();
+    let _4: Pair;
+    let mut _5: Leaf;
+    let mut _6: Leaf;
+    let _7: ();
+    let mut _8: Event;
+    let mut _9: u8;
+    let _10: ();
+    let mut _11: Leaf;
+    let _12: u8;
+    let mut _13: u8;
+    let _14: ();
+    let mut _15: Event;
+    let mut _16: bool;
+    scope 1 {
+        debug pair => _4;
+    }
+
+    bb0: {
+        _16 = const false;
+        _5 = make(const 1_u8, const false, copy _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _6 = make(const 2_u8, copy _1, const false) -> [return: bb2, unwind: bb9];
+    }
+
+    bb2: {
+        _16 = const true;
+        _4 = Pair { first: move _5, second: move _6 };
+        switchInt(copy _2) -> [0: bb5, otherwise: bb3];
+    }
+
+    bb3: {
+        _9 = copy ((_4.1: Leaf).0: u8);
+        _8 = Event::Forgotten(move _9);
+        _7 = record(move _8) -> [return: bb4, unwind: bb17];
+    }
+
+    bb4: {
+        _16 = const false;
+        _11 = move (_4.1: Leaf);
+        _10 = std::mem::forget::<Leaf>(move _11) -> [return: bb18, unwind: bb17];
+    }
+
+    bb5: {
+        _13 = copy ((_4.0: Leaf).1: u8);
+        _12 = std::hint::black_box::<u8>(move _13) -> [return: bb6, unwind: bb17];
+    }
+
+    bb6: {
+        drop((_4.0: Leaf)) -> [return: bb13, unwind: bb11];
+    }
+
+    bb7: {
+        _16 = const false;
+        _15 = Event::AfterScope;
+        _14 = record(move _15) -> [return: bb8, unwind continue];
+    }
+
+    bb8: {
+        return;
+    }
+
+    bb9 (cleanup): {
+        drop(_5) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb10 (cleanup): {
+        resume;
+    }
+
+    bb11 (cleanup): {
+        switchInt(copy _16) -> [0: bb10, otherwise: bb12];
+    }
+
+    bb12 (cleanup): {
+        drop((_4.1: Leaf)) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb13: {
+        switchInt(copy _16) -> [0: bb7, otherwise: bb14];
+    }
+
+    bb14: {
+        drop((_4.1: Leaf)) -> [return: bb7, unwind continue];
+    }
+
+    bb15 (cleanup): {
+        switchInt(copy _16) -> [0: bb10, otherwise: bb16];
+    }
+
+    bb16 (cleanup): {
+        drop((_4.1: Leaf)) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb17 (cleanup): {
+        drop((_4.0: Leaf)) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb18: {
+        goto -> bb5;
+    }
+}
+
+fn main() -> () {
+    let mut _0: ();
+    let _1: ();
+    let mut _2: std::boxed::Box<dyn for<'a, 'b> std::ops::Fn(&'a std::panic::PanicHookInfo<'b>) + std::marker::Send + std::marker::Sync>;
+    let mut _3: std::boxed::Box<{closure@cleanup.rs:71:35: 71:38}>;
+    let _4: std::vec::Vec<Event>;
+    let mut _5: std::boxed::Box<std::mem::MaybeUninit<[Event; 3]>>;
+    let mut _6: Event;
+    let mut _7: Event;
+    let mut _8: Event;
+    let mut _10: (&str, bool, bool, bool, bool, std::vec::Vec<Event>);
+    let mut _11: std::vec::Vec<Event>;
+    let mut _12: std::boxed::Box<std::mem::MaybeUninit<[Event; 6]>>;
+    let mut _13: Event;
+    let mut _14: Event;
+    let mut _15: Event;
+    let mut _16: Event;
+    let mut _17: Event;
+    let mut _18: Event;
+    let mut _19: (&str, bool, bool, bool, bool, std::vec::Vec<Event>);
+    let mut _20: &str;
+    let mut _21: std::vec::Vec<Event>;
+    let mut _22: std::boxed::Box<std::mem::MaybeUninit<[Event; 2]>>;
+    let mut _23: Event;
+    let mut _24: Event;
+    let mut _25: (&str, bool, bool, bool, bool, std::vec::Vec<Event>);
+    let mut _26: &str;
+    let mut _27: std::vec::Vec<Event>;
+    let mut _28: std::boxed::Box<std::mem::MaybeUninit<[Event; 5]>>;
+    let mut _29: Event;
+    let mut _30: Event;
+    let mut _31: Event;
+    let mut _32: Event;
+    let mut _33: Event;
+    let mut _34: (&str, bool, bool, bool, bool, std::vec::Vec<Event>);
+    let mut _35: &str;
+    let mut _36: std::vec::Vec<Event>;
+    let mut _37: std::boxed::Box<std::mem::MaybeUninit<[Event; 4]>>;
+    let mut _38: Event;
+    let mut _39: Event;
+    let mut _40: Event;
+    let mut _41: Event;
+    let mut _42: std::array::IntoIter<(&str, bool, bool, bool, bool, std::vec::Vec<Event>), 4>;
+    let mut _44: std::option::Option<(&str, bool, bool, bool, bool, std::vec::Vec<Event>)>;
+    let mut _45: &mut std::array::IntoIter<(&str, bool, bool, bool, bool, std::vec::Vec<Event>), 4>;
+    let mut _46: isize;
+    let _53: ();
+    let mut _54: &std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _56: {closure@cleanup.rs:87:47: 87:49};
+    let mut _57: &bool;
+    let mut _58: &bool;
+    let mut _59: &bool;
+    let mut _61: &std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _63: &std::vec::Vec<Event>;
+    let _64: ();
+    let mut _65: &mut std::vec::Vec<Event>;
+    let mut _66: std::vec::Vec<Event>;
+    let mut _67: (&bool, &bool);
+    let mut _68: &bool;
+    let _69: bool;
+    let mut _70: &std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+    let mut _71: &bool;
+    let mut _74: bool;
+    let mut _75: bool;
+    let mut _76: bool;
+    let _78: !;
+    let mut _79: std::option::Option<std::fmt::Arguments<'_>>;
+    let mut _80: std::fmt::Arguments<'_>;
+    let mut _82: &&str;
+    let mut _84: core::fmt::rt::Argument<'_>;
+    let mut _85: &[u8; 15];
+    let _86: &[core::fmt::rt::Argument<'_>; 1];
+    let mut _87: (&std::vec::Vec<Event>, &std::vec::Vec<Event>);
+    let mut _88: &std::vec::Vec<Event>;
+    let mut _89: &std::vec::Vec<Event>;
+    let mut _92: bool;
+    let _94: !;
+    let mut _95: std::option::Option<std::fmt::Arguments<'_>>;
+    let mut _96: std::fmt::Arguments<'_>;
+    let mut _98: &&str;
+    let mut _100: core::fmt::rt::Argument<'_>;
+    let mut _101: &[u8; 14];
+    let _102: &[core::fmt::rt::Argument<'_>; 1];
+    let _103: ();
+    let mut _104: std::fmt::Arguments<'_>;
+    let mut _106: &bool;
+    let _107: bool;
+    let mut _108: &std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+    let mut _109: &&str;
+    let mut _110: &std::vec::Vec<Event>;
+    let mut _112: core::fmt::rt::Argument<'_>;
+    let mut _113: core::fmt::rt::Argument<'_>;
+    let mut _114: core::fmt::rt::Argument<'_>;
+    let mut _115: &[u8; 27];
+    let _116: &[core::fmt::rt::Argument<'_>; 3];
+    let mut _117: &&str;
+    let mut _118: &&str;
+    let mut _119: &&str;
+    let mut _120: &bool;
+    let mut _121: &std::vec::Vec<Event>;
+    let mut _122: bool;
+    let mut _123: *const std::mem::MaybeUninit<[Event; 3]>;
+    let mut _124: *const std::mem::MaybeUninit<[Event; 6]>;
+    let mut _125: *const std::mem::MaybeUninit<[Event; 2]>;
+    let mut _126: *const std::mem::MaybeUninit<[Event; 5]>;
+    let mut _127: *const std::mem::MaybeUninit<[Event; 4]>;
+    let mut _148: *const ();
+    let mut _149: usize;
+    let mut _150: usize;
+    let mut _151: usize;
+    let mut _152: bool;
+    let mut _153: *const ();
+    let mut _154: usize;
+    let mut _155: bool;
+    let mut _156: bool;
+    let mut _157: bool;
+    let mut _158: bool;
+    scope 1 {
+        debug prefix => _4;
+        let _9: [(&str, bool, bool, bool, bool, std::vec::Vec<Event>); 4];
+        let mut _128: *const ();
+        let mut _129: usize;
+        let mut _130: usize;
+        let mut _131: usize;
+        let mut _132: bool;
+        let mut _133: *const ();
+        let mut _134: usize;
+        let mut _135: usize;
+        let mut _136: usize;
+        let mut _137: bool;
+        let mut _138: *const ();
+        let mut _139: usize;
+        let mut _140: usize;
+        let mut _141: usize;
+        let mut _142: bool;
+        let mut _143: *const ();
+        let mut _144: usize;
+        let mut _145: usize;
+        let mut _146: usize;
+        let mut _147: bool;
+        let mut _159: *const ();
+        let mut _160: usize;
+        let mut _161: bool;
+        let mut _162: bool;
+        let mut _163: bool;
+        let mut _164: bool;
+        let mut _165: *const ();
+        let mut _166: usize;
+        let mut _167: bool;
+        let mut _168: bool;
+        let mut _169: bool;
+        let mut _170: bool;
+        let mut _171: *const ();
+        let mut _172: usize;
+        let mut _173: bool;
+        let mut _174: bool;
+        let mut _175: bool;
+        let mut _176: bool;
+        let mut _177: *const ();
+        let mut _178: usize;
+        let mut _179: bool;
+        let mut _180: bool;
+        let mut _181: bool;
+        let mut _182: bool;
+        scope 2 {
+            debug cases => _9;
+            let mut _43: std::array::IntoIter<(&str, bool, bool, bool, bool, std::vec::Vec<Event>), 4>;
+            scope 3 {
+                debug iter => _43;
+                let _47: &str;
+                let _48: bool;
+                let _49: bool;
+                let _50: bool;
+                let _51: bool;
+                let _52: std::vec::Vec<Event>;
+                scope 4 {
+                    debug name => _47;
+                    debug second_panics => _48;
+                    debug forget_second => _49;
+                    debug first_drop_panics => _50;
+                    debug expected_ok => _51;
+                    debug suffix => _52;
+                    let _55: std::result::Result<(), std::boxed::Box<dyn std::any::Any + std::marker::Send>>;
+                    scope 5 {
+                        debug result => _55;
+                        let _60: std::vec::Vec<Event>;
+                        scope 6 {
+                            debug actual => _60;
+                            let mut _62: std::vec::Vec<Event>;
+                            scope 7 {
+                                debug expected => _62;
+                                let _72: &bool;
+                                let _73: &bool;
+                                let _90: &std::vec::Vec<Event>;
+                                let _91: &std::vec::Vec<Event>;
+                                let _105: (&bool, &&str, &std::vec::Vec<Event>);
+                                scope 8 {
+                                    debug left_val => _72;
+                                    debug right_val => _73;
+                                    let _77: core::panicking::AssertKind;
+                                    scope 9 {
+                                        debug kind => _77;
+                                        let _81: (&&str,);
+                                        scope 10 {
+                                            debug args => _81;
+                                            let _83: [core::fmt::rt::Argument<'_>; 1];
+                                            scope 11 {
+                                                debug args => _83;
+                                            }
+                                        }
+                                    }
+                                }
+                                scope 12 {
+                                    debug left_val => _90;
+                                    debug right_val => _91;
+                                    let _93: core::panicking::AssertKind;
+                                    scope 13 {
+                                        debug kind => _93;
+                                        let _97: (&&str,);
+                                        scope 14 {
+                                            debug args => _97;
+                                            let _99: [core::fmt::rt::Argument<'_>; 1];
+                                            scope 15 {
+                                                debug args => _99;
+                                            }
+                                        }
+                                    }
+                                }
+                                scope 16 {
+                                    debug args => _105;
+                                    let _111: [core::fmt::rt::Argument<'_>; 3];
+                                    scope 17 {
+                                        debug args => _111;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _122 = const false;
+        _3 = Box::<{closure@cleanup.rs:71:35: 71:38}>::new(const ZeroSized: {closure@cleanup.rs:71:35: 71:38}) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _2 = move _3 as std::boxed::Box<dyn for<'a, 'b> std::ops::Fn(&'a std::panic::PanicHookInfo<'b>) + std::marker::Send + std::marker::Sync> (PointerCoercion(Unsize, Implicit));
+        _1 = set_hook(move _2) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _5 = Box::<[Event; 3]>::new_uninit() -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        _6 = Event::ConstructStart(const 1_u8);
+        _7 = Event::Constructed(const 1_u8);
+        _8 = Event::ConstructStart(const 2_u8);
+        _123 = copy (_5.0: std::ptr::Unique<std::mem::MaybeUninit<[Event; 3]>>) as *const std::mem::MaybeUninit<[Event; 3]> (BoxDerefTransmute);
+        _148 = copy _123 as *const () (PtrToPtr);
+        _149 = copy _148 as usize (Transmute);
+        _150 = Sub(const <std::mem::MaybeUninit<[Event; 3]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _151 = BitAnd(copy _149, copy _150);
+        _152 = Eq(copy _151, const 0_usize);
+        assert(copy _152, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[Event; 3]> as std::mem::SizedTypeProperties>::ALIGN, copy _149) -> [success: bb60, unwind unreachable];
+    }
+
+    bb4: {
+        _12 = Box::<[Event; 6]>::new_uninit() -> [return: bb5, unwind: bb52];
+    }
+
+    bb5: {
+        _13 = Event::Constructed(const 2_u8);
+        _14 = Event::DropEnter(const 1_u8, const 21_u8);
+        _15 = Event::DropExit(const 1_u8, const 22_u8);
+        _16 = Event::DropEnter(const 2_u8, const 41_u8);
+        _17 = Event::DropExit(const 2_u8, const 42_u8);
+        _18 = Event::AfterScope;
+        _124 = copy (_12.0: std::ptr::Unique<std::mem::MaybeUninit<[Event; 6]>>) as *const std::mem::MaybeUninit<[Event; 6]> (BoxDerefTransmute);
+        _143 = copy _124 as *const () (PtrToPtr);
+        _144 = copy _143 as usize (Transmute);
+        _145 = Sub(const <std::mem::MaybeUninit<[Event; 6]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _146 = BitAnd(copy _144, copy _145);
+        _147 = Eq(copy _146, const 0_usize);
+        assert(copy _147, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[Event; 6]> as std::mem::SizedTypeProperties>::ALIGN, copy _144) -> [success: bb59, unwind unreachable];
+    }
+
+    bb6: {
+        _10 = (const "normal", const false, const false, const false, const true, move _11);
+        _20 = const "second_constructor_panics";
+        _22 = Box::<[Event; 2]>::new_uninit() -> [return: bb7, unwind: bb51];
+    }
+
+    bb7: {
+        _23 = Event::DropEnter(const 1_u8, const 21_u8);
+        _24 = Event::DropExit(const 1_u8, const 22_u8);
+        _125 = copy (_22.0: std::ptr::Unique<std::mem::MaybeUninit<[Event; 2]>>) as *const std::mem::MaybeUninit<[Event; 2]> (BoxDerefTransmute);
+        _138 = copy _125 as *const () (PtrToPtr);
+        _139 = copy _138 as usize (Transmute);
+        _140 = Sub(const <std::mem::MaybeUninit<[Event; 2]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _141 = BitAnd(copy _139, copy _140);
+        _142 = Eq(copy _141, const 0_usize);
+        assert(copy _142, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[Event; 2]> as std::mem::SizedTypeProperties>::ALIGN, copy _139) -> [success: bb58, unwind unreachable];
+    }
+
+    bb8: {
+        _19 = (move _20, const true, const false, const false, const false, move _21);
+        _26 = const "forget_second";
+        _28 = Box::<[Event; 5]>::new_uninit() -> [return: bb9, unwind: bb50];
+    }
+
+    bb9: {
+        _29 = Event::Constructed(const 2_u8);
+        _30 = Event::Forgotten(const 2_u8);
+        _31 = Event::DropEnter(const 1_u8, const 21_u8);
+        _32 = Event::DropExit(const 1_u8, const 22_u8);
+        _33 = Event::AfterScope;
+        _126 = copy (_28.0: std::ptr::Unique<std::mem::MaybeUninit<[Event; 5]>>) as *const std::mem::MaybeUninit<[Event; 5]> (BoxDerefTransmute);
+        _133 = copy _126 as *const () (PtrToPtr);
+        _134 = copy _133 as usize (Transmute);
+        _135 = Sub(const <std::mem::MaybeUninit<[Event; 5]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _136 = BitAnd(copy _134, copy _135);
+        _137 = Eq(copy _136, const 0_usize);
+        assert(copy _137, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[Event; 5]> as std::mem::SizedTypeProperties>::ALIGN, copy _134) -> [success: bb57, unwind unreachable];
+    }
+
+    bb10: {
+        _25 = (move _26, const false, const true, const false, const true, move _27);
+        _35 = const "first_destructor_panics";
+        _37 = Box::<[Event; 4]>::new_uninit() -> [return: bb11, unwind: bb49];
+    }
+
+    bb11: {
+        _38 = Event::Constructed(const 2_u8);
+        _39 = Event::DropEnter(const 1_u8, const 21_u8);
+        _40 = Event::DropEnter(const 2_u8, const 41_u8);
+        _41 = Event::DropExit(const 2_u8, const 42_u8);
+        _127 = copy (_37.0: std::ptr::Unique<std::mem::MaybeUninit<[Event; 4]>>) as *const std::mem::MaybeUninit<[Event; 4]> (BoxDerefTransmute);
+        _128 = copy _127 as *const () (PtrToPtr);
+        _129 = copy _128 as usize (Transmute);
+        _130 = Sub(const <std::mem::MaybeUninit<[Event; 4]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _131 = BitAnd(copy _129, copy _130);
+        _132 = Eq(copy _131, const 0_usize);
+        assert(copy _132, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[Event; 4]> as std::mem::SizedTypeProperties>::ALIGN, copy _129) -> [success: bb56, unwind unreachable];
+    }
+
+    bb12: {
+        _34 = (move _35, const false, const false, const true, const false, move _36);
+        _9 = [move _10, move _19, move _25, move _34];
+        _42 = <[(&str, bool, bool, bool, bool, Vec<Event>); 4] as IntoIterator>::into_iter(copy _9) -> [return: bb13, unwind: bb52];
+    }
+
+    bb13: {
+        _43 = move _42;
+        goto -> bb14;
+    }
+
+    bb14: {
+        _45 = &mut _43;
+        _44 = <std::array::IntoIter<(&str, bool, bool, bool, bool, Vec<Event>), 4> as Iterator>::next(copy _45) -> [return: bb15, unwind: bb48];
+    }
+
+    bb15: {
+        _46 = discriminant(_44);
+        switchInt(move _46) -> [0: bb18, 1: bb17, otherwise: bb16];
+    }
+
+    bb16: {
+        unreachable;
+    }
+
+    bb17: {
+        _47 = copy (((_44 as Some).0: (&str, bool, bool, bool, bool, std::vec::Vec<Event>)).0: &str);
+        _48 = copy (((_44 as Some).0: (&str, bool, bool, bool, bool, std::vec::Vec<Event>)).1: bool);
+        _49 = copy (((_44 as Some).0: (&str, bool, bool, bool, bool, std::vec::Vec<Event>)).2: bool);
+        _50 = copy (((_44 as Some).0: (&str, bool, bool, bool, bool, std::vec::Vec<Event>)).3: bool);
+        _51 = copy (((_44 as Some).0: (&str, bool, bool, bool, bool, std::vec::Vec<Event>)).4: bool);
+        _122 = const true;
+        _52 = move (((_44 as Some).0: (&str, bool, bool, bool, bool, std::vec::Vec<Event>)).5: std::vec::Vec<Event>);
+        _54 = const main::promoted[1];
+        _53 = LocalKey::<RefCell<Vec<Event>>>::with::<{closure@cleanup.rs:86:21: 86:29}, ()>(move _54, const ZeroSized: {closure@cleanup.rs:86:21: 86:29}) -> [return: bb19, unwind: bb55];
+    }
+
+    bb18: {
+        drop(_43) -> [return: bb43, unwind: bb52];
+    }
+
+    bb19: {
+        _57 = &_48;
+        _58 = &_49;
+        _59 = &_50;
+        _56 = {closure@cleanup.rs:87:47: 87:49} { second_panics: move _57, forget_second: move _58, first_drop_panics: move _59 };
+        _55 = std::panic::catch_unwind::<{closure@cleanup.rs:87:47: 87:49}, ()>(move _56) -> [return: bb20, unwind: bb55];
+    }
+
+    bb20: {
+        _61 = const main::promoted[0];
+        _60 = LocalKey::<RefCell<Vec<Event>>>::with::<{closure@cleanup.rs:89:34: 89:42}, Vec<Event>>(move _61, const ZeroSized: {closure@cleanup.rs:89:34: 89:42}) -> [return: bb21, unwind: bb47];
+    }
+
+    bb21: {
+        _63 = &_4;
+        _62 = <Vec<Event> as Clone>::clone(move _63) -> [return: bb22, unwind: bb46];
+    }
+
+    bb22: {
+        _65 = &mut _62;
+        _122 = const false;
+        _66 = move _52;
+        _64 = <Vec<Event> as Extend<Event>>::extend::<Vec<Event>>(move _65, move _66) -> [return: bb23, unwind: bb45];
+    }
+
+    bb23: {
+        _70 = &_55;
+        _69 = Result::<(), Box<dyn Any + Send>>::is_ok(move _70) -> [return: bb24, unwind: bb45];
+    }
+
+    bb24: {
+        _68 = &_69;
+        _71 = &_51;
+        _67 = (move _68, move _71);
+        _72 = copy (_67.0: &bool);
+        _73 = copy (_67.1: &bool);
+        _75 = copy (*_72);
+        _76 = copy (*_73);
+        _74 = Eq(move _75, move _76);
+        switchInt(move _74) -> [0: bb26, otherwise: bb25];
+    }
+
+    bb25: {
+        _88 = &_60;
+        _89 = &_62;
+        _87 = (move _88, move _89);
+        _90 = copy (_87.0: &std::vec::Vec<Event>);
+        _91 = copy (_87.1: &std::vec::Vec<Event>);
+        _92 = <Vec<Event> as PartialEq>::eq(copy _90, copy _91) -> [return: bb29, unwind: bb45];
+    }
+
+    bb26: {
+        _77 = core::panicking::AssertKind::Eq;
+        _82 = &_47;
+        _81 = (move _82,);
+        _117 = no_retag copy (_81.0: &&str);
+        _84 = core::fmt::rt::Argument::<'_>::new_display::<&str>(copy _117) -> [return: bb27, unwind: bb45];
+    }
+
+    bb27: {
+        _83 = [move _84];
+        _85 = const b"\x0coutcome for \xc0\x00";
+        _86 = &_83;
+        _80 = Arguments::<'_>::new::<15, 1>(move _85, copy _86) -> [return: bb28, unwind: bb45];
+    }
+
+    bb28: {
+        _79 = Option::<Arguments<'_>>::Some(move _80);
+        _78 = core::panicking::assert_failed::<bool, bool>(copy _77, copy _72, copy _73, move _79) -> bb45;
+    }
+
+    bb29: {
+        switchInt(move _92) -> [0: bb31, otherwise: bb30];
+    }
+
+    bb30: {
+        _108 = &_55;
+        _107 = Result::<(), Box<dyn Any + Send>>::is_ok(move _108) -> [return: bb34, unwind: bb45];
+    }
+
+    bb31: {
+        _93 = core::panicking::AssertKind::Eq;
+        _98 = &_47;
+        _97 = (move _98,);
+        _118 = no_retag copy (_97.0: &&str);
+        _100 = core::fmt::rt::Argument::<'_>::new_display::<&str>(copy _118) -> [return: bb32, unwind: bb45];
+    }
+
+    bb32: {
+        _99 = [move _100];
+        _101 = const b"\x0bevents for \xc0\x00";
+        _102 = &_99;
+        _96 = Arguments::<'_>::new::<14, 1>(move _101, copy _102) -> [return: bb33, unwind: bb45];
+    }
+
+    bb33: {
+        _95 = Option::<Arguments<'_>>::Some(move _96);
+        _94 = core::panicking::assert_failed::<Vec<Event>, Vec<Event>>(copy _93, copy _90, copy _91, move _95) -> bb45;
+    }
+
+    bb34: {
+        _106 = &_107;
+        _109 = &_47;
+        _110 = &_60;
+        _105 = (move _106, move _109, move _110);
+        _119 = no_retag copy (_105.1: &&str);
+        _112 = core::fmt::rt::Argument::<'_>::new_display::<&str>(copy _119) -> [return: bb35, unwind: bb45];
+    }
+
+    bb35: {
+        _120 = no_retag copy (_105.0: &bool);
+        _113 = core::fmt::rt::Argument::<'_>::new_display::<bool>(copy _120) -> [return: bb36, unwind: bb45];
+    }
+
+    bb36: {
+        _121 = no_retag copy (_105.2: &std::vec::Vec<Event>);
+        _114 = core::fmt::rt::Argument::<'_>::new_debug::<Vec<Event>>(copy _121) -> [return: bb37, unwind: bb45];
+    }
+
+    bb37: {
+        _111 = [move _112, move _113, move _114];
+        _115 = const b"\xc0\x0b: returned=\xc0\x08 events=\xc0\x01\n\x00";
+        _116 = &_111;
+        _104 = Arguments::<'_>::new::<27, 3>(move _115, copy _116) -> [return: bb38, unwind: bb45];
+    }
+
+    bb38: {
+        _103 = std::io::_print(move _104) -> [return: bb39, unwind: bb45];
+    }
+
+    bb39: {
+        drop(_62) -> [return: bb40, unwind: bb46];
+    }
+
+    bb40: {
+        drop(_60) -> [return: bb41, unwind: bb47];
+    }
+
+    bb41: {
+        drop(_55) -> [return: bb42, unwind: bb55];
+    }
+
+    bb42: {
+        _122 = const false;
+        goto -> bb14;
+    }
+
+    bb43: {
+        drop(_4) -> [return: bb44, unwind continue];
+    }
+
+    bb44: {
+        return;
+    }
+
+    bb45 (cleanup): {
+        drop(_62) -> [return: bb46, unwind terminate(cleanup)];
+    }
+
+    bb46 (cleanup): {
+        drop(_60) -> [return: bb47, unwind terminate(cleanup)];
+    }
+
+    bb47 (cleanup): {
+        drop(_55) -> [return: bb55, unwind terminate(cleanup)];
+    }
+
+    bb48 (cleanup): {
+        drop(_43) -> [return: bb52, unwind terminate(cleanup)];
+    }
+
+    bb49 (cleanup): {
+        drop(_25) -> [return: bb50, unwind terminate(cleanup)];
+    }
+
+    bb50 (cleanup): {
+        drop(_19) -> [return: bb51, unwind terminate(cleanup)];
+    }
+
+    bb51 (cleanup): {
+        drop(_10) -> [return: bb52, unwind terminate(cleanup)];
+    }
+
+    bb52 (cleanup): {
+        drop(_4) -> [return: bb53, unwind terminate(cleanup)];
+    }
+
+    bb53 (cleanup): {
+        resume;
+    }
+
+    bb54 (cleanup): {
+        drop(_52) -> [return: bb48, unwind terminate(cleanup)];
+    }
+
+    bb55 (cleanup): {
+        switchInt(copy _122) -> [0: bb48, otherwise: bb54];
+    }
+
+    bb56: {
+        _177 = copy _127 as *const () (PtrToPtr);
+        _178 = copy _177 as usize (Transmute);
+        _179 = Ne(const <std::mem::MaybeUninit<[Event; 4]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _180 = Eq(copy _178, const 0_usize);
+        _181 = BitAnd(copy _180, copy _179);
+        _182 = Not(copy _181);
+        assert(copy _182, "null pointer dereference occurred") -> [success: bb65, unwind unreachable];
+    }
+
+    bb57: {
+        _171 = copy _126 as *const () (PtrToPtr);
+        _172 = copy _171 as usize (Transmute);
+        _173 = Ne(const <std::mem::MaybeUninit<[Event; 5]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _174 = Eq(copy _172, const 0_usize);
+        _175 = BitAnd(copy _174, copy _173);
+        _176 = Not(copy _175);
+        assert(copy _176, "null pointer dereference occurred") -> [success: bb64, unwind unreachable];
+    }
+
+    bb58: {
+        _165 = copy _125 as *const () (PtrToPtr);
+        _166 = copy _165 as usize (Transmute);
+        _167 = Ne(const <std::mem::MaybeUninit<[Event; 2]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _168 = Eq(copy _166, const 0_usize);
+        _169 = BitAnd(copy _168, copy _167);
+        _170 = Not(copy _169);
+        assert(copy _170, "null pointer dereference occurred") -> [success: bb63, unwind unreachable];
+    }
+
+    bb59: {
+        _159 = copy _124 as *const () (PtrToPtr);
+        _160 = copy _159 as usize (Transmute);
+        _161 = Ne(const <std::mem::MaybeUninit<[Event; 6]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _162 = Eq(copy _160, const 0_usize);
+        _163 = BitAnd(copy _162, copy _161);
+        _164 = Not(copy _163);
+        assert(copy _164, "null pointer dereference occurred") -> [success: bb62, unwind unreachable];
+    }
+
+    bb60: {
+        _153 = copy _123 as *const () (PtrToPtr);
+        _154 = copy _153 as usize (Transmute);
+        _155 = Ne(const <std::mem::MaybeUninit<[Event; 3]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _156 = Eq(copy _154, const 0_usize);
+        _157 = BitAnd(copy _156, copy _155);
+        _158 = Not(copy _157);
+        assert(copy _158, "null pointer dereference occurred") -> [success: bb61, unwind unreachable];
+    }
+
+    bb61: {
+        ((((*_123).1: std::mem::ManuallyDrop<[Event; 3]>).0: std::mem::MaybeDangling<[Event; 3]>).0: [Event; 3]) = [move _6, move _7, move _8];
+        _4 = std::boxed::box_assume_init_into_vec_unsafe::<Event, 3>(copy _5) -> [return: bb4, unwind continue];
+    }
+
+    bb62: {
+        ((((*_124).1: std::mem::ManuallyDrop<[Event; 6]>).0: std::mem::MaybeDangling<[Event; 6]>).0: [Event; 6]) = [move _13, move _14, move _15, move _16, move _17, move _18];
+        _11 = std::boxed::box_assume_init_into_vec_unsafe::<Event, 6>(copy _12) -> [return: bb6, unwind: bb52];
+    }
+
+    bb63: {
+        ((((*_125).1: std::mem::ManuallyDrop<[Event; 2]>).0: std::mem::MaybeDangling<[Event; 2]>).0: [Event; 2]) = [move _23, move _24];
+        _21 = std::boxed::box_assume_init_into_vec_unsafe::<Event, 2>(copy _22) -> [return: bb8, unwind: bb51];
+    }
+
+    bb64: {
+        ((((*_126).1: std::mem::ManuallyDrop<[Event; 5]>).0: std::mem::MaybeDangling<[Event; 5]>).0: [Event; 5]) = [move _29, move _30, move _31, move _32, move _33];
+        _27 = std::boxed::box_assume_init_into_vec_unsafe::<Event, 5>(copy _28) -> [return: bb10, unwind: bb50];
+    }
+
+    bb65: {
+        ((((*_127).1: std::mem::ManuallyDrop<[Event; 4]>).0: std::mem::MaybeDangling<[Event; 4]>).0: [Event; 4]) = [move _38, move _39, move _40, move _41];
+        _36 = std::boxed::box_assume_init_into_vec_unsafe::<Event, 4>(copy _37) -> [return: bb12, unwind: bb49];
+    }
+}
+
+alloc148 (size: 27, align: 1) {
+    0x00 │ c0 0b 3a 20 72 65 74 75 72 6e 65 64 3d c0 08 20 │ ..: returned=.. 
+    0x10 │ 65 76 65 6e 74 73 3d c0 01 0a 00                │ events=....
+}
+
+alloc147 (size: 14, align: 1) {
+    0b 65 76 65 6e 74 73 20 66 6f 72 20 c0 00       │ .events for ..
+}
+
+alloc146 (size: 15, align: 1) {
+    0c 6f 75 74 63 6f 6d 65 20 66 6f 72 20 c0 00    │ .outcome for ..
+}
+
+alloc145 (size: 23, align: 1) {
+    0x00 │ 66 69 72 73 74 5f 64 65 73 74 72 75 63 74 6f 72 │ first_destructor
+    0x10 │ 5f 70 61 6e 69 63 73                            │ _panics
+}
+
+alloc144 (size: 13, align: 1) {
+    66 6f 72 67 65 74 5f 73 65 63 6f 6e 64          │ forget_second
+}
+
+alloc143 (size: 25, align: 1) {
+    0x00 │ 73 65 63 6f 6e 64 5f 63 6f 6e 73 74 72 75 63 74 │ second_construct
+    0x10 │ 6f 72 5f 70 61 6e 69 63 73                      │ or_panics
+}
+
+alloc142 (size: 6, align: 1) {
+    6e 6f 72 6d 61 6c                               │ normal
+}
+
+const main::promoted[0]: &LocalKey<RefCell<Vec<Event>>> = {
+    let mut _0: &std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _1: std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+
+    bb0: {
+        _1 = const EVENTS;
+        _0 = &_1;
+        return;
+    }
+}
+
+const main::promoted[1]: &LocalKey<RefCell<Vec<Event>>> = {
+    let mut _0: &std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+    let mut _1: std::thread::LocalKey<std::cell::RefCell<std::vec::Vec<Event>>>;
+
+    bb0: {
+        _1 = const EVENTS;
+        _0 = &_1;
+        return;
+    }
+}
+
+fn main::{closure#0}(_1: &{closure@cleanup.rs:71:35: 71:38}, _2: &PanicHookInfo<'_>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        return;
+    }
+}
+
+fn main::{closure#1}(_1: {closure@cleanup.rs:86:21: 86:29}, _2: &RefCell<Vec<Event>>) -> () {
+    debug events => _2;
+    let mut _0: ();
+    let mut _3: &mut std::vec::Vec<Event>;
+    let mut _4: &mut std::cell::RefMut<'_, std::vec::Vec<Event>>;
+    let mut _5: std::cell::RefMut<'_, std::vec::Vec<Event>>;
+
+    bb0: {
+        _5 = RefCell::<Vec<Event>>::borrow_mut(copy _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = &mut _5;
+        _3 = <RefMut<'_, Vec<Event>> as DerefMut>::deref_mut(move _4) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        _0 = Vec::<Event>::clear(copy _3) -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        drop(_5) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        drop(_5) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}
+
+fn main::{closure#2}(_1: {closure@cleanup.rs:87:47: 87:49}) -> () {
+    debug second_panics => (*(_1.0: &bool));
+    debug forget_second => (*(_1.1: &bool));
+    debug first_drop_panics => (*(_1.2: &bool));
+    let mut _0: ();
+    let mut _2: bool;
+    let mut _3: bool;
+    let mut _4: bool;
+    let mut _5: &bool;
+    let mut _6: &bool;
+    let mut _7: &bool;
+
+    bb0: {
+        _5 = no_retag copy (_1.0: &bool);
+        _2 = copy (*_5);
+        _6 = no_retag copy (_1.1: &bool);
+        _3 = copy (*_6);
+        _7 = no_retag copy (_1.2: &bool);
+        _4 = copy (*_7);
+        _0 = exercise(move _2, move _3, move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn main::{closure#3}(_1: {closure@cleanup.rs:89:34: 89:42}, _2: &RefCell<Vec<Event>>) -> Vec<Event> {
+    debug events => _2;
+    let mut _0: std::vec::Vec<Event>;
+    let _3: &std::vec::Vec<Event>;
+    let mut _4: &std::cell::Ref<'_, std::vec::Vec<Event>>;
+    let _5: std::cell::Ref<'_, std::vec::Vec<Event>>;
+
+    bb0: {
+        _5 = RefCell::<Vec<Event>>::borrow(copy _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = &_5;
+        _3 = <Ref<'_, Vec<Event>> as Deref>::deref(move _4) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        _0 = <Vec<Event> as Clone>::clone(copy _3) -> [return: bb3, unwind: bb5];
+    }
+
+    bb3: {
+        drop(_5) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        drop(_5) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}
+
+fn Event::ConstructStart(_1: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::ConstructStart(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Event::ConstructStart(_1: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::ConstructStart(move _1);
+        return;
+    }
+}
+
+fn Event::Constructed(_1: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::Constructed(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Event::Constructed(_1: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::Constructed(move _1);
+        return;
+    }
+}
+
+fn Event::DropEnter(_1: u8, _2: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::DropEnter(move _1, move _2);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Event::DropEnter(_1: u8, _2: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::DropEnter(move _1, move _2);
+        return;
+    }
+}
+
+fn Event::DropExit(_1: u8, _2: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::DropExit(move _1, move _2);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Event::DropExit(_1: u8, _2: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::DropExit(move _1, move _2);
+        return;
+    }
+}
+
+fn Event::Forgotten(_1: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::Forgotten(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn Event::Forgotten(_1: u8) -> Event {
+    let mut _0: Event;
+
+    bb0: {
+        _0 = Event::Forgotten(move _1);
+        return;
+    }
+}

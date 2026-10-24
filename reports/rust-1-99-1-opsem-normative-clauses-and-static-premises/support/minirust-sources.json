@@ -1,0 +1,207 @@
+{
+  "upstream_revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "retained_at": "1dbb29faf6161f5c00946f1a69d0e43c90842190",
+  "archive_path": "reports/minirust-actual-core-disagreement-evidence-d821c6e/support/archives/minirust.tar.gz",
+  "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 17336,
+      "sha256": "0cf8eef4f7ea8163dc9746e8b148206d4722be5fd3106cb9c16b3f4b7efb4cb8",
+      "git_blob": "1fa12c10854fbf28f3c00ed81b1b696d374823cb",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/README.md"
+    },
+    {
+      "path": "spec/lang/machine.md",
+      "bytes": 14940,
+      "sha256": "121c624125adf8d8d988b6d088d8e85687e8a275ee703a80e486dcb05dfbd91c",
+      "git_blob": "12c78fcbb23d59c771ce006a74ee333a0266e5a8",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/machine.md"
+    },
+    {
+      "path": "spec/lang/prelude.md",
+      "bytes": 172,
+      "sha256": "15c5e052591700fd24a534aaf016ab2c3e4e9e4cedd20708cf2337e673ecae77",
+      "git_blob": "a9b59444cf32562b0c5e9aa87028d0af7c646ad7",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/prelude.md"
+    },
+    {
+      "path": "spec/lang/representation.md",
+      "bytes": 40866,
+      "sha256": "3b101b30e85a6aea580b5b06371116abaab97f87b622f62de7459e0363f37844",
+      "git_blob": "f87753d9d75d438e964d0a7ce445eca433c6d259",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/representation.md"
+    },
+    {
+      "path": "spec/lang/step/expressions.md",
+      "bytes": 13367,
+      "sha256": "cfa01e5f8d30eae252e36dbd1ecca51365f5cc02e90fe73b1b706fc3747cb6cb",
+      "git_blob": "911ce6e4c7109040ab66bd6050fc456b7102ef3b",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/expressions.md"
+    },
+    {
+      "path": "spec/lang/step/intrinsics.md",
+      "bytes": 20288,
+      "sha256": "261fe197e65556bae74cf209c64c5913fdd713f3a57d2bf56f0b1fb0e3a34be8",
+      "git_blob": "0a2eb8e67affb71bd5b73375c6f9483dae64b469",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/intrinsics.md"
+    },
+    {
+      "path": "spec/lang/step/locks.md",
+      "bytes": 5464,
+      "sha256": "385edb3568484f685f7c6ec9511f0d4f269e27a10d54eef253f2c82865ee73a6",
+      "git_blob": "0a54d94b71b33dd730f9a89c5ab8e404c4a3b325",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/locks.md"
+    },
+    {
+      "path": "spec/lang/step/operators.md",
+      "bytes": 18622,
+      "sha256": "075e1e7d0b9fee47ef4a0adea2e9fef9861fb6ccfe98af6d42a0123fce96400d",
+      "git_blob": "e6c1d5382be593894bed047efbf9dd728819b8a3",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/operators.md"
+    },
+    {
+      "path": "spec/lang/step/statements.md",
+      "bytes": 7746,
+      "sha256": "737151ae844720a47d4f224e50c28e8eb54a2dc80f0b450dd2b1f495570716a9",
+      "git_blob": "9845e97c9e4675f02b6fb4e9b3f2396fed8e650a",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/statements.md"
+    },
+    {
+      "path": "spec/lang/step/terminators.md",
+      "bytes": 19315,
+      "sha256": "ae0c30634abe041ab520ee647c249489db5aa01e82ee0baa07b783e1d4086360",
+      "git_blob": "35d4cecf373e272915d50cfd4ea80d2e9b50d98a",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/step/terminators.md"
+    },
+    {
+      "path": "spec/lang/syntax.md",
+      "bytes": 19824,
+      "sha256": "fb52bcf504990477daf6928e95b8ccf90f99700fdf17d6bb031fb590728c0674",
+      "git_blob": "3406c107f9f07c5fe381cc17f5ca8d190dfa7b25",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/syntax.md"
+    },
+    {
+      "path": "spec/lang/types.md",
+      "bytes": 15296,
+      "sha256": "4fef7acaaef6c1e0d14ab65bfd1934b495aa946ec7d23b42f0ab1d2cb30afdc7",
+      "git_blob": "a15337a4d17bfba8ee4e06971f54bf4cd019b522",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/types.md"
+    },
+    {
+      "path": "spec/lang/values.md",
+      "bytes": 1631,
+      "sha256": "06cd9f8f0fab58a0d5ff29c1ba25b41a2315d2db1a8413973d95e0f1cb96575d",
+      "git_blob": "860f26e06ba2d43c4ccd696e2a47ffd4bf040d4c",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/values.md"
+    },
+    {
+      "path": "spec/lang/well-formed.md",
+      "bytes": 44369,
+      "sha256": "4aef03dfaa6b8e12128951143bb2a0b98c1de2dd8f5c2a762ffeef334b6d0bcb",
+      "git_blob": "798f60af355bd892d57a9d659e9f36b09dcb0a14",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/lang/well-formed.md"
+    },
+    {
+      "path": "spec/mem/basic.md",
+      "bytes": 13539,
+      "sha256": "99b80806ce4a14fd1787d9b20d6931bb4756155b9fd74b380508d8c7cf87c072",
+      "git_blob": "b050a1d14b9589d0908f8b70e58ec7411896bcaa",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/basic.md"
+    },
+    {
+      "path": "spec/mem/concurrent.md",
+      "bytes": 5864,
+      "sha256": "2b3f928517bed4da43739395656c7e24572dae37cb041fb7b77061c47a8e5816",
+      "git_blob": "4f404d9e1a9d439f4886bf2b353e90358732e927",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/concurrent.md"
+    },
+    {
+      "path": "spec/mem/interface.md",
+      "bytes": 7541,
+      "sha256": "dfe4e0f504fc8892a520c555cb64b82774973b46f9adcaaaf915f4e5610f4708",
+      "git_blob": "0ede2c2cefdbb2e00ab70cf428e42bb4b1202a4c",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/interface.md"
+    },
+    {
+      "path": "spec/mem/intptrcast.md",
+      "bytes": 1838,
+      "sha256": "ddb67b4ef74e05568fced9f1460730b595b4584d73d48c93fd326ff5dd7378b6",
+      "git_blob": "241ba96f5498bde49bf9b8c489bafcf12ba98b07",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/intptrcast.md"
+    },
+    {
+      "path": "spec/mem/pointer.md",
+      "bytes": 8078,
+      "sha256": "1eb963e5ef08052ba5947bb78debc8356fb91a6fef457247821ddb52f66d87b7",
+      "git_blob": "f53d05aec273694a3ae5ea0e759df5b43a553e08",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/pointer.md"
+    },
+    {
+      "path": "spec/mem/prelude.md",
+      "bytes": 158,
+      "sha256": "c1c09b68a5952a7f2c77bbcc2d3a9dbcd915ab7575267551433b6a1693d09b69",
+      "git_blob": "66a0b82203d32b993bd9e8654bb8bfde97aac538",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/prelude.md"
+    },
+    {
+      "path": "spec/mem/tree_borrows/memory.md",
+      "bytes": 10366,
+      "sha256": "a61ffb69e23c0b0076c09e63ae9d1fa4843d0d5b2258b10c9c8d67bbc652fc2f",
+      "git_blob": "6fe36283dfebfeea596e238da0bb0a4448c6e41b",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/memory.md"
+    },
+    {
+      "path": "spec/mem/tree_borrows/reborrow_settings.md",
+      "bytes": 8235,
+      "sha256": "ecfe79402f4d11e011ef01c9013e1de1a1866821ec024c97255679af0801d729",
+      "git_blob": "01ad4a0679d10c1dd79969f4c9961a24ff88050c",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/reborrow_settings.md"
+    },
+    {
+      "path": "spec/mem/tree_borrows/state_machine.md",
+      "bytes": 3272,
+      "sha256": "548918ad62b98c862b8a5ab9b58483bf6fd865c03d133631273a0b82782e120b",
+      "git_blob": "a4f3be329c8dcbca812ace4fdab8e4bfca915bcd",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/state_machine.md"
+    },
+    {
+      "path": "spec/mem/tree_borrows/state_machine_protected.md",
+      "bytes": 7319,
+      "sha256": "968aa477b32c2e90aec47db517c24bed03a2e5292871b4121aab6a654deb7e51",
+      "git_blob": "497afb52886f7a471a0532d71e363f7df3714632",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/state_machine_protected.md"
+    },
+    {
+      "path": "spec/mem/tree_borrows/state_machine_unprotected.md",
+      "bytes": 3526,
+      "sha256": "956688821b81db8912a5847730bd9f3aa439e79f727b29dc95e58f8e1b1e9335",
+      "git_blob": "64ca5014072c2e71417f7b3b4b06e25ade7b3179",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/state_machine_unprotected.md"
+    },
+    {
+      "path": "spec/mem/tree_borrows/tree.md",
+      "bytes": 9985,
+      "sha256": "67e3d2e245ffc752ee2ec4f82bdf928a23c6345926436b22a041546aa32ff988",
+      "git_blob": "33ffda528a9f40c7f1c9c6366a266090e5f0bd28",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/mem/tree_borrows/tree.md"
+    },
+    {
+      "path": "spec/prelude/main.md",
+      "bytes": 2143,
+      "sha256": "b031f4b168ca826e0713b840415cb69d076299b01d4588fc92cfe89452d18262",
+      "git_blob": "0583399749f40f9b70e6c44067e42e87e13917e5",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/prelude/main.md"
+    },
+    {
+      "path": "spec/prelude/target.md",
+      "bytes": 1501,
+      "sha256": "28cb80649c97776490cc321c130de53ea12e4dd132043199eadf3b2a6f6cb3f4",
+      "git_blob": "35f27f44e2da7fcea0fbd9d3f15c059ce903920e",
+      "url": "https://github.com/minirust/minirust/blob/d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed/spec/prelude/target.md"
+    }
+  ],
+  "upstream_repository": "https://github.com/minirust/minirust",
+  "retrieval": "Read retained Git archive locally; extracted Markdown only; no source scripts executed. The upstream revision attribution comes from retained research evidence, not a fresh remote verification.",
+  "import_boundary": "Audited manual transcription. No verified specification importer or Rust adequacy theorem."
+}

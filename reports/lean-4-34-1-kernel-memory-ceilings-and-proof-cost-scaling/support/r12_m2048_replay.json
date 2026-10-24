@@ -1,0 +1,612 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "flags": [
+    "-j1",
+    "-M2048"
+  ],
+  "observed_at": "2026-10-24",
+  "module_count": 60,
+  "modules": [
+    {
+      "module": "AnnealResearch.MiniRustReference",
+      "source_bytes": 11626,
+      "source_sha256": "f2974b04a15b378f930719a0ad8943e3313abccbabf108b6ad0d24a0478fc778",
+      "olean_bytes": 949360,
+      "returncode": 0,
+      "wall_seconds": 0.884,
+      "max_rss_kb": 812152,
+      "max_rss_bytes": 831643648
+    },
+    {
+      "module": "AnnealResearch.MiniRustFactored",
+      "source_bytes": 20172,
+      "source_sha256": "92eca7fe012cdc43849ab09737fce72c7bbd627ff1776184170af48c2f810c98",
+      "olean_bytes": 859584,
+      "returncode": 0,
+      "wall_seconds": 1.134,
+      "max_rss_kb": 813720,
+      "max_rss_bytes": 833249280
+    },
+    {
+      "module": "AnnealResearch.Execution",
+      "source_bytes": 12161,
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_bytes": 333440,
+      "returncode": 0,
+      "wall_seconds": 0.591,
+      "max_rss_kb": 799452,
+      "max_rss_bytes": 818638848
+    },
+    {
+      "module": "AnnealResearch.PrefixTransfer",
+      "source_bytes": 10069,
+      "source_sha256": "764328f9a7dcc13a32ab86f3bdfd3f23194ec95f5982621b21a519b643b360f9",
+      "olean_bytes": 175600,
+      "returncode": 0,
+      "wall_seconds": 0.494,
+      "max_rss_kb": 792360,
+      "max_rss_bytes": 811376640
+    },
+    {
+      "module": "AnnealResearch.MemoryExecution",
+      "source_bytes": 14472,
+      "source_sha256": "0caa2ac61c36ab17aa1ce7a7279358830c6f0b1c6acdacb4021908364db2f4e2",
+      "olean_bytes": 1329008,
+      "returncode": 0,
+      "wall_seconds": 1.086,
+      "max_rss_kb": 818588,
+      "max_rss_bytes": 838234112
+    },
+    {
+      "module": "AnnealResearch.ReferenceInvariants",
+      "source_bytes": 17096,
+      "source_sha256": "18e7d810df82fe6620fc32bd6a69ad2b9b71b768c1d1baaeeba78086169741ec",
+      "olean_bytes": 754544,
+      "returncode": 0,
+      "wall_seconds": 1.22,
+      "max_rss_kb": 813408,
+      "max_rss_bytes": 832929792
+    },
+    {
+      "module": "AnnealResearch.MemoryExamples",
+      "source_bytes": 16713,
+      "source_sha256": "b2c5057431b808313da5c4d782d7761f506f2411959b42054bc0c41e05f0f1f6",
+      "olean_bytes": 547800,
+      "returncode": 0,
+      "wall_seconds": 0.935,
+      "max_rss_kb": 814516,
+      "max_rss_bytes": 834064384
+    },
+    {
+      "module": "AnnealResearch.MemoryWitnesses",
+      "source_bytes": 11510,
+      "source_sha256": "abd6ab79cece08918c06a9fb3f67c919de0372360b61f26ac0b003537836f1fa",
+      "olean_bytes": 485792,
+      "returncode": 0,
+      "wall_seconds": 1.086,
+      "max_rss_kb": 809472,
+      "max_rss_bytes": 828899328
+    },
+    {
+      "module": "AnnealResearch.ProofCostCommon",
+      "source_bytes": 17135,
+      "source_sha256": "404b96cc0fa6e3f5efa9d1cb5d3963cc94f29321196e622f53dffac557da287b",
+      "olean_bytes": 550480,
+      "returncode": 0,
+      "wall_seconds": 1.106,
+      "max_rss_kb": 814632,
+      "max_rss_bytes": 834183168
+    },
+    {
+      "module": "AnnealResearch.ProofCostContinuationBase",
+      "source_bytes": 920,
+      "source_sha256": "9fd356df6d8db4c76b705807795b6045a5ca122f57d50dbcfe26c7515cc9974c",
+      "olean_bytes": 10656,
+      "returncode": 0,
+      "wall_seconds": 0.345,
+      "max_rss_kb": 785292,
+      "max_rss_bytes": 804139008
+    },
+    {
+      "module": "AnnealResearch.ProofCostFrames",
+      "source_bytes": 8275,
+      "source_sha256": "1325cc9d5cfd31c41884c72eb2bae3392ef1f44659f6966de1c885b05103699f",
+      "olean_bytes": 471152,
+      "returncode": 0,
+      "wall_seconds": 0.917,
+      "max_rss_kb": 804256,
+      "max_rss_bytes": 823558144
+    },
+    {
+      "module": "AnnealResearch.ProofCostContinuation",
+      "source_bytes": 7452,
+      "source_sha256": "de3c2379c1ea5bbb52c6d02411cd3c2674655074eb2549a5693ead564c5223bb",
+      "olean_bytes": 200920,
+      "returncode": 0,
+      "wall_seconds": 0.553,
+      "max_rss_kb": 798352,
+      "max_rss_bytes": 817512448
+    },
+    {
+      "module": "AnnealResearch.ProofCostContinuationClientOne",
+      "source_bytes": 791,
+      "source_sha256": "81517d322d5633a8b25aa307c3f93de8df4032932810010019f00373c105105f",
+      "olean_bytes": 6432,
+      "returncode": 0,
+      "wall_seconds": 0.336,
+      "max_rss_kb": 786660,
+      "max_rss_bytes": 805539840
+    },
+    {
+      "module": "AnnealResearch.ProofCostContinuationClientFour",
+      "source_bytes": 797,
+      "source_sha256": "a08ac05037986d1ada3df7fc5c6df3e83af951e8feca8bd3e9e185a54cb68583",
+      "olean_bytes": 6432,
+      "returncode": 0,
+      "wall_seconds": 0.36,
+      "max_rss_kb": 785800,
+      "max_rss_bytes": 804659200
+    },
+    {
+      "module": "AnnealResearch.ProofCostContinuationClientSixteen",
+      "source_bytes": 815,
+      "source_sha256": "cee6ca4a55d183757f442df0475f9dd2493a89f834da05e76f8daffeec3369d5",
+      "olean_bytes": 6440,
+      "returncode": 0,
+      "wall_seconds": 0.35,
+      "max_rss_kb": 786656,
+      "max_rss_bytes": 805535744
+    },
+    {
+      "module": "AnnealResearch.ProofCostInvariant",
+      "source_bytes": 6600,
+      "source_sha256": "c5b174b0e3b43d6e2a4be107407b30e3f42fd0eb78669a703dde50302cc519bd",
+      "olean_bytes": 256416,
+      "returncode": 0,
+      "wall_seconds": 0.531,
+      "max_rss_kb": 800664,
+      "max_rss_bytes": 819879936
+    },
+    {
+      "module": "AnnealResearch.ProofCostInvariantExtension",
+      "source_bytes": 12916,
+      "source_sha256": "0104653b3eb65b31dd2e0f147cb2f7d32e61fab2e2ae6f2330be7ca3d8da15aa",
+      "olean_bytes": 449656,
+      "returncode": 0,
+      "wall_seconds": 0.654,
+      "max_rss_kb": 809524,
+      "max_rss_bytes": 828952576
+    },
+    {
+      "module": "AnnealResearch.ProofCostInvariantClientOne",
+      "source_bytes": 783,
+      "source_sha256": "8a53398ac2d26f49e5127f020e4d4853ff4ae2bbc5fd05f9ec735c869fc9f4d7",
+      "olean_bytes": 6272,
+      "returncode": 0,
+      "wall_seconds": 0.356,
+      "max_rss_kb": 786756,
+      "max_rss_bytes": 805638144
+    },
+    {
+      "module": "AnnealResearch.ProofCostInvariantClientFour",
+      "source_bytes": 789,
+      "source_sha256": "2d384fb70832c93aece2833dd0740f8fc2e87d2aebd489bb9e313261c40cfc02",
+      "olean_bytes": 6432,
+      "returncode": 0,
+      "wall_seconds": 0.35,
+      "max_rss_kb": 786752,
+      "max_rss_bytes": 805634048
+    },
+    {
+      "module": "AnnealResearch.ProofCostInvariantClientSixteen",
+      "source_bytes": 807,
+      "source_sha256": "be2649fddf8c305dfa93dbd8dc4df72d4ca1b0fe485c4ba1d9ece6751b3bf382",
+      "olean_bytes": 6432,
+      "returncode": 0,
+      "wall_seconds": 0.336,
+      "max_rss_kb": 786752,
+      "max_rss_bytes": 805634048
+    },
+    {
+      "module": "AnnealResearch.ProgramCostCommon",
+      "source_bytes": 39602,
+      "source_sha256": "970629f58cae5689b84a3eddd79d4922a31b6a841d9bec40bb75cf6498da078a",
+      "olean_bytes": 800832,
+      "returncode": 0,
+      "wall_seconds": 1.25,
+      "max_rss_kb": 825548,
+      "max_rss_bytes": 845361152
+    },
+    {
+      "module": "AnnealResearch.ProgramCostPrimitives",
+      "source_bytes": 15320,
+      "source_sha256": "dded46949aa208d4d9045095f2c825ba2c67cfa804b70f11dadd4a1d01611086",
+      "olean_bytes": 464448,
+      "returncode": 0,
+      "wall_seconds": 0.94,
+      "max_rss_kb": 812020,
+      "max_rss_bytes": 831508480
+    },
+    {
+      "module": "AnnealResearch.ProgramCostSmallControls",
+      "source_bytes": 13223,
+      "source_sha256": "bbf95984e415092f1aaf45aeb10f02dd33b83a2cab21330db946616726f41186",
+      "olean_bytes": 343632,
+      "returncode": 0,
+      "wall_seconds": 0.908,
+      "max_rss_kb": 808228,
+      "max_rss_bytes": 827625472
+    },
+    {
+      "module": "AnnealResearch.ProgramCostContinuation8",
+      "source_bytes": 11497,
+      "source_sha256": "2b7fb7c69c01a242ea901e3ff3c910afa2376d2cd287a7c80941f913f77c7218",
+      "olean_bytes": 225624,
+      "returncode": 0,
+      "wall_seconds": 0.6,
+      "max_rss_kb": 806340,
+      "max_rss_bytes": 825692160
+    },
+    {
+      "module": "AnnealResearch.ProgramCostInvariant8",
+      "source_bytes": 11663,
+      "source_sha256": "6705c4a2a8e95a674943971ec8664392e55417a28082d0da205b39bf08a3ad51",
+      "olean_bytes": 392880,
+      "returncode": 0,
+      "wall_seconds": 0.624,
+      "max_rss_kb": 812932,
+      "max_rss_bytes": 832442368
+    },
+    {
+      "module": "AnnealResearch.ProgramCostContinuation32",
+      "source_bytes": 15769,
+      "source_sha256": "a6b8ee251e1ac6c1c82aa9986e9a4d3299fa888ba28143b029a27fdda3870191",
+      "olean_bytes": 276240,
+      "returncode": 0,
+      "wall_seconds": 0.646,
+      "max_rss_kb": 806880,
+      "max_rss_bytes": 826245120
+    },
+    {
+      "module": "AnnealResearch.ProgramCostInvariant32",
+      "source_bytes": 32152,
+      "source_sha256": "f92ef1c6c093656848f12dc23a7fb07be09226b8e927de239147d8cdf96d56d9",
+      "olean_bytes": 991608,
+      "returncode": 0,
+      "wall_seconds": 1.131,
+      "max_rss_kb": 844512,
+      "max_rss_bytes": 864780288
+    },
+    {
+      "module": "AnnealResearch.ProgramCostContinuation128",
+      "source_bytes": 19799,
+      "source_sha256": "5f508e5a8b55f1f775272d7203eb5c3d61a529441b06b8742ebacdc8de9dc666",
+      "olean_bytes": 326536,
+      "returncode": 0,
+      "wall_seconds": 0.703,
+      "max_rss_kb": 814444,
+      "max_rss_bytes": 833990656
+    },
+    {
+      "module": "AnnealResearch.SubstantiveMirByteParser",
+      "source_bytes": 72724,
+      "source_sha256": "9e24337cdf324d6f1d41914a6302b8e72560fd0de1f542da43507dc3b71def7a",
+      "olean_bytes": 10673288,
+      "returncode": 0,
+      "wall_seconds": 8.008,
+      "max_rss_kb": 795888,
+      "max_rss_bytes": 814989312
+    },
+    {
+      "module": "AnnealResearch.SemanticVerticalSliceCore",
+      "source_bytes": 78241,
+      "source_sha256": "66a3f649494aafbc9360588a9619d48ebbe39bde5801f840e67f4860b7c3e785",
+      "olean_bytes": 6125360,
+      "returncode": 0,
+      "wall_seconds": 8.962,
+      "max_rss_kb": 712848,
+      "max_rss_bytes": 729956352
+    },
+    {
+      "module": "AnnealResearch.CargoWorkspaceIntegration",
+      "source_bytes": 37192,
+      "source_sha256": "c951dd5e5b3bce05e9d2eb60dbaa1d758a1b9206b1a030febf681b383c619e64",
+      "olean_bytes": 3051128,
+      "returncode": 0,
+      "wall_seconds": 5.07,
+      "max_rss_kb": 596188,
+      "max_rss_bytes": 610496512
+    },
+    {
+      "module": "AnnealResearch.StatefulGenericLibraryH3H7Core",
+      "source_bytes": 141893,
+      "source_sha256": "ddcd212ee3175dcad9a1a2a927454806039d10429de44ecf4ebe0f402bd341b0",
+      "olean_bytes": 5756408,
+      "returncode": 0,
+      "wall_seconds": 22.992,
+      "max_rss_kb": 749344,
+      "max_rss_bytes": 767328256
+    },
+    {
+      "module": "AnnealResearch.StatefulGenericLibraryH3H7",
+      "source_bytes": 31497,
+      "source_sha256": "aae672e87d843818adecb1756f21f0f8be4ef49af3e7538f2801e4f7f94f8b2d",
+      "olean_bytes": 1193624,
+      "returncode": 0,
+      "wall_seconds": 4.613,
+      "max_rss_kb": 691496,
+      "max_rss_bytes": 708091904
+    },
+    {
+      "module": "AnnealResearch.StatefulGenericLibraryH3H7Controls",
+      "source_bytes": 33025,
+      "source_sha256": "8c534c498ae230a8799639c28847ec1a01b0324710a4d274da29553df5a328d0",
+      "olean_bytes": 587688,
+      "returncode": 0,
+      "wall_seconds": 6.715,
+      "max_rss_kb": 775672,
+      "max_rss_bytes": 794288128
+    },
+    {
+      "module": "AnnealResearch.PR86AuditRepairs",
+      "source_bytes": 87200,
+      "source_sha256": "f41bb03bc40b63ecdb27d96b93f59efd5672a5340a91221bb43a66c0c3029cdb",
+      "olean_bytes": 2126712,
+      "returncode": 0,
+      "wall_seconds": 6.692,
+      "max_rss_kb": 742544,
+      "max_rss_bytes": 760365056
+    },
+    {
+      "module": "AnnealResearch.BuiltPhaseControlsR1",
+      "source_bytes": 22361,
+      "source_sha256": "a097b644ff324b231f984871111b72ed13a37dea51f1535c185f667a6913f3b6",
+      "olean_bytes": 3558392,
+      "returncode": 0,
+      "wall_seconds": 8.085,
+      "max_rss_kb": 788300,
+      "max_rss_bytes": 807219200
+    },
+    {
+      "module": "AnnealResearch.CharonNativeAndControlsR3R4",
+      "source_bytes": 56548,
+      "source_sha256": "00eeb14c5636bd68eb06d815329b22ef5898383e0484e198fbce4c4efb5e7d6f",
+      "olean_bytes": 6842680,
+      "returncode": 0,
+      "wall_seconds": 17.802,
+      "max_rss_kb": 801548,
+      "max_rss_bytes": 820785152
+    },
+    {
+      "module": "AnnealResearch.PR86AuditCounterexamples",
+      "source_bytes": 15717,
+      "source_sha256": "5201130e929936c7a2fedf1b754619e90b9b49ac984bca64615f960248790a63",
+      "olean_bytes": 215504,
+      "returncode": 0,
+      "wall_seconds": 10.769,
+      "max_rss_kb": 750432,
+      "max_rss_bytes": 768442368
+    },
+    {
+      "module": "AnnealResearch.CargoWorkspaceIntegrationControls",
+      "source_bytes": 22121,
+      "source_sha256": "5cd2c495804b365fd0ce91bae5b7d3454355a53a8b3bc32b451fe9751ae8f870",
+      "olean_bytes": 1410720,
+      "returncode": 0,
+      "wall_seconds": 3.184,
+      "max_rss_kb": 603948,
+      "max_rss_bytes": 618442752
+    },
+    {
+      "module": "AnnealResearch.OpenHashMultiCrateR5R6R9R10",
+      "source_bytes": 71815,
+      "source_sha256": "1b0440c5b6d9c9c2a394e311c50310028ec6a529673443162b9c6496b36a53b8",
+      "olean_bytes": 6197784,
+      "returncode": 0,
+      "wall_seconds": 15.057,
+      "max_rss_kb": 787144,
+      "max_rss_bytes": 806035456
+    },
+    {
+      "module": "AnnealResearch.PR92AuditCounterexamples",
+      "source_bytes": 12258,
+      "source_sha256": "0399928eb91fc27d429cf5f5c5c31e47a5ad9c402e63f3d11f2e7be2174191a4",
+      "olean_bytes": 225608,
+      "returncode": 0,
+      "wall_seconds": 10.908,
+      "max_rss_kb": 759444,
+      "max_rss_bytes": 777670656
+    },
+    {
+      "module": "AnnealResearch.PR94AuditCounterexamples",
+      "source_bytes": 6787,
+      "source_sha256": "128a877aee809c2006fa0088a80e7de288d59829f1048e5cf3106f218d255851",
+      "olean_bytes": 42152,
+      "returncode": 0,
+      "wall_seconds": 1.733,
+      "max_rss_kb": 599880,
+      "max_rss_bytes": 614277120
+    },
+    {
+      "module": "AnnealResearch.Post96Consumer",
+      "source_bytes": 8380,
+      "source_sha256": "c2fab856dde2b273d768cc1082d349897f19881f40e233c7a56827c4e531bd72",
+      "olean_bytes": 1150304,
+      "returncode": 0,
+      "wall_seconds": 0.868,
+      "max_rss_kb": 563800,
+      "max_rss_bytes": 577331200
+    },
+    {
+      "module": "AnnealResearch.Post96NativeConsumer",
+      "source_bytes": 8127,
+      "source_sha256": "c7ad11506f8a7fd4a31933dfb83c6d7289b46b9be3e4450cc0dc0434cca60e56",
+      "olean_bytes": 1341720,
+      "returncode": 0,
+      "wall_seconds": 0.982,
+      "max_rss_kb": 566024,
+      "max_rss_bytes": 579608576
+    },
+    {
+      "module": "AnnealResearch.Post96LifecycleInterface",
+      "source_bytes": 2851,
+      "source_sha256": "1917b64235c178f5f83606be8fbbf0941a3811e46a93bf59e027208f7ab543e7",
+      "olean_bytes": 530224,
+      "returncode": 0,
+      "wall_seconds": 0.53,
+      "max_rss_kb": 543340,
+      "max_rss_bytes": 556380160
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Data",
+      "source_bytes": 14888,
+      "source_sha256": "c106d2a6a86b021cdc2c1d2b96d99de3f784b92410b6b172ef81bb247c6831d1",
+      "olean_bytes": 778184,
+      "returncode": 0,
+      "wall_seconds": 0.567,
+      "max_rss_kb": 543504,
+      "max_rss_bytes": 556548096
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Binding",
+      "source_bytes": 887,
+      "source_sha256": "1787f1553148e332051a5bdd6fc25ddbfcce09625fa4e82469fe48dd92bb5606",
+      "olean_bytes": 13128,
+      "returncode": 0,
+      "wall_seconds": 0.421,
+      "max_rss_kb": 548436,
+      "max_rss_bytes": 561598464
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Identity",
+      "source_bytes": 762,
+      "source_sha256": "05da7a37b726557209a32ec189ab2bb297fa3d9884a097b3ba4145fd7a76e0e5",
+      "olean_bytes": 6880,
+      "returncode": 0,
+      "wall_seconds": 1.696,
+      "max_rss_kb": 741444,
+      "max_rss_bytes": 759238656
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Types",
+      "source_bytes": 734,
+      "source_sha256": "e7fc8b6072fdbd63c103847e28beff779fbf5271b6da99f3aef807bfdcc2a732",
+      "olean_bytes": 5848,
+      "returncode": 0,
+      "wall_seconds": 0.256,
+      "max_rss_kb": 523684,
+      "max_rss_bytes": 536252416
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Keys",
+      "source_bytes": 732,
+      "source_sha256": "726e9131d264f17f26832d5fa4e8da7aae4ae0cf93a7d0b0073f89dfdb6a65dc",
+      "olean_bytes": 5840,
+      "returncode": 0,
+      "wall_seconds": 1.473,
+      "max_rss_kb": 683660,
+      "max_rss_bytes": 700067840
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Encoding",
+      "source_bytes": 754,
+      "source_sha256": "24b1fe2ca61b008e86424c480ed02862aa0fe97d585f48de295f2a8b6af35e56",
+      "olean_bytes": 5400,
+      "returncode": 0,
+      "wall_seconds": 0.278,
+      "max_rss_kb": 523024,
+      "max_rss_bytes": 535576576
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Fingerprint",
+      "source_bytes": 810,
+      "source_sha256": "9b9c326b01568389d64740f2862cea69a99c1df57f733543581e09f7fe9132f1",
+      "olean_bytes": 8184,
+      "returncode": 0,
+      "wall_seconds": 0.323,
+      "max_rss_kb": 531116,
+      "max_rss_bytes": 543862784
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Bridge",
+      "source_bytes": 864,
+      "source_sha256": "3721ef598a3a880607abb840179c38eb5b1a7b7e3ecf32bab8f57c1e82ad44df",
+      "olean_bytes": 13904,
+      "returncode": 0,
+      "wall_seconds": 0.283,
+      "max_rss_kb": 524480,
+      "max_rss_bytes": 537067520
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Admission",
+      "source_bytes": 744,
+      "source_sha256": "5c32535d68a940568f3f32f35848eebe21ac8ecd26fb91bb3f3d6fed2f6a2a17",
+      "olean_bytes": 5752,
+      "returncode": 0,
+      "wall_seconds": 0.379,
+      "max_rss_kb": 534016,
+      "max_rss_bytes": 546832384
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Decode",
+      "source_bytes": 795,
+      "source_sha256": "fe5dfd1639d42dc68e4c8ddb4cb1e4fa53b0d5a6775a4c197147b05f985fb0fa",
+      "olean_bytes": 6864,
+      "returncode": 0,
+      "wall_seconds": 0.359,
+      "max_rss_kb": 535980,
+      "max_rss_bytes": 548843520
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Closure",
+      "source_bytes": 751,
+      "source_sha256": "723d78d9e719c9b5b0ddf3b681acb1ea29f03ac00e27d891571d571c3667a508",
+      "olean_bytes": 6096,
+      "returncode": 0,
+      "wall_seconds": 0.26,
+      "max_rss_kb": 521692,
+      "max_rss_bytes": 534212608
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Outcome",
+      "source_bytes": 829,
+      "source_sha256": "17cfd2bfb92d741b07a5b8aaf8c04ae85553b88c8d6d89dcce49e52b61bbabdc",
+      "olean_bytes": 8864,
+      "returncode": 0,
+      "wall_seconds": 0.288,
+      "max_rss_kb": 525256,
+      "max_rss_bytes": 537862144
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Composed",
+      "source_bytes": 2173,
+      "source_sha256": "bd7b7c195ad89df9330a5a517a3aef3cf96e6dce1d1c702eb46aae665f7597b3",
+      "olean_bytes": 36104,
+      "returncode": 0,
+      "wall_seconds": 4.896,
+      "max_rss_kb": 1000360,
+      "max_rss_bytes": 1024368640
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2BindingGround",
+      "source_bytes": 755,
+      "source_sha256": "6e6dbc4cf7ac1d78f0f794e5214eda8f5a062f014296523195c0fc9fba756fa9",
+      "olean_bytes": 5992,
+      "returncode": 0,
+      "wall_seconds": 10.148,
+      "max_rss_kb": 1951988,
+      "max_rss_bytes": 1998835712
+    },
+    {
+      "module": "AnnealResearch.CargoLeanCostCold2Monolithic",
+      "source_bytes": 751,
+      "source_sha256": "b2625eda30e0040d0c075dca721795c14bd299df8393b10b0896db0b4826be64",
+      "olean_bytes": null,
+      "returncode": 1,
+      "wall_seconds": 11.585,
+      "max_rss_kb": 2099692,
+      "max_rss_bytes": 2150084608,
+      "diagnostic": "/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/CargoLeanCostCold2Monolithic.lean:16:8: error: (kernel) excessive memory consumption detected"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "topics": [
+    "lean4/decide-vs-equality-reflection",
+    "lean4/inductive-eliminator-overhead",
+    "lean4/kernel-memory-ceilings",
+    "lean4/lcnf-string-literal-hoisting",
+    "lean4/proof-cost-scaling",
+    "lean4/whnf-reduction-scaling"
+  ],
+  "subjects": [
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4",
+        "version": "4.34.1",
+        "linux_x86_64_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "darwin_arm64_commit": "d8ef7fd2d72efbe2ee2cefd1b62bf8ab2ff3f205"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

@@ -1,0 +1,46 @@
+{
+  "experiment": "experiments/opsem/substantive-mir-byte-parser",
+  "tasks": [
+    "FD-02",
+    "FE-F4",
+    "R1"
+  ],
+  "lean_toolchain": "leanprover/lean4:v4.34.1",
+  "lean_version_output": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "modules": [
+    {
+      "module": "experiments/opsem/AnnealResearch/SubstantiveMirByteParser.lean",
+      "sha256": "9e24337cdf324d6f1d41914a6302b8e72560fd0de1f542da43507dc3b71def7a",
+      "olean_sha256": "77431f3aa31394dfa636e06047781f972d8a8367a1fdf93c6f1569758c095944",
+      "command": "LEAN_PATH=experiments/opsem lean -j1 -M768 experiments/opsem/AnnealResearch/SubstantiveMirByteParser.lean",
+      "exit_code": 0,
+      "wall_clock_ms": 8505,
+      "max_rss_bytes": 790204416,
+      "printed_axiom_audits": 7,
+      "custom_axioms": [],
+      "standard_axioms_at_most": [
+        "propext",
+        "Quot.sound"
+      ]
+    },
+    {
+      "module": "experiments/opsem/AnnealResearch/SubstantiveMirByteParserControls.lean",
+      "sha256": "270774ccf6bcc50533a0758d9307615707e553828c1f669c2af0fbd6835119fa",
+      "olean_sha256": "71efacc2f03369323d5243c9543a6df4776795b33c8101a757c667c23b08a2d0",
+      "command": "LEAN_PATH=experiments/opsem lean -j1 -M768 experiments/opsem/AnnealResearch/SubstantiveMirByteParserControls.lean",
+      "exit_code": 0,
+      "wall_clock_ms": 17386,
+      "max_rss_bytes": 898809856,
+      "printed_axiom_audits": 16,
+      "custom_axioms": [],
+      "standard_axioms_at_most": [
+        "propext",
+        "Quot.sound"
+      ]
+    }
+  ],
+  "empirical_ledger_file": "capture-v4-ledger.json",
+  "empirical_ledger_sha256": "98b30bcbc43ec6e5ea7fa3d8d4a4c9df2e027d1c31f11beeb13e359c7ac819e6",
+  "issue_61_continuation_reconciled": true,
+  "issue_62_continuation_reconciled": true
+}

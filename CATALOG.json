@@ -13350,6 +13350,55 @@
         "sccache/compiler-cache"
       ]
     },
+    "cargo-rustc-wrapper-multi-crate-svh-binding-and-open-adt-capture": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "channel": "nightly",
+            "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "date": "2026-05-30",
+            "sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "channel": "nightly",
+            "commit": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.100.0-nightly"
+          },
+          "name": "rustc-post96"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+            "sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+            "version": "0.1.210"
+          },
+          "name": "charon"
+        }
+      ],
+      "topics": [
+        "rust/cargo/rustc-wrapper",
+        "rust/mir/multi-crate-svh-binding",
+        "rust/mir/open-adt-capture",
+        "verification/lean4/incremental-caching",
+        "verification/lean4/proof-cost-scaling"
+      ]
+    },
     "cargo-subject-features-unit-graphs-nightly-2026-05-31-to-2026-09-30": {
       "observed_at": "2026-10-01",
       "subjects": [
@@ -13498,6 +13547,53 @@
         "rust/toolchain-pins",
         "cargo/component-identity",
         "reference/cohort-audit"
+      ]
+    },
+    "charon-0-1-210-ullbc-vs-llbc-and-direct-mir-comparative-evaluation": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+            "rustc_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "rustc_nightly": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "charon"
+        },
+        {
+          "identity": {
+            "commit": "ca282ec2",
+            "repository": "https://github.com/AeneasVerif/aeneas"
+          },
+          "name": "aeneas"
+        },
+        {
+          "identity": {
+            "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "commit_date": "2026-05-30",
+            "llvm_version": "22.1.6",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "charon",
+        "aeneas",
+        "rust/mir",
+        "rust/ullbc",
+        "rust/llbc",
+        "lean"
       ]
     },
     "charon-aeneas-pass-seams-and-certificate-inventory": {
@@ -17155,6 +17251,50 @@
         "aeneas/separation-logic"
       ]
     },
+    "iris-lean-81bc350-notstuck-adequacy-and-minirust-formalization-survey": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+            "lean_toolchain": "leanprover/lean4:v4.29.0",
+            "repository": "https://github.com/leanprover-community/iris-lean",
+            "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816"
+          },
+          "name": "iris-lean"
+        },
+        {
+          "identity": {
+            "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "repository": "https://github.com/minirust/minirust"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "commit": "15200eb5e6",
+            "repository": "https://github.com/minirust/specr"
+          },
+          "name": "specr"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "iris-lean/adequacy",
+        "iris-lean/notstuck-ub-detection",
+        "lean4/program-logic",
+        "minirust/formalization-survey",
+        "minirust/operational-semantics",
+        "rust/undefined-behavior-encoding"
+      ]
+    },
     "isabelle-pide-document-processing-2008-2019": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -19289,6 +19429,28 @@
         "proof-assistants/lcf",
         "proof-assistants/small-kernel",
         "verification/artifact-identity"
+      ]
+    },
+    "lean-4-34-1-kernel-memory-ceilings-and-proof-cost-scaling": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "darwin_arm64_commit": "d8ef7fd2d72efbe2ee2cefd1b62bf8ab2ff3f205",
+            "linux_x86_64_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "lean4/decide-vs-equality-reflection",
+        "lean4/inductive-eliminator-overhead",
+        "lean4/kernel-memory-ceilings",
+        "lean4/lcnf-string-literal-hoisting",
+        "lean4/proof-cost-scaling",
+        "lean4/whnf-reduction-scaling"
       ]
     },
     "lean-429-430-comparison-to-4341-source-review": {
@@ -21716,6 +21878,156 @@
         "semantics/correspondence"
       ]
     },
+    "minirust-d821c6e-basic-memory-factored-correspondence": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target_triple": "x86_64-unknown-linux-gnu",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "lean4/verification",
+        "minirust/memory",
+        "minirust/operational-semantics",
+        "minirust/tree-borrows",
+        "rust/memory-model",
+        "rust/operational-semantics"
+      ]
+    },
+    "minirust-d821c6e-nondeterminism-prediction-and-finite-witnesses": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "crate_archive_sha256": "a3c0c46f39513f6c4b533ec6bea7d623f6761fd0a610b1152db7f2e4dd385a61",
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220",
+            "version": "0.1.41"
+          },
+          "name": "specr"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target_triple": "x86_64-unknown-linux-gnu",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "lean4/verification",
+        "minirust/memory",
+        "minirust/nondeterminism",
+        "minirust/operational-semantics",
+        "rust/operational-semantics",
+        "specr/libspecr"
+      ]
+    },
+    "minirust-d821c6e-representation-transfers-and-codec-coherence": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0",
+            "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "release": "1.99.1"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "darwin_rustc": "1.99.0 (b940084d7eb6a299eb4bfeb8e34901bc051e7ac4)",
+            "linux_rustc": "1.101.0-nightly (19833af7224424e8b53e288097d56b6af43d5bcf)"
+          },
+          "name": "rustc-layout-probe"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "minirust/representation-transfers",
+        "minirust/pointer-provenance-decoder",
+        "minirust/dead-data-correspondence",
+        "minirust/codec-coherence"
+      ]
+    },
+    "minirust-d821c6e-tree-borrows-protectors-and-prefix-correspondence": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "crate_archive_sha256": "a3c0c46f39513f6c4b533ec6bea7d623f6761fd0a610b1152db7f2e4dd385a61",
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220",
+            "version": "0.1.41"
+          },
+          "name": "specr"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target_triple": "x86_64-unknown-linux-gnu",
+            "version": "v4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "lean4/verification",
+        "minirust/memory",
+        "minirust/operational-semantics",
+        "minirust/tree-borrows",
+        "rust/aliasing",
+        "rust/operational-semantics",
+        "specr/libspecr"
+      ]
+    },
     "minirust-primitive-lowering-and-layout-frontier-d821c6e": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -22861,6 +23173,31 @@
         "verification/simulation",
         "aeneas",
         "compcert"
+      ]
+    },
+    "opsem-cost-stack-depth-and-relational-noninterference": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "repository": "https://github.com/minirust/minirust"
+          },
+          "name": "minirust"
+        }
+      ],
+      "topics": [
+        "rust/operational-semantics",
+        "minirust/semantics",
+        "lean4/kernel-verification"
       ]
     },
     "optimistic-edits-semantic-transactions-1981-2026": {
@@ -24770,6 +25107,38 @@
         "anneal/architecture"
       ]
     },
+    "rust-1-99-1-opsem-normative-clauses-and-static-premises": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "release": "1.99.1"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "parent_rust_release": "1.99.1",
+            "submodule_commit": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "rust-reference"
+        },
+        {
+          "identity": {
+            "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0",
+            "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "minirust"
+        }
+      ],
+      "topics": [
+        "rust/opsem/normative-clauses",
+        "rust/memory-model/layout-and-validity",
+        "rust/cleanup-and-unwinding",
+        "minirust/static-premises"
+      ]
+    },
     "rust-189-aarch64-s390x-valid-target-observations-2948388": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -25523,6 +25892,60 @@
         "verification/total-correctness"
       ]
     },
+    "rust-cpp20-weak-memory-views-and-minirust-atomic-concurrency": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "file": "library/core/src/sync/atomic.rs",
+            "git_blob": "71502f8d918e739c558710955e3fba31db2ad29e",
+            "release": "1.99.1",
+            "repository": "https://github.com/rust-lang/rust"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+            "repository": "https://github.com/rust-lang/reference"
+          },
+          "name": "rust-reference"
+        },
+        {
+          "identity": {
+            "commit": "1f468a67c67143625d7946cdc4cfc7f7730d9160",
+            "repository": "https://github.com/cplusplus/draft",
+            "tag": "n4868"
+          },
+          "name": "cplusplus-draft"
+        },
+        {
+          "identity": {
+            "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "repository": "https://github.com/minirust/minirust"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "rust/memory-model",
+        "rust/operational-semantics",
+        "cpp20/memory-model",
+        "minirust/semantics",
+        "minirust/concurrency-and-atomics",
+        "minirust/weak-memory",
+        "lean4/kernel-verification"
+      ]
+    },
     "rust-drop-elaboration-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -25758,6 +26181,44 @@
         "rust/padding",
         "rust/typed-copy",
         "rust/validity"
+      ]
+    },
+    "rust-inline-asm-macho-relocations-and-kraken-aarch64-bridge": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+            "repository": "https://github.com/rust-lang/reference",
+            "tree": "2f158dd465eb5a755cbbf2d77b6f2db0075498f8"
+          },
+          "name": "rust-reference"
+        },
+        {
+          "identity": {
+            "commit": "8af78062037bc237b341d20252aafd1797c1bcb7",
+            "lean_toolchain": "leanprover/lean4:v4.20.1",
+            "repository": "https://github.com/leanprover/kraken",
+            "tree": "e8d44f05dd01f8fc1564f57ef00237d8e1a9d825"
+          },
+          "name": "kraken"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "aarch64/assembly-verification",
+        "kraken/effects-semantics",
+        "kraken/parser-opacity",
+        "lean4/partial-def-kernel-opacity",
+        "mach-o/aarch64-relocations",
+        "rust/inline-assembly-contracts"
       ]
     },
     "rust-inline-assembly-contracts-2dafab9": {
@@ -27145,6 +27606,144 @@
         "separation-logic"
       ]
     },
+    "rustc-1-98-mir-phases-steal-hazards-and-preserve-ub-boundary": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "commit_date": "2026-05-30",
+            "llvm_version": "22.1.6",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+            "rustc_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "rustc_nightly": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "charon"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "rust/mir",
+        "rust/mir-phases",
+        "rust/drop-elaboration",
+        "rust/undefined-behavior",
+        "rustc-driver",
+        "lean"
+      ]
+    },
+    "rustc-1-99-1-layout-dst-extent-and-sparse-allocation-audit": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "release": "1.99.1"
+          },
+          "name": "rust"
+        },
+        {
+          "identity": {
+            "commit": "f8a08b688",
+            "release": "1.98.0-nightly",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "rustc-nightly-linux-capture"
+        },
+        {
+          "identity": {
+            "commit": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+            "release": "1.100.0-nightly",
+            "target": "aarch64-apple-darwin"
+          },
+          "name": "rustc-nightly-darwin-capture"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "rust/layout/compiler-queries",
+        "rust/layout/dst-and-packed-extents",
+        "rust/memory-model/sparse-dereferenceability",
+        "rust/opsem/layout-table-binding"
+      ]
+    },
+    "rustc-configured-const-admission-and-post-monomorphization-ctfe": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+            "repository": "https://github.com/rust-lang/reference"
+          },
+          "name": "rust-reference"
+        },
+        {
+          "identity": {
+            "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "commit_date": "2026-05-30",
+            "llvm_version": "22.1.6",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "commit_date": "2026-07-30",
+            "llvm_version": "22.1.1",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.99.0"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+            "rustc_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "rustc_nightly": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "charon"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "rust/mir",
+        "rust/const-eval",
+        "rust/monomorphization",
+        "charon",
+        "verification/admission",
+        "lean"
+      ]
+    },
     "rustc-diagnostic-width-format-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -27272,6 +27871,54 @@
         "charon/mir",
         "charon/reachability",
         "anneal/coverage"
+      ]
+    },
+    "rustc-mir-drop-elaboration-and-minirust-unwind-cleanup": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "edition": "2024",
+            "prior_mir_baseline_commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "prior_mir_baseline_release": "1.99.0",
+            "release": "1.99.1",
+            "repository": "https://github.com/rust-lang/rust"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+            "repository": "https://github.com/rust-lang/reference"
+          },
+          "name": "rust-reference"
+        },
+        {
+          "identity": {
+            "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "repository": "https://github.com/minirust/minirust"
+          },
+          "name": "minirust"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "rust/mir",
+        "rust/drop-elaboration",
+        "rust/unwind-cleanup",
+        "rust/ownership-and-destruction",
+        "minirust/semantics",
+        "minirust/unwind-elaboration",
+        "minirust/tree-borrows",
+        "lean4/kernel-verification"
       ]
     },
     "rustc-mir-unsafe-operations-nightly-2026-05-31": {
@@ -29057,6 +29704,44 @@
         "typescript/watch-build"
       ]
     },
+    "verification-claim-anti-circularity-and-certificate-reuse-gates": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "primary_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "target": "x86_64-unknown-linux-gnu",
+            "toolchains": "1.95.0-nightly (efc9e1b50 2026-02-06), 1.96.0-nightly (02c7f9bec 2026-04-10), 1.97.0-nightly (bf4fbfb7a 2026-04-11), 1.98.0-nightly (f8a08b688 2026-05-30)"
+          },
+          "name": "rustc-1.95-to-1.98-nightly"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "charon_0_1_174_sha256": "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836",
+            "charon_0_1_210_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+            "versions": "0.1.174 (5096e36339dc62d885fb3b7bf6e1bd98000514e0) and 0.1.210 (1e08453924610c19d74c245a7308f17c1008e2db)"
+          },
+          "name": "charon"
+        }
+      ],
+      "topics": [
+        "verification/lean4/specification-validation",
+        "verification/lean4/claim-change-detection",
+        "verification/lean4/design-model-transfer",
+        "verification/lean4/optimization-preservation",
+        "verification/lean4/certificate-reuse",
+        "rust/mir/compiler-upgrade-maintenance"
+      ]
+    },
     "verification-nondeterminism-environmental-effects-2020-2026": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -29094,6 +29779,46 @@
         "compcert",
         "interaction-trees",
         "choice-trees"
+      ]
+    },
+    "verified-amir-binary-wire-format-and-structural-proof-views": {
+      "observed_at": "2026-10-24",
+      "subjects": [
+        {
+          "identity": {
+            "channel": "nightly",
+            "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "date": "2026-05-30",
+            "sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+            "sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+            "version": "0.1.210"
+          },
+          "name": "charon"
+        }
+      ],
+      "topics": [
+        "rust/mir/binary-wire-format",
+        "verification/lean4/verified-parsing",
+        "rust/mir/cleanup-cfg",
+        "verification/lean4/structured-proof-views",
+        "rust/opsem/raw-pointer-validity"
       ]
     },
     "verified-checker-theorem-endpoints-2026-10-14": {

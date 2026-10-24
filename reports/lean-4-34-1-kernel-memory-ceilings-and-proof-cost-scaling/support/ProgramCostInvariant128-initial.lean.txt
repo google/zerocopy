@@ -1,0 +1,2094 @@
+import AnnealResearch.ProgramCostPrimitives
+
+/-!
+Direct operational phase-invariant proof for the literal 128-call body.
+Every site has its own materialized Phase constructor and preservation case.
+All route-specific setup is in this measured module; smaller route endpoints
+are neither imported nor applied. Text generation expanded these fixed cases.
+No evaluator, runtime repetition, graph validator, or cached suite is added.
+-/
+namespace AnnealResearch.ProgramCostInvariant128
+
+open Execution MemoryExecution MiniRustReference ProgramCostCommon ProgramCostPrimitives
+
+/-- One actual branch of the fixed one-byte allocator call. -/
+theorem allocate_one_good (memory : State) (candidate : Nat)
+    (valid : AllocationCandidate memory 1 1 candidate) :
+    sourceExecute candidate memory (.allocate .heap 1 1) =
+      .good (.pointer ⟨candidate, some memory.next⟩)
+        (append memory (freshAllocation .heap 1 1 candidate)) := by
+  simp [sourceExecute, allocateAt,
+    Nat.not_le.mpr (show 1 < sizeLimit from by decide), valid,
+    liftResult, freshAllocation]
+
+/-- An invalid candidate contributes no allocation successor. -/
+theorem allocate_one_absent (memory : State) (candidate : Nat)
+    (invalid : ¬ AllocationCandidate memory 1 1 candidate) :
+    sourceExecute candidate memory (.allocate .heap 1 1) = .noChoice := by
+  simp [sourceExecute, allocateAt,
+    Nat.not_le.mpr (show 1 < sizeLimit from by decide), invalid, liftResult]
+
+/-- Phase facts are derived along actual executions. Each named constructor
+contains the corresponding frozen source stage and its current byte facts. -/
+inductive Phase (q : Bool) : Config State → Prop where
+  | s001 (trace : List Event) :
+      Phase q (.running empty (base128 q) trace)
+  | s002 (memory : State) (pA : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 .uninit)
+      (nextOne : memory.next = 1)
+      (live : LiveOnly memory (fun id => id = 0)) :
+      Phase q (.running memory (base128_s002 q pA) trace)
+  | s003 (memory : State) (pA : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (nextOne : memory.next = 1)
+      (live : LiveOnly memory (fun id => id = 0)) :
+      Phase q (.running memory (base128_s003 q pA) trace)
+  | s004 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 .uninit)
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s004 q pA pB) trace)
+  | s005 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s005 q pA pB) trace)
+  | s006 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s006 q pA pB) trace)
+  | s007 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s007 q pA pB) trace)
+  | s008 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s008 q pA pB) trace)
+  | s009 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s009 q pA pB) trace)
+  | s010 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s010 q pA pB) trace)
+  | s011 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s011 q pA pB) trace)
+  | s012 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s012 q pA pB) trace)
+  | s013 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s013 q pA pB) trace)
+  | s014 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s014 q pA pB) trace)
+  | s015 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s015 q pA pB) trace)
+  | s016 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s016 q pA pB) trace)
+  | s017 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s017 q pA pB) trace)
+  | s018 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s018 q pA pB) trace)
+  | s019 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s019 q pA pB) trace)
+  | s020 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s020 q pA pB) trace)
+  | s021 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s021 q pA pB) trace)
+  | s022 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s022 q pA pB) trace)
+  | s023 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s023 q pA pB) trace)
+  | s024 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s024 q pA pB) trace)
+  | s025 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s025 q pA pB) trace)
+  | s026 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s026 q pA pB) trace)
+  | s027 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s027 q pA pB) trace)
+  | s028 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s028 q pA pB) trace)
+  | s029 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s029 q pA pB) trace)
+  | s030 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s030 q pA pB) trace)
+  | s031 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s031 q pA pB) trace)
+  | s032 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s032 q pA pB) trace)
+  | s033 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s033 q pA pB) trace)
+  | s034 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s034 q pA pB) trace)
+  | s035 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s035 q pA pB) trace)
+  | s036 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s036 q pA pB) trace)
+  | s037 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s037 q pA pB) trace)
+  | s038 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s038 q pA pB) trace)
+  | s039 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s039 q pA pB) trace)
+  | s040 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s040 q pA pB) trace)
+  | s041 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s041 q pA pB) trace)
+  | s042 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s042 q pA pB) trace)
+  | s043 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s043 q pA pB) trace)
+  | s044 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s044 q pA pB) trace)
+  | s045 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s045 q pA pB) trace)
+  | s046 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s046 q pA pB) trace)
+  | s047 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s047 q pA pB) trace)
+  | s048 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s048 q pA pB) trace)
+  | s049 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s049 q pA pB) trace)
+  | s050 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s050 q pA pB) trace)
+  | s051 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s051 q pA pB) trace)
+  | s052 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s052 q pA pB) trace)
+  | s053 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s053 q pA pB) trace)
+  | s054 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s054 q pA pB) trace)
+  | s055 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s055 q pA pB) trace)
+  | s056 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s056 q pA pB) trace)
+  | s057 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s057 q pA pB) trace)
+  | s058 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s058 q pA pB) trace)
+  | s059 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s059 q pA pB) trace)
+  | s060 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s060 q pA pB) trace)
+  | s061 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s061 q pA pB) trace)
+  | s062 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s062 q pA pB) trace)
+  | s063 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s063 q pA pB) trace)
+  | s064 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s064 q pA pB) trace)
+  | s065 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s065 q pA pB) trace)
+  | s066 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s066 q pA pB) trace)
+  | s067 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s067 q pA pB) trace)
+  | s068 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s068 q pA pB) trace)
+  | s069 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s069 q pA pB) trace)
+  | s070 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s070 q pA pB) trace)
+  | s071 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s071 q pA pB) trace)
+  | s072 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s072 q pA pB) trace)
+  | s073 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s073 q pA pB) trace)
+  | s074 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s074 q pA pB) trace)
+  | s075 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s075 q pA pB) trace)
+  | s076 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s076 q pA pB) trace)
+  | s077 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s077 q pA pB) trace)
+  | s078 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s078 q pA pB) trace)
+  | s079 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s079 q pA pB) trace)
+  | s080 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s080 q pA pB) trace)
+  | s081 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s081 q pA pB) trace)
+  | s082 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s082 q pA pB) trace)
+  | s083 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s083 q pA pB) trace)
+  | s084 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s084 q pA pB) trace)
+  | s085 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s085 q pA pB) trace)
+  | s086 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s086 q pA pB) trace)
+  | s087 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s087 q pA pB) trace)
+  | s088 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s088 q pA pB) trace)
+  | s089 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s089 q pA pB) trace)
+  | s090 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s090 q pA pB) trace)
+  | s091 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s091 q pA pB) trace)
+  | s092 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s092 q pA pB) trace)
+  | s093 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s093 q pA pB) trace)
+  | s094 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s094 q pA pB) trace)
+  | s095 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s095 q pA pB) trace)
+  | s096 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s096 q pA pB) trace)
+  | s097 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s097 q pA pB) trace)
+  | s098 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s098 q pA pB) trace)
+  | s099 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s099 q pA pB) trace)
+  | s100 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s100 q pA pB) trace)
+  | s101 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s101 q pA pB) trace)
+  | s102 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s102 q pA pB) trace)
+  | s103 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s103 q pA pB) trace)
+  | s104 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s104 q pA pB) trace)
+  | s105 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s105 q pA pB) trace)
+  | s106 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s106 q pA pB) trace)
+  | s107 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s107 q pA pB) trace)
+  | s108 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s108 q pA pB) trace)
+  | s109 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s109 q pA pB) trace)
+  | s110 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s110 q pA pB) trace)
+  | s111 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s111 q pA pB) trace)
+  | s112 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s112 q pA pB) trace)
+  | s113 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s113 q pA pB) trace)
+  | s114 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s114 q pA pB) trace)
+  | s115 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s115 q pA pB) trace)
+  | s116 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s116 q pA pB) trace)
+  | s117 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s117 q pA pB) trace)
+  | s118 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s118 q pA pB) trace)
+  | s119 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s119 q pA pB) trace)
+  | s120 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s120 q pA pB) trace)
+  | s121 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s121 q pA pB) trace)
+  | s122 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 sevenByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s122 q pA pB) trace)
+  | s123 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s123 q pA pB) trace)
+  | s124 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s124 pA pB) trace)
+  | s125 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s125 pA pB) trace)
+  | s126 (memory : State) (pA pB : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (atB : ByteAt memory pB 1 (signalByte q))
+      (live : LiveOnly memory (fun id => id = 0 ∨ id = 1)) :
+      Phase q (.running memory (base128_s126 pA pB) trace)
+  | s127 (memory : State) (pA : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (live : LiveOnly memory (fun id => id = 0)) :
+      Phase q (.running memory (base128_s127 pA) trace)
+  | s128 (memory : State) (pA : Ptr) (trace : List Event)
+      (atA : ByteAt memory pA 0 nineByte)
+      (live : LiveOnly memory (fun id => id = 0)) :
+      Phase q (.running memory (base128_s128 pA) trace)
+  | done (memory : State) (trace : List Event) (dead : NoLive memory) :
+      Phase q (.running memory .done trace)
+  | completed (memory : State) (trace : List Event) (dead : NoLive memory) :
+      Phase q (.completed memory trace)
+
+/-- All 128 source sites preserve the operational invariant for every actual
+SourceStep, retaining all Nat candidates and exact reply reductions. -/
+theorem phase_preserved {q : Bool} {before after : Config State}
+    (phase : Phase q before) (edge : SourceStep before after) : Phase q after := by
+  obtain ⟨candidate, successor⟩ := edge
+  cases phase with
+  | s001 trace =>
+    by_cases valid : AllocationCandidate empty 1 1 candidate
+    · have answer := allocate_one_good empty candidate valid
+      simp only [MemoryExecution.next, base128, base128_s001, answer] at successor
+      cases successor
+      have supported : LiveOnly (append empty (freshAllocation .heap 1 1 candidate))
+          (fun id => id = 0) := by
+        refine liveOnly_mono (second := fun id => id = 0)
+          (append_liveOnly empty_liveOnly (freshAllocation .heap 1 1 candidate)) ?_
+        intro id member
+        rcases member with minted | impossible
+        · exact minted
+        · exact False.elim impossible
+      exact Phase.s002 _ _ _ (byteAt_fresh empty candidate) rfl supported
+    · have answer := allocate_one_absent empty candidate valid
+      simp only [MemoryExecution.next, base128, base128_s001, answer] at successor
+      cases successor
+  | s002 memory pA trace atA nextOne live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    have nextWritten : written.next = 1 :=
+      (ProofCostFrames.store_preserves_next stored').trans nextOne
+    have supported := store_preserves_liveOnly live stored'
+    simp only [MemoryExecution.next, base128_s002, answer] at successor
+    cases successor
+    exact Phase.s003 written pA _ atWritten nextWritten supported
+  | s003 memory pA trace atA nextOne live =>
+    by_cases valid : AllocationCandidate memory 1 1 candidate
+    · have answer := allocate_one_good memory candidate valid
+      have atOld : ByteAt (append memory (freshAllocation .heap 1 1 candidate))
+          pA 0 sevenByte := by
+        exact byteAt_append_other atA (by rw [nextOne]; decide)
+          (freshAllocation .heap 1 1 candidate)
+      have atNew : ByteAt (append memory (freshAllocation .heap 1 1 candidate))
+          ⟨candidate, some memory.next⟩ 1 Byte.uninit := by
+        simpa only [nextOne] using byteAt_fresh memory candidate
+      have supported : LiveOnly (append memory (freshAllocation .heap 1 1 candidate))
+          (fun id => id = 0 ∨ id = 1) := by
+        refine liveOnly_mono (second := fun id => id = 0 ∨ id = 1)
+          (append_liveOnly live (freshAllocation .heap 1 1 candidate)) ?_
+        intro id member
+        rcases member with minted | old
+        · exact Or.inr (minted.trans nextOne)
+        · exact Or.inl old
+      simp only [MemoryExecution.next, base128_s003, answer] at successor
+      cases successor
+      exact Phase.s004 _ pA _ _ atOld atNew supported
+    · have answer := allocate_one_absent memory candidate valid
+      simp only [MemoryExecution.next, base128_s003, answer] at successor
+      cases successor
+  | s004 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s004, answer] at successor
+    cases successor
+    exact Phase.s005 written pA pB _ atOld atWritten supported
+  | s005 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s005, answer] at successor
+    cases successor
+    exact Phase.s006 memory pA pB _ atA atB live
+  | s006 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s006, answer] at successor
+    cases successor
+    exact Phase.s007 written pA pB _ atWritten atOld supported
+  | s007 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s007, answer] at successor
+    cases successor
+    exact Phase.s008 written pA pB _ atOld atWritten supported
+  | s008 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s008, answer] at successor
+    cases successor
+    exact Phase.s009 memory pA pB _ atA atB live
+  | s009 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s009, answer] at successor
+    cases successor
+    exact Phase.s010 memory pA pB _ atA atB live
+  | s010 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s010, answer] at successor
+    cases successor
+    exact Phase.s011 written pA pB _ atWritten atOld supported
+  | s011 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s011, answer] at successor
+    cases successor
+    exact Phase.s012 written pA pB _ atOld atWritten supported
+  | s012 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s012, answer] at successor
+    cases successor
+    exact Phase.s013 memory pA pB _ atA atB live
+  | s013 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s013, answer] at successor
+    cases successor
+    exact Phase.s014 memory pA pB _ atA atB live
+  | s014 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s014, answer] at successor
+    cases successor
+    exact Phase.s015 written pA pB _ atWritten atOld supported
+  | s015 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s015, answer] at successor
+    cases successor
+    exact Phase.s016 written pA pB _ atOld atWritten supported
+  | s016 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s016, answer] at successor
+    cases successor
+    exact Phase.s017 memory pA pB _ atA atB live
+  | s017 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s017, answer] at successor
+    cases successor
+    exact Phase.s018 memory pA pB _ atA atB live
+  | s018 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s018, answer] at successor
+    cases successor
+    exact Phase.s019 written pA pB _ atWritten atOld supported
+  | s019 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s019, answer] at successor
+    cases successor
+    exact Phase.s020 written pA pB _ atOld atWritten supported
+  | s020 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s020, answer] at successor
+    cases successor
+    exact Phase.s021 memory pA pB _ atA atB live
+  | s021 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s021, answer] at successor
+    cases successor
+    exact Phase.s022 memory pA pB _ atA atB live
+  | s022 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s022, answer] at successor
+    cases successor
+    exact Phase.s023 written pA pB _ atWritten atOld supported
+  | s023 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s023, answer] at successor
+    cases successor
+    exact Phase.s024 written pA pB _ atOld atWritten supported
+  | s024 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s024, answer] at successor
+    cases successor
+    exact Phase.s025 memory pA pB _ atA atB live
+  | s025 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s025, answer] at successor
+    cases successor
+    exact Phase.s026 memory pA pB _ atA atB live
+  | s026 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s026, answer] at successor
+    cases successor
+    exact Phase.s027 written pA pB _ atWritten atOld supported
+  | s027 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s027, answer] at successor
+    cases successor
+    exact Phase.s028 written pA pB _ atOld atWritten supported
+  | s028 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s028, answer] at successor
+    cases successor
+    exact Phase.s029 memory pA pB _ atA atB live
+  | s029 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s029, answer] at successor
+    cases successor
+    exact Phase.s030 memory pA pB _ atA atB live
+  | s030 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s030, answer] at successor
+    cases successor
+    exact Phase.s031 written pA pB _ atWritten atOld supported
+  | s031 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s031, answer] at successor
+    cases successor
+    exact Phase.s032 written pA pB _ atOld atWritten supported
+  | s032 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s032, answer] at successor
+    cases successor
+    exact Phase.s033 memory pA pB _ atA atB live
+  | s033 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s033, answer] at successor
+    cases successor
+    exact Phase.s034 memory pA pB _ atA atB live
+  | s034 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s034, answer] at successor
+    cases successor
+    exact Phase.s035 written pA pB _ atWritten atOld supported
+  | s035 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s035, answer] at successor
+    cases successor
+    exact Phase.s036 written pA pB _ atOld atWritten supported
+  | s036 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s036, answer] at successor
+    cases successor
+    exact Phase.s037 memory pA pB _ atA atB live
+  | s037 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s037, answer] at successor
+    cases successor
+    exact Phase.s038 memory pA pB _ atA atB live
+  | s038 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s038, answer] at successor
+    cases successor
+    exact Phase.s039 written pA pB _ atWritten atOld supported
+  | s039 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s039, answer] at successor
+    cases successor
+    exact Phase.s040 written pA pB _ atOld atWritten supported
+  | s040 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s040, answer] at successor
+    cases successor
+    exact Phase.s041 memory pA pB _ atA atB live
+  | s041 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s041, answer] at successor
+    cases successor
+    exact Phase.s042 memory pA pB _ atA atB live
+  | s042 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s042, answer] at successor
+    cases successor
+    exact Phase.s043 written pA pB _ atWritten atOld supported
+  | s043 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s043, answer] at successor
+    cases successor
+    exact Phase.s044 written pA pB _ atOld atWritten supported
+  | s044 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s044, answer] at successor
+    cases successor
+    exact Phase.s045 memory pA pB _ atA atB live
+  | s045 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s045, answer] at successor
+    cases successor
+    exact Phase.s046 memory pA pB _ atA atB live
+  | s046 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s046, answer] at successor
+    cases successor
+    exact Phase.s047 written pA pB _ atWritten atOld supported
+  | s047 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s047, answer] at successor
+    cases successor
+    exact Phase.s048 written pA pB _ atOld atWritten supported
+  | s048 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s048, answer] at successor
+    cases successor
+    exact Phase.s049 memory pA pB _ atA atB live
+  | s049 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s049, answer] at successor
+    cases successor
+    exact Phase.s050 memory pA pB _ atA atB live
+  | s050 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s050, answer] at successor
+    cases successor
+    exact Phase.s051 written pA pB _ atWritten atOld supported
+  | s051 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s051, answer] at successor
+    cases successor
+    exact Phase.s052 written pA pB _ atOld atWritten supported
+  | s052 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s052, answer] at successor
+    cases successor
+    exact Phase.s053 memory pA pB _ atA atB live
+  | s053 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s053, answer] at successor
+    cases successor
+    exact Phase.s054 memory pA pB _ atA atB live
+  | s054 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s054, answer] at successor
+    cases successor
+    exact Phase.s055 written pA pB _ atWritten atOld supported
+  | s055 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s055, answer] at successor
+    cases successor
+    exact Phase.s056 written pA pB _ atOld atWritten supported
+  | s056 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s056, answer] at successor
+    cases successor
+    exact Phase.s057 memory pA pB _ atA atB live
+  | s057 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s057, answer] at successor
+    cases successor
+    exact Phase.s058 memory pA pB _ atA atB live
+  | s058 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s058, answer] at successor
+    cases successor
+    exact Phase.s059 written pA pB _ atWritten atOld supported
+  | s059 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s059, answer] at successor
+    cases successor
+    exact Phase.s060 written pA pB _ atOld atWritten supported
+  | s060 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s060, answer] at successor
+    cases successor
+    exact Phase.s061 memory pA pB _ atA atB live
+  | s061 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s061, answer] at successor
+    cases successor
+    exact Phase.s062 memory pA pB _ atA atB live
+  | s062 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s062, answer] at successor
+    cases successor
+    exact Phase.s063 written pA pB _ atWritten atOld supported
+  | s063 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s063, answer] at successor
+    cases successor
+    exact Phase.s064 written pA pB _ atOld atWritten supported
+  | s064 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s064, answer] at successor
+    cases successor
+    exact Phase.s065 memory pA pB _ atA atB live
+  | s065 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s065, answer] at successor
+    cases successor
+    exact Phase.s066 memory pA pB _ atA atB live
+  | s066 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s066, answer] at successor
+    cases successor
+    exact Phase.s067 written pA pB _ atWritten atOld supported
+  | s067 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s067, answer] at successor
+    cases successor
+    exact Phase.s068 written pA pB _ atOld atWritten supported
+  | s068 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s068, answer] at successor
+    cases successor
+    exact Phase.s069 memory pA pB _ atA atB live
+  | s069 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s069, answer] at successor
+    cases successor
+    exact Phase.s070 memory pA pB _ atA atB live
+  | s070 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s070, answer] at successor
+    cases successor
+    exact Phase.s071 written pA pB _ atWritten atOld supported
+  | s071 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s071, answer] at successor
+    cases successor
+    exact Phase.s072 written pA pB _ atOld atWritten supported
+  | s072 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s072, answer] at successor
+    cases successor
+    exact Phase.s073 memory pA pB _ atA atB live
+  | s073 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s073, answer] at successor
+    cases successor
+    exact Phase.s074 memory pA pB _ atA atB live
+  | s074 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s074, answer] at successor
+    cases successor
+    exact Phase.s075 written pA pB _ atWritten atOld supported
+  | s075 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s075, answer] at successor
+    cases successor
+    exact Phase.s076 written pA pB _ atOld atWritten supported
+  | s076 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s076, answer] at successor
+    cases successor
+    exact Phase.s077 memory pA pB _ atA atB live
+  | s077 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s077, answer] at successor
+    cases successor
+    exact Phase.s078 memory pA pB _ atA atB live
+  | s078 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s078, answer] at successor
+    cases successor
+    exact Phase.s079 written pA pB _ atWritten atOld supported
+  | s079 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s079, answer] at successor
+    cases successor
+    exact Phase.s080 written pA pB _ atOld atWritten supported
+  | s080 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s080, answer] at successor
+    cases successor
+    exact Phase.s081 memory pA pB _ atA atB live
+  | s081 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s081, answer] at successor
+    cases successor
+    exact Phase.s082 memory pA pB _ atA atB live
+  | s082 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s082, answer] at successor
+    cases successor
+    exact Phase.s083 written pA pB _ atWritten atOld supported
+  | s083 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s083, answer] at successor
+    cases successor
+    exact Phase.s084 written pA pB _ atOld atWritten supported
+  | s084 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s084, answer] at successor
+    cases successor
+    exact Phase.s085 memory pA pB _ atA atB live
+  | s085 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s085, answer] at successor
+    cases successor
+    exact Phase.s086 memory pA pB _ atA atB live
+  | s086 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s086, answer] at successor
+    cases successor
+    exact Phase.s087 written pA pB _ atWritten atOld supported
+  | s087 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s087, answer] at successor
+    cases successor
+    exact Phase.s088 written pA pB _ atOld atWritten supported
+  | s088 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s088, answer] at successor
+    cases successor
+    exact Phase.s089 memory pA pB _ atA atB live
+  | s089 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s089, answer] at successor
+    cases successor
+    exact Phase.s090 memory pA pB _ atA atB live
+  | s090 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s090, answer] at successor
+    cases successor
+    exact Phase.s091 written pA pB _ atWritten atOld supported
+  | s091 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s091, answer] at successor
+    cases successor
+    exact Phase.s092 written pA pB _ atOld atWritten supported
+  | s092 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s092, answer] at successor
+    cases successor
+    exact Phase.s093 memory pA pB _ atA atB live
+  | s093 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s093, answer] at successor
+    cases successor
+    exact Phase.s094 memory pA pB _ atA atB live
+  | s094 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s094, answer] at successor
+    cases successor
+    exact Phase.s095 written pA pB _ atWritten atOld supported
+  | s095 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s095, answer] at successor
+    cases successor
+    exact Phase.s096 written pA pB _ atOld atWritten supported
+  | s096 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s096, answer] at successor
+    cases successor
+    exact Phase.s097 memory pA pB _ atA atB live
+  | s097 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s097, answer] at successor
+    cases successor
+    exact Phase.s098 memory pA pB _ atA atB live
+  | s098 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s098, answer] at successor
+    cases successor
+    exact Phase.s099 written pA pB _ atWritten atOld supported
+  | s099 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s099, answer] at successor
+    cases successor
+    exact Phase.s100 written pA pB _ atOld atWritten supported
+  | s100 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s100, answer] at successor
+    cases successor
+    exact Phase.s101 memory pA pB _ atA atB live
+  | s101 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s101, answer] at successor
+    cases successor
+    exact Phase.s102 memory pA pB _ atA atB live
+  | s102 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s102, answer] at successor
+    cases successor
+    exact Phase.s103 written pA pB _ atWritten atOld supported
+  | s103 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s103, answer] at successor
+    cases successor
+    exact Phase.s104 written pA pB _ atOld atWritten supported
+  | s104 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s104, answer] at successor
+    cases successor
+    exact Phase.s105 memory pA pB _ atA atB live
+  | s105 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s105, answer] at successor
+    cases successor
+    exact Phase.s106 memory pA pB _ atA atB live
+  | s106 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s106, answer] at successor
+    cases successor
+    exact Phase.s107 written pA pB _ atWritten atOld supported
+  | s107 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s107, answer] at successor
+    cases successor
+    exact Phase.s108 written pA pB _ atOld atWritten supported
+  | s108 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s108, answer] at successor
+    cases successor
+    exact Phase.s109 memory pA pB _ atA atB live
+  | s109 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s109, answer] at successor
+    cases successor
+    exact Phase.s110 memory pA pB _ atA atB live
+  | s110 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s110, answer] at successor
+    cases successor
+    exact Phase.s111 written pA pB _ atWritten atOld supported
+  | s111 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s111, answer] at successor
+    cases successor
+    exact Phase.s112 written pA pB _ atOld atWritten supported
+  | s112 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s112, answer] at successor
+    cases successor
+    exact Phase.s113 memory pA pB _ atA atB live
+  | s113 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s113, answer] at successor
+    cases successor
+    exact Phase.s114 memory pA pB _ atA atB live
+  | s114 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s114, answer] at successor
+    cases successor
+    exact Phase.s115 written pA pB _ atWritten atOld supported
+  | s115 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s115, answer] at successor
+    cases successor
+    exact Phase.s116 written pA pB _ atOld atWritten supported
+  | s116 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s116, answer] at successor
+    cases successor
+    exact Phase.s117 memory pA pB _ atA atB live
+  | s117 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s117, answer] at successor
+    cases successor
+    exact Phase.s118 memory pA pB _ atA atB live
+  | s118 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA sevenByte
+    have stored' : store memory pA sevenBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA sevenBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s118, answer] at successor
+    cases successor
+    exact Phase.s119 written pA pB _ atWritten atOld supported
+  | s119 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 sevenByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s119, answer] at successor
+    cases successor
+    exact Phase.s120 written pA pB _ atOld atWritten supported
+  | s120 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s120, answer] at successor
+    cases successor
+    exact Phase.s121 memory pA pB _ atA atB live
+  | s121 memory pA pB trace atA atB live =>
+    have loaded : load memory pA 1 1 = .ok (sevenBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes sevenBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s121, answer] at successor
+    cases successor
+    exact Phase.s122 memory pA pB _ atA atB live
+  | s122 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atA nineByte
+    have stored' : store memory pA nineBytes 1 = .ok written := stored
+    have atOld : ByteAt written pB 1 (signalByte q) :=
+      byteAt_store_other (written := pA) (writtenId := 0)
+        atB atA.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pA nineBytes 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s122, answer] at successor
+    cases successor
+    exact Phase.s123 written pA pB _ atWritten atOld supported
+  | s123 memory pA pB trace atA atB live =>
+    obtain ⟨written, stored, atWritten⟩ := byteAt_store atB (signalByte q)
+    have stored' : store memory pB (signalBytes q) 1 = .ok written := stored
+    have atOld : ByteAt written pA 0 nineByte :=
+      byteAt_store_other (written := pB) (writtenId := 1)
+        atA atB.1 (by decide) stored'
+    have supported := store_preserves_liveOnly live stored'
+    have answer : sourceExecute candidate memory (.store pB (signalBytes q) 1) =
+        .good .unit written := by
+      simp only [sourceExecute, stored', liftResult]
+    simp only [MemoryExecution.next, base128_s123, answer] at successor
+    cases successor
+    exact Phase.s124 written pA pB _ atOld atWritten supported
+  | s124 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s124, answer] at successor
+    cases successor
+    exact Phase.s125 memory pA pB _ atA atB live
+  | s125 memory pA pB trace atA atB live =>
+    have loaded : load memory pB 1 1 = .ok (signalBytes q, memory) := byteAt_load atB
+    have answer : sourceExecute candidate memory (.load pB 1 1) =
+        .good (.bytes (signalBytes q)) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s125, answer] at successor
+    cases successor
+    exact Phase.s126 memory pA pB _ atA atB live
+  | s126 memory pA pB trace atA atB live =>
+    obtain ⟨freed, released, _⟩ := byteAt_free atB
+    have atOld : ByteAt freed pA 0 nineByte :=
+      byteAt_free_other (freed := pB) (freedId := 1)
+        atA atB.1 (by decide) released
+    have narrowed := free_removes_liveOnly (p := pB) (id := 1) live atB.1 released
+    have supported : LiveOnly freed (fun id => id = 0) := by
+      refine liveOnly_mono (second := fun id => id = 0) narrowed ?_
+      intro id member
+      rcases member with ⟨old, notB⟩
+      rcases old with isA | isB
+      · exact isA
+      · exact False.elim (notB isB)
+    have answer : sourceExecute candidate memory (.free pB .heap 1 1) =
+        .good .unit freed := by
+      simp only [sourceExecute, released, liftResult]
+    simp only [MemoryExecution.next, base128_s126, answer] at successor
+    cases successor
+    exact Phase.s127 freed pA _ atOld supported
+  | s127 memory pA trace atA live =>
+    have loaded : load memory pA 1 1 = .ok (nineBytes, memory) := byteAt_load atA
+    have answer : sourceExecute candidate memory (.load pA 1 1) =
+        .good (.bytes nineBytes) memory := by
+      simp only [sourceExecute, loaded, liftResult]
+    simp only [MemoryExecution.next, base128_s127, answer] at successor
+    cases successor
+    exact Phase.s128 memory pA _ atA live
+  | s128 memory pA trace atA live =>
+    obtain ⟨freed, released, _⟩ := byteAt_free atA
+    have narrowed := free_removes_liveOnly (p := pA) (id := 0) live atA.1 released
+    have dead : NoLive freed := by
+      apply (noLive_iff_liveOnly_empty freed).mpr
+      refine liveOnly_mono (second := fun _ => False) narrowed ?_
+      intro id member
+      exact member.2 member.1
+    have answer : sourceExecute candidate memory (.free pA .heap 1 1) =
+        .good .unit freed := by
+      simp only [sourceExecute, released, liftResult]
+    simp only [MemoryExecution.next, base128_s128, answer] at successor
+    cases successor
+    exact Phase.done freed _ dead
+  | done memory trace dead =>
+    simp only [MemoryExecution.next] at successor
+    cases successor
+    exact Phase.completed memory trace dead
+  | completed memory trace dead =>
+    simp only [MemoryExecution.next] at successor
+    cases successor
+
+theorem phase_excludes_bad {q : Bool} {config : Config State}
+    (phase : Phase q config) : ¬ Bad config := by
+  cases phase <;> exact id
+
+theorem phase_completed_noLive {q : Bool} {memory : State} {trace : List Event}
+    (phase : Phase q (.completed memory trace)) : NoLive memory := by
+  cases phase
+  assumption
+
+/-- Every finite path from the exact common root, including horizon zero. -/
+theorem reachable_phase (q : Bool) {reached : Config State}
+    (path : Reach SourceStep (initial base128 q) reached) : Phase q reached :=
+  invariant_reachable (Invariant := Phase q) (Phase.s001 []) phase_preserved path
+
+/-- Exact common all-candidate finite-prefix safety AND normal-completion
+resource claim. There is no successful-allocation or termination premise. -/
+theorem base128_claim (q : Bool) : ProgramCostCommon.Base128Claim q := by
+  constructor
+  · exact invariant_noUB (Invariant := Phase q) (Phase.s001 []) phase_preserved
+      (fun _ phase => phase_excludes_bad phase)
+  · intro memory trace path
+    exact phase_completed_noLive (reachable_phase q path)
+
+#print axioms allocate_one_good
+#print axioms allocate_one_absent
+#print axioms phase_preserved
+#print axioms phase_excludes_bad
+#print axioms phase_completed_noLive
+#print axioms reachable_phase
+#print axioms base128_claim
+
+end AnnealResearch.ProgramCostInvariant128

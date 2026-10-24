@@ -1,0 +1,21 @@
+{
+  "repository": "rust-lang/reference",
+  "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+  "compiler_subject": "rust-lang/rust b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+  "compiler_gitlink_evidence": "work/configured-admission-probe/reference-pin-response.json",
+  "files": [
+    {
+      "path": "src/attributes/codegen.md",
+      "bytes": 52807,
+      "git_oid": "d3ecf00b88538e05105420dea65015d5f464aaee",
+      "sha256": "76e67042c06b6e84098187f5ea5f08ab0248d3d8cfa04a30c2d148075cf35a4a"
+    },
+    {
+      "path": "src/inline-assembly.md",
+      "bytes": 74833,
+      "git_oid": "d10b874c5cd8e6ebdc7ee0f34c85675d672f712b",
+      "sha256": "8c31b5f2f0cd50bc344465244760dea6946ac4b1182a6110ca115f7dc259959e"
+    }
+  ],
+  "qualification": "Fresh authenticated pinned blobs, native identity verification only; content reconciliation and current executable subject preflight remain required."
+}

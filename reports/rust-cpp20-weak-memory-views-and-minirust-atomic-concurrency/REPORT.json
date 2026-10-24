@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "rust/memory-model",
+    "rust/operational-semantics",
+    "cpp20/memory-model",
+    "minirust/semantics",
+    "minirust/concurrency-and-atomics",
+    "minirust/weak-memory",
+    "lean4/kernel-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "https://github.com/rust-lang/rust",
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "file": "library/core/src/sync/atomic.rs",
+        "git_blob": "71502f8d918e739c558710955e3fba31db2ad29e"
+      }
+    },
+    {
+      "name": "rust-reference",
+      "identity": {
+        "repository": "https://github.com/rust-lang/reference",
+        "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "cplusplus-draft",
+      "identity": {
+        "repository": "https://github.com/cplusplus/draft",
+        "tag": "n4868",
+        "commit": "1f468a67c67143625d7946cdc4cfc7f7730d9160"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "https://github.com/minirust/minirust",
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}
