@@ -122,19 +122,22 @@ const _: () = {
         #[automatically_derived]
         const _: () = {
             unsafe impl<
-                ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                 ___ZcAlignment: ::zerocopy::invariant::Alignment,
             > ::zerocopy::ProjectField<
                 ::zerocopy::project_clients::TryFromBytesDerive,
                 ẕa,
-                (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                (
+                    ::zerocopy::invariant::Exclusive,
+                    ___ZcAlignment,
+                    ::zerocopy::invariant::Uninit,
+                ),
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
             > for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                 type Invariants = (
-                    ___ZcAliasing,
+                    ::zerocopy::invariant::Exclusive,
                     ___ZcAlignment,
                     ::zerocopy::invariant::Uninit,
                 );
@@ -154,19 +157,22 @@ const _: () = {
         #[automatically_derived]
         const _: () = {
             unsafe impl<
-                ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                 ___ZcAlignment: ::zerocopy::invariant::Alignment,
             > ::zerocopy::ProjectField<
                 ::zerocopy::project_clients::TryFromBytesDerive,
                 ẕa,
-                (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                (
+                    ::zerocopy::invariant::Exclusive,
+                    ___ZcAlignment,
+                    ::zerocopy::invariant::Initialized,
+                ),
                 { ::zerocopy::UNION_VARIANT_ID },
                 { ::zerocopy::ident_id!(a) },
             > for Foo {
                 fn only_derive_is_allowed_to_implement_this_trait() {}
                 type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                 type Invariants = (
-                    ___ZcAliasing,
+                    ::zerocopy::invariant::Exclusive,
                     ___ZcAlignment,
                     ::zerocopy::invariant::Initialized,
                 );

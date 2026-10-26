@@ -2332,20 +2332,23 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
-                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                         ___ZcAlignment: ::zerocopy::invariant::Alignment,
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__field_StructLike,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        (
+                            ::zerocopy::invariant::Exclusive,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        ),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_StructLike) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Uninit,
                         );
@@ -2368,14 +2371,13 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
-                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                         ___ZcAlignment: ::zerocopy::invariant::Alignment,
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__field_StructLike,
                         (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Initialized,
                         ),
@@ -2385,7 +2387,7 @@ const _: () = {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Initialized,
                         );
@@ -2454,20 +2456,23 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
-                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                         ___ZcAlignment: ::zerocopy::invariant::Alignment,
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__field_TupleLike,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        (
+                            ::zerocopy::invariant::Exclusive,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        ),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__field_TupleLike) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Uninit,
                         );
@@ -2490,14 +2495,13 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
-                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                         ___ZcAlignment: ::zerocopy::invariant::Alignment,
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__field_TupleLike,
                         (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Initialized,
                         ),
@@ -2507,7 +2511,7 @@ const _: () = {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Initialized,
                         );
@@ -2574,20 +2578,23 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
-                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                         ___ZcAlignment: ::zerocopy::invariant::Alignment,
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__nonempty,
-                        (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                        (
+                            ::zerocopy::invariant::Exclusive,
+                            ___ZcAlignment,
+                            ::zerocopy::invariant::Uninit,
+                        ),
                         { ::zerocopy::REPR_C_UNION_VARIANT_ID },
                         { ::zerocopy::ident_id!(__nonempty) },
                     > for ___ZerocopyVariants<'a, { N }, X, Y> {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Uninit,
                         );
@@ -2610,14 +2617,13 @@ const _: () = {
                         'a: 'static,
                         X,
                         Y: Deref,
-                        ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                         ___ZcAlignment: ::zerocopy::invariant::Alignment,
                         const N: usize,
                     > ::zerocopy::ProjectField<
                         ::zerocopy::project_clients::TryFromBytesDerive,
                         ẕ__nonempty,
                         (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Initialized,
                         ),
@@ -2627,7 +2633,7 @@ const _: () = {
                         fn only_derive_is_allowed_to_implement_this_trait() {}
                         type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                         type Invariants = (
-                            ___ZcAliasing,
+                            ::zerocopy::invariant::Exclusive,
                             ___ZcAlignment,
                             ::zerocopy::invariant::Initialized,
                         );
@@ -3117,13 +3123,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(a) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3133,7 +3142,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -3156,13 +3165,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(a) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3172,7 +3184,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -3338,13 +3350,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(b) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3354,7 +3369,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -3377,13 +3392,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(b) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3393,7 +3411,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -3559,13 +3577,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(c) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3575,7 +3596,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -3598,13 +3619,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(c) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3614,7 +3638,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -3780,13 +3804,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(d) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3796,7 +3823,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -3819,13 +3846,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(d) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -3835,7 +3865,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -4001,13 +4031,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(e) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4017,7 +4050,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -4040,13 +4073,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(StructLike) },
                     { ::zerocopy::ident_id!(e) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4056,7 +4092,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -4222,13 +4258,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(0) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4238,7 +4277,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -4261,13 +4300,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(0) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4277,7 +4319,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -4443,13 +4485,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(1) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4459,7 +4504,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -4482,13 +4527,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(1) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4498,7 +4546,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
@@ -4664,13 +4712,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Uninit),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Uninit,
+                    ),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(2) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4680,7 +4731,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Uninit,
                     );
@@ -4703,13 +4754,16 @@ const _: () = {
                     'a: 'static,
                     X,
                     Y: Deref,
-                    ___ZcAliasing: ::zerocopy::invariant::Aliasing,
                     ___ZcAlignment: ::zerocopy::invariant::Alignment,
                     const N: usize,
                 > ::zerocopy::ProjectField<
                     ::zerocopy::project_clients::TryFromBytesDerive,
                     (),
-                    (___ZcAliasing, ___ZcAlignment, ::zerocopy::invariant::Initialized),
+                    (
+                        ::zerocopy::invariant::Exclusive,
+                        ___ZcAlignment,
+                        ::zerocopy::invariant::Initialized,
+                    ),
                     { ::zerocopy::ident_id!(TupleLike) },
                     { ::zerocopy::ident_id!(2) },
                 > for ComplexWithGenerics<'a, { N }, X, Y>
@@ -4719,7 +4773,7 @@ const _: () = {
                     fn only_derive_is_allowed_to_implement_this_trait() {}
                     type Error = ::zerocopy::util::macro_util::core_reexport::convert::Infallible;
                     type Invariants = (
-                        ___ZcAliasing,
+                        ::zerocopy::invariant::Exclusive,
                         ___ZcAlignment,
                         ::zerocopy::invariant::Initialized,
                     );
