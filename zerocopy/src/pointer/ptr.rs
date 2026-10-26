@@ -584,16 +584,14 @@ mod _conversions {
             // - Since `Unalign<T>` has the same layout as `T`, the returned
             //   pointer refers to `UnsafeCell`s at the same locations as
             //   `self`.
-            // - `Unalign<T>` promises to have the same bit validity as `T`. By
-            //   invariant on `Validity`, the set of bit patterns allowed in the
-            //   referent of a `Ptr<X, (_, _, V)>` is only a function of the
-            //   validity of `X` and of `V`. Thus, the set of bit patterns
-            //   allowed in the referent of a `Ptr<T, (_, _, I::Validity)>` is
-            //   the same as the set of bit patterns allowed in the referent of
-            //   a `Ptr<Unalign<T>, (_, _, I::Validity)>`. As a result, `self`
-            //   and the returned `Ptr` permit the same set of bit patterns in
-            //   their referents, and so neither can be used to violate the
-            //   validity of the other.
+            // - `Uninit` and `Initialized` depend only on initialization of
+            //   the byte range. `Unalign<T>` has the same bit validity as `T`,
+            //   including whether valid instances exist, so their
+            //   `AsInitialized` requirements agree. It also has the same
+            //   library safety invariants as its inner `T`, so their
+            //   `Safe` requirements agree. Thus `S(Unalign<T>, V) = S(T, V)`
+            //   for every `V`, and mutation preserving either pointer's
+            //   validity preserves the other's validity.
             let ptr = unsafe { self.project_transmute_unchecked::<_, _, CastSized>() };
             ptr.bikeshed_recall_aligned()
         }
@@ -1077,11 +1075,13 @@ mod _casts {
             //    `I::Aliasing` because `self` does.
             // 1. By the above lemma, `slice` conforms to the alignment
             //    invariant of `I::Alignment` because `self` does.
-            // 2. Since `[T; N]` and `[T]` have the same bit validity [1][2],
-            //    and since `self` and the returned `Ptr` have the same validity
-            //    invariant, neither `self` nor the returned `Ptr` can be used
-            //    to write a value to the referent which violates the other's
-            //    validity invariant.
+            // 2. Since `[T; N]` and `[T]` at length N have the same bit validity
+            //    [1][2], including whether valid instances exist, their
+            //    `AsInitialized` requirements agree. Their `Safe`
+            //    requirements are also identical: every element must be safe
+            //    for `T`. `Uninit` and `Initialized` constrain only the byte
+            //    range. In each case, mutation through either pointer
+            //    preserves the other's validity.
             //
             // [1] Per https://doc.rust-lang.org/1.81.0/reference/type-layout.html#array-layout:
             //
@@ -1264,13 +1264,14 @@ mod _casts {
             //   but the subsequent sentence in the documentation makes it clear
             //   that this is the intention.
             //
-            //   By invariant on `Validity`, since `T` and `UnsafeCell<T>` have
-            //   the same bit validity, then the set of values which may appear
-            //   in the referent of a `Ptr<T, (_, _, V)>` is the same as the set
-            //   which may appear in the referent of a `Ptr<UnsafeCell<T>, (_,
-            //   _, V)>`. Thus, neither `self` nor `ptr` may be used to write a
-            //   value to the referent which would violate the other's validity
-            //   invariant.
+            //   Valid instances therefore exist for both or neither, and
+            //   their `AsInitialized` requirements agree in either case. With
+            //   exclusive access, `UnsafeCell<T>` has the same library safety
+            //   requirements as its inner `T`, so `Safe` is preserved too.
+            //   `Uninit` and `Initialized` constrain only the byte range.
+            //   These cases exhaust `I::Validity`, and each permits the same
+            //   states before and after the cast. Thus, mutation through
+            //   either pointer preserves the other's validity.
             //
             // [1] Per https://doc.rust-lang.org/1.81.0/core/cell/struct.UnsafeCell.html#memory-layout:
             //
@@ -1329,8 +1330,16 @@ mod _project {
             //    Arrays are laid out so that the zero-based `nth` element of
             //    the array is offset from the start of the array by `n *
             //    size_of::<T>()` bytes. Thus, `elem` addresses a valid `T`
-            //    within the slice. Since `self` satisfies `I::Validity`, `elem`
-            //    also satisfies `I::Validity`.
+            //    within the slice. `self` has validity `Uninit`, `Initialized`,
+            //    `AsInitialized`, or `Safe`. Respectively, each
+            //    element may be uninitialized, is fully initialized, is
+            //    initialized wherever `T` requires, or is safe for `T`.
+            //    For `AsInitialized` with uninhabited `T`, a nonempty slice
+            //    also has no valid instances, so both the slice and each
+            //    element require every byte to be initialized. An empty
+            //    slice yields no elements.
+            //    Preserving that condition in one element preserves the
+            //    slice's condition, since other elements are disjoint.
             self.as_inner().iter().map(
                 #[inline(always)]
                 |elem| unsafe { Ptr::from_inner(elem) },
@@ -1368,6 +1377,42 @@ mod tests {
     #[allow(unused)] // Needed on our MSRV, but considered unused on later toolchains.
     use crate::util::AsAddress;
     use crate::{pointer::BecauseImmutable, util::testutil::AU64, FromBytes, Immutable};
+
+    #[test]
+    fn test_project_tag_uninhabited() {
+        use crate::{pointer::cast::CastSized, project_clients::ProjectDerive};
+
+        enum Never {}
+
+        #[allow(dead_code)]
+        #[derive(zerocopy_derive::Project)]
+        #[repr(u8)]
+        enum Enum {
+            // A nonzero-sized payload keeps tag projection available on the
+            // MSRV, which gives Variant(Never) a zero-sized representation.
+            Variant(Never, u8),
+        }
+
+        let mut storage = MaybeUninit::<Enum>::uninit();
+        // SAFETY: The exclusive pointer covers size_of::<Enum>() writable
+        // bytes. Writing u8 bytes requires alignment one and initializes the
+        // entire storage, including padding, without constructing an Enum.
+        unsafe {
+            storage.as_mut_ptr().cast::<u8>().write_bytes(0xFF, core::mem::size_of::<Enum>());
+        }
+        let inner = PtrInner::from_mut(&mut storage).project::<Enum, CastSized>();
+        // SAFETY: Every byte was initialized in place above, satisfying
+        // AsInitialized even though Enum is uninhabited. The storage is live,
+        // aligned and exclusively borrowed. No Enum value is constructed.
+        let mut ptr: Ptr<'_, Enum, (Exclusive, Aligned, AsInitialized)> =
+            unsafe { Ptr::from_inner(inner) };
+        let tag: Ptr<'_, _, (Shared, Aligned, AsInitialized)> =
+            ptr.reborrow().project_tag::<ProjectDerive>();
+        // SAFETY: The generated repr(u8) tag has one byte, initialized by
+        // AsInitialized. Reading it as u8 permits the invalid discriminant
+        // 0xFF and requires alignment one. The shared pointer permits reading.
+        assert_eq!(unsafe { tag.as_inner().as_ptr().cast::<u8>().read() }, 0xFF);
+    }
 
     #[test]
     fn test_project_tag_downgrades_aliasing() {
