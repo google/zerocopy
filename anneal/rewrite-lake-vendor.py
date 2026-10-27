@@ -13,6 +13,26 @@ from pathlib import Path
 REMOTE_TOML_KEYS = {"git", "url", "rev", "scope", "subDir", "inputRev"}
 
 
+def validate_vendoring_roots(root: Path, packages_dir: Path) -> None:
+    """Reject links that could route a private rewrite into another installation."""
+    roots = [root.absolute(), packages_dir.absolute()]
+    for directory in roots:
+        if directory.is_symlink() or not directory.is_dir():
+            raise ValueError(f"Vendoring root must be a physical directory: {directory}")
+    allowed = [directory.resolve() for directory in roots]
+    def fail_walk(error: OSError) -> None:
+        raise error
+
+    for directory in roots:
+        for current, directories, files in os.walk(directory, followlinks=False, onerror=fail_walk):
+            for name in directories + files:
+                path = Path(current) / name
+                if path.is_symlink():
+                    target = path.resolve(strict=True)
+                    if not any(target.is_relative_to(parent) for parent in allowed):
+                        raise ValueError(f"Vendoring symlink leaves private roots: {path} -> {target}")
+
+
 def quote_name(name: str) -> str:
     if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_']*", name):
         return name
@@ -34,7 +54,9 @@ def package_dirs(packages_dir: Path) -> dict[str, Path]:
 
 def replace_require_toml_blocks(path: Path, packages: dict[str, Path]) -> bool:
     content = path.read_text()
-    block_re = re.compile(r"(?ms)^\s*\[\[require\]\]\s*\n(?:(?!^\s*\[\[).*\n?)*")
+    # Stop at every TOML table, including single-bracket option tables. A
+    # greedy dot with DOTALL would also consume later library/executable tables.
+    block_re = re.compile(r"(?ms)^[ \t]*\[\[require\]\][ \t]*\n.*?(?=^[ \t]*\[|\Z)")
 
     changed = False
 
@@ -151,7 +173,7 @@ def rewrite_trace_prefixes(
     prefixes = trace_prefixes(root, packages_dir, packages, extra_prefixes)
     package_root_patterns = [
         re.compile(
-            rf"(?<![A-Za-z0-9_.-])(?:/[^\s\"':]+)+/(?:packages|\.lake/packages)/{re.escape(name)}/"
+            rf"(?<![A-Za-z0-9_.-])(?:/[^/\s\"':]+)+/(?:packages|\.lake/packages)/{re.escape(name)}/"
         )
         for name in packages
     ]
@@ -215,6 +237,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    validate_vendoring_roots(args.root, args.packages_dir)
     root = args.root.resolve()
     packages_dir = args.packages_dir.resolve()
     packages = package_dirs(packages_dir)
