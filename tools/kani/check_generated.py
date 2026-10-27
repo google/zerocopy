@@ -1,0 +1,373 @@
+#!/usr/bin/env python3
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+"""Check compiled generated proofs, including attributes injected by other macros.
+
+The __kani_contract_ name prefix is reserved for zerocopy-kani-macros. Ordinary
+handwritten caller harnesses may use verified stubs; generated contract proofs
+must execute their selected implementation. Verified dependencies are permitted
+only when their compiled dispatchers have full-domain proofs in an acyclic graph.
+"""
+
+import json
+import re
+from pathlib import Path
+import shutil
+import subprocess
+import tempfile
+
+
+ATTRIBUTE_KEYS = {
+    "kind", "should_panic", "solver", "unwind_value", "stubs", "verified_stubs",
+}
+
+
+def validate_generated(metadata):
+    proofs = []
+    for harness in metadata["proof_harnesses"] + metadata["test_harnesses"]:
+        if not any(part.startswith("__kani_contract_") for part in
+                   harness["pretty_name"].split("::")):
+            continue
+        attrs = harness["attributes"]
+        if set(attrs) != ATTRIBUTE_KEYS:
+            raise ValueError("unexpected generated proof metadata schema")
+        kind = attrs["kind"]
+        if not isinstance(kind, dict) or set(kind) != {"ProofForContract"}:
+            raise ValueError("generated proof must verify a function contract")
+        if attrs["should_panic"] or attrs["stubs"]:
+            raise ValueError("unverified substitutions and expected panics are forbidden in generated proofs")
+        if harness.get("contract", {}).get("recursion_tracker") is not None:
+            raise ValueError("recursive contract assumptions are forbidden in generated proofs")
+        if "{closure#" in harness["pretty_name"]:
+            raise ValueError("generated proof was nested inside a contracted function")
+        proofs.append(harness["pretty_name"])
+    if len(proofs) != len(set(proofs)):
+        raise ValueError("duplicate generated contract proof")
+    # The compiler resolves contract targets. Its canonical function-to-proof
+    # mapping catches missing discovery and a proof bound to a different
+    # same-named function, even when every discovered proof verifies.
+    linked = set()
+    for function in metadata["contracted_functions"]:
+        if (set(function) != {"function", "file", "harnesses"}
+                or not isinstance(function["function"], str)
+                or not isinstance(function["file"], str)
+                or not isinstance(function["harnesses"], list)):
+            raise ValueError("unexpected contracted-function metadata schema")
+        names = function["harnesses"]
+        if not names:
+            raise ValueError(f"contract has no discovered generated proof: {function['function']}")
+        for name in names:
+            if name not in proofs or name in linked:
+                raise ValueError("contract maps to a missing, ungenerated or multiply linked proof")
+            linked.add(name)
+    if linked != set(proofs):
+        raise ValueError("generated proof is not linked to a contracted function")
+    return proofs
+
+
+IGNORE_MARKER = "__zerocopy_ignore_"
+
+
+def ignored_proofs(metadata):
+    """Read the macro's compiled identifier marker, never source text."""
+    result = {}
+    generated = set(validate_generated(metadata))
+    for harness in metadata["proof_harnesses"] + metadata["test_harnesses"]:
+        name = harness["pretty_name"]
+        if IGNORE_MARKER not in name:
+            continue
+        if name not in generated or name.count(IGNORE_MARKER) != 1:
+            raise ValueError("ignore marker outside a generated proof identifier")
+        encoded = name.rsplit(IGNORE_MARKER, 1)[1]
+        if not re.fullmatch(r"(?:[0-9a-f]{2})+", encoded):
+            raise ValueError("malformed generated proof ignore reason")
+        try:
+            reason = bytes.fromhex(encoded).decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise ValueError("malformed generated proof ignore reason") from error
+        if len(reason.encode("utf-8")) > 32:
+            raise ValueError("generated proof ignore reason exceeds 32 UTF-8 bytes")
+        if not reason.strip():
+            raise ValueError("empty generated proof ignore reason")
+        result[name] = reason
+    return result
+
+
+def select_harnesses(metadata, dependencies, *, include_ignored=False,
+                     only_ignored=False, harnesses=()):
+    """Select roots and their compiled providers, rejecting ignored assumptions.
+
+    An explicit ignored root or either ignore switch authorizes its ignored
+    dependencies. Selecting an enabled caller alone never silently does so.
+    """
+    if include_ignored and only_ignored:
+        raise ValueError("ignore selection switches are mutually exclusive")
+    names = [h["pretty_name"] for h in
+             metadata["proof_harnesses"] + metadata["test_harnesses"]]
+    if len(names) != len(set(names)):
+        raise ValueError("duplicate harness name in inventory")
+    if set(dependencies) != set(names):
+        raise ValueError("dependency inventory must cover every harness")
+    ignored = ignored_proofs(metadata)
+    unknown = set(harnesses) - set(names)
+    if unknown:
+        raise ValueError("unknown exact harness selection: " + ", ".join(sorted(unknown)))
+    if harnesses:
+        roots = set(harnesses)
+        if only_ignored and not roots <= ignored.keys():
+            raise ValueError("--ignored requires ignored explicit harnesses")
+    else:
+        roots = (set(ignored) if only_ignored else
+                 set(names) if include_ignored else set(names) - ignored.keys())
+    selected = set()
+    for root in roots:
+        allow_ignored = include_ignored or only_ignored or root in ignored
+        pending = [root]
+        seen = set()
+        while pending:
+            name = pending.pop()
+            if name in seen:
+                continue
+            seen.add(name)
+            if name not in dependencies:
+                raise ValueError("missing compiled dependency provider")
+            if name in ignored and not allow_ignored:
+                raise ValueError(f"enabled proof {root} relies on ignored contract {name}")
+            pending.extend(dependencies[name])
+        selected.update(seen)
+    if not selected:
+        raise ValueError("no harnesses selected")
+    return [name for name in names if name in selected], ignored
+
+
+def _json_payload(output, key):
+    records = json.loads(output)
+    if not isinstance(records, list):
+        raise ValueError("unexpected GOTO JSON schema")
+    values = [record[key] for record in records if isinstance(record, dict) and key in record]
+    if len(values) != 1:
+        raise ValueError("unexpected GOTO JSON schema")
+    return values[0]
+
+
+def validate_checking_graph(functions, graph, harness, *, allow_replacements=False,
+                            generated=True):
+    """Reject nested Kani SimpleCheck dispatch, including other type instances.
+
+    Kani 0.60 selects Check by DefId. Every invocation of that definition assumes
+    its requires clauses, even a recursive call or another concrete instance.
+    Its MIR transform stores mode 2 in the generated scalar kani_contract_mode
+    local. Check closure locals can disappear for zero-sized closures, whereas
+    this scalar marker is retained. Interpret the pinned unoptimized GOTO schema
+    and conservatively include every edge, including function-pointer candidates.
+    """
+    u8 = {"id": "unsignedbv", "namedSub": {"width": {"id": "8"}}}
+    false = {"id": "constant", "namedSub": {"type": {"id": "bool"}, "value": {"id": "false"}}}
+    if not isinstance(functions, list):
+        raise ValueError("unexpected GOTO function schema")
+    bodies = {}
+    checks = set()
+    replacements = set()
+    for function in functions:
+        name = function["name"]
+        if not isinstance(name, str) or name in bodies:
+            raise ValueError("unexpected GOTO function schema")
+        bodies[name] = function
+        instructions = function.get("instructions", [])
+        declared = set()
+        modes = []
+        for instruction in instructions:
+            kind = instruction["instructionId"]
+            if kind not in {"DECL", "ASSIGN"}:
+                continue
+            operands = instruction["operands"]
+            lhs = operands[0]
+            if lhs["id"] != "symbol":
+                continue
+            identifier = lhs["namedSub"]["identifier"]["id"]
+            if not identifier.endswith("::kani_contract_mode"):
+                continue
+            if not identifier.startswith(name + "::") or lhs["namedSub"]["type"] != u8:
+                raise ValueError("unexpected Kani contract mode marker")
+            if kind == "DECL":
+                declared.add(identifier)
+                continue
+            if len(operands) != 2:
+                raise ValueError("unexpected Kani contract mode assignment")
+            rhs = operands[1]
+            if rhs["id"] != "constant" or rhs["namedSub"]["type"] != u8:
+                raise ValueError("unexpected Kani contract mode assignment")
+            mode = rhs["namedSub"]["value"]["id"]
+            if mode not in ({"0", "1", "2", "3", "4"} if not generated else
+                            {"0", "2", "3", "4"} if allow_replacements else
+                            {"0", "2", "4"}):
+                raise ValueError("replacement or recursive contract checking is forbidden")
+            modes.append((identifier, mode))
+        if declared and not modes:
+            # Unused generated closures are cleared to Unreachable, retaining
+            # their declarations. An active dispatcher must retain its marker.
+            if (any(i["instructionId"] == "FUNCTION_CALL" for i in instructions)
+                    or not any(i["instructionId"] == "ASSUME" and i["guard"] == false
+                               for i in instructions)):
+                raise ValueError("missing Kani contract mode assignment")
+        if modes:
+            if len(modes) != 1 or declared != {modes[0][0]}:
+                raise ValueError("unexpected Kani contract mode assignments")
+            if modes[0][1] == "2":
+                checks.add(name)
+            if modes[0][1] == "3":
+                replacements.add(name)
+    entry = harness["mangled_name"]
+    if entry not in bodies or not bodies[entry]["isBodyAvailable"]:
+        raise ValueError("missing generated proof GOTO body")
+    edges = {}
+    messages = ("Reading GOTO program from ", "Function Pointer Removal",
+                "Virtual function removal", "Cleaning inline assembler statements")
+    for line in graph.splitlines():
+        if " -> " in line:
+            caller, callee = line.split(" -> ")
+            if caller not in bodies or callee not in bodies:
+                raise ValueError("unexpected GOTO call graph symbol")
+            edges.setdefault(caller, set()).add(callee)
+        elif line and not line.startswith(messages):
+            raise ValueError("unexpected GOTO call graph schema")
+
+    def reachable(starts, stop_at_check=False):
+        seen = set()
+        pending = list(starts)
+        while pending:
+            current = pending.pop()
+            if current in seen:
+                continue
+            seen.add(current)
+            if not (stop_at_check and current in checks):
+                pending.extend(edges.get(current, ()))
+        return seen
+
+    if not generated:
+        return None, reachable([entry]) & replacements
+
+    first = reachable([entry], stop_at_check=True) & checks
+    if len(first) != 1:
+        raise ValueError("generated proof must reach exactly one initial checking dispatcher")
+    checking = next(iter(first))
+    calls = []
+    for instruction in bodies[entry].get("instructions", []):
+        if instruction["instructionId"] != "FUNCTION_CALL":
+            continue
+        operands = instruction["operands"]
+        if len(operands) != 3:
+            raise ValueError("unexpected generated proof call schema")
+        function = operands[1]
+        if (function["id"] == "symbol"
+                and function["namedSub"]["identifier"]["id"] == checking):
+            calls.append(instruction)
+    if len(calls) != 1:
+        raise ValueError("generated proof must call its checking dispatcher directly exactly once")
+    other_callees = edges.get(entry, set()) - {checking}
+    if reachable(other_callees) & checks:
+        raise ValueError("argument generation or cleanup reaches contract checking")
+    below = reachable(edges.get(checking, ()))
+    if below & checks:
+        raise ValueError(f"nested contract checking is forbidden: {harness['pretty_name']}")
+    wrapper = harness["contract"]["contracted_function_name"]
+    if wrapper not in below or not bodies[wrapper]["isBodyAvailable"]:
+        raise ValueError("selected contract wrapper is not reached by its checking dispatcher")
+    used = reachable([entry]) & replacements
+    return checking, used
+
+
+def validate_dependencies(models):
+    """Bind replacements to actual proved dispatchers, then reject cycles.
+
+    Keys are monomorphized GOTO symbols, not source spellings of stub paths.
+    Every replacement must have a discovered, checked implementation proof.
+    The selected suite must verify every transitive provider in the same
+    configuration; ignored providers require explicit manual authorization.
+    """
+    dependencies = {}
+    for harness, checking, used in models:
+        if checking in dependencies:
+            raise ValueError("duplicate proof for a compiled contract dispatcher")
+        dependencies[checking] = set(used)
+    for used in dependencies.values():
+        if not used <= dependencies.keys():
+            raise ValueError("verified dependency has no generated full-domain proof")
+    visiting = set()
+    complete = set()
+
+    def visit(function):
+        if function in visiting:
+            raise ValueError("cyclic verified contract dependencies are forbidden")
+        if function in complete:
+            return
+        visiting.add(function)
+        for dependency in dependencies[function]:
+            visit(dependency)
+        visiting.remove(function)
+        complete.add(function)
+
+    for function in dependencies:
+        visit(function)
+    return dependencies
+
+
+def validate_generated_models(metadata, *, return_dependencies=False):
+    """Validate metadata and each fresh only-codegen linked GOTO model."""
+    proofs = validate_generated(metadata)
+    # Kani's driver locates these bundled tools relative to its installation.
+    # The GitHub action need only expose cargo-kani on PATH.
+    directory = Path.home() / ".kani" / "kani-0.60.0" / "bin"
+    goto_cc = shutil.which("goto-cc") or str(directory / "goto-cc")
+    goto_instrument = shutil.which("goto-instrument") or str(directory / "goto-instrument")
+    version = subprocess.check_output([goto_instrument, "--version"], text=True).strip()
+    if version != "6.4.1 (cbmc-6.4.1)":
+        raise ValueError("review the GOTO checking schema before changing CBMC")
+    models = []
+    caller_models = []
+    for harness in metadata["proof_harnesses"] + metadata["test_harnesses"]:
+        generated = harness["pretty_name"] in proofs
+        if not generated and not harness["attributes"]["verified_stubs"]:
+            continue
+        source = Path(harness["goto_file"])
+        if not source.name.endswith(".symtab.out"):
+            raise ValueError("unexpected generated proof GOTO filename")
+        linked = source.with_name(source.name.removesuffix(".symtab.out") + ".out")
+        if not linked.is_file():
+            raise ValueError("missing fresh linked generated proof GOTO model")
+        with tempfile.TemporaryDirectory(prefix="kani-check-graph-") as temporary:
+            model = Path(temporary) / "proof.goto"
+            subprocess.check_output([goto_cc, str(linked), "--function", harness["mangled_name"],
+                                     "-o", str(model)], text=True)
+            functions = _json_payload(subprocess.check_output(
+                [goto_instrument, "--show-goto-functions", "--json-ui", str(model)], text=True),
+                "functions")
+            graph = subprocess.check_output([goto_instrument, "--call-graph", str(model)], text=True)
+            try:
+                checking, used = validate_checking_graph(
+                    functions, graph, harness,
+                    allow_replacements=bool(harness["attributes"]["verified_stubs"]),
+                    generated=generated)
+                if generated:
+                    models.append((harness, checking, used))
+                else:
+                    caller_models.append((harness, used))
+            except (KeyError, IndexError, TypeError) as error:
+                raise ValueError("unexpected GOTO checking schema") from error
+    validate_dependencies(models)
+    providers = {checking: harness["pretty_name"] for harness, checking, _ in models}
+    dependencies = {h["pretty_name"]: set() for h in
+                    metadata["proof_harnesses"] + metadata["test_harnesses"]}
+    for harness, used in [(h, used) for h, _, used in models] + caller_models:
+        if not used <= providers.keys():
+            raise ValueError("verified dependency has no generated full-domain proof")
+        dependencies[harness["pretty_name"]] = {providers[symbol] for symbol in used}
+    # Validate ignore metadata even for callers using only the legacy return API.
+    ignored_proofs(metadata)
+    return (proofs, dependencies) if return_dependencies else proofs
