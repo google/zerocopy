@@ -23487,6 +23487,105 @@
         "certificates/progress"
       ]
     },
+    "plan-guided-shallow-functional-translation-2026-10-29": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c7abff681e96af604f8162865d05afbd23ece71f"
+          },
+          "name": "Anneal Trusted Core and Theory Library"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas Functional Translator"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+          },
+          "name": "Charon ULLBC-to-LLBC Control-Flow Reconstruction"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+          },
+          "name": "Lean 4 Std.WP Weakest Precondition Framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1 Local Kernel Verification Toolchain"
+        },
+        {
+          "identity": {
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          },
+          "name": "Foundational VeriFast Hinted Mirroring Exporter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547628"
+          },
+          "name": "Katamaran: Symbolic Execution by Shallow Monadic Evaluation (Keuchel et al., ICFP 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.07185v2",
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation (Ho & Protzenko, ICFP 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.02680v2",
+            "doi": "10.1145/3674640"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (Ho, Fromherz & Protzenko, ICFP 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704",
+            "zenodo": "6417462"
+          },
+          "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (Matsushita et al., PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1328438.1328444"
+          },
+          "name": "Formal Verification of a Instruction Scheduler: Verified Translation Validation in CompCert (Tristan & Leroy, POPL 2008)"
+        },
+        {
+          "identity": {
+            "artifact": "support/ShallowPlanPrototype.lean",
+            "sha256": "c3bedde36a08986a9d2d7adebe706cc4c141d74411f27d128dd2ec94b91cae3e"
+          },
+          "name": "Plan-Guided Shallow Functional Translation Lean 4 Prototype"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "aeneas/borrow-translation",
+        "aeneas/pure-extraction",
+        "charon/cfg-structuring",
+        "lean4/shallow-specialization",
+        "futamura-projection",
+        "partial-refinement",
+        "translation-validation",
+        "memory/frame"
+      ]
+    },
     "plutus-inductive-pass-certificates-scp-2024": {
       "observed_at": "2026-10-14",
       "subjects": [
