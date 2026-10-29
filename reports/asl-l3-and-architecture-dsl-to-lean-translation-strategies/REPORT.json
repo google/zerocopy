@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "asl",
+    "l3",
+    "sail",
+    "lean4",
+    "aarch64",
+    "isa-semantics",
+    "translation-validation",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "anneal",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/joshlf/anneal-private",
+        "revision": "42f4571d761b46c7142815f38b69c3781b3555e3"
+      }
+    },
+    {
+      "name": "asl-interpreter",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/asl-interpreter",
+        "revision": "8cfc0b27002d282da55568e3462868e9dfd8c3bd"
+      }
+    },
+    {
+      "name": "mra_tools",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/mra_tools",
+        "revision": "941317606f36580f668498889abc6301ed8222d8"
+      }
+    },
+    {
+      "name": "asl_to_sail",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/asl_to_sail",
+        "revision": "78242b8d60a507fab18d9b4f225bfc7bd33e62b3"
+      }
+    },
+    {
+      "name": "herdtools7",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/herd/herdtools7",
+        "revision": "6bea2e8131feaeb497a7bf86d52d94cdd8721a6c"
+      }
+    },
+    {
+      "name": "L3",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/coruus/L3",
+        "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+      }
+    },
+    {
+      "name": "sail",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "kind": "package",
+        "locator": "leanprover/lean4",
+        "revision": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

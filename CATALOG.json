@@ -11372,6 +11372,170 @@
         "lake/invalidation"
       ]
     },
+    "anneal-isa-integration-architecture-and-roadmap-synthesis-2026": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal-private",
+            "revision": "42f4571d761b46c7142815f38b69c3781b3555e3"
+          },
+          "name": "Anneal verification framework (skeleton worktree)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+          },
+          "name": "Kraken (AeneasVerif fork)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken (upstream)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/LNSym",
+            "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+          },
+          "name": "LNSym ARMv8-A formalization"
+        },
+        {
+          "identity": {
+            "repository": "cslib-community/bignum",
+            "revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba"
+          },
+          "name": "CSLib Bignum ARM64 formalization"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91"
+          },
+          "name": "AWS s2n-bignum HOL Light formalization"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+          },
+          "name": "Sail ISA specification language and Lean 4 backend"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "1e5b216bf881ef08da160db63b44ecda430802d6"
+          },
+          "name": "lean-sail monadic runtime support library"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/archsem-lean",
+            "revision": "318583a5f2052c039c25dfd69a3beec0b0a27090"
+          },
+          "name": "ArchSem architectural concurrency framework (Lean 4)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/archsem",
+            "revision": "42204d87df2e7d20e5ec23deb8ba8220e65148ab"
+          },
+          "name": "ArchSem architectural concurrency framework (Coq/Rocq)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-tiny-arm-lean",
+            "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b"
+          },
+          "name": "sail-tiny-arm-lean"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "7c6b500c1744f40d928fb131125cd06edf9f4fce"
+          },
+          "name": "OpenCompl riscv-lean"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/lean-mlir",
+            "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
+          },
+          "name": "OpenCompl lean-mlir"
+        },
+        {
+          "identity": {
+            "repository": "BasisResearch/ship-your-interpreter",
+            "revision": "fb07094cff916318c34b07494a7d739f1e53989b"
+          },
+          "name": "BasisResearch ship-your-interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris (Isla + Iris machine-code verification)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+          },
+          "name": "Jasmin compiler and verification framework"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Project Everest Vale"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler (rustc_middle::mir::TerminatorKind::InlineAsm)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference (Inline Assembly [asm.*])"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/isa-integration",
+        "anneal/inline-asm",
+        "anneal/trusted-computing-base",
+        "lean4",
+        "lean4/isa-semantics",
+        "rust/inline-asm",
+        "rust/mir-semantics",
+        "formal-verification/machine-code"
+      ]
+    },
     "anneal-linux-elf-relocation-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -12617,6 +12781,85 @@
         "verification/hazard-pointers",
         "verification/rcu",
         "verification/adequacy"
+      ]
+    },
+    "asl-l3-and-architecture-dsl-to-lean-translation-strategies": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/joshlf/anneal-private",
+            "revision": "42f4571d761b46c7142815f38b69c3781b3555e3"
+          },
+          "name": "anneal"
+        },
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/rems-project/asl-interpreter",
+            "revision": "8cfc0b27002d282da55568e3462868e9dfd8c3bd"
+          },
+          "name": "asl-interpreter"
+        },
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/rems-project/mra_tools",
+            "revision": "941317606f36580f668498889abc6301ed8222d8"
+          },
+          "name": "mra_tools"
+        },
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/rems-project/asl_to_sail",
+            "revision": "78242b8d60a507fab18d9b4f225bfc7bd33e62b3"
+          },
+          "name": "asl_to_sail"
+        },
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/herd/herdtools7",
+            "revision": "6bea2e8131feaeb497a7bf86d52d94cdd8721a6c"
+          },
+          "name": "herdtools7"
+        },
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/coruus/L3",
+            "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+          },
+          "name": "L3"
+        },
+        {
+          "identity": {
+            "kind": "git-repo",
+            "locator": "https://github.com/rems-project/sail",
+            "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+          },
+          "name": "sail"
+        },
+        {
+          "identity": {
+            "kind": "package",
+            "locator": "leanprover/lean4",
+            "revision": "v4.34.1"
+          },
+          "name": "lean4"
+        }
+      ],
+      "topics": [
+        "asl",
+        "l3",
+        "sail",
+        "lean4",
+        "aarch64",
+        "isa-semantics",
+        "translation-validation",
+        "anneal"
       ]
     },
     "assembly-atomic-fence-language-mappings-2026": {
@@ -15290,6 +15533,72 @@
         "aeneas/diagnostics",
         "lean/positions",
         "lean/lsp"
+      ]
+    },
+    "cslib-bignum-lean-port-and-s2n-bignum-hol-light-comparison": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cslib-community/bignum",
+            "revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+            "toolchain": "leanprover/lean4:v4.36.0-rc1",
+            "url": "https://github.com/cslib-community/bignum"
+          },
+          "name": "cslib-community/bignum Lean 4 port of s2n-bignum"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+            "url": "https://github.com/awslabs/s2n-bignum"
+          },
+          "name": "awslabs/s2n-bignum HOL Light formalization (upstream HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+            "url": "https://github.com/awslabs/s2n-bignum"
+          },
+          "name": "awslabs/s2n-bignum HOL Light formalization (prior corpus baseline)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+            "url": "https://github.com/AeneasVerif/kraken"
+          },
+          "name": "AeneasVerif/kraken AArch64 and X64 Lean 4 verification framework"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal-private",
+            "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+            "url": "https://github.com/joshlf/anneal-private"
+          },
+          "name": "Anneal trusted verification skeleton (Layer 1A and Layer 1B)"
+        },
+        {
+          "identity": {
+            "artifact": "support/cslib_bignum_component_and_ensures_probe.lean",
+            "sha256": "c9618e915e52d85585303445562521842949449aaa0949d39ff0fea1f6f234d2",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Standalone Lean 4.34.1 mechanization of Component lenses, Simple.lean decode fix, and Anneal SpecOn bridge"
+        }
+      ],
+      "topics": [
+        "assembly/s2n-bignum",
+        "assembly/cslib-bignum",
+        "assembly/decoding",
+        "assembly/byte-binding",
+        "hol-light",
+        "lean/isa-semantics",
+        "lean/lenses",
+        "memory/permissions",
+        "security/constant-time",
+        "anneal/asm-bridge"
       ]
     },
     "dafny-boogie-viper-current-source-review": {
@@ -18651,6 +18960,58 @@
         "memory/permissions"
       ]
     },
+    "kraken-wp-foundation-directive-refactor-and-syntax-elaborators-c9aa45e": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Current upstream HEAD introducing Program.wp, Host, Directive.Inert, abstracted Kraken.Directive Instr, and X64 TermElabM syntax elaborators",
+            "rev": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+            "url": "https://github.com/AeneasVerif/kraken"
+          },
+          "name": "AeneasVerif/kraken"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Baseline commit analyzed in prior reference reports",
+            "rev": "8af78062037bc237b341d20252aafd1797c1bcb7",
+            "url": "https://github.com/AeneasVerif/kraken"
+          },
+          "name": "AeneasVerif/kraken"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Anneal skeleton repository containing Layer 1A (Trusted.Refinement) and Layer 1B (Trusted.StepResult)",
+            "rev": "6a88de9da56e4d23c1b29927c44bc3c1733b0500",
+            "url": "https://github.com/joshlf/anneal-private"
+          },
+          "name": "joshlf/anneal-private"
+        },
+        {
+          "identity": {
+            "kind": "tool",
+            "notes": "Lean 4 toolchain used by Kraken and the standalone mechanized support probe",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        }
+      ],
+      "topics": [
+        "aarch64-isa",
+        "anneal",
+        "formal-verification",
+        "isa-semantics",
+        "kraken",
+        "lean4",
+        "omni-semantics",
+        "weakest-precondition",
+        "x86-64-isa"
+      ]
+    },
     "kraken-x64-sysv-leaf-return-and-cross-foundation-pilot": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -21290,6 +21651,124 @@
         "verification/automation"
       ]
     },
+    "lean4-wasm-formalizations-and-virtual-isa-verification-2026": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:v4.27.0",
+            "repository": "plum-umd/lean-wasm",
+            "revision": "d438fabdd6304bcbc72f211b9f532be76ebc7f29"
+          },
+          "name": "plum-umd/lean-wasm"
+        },
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:v4.34.1",
+            "repository": "cajal-technologies/talos",
+            "revision": "80644390de3ad4db3055445259a034413ae41577"
+          },
+          "name": "cajal-technologies/talos"
+        },
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:v4.15.0",
+            "repository": "linobit-corp/wasm-lean",
+            "revision": "6d612a510d145950838ec193e9ae0b75a7c881ef"
+          },
+          "name": "linobit-corp/wasm-lean"
+        },
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:v4.10.0-rc2",
+            "repository": "aionescu/lean-wasm",
+            "revision": "66f1166f84a763b23475b0eb660153c72ec54d29"
+          },
+          "name": "aionescu/lean-wasm"
+        },
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:nightly-2023-01-10",
+            "repository": "argumentcomputer/Wasm.lean",
+            "revision": "454172e1219ce648732211a7804829809dffd64d"
+          },
+          "name": "argumentcomputer/Wasm.lean"
+        },
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:v4.25.0",
+            "repository": "T-Brick/lean-wasm",
+            "revision": "43b051f30b920e4d1253d83ae08b3dc83b4d6d88"
+          },
+          "name": "T-Brick/lean-wasm"
+        },
+        {
+          "identity": {
+            "iris_wasm_opam_revision": "57b05fb59a193078e5db4378cce164766e7b8a2c",
+            "iriswasm_revision": "e37f8387a1171d104d78a2f77f9e637e090cf3d4",
+            "repository": "WasmCert/WasmCert-Coq",
+            "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8"
+          },
+          "name": "WasmCert-Coq and Iris-Wasm"
+        },
+        {
+          "identity": {
+            "repository": "WasmCert/WasmCert-Isabelle",
+            "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+          },
+          "name": "WasmCert-Isabelle"
+        },
+        {
+          "identity": {
+            "repository": "future-proof-iot/CertFC",
+            "revision": "75690097c946c555cc4ce1e69d13ef86dc738180"
+          },
+          "name": "CertrBPF (CertFC)"
+        },
+        {
+          "identity": {
+            "repository": "uw-unsat/jitterbug",
+            "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+          },
+          "name": "Jitterbug"
+        },
+        {
+          "identity": {
+            "arxiv": "2606.24213",
+            "path": "kinsn/lean",
+            "repository": "eunomia-bpf/bpf-benchmark",
+            "revision": "d03e6742bd2a56b94448071b0439d67a6574e9a3"
+          },
+          "name": "Kops / BPF-Ext (KinsnLean4)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal-private",
+            "revision": "0c00b820d4571ba35a9c48dfe2cca50dfd1d3e0d"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean4",
+        "wasm",
+        "webassembly",
+        "ebpf",
+        "virtual-isa",
+        "isa-verification",
+        "iris-lean",
+        "separation-logic",
+        "compiler-verification"
+      ]
+    },
     "leantar-archive-format-v0-1-16-v0-1-19": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -21473,6 +21952,36 @@
         "aeneas/admission",
         "lean/containers",
         "verification/refinement"
+      ]
+    },
+    "lnsym-armv8-symbolic-simulator-and-tactic-architecture-5c05220": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+            "repository": "https://github.com/leanprover/LNSym",
+            "tree": "1f2abe7b0830756e9b33e9bb5e722fc5bd681c13"
+          },
+          "name": "leanprover/LNSym"
+        },
+        {
+          "identity": {
+            "commit": "d9a8fe179923d4fe4f4ca76a5cd040ccbf8be196",
+            "repository": "https://github.com/joshlf/anneal-private",
+            "tree": "08359be1b6511c7288bc02711b69efda14424317"
+          },
+          "name": "joshlf/anneal-private"
+        }
+      ],
+      "topics": [
+        "lean4",
+        "aarch64",
+        "isa-semantics",
+        "symbolic-simulation",
+        "memory-model",
+        "machine-code-verification",
+        "compiler-verification"
       ]
     },
     "lsp-proof-assistant-architecture-2026-09-27": {
@@ -23264,6 +23773,103 @@
         "rust/generics",
         "verification/certificates",
         "zerocopy/pointer"
+      ]
+    },
+    "opencompl-riscv-lean-lean-mlir-and-ship-your-interpreter-2026": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "7c6b500c1744f40d928fb131125cd06edf9f4fce",
+            "kind": "git",
+            "ref": "main",
+            "repo": "opencompl/riscv-lean",
+            "role": "primary",
+            "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 61 theorems) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 69 theorems).",
+            "url": "https://github.com/opencompl/riscv-lean"
+          },
+          "name": "opencompl/riscv-lean"
+        },
+        {
+          "identity": {
+            "commit": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+            "kind": "git",
+            "ref": "main",
+            "repo": "opencompl/lean-mlir",
+            "role": "primary",
+            "summary": "MLIR SSA dialect framework embedding opencompl/riscv-lean as RISCV64.RV64 (SSA/Projects/RISCV64/Base.lean) and coupling it to LLVM IR via the hybrid dialect LLVMPlusRiscV (SSA/Projects/LLVMRiscV/LLVMAndRiscv.lean) and peephole refinement rewrites (SSA/Projects/LLVMRiscV/PeepholeRefine.lean).",
+            "url": "https://github.com/opencompl/lean-mlir"
+          },
+          "name": "opencompl/lean-mlir"
+        },
+        {
+          "identity": {
+            "commit": "fb07094cff916318c34b07494a7d739f1e53989b",
+            "kind": "git",
+            "ref": "main",
+            "repo": "BasisResearch/ship-your-interpreter",
+            "role": "primary",
+            "summary": "End-to-end verified RISC-V 64-bit ELF interpreter and compiler over the Sail RV64 model (Lean_RV64D_executable) proved using only standard Lean axioms (propext, Classical.choice, Quot.sound) via #simp_nf decodeN, TextPiece byte pinning, RetireReads/stepObs_exec, reflective SWP symbolic execution, and Iris adequacy.",
+            "url": "https://github.com/BasisResearch/ship-your-interpreter"
+          },
+          "name": "BasisResearch/ship-your-interpreter"
+        },
+        {
+          "identity": {
+            "commit": "11d8fa212a60c05dcc9fe5db925dd4d06dad65b5",
+            "kind": "git",
+            "ref": "main",
+            "repo": "opencompl/sail-riscv-lean",
+            "role": "comparison",
+            "summary": "Sail-generated Lean 4 RV64D specification (Lean_RV64D) pinned by opencompl/riscv-lean's lake-manifest.json and vendored in executable form (Lean_RV64D_executable) by BasisResearch/ship-your-interpreter.",
+            "url": "https://github.com/opencompl/sail-riscv-lean"
+          },
+          "name": "opencompl/sail-riscv-lean"
+        },
+        {
+          "identity": {
+            "commit": "079463134b9c50450b8393e1566a09fc492a34d9",
+            "kind": "git",
+            "ref": "v5",
+            "repo": "rems-project/lean-sail",
+            "role": "comparison",
+            "summary": "Lean 4 support library for Sail-generated monadic specifications (PreSail, EStateM, SequentialState, IntRange.forIn') pinned by opencompl/riscv-lean.",
+            "url": "https://github.com/rems-project/lean-sail"
+          },
+          "name": "rems-project/lean-sail"
+        },
+        {
+          "identity": {
+            "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+            "kind": "git",
+            "ref": "skeleton",
+            "repo": "joshlf/anneal-private",
+            "role": "comparison",
+            "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json).",
+            "url": "https://github.com/joshlf/anneal-private"
+          },
+          "name": "joshlf/anneal-private"
+        },
+        {
+          "identity": {
+            "kind": "tool",
+            "summary": "Lean 4 theorem prover (commit 5045d0056413266e57c625dcd7c365b10e377c52, x86_64-unknown-linux-gnu) used to verify support/two_tier_isa_dialect_and_elf_refinement_probe.lean under -j1 -M768.",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "riscv64",
+        "isa-semantics",
+        "sail",
+        "lean4",
+        "mlir",
+        "bitvec",
+        "elf-verification",
+        "compiler-verification",
+        "refinement",
+        "trusted-computing-base"
       ]
     },
     "operational-semantics-versus-functional-translation-2026-09-27": {
@@ -25202,6 +25808,197 @@
         "rust/ide",
         "rust/rls",
         "rust/rust-analyzer"
+      ]
+    },
+    "rocq-hol-acl2-isa-verification-frameworks-lean-adaptation-2026": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Isla symbolic execution engine for Sail JIB IR (isla-sail/jib_ir.ml, src/footprint.rs).",
+            "observed_at": "2026-10-29",
+            "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3",
+            "url": "https://github.com/rems-project/isla.git"
+          },
+          "name": "isla"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Islaris Iris/Rocq machine-code verification framework over Isla traces, including sail-riscv refinement (sail-riscv/sail_opsem.v) and branches sail-riscv-update (16fa62eb13253f16b0bd82e17d1a5f7da88181ec) and CN2Islaris (8d8ffb97cd0c77e21eebf35fa8dc2c3a98e827ed).",
+            "observed_at": "2026-10-29",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+            "url": "https://github.com/rems-project/islaris.git"
+          },
+          "name": "islaris"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Ott/Rocq AST definition of Isla symbolic traces (coq/isla_lang.v).",
+            "observed_at": "2026-10-29",
+            "revision": "db2ba552ba4b26fabbff27d5ad806d38ecce9bd6",
+            "url": "https://github.com/rems-project/isla-lang.git"
+          },
+          "name": "isla-lang"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Automated translation of CN separation-logic C specifications into Islaris AArch64 binary correctness proofs across -O0, -O1, and -O2.",
+            "observed_at": "2026-10-29",
+            "revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466",
+            "url": "https://github.com/rems-project/CN2Islaris.git"
+          },
+          "name": "CN2Islaris"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Cerberus CN2Islaris branch implementing backend/cn/binaryVerification.ml and backend/cn/dwarfData.ml.",
+            "observed_at": "2026-10-29",
+            "revision": "3bdd8cb8e2805d46c22725d7651a2ed90b012837",
+            "url": "https://github.com/rems-project/cerberus.git"
+          },
+          "name": "cerberus"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "MIT PLV typeclass-parameterized RISC-V specification in Rocq (RiscvProgram, RiscvMachine, Primitives, MinimalMMIO, LeakageOfInstr).",
+            "observed_at": "2026-10-29",
+            "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae",
+            "url": "https://github.com/mit-plv/riscv-coq.git"
+          },
+          "name": "riscv-coq"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "MIT PLV C-like systems compiler targeting riscv-coq via FlatToRiscvCommon.v and Pipeline.v.",
+            "observed_at": "2026-10-29",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13",
+            "url": "https://github.com/mit-plv/bedrock2.git"
+          },
+          "name": "bedrock2"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "CompCert verified C compiler value/memory model (common/Values.v, common/Memory.v) and target assembly semantics (x86/Asm.v, aarch64/Asm.v, riscV/Asm.v).",
+            "observed_at": "2026-10-29",
+            "revision": "e26caf9fa6cd91665c9e8ee2b5194f413c796821",
+            "url": "https://github.com/AbsInt/CompCert.git"
+          },
+          "name": "CompCert"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Jasmin cryptographic assembly compiler and Rocq architecture parameterization (proofs/arch/arch_decl.v, arch_sem.v, x86_instr_decl.v, memory_model.v).",
+            "observed_at": "2026-10-29",
+            "revision": "6c4994d56a9a030201e62275a7d343b101bd0a23",
+            "url": "https://github.com/jasmin-lang/jasmin.git"
+          },
+          "name": "jasmin"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Project Everest Verified Assembly Language for Everest x64 semantics in F* (fstar/specs/hardware/X64.Machine_s.fst, X64.Semantics_s.fst).",
+            "observed_at": "2026-10-29",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+            "url": "https://github.com/project-everest/vale.git"
+          },
+          "name": "vale"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "ACL2 x86isa formalization (books/projects/x86isa/machine/: state.lisp, register-readers-and-writers.lisp, other-non-det.lisp, top-level-memory.lisp, paging.lisp).",
+            "observed_at": "2026-10-29",
+            "revision": "9df88e946034e24212f3aedd8b71b02e4224783e",
+            "url": "https://github.com/acl2/acl2.git"
+          },
+          "name": "acl2"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "HOL4 theorem prover including Fox's L3 machine-code Hoare triple infrastructure (examples/l3-machine-code/common/stateScript.sml).",
+            "observed_at": "2026-10-29",
+            "revision": "d73e603616d80726506326d83af8f0e74559623c",
+            "url": "https://github.com/HOL-Theorem-Prover/HOL.git"
+          },
+          "name": "HOL"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "CakeML verified compiler target-agnostic assembly interface (compiler/encoders/asm/asmScript.sml, asmSemScript.sml).",
+            "observed_at": "2026-10-29",
+            "revision": "665f9b21712ad093e10a404ccc2f78e64a34aeef",
+            "url": "https://github.com/CakeML/cakeml.git"
+          },
+          "name": "cakeml"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "KTH STEP HOL4 Binary Analysis platform and BIR intermediate representation (src/theory/bir/bir_programScript.sml, bir_exp_memScript.sml).",
+            "observed_at": "2026-10-29",
+            "revision": "ef22c1fd8da612c57f2e7f273cb14594a7e529d3",
+            "url": "https://github.com/kth-step/HolBA.git"
+          },
+          "name": "HolBA"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "seL4 Isabelle/HOL AArch64 machine interface and virtual address space specification (spec/machine/AARCH64/MachineOps.thy, spec/abstract/AARCH64/ArchVSpace_A.thy).",
+            "observed_at": "2026-10-29",
+            "revision": "7b8c09901f25bd3ba5d05046bba14e226bd659d1",
+            "url": "https://github.com/seL4/l4v.git"
+          },
+          "name": "l4v"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Anneal trusted Lean 4 verification kernel (trusted/lean/Trusted/Refinement.lean, StepResult.lean, Memory.lean, MirSemantics.lean).",
+            "observed_at": "2026-10-29",
+            "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+            "url": "https://github.com/google/zerocopy.git"
+          },
+          "name": "zerocopy"
+        },
+        {
+          "identity": {
+            "kind": "tool",
+            "notes": "Lean 4.34.1 theorem prover used to verify support/islaris_trace_and_riscv_typeclass_lean_probe.lean with -j1 -M768.",
+            "observed_at": "2026-10-29",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "aarch64",
+        "acl2",
+        "bedrock2",
+        "compcert",
+        "hol4",
+        "isa-formalization",
+        "islaris",
+        "jasmin",
+        "lean4",
+        "refinement",
+        "riscv",
+        "sail",
+        "separation-logic",
+        "x86-64"
       ]
     },
     "rocq-serapi-fleche-current-source-review": {
@@ -28331,6 +29128,147 @@
         "lean/kernel"
       ]
     },
+    "sail-arm-x86-cheri-and-riscv-models-lean-portability-2026": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+            "paths": "trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/Memory.lean",
+            "repository": "https://github.com/joshlf/anneal-private"
+          },
+          "name": "joshlf/anneal-private"
+        },
+        {
+          "identity": {
+            "commit": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+            "paths": "src/sail_lean_backend/sail_plugin_lean.ml",
+            "repository": "https://github.com/rems-project/sail"
+          },
+          "name": "rems-project/sail"
+        },
+        {
+          "identity": {
+            "commit": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+            "paths": "arm-v9.4-a/Makefile, arm-v9.4-a/lean/ArmExtras.lean, arm-v9.4-a/src/termination_measures.sail, arm-v9.4-a/src/prelude.sail",
+            "repository": "https://github.com/rems-project/sail-arm"
+          },
+          "name": "rems-project/sail-arm"
+        },
+        {
+          "identity": {
+            "commit": "d6b7c9cf86adaa479492b3881884b190a48f385b",
+            "paths": "armV8.sail, armV8_A64_lib.sail",
+            "repository": "https://github.com/rems-project/sail-small-arm"
+          },
+          "name": "rems-project/sail-small-arm"
+        },
+        {
+          "identity": {
+            "commit": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+            "paths": "Makefile, registers.sail, translation.sail, instrs-user.sail, instrs-sys.sail",
+            "repository": "https://github.com/rems-project/sail-tiny-arm"
+          },
+          "name": "rems-project/sail-tiny-arm"
+        },
+        {
+          "identity": {
+            "baseline_commit": "e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a",
+            "commit": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+            "paths": "SailTinyArmUser/Defs.lean, SailTinyArmUser/Translation.lean, SailTinyArmUser/TinyArm.lean",
+            "repository": "https://github.com/rems-project/sail-tiny-arm-lean"
+          },
+          "name": "rems-project/sail-tiny-arm-lean"
+        },
+        {
+          "identity": {
+            "commit": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+            "paths": "translator/config_patterns.py, model/prelude.sail, model/registers.sail, model/linear_memory.sail, model/paging.sail, model/step.sail",
+            "repository": "https://github.com/rems-project/sail-x86-from-acl2"
+          },
+          "name": "rems-project/sail-x86-from-acl2"
+        },
+        {
+          "identity": {
+            "commit": "229bd8448937042baa51b0a2d14bc437929b0dce",
+            "paths": "registers.sail, interface.sail, decode.sail, tiny-x86.sail",
+            "repository": "https://github.com/rems-project/sail-tiny-x86"
+          },
+          "name": "rems-project/sail-tiny-x86"
+        },
+        {
+          "identity": {
+            "commit": "2305f656ff84619caf50107f49dae7be52aec72b",
+            "paths": "src/v8_base.sail, src/instrs.sail, src/mem.sail",
+            "repository": "https://github.com/CTSRD-CHERI/sail-morello"
+          },
+          "name": "CTSRD-CHERI/sail-morello"
+        },
+        {
+          "identity": {
+            "commit": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+            "paths": "src/cheri_prelude_128.sail, src/cheri_cap_common.sail, src/cheri_mem_metadata.sail, src/cheri_mem.sail, src/cheri_insts.sail",
+            "repository": "https://github.com/CTSRD-CHERI/sail-cheri-riscv"
+          },
+          "name": "CTSRD-CHERI/sail-cheri-riscv"
+        },
+        {
+          "identity": {
+            "commit": "518813ec3e595f79930d9129eaded2521831cbe2",
+            "paths": "src/cheri_cap_common.sail, properties/props.sail",
+            "repository": "https://github.com/CHERIoT-Platform/cheriot-sail"
+          },
+          "name": "CHERIoT-Platform/cheriot-sail"
+        },
+        {
+          "identity": {
+            "commit": "b39cd73409d8c2a058ba8065f81dc72d3c84fb11",
+            "paths": "theories/Common/Capabilities.v, theories/Morello/Capabilities.v, theories/Morello/Lemmas.v",
+            "repository": "https://github.com/rems-project/coq-cheri-capabilities"
+          },
+          "name": "rems-project/coq-cheri-capabilities"
+        },
+        {
+          "identity": {
+            "commit": "51c635c460125ac87955d061fcd902ce03b8011f",
+            "paths": "lakefile.toml, LeanRV64D/RiscvExtras.lean, LeanRV64D/Defs.lean",
+            "repository": "https://github.com/opencompl/sail-riscv-lean"
+          },
+          "name": "opencompl/sail-riscv-lean"
+        },
+        {
+          "identity": {
+            "commit": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+            "paths": "sail-import/PROVENANCE.toml, scripts/regen-model.sh, RiscvZkvm/Rv64/SailEquiv/StateRel.lean, RiscvZkvm/Rv64/SailEquiv/StepSim.lean, RiscvZkvm/Rv64/SailEquiv/StepRun.lean, scripts/AxiomSweep.lean",
+            "repository": "https://github.com/Verified-zkEVM/riscv-zkvm"
+          },
+          "name": "Verified-zkEVM/riscv-zkvm"
+        },
+        {
+          "identity": {
+            "commit": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+            "paths": "Lean_RV32D/sail-source-provenance.tsv, Lean_RV32D/LeanRV32D/RiscvExtrasExecutable.lean, Lean_RV32D/LeanRV32D/XopenvmInsts.lean, Lean_RV32D/LeanRV32D/InstsEnd.lean",
+            "repository": "https://github.com/axiom-crypto/sail-riscv-lean"
+          },
+          "name": "axiom-crypto/sail-riscv-lean"
+        }
+      ],
+      "topics": [
+        "sail",
+        "lean4",
+        "isa-semantics",
+        "aarch64/sail-arm",
+        "aarch64/sail-tiny-arm",
+        "x86-64/sail-x86",
+        "cheri/morello",
+        "cheri/riscv",
+        "cheri/cheriot",
+        "riscv/sail-riscv-lean",
+        "riscv/zkvm",
+        "memory-model/capabilities",
+        "anneal"
+      ]
+    },
     "sail-islaris-compcert-access-foundations": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -28370,6 +29308,83 @@
         "islaris",
         "compcert",
         "memory/permissions"
+      ]
+    },
+    "sail-lean-backend-lean-sail-and-archsem-lean-ecosystem-2026": {
+      "observed_at": "2026-10-29",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "repository",
+            "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+            "symbols": "Sail_plugin_lean.lean_rewrites, Sail_plugin_lean.lean_target, Pretty_print_lean.doc_def, Pretty_print_lean.doc_sail_typ, Pretty_print_lean.d_of_arg_with_typ, Deptype_targets.unfold_exists_typ, Rewrites.rewrite_var_updates, Rewrites.rewrite_if_eq, Type_check.unify",
+            "url": "https://github.com/rems-project/sail"
+          },
+          "name": "rems-project/sail"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+            "symbols": "Sail.ArchSem.Effect, Sail.ArchSem.FreeM, Sail.ArchSem.InstructionEffect, Sail.ArchSem.PreSailM, Sail.ArchSem.PreSailME, Sail.ArchSem.Sequential.interpretEffect, Sail.ArchSem.Sequential.interpretSailEffects, Sail.ConcurrencyInterfaceV1.PreSailM, Sail.BitVec.updateSubrange', IntRange",
+            "url": "https://github.com/rems-project/lean-sail",
+            "version": "v8"
+          },
+          "name": "rems-project/lean-sail"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "revision": "318583a5f2052c039c25dfd69a3beec0b0a27090",
+            "symbols": "ArchSem.NondeterministicMonad.NExcept, ArchSem.NondeterministicMonad.NEStateM, ArchSem.TerminatingModel.ComputationalTerminatingModel, ArchSem.CandidateExecutions.PreCand, ArchSem.CandidateExecutions.Cand, ArchSem.Trace.FreeM.traces, ArchSemTinyArm.Sequential.interpretEffect, ArchSemTinyArm.Promising.runEffect, ArchSemTinyArm.Promising.runNaive, ArchSemTinyArm.Promising.runPromiseFirst, ArchSemTinyArm.SequentialAxiomatic.model",
+            "url": "https://github.com/rems-project/archsem-lean",
+            "version": "0.1.0"
+          },
+          "name": "rems-project/archsem-lean"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "revision": "42204d87df2e7d20e5ec23deb8ba8220e65148ab",
+            "symbols": "Interface.outcome, IMonFromSail.iMon_from_Sail, SequentialModel.sequential_model_outcome, GenPromising.Promising.Model, GenPromising.CPState.run_transition_promise_first, UMPromising.UMPromising, VMPromising.Ev.out_of_order, VMUMEquivThm.VMUM_phase1, UMRiscV.consistent_ok, OperationalX86TSO.x86_tso_modelc",
+            "url": "https://github.com/rems-project/archsem"
+          },
+          "name": "rems-project/archsem"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+            "symbols": "SailTinyArmUser.Functions.initialize_registers, SailTinyArmUser.Functions.decode, SailTinyArmUser.Functions.fetch_and_execute",
+            "url": "https://github.com/rems-project/sail-tiny-arm-lean"
+          },
+          "name": "rems-project/sail-tiny-arm-lean"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+            "symbols": "Trusted.Behavior, Trusted.WellFormed, Trusted.StepResult, Trusted.ReachesPrefix, Trusted.BehaviorOf, Trusted.MemState.visibleAtomicMsgs, Trusted.applyAtomicLoad, Trusted.Audit.audit, Trusted.Audit.verifyCrateAudit",
+            "url": "https://github.com/joshlf/anneal-private"
+          },
+          "name": "joshlf/anneal-private"
+        },
+        {
+          "identity": {
+            "kind": "tool",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        }
+      ],
+      "topics": [
+        "lean4",
+        "sail",
+        "archsem",
+        "isa-models",
+        "concurrency-semantics",
+        "formal-verification"
       ]
     },
     "sail-rv64d-lean-integration-effects-and-framing-2026": {

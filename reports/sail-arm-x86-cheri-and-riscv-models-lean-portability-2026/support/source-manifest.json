@@ -1,0 +1,583 @@
+{
+  "package": "sail-arm-x86-cheri-and-riscv-models-lean-portability-2026",
+  "observed_at": "2026-10-29",
+  "unpopulated_upstream_repositories": [
+    {
+      "repository": "christiankissig/rocq-cheriot-sail",
+      "url": "https://github.com/christiankissig/rocq-cheriot-sail",
+      "note": "Empty upstream GitHub repository (git ls-remote returns 0 refs/commits as of 2026-10-29)."
+    }
+  ],
+  "sources": [
+    {
+      "repository": "joshlf/anneal-private",
+      "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/StepResult.lean",
+      "git_blob": "9825e59b0de79d41329e9401ae4b5562707e4609",
+      "sha256": "54481add3dbf4ffa95d4f7533ae6e390201eb3db3d24a6beb0757f9f68115b77",
+      "lines": 175,
+      "symbols": "StepResult (.next, .done, .trap, .stuck), PrefixOutcome",
+      "url": "https://github.com/joshlf/anneal-private/blob/42f4571d761b46c7142815f38b69c3781b3555e3/trusted/lean/Trusted/StepResult.lean"
+    },
+    {
+      "repository": "joshlf/anneal-private",
+      "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/Refinement.lean",
+      "git_blob": "23b043e73a60f0d1dfc1bdbeafbdb99e20e59db4",
+      "sha256": "e9fb5351eac8e07d58c4738605e13214b01b6d06d5bed17c621206111c8d0753",
+      "lines": 438,
+      "symbols": "Preorder, Partial, SmallStepMachine, ReachesPrefix, BehaviorOf",
+      "url": "https://github.com/joshlf/anneal-private/blob/42f4571d761b46c7142815f38b69c3781b3555e3/trusted/lean/Trusted/Refinement.lean"
+    },
+    {
+      "repository": "joshlf/anneal-private",
+      "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/Memory.lean",
+      "git_blob": "19e4398037a85001733f66dc20f8aba963a65bf5",
+      "sha256": "c79c80ef26b81f830289d407b0e49d4a8f65bb1ad233ab4110226ef60929cdc2",
+      "lines": 214,
+      "symbols": "Pointer, AllocInfo, Memory, Memory.loadByte, Memory.storeByte",
+      "url": "https://github.com/joshlf/anneal-private/blob/42f4571d761b46c7142815f38b69c3781b3555e3/trusted/lean/Trusted/Memory.lean"
+    },
+    {
+      "repository": "rems-project/sail",
+      "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+      "path": "src/sail_lean_backend/sail_plugin_lean.ml",
+      "git_blob": "36ed6137d8476cd4c91f3b8ab3b6ede628b6e8d6",
+      "sha256": "ac04d79d8321e5bfcbd87782396ab8f9c30e0b10f8a8981fa174b874424db473",
+      "lines": 460,
+      "symbols": "Lean 4 codegen plugin, --lean-noncomputable, --lean-import-file",
+      "url": "https://github.com/rems-project/sail/blob/0f51056900af85d0b18928d6ea2d2271d18184e8/src/sail_lean_backend/sail_plugin_lean.ml"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm",
+      "revision": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+      "path": "Makefile",
+      "git_blob": "cedca865013aaa73fe17b7772101a0e4f7c972c3",
+      "sha256": "317a214b7860588310ca874161f7c0e230d9f27ed15965213c1ce40f1e1b5c46",
+      "lines": 29,
+      "symbols": "lean target (SailTinyArmUser, user-only without -D SYSTEM_TINY_ARM), rocq target",
+      "url": "https://github.com/rems-project/sail-tiny-arm/blob/98d904912620ddd74e76714b7ef8457192cb4e3a/Makefile"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm",
+      "revision": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+      "path": "registers.sail",
+      "git_blob": "82f1bdce559a8a09b0e4262456a9ffa22bd8be87",
+      "sha256": "a77610d8f6959e9a27d47bf774afcb02326f22636300f74eb17b8295f6afa801",
+      "lines": 211,
+      "symbols": "R0..R30, _PC, NZCV, SP_EL0, 37 EL1/EL2/EL3 system registers under SYSTEM_TINY_ARM",
+      "url": "https://github.com/rems-project/sail-tiny-arm/blob/98d904912620ddd74e76714b7ef8457192cb4e3a/registers.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm",
+      "revision": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+      "path": "translation.sail",
+      "git_blob": "6231b075ac974bb7699afa00c48a20cab9a187c9",
+      "sha256": "7873176acacef3bdd5c78eb6827e599818500ea8f040d6079faaa1a06d434680",
+      "lines": 336,
+      "symbols": "pgt_walk (4-level EL1&0 VMSA walker), translate_address, take_exception, handle_fault",
+      "url": "https://github.com/rems-project/sail-tiny-arm/blob/98d904912620ddd74e76714b7ef8457192cb4e3a/translation.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm",
+      "revision": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+      "path": "instrs-user.sail",
+      "git_blob": "3ec78fcbedddb39f9680837b09593e2d721e57c8",
+      "sha256": "0b429065250524cc55b89307074a09c7642fd88deb36bc9846712b1dc9044145",
+      "lines": 761,
+      "symbols": "17 user-mode ast instruction families, decode, execute, fetch_and_execute",
+      "url": "https://github.com/rems-project/sail-tiny-arm/blob/98d904912620ddd74e76714b7ef8457192cb4e3a/instrs-user.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm",
+      "revision": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+      "path": "instrs-sys.sail",
+      "git_blob": "78b30fd18b8c32243ab081b6235e8e40213e031e",
+      "sha256": "9205da87e1dd75ae9faaff18a14b2de8ad1a8ec360d7d2e2bb4b83a778ca541e",
+      "lines": 200,
+      "symbols": "TLBInvalidation, SupervisorCall, ExceptionReturn, SystemRegisterMove",
+      "url": "https://github.com/rems-project/sail-tiny-arm/blob/98d904912620ddd74e76714b7ef8457192cb4e3a/instrs-sys.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm-lean",
+      "revision": "e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a",
+      "path": "Out/Defs.lean",
+      "git_blob": "f8fdcfa6be24341cfa9f385393b34ec80cd61816",
+      "sha256": "9b1abee04d7321ea13d3507180899b4996b36cde811bab099cd1320020a00669",
+      "lines": 485,
+      "symbols": "Initial Lean 4 extraction (lean4:nightly-2026-01-22): 10 ast constructors, RegisterType",
+      "url": "https://github.com/rems-project/sail-tiny-arm-lean/blob/e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a/Out/Defs.lean"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm-lean",
+      "revision": "e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a",
+      "path": "Out/TinyArm.lean",
+      "git_blob": "fae424dfe26873b73be10844ea30bcef07edab60",
+      "sha256": "a32d35f0b0d7f16b8b88cba7b9fc330d3ee58c2dfa4e23b24545a15e8cebb97f",
+      "lines": 165,
+      "symbols": "Pure decode : BitVec 32 -> Option ast, execute, fetch_and_execute",
+      "url": "https://github.com/rems-project/sail-tiny-arm-lean/blob/e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a/Out/TinyArm.lean"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm-lean",
+      "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+      "path": "lakefile.toml",
+      "git_blob": "02def2db7e0fd6819e08ab03ed6fed0c50472012",
+      "sha256": "c7ee9566435384abe8a66d46ff6c96988ec9bf96ed840417ae3502c76495a772",
+      "lines": 13,
+      "symbols": "SailTinyArmUser package configuration requiring lean-sail@v7 on Lean v4.29.0",
+      "url": "https://github.com/rems-project/sail-tiny-arm-lean/blob/4a474cfc415e46a0f6251c8c7d58a85e6411eb7b/lakefile.toml"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm-lean",
+      "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+      "path": "SailTinyArmUser/Defs.lean",
+      "git_blob": "0500a6ebab9d066cf1c907d15a8b7897e274185d",
+      "sha256": "01d88ff0974ec3dc450357aaadf99cecb2dd6b9ee557f24ed1f798587985a9d9",
+      "lines": 509,
+      "symbols": "17 ast constructors, 34 user Register variants, Unit stubs for sys_reg_id/exn/tlbi",
+      "url": "https://github.com/rems-project/sail-tiny-arm-lean/blob/4a474cfc415e46a0f6251c8c7d58a85e6411eb7b/SailTinyArmUser/Defs.lean"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm-lean",
+      "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+      "path": "SailTinyArmUser/Translation.lean",
+      "git_blob": "06df911677ec6997b61d0f3830f43d47e0916878",
+      "sha256": "4b4f8260c9011330af04ecfedf37dae8fe640fd074d71ec58919ce93d320610a",
+      "lines": 57,
+      "symbols": "translate_address (va : BitVec 64) : Option (BitVec 64) := some va",
+      "url": "https://github.com/rems-project/sail-tiny-arm-lean/blob/4a474cfc415e46a0f6251c8c7d58a85e6411eb7b/SailTinyArmUser/Translation.lean"
+    },
+    {
+      "repository": "rems-project/sail-tiny-arm-lean",
+      "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+      "path": "SailTinyArmUser/TinyArm.lean",
+      "git_blob": "3ce200a0e87dd804b51e8abe2976b5243d9e9752",
+      "sha256": "244c181dda92eb38916636df132452d77c4cade943b525d0ca597007441a4217",
+      "lines": 549,
+      "symbols": "Monadic decode : BitVec 32 -> SailM ast, SailME.run early-return execute_Load/Store/fetch_and_execute",
+      "url": "https://github.com/rems-project/sail-tiny-arm-lean/blob/4a474cfc415e46a0f6251c8c7d58a85e6411eb7b/SailTinyArmUser/TinyArm.lean"
+    },
+    {
+      "repository": "rems-project/sail-small-arm",
+      "revision": "d6b7c9cf86adaa479492b3881884b190a48f385b",
+      "path": "armV8.sail",
+      "git_blob": "d1983dac8bed3d941b4f041444088e7005b209eb",
+      "sha256": "adf61b66eefe45696f51bbce0165a1cf5d41de58a0be2a1ec3f5153d92197136",
+      "lines": 2523,
+      "symbols": "49 ast constructors with existentially quantified dependent bitvector widths {'R, RegisterSize('R)...}",
+      "url": "https://github.com/rems-project/sail-small-arm/blob/d6b7c9cf86adaa479492b3881884b190a48f385b/armV8.sail"
+    },
+    {
+      "repository": "rems-project/sail-small-arm",
+      "revision": "d6b7c9cf86adaa479492b3881884b190a48f385b",
+      "path": "armV8_A64_lib.sail",
+      "git_blob": "c6177311199f3ac43024df21e1299c58e3393887",
+      "sha256": "e6bc88ac6386037b3044d9c4297cfcefe4bed97f742a27491132aa116a128db3",
+      "lines": 1014,
+      "symbols": "rMem_normal, wMem, stubbed AArch64_TranslateAddress",
+      "url": "https://github.com/rems-project/sail-small-arm/blob/d6b7c9cf86adaa479492b3881884b190a48f385b/armV8_A64_lib.sail"
+    },
+    {
+      "repository": "rems-project/sail-arm",
+      "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+      "path": "arm-v9.4-a/Makefile",
+      "git_blob": "98e0ff4954c1bc7c555436f4864f045719616bb8",
+      "sha256": "4ab40e13ea02ac70bf77d64b826dfe0536b072cd0f5f67b57452c6b9dc325fee",
+      "lines": 133,
+      "symbols": "gen_lean target (-lean -lean-noncomputable -lean-import-file ../lean/ArmExtras.lean)",
+      "url": "https://github.com/rems-project/sail-arm/blob/7d0581642d0e3aaca367bbc5650aca7c53057543/arm-v9.4-a/Makefile"
+    },
+    {
+      "repository": "rems-project/sail-arm",
+      "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+      "path": "arm-v9.4-a/lean/ArmExtras.lean",
+      "git_blob": "c17bf20d238bfcb88c3a0c99398f680a41a55e1c",
+      "sha256": "7ad7c87ccdcad412643b9d1e2c435e9cd17b5de4900e9216af8e741fc5ea20ee",
+      "lines": 22,
+      "symbols": "macro_rules decreasing_trivial => first | grind | decide | sorry, print axioms",
+      "url": "https://github.com/rems-project/sail-arm/blob/7d0581642d0e3aaca367bbc5650aca7c53057543/arm-v9.4-a/lean/ArmExtras.lean"
+    },
+    {
+      "repository": "rems-project/sail-arm",
+      "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+      "path": "arm-v9.4-a/src/termination_measures.sail",
+      "git_blob": "be0b9537db5f7c6c41a400d0cb34a23c5e1c46cd",
+      "sha256": "b7531c0c5fdd0fe2f14ddab1b8fb97005d855fa816790f6f51da651c3928e307",
+      "lines": 116,
+      "symbols": "24 loop termination measures gated under $iftarget coq",
+      "url": "https://github.com/rems-project/sail-arm/blob/7d0581642d0e3aaca367bbc5650aca7c53057543/arm-v9.4-a/src/termination_measures.sail"
+    },
+    {
+      "repository": "rems-project/sail-arm",
+      "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+      "path": "arm-v9.4-a/src/prelude.sail",
+      "git_blob": "36c44748a16ff09fb27094932ba163d5be93a10b",
+      "sha256": "456e71ded863ac0f1dc844548ed41781c59498feafb60e8564ad881892a4caf0",
+      "lines": 375,
+      "symbols": "emod_nat extern mapping (fixed from Nat.div to Nat.mod in 7d058164)",
+      "url": "https://github.com/rems-project/sail-arm/blob/7d0581642d0e3aaca367bbc5650aca7c53057543/arm-v9.4-a/src/prelude.sail"
+    },
+    {
+      "repository": "rems-project/sail-x86-from-acl2",
+      "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+      "path": "translator/config_patterns.py",
+      "git_blob": "727ffcb058e9bd6dd7a286badcc03b9edbe0cd8c",
+      "sha256": "c0f326ef930526e03b3970b5ebf340f02586e3de597dd958b82d79c0a824a1cc",
+      "lines": 361,
+      "symbols": "ACL2 x86isa book translation configuration, excluded fp-structures and syscall-app-view",
+      "url": "https://github.com/rems-project/sail-x86-from-acl2/blob/0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf/translator/config_patterns.py"
+    },
+    {
+      "repository": "rems-project/sail-x86-from-acl2",
+      "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+      "path": "model/prelude.sail",
+      "git_blob": "db136d67a25aaaf3349e765074c8feaea4d9b7bf",
+      "sha256": "c8459e03dac0bd80620bfd8b91498b153e95cbb2924113f8617a3c3fcbf90bfd",
+      "lines": 711,
+      "symbols": "check_range, bitslice, logcount_int/logand_int recursive helpers, __read_mem/__write_mem",
+      "url": "https://github.com/rems-project/sail-x86-from-acl2/blob/0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf/model/prelude.sail"
+    },
+    {
+      "repository": "rems-project/sail-x86-from-acl2",
+      "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+      "path": "model/registers.sail",
+      "git_blob": "06f973d898ede7bd2cfd927168b51ec8ea3344b1",
+      "sha256": "789f81d776682f76b3b70e1a179537713c95327edef9f7eefca58f4a36992902",
+      "lines": 154,
+      "symbols": "rflagsbits, read_gpr/write_gpr, rip, app_view, ZMM/YMM/XMM, segment/control/debug registers",
+      "url": "https://github.com/rems-project/sail-x86-from-acl2/blob/0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf/model/registers.sail"
+    },
+    {
+      "repository": "rems-project/sail-x86-from-acl2",
+      "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+      "path": "model/linear_memory.sail",
+      "git_blob": "38a1042aba32e05e9447c5b2b7b00929c2c878d3",
+      "sha256": "de0f6a226a8d9619359334f3a063071b9baf763f402a82105aed12b1145b4c84",
+      "lines": 428,
+      "symbols": "rb_1/wb_1, rme08..rme64, wme08..wme64, CanonicalAddressCheck, IA-32e paging integration",
+      "url": "https://github.com/rems-project/sail-x86-from-acl2/blob/0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf/model/linear_memory.sail"
+    },
+    {
+      "repository": "rems-project/sail-x86-from-acl2",
+      "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+      "path": "model/paging.sail",
+      "git_blob": "877841d191997c35e2e65139db0d2aef8c942394",
+      "sha256": "3cd1af83bc3d141192b043e88e3f08b527b4942d0d70333dc60719a10cac3c20",
+      "lines": 423,
+      "symbols": "ia32e_la_to_pa_page_table_walk, 4-level page table traversal (PML4, PDPT, PD, PT)",
+      "url": "https://github.com/rems-project/sail-x86-from-acl2/blob/0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf/model/paging.sail"
+    },
+    {
+      "repository": "rems-project/sail-x86-from-acl2",
+      "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+      "path": "model/step.sail",
+      "git_blob": "1bb27ab83ce8300d7aa814f8f42ae3c14edb117b",
+      "sha256": "4f3d45bd77edb94b3ec307aa077383d2e4337185d396bda4a894823dc2c86462",
+      "lines": 2493,
+      "symbols": "get_prefixes, one_byte_opcode_execute, x86_fetch_decode_execute (fused fetch-decode-execute)",
+      "url": "https://github.com/rems-project/sail-x86-from-acl2/blob/0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf/model/step.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-x86",
+      "revision": "229bd8448937042baa51b0a2d14bc437929b0dce",
+      "path": "registers.sail",
+      "git_blob": "5da16f7f48444e58109f5c75ffb3e17b3040e045",
+      "sha256": "39ef7a7d72934d2a060295b11a03207bf7aa11246c15ed8312971335ab6a09b6",
+      "lines": 214,
+      "symbols": "16 64-bit GPRs, let GPRs : vector(16, register(bits(64))) = [ref r15, ..., ref rax], rflags, rip",
+      "url": "https://github.com/rems-project/sail-tiny-x86/blob/229bd8448937042baa51b0a2d14bc437929b0dce/registers.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-x86",
+      "revision": "229bd8448937042baa51b0a2d14bc437929b0dce",
+      "path": "interface.sail",
+      "git_blob": "5751bc5819f7854a119fc976a422ec0d49c1643a",
+      "sha256": "d235723a95eec6673e7395c6b406a2fe75260557883645088a2d681362eb7334",
+      "lines": 152,
+      "symbols": "CONCURRENCY_INTERFACE_V2 sail_mem_read, sail_mem_write, sail_barrier",
+      "url": "https://github.com/rems-project/sail-tiny-x86/blob/229bd8448937042baa51b0a2d14bc437929b0dce/interface.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-x86",
+      "revision": "229bd8448937042baa51b0a2d14bc437929b0dce",
+      "path": "decode.sail",
+      "git_blob": "c26097aedb0b1bc103e02a9527478f52d9d4f74b",
+      "sha256": "30257ca0ad52a7bd99ba9a842563a6f8a5066b4610b5f2e7b3e75a7b9ff692da",
+      "lines": 506,
+      "symbols": "19 ast constructors, impure decode(rip) reading GPRs, RIP-relative addressing bug at lines 300-308",
+      "url": "https://github.com/rems-project/sail-tiny-x86/blob/229bd8448937042baa51b0a2d14bc437929b0dce/decode.sail"
+    },
+    {
+      "repository": "rems-project/sail-tiny-x86",
+      "revision": "229bd8448937042baa51b0a2d14bc437929b0dce",
+      "path": "tiny-x86.sail",
+      "git_blob": "566ac46b62f733681737f12f1cec08baf2ffe510",
+      "sha256": "b3d330789f2f11bc4ce1d28958aa355b2e86506e7dbf85d2fa2611518499a029",
+      "lines": 977,
+      "symbols": "fetch_execute setting rip = new_rip after decode(rip), execute",
+      "url": "https://github.com/rems-project/sail-tiny-x86/blob/229bd8448937042baa51b0a2d14bc437929b0dce/tiny-x86.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-morello",
+      "revision": "2305f656ff84619caf50107f49dae7be52aec72b",
+      "path": "src/v8_base.sail",
+      "git_blob": "a72d5e2c29e9c2e24cd8e4007eeb273b9cb9be5f",
+      "sha256": "a2b3eca02bbfd1ef1d316ad564b498ee4e2b641da6471461ed4b1285e34fd7d7",
+      "lines": 46035,
+      "symbols": "129-bit Morello Capability type, CapGetBounds (16-bit bottom, 14-bit top, IE), CapSetBounds, CapIsTagClear",
+      "url": "https://github.com/CTSRD-CHERI/sail-morello/blob/2305f656ff84619caf50107f49dae7be52aec72b/src/v8_base.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-morello",
+      "revision": "2305f656ff84619caf50107f49dae7be52aec72b",
+      "path": "src/instrs.sail",
+      "git_blob": "0bdd8c3261af372c3189555f92026a91f8d84cdf",
+      "sha256": "46090f2a222ee8400c3579d0d62e7e695b7195fff11e0193bcf270d1f08597ad",
+      "lines": 44402,
+      "symbols": "Morello capability instructions, C64 AArch64 capability loads/stores/branches/sealing",
+      "url": "https://github.com/CTSRD-CHERI/sail-morello/blob/2305f656ff84619caf50107f49dae7be52aec72b/src/instrs.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-morello",
+      "revision": "2305f656ff84619caf50107f49dae7be52aec72b",
+      "path": "src/mem.sail",
+      "git_blob": "a4fc3a207ba05b208762817e9a21fc207bf39336",
+      "sha256": "477cde580777ecd300b16cbe375130fc2935abe1029403edf7ec24e5152c76b5",
+      "lines": 219,
+      "symbols": "__ReadTaggedMem, __WriteTaggedMem, __WriteMem clearing enclosing 16-byte capability granule tag",
+      "url": "https://github.com/CTSRD-CHERI/sail-morello/blob/2305f656ff84619caf50107f49dae7be52aec72b/src/mem.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-cheri-riscv",
+      "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+      "path": "src/cheri_prelude_128.sail",
+      "git_blob": "e99c637008bdc8ac80ddb7c20d7c436330aca8b6",
+      "sha256": "e8d392cb4a969330453fb4e2c24a13762af992f7233e57b527dbc952e750e38a",
+      "lines": 127,
+      "symbols": "128-bit CHERI-RISC-V capability geometry (cap_size=16, cap_mantissa_width=14, cap_max_E=52)",
+      "url": "https://github.com/CTSRD-CHERI/sail-cheri-riscv/blob/cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b/src/cheri_prelude_128.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-cheri-riscv",
+      "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+      "path": "src/cheri_cap_common.sail",
+      "git_blob": "7508f0751b014b2cc0e8f6da4f6cc06f3e1c2678",
+      "sha256": "aedd2619bd2d26ddc695f3d85b61be22dd63db52fc05df3081e7e895e11f0695",
+      "lines": 593,
+      "symbols": "EncCapability, Capability, getCapBounds, setCapBounds, setCapOffset, clearTagIf, capToMemBits",
+      "url": "https://github.com/CTSRD-CHERI/sail-cheri-riscv/blob/cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b/src/cheri_cap_common.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-cheri-riscv",
+      "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+      "path": "src/cheri_mem_metadata.sail",
+      "git_blob": "2092a3fdc4734b34f51b21e73a8268f24570ab07",
+      "sha256": "d3b187dd28af94e242abe173cb6dc754a2a7531b79a94a544047f2e35d3fd0ec",
+      "lines": 103,
+      "symbols": "addr_to_tag_addr, __WriteRAM_Meta, __ReadRAM_Meta",
+      "url": "https://github.com/CTSRD-CHERI/sail-cheri-riscv/blob/cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b/src/cheri_mem_metadata.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-cheri-riscv",
+      "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+      "path": "src/cheri_mem.sail",
+      "git_blob": "d03b66b07e8ff48218d176d592bb29e13a6beb63",
+      "sha256": "ee970316c948e0f24b97d0296fa9fb136cd4417e84bfe5577f281cf2397b15b6",
+      "lines": 89,
+      "symbols": "mem_read_cap, mem_write_cap, non-capability mem_write_ea clearing capability tags",
+      "url": "https://github.com/CTSRD-CHERI/sail-cheri-riscv/blob/cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b/src/cheri_mem.sail"
+    },
+    {
+      "repository": "CTSRD-CHERI/sail-cheri-riscv",
+      "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+      "path": "src/cheri_insts.sail",
+      "git_blob": "e093b6410747be70f2ec4110c9e86bef31178fff",
+      "sha256": "21849f24a49d0b3d38e22d149f7d230b630319729f44f8b91c78a9d439c34af4",
+      "lines": 2379,
+      "symbols": "CGetPerm..CBuildCap,CLC,CSC capability instruction execution semantics and exception priority",
+      "url": "https://github.com/CTSRD-CHERI/sail-cheri-riscv/blob/cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b/src/cheri_insts.sail"
+    },
+    {
+      "repository": "CHERIoT-Platform/cheriot-sail",
+      "revision": "518813ec3e595f79930d9129eaded2521831cbe2",
+      "path": "src/cheri_cap_common.sail",
+      "git_blob": "1aec1468ff84ee14e8bd26a3648d4958506bd889",
+      "sha256": "5796e610da72350680a21831e99dd3d1e8d7a247493e1dc067073f8404615a00",
+      "lines": 871,
+      "symbols": "64-bit CHERIoT compressed capability (9-bit mantissas, 4-bit cE, 6-bit cperms, revocation bit)",
+      "url": "https://github.com/CHERIoT-Platform/cheriot-sail/blob/518813ec3e595f79930d9129eaded2521831cbe2/src/cheri_cap_common.sail"
+    },
+    {
+      "repository": "CHERIoT-Platform/cheriot-sail",
+      "revision": "518813ec3e595f79930d9129eaded2521831cbe2",
+      "path": "properties/props.sail",
+      "git_blob": "d57a2f86b8801a075777c0a639b5753769470222",
+      "sha256": "2929a2ab633b704937ed35c4af4dbd5b1391d9c8140af8fccc5618f7045d55cb",
+      "lines": 285,
+      "symbols": "13 $property formal specifications including prop_setbounds_monotonic, prop_decEnc, prop_setaddr",
+      "url": "https://github.com/CHERIoT-Platform/cheriot-sail/blob/518813ec3e595f79930d9129eaded2521831cbe2/properties/props.sail"
+    },
+    {
+      "repository": "rems-project/coq-cheri-capabilities",
+      "revision": "b39cd73409d8c2a058ba8065f81dc72d3c84fb11",
+      "path": "theories/Common/Capabilities.v",
+      "git_blob": "d8e2527870f51bf7ecaacc272bdae5108d497f94",
+      "sha256": "74a79958a1249fe4d448b1fa3f986becdb14d0d890499a33a28b3379e2d8d3e1",
+      "lines": 332,
+      "symbols": "Capability_GS Module Type, leq_bounds, leq_perms, leq_cap",
+      "url": "https://github.com/rems-project/coq-cheri-capabilities/blob/b39cd73409d8c2a058ba8065f81dc72d3c84fb11/theories/Common/Capabilities.v"
+    },
+    {
+      "repository": "rems-project/coq-cheri-capabilities",
+      "revision": "b39cd73409d8c2a058ba8065f81dc72d3c84fb11",
+      "path": "theories/Morello/Capabilities.v",
+      "git_blob": "4fe1f66a69dd7d23ea3a58e7bf9d052cf532dedc",
+      "sha256": "de4bb59517b6280051b2b64902f419ff5f4ec53dad5dbc4061962f6a2f304578",
+      "lines": 1570,
+      "symbols": "Extracted Sail Morello cap_t interfaced to Capability_GS",
+      "url": "https://github.com/rems-project/coq-cheri-capabilities/blob/b39cd73409d8c2a058ba8065f81dc72d3c84fb11/theories/Morello/Capabilities.v"
+    },
+    {
+      "repository": "rems-project/coq-cheri-capabilities",
+      "revision": "b39cd73409d8c2a058ba8065f81dc72d3c84fb11",
+      "path": "theories/Morello/Lemmas.v",
+      "git_blob": "0fc63f7e2d352f2aadbe2e2722a35012825e64cf",
+      "sha256": "6edd72010d0516fb4ceeb4200d0d6d6f2819a7e9ac29e6b7846f6aa51e068b2d",
+      "lines": 248,
+      "symbols": "cap_set_bounds_Represents, cap_set_bounds_mono, leq_bounds_to_cap_addresses_subset",
+      "url": "https://github.com/rems-project/coq-cheri-capabilities/blob/b39cd73409d8c2a058ba8065f81dc72d3c84fb11/theories/Morello/Lemmas.v"
+    },
+    {
+      "repository": "opencompl/sail-riscv-lean",
+      "revision": "51c635c460125ac87955d061fcd902ce03b8011f",
+      "path": "lakefile.toml",
+      "git_blob": "f1e7cc95d7dc4a04f96963411a6c63d2777eeb86",
+      "sha256": "cc5057ccda0757b4b18b51601e105793bb3523c4a0d663c7ad5e104a07792592",
+      "lines": 13,
+      "symbols": "Lean_RV64D package requiring rems-project/lean-sail@v5 on Lean v4.29.0",
+      "url": "https://github.com/opencompl/sail-riscv-lean/blob/51c635c460125ac87955d061fcd902ce03b8011f/lakefile.toml"
+    },
+    {
+      "repository": "opencompl/sail-riscv-lean",
+      "revision": "51c635c460125ac87955d061fcd902ce03b8011f",
+      "path": "LeanRV64D/RiscvExtras.lean",
+      "git_blob": "71a6390c95deafcd2cd36d5f0c4fd3677bee5f36",
+      "sha256": "e5ebf33aaad4a197341132e6873cad34a4a9f1c2a1f53f797c6b1fb30a2db0e9",
+      "lines": 118,
+      "symbols": "75 platform/SoftFloat axioms, SizeOf extension, decreasing_trivial => decide",
+      "url": "https://github.com/opencompl/sail-riscv-lean/blob/51c635c460125ac87955d061fcd902ce03b8011f/LeanRV64D/RiscvExtras.lean"
+    },
+    {
+      "repository": "opencompl/sail-riscv-lean",
+      "revision": "51c635c460125ac87955d061fcd902ce03b8011f",
+      "path": "LeanRV64D/Defs.lean",
+      "git_blob": "8b267e6eb253a0a8a3183a9cdd9c80e628d1e181",
+      "sha256": "3d1494d1f3f398d542cf945dc658e1c0e9a3cb8af7c68df327b67162bbbd1b66",
+      "lines": 2063,
+      "symbols": "353-constructor instruction inductive and full RV64D Register/RegisterType",
+      "url": "https://github.com/opencompl/sail-riscv-lean/blob/51c635c460125ac87955d061fcd902ce03b8011f/LeanRV64D/Defs.lean"
+    },
+    {
+      "repository": "Verified-zkEVM/riscv-zkvm",
+      "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+      "path": "sail-import/PROVENANCE.toml",
+      "git_blob": "92918015b66f786f4c4b908f81cd6541c3cab01d",
+      "sha256": "556b322bcf412b50741f77ed41feceb994361dba6b68fe5897d485c224df24c5",
+      "lines": 32,
+      "symbols": "Pinned sail-riscv 0.13.1, Sail 0.20.3, lean-sail v5, 8-module scoped RV64IM extraction",
+      "url": "https://github.com/Verified-zkEVM/riscv-zkvm/blob/6810fc14d9c40373101321cefaec59df8d82e3e7/sail-import/PROVENANCE.toml"
+    },
+    {
+      "repository": "Verified-zkEVM/riscv-zkvm",
+      "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+      "path": "scripts/regen-model.sh",
+      "git_blob": "9790ad78d52d5389f87964e1c2319842077d3a93",
+      "sha256": "1477b95d847bdfa3ebc556a6052d0f4e31afdf1785cd11f7ada9d30da44ce292",
+      "lines": 156,
+      "symbols": "Deterministic Sail -> Lean regeneration and Out namespace normalization",
+      "url": "https://github.com/Verified-zkEVM/riscv-zkvm/blob/6810fc14d9c40373101321cefaec59df8d82e3e7/scripts/regen-model.sh"
+    },
+    {
+      "repository": "Verified-zkEVM/riscv-zkvm",
+      "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+      "path": "RiscvZkvm/Rv64/SailEquiv/StateRel.lean",
+      "git_blob": "e9d3cfa13ef2115b2e038b6f22f637bc4a3579b5",
+      "sha256": "c8b16ca884bf46700be8f8f62517b857fb3e1df600299fc609d0fb56b8d9af6d",
+      "lines": 424,
+      "symbols": "StateRel, StateRelPC, MemPresent, BytesPresent, PlatformFrame, InstsEnd narrow import",
+      "url": "https://github.com/Verified-zkEVM/riscv-zkvm/blob/6810fc14d9c40373101321cefaec59df8d82e3e7/RiscvZkvm/Rv64/SailEquiv/StateRel.lean"
+    },
+    {
+      "repository": "Verified-zkEVM/riscv-zkvm",
+      "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+      "path": "RiscvZkvm/Rv64/SailEquiv/StepSim.lean",
+      "git_blob": "439077b7561e12c736bd732e5ee8195a8dbe2529",
+      "sha256": "2f46e91ccc6bc0d3bfd7bdb9369cc36a1a33223ab1fcd1b72f2e3567f49c49d9",
+      "lines": 594,
+      "symbols": "Instr.simulable, instrSideCond, step_execute_sail_sim over 49 instructions",
+      "url": "https://github.com/Verified-zkEVM/riscv-zkvm/blob/6810fc14d9c40373101321cefaec59df8d82e3e7/RiscvZkvm/Rv64/SailEquiv/StepSim.lean"
+    },
+    {
+      "repository": "Verified-zkEVM/riscv-zkvm",
+      "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+      "path": "RiscvZkvm/Rv64/SailEquiv/StepRun.lean",
+      "git_blob": "81b8cd3646a72e582bf946dba1a57d35ec16500e",
+      "sha256": "a8a47ebf63ceba1b7adf3469b8df2d233c3e549a9bd2f62bbee0eb4bf3bffa4e",
+      "lines": 483,
+      "symbols": "sailStep, sailStep_run_sim, sailStepN_run_sim, jalr_sideCond_satisfiable (#10688 anti-vacuity)",
+      "url": "https://github.com/Verified-zkEVM/riscv-zkvm/blob/6810fc14d9c40373101321cefaec59df8d82e3e7/RiscvZkvm/Rv64/SailEquiv/StepRun.lean"
+    },
+    {
+      "repository": "Verified-zkEVM/riscv-zkvm",
+      "revision": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+      "path": "scripts/AxiomSweep.lean",
+      "git_blob": "6913540e30ed58befcbc0b075a7e9fbc64a1a6de",
+      "sha256": "3294ed648e9a5fd374a18d690f99198dd98f2fde65d3f6fd50fd057293f47449",
+      "lines": 103,
+      "symbols": "Kernel-truth axiom gate enforcing 7 allowed axioms across 3500+ declarations",
+      "url": "https://github.com/Verified-zkEVM/riscv-zkvm/blob/6810fc14d9c40373101321cefaec59df8d82e3e7/scripts/AxiomSweep.lean"
+    },
+    {
+      "repository": "axiom-crypto/sail-riscv-lean",
+      "revision": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+      "path": "Lean_RV32D/sail-source-provenance.tsv",
+      "git_blob": "096941e2d07572236727a365352ccd5311c19326",
+      "sha256": "eed75a506d14193d5f53af5de835cdaa451ba6f2db6b57e5d9928eb265ef6002",
+      "lines": 29,
+      "symbols": "Provenance pinning Lean v4.34.0, Sail 0.20.2, lean-sail 79b4d085, OpenVM RV32D profile",
+      "url": "https://github.com/axiom-crypto/sail-riscv-lean/blob/82afed87c9d6827d3691acbe66d5395fa37dc41d/Lean_RV32D/sail-source-provenance.tsv"
+    },
+    {
+      "repository": "axiom-crypto/sail-riscv-lean",
+      "revision": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+      "path": "Lean_RV32D/LeanRV32D/RiscvExtrasExecutable.lean",
+      "git_blob": "6ab984b91b979c43eeedf9afc79c8abff72a6f1f",
+      "sha256": "1128a66741ad8d3ba9d9d8a1f1b3f6b1ccad5ad72af4b7ec4dc3645c3cebaf1f",
+      "lines": 117,
+      "symbols": "Zero-axiom computable platform/SoftFloat stubs replacing axiom declarations",
+      "url": "https://github.com/axiom-crypto/sail-riscv-lean/blob/82afed87c9d6827d3691acbe66d5395fa37dc41d/Lean_RV32D/LeanRV32D/RiscvExtrasExecutable.lean"
+    },
+    {
+      "repository": "axiom-crypto/sail-riscv-lean",
+      "revision": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+      "path": "Lean_RV32D/LeanRV32D/XopenvmInsts.lean",
+      "git_blob": "ef5dc98e4547dc6a8373eea84778b87e8084465e",
+      "sha256": "29e6f1ab05e413efff63f2559d29e428603db302d3ad9468061e0747a160020e",
+      "lines": 791,
+      "symbols": "Ext_Xopenvm custom extension, next_hint_byte, record_reveal, store_hint_words, execute_hint_words",
+      "url": "https://github.com/axiom-crypto/sail-riscv-lean/blob/82afed87c9d6827d3691acbe66d5395fa37dc41d/Lean_RV32D/LeanRV32D/XopenvmInsts.lean"
+    },
+    {
+      "repository": "axiom-crypto/sail-riscv-lean",
+      "revision": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+      "path": "Lean_RV32D/LeanRV32D/InstsEnd.lean",
+      "git_blob": "8e4a69c57d3d917e20a356f9554c23aa95874b61",
+      "sha256": "fd0c6c4555205577977185a0d818f5ee6c5e36393f69db2dde31bba8133938f3",
+      "lines": 5077,
+      "symbols": "34-constructor execute dispatcher including OPENVM_TERMINATE, OPENVM_REVEAL, OPENVM_HINT_STOREW/BUFFER",
+      "url": "https://github.com/axiom-crypto/sail-riscv-lean/blob/82afed87c9d6827d3691acbe66d5395fa37dc41d/Lean_RV32D/LeanRV32D/InstsEnd.lean"
+    }
+  ]
+}

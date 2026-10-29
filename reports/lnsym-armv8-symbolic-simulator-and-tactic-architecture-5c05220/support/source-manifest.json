@@ -1,0 +1,1392 @@
+{
+  "observed_at": "2026-10-29",
+  "subjects": {
+    "leanprover/LNSym": {
+      "url": "https://github.com/leanprover/LNSym",
+      "commit": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+      "tree": "1f2abe7b0830756e9b33e9bb5e722fc5bd681c13",
+      "lean_toolchain": "leanprover/lean4:nightly-2024-10-07",
+      "tracked_file_count": 268,
+      "files": {
+        ".github/CODEOWNERS": {
+          "blob_sha": "452b1a6fb1a8714a91c8abc71b916dc03fa28339",
+          "bytes": 30,
+          "lines": 4
+        },
+        ".github/dependabot.yml": {
+          "blob_sha": "123014908bebbfb7ecfa1d15daaceb272fabe05b",
+          "bytes": 117,
+          "lines": 6
+        },
+        ".github/pull_request_template.md": {
+          "blob_sha": "c23f5e6b7ef962b2a5e67f551369718050c9b058",
+          "bytes": 1038,
+          "lines": 43
+        },
+        ".github/workflows/copyright-header.yml": {
+          "blob_sha": "1863a250d430de72f46124b33e81a908789e03b1",
+          "bytes": 622,
+          "lines": 20
+        },
+        ".github/workflows/doc.yml": {
+          "blob_sha": "d9220c7ec17f05346208eef8e0d2dc8200266dd4",
+          "bytes": 1020,
+          "lines": 40
+        },
+        ".github/workflows/makefile.yml": {
+          "blob_sha": "a9826fd6df0adab575b466211f1eb8aa9dc39ec9",
+          "bytes": 1096,
+          "lines": 49
+        },
+        ".gitignore": {
+          "blob_sha": "1e3e3f4dd20f6d3558b68c333ee19a87d02b04f2",
+          "bytes": 72,
+          "lines": 7
+        },
+        "AWSLCELFTests.lean": {
+          "blob_sha": "1be8b1557b65a7feb9f373a09d6eaa5833f1b26b",
+          "bytes": 268,
+          "lines": 7
+        },
+        "Arm.lean": {
+          "blob_sha": "9ca0c6cec03068e761766a9e21a34f269f164e1f",
+          "bytes": 361,
+          "lines": 10
+        },
+        "Arm/Attr.lean": {
+          "blob_sha": "d9076b784097ec2c117efc4b1fb0ee4ca9f0cab0",
+          "bytes": 517,
+          "lines": 17
+        },
+        "Arm/BitVec.lean": {
+          "blob_sha": "8e03b15607659cb737ad001ee7a7307babbd0f08",
+          "bytes": 45734,
+          "lines": 1246
+        },
+        "Arm/Cfg/Cfg.lean": {
+          "blob_sha": "3af3c52174d71268fe8906aecc81ecd003af4bd5",
+          "bytes": 14186,
+          "lines": 352
+        },
+        "Arm/Cosim.lean": {
+          "blob_sha": "4c98224c17c60f6e01bfd1dbac2e2d85ce15239f",
+          "bytes": 13963,
+          "lines": 369
+        },
+        "Arm/Decode.lean": {
+          "blob_sha": "aa1faf1e03438c205151befb5e0de4add04b4ec1",
+          "bytes": 25278,
+          "lines": 645
+        },
+        "Arm/Decode/BR.lean": {
+          "blob_sha": "87b150cd28bf191584cc3d755533c90305e9b1b7",
+          "bytes": 2751,
+          "lines": 84
+        },
+        "Arm/Decode/DPI.lean": {
+          "blob_sha": "0372da84bd873139a6146024ad066ed31484d56a",
+          "bytes": 4990,
+          "lines": 137
+        },
+        "Arm/Decode/DPR.lean": {
+          "blob_sha": "d6f4b0a7649a61bc31538b623291111a1577f10f",
+          "bytes": 6231,
+          "lines": 154
+        },
+        "Arm/Decode/DPSFP.lean": {
+          "blob_sha": "a0e42d0a2995002d6a5be07dba9f8a49ac90dda7",
+          "bytes": 15083,
+          "lines": 341
+        },
+        "Arm/Decode/LDST.lean": {
+          "blob_sha": "2eacfb1fa5dcb8a56c2e591e4751d27a16c43825",
+          "bytes": 5614,
+          "lines": 151
+        },
+        "Arm/Exec.lean": {
+          "blob_sha": "765a419f95accbb8cee2526c0e99f8d42c79fa8c",
+          "bytes": 6559,
+          "lines": 178
+        },
+        "Arm/FromMathlib.lean": {
+          "blob_sha": "3d17145f5b4f5774529802bbbcad8560ce90c796",
+          "bytes": 770,
+          "lines": 23
+        },
+        "Arm/Insts.lean": {
+          "blob_sha": "9134e30b641739747ad27899a4b2aeba683aedbd",
+          "bytes": 450,
+          "lines": 17
+        },
+        "Arm/Insts/BR/Compare_branch.lean": {
+          "blob_sha": "b15d551d90ac3b1937aa9bfc0b794024fa490e35",
+          "bytes": 1525,
+          "lines": 52
+        },
+        "Arm/Insts/BR/Cond_branch_imm.lean": {
+          "blob_sha": "33a0fdfb6d7d867a9f0762bad4a3bf9c6a862529",
+          "bytes": 1464,
+          "lines": 59
+        },
+        "Arm/Insts/BR/Hints.lean": {
+          "blob_sha": "3d0bf110a390817f3634e995f9428b513c9e3495",
+          "bytes": 922,
+          "lines": 36
+        },
+        "Arm/Insts/BR/Insts.lean": {
+          "blob_sha": "37a024b98a905538d435bbc4cfc200d116a7110a",
+          "bytes": 527,
+          "lines": 16
+        },
+        "Arm/Insts/BR/Uncond_branch_imm.lean": {
+          "blob_sha": "1313a4d37ef2aebba9c2807d099f5a2cd28612fd",
+          "bytes": 916,
+          "lines": 37
+        },
+        "Arm/Insts/BR/Uncond_branch_reg.lean": {
+          "blob_sha": "1e3cbb9742fccc50c59e482b67cada37ac9dd34c",
+          "bytes": 851,
+          "lines": 32
+        },
+        "Arm/Insts/Common.lean": {
+          "blob_sha": "58c5068ac3975f5249e96a5013cd057f1c26bce5",
+          "bytes": 34694,
+          "lines": 930
+        },
+        "Arm/Insts/Cosim/.gitignore": {
+          "blob_sha": "150a2e2a85d4c7beaa1feda228fb4175a2b5eaf9",
+          "bytes": 24,
+          "lines": 3
+        },
+        "Arm/Insts/Cosim/armsimulate": {
+          "blob_sha": "198a72a438932a54cd0477b6fd7af214d0ef4024",
+          "bytes": 983,
+          "lines": 27
+        },
+        "Arm/Insts/Cosim/disasm.sh": {
+          "blob_sha": "9a3012d4d1c9494501fb10f0f11d42503d2b8c38",
+          "bytes": 909,
+          "lines": 34
+        },
+        "Arm/Insts/Cosim/platform_check.sh": {
+          "blob_sha": "6cd640a8bfacc32d3038795923b6f4ff32d511b7",
+          "bytes": 1541,
+          "lines": 66
+        },
+        "Arm/Insts/Cosim/simulator.c": {
+          "blob_sha": "fb081fb65bb84339c5c97fa5ef7c9677f74624bb",
+          "bytes": 1414,
+          "lines": 54
+        },
+        "Arm/Insts/Cosim/template.S": {
+          "blob_sha": "d8cf9ee42e7aa5976ac6888f8e056c991111125c",
+          "bytes": 9603,
+          "lines": 246
+        },
+        "Arm/Insts/Cosim/tests/.gitignore": {
+          "blob_sha": "4da123cd0923d0de919b4112832bd9ab914e0884",
+          "bytes": 14,
+          "lines": 3
+        },
+        "Arm/Insts/CosimM.lean": {
+          "blob_sha": "da8c55c1e3f7e7072f2697730c01ce518cd8e304",
+          "bytes": 1654,
+          "lines": 54
+        },
+        "Arm/Insts/DPI/Add_sub_imm.lean": {
+          "blob_sha": "48a7d8c74110050dc8f62f14f6e51a80e04f4980",
+          "bytes": 2735,
+          "lines": 69
+        },
+        "Arm/Insts/DPI/Bitfield.lean": {
+          "blob_sha": "133da0bf781f6f9900e2476bfaaffa6583a42f93",
+          "bytes": 5000,
+          "lines": 138
+        },
+        "Arm/Insts/DPI/Insts.lean": {
+          "blob_sha": "2298ad82883f0c7be99098c0964558410f869133",
+          "bytes": 618,
+          "lines": 19
+        },
+        "Arm/Insts/DPI/Logical_imm.lean": {
+          "blob_sha": "0a1d7afb29f63df16919d37b218610cd41dd760f",
+          "bytes": 6975,
+          "lines": 180
+        },
+        "Arm/Insts/DPI/Move_wide_imm.lean": {
+          "blob_sha": "6681cac4b05896f93d3b6fee4976a717b8614412",
+          "bytes": 1869,
+          "lines": 59
+        },
+        "Arm/Insts/DPI/PC_rel_addressing.lean": {
+          "blob_sha": "b3c8334814d90ccffea58c3bf2b285e16533d506",
+          "bytes": 907,
+          "lines": 33
+        },
+        "Arm/Insts/DPR/Add_sub_carry.lean": {
+          "blob_sha": "b0874c4c9bc1a5962222c61a48d376bbbe4f68b3",
+          "bytes": 1675,
+          "lines": 49
+        },
+        "Arm/Insts/DPR/Add_sub_shifted_reg.lean": {
+          "blob_sha": "030c9febf96593c7ecd371c3e7386065a08fc474",
+          "bytes": 2268,
+          "lines": 64
+        },
+        "Arm/Insts/DPR/Conditional_select.lean": {
+          "blob_sha": "c2dcfa655b0bd226f5ca48fc70fd56c1a88cb4ec",
+          "bytes": 1771,
+          "lines": 57
+        },
+        "Arm/Insts/DPR/Data_processing_one_source.lean": {
+          "blob_sha": "145f004ab50d581c3d525433398e1aff9f9c94bc",
+          "bytes": 4860,
+          "lines": 124
+        },
+        "Arm/Insts/DPR/Data_processing_three_source.lean": {
+          "blob_sha": "b2d692d038b7d26a3e278195f640d176850a0208",
+          "bytes": 3800,
+          "lines": 97
+        },
+        "Arm/Insts/DPR/Data_processing_two_source.lean": {
+          "blob_sha": "a48ac98129bc103d781903e81b0719e32d3d73b9",
+          "bytes": 2223,
+          "lines": 65
+        },
+        "Arm/Insts/DPR/Insts.lean": {
+          "blob_sha": "6bca71d125c58020b9d026ccb52d06a137e137a6",
+          "bytes": 912,
+          "lines": 24
+        },
+        "Arm/Insts/DPR/Logical_shifted_reg.lean": {
+          "blob_sha": "75d1032c01b831c1c1ef84810009738ea4fa97b1",
+          "bytes": 3483,
+          "lines": 94
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_copy.lean": {
+          "blob_sha": "bb383d7c38292a825cabbb86a4e05e079b2a327c",
+          "bytes": 9381,
+          "lines": 271
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_extract.lean": {
+          "blob_sha": "9ec571cd6b7856b87f8b98b218369c6918a03d96",
+          "bytes": 2313,
+          "lines": 68
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_modified_immediate.lean": {
+          "blob_sha": "3f9feabfe6d02da1034ce8a10a5e81ff52d49d18",
+          "bytes": 7298,
+          "lines": 180
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_permute.lean": {
+          "blob_sha": "d3ded2ebc1c2f662e07bdfbc18e0e16715e315ef",
+          "bytes": 3180,
+          "lines": 98
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_scalar_copy.lean": {
+          "blob_sha": "47a1c98d17df5ee490311c8b30caf93b48caa4c8",
+          "bytes": 1766,
+          "lines": 56
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_scalar_shift_by_immediate.lean": {
+          "blob_sha": "585c796c43210cf9888c168e040ebf9597bd6176",
+          "bytes": 4360,
+          "lines": 116
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_shift_by_immediate.lean": {
+          "blob_sha": "5da1f99c49e0ec65f06268fb80f26749ae60ed2e",
+          "bytes": 5011,
+          "lines": 134
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_table_lookup.lean": {
+          "blob_sha": "beb4fa78bfc4461b47164d34435ceb64e3c5bae2",
+          "bytes": 2898,
+          "lines": 89
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_three_different.lean": {
+          "blob_sha": "c1cd5765df756d0d85083d9c0bfba49fb9d7dd9e",
+          "bytes": 4153,
+          "lines": 113
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_three_same.lean": {
+          "blob_sha": "7b26b5a440e26abb334eb09e37c81894fa7a51f4",
+          "bytes": 6508,
+          "lines": 169
+        },
+        "Arm/Insts/DPSFP/Advanced_simd_two_reg_misc.lean": {
+          "blob_sha": "3b1d8a281b5113dedec2b91323725e01470697a1",
+          "bytes": 6724,
+          "lines": 176
+        },
+        "Arm/Insts/DPSFP/Conversion_between_FP_and_Int.lean": {
+          "blob_sha": "366405c245254caee9228928855452834e145b62",
+          "bytes": 4630,
+          "lines": 119
+        },
+        "Arm/Insts/DPSFP/Crypto_aes.lean": {
+          "blob_sha": "e58e3f73d73d2b9d7d7b3d25d6eb924d1250edd5",
+          "bytes": 4410,
+          "lines": 129
+        },
+        "Arm/Insts/DPSFP/Crypto_four_reg.lean": {
+          "blob_sha": "db653775239525aabdbaf09303a526a3febe2e8d",
+          "bytes": 1711,
+          "lines": 56
+        },
+        "Arm/Insts/DPSFP/Crypto_three_reg_sha512.lean": {
+          "blob_sha": "e62b4d8ee31c07ed38c798e07076a90845caa61d",
+          "bytes": 3858,
+          "lines": 116
+        },
+        "Arm/Insts/DPSFP/Crypto_two_reg_sha512.lean": {
+          "blob_sha": "f3bbd1fa3e613c590df1c2d542358079c9608a70",
+          "bytes": 1989,
+          "lines": 69
+        },
+        "Arm/Insts/DPSFP/Insts.lean": {
+          "blob_sha": "9747baa875046e010119ee050bcb05433652084b",
+          "bytes": 1811,
+          "lines": 41
+        },
+        "Arm/Insts/LDST/Advanced_simd_multiple_struct.lean": {
+          "blob_sha": "732ec8f220ccb6afc81daa0f71ce8f4d6e7e9509",
+          "bytes": 6964,
+          "lines": 152
+        },
+        "Arm/Insts/LDST/Insts.lean": {
+          "blob_sha": "fbb201bd82b65366554d81155685dfba4c3685f4",
+          "bytes": 325,
+          "lines": 9
+        },
+        "Arm/Insts/LDST/Reg_imm.lean": {
+          "blob_sha": "cd76e17b69f5959e5023990dbce02f479d97e943",
+          "bytes": 5480,
+          "lines": 143
+        },
+        "Arm/Insts/LDST/Reg_pair.lean": {
+          "blob_sha": "5c0c6263274c283391eef3fa99fb977c79e98d1d",
+          "bytes": 5401,
+          "lines": 152
+        },
+        "Arm/Insts/LDST/Reg_unscaled_imm.lean": {
+          "blob_sha": "1e0db69784f33cbaadc2277233018a6f16fec789",
+          "bytes": 1794,
+          "lines": 52
+        },
+        "Arm/Map.lean": {
+          "blob_sha": "d25d400d2b081fadda698e31ed372debb8f50f95",
+          "bytes": 8010,
+          "lines": 198
+        },
+        "Arm/Memory/AddressNormalization.lean": {
+          "blob_sha": "c6153afe571009908b02438a35db84a9e34fc38a",
+          "bytes": 8056,
+          "lines": 207
+        },
+        "Arm/Memory/Attr.lean": {
+          "blob_sha": "3b68206f2b8605fac21a2ff10c8f14c8924d4983",
+          "bytes": 884,
+          "lines": 28
+        },
+        "Arm/Memory/Common.lean": {
+          "blob_sha": "b9f643fb38a3876727d5bc675190a77592a403f6",
+          "bytes": 30653,
+          "lines": 822
+        },
+        "Arm/Memory/MemOmega.lean": {
+          "blob_sha": "30840e5183466b4ef3c930f161db64d59b00ccc7",
+          "bytes": 10961,
+          "lines": 271
+        },
+        "Arm/Memory/MemoryProofs.lean": {
+          "blob_sha": "c5af4901208047ca8102076499e1e208043a1a65",
+          "bytes": 42188,
+          "lines": 1003
+        },
+        "Arm/Memory/Separate.lean": {
+          "blob_sha": "5e975f1ffde3e24f042d62653a727950b4ab3cea",
+          "bytes": 25082,
+          "lines": 709
+        },
+        "Arm/Memory/SeparateAutomation.lean": {
+          "blob_sha": "3a466509e8415fc224f865695de351488df96463",
+          "bytes": 27904,
+          "lines": 623
+        },
+        "Arm/Memory/SeparateProofs.lean": {
+          "blob_sha": "a5d30025775b3f6aac38154b871a7a073cb4b446",
+          "bytes": 12349,
+          "lines": 317
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.Memory.SeparateProofs.0.first_address_add_one_is_subset_of_region_helper-119-2.lrat": {
+          "blob_sha": "149dc7e68240b715dc0945d8f5dcb8a39ebb943a",
+          "bytes": 668940,
+          "lines": 2873
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.Memory.SeparateProofs.0.first_addresses_add_one_is_subset_of_region_general_helper-135-4.lrat": {
+          "blob_sha": "9b933ed62e57efd97a4765c1734cf6792a8662ed",
+          "bytes": 5181618,
+          "lines": 3624
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.Memory.SeparateProofs.0.first_addresses_add_one_preserves_subset_same_addr_helper-154-2.lrat": {
+          "blob_sha": "f5c74c32a05cbfed133b65c9b413ec3e5ba3181c",
+          "bytes": 11335,
+          "lines": 157
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.Memory.SeparateProofs.0.mem_separate_contiguous_regions_one_address_helper-276-2.lrat": {
+          "blob_sha": "58514b791bad88fb0f1c0699725788f969ed2df5",
+          "bytes": 1050795,
+          "lines": 4808
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.Memory.SeparateProofs.0.mem_separate_contiguous_regions_one_address_helper-277-2.lrat": {
+          "blob_sha": "58514b791bad88fb0f1c0699725788f969ed2df5",
+          "bytes": 1050795,
+          "lines": 4808
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.Memory.SeparateProofs.0.mem_subset_one_addr_region_lemma_helper-204-2.lrat": {
+          "blob_sha": "ea3efa11a5cbd49fd103e02c6bb29cd120755cbd",
+          "bytes": 886185,
+          "lines": 2209
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.SeparateProofs.0.first_address_add_one_is_subset_of_region_helper-118-2.lrat": {
+          "blob_sha": "8055cc2e41c686cc38d5f116a7d25000ac92f83d",
+          "bytes": 2980794,
+          "lines": 10776
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.SeparateProofs.0.first_addresses_add_one_is_subset_of_region_general_helper-134-4.lrat": {
+          "blob_sha": "c06eef94c810c4372a9c472c8af5af3d1a1229ff",
+          "bytes": 13682368,
+          "lines": 64669
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.SeparateProofs.0.first_addresses_add_one_preserves_subset_same_addr_helper-153-2.lrat": {
+          "blob_sha": "939c8e3a225ab194b58ca3ee05f574503911c855",
+          "bytes": 23995,
+          "lines": 958
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.SeparateProofs.0.mem_separate_contiguous_regions_one_address_helper-276-2.lrat": {
+          "blob_sha": "b8c4e8e09b78e40a10e35959b8c4f1f3cc118af6",
+          "bytes": 2999271,
+          "lines": 20274
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-_private.Arm.SeparateProofs.0.mem_subset_one_addr_region_lemma_helper-203-2.lrat": {
+          "blob_sha": "124525a31375a8e4b03c0b5e83a458abc735a94f",
+          "bytes": 1815861,
+          "lines": 5382
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-first_address_is_subset_of_region-112-2.lrat": {
+          "blob_sha": "b7fbbe90566fbe1ccc33ed0ff8315cca3e14cc04",
+          "bytes": 10142,
+          "lines": 390
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-first_address_is_subset_of_region-113-2.lrat": {
+          "blob_sha": "3b8d1276a9ed9aa712987735bd8d21e1e7a948f7",
+          "bytes": 4612,
+          "lines": 29
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_commutative-247-2.lrat": {
+          "blob_sha": "06f5dfffae1b49e49438f428944d982fc3135353",
+          "bytes": 226,
+          "lines": 1
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_contiguous_regions-270-2.lrat": {
+          "blob_sha": "e0894c9390f45113b44912732ba2da2aef968bf3",
+          "bytes": 12789556,
+          "lines": 179586
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_first_address_separate-263-2.lrat": {
+          "blob_sha": "4057088171c977b303873826a77314a8dc2ef17e",
+          "bytes": 15207,
+          "lines": 23
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_for_subset2-295-2.lrat": {
+          "blob_sha": "f62822ae72161f7ecae8d17aba0ad3314b2cd193",
+          "bytes": 20607102,
+          "lines": 221700
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_for_subset2-296-2.lrat": {
+          "blob_sha": "a0d2238070556f5d21823b0b9183c5b544302766",
+          "bytes": 21581824,
+          "lines": 447471
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_neq-257-2.lrat": {
+          "blob_sha": "0d3cffc1787f2e35ce47054df4dea56f67ee9d7a",
+          "bytes": 442427,
+          "lines": 1636
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_separate_starting_addresses_neq-252-2.lrat": {
+          "blob_sha": "4751e9575e7eb1ad2ac9fd9d49b2b9ee8cd5e8b0",
+          "bytes": 206116,
+          "lines": 31
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_eq-87-2.lrat": {
+          "blob_sha": "ef7e7d463ff11d02e96711ca12aed17fa8b79053",
+          "bytes": 233160,
+          "lines": 1805
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_eq-88-2.lrat": {
+          "blob_sha": "643b7172be0c2a82a434cf1225f1d675a242ad16",
+          "bytes": 125425,
+          "lines": 2951
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_first_address-93-2.lrat": {
+          "blob_sha": "e60da42d01ae97aa9ad16654e1e52ab57517b170",
+          "bytes": 101577,
+          "lines": 1678
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_first_address-94-2.lrat": {
+          "blob_sha": "bea25d28330849cd3d6b7d7352849427940fff42",
+          "bytes": 20488,
+          "lines": 126
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_one_addr_neq-100-2.lrat": {
+          "blob_sha": "e00cf4ba335c3da6c99d30ce49950dc488432b31",
+          "bytes": 13642570,
+          "lines": 65891
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_one_addr_neq-101-2.lrat": {
+          "blob_sha": "14232b675edac39df75bda1916c3b8e6e56af9d4",
+          "bytes": 5702097,
+          "lines": 21372
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_refl-77-2.lrat": {
+          "blob_sha": "101daedd2738ab8af332b0489f086dd7c6cb0037",
+          "bytes": 20446,
+          "lines": 720
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_refl-78-2.lrat": {
+          "blob_sha": "ee2ac6233099af0b395b3f72848197194993582f",
+          "bytes": 4612,
+          "lines": 45
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_same_address_different_sizes-107-2.lrat": {
+          "blob_sha": "fe449002529aad55564a7634826f78bcfe7a166d",
+          "bytes": 6953708,
+          "lines": 47903
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_same_address_different_sizes-108-2.lrat": {
+          "blob_sha": "1e9ebd1720ee7a84778797b8f35d115abfd65813",
+          "bytes": 3575579,
+          "lines": 8502
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subset_trans-239-2.lrat": {
+          "blob_sha": "d7227cbc2eb6b60965c63b98b5ad49bed065ae46",
+          "bytes": 23772195,
+          "lines": 220650
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subsets_overlap-83-2.lrat": {
+          "blob_sha": "f625b6231e8cbbe8005b44919720ff6751ffdd84",
+          "bytes": 20284,
+          "lines": 717
+        },
+        "Arm/Memory/lrat_files/SeparateProofs.lean-mem_subsets_overlap-84-2.lrat": {
+          "blob_sha": "c94adf7e49549eb84f30fb0581472feef2e5fdb9",
+          "bytes": 10324,
+          "lines": 70
+        },
+        "Arm/MinTheory.lean": {
+          "blob_sha": "a4cbc4fd69f3c83f1ab790faa0ef0d3f46afc74c",
+          "bytes": 6385,
+          "lines": 153
+        },
+        "Arm/State.lean": {
+          "blob_sha": "11cb8b00b426ba585ccba837fc7d761213c3ebac",
+          "bytes": 43952,
+          "lines": 1293
+        },
+        "Arm/Syntax.lean": {
+          "blob_sha": "99658f436f2f17bc4d5490b5ca6752a9b9bdc97e",
+          "bytes": 1713,
+          "lines": 41
+        },
+        "Arm/Util.lean": {
+          "blob_sha": "3fa5481eb50363cc40a8d53e2fb6675e3a60d572",
+          "bytes": 271,
+          "lines": 9
+        },
+        "Arm/mem_separate_for_subset.smt2": {
+          "blob_sha": "129e822cb0f415270bc362fceca060f1102b664d",
+          "bytes": 1668,
+          "lines": 73
+        },
+        "Benchmarks.lean": {
+          "blob_sha": "cc1f1c6b40ca8d92319f0a32b2bb405320bbadd8",
+          "bytes": 467,
+          "lines": 13
+        },
+        "Benchmarks/Command.lean": {
+          "blob_sha": "87dc9582efea545d472147118a76eb47a41a93e8",
+          "bytes": 8833,
+          "lines": 251
+        },
+        "Benchmarks/SHA512.lean": {
+          "blob_sha": "685a18b71832f18b07b9df543f7302467be199ef",
+          "bytes": 1094,
+          "lines": 29
+        },
+        "Benchmarks/SHA512_150.lean": {
+          "blob_sha": "0cf74cff461133b570d9baad588b083b8368080d",
+          "bytes": 469,
+          "lines": 17
+        },
+        "Benchmarks/SHA512_150_noKernel_noLint.lean": {
+          "blob_sha": "faec9e9fca12c256e075236d52693c6ad5be3d33",
+          "bytes": 529,
+          "lines": 19
+        },
+        "Benchmarks/SHA512_225.lean": {
+          "blob_sha": "a43f5dc5dd80de6906cb695510edf99bbdd3e630",
+          "bytes": 393,
+          "lines": 16
+        },
+        "Benchmarks/SHA512_225_noKernel_noLint.lean": {
+          "blob_sha": "df2b7a880dae2fd2bbdf25cd55b56a20b58822bf",
+          "bytes": 529,
+          "lines": 19
+        },
+        "Benchmarks/SHA512_400.lean": {
+          "blob_sha": "ae26c4e9da0ace2cb826a70a7a234383013eb535",
+          "bytes": 469,
+          "lines": 17
+        },
+        "Benchmarks/SHA512_400_noKernel_noLint.lean": {
+          "blob_sha": "cefce28c9a39bf2c91c057c88da5e2843bcdb35d",
+          "bytes": 529,
+          "lines": 19
+        },
+        "Benchmarks/SHA512_50.lean": {
+          "blob_sha": "7e388869b17e126807ec2f0815caafe04aa92630",
+          "bytes": 453,
+          "lines": 17
+        },
+        "Benchmarks/SHA512_50_noKernel_noLint.lean": {
+          "blob_sha": "f08a6868e6cc938eeb0dde61fd11920784021cc2",
+          "bytes": 526,
+          "lines": 19
+        },
+        "Benchmarks/SHA512_75.lean": {
+          "blob_sha": "068b06b337d044fcb9983fa494360901af5b069c",
+          "bytes": 453,
+          "lines": 17
+        },
+        "Benchmarks/SHA512_75_noKernel_noLint.lean": {
+          "blob_sha": "516880c87a14a83b9e682634ade8066dd8b345cb",
+          "bytes": 526,
+          "lines": 19
+        },
+        "CONTRIBUTING.md": {
+          "blob_sha": "93418a0ff3ad8212a64b4827fce7174bec16b7f8",
+          "bytes": 2131,
+          "lines": 57
+        },
+        "Correctness.lean": {
+          "blob_sha": "e043bd4868642d273ef87805af63c28098016c18",
+          "bytes": 340,
+          "lines": 8
+        },
+        "Correctness/ArmSpec.lean": {
+          "blob_sha": "fb7b9576872ec60b3990eb1f0b7dc52f80c94f33",
+          "bytes": 1474,
+          "lines": 46
+        },
+        "Correctness/Basic.lean": {
+          "blob_sha": "97171c4c1eb80154cf08ae8590ecb72dd7b7b09a",
+          "bytes": 2485,
+          "lines": 83
+        },
+        "Correctness/Correctness.lean": {
+          "blob_sha": "1ec8b9c97f1ad1fffc3d79db35d028f1bf3f0f2e",
+          "bytes": 26247,
+          "lines": 665
+        },
+        "Correctness/Iterate.lean": {
+          "blob_sha": "6e0cfc9202f99873c0a1ef002f8cf0b1add41a4f",
+          "bytes": 7528,
+          "lines": 220
+        },
+        "Doc.lean": {
+          "blob_sha": "d7adfce6557078499fe6eb34de563c8e41621190",
+          "bytes": 2741,
+          "lines": 20
+        },
+        "LICENSE": {
+          "blob_sha": "d28049b245d1cc935e11087893bac4d2444fea2d",
+          "bytes": 9158,
+          "lines": 70
+        },
+        "LNSym.code-workspace": {
+          "blob_sha": "dc9935d5d4894dcf17f758352087eb466a75017c",
+          "bytes": 211,
+          "lines": 17
+        },
+        "Main.lean": {
+          "blob_sha": "55ed91b30e979d256d18f79993f06448cf5746e1",
+          "bytes": 1394,
+          "lines": 44
+        },
+        "Makefile": {
+          "blob_sha": "f3588a577c55e59ac480465e6f8daabbee12c6d9",
+          "bytes": 1630,
+          "lines": 72
+        },
+        "Proofs.lean": {
+          "blob_sha": "1060b980e99ab9ebb18e12b47777118ecd64e3c0",
+          "bytes": 325,
+          "lines": 8
+        },
+        "Proofs/AES-GCM/AESGCMEncKernelPre.lean": {
+          "blob_sha": "e8dc16870ae0533aad57c3cbbee9486eee0e04cf",
+          "bytes": 387,
+          "lines": 14
+        },
+        "Proofs/AES-GCM/AESGCMEncKernelSym.lean": {
+          "blob_sha": "23029cc469852c953fa54ed807dfe6cf5259e2f0",
+          "bytes": 2563,
+          "lines": 54
+        },
+        "Proofs/AES-GCM/AESHWEncryptSym.lean": {
+          "blob_sha": "2739b007e0c9e48bfda7c6bbc1f593127bdb588b",
+          "bytes": 8202,
+          "lines": 171
+        },
+        "Proofs/AES-GCM/GCM.lean": {
+          "blob_sha": "53374f414a43336d6a99d0911df94f4c365532f6",
+          "bytes": 339,
+          "lines": 9
+        },
+        "Proofs/AES-GCM/GCMGmultV8Sym.lean": {
+          "blob_sha": "3ffab0d7bb7126b380b38ee1164fc41478743c71",
+          "bytes": 13257,
+          "lines": 328
+        },
+        "Proofs/AES-GCM/GCMInitV8Pre.lean": {
+          "blob_sha": "505c532b6f3529ac9b4019472620185533b7f8b2",
+          "bytes": 362,
+          "lines": 14
+        },
+        "Proofs/AES-GCM/GCMInitV8Sym.lean": {
+          "blob_sha": "8be3de133cdd83ef620edaf4084bb04f5542b8f3",
+          "bytes": 4245,
+          "lines": 99
+        },
+        "Proofs/AES-GCM/lrat_files/GCMGmultV8Sym.lean-GCMGmultV8Program.rev_elems_128_8_eq_rev_elems_64_8_extractLsb'-51-2.lrat": {
+          "blob_sha": "a3b6d5f3e0a00cbbfdde377c64ea4a9a51e5acb3",
+          "bytes": 22,
+          "lines": 1
+        },
+        "Proofs/AES-GCM/lrat_files/GCMGmultV8Sym.lean-GCMGmultV8Program.rev_elems_64_8_append_eq_rev_elems_128_8-60-2.lrat": {
+          "blob_sha": "0e43345a77bf9bf8d708571b5111b50e0b9e3f99",
+          "bytes": 22,
+          "lines": 1
+        },
+        "Proofs/AES-GCM/lrat_files/GCMInitV8Sym.lean-GCMInitV8Program.gcm_init_v8_program_correct-117-4.lrat": {
+          "blob_sha": "a639618ad34e42cc5f5eb740b3efda0b0d8c6f09",
+          "bytes": 45493307,
+          "lines": 100417
+        },
+        "Proofs/Bit_twiddling.lean": {
+          "blob_sha": "3aa0bc8d782dbd8466d0bdea359bc98045a22209",
+          "bytes": 8615,
+          "lines": 276
+        },
+        "Proofs/Experiments/Abs/Abs.lean": {
+          "blob_sha": "b0e75bfcdcf08775dffded5491ac8641d29ecac1",
+          "bytes": 1588,
+          "lines": 56
+        },
+        "Proofs/Experiments/Abs/AbsVCG.lean": {
+          "blob_sha": "beaeffc5ff1c4e2092d9628373affb0c31c88aac",
+          "bytes": 10088,
+          "lines": 284
+        },
+        "Proofs/Experiments/Abs/AbsVCGTandem.lean": {
+          "blob_sha": "72271b76debe6e0f226726e34b340e252b748a80",
+          "bytes": 11084,
+          "lines": 306
+        },
+        "Proofs/Experiments/AddLoop/AddLoop.lean": {
+          "blob_sha": "eb647fd028190e2e383435b81a75cc629c7682ef",
+          "bytes": 22603,
+          "lines": 625
+        },
+        "Proofs/Experiments/AddLoop/AddLoopTandem.lean": {
+          "blob_sha": "a5aa02d6548c9209bf074f91cbda8cfa37aea045",
+          "bytes": 20796,
+          "lines": 584
+        },
+        "Proofs/Experiments/Max/MaxProgram.lean": {
+          "blob_sha": "f88a1cb3b48d8017449590ae673a46aa58ed5423",
+          "bytes": 2082,
+          "lines": 44
+        },
+        "Proofs/Experiments/Max/MaxTandem.lean": {
+          "blob_sha": "ae8da77b5fc34c5115dbea54a058e6c208a8fd33",
+          "bytes": 37963,
+          "lines": 867
+        },
+        "Proofs/Experiments/Memcpy/MemCpyVCG.lean": {
+          "blob_sha": "c288d22bb653976ef6ab7e45f86dc63ad9b63923",
+          "bytes": 32647,
+          "lines": 787
+        },
+        "Proofs/Experiments/Memcpy/Memcpy.lean": {
+          "blob_sha": "f8701da1c43930367bdfba1937e96ccfe431e429",
+          "bytes": 2527,
+          "lines": 66
+        },
+        "Proofs/Experiments/MemoryAliasing.lean": {
+          "blob_sha": "4ee847c970768bbe6de578abb22a65b57d5ccfce",
+          "bytes": 32206,
+          "lines": 751
+        },
+        "Proofs/Experiments/SHA512MemoryAliasing.lean": {
+          "blob_sha": "7d6e69980105695ce9b6a470016a1bac0cb242da",
+          "bytes": 7303,
+          "lines": 166
+        },
+        "Proofs/Experiments/Summary1.lean": {
+          "blob_sha": "83e482013333d9a0ce57bebe77d9636ba4e32b64",
+          "bytes": 5204,
+          "lines": 84
+        },
+        "Proofs/MultiInsts.lean": {
+          "blob_sha": "3a57faaec9586d4d3c6b0303889db91baaf32f55",
+          "bytes": 3104,
+          "lines": 85
+        },
+        "Proofs/Popcount32.lean": {
+          "blob_sha": "6aa983a93acfa110fc76720d940c06278d34fc6d",
+          "bytes": 4348,
+          "lines": 120
+        },
+        "Proofs/Proofs.lean": {
+          "blob_sha": "9e1b4102432ae886fc635bf54ced343e101bc6a7",
+          "bytes": 795,
+          "lines": 21
+        },
+        "Proofs/SHA512/SHA512.lean": {
+          "blob_sha": "699bc9b96022a0da3a0e948c5cb401008f13b70c",
+          "bytes": 286,
+          "lines": 8
+        },
+        "Proofs/SHA512/SHA512BlockSym.lean": {
+          "blob_sha": "a9e7fa1c59f573baf2e69eac86b08c69b3e472db",
+          "bytes": 15085,
+          "lines": 242
+        },
+        "Proofs/SHA512/SHA512Loop.lean": {
+          "blob_sha": "45bd16efca4fe0572a5b03b65a84cfed3e61cb01",
+          "bytes": 14809,
+          "lines": 331
+        },
+        "Proofs/SHA512/SHA512LoopBlocks.lean": {
+          "blob_sha": "33082ff72a31070f801007be5dfe9679ec29dc01",
+          "bytes": 365900,
+          "lines": 5543
+        },
+        "Proofs/SHA512/SHA512Prelude.lean": {
+          "blob_sha": "27eaaa1a9f4a7b76db332b625470e34851cdf1d4",
+          "bytes": 9609,
+          "lines": 243
+        },
+        "Proofs/SHA512/SHA512StepLemmas.lean": {
+          "blob_sha": "62b5537301fbd4654b5f12c529c5daa861e38d3d",
+          "bytes": 774,
+          "lines": 23
+        },
+        "Proofs/SHA512/SHA512Sym.lean": {
+          "blob_sha": "c50cae691b1ab225bdb07da44a9efcd3f26b602d",
+          "bytes": 1109,
+          "lines": 27
+        },
+        "Proofs/SHA512/SHA512_block_armv8_rules.lean": {
+          "blob_sha": "1cde8283cdb8dad41b5503476cd1fd30161831f8",
+          "bytes": 10921,
+          "lines": 263
+        },
+        "Proofs/SHA512/lrat_files/SHA512_block_armv8_rules.lean-sha512_message_schedule_rule-31-2.lrat": {
+          "blob_sha": "e1ec43906d3f6969de044a008a6a665a6c86b891",
+          "bytes": 11471348,
+          "lines": 154995
+        },
+        "Proofs/SHA512/lrat_files/SHA512_block_armv8_rules.lean-sha512h2_rule-43-2.lrat": {
+          "blob_sha": "a55712825d8d8e1c734e56752cc1ae8561580e1a",
+          "bytes": 1549609,
+          "lines": 1726
+        },
+        "Proofs/Simple.lean": {
+          "blob_sha": "7a602e84c85328e8850bdd5327956ea3eaf7f2a3",
+          "bytes": 1034,
+          "lines": 39
+        },
+        "README.md": {
+          "blob_sha": "4fdb2f686642b03df090f0f04467d7eb665e33f7",
+          "bytes": 2016,
+          "lines": 61
+        },
+        "Specs/AESArm.lean": {
+          "blob_sha": "e486fff693433d445da50991349b629735788a82",
+          "bytes": 8183,
+          "lines": 238
+        },
+        "Specs/AESCommon.lean": {
+          "blob_sha": "73cc4265c96c3785db820dd6f923d309fa72c8f3",
+          "bytes": 4343,
+          "lines": 110
+        },
+        "Specs/AESV8.lean": {
+          "blob_sha": "44ba9457c5357150ab0e81bb7c696c776441664a",
+          "bytes": 7760,
+          "lines": 179
+        },
+        "Specs/GCM.lean": {
+          "blob_sha": "0a83fa5c3190c6b0316486d31c1fbf73c7ae9bd5",
+          "bytes": 6658,
+          "lines": 185
+        },
+        "Specs/GCMV8.lean": {
+          "blob_sha": "a491f1ffb0dd77440725cd04ce18256d7da050dc",
+          "bytes": 10694,
+          "lines": 271
+        },
+        "Specs/SHA512.lean": {
+          "blob_sha": "c87b83e120cb3b133d05e8ff67639cb5fbf07df2",
+          "bytes": 8894,
+          "lines": 228
+        },
+        "Specs/SHA512Common.lean": {
+          "blob_sha": "334e3dfdf683acffd5a1cc5628239c3a353a4294",
+          "bytes": 947,
+          "lines": 32
+        },
+        "Specs/Specs.lean": {
+          "blob_sha": "01b038f279d9d5033472234a3d710544f618e97d",
+          "bytes": 315,
+          "lines": 11
+        },
+        "THIRD_PARTY_LICENSES": {
+          "blob_sha": "c1e95d76e3b09954d0eaebfc629588f12f1226c2",
+          "bytes": 1235,
+          "lines": 24
+        },
+        "Tactics.lean": {
+          "blob_sha": "597da55ca32a80e6900405f4515504b941eb6300",
+          "bytes": 461,
+          "lines": 13
+        },
+        "Tactics/Aggregate.lean": {
+          "blob_sha": "632f7df6fd18041355d016fc3b7b67a4bf8537be",
+          "bytes": 4961,
+          "lines": 123
+        },
+        "Tactics/Attr.lean": {
+          "blob_sha": "15c4a568f98ea1de83917db4a4279b42bdbe1048",
+          "bytes": 3019,
+          "lines": 81
+        },
+        "Tactics/BvOmegaBench.lean": {
+          "blob_sha": "5ea38a4a64b23f13e05e7dd480021a04d646593a",
+          "bytes": 4771,
+          "lines": 119
+        },
+        "Tactics/CSE.lean": {
+          "blob_sha": "59adcb09b7fa5ac89dfb370a248aa96c861445ff",
+          "bytes": 13044,
+          "lines": 374
+        },
+        "Tactics/ChangeHyps.lean": {
+          "blob_sha": "cc3c00d218adbcbec8b544e52dc86e3f1699b369",
+          "bytes": 12317,
+          "lines": 287
+        },
+        "Tactics/ClearNamed.lean": {
+          "blob_sha": "5f67be426b2f12635daded5c9f280d0216d9bc88",
+          "bytes": 688,
+          "lines": 18
+        },
+        "Tactics/Common.lean": {
+          "blob_sha": "ea115419da9a6360925185d20d6bbc40252fb20e",
+          "bytes": 14706,
+          "lines": 384
+        },
+        "Tactics/FetchAndDecode.lean": {
+          "blob_sha": "bf0d3e56b4e9137bdb9a94b042ba130952800189",
+          "bytes": 4534,
+          "lines": 100
+        },
+        "Tactics/IntroHyp.lean": {
+          "blob_sha": "8dc20a4dfacc5b7fff558bc368a72ddf4257ec79",
+          "bytes": 2677,
+          "lines": 67
+        },
+        "Tactics/Name.lean": {
+          "blob_sha": "15f58423936b81cb32375fc61ef55748c95ada9d",
+          "bytes": 356,
+          "lines": 9
+        },
+        "Tactics/PruneUpdates.lean": {
+          "blob_sha": "17c7cbcc118b4d6acfd9137d451987a3fc0c5369",
+          "bytes": 25924,
+          "lines": 630
+        },
+        "Tactics/PruneUpdatesLogic.lean": {
+          "blob_sha": "e22852a40e3937d35218b78d18019f1cb9b420c8",
+          "bytes": 18134,
+          "lines": 627
+        },
+        "Tactics/Rename.lean": {
+          "blob_sha": "70c40d8ddabf922f38139121420696748b31307a",
+          "bytes": 411,
+          "lines": 13
+        },
+        "Tactics/Simp.lean": {
+          "blob_sha": "cd00136965432bec5b648b1a84419a5ebea2a959",
+          "bytes": 5373,
+          "lines": 139
+        },
+        "Tactics/SkipProof.lean": {
+          "blob_sha": "e507f8477bc35eb85b6d58f36bbde7f0e602e5c6",
+          "bytes": 2020,
+          "lines": 52
+        },
+        "Tactics/StepThms.lean": {
+          "blob_sha": "2f0348394604be6001ca55638ddda4d063901d15",
+          "bytes": 10354,
+          "lines": 263
+        },
+        "Tactics/Sym.lean": {
+          "blob_sha": "ca17f2ba53855d63ce6c08f12edbace25e13d632",
+          "bytes": 17898,
+          "lines": 439
+        },
+        "Tactics/Sym/AxEffects.lean": {
+          "blob_sha": "fb1a6956fba1701d385cdd2e14c35a03a022626d",
+          "bytes": 31954,
+          "lines": 810
+        },
+        "Tactics/Sym/Common.lean": {
+          "blob_sha": "bb151ffdcd3e9a184c34aa2ca539f9418066f049",
+          "bytes": 1264,
+          "lines": 41
+        },
+        "Tactics/Sym/Context.lean": {
+          "blob_sha": "ced47fe250d412f1c322ce35fee14285f9408011",
+          "bytes": 17507,
+          "lines": 480
+        },
+        "Tactics/Sym/FetchAndDecode.lean": {
+          "blob_sha": "d584648b429d270c259fe0935b67f5a4d1bdd1fa",
+          "bytes": 1749,
+          "lines": 55
+        },
+        "Tactics/Sym/LCtxSearch.lean": {
+          "blob_sha": "bc59eb5d4a8587e77828e9766735ad827e1737a1",
+          "bytes": 9350,
+          "lines": 235
+        },
+        "Tactics/Sym/MemoryEffects.lean": {
+          "blob_sha": "5b8d37193d88419e1aa67d0dbc87cb273286a2fa",
+          "bytes": 4238,
+          "lines": 121
+        },
+        "Tactics/Sym/ProgramInfo.lean": {
+          "blob_sha": "d7903a1b1f705625a3a468d32d60c4e36e2f13d1",
+          "bytes": 12378,
+          "lines": 354
+        },
+        "Tactics/SymBlock.lean": {
+          "blob_sha": "dd6f60efd5257b004508462b470a34e9e5e7ab20",
+          "bytes": 9726,
+          "lines": 246
+        },
+        "Tests.lean": {
+          "blob_sha": "0542dfa4d2066ddc4489b769f7862f425e16c986",
+          "bytes": 322,
+          "lines": 8
+        },
+        "Tests/AES-GCM/AESGCMDecKernelProgram.lean": {
+          "blob_sha": "06bd110d40a4014b1014a5db9a55f7112108fb2a",
+          "bytes": 51220,
+          "lines": 776
+        },
+        "Tests/AES-GCM/AESGCMEncKernelProgram.lean": {
+          "blob_sha": "8a9c201b1c4f5b258d7bd0dd55967a5d237304e4",
+          "bytes": 50880,
+          "lines": 773
+        },
+        "Tests/AES-GCM/AESGCMProgramTests.lean": {
+          "blob_sha": "34538ccf0b290975e091d7194d14432a77dda380",
+          "bytes": 18700,
+          "lines": 451
+        },
+        "Tests/AES-GCM/AESGCMSpecTest.lean": {
+          "blob_sha": "8f17f107c590fbaa61953e1f34e8c89c25756201",
+          "bytes": 13224,
+          "lines": 257
+        },
+        "Tests/AES-GCM/AESHWCtr32EncryptBlocksProgram.lean": {
+          "blob_sha": "79fa5d8ef7f484ce0530f8c387f5e91d28638728",
+          "bytes": 12007,
+          "lines": 198
+        },
+        "Tests/AES-GCM/AESHWEncryptProgram.lean": {
+          "blob_sha": "d32c676bb3fab7b67bfb88feb160e65159c28d79",
+          "bytes": 2102,
+          "lines": 49
+        },
+        "Tests/AES-GCM/AESHWSetEncryptKeyProgram.lean": {
+          "blob_sha": "a4004ec0fc2a4d511306f3d34ea815383993f6e9",
+          "bytes": 9717,
+          "lines": 174
+        },
+        "Tests/AES-GCM/AESSpecTest.lean": {
+          "blob_sha": "7564955be20c933b3d10f62e6099802e37705a83",
+          "bytes": 1228,
+          "lines": 42
+        },
+        "Tests/AES-GCM/AESV8ProgramTests.lean": {
+          "blob_sha": "085fe7a25c100762795b3c85e9d95bc9b10ae426",
+          "bytes": 17550,
+          "lines": 448
+        },
+        "Tests/AES-GCM/AESV8SpecTests.lean": {
+          "blob_sha": "5446b21f7a52cc76a26302f7f4aae64562101fa8",
+          "bytes": 3116,
+          "lines": 84
+        },
+        "Tests/AES-GCM/GCMGhashV8Program.lean": {
+          "blob_sha": "61e66037ced99676a73122d3de5ee1d094741748",
+          "bytes": 23838,
+          "lines": 353
+        },
+        "Tests/AES-GCM/GCMGmultV8Program.lean": {
+          "blob_sha": "9286ebb6f84ba981a6e805e67c8e5d648e950886",
+          "bytes": 3993,
+          "lines": 61
+        },
+        "Tests/AES-GCM/GCMInitV8Program.lean": {
+          "blob_sha": "10c43638ead759f60cfc45cd866c7bbaee33030f",
+          "bytes": 11985,
+          "lines": 177
+        },
+        "Tests/AES-GCM/GCMProgramTests.lean": {
+          "blob_sha": "c2957e2459a836e1bbf0d2e79ff09fe3c70caace",
+          "bytes": 10658,
+          "lines": 305
+        },
+        "Tests/AES-GCM/GCMSpecTests.lean": {
+          "blob_sha": "2bd8598ecfd54ae2f5c6974a4c32a5610a1ae99e",
+          "bytes": 1540,
+          "lines": 52
+        },
+        "Tests/AWSLCELFTests.lean": {
+          "blob_sha": "b1055425392714caba3c4e73cf5505874bc6732f",
+          "bytes": 388,
+          "lines": 11
+        },
+        "Tests/Debug.lean": {
+          "blob_sha": "940c593452d9e70038c337da33c2cfe6bdc1088c",
+          "bytes": 1801,
+          "lines": 63
+        },
+        "Tests/ELFParser/AWSLCAESGCMKernel.lean": {
+          "blob_sha": "76193dc5dc3502fb19a1458b86b0acc8babdfd53",
+          "bytes": 23365,
+          "lines": 1452
+        },
+        "Tests/ELFParser/AWSLCAESV8.lean": {
+          "blob_sha": "91465229ea15c68acec65051e2bb3ba0f1528559",
+          "bytes": 6468,
+          "lines": 366
+        },
+        "Tests/ELFParser/AWSLCCrypto.lean": {
+          "blob_sha": "85ef8741220ea46807e3b0671388b1eae5fc462b",
+          "bytes": 498,
+          "lines": 21
+        },
+        "Tests/ELFParser/AWSLCGCMV8.lean": {
+          "blob_sha": "80020c7948d062cbc7fdd46c98fdd5f598873cd0",
+          "bytes": 8279,
+          "lines": 509
+        },
+        "Tests/ELFParser/AWSLCSHA2.lean": {
+          "blob_sha": "624fb7eba6844d254c20a2da58a2f9888b6e832a",
+          "bytes": 11761,
+          "lines": 697
+        },
+        "Tests/ELFParser/Data/libtest.so": {
+          "blob_sha": "9ad64161519afe41ae175728609560292dd8e213",
+          "bytes": 70000,
+          "lines": 12
+        },
+        "Tests/ELFParser/Data/test.o": {
+          "blob_sha": "9a64f13874157aba6a9843c71dea7b11af180c6b",
+          "bytes": 1680,
+          "lines": 7
+        },
+        "Tests/ELFParser/MiscTests.lean": {
+          "blob_sha": "2a08e1a62d63d0673686f4de16826fbcdd6defbd",
+          "bytes": 1567,
+          "lines": 42
+        },
+        "Tests/ELFParser/SymbolContents.lean": {
+          "blob_sha": "6da897c20564d5071ac4ca048e4df34896c115f9",
+          "bytes": 2934,
+          "lines": 71
+        },
+        "Tests/LDSTTest.lean": {
+          "blob_sha": "d9911a3d1b5af1b29cf6f6e5d25efc75a1611bac",
+          "bytes": 5548,
+          "lines": 147
+        },
+        "Tests/SHA2/SHA512Program.lean": {
+          "blob_sha": "112ad34ab4b3013d64548fe9b4a937ef1e229d6a",
+          "bytes": 38312,
+          "lines": 521
+        },
+        "Tests/SHA2/SHA512ProgramTest.lean": {
+          "blob_sha": "fda116ac5177ac8370ad2c6ade7c92ff7f699586",
+          "bytes": 6005,
+          "lines": 163
+        },
+        "Tests/SHA2/SHA512SpecTest.lean": {
+          "blob_sha": "eb57e710db1fe207a21780825bb81b61739d070d",
+          "bytes": 4050,
+          "lines": 145
+        },
+        "Tests/SHA2/SHA512StandardSpecTest.lean": {
+          "blob_sha": "120df0b7335d494b0ecf936e0ab5e57ec9579408",
+          "bytes": 829,
+          "lines": 27
+        },
+        "Tests/Tactics/AddressNormalization.lean": {
+          "blob_sha": "709275d89e27b5f2c8548ec53c93c540dfa1e7bb",
+          "bytes": 2948,
+          "lines": 82
+        },
+        "Tests/Tactics/CSE.lean": {
+          "blob_sha": "3585292e8c457b9c627eb9c32e22b2c6ba6fe702",
+          "bytes": 9591,
+          "lines": 326
+        },
+        "Tests/Tactics/ReduceFetchInst.lean": {
+          "blob_sha": "7ff5ae133c8e1d1fc37b067b51de24ea1d8c0b4c",
+          "bytes": 839,
+          "lines": 22
+        },
+        "Tests/Tactics/Sym.lean": {
+          "blob_sha": "65f13205d6ac661d0e267f35f048b3fac6b2e6c3",
+          "bytes": 1361,
+          "lines": 48
+        },
+        "Tests/Tactics/SymBlock.lean": {
+          "blob_sha": "da82e4fe4ee2f202c3796f14116bff2d528f1eef",
+          "bytes": 3659,
+          "lines": 95
+        },
+        "Tests/Tests.lean": {
+          "blob_sha": "64a33a775e05dc967c9abd21a9ca170b8536aee5",
+          "bytes": 939,
+          "lines": 23
+        },
+        "doc/add_new_inst.md": {
+          "blob_sha": "ce55330f797672c73d8cb3fce860f21cef339707",
+          "bytes": 2500,
+          "lines": 50
+        },
+        "docgen.sh": {
+          "blob_sha": "733c5eca88c6523760efc3a2c3db28b621ca11c4",
+          "bytes": 41,
+          "lines": 3
+        },
+        "lake-manifest.json": {
+          "blob_sha": "e1a8d161fb5daf67984c201a163955e66406372e",
+          "bytes": 1953,
+          "lines": 65
+        },
+        "lakefile.lean": {
+          "blob_sha": "70d5df236c3dc53e13ea019958c8379b1326919a",
+          "bytes": 2006,
+          "lines": 58
+        },
+        "lean-toolchain": {
+          "blob_sha": "143740cb3920abf140fbae7af9f36cad1d0b10f2",
+          "bytes": 36,
+          "lines": 1
+        },
+        "scripts/Dockerfile": {
+          "blob_sha": "0ff8bf49f04ae9d5a341a96538f5536986bec9c4",
+          "bytes": 337,
+          "lines": 10
+        },
+        "scripts/benchmark.sh": {
+          "blob_sha": "717892bf284b5756acbfcd924d101af9c68abbda",
+          "bytes": 1253,
+          "lines": 39
+        },
+        "scripts/build_awslc.cmake": {
+          "blob_sha": "70c63d048c30ef693dea76e75b4550d426601d59",
+          "bytes": 749,
+          "lines": 18
+        },
+        "scripts/build_awslc.sh": {
+          "blob_sha": "f15d124734cb92fb92e9d759a67d020d305b6815",
+          "bytes": 1362,
+          "lines": 44
+        },
+        "scripts/ci_ubuntu_build_awslc.sh": {
+          "blob_sha": "8e1114ba66ba2536416fb7ff191ca993928a7d1b",
+          "bytes": 307,
+          "lines": 11
+        },
+        "scripts/gen_armconstr_cases.py": {
+          "blob_sha": "839f58310c72b459809a3db46ab57fe64bb43f4e",
+          "bytes": 2920,
+          "lines": 85
+        },
+        "scripts/profile.sh": {
+          "blob_sha": "9be0994d252f9b499102f3fa8fbf41ebff2fba4b",
+          "bytes": 1349,
+          "lines": 40
+        }
+      }
+    },
+    "joshlf/anneal-private": {
+      "url": "https://github.com/joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "tree": "219dfb9655e7b1a2754d3590cdbbec224ac790a0",
+      "lean_toolchain": "leanprover/lean4:v4.34.1",
+      "inspected_files": {
+        "PRINCIPLES.md": {
+          "blob_sha": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+          "bytes": 5553,
+          "lines": 55
+        },
+        "trusted/lean/Trusted/Refinement.lean": {
+          "blob_sha": "23b043e73a60f0d1dfc1bdbeafbdb99e20e59db4",
+          "bytes": 27964,
+          "lines": 572
+        },
+        "trusted/lean/Trusted/StepResult.lean": {
+          "blob_sha": "9825e59b0de79d41329e9401ae4b5562707e4609",
+          "bytes": 8009,
+          "lines": 187
+        },
+        "trusted/lean/lean-toolchain": {
+          "blob_sha": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+          "bytes": 25,
+          "lines": 1
+        }
+      }
+    }
+  },
+  "support_artifacts": {
+    "support/lnsym_architecture_and_bridge_probe.lean": {
+      "sha256": "75a3236e94f24593dd5f5f41800e8c8fba2048874c3ad4b0c8ab32dff136477a",
+      "bytes": 56629,
+      "lines": 1390,
+      "verified_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768",
+      "sorry_count": 0,
+      "custom_axiom_count": 0
+    }
+  }
+}

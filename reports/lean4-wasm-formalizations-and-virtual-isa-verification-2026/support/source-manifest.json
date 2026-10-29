@@ -1,0 +1,254 @@
+{
+  "package": "lean4-wasm-formalizations-and-virtual-isa-verification-2026",
+  "observed_at": "2026-10-29",
+  "probe_verification": {
+    "path": "support/lean_wasm_and_ebpf_bridge_probe.lean",
+    "sha256": "62dfcee3ef3883a48da7abda9fed30bb8097460d65959f76af8c674bdf2298a4",
+    "lines": 1250,
+    "toolchain": "leanprover/lean4:v4.34.1",
+    "toolchain_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/lean_wasm_and_ebpf_bridge_probe.lean",
+    "exit_code": 0,
+    "active_sorry_count": 0,
+    "custom_axiom_count": 0,
+    "verified_theorems": [
+      {
+        "name": "WasmExtrinsicIntrinsic.stepIntrinsic_erases_to_extrinsic",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmExtrinsicIntrinsic.execIntrinsicSeq_erases_to_extrinsic",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmExtrinsicIntrinsic.extrinsic_progress_and_preservation",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmExtrinsicIntrinsic.linobit_unconstrained_reduce_vacuity",
+        "axioms": []
+      },
+      {
+        "name": "WasmTrapVsRustUb.wasm_trap_is_defined_not_ub",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmTrapVsRustUb.rustc_raw_load_to_wasm_compiles",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmTrapVsRustUb.wasm_linear_memory_lack_of_provenance",
+        "axioms": ["propext", "Quot.sound"]
+      },
+      {
+        "name": "WasmTrapVsRustUb.wasm_trap_refutes_ensuresNoTrap",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmTrapVsRustUb.wasm_trap_satisfies_valueOrTrap",
+        "axioms": ["propext"]
+      },
+      {
+        "name": "WasmTrapVsRustUb.wasm32_u32_wrapping_vs_memarg_offset",
+        "axioms": []
+      },
+      {
+        "name": "EbpfVerifierAndKopsBridge.ebpfVerifiedChecker",
+        "axioms": ["propext", "Quot.sound"]
+      },
+      {
+        "name": "EbpfVerifierAndKopsBridge.kops_dual_sequence_jit_soundness",
+        "axioms": ["propext", "Quot.sound"]
+      }
+    ]
+  },
+  "lean4_wasm_repositories": [
+    {
+      "repository": "plum-umd/lean-wasm",
+      "url": "https://github.com/plum-umd/lean-wasm",
+      "revision": "d438fabdd6304bcbc72f211b9f532be76ebc7f29",
+      "commit_date": "2026-10-29T18:10:02-04:00",
+      "lean_toolchain": "leanprover/lean4:v4.27.0",
+      "lean_files": 96,
+      "lean_loc": 19394,
+      "theorem_declarations": 218,
+      "active_sorry_count": 0,
+      "comment_or_string_sorry_count": 0,
+      "custom_axiom_count": 0,
+      "wasm_spec_target": "Wasm 3.0 (2026-10-09 spec snapshot)",
+      "testsuite_submodule_commit": "b464a4cd100d98175ae6e3890db89a2e6c8302f7",
+      "testsuite_conformance": "257/257 scripts, 65,202 commands, 0 failures",
+      "key_files": [
+        "Wasm/Syntax/Instr.lean",
+        "Wasm/Validation.lean",
+        "Wasm/ExecutableValidation.lean",
+        "Wasm/ExecutableValidationSoundness.lean",
+        "Wasm/Reduction.lean",
+        "Wasm/Stepper.lean",
+        "Wasm/Configuration.lean",
+        "Wasm/Host.lean",
+        "Wasm/Wat/Parser.lean",
+        "Wasm/Binary/DecodeModule.lean"
+      ]
+    },
+    {
+      "repository": "cajal-technologies/talos",
+      "url": "https://github.com/cajal-technologies/talos",
+      "revision": "80644390de3ad4db3055445259a034413ae41577",
+      "commit_date": "2026-10-06T22:47:20-07:00",
+      "lean_toolchain": "leanprover/lean4:v4.34.1",
+      "dependencies": [
+        "leanprover-community/mathlib4@0f4eab4be9cd2fd9bcd1ca9bbeadfa16b8ae0b82",
+        "cajal-technologies/iris-lean@b1152bd6e649f4ac376e7f778d02581d66b622cf"
+      ],
+      "lean_files": 410,
+      "lean_loc": 176097,
+      "theorem_declarations": 3718,
+      "active_sorry_count": 0,
+      "comment_or_string_sorry_count": 6,
+      "custom_axiom_count": 0,
+      "wasm_spec_target": "Wasm 2.0 + Wasm 3.0 exception handling (try_table, throw, throw_ref) + multi-memory",
+      "key_files": [
+        "interpreter/Interpreter/Wasm/Syntax/Types.lean",
+        "interpreter/Interpreter/Wasm/Syntax/Instructions.lean",
+        "interpreter/Interpreter/Wasm/Runtime/Store.lean",
+        "interpreter/Interpreter/Wasm/Semantics.lean",
+        "interpreter/Interpreter/Wasm/SmallStep.lean",
+        "interpreter/Interpreter/Wasm/SmallStepTest.lean",
+        "codelib/CodeLib/SepLogic/SmallStepLanguage.lean",
+        "codelib/CodeLib/SepLogic/SmallStepOutcomeAdequacy.lean",
+        "codelib/CodeLib/SepLogic/WasmHeap.lean",
+        "codelib/CodeLib/SepLogic/WasmRules.lean",
+        "programs/lean/Project/SwapElements.lean",
+        "programs/lean/Project/Mergesort.lean",
+        "programs/lean/Project/RustVec.lean"
+      ]
+    },
+    {
+      "repository": "linobit-corp/wasm-lean",
+      "url": "https://github.com/linobit-corp/wasm-lean",
+      "revision": "6d612a510d145950838ec193e9ae0b75a7c881ef",
+      "commit_date": "2026-04-25T16:40:17+09:00",
+      "lean_toolchain": "leanprover/lean4:v4.15.0",
+      "dependencies": [
+        "linobit-corp/bfloat-lean@89b9d3f3fd842bc5a12854b07c92a493c9c9d2b5"
+      ],
+      "lean_files": 54,
+      "lean_loc": 14005,
+      "theorem_declarations": 250,
+      "active_sorry_count": 0,
+      "comment_or_string_sorry_count": 2,
+      "custom_axiom_count": 0,
+      "wasm_spec_target": "Wasm 1.0 MVP + partial 2.0 bulk memory/table ops",
+      "testsuite_conformance": "14,342/14,342 Wasm 1.0 spec assertions",
+      "vacuity_findings": [
+        "WasmLean/Semantics/Reduce.lean:339-343 defines Reduce.r_interp_flat with zero hypotheses relating any consumed/produced operand stacks across any BasicInstr",
+        "WasmLean/Semantics/Reduce.lean:256-329 defines r_load, r_store, r_memory_size, r_memory_grow, r_memory_fill, r_memory_copy, r_table_get, r_table_set, r_call_indirect, r_cvtop with zero premises",
+        "WasmLean/Correctness/Lemmas.lean:73-112 and WasmLean/Correctness/Block.lean:285,825 route execBasicInstr and execBlock_sound through r_interp_flat without using the interpreter execution hypothesis _hbi"
+      ]
+    },
+    {
+      "repository": "aionescu/lean-wasm",
+      "url": "https://github.com/aionescu/lean-wasm",
+      "revision": "66f1166f84a763b23475b0eb660153c72ec54d29",
+      "commit_date": "2024-07-11T16:28:18+03:00",
+      "lean_toolchain": "leanprover/lean4:v4.10.0-rc2",
+      "lean_files": 9,
+      "lean_loc": 1458,
+      "theorem_declarations": 0,
+      "active_sorry_count": 8,
+      "comment_or_string_sorry_count": 11,
+      "custom_axiom_count": 0,
+      "wasm_spec_target": "Core Wasm 1.0 control-flow + i32/i64 arithmetic fragment (no memory/tables/globals)",
+      "key_files": [
+        "Wasm/Util/HList.lean",
+        "Wasm/IR.lean",
+        "Wasm/Eval/Common.lean",
+        "Wasm/Eval/Spec.lean",
+        "Wasm/Eval/Fast.lean"
+      ]
+    },
+    {
+      "repository": "argumentcomputer/Wasm.lean",
+      "url": "https://github.com/argumentcomputer/Wasm.lean",
+      "revision": "454172e1219ce648732211a7804829809dffd64d",
+      "commit_date": "2023-12-13T17:43:23-03:00",
+      "lean_toolchain": "leanprover/lean4:nightly-2023-01-10",
+      "lean_files": 23,
+      "lean_loc": 4616,
+      "theorem_declarations": 0,
+      "active_sorry_count": 8,
+      "comment_or_string_sorry_count": 1,
+      "custom_axiom_count": 0,
+      "wasm_spec_target": "Wasm 1.0 subset without linear memory",
+      "key_files": [
+        "Wasm/AST.lean",
+        "Wasm/Engine.lean",
+        "Wasm/Bytes.lean",
+        "Wasm/Leb128.lean",
+        "Wasm/Wast/Parser.lean"
+      ]
+    },
+    {
+      "repository": "T-Brick/lean-wasm",
+      "url": "https://github.com/T-Brick/lean-wasm",
+      "revision": "43b051f30b920e4d1253d83ae08b3dc83b4d6d88",
+      "commit_date": "2025-11-14T15:52:47-05:00",
+      "lean_toolchain": "leanprover/lean4:v4.25.0",
+      "lean_files": 44,
+      "lean_loc": 7005,
+      "theorem_declarations": 12,
+      "active_sorry_count": 39,
+      "comment_or_string_sorry_count": 3,
+      "custom_axiom_count": 0,
+      "wasm_spec_target": "Wasm 2.0 scaffold (incomplete)",
+      "key_files": [
+        "Wasm/Syntax.lean",
+        "Wasm/Validation/Statics.lean",
+        "Wasm/Dynamics.lean",
+        "Wasm/Binary.lean",
+        "Wasm/Text/Module.lean"
+      ]
+    }
+  ],
+  "comparison_repositories": [
+    {
+      "repository": "WasmCert/WasmCert-Coq",
+      "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8",
+      "iris_wasm_opam_branch_revision": "57b05fb59a193078e5db4378cce164766e7b8a2c",
+      "iriswasm_revision": "e37f8387a1171d104d78a2f77f9e637e090cf3d4",
+      "commit_date": "2026-10-12T17:44:28+02:00"
+    },
+    {
+      "repository": "WasmCert/WasmCert-Isabelle",
+      "revision": "d9b4659c8b38879a5fc7e0213950751a61091908",
+      "commit_date": "2026-08-27T17:46:24+01:00"
+    },
+    {
+      "repository": "future-proof-iot/CertFC",
+      "revision": "75690097c946c555cc4ce1e69d13ef86dc738180",
+      "commit_date": "2022-09-01T15:08:52+02:00"
+    },
+    {
+      "repository": "uw-unsat/jitterbug",
+      "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+      "commit_date": "2023-07-03T12:25:17-07:00"
+    },
+    {
+      "repository": "eunomia-bpf/bpf-benchmark",
+      "revision": "d03e6742bd2a56b94448071b0439d67a6574e9a3",
+      "commit_date": "2026-10-29T00:08:23-07:00",
+      "lean_subdir": "kinsn/lean",
+      "lean_toolchain": "leanprover/lean4:v4.28.0"
+    },
+    {
+      "repository": "leanprover/LNSym",
+      "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+      "commit_date": "2024-12-09T11:36:56-08:00"
+    },
+    {
+      "repository": "joshlf/anneal-private",
+      "revision": "0c00b820d4571ba35a9c48dfe2cca50dfd1d3e0d"
+    }
+  ]
+}

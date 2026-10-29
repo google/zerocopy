@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "lean4",
+    "sail",
+    "archsem",
+    "isa-models",
+    "concurrency-semantics",
+    "formal-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rems-project/sail",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+        "symbols": "Sail_plugin_lean.lean_rewrites, Sail_plugin_lean.lean_target, Pretty_print_lean.doc_def, Pretty_print_lean.doc_sail_typ, Pretty_print_lean.d_of_arg_with_typ, Deptype_targets.unfold_exists_typ, Rewrites.rewrite_var_updates, Rewrites.rewrite_if_eq, Type_check.unify"
+      }
+    },
+    {
+      "name": "rems-project/lean-sail",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/lean-sail",
+        "version": "v8",
+        "revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+        "symbols": "Sail.ArchSem.Effect, Sail.ArchSem.FreeM, Sail.ArchSem.InstructionEffect, Sail.ArchSem.PreSailM, Sail.ArchSem.PreSailME, Sail.ArchSem.Sequential.interpretEffect, Sail.ArchSem.Sequential.interpretSailEffects, Sail.ConcurrencyInterfaceV1.PreSailM, Sail.BitVec.updateSubrange', IntRange"
+      }
+    },
+    {
+      "name": "rems-project/archsem-lean",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/archsem-lean",
+        "version": "0.1.0",
+        "revision": "318583a5f2052c039c25dfd69a3beec0b0a27090",
+        "symbols": "ArchSem.NondeterministicMonad.NExcept, ArchSem.NondeterministicMonad.NEStateM, ArchSem.TerminatingModel.ComputationalTerminatingModel, ArchSem.CandidateExecutions.PreCand, ArchSem.CandidateExecutions.Cand, ArchSem.Trace.FreeM.traces, ArchSemTinyArm.Sequential.interpretEffect, ArchSemTinyArm.Promising.runEffect, ArchSemTinyArm.Promising.runNaive, ArchSemTinyArm.Promising.runPromiseFirst, ArchSemTinyArm.SequentialAxiomatic.model"
+      }
+    },
+    {
+      "name": "rems-project/archsem",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/archsem",
+        "revision": "42204d87df2e7d20e5ec23deb8ba8220e65148ab",
+        "symbols": "Interface.outcome, IMonFromSail.iMon_from_Sail, SequentialModel.sequential_model_outcome, GenPromising.Promising.Model, GenPromising.CPState.run_transition_promise_first, UMPromising.UMPromising, VMPromising.Ev.out_of_order, VMUMEquivThm.VMUM_phase1, UMRiscV.consistent_ok, OperationalX86TSO.x86_tso_modelc"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-arm-lean",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/sail-tiny-arm-lean",
+        "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+        "symbols": "SailTinyArmUser.Functions.initialize_registers, SailTinyArmUser.Functions.decode, SailTinyArmUser.Functions.fetch_and_execute"
+      }
+    },
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/joshlf/anneal-private",
+        "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "symbols": "Trusted.Behavior, Trusted.WellFormed, Trusted.StepResult, Trusted.ReachesPrefix, Trusted.BehaviorOf, Trusted.MemState.visibleAtomicMsgs, Trusted.applyAtomicLoad, Trusted.Audit.audit, Trusted.Audit.verifyCrateAudit"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "kind": "tool",
+        "url": "https://github.com/leanprover/lean4",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

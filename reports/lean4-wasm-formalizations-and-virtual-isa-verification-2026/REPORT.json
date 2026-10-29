@@ -1,0 +1,118 @@
+{
+  "topics": [
+    "lean4",
+    "wasm",
+    "webassembly",
+    "ebpf",
+    "virtual-isa",
+    "isa-verification",
+    "iris-lean",
+    "separation-logic",
+    "compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "plum-umd/lean-wasm",
+      "identity": {
+        "repository": "plum-umd/lean-wasm",
+        "revision": "d438fabdd6304bcbc72f211b9f532be76ebc7f29",
+        "lean_toolchain": "leanprover/lean4:v4.27.0"
+      }
+    },
+    {
+      "name": "cajal-technologies/talos",
+      "identity": {
+        "repository": "cajal-technologies/talos",
+        "revision": "80644390de3ad4db3055445259a034413ae41577",
+        "lean_toolchain": "leanprover/lean4:v4.34.1"
+      }
+    },
+    {
+      "name": "linobit-corp/wasm-lean",
+      "identity": {
+        "repository": "linobit-corp/wasm-lean",
+        "revision": "6d612a510d145950838ec193e9ae0b75a7c881ef",
+        "lean_toolchain": "leanprover/lean4:v4.15.0"
+      }
+    },
+    {
+      "name": "aionescu/lean-wasm",
+      "identity": {
+        "repository": "aionescu/lean-wasm",
+        "revision": "66f1166f84a763b23475b0eb660153c72ec54d29",
+        "lean_toolchain": "leanprover/lean4:v4.10.0-rc2"
+      }
+    },
+    {
+      "name": "argumentcomputer/Wasm.lean",
+      "identity": {
+        "repository": "argumentcomputer/Wasm.lean",
+        "revision": "454172e1219ce648732211a7804829809dffd64d",
+        "lean_toolchain": "leanprover/lean4:nightly-2023-01-10"
+      }
+    },
+    {
+      "name": "T-Brick/lean-wasm",
+      "identity": {
+        "repository": "T-Brick/lean-wasm",
+        "revision": "43b051f30b920e4d1253d83ae08b3dc83b4d6d88",
+        "lean_toolchain": "leanprover/lean4:v4.25.0"
+      }
+    },
+    {
+      "name": "WasmCert-Coq and Iris-Wasm",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Coq",
+        "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8",
+        "iris_wasm_opam_revision": "57b05fb59a193078e5db4378cce164766e7b8a2c",
+        "iriswasm_revision": "e37f8387a1171d104d78a2f77f9e637e090cf3d4"
+      }
+    },
+    {
+      "name": "WasmCert-Isabelle",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Isabelle",
+        "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+      }
+    },
+    {
+      "name": "CertrBPF (CertFC)",
+      "identity": {
+        "repository": "future-proof-iot/CertFC",
+        "revision": "75690097c946c555cc4ce1e69d13ef86dc738180"
+      }
+    },
+    {
+      "name": "Jitterbug",
+      "identity": {
+        "repository": "uw-unsat/jitterbug",
+        "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+      }
+    },
+    {
+      "name": "Kops / BPF-Ext (KinsnLean4)",
+      "identity": {
+        "repository": "eunomia-bpf/bpf-benchmark",
+        "revision": "d03e6742bd2a56b94448071b0439d67a6574e9a3",
+        "path": "kinsn/lean",
+        "arxiv": "2606.24213"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal-private",
+        "revision": "0c00b820d4571ba35a9c48dfe2cca50dfd1d3e0d"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

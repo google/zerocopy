@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lean4",
+    "aarch64",
+    "isa-semantics",
+    "symbolic-simulation",
+    "memory-model",
+    "machine-code-verification",
+    "compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover/LNSym",
+      "identity": {
+        "repository": "https://github.com/leanprover/LNSym",
+        "commit": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+        "tree": "1f2abe7b0830756e9b33e9bb5e722fc5bd681c13"
+      }
+    },
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "repository": "https://github.com/joshlf/anneal-private",
+        "commit": "d9a8fe179923d4fe4f4ca76a5cd040ccbf8be196",
+        "tree": "08359be1b6511c7288bc02711b69efda14424317"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

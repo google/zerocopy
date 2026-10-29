@@ -1,0 +1,141 @@
+{
+  "topics": [
+    "sail",
+    "lean4",
+    "isa-semantics",
+    "aarch64/sail-arm",
+    "aarch64/sail-tiny-arm",
+    "x86-64/sail-x86",
+    "cheri/morello",
+    "cheri/riscv",
+    "cheri/cheriot",
+    "riscv/sail-riscv-lean",
+    "riscv/zkvm",
+    "memory-model/capabilities",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "repository": "https://github.com/joshlf/anneal-private",
+        "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "paths": "trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/Memory.lean"
+      }
+    },
+    {
+      "name": "rems-project/sail",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail",
+        "commit": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+        "paths": "src/sail_lean_backend/sail_plugin_lean.ml"
+      }
+    },
+    {
+      "name": "rems-project/sail-arm",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail-arm",
+        "commit": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+        "paths": "arm-v9.4-a/Makefile, arm-v9.4-a/lean/ArmExtras.lean, arm-v9.4-a/src/termination_measures.sail, arm-v9.4-a/src/prelude.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-small-arm",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail-small-arm",
+        "commit": "d6b7c9cf86adaa479492b3881884b190a48f385b",
+        "paths": "armV8.sail, armV8_A64_lib.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-arm",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail-tiny-arm",
+        "commit": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+        "paths": "Makefile, registers.sail, translation.sail, instrs-user.sail, instrs-sys.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-arm-lean",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail-tiny-arm-lean",
+        "commit": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+        "baseline_commit": "e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a",
+        "paths": "SailTinyArmUser/Defs.lean, SailTinyArmUser/Translation.lean, SailTinyArmUser/TinyArm.lean"
+      }
+    },
+    {
+      "name": "rems-project/sail-x86-from-acl2",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail-x86-from-acl2",
+        "commit": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+        "paths": "translator/config_patterns.py, model/prelude.sail, model/registers.sail, model/linear_memory.sail, model/paging.sail, model/step.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-x86",
+      "identity": {
+        "repository": "https://github.com/rems-project/sail-tiny-x86",
+        "commit": "229bd8448937042baa51b0a2d14bc437929b0dce",
+        "paths": "registers.sail, interface.sail, decode.sail, tiny-x86.sail"
+      }
+    },
+    {
+      "name": "CTSRD-CHERI/sail-morello",
+      "identity": {
+        "repository": "https://github.com/CTSRD-CHERI/sail-morello",
+        "commit": "2305f656ff84619caf50107f49dae7be52aec72b",
+        "paths": "src/v8_base.sail, src/instrs.sail, src/mem.sail"
+      }
+    },
+    {
+      "name": "CTSRD-CHERI/sail-cheri-riscv",
+      "identity": {
+        "repository": "https://github.com/CTSRD-CHERI/sail-cheri-riscv",
+        "commit": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+        "paths": "src/cheri_prelude_128.sail, src/cheri_cap_common.sail, src/cheri_mem_metadata.sail, src/cheri_mem.sail, src/cheri_insts.sail"
+      }
+    },
+    {
+      "name": "CHERIoT-Platform/cheriot-sail",
+      "identity": {
+        "repository": "https://github.com/CHERIoT-Platform/cheriot-sail",
+        "commit": "518813ec3e595f79930d9129eaded2521831cbe2",
+        "paths": "src/cheri_cap_common.sail, properties/props.sail"
+      }
+    },
+    {
+      "name": "rems-project/coq-cheri-capabilities",
+      "identity": {
+        "repository": "https://github.com/rems-project/coq-cheri-capabilities",
+        "commit": "b39cd73409d8c2a058ba8065f81dc72d3c84fb11",
+        "paths": "theories/Common/Capabilities.v, theories/Morello/Capabilities.v, theories/Morello/Lemmas.v"
+      }
+    },
+    {
+      "name": "opencompl/sail-riscv-lean",
+      "identity": {
+        "repository": "https://github.com/opencompl/sail-riscv-lean",
+        "commit": "51c635c460125ac87955d061fcd902ce03b8011f",
+        "paths": "lakefile.toml, LeanRV64D/RiscvExtras.lean, LeanRV64D/Defs.lean"
+      }
+    },
+    {
+      "name": "Verified-zkEVM/riscv-zkvm",
+      "identity": {
+        "repository": "https://github.com/Verified-zkEVM/riscv-zkvm",
+        "commit": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+        "paths": "sail-import/PROVENANCE.toml, scripts/regen-model.sh, RiscvZkvm/Rv64/SailEquiv/StateRel.lean, RiscvZkvm/Rv64/SailEquiv/StepSim.lean, RiscvZkvm/Rv64/SailEquiv/StepRun.lean, scripts/AxiomSweep.lean"
+      }
+    },
+    {
+      "name": "axiom-crypto/sail-riscv-lean",
+      "identity": {
+        "repository": "https://github.com/axiom-crypto/sail-riscv-lean",
+        "commit": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+        "paths": "Lean_RV32D/sail-source-provenance.tsv, Lean_RV32D/LeanRV32D/RiscvExtrasExecutable.lean, Lean_RV32D/LeanRV32D/XopenvmInsts.lean, Lean_RV32D/LeanRV32D/InstsEnd.lean"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

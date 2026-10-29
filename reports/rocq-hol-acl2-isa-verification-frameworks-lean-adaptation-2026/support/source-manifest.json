@@ -1,0 +1,597 @@
+{
+  "package": "rocq-hol-acl2-isa-verification-frameworks-lean-adaptation-2026",
+  "observed_at": "2026-10-29",
+  "repositories": {
+    "isla": {
+      "url": "https://github.com/rems-project/isla.git",
+      "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3",
+      "files": [
+        {
+          "path": "isla-sail/jib_ir.ml",
+          "git_blob_sha1": "84d34a759afe29d6a4571d82d341bfa3ebba1a05",
+          "sha256": "d442ce4177d92cbb56650489af7dfb72a6b97d9c3837109f77b9ffb5ac2415ea",
+          "lines": 341
+        },
+        {
+          "path": "src/footprint.rs",
+          "git_blob_sha1": "cbe539c700b1a32b628aa35fdfafe47aefba9198",
+          "sha256": "0f732b18654213a51121507c8552ef4bde3fdc350a7d5b7e26986b577eb80df2",
+          "lines": 739
+        }
+      ]
+    },
+    "islaris": {
+      "url": "https://github.com/rems-project/islaris.git",
+      "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "files": [
+        {
+          "path": "frontend/main.ml",
+          "git_blob_sha1": "40139b973b7d472d3f3e1094825f1f128a2d5ec2",
+          "sha256": "f722bda83cc7527204e94e920bd22ecefb91514144748ab68ec1a1609a64c059",
+          "lines": 394
+        },
+        {
+          "path": "frontend/decomp.ml",
+          "git_blob_sha1": "422618df63b507d4ab1251c6fbddbe651101e7a7",
+          "sha256": "96f4c32c1f67cfcc02834bbf9b9137d32fe324b23475df77fa8d1bc290b646d8",
+          "lines": 283
+        },
+        {
+          "path": "frontend/isla_lang_if.ml",
+          "git_blob_sha1": "7cf685e9634c6f42018505a217cfa9199fe349b0",
+          "sha256": "f5eb0de3e83155f21983c7125cf5d480ff49f42dd74d91f78ba2fcbe4b1ac7f1",
+          "lines": 112
+        },
+        {
+          "path": "frontend/arch.ml",
+          "git_blob_sha1": "6cb3b5e0279269eb90b17a7e22c0e8b9f3dc1c8a",
+          "sha256": "b7a1c8cc1c26e81cb2c3776e99a2928c0c2cb8f36723f06ac867813e8cc1edfc",
+          "lines": 110
+        },
+        {
+          "path": "theories/opsem.v",
+          "git_blob_sha1": "be55c9a4e89b9cb8ea9568d452dab89a12b24aa7",
+          "sha256": "65f592fd77f4186eb2e4f81ea038cf6d5f52c9d4ed007f9aa1e5e04dd4866139",
+          "lines": 600
+        },
+        {
+          "path": "theories/lifting.v",
+          "git_blob_sha1": "606b797f78b468207384b1eb360cc8bdfb32e7a6",
+          "sha256": "28986e114495d6601c21ed4f8d0496ceca9649dbd432a7103d48bd6b996115e0",
+          "lines": 1030
+        },
+        {
+          "path": "theories/spec.v",
+          "git_blob_sha1": "de92b905427e42f7ae5cc05dc9bb738257ad3ecd",
+          "sha256": "1c186b76a7889e9d313a54d5e66c46c426c6b56265f8a4bcf3b5efdbc29edd84",
+          "lines": 118
+        },
+        {
+          "path": "theories/adequacy.v",
+          "git_blob_sha1": "2e0fc811e6da399f0f041e14654d130067a9a258",
+          "sha256": "f9c8d70ccbc26b16fbbc2fbdbb56fc6d09c5fb4d7c7e25b186c2e6a316e1f630",
+          "lines": 145
+        },
+        {
+          "path": "theories/aarch64/calling_convention.v",
+          "git_blob_sha1": "11b0fc5f73f1bb889f848ddd01adc6abc4cb6c1b",
+          "sha256": "adacb43490f79c1f2d3d9c70d89474ae3bea8ea76b542df0922ee09e922be4ab",
+          "lines": 119
+        },
+        {
+          "path": "theories/riscv64/calling_convention.v",
+          "git_blob_sha1": "c20ebb602f72a97d79a41a93faa19ed2b800e6ef",
+          "sha256": "8439ff0f1b51398f8b541436cf5193be349e23a96183801d9346b1221dc4d168",
+          "lines": 111
+        },
+        {
+          "path": "sail/sail_opsem.v",
+          "git_blob_sha1": "7fc29b78209a760de6e3fecb4d2e0f31b2e90d68",
+          "sha256": "993bace87779291aa0780cea0bf95361a5973d4076f7b0bd2c7e64ce56afc58e",
+          "lines": 259
+        },
+        {
+          "path": "sail-riscv/sail_opsem.v",
+          "git_blob_sha1": "20e285d1c9c670d5f79d411ab79421d0d63ab5fc",
+          "sha256": "3679c43cc52753229bbdd674cf364460638a335c9107ae1953c6279fed266f16",
+          "lines": 1120
+        },
+        {
+          "path": "sail-riscv/RV64.v",
+          "git_blob_sha1": "8bd1b3077dc5141587510772585b5486e15b49a5",
+          "sha256": "e816942ecc90603edf680a0a25dde9bb93767cc8f2f19feb2f399a43018d5a67",
+          "lines": 914
+        },
+        {
+          "path": "sail-riscv/memcpy.v",
+          "git_blob_sha1": "692ab57487e6dc8a788ac80218e156a7131a1103",
+          "sha256": "c3f9a9b6b78dceb72173fa7f57f60c8bbdb7a239ef106a6eebbc03d4cc6d8b53",
+          "lines": 233
+        }
+      ]
+    },
+    "isla-lang": {
+      "url": "https://github.com/rems-project/isla-lang.git",
+      "revision": "db2ba552ba4b26fabbff27d5ad806d38ecce9bd6",
+      "files": [
+        {
+          "path": "coq/isla_lang.v",
+          "git_blob_sha1": "b9e387d53fe0b4414c5619ccc4e584ddd0ea5398",
+          "sha256": "1f50972987d7f76bfc5a91fb500f6668ad90b25faba04acece912acb6b4d39f0",
+          "lines": 356
+        }
+      ]
+    },
+    "CN2Islaris": {
+      "url": "https://github.com/rems-project/CN2Islaris.git",
+      "revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466",
+      "files": [
+        {
+          "path": "README.md",
+          "git_blob_sha1": "9046a32e62f340e338170f7e41d9425467885153",
+          "sha256": "0025433aa5a095988bfb31a1fb8f100c99544333d026bdf649019418ef331a6b",
+          "lines": 93
+        },
+        {
+          "path": "examples/Makefile",
+          "git_blob_sha1": "1fb1961f59a5940baa87583e9d8bb7d932925578",
+          "sha256": "839152c87a62a49d597ba799ed6434b84a8069e2248948b6220750b0e9ad8395",
+          "lines": 101
+        },
+        {
+          "path": "examples/array_read.c",
+          "git_blob_sha1": "7ba8a8ff377db8bf25b19ac993ae385a612071f9",
+          "sha256": "12aa4f69e4c6fa1a6d5b77f4e6502c478428e0e686f9fe871a4a1246a81f8c94",
+          "lines": 10
+        },
+        {
+          "path": "examples/array_write.c",
+          "git_blob_sha1": "8d1a8705f5130d93c089b7e3c45de946a6ef1433",
+          "sha256": "582dca06870c7a3ee8327ecdc002c292daeaf0f78ecd6f615a8a8cfbfc3d6b7c",
+          "lines": 9
+        },
+        {
+          "path": "examples/conditional.c",
+          "git_blob_sha1": "2f07c1ffd05aadeeba91d8eb4146d3059eddd1fc",
+          "sha256": "3bea1b15e93dcf4d7c7fd871a0023b5306096a05d60196819ebb4b67f59de494",
+          "lines": 11
+        },
+        {
+          "path": "examples/incr_decr.c",
+          "git_blob_sha1": "a5a1f9d7a10cce49e2bf3256c9902ddea3a56695",
+          "sha256": "407a45f966e1a69e0835e421df3fa6022ab1df967fdcdd07d202588e699ac4be",
+          "lines": 25
+        },
+        {
+          "path": "examples/incr_mem_sub.c",
+          "git_blob_sha1": "6f58ae254474240791ebc3557f3a9673b3bafebe",
+          "sha256": "a9896ea6634017f86788197784652b06614d262ec7abd60f3a173a55aabb3277",
+          "lines": 18
+        },
+        {
+          "path": "examples/incr_unsigned.c",
+          "git_blob_sha1": "66062ec853279ac7cd4a3c6b7216db5b196f41d6",
+          "sha256": "9028c918bac38bd81878f5066984575cece34397d361477a9663ba0ffa62291c",
+          "lines": 14
+        },
+        {
+          "path": "proofs/array_read/O2/array_read.v",
+          "git_blob_sha1": "da7f55ccc8ce2217646b8c955a233d81ac2219b9",
+          "sha256": "42bf27b6fe5a7fbe459787ea0e34def25ceebaa2b8139f0f174146650b72fbfe",
+          "lines": 49
+        },
+        {
+          "path": "proofs/array_write/O2/array_write.v",
+          "git_blob_sha1": "f6e77f8dd32da31ba3b84610dd222158f898e4f7",
+          "sha256": "795215a8ecfb970cb6d0c0b28c3010ad459c5392bd6d18bc619538d44cc05646",
+          "lines": 49
+        },
+        {
+          "path": "proofs/conditional/O2/conditional.v",
+          "git_blob_sha1": "69814ef3131e4c24ad0a3bfdef4ee3a3bcea38a8",
+          "sha256": "3c3f37255d296929dc2b2c08bca8034e3031c77b14ca09139d2e70c29dacf926",
+          "lines": 43
+        },
+        {
+          "path": "proofs/incr_decr/O2/incr_decr.v",
+          "git_blob_sha1": "b855d23dbb8a2cf023c98fcb6fd07bd1e6872767",
+          "sha256": "2935944eb75b7d10a70c66a218a590163bbf950191a16b08c7149a9e18cbc364",
+          "lines": 92
+        },
+        {
+          "path": "proofs/incr_unsigned/O2/incr_unsigned.v",
+          "git_blob_sha1": "d83ad730eb573ce1b4d24a1a33d058c016f44c8d",
+          "sha256": "1fd4a099fc90571237120b8c82f1e5d964173f99c9939da491a732553bff48c1",
+          "lines": 59
+        }
+      ]
+    },
+    "cerberus": {
+      "url": "https://github.com/rems-project/cerberus.git",
+      "revision": "3bdd8cb8e2805d46c22725d7651a2ed90b012837",
+      "files": [
+        {
+          "path": "backend/cn/binaryVerification.ml",
+          "git_blob_sha1": "b0048215b752b4461b72b8908161aadf8871da6f",
+          "sha256": "5c04db6a5515e203e0405aae9dd0439785eca21b567af12df75799f47bd2e1ea",
+          "lines": 283
+        },
+        {
+          "path": "backend/cn/binaryVerificationTypes.ml",
+          "git_blob_sha1": "a06b3a6aec2cbd658a17f5d9aa8c0098a30bc50c",
+          "sha256": "28e8e34d2d111ad61553d7129822b79df9953e16363e6303d3b9fa846727b45d",
+          "lines": 20
+        },
+        {
+          "path": "backend/cn/dwarfData.ml",
+          "git_blob_sha1": "fc25e8bfaaccfe008cde0424f585caa75e7df6a4",
+          "sha256": "7346a3911a32e3f5038bcc07001d8d763d93cc6a170d1926d084a68ea1166196",
+          "lines": 75
+        }
+      ]
+    },
+    "riscv-coq": {
+      "url": "https://github.com/mit-plv/riscv-coq.git",
+      "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae",
+      "files": [
+        {
+          "path": "src/riscv/Spec/Machine.v",
+          "git_blob_sha1": "2a1565a9d479dda4cd18fe76dc5cc9654a79d842",
+          "sha256": "4e060e1dfed5eca5d4bf5da6c40aa00074973377d7fc6fbf85d928d0cb5c9271",
+          "lines": 160
+        },
+        {
+          "path": "src/riscv/Spec/Decode.v",
+          "git_blob_sha1": "4bbf55e5ee8cbfbc96a6913423a85c1d2f82de7c",
+          "sha256": "23a19dfb96d1eddd4e613394af87e56a077fa5df249bdb7f71d553603818a2f5",
+          "lines": 1537
+        },
+        {
+          "path": "src/riscv/Spec/Execute.v",
+          "git_blob_sha1": "d40bd6a0cd841147c270523b03c5507027dc92da",
+          "sha256": "6df5a4e753118fe4790e20b1973543388674463212395b9b14e0355f7a5a0be5",
+          "lines": 23
+        },
+        {
+          "path": "src/riscv/Spec/ExecuteI.v",
+          "git_blob_sha1": "a996001ff0949609da7039f2684027374b3da28c",
+          "sha256": "f8b68f2edaba7acf444f76112716a28e7e9c37e6a35da724d68804eeff1c12b3",
+          "lines": 272
+        },
+        {
+          "path": "src/riscv/Spec/Primitives.v",
+          "git_blob_sha1": "d5563a806fd29458e3d7c57a196a45d6b3bf7327",
+          "sha256": "c6f5d0f1289f83dbe4fe8e64e329b679532b65eddc12c41661645370cd06565d",
+          "lines": 187
+        },
+        {
+          "path": "src/riscv/Spec/LeakageOfInstr.v",
+          "git_blob_sha1": "76d3f10fc77454034c37cb892fd1eebf1501b1a3",
+          "sha256": "e53fd7c3fc4c830ffd61d9be4c69889b134521a120c4c96fe019503b1d12a77f",
+          "lines": 234
+        },
+        {
+          "path": "src/riscv/Platform/Run.v",
+          "git_blob_sha1": "e529e8fa39712ca21b2a6ed174f63570133c74b1",
+          "sha256": "bd4694ef933c3342ce748f7146d9f08ea1e8a64cc0670786dedca8f891e91eb9",
+          "lines": 41
+        },
+        {
+          "path": "src/riscv/Platform/RiscvMachine.v",
+          "git_blob_sha1": "0293a102d7cac8dd6bea09bd8b22f055d2136aa1",
+          "sha256": "7f5f2c3203777c8e84cf8a955b5fc8047f5e1119943547a112621e5cb86f2522",
+          "lines": 202
+        },
+        {
+          "path": "src/riscv/Platform/Minimal.v",
+          "git_blob_sha1": "c91cbf020d6764782320ec9a88c6e98d55455a33",
+          "sha256": "718baecb28cd13135be3fbb516759cd98dbd202e7a33d6b73f2f6cc8da3d6526",
+          "lines": 286
+        },
+        {
+          "path": "src/riscv/Platform/MinimalMMIO.v",
+          "git_blob_sha1": "a9e35a20992db9c461dd2a97c55e647269de23c3",
+          "sha256": "41cac74deb80a5de531c9f21bb758b4821af04cadcfdfcbc600b50fc9bb455f6",
+          "lines": 314
+        },
+        {
+          "path": "src/riscv/Platform/MetricRiscvMachine.v",
+          "git_blob_sha1": "93844435933de6cb9bd712b79f54f938052118a4",
+          "sha256": "863905809f5b41b466dce2b47e1f6ac3afba4bc25d0e66fa80384c8916d4b217",
+          "lines": 103
+        },
+        {
+          "path": "src/riscv/Utility/Monads.v",
+          "git_blob_sha1": "8bf739caced8d0fa313ecd3294a7350a276ab1d6",
+          "sha256": "bca81710117cc2c2e62bdcb87c3cbad5b694894f62e2370ed6f9ab21b90a65d9",
+          "lines": 434
+        },
+        {
+          "path": "src/riscv/Utility/FreeMonad.v",
+          "git_blob_sha1": "f74bea78f16d74fa211cec35efb2e292ede437be",
+          "sha256": "7b43be63dc4eec8d6e3b55efc6d8bfa778cfb351effeb4ad93be19f4c9c8005d",
+          "lines": 152
+        }
+      ]
+    },
+    "bedrock2": {
+      "url": "https://github.com/mit-plv/bedrock2.git",
+      "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13",
+      "files": [
+        {
+          "path": "compiler/src/compiler/FlatToRiscvCommon.v",
+          "git_blob_sha1": "bc419972ead16c0b1ed8443e9597382a5522cb1c",
+          "sha256": "5639554c73e24c6bdef50820828f0681cb14f951bece10d99b95a968cda5f734",
+          "lines": 923
+        },
+        {
+          "path": "compiler/src/compiler/Pipeline.v",
+          "git_blob_sha1": "06aefd8036a84df20aa55dfcb4244236414cdff1",
+          "sha256": "514ccfb970f014443ffc9657022b4cd889d04888d079e5939daff6ceba7c9575",
+          "lines": 818
+        }
+      ]
+    },
+    "CompCert": {
+      "url": "https://github.com/AbsInt/CompCert.git",
+      "revision": "e26caf9fa6cd91665c9e8ee2b5194f413c796821",
+      "files": [
+        {
+          "path": "common/Values.v",
+          "git_blob_sha1": "f25c231758c40450f70f3a5538b2d4c43c178b3a",
+          "sha256": "12fab5a225fc998834e4e7a1ed8247cb6cae159e229689de8f76faaeb38c4e0e",
+          "lines": 2747
+        },
+        {
+          "path": "common/Memory.v",
+          "git_blob_sha1": "a6276dd082473a458514f000a2272077abe8f917",
+          "sha256": "759aae974cd85f7a35e8ed43780bc7826720f0064a35b972e864eb4aea496541",
+          "lines": 4665
+        },
+        {
+          "path": "x86/Asm.v",
+          "git_blob_sha1": "14999445de01aad586b10c362e7f52a083139d50",
+          "sha256": "2b1ba1ae4e2661ec568cdc736f1feeb2560105c47b0606b4513b584db574a4de",
+          "lines": 1225
+        },
+        {
+          "path": "aarch64/Asm.v",
+          "git_blob_sha1": "5bf3456b0e6427de097c44761be48253f1a6a5df",
+          "sha256": "779b33307d789ba050bdf4376e6e54d23c0a0866c4260ddb28f8a9f7c2bd8c91",
+          "lines": 1343
+        },
+        {
+          "path": "riscV/Asm.v",
+          "git_blob_sha1": "128b0dde62cfddfd2f16f7dce2852d2df4e7dd49",
+          "sha256": "0740f6b0c75783eb867daeb1732268eedab43ad61d3b118d1ebe9f3da1b340ac",
+          "lines": 1197
+        }
+      ]
+    },
+    "jasmin": {
+      "url": "https://github.com/jasmin-lang/jasmin.git",
+      "revision": "6c4994d56a9a030201e62275a7d343b101bd0a23",
+      "files": [
+        {
+          "path": "proofs/lang/wsize.v",
+          "git_blob_sha1": "5ba71f56a23e501fa942d6eaf99ca963915c4896",
+          "sha256": "7e48b25494a7e02c5ea708f0b43f3cde2f95c1877c9e74dbdc1a3ba8e82dcc2d",
+          "lines": 197
+        },
+        {
+          "path": "proofs/arch/arch_decl.v",
+          "git_blob_sha1": "84012ee32ad15aaa68ec216c2b2617ce8e26c037",
+          "sha256": "cc850336ad7a03c180f408191269e1709d113de122f103eb8b0dbbfdeea87337",
+          "lines": 945
+        },
+        {
+          "path": "proofs/arch/arch_sem.v",
+          "git_blob_sha1": "f5a5bc739d347a646763db5187f21d4e26d5d7a9",
+          "sha256": "36ce0b1acad5c1937e411b0469ff6b1240cce237e4df3c90037591afa27c999e",
+          "lines": 815
+        },
+        {
+          "path": "proofs/compiler/x86_decl.v",
+          "git_blob_sha1": "58c93a6e654fb98e0e6a0f7f55bb5cd577549bde",
+          "sha256": "12c607f91928a12c33b0348f2c85c3af4eb5499d93a2814f3ac57e29a3b0c62a",
+          "lines": 353
+        },
+        {
+          "path": "proofs/compiler/x86_instr_decl.v",
+          "git_blob_sha1": "eae0897710c10a77b1021cb5f49f71156a431384",
+          "sha256": "d7a24f19429ab99f075affad20e7790287f39a8f8c51d4928d4304f9ca632759",
+          "lines": 2533
+        },
+        {
+          "path": "proofs/lang/memory_model.v",
+          "git_blob_sha1": "5709a5be497b752df7bce55229abc0d4bf53ff7a",
+          "sha256": "f85f3aac961d2f62d6a3650984d8aa0bed3391ead4e5de8888238d9a9183a694",
+          "lines": 1142
+        },
+        {
+          "path": "proofs/compiler/stack_alloc.v",
+          "git_blob_sha1": "c229b6dac467f0c4941ba461239440bf06594a2b",
+          "sha256": "cac7fc3c1397a92841cfa514ab94e2d010d66a16640af44a57b4e43a20a68037",
+          "lines": 2171
+        },
+        {
+          "path": "proofs/lang/safety_cond.v",
+          "git_blob_sha1": "508b43f1802bee85f30f209630531912e58d661d",
+          "sha256": "9e98480081721b6be9ce521311ec779931d6a958fd6f9876e713c290b47a2770",
+          "lines": 392
+        }
+      ]
+    },
+    "vale": {
+      "url": "https://github.com/project-everest/vale.git",
+      "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "files": [
+        {
+          "path": "fstar/specs/hardware/X64.Machine_s.fst",
+          "git_blob_sha1": "386b38425b675a75ea21bf6866e241b960eaabd4",
+          "sha256": "7749675b9c1fc7bdfd0944bb96478323b3693be2e8e593fd07eb2b738a186786",
+          "lines": 87
+        },
+        {
+          "path": "fstar/specs/hardware/X64.Semantics_s.fst",
+          "git_blob_sha1": "2b2716c60a072428cfc0ff2b3eb3f1c64caaa64e",
+          "sha256": "855d2814d8031f1e0c7a8c33ae35e8caa3ea91209a9aa562627c5a2e3d2a3acd",
+          "lines": 420
+        },
+        {
+          "path": "fstar/code/arch/x64/X64.Vale.State.fsti",
+          "git_blob_sha1": "40117d270a5a550249543ea6fab9a652b0f42af7",
+          "sha256": "42ddf4bd9b68429c37a3cf668e42a2b0ac16b36d3cf875d6457cb39bfbbef6de",
+          "lines": 72
+        }
+      ]
+    },
+    "acl2": {
+      "url": "https://github.com/acl2/acl2.git",
+      "revision": "9df88e946034e24212f3aedd8b71b02e4224783e",
+      "files": [
+        {
+          "path": "books/projects/x86isa/machine/register-readers-and-writers.lisp",
+          "git_blob_sha1": "84507b0e721f4ba29f18f17d129e99cb0fa577ca",
+          "sha256": "ed2f7577a38b19d8b968169024ebf2bb87911db8548e613bf086de63a1f7339d",
+          "lines": 1825
+        },
+        {
+          "path": "books/projects/x86isa/machine/rflags-spec.lisp",
+          "git_blob_sha1": "f00a3b70d7bea391e14183589297f1df24158da6",
+          "sha256": "7b46bfb8b3eeb30b28938323359e7c456e7e2d1a672405458431e41afc50b507",
+          "lines": 866
+        },
+        {
+          "path": "books/projects/x86isa/machine/top-level-memory.lisp",
+          "git_blob_sha1": "73b0442691936d9b4ac2ebbe5b086502585985a9",
+          "sha256": "ffa7c16e023197b4a6dfa4bcac2b32a48e98a9818b4dca514f6bab55a05ae492",
+          "lines": 1970
+        },
+        {
+          "path": "books/projects/x86isa/machine/other-non-det.lisp",
+          "git_blob_sha1": "e89c278ef618d2092b997f94eaa69f85db954210",
+          "sha256": "ef9b1e86f0e636e6ae572db8016f197b2b316c523d0db2e437028805c5ee34c8",
+          "lines": 104
+        },
+        {
+          "path": "books/projects/x86isa/machine/state.lisp",
+          "git_blob_sha1": "ddc9e15fe2a963072305995a17393bca1c7cc1d0",
+          "sha256": "fe9837e255620c6797e8a41e9fca3af541c2650b192abb6c2bef307f5f3296c1",
+          "lines": 982
+        },
+        {
+          "path": "books/projects/x86isa/machine/paging.lisp",
+          "git_blob_sha1": "54a03318593e1a2a941756d46061410e68368a0e",
+          "sha256": "b1f702f54316d8211051ec21d4e7086cfdd04054272e8a90f8eca3f3235d08c1",
+          "lines": 4210
+        }
+      ]
+    },
+    "HOL": {
+      "url": "https://github.com/HOL-Theorem-Prover/HOL.git",
+      "revision": "d73e603616d80726506326d83af8f0e74559623c",
+      "files": [
+        {
+          "path": "examples/l3-machine-code/common/stateScript.sml",
+          "git_blob_sha1": "acb4ddfb7697411da45e056962579329b5761125",
+          "sha256": "c56fcc6ba1e43345cf0690e9bfc0b3242fe1c1e4ac39bf143383b83c408465b2",
+          "lines": 578
+        }
+      ]
+    },
+    "cakeml": {
+      "url": "https://github.com/CakeML/cakeml.git",
+      "revision": "665f9b21712ad093e10a404ccc2f78e64a34aeef",
+      "files": [
+        {
+          "path": "compiler/encoders/asm/asmScript.sml",
+          "git_blob_sha1": "65796c284d83e2c0d1ba5f24df5a90c4eeb938a3",
+          "sha256": "48c65f1b2ccc956da98826f9fd078a759349253515e5d115ae133e02a066544d",
+          "lines": 382
+        },
+        {
+          "path": "compiler/encoders/asm/asmSemScript.sml",
+          "git_blob_sha1": "592a7a86c375171dac9c5e7831d608335c065f93",
+          "sha256": "360f6d8b7f801bee1c691bf4859bb644fe2ab9283e791040868d3341dac5f62a",
+          "lines": 270
+        }
+      ]
+    },
+    "HolBA": {
+      "url": "https://github.com/kth-step/HolBA.git",
+      "revision": "ef22c1fd8da612c57f2e7f273cb14594a7e529d3",
+      "files": [
+        {
+          "path": "src/theory/bir/bir_programScript.sml",
+          "git_blob_sha1": "08f110ead5c6faf510cbe5fc3bc9b21fd631ee55",
+          "sha256": "e95ec41af3c8645dfd0a874bf08eff5c542c9fd016cd0744b553ff56d2467de4",
+          "lines": 641
+        },
+        {
+          "path": "src/theory/bir/bir_exp_memScript.sml",
+          "git_blob_sha1": "2297640064e4d53440fb879e1ad8b086e71fdf12",
+          "sha256": "d9e9e74891f7857fdaf87ec6dd070b61ba26284b62ab4663882296d0303b0912",
+          "lines": 1055
+        }
+      ]
+    },
+    "l4v": {
+      "url": "https://github.com/seL4/l4v.git",
+      "revision": "7b8c09901f25bd3ba5d05046bba14e226bd659d1",
+      "files": [
+        {
+          "path": "spec/machine/AARCH64/MachineOps.thy",
+          "git_blob_sha1": "78fac55000b7a967978e23ef3c2a8b745a43dd22",
+          "sha256": "f898d00d9a1289bad2e341f279e6ce9c2b0b24d54e06de534d755b9466d79dfe",
+          "lines": 519
+        },
+        {
+          "path": "spec/abstract/AARCH64/ArchVSpace_A.thy",
+          "git_blob_sha1": "b7b718e652017dbbed662910fe72bbed0522bf60",
+          "sha256": "0a6032fa6b754d6cc8b9c8d3539931b0a6dbf88994ada65207f6683a2c93b25a",
+          "lines": 419
+        }
+      ]
+    },
+    "anneal": {
+      "url": "https://github.com/google/zerocopy.git",
+      "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "files": [
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "git_blob_sha1": "23b043e73a60f0d1dfc1bdbeafbdb99e20e59db4",
+          "sha256": "7ebb33d7c22ef20c009c4161d0f37c6fe7d2d4fab47154037ff3a3adec93b448",
+          "lines": 550
+        },
+        {
+          "path": "trusted/lean/Trusted/StepResult.lean",
+          "git_blob_sha1": "9825e59b0de79d41329e9401ae4b5562707e4609",
+          "sha256": "c9b9201a3cbaa406c797881e108b60b920dc33a4dce08c4cc389512394160837",
+          "lines": 187
+        },
+        {
+          "path": "trusted/lean/Trusted/Memory.lean",
+          "git_blob_sha1": "19e4398037a85001733f66dc20f8aba963a65bf5",
+          "sha256": "1027fa27421560ff1a834d1bd60f23bb8761b666cb68c8a712ed633bc36a8e7a",
+          "lines": 227
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "git_blob_sha1": "6f24077759add07a30fdc88792647b8c6bb8ac7d",
+          "sha256": "78e59693908e974533b7ca32dc6f14c7e5cf6a33dc4b2d74c5b70d73b784d47a",
+          "lines": 850
+        }
+      ]
+    }
+  },
+  "lean_probe": {
+    "path": "support/islaris_trace_and_riscv_typeclass_lean_probe.lean",
+    "lean_version": "4.34.1",
+    "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/islaris_trace_and_riscv_typeclass_lean_probe.lean",
+    "sha256": "b1dc5ad4e99921e1913146a7c71d731a7a3dbac8269ae7c12720c8fc7df06acd",
+    "git_blob_sha1": "6effa8f6f691015f3c27f833213fdbbe337d012a",
+    "lines": 936
+  }
+}

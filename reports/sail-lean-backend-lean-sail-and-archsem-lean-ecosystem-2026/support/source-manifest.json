@@ -1,0 +1,433 @@
+{
+  "observed_at": "2026-10-29",
+  "repositories": {
+    "rems-project/sail": {
+      "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+      "commit_date": "2026-10-29T17:01:40Z",
+      "inspected_files": [
+        {
+          "path": "src/sail_lean_backend/sail_plugin_lean.ml",
+          "bytes": 22266,
+          "sha256": "ac04d79d8321e5bfcbd87782396ab8f9c30e0b10f8a8981fa174b874424db473",
+          "lines": 460
+        },
+        {
+          "path": "src/sail_lean_backend/pretty_print_lean.ml",
+          "bytes": 85831,
+          "sha256": "6f32ce51ee411a3223c482e750d53cfa667cb474be87f4a43e6b3b194d0d8647",
+          "lines": 1844
+        },
+        {
+          "path": "src/sail_lean_backend/Sail/SpecializationArchSem.lean",
+          "bytes": 4022,
+          "sha256": "d894dc88e1842e8594e959fa7b43a1b0e0eb18120f9813a782dcf2d80472c7db",
+          "lines": 79
+        },
+        {
+          "path": "src/sail_lean_backend/Sail/SpecializationV1.lean",
+          "bytes": 4084,
+          "sha256": "45bf9b411fdfd5acb9e31e55cc9c6f23ceea267fda132476c474efe526ebe269",
+          "lines": 87
+        },
+        {
+          "path": "src/sail_lean_backend/Sail/FakeReal.lean",
+          "bytes": 1835,
+          "sha256": "40b6e804de41f1026b112b9d61adf25cc0069027aa98ce9e0e291b1e22c8ab20",
+          "lines": 65
+        },
+        {
+          "path": "src/sail_lean_backend/Sail/Real.lean",
+          "bytes": 1869,
+          "sha256": "83b3653d9415a00d7e1fc331e8cd718d0df1aff60e482d9fd63f28132bd90f4c",
+          "lines": 72
+        },
+        {
+          "path": "src/lib/deptype_targets.ml",
+          "bytes": 7261,
+          "sha256": "e5282356ff7a9a64e28ec704ffbb61e9328b034b4844f01abd3123692b70eecd",
+          "lines": 135
+        },
+        {
+          "path": "src/lib/rewrites.ml",
+          "bytes": 211925,
+          "sha256": "ec912ca5291127101d3590fc502a5bbbb199f57a9ceed9a6dd2c2e97f9e122b2",
+          "lines": 4741
+        },
+        {
+          "path": "src/lib/type_check.ml",
+          "bytes": 279794,
+          "sha256": "ad6cc61068a808a396fcf2f1e5f6cc7717e2f54a5ac49cc0da18bffabe7b7593",
+          "lines": 5714
+        },
+        {
+          "path": "src/lib/externs.json",
+          "bytes": 88866,
+          "sha256": "83fbe2c19f248fec01485054b4d50215101ee82f429d89702f6e9b3166200991",
+          "lines": 3022
+        },
+        {
+          "path": "src/rocq/lib/Monad.v",
+          "bytes": 9163,
+          "sha256": "074ee57d4d416f36dfe4388db80491b29809d7ef6d3a79399ed325e474e389ed",
+          "lines": 215
+        },
+        {
+          "path": "test/suites/lean.py",
+          "bytes": 5211,
+          "sha256": "57da9c85728693836279d7f6718f69d2794a638279a94cfc01db9c218c11498a",
+          "lines": 143
+        }
+      ]
+    },
+    "rems-project/lean-sail": {
+      "revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+      "commit_date": "2026-10-27T14:18:30Z",
+      "inspected_files": [
+        {
+          "path": "Sail.lean",
+          "bytes": 57,
+          "sha256": "24b92934ac9f5508446f2f5ce415b8f90522c3057d24f9063f93a0e46c69f973",
+          "lines": 3
+        },
+        {
+          "path": "Sail/Sail.lean",
+          "bytes": 4497,
+          "sha256": "30b7c9f8283823f65bebd9d7369e51c847b90164c02f6766465f71e917c1db59",
+          "lines": 141
+        },
+        {
+          "path": "Sail/ArchSem.lean",
+          "bytes": 14524,
+          "sha256": "70ff8f29b800fd33aa26b3d2ccd22a2f6456b95cf6b96c44b96090c03e24c447",
+          "lines": 424
+        },
+        {
+          "path": "Sail/ArchSemSequential.lean",
+          "bytes": 3828,
+          "sha256": "8c7b8955a69444032283046a3431147c7ffc998df7807b6c640781973b29bace",
+          "lines": 107
+        },
+        {
+          "path": "Sail/ConcurrencyInterfaceV1.lean",
+          "bytes": 11347,
+          "sha256": "8d3b8eb4131186e26e20e9e756ba8e71b47a2a6ec018e37f0f029baab9014df0",
+          "lines": 347
+        },
+        {
+          "path": "Sail/Common.lean",
+          "bytes": 9532,
+          "sha256": "5269603c159519b598edf26b39cc8ff5b0d54a79846b2b652f303950719d8452",
+          "lines": 330
+        },
+        {
+          "path": "Sail/BitVec.lean",
+          "bytes": 7739,
+          "sha256": "34c6424c6aa606206deaefa27867358a9df749fe3f53fe8b6f50cac64c601ed4",
+          "lines": 239
+        },
+        {
+          "path": "Sail/IntRange.lean",
+          "bytes": 3454,
+          "sha256": "405efd008ef4811b8dc664ccb982d5d2838a53423875f131450aad139846e4a9",
+          "lines": 94
+        },
+        {
+          "path": "Sail/Attr.lean",
+          "bytes": 42,
+          "sha256": "890c8435c6a7e13f07f20b746c88639baf075c6b21808d921f3bec4fda76211e",
+          "lines": 3
+        },
+        {
+          "path": "SailTest/VectorConversion.lean",
+          "bytes": 735,
+          "sha256": "e4e704b1846f28ad1780d49ee734048cbd543164c32e2b032022ec51f2141389",
+          "lines": 29
+        },
+        {
+          "path": "lakefile.toml",
+          "bytes": 257,
+          "sha256": "b211177c7f8fceca1808c6a6f15471ce5d8c168f5873b276ef5caee44be834b7",
+          "lines": 12
+        },
+        {
+          "path": "lean-toolchain",
+          "bytes": 24,
+          "sha256": "85b71aa934e019c03eac6ec5ed97526956b4dff51b54c5d558fca8a5b34703e6",
+          "lines": 1
+        }
+      ]
+    },
+    "rems-project/archsem-lean": {
+      "revision": "318583a5f2052c039c25dfd69a3beec0b0a27090",
+      "commit_date": "2026-06-29T10:55:28+01:00",
+      "inspected_files": [
+        {
+          "path": "ArchSem.lean",
+          "bytes": 229,
+          "sha256": "3c956215e307b7bcd8208ac0def4b2fa946f1c2c539b36eba1e14570788f4509",
+          "lines": 8
+        },
+        {
+          "path": "ArchSem/Defs.lean",
+          "bytes": 11768,
+          "sha256": "e09933ea37f81d668d7e3130ff3d5880bfbf2342e4b07e81f1793ed219f09be9",
+          "lines": 237
+        },
+        {
+          "path": "ArchSem/Trace.lean",
+          "bytes": 8353,
+          "sha256": "ef7d64875aa3272072cc8589f496db9aa886e2fdc1399aeee4b39d3f9522882d",
+          "lines": 257
+        },
+        {
+          "path": "ArchSem/NondeterministicMonad.lean",
+          "bytes": 12516,
+          "sha256": "6e0ce73118ed80b7ab60ba28981223a00f0014a6e897940f0991c101b90e6236",
+          "lines": 343
+        },
+        {
+          "path": "ArchSem/ListSet.lean",
+          "bytes": 9783,
+          "sha256": "d61fb9495ffdf513d57359549ea7c4d4b5190539506470abcc9da06a9e637fa4",
+          "lines": 313
+        },
+        {
+          "path": "ArchSem/TerminatingModel.lean",
+          "bytes": 6181,
+          "sha256": "dafc71c502aeacadc15bd554d3d5e185b590973550007b383fc67ac28ac6d96b",
+          "lines": 175
+        },
+        {
+          "path": "ArchSem/CandidateExecution.lean",
+          "bytes": 42141,
+          "sha256": "0c06faa51a13f37d26b0ea2c860df0b42afc3617b1719ffb9dc0412c8d7bfd2a",
+          "lines": 1170
+        },
+        {
+          "path": "ArchSem/LitmusTest/Basic.lean",
+          "bytes": 6786,
+          "sha256": "562c6f11c0a2e642af171eb2bc851f6a665614f0122cc3cfea6c6c5813e7d5e9",
+          "lines": 164
+        },
+        {
+          "path": "ArchSem/LitmusTest/Run.lean",
+          "bytes": 3381,
+          "sha256": "10b652f57b3b215930522c2f6d8df3a580b7542107114876a3525a67e9026143",
+          "lines": 91
+        },
+        {
+          "path": "ArchSemTinyArm/Defs.lean",
+          "bytes": 5655,
+          "sha256": "76990327ad1f3681e5023e69888ed57b772da501727534934b4894fe61ba1d28",
+          "lines": 203
+        },
+        {
+          "path": "ArchSemTinyArm/Sequential.lean",
+          "bytes": 5165,
+          "sha256": "98470e7f1c5f283b8084afe376ec548d1f6a518d9baca7086f9f58a37b9ec574",
+          "lines": 125
+        },
+        {
+          "path": "ArchSemTinyArm/SequentialAxiomatic.lean",
+          "bytes": 3691,
+          "sha256": "aa9b17238d0b990be40839379c25f4964262a020978896aff75d0231d47b948c",
+          "lines": 108
+        },
+        {
+          "path": "ArchSemTinyArm/Promising.lean",
+          "bytes": 33713,
+          "sha256": "3a7cbcfbd7fd07c8db074426e80df64201683c5c4c69c02a7b893dc1d8e73600",
+          "lines": 837
+        },
+        {
+          "path": "ArchSemTinyArm/PromisingFirstProof.lean",
+          "bytes": 14568,
+          "sha256": "65f9baf0b7ce7c1e176be32c94a9ec81a115b40c250624b9999ed51f68624f8d",
+          "lines": 368
+        },
+        {
+          "path": "ArchSemTinyArm/Test.lean",
+          "bytes": 2173,
+          "sha256": "c008b5b81e8a37598b6af72e4958383d48389318a43fd5ca8147fa9e6cc29c13",
+          "lines": 54
+        },
+        {
+          "path": "ArchSemTinyArm/SequentialTest.lean",
+          "bytes": 2671,
+          "sha256": "24f0c8df28e5e724db9de4a3203a66af4aeee8dd53596aa35cc910153e9dabf3",
+          "lines": 87
+        },
+        {
+          "path": "ArchSemTinyArm/PromisingTest.lean",
+          "bytes": 8736,
+          "sha256": "08555fe739addbf7ce407b310ac226cb6c7fddab3c6215366bd3d909c9add860",
+          "lines": 268
+        },
+        {
+          "path": "Main.lean",
+          "bytes": 3179,
+          "sha256": "6ce3b2144fb4d2e374a87b93b529ce9244ec8d103c9f9e88e0724c387bed2228",
+          "lines": 93
+        },
+        {
+          "path": "lakefile.toml",
+          "bytes": 560,
+          "sha256": "f5cc07ed568615f359bdf6005740a555d8771b2244c9df5c2dc74bc0ded718b1",
+          "lines": 27
+        },
+        {
+          "path": "lake-manifest.json",
+          "bytes": 1055,
+          "sha256": "8aa66fc43eede35618df795b3b170963c4a3645967e9f8c79983c30ebcf4bf22",
+          "lines": 35
+        },
+        {
+          "path": "lean-toolchain",
+          "bytes": 36,
+          "sha256": "599f5a5ff426cbeec13020d06826fa7d58dd2ad003af225009556ac8f4d13248",
+          "lines": 1
+        }
+      ]
+    },
+    "rems-project/archsem": {
+      "revision": "42204d87df2e7d20e5ec23deb8ba8220e65148ab",
+      "commit_date": "2026-10-29T14:06:23Z",
+      "inspected_files": [
+        {
+          "path": "ArchSem/Interface.v",
+          "bytes": 34522,
+          "sha256": "dfd2baac0a93e67219dc492ef6f8dbbde17a7da4ec645472881969bdea7603e5",
+          "lines": 917
+        },
+        {
+          "path": "ArchSem/FromSail.v",
+          "bytes": 12910,
+          "sha256": "5389f0efca7c5039e46292612616eafecae65f13ee6cd206566ac9533e3eaa18",
+          "lines": 286
+        },
+        {
+          "path": "ArchSem/SeqModel.v",
+          "bytes": 8922,
+          "sha256": "5085c6927e407c5bcb0cdcc9081ba39d048fba24ef1dc8ba85fc18e829029bb6",
+          "lines": 179
+        },
+        {
+          "path": "ArchSem/GenPromising.v",
+          "bytes": 39123,
+          "sha256": "7099b0530761605d6eb69a10649191afbf80a55417df9799a4a322e3381b0565",
+          "lines": 902
+        },
+        {
+          "path": "ArchSem/TermModels.v",
+          "bytes": 19616,
+          "sha256": "21e3fb3fef1f47528a3095a3803dc923988d068953fbd0d17dd65d9908ee8fe2",
+          "lines": 464
+        },
+        {
+          "path": "ArchSem/CandidateExecutions.v",
+          "bytes": 61120,
+          "sha256": "84d6b2e52ec8ecaf3a29913be7b4e3808b31ef9e9d0525f33fb997cfa399a7cc",
+          "lines": 1520
+        },
+        {
+          "path": "ArchSem/ISAManip.v",
+          "bytes": 7290,
+          "sha256": "8b59e16fd83cc2a849ae775080b853f59346ffac188b2f6221e336a36079d53d",
+          "lines": 147
+        },
+        {
+          "path": "ArchSemArm/UMPromising.v",
+          "bytes": 24398,
+          "sha256": "f9ce2a5774043cf431aa009c16dab56711d3651cd35eac10b272c689a60594d1",
+          "lines": 562
+        },
+        {
+          "path": "ArchSemArm/VMPromising.v",
+          "bytes": 115698,
+          "sha256": "6a70e831c144881b6a2b8d71fe0ca422f2471ba0d7230eeebfbbdc3d3f76d3a1",
+          "lines": 2809
+        },
+        {
+          "path": "ArchSemArm/VMUMEquivThm.v",
+          "bytes": 14524,
+          "sha256": "6b77c48cc997dea6c7f2c6bbb5898ed3e78c7cb56d2402ab2bd5c7f79b32c71d",
+          "lines": 411
+        },
+        {
+          "path": "ArchSemRiscV/UMAxRiscV.v",
+          "bytes": 8385,
+          "sha256": "197c16470aa1896f742a556284448955cbeb6332ed9d9d314ad3a11c3d2bda7c",
+          "lines": 207
+        },
+        {
+          "path": "ArchSemX86/OperationalX86TSO.v",
+          "bytes": 20202,
+          "sha256": "fb909ba5b3d21b6de46812c1dde63b2b2b69f13685cbe6a5dedc5cc81ddee32d",
+          "lines": 497
+        }
+      ]
+    },
+    "rems-project/sail-tiny-arm-lean": {
+      "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+      "commit_date": "2026-10-25T00:10:42Z",
+      "inspected_files": [
+        {
+          "path": "SailTinyArmUser.lean",
+          "bytes": 2481,
+          "sha256": "dd7ffa8ccd1da4442830daccc05bbca9ef89569fb449bea0a4aac0e7d0e70332",
+          "lines": 90
+        },
+        {
+          "path": "SailTinyArmUser/Defs.lean",
+          "bytes": 14314,
+          "sha256": "01d88ff0974ec3dc450357aaadf99cecb2dd6b9ee557f24ed1f798587985a9d9",
+          "lines": 509
+        },
+        {
+          "path": "SailTinyArmUser/TinyArm.lean",
+          "bytes": 43085,
+          "sha256": "244c181dda92eb38916636df132452d77c4cade943b525d0ca597007441a4217",
+          "lines": 549
+        },
+        {
+          "path": "SailTinyArmUser/SpecializationArchSem.lean",
+          "bytes": 4022,
+          "sha256": "9263e541c6d87cdf91e10977a784eb4f2275052125dcc046da68881a9e0d750b",
+          "lines": 79
+        },
+        {
+          "path": "lakefile.toml",
+          "bytes": 310,
+          "sha256": "c7ee9566435384abe8a66d46ff6c96988ec9bf96ed840417ae3502c76495a772",
+          "lines": 13
+        },
+        {
+          "path": "lean-toolchain",
+          "bytes": 24,
+          "sha256": "85b71aa934e019c03eac6ec5ed97526956b4dff51b54c5d558fca8a5b34703e6",
+          "lines": 1
+        },
+        {
+          "path": "build_log.txt",
+          "bytes": 1148,
+          "sha256": "4b581c22efa57e0d811e8b8b5ec6201b915bb432ccfdaca899614c7870d8982c",
+          "lines": 25
+        }
+      ]
+    }
+  },
+  "local_artifacts": [
+    {
+      "package_path": "support/sail_archsem_lean_bridge_probe.lean",
+      "bytes": 46704,
+      "sha256": "eb2d97ad1c000b90e9425902047bd2c41b2810cccd3ae3b14fe46c33fad3b90c",
+      "lines": 1133,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768",
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "sorry_count": 0
+    }
+  ]
+}

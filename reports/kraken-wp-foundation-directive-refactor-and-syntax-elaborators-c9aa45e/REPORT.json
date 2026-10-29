@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "aarch64-isa",
+    "anneal",
+    "formal-verification",
+    "isa-semantics",
+    "kraken",
+    "lean4",
+    "omni-semantics",
+    "weakest-precondition",
+    "x86-64-isa"
+  ],
+  "subjects": [
+    {
+      "name": "AeneasVerif/kraken",
+      "identity": {
+        "kind": "repository",
+        "rev": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+        "url": "https://github.com/AeneasVerif/kraken",
+        "notes": "Current upstream HEAD introducing Program.wp, Host, Directive.Inert, abstracted Kraken.Directive Instr, and X64 TermElabM syntax elaborators"
+      }
+    },
+    {
+      "name": "AeneasVerif/kraken",
+      "identity": {
+        "kind": "repository",
+        "rev": "8af78062037bc237b341d20252aafd1797c1bcb7",
+        "url": "https://github.com/AeneasVerif/kraken",
+        "notes": "Baseline commit analyzed in prior reference reports"
+      }
+    },
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "kind": "repository",
+        "rev": "6a88de9da56e4d23c1b29927c44bc3c1733b0500",
+        "url": "https://github.com/joshlf/anneal-private",
+        "notes": "Anneal skeleton repository containing Layer 1A (Trusted.Refinement) and Layer 1B (Trusted.StepResult)"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "kind": "tool",
+        "version": "v4.34.1",
+        "url": "https://github.com/leanprover/lean4",
+        "notes": "Lean 4 toolchain used by Kraken and the standalone mechanized support probe"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

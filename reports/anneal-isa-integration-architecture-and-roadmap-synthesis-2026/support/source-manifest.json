@@ -1,0 +1,208 @@
+{
+  "report_slug": "anneal-isa-integration-architecture-and-roadmap-synthesis-2026",
+  "observed_at": "2026-10-29",
+  "toolchain": {
+    "lean_version": "4.34.1",
+    "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "lean_binary": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/AnnealIsaBridgeSynthesis.lean"
+  },
+  "local_artifacts": [
+    {
+      "path": "support/AnnealIsaBridgeSynthesis.lean",
+      "lines": 2289,
+      "sha256": "0aea81289fb1cc881a7e492796f0cd40035fb8498c560ad767550eff07ad2a70",
+      "sorry_count": 0,
+      "custom_axioms": [],
+      "theorems": [
+        "kraken_all_unsound_on_unaligned_or_oob",
+        "kraken_strict_observe_eq_kernel1",
+        "regComponent_orthogonal",
+        "bignum_lnsym_words_eq_kernel1",
+        "sail_tier1_equiv_tier2_summary",
+        "accum_one_branch_eq",
+        "evalInlineAsm_accum_all_branches",
+        "checkedMmio_safe_and_returns",
+        "checkedMmioBody_refines_spec",
+        "verify_crate_with_inline_asm",
+        "non_vacuity_at_every_depth",
+        "canary_undeclared_clobber_ub",
+        "canary_readonly_write_ub",
+        "canary_nomem_read_ub",
+        "canary_unaligned_access_ub",
+        "canary_demonic_reg_aliasing_ub"
+      ]
+    }
+  ],
+  "anneal_skeleton_files": [
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted.lean",
+      "sha256": "3ebd63c7c070f76057200c19e9bd30de2204c617cf87a3d3e0e6156df0b5d0eb"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/Refinement.lean",
+      "sha256": "73204193f01d85ffc5b5858d535f4538a4f5ef54658fc0c6203b3087caff2154"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/StepResult.lean",
+      "sha256": "c9b9201a3cbaa406c797881e108b60b920dc33a4dce08c4cc389512394160837"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/Memory.lean",
+      "sha256": "1027fa27421560ff1a834d1bd60f23bb8761b666cb68c8a712ed633bc36a8e7a"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/MirAst.lean",
+      "sha256": "44087560378e54b5a7cb82beeb79c798232f5d00de500ac747a3bd768fc9fe20"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/lean/Trusted/MirSemantics.lean",
+      "sha256": "78e59693908e974533b7ca32dc6f14c7e5cf6a33dc4b2d74c5b70d73b784d47a"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "trusted/audit/TrustedBoundary.lean",
+      "sha256": "34a4728d32f1acf6c99f257b720ab5c0af219abc5d73a07bc699cc7f6001a9c7"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "theory/Anneal.lean",
+      "sha256": "594780f0e3bf56670fbca809dfa28a2b9dca1883c2fe1036c91aa856b6397b28"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "theory/Anneal/Refinement.lean",
+      "sha256": "cc8c5c614e6d5370f73931f4b9aa286fa8ecd73eb52ebfadd503fa71eb73454b"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "theory/Anneal/StepResult.lean",
+      "sha256": "c607bf7b1108cdf26a03587805ab6e72708c855642e30ccdae04de2f6ba7dfbe"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "theory/Anneal/MirLemmas.lean",
+      "sha256": "9a44f438b9cc0645b3e65791a4de1fbdb99d604bfb114f82cb57809b5232e725"
+    },
+    {
+      "repo": "joshlf/anneal-private",
+      "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "path": "theory/Anneal/FunctionalTranslation.lean",
+      "sha256": "852a2e9452a803c79982e71284cf9e04a491aea2770e91844eba5c064440baa6"
+    }
+  ],
+  "external_repositories": [
+    {
+      "repo": "https://github.com/AeneasVerif/kraken",
+      "commit": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+      "role": "Structured assembly AST, MemModel (All vsAllocated), symstep tactic, Aeneas functional bridge"
+    },
+    {
+      "repo": "https://github.com/leanprover/kraken",
+      "commit": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "role": "Upstream Kraken repository (Lean 4 ARM64/RISC-V assembly verification)"
+    },
+    {
+      "repo": "https://github.com/leanprover/LNSym",
+      "commit": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+      "role": "ARMv8-A byte-decoded BitVec 32 semantics, ArmState, SymContext symbolic simulation"
+    },
+    {
+      "repo": "https://github.com/cslib-community/bignum",
+      "commit": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+      "role": "CSLib port of HOL Light s2n-bignum (Component lenses, Orthogonality, UArchEvent trace)"
+    },
+    {
+      "repo": "https://github.com/awslabs/s2n-bignum",
+      "commit": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+      "role": "HOL Light ARM64/x86-64 object-code verification framework and tactics"
+    },
+    {
+      "repo": "https://github.com/rems-project/sail",
+      "commit": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+      "role": "Sail ISA specification compiler with Lean 4 backend"
+    },
+    {
+      "repo": "https://github.com/rems-project/lean-sail",
+      "commit": "1e5b216bf881ef08da160db63b44ecda430802d6",
+      "role": "Pre-PreSailM free monad Effect/FreeM support library for Sail-generated Lean 4 code"
+    },
+    {
+      "repo": "https://github.com/rems-project/archsem",
+      "commit": "42204d87df2e7d20e5ec23deb8ba8220e65148ab",
+      "role": "REMS architectural concurrency semantics (umpaLumpa/promising/operational)"
+    },
+    {
+      "repo": "https://github.com/rems-project/archsem-lean",
+      "commit": "318583a5f2052c039c25dfd69a3beec0b0a27090",
+      "role": "Lean 4 PreSailM IMon (Outcome) interface and candidate execution concurrency models"
+    },
+    {
+      "repo": "https://github.com/rems-project/sail-tiny-arm-lean",
+      "commit": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+      "role": "Sail-generated Lean 4 TinyArm model over PreSailM"
+    },
+    {
+      "repo": "https://github.com/opencompl/riscv-lean",
+      "commit": "7c6b500c1744f40d928fb131125cd06edf9f4fce",
+      "role": "RV64IM pure BitVec instruction semantics and Lean-MLIR dialect lowers"
+    },
+    {
+      "repo": "https://github.com/opencompl/lean-mlir",
+      "commit": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+      "role": "SSA dialect verification and bv_decide bitvector automation"
+    },
+    {
+      "repo": "https://github.com/BasisResearch/ship-your-interpreter",
+      "commit": "fb07094cff916318c34b07494a7d739f1e53989b",
+      "role": "Pure StateM / C-FFI differential fuzzing harness for RISC-V Lean 4 interpreters"
+    },
+    {
+      "repo": "https://github.com/rems-project/islaris",
+      "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "role": "Isla trace export + Iris separation logic for AArch64/RISC-V machine code"
+    },
+    {
+      "repo": "https://github.com/AbsInt/CompCert",
+      "commit": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "role": "CompCert builtin_ais_annot / EF_inline_asm and Asm/Mem.mem separation"
+    },
+    {
+      "repo": "https://github.com/jasmin-lang/jasmin",
+      "commit": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+      "role": "Jasmin compiler-checked assembly and #declassify leakage traces"
+    },
+    {
+      "repo": "https://github.com/project-everest/vale",
+      "commit": "bbae0eb89143734363b14a77642dbf8dec36e288",
+      "role": "Vale structured assembly DSL and weakest-precondition VC generator"
+    },
+    {
+      "repo": "https://github.com/rust-lang/rust",
+      "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "role": "rustc_middle::mir::TerminatorKind::InlineAsm and InlineAsmOperand representation"
+    },
+    {
+      "repo": "https://github.com/rust-lang/reference",
+      "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+      "role": "The Rust Reference inline assembly normative rules [asm.*]"
+    }
+  ]
+}

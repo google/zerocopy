@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "assembly/s2n-bignum",
+    "assembly/cslib-bignum",
+    "assembly/decoding",
+    "assembly/byte-binding",
+    "hol-light",
+    "lean/isa-semantics",
+    "lean/lenses",
+    "memory/permissions",
+    "security/constant-time",
+    "anneal/asm-bridge"
+  ],
+  "subjects": [
+    {
+      "name": "cslib-community/bignum Lean 4 port of s2n-bignum",
+      "identity": {
+        "repository": "cslib-community/bignum",
+        "revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+        "url": "https://github.com/cslib-community/bignum",
+        "toolchain": "leanprover/lean4:v4.36.0-rc1"
+      }
+    },
+    {
+      "name": "awslabs/s2n-bignum HOL Light formalization (upstream HEAD)",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+        "url": "https://github.com/awslabs/s2n-bignum"
+      }
+    },
+    {
+      "name": "awslabs/s2n-bignum HOL Light formalization (prior corpus baseline)",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+        "url": "https://github.com/awslabs/s2n-bignum"
+      }
+    },
+    {
+      "name": "AeneasVerif/kraken AArch64 and X64 Lean 4 verification framework",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+        "url": "https://github.com/AeneasVerif/kraken"
+      }
+    },
+    {
+      "name": "Anneal trusted verification skeleton (Layer 1A and Layer 1B)",
+      "identity": {
+        "repository": "joshlf/anneal-private",
+        "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "url": "https://github.com/joshlf/anneal-private"
+      }
+    },
+    {
+      "name": "Standalone Lean 4.34.1 mechanization of Component lenses, Simple.lean decode fix, and Anneal SpecOn bridge",
+      "identity": {
+        "artifact": "support/cslib_bignum_component_and_ensures_probe.lean",
+        "sha256": "c9618e915e52d85585303445562521842949449aaa0949d39ff0fea1f6f234d2",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

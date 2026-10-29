@@ -1,0 +1,97 @@
+{
+  "topics": [
+    "riscv64",
+    "isa-semantics",
+    "sail",
+    "lean4",
+    "mlir",
+    "bitvec",
+    "elf-verification",
+    "compiler-verification",
+    "refinement",
+    "trusted-computing-base"
+  ],
+  "subjects": [
+    {
+      "name": "opencompl/riscv-lean",
+      "identity": {
+        "kind": "git",
+        "repo": "opencompl/riscv-lean",
+        "commit": "7c6b500c1744f40d928fb131125cd06edf9f4fce",
+        "ref": "main",
+        "url": "https://github.com/opencompl/riscv-lean",
+        "role": "primary",
+        "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 61 theorems) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 69 theorems)."
+      }
+    },
+    {
+      "name": "opencompl/lean-mlir",
+      "identity": {
+        "kind": "git",
+        "repo": "opencompl/lean-mlir",
+        "commit": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+        "ref": "main",
+        "url": "https://github.com/opencompl/lean-mlir",
+        "role": "primary",
+        "summary": "MLIR SSA dialect framework embedding opencompl/riscv-lean as RISCV64.RV64 (SSA/Projects/RISCV64/Base.lean) and coupling it to LLVM IR via the hybrid dialect LLVMPlusRiscV (SSA/Projects/LLVMRiscV/LLVMAndRiscv.lean) and peephole refinement rewrites (SSA/Projects/LLVMRiscV/PeepholeRefine.lean)."
+      }
+    },
+    {
+      "name": "BasisResearch/ship-your-interpreter",
+      "identity": {
+        "kind": "git",
+        "repo": "BasisResearch/ship-your-interpreter",
+        "commit": "fb07094cff916318c34b07494a7d739f1e53989b",
+        "ref": "main",
+        "url": "https://github.com/BasisResearch/ship-your-interpreter",
+        "role": "primary",
+        "summary": "End-to-end verified RISC-V 64-bit ELF interpreter and compiler over the Sail RV64 model (Lean_RV64D_executable) proved using only standard Lean axioms (propext, Classical.choice, Quot.sound) via #simp_nf decodeN, TextPiece byte pinning, RetireReads/stepObs_exec, reflective SWP symbolic execution, and Iris adequacy."
+      }
+    },
+    {
+      "name": "opencompl/sail-riscv-lean",
+      "identity": {
+        "kind": "git",
+        "repo": "opencompl/sail-riscv-lean",
+        "commit": "11d8fa212a60c05dcc9fe5db925dd4d06dad65b5",
+        "ref": "main",
+        "url": "https://github.com/opencompl/sail-riscv-lean",
+        "role": "comparison",
+        "summary": "Sail-generated Lean 4 RV64D specification (Lean_RV64D) pinned by opencompl/riscv-lean's lake-manifest.json and vendored in executable form (Lean_RV64D_executable) by BasisResearch/ship-your-interpreter."
+      }
+    },
+    {
+      "name": "rems-project/lean-sail",
+      "identity": {
+        "kind": "git",
+        "repo": "rems-project/lean-sail",
+        "commit": "079463134b9c50450b8393e1566a09fc492a34d9",
+        "ref": "v5",
+        "url": "https://github.com/rems-project/lean-sail",
+        "role": "comparison",
+        "summary": "Lean 4 support library for Sail-generated monadic specifications (PreSail, EStateM, SequentialState, IntRange.forIn') pinned by opencompl/riscv-lean."
+      }
+    },
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "kind": "git",
+        "repo": "joshlf/anneal-private",
+        "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "ref": "skeleton",
+        "url": "https://github.com/joshlf/anneal-private",
+        "role": "comparison",
+        "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json)."
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "kind": "tool",
+        "version": "4.34.1",
+        "summary": "Lean 4 theorem prover (commit 5045d0056413266e57c625dcd7c365b10e377c52, x86_64-unknown-linux-gnu) used to verify support/two_tier_isa_dialect_and_elf_refinement_probe.lean under -j1 -M768."
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

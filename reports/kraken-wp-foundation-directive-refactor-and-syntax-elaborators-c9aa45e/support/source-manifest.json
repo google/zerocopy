@@ -1,0 +1,436 @@
+{
+  "package": "kraken-wp-foundation-directive-refactor-and-syntax-elaborators-c9aa45e",
+  "observed_at": "2026-10-29",
+  "repositories": {
+    "kraken": {
+      "url": "https://github.com/AeneasVerif/kraken.git",
+      "baseline_commit": "8af78062037bc237b341d20252aafd1797c1bcb7",
+      "baseline_tree": "ce03a1dbd830b9f04960bbcbdc65e46549ba87be",
+      "head_commit": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+      "head_tree": "4462246ba04a358fb3ef52cc8d8bc78875367546",
+      "commits_since_baseline": [
+        {
+          "commit": "c497ed14a766378a1d6cf40343ae24bc741f66d4",
+          "tree": "136c5a10c52fc8aa757007d2979451e5b0c63de9",
+          "subject": "x64: add tests for all 16 condition codes and suffixed cmov"
+        },
+        {
+          "commit": "3e89f5a237ad4dd35ee3714ab77e4a7d74096557",
+          "tree": "24e141dd93e5b3361dfbfabd64c1048f683e8cdd",
+          "subject": "x64: support all 16 condition codes and width-suffixed cmov"
+        },
+        {
+          "commit": "cd8897a3d6ad9d95d571793e14b3d779a236d79b",
+          "tree": "b2b0caf674fef0f5cc95a0dde82a136bcff21b1b",
+          "subject": "x64: use present-tense comments in tests"
+        },
+        {
+          "commit": "601ff37b1300170caff8ace5def1c34e50b3e3e2",
+          "tree": "d6591bc64d97589dad08ae94ced6abeeec84219c",
+          "subject": "Program.wp and its adequacy with respect to straightlineStep"
+        },
+        {
+          "commit": "6cae7890ab5497a755e97d064bfd91ca1eb56013",
+          "tree": "bec3f630ae43e95a0565f94164f3afe4dc2c7548",
+          "subject": "Comments on Program.wp and LinkedProgram.step"
+        },
+        {
+          "commit": "5909c04503c96516ee6dbbe605d4d48616cf4680",
+          "tree": "1527c071b843e828c283072385b395d86cbb9d11",
+          "subject": "WP/Adequacy: Directive.Inert needs no expose"
+        },
+        {
+          "commit": "2f78be74253fc28e890a6204bd4b792f0088b442",
+          "tree": "673cfb6ff6f7205e6a28c31fbd568d4108caecfa",
+          "subject": "WP: Host and Layout.Valid; Host.step fetches the instruction at the address"
+        },
+        {
+          "commit": "169c234d09623b815c129093a6de2446195c1441",
+          "tree": "0955f366861d73752e2e24778ad31339658deacc",
+          "subject": "Restore the original comments; drop the new docstrings"
+        },
+        {
+          "commit": "5437fd157e8019e8e2274d44de576fe59deda911",
+          "tree": "59a67eeb4cd27dad900191fd4a2cc1e35e9adc73",
+          "subject": "WP: Executable.step' replaces Host.step; comments"
+        },
+        {
+          "commit": "03f1a55733d5f8b189beca257f20c1512c51b020",
+          "tree": "339a5d6f9fadf113220b7489a287f60dc61a5cd1",
+          "subject": "WP: split into Step, Host, Basic and Adequacy; Host.exe, Host.addrOf, startAddr, endAddr"
+        },
+        {
+          "commit": "a68de4aee7ad6b1fb8f03ad50d60a62280205d48",
+          "tree": "a40b619c75fea34e4d7add22547a0b39d7d01ad7",
+          "subject": "WP: shorter proofs of the host address lemmas"
+        },
+        {
+          "commit": "a16b1873547e9b449cedd71ba65d7fdbf8befcab",
+          "tree": "265652f5ed405bea1d9d442d3cf3de06a9b2ba98",
+          "subject": "WP: postconditions as `post : @Post MachineState`"
+        },
+        {
+          "commit": "a111e8407768ed32bfaebdd4a29543eaa7cd4526",
+          "tree": "dcf64eb929467ca5fda2947cb1979ae140e7aaec",
+          "subject": "WP: Program.step1_of_wp_at for every occurrence; step1_of_wp is its first-occurrence instance"
+        },
+        {
+          "commit": "2d114f70570a01c3c3c8f19ab36b70fc231f4e1b",
+          "tree": "131c2d80f9697738ca2eb1a964bfc53869953a06",
+          "subject": "WP: Host.eventually_directive becomes Host.eventually_of_interp; drop a stale TODO"
+        },
+        {
+          "commit": "cb1e3db6b820e59c825173fb3a6d6def9e52ead9",
+          "tree": "b868d940feb7cba3c8ae47d1bf0ee37ce3f8b7e3",
+          "subject": "Program.eq_of_getElem?_label becomes List.Nodup.eq_of_getElem?_label"
+        },
+        {
+          "commit": "523cf6b035e838f1203eb14f62f55dbc48f852e1",
+          "tree": "d93bcc78dfa857bcdfc763ae87b692ee58f94e37",
+          "subject": "WP: docstrings for the module, step', sizeBefore and addrOf"
+        },
+        {
+          "commit": "a15666a4293909c646d05506bc42f64fabf0a2e3",
+          "tree": "d342748ebc7a183d9c4025799be2eec9b14981b5",
+          "subject": "WP: drop the duplicate note on Cousot from the module docstring"
+        },
+        {
+          "commit": "3fc86f8688b1f9b0c7b9e1c0cf00231b214bb0c5",
+          "tree": "b05033fadce3a28d3738b8152f325890fad54330",
+          "subject": "Inert: compare under Effects.All; directivesAtAddress_addrOf concludes only size 0"
+        },
+        {
+          "commit": "6a8220c9af00ae311bd14a2226424ec966b0ec4b",
+          "tree": "68b4be6f7254da047a88109a8b25d17aca8978bc",
+          "subject": "Layout.Valid: replace fits with addr_determines_offset"
+        },
+        {
+          "commit": "1b5c3e47bc8f2b75c6575be7f00904ea63d99bdd",
+          "tree": "1a017196b1b99d194816a51ad6b4c8fa2ae93c8f",
+          "subject": "Program.wp: build on step1; drop step' and fetch?"
+        },
+        {
+          "commit": "31d37afae51b219b8accad1566294f5f684a5822",
+          "tree": "41c8585e77126de6f8ab80c054d3a6ee1d462e21",
+          "subject": "WP: drop declarations that Program.wp and its rules do not need"
+        },
+        {
+          "commit": "188cb1e8cf3802041b5732e8632252aa16a1192f",
+          "tree": "f5b6c2083d884e9db873c6687fdbb8eec93d5e15",
+          "subject": "Host bundles the layout and its validity; drop Layout.Valid"
+        },
+        {
+          "commit": "9f2536e37b40e39245ce3b6d32804695e65e80e3",
+          "tree": "2295c8fca689ca8f74d3931fa3ca3f6820d515ca",
+          "subject": "doc: refine the comments on `Program.wp` and `Directive.Inert`"
+        },
+        {
+          "commit": "93c08b51ac84f917a6b12df735461b25e3733f78",
+          "tree": "112ae776e7c8cc502219da7b30b321a117213deb",
+          "subject": "Update Kraken/X64/Parser/Basic.lean"
+        },
+        {
+          "commit": "6cbad6bdbdf69dd10ccdbc82b6566820a2fea246",
+          "tree": "ba2f39a4bf417c0c5b045be0b3e2628c367696f9",
+          "subject": "fix: failing over non-monadic computation"
+        },
+        {
+          "commit": "9529448ea9dd86b0076774ef93c2990e7ddefff6",
+          "tree": "c3418611d32f0b35b1103302ca0dd153d73b15b1",
+          "subject": "refactor: add parseWidthSuffix function"
+        },
+        {
+          "commit": "b19259d2651c756cb3a502a92075991033ac64f9",
+          "tree": "73174bcdb53418e04f94d26a52d827ecea867016",
+          "subject": "Merge branch 'main' into pull/181"
+        },
+        {
+          "commit": "bf39a73101fb94f1bf8ba8ec03ff29764419694f",
+          "tree": "73174bcdb53418e04f94d26a52d827ecea867016",
+          "subject": "Merge pull request #193 from ayhon/pull/181"
+        },
+        {
+          "commit": "1ddddcfbc84922473ce5ffee429cd1bb068b2eea",
+          "tree": "a99171c298fdceba51a5da2c970386217dc47098",
+          "subject": "doc: document the soundness theorems of `Program.wp`"
+        },
+        {
+          "commit": "e540187ee15a6f4e75cd8f1abeb5221977e6eab6",
+          "tree": "d5f4b2c68df3a3643dee4ad14a80776152eb6e79",
+          "subject": "Merge branch 'main' into sgraf812/wp-foundation"
+        },
+        {
+          "commit": "72f3a7a3a2d94ac51040815d692cd31a1d240a1d",
+          "tree": "d5f4b2c68df3a3643dee4ad14a80776152eb6e79",
+          "subject": "Merge pull request #165 from AeneasVerif/sgraf812/wp-foundation"
+        },
+        {
+          "commit": "a0d7eedf8d473d888347425dbd0e4632d32fb444",
+          "tree": "9244be154dab5d3212c0495327fcf09ef71b3df5",
+          "subject": "readme"
+        },
+        {
+          "commit": "412d0020bad6612ac77f523912bc604d062360ff",
+          "tree": "9244be154dab5d3212c0495327fcf09ef71b3df5",
+          "subject": "Merge pull request #207 from AeneasVerif/protz/readme"
+        },
+        {
+          "commit": "93519ab25e8eff5f5a4375afc8aa3a8d7b13f899",
+          "tree": "7cedc3c085cf86cf3e80b84cc5d306854bf88fb9",
+          "subject": "X64: add shared parser infrastructure and Lean syntax definitions"
+        },
+        {
+          "commit": "24502e93dda976f663b0fac1a5fb1daa884d3864",
+          "tree": "31c9bb1538cb35a2425c8bdee0a14431fec8fcd6",
+          "subject": "X64: add TermElabM syntax elaborators, elabX64, and include_x64"
+        },
+        {
+          "commit": "6c3df650cec4baff0af7410ebd23f1e2bdc23936",
+          "tree": "f44ee0e001686aabae0c19f374c8a5d9b59d7917",
+          "subject": "feat: use an environment extension in SyntaxAffixed.lean"
+        },
+        {
+          "commit": "b6c5b8c1ea4269a69f02e9269fd4aa02c1617156",
+          "tree": "20256ad0bcf35ebded3c7f5d882f423374efc231",
+          "subject": "nit: address PR comments"
+        },
+        {
+          "commit": "a831f5339d5e1d5e1bdb4d2091a9be89b378c0bc",
+          "tree": "ae402b1cbc85adb05b99476caeec59c7dcc6d5ac",
+          "subject": "cleanup"
+        },
+        {
+          "commit": "a802e9bc1568efd3cbe87e9f93225def2900354b",
+          "tree": "ae402b1cbc85adb05b99476caeec59c7dcc6d5ac",
+          "subject": "Merge pull request #196 from AeneasVerif/feat/lean-parsers-x64"
+        },
+        {
+          "commit": "46e5fe90770d3e0e81313c357512dfd929ffb641",
+          "tree": "4462246ba04a358fb3ef52cc8d8bc78875367546",
+          "subject": "refactor: abstract Directive definition between architecture implementations"
+        },
+        {
+          "commit": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+          "tree": "4462246ba04a358fb3ef52cc8d8bc78875367546",
+          "subject": "Merge pull request #211 from AeneasVerif/refactor/abstract-directive-definition"
+        }
+      ],
+      "files_at_head": [
+        {
+          "path": "Kraken/OmniSemantics.lean",
+          "blob_sha": "8cfdbc4fbc2ed8d232f3c465f5b2666a6e803391",
+          "sha256": "87e19661dcc00b0149c10e77f1c1e5bb75ecbb0e29a69046b8ab0fcae50d60d6",
+          "lines": 62
+        },
+        {
+          "path": "Kraken/X64/OmniSemantics.lean",
+          "blob_sha": "e75090897887255ca4198a95f9f5347df8f315c0",
+          "sha256": "ebc38906f936005d28eb8c41804bea803c7206bec3e4d502fc985d271db399f1",
+          "lines": 28
+        },
+        {
+          "path": "Kraken/AArch64/OmniSemantics.lean",
+          "blob_sha": "9588f643bdef212be18b88cdb5df7c5b46e80005",
+          "sha256": "bfdd4e19572558f28f08bc68ddb6715ff32634c5acc23cadb073c6250d636608",
+          "lines": 28
+        },
+        {
+          "path": "Kraken/X64/WP.lean",
+          "blob_sha": "869219bed56f016e7eaae3743c398ea89327c085",
+          "sha256": "1b4a1927f53244fe0fa3229175ebeb289a5195d6c26dd41a3481500e7c90676e",
+          "lines": 4
+        },
+        {
+          "path": "Kraken/X64/WP/Host.lean",
+          "blob_sha": "555f54ff510a7e9e07ace253f029b221195e0180",
+          "sha256": "287213a532c02f86e07b5909161d01ef3657b05ce235abf1c3f19e0e7001a51d",
+          "lines": 107
+        },
+        {
+          "path": "Kraken/X64/WP/Basic.lean",
+          "blob_sha": "4090d84b4c7bd8f8a11faf0fe4ed8c65b3d4c3d3",
+          "sha256": "e29a1485d9dec603b82514998eb1c4670d9f0409cf88495741be95852a43b9bc",
+          "lines": 113
+        },
+        {
+          "path": "Kraken/X64/Inert.lean",
+          "blob_sha": "775d534b74d65c8e06e02e125c2983e70c091a94",
+          "sha256": "d92c8b6aa86440cc57747b128c0e9aed3f5af86bbf66719c31e181f7416c01c7",
+          "lines": 31
+        },
+        {
+          "path": "Kraken/Layout.lean",
+          "blob_sha": "dfd4ca9b844888b27062e17e68c44c0e5e1835bb",
+          "sha256": "16c47ec281d89eec89ce8eaa837878ceb1610a0dc18729c5dbcdbe0940f6f9de",
+          "lines": 186
+        },
+        {
+          "path": "Kraken/Data/List/Infix.lean",
+          "blob_sha": "ee071af7df70dfec3c5307bd860b9f4538fcc2af",
+          "sha256": "89d1af0de5b33392f52f54cc198a84bb4f8287b15eec08b5976c729fdc241904",
+          "lines": 65
+        },
+        {
+          "path": "Kraken/ForLean.lean",
+          "blob_sha": "adf14bf7491cbca003201781b4e37b64da6c0d42",
+          "sha256": "9cc95f4c5119920da86ec3b2f5cf31d14caf83453f3252833ce6dfc68e37f6f5",
+          "lines": 47
+        },
+        {
+          "path": "Kraken/Mem.lean",
+          "blob_sha": "b2d6239e8c98ad37e5d20f4e5d18070ae57a64a1",
+          "sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01",
+          "lines": 129
+        },
+        {
+          "path": "Kraken/SyntaxAffixed.lean",
+          "blob_sha": "bf4450dadf6f0b612a8b169d74b4906a44907e34",
+          "sha256": "8afdf6c067210b20d69b3e5eed17a29f120d26866e1d32fb290e2cce380b3840",
+          "lines": 126
+        },
+        {
+          "path": "Kraken/Parser.lean",
+          "blob_sha": "fbcbe15b5caff537be54a916fdf606248e28517f",
+          "sha256": "c01a0ec201f909d69c457cf491b48c677d75042ff9721b97399940de387c1b51",
+          "lines": 69
+        },
+        {
+          "path": "Kraken/X64/Parser.lean",
+          "blob_sha": "00fc4dac87c64ade0aff7bf4b1e98c516d0488fe",
+          "sha256": "db42dc02cedc1a218c9d26b39494faa93f0670038cbdab776314f18a345ce796",
+          "lines": 8
+        },
+        {
+          "path": "Kraken/X64/Parser/Syntax.lean",
+          "blob_sha": "5cfe8cf908c3f91b1070e9aa016b5815eb2c50dc",
+          "sha256": "b2be0e8d22911949d47e43c7d8f8cc44d95732ce548d6cfaf87fea2a4342049f",
+          "lines": 396
+        },
+        {
+          "path": "Kraken/X64/Parser/Elab.lean",
+          "blob_sha": "bdcdda60d94621ef6b68e5d7eff81363290e8ce7",
+          "sha256": "b06b1dd18669341128af3a540ae8c42ed7480b82b13bd2bdb8ba72d1e8d35eed",
+          "lines": 747
+        },
+        {
+          "path": "Kraken/X64/Parser/Basic.lean",
+          "blob_sha": "deccece0e27d16720913e148bc5c926640b88f0b",
+          "sha256": "0cf1dbac6175bf244510dd652d7fc218ba4898e1eb4e43dccd1d980645441d8d",
+          "lines": 1192
+        },
+        {
+          "path": "Kraken/X64/ParserTests.lean",
+          "blob_sha": "e68818e27dd27aeb8242da6298e5d0f932c6ae85",
+          "sha256": "d7c8839c134c02271c1accbbd7008c3cb26014169cc7aae27a7dd84f9a113aa4",
+          "lines": 597
+        },
+        {
+          "path": "Kraken/X64/Syntax.lean",
+          "blob_sha": "86254ec9eb1e7acaeb2bf7562be52aa01f6f316a",
+          "sha256": "ddca7335cca7fbbdfedc6e816973f4af7b550651d0e86a0350f0e50462eaa614",
+          "lines": 338
+        },
+        {
+          "path": "Kraken/X64/Semantics.lean",
+          "blob_sha": "afe91a701dba40e1ffe9cf578ac0bdac58d6874d",
+          "sha256": "57b16f5334cb19977d6671554685b30ae1111989f897933921767823f0e50695",
+          "lines": 863
+        },
+        {
+          "path": "Kraken/X64/Examples/Examples.lean",
+          "blob_sha": "bea14ade68b7496a2c7119d251471e171257ff10",
+          "sha256": "71d9e15449e1ac889dcf46cda87a0097a6d2d1a0b6dc5151318c39266303e5d4",
+          "lines": 475
+        },
+        {
+          "path": "Kraken/AArch64/Syntax.lean",
+          "blob_sha": "72254d4e8a2c6563e621f93b9558131785c19894",
+          "sha256": "4f9c1754e645afc4d9f5a3b65a2b953e687841b0866139a0e4de1cfc26210672",
+          "lines": 622
+        },
+        {
+          "path": "Kraken/AArch64/Semantics.lean",
+          "blob_sha": "6214f1e33674b7c3bfa259e21d5df2ca6629e2df",
+          "sha256": "5ab0b8ad46550ed69e67fac81350f50aeadc1cf37402b90d923c92e61b3b2fd8",
+          "lines": 1044
+        },
+        {
+          "path": "Kraken/AArch64/Parser.lean",
+          "blob_sha": "47ed49f03e4d1663c762b45ef13e7d1c1c839b84",
+          "sha256": "84407963f198e18b130b2a2ca7faa085b5a27a4651ad59f6d28c34e5f98ceb99",
+          "lines": 42
+        },
+        {
+          "path": "Kraken/AArch64/Parser/Basic.lean",
+          "blob_sha": "c8921e658e1ad5d6c948f483fd4b15fc2488d34c",
+          "sha256": "9cf52670dd7beacdac8c05a1dd83500a36cd03993359ebb5dc978296161ba4a3",
+          "lines": 2205
+        },
+        {
+          "path": "Kraken/AArch64/Examples/Examples.lean",
+          "blob_sha": "111cf649e1f0182aad60e3b60f1450fbb3465525",
+          "sha256": "a1a380039a1f54bd14341d39df9eec12926efbd9a97f02d6730690805193a918",
+          "lines": 179
+        },
+        {
+          "path": "Kraken.lean",
+          "blob_sha": "a6ea2a9c6009f6b10e9c6d7ec57ba7d38b6aeba4",
+          "sha256": "dc7d81993d6c654bdce18c73fc8d2e6fde8c3159df1b7983702e50c5cd99c9f2",
+          "lines": 18
+        },
+        {
+          "path": "lean-toolchain",
+          "blob_sha": "a14384e40dd98f3ec5036ef7980f2cfc870a78d0",
+          "sha256": "c7d3be4f231b7173b248710c425d8b406df756ed3de889895999a9a7b2518add",
+          "lines": 1
+        },
+        {
+          "path": "lakefile.toml",
+          "blob_sha": "41ab3c64682715ea900b520e3d17b74809329738",
+          "sha256": "24aeacd43a41389dbfafc7247160d3e2f94cc38b65f12461080c0b2b220cde8d",
+          "lines": 27
+        }
+      ]
+    },
+    "anneal_skeleton": {
+      "url": "https://github.com/joshlf/anneal-private.git",
+      "head_commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "head_tree": "219dfb9655e7b1a2754d3590cdbbec224ac790a0",
+      "files_at_head": [
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "blob_sha": "23b043e73a60f0d1dfc1bdbeafbdb99e20e59db4",
+          "sha256": "e9fb5351eac8e07d58c4738605e13214b01b6d06d5bed17c621206111c8d0753",
+          "lines": 438
+        },
+        {
+          "path": "trusted/lean/Trusted/StepResult.lean",
+          "blob_sha": "9825e59b0de79d41329e9401ae4b5562707e4609",
+          "sha256": "54481add3dbf4ffa95d4f7533ae6e390201eb3db3d24a6beb0757f9f68115b77",
+          "lines": 175
+        },
+        {
+          "path": "theory/Anneal/Refinement.lean",
+          "blob_sha": "7493b532d0a16cf00d8cb6c5e26ae6c440bb7da9",
+          "sha256": "cc8c5c614e6d5370f73931f4b9aa286fa8ecd73eb52ebfadd503fa71eb73454b",
+          "lines": 262
+        },
+        {
+          "path": "theory/Anneal/StepResult.lean",
+          "blob_sha": "e36b28a1560a03c5fd4146bca807f56465fc8102",
+          "sha256": "c607bf7b1108cdf26a03587805ab6e72708c855642e30ccdae04de2f6ba7dfbe",
+          "lines": 171
+        }
+      ]
+    }
+  },
+  "support_artifacts": [
+    {
+      "path": "support/kraken_wp_and_bridge_probe.lean",
+      "sha256": "2681ed3737cb56f0abd52be990fca62a43188d3ca5b178f32b9ad0683560cbff",
+      "lines": 1147,
+      "toolchain": "leanprover/lean4:v4.34.1",
+      "check_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/kraken_wp_and_bridge_probe.lean"
+    }
+  ]
+}
