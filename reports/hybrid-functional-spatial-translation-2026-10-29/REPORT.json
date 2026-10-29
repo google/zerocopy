@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "anneal",
+    "aeneas/borrow-translation",
+    "aeneas/pure-extraction",
+    "aeneas/separation-logic",
+    "gillian-rust",
+    "refinedrust",
+    "refinedc/lithium",
+    "rusthornbelt",
+    "omnisemantics",
+    "interaction-trees",
+    "futamura-projection",
+    "lean4/shallow-specialization",
+    "memory/frame",
+    "memory/cpp20-weak-memory",
+    "rust/unsafe",
+    "rust/raw-pointers",
+    "rust/atomics"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Trusted Core and FunctionalTranslation Theory Module",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "be9cafeb2a401b47d22fb8a5b548d28c46617e54"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 Local Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Hybrid Borrow-and-Heap Translation Lean 4 Prototype",
+      "identity": {
+        "artifact": "support/HybridBorrowHeapPrototype.lean",
+        "sha256": "823ac5309f2d67a229f4dda5b4cea7824a7ca5caab4f4aa44b4c2a19a278bea9"
+      }
+    },
+    {
+      "name": "Aeneas Functional Translator and Raw-Pointer Symbolic Evaluation",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Gillian-Rust: Symbolic Execution of Unsafe Rust with Hybrid Borrow/Spatial State (Ayoun et al., PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "arxiv": "2403.15122",
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e23632e07645c1756f97ef47d3d9a8be79"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (Gäher et al., PLDI 2024)",
+      "identity": {
+        "doi": "10.1145/3656423",
+        "arxiv": "2404.04029"
+      }
+    },
+    {
+      "name": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types (Sammler et al., PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454036"
+      }
+    },
+    {
+      "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (Matsushita et al., PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "zenodo": "6417462"
+      }
+    },
+    {
+      "name": "Omnisemantics: Smoother Handling of Nondeterminism (Charguéraud et al., TOPLAS 2023)",
+      "identity": {
+        "doi": "10.1145/3579834",
+        "arxiv": "2205.02728"
+      }
+    },
+    {
+      "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq (Xia et al., POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371119"
+      }
+    },
+    {
+      "name": "Katamaran: Symbolic Execution by Shallow Monadic Evaluation (Keuchel et al., ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547628"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation (Ho & Protzenko, ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (Ho, Fromherz & Protzenko, ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680v2"
+      }
+    },
+    {
+      "name": "Verus: Verifying Rust Programs using Linear Ghost Types (Lattuada et al., OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3586037"
+      }
+    },
+    {
+      "name": "Foundational VeriFast Hinted Mirroring Exporter",
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}
