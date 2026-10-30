@@ -722,7 +722,9 @@ jobs:
           files: zerocopy/lcov.info
 
   kani:
-    runs-on: ubuntu-latest
+    # Pin to ubuntu-24.04: ubuntu-26.04 ships with GCC 15, whose stddef.h
+    # includes C23 `nullptr_t`, which breaks CBMC's goto-cc in Kani 0.60.0.
+    runs-on: ubuntu-24.04
     name: 'Run tests under Kani (${{ matrix.configuration }})'
     strategy:
       fail-fast: false
