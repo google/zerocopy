@@ -11091,6 +11091,95 @@
         "archive/reproducibility"
       ]
     },
+    "anneal-audit-std-realizeconst-closure-replay-and-nanoda-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+            "skeleton_worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+          },
+          "name": "Anneal Boundary Auditor, Foundation Lock, and Functional Translation Library"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel, Environment Realization, Elaborator, and Standard Library"
+        },
+        {
+          "identity": {
+            "format_version": "3.1.0",
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "lean4export NDJSON Kernel Declaration Exporter"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "8de7e0c4ed3052745a7f8725164efd9e76d84c56",
+            "version": "v0.4.31"
+          },
+          "name": "nanoda_lib Independent Rust Lean 4 Kernel Typechecker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Comparator Safe-Verify Challenge-Solution Sandbox Orchestrator"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker Standalone Environment Replay Tool"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean Pure Lean 4 Kernel Reimplementation"
+        },
+        {
+          "identity": {
+            "artifact": "support/DiagnoseRealizeConst.lean",
+            "sha256": "01b13a9843828c664fe79ad44052fa280bbc554fe06a9d6dd25ba4dda4ce930b"
+          },
+          "name": "Init and Std Duplicate Realized Constant Diagnostic Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/ProbePartialVsTotal.lean",
+            "sha256": "ac32784cb3edb4e26d4a933d62f778976901367f599e33728a8866735359a8a6"
+          },
+          "name": "Total Recursion vs. Partial Definition ConstantInfo Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/PatchedTrustedBoundaryPrototype.lean",
+            "sha256": "ca20c8df946a628abef8ebcb43b89a87a6a31cbf9ebfb89d63ae06e9a2a1607e"
+          },
+          "name": "Patched TrustedBoundary.lean Prototype with Realized-Theorem Subsumption, Partial Companion Filtering, Toolchain Library Admission, and Closure-Only Replay"
+        }
+      ],
+      "topics": [
+        "anneal/audit",
+        "anneal/trusted-boundary",
+        "lean/realize-const",
+        "lean/kernel-replay",
+        "lean/std-library",
+        "lean/partial-recursion",
+        "verification/nanoda",
+        "verification/multi-crate"
+      ]
+    },
     "anneal-cross-tool-error-provenance-specimens-v4-30-0-rc2": {
       "observed_at": "2026-09-28",
       "subjects": [
@@ -15769,6 +15858,185 @@
         "verification/permissions",
         "rust/unsafe",
         "verification/why3-trust"
+      ]
+    },
+    "cross-prover-interoperability-dedukti-and-agentic-proof-tooling-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "Lean 4 Kernel Export Format and Serializer (lean4export)"
+        },
+        {
+          "identity": {
+            "repository": "rish987/lean4less",
+            "revision": "5b66bbc4af5c2c11313fcfb5098630dadaf19281"
+          },
+          "name": "Extensional-to-Intensional Lean 4 Kernel Translator (lean4less)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "rish987/lean2dk",
+            "revision": "471208f18c29420e25750503648469fc95d2ac8f"
+          },
+          "name": "Lean 4 to Dedukti Translator (lean2dk main branch)"
+        },
+        {
+          "identity": {
+            "branch": "claude-stable",
+            "repository": "rish987/lean2dk",
+            "revision": "29f985670008c29e852d61c562b8c10c84f7c5fb"
+          },
+          "name": "Lean 4 to Dedukti Translator with Lazy-Delta and Eta-Memoization Patches (lean2dk claude-stable branch)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-community/rocq-lean-import",
+            "revision": "2d28bbe80e7361bf3ac54f5ef099207fc61ce837"
+          },
+          "name": "Rocq Kernel Importer for Lean 4 Exported Environments (rocq-lean-import)"
+        },
+        {
+          "identity": {
+            "repository": "LLM4Rocq/babel-formal",
+            "revision": "71c2aa9bc78e6d41c5421f8ae8e9f551c12f570b"
+          },
+          "name": "Kernel Proof Term Pivot Translator (babel-formal)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/specr",
+            "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+            "version": "v0.1.41"
+          },
+          "name": "MiniRust Specification-to-Rust Transpiler (specr)"
+        },
+        {
+          "identity": {
+            "repository": "nomeata/loogle",
+            "revision": "9f11169aaebf1ed1e7dcc4077f2aafe0fcf66fd0"
+          },
+          "name": "Lean 4 Type-Shape and Constant-Index Search Engine (loogle)"
+        },
+        {
+          "identity": {
+            "repository": "justincasher/lean-explore",
+            "revision": "17b9d6c87a2bf0dc4ea27de05da8a1c9965391b7"
+          },
+          "name": "Hybrid BM25 and FAISS Informalization Search Engine for Lean 4 (lean-explore)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/LeanSearchClient",
+            "revision": "c61286b7b63cbfd563b28e11e81d0a18233a044a"
+          },
+          "name": "In-Editor LeanSearch, LeanStateSearch, and Loogle Client (LeanSearchClient)"
+        },
+        {
+          "identity": {
+            "repository": "lenianiva/Pantograph",
+            "revision": "0789692d65e365c027d171074bf747f1d40328d0",
+            "version": "v0.3.19"
+          },
+          "name": "Pantograph Machine-to-Machine Lean 4 Proof Search Server"
+        },
+        {
+          "identity": {
+            "repository": "stanford-centaur/PyPantograph",
+            "revision": "a098035e29f7910a627b8440145b51246ec38484"
+          },
+          "name": "PyPantograph Python Interface and Tree-Search Harness"
+        },
+        {
+          "identity": {
+            "repository": "lean-dojo/LeanDojo-v2",
+            "revision": "baed5eae6e87a65a446d9f54af07aab2154e7599"
+          },
+          "name": "LeanDojo-v2 Offline InfoTree Tracer and Pantograph Agent Framework"
+        },
+        {
+          "identity": {
+            "repository": "oOo0oOo/lean-lsp-mcp",
+            "revision": "bd95db58fe684ec0c3f5f875c81bac949abc8929",
+            "version": "v0.32.0"
+          },
+          "name": "Lean 4 Model Context Protocol Server and ScratchPool Orchestrator (lean-lsp-mcp)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/repl",
+            "revision": "6a2be396449a5213a36748ca7682d16d54a1ca4a"
+          },
+          "name": "Lean 4 JSON Command and ProofSnapshot REPL (leanprover-community/repl)"
+        },
+        {
+          "identity": {
+            "repository": "augustepoiroux/LeanInteract",
+            "revision": "768e18ebcb5c7ec34d308768a785389eeac37798",
+            "version": "v0.11.6"
+          },
+          "name": "LeanInteract Python REPL Process Pool and ReplaySessionCache"
+        },
+        {
+          "identity": {
+            "repository": "Project-Numina/kimina-lean-server",
+            "revision": "fb2393de3461db35eda4c714e3fd21187e92ec90"
+          },
+          "name": "Kimina High-Throughput Header-Cached Lean 4 Verification Server"
+        },
+        {
+          "identity": {
+            "no_mathlib_revision": "7e54df3e5b7f78e5e6170ffab8ebe813904262b0",
+            "repository": "ufmg-smite/lean-smt",
+            "revision": "db545bebe2de1e06dc2df62a6ff6c20e5736bfc0"
+          },
+          "name": "Lean 4 SMT Cooperating Proof Calculus Reconstruction Engine (lean-smt)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel and Metaprogramming Toolchain"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal Trusted Core and Boundary Auditor"
+        },
+        {
+          "identity": {
+            "artifact": "support/anneal_harness.lean",
+            "sha256": "9f9c51efc7ef322f7c7b991dbb3b261d3893f244b6f2f9c5d5cb29ae9fecb25a"
+          },
+          "name": "Zero-Dependency Lean 4.34.1 Type-Shape Search and Coupled-Goal Harness"
+        },
+        {
+          "identity": {
+            "artifact": "support/source-manifest.json",
+            "sha256": "550d7df129b1ef89f532313ee96f32a11dee6f52fdda6cfb78e23f860b3ba89a"
+          },
+          "name": "Inspected Repository and File Digest Manifest"
+        }
+      ],
+      "topics": [
+        "anneal/proof-tooling",
+        "anneal/trust-boundary",
+        "lean/cross-prover-translation",
+        "lean/dedukti",
+        "lean/export",
+        "lean/metaprogramming",
+        "lean/repl",
+        "lean/type-search",
+        "proof/certificates",
+        "rocq/lean-import"
       ]
     },
     "cross-tool-diagnostic-path-normalization-2026-09-27": {
@@ -22060,6 +22328,606 @@
         "lean/tcb",
         "aeneas/lean-backend",
         "verification/automation"
+      ]
+    },
+    "lean4-core-tactics-kernel-bvdecide-stddo-and-containers-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "src/lean/Init/{Core.lean,Prelude.lean,Omega.lean,Grind.lean,GrindInstances.lean}, src/lean/Init/Data/{Int/OfNat.lean,String/Bootstrap.lean}, src/lean/Lean/Meta/Native.lean, src/lean/Lean/Elab/Tactic/{BVDecide.lean,Omega/Core.lean,Do/VCGen.lean}, src/lean/Lean/Meta/Tactic/BVDecide/{Prover/Bitblast.lean,Reflect/SatAtBVLogical.lean}, src/lean/Lean/Meta/Tactic/Grind/Arith/Cutsat/{Proof.lean,Nat.lean}, src/lean/Std/Sat/{AIG/Basic.lean,AIG/RelabelNat.lean,CNF/Basic.lean,CNF/RelabelFin.lean}, src/lean/Std/Tactic/BVDecide/{Reflect.lean,LRAT/Parser.lean,LRAT/Internal/Clause.lean,Bitblast/BVExpr/Basic.lean,Bitblast/BVExpr/Circuit/Impl/Expr.lean}, src/lean/Std/Do/{SPred/SVal.lean,SPred/SPred.lean,PostCond.lean,PredTrans.lean,WP/Basic.lean,WP/Monad.lean,Triple/Basic.lean}, src/lean/Std/Tactic/Do/Syntax.lean, src/lean/Std/Data/{DHashMap/Internal/Index.lean,DTreeMap/Internal/Def.lean,DTreeMap/Internal/WF/Defs.lean,TreeMap/Basic.lean,TreeMap/Raw/Basic.lean,ExtTreeMap/Basic.lean,HashMap/Basic.lean,HashMap/Raw.lean,ExtHashMap/Basic.lean}",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 core tactics, Std.Sat, Std.Tactic.BVDecide, Init.Omega, Init.Grind, Std.Do, and Std.Data"
+        },
+        {
+          "identity": {
+            "paths": "trusted/audit/TrustedBoundary.lean, trusted/audit/src/lib.rs, trusted/lean/foundation-lock.json",
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal boundary auditor and foundation module lock"
+        },
+        {
+          "identity": {
+            "bytes": "33811",
+            "lines": "1006",
+            "path": "support/ProbeBVDecide.lean",
+            "sha256": "3d2465d2cf40724556c1f14bc7f9a3375d277148d8de3f23822930341053a6f8",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Standalone Lean 4.34.1 probe for KernelLRAT and KernelBVDecide (bv_decide_kernel)"
+        },
+        {
+          "identity": {
+            "bytes": "2486",
+            "lines": "69",
+            "path": "support/ProbeGrindOmega.lean",
+            "sha256": "abeb3548f70a9d683b791638c6b084c050e9e780ae99d4fcacf8ec0e72c4d114",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Standalone Lean 4.34.1 prelude probe for Init.Omega and Init.Grind under TrustedBoundary.lean"
+        },
+        {
+          "identity": {
+            "bytes": "6530",
+            "lines": "184",
+            "path": "support/ProbeStdDoData.lean",
+            "sha256": "1cdc3c347bde6d4f2a091b7ed374085e60b4788324998cf33cc60782ffd5bf5d",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Standalone Lean 4.34.1 probe for Std.Do (SPred, WP, Triple, mvcgen) and Std.Data containers"
+        },
+        {
+          "identity": {
+            "bytes": "6160",
+            "lines": "178",
+            "path": "support/DiagnoseReduce.lean",
+            "sha256": "ab8544539c4a5ed319edfbed888262376cbcb6445f01d8a1f2b9b54ae2f46c42",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Standalone Lean 4.34.1 diagnostic probe for the 7 verifyBVExpr kernel-reduction blockers and omega/grind axiom footprints"
+        }
+      ],
+      "topics": [
+        "lean/bv-decide",
+        "lean/kernel-reduction",
+        "lean/lrat",
+        "lean/robdd",
+        "lean/grind",
+        "lean/omega",
+        "lean/std-do",
+        "lean/mvcgen",
+        "lean/std-data",
+        "lean/treemap",
+        "lean/hashmap",
+        "anneal/trusted-boundary",
+        "anneal/foundation-lock"
+      ]
+    },
+    "lean4-external-libraries-cslib-aesop-duper-and-vc-benchmarks-2026": {
+      "observed_at": "2026-04-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "f6fb2a3bfdc8fa0dbdbeb9fb8cdbfeb3dbbbba85",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        },
+        {
+          "identity": {
+            "main_revision": "82db31eec215b6843be6df283304cc02e736ddef",
+            "repository": "https://github.com/leanprover/cslib",
+            "v4_34_1_revision": "7c8f6c0f67015df29b152fdcffaf7850db2e9185"
+          },
+          "name": "leanprover/cslib"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/stagiralabs/VerifiedAgora",
+            "revision": "9703b9597dd37d6ec4845fc5d0480132e3db8054"
+          },
+          "name": "stagiralabs/VerifiedAgora"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover-community/aesop",
+            "revision": "f6fb2a3bfdc8fa0dbdbeb9fb8cdbfeb3dbbbba85",
+            "v4_34_1_port_sha256": "bf9724fd2657c9c264011ffdd060f47b27fcdf08c55c064011c52a16758c9b8f",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "leanprover-community/aesop"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover-community/duper",
+            "revision": "ac313ef93ba04d987e4bc6debcab7e7ccdbef54c",
+            "v4_34_1_port_sha256": "be82522d9f864af48b2d56e9898791867dbda169d0db45c7d09bd1de7e7463bd",
+            "version": "v0.0.29"
+          },
+          "name": "leanprover-community/duper"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover-community/lean-auto",
+            "revision": "9f6326fc6238a85287ab4f57ffbb6a8acfc8bd3b",
+            "version": "v0.0.30"
+          },
+          "name": "leanprover-community/lean-auto"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover-community/batteries",
+            "revision": "9eed7ac0ab0dcbb4d3ecbc0edbf32f6eb4c1cc34",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "leanprover-community/batteries"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover-community/mathlib4",
+            "revision": "c2a9b1b9d72b11e6fb80c8cb6c218d0d60dd94b0",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "leanprover-community/mathlib4"
+        },
+        {
+          "identity": {
+            "path": "reports/lean4-external-libraries-cslib-aesop-duper-and-vc-benchmarks-2026/support/CoreVCTacticBenchmarkProbe.lean",
+            "sha256": "47b29ea4a4cc71962637946aea0540d48f63549c209d99fe55d652f9e9b439a3"
+          },
+          "name": "support/CoreVCTacticBenchmarkProbe.lean"
+        },
+        {
+          "identity": {
+            "path": "reports/lean4-external-libraries-cslib-aesop-duper-and-vc-benchmarks-2026/support/ExternalAesopDuperBenchmarkSuite.lean",
+            "sha256": "177406f86470848b88ba4142ce7fdcd32fc3da5fbc9ff12ec8cf438e171ead86"
+          },
+          "name": "support/ExternalAesopDuperBenchmarkSuite.lean"
+        }
+      ],
+      "topics": [
+        "lean4",
+        "cslib",
+        "verified-agora",
+        "aesop",
+        "duper",
+        "lean-auto",
+        "batteries",
+        "mathlib4",
+        "verification-conditions",
+        "proof-automation",
+        "benchmarks",
+        "supply-chain",
+        "soundness"
+      ]
+    },
+    "lean4-ieee754-floatspec-rfc3514-crypto-and-constant-time-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "kind": "toolchain",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        },
+        {
+          "identity": {
+            "commit": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+            "kind": "git",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal"
+        },
+        {
+          "identity": {
+            "commit": "158263e983ec3925e02b10f5b312498bf414e0f1",
+            "kind": "git",
+            "toolchain": "leanprover/lean4:v4.28.0-rc1 (PR #8 targets v4.34.0-rc2)",
+            "url": "https://github.com/Beneficial-AI-Foundation/FloatSpec"
+          },
+          "name": "Beneficial-AI-Foundation/FloatSpec"
+        },
+        {
+          "identity": {
+            "commit": "c3124f3c23afb5a70efb90983015b99801985058",
+            "kind": "git",
+            "toolchain": "leanprover/lean4:nightly-2026-01-14",
+            "url": "https://github.com/opencompl/fp-lean"
+          },
+          "name": "opencompl/fp-lean"
+        },
+        {
+          "identity": {
+            "commit": "a2c53bb5ff790e729e252958060699b7eff898b9",
+            "kind": "git",
+            "toolchain": "leanprover/lean4:v4.34.1",
+            "url": "https://github.com/leanprover/SampCert"
+          },
+          "name": "leanprover/SampCert"
+        },
+        {
+          "identity": {
+            "commit": "aae1c9cbd6c00311091d691b74f2d0032d76d9bd",
+            "kind": "git",
+            "toolchain": "leanprover/lean4:v4.35.0",
+            "url": "https://github.com/Verified-zkEVM/VCV-io"
+          },
+          "name": "Verified-zkEVM/VCV-io"
+        },
+        {
+          "identity": {
+            "commit": "bc367f8d53f603a48c5502e1ad7d39b7b3be725c",
+            "kind": "git",
+            "toolchain": "leanprover/lean4:v4.34.1",
+            "url": "https://github.com/Verified-zkEVM/ArkLib"
+          },
+          "name": "Verified-zkEVM/ArkLib"
+        },
+        {
+          "identity": {
+            "commit": "76f7fabbec7e3f184f15b408b34619ad37a36ec8",
+            "kind": "git",
+            "url": "https://github.com/GaloisInc/cryptol"
+          },
+          "name": "GaloisInc/cryptol"
+        },
+        {
+          "identity": {
+            "commit": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+            "kind": "git",
+            "url": "https://github.com/GaloisInc/saw-script"
+          },
+          "name": "GaloisInc/saw-script"
+        },
+        {
+          "identity": {
+            "bytes": "30390",
+            "kind": "support-file",
+            "lines": "811",
+            "path": "support/FloatProbe.lean",
+            "sha256": "02fa416ddd585e8e992dd01d9e4515b7d9795c4d55e27c52365010c939d9e840"
+          },
+          "name": "support/FloatProbe.lean"
+        },
+        {
+          "identity": {
+            "bytes": "46730",
+            "kind": "support-file",
+            "lines": "1210",
+            "path": "support/FloatSpecRFC3514Bridge.lean",
+            "sha256": "1be6c444642f30b2d0f048874a42c785e7f9399be0c4605bcb62cf930d9bf917"
+          },
+          "name": "support/FloatSpecRFC3514Bridge.lean"
+        },
+        {
+          "identity": {
+            "bytes": "31537",
+            "kind": "support-file",
+            "lines": "827",
+            "path": "support/CostCtProbe.lean",
+            "sha256": "aa97fcdeefe2a555293c8ad1b5d240f2f50a5f7643bf830365a6b6581dbd1e64"
+          },
+          "name": "support/CostCtProbe.lean"
+        },
+        {
+          "identity": {
+            "kind": "support-file",
+            "path": "support/source-manifest.json",
+            "sha256": "9de0110b04fca8c463217d5d005159f4dc817714bfb3eeb088d3db90fe9955ae"
+          },
+          "name": "support/source-manifest.json"
+        }
+      ],
+      "topics": [
+        "lean4/ieee-754",
+        "lean4/floatspec",
+        "lean4/fp-lean",
+        "rust/rfc-3514",
+        "rust/floating-point",
+        "rust/nan-nondeterminism",
+        "security/constant-time",
+        "security/side-channel-leakage",
+        "verification/execution-cost",
+        "verification/stack-depth",
+        "crypto/vcv-io",
+        "crypto/sampcert",
+        "crypto/arklib",
+        "crypto/cryptol",
+        "crypto/saw-script"
+      ]
+    },
+    "lean4-lake-reservoir-nix-and-outbound-library-publishing-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1",
+            "x86_64_linux_archive_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4"
+          },
+          "name": "leanprover/lean4"
+        },
+        {
+          "identity": {
+            "main_commit": "24367bd1a8c784f2578535954f9915e24894a56f",
+            "skeleton_commit": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+          },
+          "name": "joshlf/anneal"
+        },
+        {
+          "identity": {
+            "commit_r1": "a5774ea3b51fef4a496f35c791cfa660c914454f",
+            "commit_r2": "d58b4e3866c57690f7fd74099f08bd20d62de98b"
+          },
+          "name": "leanprover/reservoir"
+        },
+        {
+          "identity": {
+            "commit_r1": "bd5cb0b830eda614ce3fc186d8429b9409b16c47",
+            "commit_r2": "52bbb8dde6eb0c6c1ef3a12bccecfdeaa25eb792"
+          },
+          "name": "leanprover/lean-action"
+        },
+        {
+          "identity": {
+            "commit": "b968d9679900841dbe9b86894ae7ff8f454a2b1f"
+          },
+          "name": "leanprover/doc-gen4"
+        },
+        {
+          "identity": {
+            "commit": "a62a15bbe7719a9086442c5bbe83140f5334aa6f"
+          },
+          "name": "leanprover/verso"
+        },
+        {
+          "identity": {
+            "inspected_commit": "2ad74592e34c2e6ff5e8bec9d8abab8f4e9c3a37",
+            "pantograph_locked_commit": "6067688bc484f50f16dde1f2749bbb3e373198c9"
+          },
+          "name": "lenianiva/lean4-nix"
+        },
+        {
+          "identity": {
+            "commit": "9a9c98b19d04585d9c7213ff52bd385aa182617a"
+          },
+          "name": "licensee/licensee"
+        },
+        {
+          "identity": {
+            "commit": "d19b86bee54a80f957fba6cd536ccaca0df50fb4"
+          },
+          "name": "google/zerocopy"
+        },
+        {
+          "identity": {
+            "commit": "4229b5485e3773e33c2867d8aa29e3d61a6c7242"
+          },
+          "name": "NethermindEth/LeanCIL"
+        },
+        {
+          "identity": {
+            "appendix_truncation_commit": "a49e4ad730c028a21cf8bc85b4bc2f57ce33fa2a",
+            "commit": "9e7d328f60d6372ae22927f37d1a816fc980f25e"
+          },
+          "name": "rust-random/rand"
+        },
+        {
+          "identity": {
+            "sha256": "2225e7df1a82185b62ee1de5efb473b1f7c98e1f02370a6bbef700320afc761f"
+          },
+          "name": "support/AnnealRefinementOutboundProbe.lean"
+        },
+        {
+          "identity": {
+            "sha256": "a2352c7ff2b7e6b4f6f9451a1481ffafc52137530641ffa17f652d48c63dd283"
+          },
+          "name": "support/CrossCrateReceiptsProbe.lean"
+        }
+      ],
+      "topics": [
+        "lean4",
+        "lean4/lake",
+        "lean4/reservoir",
+        "nix",
+        "spdx-licensing",
+        "outbound-publishing",
+        "cross-crate-verification",
+        "verified-crate-receipts"
+      ]
+    },
+    "lean4-separation-logics-iris-lean-iprop-and-choicekind-adequacy-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.34.1",
+            "notes": "Iris separation logic and Interactive Proof Mode (IPM) in Lean 4 at tag v4.34.1: BIBase/BI, UPred M, IProp GF, BundledGFunctors, OFE/COFE, CMRA, Auth/Excl/Agree/DFrac/View/HeapView, BUpd/FUpd/Inv, GhostMapG, GhostVarG, step_fupdN_soundness_close, and ProofMode tactics (iintro, iframe, isplitl, isplitr, iapply, ihave, imod).",
+            "repository": "leanprover-community/iris-lean",
+            "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47",
+            "tag": "v4.34.1",
+            "tree": "1282d7d5b1405ae3db38efe58c04c2261dc31f1f",
+            "url": "https://github.com/leanprover-community/iris-lean.git"
+          },
+          "name": "iris-lean"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.35.0",
+            "notes": "Iris separation logic in Lean 4 at main HEAD (2026-10-28): adds IrisStepIndex/Elab.lean and IrisStepIndex/Registry.lean alongside IrisMath/IrisMath/Ordinal.lean transfinite step-indexing (SIdx I) and local bi PROP / bi% multi-BI notation.",
+            "repository": "leanprover-community/iris-lean",
+            "revision": "fb21a8af4727bd42190072a5ed2836cbe9fb844e",
+            "tree": "4912bf34c2e7f40635ecad94671ebc0af64f3c55",
+            "url": "https://github.com/leanprover-community/iris-lean.git"
+          },
+          "name": "iris-lean"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.35.0",
+            "notes": "Affinely-verified imperative DSL and total/partial correctness verifier built on Loom: Velvet/Core/NonDet/{Defs,WP,Soundness}.lean, Velvet/Core/FreerMonad/WP.lean, Velvet/Core/VCGen/Driver.lean. Also cross-referenced with historical checkpoint 836ed5a.",
+            "repository": "verse-lab/velvet",
+            "revision": "836ed5a163b36c09081ed1d8aeecd3cec040f87e",
+            "tree": "6bf02072256851fcdb448c03481b7d8754a0d516",
+            "url": "https://github.com/verse-lab/velvet.git"
+          },
+          "name": "velvet"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.24.0",
+            "notes": "Monad-algebra and CCompleteLattice weakest-precondition framework in Lean 4: Loom/MonadAlgebras/NonDetT/Extract.lean, Loom/MonadAlgebras/WP/{Gen,Tactic}.lean (also cross-referenced against historical reference 7f53c15).",
+            "repository": "verse-lab/loom",
+            "revision": "78928abc9054b31d0bea85985496490baae95244",
+            "tree": "884dab40df596f85260755f12a22183302f83a00",
+            "url": "https://github.com/verse-lab/loom.git"
+          },
+          "name": "loom"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.32.0",
+            "notes": "Distributed protocol verifier in Lean 4 using two-state relational transition specifications (ActionSpec.lean) and lean-auto/SMT discharge (also cross-referenced against historical reference 712a8a5).",
+            "repository": "verse-lab/veil",
+            "revision": "eb458cb602d3cf9a19d8f5d8af21edcf27775c8e",
+            "tree": "533396ae262856cd13bc7cc24687438fcf0cde0c",
+            "url": "https://github.com/verse-lab/veil.git"
+          },
+          "name": "veil"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.11.0",
+            "notes": "CFML-style separation logic in Lean 4 over Finmap Ptr Val heaps: SPLean/Theories/{HProp,XSimp,WP1}.lean and SPLean/Common/State.lean (surveyed alongside the non-existent standalone LayerCake label e934dd6).",
+            "repository": "verse-lab/splean",
+            "revision": "e24286f51bd9ee207197d47ec587d592cdfb0ddc",
+            "tree": "567ca57a8f901b2d6c15e7156307ec53cee9fb90",
+            "url": "https://github.com/verse-lab/splean.git"
+          },
+          "name": "splean"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.34.1",
+            "notes": "Small-step/big-step imperative WHILE language equivalence educational formalization in Lean 4.34.1 (Lentil.lean).",
+            "repository": "verse-lab/Lentil",
+            "revision": "b3ca5e224fed1e09fb22daa45a0b61ec5685df76",
+            "tree": "94b7b1f4785c6ee9429e86a90b10ce4762723395",
+            "url": "https://github.com/verse-lab/Lentil.git"
+          },
+          "name": "Lentil"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.22.0-rc2",
+            "notes": "Educational Hoare logic prototype in Lean 4: Hoare/{Basic,Logic,Statements}.lean and Hoare/Examples/Sqrt.lean (also cross-referenced against historical reference 92e033c).",
+            "repository": "goens/lean-hoare",
+            "revision": "aa2d88ae418d58ee22460a9097a2fad62c47eb38",
+            "tree": "2495d7db77f775799d66d2b29de8bf4ba7b3f15b",
+            "url": "https://github.com/goens/lean-hoare.git"
+          },
+          "name": "lean-hoare"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.36.0-rc2",
+            "notes": "Lean Computer Science Library: Cslib/Foundations/Semantics/LTS/{Basic,Bisimulation}.lean, Flts/Basic.lean, and Cslib/Logics/HML/LogicalEquivalence.lean (also tagged at v4.34.1 revision 7c8f6c0f67015df29b152fdcffaf7850db2e9185).",
+            "repository": "leanprover/cslib",
+            "revision": "82db31eec215b6843be6df283304cc02e736ddef",
+            "tree": "36b687b942927d910624687bfbd2085169788b90",
+            "url": "https://github.com/leanprover/cslib.git"
+          },
+          "name": "cslib"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.25.0",
+            "notes": "Multivariate Quotient Polynomial Functors (Data/Codata) in Lean 4: Qpf/Macro/Data.lean (elabQpfCompositionBody), Qpf/PFunctor/Multivariate/Basic.lean, and Test/ITree.lean.",
+            "repository": "alexkeizer/QpfTypes",
+            "revision": "5b5dd4f83121662838b99d129b92f632f263c508",
+            "tree": "4b173b2747b55417748cfd1f9360f25af204266f",
+            "url": "https://github.com/alexkeizer/QpfTypes.git"
+          },
+          "name": "QpfTypes"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "lean_toolchain": "leanprover/lean4:v4.34.1",
+            "notes": "Anneal trusted verification kernel and weak-memory MIR operational semantics: trusted/lean/Trusted/{StepResult,Refinement,Memory,MirAst,MirSemantics}.lean (also inspected at trusted-core revision 8e7ab324dc86e2086f301cdfc61a35c768896229).",
+            "repository": "joshlf/anneal",
+            "revision": "6e9bf8b54344c8283946387b7db8bf6879c4caf1",
+            "tree": "b52799f2c8fef185c9e41a26f29e9f60d8580bb9",
+            "url": "https://github.com/joshlf/anneal.git"
+          },
+          "name": "anneal"
+        },
+        {
+          "identity": {
+            "kind": "tool",
+            "notes": "Lean 4.34.1 compiler and kernel used to verify support/anneal_step_wp_and_choicekind_probe.lean and support/R2IrisLeanProbe.lean with zero sorry and zero warnings.",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        },
+        {
+          "identity": {
+            "kind": "support-artifact",
+            "lean_toolchain": "leanprover/lean4:v4.34.1",
+            "lines": "1674",
+            "path": "support/anneal_step_wp_and_choicekind_probe.lean",
+            "sha256": "38a5f90f0d5269ce763079d496c7034e9deef31da62a39950393d57f193accf7"
+          },
+          "name": "anneal_step_wp_and_choicekind_probe.lean"
+        },
+        {
+          "identity": {
+            "kind": "support-artifact",
+            "lean_toolchain": "leanprover/lean4:v4.34.1",
+            "lines": "1340",
+            "path": "support/R2IrisLeanProbe.lean",
+            "sha256": "67772f157e86f81b996cfc4b990721d328d3096ee309740ee8f000ed33653d4b"
+          },
+          "name": "R2IrisLeanProbe.lean"
+        }
+      ],
+      "topics": [
+        "adequacy",
+        "angelic-nondeterminism",
+        "anneal",
+        "cslib",
+        "fancy-updates",
+        "hoare-logic",
+        "iris-lean",
+        "lean4",
+        "loom",
+        "mir",
+        "program-logic",
+        "qpf-types",
+        "separation-logic",
+        "splean",
+        "step-indexing",
+        "veil",
+        "velvet",
+        "weakest-precondition"
       ]
     },
     "lean4-wasm-formalizations-and-virtual-isa-verification-2026": {
@@ -29021,6 +29889,141 @@
         "rust/aliasing",
         "rust/library-invariants",
         "rustc/validity"
+      ]
+    },
+    "rust-verification-aeneas-lithium-tracked-funclang-and-loops-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Aeneas Lean 4 backend: Std/Primitives.lean (Result, massert, CCPO, loop), Std/WP.lean (Wp, theta, spec, predn, loop.spec_decr_nat, WPMonad), Data/Coinductive/ITreeWP/Taxonomy.lean (DWP/DWLP), Std/Scalar/Core.lean, Tactic/Step/ (Step, StepStar, StepGrindState), Tactic/Solver/ (ScalarTac, BvTac). Also inspected at local snapshot 8ab2e7e4e47fe73fd5b2a0c061293e00b30013fe and historical checkpoints 21345f80fa212c596f6437378d7d57984fa2ea77 and ac9f1bc5262a5e4ff1e24ca78617121382202727.",
+            "observed_at": "2026-10-30",
+            "revision": "70683bd4ab876179a23e5f994d02947b3e5c4f0d",
+            "url": "https://github.com/AeneasVerif/aeneas.git"
+          },
+          "name": "aeneas"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Cryspen hax Lean 4 proof library unified onto Aeneas (hax-lib/proof-libs/lean/CoreModels/RustPrimitives/Types.lean, CoreModels/Spec/RustPrimitives/Arithmetic.lean, Hax/Tactic/HaxMvcgen.lean).",
+            "observed_at": "2026-10-30",
+            "revision": "1ec88cdb2c8e546845e64eb2cd2321b4f58069c4",
+            "url": "https://github.com/cryspen/hax.git"
+          },
+          "name": "hax"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "RefinedRust Radium frontend and Rocq/Iris Lithium type-checking engine (rr_frontend/radium/src/code.rs, theories/refinedrust/lithium/, theories/refinedrust/rust_typing/automation/proof_state.v, typing/automation.v, typing/program_rules.v, primitive/functions.v). Also cross-referenced against PLDI 2024 artifact revision be9dc71f (Zenodo 10.5281/zenodo.11092425).",
+            "observed_at": "2026-10-30",
+            "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+            "url": "https://github.com/lgaeher/refinedrust-dev.git"
+          },
+          "name": "refinedrust"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "RefinedC foundational Lithium goal-directed separation-logic proof automation engine (theories/lithium/definitions.v, syntax.v, interpreter.v, proof_state.v).",
+            "observed_at": "2026-10-30",
+            "revision": "d057583986651a28047164581f05fbee3a83ed9d",
+            "url": "https://gitlab.mpi-sws.org/iris/refinedc.git"
+          },
+          "name": "refinedc"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Creusot deductive Rust verifier using prophetic mutable borrows, Pearlite specification logic, and Coma intermediate verification language (creusot-std/src/model.rs, creusot/src/backend/place.rs, clone_map.rs).",
+            "observed_at": "2026-10-30",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+            "url": "https://github.com/creusot-rs/creusot.git"
+          },
+          "name": "creusot"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Verus SMT-based Rust verifier with exec/tracked/spec mode stratification, SST loop elaboration, and isolated bitvector/nonlinear queries (source/vir/src/loops.rs, sst_to_air.rs, bitvector_to_air.rs).",
+            "observed_at": "2026-10-30",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+            "url": "https://github.com/verus-lang/verus.git"
+          },
+          "name": "verus"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Kani Rust bit-precise model checker with shadow-memory pointer validity/initialization tracking and bounded loop/contract instrumentation (kani-compiler/src/codegen_cprover_gotoc/codegen/place.rs, contract.rs, loop_contracts.rs).",
+            "observed_at": "2026-10-30",
+            "revision": "9461e07af7ec929f050aa4192f29363c9be07779",
+            "url": "https://github.com/model-checking/kani.git"
+          },
+          "name": "kani"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Gillian parametric compositional symbolic execution platform and Gillian-Rust hybrid tree/flat memory model (GillianCore/engine/symbolic_semantics/symex.ml).",
+            "observed_at": "2026-10-30",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7",
+            "url": "https://github.com/GillianPlatform/Gillian.git"
+          },
+          "name": "gillian"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "RustBelt semantic type system and Iris lifetime logic (theories/lifetime/lifetime.v, theories/typing/type.v, theories/typing/borrows.v; POPL 2018 archive sha256 b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996).",
+            "observed_at": "2026-10-30",
+            "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+            "url": "https://gitlab.mpi-sws.org/iris/lambda-rust.git"
+          },
+          "name": "lambda-rust"
+        },
+        {
+          "identity": {
+            "kind": "git",
+            "notes": "Anneal trusted verification kernel and functional translation theory (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean, trusted/rustc-capture/src/proof_gen.rs, theory/Anneal/FunctionalTranslation.lean; skeleton worktree 42f4571d761b46c7142815f38b69c3781b3555e3).",
+            "observed_at": "2026-10-30",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+            "url": "https://github.com/joshlf/anneal.git"
+          },
+          "name": "anneal"
+        },
+        {
+          "identity": {
+            "kind": "tool",
+            "notes": "Lean 4.34.1 theorem prover used to kernel-check support/ProbeGeneralSpecAndLithium.lean (sha256 65f8af557997769bd43b4ce6eac36b79e1555bd222b75f31a4b439f08016895a) and support/ProbeTrackedFuncLangAndLoops.lean (sha256 98e7321e53c2b32644b8e62c10275b26234f1c7c4d587f381374995a74b16a66) with -j1 -M1024 and zero sorry.",
+            "observed_at": "2026-10-30",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "lean"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "constant-time",
+        "creusot",
+        "functional-translation",
+        "gillian",
+        "hax",
+        "kani",
+        "lean4",
+        "lithium",
+        "loop-invariants",
+        "mir",
+        "refinedrust",
+        "refinement",
+        "rust-verification",
+        "rustbelt",
+        "tcb",
+        "vcgen",
+        "verus"
       ]
     },
     "rust-volatile-memory-access-nightly-2026-05-31": {

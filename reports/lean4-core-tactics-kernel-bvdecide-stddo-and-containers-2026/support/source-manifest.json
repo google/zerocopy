@@ -1,0 +1,334 @@
+{
+  "observed_at": "2026-10-30",
+  "repositories": {
+    "leanprover/lean4": {
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "version": "v4.34.1",
+      "inspected_files": [
+        {
+          "path": "src/lean/Init/Core.lean",
+          "bytes": 100653,
+          "sha256": "6218a9825a0ce51a6bbe3949ec7a86c4406f4f216bd3cd1262736cfc1c997c54",
+          "lines": 2564
+        },
+        {
+          "path": "src/lean/Init/Prelude.lean",
+          "bytes": 238777,
+          "sha256": "2a3163bdd830cd31f1f1bc9bc79ea6bdad6a3b2c6f334166792bbc73631f3b10",
+          "lines": 6091
+        },
+        {
+          "path": "src/lean/Init/Data/String/Bootstrap.lean",
+          "bytes": 6950,
+          "sha256": "23f245ddbf06875c7774527a1fd834bef96cd1ac95a63da57850b022093fc177",
+          "lines": 233
+        },
+        {
+          "path": "src/lean/Init/Data/Int/OfNat.lean",
+          "bytes": 5090,
+          "sha256": "7039ade017c2c3b045cb6a8683f8a3232c98fad0cff749e95e09424c5789292d",
+          "lines": 124
+        },
+        {
+          "path": "src/lean/Init/Omega.lean",
+          "bytes": 650,
+          "sha256": "3cdc18c9c2d8f8d8754849bb7ed8db96fdcea115331ca42befddce3b60d52cee",
+          "lines": 18
+        },
+        {
+          "path": "src/lean/Init/Grind.lean",
+          "bytes": 962,
+          "sha256": "95dba9c6c8cc21ac1173a46e440ad28f3bbdabfb475e110aeb283555bd7b2447",
+          "lines": 31
+        },
+        {
+          "path": "src/lean/Init/GrindInstances.lean",
+          "bytes": 303,
+          "sha256": "be5b6782920a8f6e3b15f63d1ed0dc02ade4ff33dd2ca7e1fe7f8166d633e58a",
+          "lines": 11
+        },
+        {
+          "path": "src/lean/Lean/Meta/Native.lean",
+          "bytes": 3207,
+          "sha256": "e1d0c6b5be42f492810a12281fc0d8ff4c981e421397c3ec00e165a255ed09c1",
+          "lines": 87
+        },
+        {
+          "path": "src/lean/Lean/Elab/Tactic/BVDecide.lean",
+          "bytes": 11639,
+          "sha256": "e1698dc2088d60bb1336d854a5080d8ead5c6a164a2e9a1317d1fbdbfb752546",
+          "lines": 262
+        },
+        {
+          "path": "src/lean/Lean/Meta/Tactic/BVDecide/Prover/Bitblast.lean",
+          "bytes": 4520,
+          "sha256": "30b7c18485bdb819a5cb4832a6a337c650ba09d7ce15b19e07248661dec07e30",
+          "lines": 118
+        },
+        {
+          "path": "src/lean/Lean/Meta/Tactic/BVDecide/Reflect/SatAtBVLogical.lean",
+          "bytes": 2998,
+          "sha256": "1bc5c79cd4c1c89e278c3e70e857d33449bafa3da5ca04f3b194b7b8446bb000",
+          "lines": 83
+        },
+        {
+          "path": "src/lean/Lean/Elab/Tactic/Omega/Core.lean",
+          "bytes": 21501,
+          "sha256": "0cc1a59420d93bc08bd167066df6f2ffb5e1a13d75cf28937faddf0d83925c87",
+          "lines": 578
+        },
+        {
+          "path": "src/lean/Lean/Meta/Tactic/Grind/Arith/Cutsat/Proof.lean",
+          "bytes": 37259,
+          "sha256": "fc29cbf8fc2da87e8b035aca0e499350e3c511c246472ea6b5200f0d15c3c08a",
+          "lines": 686
+        },
+        {
+          "path": "src/lean/Lean/Meta/Tactic/Grind/Arith/Cutsat/Nat.lean",
+          "bytes": 6375,
+          "sha256": "1350d545a8502b0e1cf633a07e7bcbb17d3b1ace6a3466e8de0c296dec397d14",
+          "lines": 167
+        },
+        {
+          "path": "src/lean/Lean/Elab/Tactic/Do/VCGen.lean",
+          "bytes": 24887,
+          "sha256": "fa6bd35436d75139af5cfbe6a7306905c0ce5f373a1551635dfff565453aadec",
+          "lines": 497
+        },
+        {
+          "path": "src/lean/Std/Tactic/BVDecide/Reflect.lean",
+          "bytes": 6506,
+          "sha256": "912d52f783dde28ca43460dbd6a0bc009c0c4276b674ef0b816eba6dbba60650",
+          "lines": 205
+        },
+        {
+          "path": "src/lean/Std/Tactic/BVDecide/LRAT/Parser.lean",
+          "bytes": 11628,
+          "sha256": "14a27d543ae4812102c78fc1850c459b15e5ccb4fc15d3f83f850f7cc2fca0a0",
+          "lines": 431
+        },
+        {
+          "path": "src/lean/Std/Tactic/BVDecide/LRAT/Internal/Clause.lean",
+          "bytes": 10342,
+          "sha256": "c1693496fd1da36b340595f26f250237267e389b3c19e3450dae729e370ab385",
+          "lines": 282
+        },
+        {
+          "path": "src/lean/Std/Tactic/BVDecide/Bitblast/BVExpr/Basic.lean",
+          "bytes": 19351,
+          "sha256": "3c81f777c26ff12288bc5747d3ac46f580d1a3b86c7945a40b435a3332e94112",
+          "lines": 606
+        },
+        {
+          "path": "src/lean/Std/Tactic/BVDecide/Bitblast/BVExpr/Circuit/Impl/Expr.lean",
+          "bytes": 17542,
+          "sha256": "fb2b75ecf24d006f4f7f3c4ba7088efd2d63827abadc63b403a6ede235904466",
+          "lines": 429
+        },
+        {
+          "path": "src/lean/Std/Sat/AIG/Basic.lean",
+          "bytes": 18844,
+          "sha256": "de584b4ccd5c074f13bb4843513763191196c9fc56ad0820c636c4e0f0685123",
+          "lines": 608
+        },
+        {
+          "path": "src/lean/Std/Sat/AIG/RelabelNat.lean",
+          "bytes": 11971,
+          "sha256": "8070baeda33e0ee4116011314324441d41f211f2959dffa77fcabb49d28b5522",
+          "lines": 399
+        },
+        {
+          "path": "src/lean/Std/Sat/CNF/Basic.lean",
+          "bytes": 7358,
+          "sha256": "3a7adef51325558e2529fdab9cacf6ddd2aa991ca501e8e945d9bd6eaeec4228",
+          "lines": 247
+        },
+        {
+          "path": "src/lean/Std/Sat/CNF/RelabelFin.lean",
+          "bytes": 5887,
+          "sha256": "9595e9dbf121f6af79af0e5754220249527ea7e4d6323f6525708ab31a0bc70f",
+          "lines": 185
+        },
+        {
+          "path": "src/lean/Std/Data/DHashMap/Internal/Index.lean",
+          "bytes": 2229,
+          "sha256": "1306a77117e7c8528cd67729147355b63537d6ece7761bd6d223d834cd999f42",
+          "lines": 61
+        },
+        {
+          "path": "src/lean/Std/Data/DTreeMap/Internal/Def.lean",
+          "bytes": 2603,
+          "sha256": "64398a4c86a7c8d39b50f296a9e7569bd0fe009620b09c9476fd67263468f028",
+          "lines": 88
+        },
+        {
+          "path": "src/lean/Std/Data/DTreeMap/Internal/WF/Defs.lean",
+          "bytes": 6236,
+          "sha256": "63e7c1c7529efd263fa0311ed15851c73a642ccabfdfd3e7fa3e67fc90aa096c",
+          "lines": 139
+        },
+        {
+          "path": "src/lean/Std/Data/TreeMap/Basic.lean",
+          "bytes": 19545,
+          "sha256": "01f0ba418712fa6d55dcbb709d9637f8ef2805ddc6377a07fcfa5a17aace1c02",
+          "lines": 528
+        },
+        {
+          "path": "src/lean/Std/Data/TreeMap/Raw/Basic.lean",
+          "bytes": 19349,
+          "sha256": "cafdf8100e8ca1a133175e3a9ab1d39b818e10bd017c3aba37f6e9986d99124c",
+          "lines": 532
+        },
+        {
+          "path": "src/lean/Std/Data/ExtTreeMap/Basic.lean",
+          "bytes": 24146,
+          "sha256": "6ad6425218f832164afd13cb3558053777b3fe75b9f749da56abb3137b8a33d1",
+          "lines": 568
+        },
+        {
+          "path": "src/lean/Std/Data/HashMap/Basic.lean",
+          "bytes": 13570,
+          "sha256": "c7849feae33d2991a76a64f445dd789c988fbc7bac421c3fb4bec697179fcd92",
+          "lines": 356
+        },
+        {
+          "path": "src/lean/Std/Data/HashMap/Raw.lean",
+          "bytes": 15959,
+          "sha256": "33c02ee7bd07099fc0df5290e8894c1f692ee1327f11a9b3b77c497c1ae734dc",
+          "lines": 381
+        },
+        {
+          "path": "src/lean/Std/Data/ExtHashMap/Basic.lean",
+          "bytes": 11381,
+          "sha256": "7fd6ba490503b0a8fdb9ffa202343ec0af14a03fe2760f026104a48b82a88966",
+          "lines": 283
+        },
+        {
+          "path": "src/lean/Std/Do/SPred/SVal.lean",
+          "bytes": 3532,
+          "sha256": "949a66098079c8219f21513542efc937853eea9ca1c6a08d6a089aecc969ea80",
+          "lines": 90
+        },
+        {
+          "path": "src/lean/Std/Do/SPred/SPred.lean",
+          "bytes": 7313,
+          "sha256": "c820600c7019880a1f18f47b7e097a31d7b2944fa15572924633e7cd51e53203",
+          "lines": 157
+        },
+        {
+          "path": "src/lean/Std/Do/PostCond.lean",
+          "bytes": 16652,
+          "sha256": "b5adda49e12f20f2657b65e057da506234506dd6dcbea1528e5a7a27141ffa9a",
+          "lines": 423
+        },
+        {
+          "path": "src/lean/Std/Do/PredTrans.lean",
+          "bytes": 9953,
+          "sha256": "f85424f0a6eb31a008e71b3686ffc69454ca5e0582aaec6832c76f0c3d77f8e9",
+          "lines": 251
+        },
+        {
+          "path": "src/lean/Std/Do/WP/Basic.lean",
+          "bytes": 5017,
+          "sha256": "b03fef034fa636650188a5fcd38fe18826fe461e74546b1a312f2f1688239176",
+          "lines": 125
+        },
+        {
+          "path": "src/lean/Std/Do/WP/Monad.lean",
+          "bytes": 3784,
+          "sha256": "cb2ecb7c45f81353d9e0849a0cf1355212f50c62219015e3b4e825015b229d7a",
+          "lines": 106
+        },
+        {
+          "path": "src/lean/Std/Do/Triple/Basic.lean",
+          "bytes": 5805,
+          "sha256": "6f90b2a7e5ed8720a9728688acbb5be65318fbff4bb730e0c0694162c96facc0",
+          "lines": 130
+        },
+        {
+          "path": "src/lean/Std/Tactic/Do/Syntax.lean",
+          "bytes": 19832,
+          "sha256": "430e269de91aca4a35e2bc09efc6844856708c3d33538679da48c8079b1eb791",
+          "lines": 484
+        }
+      ]
+    },
+    "joshlf/anneal": {
+      "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+      "inspected_files": [
+        {
+          "path": "trusted/audit/TrustedBoundary.lean",
+          "bytes": 56352,
+          "sha256": "d2124ac0c7b07af7cafd6b6caeaabd2db962ff3c00163e0c63091cf4bda42d77",
+          "lines": 1014
+        },
+        {
+          "path": "trusted/audit/src/lib.rs",
+          "bytes": 75160,
+          "sha256": "38680775417451dde2154702669fe807e0d96780d45cf1c44dea9e0f51f1c4d9",
+          "lines": 1961
+        },
+        {
+          "path": "trusted/lean/foundation-lock.json",
+          "bytes": 48369,
+          "sha256": "37f780b6257d0bc99fd5d7d3d0a1f16d168ef066a2a01466f4076f080d3425d2",
+          "lines": 1335
+        }
+      ]
+    }
+  },
+  "local_artifacts": [
+    {
+      "package_path": "support/ProbeBVDecide.lean",
+      "bytes": 33811,
+      "sha256": "3d2465d2cf40724556c1f14bc7f9a3375d277148d8de3f23822930341053a6f8",
+      "lines": 1006,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "sorry_count": 0
+    },
+    {
+      "package_path": "support/ProbeGrindOmega.lean",
+      "bytes": 2486,
+      "sha256": "abeb3548f70a9d683b791638c6b084c050e9e780ae99d4fcacf8ec0e72c4d114",
+      "lines": 69,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "sorry_count": 0
+    },
+    {
+      "package_path": "support/ProbeStdDoData.lean",
+      "bytes": 6530,
+      "sha256": "1cdc3c347bde6d4f2a091b7ed374085e60b4788324998cf33cc60782ffd5bf5d",
+      "lines": 184,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "sorry_count": 0
+    },
+    {
+      "package_path": "support/DiagnoseReduce.lean",
+      "bytes": 6160,
+      "sha256": "ab8544539c4a5ed319edfbed888262376cbcb6445f01d8a1f2b9b54ae2f46c42",
+      "lines": 178,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "sorry_count": 0
+    }
+  ]
+}

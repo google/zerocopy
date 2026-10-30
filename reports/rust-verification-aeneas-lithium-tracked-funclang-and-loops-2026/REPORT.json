@@ -1,0 +1,135 @@
+{
+  "topics": [
+    "aeneas",
+    "constant-time",
+    "creusot",
+    "functional-translation",
+    "gillian",
+    "hax",
+    "kani",
+    "lean4",
+    "lithium",
+    "loop-invariants",
+    "mir",
+    "refinedrust",
+    "refinement",
+    "rust-verification",
+    "rustbelt",
+    "tcb",
+    "vcgen",
+    "verus"
+  ],
+  "subjects": [
+    {
+      "name": "aeneas",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/AeneasVerif/aeneas.git",
+        "revision": "70683bd4ab876179a23e5f994d02947b3e5c4f0d",
+        "observed_at": "2026-10-30",
+        "notes": "Aeneas Lean 4 backend: Std/Primitives.lean (Result, massert, CCPO, loop), Std/WP.lean (Wp, theta, spec, predn, loop.spec_decr_nat, WPMonad), Data/Coinductive/ITreeWP/Taxonomy.lean (DWP/DWLP), Std/Scalar/Core.lean, Tactic/Step/ (Step, StepStar, StepGrindState), Tactic/Solver/ (ScalarTac, BvTac). Also inspected at local snapshot 8ab2e7e4e47fe73fd5b2a0c061293e00b30013fe and historical checkpoints 21345f80fa212c596f6437378d7d57984fa2ea77 and ac9f1bc5262a5e4ff1e24ca78617121382202727."
+      }
+    },
+    {
+      "name": "hax",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/cryspen/hax.git",
+        "revision": "1ec88cdb2c8e546845e64eb2cd2321b4f58069c4",
+        "observed_at": "2026-10-30",
+        "notes": "Cryspen hax Lean 4 proof library unified onto Aeneas (hax-lib/proof-libs/lean/CoreModels/RustPrimitives/Types.lean, CoreModels/Spec/RustPrimitives/Arithmetic.lean, Hax/Tactic/HaxMvcgen.lean)."
+      }
+    },
+    {
+      "name": "refinedrust",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/lgaeher/refinedrust-dev.git",
+        "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+        "observed_at": "2026-10-30",
+        "notes": "RefinedRust Radium frontend and Rocq/Iris Lithium type-checking engine (rr_frontend/radium/src/code.rs, theories/refinedrust/lithium/, theories/refinedrust/rust_typing/automation/proof_state.v, typing/automation.v, typing/program_rules.v, primitive/functions.v). Also cross-referenced against PLDI 2024 artifact revision be9dc71f (Zenodo 10.5281/zenodo.11092425)."
+      }
+    },
+    {
+      "name": "refinedc",
+      "identity": {
+        "kind": "git",
+        "url": "https://gitlab.mpi-sws.org/iris/refinedc.git",
+        "revision": "d057583986651a28047164581f05fbee3a83ed9d",
+        "observed_at": "2026-10-30",
+        "notes": "RefinedC foundational Lithium goal-directed separation-logic proof automation engine (theories/lithium/definitions.v, syntax.v, interpreter.v, proof_state.v)."
+      }
+    },
+    {
+      "name": "creusot",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/creusot-rs/creusot.git",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+        "observed_at": "2026-10-30",
+        "notes": "Creusot deductive Rust verifier using prophetic mutable borrows, Pearlite specification logic, and Coma intermediate verification language (creusot-std/src/model.rs, creusot/src/backend/place.rs, clone_map.rs)."
+      }
+    },
+    {
+      "name": "verus",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/verus-lang/verus.git",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+        "observed_at": "2026-10-30",
+        "notes": "Verus SMT-based Rust verifier with exec/tracked/spec mode stratification, SST loop elaboration, and isolated bitvector/nonlinear queries (source/vir/src/loops.rs, sst_to_air.rs, bitvector_to_air.rs)."
+      }
+    },
+    {
+      "name": "kani",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/model-checking/kani.git",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779",
+        "observed_at": "2026-10-30",
+        "notes": "Kani Rust bit-precise model checker with shadow-memory pointer validity/initialization tracking and bounded loop/contract instrumentation (kani-compiler/src/codegen_cprover_gotoc/codegen/place.rs, contract.rs, loop_contracts.rs)."
+      }
+    },
+    {
+      "name": "gillian",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/GillianPlatform/Gillian.git",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7",
+        "observed_at": "2026-10-30",
+        "notes": "Gillian parametric compositional symbolic execution platform and Gillian-Rust hybrid tree/flat memory model (GillianCore/engine/symbolic_semantics/symex.ml)."
+      }
+    },
+    {
+      "name": "lambda-rust",
+      "identity": {
+        "kind": "git",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust.git",
+        "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+        "observed_at": "2026-10-30",
+        "notes": "RustBelt semantic type system and Iris lifetime logic (theories/lifetime/lifetime.v, theories/typing/type.v, theories/typing/borrows.v; POPL 2018 archive sha256 b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996)."
+      }
+    },
+    {
+      "name": "anneal",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/joshlf/anneal.git",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+        "observed_at": "2026-10-30",
+        "notes": "Anneal trusted verification kernel and functional translation theory (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean, trusted/rustc-capture/src/proof_gen.rs, theory/Anneal/FunctionalTranslation.lean; skeleton worktree 42f4571d761b46c7142815f38b69c3781b3555e3)."
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "kind": "tool",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "observed_at": "2026-10-30",
+        "notes": "Lean 4.34.1 theorem prover used to kernel-check support/ProbeGeneralSpecAndLithium.lean (sha256 65f8af557997769bd43b4ce6eac36b79e1555bd222b75f31a4b439f08016895a) and support/ProbeTrackedFuncLangAndLoops.lean (sha256 98e7321e53c2b32644b8e62c10275b26234f1c7c4d587f381374995a74b16a66) with -j1 -M1024 and zero sorry."
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

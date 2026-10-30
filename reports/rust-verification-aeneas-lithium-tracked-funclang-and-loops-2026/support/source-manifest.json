@@ -1,0 +1,350 @@
+{
+  "package": "rust-verification-aeneas-lithium-tracked-funclang-and-loops-2026",
+  "observed_at": "2026-10-30",
+  "repositories": {
+    "aeneas_upstream": {
+      "url": "https://github.com/AeneasVerif/aeneas.git",
+      "revision": "70683bd4ab876179a23e5f994d02947b3e5c4f0d",
+      "files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Primitives.lean",
+          "git_blob_sha1": "2ea4041066748907411b490eb691f2a5f5f0f6d5",
+          "sha256": "ea312dfb113a04126f7d975b934266fc420bd3209a0b14466f6ec76089d93bbb",
+          "lines": 504
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/WP.lean",
+          "git_blob_sha1": "25697abc7e4a2e19ca8baf14f4b1486d7293b094",
+          "sha256": "961c52bd79e30b8e8300dde4cbfcd21bdcbf5af039ccab6886d051b29f21af7a",
+          "lines": 807
+        },
+        {
+          "path": "backends/lean/Aeneas/Data/Coinductive/ITreeWP/Taxonomy.lean",
+          "git_blob_sha1": "39a01a7758a46ed5420050feb5b372f44031d5fc",
+          "sha256": "d570189bcd81ed6e0cc99444252696a09d6a8c341c58a5d4697e39f236998c92",
+          "lines": 39
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Scalar/Core.lean",
+          "git_blob_sha1": "972f67c95458ac4269468f6b004b2bc9df1aa9ab",
+          "sha256": "b0be731c1120576222767f7a55b98e45fc8fb90bb45e20e1d3b1e4b0b8d63a70",
+          "lines": 1295
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Init.lean",
+          "git_blob_sha1": "b16577134a8d09d6e98b45f53d1ca4c6fe09e33b",
+          "sha256": "5398851d97e08e78c467d6501cef098f14441a080e25ed81acc9e3d7668e22aa",
+          "lines": 1033
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Step.lean",
+          "git_blob_sha1": "e2a6cd038a6fdc5e8e4d9d382f20c2bbb1be96af",
+          "sha256": "13237a6998959d5132016b66e05701e352fa735c3986664f5adcc567b8a5e887",
+          "lines": 2107
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/StepStar.lean",
+          "git_blob_sha1": "139aecba95fe7f3076b7ad997c63432a3202e9dc",
+          "sha256": "8b696721f6270489c32d174ea4f181df1c6cc48cd6f8b00b0c2e26c6587365b0",
+          "lines": 1367
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Solver/ScalarTac.lean",
+          "git_blob_sha1": "36ce2c453fc4af52946103dfd07d77ae02e96156",
+          "sha256": "526d5bdd54b7a44c9eb1d5044330278520b1ade02245288629130537c71fe853",
+          "lines": 5
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Solver/BvTac/BvTac.lean",
+          "git_blob_sha1": "eae438c0a7b7d4e8fffadd7c3bc1b4d09e51142d",
+          "sha256": "821103978ffa1e4aca5bf7f48fb93135d14eb4454597a3886fc8aa27a7b679e0",
+          "lines": 267
+        }
+      ]
+    },
+    "aeneas_local": {
+      "url": "https://github.com/AeneasVerif/aeneas.git",
+      "revision": "8ab2e7e4e47fe73fd5b2a0c061293e00b30013fe",
+      "files": [
+        {
+          "path": "backends/lean/Aeneas/Std/Primitives.lean",
+          "git_blob_sha1": "5a73ea5bfae575baf2f26e1d86ea00768d1bccea",
+          "sha256": "2d635b133be0494284c44f19cb142d0b7944944ae367fb60d4e05a6a67accc53",
+          "lines": 260
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/WP.lean",
+          "git_blob_sha1": "a599b2b6632fbfdfadbe3dcfb68ee17a6048be5d",
+          "sha256": "650145cd1d67faaacd633f3cd65a5bb81e818d6d1d71c138f47fe1082a9bc8b3",
+          "lines": 529
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Scalar/Core.lean",
+          "git_blob_sha1": "755fbc51ed837a9e8423a425a93bb42ea315b888",
+          "sha256": "a75f6ce2f21cabb261dd7b9a8c75bbd3490e3ef6f860d4b32ef9252675c00f42",
+          "lines": 1216
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Init.lean",
+          "git_blob_sha1": "03d3550ac90d05a4ac443f8d3cc553e6badaf2e9",
+          "sha256": "864d72434869de4c2780a0f3d4d1d0b9272f1072ef9d489f58fdae3455c65754",
+          "lines": 979
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/Step.lean",
+          "git_blob_sha1": "7762bb1e42797b982354c7444d07d65174f5876b",
+          "sha256": "f888210e02f89edf15ae7754da1f12fff3146de64367fb65303dd8b1d2538661",
+          "lines": 1861
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Step/StepStar.lean",
+          "git_blob_sha1": "e986b8929c245321a06ae65cb195a194e0bd8a77",
+          "sha256": "ee39c653daa656868a962caae80fa0fbc21bb8949b93231cfde178aae8c124d3",
+          "lines": 1368
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Solver/ScalarTac.lean",
+          "git_blob_sha1": "38a7226fa67bdef3002f6d5bbc7a19e5d1dd4141",
+          "sha256": "601ef1fca04a744f8e60d742091e815afc194e3cbbb293336e0af6c09c9bb799",
+          "lines": 4
+        },
+        {
+          "path": "backends/lean/Aeneas/Tactic/Solver/BvTac/BvTac.lean",
+          "git_blob_sha1": "65d1fca3967700632483cb846def9ea457a528a6",
+          "sha256": "efdf8ce55fb12519fbf2df7b2a4d8bd493f5982bf28d26f0c23176932de06ab7",
+          "lines": 261
+        }
+      ]
+    },
+    "hax": {
+      "url": "https://github.com/cryspen/hax.git",
+      "revision": "1ec88cdb2c8e546845e64eb2cd2321b4f58069c4",
+      "files": [
+        {
+          "path": "hax-lib/proof-libs/lean/CoreModels/RustPrimitives/Types.lean",
+          "git_blob_sha1": "3aefe92f7fbe777593c4e915275a5c0c1762deb6",
+          "sha256": "53c6ebc17c5a3778c93ca659a458ab50923ddadc3bb9845fea30f2aa4c731b62",
+          "lines": 13
+        },
+        {
+          "path": "hax-lib/proof-libs/lean/CoreModels/Spec/RustPrimitives/Arithmetic.lean",
+          "git_blob_sha1": "15317649f49632da963811512810a9b70bdf4874",
+          "sha256": "e4b8eb1e01c3d72176708328cec3171d5dca672d71d205bd6bee6034438f3298",
+          "lines": 59
+        },
+        {
+          "path": "hax-lib/proof-libs/lean/Hax/Tactic/HaxMvcgen.lean",
+          "git_blob_sha1": "431c38b7990a5ea9ff313e6c1181ee3efe683d78",
+          "sha256": "c8f67a5852f533533379091dc7110e9568e7bc7cc2b8e2f3a77d3524cb1ea3e5",
+          "lines": 68
+        }
+      ]
+    },
+    "refinedrust": {
+      "url": "https://github.com/lgaeher/refinedrust-dev.git",
+      "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+      "files": [
+        {
+          "path": "rr_frontend/radium/src/code.rs",
+          "git_blob_sha1": "fad50bfed34a53886e1a19aa577b1a32cd220a64",
+          "sha256": "549c2c49184d07ed5ed92450b66a22357588192cad15d5f268c00a4d72c4cc17",
+          "lines": 2226
+        },
+        {
+          "path": "theories/refinedrust/lithium/definitions.v",
+          "git_blob_sha1": "36d19fa71b3e5aaa064766ddad722b514b8849b4",
+          "sha256": "2611e19aa233e1a090483f5e1902b0a4a42fd21fe1f37296a47b83d0f4df6886",
+          "lines": 144
+        },
+        {
+          "path": "theories/refinedrust/lithium/syntax.v",
+          "git_blob_sha1": "bca662b420fe7a9fff754c6333da5cc221760a20",
+          "sha256": "78e30c4b249b33f2a1175f05a68bae8e89398f5f2e7c79fc67d0b20aa12b44d2",
+          "lines": 517
+        },
+        {
+          "path": "theories/refinedrust/lithium/interpreter.v",
+          "git_blob_sha1": "e02133aa4656ee63199ebd2602fe38ed1852c9a3",
+          "sha256": "8b087ff28d73c5b77c21cef1c12222bd4671fee0ed1e7864c391efbb4e5eaa6f",
+          "lines": 1037
+        },
+        {
+          "path": "theories/refinedrust/lithium/proof_state.v",
+          "git_blob_sha1": "de66a8e8ffef0ba4503f5a9bead884091b6228a5",
+          "sha256": "e78e54d7f47ac78de592b49798fcaf1806d39bb313811d8e765312135f6fa78e",
+          "lines": 374
+        },
+        {
+          "path": "theories/refinedrust/rust_typing/automation/proof_state.v",
+          "git_blob_sha1": "dd661e7c975c39aaf5f94488e6266b223ab411b6",
+          "sha256": "5ac0ae5d980b3075f293aa1ca08c763dbb67af0b911584a239015a9cc2ada05f",
+          "lines": 538
+        },
+        {
+          "path": "theories/refinedrust/rust_typing/typing/automation.v",
+          "git_blob_sha1": "991835f414494696a7d3d229933ced2e3392b560",
+          "sha256": "beeb059b7cb7e19913fd13006177a553a89339600c45bf84311da8146bd3d19d",
+          "lines": 2327
+        },
+        {
+          "path": "theories/refinedrust/rust_typing/base/programs.v",
+          "git_blob_sha1": "3c5f3826b55d3afd749778baf6704f4045bcd6c6",
+          "sha256": "ec059962a64aff5e6caf475d6a78cebfbf5f2a476cef52b19ca014cc3feadc89",
+          "lines": 4206
+        },
+        {
+          "path": "theories/refinedrust/rust_typing/primitive/functions.v",
+          "git_blob_sha1": "f2e56577cdd5190974bc317488f2ca2e97ab4d49",
+          "sha256": "4d4b8b472a56344b2f82f40c25c2ae53e41b0c3e5d7ceb322134183106a0c2dd",
+          "lines": 1735
+        },
+        {
+          "path": "theories/refinedrust/rust_typing/typing/program_rules.v",
+          "git_blob_sha1": "529bf5fccdeb0abcd8d490a711dbbba9d63fa262",
+          "sha256": "2912aa36c4bf4beb4bade6c025077cf0bff25e72fb3ce875882251227e6cc461",
+          "lines": 6348
+        }
+      ]
+    },
+    "refinedc": {
+      "url": "https://gitlab.mpi-sws.org/iris/refinedc.git",
+      "revision": "d057583986651a28047164581f05fbee3a83ed9d",
+      "files": [
+        {
+          "path": "theories/lithium/definitions.v",
+          "git_blob_sha1": "502eec21886e6e24e9cafd003316ea41d5043b3e",
+          "sha256": "906be13def247a9ae3e0532807931d2fd4aebf95d560e47692dbd73f5c6a0790",
+          "lines": 350
+        },
+        {
+          "path": "theories/lithium/syntax.v",
+          "git_blob_sha1": "f34620febc6937a9b8b38e8e5c33efbaba7707bc",
+          "sha256": "239c5c1642a1007b4162ddccef7bcb5845ee931323cfbbab1d31dc6c2f6d4c0a",
+          "lines": 468
+        },
+        {
+          "path": "theories/lithium/interpreter.v",
+          "git_blob_sha1": "a657e60ad1901612afe31bdf39b6e9e0bc95f60c",
+          "sha256": "a2319bc9c6bce6e2bfd18663b54e13147c0f61d0424443eeaba64a2b7d783588",
+          "lines": 1201
+        },
+        {
+          "path": "theories/lithium/proof_state.v",
+          "git_blob_sha1": "9dc5505f859654c045c99dee2f6d6598b31fd644",
+          "sha256": "da016f282bd0069839d9f5310187f10b75f3bb3b3fb2dacbe46df0cad35c09cb",
+          "lines": 231
+        }
+      ]
+    },
+    "anneal": {
+      "url": "https://github.com/joshlf/anneal.git",
+      "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+      "worktree_revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "files": [
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "git_blob_sha1": "b989f5ad9ed740bb16a99c22f0226433cc69bad3",
+          "sha256": "520d15e91568c05c7d00173e710c0f71e2f9cc2d57a74b74bc4ff47c1501cd5a",
+          "lines": 532
+        },
+        {
+          "path": "trusted/lean/Trusted/StepResult.lean",
+          "git_blob_sha1": "2423eb55d6145c569f72986ff7d37bcf4b44b565",
+          "sha256": "7dc7d0a1f30d54a43abe74dc10152ef37636d8b44ac21bbeaf13593919b46147",
+          "lines": 196
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "git_blob_sha1": "00eff002c9fb9c2924d5a38b1a365d774e37a0d6",
+          "sha256": "437300dc48754b22d3a1b60cd6bb90a68e0c8a3aad84a6cf3916be6df061b9e3",
+          "lines": 872
+        },
+        {
+          "path": "trusted/rustc-capture/src/proof_gen.rs",
+          "git_blob_sha1": "717b40609526913f7507ee035312cf6b286dc3db",
+          "sha256": "32b33c237ae588d5ff031d39239483e355c9156e4c3fd02f610357096872ffc8",
+          "lines": 388
+        },
+        {
+          "path": "theory/Anneal/FunctionalTranslation.lean",
+          "git_blob_sha1": "42752d56592dfb3e59a243f22bf2f83c4b768348",
+          "sha256": "9b40696b6b504a67bc569042df3db5a9e08ac42beab65fb874bb0bac9a595385",
+          "lines": 8315
+        }
+      ]
+    },
+    "comparative_rust_verifiers": {
+      "creusot": {
+        "url": "https://github.com/creusot-rs/creusot.git",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+        "notes": "Prophecy-based mutable borrow encoding (^x final value, *x current value), Pearlite specification logic, and Coma intermediate verification language (creusot-std/src/model.rs, creusot/src/backend/place.rs, creusot/src/backend/clone_map.rs)."
+      },
+      "verus": {
+        "url": "https://github.com/verus-lang/verus.git",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+        "notes": "exec/tracked/spec mode stratification, VIR SST ToSst/ElaborateLoops/BitvectorToAir passes, and query-isolated broadcast quantifier triggers (source/vir/src/loops.rs, source/vir/src/sst_to_air.rs, source/vir/src/bitvector_to_air.rs)."
+      },
+      "kani": {
+        "url": "https://github.com/model-checking/kani.git",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779",
+        "notes": "Shadow-memory provenance/initialization tracking and bounded model checking loop/contract instrumentation (kani-compiler/src/codegen_cprover_gotoc/codegen/place.rs, contract.rs, loop_contracts.rs)."
+      },
+      "gillian": {
+        "url": "https://github.com/GillianPlatform/Gillian.git",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7",
+        "notes": "Parametric symbolic execution engine and Gillian-Rust hybrid tree/flat memory model with prophetic borrows (GillianCore/engine/symbolic_semantics/symex.ml)."
+      },
+      "lambda_rust": {
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust.git",
+        "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+        "popl18_archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "notes": "RustBelt semantic type system and lifetime logic (theories/lifetime/lifetime.v, theories/typing/type.v, theories/typing/borrows.v)."
+      }
+    }
+  },
+  "lean_probes": [
+    {
+      "path": "support/ProbeGeneralSpecAndLithium.lean",
+      "git_blob_sha1": "eed3025b083ed485f457972df6431a03702865e3",
+      "sha256": "65f8af557997769bd43b4ce6eac36b79e1555bd222b75f31a4b439f08016895a",
+      "lines": 784,
+      "lean_version": "4.34.1",
+      "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/ProbeGeneralSpecAndLithium.lean",
+      "sorry_count": 0,
+      "theorems": [
+        "Anneal.Probe.Theory.evalSymWith_sound",
+        "Anneal.Probe.Theory.funcSpec_verified",
+        "Anneal.Probe.Theory.maxAssign_verified",
+        "Anneal.Probe.Theory.clampAssign_verified",
+        "Anneal.Probe.Theory.chooseMut_verified",
+        "Anneal.Probe.Theory.all_exemplars_verified"
+      ]
+    },
+    {
+      "path": "support/ProbeTrackedFuncLangAndLoops.lean",
+      "git_blob_sha1": "9f4b5c7e68d29b96dd90293da3e372ca4b18ce99",
+      "sha256": "98e7321e53c2b32644b8e62c10275b26234f1c7c4d587f381374995a74b16a66",
+      "lines": 2199,
+      "lean_version": "4.34.1",
+      "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/ProbeTrackedFuncLangAndLoops.lean",
+      "sorry_count": 0,
+      "theorems": [
+        "Anneal.R2Probe.Theory.monotone_\u03c0_tracked",
+        "Anneal.R2Probe.Theory.evalSymWithTracked_sound",
+        "Anneal.R2Probe.Theory.trackedFuncLang_exact_trace_length_at_steps",
+        "Anneal.R2Probe.Theory.trackedFuncLang_adequacy_specOn",
+        "Anneal.R2Probe.Theory.loop_spec_decr_nat",
+        "Anneal.R2Probe.Theory.tracked_loop_spec_decr_nat",
+        "Anneal.R2Probe.Theory.sumToN_verified_via_ranking_measure",
+        "Anneal.R2Probe.Theory.sumToN_satisfies_fuelFree_specOn",
+        "Anneal.R2Probe.Theory.diamond_join_cutpoint",
+        "Anneal.R2Probe.Theory.twoDiamondBody_verified_linear",
+        "Anneal.R2Probe.Theory.evalSymTracked_trace_eq_of_branchAligned",
+        "Anneal.R2Probe.Theory.trackedFuncLang_implies_constantTime2Safety",
+        "Anneal.R2Probe.Theory.ctPublicModeXor_is_constant_time"
+      ]
+    }
+  ]
+}

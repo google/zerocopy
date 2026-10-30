@@ -1,0 +1,323 @@
+{
+  "observed_at": "2026-10-30",
+  "toolchain": {
+    "lean4_version": "leanprover/lean4:v4.34.1",
+    "lean4_commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+  },
+  "support_files": [
+    {
+      "path": "support/CoreVCTacticBenchmarkProbe.lean",
+      "lines": 1061,
+      "sha256": "47b29ea4a4cc71962637946aea0540d48f63549c209d99fe55d652f9e9b439a3",
+      "description": "Standalone Lean v4.34.1 core-tactic benchmark probe (omega, grind, bv_decide_kernel, refine) across Classes A-E with KernelBVDecide and #print axioms audit; compiles under lean -j1 -M1024 with zero warnings and zero sorry."
+    },
+    {
+      "path": "support/ExternalAesopDuperBenchmarkSuite.lean",
+      "lines": 522,
+      "sha256": "177406f86470848b88ba4142ce7fdcd32fc3da5fbc9ff12ec8cf438e171ead86",
+      "description": "Multi-package Lake benchmark suite (Aesop v4.34.0 + Duper v4.34.1 + Auto v4.34.1 + KernelBVDecide) containing 41 compiled benchmark theorems across Classes A-E."
+    }
+  ],
+  "repositories": [
+    {
+      "repository": "leanprover/lean4",
+      "url": "https://github.com/leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "tag": "v4.34.1",
+      "commit_date": "2026-10-16"
+    },
+    {
+      "repository": "leanprover-community/batteries",
+      "url": "https://github.com/leanprover-community/batteries",
+      "revision": "f2effa3d803fda822b1f97b806c47cf2adfbcbc2",
+      "tag": "v4.34.0",
+      "head_revision": "6d971e7e6b3f7d0a501c5418815aa9022edd3499",
+      "commit_date": "2026-09-24",
+      "inspected_files": [
+        {
+          "path": "lakefile.toml",
+          "lines": 24,
+          "sha256": "acadcd8beb13a53a4ac9399e6706c829309d2380f338d13b037886666f978015"
+        },
+        {
+          "path": "Batteries/Data/BinaryHeap.lean",
+          "lines": 4,
+          "sha256": "7327ee7ae02205599f0eea0e0c2b5aba39f2f3386da73e0e7d3436a43b8a1623"
+        },
+        {
+          "path": "Batteries/Data/UnionFind/Basic.lean",
+          "lines": 584,
+          "sha256": "18bc9b3e07d389a8761dbea7339d09c968c39842517f1dadc4fc03164fe158b5"
+        },
+        {
+          "path": "Batteries/Tactic/Lint/Basic.lean",
+          "lines": 201,
+          "sha256": "907aef469ac1dd6e027083bdda94058b473e3081bd8cc4dcba53e6aba4b0582d"
+        },
+        {
+          "path": "Batteries/Tactic/GeneralizeProofs.lean",
+          "lines": 533,
+          "sha256": "f458046a72b296df8938499ed11582a48509c96a45b40638ba3036d0a5f06f3c"
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "url": "https://github.com/leanprover-community/mathlib4",
+      "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+      "tag": "v4.34.1",
+      "v4_34_0_revision": "5ed2965256430c3649e86755f9576b54eca72435",
+      "cslib_main_pinned_revision": "69552756cd8a2d2d48763cf7279fd814d6a1224d",
+      "head_revision": "f9738e46d32221bdd20d876adf69c619543cc523",
+      "commit_date": "2026-10-16",
+      "inspected_files": [
+        {
+          "path": "lakefile.lean",
+          "lines": 222,
+          "sha256": "222c2981acc174ebead9bb83ce4b4dcb5f1f7089e4e67d2837c7266ff364ecd0"
+        },
+        {
+          "path": "lake-manifest.json",
+          "lines": 86,
+          "sha256": "2ba555aacda52fa42c3a2128bd7cb5eda54086d97e4f69576a0fc9b73749fa83"
+        }
+      ]
+    },
+    {
+      "repository": "leanprover/cslib",
+      "url": "https://github.com/leanprover/cslib",
+      "revision": "82db31eec215b6843be6df283304cc02e736ddef",
+      "v4_34_1_revision": "7c8f6c0f67015df29b152fdcffaf7850db2e9185",
+      "commit_date": "2026-10-30",
+      "inspected_files": [
+        {
+          "path": "lakefile.toml",
+          "lines": 36,
+          "sha256": "841cc2e914b50cc541f4ae8d1cbf842ff5efc48cd9ceb84b3cf5f1e930f0e5b8"
+        },
+        {
+          "path": "lake-manifest.json",
+          "lines": 96,
+          "sha256": "c8886af329984533313572ff2e0c88ff1167157e28852ee5cef12fc9e9d0ee00"
+        },
+        {
+          "path": "Cslib/Init.lean",
+          "lines": 22,
+          "sha256": "e453b900baa1938e94b02c562254de2ab2240611e3f23410f8c35dde0f419b0b"
+        },
+        {
+          "path": "Cslib/Algorithms/Lean/TimeM.lean",
+          "lines": 154,
+          "sha256": "391294b3a961332ae8a321fe4158bd45eaa5fd87edd80a5ca39e4790481c5413"
+        },
+        {
+          "path": "Cslib/Foundations/Semantics/LTS/Basic.lean",
+          "lines": 425,
+          "sha256": "368386639176a55e5d1ad5e6b3b48a301c7fb4c0afd6b71ffd66f08c24198d87"
+        },
+        {
+          "path": "Cslib/Foundations/Semantics/LTS/Bisimulation.lean",
+          "lines": 689,
+          "sha256": "5b6539873204a6cdee75940db9570d8e6cef8c785643e4169fdff9a71d9344f4"
+        },
+        {
+          "path": "Cslib/Foundations/Control/Monad/Free.lean",
+          "lines": 345,
+          "sha256": "6146ad73bdbea4e5b8554b1a00bba9dbdf4aa6c29940c77b0b868bd0de4825fa"
+        },
+        {
+          "path": "Cslib/Languages/CCS/Basic.lean",
+          "lines": 204,
+          "sha256": "8a1a8aafb42d110ea3ca96464177b052a6e0d9faa21ae9ced2521fc62c720345"
+        },
+        {
+          "path": "Cslib/Languages/LambdaCalculus/LocallyNameless/Stlc/Basic.lean",
+          "lines": 132,
+          "sha256": "08eb666ece23573241042bb26b4d5d8d6a485f10519697f62cbe4c060ba50459"
+        },
+        {
+          "path": "Cslib/Logics/LinearLogic/CLL/Basic.lean",
+          "lines": 605,
+          "sha256": "3d85d7aa1212551e5c9efbb8e6141382491ba2f3d9452cacb1e8d98ee4e9456a"
+        },
+        {
+          "path": "Cslib/Logics/HML/Basic.lean",
+          "lines": 193,
+          "sha256": "396b3d64b9b6d11a46ac83c86cedb3d705004f71dc7b8f138c6bc58536ee1d2e"
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/aesop",
+      "url": "https://github.com/leanprover-community/aesop",
+      "revision": "355695d523e41d0554926416cba2a2b3544fbbc9",
+      "tag": "v4.34.0",
+      "head_revision": "7d11bfa88558f8d3d90afdf6bd877ed70001498d",
+      "commit_date": "2026-09-25",
+      "inspected_files": [
+        {
+          "path": "lakefile.toml",
+          "lines": 18,
+          "sha256": "481e02c9e6c2ebb972fb51d5eb51a6c2bc286f01fd4bf3ef89bf25775eee9fae"
+        },
+        {
+          "path": "Aesop/Tree/ExtractProof.lean",
+          "lines": 189,
+          "sha256": "f1c5310f3fa55583b3389c2f1514da1628d3c3574e229cc383894005c2968b83"
+        },
+        {
+          "path": "Aesop/Search/Main.lean",
+          "lines": 290,
+          "sha256": "7f32a6a524aeee0f6df8694575e47f74442f238444ddddb38cdd174c08cc8462"
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/lean-auto",
+      "url": "https://github.com/leanprover-community/lean-auto",
+      "revision": "6b2774cde4d1cb7ac4d48ac61c34e950e0588d69",
+      "tag": "v4.34.1",
+      "v4_34_0_revision": "92d628ba41801bd12c9d81f9be12fde97f0ad177",
+      "head_revision": "59427b4c6d8a9e5e4fb788a0d3b898f073fe5d25",
+      "commit_date": "2026-10-16",
+      "inspected_files": [
+        {
+          "path": "lakefile.lean",
+          "lines": 78,
+          "sha256": "e373e109667e49569637da86b69b772d6642b3391aaf7adcfed4dab578eeb898"
+        },
+        {
+          "path": "Auto/Tactic.lean",
+          "lines": 765,
+          "sha256": "929aa9982f0ccc60c61a961cdb85b50dbc92bb217cb2eeb38d5255cf2b297533"
+        },
+        {
+          "path": "Auto/Lib/MonadUtils.lean",
+          "lines": 198,
+          "sha256": "48cb36142056d7b73b1aa91f5c3d2a8c65896a8b065f89cb3e20798944d9c6ab"
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/duper",
+      "url": "https://github.com/leanprover-community/duper",
+      "revision": "9e09cd05fd541d6cef4c485882b7978d32c7e0a3",
+      "tag": "v4.34.1",
+      "head_revision": "5940907b9581beb2fd08b9d0b0682c2b0c9c15b8",
+      "commit_date": "2026-10-16",
+      "inspected_files": [
+        {
+          "path": "lakefile.lean",
+          "lines": 18,
+          "sha256": "22bf800801e83759931481f3b7d781b78473195e70d2d86ad20aa2d250899417"
+        },
+        {
+          "path": "Duper/Tactic.lean",
+          "lines": 549,
+          "sha256": "b496f48f15a1a485a56746879304550518e873ec4ac7c7d14774ef8803b1b9ef"
+        },
+        {
+          "path": "Duper/ProverM.lean",
+          "lines": 602,
+          "sha256": "85add75144cb890b6b03a8d506d4705af9bc669b34ac4c13c6cdf408cbb4be15"
+        },
+        {
+          "path": "Duper/ProofReconstruction.lean",
+          "lines": 255,
+          "sha256": "c1e26a68a49e658d74852269370e914c29f9b11ecae22641c2fe6248b618a289"
+        }
+      ]
+    },
+    {
+      "repository": "ufmg-smite/lean-smt",
+      "url": "https://github.com/ufmg-smite/lean-smt",
+      "revision": "db545bebe2de1e06dc2df62a6ff6c20e5736bfc0",
+      "no_mathlib_revision": "7e54df3e5b7f78e5e6170ffab8ebe813904262b0",
+      "lean_cvc5_revision": "41e47796d4d15712e6064b064ca5d251a1283955",
+      "quote4_revision": "6a489d9af5d0c47e5b259e2e8bcdfc1811b5a259",
+      "commit_date": "2026-10-20",
+      "inspected_files": [
+        {
+          "path": "lakefile.lean",
+          "lines": 152,
+          "sha256": "36bbb1b40c665c9f4fe9d2117d5411cce6b00d71c4b143ce06670322e7460283"
+        },
+        {
+          "path": "Smt/Reconstruct.lean",
+          "lines": 471,
+          "sha256": "b5a295d6efb392cbdf4196bb93c28ce0c3de4f61cb1cdb5c15c78b3a001493c6"
+        },
+        {
+          "path": "Smt/Tactic/Smt.lean",
+          "lines": 336,
+          "sha256": "1429efd221f5641bbd1f473781f5b56d0e835f3ad2b0b6f4fb70f048f9a2f792"
+        },
+        {
+          "path": "Smt/Reconstruct/Prop/Core.lean",
+          "lines": 113,
+          "sha256": "e54ce1ec943d52a36e7e1c5128b29748d1f59767b96be467b19b4464e9199435"
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/plausible",
+      "url": "https://github.com/leanprover-community/plausible",
+      "revision": "118aa17ee84656b8bd727fef7c458ee8c833385c",
+      "tag": "v4.34.0",
+      "head_revision": "129d1ba9a16bc0660f46c79e9fb041ef5d5d80de",
+      "commit_date": "2026-09-24",
+      "inspected_files": [
+        {
+          "path": "lakefile.toml",
+          "lines": 10,
+          "sha256": "4147957012320a3afe8f041662202b7a3453c8a0df4311c1698da029a3b4834f"
+        },
+        {
+          "path": "Plausible/Tactic.lean",
+          "lines": 243,
+          "sha256": "51148f1df67f14740a7a63abe0743d35a18e4d2a40cee0ecd9223e1f70045e14"
+        }
+      ]
+    },
+    {
+      "repository": "stagiralabs/VerifiedAgora",
+      "url": "https://github.com/stagiralabs/VerifiedAgora",
+      "revision": "9703b9597dd37d6ec4845fc5d0480132e3db8054",
+      "eval_computability_pinned_revision": "b29e0c3443416718327b9a7e9af2ee4737e6bf38",
+      "safeverify_revision": "5791a40d2c2a4dc8ef4ca14ae512ef846968b15a",
+      "commit_date": "2026-02-05",
+      "inspected_files": [
+        {
+          "path": "lakefile.lean",
+          "lines": 29,
+          "sha256": "780eed74dee9bbc98f55822ecc220661dcc69aeb836b317d17152b3246b05945"
+        },
+        {
+          "path": "lake-manifest.json",
+          "lines": 105,
+          "sha256": "16fcc88e6712923da9fb85b2cc3084dfa965e495cb9aad5c80c5b1946a4c366a"
+        },
+        {
+          "path": "VerifiedAgora/tagger.lean",
+          "lines": 5,
+          "sha256": "5480ae6b79b841f5c0a506538ba9df7365da6fc77bdfccbcd69e9b03c6e7ec9c"
+        },
+        {
+          "path": "VerifiedAgora/Utils.lean",
+          "lines": 180,
+          "sha256": "1d108111397da511d0bd4ab8d2fdcdab29efd572f6d68b2cae29a4fc024596dc"
+        },
+        {
+          "path": "VerifiedAgora/allTargets.lean",
+          "lines": 114,
+          "sha256": "721412add2b4d78f43128dd6f37deedb1eed47a72c06174f640a1c043e785503"
+        },
+        {
+          "path": "VerifiedAgora/getTargets.lean",
+          "lines": 399,
+          "sha256": "2f9baca3b879f98716ae473cf428a91b9d4a24d3368b604250030a121b23dccb"
+        }
+      ]
+    }
+  ]
+}

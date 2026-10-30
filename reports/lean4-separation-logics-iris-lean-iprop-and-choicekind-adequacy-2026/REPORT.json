@@ -1,0 +1,187 @@
+{
+  "topics": [
+    "adequacy",
+    "angelic-nondeterminism",
+    "anneal",
+    "cslib",
+    "fancy-updates",
+    "hoare-logic",
+    "iris-lean",
+    "lean4",
+    "loom",
+    "mir",
+    "program-logic",
+    "qpf-types",
+    "separation-logic",
+    "splean",
+    "step-indexing",
+    "veil",
+    "velvet",
+    "weakest-precondition"
+  ],
+  "subjects": [
+    {
+      "name": "iris-lean",
+      "identity": {
+        "kind": "git",
+        "repository": "leanprover-community/iris-lean",
+        "url": "https://github.com/leanprover-community/iris-lean.git",
+        "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47",
+        "tree": "1282d7d5b1405ae3db38efe58c04c2261dc31f1f",
+        "tag": "v4.34.1",
+        "lean_toolchain": "leanprover/lean4:v4.34.1",
+        "notes": "Iris separation logic and Interactive Proof Mode (IPM) in Lean 4 at tag v4.34.1: BIBase/BI, UPred M, IProp GF, BundledGFunctors, OFE/COFE, CMRA, Auth/Excl/Agree/DFrac/View/HeapView, BUpd/FUpd/Inv, GhostMapG, GhostVarG, step_fupdN_soundness_close, and ProofMode tactics (iintro, iframe, isplitl, isplitr, iapply, ihave, imod)."
+      }
+    },
+    {
+      "name": "iris-lean",
+      "identity": {
+        "kind": "git",
+        "repository": "leanprover-community/iris-lean",
+        "url": "https://github.com/leanprover-community/iris-lean.git",
+        "revision": "fb21a8af4727bd42190072a5ed2836cbe9fb844e",
+        "tree": "4912bf34c2e7f40635ecad94671ebc0af64f3c55",
+        "lean_toolchain": "leanprover/lean4:v4.35.0",
+        "notes": "Iris separation logic in Lean 4 at main HEAD (2026-10-28): adds IrisStepIndex/Elab.lean and IrisStepIndex/Registry.lean alongside IrisMath/IrisMath/Ordinal.lean transfinite step-indexing (SIdx I) and local bi PROP / bi% multi-BI notation."
+      }
+    },
+    {
+      "name": "velvet",
+      "identity": {
+        "kind": "git",
+        "repository": "verse-lab/velvet",
+        "url": "https://github.com/verse-lab/velvet.git",
+        "revision": "836ed5a163b36c09081ed1d8aeecd3cec040f87e",
+        "tree": "6bf02072256851fcdb448c03481b7d8754a0d516",
+        "lean_toolchain": "leanprover/lean4:v4.35.0",
+        "notes": "Affinely-verified imperative DSL and total/partial correctness verifier built on Loom: Velvet/Core/NonDet/{Defs,WP,Soundness}.lean, Velvet/Core/FreerMonad/WP.lean, Velvet/Core/VCGen/Driver.lean. Also cross-referenced with historical checkpoint 836ed5a."
+      }
+    },
+    {
+      "name": "loom",
+      "identity": {
+        "kind": "git",
+        "repository": "verse-lab/loom",
+        "url": "https://github.com/verse-lab/loom.git",
+        "revision": "78928abc9054b31d0bea85985496490baae95244",
+        "tree": "884dab40df596f85260755f12a22183302f83a00",
+        "lean_toolchain": "leanprover/lean4:v4.24.0",
+        "notes": "Monad-algebra and CCompleteLattice weakest-precondition framework in Lean 4: Loom/MonadAlgebras/NonDetT/Extract.lean, Loom/MonadAlgebras/WP/{Gen,Tactic}.lean (also cross-referenced against historical reference 7f53c15)."
+      }
+    },
+    {
+      "name": "veil",
+      "identity": {
+        "kind": "git",
+        "repository": "verse-lab/veil",
+        "url": "https://github.com/verse-lab/veil.git",
+        "revision": "eb458cb602d3cf9a19d8f5d8af21edcf27775c8e",
+        "tree": "533396ae262856cd13bc7cc24687438fcf0cde0c",
+        "lean_toolchain": "leanprover/lean4:v4.32.0",
+        "notes": "Distributed protocol verifier in Lean 4 using two-state relational transition specifications (ActionSpec.lean) and lean-auto/SMT discharge (also cross-referenced against historical reference 712a8a5)."
+      }
+    },
+    {
+      "name": "splean",
+      "identity": {
+        "kind": "git",
+        "repository": "verse-lab/splean",
+        "url": "https://github.com/verse-lab/splean.git",
+        "revision": "e24286f51bd9ee207197d47ec587d592cdfb0ddc",
+        "tree": "567ca57a8f901b2d6c15e7156307ec53cee9fb90",
+        "lean_toolchain": "leanprover/lean4:v4.11.0",
+        "notes": "CFML-style separation logic in Lean 4 over Finmap Ptr Val heaps: SPLean/Theories/{HProp,XSimp,WP1}.lean and SPLean/Common/State.lean (surveyed alongside the non-existent standalone LayerCake label e934dd6)."
+      }
+    },
+    {
+      "name": "Lentil",
+      "identity": {
+        "kind": "git",
+        "repository": "verse-lab/Lentil",
+        "url": "https://github.com/verse-lab/Lentil.git",
+        "revision": "b3ca5e224fed1e09fb22daa45a0b61ec5685df76",
+        "tree": "94b7b1f4785c6ee9429e86a90b10ce4762723395",
+        "lean_toolchain": "leanprover/lean4:v4.34.1",
+        "notes": "Small-step/big-step imperative WHILE language equivalence educational formalization in Lean 4.34.1 (Lentil.lean)."
+      }
+    },
+    {
+      "name": "lean-hoare",
+      "identity": {
+        "kind": "git",
+        "repository": "goens/lean-hoare",
+        "url": "https://github.com/goens/lean-hoare.git",
+        "revision": "aa2d88ae418d58ee22460a9097a2fad62c47eb38",
+        "tree": "2495d7db77f775799d66d2b29de8bf4ba7b3f15b",
+        "lean_toolchain": "leanprover/lean4:v4.22.0-rc2",
+        "notes": "Educational Hoare logic prototype in Lean 4: Hoare/{Basic,Logic,Statements}.lean and Hoare/Examples/Sqrt.lean (also cross-referenced against historical reference 92e033c)."
+      }
+    },
+    {
+      "name": "cslib",
+      "identity": {
+        "kind": "git",
+        "repository": "leanprover/cslib",
+        "url": "https://github.com/leanprover/cslib.git",
+        "revision": "82db31eec215b6843be6df283304cc02e736ddef",
+        "tree": "36b687b942927d910624687bfbd2085169788b90",
+        "lean_toolchain": "leanprover/lean4:v4.36.0-rc2",
+        "notes": "Lean Computer Science Library: Cslib/Foundations/Semantics/LTS/{Basic,Bisimulation}.lean, Flts/Basic.lean, and Cslib/Logics/HML/LogicalEquivalence.lean (also tagged at v4.34.1 revision 7c8f6c0f67015df29b152fdcffaf7850db2e9185)."
+      }
+    },
+    {
+      "name": "QpfTypes",
+      "identity": {
+        "kind": "git",
+        "repository": "alexkeizer/QpfTypes",
+        "url": "https://github.com/alexkeizer/QpfTypes.git",
+        "revision": "5b5dd4f83121662838b99d129b92f632f263c508",
+        "tree": "4b173b2747b55417748cfd1f9360f25af204266f",
+        "lean_toolchain": "leanprover/lean4:v4.25.0",
+        "notes": "Multivariate Quotient Polynomial Functors (Data/Codata) in Lean 4: Qpf/Macro/Data.lean (elabQpfCompositionBody), Qpf/PFunctor/Multivariate/Basic.lean, and Test/ITree.lean."
+      }
+    },
+    {
+      "name": "anneal",
+      "identity": {
+        "kind": "git",
+        "repository": "joshlf/anneal",
+        "url": "https://github.com/joshlf/anneal.git",
+        "revision": "6e9bf8b54344c8283946387b7db8bf6879c4caf1",
+        "tree": "b52799f2c8fef185c9e41a26f29e9f60d8580bb9",
+        "lean_toolchain": "leanprover/lean4:v4.34.1",
+        "notes": "Anneal trusted verification kernel and weak-memory MIR operational semantics: trusted/lean/Trusted/{StepResult,Refinement,Memory,MirAst,MirSemantics}.lean (also inspected at trusted-core revision 8e7ab324dc86e2086f301cdfc61a35c768896229)."
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "kind": "tool",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "notes": "Lean 4.34.1 compiler and kernel used to verify support/anneal_step_wp_and_choicekind_probe.lean and support/R2IrisLeanProbe.lean with zero sorry and zero warnings."
+      }
+    },
+    {
+      "name": "anneal_step_wp_and_choicekind_probe.lean",
+      "identity": {
+        "kind": "support-artifact",
+        "path": "support/anneal_step_wp_and_choicekind_probe.lean",
+        "sha256": "38a5f90f0d5269ce763079d496c7034e9deef31da62a39950393d57f193accf7",
+        "lines": "1674",
+        "lean_toolchain": "leanprover/lean4:v4.34.1"
+      }
+    },
+    {
+      "name": "R2IrisLeanProbe.lean",
+      "identity": {
+        "kind": "support-artifact",
+        "path": "support/R2IrisLeanProbe.lean",
+        "sha256": "67772f157e86f81b996cfc4b990721d328d3096ee309740ee8f000ed33653d4b",
+        "lines": "1340",
+        "lean_toolchain": "leanprover/lean4:v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

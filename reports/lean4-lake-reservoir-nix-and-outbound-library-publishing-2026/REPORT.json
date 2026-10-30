@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "lean4",
+    "lean4/lake",
+    "lean4/reservoir",
+    "nix",
+    "spdx-licensing",
+    "outbound-publishing",
+    "cross-crate-verification",
+    "verified-crate-receipts"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "version": "v4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "x86_64_linux_archive_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4"
+      }
+    },
+    {
+      "name": "joshlf/anneal",
+      "identity": {
+        "main_commit": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "skeleton_commit": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+      }
+    },
+    {
+      "name": "leanprover/reservoir",
+      "identity": {
+        "commit_r1": "a5774ea3b51fef4a496f35c791cfa660c914454f",
+        "commit_r2": "d58b4e3866c57690f7fd74099f08bd20d62de98b"
+      }
+    },
+    {
+      "name": "leanprover/lean-action",
+      "identity": {
+        "commit_r1": "bd5cb0b830eda614ce3fc186d8429b9409b16c47",
+        "commit_r2": "52bbb8dde6eb0c6c1ef3a12bccecfdeaa25eb792"
+      }
+    },
+    {
+      "name": "leanprover/doc-gen4",
+      "identity": {
+        "commit": "b968d9679900841dbe9b86894ae7ff8f454a2b1f"
+      }
+    },
+    {
+      "name": "leanprover/verso",
+      "identity": {
+        "commit": "a62a15bbe7719a9086442c5bbe83140f5334aa6f"
+      }
+    },
+    {
+      "name": "lenianiva/lean4-nix",
+      "identity": {
+        "pantograph_locked_commit": "6067688bc484f50f16dde1f2749bbb3e373198c9",
+        "inspected_commit": "2ad74592e34c2e6ff5e8bec9d8abab8f4e9c3a37"
+      }
+    },
+    {
+      "name": "licensee/licensee",
+      "identity": {
+        "commit": "9a9c98b19d04585d9c7213ff52bd385aa182617a"
+      }
+    },
+    {
+      "name": "google/zerocopy",
+      "identity": {
+        "commit": "d19b86bee54a80f957fba6cd536ccaca0df50fb4"
+      }
+    },
+    {
+      "name": "NethermindEth/LeanCIL",
+      "identity": {
+        "commit": "4229b5485e3773e33c2867d8aa29e3d61a6c7242"
+      }
+    },
+    {
+      "name": "rust-random/rand",
+      "identity": {
+        "commit": "9e7d328f60d6372ae22927f37d1a816fc980f25e",
+        "appendix_truncation_commit": "a49e4ad730c028a21cf8bc85b4bc2f57ce33fa2a"
+      }
+    },
+    {
+      "name": "support/AnnealRefinementOutboundProbe.lean",
+      "identity": {
+        "sha256": "2225e7df1a82185b62ee1de5efb473b1f7c98e1f02370a6bbef700320afc761f"
+      }
+    },
+    {
+      "name": "support/CrossCrateReceiptsProbe.lean",
+      "identity": {
+        "sha256": "a2352c7ff2b7e6b4f6f9451a1481ffafc52137530641ffa17f652d48c63dd283"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "lean/bv-decide",
+    "lean/kernel-reduction",
+    "lean/lrat",
+    "lean/robdd",
+    "lean/grind",
+    "lean/omega",
+    "lean/std-do",
+    "lean/mvcgen",
+    "lean/std-data",
+    "lean/treemap",
+    "lean/hashmap",
+    "anneal/trusted-boundary",
+    "anneal/foundation-lock"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 core tactics, Std.Sat, Std.Tactic.BVDecide, Init.Omega, Init.Grind, Std.Do, and Std.Data",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "paths": "src/lean/Init/{Core.lean,Prelude.lean,Omega.lean,Grind.lean,GrindInstances.lean}, src/lean/Init/Data/{Int/OfNat.lean,String/Bootstrap.lean}, src/lean/Lean/Meta/Native.lean, src/lean/Lean/Elab/Tactic/{BVDecide.lean,Omega/Core.lean,Do/VCGen.lean}, src/lean/Lean/Meta/Tactic/BVDecide/{Prover/Bitblast.lean,Reflect/SatAtBVLogical.lean}, src/lean/Lean/Meta/Tactic/Grind/Arith/Cutsat/{Proof.lean,Nat.lean}, src/lean/Std/Sat/{AIG/Basic.lean,AIG/RelabelNat.lean,CNF/Basic.lean,CNF/RelabelFin.lean}, src/lean/Std/Tactic/BVDecide/{Reflect.lean,LRAT/Parser.lean,LRAT/Internal/Clause.lean,Bitblast/BVExpr/Basic.lean,Bitblast/BVExpr/Circuit/Impl/Expr.lean}, src/lean/Std/Do/{SPred/SVal.lean,SPred/SPred.lean,PostCond.lean,PredTrans.lean,WP/Basic.lean,WP/Monad.lean,Triple/Basic.lean}, src/lean/Std/Tactic/Do/Syntax.lean, src/lean/Std/Data/{DHashMap/Internal/Index.lean,DTreeMap/Internal/Def.lean,DTreeMap/Internal/WF/Defs.lean,TreeMap/Basic.lean,TreeMap/Raw/Basic.lean,ExtTreeMap/Basic.lean,HashMap/Basic.lean,HashMap/Raw.lean,ExtHashMap/Basic.lean}"
+      }
+    },
+    {
+      "name": "Anneal boundary auditor and foundation module lock",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+        "paths": "trusted/audit/TrustedBoundary.lean, trusted/audit/src/lib.rs, trusted/lean/foundation-lock.json"
+      }
+    },
+    {
+      "name": "Standalone Lean 4.34.1 probe for KernelLRAT and KernelBVDecide (bv_decide_kernel)",
+      "identity": {
+        "path": "support/ProbeBVDecide.lean",
+        "sha256": "3d2465d2cf40724556c1f14bc7f9a3375d277148d8de3f23822930341053a6f8",
+        "bytes": "33811",
+        "lines": "1006",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    },
+    {
+      "name": "Standalone Lean 4.34.1 prelude probe for Init.Omega and Init.Grind under TrustedBoundary.lean",
+      "identity": {
+        "path": "support/ProbeGrindOmega.lean",
+        "sha256": "abeb3548f70a9d683b791638c6b084c050e9e780ae99d4fcacf8ec0e72c4d114",
+        "bytes": "2486",
+        "lines": "69",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    },
+    {
+      "name": "Standalone Lean 4.34.1 probe for Std.Do (SPred, WP, Triple, mvcgen) and Std.Data containers",
+      "identity": {
+        "path": "support/ProbeStdDoData.lean",
+        "sha256": "1cdc3c347bde6d4f2a091b7ed374085e60b4788324998cf33cc60782ffd5bf5d",
+        "bytes": "6530",
+        "lines": "184",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    },
+    {
+      "name": "Standalone Lean 4.34.1 diagnostic probe for the 7 verifyBVExpr kernel-reduction blockers and omega/grind axiom footprints",
+      "identity": {
+        "path": "support/DiagnoseReduce.lean",
+        "sha256": "ab8544539c4a5ed319edfbed888262376cbcb6445f01d8a1f2b9b54ae2f46c42",
+        "bytes": "6160",
+        "lines": "178",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

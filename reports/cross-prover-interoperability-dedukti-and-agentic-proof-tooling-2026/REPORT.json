@@ -1,0 +1,179 @@
+{
+  "topics": [
+    "anneal/proof-tooling",
+    "anneal/trust-boundary",
+    "lean/cross-prover-translation",
+    "lean/dedukti",
+    "lean/export",
+    "lean/metaprogramming",
+    "lean/repl",
+    "lean/type-search",
+    "proof/certificates",
+    "rocq/lean-import"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 Kernel Export Format and Serializer (lean4export)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "Extensional-to-Intensional Lean 4 Kernel Translator (lean4less)",
+      "identity": {
+        "repository": "rish987/lean4less",
+        "revision": "5b66bbc4af5c2c11313fcfb5098630dadaf19281"
+      }
+    },
+    {
+      "name": "Lean 4 to Dedukti Translator (lean2dk main branch)",
+      "identity": {
+        "repository": "rish987/lean2dk",
+        "branch": "main",
+        "revision": "471208f18c29420e25750503648469fc95d2ac8f"
+      }
+    },
+    {
+      "name": "Lean 4 to Dedukti Translator with Lazy-Delta and Eta-Memoization Patches (lean2dk claude-stable branch)",
+      "identity": {
+        "repository": "rish987/lean2dk",
+        "branch": "claude-stable",
+        "revision": "29f985670008c29e852d61c562b8c10c84f7c5fb"
+      }
+    },
+    {
+      "name": "Rocq Kernel Importer for Lean 4 Exported Environments (rocq-lean-import)",
+      "identity": {
+        "repository": "rocq-community/rocq-lean-import",
+        "revision": "2d28bbe80e7361bf3ac54f5ef099207fc61ce837"
+      }
+    },
+    {
+      "name": "Kernel Proof Term Pivot Translator (babel-formal)",
+      "identity": {
+        "repository": "LLM4Rocq/babel-formal",
+        "revision": "71c2aa9bc78e6d41c5421f8ae8e9f551c12f570b"
+      }
+    },
+    {
+      "name": "MiniRust Specification-to-Rust Transpiler (specr)",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "version": "v0.1.41"
+      }
+    },
+    {
+      "name": "Lean 4 Type-Shape and Constant-Index Search Engine (loogle)",
+      "identity": {
+        "repository": "nomeata/loogle",
+        "revision": "9f11169aaebf1ed1e7dcc4077f2aafe0fcf66fd0"
+      }
+    },
+    {
+      "name": "Hybrid BM25 and FAISS Informalization Search Engine for Lean 4 (lean-explore)",
+      "identity": {
+        "repository": "justincasher/lean-explore",
+        "revision": "17b9d6c87a2bf0dc4ea27de05da8a1c9965391b7"
+      }
+    },
+    {
+      "name": "In-Editor LeanSearch, LeanStateSearch, and Loogle Client (LeanSearchClient)",
+      "identity": {
+        "repository": "leanprover-community/LeanSearchClient",
+        "revision": "c61286b7b63cbfd563b28e11e81d0a18233a044a"
+      }
+    },
+    {
+      "name": "Pantograph Machine-to-Machine Lean 4 Proof Search Server",
+      "identity": {
+        "repository": "lenianiva/Pantograph",
+        "revision": "0789692d65e365c027d171074bf747f1d40328d0",
+        "version": "v0.3.19"
+      }
+    },
+    {
+      "name": "PyPantograph Python Interface and Tree-Search Harness",
+      "identity": {
+        "repository": "stanford-centaur/PyPantograph",
+        "revision": "a098035e29f7910a627b8440145b51246ec38484"
+      }
+    },
+    {
+      "name": "LeanDojo-v2 Offline InfoTree Tracer and Pantograph Agent Framework",
+      "identity": {
+        "repository": "lean-dojo/LeanDojo-v2",
+        "revision": "baed5eae6e87a65a446d9f54af07aab2154e7599"
+      }
+    },
+    {
+      "name": "Lean 4 Model Context Protocol Server and ScratchPool Orchestrator (lean-lsp-mcp)",
+      "identity": {
+        "repository": "oOo0oOo/lean-lsp-mcp",
+        "revision": "bd95db58fe684ec0c3f5f875c81bac949abc8929",
+        "version": "v0.32.0"
+      }
+    },
+    {
+      "name": "Lean 4 JSON Command and ProofSnapshot REPL (leanprover-community/repl)",
+      "identity": {
+        "repository": "leanprover-community/repl",
+        "revision": "6a2be396449a5213a36748ca7682d16d54a1ca4a"
+      }
+    },
+    {
+      "name": "LeanInteract Python REPL Process Pool and ReplaySessionCache",
+      "identity": {
+        "repository": "augustepoiroux/LeanInteract",
+        "revision": "768e18ebcb5c7ec34d308768a785389eeac37798",
+        "version": "v0.11.6"
+      }
+    },
+    {
+      "name": "Kimina High-Throughput Header-Cached Lean 4 Verification Server",
+      "identity": {
+        "repository": "Project-Numina/kimina-lean-server",
+        "revision": "fb2393de3461db35eda4c714e3fd21187e92ec90"
+      }
+    },
+    {
+      "name": "Lean 4 SMT Cooperating Proof Calculus Reconstruction Engine (lean-smt)",
+      "identity": {
+        "repository": "ufmg-smite/lean-smt",
+        "revision": "db545bebe2de1e06dc2df62a6ff6c20e5736bfc0",
+        "no_mathlib_revision": "7e54df3e5b7f78e5e6170ffab8ebe813904262b0"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel and Metaprogramming Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Anneal Trusted Core and Boundary Auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      }
+    },
+    {
+      "name": "Zero-Dependency Lean 4.34.1 Type-Shape Search and Coupled-Goal Harness",
+      "identity": {
+        "artifact": "support/anneal_harness.lean",
+        "sha256": "9f9c51efc7ef322f7c7b991dbb3b261d3893f244b6f2f9c5d5cb29ae9fecb25a"
+      }
+    },
+    {
+      "name": "Inspected Repository and File Digest Manifest",
+      "identity": {
+        "artifact": "support/source-manifest.json",
+        "sha256": "550d7df129b1ef89f532313ee96f32a11dee6f52fdda6cfb78e23f860b3ba89a"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

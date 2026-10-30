@@ -1,0 +1,89 @@
+{
+  "topics": [
+    "anneal/audit",
+    "anneal/trusted-boundary",
+    "lean/realize-const",
+    "lean/kernel-replay",
+    "lean/std-library",
+    "lean/partial-recursion",
+    "verification/nanoda",
+    "verification/multi-crate"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Boundary Auditor, Foundation Lock, and Functional Translation Library",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "skeleton_worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel, Environment Realization, Elaborator, and Standard Library",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "lean4export NDJSON Kernel Declaration Exporter",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+        "format_version": "3.1.0"
+      }
+    },
+    {
+      "name": "nanoda_lib Independent Rust Lean 4 Kernel Typechecker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "version": "v0.4.31",
+        "revision": "8de7e0c4ed3052745a7f8725164efd9e76d84c56"
+      }
+    },
+    {
+      "name": "Comparator Safe-Verify Challenge-Solution Sandbox Orchestrator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "lean4checker Standalone Environment Replay Tool",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "Lean4Lean Pure Lean 4 Kernel Reimplementation",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Init and Std Duplicate Realized Constant Diagnostic Probe",
+      "identity": {
+        "artifact": "support/DiagnoseRealizeConst.lean",
+        "sha256": "01b13a9843828c664fe79ad44052fa280bbc554fe06a9d6dd25ba4dda4ce930b"
+      }
+    },
+    {
+      "name": "Total Recursion vs. Partial Definition ConstantInfo Probe",
+      "identity": {
+        "artifact": "support/ProbePartialVsTotal.lean",
+        "sha256": "ac32784cb3edb4e26d4a933d62f778976901367f599e33728a8866735359a8a6"
+      }
+    },
+    {
+      "name": "Patched TrustedBoundary.lean Prototype with Realized-Theorem Subsumption, Partial Companion Filtering, Toolchain Library Admission, and Closure-Only Replay",
+      "identity": {
+        "artifact": "support/PatchedTrustedBoundaryPrototype.lean",
+        "sha256": "ca20c8df946a628abef8ebcb43b89a87a6a31cbf9ebfb89d63ae06e9a2a1607e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

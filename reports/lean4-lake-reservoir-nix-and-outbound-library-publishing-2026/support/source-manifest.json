@@ -1,0 +1,362 @@
+{
+  "package": "lean4-lake-reservoir-nix-and-outbound-library-publishing-2026",
+  "observed_at": "2026-10-30",
+  "support_files": [
+    {
+      "path": "support/AnnealRefinementOutboundProbe.lean",
+      "sha256": "2225e7df1a82185b62ee1de5efb473b1f7c98e1f02370a6bbef700320afc761f",
+      "bytes": 20015,
+      "lines": 512,
+      "toolchain": "leanprover/lean4:v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+      "description": "Standalone Lean v4.34.1 synthesis of the publishable anneal-refinement package (Layer 1A Refinement, Layer 1B StepResult, and #guard_msgs / #print axioms regression tests with zero sorryAx)."
+    },
+    {
+      "path": "support/CrossCrateReceiptsProbe.lean",
+      "sha256": "a2352c7ff2b7e6b4f6f9451a1481ffafc52137530641ffa17f652d48c63dd283",
+      "bytes": 30106,
+      "lines": 742,
+      "toolchain": "leanprover/lean4:v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+      "description": "Standalone Lean v4.34.1 synthesis of cross-crate specification reuse, direct dependency MIR body inspection, and transitive VerifiedCrateReceipt / SubjectIdentity target-compatibility checking (OD-08 and LIB-01..LIB-10)."
+    }
+  ],
+  "primary_sources": [
+    {
+      "repository": "https://github.com/leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "tag": "v4.34.1",
+      "archive_x86_64_linux_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4",
+      "inspected_files": [
+        {
+          "path": "src/lake/Lake/Load/Manifest.lean",
+          "sha256": "8b01bdff19b7e4cba470755f8d308a9d77d7402486c409e8105e26fee524a43e"
+        },
+        {
+          "path": "src/lake/Lake/Load/Config.lean",
+          "sha256": "7292223420baa665c49a71a022191bddf8507243e310161d10b52a83f3238e4b"
+        },
+        {
+          "path": "src/lake/Lake/Load/Workspace.lean",
+          "sha256": "dd23a173478243833d443dae8ffd28695f9a9b0ca00dd03ee88d039d1f6dd129"
+        },
+        {
+          "path": "src/lake/Lake/Load/Materialize.lean",
+          "sha256": "3b031d66f31afb202a8022cfbae05ac402f39d7f92831e85f7057c360ed9439c"
+        },
+        {
+          "path": "src/lake/Lake/Load/Package.lean",
+          "sha256": "a4547c5fbe45bb7c38762dd8036f1897576599930d541b4121f4cb45808f63dd"
+        },
+        {
+          "path": "src/lake/Lake/Config/Package.lean",
+          "sha256": "d9a6a2e5b31a745616f1f174cbc3ebd20af3aca1cdf71692ec2308bdcbe5c876"
+        },
+        {
+          "path": "src/lake/Lake/Config/Cache.lean",
+          "sha256": "c3ee5a7565a656d8679461119deaee52b0ac981162bedfbea34342e648c7ad4d"
+        },
+        {
+          "path": "src/lake/Lake/Config/Env.lean",
+          "sha256": "bc976a2f9ae4806676adb3a29c83828161767f5eeae496f8ebbc0af5c6304739"
+        },
+        {
+          "path": "src/lake/Lake/Reservoir.lean",
+          "sha256": "7c4f518a02ddd8e18b379d3510cdd13a9ad6087590d54762edca604ac2ea3c01"
+        },
+        {
+          "path": "src/lake/Lake/CLI/Main.lean",
+          "sha256": "3afad780df8292a7153465b51470af6ea00cf8a2345b9d8758922026237ac094"
+        },
+        {
+          "path": "src/Lean/Linter/Basic.lean",
+          "sha256": "7cfce778451125e5a9d4d17ea1830702adf3f120d1bdb284347d547f3fbf75c0"
+        },
+        {
+          "path": "src/Lean/Linter/MissingDocs.lean",
+          "sha256": "d936befc1cd30355e37782cb8551d5c84006af99e84be6a7a5de6f9e686aebb1"
+        },
+        {
+          "path": "src/Lean/Linter/UnusedVariables.lean",
+          "sha256": "b583c77e3d5a593a2804b1f61a42503bb598a726203eaddd93c5fe293bb4eda1"
+        },
+        {
+          "path": "src/Lean/Linter/Deprecated.lean",
+          "sha256": "dcd0fafccc838451cc2e3d67c487907ec31588557ab3f5111cdddb9170d60725"
+        },
+        {
+          "path": "src/Lean/Linter/ConstructorAsVariable.lean",
+          "sha256": "81b0330a67cdc04418098f52a38a6af29193f56e4108023c84d3026a9a70b80d"
+        },
+        {
+          "path": "src/Lean/Linter/UnusedSimpArgs.lean",
+          "sha256": "8141e412d3ffe4c10754b3f46b69b4594f962344fd345ac98d9a71c80c4b9e11"
+        },
+        {
+          "path": "src/Lean/Linter/Omit.lean",
+          "sha256": "5ff3574681691161186ddda8acbd301ed0804d1855542da4c21afc82c637c223"
+        },
+        {
+          "path": "src/Lean/Linter/EnvLinter.lean",
+          "sha256": "11a53e613ff175fffa09bd55a5460605c67e35191ff252f65b29eaad0eb95c93"
+        },
+        {
+          "path": "src/Lean/Elab/InfoTree/Main.lean",
+          "sha256": "1e1f66cf906255edcc0190aaffeecd2c4e3672349ac2da4838e5919ddfbd6089"
+        },
+        {
+          "path": "src/Lean/Elab/GuardMsgs.lean",
+          "sha256": "acd83b131c4161d052328998ebf01b446f69d9040a0bf04a327f4dfbb48ace92"
+        },
+        {
+          "path": "src/Init/Guard.lean",
+          "sha256": "5d7c66cad55e7de51b2a13a8aa6704ee3aa4eaa79ef1dbb6491a43da61d324fd"
+        },
+        {
+          "path": "src/Shake/Main.lean",
+          "note": "Inspected via upstream leanprover/lean4 at commit 5045d0056413266e57c625dcd7c365b10e377c52 (lines 1-95)"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/joshlf/anneal",
+      "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+      "branch": "main",
+      "inspected_files": [
+        {
+          "path": "flake.nix",
+          "sha256": "a7ea2a49a46f8969aee80703753869d3bfb0b3351a611c4d47c535a42ae90450"
+        },
+        {
+          "path": "trusted/lean/foundation-lock.json",
+          "sha256": "37f780b6257d0bc99fd5d7d3d0a1f16d168ef066a2a01466f4076f080d3425d2"
+        },
+        {
+          "path": "trusted/lean/lean-toolchain",
+          "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+        },
+        {
+          "path": "trusted/audit/TrustedBoundary.lean",
+          "sha256": "d2124ac0c7b07af7cafd6b6caeaabd2db962ff3c00163e0c63091cf4bda42d77"
+        },
+        {
+          "path": "trusted/audit/src/lib.rs",
+          "sha256": "38680775417451dde2154702669fe807e0d96780d45cf1c44dea9e0f51f1c4d9"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/joshlf/anneal",
+      "revision": "e75556f5767705404404c0675c6d2d9bcee41d6f",
+      "branch": "skeleton",
+      "inspected_files": [
+        {
+          "path": "flake.nix",
+          "sha256": "2fd7e9ac99cfd35fdefd7b5633ca46755338226a86ce39888e008a47addebf08"
+        },
+        {
+          "path": "theory/Anneal/Refinement.lean",
+          "sha256": "22a4b6dcaa01112fb5ad0591f3ecd7d539e7617f341a8ac2a5b2e3cb828f982f"
+        },
+        {
+          "path": "theory/Anneal/StepResult.lean",
+          "sha256": "ec436622185d736e9dd963f88830f6b128f1944ca42189353929b1092ba6649b"
+        },
+        {
+          "path": "theory/Anneal/MirLemmas.lean",
+          "sha256": "3d5a0662c48eca6766c275f985a851b498ef0018a430da32e67f41a27706ee11"
+        },
+        {
+          "path": "theory/Anneal/FunctionalTranslation.lean",
+          "sha256": "9b40696b6b504a67bc569042df3db5a9e08ac42beab65fb874bb0bac9a595385"
+        },
+        {
+          "path": "trusted/lean/Trusted/Memory.lean",
+          "sha256": "e93815f1f985009e5715b9989e95cb4827f02ed0dc49e1d94725b1b0cc5afc73"
+        },
+        {
+          "path": "trusted/lean/Trusted/MirAst.lean",
+          "sha256": "94e0562284d0837e8579286ee65a73323480e847af394bac746bd9b54fc36b13"
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "sha256": "437300dc48754b22d3a1b60cd6bb90a68e0c8a3aad84a6cf3916be6df061b9e3"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/leanprover/reservoir",
+      "revisions": [
+        "a5774ea3b51fef4a496f35c791cfa660c914454f",
+        "d58b4e3866c57690f7fd74099f08bd20d62de98b"
+      ],
+      "inspected_files": [
+        {
+          "path": "Reservoir/Criterion.lean",
+          "lines": "1-125"
+        },
+        {
+          "path": "Reservoir/Index.lean",
+          "lines": "1-350"
+        },
+        {
+          "path": "Reservoir/GitHub.lean",
+          "lines": "1-120"
+        },
+        {
+          "path": "Reservoir/Build.lean",
+          "lines": "1-180"
+        },
+        {
+          "path": "Reservoir/Schema/Config.lean",
+          "lines": "1-60"
+        },
+        {
+          "path": "Reservoir/Spdx.lean",
+          "lines": "1-617"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/leanprover/lean-action",
+      "revisions": [
+        "bd5cb0b830eda614ce3fc186d8429b9409b16c47",
+        "52bbb8dde6eb0c6c1ef3a12bccecfdeaa25eb792"
+      ],
+      "inspected_files": [
+        {
+          "path": "action.yml",
+          "lines": "1-319"
+        },
+        {
+          "path": "scripts/config.sh",
+          "lines": "1-90"
+        },
+        {
+          "path": "scripts/build.sh",
+          "lines": "1-35"
+        },
+        {
+          "path": "scripts/test.sh",
+          "lines": "1-35"
+        },
+        {
+          "path": "scripts/lint.sh",
+          "lines": "1-35"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/leanprover/doc-gen4",
+      "revision": "b968d9679900841dbe9b86894ae7ff8f454a2b1f",
+      "inspected_files": [
+        {
+          "path": "README.md",
+          "lines": "1-120"
+        },
+        {
+          "path": "DocGen4/Output.lean",
+          "lines": "1-200"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/leanprover/verso",
+      "revision": "a62a15bbe7719a9086442c5bbe83140f5334aa6f",
+      "inspected_files": [
+        {
+          "path": "README.md",
+          "lines": "1-120"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/lenianiva/lean4-nix",
+      "revisions": [
+        "6067688bc484f50f16dde1f2749bbb3e373198c9",
+        "2ad74592e34c2e6ff5e8bec9d8abab8f4e9c3a37"
+      ],
+      "inspected_files": [
+        {
+          "path": "lib/lake.nix",
+          "sha256": "22aa0cf1dda5526bce69e9bd5d2411a567cf098ab61be38b264f172e1ea56551",
+          "lines": "1-265"
+        },
+        {
+          "path": "lib/toolchain.nix",
+          "sha256": "d23417143037b14c797858762c88bf29fedf51207c131196d6c4abfcd62446de",
+          "lines": "1-155"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/licensee/licensee",
+      "revision": "9a9c98b19d04585d9c7213ff52bd385aa182617a",
+      "inspected_files": [
+        {
+          "path": "lib/licensee.rb",
+          "lines": "6-42"
+        },
+        {
+          "path": "lib/licensee/projectFiles/license_file.rb",
+          "lines": "8-140"
+        },
+        {
+          "path": "lib/licensee/project.rb",
+          "lines": "15-171"
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/google/zerocopy",
+      "revision": "d19b86bee54a80f957fba6cd536ccaca0df50fb4",
+      "inspected_files": [
+        {
+          "path": "LICENSE-APACHE",
+          "bytes": 11350
+        },
+        {
+          "path": "LICENSE-BSD",
+          "bytes": 1296
+        },
+        {
+          "path": "LICENSE-MIT",
+          "bytes": 1023
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/NethermindEth/LeanCIL",
+      "revision": "4229b5485e3773e33c2867d8aa29e3d61a6c7242",
+      "inspected_files": [
+        {
+          "path": "LICENSE",
+          "bytes": 207
+        },
+        {
+          "path": "LICENSE-APACHE",
+          "bytes": 10850
+        },
+        {
+          "path": "LICENSE-MIT",
+          "bytes": 1072
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/rust-random/rand",
+      "revisions": [
+        "9e7d328f60d6372ae22927f37d1a816fc980f25e",
+        "a49e4ad730c028a21cf8bc85b4bc2f57ce33fa2a"
+      ],
+      "inspected_files": [
+        {
+          "path": "LICENSE-APACHE",
+          "bytes": 9724
+        },
+        {
+          "path": "LICENSE-MIT",
+          "bytes": 1023
+        }
+      ]
+    }
+  ]
+}

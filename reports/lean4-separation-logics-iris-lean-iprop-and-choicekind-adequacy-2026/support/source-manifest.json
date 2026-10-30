@@ -1,0 +1,961 @@
+{
+  "package": "lean4-separation-logics-iris-lean-iprop-and-choicekind-adequacy-2026",
+  "observed_at": "2026-10-30",
+  "repositories": [
+    {
+      "name": "leanprover-community/iris-lean (main@fb21a8a, v4.35.0)",
+      "url": "https://github.com/leanprover-community/iris-lean",
+      "revision": "fb21a8af4727bd42190072a5ed2836cbe9fb844e",
+      "tree": "4912bf34c2e7f40635ecad94671ebc0af64f3c55",
+      "commit_date": "2026-10-28T14:20:50-04:00",
+      "lean_toolchain": "leanprover/lean4:v4.35.0",
+      "files": [
+        {
+          "path": "Iris/lakefile.toml",
+          "git_blob_sha1": "6b0219ddb8211b928f6bfc90b9953780dd3e10e5",
+          "sha256": "dd15103f5ce5dfb720939fd73290764fe375d25a2651a9724f004a9a30cf7324",
+          "bytes": 1743,
+          "lines": 65
+        },
+        {
+          "path": "Iris/lean-toolchain",
+          "git_blob_sha1": "a6aff065db2882c535684f8c5bcd4f16e9a23915",
+          "sha256": "ca5f1f601d34c49079e38d7e7041eb0f2a9c227fbc1df0f404820069a052330c",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "Iris/Iris/BI/BIBase.lean",
+          "git_blob_sha1": "808c1d9c7f2f3a13067c79d12391ef18ab62db7d",
+          "sha256": "bd2e41851db9cbdf12fb3b72b6471b4bb8753e27f1db4720bda1f503c5a01433",
+          "bytes": 17658,
+          "lines": 458
+        },
+        {
+          "path": "Iris/Iris/BI/BI.lean",
+          "git_blob_sha1": "1918997625a5bdf34a3669ffa6fc3926f1dbda90",
+          "sha256": "e222d2ce0c4f0f98fcd3da19ec7b1d2c39bbf62fca7bbae435619b60170c4d56",
+          "bytes": 14595,
+          "lines": 325
+        },
+        {
+          "path": "Iris/Iris/BI/Classes.lean",
+          "git_blob_sha1": "6a7f067bd067975e4a7fa6fd9be05bab15e0d990",
+          "sha256": "ffe174dd27cd0c82b87338dc5f9d1628c9434487771ed8277e184d0b46209421",
+          "bytes": 1116,
+          "lines": 42
+        },
+        {
+          "path": "Iris/Iris/BI/Updates.lean",
+          "git_blob_sha1": "3e5a5b19f866ec75c8a175a12f379ab3edb48628",
+          "sha256": "d24e9a5398ecf63fd98309751826011a8295723ccbb4d265373df5fea3476abe",
+          "bytes": 42106,
+          "lines": 971
+        },
+        {
+          "path": "Iris/Iris/BI/Sbi.lean",
+          "git_blob_sha1": "b5ea437d2a645da6fe0fab08188592f44456bc2a",
+          "sha256": "5a5ed6ba5de3864c8758c204c28f28908625faa461adeed260b9db361aa06062",
+          "bytes": 31513,
+          "lines": 683
+        },
+        {
+          "path": "Iris/Iris/BI/Notation.lean",
+          "git_blob_sha1": "91f9f608ff4f1c64c1ca8e347d83c7488090f6b0",
+          "sha256": "31c66f2819635936712ff503165d714d86ab88895636e2e2a42f97a9c933359f",
+          "bytes": 3970,
+          "lines": 95
+        },
+        {
+          "path": "Iris/Iris/Algebra/OFE.lean",
+          "git_blob_sha1": "866e07d7946687135bb06eb2a0e733cfa8abc489",
+          "sha256": "acfb07fd150ab8e97fc1f38ddba541bd9f5a811334fcc9fd2aec4e1a5dfa7137",
+          "bytes": 96497,
+          "lines": 2265
+        },
+        {
+          "path": "Iris/Iris/Algebra/CMRA.lean",
+          "git_blob_sha1": "5133e57106b3c82a1ad1f01ea6582765d623789a",
+          "sha256": "f0124b30128577237adfc3be8527ee151786359714501bc37944cb7dcdab4ddb",
+          "bytes": 146894,
+          "lines": 3684
+        },
+        {
+          "path": "Iris/Iris/Algebra/Auth.lean",
+          "git_blob_sha1": "d5f1383b757a78ae3971658c7f9a44a9fa7b9c0f",
+          "sha256": "5fb9169704e2e938903a9f3e91986e35615d1dd4076e982b547ebb517b3f8584",
+          "bytes": 29441,
+          "lines": 703
+        },
+        {
+          "path": "Iris/Iris/Algebra/Excl.lean",
+          "git_blob_sha1": "0e7254cbec746cc4f6917d573bcfd31f3e0cab46",
+          "sha256": "07df7a8c0a206aa414e815ba17b46ce2bf26b2a1ac755125bbc0ddeff84e2b36",
+          "bytes": 9736,
+          "lines": 315
+        },
+        {
+          "path": "Iris/Iris/Algebra/Agree.lean",
+          "git_blob_sha1": "00bed51a0c37b4709a41b3390a42048f889f30a9",
+          "sha256": "fc2090d2bc588f76f37318490d64048381b3fecafb6b7462aa7dc4713c555083",
+          "bytes": 27458,
+          "lines": 729
+        },
+        {
+          "path": "Iris/Iris/Algebra/DFrac.lean",
+          "git_blob_sha1": "2e67100ba6cd1d40cd0bbf7ab92081c3eed2c5aa",
+          "sha256": "4ccf36a517dfbc6dd37b0b52e70d37caf4ea2136f6b687664abaecd2272d05e6",
+          "bytes": 8837,
+          "lines": 258
+        },
+        {
+          "path": "Iris/Iris/Algebra/View.lean",
+          "git_blob_sha1": "b8ee1b798e8a72b54a07cff218d2f7bc66a427cf",
+          "sha256": "4cb0fa0c1f2e7a46159c442fcff85c6f8d3b3e32bc133c823d3773c36133921c",
+          "bytes": 48554,
+          "lines": 1147
+        },
+        {
+          "path": "Iris/Iris/Algebra/HeapView.lean",
+          "git_blob_sha1": "549528489cb56b59c973fdf59f7bcedda4db7087",
+          "sha256": "e686a62ecf5e234846de4076facc40a26b237cfbacede54410c98159f5432f54",
+          "bytes": 38659,
+          "lines": 826
+        },
+        {
+          "path": "Iris/Iris/Algebra/LocalUpdates.lean",
+          "git_blob_sha1": "2dcb0b21bdd8f3061f66fca1dc040a1612038d73",
+          "sha256": "b682e11746833198d94d58f0c9d1af7dbb17047e83559eba330537eca4ca4970",
+          "bytes": 10254,
+          "lines": 266
+        },
+        {
+          "path": "Iris/Iris/Algebra/Updates.lean",
+          "git_blob_sha1": "46010aa10207097fd525c329f5f26050d268be56",
+          "sha256": "92a1b5c6b6a570e22f42526d254a8a85fa7a36fd6d28d399e87127ef70444d77",
+          "bytes": 11060,
+          "lines": 269
+        },
+        {
+          "path": "Iris/Iris/Algebra/IProp.lean",
+          "git_blob_sha1": "6e062042b0a0cc2a0641a2e6832a25d90da2fd60",
+          "sha256": "03e4ad75e5115f66a7fbcf9da32d11e5a21c77ea7fe8537bc401c91c06f20681",
+          "bytes": 3703,
+          "lines": 106
+        },
+        {
+          "path": "Iris/Iris/Instances/UPred/Instance.lean",
+          "git_blob_sha1": "9200aed9cf5371c43608df7b00d1fea29c4bab0d",
+          "sha256": "47819170646f5f5a99b2fec723886ea464858b07a8d38c0e88a05326d4d557c3",
+          "bytes": 41306,
+          "lines": 905
+        },
+        {
+          "path": "Iris/Iris/Instances/IProp/Instance.lean",
+          "git_blob_sha1": "2de119e678b7ab302d0f4f1e0fb347f4791f84e6",
+          "sha256": "c11164e8b9b41c3546d1b060b30d3174de6e8f2369c4d42ea35673d62dc17230",
+          "bytes": 52247,
+          "lines": 1198
+        },
+        {
+          "path": "Iris/Iris/Instances/Lib/FUpd.lean",
+          "git_blob_sha1": "69fab5ce5b3b7cccd0a190d6f51f8e33832da8ae",
+          "sha256": "81dc2e608e4726899fcd4aef60979a5216b29986fa7d7f28cd8b913679ab1254",
+          "bytes": 18661,
+          "lines": 569
+        },
+        {
+          "path": "Iris/Iris/Instances/Lib/GhostMap.lean",
+          "git_blob_sha1": "9fe59c0ec868d2c345cc5d4c43522c6ec8336abe",
+          "sha256": "eb3a22fe77d44a7ffd3f869be4cb27fad40a19763ddd64ae5bd5e441ac9516ce",
+          "bytes": 18380,
+          "lines": 480
+        },
+        {
+          "path": "Iris/Iris/Instances/Lib/GhostVar.lean",
+          "git_blob_sha1": "00be72d4a8c153a917b1098881ae3112f643a02b",
+          "sha256": "5b86a93c189cefc8ca66aaf153352a786e05523550528cdd02f1a15bd71523c8",
+          "bytes": 6079,
+          "lines": 163
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Expr.lean",
+          "git_blob_sha1": "c8bd33b2d2614d3a5b02d7d3782f18e17ecf5900",
+          "sha256": "0614564b34a8dc7202bd55c1e9331e25f24bcdacf5b4921f28de8c0180c6ca86",
+          "bytes": 30870,
+          "lines": 695
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Basic.lean",
+          "git_blob_sha1": "894f8be5a7c1fd82110f86c1c0071cffdc82b6df",
+          "sha256": "e4fa5bff77c5113bf91ea91513f749897d9f09a9166b5654bcfafbe1cf6dfbf0",
+          "bytes": 2393,
+          "lines": 83
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Frame.lean",
+          "git_blob_sha1": "0d8044444045faa8056c4acf90a3097fe85dd488",
+          "sha256": "426f0e5e66cae780888575c89bbadefa844e38b29154b60590d4d942c1a12b72",
+          "bytes": 7555,
+          "lines": 179
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Split.lean",
+          "git_blob_sha1": "27aa5a7e9c642275ce079b8b9713e68a749ddb2c",
+          "sha256": "ab06094a4ad0b0800b1aca8209ae0b242ddfcc26d065f5a609e78e66aa0a4186",
+          "bytes": 3499,
+          "lines": 114
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Apply.lean",
+          "git_blob_sha1": "a5c889484aeffa5251539c253e46f87732902ff3",
+          "sha256": "f5d2e033b82b81850d79bf77d8318430c89c72a8c5ae75a4582fd9ae4a9f94e6",
+          "bytes": 3501,
+          "lines": 87
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Have.lean",
+          "git_blob_sha1": "df18907fb8d09bb85cbfaebaa5ea7426041364b6",
+          "sha256": "20b5dc8524ad1f897abcd8d2c3f042df3d5386edd4c6cbabbef90b61cc602c15",
+          "bytes": 1727,
+          "lines": 55
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Mod.lean",
+          "git_blob_sha1": "71f72dd7eac7d6d7a856f1ae944cba85061da985",
+          "sha256": "4e1ebac08889923842e6713251bc02b22f0e42995fa214cb6dacfedd93a5dc1f",
+          "bytes": 2208,
+          "lines": 70
+        },
+        {
+          "path": "Iris/Iris/Examples/HeapLang.lean",
+          "git_blob_sha1": "41ebc014ba859354a03936e2d229c2acce5a0c2a",
+          "sha256": "a226995eb323d4ec5ea33b29b3b02966bfdadf4ced12f2d0c150a33af829b9b8",
+          "bytes": 5177,
+          "lines": 246
+        },
+        {
+          "path": "Iris/Iris/Examples/IProp.lean",
+          "git_blob_sha1": "2425019de12fa13a6398e8f66bfffe839d99266a",
+          "sha256": "e5ad18ce070ead62c502348f025b4df029dba2939c6b51356c02586f7e878f18",
+          "bytes": 7105,
+          "lines": 199
+        },
+        {
+          "path": "Iris/IrisStepIndex/Elab.lean",
+          "git_blob_sha1": "d8a95ee5065a4114f50dc6970fa4cbe3b00aabf3",
+          "sha256": "ea4ace7d741a5443a31131eb6cede8515d30d26e7ac93737a39eb758e26c44bc",
+          "bytes": 5466,
+          "lines": 131
+        },
+        {
+          "path": "Iris/IrisStepIndex/Registry.lean",
+          "git_blob_sha1": "62a84c6ab2c164ab974cfca8174dde99d85747d8",
+          "sha256": "0e76037649b862fb0c30082b6e16efed0eb8894375faa1bc93e6fe3878390879",
+          "bytes": 4522,
+          "lines": 113
+        }
+      ]
+    },
+    {
+      "name": "leanprover-community/iris-lean (tag v4.34.1@04b7689)",
+      "url": "https://github.com/leanprover-community/iris-lean",
+      "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47",
+      "tree": "1282d7d5b1405ae3db38efe58c04c2261dc31f1f",
+      "commit_date": "2026-09-25T09:02:21-04:00",
+      "lean_toolchain": "leanprover/lean4:v4.34.1",
+      "files": [
+        {
+          "path": "Iris/lakefile.toml",
+          "git_blob_sha1": "df49f3abf484c2d14e9eac31cc4e005909686ab7",
+          "sha256": "6f9cfee7d97ad7724f5db54f201a9ae8973910ecba4d3d7e1f88272d6e6c3bb5",
+          "bytes": 1422,
+          "lines": 58
+        },
+        {
+          "path": "Iris/lean-toolchain",
+          "git_blob_sha1": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+          "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "Iris/Iris/BI/BIBase.lean",
+          "git_blob_sha1": "4f49dc3cfae2406b6a466320786bd1aa086e358c",
+          "sha256": "9c134b9f73c23b600228082c3da9bf31f87e707bca6a57b933aba18c1d20a93e",
+          "bytes": 16244,
+          "lines": 424
+        },
+        {
+          "path": "Iris/Iris/BI/BI.lean",
+          "git_blob_sha1": "1918997625a5bdf34a3669ffa6fc3926f1dbda90",
+          "sha256": "e222d2ce0c4f0f98fcd3da19ec7b1d2c39bbf62fca7bbae435619b60170c4d56",
+          "bytes": 14595,
+          "lines": 325
+        },
+        {
+          "path": "Iris/Iris/BI/Classes.lean",
+          "git_blob_sha1": "6a7f067bd067975e4a7fa6fd9be05bab15e0d990",
+          "sha256": "ffe174dd27cd0c82b87338dc5f9d1628c9434487771ed8277e184d0b46209421",
+          "bytes": 1116,
+          "lines": 42
+        },
+        {
+          "path": "Iris/Iris/BI/Updates.lean",
+          "git_blob_sha1": "1370778c22fb1fdceda51b5c93f9e800d6973384",
+          "sha256": "c66db2f7c3e7194791eeff1c7a9d1169bd02ec94dc0c5a35df6966ef22b79757",
+          "bytes": 41645,
+          "lines": 958
+        },
+        {
+          "path": "Iris/Iris/BI/Sbi.lean",
+          "git_blob_sha1": "5039ce06b04f717d0ca3b34a3e0aad3a6efa80ce",
+          "sha256": "629d90e3e4bec6ed70c9c3e2d43c825c6cb9572be2199e491f85c52beaf84d94",
+          "bytes": 31644,
+          "lines": 669
+        },
+        {
+          "path": "Iris/Iris/BI/Notation.lean",
+          "git_blob_sha1": "91f9f608ff4f1c64c1ca8e347d83c7488090f6b0",
+          "sha256": "31c66f2819635936712ff503165d714d86ab88895636e2e2a42f97a9c933359f",
+          "bytes": 3970,
+          "lines": 95
+        },
+        {
+          "path": "Iris/Iris/Algebra/OFE.lean",
+          "git_blob_sha1": "9387eff8d7e4dd5041f951c4d59a1ca34ddc5add",
+          "sha256": "0b9b38089e1588ea8cba5ed8582b156be3db48598dc67ac45f13601d62dbdbbd",
+          "bytes": 96498,
+          "lines": 2265
+        },
+        {
+          "path": "Iris/Iris/Algebra/CMRA.lean",
+          "git_blob_sha1": "c3d89cfd92f34e68a69ebfebad30b9e4a1988f07",
+          "sha256": "812fa34b2850fda213934e7d2d58c1cf2f3a81c6c823215233f2b6e2d72517d5",
+          "bytes": 96235,
+          "lines": 2448
+        },
+        {
+          "path": "Iris/Iris/Algebra/Auth.lean",
+          "git_blob_sha1": "6cc9ca5ada32be0cb59a97499b85e0a6bc4fd868",
+          "sha256": "3780012883d65ef7074eb9297ae2a4318e397c00472f4007c06da7d0cd783ad0",
+          "bytes": 20871,
+          "lines": 539
+        },
+        {
+          "path": "Iris/Iris/Algebra/Excl.lean",
+          "git_blob_sha1": "3c3858d3cc291d92c292a9eeb0e7f2072f8ad878",
+          "sha256": "f80d3cf594eb40786caf8ca4f20de7f6ae44f0804dbab4fb03e211da6b1dcdce",
+          "bytes": 9082,
+          "lines": 297
+        },
+        {
+          "path": "Iris/Iris/Algebra/Agree.lean",
+          "git_blob_sha1": "c721ea848b42c1e946c74dc3b9cc356ba18800df",
+          "sha256": "07128691e7422ee32812161b910820af6fd41db6f3e8714c036842a2b4ee58c8",
+          "bytes": 26681,
+          "lines": 707
+        },
+        {
+          "path": "Iris/Iris/Algebra/DFrac.lean",
+          "git_blob_sha1": "c56f37f9955732bde58d9a33b209db67aa6a8ad7",
+          "sha256": "554e6e821544e56d430e8ddf472c2c2782846e7eb1506aff2dd930c58f8838d2",
+          "bytes": 8701,
+          "lines": 258
+        },
+        {
+          "path": "Iris/Iris/Algebra/View.lean",
+          "git_blob_sha1": "b080748782a5830b5a4ffd3a3f060aa64af22bc8",
+          "sha256": "800d3de97f0fd1bb8b5804b950fa1c28ed12fd066514c355ae400079b9b5ccbb",
+          "bytes": 39515,
+          "lines": 935
+        },
+        {
+          "path": "Iris/Iris/Algebra/HeapView.lean",
+          "git_blob_sha1": "a95a5d63b3041f485a4677c0a23e69d87a58255a",
+          "sha256": "c1ea3971e1066337722015c4b44b749d9dc5905077d985bc47af58600c7189bf",
+          "bytes": 32457,
+          "lines": 750
+        },
+        {
+          "path": "Iris/Iris/Algebra/LocalUpdates.lean",
+          "git_blob_sha1": "3bc705594f76f0dc01bcaba52a16503e34ab846a",
+          "sha256": "d9f980a1d245ef38369ac775099206467087538f216a0511024a4d9b5bc6e9ad",
+          "bytes": 10511,
+          "lines": 265
+        },
+        {
+          "path": "Iris/Iris/Algebra/Updates.lean",
+          "git_blob_sha1": "9e1960d20fbe4fc53b8581daa11efe2f963a7461",
+          "sha256": "f1e0e6dae095dbb866815a9d85c683831fa2c5b4a32d7196f0718ff6381afdbe",
+          "bytes": 11216,
+          "lines": 269
+        },
+        {
+          "path": "Iris/Iris/Algebra/IProp.lean",
+          "git_blob_sha1": "4ab1fe21714c046ef625e6bdc8c78c4ab98ab70a",
+          "sha256": "694f68d94f0fbd1b396e288c5237a07e888276e6acabc8440235e0279948a8a4",
+          "bytes": 3291,
+          "lines": 97
+        },
+        {
+          "path": "Iris/Iris/Instances/UPred/Instance.lean",
+          "git_blob_sha1": "d2ef0439c49dcdd5a89159152e7520482b6401a6",
+          "sha256": "aa4633b60afb08ef0b96447d77197a49fde61a7d8342ba78ff70126458ebe310",
+          "bytes": 42076,
+          "lines": 935
+        },
+        {
+          "path": "Iris/Iris/Instances/IProp/Instance.lean",
+          "git_blob_sha1": "b8a6d4c96cd175afe94642d45211d5972cd12dff",
+          "sha256": "7e31f7d3c4f6a18e42a2ef3782bfcfe90a082c6b8711d89295caba48d0795ee1",
+          "bytes": 47811,
+          "lines": 1100
+        },
+        {
+          "path": "Iris/Iris/Instances/Lib/FUpd.lean",
+          "git_blob_sha1": "685c52b0270a7bd4f5df960c8655290043b4dcf8",
+          "sha256": "265d280ccd54813dad16063bc70869b40b2b4a67152aa2fe8e5b411db2a73f95",
+          "bytes": 24358,
+          "lines": 709
+        },
+        {
+          "path": "Iris/Iris/Instances/Lib/GhostMap.lean",
+          "git_blob_sha1": "ace72bdaa55ffef386442c668a780e6154197574",
+          "sha256": "fa8b8fc2602d21273560a273c6b2556e374a79a63dee64070252d7a9264aaf2b",
+          "bytes": 18565,
+          "lines": 477
+        },
+        {
+          "path": "Iris/Iris/Instances/Lib/GhostVar.lean",
+          "git_blob_sha1": "ec054faad707aedd9a742343fbde14befd2cba25",
+          "sha256": "70a35a89dfb06f89fcba0463867c2e3ffea9d7cb8ce6836f99048bc4e8929233",
+          "bytes": 6168,
+          "lines": 161
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Expr.lean",
+          "git_blob_sha1": "b4581d330cbc9a420b859a8819920586d298f948",
+          "sha256": "5d6d30257be0710739ea042fe0809a3976f066f95dbb540376b928b3558e621a",
+          "bytes": 30892,
+          "lines": 695
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Basic.lean",
+          "git_blob_sha1": "894f8be5a7c1fd82110f86c1c0071cffdc82b6df",
+          "sha256": "e4fa5bff77c5113bf91ea91513f749897d9f09a9166b5654bcfafbe1cf6dfbf0",
+          "bytes": 2393,
+          "lines": 83
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Frame.lean",
+          "git_blob_sha1": "0d8044444045faa8056c4acf90a3097fe85dd488",
+          "sha256": "426f0e5e66cae780888575c89bbadefa844e38b29154b60590d4d942c1a12b72",
+          "bytes": 7555,
+          "lines": 179
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Split.lean",
+          "git_blob_sha1": "27aa5a7e9c642275ce079b8b9713e68a749ddb2c",
+          "sha256": "ab06094a4ad0b0800b1aca8209ae0b242ddfcc26d065f5a609e78e66aa0a4186",
+          "bytes": 3499,
+          "lines": 114
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Apply.lean",
+          "git_blob_sha1": "a5c889484aeffa5251539c253e46f87732902ff3",
+          "sha256": "f5d2e033b82b81850d79bf77d8318430c89c72a8c5ae75a4582fd9ae4a9f94e6",
+          "bytes": 3501,
+          "lines": 87
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Have.lean",
+          "git_blob_sha1": "df18907fb8d09bb85cbfaebaa5ea7426041364b6",
+          "sha256": "20b5dc8524ad1f897abcd8d2c3f042df3d5386edd4c6cbabbef90b61cc602c15",
+          "bytes": 1727,
+          "lines": 55
+        },
+        {
+          "path": "Iris/Iris/ProofMode/Tactics/Mod.lean",
+          "git_blob_sha1": "71f72dd7eac7d6d7a856f1ae944cba85061da985",
+          "sha256": "4e1ebac08889923842e6713251bc02b22f0e42995fa214cb6dacfedd93a5dc1f",
+          "bytes": 2208,
+          "lines": 70
+        },
+        {
+          "path": "Iris/Iris/Examples/HeapLang.lean",
+          "git_blob_sha1": "41ebc014ba859354a03936e2d229c2acce5a0c2a",
+          "sha256": "a226995eb323d4ec5ea33b29b3b02966bfdadf4ced12f2d0c150a33af829b9b8",
+          "bytes": 5177,
+          "lines": 246
+        },
+        {
+          "path": "Iris/Iris/Examples/IProp.lean",
+          "git_blob_sha1": "2425019de12fa13a6398e8f66bfffe839d99266a",
+          "sha256": "e5ad18ce070ead62c502348f025b4df029dba2939c6b51356c02586f7e878f18",
+          "bytes": 7105,
+          "lines": 199
+        }
+      ]
+    },
+    {
+      "name": "verse-lab/velvet",
+      "url": "https://github.com/verse-lab/velvet",
+      "revision": "836ed5a163b36c09081ed1d8aeecd3cec040f87e",
+      "tree": "6bf02072256851fcdb448c03481b7d8754a0d516",
+      "commit_date": "2026-10-26T17:31:12+08:00",
+      "lean_toolchain": "leanprover/lean4:v4.35.0",
+      "files": [
+        {
+          "path": "lakefile.toml",
+          "git_blob_sha1": "64c29d26359ad137aa36bee270c2c8bd7a576b6f",
+          "sha256": "ab6fc16068e78eb4c39606b5551ecd4a420dcb2101a4c3b17629f266b32fd300",
+          "bytes": 367,
+          "lines": 21
+        },
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "a6aff065db2882c535684f8c5bcd4f16e9a23915",
+          "sha256": "ca5f1f601d34c49079e38d7e7041eb0f2a9c227fbc1df0f404820069a052330c",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "Velvet/Core/NonDet/Defs.lean",
+          "git_blob_sha1": "6291394e821fe3c97d69c75e200acb88f3388154",
+          "sha256": "69f98737ffea30be53b8f134b91f6468425bf9c6fbdaaf95742291f32d3accb4",
+          "bytes": 6303,
+          "lines": 140
+        },
+        {
+          "path": "Velvet/Core/NonDet/WP.lean",
+          "git_blob_sha1": "b9aa28a017cb746184cf8a25128f33f8acea30ad",
+          "sha256": "4b800ab39cdd54364bf57497f77500f042a333cc3796ad03dc23c3f2b3e77289",
+          "bytes": 19711,
+          "lines": 439
+        },
+        {
+          "path": "Velvet/Core/NonDet/Soundness.lean",
+          "git_blob_sha1": "779a2a5059f6700c3891bfb9e3be81a6eecb5413",
+          "sha256": "1364c8af4f4aa4f3e620af11924edbcfc5d3465d3762d96cfbd8ce1dc7d74a55",
+          "bytes": 7205,
+          "lines": 183
+        },
+        {
+          "path": "Velvet/Core/FreerMonad/WP.lean",
+          "git_blob_sha1": "1e5899b7c401167422745a7deefd1c578eac8cfc",
+          "sha256": "b5a76c3390dc9bed58be3b88cafaf45bc8a972863ebf1750df421c632e96dada",
+          "bytes": 10540,
+          "lines": 275
+        },
+        {
+          "path": "Velvet/Core/VCGen/Driver.lean",
+          "git_blob_sha1": "257c9bf386ef5090298fb9c102846c48e8fdaad6",
+          "sha256": "19257343cb8e3e2a1f2126bb30d8211777b737e932b174a2c23560374696c8c4",
+          "bytes": 11222,
+          "lines": 239
+        }
+      ]
+    },
+    {
+      "name": "verse-lab/loom",
+      "url": "https://github.com/verse-lab/loom",
+      "revision": "78928abc9054b31d0bea85985496490baae95244",
+      "tree": "884dab40df596f85260755f12a22183302f83a00",
+      "commit_date": "2026-02-21T22:29:22+08:00",
+      "lean_toolchain": "leanprover/lean4:v4.24.0",
+      "files": [
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "58ae2451c570b0eb72346ae89d92eb225352deeb",
+          "sha256": "dfe82ad7eda8c2f3723b5195de5e3ff677a328c7d44bd45d478fa23b4d8a810b",
+          "bytes": 24,
+          "lines": 1
+        },
+        {
+          "path": "Loom/MonadAlgebras/NonDetT/Extract.lean",
+          "git_blob_sha1": "7a4701192cc00b2913a240fb8219a9436d88ab50",
+          "sha256": "4409b43268fcdfb491672e9dced526812f137904a0da48ebf989b2382cef6d8c",
+          "bytes": 3301,
+          "lines": 98
+        },
+        {
+          "path": "Loom/MonadAlgebras/WP/Gen.lean",
+          "git_blob_sha1": "2d2644588f87b747f720920512cf1f7d66d40bc5",
+          "sha256": "c0dca12155e4452c6a3d06e06a011c524b43aee9fcfcd99f93683d00873de3bb",
+          "bytes": 11677,
+          "lines": 298
+        },
+        {
+          "path": "Loom/MonadAlgebras/WP/Tactic.lean",
+          "git_blob_sha1": "bd3b09b96a10c6e10d42e1910c80e7a44cb59816",
+          "sha256": "228c1e0a2ab5122787530cf42f768417a2f0a42bbfb7a4bb9929c0629f92a240",
+          "bytes": 9469,
+          "lines": 273
+        }
+      ]
+    },
+    {
+      "name": "verse-lab/veil",
+      "url": "https://github.com/verse-lab/veil",
+      "revision": "eb458cb602d3cf9a19d8f5d8af21edcf27775c8e",
+      "tree": "533396ae262856cd13bc7cc24687438fcf0cde0c",
+      "commit_date": "2026-10-27T20:59:07+08:00",
+      "lean_toolchain": "leanprover/lean4:v4.32.0",
+      "files": [
+        {
+          "path": "lakefile.lean",
+          "git_blob_sha1": "6081a6cf4ff84d8f08245e94b3703c29c98c8c47",
+          "sha256": "422bb001c767a964696620fd4e33180e312ad08dcb47295d2969c56a7bf7bd12",
+          "bytes": 12372,
+          "lines": 292
+        },
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "94b9f495baff80fd9cb44aad8f4762cb3b2066fe",
+          "sha256": "2773c517aa90b66ea8a2c52bddddf84393157797f8341be0df45294fff7fd32e",
+          "bytes": 25,
+          "lines": 1
+        }
+      ]
+    },
+    {
+      "name": "verse-lab/splean",
+      "url": "https://github.com/verse-lab/splean",
+      "revision": "e24286f51bd9ee207197d47ec587d592cdfb0ddc",
+      "tree": "567ca57a8f901b2d6c15e7156307ec53cee9fb90",
+      "commit_date": "2026-01-28T15:17:40+08:00",
+      "lean_toolchain": "leanprover/lean4:v4.11.0",
+      "files": [
+        {
+          "path": "lakefile.lean",
+          "git_blob_sha1": "97b6ffe81c0b7f326b00e8374785f3e6734377e4",
+          "sha256": "3d517f280117a408ba5cf4fa0cdb7e0efdeeed4729f7219b4fff445baac5ae12",
+          "bytes": 701,
+          "lines": 21
+        },
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "5a9c76dc98c08482fd62c2783dfe31059dcb5765",
+          "sha256": "7c7da413860f9ec1f8741d6d9d1e803bda6c664f6d954fe15f1a05087dd066f0",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "SPLean/Theories/HProp.lean",
+          "git_blob_sha1": "e890cc78fd8bb92bbe3242ebaf66342d9fbd8365",
+          "sha256": "6da4d9f65358e2af59119a27f74f9a85a575a2592e94d69db29d789885f5d1ca",
+          "bytes": 26352,
+          "lines": 1014
+        },
+        {
+          "path": "SPLean/Theories/XSimp.lean",
+          "git_blob_sha1": "9e819821cfa1e0727a4b101c4d96242d95f9bd95",
+          "sha256": "be9571fda7318e8552f0afe271d5fdd58e8daeb017c1ae335f865a4b202f5a88",
+          "bytes": 36280,
+          "lines": 1206
+        },
+        {
+          "path": "SPLean/Theories/WP1.lean",
+          "git_blob_sha1": "a56ad25252776add3f083416309a412a6d9c6865",
+          "sha256": "c34327dbcf493daecdb41ef7d9c5c784afaa00e683c84417e1f0dd2d4e309c3f",
+          "bytes": 53202,
+          "lines": 1819
+        },
+        {
+          "path": "SPLean/Common/State.lean",
+          "git_blob_sha1": "a82cf61c9aa4bf9d3fa4d0cd8b7a91a85d055bde",
+          "sha256": "a38423d630a23e7db1bda7086fd85c3704eb6af29deb79adcce5f787f01e4956",
+          "bytes": 19837,
+          "lines": 643
+        }
+      ]
+    },
+    {
+      "name": "verse-lab/Lentil",
+      "url": "https://github.com/verse-lab/Lentil",
+      "revision": "b3ca5e224fed1e09fb22daa45a0b61ec5685df76",
+      "tree": "94b7b1f4785c6ee9429e86a90b10ce4762723395",
+      "commit_date": "2026-10-14T03:04:51+08:00",
+      "lean_toolchain": "leanprover/lean4:v4.34.1",
+      "files": [
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+          "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "Lentil.lean",
+          "git_blob_sha1": "430738f7fed41afc0890955e8db02db31b729a0f",
+          "sha256": "def341f556004c2758cb8e0e2c9329ec701726849bba08f8f24a966963b7bc1f",
+          "bytes": 538,
+          "lines": 16
+        }
+      ]
+    },
+    {
+      "name": "goens/lean-hoare",
+      "url": "https://github.com/goens/lean-hoare",
+      "revision": "aa2d88ae418d58ee22460a9097a2fad62c47eb38",
+      "tree": "2495d7db77f775799d66d2b29de8bf4ba7b3f15b",
+      "commit_date": "2026-01-28T17:51:39+01:00",
+      "lean_toolchain": "leanprover/lean4:v4.22.0-rc2",
+      "files": [
+        {
+          "path": "lakefile.toml",
+          "git_blob_sha1": "805e2cc847511a7ca87cf267a50fedc773dfc174",
+          "sha256": "bee7c9e23b1bbd068e76ace211e56f7396e5db19d459ab6f11ba9e016c318e68",
+          "bytes": 114,
+          "lines": 9
+        },
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "bfcebb12cc80086e01832d4ed726d32449e128ee",
+          "sha256": "b05d3edb32231e9f94e5621652c0b8889a9d5664c1200286e78b2bcf9a4b03fd",
+          "bytes": 29,
+          "lines": 1
+        },
+        {
+          "path": "Hoare/Basic.lean",
+          "git_blob_sha1": "39a811342ffdc0f991a06e4859df40f4c9c1959f",
+          "sha256": "17acc259019ea167ff6f11bdc837298870df9e9777c5e455a438c5002ea202d1",
+          "bytes": 817,
+          "lines": 28
+        },
+        {
+          "path": "Hoare/Logic.lean",
+          "git_blob_sha1": "331ecb5af93bd971dbf56fba511e053a834aa043",
+          "sha256": "1691768a723f40e4a95c5305574105792d18faeefeccbbc389eb5ea9bae90d27",
+          "bytes": 3444,
+          "lines": 58
+        },
+        {
+          "path": "Hoare/Statements.lean",
+          "git_blob_sha1": "f314b56e7e78300ad58185bbd5edc9e5f4794fa6",
+          "sha256": "8a10a789dd5f9ab80ca82175b5d867edbebbb4d7b02f9393ce5d1154b11420ec",
+          "bytes": 4854,
+          "lines": 130
+        },
+        {
+          "path": "Hoare/Examples/Sqrt.lean",
+          "git_blob_sha1": "3f1761e2ae924b24f0567887ee263862b9fc03ec",
+          "sha256": "c405e075e6a9214e008a036900797e5778ef8f97034b5e2e3169d0e91509566d",
+          "bytes": 549,
+          "lines": 30
+        }
+      ]
+    },
+    {
+      "name": "leanprover/cslib",
+      "url": "https://github.com/leanprover/cslib",
+      "revision": "82db31eec215b6843be6df283304cc02e736ddef",
+      "tree": "36b687b942927d910624687bfbd2085169788b90",
+      "commit_date": "2026-10-30T07:59:32Z",
+      "lean_toolchain": "leanprover/lean4:v4.36.0-rc2",
+      "files": [
+        {
+          "path": "lakefile.toml",
+          "git_blob_sha1": "c2da3d4299185b46e8bd77af5171bc395bb8dd43",
+          "sha256": "841cc2e914b50cc541f4ae8d1cbf842ff5efc48cd9ceb84b3cf5f1e930f0e5b8",
+          "bytes": 1119,
+          "lines": 36
+        },
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "0fc4336929df18cb6edbdcce0498f49d38877271",
+          "sha256": "11c697aebe5b539d74f5069e497a588e7dfab1c4eeb74313f28357e351c55ca3",
+          "bytes": 29,
+          "lines": 1
+        },
+        {
+          "path": "Cslib/Foundations/Semantics/LTS/Basic.lean",
+          "git_blob_sha1": "625305a6e9671f8e1bb5154d535e20f4a037a02f",
+          "sha256": "368386639176a55e5d1ad5e6b3b48a301c7fb4c0afd6b71ffd66f08c24198d87",
+          "bytes": 16576,
+          "lines": 425
+        },
+        {
+          "path": "Cslib/Foundations/Semantics/LTS/Bisimulation.lean",
+          "git_blob_sha1": "4815c1a3aa1802921583ff180f62ac3bff9a1313",
+          "sha256": "5b6539873204a6cdee75940db9570d8e6cef8c785643e4169fdff9a71d9344f4",
+          "bytes": 32059,
+          "lines": 689
+        }
+      ]
+    },
+    {
+      "name": "alexkeizer/QpfTypes",
+      "url": "https://github.com/alexkeizer/QpfTypes",
+      "revision": "5b5dd4f83121662838b99d129b92f632f263c508",
+      "tree": "4b173b2747b55417748cfd1f9360f25af204266f",
+      "commit_date": "2026-02-21T20:50:20Z",
+      "lean_toolchain": "leanprover/lean4:v4.25.0",
+      "files": [
+        {
+          "path": "lakefile.lean",
+          "git_blob_sha1": "bc367caf50459ea300f3cffc2a048844f66fe85e",
+          "sha256": "96f073c66bca20927fe9005c208279273ff4e972bb5bbf2d05035b2532b6aa44",
+          "bytes": 199,
+          "lines": 15
+        },
+        {
+          "path": "lean-toolchain",
+          "git_blob_sha1": "1d4c9d4d5e2a636b5f1b918f5affa33c1d70ba12",
+          "sha256": "a65c3f566d4d2c54b2bc6960c0853610cc544dd44595fd06e5bab266efb0b987",
+          "bytes": 24,
+          "lines": 1
+        },
+        {
+          "path": "Qpf/Macro/Data.lean",
+          "git_blob_sha1": "20648e2e7bd945f48edfa5b752569b62b019f22c",
+          "sha256": "68edc8294f5dad8260320643af55c87a4771545537f97955f7f7165b177369a7",
+          "bytes": 15822,
+          "lines": 475
+        },
+        {
+          "path": "Qpf/PFunctor/Multivariate/Basic.lean",
+          "git_blob_sha1": "0ba4c6b7d284b4ac9c453cc1e64926bdd2ad6782",
+          "sha256": "b1e531969d48c30664eb609873c45a43edafd404ff9dee03e26bb9f7fedd07f2",
+          "bytes": 244,
+          "lines": 12
+        }
+      ]
+    },
+    {
+      "name": "joshlf/anneal (weak-memory MIR@6e9bf8b)",
+      "url": "https://github.com/joshlf/anneal",
+      "revision": "6e9bf8b54344c8283946387b7db8bf6879c4caf1",
+      "tree": "b52799f2c8fef185c9e41a26f29e9f60d8580bb9",
+      "commit_date": "2026-10-30T18:07:11Z",
+      "lean_toolchain": "leanprover/lean4:v4.34.1",
+      "files": [
+        {
+          "path": "trusted/lean/lean-toolchain",
+          "git_blob_sha1": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+          "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "trusted/lean/Trusted.lean",
+          "git_blob_sha1": "07989ffe4837e9e434d29147e78d2eaa6a7c6505",
+          "sha256": "5029f82c9a4f13ed44a0b98e7dc4c8accf53587a230d8f27d3e29dcf2085eb6f",
+          "bytes": 534,
+          "lines": 15
+        },
+        {
+          "path": "trusted/lean/Trusted/Memory.lean",
+          "git_blob_sha1": "1ad2033ec01baae82a914753b6b67e6a6cf49fb5",
+          "sha256": "e93815f1f985009e5715b9989e95cb4827f02ed0dc49e1d94725b1b0cc5afc73",
+          "bytes": 10268,
+          "lines": 228
+        },
+        {
+          "path": "trusted/lean/Trusted/MirAst.lean",
+          "git_blob_sha1": "29ff7e2d875202fc0961ff0470803900f84f91f1",
+          "sha256": "582f55fcf0efc6690401708cfb2cd19e0be265d3ccd41ac648c0ec804fbdfd66",
+          "bytes": 11155,
+          "lines": 266
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "git_blob_sha1": "ec5770f6beb542619693b26b3e9e5a863bfd1c80",
+          "sha256": "123786d98274adf8a8dbfdef5103c88cc599eb9b4ee5335c8fd7f884ad4c6384",
+          "bytes": 16749,
+          "lines": 399
+        },
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "git_blob_sha1": "b989f5ad9ed740bb16a99c22f0226433cc69bad3",
+          "sha256": "520d15e91568c05c7d00173e710c0f71e2f9cc2d57a74b74bc4ff47c1501cd5a",
+          "bytes": 26425,
+          "lines": 532
+        },
+        {
+          "path": "trusted/lean/Trusted/StepResult.lean",
+          "git_blob_sha1": "2423eb55d6145c569f72986ff7d37bcf4b44b565",
+          "sha256": "7dc7d0a1f30d54a43abe74dc10152ef37636d8b44ac21bbeaf13593919b46147",
+          "bytes": 8389,
+          "lines": 196
+        }
+      ]
+    },
+    {
+      "name": "joshlf/anneal (trusted-core@8e7ab32)",
+      "url": "https://github.com/joshlf/anneal",
+      "revision": "8e7ab324dc86e2086f301cdfc61a35c768896229",
+      "tree": "b7119c0233df33fef1954713ad3628cbb741b07a",
+      "commit_date": "2026-10-30T20:07:30Z",
+      "lean_toolchain": "leanprover/lean4:v4.34.1",
+      "files": [
+        {
+          "path": "trusted/lean/lean-toolchain",
+          "git_blob_sha1": "ba8ebf2dbaf6a668cd2a0e086186d6d569b69ff5",
+          "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+          "bytes": 25,
+          "lines": 1
+        },
+        {
+          "path": "trusted/lean/Trusted.lean",
+          "git_blob_sha1": "e09469bb6c89c063e74a69a1a5c71faef480e267",
+          "sha256": "c5ad35f970e2959df151cc2c3ea99fca691d898a820579a2facd6575dfada675",
+          "bytes": 538,
+          "lines": 15
+        },
+        {
+          "path": "trusted/lean/Trusted/Attributes.lean",
+          "git_blob_sha1": "a260792a4d05a673e1dbd26f144aea5d48fbc1a7",
+          "sha256": "6b4ee181ad4656f5db63542e7429af32b11875df9c99ced97ece49f708a0cb2e",
+          "bytes": 7516,
+          "lines": 140
+        },
+        {
+          "path": "trusted/lean/Trusted/MirAst.lean",
+          "git_blob_sha1": "a7db3c2bdf76d58f96efd79026dc57883b21f759",
+          "sha256": "3b72591d19b2e389305d2a3c30c209c792c6dea2a3bac5a071524d3df2e77526",
+          "bytes": 9151,
+          "lines": 223
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "git_blob_sha1": "931dea4b90e2f04390d48b96f582c327cc84873d",
+          "sha256": "0c5eda8a7f0e458da709d0f97dd359bea21de274a21804fb35c091fbe4de1b45",
+          "bytes": 15898,
+          "lines": 381
+        },
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "git_blob_sha1": "838f6b13a84804d27b8bb9f8c9365c4fa592090a",
+          "sha256": "6821b53c209642e39762a0e23407a4f8e6c04ce674aeba12895ee94cdf5fae7c",
+          "bytes": 23616,
+          "lines": 481
+        },
+        {
+          "path": "trusted/lean/Trusted/StepResult.lean",
+          "git_blob_sha1": "94e6bd38560659b19f52eae6ef2fd18b71b2404f",
+          "sha256": "4df486c08a0050a5affbf28856e6872f6d6912bb28f5f10ca1ec2f0e58ae772e",
+          "bytes": 9609,
+          "lines": 217
+        }
+      ]
+    }
+  ],
+  "support_artifacts": [
+    {
+      "path": "support/anneal_step_wp_and_choicekind_probe.lean",
+      "git_blob_sha1": "4d41d5156952c172423040c26c8f5c5804b00815",
+      "sha256": "38a5f90f0d5269ce763079d496c7034e9deef31da62a39950393d57f193accf7",
+      "bytes": 71860,
+      "lines": 1674
+    },
+    {
+      "path": "support/R2IrisLeanProbe.lean",
+      "git_blob_sha1": "3431955ad658146ba970689e0b1440b53fb5525c",
+      "sha256": "67772f157e86f81b996cfc4b990721d328d3096ee309740ee8f000ed33653d4b",
+      "bytes": 60930,
+      "lines": 1340
+    }
+  ]
+}

@@ -1,0 +1,545 @@
+{
+  "package": "lean4-ieee754-floatspec-rfc3514-crypto-and-constant-time-2026",
+  "observed_at": "2026-10-30",
+  "toolchain": {
+    "id": "leanprover/lean4:v4.34.1",
+    "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "binary": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "flags": ["-j1", "-M1024"]
+  },
+  "support_probes": [
+    {
+      "path": "support/FloatProbe.lean",
+      "sha256": "02fa416ddd585e8e992dd01d9e4515b7d9795c4d55e27c52365010c939d9e840",
+      "bytes": 30390,
+      "lines": 811,
+      "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/FloatProbe.lean",
+      "sorrys": 0,
+      "custom_axioms": [],
+      "principal_theorems": [
+        {
+          "name": "Anneal.FloatProbe.absProg_preserves_exact_nan_payload",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatProbe.singleNaN_spec_sound_for_rfc3514",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatProbe.rfc3514_rejects_canonical_nan_spec",
+          "axioms": ["propext", "Quot.sound"]
+        }
+      ]
+    },
+    {
+      "path": "support/FloatSpecRFC3514Bridge.lean",
+      "sha256": "1be6c444642f30b2d0f048874a42c785e7f9399be0c4605bcb62cf930d9bf917",
+      "bytes": 46730,
+      "lines": 1210,
+      "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/FloatSpecRFC3514Bridge.lean",
+      "sorrys": 0,
+      "custom_axioms": [],
+      "principal_theorems": [
+        {
+          "name": "Anneal.FloatSpecBridge.Core.Digits.digits2_Pnat_correct",
+          "axioms": ["propext", "Classical.choice", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.binaryFloatToFullFloat_fullFloatToBinaryFloat",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.fullFloatToBinaryFloat_binaryFloatToFullFloat",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.Babs_upstream_fails_on_neg_nan",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.sign_FF_Babs",
+          "axioms": []
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.Babs_FF_idempotent",
+          "axioms": []
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.Babs_Bneg_FF",
+          "axioms": []
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.Bneg_FF_involutive",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.sign_FF_Bcopysign",
+          "axioms": []
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.binary_float.Bsign_Babs",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.binary_float.Babs_idempotent",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.binary_float.Babs_Bneg",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.binary_float.Bneg_involutive",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.binary_float.Bsign_Bcopysign",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.floatspec_non_nan_deterministic",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.floatspec_quiet_handler_in_rfc3514_envelope",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.rfc3514_envelope_realized_by_floatspec_handler",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.payload_oblivious_transfers_from_default_handler",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.PackedFloat32.toFullFloat_neg",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.PackedFloat32.toFullFloat_abs",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.FloatSpecBridge.PackedFloat32.toFullFloat_copysign",
+          "axioms": ["propext", "Quot.sound"]
+        }
+      ]
+    },
+    {
+      "path": "support/CostCtProbe.lean",
+      "sha256": "aa97fcdeefe2a555293c8ad1b5d240f2f50a5f7643bf830365a6b6581dbd1e64",
+      "bytes": 31537,
+      "lines": 827,
+      "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/CostCtProbe.lean",
+      "sorrys": 0,
+      "custom_axioms": [],
+      "principal_theorems": [
+        {
+          "name": "Anneal.CostCtProbe.boundedStackSelectProg_cost_and_stack_bound",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.CostCtProbe.compiler_cost_scaling_bound",
+          "axioms": []
+        },
+        {
+          "name": "Anneal.CostCtProbe.ctSelectProg_is_constant_time",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.CostCtProbe.ctSelectXorBody_is_constant_time",
+          "axioms": ["propext", "Quot.sound"]
+        },
+        {
+          "name": "Anneal.CostCtProbe.branchSelectProg_not_constant_time",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.CostCtProbe.secretBranchBody_not_constant_time",
+          "axioms": ["propext"]
+        },
+        {
+          "name": "Anneal.CostCtProbe.liftAeneasRes_eq_ok_of_safeAndReturns",
+          "axioms": []
+        },
+        {
+          "name": "Anneal.CostCtProbe.liftAeneasToOracle_sound",
+          "axioms": []
+        }
+      ]
+    }
+  ],
+  "repositories": [
+    {
+      "name": "Beneficial-AI-Foundation/FloatSpec",
+      "url": "https://github.com/Beneficial-AI-Foundation/FloatSpec",
+      "commit": "158263e983ec3925e02b10f5b312498bf414e0f1",
+      "upstream_toolchain": "leanprover/lean4:v4.28.0-rc1 (PR #8 targets v4.34.0-rc2)",
+      "sorrys": 0,
+      "custom_axioms": 0,
+      "inspected_files": [
+        {
+          "path": "lakefile.lean",
+          "sha256": "7b0fc21ee0b95f819880b5eb6390fb47619d4a3dee9be80be65384208369df98",
+          "bytes": 2437
+        },
+        {
+          "path": "FloatSpec/src/Core/Defs.lean",
+          "sha256": "77f51c8e69ff141beb192a0be04d710c8c3b1a7a56d4b7b87997d240d53f0ffc",
+          "bytes": 13016
+        },
+        {
+          "path": "FloatSpec/src/Core/Zaux.lean",
+          "sha256": "a2115f1b1a0e137bc39deb14b939236c9aa085bb5fd5185913749fedd3fa8f53",
+          "bytes": 72298
+        },
+        {
+          "path": "FloatSpec/src/Core/Digits.lean",
+          "sha256": "62bccb1f2ba2dbb6fd64524f0c9d183940aaf1a6480a6df61434d7b47e88d5f9",
+          "bytes": 257130
+        },
+        {
+          "path": "FloatSpec/src/Core/FLT.lean",
+          "sha256": "a83e43f4939cd50a56fb0013249a22a4fed9745d2c93409b9eff051836881fda",
+          "bytes": 102320
+        },
+        {
+          "path": "FloatSpec/src/Core/Generic_fmt.lean",
+          "sha256": "6e738049a8cdd73ffa5e6d74f9558db856af5e29d9f6aceea22f73e368c28c1d",
+          "bytes": 400402
+        },
+        {
+          "path": "FloatSpec/src/Core/Round_NE.lean",
+          "sha256": "7333a08e328e24d7e3fc7798917538199ae438aeed8a995c07eed8928c497519",
+          "bytes": 152587
+        },
+        {
+          "path": "FloatSpec/src/Core/Round_pred.lean",
+          "sha256": "a5ad1eed267eafaca57b180cc3e03412299ce8d3ee2192e32e9886f85c8bf4aa",
+          "bytes": 182243
+        },
+        {
+          "path": "FloatSpec/src/Core/Ulp.lean",
+          "sha256": "4efec2c4151d63dd38ff4c992c111e669658c1e4df1ee84fa400085ea3e11eba",
+          "bytes": 598070
+        },
+        {
+          "path": "FloatSpec/src/Prop/Relative.lean",
+          "sha256": "530252d0bde376542fbba5dad444adf55f4b1703b3b987c608fd5f2f89bdca03",
+          "bytes": 106013
+        },
+        {
+          "path": "FloatSpec/src/Prop/Plus_error.lean",
+          "sha256": "84a8fa6e71ec25a00903ab123f7699a090887e420911ffa15d4df5b92393858c",
+          "bytes": 57351
+        },
+        {
+          "path": "FloatSpec/src/Prop/Sterbenz.lean",
+          "sha256": "6b957660682192dbe48f9f60fb4e1c5023a518a36865a3a0add10a820cb280b9",
+          "bytes": 10078
+        },
+        {
+          "path": "FloatSpec/src/IEEE754/Binary.lean",
+          "sha256": "a2e9031cdc1a5759789271b49e95d4c772bdae482b00b8d00181935e45cb77f8",
+          "bytes": 249198
+        },
+        {
+          "path": "FloatSpec/src/IEEE754/BinarySingleNaN.lean",
+          "sha256": "5227e950b14e3a5562d0aff551138ad3e5436dd1ece66f22e8c3cb1a7e756f22",
+          "bytes": 735736
+        },
+        {
+          "path": "FloatSpec/src/IEEE754/Bits.lean",
+          "sha256": "722bc667370b95ea162d5d4cf1fa8f41482182cc486561f4aa6639caad315383",
+          "bytes": 104186
+        },
+        {
+          "path": "FloatSpec/src/IEEE754/PrimFloat.lean",
+          "sha256": "906cd6ceb9183a2e32ca0a1cf6f6aa5b91d4a620000254b7ece5942d6ff91b7e",
+          "bytes": 66990
+        }
+      ]
+    },
+    {
+      "name": "opencompl/fp-lean",
+      "url": "https://github.com/opencompl/fp-lean",
+      "commit": "c3124f3c23afb5a70efb90983015b99801985058",
+      "upstream_toolchain": "leanprover/lean4:nightly-2026-01-14",
+      "sorrys": 35,
+      "custom_axioms": 6,
+      "inspected_files": [
+        {
+          "path": "Fp/Basic.lean",
+          "sha256": "e2bcb5bdb28d4ed4bc703600ad650a054ec3d820e9a487a1d69b70685ae83d1e",
+          "bytes": 131166
+        },
+        {
+          "path": "Fp/PackedFloat/Basic.lean",
+          "sha256": "2800d20038db9e00879e5dec7da4b7e0a856118d6f3b12d5638882c0cc39c1cc2",
+          "bytes": 1530
+        },
+        {
+          "path": "Fp/UnpackedFloat/Basic.lean",
+          "sha256": "773c85f45f83237ce5ceaa855cc574aa33d05c1c3671457451a57ebc0dc0713d",
+          "bytes": 2069
+        },
+        {
+          "path": "Fp/Unpacking.lean",
+          "sha256": "4e71deed41d1fb36f150e0ccb7bf740e2b74350b1042cb423b6fea98b85836f7",
+          "bytes": 13787
+        },
+        {
+          "path": "Fp/UnpackedRound.lean",
+          "sha256": "f079df947d6c05a94ce51738c78cef69c74c62011849148e1dfe6423fa38471d",
+          "bytes": 40732
+        },
+        {
+          "path": "Fp/Rounding.lean",
+          "sha256": "834169fa8b02f37f774aff59b4a1510f6ec85deddced2df952b14acd02482a0e",
+          "bytes": 13024
+        },
+        {
+          "path": "Fp/Negation.lean",
+          "sha256": "2a40223926a8ddd68a6ab183e869cc8aa7b76fb8fa5d46f6de580c7a2ce2eddc",
+          "bytes": 2198
+        },
+        {
+          "path": "Fp/SmtLibSemantics.lean",
+          "sha256": "878e926271627bd2342e4861fd8598c5fc9940c359d98d04dc7c4b222990e654",
+          "bytes": 23497
+        },
+        {
+          "path": "Fp/Utils/BitVec.lean",
+          "sha256": "8966ce80d66c000d735ab7fa1bb151385b50843c338de63e2f3ece1c1afc0744",
+          "bytes": 11664
+        },
+        {
+          "path": "Fp/Theorems/PackedFloat/Packing.lean",
+          "sha256": "9ff0d0d4f8f6a362634cc77ea4835b78c0b960aeb136f44f5d3d4958c36888f3",
+          "bytes": 27291
+        }
+      ]
+    },
+    {
+      "name": "leanprover/SampCert",
+      "url": "https://github.com/leanprover/SampCert",
+      "commit": "a2c53bb5ff790e729e252958060699b7eff898b9",
+      "upstream_toolchain": "leanprover/lean4:v4.34.1",
+      "sorrys": 0,
+      "custom_axioms": 0,
+      "inspected_files": [
+        {
+          "path": "lean-toolchain",
+          "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+          "bytes": 25
+        },
+        {
+          "path": "SampCert/SLang.lean",
+          "sha256": "6873dbfb4dfaee440d0262523b0d239b3f76a4cbb82c298ca40fae84a77d00ff",
+          "bytes": 5562
+        },
+        {
+          "path": "SampCert/Foundations/While.lean",
+          "sha256": "19cc3151555d2d45f130de0709528dbff0fa8350ad0ff4e4517a812ab40148c1",
+          "bytes": 1557
+        },
+        {
+          "path": "SampCert/DifferentialPrivacy/Abstract.lean",
+          "sha256": "f222d7467d5ab794e09dc6c8320932599c8582a3952b1e0c83f37a628841d56c",
+          "bytes": 4792
+        },
+        {
+          "path": "SampCert/DifferentialPrivacy/Pure/DP.lean",
+          "sha256": "3be3f730be84cbf622bc13e1ed0f7df5e2233746fcdd4a6b05d6faec83046c21",
+          "bytes": 4009
+        },
+        {
+          "path": "SampCert/DifferentialPrivacy/Pure/System.lean",
+          "sha256": "8a71576f5f64fbfeee94392506773c0f46eb599c93c63388ad7665d170dd0b11",
+          "bytes": 1333
+        },
+        {
+          "path": "SampCert/DifferentialPrivacy/Approximate/DP.lean",
+          "sha256": "196ee79a8ca0b01fc5bb29f4684c95e94fbd422f4b0640a5109ceae0ef48b114",
+          "bytes": 1415
+        },
+        {
+          "path": "SampCert/DifferentialPrivacy/ZeroConcentrated/DP.lean",
+          "sha256": "3e7e61212ff8ef0cea59697334a0fdb87bb5bd735a6617ac92ba34bc7fc995e2",
+          "bytes": 65681
+        },
+        {
+          "path": "SampCert/DifferentialPrivacy/ZeroConcentrated/System.lean",
+          "sha256": "3dc0f26ae2ca0cb88b42e8c869770e28c902c85d2a6812c95aaea6bb945f6746",
+          "bytes": 1799
+        },
+        {
+          "path": "SampCert/Samplers/GaussianGen/Properties.lean",
+          "sha256": "f50caa75d9638b4948ca548d58cf44d41f0c5c606b43ecdef3335437cd215f16",
+          "bytes": 2606
+        },
+        {
+          "path": "SampCert/Samplers/LaplaceGen/Properties.lean",
+          "sha256": "df143d7c859d2b225a4385165edf08f10c6bbf9efde7919f92f0e6a2e63ea3bb",
+          "bytes": 1782
+        }
+      ]
+    },
+    {
+      "name": "Verified-zkEVM/VCV-io",
+      "url": "https://github.com/Verified-zkEVM/VCV-io",
+      "commit": "aae1c9cbd6c00311091d691b74f2d0032d76d9bd",
+      "upstream_toolchain": "leanprover/lean4:v4.35.0",
+      "sorrys": 0,
+      "custom_axioms": 0,
+      "inspected_files": [
+        {
+          "path": "scripts/axiom_baseline.json",
+          "sha256": "0ec18851550135bca056273f4a40521c7a3660a12fd3e28a2466e8ee620f6c9d",
+          "bytes": 150
+        },
+        {
+          "path": "VCVio/OracleComp/OracleSpec.lean",
+          "sha256": "423c27f87abc09c11857a1ae907b375563d0a1e3befc58d0ea45cd832cc30573",
+          "bytes": 11240
+        },
+        {
+          "path": "VCVio/OracleComp/OracleComp.lean",
+          "sha256": "0524a502a8134694c6f6870d9601e4a416c7626f38ec7a66370b6483e78b14f6",
+          "bytes": 14125
+        },
+        {
+          "path": "VCVio/OracleComp/SimSemantics/SimulateQ.lean",
+          "sha256": "92949cfcaf2f6bda64738321d8c9b37012a11d69378c9e31df4cc4677ee7f3f0",
+          "bytes": 17874
+        },
+        {
+          "path": "VCVio/EvalDist/Monad/Basic.lean",
+          "sha256": "33171d0dd24901e7d5f4fc3cc8378e565dc89b1fe40694a7744f1b0fec259f20",
+          "bytes": 2095
+        },
+        {
+          "path": "VCVio/ProgramLogic/Unary/StdDoBridge.lean",
+          "sha256": "002c4c12b2452d839c0d5171a1ebcc140aa9f0f535f1c8f7a6fbbc01955e1fe9",
+          "bytes": 10789
+        },
+        {
+          "path": "VCVio/ProgramLogic/Relational/Basic.lean",
+          "sha256": "3b54c2fe58bd445677834ff7eb6c08a0f9edb383c8555311cb5110bb4ee90136",
+          "bytes": 34919
+        },
+        {
+          "path": "VCVio/ProgramLogic/Relational/Leakage.lean",
+          "sha256": "7ef69a90d6d1c1cb9ad50baa76205cc18f307f7a899d2033b78695ce19290485",
+          "bytes": 13656
+        },
+        {
+          "path": "VCVio/OracleComp/QueryTracking/ObservationOracle.lean",
+          "sha256": "fbdcb83511ba7524e0bfb4494e6914b322368956f55aa72f5909e039d30f8d0d",
+          "bytes": 9284
+        },
+        {
+          "path": "VCVio/OracleComp/QueryTracking/CostModel.lean",
+          "sha256": "cdb0a50932a02e15bac6a055e6aca5c5c8db60ca28c3efdc31cddc4aa7f6d34c",
+          "bytes": 18281
+        },
+        {
+          "path": "Interop/Rust/Common.lean",
+          "sha256": "9e77af9c9c3ae507e0996003446533fc0996675745c09b6501a7cbd768736642",
+          "bytes": 4230
+        },
+        {
+          "path": "Interop/Rust/Run.lean",
+          "sha256": "7c2ee87a34b700bba8d28c01a80c8208821686c02e12c1e7669dec25d7835f9c",
+          "bytes": 4795
+        },
+        {
+          "path": "Interop/Hax/Bridge.lean",
+          "sha256": "b09aaa44806578d5ff4e2d838a16b4471edeea52b6a2c3de44f2cecee188e9db",
+          "bytes": 8671
+        },
+        {
+          "path": "Interop/Hax/CenteredBinomial.lean",
+          "sha256": "67c53711579d4396008fa2d9eee53d98e123932b1afbcc593a4c8de5f2c866b9",
+          "bytes": 13884
+        },
+        {
+          "path": "Interop/Aeneas/README.md",
+          "sha256": "e60e83ffb3de114bfb78fdaa51e3ea623647a21f64f9451e394b20d262c7117c",
+          "bytes": 3001
+        }
+      ]
+    },
+    {
+      "name": "Verified-zkEVM/ArkLib",
+      "url": "https://github.com/Verified-zkEVM/ArkLib",
+      "commit": "bc367f8d53f603a48c5502e1ad7d39b7b3be725c",
+      "upstream_toolchain": "leanprover/lean4:v4.34.1",
+      "sorrys": 500,
+      "custom_axioms": 0,
+      "inspected_files": [
+        {
+          "path": "scripts/axiom_baseline.json",
+          "sha256": "c7de37c8e6d75c0e8dc3c688b6b13a0fbb73173a9efedfb511a78d02e1587d9b",
+          "bytes": 779
+        },
+        {
+          "path": "ArkLib/Data/OracleComp/MeasuredProgram.lean",
+          "sha256": "19e9fa9ae60e6fd238b4f3f3fa0e8c27f27a4f483c22611410e0a15228623545",
+          "bytes": 7275
+        }
+      ]
+    },
+    {
+      "name": "GaloisInc/cryptol",
+      "url": "https://github.com/GaloisInc/cryptol",
+      "commit": "76f7fabbec7e3f184f15b408b34619ad37a36ec8",
+      "inspected_files": [
+        {
+          "path": "lib/Cryptol.cry",
+          "sha256": "8ace6e6308a863e17355e0b8289ea52eb16c12e36b51e76f7ac668bf03a7f59e",
+          "bytes": 36892
+        },
+        {
+          "path": "lib/Float.cry",
+          "sha256": "5fe5864b22f8bba64da12c7aad655c19e5434bbda410970653117f80348e0d7a",
+          "bytes": 11794
+        }
+      ]
+    },
+    {
+      "name": "GaloisInc/saw-script",
+      "url": "https://github.com/GaloisInc/saw-script",
+      "commit": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+      "inspected_files": [
+        {
+          "path": "saw-central/src/SAWCentral/Crucible/MIR/Builtins.hs",
+          "sha256": "c9e9832f6d32ad7ecf03ebd1f3242cfbd024b0fe0f91526a854deaccb17abb53",
+          "bytes": 97610
+        },
+        {
+          "path": "saw-central/src/SAWCentral/Crucible/Common/MethodSpec.hs",
+          "sha256": "a1a74b90d411210dc1acaec91419d98a59d4a5b45b8ede3d265465e6fa09462e",
+          "bytes": 19655
+        },
+        {
+          "path": "crux-mir-comp/DESIGN.md",
+          "sha256": "cd49e3b52e21358a2d1bdcc3e0bc720846649ebe7123c9433843514073bd6ef1",
+          "bytes": 10177
+        },
+        {
+          "path": "doc/rust-verification-with-saw/overrides-and-compositional-verification.md",
+          "sha256": "fbcc4c036866931afeb33b9679968dccd9d33c813f3f82cedafee231fcf6c5e0",
+          "bytes": 16139
+        }
+      ]
+    },
+    {
+      "name": "joshlf/anneal",
+      "url": "https://github.com/joshlf/anneal",
+      "commit": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+      "upstream_toolchain": "leanprover/lean4:v4.34.1"
+    }
+  ]
+}

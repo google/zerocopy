@@ -1,0 +1,295 @@
+{
+  "observed_at": "2026-10-30",
+  "repositories": {
+    "joshlf/anneal": {
+      "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+      "skeleton_worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f",
+      "commit_date": "2026-10-30T20:06:29Z",
+      "inspected_files": [
+        {
+          "path": "trusted/audit/src/lib.rs",
+          "bytes": 75160,
+          "sha256": "38680775417451dde2154702669fe807e0d96780d45cf1c44dea9e0f51f1c4d9",
+          "lines": 1961
+        },
+        {
+          "path": "trusted/audit/TrustedBoundary.lean",
+          "bytes": 56352,
+          "sha256": "d2124ac0c7b07af7cafd6b6caeaabd2db962ff3c00163e0c63091cf4bda42d77",
+          "lines": 1014
+        },
+        {
+          "path": "trusted/lean/foundation-lock.json",
+          "bytes": 48369,
+          "sha256": "37f780b6257d0bc99fd5d7d3d0a1f16d168ef066a2a01466f4076f080d3425d2",
+          "lines": 1335
+        },
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "bytes": 26425,
+          "sha256": "520d15e91568c05c7d00173e710c0f71e2f9cc2d57a74b74bc4ff47c1501cd5a",
+          "lines": 532
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "bytes": 37882,
+          "sha256": "437300dc48754b22d3a1b60cd6bb90a68e0c8a3aad84a6cf3916be6df061b9e3",
+          "lines": 872
+        },
+        {
+          "path": "theory/Anneal/FunctionalTranslation.lean",
+          "bytes": 367424,
+          "sha256": "9b40696b6b504a67bc569042df3db5a9e08ac42beab65fb874bb0bac9a595385",
+          "lines": 8315
+        }
+      ]
+    },
+    "leanprover/lean4": {
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "version": "v4.34.1",
+      "commit_date": "2026-09-24T17:27:27Z",
+      "inspected_files": [
+        {
+          "path": "src/lean/Lean/Environment.lean",
+          "bytes": 137725,
+          "sha256": "ee364e4788ce0560c87f621eeb3c4c3dfec62e8db4e15e099fd80e6adc533b86",
+          "lines": 2903
+        },
+        {
+          "path": "src/lean/Lean/Meta/Basic.lean",
+          "bytes": 126152,
+          "sha256": "942fef8c68f6076188691c4698e83789e695e8a59dfadafc38c658f3ab03a7b4",
+          "lines": 2850
+        },
+        {
+          "path": "src/lean/Lean/Replay.lean",
+          "bytes": 7987,
+          "sha256": "c434b5b2bc5047ca58d4a095fcf1d9935d413c788ae98a4f21948e6a95ca3fb0",
+          "lines": 197
+        },
+        {
+          "path": "src/lean/LeanChecker.lean",
+          "bytes": 4806,
+          "sha256": "2d18ec111d73c536b0bdee2533556bb9548c349f386797d3d3837b1f84d55dae",
+          "lines": 114
+        },
+        {
+          "path": "src/lean/Lean/Elab/PreDefinition/Basic.lean",
+          "bytes": 15394,
+          "sha256": "46a2876ccbe1efc4cc491dc24658fea5e972544a64da888334fe2ffcc9c1a5c7",
+          "lines": 337
+        },
+        {
+          "path": "src/lean/Lean/Elab/PreDefinition/Main.lean",
+          "bytes": 17944,
+          "sha256": "b384fe2a3fd637f36194cab22821440871e9112d700a8dbb1c4c7392fe399647",
+          "lines": 362
+        },
+        {
+          "path": "src/lean/Lean/Elab/PreDefinition/Structural/Main.lean",
+          "bytes": 11469,
+          "sha256": "8a86ae2d1bae7f1b6c3e52a86f20e3460eecf0dbb7f7a891a16f89971d36be29",
+          "lines": 223
+        },
+        {
+          "path": "src/lean/Lean/Elab/PreDefinition/WF/Main.lean",
+          "bytes": 5127,
+          "sha256": "cc673e422dd83756dda6cfc04ea3a02f3aae04dc00b37d11e61e18b6cde0b01d",
+          "lines": 102
+        },
+        {
+          "path": "src/lean/Lean/Compiler/ImplementedByAttr.lean",
+          "bytes": 3501,
+          "sha256": "fec5d936a52cdbac96173249c9ad2028c2be3a049d380fdc0c84da5b4116640f",
+          "lines": 81
+        },
+        {
+          "path": "src/lean/Lean/Compiler/ExternAttr.lean",
+          "bytes": 5170,
+          "sha256": "b7fc317ef4457ee6383d2c85a264361b1960d0ce1109c8d2fe5901144d323345",
+          "lines": 136
+        },
+        {
+          "path": "src/lean/Lean/Compiler/CSimpAttr.lean",
+          "bytes": 3755,
+          "sha256": "13da54e9d33ca9abf7ec91ac3e7fcf9bc424d3e6944f0c879a7bba9521fcedbc",
+          "lines": 103
+        },
+        {
+          "path": "src/lean/Lean/Compiler/LCNF/ToLCNF.lean",
+          "bytes": 35884,
+          "sha256": "83bffaa6fddff8f743be0f3d0bc1112a1f09403003ac511c115e68a0d578210d",
+          "lines": 923
+        },
+        {
+          "path": "src/lean/Init/Core.lean",
+          "bytes": 100653,
+          "sha256": "6218a9825a0ce51a6bbe3949ec7a86c4406f4f216bd3cd1262736cfc1c997c54",
+          "lines": 2564
+        },
+        {
+          "path": "src/lean/Init/Prelude.lean",
+          "bytes": 238777,
+          "sha256": "2a3163bdd830cd31f1f1bc9bc79ea6bdad6a3b2c6f334166792bbc73631f3b10",
+          "lines": 6091
+        },
+        {
+          "path": "src/kernel/type_checker.cpp",
+          "bytes": 53663,
+          "sha256": "5312a8f02318d6e3fe7eca68bf3525d5f3558fa98f5737612b52cac2e588c447",
+          "lines": 1373
+        },
+        {
+          "path": "src/kernel/environment.cpp",
+          "bytes": 12458,
+          "sha256": "6748cf9368a16b7e4fd8546accc78f98874fb69323934b21c796e722dad136b2",
+          "lines": 315
+        },
+        {
+          "path": "src/kernel/environment.h",
+          "bytes": 4197,
+          "sha256": "95e9b7aad9f138830197972c1812ca206317dae059ace9b7815674beec8500ed",
+          "lines": 112
+        }
+      ]
+    },
+    "leanprover/lean4export": {
+      "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+      "commit_date": "2026-10-14T18:45:54Z",
+      "inspected_files": [
+        {
+          "path": "Export.lean",
+          "bytes": 16016,
+          "sha256": "6e9f24262253678960b05b8392a1774a3cbf36b21ed2fc1b834906659b8ca95a",
+          "lines": 438
+        },
+        {
+          "path": "Main.lean",
+          "bytes": 751,
+          "sha256": "bd8e350903f1382b25fe767f9086dd9882000f01085f7046ea06545e7848842a",
+          "lines": 18
+        }
+      ]
+    },
+    "ammkrn/nanoda_lib": {
+      "revision": "8de7e0c4ed3052745a7f8725164efd9e76d84c56",
+      "version": "v0.4.31",
+      "commit_date": "2026-10-29T23:39:55Z",
+      "inspected_files": [
+        {
+          "path": "Cargo.toml",
+          "bytes": 859,
+          "sha256": "ac8da099778f6bc49776fe612aa022ec826c54a0f86a854bfc084895ab3186bc",
+          "lines": 37
+        },
+        {
+          "path": "src/parser.rs",
+          "bytes": 41466,
+          "sha256": "d84b01b2a3ac5b5598e63e5b06d31d6fed3ca18859086eee97fd3e07b6fd6748",
+          "lines": 1083
+        },
+        {
+          "path": "src/env.rs",
+          "bytes": 12757,
+          "sha256": "52c1593f0e08c4e7b9b9f8a97e48bfdde1d449253bf0c3e4967321b46dbece01",
+          "lines": 328
+        },
+        {
+          "path": "src/tc.rs",
+          "bytes": 60896,
+          "sha256": "fcee3a4e6e7581c5aedebba7100b26c9fe8ba067a88d70ae2ad3d34644a28d4b",
+          "lines": 1397
+        },
+        {
+          "path": "src/util.rs",
+          "bytes": 42639,
+          "sha256": "0d1121ea4d0ccaf54979b37847785e9da855e5a10ad9f700160a024394c3fa72",
+          "lines": 1036
+        }
+      ]
+    },
+    "leanprover/comparator": {
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "commit_date": "2026-10-14T08:49:09Z",
+      "inspected_files": [
+        {
+          "path": "Main.lean",
+          "bytes": 13109,
+          "sha256": "bb97e3e56d35431cfc7fbef9153935f85e82cde8cc0fc588ceb0119022646cec",
+          "lines": 374
+        },
+        {
+          "path": "Comparator/Compare.lean",
+          "bytes": 4089,
+          "sha256": "9bc34cb7de5a069a6fef7f3b13b20fea22f1d52603f74320a93d519b735ad3dd",
+          "lines": 110
+        },
+        {
+          "path": "Comparator/Axioms.lean",
+          "bytes": 2389,
+          "sha256": "863c5e1329811be0427880e08c171de733343491c5a3619b5dbf2e12b34c6125",
+          "lines": 72
+        }
+      ]
+    },
+    "leanprover/lean4checker": {
+      "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709",
+      "commit_date": "2026-03-25T00:16:52Z",
+      "inspected_files": [
+        {
+          "path": "README.md",
+          "bytes": 1670,
+          "sha256": "2560c266894dd699a83b8a6f6359bc251a03aa76f46c4f9a78801f39505b25a3",
+          "lines": 46
+        }
+      ]
+    },
+    "digama0/lean4lean": {
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "commit_date": "2026-10-10T13:10:41Z",
+      "inspected_files": [
+        {
+          "path": "Lean4Lean/TypeChecker.lean",
+          "bytes": 41774,
+          "sha256": "32a426fb2cd092d2cc973866ac91adb44b3b91c463891b78c21d95c864fbf808",
+          "lines": 979
+        },
+        {
+          "path": "Lean4Lean/Primitive.lean",
+          "bytes": 29855,
+          "sha256": "af331c517b78d805ae74c10332f8cf8deb14428d798601ec964e6c5410258afe",
+          "lines": 624
+        },
+        {
+          "path": "Lean4Lean/Replay.lean",
+          "bytes": 13528,
+          "sha256": "245b79946d527869fae09953a1c60d19cc40022b00cb54a5f491bb4ac9fa2b77",
+          "lines": 325
+        }
+      ]
+    }
+  },
+  "local_artifacts": [
+    {
+      "package_path": "support/DiagnoseRealizeConst.lean",
+      "bytes": 10154,
+      "sha256": "01b13a9843828c664fe79ad44052fa280bbc554fe06a9d6dd25ba4dda4ce930b",
+      "lines": 225,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+    },
+    {
+      "package_path": "support/ProbePartialVsTotal.lean",
+      "bytes": 5120,
+      "sha256": "ac32784cb3edb4e26d4a933d62f778976901367f599e33728a8866735359a8a6",
+      "lines": 134,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+    },
+    {
+      "package_path": "support/PatchedTrustedBoundaryPrototype.lean",
+      "bytes": 64985,
+      "sha256": "ca20c8df946a628abef8ebcb43b89a87a6a31cbf9ebfb89d63ae06e9a2a1607e",
+      "lines": 1214,
+      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+    }
+  ]
+}
