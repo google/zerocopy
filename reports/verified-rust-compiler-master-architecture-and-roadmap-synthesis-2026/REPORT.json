@@ -1,0 +1,107 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/verified-compiler",
+    "anneal/architecture-roadmap",
+    "anneal/trusted-computing-base",
+    "rust/rustc-codegen",
+    "rust/mir-semantics",
+    "cranelift",
+    "regalloc2",
+    "llvm/translation-validation",
+    "compcert",
+    "lean4",
+    "formal-verification/verified-compilation"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_cranelift)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "additional_revisions": "8006091eb71ae7d9e9bccb66c6122c9d68af4466, 49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Wasmtime and Cranelift code generator (ISLE, aegraphs, MachBuffer, unwind)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "additional_revisions": "4c2d5fb3f42f77be866b51ca7b89c803bf42694f"
+      }
+    },
+    {
+      "name": "regalloc2 register allocator and symbolic checker",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27"
+      }
+    },
+    {
+      "name": "OpenCompl lean-mlir and alive-lean SSA/BitVec semantics",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+      }
+    },
+    {
+      "name": "seL4 graph-refine binary translation validator",
+      "identity": {
+        "repository": "seL4/graph-refine",
+        "revision": "6c6f2612b17f48ddfe41ee62ff1b077e320b9c89"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (RTL, BTL, Linear, Stacking, Asm, Linking)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03",
+        "additional_revisions": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6, a6f2857fc1be9e628f8b1462bc29224fb1edeb82"
+      }
+    },
+    {
+      "name": "Vellvm Coq formalization of LLVM IR",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "519c979ff9ab75ef58285bc2697f439bd04c1881"
+      }
+    },
+    {
+      "name": "Intermediate Memory Model (IMM) Coq mechanization",
+      "identity": {
+        "repository": "weakmemory/imm",
+        "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+      }
+    },
+    {
+      "name": "herdtools7 axiomatic hardware memory models",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

@@ -1,0 +1,92 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/memory-model",
+    "anneal/weak-memory",
+    "anneal/constant-time",
+    "anneal/bare-metal",
+    "compcert/memory-model",
+    "rust/atomics",
+    "rust/volatile-mmio",
+    "rust/naked-functions",
+    "rust/linker-scripts",
+    "lean4",
+    "formal-verification/memory-models",
+    "formal-verification/cryptographic-constant-time"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (block-offset memory model)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03"
+      }
+    },
+    {
+      "name": "Rust compiler (atomic intrinsics, volatile, global_asm, naked functions)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "Rust compiler (atomic/volatile MIR and Cranelift/LLVM codegen revisions)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466",
+        "additional_revisions": "49d734536222bf28bb6d07d885b3a81d145981da, b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Intermediate Memory Model (IMM) Coq mechanization",
+      "identity": {
+        "repository": "weakmemory/imm",
+        "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+      }
+    },
+    {
+      "name": "herdtools7 axiomatic hardware memory models (aarch64.cat, x86tso.cat, riscv.cat)",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure (AArch64/x86/RISC-V atomic and barrier lowering)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+      }
+    },
+    {
+      "name": "Track 7 memory bridge, constant-time, weak-memory, and ELF Lean 4 probe",
+      "identity": {
+        "path": "support/track7_memory_ct_weakmem_elf_probe.lean",
+        "sha256": "4abe15811027f936ff68f92351c827476146eff66d3f062f0cc7140ffed1b09e"
+      }
+    },
+    {
+      "name": "Round 2 Track 6 RMW/SeqCst atomics, ELF BSS/data, and unwind/CFI Lean 4 probe",
+      "identity": {
+        "path": "support/round2_track6_probe.lean",
+        "sha256": "d5049314b0d824b19586324884f5c1a64e3172d391d35c8a4ebfaa52b1ef8771"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

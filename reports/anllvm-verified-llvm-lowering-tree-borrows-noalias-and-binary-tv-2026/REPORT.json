@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "anneal/anllvm",
+    "lean/lean-mlir",
+    "llvm/alive2",
+    "llvm/crellvm",
+    "llvm/noalias",
+    "llvm/poison-freeze",
+    "llvm/vellvm",
+    "rust/pin-unpin",
+    "rust/tree-borrows",
+    "sel4/graph-refine",
+    "verification/binary-translation-validation"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework and Trusted.Refinement preorder (Partial, Compiles, Compiler.Verified, pass_trans)",
+      "identity": {
+        "inspected-revision": "e75556f5767705404404c0675c6d2d9bcee41d6f",
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      }
+    },
+    {
+      "name": "Vellvm Coq/Rocq VIR semantics, byte-level poison memory (DTYPE_B), and nondeterministic freeze",
+      "identity": {
+        "inspected-revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e",
+        "repository": "vellvm/vellvm",
+        "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+      }
+    },
+    {
+      "name": "Alive2 SMT translation validator for LLVM IR",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+        "version": "v21.0"
+      }
+    },
+    {
+      "name": "Crellvm relational Coq translation validator for LLVM",
+      "identity": {
+        "repository": "snu-sf/crellvm",
+        "revision": "668249b88756233f96b3ef21f12993501a348afc"
+      }
+    },
+    {
+      "name": "lean-mlir (VeIR) LLVM dialect semantics and LLVMRiscV peephole refinement pipeline",
+      "identity": {
+        "inspected-revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+      }
+    },
+    {
+      "name": "seL4 GraphLang binary translation validator and stack-slot scalarizer (graph-refine)",
+      "identity": {
+        "inspected-revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4",
+        "repository": "seL4/graph-refine",
+        "revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+      }
+    },
+    {
+      "name": "Rust compiler LLVM ABI/retag lowering and Miri Tree Borrows operational state machine",
+      "identity": {
+        "inspected-revision": "92b5b8c87c61b20adc9001b41baf587634a74734",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "secondary-revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and theorem prover toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Round 1 Track 6 Lean 4.34.1 mechanization of AnLLVM directional refinement, MaybeUninit/!Unpin lowering hazards, and GraphLang binary translation validation",
+      "identity": {
+        "lines": "1-1215",
+        "path": "support/track6_llvm_lowering_and_binary_tv_probe.lean",
+        "sha256": "f22d763bc5d8fc5832e164f12e0e8937880dc488313f6bad077222ee623c1027"
+      }
+    },
+    {
+      "name": "Round 2 Track 5 Lean 4.34.1 mechanization of DTYPE_B byte memory, 4-state Tree Borrows to LLVM noalias/readonly/writable simulation, stack-slot scalarization, and k:1 unrolled loop validation",
+      "identity": {
+        "lines": "1-1532",
+        "path": "support/round2_track5_probe.lean",
+        "sha256": "0740195c02f1249a56635bed1ec1bcd7909dc127c3cae3ed111889dc44602a50"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

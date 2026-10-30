@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "anneal/compiler-verification",
+    "anneal/self-hosting",
+    "anneal/certifying-compilation",
+    "rust/mir-semantics",
+    "rust/with-retag",
+    "lean/functional-translation",
+    "verification/bootstrap"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Trusted Core, Boundary Auditor, and Theory Library",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+        "worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+      }
+    },
+    {
+      "name": "Rust Compiler MIR Syntax and Semantics (ProjectionElem, Rvalue, TerminatorKind)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Rust Compiler PR #154341 (Merge Retag statement into Use rvalue)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+        "pull_request": "154341"
+      }
+    },
+    {
+      "name": "Rust Compiler Baseline Pinned by Anneal Trusted Core",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "The Rust Reference (Slice Layout and Undefined Behavior)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Round 1 Self-Hosted and Certifying Compiler Lean 4.34.1 Mechanization Probe",
+      "identity": {
+        "artifact": "support/track2_self_hosted_compiler_probe.lean",
+        "sha256": "f35d5e4a3d0c01dbce593ff10b94a4ff4666e0125fdfa88778e268002fe4a1ec"
+      }
+    },
+    {
+      "name": "Round 2 Slices, ADTs, WithRetag, CallSpecTable, and HwIsa Projection Lean 4.34.1 Probe",
+      "identity": {
+        "artifact": "support/round2_track2_probe.lean",
+        "sha256": "11de1875983da8a6e8c3a3705d559d406938ad06fb7ea3b6e9d8cbebfaf136e4"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

@@ -1666,6 +1666,104 @@
         "anneal/history"
       ]
     },
+    "anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "inspected-revision": "e75556f5767705404404c0675c6d2d9bcee41d6f",
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework and Trusted.Refinement preorder (Partial, Compiles, Compiler.Verified, pass_trans)"
+        },
+        {
+          "identity": {
+            "inspected-revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e",
+            "repository": "vellvm/vellvm",
+            "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+          },
+          "name": "Vellvm Coq/Rocq VIR semantics, byte-level poison memory (DTYPE_B), and nondeterministic freeze"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+            "version": "v21.0"
+          },
+          "name": "Alive2 SMT translation validator for LLVM IR"
+        },
+        {
+          "identity": {
+            "repository": "snu-sf/crellvm",
+            "revision": "668249b88756233f96b3ef21f12993501a348afc"
+          },
+          "name": "Crellvm relational Coq translation validator for LLVM"
+        },
+        {
+          "identity": {
+            "inspected-revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+            "repository": "opencompl/lean-mlir",
+            "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+          },
+          "name": "lean-mlir (VeIR) LLVM dialect semantics and LLVMRiscV peephole refinement pipeline"
+        },
+        {
+          "identity": {
+            "inspected-revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4",
+            "repository": "seL4/graph-refine",
+            "revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+          },
+          "name": "seL4 GraphLang binary translation validator and stack-slot scalarizer (graph-refine)"
+        },
+        {
+          "identity": {
+            "inspected-revision": "92b5b8c87c61b20adc9001b41baf587634a74734",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "secondary-revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust compiler LLVM ABI/retag lowering and Miri Tree Borrows operational state machine"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and theorem prover toolchain"
+        },
+        {
+          "identity": {
+            "lines": "1-1215",
+            "path": "support/track6_llvm_lowering_and_binary_tv_probe.lean",
+            "sha256": "f22d763bc5d8fc5832e164f12e0e8937880dc488313f6bad077222ee623c1027"
+          },
+          "name": "Round 1 Track 6 Lean 4.34.1 mechanization of AnLLVM directional refinement, MaybeUninit/!Unpin lowering hazards, and GraphLang binary translation validation"
+        },
+        {
+          "identity": {
+            "lines": "1-1532",
+            "path": "support/round2_track5_probe.lean",
+            "sha256": "0740195c02f1249a56635bed1ec1bcd7909dc127c3cae3ed111889dc44602a50"
+          },
+          "name": "Round 2 Track 5 Lean 4.34.1 mechanization of DTYPE_B byte memory, 4-state Tree Borrows to LLVM noalias/readonly/writable simulation, stack-slot scalarization, and k:1 unrolled loop validation"
+        }
+      ],
+      "topics": [
+        "anneal/anllvm",
+        "lean/lean-mlir",
+        "llvm/alive2",
+        "llvm/crellvm",
+        "llvm/noalias",
+        "llvm/poison-freeze",
+        "llvm/vellvm",
+        "rust/pin-unpin",
+        "rust/tree-borrows",
+        "sel4/graph-refine",
+        "verification/binary-translation-validation"
+      ]
+    },
     "anneal-3725-recommendation-coverage-audit-2026-09-28": {
       "observed_at": "2026-09-28",
       "subjects": [
@@ -11618,6 +11716,98 @@
         "macos/relocation"
       ]
     },
+    "anneal-memory-bridge-weak-memory-atomics-constant-time-and-bare-metal-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03"
+          },
+          "name": "CompCert verified C compiler (block-offset memory model)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler (atomic intrinsics, volatile, global_asm, naked functions)"
+        },
+        {
+          "identity": {
+            "additional_revisions": "49d734536222bf28bb6d07d885b3a81d145981da, b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "repository": "rust-lang/rust",
+            "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust compiler (atomic/volatile MIR and Cranelift/LLVM codegen revisions)"
+        },
+        {
+          "identity": {
+            "repository": "weakmemory/imm",
+            "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+          },
+          "name": "Intermediate Memory Model (IMM) Coq mechanization"
+        },
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+          },
+          "name": "herdtools7 axiomatic hardware memory models (aarch64.cat, x86tso.cat, riscv.cat)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+          },
+          "name": "LLVM compiler infrastructure (AArch64/x86/RISC-V atomic and barrier lowering)"
+        },
+        {
+          "identity": {
+            "path": "support/track7_memory_ct_weakmem_elf_probe.lean",
+            "sha256": "4abe15811027f936ff68f92351c827476146eff66d3f062f0cc7140ffed1b09e"
+          },
+          "name": "Track 7 memory bridge, constant-time, weak-memory, and ELF Lean 4 probe"
+        },
+        {
+          "identity": {
+            "path": "support/round2_track6_probe.lean",
+            "sha256": "d5049314b0d824b19586324884f5c1a64e3172d391d35c8a4ebfaa52b1ef8771"
+          },
+          "name": "Round 2 Track 6 RMW/SeqCst atomics, ELF BSS/data, and unwind/CFI Lean 4 probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/memory-model",
+        "anneal/weak-memory",
+        "anneal/constant-time",
+        "anneal/bare-metal",
+        "compcert/memory-model",
+        "rust/atomics",
+        "rust/volatile-mmio",
+        "rust/naked-functions",
+        "rust/linker-scripts",
+        "lean4",
+        "formal-verification/memory-models",
+        "formal-verification/cryptographic-constant-time"
+      ]
+    },
     "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -12715,6 +12905,75 @@
         "cargo/profile",
         "cargo/cfg",
         "charon/cargo-extraction"
+      ]
+    },
+    "anssa-block-argument-ssa-mem2reg-and-mir-semantic-hazards-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/MirAst.lean, trusted/lean/Trusted/MirSemantics.lean, trusted/lean/Trusted/Memory.lean, trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework and Trusted MIR semantics"
+        },
+        {
+          "identity": {
+            "paths": "compiler/rustc_mir_transform/src/{sroa.rs,ssa.rs}, compiler/rustc_abi/src/{lib.rs,layout.rs}, compiler/rustc_codegen_ssa/src/mir/{analyze.rs,operand.rs,place.rs,rvalue.rs,block.rs,statement.rs,retag.rs}, compiler/rustc_codegen_cranelift/src/discriminant.rs, compiler/rustc_codegen_llvm/src/{abi.rs,builder.rs}, compiler/rustc_ty_utils/src/abi.rs",
+            "repository": "rust-lang/rust",
+            "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust compiler MIR transforms, ABI layout, and SSA codegen"
+        },
+        {
+          "identity": {
+            "paths": "compiler/rustc_middle/src/mir/syntax.rs, compiler/rustc_mir_transform/src/sroa.rs, compiler/rustc_const_eval/src/interpret/step.rs, compiler/rustc_codegen_ssa/src/mir/{rvalue.rs,retag.rs}",
+            "pull_request": "rust-lang/rust#154341",
+            "repository": "rust-lang/rust",
+            "revision": "e402c1edf047a23b0cfef40c6097d1caa294050b"
+          },
+          "name": "Rust compiler retag-on-typed-copy refactoring (PR #154341)"
+        },
+        {
+          "identity": {
+            "crate": "cranelift-frontend",
+            "paths": "cranelift/frontend/src/ssa.rs",
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+            "version": "0.136.2"
+          },
+          "name": "Cranelift SSA construction frontend (SSABuilder)"
+        },
+        {
+          "identity": {
+            "paths": "src/Lean/Compiler/LCNF/{Basic.lean,Check.lean,JoinPoints.lean,CSE.lean,SimpCase.lean}",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and LCNF join-point IR"
+        },
+        {
+          "identity": {
+            "lines": "1494",
+            "path": "support/track3_ssa_mem2reg_niche_probe.lean",
+            "sha256": "b412ca6b6603b08ebfb50e63aa7d184af4b3ee7b4fb0e23e1dcf3cd95e3f0565",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Standalone Lean 4.34.1 mechanization probe for AnSSA, checkMem2Reg, MaybeUninit freeze, and TagEncoding::Niche"
+        }
+      ],
+      "topics": [
+        "anneal/anssa",
+        "compiler/ssa",
+        "compiler/mem2reg",
+        "compiler/sroa",
+        "rust/maybe-uninit",
+        "rust/niche-encoding",
+        "rust/uninhabited-types",
+        "rust/retag",
+        "rust/zst"
       ]
     },
     "arc-hazard-pointer-and-weak-rcu-protocol-boundaries-2026": {
@@ -14934,6 +15193,75 @@
         "anneal/compatibility",
         "rust/rewrites",
         "operating-systems/rust"
+      ]
+    },
+    "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "additional_revisions": "8006091eb71ae7d9e9bccb66c6122c9d68af4466, 49d734536222bf28bb6d07d885b3a81d145981da",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler (MIR UnwindAction, rustc_codegen_cranelift unwind/LSDA,libunwind personality)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64"
+          },
+          "name": "Wasmtime and Cranelift code generator (DWARF .eh_frame CFI and gimli integration)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+          },
+          "name": "CompCert verified C compiler (Linking.v and compositional simulation literature)"
+        },
+        {
+          "identity": {
+            "path": "support/track8_compositional_and_unwind_cfi_probe.lean",
+            "sha256": "74360333b4f7e7bf0c6f17da95713ebb055471a6e5e17632806c779a62fb9633"
+          },
+          "name": "Track 8 compositional compilation, FFI linking, and DWARF/LSDA unwind CFI Lean 4 probe"
+        },
+        {
+          "identity": {
+            "path": "support/round2_track6_probe.lean",
+            "sha256": "d5049314b0d824b19586324884f5c1a64e3172d391d35c8a4ebfaa52b1ef8771"
+          },
+          "name": "Round 2 Track 6 two-phase Itanium ABI unwind fix and AArch64 PAC/FP/LR CFI Lean 4 probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/compositional-compilation",
+        "anneal/ffi-linking",
+        "anneal/unwinding",
+        "anneal/dwarf-cfi",
+        "compcert/compositional-linking",
+        "cranelift/unwinding",
+        "rust/panic-unwinding",
+        "rust/ffi",
+        "lean4",
+        "formal-verification/separate-compilation"
       ]
     },
     "concurrency-memory-model-verification-approaches-2013-2026": {
@@ -18316,6 +18644,89 @@
         "git/source-cache",
         "opam/source-acquisition",
         "experiments/resource-boundaries"
+      ]
+    },
+    "isle-aegraphs-btl-symbolic-execution-and-dst-vtable-lowering-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json, trusted/lean/Trusted/Refinement.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework and TrustedBoundary axiom policy"
+        },
+        {
+          "identity": {
+            "crates": "cranelift-isle, cranelift-codegen",
+            "paths": "cranelift/isle/isle/src/{ast.rs,sema.rs,trie_again.rs,codegen.rs}, cranelift/codegen/src/egraph/{mod.rs,cost.rs,elaborate.rs}, cranelift/codegen/src/{opts.rs,inst_predicates.rs,ir/memflags.rs,prelude_opt.isle}, cranelift/codegen/src/opts/{README.md,arithmetic.isle,bitops.isle,shifts.isle}, cranelift/codegen/src/isa/{riscv64,aarch64,x64}/{lower.isle,inst.isle}",
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+            "version": "0.132.0"
+          },
+          "name": "Cranelift ISLE compiler and acyclic e-graph optimizer"
+        },
+        {
+          "identity": {
+            "paths": "compiler/rustc_middle/src/ty/vtable.rs, compiler/rustc_trait_selection/src/traits/vtable.rs, compiler/rustc_codegen_ssa/src/mir/{place.rs,rvalue.rs}",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 layout, DST extent, and vtable traits baseline"
+        },
+        {
+          "identity": {
+            "paths": "compiler/rustc_codegen_cranelift/src/{num.rs,codegen_i128.rs,unsize.rs,vtable.rs,value_and_place.rs}, compiler/rustc_codegen_ssa/src/mir/{place.rs,rvalue.rs}, compiler/rustc_middle/src/ty/vtable.rs, compiler/rustc_trait_selection/src/traits/vtable.rs",
+            "repository": "rust-lang/rust",
+            "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust compiler Cranelift and SSA codegen backends"
+        },
+        {
+          "identity": {
+            "paths": "compiler-builtins/src/int/mul.rs",
+            "repository": "rust-lang/compiler-builtins",
+            "revision": "351d48e4b95f1665cfd3360e3ba8f3dd4d3fb3c1"
+          },
+          "name": "Rust compiler-builtins 128-bit multiplication overflow intrinsics"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "lines": "1089",
+            "path": "support/track5_isle_egraph_dst_probe.lean",
+            "sha256": "bfedaab9b0c00406ada5614c165ebc401d01c5e197597c8ed2ef0842d9cabf19",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Round 1 Track 5 Lean 4.34.1 mechanization probe (ISLE, rewrite traces, BTL superblock validation, and DST/vtable lowering)"
+        },
+        {
+          "identity": {
+            "lines": "1742",
+            "path": "support/round2_track4_probe.lean",
+            "sha256": "73f05a1e0b80bae34a1d1f17e75283c1a2c6fd6bdd83ed75f7ffa193f7451462",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Round 2 Track 4 Lean 4.34.1 mechanization probe (Signed MulWithOverflow, 128-bit arithmetic, BTL partitioned vtable/stack smem, GlobalRelocTable, and aegraph loop hoisting)"
+        }
+      ],
+      "topics": [
+        "cranelift/isle",
+        "cranelift/aegraphs",
+        "compcert/btl",
+        "compiler/instruction-selection",
+        "rust/dst-layout",
+        "rust/trait-upcasting",
+        "rust/checked-arithmetic"
       ]
     },
     "jasmin-native-aarch64-evaluation-and-verified-build-inputs-2026": {
@@ -25387,6 +25798,116 @@
         "verification/invariants"
       ]
     },
+    "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework and behavioral assumptions (A-BEH-07)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+            "vendored-revision": "2fe490bc9dda433f70c54f90f7633ed929f693d9",
+            "version": "0.15.2"
+          },
+          "name": "regalloc2 Ion register allocator, parallel-move resolver, and symbolic dataflow checker"
+        },
+        {
+          "identity": {
+            "component": "cranelift-codegen",
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "83166ba31317afbe1574186798f4db17cd641ab4",
+            "version": "0.132.0"
+          },
+          "name": "Cranelift code generator ABI prologue/epilogue and x86-64 stack-probe emission"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03",
+            "tag-revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "v3.18"
+          },
+          "name": "CompCert register allocation (Allocation/Allocproof) and stack frame lowering (Bounds/Stacking/Stacklayout)"
+        },
+        {
+          "identity": {
+            "reference": "POPL 2019 (10.1145/3290382)",
+            "repository": "ssrg-vt/compcert_stack_aware",
+            "revision": "0518d9ffb69ec11e79a214df1afc0b0159930478"
+          },
+          "name": "Stack-Aware CompCert abstract stack ADT and quantitative stack-usage theorem"
+        },
+        {
+          "identity": {
+            "inspected-revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "repository": "CakeML/cakeml",
+            "revision": "7b9a722a1d88bc65555110fb6731173cd4be9b34"
+          },
+          "name": "CakeML SSA clash-tree register allocator and verifier (word_alloc / reg_alloc)"
+        },
+        {
+          "identity": {
+            "inspected-revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13",
+            "repository": "mit-plv/bedrock2",
+            "revision": "7cbf3ef1be3c4fa6be792371ab0ec79cf773bd7f"
+          },
+          "name": "Bedrock2 syntax-directed register allocation checker (RegAlloc.v) and call-DAG stack bound verifier (FitsStack.v)"
+        },
+        {
+          "identity": {
+            "inspected-revision": "92b5b8c87c61b20adc9001b41baf587634a74734",
+            "repository": "rust-lang/rust",
+            "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust compiler-builtins __rust_probestack and StackProbeType target specification"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and theorem prover toolchain"
+        },
+        {
+          "identity": {
+            "lines": "1-2476",
+            "path": "support/track4_regalloc2_stacking_probe.lean",
+            "sha256": "89b955c52defcb9e47403dddf9846976d5d6ba1418675c0b4e43f0421df19b37"
+          },
+          "name": "Round 1 Track 4 Lean 4.34.1 mechanization of repaired regalloc2 symbolic checker, Stacking pass, red-zone safety, and quantitative stack bounds"
+        },
+        {
+          "identity": {
+            "lines": "1-1549",
+            "path": "support/round2_track3_probe.lean",
+            "sha256": "7f3aaf1f1e8dd2917c1ac460bb614c8b77082a3bf786de25bba51d8effd830c0"
+          },
+          "name": "Round 2 Track 3 Lean 4.34.1 mechanization of public/private stack-frame partitioning, PNVI-ae-udi guard bytes, sub-register family aliasing, callee-saved tokens, and indirect-call stack contracts"
+        }
+      ],
+      "topics": [
+        "abi/callee-saved-registers",
+        "abi/red-zone",
+        "anneal/a-beh-07",
+        "anneal/backend",
+        "bedrock2/regalloc",
+        "cakeml/word-alloc",
+        "compiler/register-allocation",
+        "compcert/stacking",
+        "memory/pnvi-ae-udi",
+        "regalloc2/checker",
+        "rust/stack-probes",
+        "verification/quantitative-stack-bounds",
+        "verification/translation-validation"
+      ]
+    },
     "relaxed-memory-reclamation-premises-2026": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -28711,6 +29232,79 @@
         "rust/opsem/layout-table-binding"
       ]
     },
+    "rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+            "worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+          },
+          "name": "Anneal Trusted Core, MIR Capture Driver, and Theory Library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust Compiler Baseline Pinned by Anneal Trusted Core"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust Compiler MIR Syntax and Semantics Baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "92b5b8c87c61b20adc9001b41baf587634a74734",
+            "version": "1.101.0-nightly"
+          },
+          "name": "Rust Compiler Toolchain Source (CodegenBackend, Monomorphization, FnAbi, and Intrinsics)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel Verification Toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/track1_abi_and_mono_probe.lean",
+            "sha256": "9035399af8255d9f6eb2ba42f69013beb0c014e6f7894bc3435f53ff75466f28"
+          },
+          "name": "Round 1 Direct-MIR ABI, Monomorphization, and Deduced-Attrs Lean 4.34.1 Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/round2_track1_probe.lean",
+            "sha256": "7d28a6692348dbbae30e190401f836d72c3922217d9a8bcf99778a7f2c48302a"
+          },
+          "name": "Round 2 PassMode::Cast MaskedWord Freeze, ScalarPair Sub-Word Niche, and Float Intrinsics Lean 4.34.1 Probe"
+        }
+      ],
+      "topics": [
+        "anneal/rustc-capture",
+        "rustc/codegen-backend",
+        "rustc/monomorphization",
+        "rustc/abi",
+        "rustc/intrinsics",
+        "rustc/pass-mode-cast",
+        "rustc/build-std"
+      ]
+    },
     "rustc-configured-const-admission-and-post-monomorphization-ctfe": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -31180,6 +31774,186 @@
         "compilation/bootstrap",
         "checking/executable-boundary",
         "certirocq"
+      ]
+    },
+    "verified-rust-compiler-master-architecture-and-roadmap-synthesis-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "additional_revisions": "8006091eb71ae7d9e9bccb66c6122c9d68af4466, 49d734536222bf28bb6d07d885b3a81d145981da",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_cranelift)"
+        },
+        {
+          "identity": {
+            "additional_revisions": "4c2d5fb3f42f77be866b51ca7b89c803bf42694f",
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64"
+          },
+          "name": "Wasmtime and Cranelift code generator (ISLE, aegraphs, MachBuffer, unwind)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27"
+          },
+          "name": "regalloc2 register allocator and symbolic checker"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/lean-mlir",
+            "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+          },
+          "name": "OpenCompl lean-mlir and alive-lean SSA/BitVec semantics"
+        },
+        {
+          "identity": {
+            "repository": "seL4/graph-refine",
+            "revision": "6c6f2612b17f48ddfe41ee62ff1b077e320b9c89"
+          },
+          "name": "seL4 graph-refine binary translation validator"
+        },
+        {
+          "identity": {
+            "additional_revisions": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6, a6f2857fc1be9e628f8b1462bc29224fb1edeb82",
+            "repository": "AbsInt/CompCert",
+            "revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03"
+          },
+          "name": "CompCert verified C compiler (RTL, BTL, Linear, Stacking, Asm, Linking)"
+        },
+        {
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "519c979ff9ab75ef58285bc2697f439bd04c1881"
+          },
+          "name": "Vellvm Coq formalization of LLVM IR"
+        },
+        {
+          "identity": {
+            "repository": "weakmemory/imm",
+            "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+          },
+          "name": "Intermediate Memory Model (IMM) Coq mechanization"
+        },
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+          },
+          "name": "herdtools7 axiomatic hardware memory models"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+          },
+          "name": "LLVM compiler infrastructure"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/verified-compiler",
+        "anneal/architecture-roadmap",
+        "anneal/trusted-computing-base",
+        "rust/rustc-codegen",
+        "rust/mir-semantics",
+        "cranelift",
+        "regalloc2",
+        "llvm/translation-validation",
+        "compcert",
+        "lean4",
+        "formal-verification/verified-compilation"
+      ]
+    },
+    "verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+            "worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+          },
+          "name": "Anneal Trusted Core, Boundary Auditor, and Theory Library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+          },
+          "name": "Rust Compiler MIR Syntax and Semantics (ProjectionElem, Rvalue, TerminatorKind)"
+        },
+        {
+          "identity": {
+            "pull_request": "154341",
+            "repository": "rust-lang/rust",
+            "revision": "e402c1edf047a23b0cfef40c6097d1caa294050b"
+          },
+          "name": "Rust Compiler PR #154341 (Merge Retag statement into Use rvalue)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust Compiler Baseline Pinned by Anneal Trusted Core"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference (Slice Layout and Undefined Behavior)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel Verification Toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/track2_self_hosted_compiler_probe.lean",
+            "sha256": "f35d5e4a3d0c01dbce593ff10b94a4ff4666e0125fdfa88778e268002fe4a1ec"
+          },
+          "name": "Round 1 Self-Hosted and Certifying Compiler Lean 4.34.1 Mechanization Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/round2_track2_probe.lean",
+            "sha256": "11de1875983da8a6e8c3a3705d559d406938ad06fb7ea3b6e9d8cbebfaf136e4"
+          },
+          "name": "Round 2 Slices, ADTs, WithRetag, CallSpecTable, and HwIsa Projection Lean 4.34.1 Probe"
+        }
+      ],
+      "topics": [
+        "anneal/compiler-verification",
+        "anneal/self-hosting",
+        "anneal/certifying-compilation",
+        "rust/mir-semantics",
+        "rust/with-retag",
+        "lean/functional-translation",
+        "verification/bootstrap"
       ]
     },
     "verus-tracked-memory-trust-0141ebc": {

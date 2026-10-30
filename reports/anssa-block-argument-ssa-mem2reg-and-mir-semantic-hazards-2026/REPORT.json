@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "anneal/anssa",
+    "compiler/ssa",
+    "compiler/mem2reg",
+    "compiler/sroa",
+    "rust/maybe-uninit",
+    "rust/niche-encoding",
+    "rust/uninhabited-types",
+    "rust/retag",
+    "rust/zst"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework and Trusted MIR semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+        "paths": "trusted/lean/Trusted/MirAst.lean, trusted/lean/Trusted/MirSemantics.lean, trusted/lean/Trusted/Memory.lean, trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean"
+      }
+    },
+    {
+      "name": "Rust compiler MIR transforms, ABI layout, and SSA codegen",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466",
+        "paths": "compiler/rustc_mir_transform/src/{sroa.rs,ssa.rs}, compiler/rustc_abi/src/{lib.rs,layout.rs}, compiler/rustc_codegen_ssa/src/mir/{analyze.rs,operand.rs,place.rs,rvalue.rs,block.rs,statement.rs,retag.rs}, compiler/rustc_codegen_cranelift/src/discriminant.rs, compiler/rustc_codegen_llvm/src/{abi.rs,builder.rs}, compiler/rustc_ty_utils/src/abi.rs"
+      }
+    },
+    {
+      "name": "Rust compiler retag-on-typed-copy refactoring (PR #154341)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+        "pull_request": "rust-lang/rust#154341",
+        "paths": "compiler/rustc_middle/src/mir/syntax.rs, compiler/rustc_mir_transform/src/sroa.rs, compiler/rustc_const_eval/src/interpret/step.rs, compiler/rustc_codegen_ssa/src/mir/{rvalue.rs,retag.rs}"
+      }
+    },
+    {
+      "name": "Cranelift SSA construction frontend (SSABuilder)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "crate": "cranelift-frontend",
+        "version": "0.136.2",
+        "paths": "cranelift/frontend/src/ssa.rs"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and LCNF join-point IR",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "paths": "src/Lean/Compiler/LCNF/{Basic.lean,Check.lean,JoinPoints.lean,CSE.lean,SimpCase.lean}"
+      }
+    },
+    {
+      "name": "Standalone Lean 4.34.1 mechanization probe for AnSSA, checkMem2Reg, MaybeUninit freeze, and TagEncoding::Niche",
+      "identity": {
+        "path": "support/track3_ssa_mem2reg_niche_probe.lean",
+        "sha256": "b412ca6b6603b08ebfb50e63aa7d184af4b3ee7b4fb0e23e1dcf3cd95e3f0565",
+        "lines": "1494",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

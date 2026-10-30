@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "anneal/rustc-capture",
+    "rustc/codegen-backend",
+    "rustc/monomorphization",
+    "rustc/abi",
+    "rustc/intrinsics",
+    "rustc/pass-mode-cast",
+    "rustc/build-std"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Trusted Core, MIR Capture Driver, and Theory Library",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+        "worktree_revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+      }
+    },
+    {
+      "name": "Rust Compiler Baseline Pinned by Anneal Trusted Core",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "Rust Compiler MIR Syntax and Semantics Baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Rust Compiler Toolchain Source (CodegenBackend, Monomorphization, FnAbi, and Intrinsics)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "92b5b8c87c61b20adc9001b41baf587634a74734",
+        "version": "1.101.0-nightly"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Round 1 Direct-MIR ABI, Monomorphization, and Deduced-Attrs Lean 4.34.1 Probe",
+      "identity": {
+        "artifact": "support/track1_abi_and_mono_probe.lean",
+        "sha256": "9035399af8255d9f6eb2ba42f69013beb0c014e6f7894bc3435f53ff75466f28"
+      }
+    },
+    {
+      "name": "Round 2 PassMode::Cast MaskedWord Freeze, ScalarPair Sub-Word Niche, and Float Intrinsics Lean 4.34.1 Probe",
+      "identity": {
+        "artifact": "support/round2_track1_probe.lean",
+        "sha256": "7d28a6692348dbbae30e190401f836d72c3922217d9a8bcf99778a7f2c48302a"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

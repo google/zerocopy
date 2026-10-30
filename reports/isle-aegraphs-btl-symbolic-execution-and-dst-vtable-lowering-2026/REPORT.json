@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "cranelift/isle",
+    "cranelift/aegraphs",
+    "compcert/btl",
+    "compiler/instruction-selection",
+    "rust/dst-layout",
+    "rust/trait-upcasting",
+    "rust/checked-arithmetic"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework and TrustedBoundary axiom policy",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
+        "paths": "trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json, trusted/lean/Trusted/Refinement.lean"
+      }
+    },
+    {
+      "name": "Cranelift ISLE compiler and acyclic e-graph optimizer",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "crates": "cranelift-isle, cranelift-codegen",
+        "version": "0.132.0",
+        "paths": "cranelift/isle/isle/src/{ast.rs,sema.rs,trie_again.rs,codegen.rs}, cranelift/codegen/src/egraph/{mod.rs,cost.rs,elaborate.rs}, cranelift/codegen/src/{opts.rs,inst_predicates.rs,ir/memflags.rs,prelude_opt.isle}, cranelift/codegen/src/opts/{README.md,arithmetic.isle,bitops.isle,shifts.isle}, cranelift/codegen/src/isa/{riscv64,aarch64,x64}/{lower.isle,inst.isle}"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 layout, DST extent, and vtable traits baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "paths": "compiler/rustc_middle/src/ty/vtable.rs, compiler/rustc_trait_selection/src/traits/vtable.rs, compiler/rustc_codegen_ssa/src/mir/{place.rs,rvalue.rs}"
+      }
+    },
+    {
+      "name": "Rust compiler Cranelift and SSA codegen backends",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466",
+        "paths": "compiler/rustc_codegen_cranelift/src/{num.rs,codegen_i128.rs,unsize.rs,vtable.rs,value_and_place.rs}, compiler/rustc_codegen_ssa/src/mir/{place.rs,rvalue.rs}, compiler/rustc_middle/src/ty/vtable.rs, compiler/rustc_trait_selection/src/traits/vtable.rs"
+      }
+    },
+    {
+      "name": "Rust compiler-builtins 128-bit multiplication overflow intrinsics",
+      "identity": {
+        "repository": "rust-lang/compiler-builtins",
+        "revision": "351d48e4b95f1665cfd3360e3ba8f3dd4d3fb3c1",
+        "paths": "compiler-builtins/src/int/mul.rs"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Round 1 Track 5 Lean 4.34.1 mechanization probe (ISLE, rewrite traces, BTL superblock validation, and DST/vtable lowering)",
+      "identity": {
+        "path": "support/track5_isle_egraph_dst_probe.lean",
+        "sha256": "bfedaab9b0c00406ada5614c165ebc401d01c5e197597c8ed2ef0842d9cabf19",
+        "lines": "1089",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    },
+    {
+      "name": "Round 2 Track 4 Lean 4.34.1 mechanization probe (Signed MulWithOverflow, 128-bit arithmetic, BTL partitioned vtable/stack smem, GlobalRelocTable, and aegraph loop hoisting)",
+      "identity": {
+        "path": "support/round2_track4_probe.lean",
+        "sha256": "73f05a1e0b80bae34a1d1f17e75283c1a2c6fd6bdd83ed75f7ffa193f7451462",
+        "lines": "1742",
+        "toolchain": "leanprover/lean4:v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/compositional-compilation",
+    "anneal/ffi-linking",
+    "anneal/unwinding",
+    "anneal/dwarf-cfi",
+    "compcert/compositional-linking",
+    "cranelift/unwinding",
+    "rust/panic-unwinding",
+    "rust/ffi",
+    "lean4",
+    "formal-verification/separate-compilation"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler (MIR UnwindAction, rustc_codegen_cranelift unwind/LSDA,libunwind personality)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "additional_revisions": "8006091eb71ae7d9e9bccb66c6122c9d68af4466, 49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Wasmtime and Cranelift code generator (DWARF .eh_frame CFI and gimli integration)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (Linking.v and compositional simulation literature)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+      }
+    },
+    {
+      "name": "Track 8 compositional compilation, FFI linking, and DWARF/LSDA unwind CFI Lean 4 probe",
+      "identity": {
+        "path": "support/track8_compositional_and_unwind_cfi_probe.lean",
+        "sha256": "74360333b4f7e7bf0c6f17da95713ebb055471a6e5e17632806c779a62fb9633"
+      }
+    },
+    {
+      "name": "Round 2 Track 6 two-phase Itanium ABI unwind fix and AArch64 PAC/FP/LR CFI Lean 4 probe",
+      "identity": {
+        "path": "support/round2_track6_probe.lean",
+        "sha256": "d5049314b0d824b19586324884f5c1a64e3172d391d35c8a4ebfaa52b1ef8771"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}
