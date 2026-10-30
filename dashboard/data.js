@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793377782646,
+  "lastUpdate": 1793382164749,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23803,6 +23803,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1443,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "d19b86bee54a80f957fba6cd536ccaca0df50fb4",
+          "message": "[ci] Pin Kani job to ubuntu-24.04 runner (#3911)\n\nGitHub Actions' rollout of the ubuntu-26.04 runner image for\nubuntu-latest upgraded the default system compiler to GCC 15. In\nGCC 15, <stddef.h> introduces C23 `typedef __typeof__(nullptr) nullptr_t;`.\nCBMC's goto-cc compiler wrapper in Kani 0.60.0 fails to parse this C23\nsymbol in system headers, failing Kani verification jobs with:\n`error: failed to find symbol 'nullptr'`.\n\nPin the `kani` job in .github/workflows/ci.yml to ubuntu-24.04 so Kani\nruns against GCC 13/14 headers where `nullptr` is not present in C mode.\n\ngherrit-pr-id: Gt4vhuy7vi5cegikntednwwsuospcpdnp\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-10-30T16:42:54Z",
+          "tree_id": "c0e334849575de9e85bd7dcd7d10d098a2e3da9b",
+          "url": "https://github.com/google/zerocopy/commit/d19b86bee54a80f957fba6cd536ccaca0df50fb4"
+        },
+        "date": 1793382162229,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1316,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1437,
             "unit": "seconds"
           }
         ]
