@@ -1,0 +1,455 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn add(_1: usize, _2: usize) -> usize {
+    debug x => _1;
+    debug y => _2;
+    let mut _0: usize;
+    let mut _3: (usize, bool);
+
+    bb0: {
+        _3 = AddWithOverflow(copy _1, copy _2);
+        assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, copy _2) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = move (_3.0: usize);
+        return;
+    }
+}
+
+fn double_bounded(_1: usize) -> usize {
+    debug x => _1;
+    let mut _0: usize;
+    let mut _2: bool;
+
+    bb0: {
+        _2 = Le(copy _1, const 1000_usize);
+        switchInt(move _2) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _0 = add(copy _1, copy _1) -> [return: bb3, unwind continue];
+    }
+
+    bb2: {
+        _0 = const 0_usize;
+        goto -> bb3;
+    }
+
+    bb3: {
+        return;
+    }
+}
+
+fn const_bounded_add(_1: usize) -> usize {
+    debug x => _1;
+    let mut _0: usize;
+    let mut _2: bool;
+    let mut _3: (usize, bool);
+
+    bb0: {
+        _2 = Le(copy _1, const 1000_usize);
+        switchInt(move _2) -> [0: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        _3 = AddWithOverflow(copy _1, const N);
+        assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, const N) -> [success: bb2, unwind continue];
+    }
+
+    bb2: {
+        _0 = move (_3.0: usize);
+        goto -> bb4;
+    }
+
+    bb3: {
+        _0 = const 0_usize;
+        goto -> bb4;
+    }
+
+    bb4: {
+        return;
+    }
+}
+
+const_bounded_add::{constant#0}: () = {
+    let mut _0: ();
+    let _1: ();
+    let mut _2: bool;
+    let mut _3: !;
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        _2 = Le(const N, const 1000_usize);
+        switchInt(move _2) -> [0: bb1, otherwise: bb2];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        ConstEvalCounter;
+        _3 = panic(const "assertion failed: N <= 1000") -> unwind continue;
+    }
+
+    bb2: {
+        _1 = const ();
+        StorageDead(_2);
+        StorageDead(_1);
+        _0 = const ();
+        return;
+    }
+}
+
+alloc1 (size: 27, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 4e 20 3c 3d 20 31 30 30 30                │ : N <= 1000
+}
+
+fn transmute_ref(_1: &Src) -> &Dst {
+    debug src => _1;
+    let mut _0: &Dst;
+    let _2: *const Dst;
+    let mut _3: *const Src;
+    let mut _4: *const ();
+    let mut _5: usize;
+    let mut _6: usize;
+    let mut _7: usize;
+    let mut _8: bool;
+    let mut _9: *const ();
+    let mut _10: usize;
+    let mut _11: bool;
+    let mut _12: bool;
+    let mut _13: bool;
+
+    bb0: {
+        _3 = &raw const (*_1);
+        _2 = copy _3 as *const Dst (PtrToPtr);
+        _4 = copy _2 as *const () (PtrToPtr);
+        _5 = copy _4 as usize (Transmute);
+        _6 = Sub(const <Dst as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _7 = BitAnd(copy _5, copy _6);
+        _8 = Eq(copy _7, const 0_usize);
+        assert(copy _8, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Dst as std::mem::SizedTypeProperties>::ALIGN, copy _5) -> [success: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        _9 = copy _2 as *const () (PtrToPtr);
+        _10 = copy _9 as usize (Transmute);
+        _11 = Eq(copy _10, const 0_usize);
+        _12 = BitAnd(copy _11, const true);
+        _13 = Not(copy _12);
+        assert(copy _13, "null reference produced") -> [success: bb2, unwind unreachable];
+    }
+
+    bb2: {
+        _0 = &(*_2);
+        return;
+    }
+}
+
+transmute_ref::{constant#0}: () = {
+    let mut _0: ();
+    let _1: ();
+    let mut _2: bool;
+    let mut _3: usize;
+    let mut _4: usize;
+    let mut _5: !;
+    let _6: ();
+    let mut _7: bool;
+    let mut _8: usize;
+    let mut _9: usize;
+    let mut _10: !;
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        StorageLive(_3);
+        ConstEvalCounter;
+        _3 = std::mem::size_of::<Src>() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        ConstEvalCounter;
+        _4 = std::mem::size_of::<Dst>() -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _2 = Eq(move _3, move _4);
+        switchInt(move _2) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        StorageDead(_3);
+        _1 = const ();
+        StorageDead(_2);
+        StorageDead(_1);
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        ConstEvalCounter;
+        _8 = std::mem::align_of::<Src>() -> [return: bb5, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageLive(_5);
+        ConstEvalCounter;
+        _5 = panic(const "assertion failed: core::mem::size_of::<Src>() == core::mem::size_of::<Dst>()") -> unwind continue;
+    }
+
+    bb5: {
+        StorageLive(_9);
+        ConstEvalCounter;
+        _9 = std::mem::align_of::<Dst>() -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        _7 = Ge(move _8, move _9);
+        switchInt(move _7) -> [0: bb8, otherwise: bb7];
+    }
+
+    bb7: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _6 = const ();
+        StorageDead(_7);
+        StorageDead(_6);
+        _0 = const ();
+        return;
+    }
+
+    bb8: {
+        StorageDead(_9);
+        StorageDead(_8);
+        StorageLive(_10);
+        ConstEvalCounter;
+        _10 = panic(const "assertion failed: core::mem::align_of::<Src>() >= core::mem::align_of::<Dst>()") -> unwind continue;
+    }
+}
+
+alloc3 (size: 78, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 72 65 3a 3a 6d 65 6d 3a 3a 61 6c 69 │ : core::mem::ali
+    0x20 │ 67 6e 5f 6f 66 3a 3a 3c 53 72 63 3e 28 29 20 3e │ gn_of::<Src>() >
+    0x30 │ 3d 20 63 6f 72 65 3a 3a 6d 65 6d 3a 3a 61 6c 69 │ = core::mem::ali
+    0x40 │ 67 6e 5f 6f 66 3a 3a 3c 44 73 74 3e 28 29       │ gn_of::<Dst>()
+}
+
+alloc2 (size: 76, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 63 6f 72 65 3a 3a 6d 65 6d 3a 3a 73 69 7a │ : core::mem::siz
+    0x20 │ 65 5f 6f 66 3a 3a 3c 53 72 63 3e 28 29 20 3d 3d │ e_of::<Src>() ==
+    0x30 │ 20 63 6f 72 65 3a 3a 6d 65 6d 3a 3a 73 69 7a 65 │  core::mem::size
+    0x40 │ 5f 6f 66 3a 3a 3c 44 73 74 3e 28 29             │ _of::<Dst>()
+}
+
+fn transmute_ref_static_assert(_1: &Src) -> &Dst {
+    debug src => _1;
+    let mut _0: &Dst;
+    let mut _2: !;
+    let _3: *const Dst;
+    let mut _4: *const Src;
+    let mut _5: *const ();
+    let mut _6: usize;
+    let mut _7: usize;
+    let mut _8: usize;
+    let mut _9: bool;
+    let mut _10: *const ();
+    let mut _11: usize;
+    let mut _12: bool;
+    let mut _13: bool;
+    let mut _14: bool;
+
+    bb0: {
+        switchInt(const <(std::marker::PhantomData<Src>, std::marker::PhantomData<Dst>) as transmute_ref_static_assert::StaticAssert>::ASSERT) -> [0: bb1, otherwise: bb2];
+    }
+
+    bb1: {
+        _2 = panic(const "assertion failed: <(core::marker::PhantomData<Src>, core::marker::PhantomData<Dst>) as\n    StaticAssert>::ASSERT") -> unwind continue;
+    }
+
+    bb2: {
+        _4 = &raw const (*_1);
+        _3 = copy _4 as *const Dst (PtrToPtr);
+        _5 = copy _3 as *const () (PtrToPtr);
+        _6 = copy _5 as usize (Transmute);
+        _7 = Sub(const <Dst as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _8 = BitAnd(copy _6, copy _7);
+        _9 = Eq(copy _8, const 0_usize);
+        assert(copy _9, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Dst as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb3, unwind unreachable];
+    }
+
+    bb3: {
+        _10 = copy _3 as *const () (PtrToPtr);
+        _11 = copy _10 as usize (Transmute);
+        _12 = Eq(copy _11, const 0_usize);
+        _13 = BitAnd(copy _12, const true);
+        _14 = Not(copy _13);
+        assert(copy _14, "null reference produced") -> [success: bb4, unwind unreachable];
+    }
+
+    bb4: {
+        _0 = &(*_3);
+        return;
+    }
+}
+
+alloc4 (size: 112, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 3c 28 63 6f 72 65 3a 3a 6d 61 72 6b 65 72 │ : <(core::marker
+    0x20 │ 3a 3a 50 68 61 6e 74 6f 6d 44 61 74 61 3c 53 72 │ ::PhantomData<Sr
+    0x30 │ 63 3e 2c 20 63 6f 72 65 3a 3a 6d 61 72 6b 65 72 │ c>, core::marker
+    0x40 │ 3a 3a 50 68 61 6e 74 6f 6d 44 61 74 61 3c 44 73 │ ::PhantomData<Ds
+    0x50 │ 74 3e 29 20 61 73 0a 20 20 20 20 53 74 61 74 69 │ t>) as.    Stati
+    0x60 │ 63 41 73 73 65 72 74 3e 3a 3a 41 53 53 45 52 54 │ cAssert>::ASSERT
+}
+
+const transmute_ref_static_assert::<impl at pme_capture_probe/src/lib.rs:44:5: 44:93>::ASSERT: bool = {
+    let mut _0: bool;
+    let _1: bool;
+    let mut _2: bool;
+    let mut _3: usize;
+    let mut _4: usize;
+    let mut _5: usize;
+    let mut _6: usize;
+    let _7: ();
+    let mut _8: bool;
+    let mut _9: !;
+    scope 1 {
+        debug ok => _1;
+    }
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        StorageLive(_3);
+        ConstEvalCounter;
+        _3 = std::mem::size_of::<S>() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        ConstEvalCounter;
+        _4 = std::mem::size_of::<D>() -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _2 = Eq(move _3, move _4);
+        switchInt(move _2) -> [0: bb4, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageLive(_5);
+        ConstEvalCounter;
+        _5 = std::mem::align_of::<S>() -> [return: bb5, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_4);
+        StorageDead(_3);
+        _1 = const false;
+        goto -> bb7;
+    }
+
+    bb5: {
+        StorageLive(_6);
+        ConstEvalCounter;
+        _6 = std::mem::align_of::<D>() -> [return: bb6, unwind continue];
+    }
+
+    bb6: {
+        _1 = Ge(move _5, move _6);
+        StorageDead(_6);
+        StorageDead(_5);
+        goto -> bb7;
+    }
+
+    bb7: {
+        StorageDead(_2);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = copy _1;
+        switchInt(move _8) -> [0: bb8, otherwise: bb9];
+    }
+
+    bb8: {
+        StorageLive(_9);
+        ConstEvalCounter;
+        _9 = panic(const "assertion failed: ok") -> unwind continue;
+    }
+
+    bb9: {
+        _7 = const ();
+        StorageDead(_8);
+        StorageDead(_7);
+        _0 = copy _1;
+        StorageDead(_1);
+        return;
+    }
+}
+
+alloc5 (size: 20, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 6f 6b                                     │ : ok
+}
+
+fn dead_call_pme(_1: usize) -> usize {
+    debug x => _1;
+    let mut _0: usize;
+    scope 1 {
+    }
+
+    bb0: {
+        _0 = copy _1;
+        return;
+    }
+}
+
+fn after_return_no_pme(_1: usize) -> usize {
+    debug x => _1;
+    let mut _0: usize;
+
+    bb0: {
+        _0 = copy _1;
+        return;
+    }
+}
+
+after_return_no_pme::{constant#0}: () = {
+    let mut _0: ();
+    let _1: ();
+    let mut _2: bool;
+    let mut _3: !;
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        _2 = Le(const N, const 1000_usize);
+        switchInt(move _2) -> [0: bb1, otherwise: bb2];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        ConstEvalCounter;
+        _3 = panic(const "assertion failed: N <= 1000") -> unwind continue;
+    }
+
+    bb2: {
+        _1 = const ();
+        StorageDead(_2);
+        StorageDead(_1);
+        _0 = const ();
+        return;
+    }
+}
+
+alloc1 (size: 27, align: 1) {
+    0x00 │ 61 73 73 65 72 74 69 6f 6e 20 66 61 69 6c 65 64 │ assertion failed
+    0x10 │ 3a 20 4e 20 3c 3d 20 31 30 30 30                │ : N <= 1000
+}

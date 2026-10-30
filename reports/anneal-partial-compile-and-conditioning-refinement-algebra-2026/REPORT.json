@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-10-30",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      },
+      "name": "Anneal verification framework (Trusted/Refinement.lean, theory/Anneal/Refinement.lean, trusted/audit/TrustedBoundary.lean)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/partial-compilation",
+    "anneal/conditioning-algebra",
+    "anneal/post-monomorphization-errors",
+    "anneal/trusted-boundary",
+    "lean/verification"
+  ]
+}

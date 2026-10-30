@@ -1,0 +1,71 @@
+=== ENTRY_FN: Some("main") ===
+def_path_str                                         | DefKind      | in_bo | in_mk | nom_vis      | Direct       | Reexported   | Reachable    | ReachImplT   | reach | extern | mono
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+<DynPrivStruct as PubTrait>::cat4_trait_req          | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | false | false  | false
+<PrivFnRpitStruct as PubTrait>::cat4_trait_req       | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | false | false  | false
+<PubStruct as PrivTrait>::cat4_priv_trait_req        | AssocFn      | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | false | false  | false
+<PubStruct as PubTrait>::cat4_trait_req              | AssocFn      | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+<RpitPrivStruct as PubTrait>::cat4_trait_req         | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | false | false  | false
+<UnexportedPrivStruct as PubTrait>::cat4_trait_req   | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | false | false  | false
+DYN_PRIV                                             | Static { safety: Safe, mutability: Not, nested: false } | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+DynPrivStruct                                        | Ctor(Struct, Fn) | false | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PrivFnRpitStruct                                     | Ctor(Struct, Fn) | false | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PrivStruct                                           | Ctor(Struct, Fn) | false | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PrivStruct::cat3_priv_struct_inh_priv                | AssocFn      | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PrivStruct::cat3_priv_struct_inh_pub                 | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | false | false  | false
+PrivTrait::cat4_priv_trait_default                   | AssocFn      | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PubStruct                                            | Ctor(Struct, Fn) | false | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+PubStruct::cat3_pub_struct_inh_priv                  | AssocFn      | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PubStruct::cat3_pub_struct_inh_pub                   | AssocFn      | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+PubStruct::cat3_pub_struct_inh_pub_crate             | AssocFn      | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+PubTrait::cat4_trait_default                         | AssocFn      | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+ReachablePrivStruct                                  | Ctor(Struct, Fn) | false | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+ReachablePrivStruct::cat3_reachable_priv_struct_inh_priv | AssocFn      | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+ReachablePrivStruct::cat3_reachable_priv_struct_inh_pub | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | false | false  | false
+RpitPrivStruct                                       | Ctor(Struct, Fn) | false | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+RpitPrivStruct::cat4_rpit_priv_struct_inh_pub        | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | false | false  | false
+UnexportedPrivStruct                                 | Ctor(Struct, Fn) | false | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+cat1_top_priv                                        | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | true
+cat1_top_pub                                         | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat1_top_pub_crate                                   | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+cat3_leak_pub_in_priv_mod                            | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat4_priv_return_rpit                                | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+cat4_return_dyn                                      | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat4_return_rpit                                     | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat5_caller_of_generic                               | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat5_generic_calling_priv_helper                     | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat5_generic_priv_uninstantiated                     | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+cat5_generic_pub_instantiated                        | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat5_generic_pub_uninstantiated                      | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat5_priv_helper_called_by_generic                   | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | true  | false  | false
+cat6_ffi_export_name                                 | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | true  | true   | true
+cat6_ffi_no_mangle                                   | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | true  | true   | true
+cat7_internal_closure_only                           | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat7_internal_closure_only::{closure#0}              | Closure      | true  | true  | -            | -            | -            | -            | -            | false | false  | false
+cat7_make_adder_priv                                 | Fn           | true  | true  | Restr(DefId(0:0 ~ lib[3bf8])) | -            | -            | -            | -            | false | false  | false
+cat7_make_adder_priv::{closure#0}                    | Closure      | true  | true  | -            | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | false | false  | false
+cat7_make_adder_pub                                  | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | false
+cat7_make_adder_pub::{closure#0}                     | Closure      | true  | true  | -            | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | false | false  | false
+main                                                 | Fn           | true  | true  | Pub          | Pub          | Pub          | Pub          | Pub          | false | false  | true
+priv_mod::cat2_priv_mod_reexported                   | Fn           | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | Pub          | Pub          | false | false  | false
+priv_mod::cat2_priv_mod_unexported                   | Fn           | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | false | false  | false
+priv_mod_type::PubInPrivMod                          | Ctor(Struct, Fn) | false | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | Pub          | false | false  | false
+priv_mod_type::PubInPrivMod::cat3_pub_in_priv_mod_inh_priv | AssocFn      | true  | true  | Restr(DefId(0:30 ~ lib[3bf8]::priv_mod_type)) | -            | -            | -            | -            | false | false  | false
+priv_mod_type::PubInPrivMod::cat3_pub_in_priv_mod_inh_pub | AssocFn      | true  | true  | Pub          | Restr(DefId(0:0 ~ lib[3bf8])) | Restr(DefId(0:0 ~ lib[3bf8])) | Pub          | Pub          | false | false  | false
+
+=== IMPL & OPAQUE EFFECTIVE VISIBILITIES ===
+PubStruct                                            | Impl { of_trait: false } | Direct=Pub Reexp=Pub Reach=Pub ReachImplT=Pub
+PrivStruct                                           | Impl { of_trait: false } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Restr(DefId(0:0 ~ lib[3bf8]))
+ReachablePrivStruct                                  | Impl { of_trait: false } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Restr(DefId(0:0 ~ lib[3bf8]))
+priv_mod_type::PubInPrivMod                          | Impl { of_trait: false } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Pub ReachImplT=Pub
+<PubStruct as PubTrait>                              | Impl { of_trait: true } | Direct=Pub Reexp=Pub Reach=Pub ReachImplT=Pub
+<RpitPrivStruct as PubTrait>                         | Impl { of_trait: true } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Pub
+RpitPrivStruct                                       | Impl { of_trait: false } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Pub
+<PrivFnRpitStruct as PubTrait>                       | Impl { of_trait: true } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Pub
+<DynPrivStruct as PubTrait>                          | Impl { of_trait: true } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Restr(DefId(0:0 ~ lib[3bf8]))
+<UnexportedPrivStruct as PubTrait>                   | Impl { of_trait: true } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Restr(DefId(0:0 ~ lib[3bf8]))
+<PubStruct as PrivTrait>                             | Impl { of_trait: true } | Direct=Restr(DefId(0:0 ~ lib[3bf8])) Reexp=Restr(DefId(0:0 ~ lib[3bf8])) Reach=Restr(DefId(0:0 ~ lib[3bf8])) ReachImplT=Restr(DefId(0:0 ~ lib[3bf8]))
+OpaqueTy cat4_return_rpit::{opaque#0}                | parent=cat4_return_rpit               | Direct=- Reexp=- Reach=- ReachImplT=-
+OpaqueTy cat4_priv_return_rpit::{opaque#0}           | parent=cat4_priv_return_rpit          | Direct=- Reexp=- Reach=- ReachImplT=-
+OpaqueTy cat7_make_adder_pub::{opaque#0}             | parent=cat7_make_adder_pub            | Direct=- Reexp=- Reach=- ReachImplT=-
+OpaqueTy cat7_make_adder_priv::{opaque#0}            | parent=cat7_make_adder_priv           | Direct=- Reexp=- Reach=- ReachImplT=-

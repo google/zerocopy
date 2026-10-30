@@ -12107,6 +12107,127 @@
         "zstd"
       ]
     },
+    "anneal-partial-compile-and-conditioning-refinement-algebra-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework (Trusted/Refinement.lean, theory/Anneal/Refinement.lean, trusted/audit/TrustedBoundary.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/partial-compilation",
+        "anneal/conditioning-algebra",
+        "anneal/post-monomorphization-errors",
+        "anneal/trusted-boundary",
+        "lean/verification"
+      ]
+    },
+    "anneal-pme-mir-semantics-and-polymorphic-contracts-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework (Trusted/MirSemantics.lean, Trusted/Refinement.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_monomorphize, rustc_codegen_ssa)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference (const blocks, type layout, and reference validity)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+          },
+          "name": "zerocopy (transmute_ref and static_assert!)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/mir-semantics",
+        "anneal/pme",
+        "anneal/polymorphic-contracts",
+        "anneal/refinement",
+        "lean",
+        "rustc/const-eval",
+        "rustc/mir",
+        "rustc/monomorphization",
+        "zerocopy/transmute-ref"
+      ]
+    },
+    "anneal-public-mir-discovery-and-conditional-interprocedural-verification-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework (Trusted/MirSemantics.lean, theory/Anneal/FunctionalTranslation.lean, trusted/rustc-capture)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_privacy, rustc_resolve, rustc_passes, rustc_monomorphize)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/public-mir-discovery",
+        "anneal/conditional-verification",
+        "anneal/interprocedural",
+        "anneal/post-monomorphization-errors",
+        "rustc/effective-visibilities",
+        "rustc/mir-keys",
+        "rustc/monomorphization",
+        "lean/symbolic-evaluation"
+      ]
+    },
     "anneal-research-agenda-2026-10-14": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -30624,6 +30745,50 @@
         "rustc/def-id",
         "rustc/def-path-hash",
         "rustc/hir"
+      ]
+    },
+    "rustc-post-monomorphization-errors-and-mir-capture-2026": {
+      "observed_at": "2026-10-30",
+      "subjects": [
+        {
+          "identity": {
+            "additional_revisions": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler (rustc_middle, rustc_mir_build, rustc_mir_transform, rustc_monomorphize, rustc_const_eval, rustc_ty_utils, rustc_codegen_ssa, rustc_codegen_llvm)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference (const block and CTFE evaluation rules)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+          },
+          "name": "zerocopy (static_assert! and const_assert! macros)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework (anneal-rustc-capture)"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/rustc",
+        "rust/mir",
+        "rust/monomorphization",
+        "rust/ctfe",
+        "rust/post-monomorphization-errors",
+        "zerocopy/static-assert",
+        "anneal/rustc-capture"
       ]
     },
     "safe-byte-correspondence-three-routes-lean4-31-rust1-99": {

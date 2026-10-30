@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "rust",
+    "rust/rustc",
+    "rust/mir",
+    "rust/monomorphization",
+    "rust/ctfe",
+    "rust/post-monomorphization-errors",
+    "zerocopy/static-assert",
+    "anneal/rustc-capture"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rustc_middle, rustc_mir_build, rustc_mir_transform, rustc_monomorphize, rustc_const_eval, rustc_ty_utils, rustc_codegen_ssa, rustc_codegen_llvm)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "additional_revisions": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "The Rust Reference (const block and CTFE evaluation rules)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "zerocopy (static_assert! and const_assert! macros)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+      }
+    },
+    {
+      "name": "Anneal verification framework (anneal-rustc-capture)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

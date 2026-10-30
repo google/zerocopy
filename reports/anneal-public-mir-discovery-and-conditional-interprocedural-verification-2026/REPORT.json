@@ -1,0 +1,38 @@
+{
+  "observed_at": "2026-10-30",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+      },
+      "name": "Anneal verification framework (Trusted/MirSemantics.lean, theory/Anneal/FunctionalTranslation.lean, trusted/rustc-capture)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      },
+      "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_privacy, rustc_resolve, rustc_passes, rustc_monomorphize)"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/public-mir-discovery",
+    "anneal/conditional-verification",
+    "anneal/interprocedural",
+    "anneal/post-monomorphization-errors",
+    "rustc/effective-visibilities",
+    "rustc/mir-keys",
+    "rustc/monomorphization",
+    "lean/symbolic-evaluation"
+  ]
+}

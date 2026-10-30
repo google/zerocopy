@@ -1,0 +1,496 @@
+=== PME CAPTURE PROBE: mir_keys count = 11 ===
+
+--- 1. All LocalDefIds in tcx.mir_keys(()) ---
+  - add                                                            | kind=Fn | const_ctx=None
+  - double_bounded                                                 | kind=Fn | const_ctx=None
+  - const_bounded_add                                              | kind=Fn | const_ctx=None
+  - const_bounded_add::{constant#0}                                | kind=InlineConst | const_ctx=Some(Const { inline: true })
+  - transmute_ref                                                  | kind=Fn | const_ctx=None
+  - transmute_ref::{constant#0}                                    | kind=InlineConst | const_ctx=Some(Const { inline: true })
+  - transmute_ref_static_assert                                    | kind=Fn | const_ctx=None
+  - <(std::marker::PhantomData<S>, std::marker::PhantomData<D>) as transmute_ref_static_assert::StaticAssert>::ASSERT | kind=AssocConst { is_type_const: false        } | const_ctx=Some(Const { inline: false })
+  - dead_call_pme                                                  | kind=Fn | const_ctx=None
+  - after_return_no_pme                                            | kind=Fn | const_ctx=None
+  - after_return_no_pme::{constant#0}                              | kind=InlineConst | const_ctx=Some(Const { inline: true })
+
+--- 2. Per-Function Extraction (Runtime(PostCleanup) vs Optimized) ---
+========================================================================
+FUNCTION: add (DefKind::Fn)
+  is_external_entry_fn (isPublic) : false
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (2 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (2 basic blocks)
+  required_consts (0):
+  mentioned_items (0):
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      StorageLive(_3);
+      _3 = copy _1;
+      StorageLive(_4);
+      _4 = copy _2;
+      _5 = AddWithOverflow(copy _3, copy _4);
+      assert(!move (_5.1: bool), "attempt to compute `{} + {}`, which would overflow", move _3, move _4) -> [success: bb1, unwind continue];
+    }
+    bb1: {
+      _0 = move (_5.0: usize);
+      StorageDead(_4);
+      StorageDead(_3);
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      _3 = AddWithOverflow(copy _1, copy _2);
+      assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, copy _2) -> [success: bb1, unwind continue];
+    }
+    bb1: {
+      _0 = move (_3.0: usize);
+      return;
+    }
+
+========================================================================
+FUNCTION: double_bounded (DefKind::Fn)
+  is_external_entry_fn (isPublic) : true
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (5 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (4 basic blocks)
+  required_consts (0):
+  mentioned_items (1):
+    [0] MentionedItem::Fn def=add args=[]
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      StorageLive(_2);
+      StorageLive(_3);
+      _3 = copy _1;
+      _2 = Le(move _3, const 1000_usize);
+      switchInt(move _2) -> [0: bb3, otherwise: bb1];
+    }
+    bb1: {
+      StorageDead(_3);
+      StorageLive(_4);
+      _4 = copy _1;
+      StorageLive(_5);
+      _5 = copy _1;
+      _0 = add(move _4, move _5) -> [return: bb2, unwind continue];
+    }
+    bb2: {
+      StorageDead(_5);
+      StorageDead(_4);
+      goto -> bb4;
+    }
+    bb3: {
+      StorageDead(_3);
+      _0 = const 0_usize;
+      goto -> bb4;
+    }
+    bb4: {
+      StorageDead(_2);
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      _2 = Le(copy _1, const 1000_usize);
+      switchInt(move _2) -> [0: bb2, otherwise: bb1];
+    }
+    bb1: {
+      _0 = add(copy _1, copy _1) -> [return: bb3, unwind continue];
+    }
+    bb2: {
+      _0 = const 0_usize;
+      goto -> bb3;
+    }
+    bb3: {
+      return;
+    }
+
+========================================================================
+FUNCTION: const_bounded_add (DefKind::Fn)
+  is_external_entry_fn (isPublic) : true
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (5 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (5 basic blocks)
+  required_consts (3):
+    [0] Const::Unevaluated raw_def=const_bounded_add::{constant#0} (InlineConst) raw_args=[N/#0, ()] ty=()
+        mir_for_ctfe(const_bounded_add::{constant#0}) phase=Runtime(PostCleanup) bb_count=3 req_consts=1:
+    bb0: {
+      StorageLive(_1);
+      StorageLive(_2);
+      _2 = Le(const N, const 1000_usize);
+      switchInt(move _2) -> [0: bb1, otherwise: bb2];
+    }
+    bb1: {
+      StorageLive(_3);
+      ConstEvalCounter;
+      _3 = core::panicking::panic(const "assertion failed: N <= 1000") -> unwind continue;
+    }
+    bb2: {
+      _1 = const ();
+      StorageDead(_2);
+      StorageDead(_1);
+      _0 = const ();
+      return;
+    }
+    [1] Ty(usize, N/#0)
+    [2] Ty(usize, N/#0)
+  mentioned_items (0):
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      StorageLive(_2);
+      _2 = const const_bounded_add::<N>::{constant#0};
+      StorageDead(_2);
+      StorageLive(_3);
+      StorageLive(_4);
+      _4 = copy _1;
+      _3 = Le(move _4, const 1000_usize);
+      switchInt(move _3) -> [0: bb3, otherwise: bb1];
+    }
+    bb1: {
+      StorageDead(_4);
+      StorageLive(_5);
+      _5 = copy _1;
+      _6 = AddWithOverflow(copy _5, const N);
+      assert(!move (_6.1: bool), "attempt to compute `{} + {}`, which would overflow", move _5, const N) -> [success: bb2, unwind continue];
+    }
+    bb2: {
+      _0 = move (_6.0: usize);
+      StorageDead(_5);
+      goto -> bb4;
+    }
+    bb3: {
+      StorageDead(_4);
+      _0 = const 0_usize;
+      goto -> bb4;
+    }
+    bb4: {
+      StorageDead(_3);
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      _2 = Le(copy _1, const 1000_usize);
+      switchInt(move _2) -> [0: bb3, otherwise: bb1];
+    }
+    bb1: {
+      _3 = AddWithOverflow(copy _1, const N);
+      assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, const N) -> [success: bb2, unwind continue];
+    }
+    bb2: {
+      _0 = move (_3.0: usize);
+      goto -> bb4;
+    }
+    bb3: {
+      _0 = const 0_usize;
+      goto -> bb4;
+    }
+    bb4: {
+      return;
+    }
+
+========================================================================
+FUNCTION: transmute_ref (DefKind::Fn)
+  is_external_entry_fn (isPublic) : true
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (1 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (3 basic blocks)
+  required_consts (1):
+    [0] Const::Unevaluated raw_def=transmute_ref::{constant#0} (InlineConst) raw_args=[Src/#0, Dst/#1, ()] ty=()
+        mir_for_ctfe(transmute_ref::{constant#0}) phase=Runtime(PostCleanup) bb_count=9 req_consts=0:
+    bb0: {
+      StorageLive(_1);
+      StorageLive(_2);
+      StorageLive(_3);
+      ConstEvalCounter;
+      _3 = std::mem::size_of::<Src>() -> [return: bb1, unwind continue];
+    }
+    bb1: {
+      StorageLive(_4);
+      ConstEvalCounter;
+      _4 = std::mem::size_of::<Dst>() -> [return: bb2, unwind continue];
+    }
+    bb2: {
+      _2 = Eq(move _3, move _4);
+      switchInt(move _2) -> [0: bb4, otherwise: bb3];
+    }
+    bb3: {
+      StorageDead(_4);
+      StorageDead(_3);
+      _1 = const ();
+      StorageDead(_2);
+      StorageDead(_1);
+      StorageLive(_6);
+      StorageLive(_7);
+      StorageLive(_8);
+      ConstEvalCounter;
+      _8 = std::mem::align_of::<Src>() -> [return: bb5, unwind continue];
+    }
+    bb4: {
+      StorageDead(_4);
+      StorageDead(_3);
+      StorageLive(_5);
+      ConstEvalCounter;
+      _5 = core::panicking::panic(const "assertion failed: core::mem::size_of::<Src>() == core::mem::size_of::<Dst>()") -> unwind continue;
+    }
+    bb5: {
+      StorageLive(_9);
+      ConstEvalCounter;
+      _9 = std::mem::align_of::<Dst>() -> [return: bb6, unwind continue];
+    }
+    bb6: {
+      _7 = Ge(move _8, move _9);
+      switchInt(move _7) -> [0: bb8, otherwise: bb7];
+    }
+    bb7: {
+      StorageDead(_9);
+      StorageDead(_8);
+      _6 = const ();
+      StorageDead(_7);
+      StorageDead(_6);
+      _0 = const ();
+      return;
+    }
+    bb8: {
+      StorageDead(_9);
+      StorageDead(_8);
+      StorageLive(_10);
+      ConstEvalCounter;
+      _10 = core::panicking::panic(const "assertion failed: core::mem::align_of::<Src>() >= core::mem::align_of::<Dst>()") -> unwind continue;
+    }
+  mentioned_items (0):
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      StorageLive(_2);
+      _2 = const transmute_ref::<Src, Dst>::{constant#0};
+      StorageDead(_2);
+      StorageLive(_3);
+      StorageLive(_4);
+      StorageLive(_5);
+      StorageLive(_6);
+      _6 = &raw const (*_1);
+      _5 = copy _6;
+      _4 = move _5 as *const Dst (PtrToPtr);
+      StorageDead(_5);
+      _3 = &(*_4);
+      _0 = &(*_3);
+      StorageDead(_6);
+      StorageDead(_4);
+      StorageDead(_3);
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      _3 = &raw const (*_1);
+      _2 = copy _3 as *const Dst (PtrToPtr);
+      _4 = copy _2 as *const () (PtrToPtr);
+      _5 = copy _4 as usize (Transmute);
+      _6 = Sub(const <Dst as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+      _7 = BitAnd(copy _5, copy _6);
+      _8 = Eq(copy _7, const 0_usize);
+      assert(copy _8, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Dst as std::mem::SizedTypeProperties>::ALIGN, copy _5) -> [success: bb1, unwind unreachable];
+    }
+    bb1: {
+      _9 = copy _2 as *const () (PtrToPtr);
+      _10 = copy _9 as usize (Transmute);
+      _11 = Eq(copy _10, const 0_usize);
+      _12 = BitAnd(copy _11, const true);
+      _13 = Not(copy _12);
+      assert(copy _13, "null pointer dereference occurred") -> [success: bb2, unwind unreachable];
+    }
+    bb2: {
+      _0 = &(*_2);
+      return;
+    }
+
+========================================================================
+FUNCTION: transmute_ref_static_assert (DefKind::Fn)
+  is_external_entry_fn (isPublic) : true
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (3 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (5 basic blocks)
+  required_consts (1):
+    [0] Const::Unevaluated raw_def=transmute_ref_static_assert::StaticAssert::ASSERT (AssocConst { is_type_const: false }) raw_args=[(std::marker::PhantomData<Src/#0>, std::marker::PhantomData<Dst/#1>)] ty=bool
+        -> Instance::try_resolve => def=<(std::marker::PhantomData<S>, std::marker::PhantomData<D>) as transmute_ref_static_assert::StaticAssert>::ASSERT args=[Src/#0, Dst/#1]
+        mir_for_ctfe(<(std::marker::PhantomData<S>, std::marker::PhantomData<D>) as transmute_ref_static_assert::StaticAssert>::ASSERT) phase=Runtime(PostCleanup) bb_count=10 req_consts=0:
+    bb0: {
+      StorageLive(_1);
+      StorageLive(_2);
+      StorageLive(_3);
+      ConstEvalCounter;
+      _3 = std::mem::size_of::<S>() -> [return: bb1, unwind continue];
+    }
+    bb1: {
+      StorageLive(_4);
+      ConstEvalCounter;
+      _4 = std::mem::size_of::<D>() -> [return: bb2, unwind continue];
+    }
+    bb2: {
+      _2 = Eq(move _3, move _4);
+      switchInt(move _2) -> [0: bb4, otherwise: bb3];
+    }
+    bb3: {
+      StorageDead(_4);
+      StorageDead(_3);
+      StorageLive(_5);
+      ConstEvalCounter;
+      _5 = std::mem::align_of::<S>() -> [return: bb5, unwind continue];
+    }
+    bb4: {
+      StorageDead(_4);
+      StorageDead(_3);
+      _1 = const false;
+      goto -> bb7;
+    }
+    bb5: {
+      StorageLive(_6);
+      ConstEvalCounter;
+      _6 = std::mem::align_of::<D>() -> [return: bb6, unwind continue];
+    }
+    bb6: {
+      _1 = Ge(move _5, move _6);
+      StorageDead(_6);
+      StorageDead(_5);
+      goto -> bb7;
+    }
+    bb7: {
+      StorageDead(_2);
+      StorageLive(_7);
+      StorageLive(_8);
+      _8 = copy _1;
+      switchInt(move _8) -> [0: bb8, otherwise: bb9];
+    }
+    bb8: {
+      StorageLive(_9);
+      ConstEvalCounter;
+      _9 = core::panicking::panic(const "assertion failed: ok") -> unwind continue;
+    }
+    bb9: {
+      _7 = const ();
+      StorageDead(_8);
+      StorageDead(_7);
+      _0 = copy _1;
+      StorageDead(_1);
+      return;
+    }
+  mentioned_items (1):
+    [0] MentionedItem::Fn def=core::panicking::panic args=[]
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      StorageLive(_2);
+      StorageLive(_3);
+      _3 = const <(std::marker::PhantomData<Src>, std::marker::PhantomData<Dst>) as transmute_ref_static_assert::StaticAssert>::ASSERT;
+      switchInt(move _3) -> [0: bb1, otherwise: bb2];
+    }
+    bb1: {
+      StorageLive(_4);
+      _4 = core::panicking::panic(const "assertion failed: <(core::marker::PhantomData<Src>, core::marker::PhantomData<Dst>) as\n    StaticAssert>::ASSERT") -> unwind continue;
+    }
+    bb2: {
+      _2 = const ();
+      StorageDead(_3);
+      StorageDead(_2);
+      StorageLive(_5);
+      StorageLive(_6);
+      StorageLive(_7);
+      StorageLive(_8);
+      _8 = &raw const (*_1);
+      _7 = copy _8;
+      _6 = move _7 as *const Dst (PtrToPtr);
+      StorageDead(_7);
+      _5 = &(*_6);
+      _0 = &(*_5);
+      StorageDead(_8);
+      StorageDead(_6);
+      StorageDead(_5);
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      switchInt(const <(std::marker::PhantomData<Src>, std::marker::PhantomData<Dst>) as transmute_ref_static_assert::StaticAssert>::ASSERT) -> [0: bb1, otherwise: bb2];
+    }
+    bb1: {
+      _2 = core::panicking::panic(const "assertion failed: <(core::marker::PhantomData<Src>, core::marker::PhantomData<Dst>) as\n    StaticAssert>::ASSERT") -> unwind continue;
+    }
+    bb2: {
+      _4 = &raw const (*_1);
+      _3 = copy _4 as *const Dst (PtrToPtr);
+      _5 = copy _3 as *const () (PtrToPtr);
+      _6 = copy _5 as usize (Transmute);
+      _7 = Sub(const <Dst as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+      _8 = BitAnd(copy _6, copy _7);
+      _9 = Eq(copy _8, const 0_usize);
+      assert(copy _9, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Dst as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb3, unwind unreachable];
+    }
+    bb3: {
+      _10 = copy _3 as *const () (PtrToPtr);
+      _11 = copy _10 as usize (Transmute);
+      _12 = Eq(copy _11, const 0_usize);
+      _13 = BitAnd(copy _12, const true);
+      _14 = Not(copy _13);
+      assert(copy _14, "null pointer dereference occurred") -> [success: bb4, unwind unreachable];
+    }
+    bb4: {
+      _0 = &(*_3);
+      return;
+    }
+
+========================================================================
+FUNCTION: dead_call_pme (DefKind::Fn)
+  is_external_entry_fn (isPublic) : true
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (5 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (1 basic blocks)
+  required_consts (0):
+  mentioned_items (1):
+    [0] MentionedItem::Fn def=const_bounded_add args=[N/#0]
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      StorageLive(_2);
+      StorageLive(_3);
+      _3 = const false;
+      switchInt(move _3) -> [0: bb3, otherwise: bb1];
+    }
+    bb1: {
+      StorageLive(_4);
+      StorageLive(_5);
+      _5 = copy _1;
+      _4 = const_bounded_add::<N>(move _5) -> [return: bb2, unwind continue];
+    }
+    bb2: {
+      StorageDead(_5);
+      StorageDead(_4);
+      _2 = const ();
+      goto -> bb4;
+    }
+    bb3: {
+      _2 = const ();
+      goto -> bb4;
+    }
+    bb4: {
+      StorageDead(_3);
+      StorageDead(_2);
+      _0 = copy _1;
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      _0 = copy _1;
+      return;
+    }
+
+========================================================================
+FUNCTION: after_return_no_pme (DefKind::Fn)
+  is_external_entry_fn (isPublic) : true
+  isSafe                          : true
+  PostCleanup phase               : Runtime(PostCleanup) (1 basic blocks)
+  Optimized phase                 : Runtime(Optimized) (1 basic blocks)
+  required_consts (0):
+  mentioned_items (0):
+  Runtime(PostCleanup) basic_blocks:
+    bb0: {
+      _0 = copy _1;
+      return;
+    }
+  Runtime(Optimized) basic_blocks:
+    bb0: {
+      _0 = copy _1;
+      return;
+    }
+
