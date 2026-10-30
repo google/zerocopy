@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792855762351,
+  "lastUpdate": 1793377782646,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23769,6 +23769,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1168,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6",
+          "message": "[exocrate] Bump to 0.3.0 (#3908)\n\nBump `exocrate` from 0.1.0 to 0.3.0, and add package metadata (`description`,\n`license`, and `repository`) to `exocrate/Cargo.toml`. Synchronize the updated\nversion in `exocrate/Cargo.lock`, `anneal/Cargo.lock`, and `anneal/v1/Cargo.lock`.\n\ngherrit-pr-id: Gdyb42ih4bwueat7h4gts2tqudohw3r6v\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-10-30T12:04:18-04:00",
+          "tree_id": "41e5d825939b3133299ac48c503932f0a038b824",
+          "url": "https://github.com/google/zerocopy/commit/8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+        },
+        "date": 1793377778830,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1216,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1443,
             "unit": "seconds"
           }
         ]
