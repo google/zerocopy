@@ -612,7 +612,7 @@ checksum = "5692dd7b5a1978a5aeb0ce83b7655c58ca8efdcb79d21036ea249da95afec2c6"
 
 [[package]]
 name = "exocrate"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "dirs",
  "fs2",
