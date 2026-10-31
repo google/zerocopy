@@ -1,0 +1,10 @@
+=== 1. Kernel-Typecheck SingleSourceCodegen.lean and Emit .olean ===
+=== 2. Emit Prog.s Directly from Trusted.emitX86CrateAsm Prog.x86Crate ===
+emitted verified assembly to Prog.s
+=== 3. Audit Genuine Prog.s Against SingleSourceCodegen.olean ===
+audit: ok (Prog.s matches .olean Prog.asmText and Trusted.CrateTheorem)
+=== 4. Audit Tampered Prog_tampered.s (Simulating Shadow-Artifact Drift) ===
+audit: REJECTED (artifact binding mismatch: disk `.s` does not match `.olean` `Prog.asmText`)
+expected rejection of tampered Prog_tampered.s confirmed.
+=== 5. Assemble Genuine Prog.s with cc and Execute on x86-64 CPU ===
+cpu_exec: ok (anneal_double_u64 passed all 64-bit modular tests)

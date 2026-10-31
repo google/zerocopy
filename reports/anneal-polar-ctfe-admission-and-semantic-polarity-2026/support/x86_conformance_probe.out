@@ -1,0 +1,28 @@
+[TEST 1: SUB-REGISTER WRITES]
+  seed     = 0x1122334455667788
+  movb al  = 0x11223344556677aa (expected 0x11223344556677aa: low 8 merged)
+  movw ax  = 0x112233445566bbcc (expected 0x112233445566bbcc: low 16 merged)
+  movl eax = 0x00000000ddeeff00 (expected 0x00000000ddeeff00: upper 32 zeroed)
+[TEST 2: 64-BIT MODULAR ALU VS X86Semantics.lean UNBOUNDED Nat]
+  addq(UINT64_MAX, 1) -> hw=0x0000000000000000 CF=1 ZF=1 OF=0 | X86Semantics.lean=2^64 (0x10000000000000000)
+  subq(0, 1)          -> hw=0xffffffffffffffff CF=1 ZF=0 SF=1 | X86Semantics.lean=0 (Nat truncating sub!)
+  imulq(2^32, 2^32)   -> hw=0x0000000000000000 CF=1 OF=1      | X86Semantics.lean=2^64 (unbounded Nat mul!)
+[TEST 3: SHIFT MASKING & FLAG SEMANTICS]
+  shlq(1, 64)  -> hw=0x0000000000000001 (cl & 0x3f = 0) | X86Semantics.lean=2^64 (1 <<< 64)
+  shrq(1, 64)  -> hw=0x0000000000000001 (cl & 0x3f = 0) | X86Semantics.lean=0 (1 >>> 64)
+  shll(1, 32)  -> hw=0x0000000000000001 (cl & 0x1f = 0)
+  sarq(INT64_MIN, 63) -> hw=0xffffffffffffffff (sign-extended)
+  shlq(x, 0) arith flags unchanged: YES (before=0x055, after=0x055)
+  shlq(0x4000..00, 1) -> CF=0 OF=1 SF=1 (OF = MSB(res) ^ CF = 1)
+[TEST 4: INC/DEC CF PRESERVATION & MOV/LEA FLAG INVARIANCE]
+  incq(UINT64_MAX): CF_in=0 -> CF_out=0 ZF=1 | CF_in=1 -> CF_out=1 ZF=1
+  decq(0):          CF_in=0 -> CF_out=0 SF=1 | CF_in=1 -> CF_out=1 SF=1
+  movq + leaq arith flags unchanged: YES
+[TEST 5: HARDWARE #DE (DIV/IDIV) AND #UD (UD2) TRAPS]
+  divq by 0: trapped with signal=8 (SIGFPE=8) si_code=1
+  idivq(INT64_MIN, -1): trapped with signal=8 (SIGFPE=8) si_code=1
+  divq(2^64, 1) overflow: trapped with signal=8 (SIGFPE=8) si_code=1
+  ud2: trapped with signal=4 (SIGILL=4) si_code=2
+[TEST 6: CallTransmuteCopy 8-BYTE MOV VS REP MOVSB (16-BYTE TYPE)]
+  render_x86_assembly 8B mov: lo=0x1111222233334444 hi=0xdeadbeefdeadbeef (hi word uncopied!)
+  X86Semantics rep movsb 16B: lo=0x1111222233334444 hi=0x5555666677778888 (both words copied)

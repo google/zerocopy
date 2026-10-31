@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/tcb-consistency",
+    "anneal/proof-gated-compilation",
+    "anneal/trust-policy",
+    "anneal/boundary-audit",
+    "lean/olean-auditing"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal boundary audit baseline (main: trusted/audit/TrustedBoundary.lean, trusted/audit/src/lib.rs)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal hardened boundary audit (pr-65: trusted/audit/TrustedBoundary.lean, trusted/audit/src/lib.rs)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "76fad1a1befa2e4c038d88c3a1bbbe873acb1322"
+      }
+    },
+    {
+      "name": "Anneal trusted core refinement and MIR semantics (trusted-core: trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/MirSemantics.lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Anneal MIR-to-x86 refinement, target ISA semantics, and boundary audit (mir-to-x86: trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/X86Semantics.lean, trusted/audit/TrustedBoundary.lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaborator toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/open-world-callbacks",
+    "anneal/reentrancy",
+    "anneal/frame-isolation",
+    "anneal/mutation-testing",
+    "anneal/canary-theorems",
+    "lean/step-result"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal (trusted-core-experiment)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
+        "paths": "trusted/lean/Anneal/Trusted/SemanticModel.lean, trusted/lean/Anneal/Trusted/MirSemantics.lean, theory/Anneal/MirLemmas.lean, trusted/audit/src/main.rs"
+      }
+    },
+    {
+      "name": "Anneal (exp/mir-to-x86)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+        "paths": "trusted/lean/Anneal/Trusted/SemanticModel.lean, trusted/lean/Anneal/Trusted/X86Semantics.lean, theory/Anneal/X86Lemmas.lean"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

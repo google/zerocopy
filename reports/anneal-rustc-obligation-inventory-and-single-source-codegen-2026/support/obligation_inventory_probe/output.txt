@@ -1,0 +1,124 @@
+=== (A) TRAIT IMPLS, UNSAFE IMPLS, AND POLARITIES ===
+impl "<RawPtrBox as std::marker::Send>" | trait="std::marker::Send" (trait_safety=Unsafe) | impl_safety=Unsafe | polarity=Positive | self_ty=RawPtrBox | clauses=0
+impl "<RawPtrBox as std::marker::Sync>" | trait="std::marker::Sync" (trait_safety=Unsafe) | impl_safety=Safe | polarity=Negative | self_ty=RawPtrBox | clauses=0
+impl "<RawPtrBox as LocalUnsafeTrait>" | trait="LocalUnsafeTrait" (trait_safety=Unsafe) | impl_safety=Unsafe | polarity=Positive | self_ty=RawPtrBox | clauses=0
+impl "<ConditionalWrapper<T> as LocalUnsafeTrait>" | trait="LocalUnsafeTrait" (trait_safety=Unsafe) | impl_safety=Unsafe | polarity=Positive | self_ty=ConditionalWrapper<T/#0> | clauses=2
+impl "<EncapsulatedNonZero as SafeMutatorTrait>" | trait="SafeMutatorTrait" (trait_safety=Safe) | impl_safety=Safe | polarity=Positive | self_ty=EncapsulatedNonZero | clauses=0
+impl "<EncapsulatedNonZero as std::clone::Clone>" | trait="std::clone::Clone" (trait_safety=Safe) | impl_safety=Safe | polarity=Positive | self_ty=EncapsulatedNonZero | clauses=0
+impl "<DropTarget as std::ops::Drop>" | trait="std::ops::Drop" (trait_safety=Safe) | impl_safety=Safe | polarity=Positive | self_ty=DropTarget | clauses=0
+
+=== (B) ADTS, FIELD VISIBILITIES, NON_EXHAUSTIVE, AND #[unsafe] FIELDS ===
+ADT "RawPtrBox" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field RawPtrBox::ptr | vis=Restricted(ModId(DefId(0:0 ~ lib[9b1d]))) (syn_pub=false, eff_reach=false, eff_exp=false) | safety=Safe -> FieldAccess.priv
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "ConditionalWrapper" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field ConditionalWrapper::0 | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=true | allFieldsPubSafe (effective_reachable)=true
+ADT "AllPubSafeStruct" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field AllPubSafeStruct::a | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  field AllPubSafeStruct::b | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=true | allFieldsPubSafe (effective_reachable)=true
+ADT "EncapsulatedNonZero" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field EncapsulatedNonZero::val | vis=Restricted(ModId(DefId(0:0 ~ lib[9b1d]))) (syn_pub=false, eff_reach=false, eff_exp=false) | safety=Safe -> FieldAccess.priv
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "PubCrateFieldStruct" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field PubCrateFieldStruct::internal | vis=Restricted(ModId(DefId(0:0 ~ lib[9b1d]))) (syn_pub=false, eff_reach=false, eff_exp=false) | safety=Safe -> FieldAccess.priv
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "NonExhaustiveAllPubStruct" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=true
+  field NonExhaustiveAllPubStruct::a | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "UnsafeFieldStruct" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field UnsafeFieldStruct::safe_meta | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  field UnsafeFieldStruct::nonzero_inv | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Unsafe -> FieldAccess.unsafeField
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "inner_reexported::ReexportedMixedVis" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field ReexportedMixedVis::pub_field | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  field ReexportedMixedVis::super_field | vis=Restricted(ModId(DefId(0:0 ~ lib[9b1d]))) (syn_pub=false, eff_reach=false, eff_exp=false) | safety=Safe -> FieldAccess.priv
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "inner_reexported::ReexportedAllPub" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field ReexportedAllPub::x | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=true | allFieldsPubSafe (effective_reachable)=true
+ADT "inner_private::UnreachableAllPub" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=false | eff_exp=false | non_exhaustive=false
+  field UnreachableAllPub::x | vis=Public (syn_pub=true, eff_reach=false, eff_exp=false) | safety=Safe -> FieldAccess.priv
+  => allFieldsPubSafe (syntactic)=true | allFieldsPubSafe (effective_reachable)=false
+ADT "SampleUnion" | kind=Union | repr_c=true | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field SampleUnion::word | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  field SampleUnion::byte | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "SampleEnum" | kind=Enum | repr_c=true | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field Tuple::0 | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  field Struct::pub_v | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+ADT "DropTarget" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field DropTarget::state | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=true | allFieldsPubSafe (effective_reachable)=true
+ADT "OuterWithDropGlue" | kind=Struct | repr_c=false | syn_pub=true | eff_reach=true | eff_exp=true | non_exhaustive=false
+  field OuterWithDropGlue::inner | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  field OuterWithDropGlue::tag | vis=Public (syn_pub=true, eff_reach=true, eff_exp=true) | safety=Safe -> FieldAccess.pubSafe
+  => allFieldsPubSafe (syntactic)=true | allFieldsPubSafe (effective_reachable)=true
+ADT "PmeAssert" | kind=Struct | repr_c=false | syn_pub=false | eff_reach=false | eff_exp=false | non_exhaustive=false
+  => allFieldsPubSafe (syntactic)=false | allFieldsPubSafe (effective_reachable)=false
+
+=== (C) TRAIT DEFAULT METHODS AND SAFE TRAIT IMPLS ON PUBLIC TYPES ===
+Trait impl "std::marker::Send" for RawPtrBox
+Trait impl "LocalUnsafeTrait" for RawPtrBox
+  method check_invariant | trait_item="LocalUnsafeTrait::check_invariant" | local_override=Some("<RawPtrBox as LocalUnsafeTrait>::check_invariant") | resolved_instance=Instance { def: Item(DefId(0:11 ~ lib[9b1d]::{impl#2}::check_invariant)), args: [] } | phase=Runtime(Optimized) | bbs=2
+  method default_unsafe_trait_helper | trait_item="LocalUnsafeTrait::default_unsafe_trait_helper" | local_override=None | resolved_instance=Instance { def: Item(DefId(0:5 ~ lib[9b1d]::LocalUnsafeTrait::default_unsafe_trait_helper)), args: [RawPtrBox] } | phase=Runtime(Optimized) | bbs=5
+Trait impl "LocalUnsafeTrait" for ConditionalWrapper<T/#0>
+  method check_invariant | trait_item="LocalUnsafeTrait::check_invariant" | local_override=Some("<ConditionalWrapper<T> as LocalUnsafeTrait>::check_invariant") | resolved_instance=Instance { def: Item(DefId(0:18 ~ lib[9b1d]::{impl#3}::check_invariant)), args: [T/#0] } | phase=Runtime(Optimized) | bbs=2
+  method default_unsafe_trait_helper | trait_item="LocalUnsafeTrait::default_unsafe_trait_helper" | local_override=None | resolved_instance=Instance { def: Item(DefId(0:5 ~ lib[9b1d]::LocalUnsafeTrait::default_unsafe_trait_helper)), args: [ConditionalWrapper<T/#0>] } | phase=Runtime(Optimized) | bbs=5
+Trait impl "SafeMutatorTrait" for EncapsulatedNonZero
+  method reset_to_zero | trait_item="SafeMutatorTrait::reset_to_zero" | local_override=Some("<EncapsulatedNonZero as SafeMutatorTrait>::reset_to_zero") | resolved_instance=Instance { def: Item(DefId(0:62 ~ lib[9b1d]::{impl#5}::reset_to_zero)), args: [] } | phase=Runtime(Optimized) | bbs=1
+  method default_zero_out | trait_item="SafeMutatorTrait::default_zero_out" | local_override=None | resolved_instance=Instance { def: Item(DefId(0:59 ~ lib[9b1d]::SafeMutatorTrait::default_zero_out)), args: [EncapsulatedNonZero] } | phase=Runtime(Optimized) | bbs=2
+  method overridable_method | trait_item="SafeMutatorTrait::overridable_method" | local_override=Some("<EncapsulatedNonZero as SafeMutatorTrait>::overridable_method") | resolved_instance=Instance { def: Item(DefId(0:63 ~ lib[9b1d]::{impl#5}::overridable_method)), args: [] } | phase=Runtime(Optimized) | bbs=1
+Trait impl "std::clone::Clone" for EncapsulatedNonZero
+  method clone | trait_item="std::clone::Clone::clone" | local_override=Some("<EncapsulatedNonZero as std::clone::Clone>::clone") | resolved_instance=Instance { def: Item(DefId(0:65 ~ lib[9b1d]::{impl#6}::clone)), args: [] } | phase=Runtime(Optimized) | bbs=1
+  method clone_from | trait_item="std::clone::Clone::clone_from" | local_override=None | resolved_instance=Instance { def: Item(DefId(2:3614 ~ core[efd5]::clone::Clone::clone_from)), args: [EncapsulatedNonZero] } | phase=Runtime(Optimized) | bbs=4
+Trait impl "std::ops::Drop" for DropTarget
+  method drop | trait_item="std::ops::Drop::drop" | local_override=Some("<DropTarget as std::ops::Drop>::drop") | resolved_instance=Instance { def: Item(DefId(0:69 ~ lib[9b1d]::{impl#7}::drop)), args: [] } | phase=Runtime(Optimized) | bbs=1
+  method pin_drop | trait_item="std::ops::Drop::pin_drop" | local_override=None | resolved_instance=Instance { def: Item(DefId(2:4647 ~ core[efd5]::ops::drop::Drop::pin_drop)), args: [DropTarget] } | phase=Runtime(Optimized) | bbs=1
+
+=== (D) DROP::DROP IMPLS, DROP GLUE, AND COMPILER SHIMS ===
+ADT "RawPtrBox" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "ConditionalWrapper" | explicit_dtor=None | drop_glue_instance=<polymorphic ADT: resolve_drop_glue per monomorphization>
+ADT "AllPubSafeStruct" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "EncapsulatedNonZero" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "PubCrateFieldStruct" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "NonExhaustiveAllPubStruct" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "UnsafeFieldStruct" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "inner_reexported::ReexportedMixedVis" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "inner_reexported::ReexportedAllPub" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "inner_private::UnreachableAllPub" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "SampleUnion" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "SampleEnum" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), None)) (phase=Runtime(Optimized), bbs=1)
+ADT "DropTarget" | explicit_dtor=Some("<DropTarget as std::ops::Drop>::drop") | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), Some(DropTarget))) (phase=Runtime(Optimized), bbs=2)
+ADT "OuterWithDropGlue" | explicit_dtor=None | drop_glue_instance=Shim(DropGlue(DefId(2:3436 ~ core[efd5]::ptr::drop_glue), Some(OuterWithDropGlue))) (phase=Runtime(Optimized), bbs=2)
+ADT "PmeAssert" | explicit_dtor=None | drop_glue_instance=<polymorphic ADT: resolve_drop_glue per monomorphization>
+Closure "exercise_closures_and_fn_ptrs::{closure#0}" | phase=Runtime(Optimized) | bbs=2 | fn_once_shim=Shim(ClosureOnce { call_once: DefId(2:4659 ~ core[efd5]::ops::function::FnOnce::call_once), closure: DefId(0:74 ~ lib[9b1d]::exercise_closures_and_fn_ptrs::{closure#0}), track_caller: false }) (phase=Runtime(Optimized), bbs=5)
+Shim Shim(Reify(DefId(0:75 ~ lib[9b1d]::top_safe_fn), None)) | phase=Runtime(Optimized) | bbs=2
+
+=== (E) MIR_KEYS, FN_SIG SAFETY/VISIBILITY, POST_CLEANUP VS MIR_FOR_CTFE VS OPTIMIZED_MIR, REQUIRED_CONSTS, MENTIONED_ITEMS ===
+mir_key "LocalUnsafeTrait::default_unsafe_trait_helper" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=5 | required_consts=Some([]) | mentioned_items=Some(["Fn(FnDef(DefId(0:4 ~ lib[9b1d]::LocalUnsafeTrait::check_invariant), Binder { value: [Self/#0], bound_vars: [] }))"])
+mir_key "<RawPtrBox as LocalUnsafeTrait>::check_invariant" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=2 | required_consts=Some([]) | mentioned_items=Some(["Fn(FnDef(DefId(2:3325 ~ core[efd5]::ptr::mut_ptr::{impl#0}::is_null), Binder { value: [usize], bound_vars: [] }))"])
+mir_key "<ConditionalWrapper<T> as LocalUnsafeTrait>::check_invariant" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=2 | required_consts=Some([]) | mentioned_items=Some(["Fn(FnDef(DefId(0:4 ~ lib[9b1d]::LocalUnsafeTrait::check_invariant), Binder { value: [T/#0], bound_vars: [] }))"])
+mir_key "EncapsulatedNonZero::new_unchecked" | kind=AssocFn | sig_safety=Unsafe, eff_reach=true -> FnKind.pubUnsafe | post_cleanup=Runtime(PostCleanup) (bbs=1) | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "EncapsulatedNonZero::get" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=Runtime(PostCleanup) (bbs=1) | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "SafeMutatorTrait::default_zero_out" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=2 | required_consts=Some([]) | mentioned_items=Some(["Fn(FnDef(DefId(0:58 ~ lib[9b1d]::SafeMutatorTrait::reset_to_zero), Binder { value: [Self/#0], bound_vars: [] }))"])
+mir_key "SafeMutatorTrait::overridable_method" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=Runtime(PostCleanup) (bbs=1) | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "<EncapsulatedNonZero as SafeMutatorTrait>::reset_to_zero" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "<EncapsulatedNonZero as SafeMutatorTrait>::overridable_method" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "<EncapsulatedNonZero as std::clone::Clone>::clone" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "<DropTarget as std::ops::Drop>::drop" | kind=AssocFn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "exercise_closures_and_fn_ptrs" | kind=Fn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=Runtime(PostCleanup) (bbs=3) | query=optimized_mir | phase=Runtime(Optimized) | bbs=3 | required_consts=Some([]) | mentioned_items=Some(["Fn(FnDef(DefId(0:75 ~ lib[9b1d]::top_safe_fn), Binder { value: [], bound_vars: [] }))", "Fn(FnDef(DefId(2:4652 ~ core[efd5]::ops::function::Fn::call), Binder { value: [Closure(DefId(0:74 ~ lib[9b1d]::exercise_closures_and_fn_ptrs::{closure#0}), [i8, Binder { value: extern \"RustCall\" fn((usize,)) -> usize, bound_vars: [] }, (&'{erased} usize,)]), (usize,)], bound_vars: [] }))", "Fn(Binder { value: fn(usize) -> usize, bound_vars: [] })"])
+mir_key "exercise_closures_and_fn_ptrs::{closure#0}" | kind=Closure | N/A | post_cleanup=<already stolen> | query=optimized_mir | phase=Runtime(Optimized) | bbs=2 | required_consts=Some([]) | mentioned_items=Some(["Fn(FnDef(DefId(2:38473 ~ core[efd5]::num::{impl#11}::wrapping_add), Binder { value: [], bound_vars: [] }))"])
+mir_key "top_safe_fn" | kind=Fn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=Runtime(PostCleanup) (bbs=1) | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "TRIVIAL_CONST" | kind=Const { is_type_const: false } | query=trivial_const | val=Some((Scalar(0x0000000000000063), usize))
+mir_key "TOP_LEVEL_CONST" | kind=Const { is_type_const: false } | N/A | post_cleanup=N/A | query=mir_for_ctfe | phase=Runtime(PostCleanup) | bbs=3 | required_consts=Some(["Unevaluated(UnevaluatedConst { def: DefId(2:38387 ~ core[efd5]::num::{impl#11}::BITS), args: [], promoted: None }, u32)"]) | mentioned_items=None
+mir_key "TOP_LEVEL_STATIC" | kind=Static { safety: Safe, mutability: Not, nested: false } | N/A | post_cleanup=N/A | query=mir_for_ctfe | phase=Runtime(PostCleanup) | bbs=2 | required_consts=Some(["Unevaluated(UnevaluatedConst { def: DefId(0:77 ~ lib[9b1d]::TOP_LEVEL_CONST), args: [], promoted: None }, usize)", "Unevaluated(UnevaluatedConst { def: DefId(0:77 ~ lib[9b1d]::TOP_LEVEL_CONST), args: [], promoted: None }, usize)"]) | mentioned_items=None
+mir_key "PmeAssert::<N>::OK" | kind=AssocConst { is_type_const: false } | N/A | post_cleanup=N/A | query=mir_for_ctfe | phase=Runtime(PostCleanup) | bbs=3 | required_consts=Some(["Ty(usize, N/#0)"]) | mentioned_items=None
+mir_key "pme_checked_helper" | kind=Fn | sig_safety=Safe, eff_reach=false -> FnKind.priv | post_cleanup=Runtime(PostCleanup) (bbs=1) | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some(["Unevaluated(UnevaluatedConst { def: DefId(0:84 ~ lib[9b1d]::{impl#8}::OK), args: [N/#0], promoted: None }, ())"]) | mentioned_items=Some([])
+mir_key "fn_with_consts_and_dead_branch" | kind=Fn | sig_safety=Safe, eff_reach=true -> FnKind.pubSafe | post_cleanup=Runtime(PostCleanup) (bbs=5) | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some(["Unevaluated(UnevaluatedConst { def: DefId(0:88 ~ lib[9b1d]::fn_with_consts_and_dead_branch::{constant#0}), args: [()], promoted: None }, ())"]) | mentioned_items=Some(["Fn(FnDef(DefId(0:85 ~ lib[9b1d]::pme_checked_helper), Binder { value: [1_usize], bound_vars: [] }))"])
+mir_key "fn_with_consts_and_dead_branch::{constant#0}" | kind=AnonConst | N/A | post_cleanup=N/A | query=mir_for_ctfe | phase=Runtime(PostCleanup) | bbs=4 | required_consts=Some([]) | mentioned_items=None
+mir_key "fn_with_consts_and_dead_branch::{constant#1}" | kind=AnonConst | query=trivial_const | val=Some((Scalar(0x0000000000000001), usize))
+mir_key "ConditionalWrapper" | kind=Ctor(Struct, Fn) | N/A | post_cleanup=N/A | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])
+mir_key "SampleEnum::Tuple" | kind=Ctor(Variant, Fn) | N/A | post_cleanup=N/A | query=optimized_mir | phase=Runtime(Optimized) | bbs=1 | required_consts=Some([]) | mentioned_items=Some([])

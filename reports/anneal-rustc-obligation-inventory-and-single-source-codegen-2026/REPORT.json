@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/rustc-capture",
+    "anneal/obligation-inventory",
+    "anneal/artifact-binding",
+    "rustc/tyctxt",
+    "rustc/mir",
+    "x86-64/codegen"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal (MIR semantic verification baseline)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
+        "paths": "trusted/rustc-capture/src/lib.rs, trusted/rustc-capture/src/proof_gen.rs, trusted/lean/Trusted/MirSemantics.lean"
+      }
+    },
+    {
+      "name": "Anneal (MIR-to-x86-64 codegen pipeline)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+        "paths": "trusted/rustc-capture/src/lib.rs, trusted/rustc-capture/src/proof_gen.rs, trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean, trusted/audit/TrustedBoundary.lean"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

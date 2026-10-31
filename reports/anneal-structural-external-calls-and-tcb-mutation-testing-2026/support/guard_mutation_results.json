@@ -1,0 +1,140 @@
+{
+  "baseline_file": "StructuralExternalCallAndCanaries.lean",
+  "baseline_exit_code": 0,
+  "total_mutations": 13,
+  "killed_mutations": 13,
+  "survived_mutations": 0,
+  "kill_rate_percent": 100.0,
+  "results": [
+    {
+      "id": "M01_alu_mod64_add_unbounded_nat",
+      "guard": "alu_mod64_add",
+      "quadrant": "Quadrant 2 (Target ISA ALU)",
+      "description": "Replace 64-bit modular BitVec addition `(va + vb).toNat` with unbounded Nat `a + b` (reproducing X86Semantics.lean:212)",
+      "expected_canary": "canary_pos_add64_wrap / canary_neg_add64_no_unbounded_nat",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpi2u6a2sp.lean:2773:30: error: Tactic `decide` proved that the proposition"
+    },
+    {
+      "id": "M02_alu_mod64_sub_truncating_nat",
+      "guard": "alu_mod64_sub",
+      "quadrant": "Quadrant 2 (Target ISA ALU)",
+      "description": "Replace 64-bit modular BitVec subtraction `(va - vb).toNat` with truncating Nat `a - b` (reproducing X86Semantics.lean:213)",
+      "expected_canary": "canary_pos_sub64_wrap / canary_neg_sub64_no_zero_truncation",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpj30jrxax.lean:2775:30: error: Tactic `decide` proved that the proposition"
+    },
+    {
+      "id": "M03_shift_mask64_shl_unmasked",
+      "guard": "shift_mask64_check",
+      "quadrant": "Quadrant 2 (Target ISA Shift/Flags)",
+      "description": "Remove `% 64` (`cl & 0x3f`) shift-count mask on 64-bit `shlq` (reproducing X86Semantics.lean:221)",
+      "expected_canary": "canary_pos_shl64_mask_and_flags",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpqldd1z7a.lean:2777:56: error: Application type mismatch: The argument"
+    },
+    {
+      "id": "M04_shift_mask64_shr_unmasked",
+      "guard": "shift_mask64_shr_check",
+      "quadrant": "Quadrant 2 (Target ISA Shift)",
+      "description": "Remove `% 64` (`cl & 0x3f`) shift-count mask on 64-bit `shrq` (reproducing X86Semantics.lean:222)",
+      "expected_canary": "canary_neg_shift64_no_unmasked_count",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpvpldjw0b.lean:2780:19: error: Tactic `decide` proved that the proposition"
+    },
+    {
+      "id": "M05_div_zero_guard_disabled",
+      "guard": "div_zero_check",
+      "quadrant": "Quadrant 1 / Quadrant 2 (Division Trap)",
+      "description": "Weaken divide-by-zero `#DE` check `divisor == 0#64` to `false` (fail-open omission of hardware trap)",
+      "expected_canary": "canary_neg_idiv64_div_zero_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpad616pvb.lean:2786:47: error: Type mismatch"
+    },
+    {
+      "id": "M06_idiv_signed_overflow_guard_disabled",
+      "guard": "idiv_overflow_check",
+      "quadrant": "Quadrant 1 / Quadrant 2 (Signed Division Overflow Trap)",
+      "description": "Weaken `INT64_MIN / -1` signed overflow `#DE` check to `false` (fail-open omission of hardware trap)",
+      "expected_canary": "canary_neg_idiv64_intmin_overflow_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpu0pzscfr.lean:2787:54: error: Type mismatch"
+    },
+    {
+      "id": "M07_slot_bounds_guard_disabled",
+      "guard": "slot_bounds_check",
+      "quadrant": "Quadrant 2 (Stack-Frame Bounds)",
+      "description": "Weaken stack-frame bounds check `slotIdx < slotCount` to `true` (reproducing X86Semantics.lean:105-115 unbounded writeSlot)",
+      "expected_canary": "canary_neg_slot_write_out_of_bounds_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpp60idp_m.lean:2789:56: error: Type mismatch"
+    },
+    {
+      "id": "M08_rsp_align16_guard_disabled",
+      "guard": "rsp_align16_check",
+      "quadrant": "Quadrant 2 (System V AMD64 ABI Alignment)",
+      "description": "Weaken 16-byte stack pointer alignment check `rsp % 16 == 0` at `call` to `true`",
+      "expected_canary": "canary_neg_call_rsp_misaligned_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmp2_cupmmz.lean:2791:51: error: Type mismatch"
+    },
+    {
+      "id": "M09_callee_saved_guard_disabled",
+      "guard": "callee_saved_check",
+      "quadrant": "Quadrant 2 (System V AMD64 Callee-Saved Integrity)",
+      "description": "Weaken callee-saved register preservation check `savedEntry == savedExit` at `ret` to `true`",
+      "expected_canary": "canary_neg_ret_callee_saved_clobbered_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmp16n6hw4v.lean:2793:58: error: Type mismatch"
+    },
+    {
+      "id": "M10_transmute_size_guard_disabled",
+      "guard": "transmute_size_check",
+      "quadrant": "Quadrant 1 / Quadrant 2 (Transmute Copy Size Check)",
+      "description": "Weaken `transmute_copy` byte-size equality check `srcSz == dstSz` to `true`",
+      "expected_canary": "canary_neg_transmute_copy_size_mismatch_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpj8sx8_dy.lean:2795:60: error: Type mismatch"
+    },
+    {
+      "id": "M11_adt_inv_guard_disabled",
+      "guard": "adt_inv_check",
+      "quadrant": "Quadrant 1 / Quadrant 2 (ADT Validity Invariant)",
+      "description": "Weaken `bool` validity invariant check `byteVal < 2` (`AdtInv`) to `true`",
+      "expected_canary": "canary_neg_load_bool_invalid_discriminant_traps",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpn_98_n28.lean:2797:62: error: Type mismatch"
+    },
+    {
+      "id": "M12_ctfe_no_unmodeled_guard_disabled",
+      "guard": "ctfe_no_unmodeled_check",
+      "quadrant": "Quadrant 4 (CTFE Negative-Polarity Vacuity Guard)",
+      "description": "Weaken `noUnmodeled := isModeled` to `true` (allowing unmodeled CTFE instructions to silently trigger vacuous truth)",
+      "expected_canary": "canary_ctfe_polarity_guards",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpj_6kklvv.lean:2798:36: error: Tactic `decide` proved that the proposition"
+    },
+    {
+      "id": "M13_ctfe_mono_admitted_forced_false",
+      "guard": "ctfe_mono_admitted_check",
+      "quadrant": "Quadrant 4 (Spurious CTFE Failure Vacuity)",
+      "description": "Mutate `monoAdmitted := isModeled && constPassed` to `false` (spurious CTFE failure shrinking effectivePre to False)",
+      "expected_canary": "canary_ctfe_polarity_guards",
+      "exit_code": 1,
+      "killed": true,
+      "first_error": "/tmp/tmpn9l08src.lean:2798:36: error: Tactic `decide` proved that the proposition"
+    }
+  ]
+}
