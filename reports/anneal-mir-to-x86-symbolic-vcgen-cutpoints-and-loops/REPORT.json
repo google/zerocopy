@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "anneal/vcgen",
+    "anneal/symbolic-execution",
+    "anneal/mir-to-x86",
+    "anneal/loop-invariants",
+    "lean4/weakest-precondition",
+    "lean4/whnf-reduction"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR-to-x86-64 Prototype and Proof Generator",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+        "branch": "mir-to-x86"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Syntax-Directed Symbolic VCGen Probe",
+      "identity": {
+        "artifact": "support/SymbolicVCGenProbe.lean",
+        "sha256": "62b694386ee6f3a3da3de1bf88d74c2ce3cc368a2d6534fd71bf1f20e7eea155"
+      }
+    },
+    {
+      "name": "Inductive Loop and Canonical Cut-Point VCGen Probe",
+      "identity": {
+        "artifact": "support/LoopAndJoinVCGenProbe.lean",
+        "sha256": "3c9b2aee3b7028c6824b494bd187e412298840727963f18728accd6041a21d4c"
+      }
+    },
+    {
+      "name": "Kernel Replay and TrustedBoundary Audit Script",
+      "identity": {
+        "artifact": "support/ReplayAudit.lean",
+        "sha256": "d640d0dc042102f123d0ac5c775bfb13bdccbab7a10949c7a04fb4455a19ed62"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

@@ -1,0 +1,506 @@
+{
+  "SeqBlock_FnMap_10": {
+    "elab_ms": 111.78,
+    "olean_bytes": 10048,
+    "replay_ms": 6.006,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseList_10": {
+    "elab_ms": 120.11,
+    "olean_bytes": 10056,
+    "replay_ms": 7.857,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_CanonList_10": {
+    "elab_ms": 120.05,
+    "olean_bytes": 10032,
+    "replay_ms": 5.877,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseArray_10": {
+    "elab_ms": 136.78,
+    "olean_bytes": 10032,
+    "replay_ms": 12.018,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_SortedAList_10": {
+    "elab_ms": 132.03,
+    "olean_bytes": 10056,
+    "replay_ms": 11.322,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_BinTrie_10": {
+    "elab_ms": 120.85,
+    "olean_bytes": 10000,
+    "replay_ms": 7.469,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_FnMap_50": {
+    "elab_ms": 193.36,
+    "olean_bytes": 10048,
+    "replay_ms": 25.698,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseList_50": {
+    "elab_ms": 271.46,
+    "olean_bytes": 10032,
+    "replay_ms": 46.657,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_CanonList_50": {
+    "elab_ms": 273.02,
+    "olean_bytes": 10032,
+    "replay_ms": 41.659,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseArray_50": {
+    "elab_ms": 420.28,
+    "olean_bytes": 10032,
+    "replay_ms": 77.907,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_SortedAList_50": {
+    "elab_ms": 438.54,
+    "olean_bytes": 10056,
+    "replay_ms": 100.135,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_BinTrie_50": {
+    "elab_ms": 226.98,
+    "olean_bytes": 9976,
+    "replay_ms": 35.025,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_FnMap_200": {
+    "elab_ms": 497.84,
+    "olean_bytes": 10048,
+    "replay_ms": 108.387,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseList_200": {
+    "elab_ms": 873.86,
+    "olean_bytes": 10056,
+    "replay_ms": 143.861,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_CanonList_200": {
+    "elab_ms": 920.0,
+    "olean_bytes": 10056,
+    "replay_ms": 138.162,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseArray_200": {
+    "elab_ms": 1738.04,
+    "olean_bytes": 10056,
+    "replay_ms": 273.607,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_SortedAList_200": {
+    "elab_ms": 1887.18,
+    "olean_bytes": 10040,
+    "replay_ms": 499.961,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_BinTrie_200": {
+    "elab_ms": 722.13,
+    "olean_bytes": 9976,
+    "replay_ms": 110.293,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_FnMap_500": {
+    "elab_ms": 1332.86,
+    "olean_bytes": 10048,
+    "replay_ms": 285.961,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseList_500": {
+    "elab_ms": 2676.79,
+    "olean_bytes": 10032,
+    "replay_ms": 271.423,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_CanonList_500": {
+    "elab_ms": 2797.97,
+    "olean_bytes": 10056,
+    "replay_ms": 260.337,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_DenseArray_500": {
+    "elab_ms": 5801.55,
+    "olean_bytes": 10032,
+    "replay_ms": 611.408,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_SortedAList_500": {
+    "elab_ms": 5491.92,
+    "olean_bytes": 10064,
+    "replay_ms": 1321.252,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqBlock_BinTrie_500": {
+    "elab_ms": 2329.41,
+    "olean_bytes": 10000,
+    "replay_ms": 245.965,
+    "dag_nodes": 206,
+    "decls": 2
+  },
+  "SeqSteps_FnMap_10": {
+    "elab_ms": 126.08,
+    "olean_bytes": 8752,
+    "replay_ms": 8.488,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_DenseList_10": {
+    "elab_ms": 136.46,
+    "olean_bytes": 8760,
+    "replay_ms": 10.263,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_CanonList_10": {
+    "elab_ms": 131.83,
+    "olean_bytes": 8760,
+    "replay_ms": 8.395,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_DenseArray_10": {
+    "elab_ms": 150.91,
+    "olean_bytes": 8760,
+    "replay_ms": 14.722,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_SortedAList_10": {
+    "elab_ms": 145.83,
+    "olean_bytes": 8760,
+    "replay_ms": 14.211,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_BinTrie_10": {
+    "elab_ms": 129.59,
+    "olean_bytes": 8704,
+    "replay_ms": 10.078,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_FnMap_50": {
+    "elab_ms": 439.67,
+    "olean_bytes": 8752,
+    "replay_ms": 69.891,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_DenseList_50": {
+    "elab_ms": 527.83,
+    "olean_bytes": 8760,
+    "replay_ms": 90.31,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_CanonList_50": {
+    "elab_ms": 530.02,
+    "olean_bytes": 8760,
+    "replay_ms": 86.791,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_DenseArray_50": {
+    "elab_ms": 682.04,
+    "olean_bytes": 8760,
+    "replay_ms": 123.668,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_SortedAList_50": {
+    "elab_ms": 704.57,
+    "olean_bytes": 8760,
+    "replay_ms": 150.364,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_BinTrie_50": {
+    "elab_ms": 491.47,
+    "olean_bytes": 8704,
+    "replay_ms": 79.439,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_FnMap_200": {
+    "elab_ms": 4645.54,
+    "olean_bytes": 8752,
+    "replay_ms": 897.047,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_DenseList_200": {
+    "elab_ms": 6009.48,
+    "olean_bytes": 8760,
+    "replay_ms": 932.555,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_CanonList_200": {
+    "elab_ms": 6206.2,
+    "olean_bytes": 8760,
+    "replay_ms": 906.492,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_DenseArray_200": {
+    "elab_ms": 6902.09,
+    "olean_bytes": 8760,
+    "replay_ms": 1072.364,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_SortedAList_200": {
+    "elab_ms": 7354.2,
+    "olean_bytes": 8768,
+    "replay_ms": 1356.858,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqSteps_BinTrie_200": {
+    "elab_ms": 6101.08,
+    "olean_bytes": 8704,
+    "replay_ms": 861.043,
+    "dag_nodes": 102,
+    "decls": 1
+  },
+  "SeqChain_FnMap_10": {
+    "elab_ms": 129.96,
+    "olean_bytes": 18472,
+    "replay_ms": 8.924,
+    "dag_nodes": 364,
+    "decls": 1
+  },
+  "SeqChain_CanonList_10": {
+    "elab_ms": 131.69,
+    "olean_bytes": 15848,
+    "replay_ms": 8.696,
+    "dag_nodes": 294,
+    "decls": 1
+  },
+  "SeqChain_BinTrie_10": {
+    "elab_ms": 135.19,
+    "olean_bytes": 15968,
+    "replay_ms": 10.32,
+    "dag_nodes": 295,
+    "decls": 1
+  },
+  "SeqChain_FnMap_50": {
+    "elab_ms": 430.24,
+    "olean_bytes": 46632,
+    "replay_ms": 77.619,
+    "dag_nodes": 1244,
+    "decls": 1
+  },
+  "SeqChain_CanonList_50": {
+    "elab_ms": 450.89,
+    "olean_bytes": 39880,
+    "replay_ms": 88.338,
+    "dag_nodes": 1045,
+    "decls": 1
+  },
+  "SeqChain_BinTrie_50": {
+    "elab_ms": 421.79,
+    "olean_bytes": 35616,
+    "replay_ms": 82.268,
+    "dag_nodes": 909,
+    "decls": 1
+  },
+  "DiamondMerged_DenseList_1": {
+    "elab_ms": 158.9,
+    "olean_bytes": 21232,
+    "replay_ms": 9.585,
+    "dag_nodes": 380,
+    "decls": 1
+  },
+  "DiamondMerged_CanonList_1": {
+    "elab_ms": 154.53,
+    "olean_bytes": 21016,
+    "replay_ms": 8.263,
+    "dag_nodes": 376,
+    "decls": 1
+  },
+  "DiamondMerged_DenseArray_1": {
+    "elab_ms": 182.68,
+    "olean_bytes": 21672,
+    "replay_ms": 13.297,
+    "dag_nodes": 388,
+    "decls": 1
+  },
+  "DiamondMerged_SortedAList_1": {
+    "elab_ms": 155.35,
+    "olean_bytes": 21176,
+    "replay_ms": 9.498,
+    "dag_nodes": 380,
+    "decls": 1
+  },
+  "DiamondMerged_BinTrie_1": {
+    "elab_ms": 145.69,
+    "olean_bytes": 21416,
+    "replay_ms": 9.165,
+    "dag_nodes": 386,
+    "decls": 1
+  },
+  "DiamondMerged_DenseList_2": {
+    "elab_ms": 201.89,
+    "olean_bytes": 26152,
+    "replay_ms": 16.015,
+    "dag_nodes": 521,
+    "decls": 1
+  },
+  "DiamondMerged_CanonList_2": {
+    "elab_ms": 196.45,
+    "olean_bytes": 25936,
+    "replay_ms": 14.291,
+    "dag_nodes": 517,
+    "decls": 1
+  },
+  "DiamondMerged_DenseArray_2": {
+    "elab_ms": 252.98,
+    "olean_bytes": 26784,
+    "replay_ms": 22.788,
+    "dag_nodes": 535,
+    "decls": 1
+  },
+  "DiamondMerged_SortedAList_2": {
+    "elab_ms": 205.13,
+    "olean_bytes": 25936,
+    "replay_ms": 15.618,
+    "dag_nodes": 516,
+    "decls": 1
+  },
+  "DiamondMerged_BinTrie_2": {
+    "elab_ms": 184.93,
+    "olean_bytes": 26304,
+    "replay_ms": 13.952,
+    "dag_nodes": 526,
+    "decls": 1
+  },
+  "DiamondMerged_DenseList_4": {
+    "elab_ms": 293.78,
+    "olean_bytes": 35648,
+    "replay_ms": 24.817,
+    "dag_nodes": 792,
+    "decls": 1
+  },
+  "DiamondMerged_CanonList_4": {
+    "elab_ms": 281.27,
+    "olean_bytes": 35512,
+    "replay_ms": 23.417,
+    "dag_nodes": 790,
+    "decls": 1
+  },
+  "DiamondMerged_DenseArray_4": {
+    "elab_ms": 380.14,
+    "olean_bytes": 36632,
+    "replay_ms": 36.26,
+    "dag_nodes": 817,
+    "decls": 1
+  },
+  "DiamondMerged_SortedAList_4": {
+    "elab_ms": 286.77,
+    "olean_bytes": 35224,
+    "replay_ms": 24.71,
+    "dag_nodes": 780,
+    "decls": 1
+  },
+  "DiamondMerged_BinTrie_4": {
+    "elab_ms": 261.79,
+    "olean_bytes": 35784,
+    "replay_ms": 23.38,
+    "dag_nodes": 796,
+    "decls": 1
+  },
+  "DiamondMerged_DenseList_8": {
+    "elab_ms": 501.54,
+    "olean_bytes": 54208,
+    "replay_ms": 48.777,
+    "dag_nodes": 1320,
+    "decls": 1
+  },
+  "DiamondMerged_CanonList_8": {
+    "elab_ms": 469.94,
+    "olean_bytes": 54072,
+    "replay_ms": 45.739,
+    "dag_nodes": 1318,
+    "decls": 1
+  },
+  "DiamondMerged_DenseArray_8": {
+    "elab_ms": 655.05,
+    "olean_bytes": 55832,
+    "replay_ms": 72.698,
+    "dag_nodes": 1365,
+    "decls": 1
+  },
+  "DiamondMerged_SortedAList_8": {
+    "elab_ms": 475.46,
+    "olean_bytes": 53272,
+    "replay_ms": 48.411,
+    "dag_nodes": 1292,
+    "decls": 1
+  },
+  "DiamondMerged_BinTrie_8": {
+    "elab_ms": 426.17,
+    "olean_bytes": 54344,
+    "replay_ms": 45.279,
+    "dag_nodes": 1324,
+    "decls": 1
+  },
+  "DiamondUnmerged_FnMap_1": {
+    "elab_ms": 117.77,
+    "olean_bytes": 22464,
+    "replay_ms": 5.95,
+    "dag_nodes": 432,
+    "decls": 1
+  },
+  "DiamondUnmerged_FnMap_2": {
+    "elab_ms": 185.08,
+    "olean_bytes": 42424,
+    "replay_ms": 14.09,
+    "dag_nodes": 1043,
+    "decls": 1
+  },
+  "DiamondUnmerged_FnMap_3": {
+    "elab_ms": 586.54,
+    "olean_bytes": 84656,
+    "replay_ms": 31.924,
+    "dag_nodes": 2337,
+    "decls": 1
+  },
+  "DiamondUnmerged_FnMap_4": {
+    "elab_ms": 51728.54,
+    "olean_bytes": 171624,
+    "replay_ms": 68.557,
+    "dag_nodes": 5003,
+    "decls": 1
+  }
+}

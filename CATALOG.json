@@ -11963,6 +11963,193 @@
         "assembly/verification"
       ]
     },
+    "anneal-mir-to-x86-rustc-capture-and-byte-provenance-semantics": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 Prototype and Capture Driver"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Bundled Anneal Rust Compiler Toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Pinned Rust Compiler Source Baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel Verification Toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/ByteMemoryProvenanceProbe.lean",
+            "sha256": "d584229501aa70396798f81fe77666cc09bdc1c0d1ca6ccb05f95045389a336b"
+          },
+          "name": "Byte-Addressed Memory, Provenance, Polymorphic Slices, and AdmissibleLibInv Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/Phase3SemanticsProbe.lean",
+            "sha256": "348282b85d13eb49c685e639adfac4e0627e6dd4d7f9ea9e289d8755e4b89379"
+          },
+          "name": "Niche Enums, Wide Slices, copy_nonoverlapping, Width Casts, and wpByteX86 Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe_6cat.rs",
+            "sha256": "8d4f9acf88995a4e354635a8fba058b17a26f8e82ae8d24c097c39c6379a8c50"
+          },
+          "name": "Six-Category Rust MIR and Intrinsics Specimen"
+        },
+        {
+          "identity": {
+            "artifact": "support/layout_mir_driver.rs",
+            "sha256": "e79065ef77adf4a879e0278e1deabe1d94e62f34d4e3fd4ebc75152c8921d0a9"
+          },
+          "name": "In-Process rustc_driver Layout and FnAbi Extractor"
+        },
+        {
+          "identity": {
+            "artifact": "support/monomorph_mir_driver.rs",
+            "sha256": "76a5061bd910780d1a55169f63ee2dea293f1b78848a52a7857483a19ebd7e60"
+          },
+          "name": "In-Process rustc_driver Monomorphization and DefId Call Classifier"
+        }
+      ],
+      "topics": [
+        "anneal/rustc-capture",
+        "anneal/mir-to-x86",
+        "anneal/byte-memory",
+        "anneal/provenance",
+        "rustc/mir-pretty",
+        "rustc/layout-abi",
+        "rustc/monomorphization",
+        "rust/validity"
+      ]
+    },
+    "anneal-mir-to-x86-symbolic-vcgen-cutpoints-and-loops": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 Prototype and Proof Generator"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel Verification Toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/SymbolicVCGenProbe.lean",
+            "sha256": "62b694386ee6f3a3da3de1bf88d74c2ce3cc368a2d6534fd71bf1f20e7eea155"
+          },
+          "name": "Syntax-Directed Symbolic VCGen Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/LoopAndJoinVCGenProbe.lean",
+            "sha256": "3c9b2aee3b7028c6824b494bd187e412298840727963f18728accd6041a21d4c"
+          },
+          "name": "Inductive Loop and Canonical Cut-Point VCGen Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/ReplayAudit.lean",
+            "sha256": "d640d0dc042102f123d0ac5c775bfb13bdccbab7a10949c7a04fb4455a19ed62"
+          },
+          "name": "Kernel Replay and TrustedBoundary Audit Script"
+        }
+      ],
+      "topics": [
+        "anneal/vcgen",
+        "anneal/symbolic-execution",
+        "anneal/mir-to-x86",
+        "anneal/loop-invariants",
+        "lean4/weakest-precondition",
+        "lean4/whnf-reduction"
+      ]
+    },
+    "anneal-mir-to-x86-variable-step-refinement-and-stateful-passes": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 Prototype and Trusted Refinement Core"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel Verification Toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/VariableStepCompilesProbe.lean",
+            "sha256": "1a042c7ccf780bca4939957659df32c5cf75fc5e5424b85a3c6752f03397ba31"
+          },
+          "name": "Variable-Step Refinement and Block-Suffix Simulation Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/StatefulVariableStepProbe.lean",
+            "sha256": "7823354cc604db33510ffff5f78add2c23449400e0acf1efd3ba3c1f580a6219"
+          },
+          "name": "Stateful Variable-Step Dead-Store and Copy-Coalescing Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/AuditCheck.lean",
+            "sha256": "614715c3808e397609f420a1e71aad1695387cb45b3ee3dbb82898a0ed3a4019"
+          },
+          "name": "Stateful Variable-Step Kernel Replay and Boundary Audit Harness"
+        }
+      ],
+      "topics": [
+        "anneal/refinement",
+        "anneal/mir-to-x86",
+        "anneal/compiler-optimizations",
+        "lean4/step-indexed-refinement",
+        "lean4/stutter-simulation"
+      ]
+    },
     "anneal-nix-fixed-output-downloads-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -20740,6 +20927,71 @@
         "lean4/lcnf-string-literal-hoisting",
         "lean4/proof-cost-scaling",
         "lean4/whnf-reduction-scaling"
+      ]
+    },
+    "lean-4-34-1-unsafe-rec-noncomputable-and-state-map-whnf-scaling": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Kernel and LCNF Code Generator"
+        },
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 Prototype and Trusted Boundary Auditor"
+        },
+        {
+          "identity": {
+            "artifact": "support/PreludeRecProbe.lean",
+            "sha256": "d9073c51de34b2fdeb14d93ca983596424837422947dd24b9a7d89ef14a0829c"
+          },
+          "name": "Prelude-Only Computable Recursion Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/UnsafeRecProbe.lean",
+            "sha256": "3b2df1273552285e62563f939f6b1be6dca63c5cb0cb9f455702836147f8a169"
+          },
+          "name": "Lean 4.34.1 ._unsafe_rec and Kernel Identity Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/StateMapBenchmarks.lean",
+            "sha256": "f7f19be1e27e3ef9d60b35f949324830423f9e77aae3348aa354e15c52f90528"
+          },
+          "name": "Prelude State-Map Canonicity and Algebraic Benchmarks"
+        },
+        {
+          "identity": {
+            "artifact": "support/RefinementBridge.lean",
+            "sha256": "1491b69dbaaf3776558196fface01ef63e8aa99c984ccde3b12451b07bd9bc61"
+          },
+          "name": "Trusted-to-Canonical State-Map Refinement Bridge"
+        },
+        {
+          "identity": {
+            "artifact": "support/benchmark_results.json",
+            "sha256": "ea0eb6a10bbe507722b7029107b3fc4bab4170a6f12bfe237f36c51bb4a68ab7"
+          },
+          "name": "Sequential and Diamond CFG WHNF Benchmark Suite Results"
+        }
+      ],
+      "topics": [
+        "lean4/unsafe-rec",
+        "lean4/noncomputable",
+        "lean4/recursors",
+        "lean4/whnf-reduction-scaling",
+        "lean4/state-maps",
+        "anneal/trusted-boundary",
+        "anneal/mir-to-x86"
       ]
     },
     "lean-429-430-comparison-to-4341-source-review": {

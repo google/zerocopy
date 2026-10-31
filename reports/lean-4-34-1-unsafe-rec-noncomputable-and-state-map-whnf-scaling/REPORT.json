@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "lean4/unsafe-rec",
+    "lean4/noncomputable",
+    "lean4/recursors",
+    "lean4/whnf-reduction-scaling",
+    "lean4/state-maps",
+    "anneal/trusted-boundary",
+    "anneal/mir-to-x86"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 Kernel and LCNF Code Generator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal MIR-to-x86-64 Prototype and Trusted Boundary Auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+        "branch": "mir-to-x86"
+      }
+    },
+    {
+      "name": "Prelude-Only Computable Recursion Probe",
+      "identity": {
+        "artifact": "support/PreludeRecProbe.lean",
+        "sha256": "d9073c51de34b2fdeb14d93ca983596424837422947dd24b9a7d89ef14a0829c"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 ._unsafe_rec and Kernel Identity Probe",
+      "identity": {
+        "artifact": "support/UnsafeRecProbe.lean",
+        "sha256": "3b2df1273552285e62563f939f6b1be6dca63c5cb0cb9f455702836147f8a169"
+      }
+    },
+    {
+      "name": "Prelude State-Map Canonicity and Algebraic Benchmarks",
+      "identity": {
+        "artifact": "support/StateMapBenchmarks.lean",
+        "sha256": "f7f19be1e27e3ef9d60b35f949324830423f9e77aae3348aa354e15c52f90528"
+      }
+    },
+    {
+      "name": "Trusted-to-Canonical State-Map Refinement Bridge",
+      "identity": {
+        "artifact": "support/RefinementBridge.lean",
+        "sha256": "1491b69dbaaf3776558196fface01ef63e8aa99c984ccde3b12451b07bd9bc61"
+      }
+    },
+    {
+      "name": "Sequential and Diamond CFG WHNF Benchmark Suite Results",
+      "identity": {
+        "artifact": "support/benchmark_results.json",
+        "sha256": "ea0eb6a10bbe507722b7029107b3fc4bab4170a6f12bfe237f36c51bb4a68ab7"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

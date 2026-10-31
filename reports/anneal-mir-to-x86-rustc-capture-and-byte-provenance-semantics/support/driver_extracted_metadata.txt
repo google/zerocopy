@@ -1,0 +1,808 @@
+==================================================================
+1. LOCAL ADT & COMPOSITE LAYOUT EXTRACTION
+==================================================================
+=== TYPE LAYOUT: Pair (`Pair`) ===
+  size: 16 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I32, false), valid_range: 0..=4294967295 })
+  adt_kind: Struct, repr: c=false, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`Pair`): discr=None
+    decl_field 0 (`a`): vis=Public, ty=`Unnormalized { value: u32, .. }`
+    decl_field 1 (`b`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+  fields_shape: Arbitrary (in_memory_order=[1, 0]):
+    FieldIdx(0) -> byte_offset: 8
+    FieldIdx(1) -> byte_offset: 0
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ReorderRust (`ReorderRust`) ===
+  size: 16 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Memory { sized: true }
+  adt_kind: Struct, repr: c=false, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`ReorderRust`): discr=None
+    decl_field 0 (`a`): vis=Public, ty=`Unnormalized { value: u8, .. }`
+    decl_field 1 (`b`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+    decl_field 2 (`c`): vis=Public, ty=`Unnormalized { value: u16, .. }`
+  fields_shape: Arbitrary (in_memory_order=[1, 2, 0]):
+    FieldIdx(0) -> byte_offset: 10
+    FieldIdx(1) -> byte_offset: 0
+    FieldIdx(2) -> byte_offset: 8
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: PairC (`PairC`) ===
+  size: 24 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Memory { sized: true }
+  adt_kind: Struct, repr: c=true, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`PairC`): discr=None
+    decl_field 0 (`a`): vis=Public, ty=`Unnormalized { value: u8, .. }`
+    decl_field 1 (`b`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+    decl_field 2 (`c`): vis=Public, ty=`Unnormalized { value: u16, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0, 1, 2]):
+    FieldIdx(0) -> byte_offset: 0
+    FieldIdx(1) -> byte_offset: 8
+    FieldIdx(2) -> byte_offset: 16
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: Wrapper (`Wrapper`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  adt_kind: Struct, repr: c=false, transparent=true, pack=None, align=None, int=None
+  decl_variant 0 (`Wrapper`): discr=None
+    decl_field 0 (`0`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: PackedPair (`PackedPair`) ===
+  size: 9 bytes, abi_align: 1 bytes, is_sized: true, is_zst: false
+  backend_repr: Memory { sized: true }
+  adt_kind: Struct, repr: c=true, transparent=false, pack=Some(Align(1 bytes)), align=None, int=None
+  decl_variant 0 (`PackedPair`): discr=None
+    decl_field 0 (`a`): vis=Public, ty=`Unnormalized { value: u8, .. }`
+    decl_field 1 (`b`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0, 1]):
+    FieldIdx(0) -> byte_offset: 0
+    FieldIdx(1) -> byte_offset: 1
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: CLike (`CLike`) ===
+  size: 1 bytes, abi_align: 1 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: (..=2) | (255..) })
+  adt_kind: Enum, repr: c=false, transparent=false, pack=None, align=None, int=Some(Fixed(I8, false))
+  decl_variant 0 (`A`): discr=Some((1, u8))
+  decl_variant 1 (`B`): discr=Some((2, u8))
+  decl_variant 2 (`C`): discr=Some((255, u8))
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Multiple { tag: Initialized { value: Int(I8, false), valid_range: (..=2) | (255..) }, tag_encoding: Direct, tag_field: 0 }
+    TagEncoding::Direct (stored at field 0)
+    variant_layout 0: size=1 bytes, backend_repr=Memory { sized: true }, field_offsets=[]
+    variant_layout 1: size=1 bytes, backend_repr=Memory { sized: true }, field_offsets=[]
+    variant_layout 2: size=1 bytes, backend_repr=Memory { sized: true }, field_offsets=[]
+
+=== TYPE LAYOUT: DataEnum (`DataEnum`) ===
+  size: 16 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Memory { sized: true }
+  adt_kind: Enum, repr: c=false, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`Empty`): discr=Some((0, isize))
+  decl_variant 1 (`Val`): discr=Some((1, isize))
+    decl_field 0 (`0`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+  decl_variant 2 (`Pair`): discr=Some((2, isize))
+    decl_field 0 (`x`): vis=Public, ty=`Unnormalized { value: u32, .. }`
+    decl_field 1 (`y`): vis=Public, ty=`Unnormalized { value: u64, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Multiple { tag: Initialized { value: Int(I32, false), valid_range: 0..=2 }, tag_encoding: Direct, tag_field: 0 }
+    TagEncoding::Direct (stored at field 0)
+    variant_layout 0: size=4 bytes, backend_repr=Memory { sized: true }, field_offsets=[]
+    variant_layout 1: size=16 bytes, backend_repr=Memory { sized: true }, field_offsets=[Size(8 bytes)]
+    variant_layout 2: size=16 bytes, backend_repr=Memory { sized: true }, field_offsets=[Size(4 bytes), Size(8 bytes)]
+
+=== TYPE LAYOUT: ret_of(cat1_make_tuple) (`(u8, u64)`) ===
+  size: 16 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  fields_shape: Arbitrary (in_memory_order=[0, 1]):
+    FieldIdx(0) -> byte_offset: 0
+    FieldIdx(1) -> byte_offset: 8
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg0_of(cat1_make_tuple) (`u8`) ===
+  size: 1 bytes, abi_align: 1 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg1_of(cat1_make_tuple) (`u64`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ret_of(cat1_make_fixed_array) (`[u32; 4]`) ===
+  size: 16 bytes, abi_align: 4 bytes, is_sized: true, is_zst: false
+  backend_repr: Memory { sized: true }
+  fields_shape: Array { stride: 4 bytes, count: 4 }
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg0_of(cat1_make_fixed_array) (`u32`) ===
+  size: 4 bytes, abi_align: 4 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I32, false), valid_range: 0..=4294967295 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg1_of(cat1_make_fixed_array) (`u32`) ===
+  size: 4 bytes, abi_align: 4 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I32, false), valid_range: 0..=4294967295 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ret_of(cat1_make_option_usize) (`core::option::Option<usize>`) ===
+  size: 16 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=1 }, Union { value: Int(I64, false) })
+  adt_kind: Enum, repr: c=false, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`None`): discr=Some((0, isize))
+  decl_variant 1 (`Some`): discr=Some((1, isize))
+    decl_field 0 (`0`): vis=Public, ty=`Unnormalized { value: usize, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Multiple { tag: Initialized { value: Int(I64, false), valid_range: 0..=1 }, tag_encoding: Direct, tag_field: 0 }
+    TagEncoding::Direct (stored at field 0)
+    variant_layout 0: size=8 bytes, backend_repr=Memory { sized: true }, field_offsets=[]
+    variant_layout 1: size=16 bytes, backend_repr=ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=1 }, Union { value: Int(I64, false) }), field_offsets=[Size(8 bytes)]
+
+=== TYPE LAYOUT: arg0_of(cat1_make_option_usize) (`usize`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg1_of(cat1_make_option_usize) (`bool`) ===
+  size: 1 bytes, abi_align: 1 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=1 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ret_of(cat1_make_option_nonzero) (`core::option::Option<core::num::NonZero<usize>>`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  adt_kind: Enum, repr: c=false, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`None`): discr=Some((0, isize))
+  decl_variant 1 (`Some`): discr=Some((1, isize))
+    decl_field 0 (`0`): vis=Public, ty=`Unnormalized { value: core::num::NonZero<usize>, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Multiple { tag: Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, tag_encoding: Niche { untagged_variant: 1, niche_variants: 0..=0, niche_start: 0 }, tag_field: 0 }
+    TagEncoding::Niche { untagged_variant: 1, niche_variants: 0..=0, niche_start: 0x0 }
+    variant_layout 0: size=0 bytes, backend_repr=Memory { sized: true }, field_offsets=[]
+    variant_layout 1: size=8 bytes, backend_repr=Scalar(Initialized { value: Int(I64, false), valid_range: 1..=18446744073709551615 }), field_offsets=[Size(0 bytes)]
+
+=== TYPE LAYOUT: arg0_of(cat1_make_option_nonzero) (`core::num::NonZero<usize>`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 1..=18446744073709551615 })
+  adt_kind: Struct, repr: c=false, transparent=true, pack=None, align=None, int=None
+  decl_variant 0 (`NonZero`): discr=None
+    decl_field 0 (`0`): vis=Restricted(DefId(1:1232 ~ core[3475]::num::nonzero)), ty=`Unnormalized { value: Alias(AliasTy { args: [usize], kind: Projection { def_id: DefId(1:1266 ~ core[3475]::num::nonzero::ZeroablePrimitive::NonZeroInner) }, .. }), .. }`
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg1_of(cat1_make_option_nonzero) (`bool`) ===
+  size: 1 bytes, abi_align: 1 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=1 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ret_of(cat1_make_result) (`core::result::Result<usize, u32>`) ===
+  size: 16 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Memory { sized: true }
+  adt_kind: Enum, repr: c=false, transparent=false, pack=None, align=None, int=None
+  decl_variant 0 (`Ok`): discr=Some((0, isize))
+    decl_field 0 (`0`): vis=Public, ty=`Unnormalized { value: usize, .. }`
+  decl_variant 1 (`Err`): discr=Some((1, isize))
+    decl_field 0 (`0`): vis=Public, ty=`Unnormalized { value: u32, .. }`
+  fields_shape: Arbitrary (in_memory_order=[0]):
+    FieldIdx(0) -> byte_offset: 0
+  variants: Multiple { tag: Initialized { value: Int(I32, false), valid_range: 0..=1 }, tag_encoding: Direct, tag_field: 0 }
+    TagEncoding::Direct (stored at field 0)
+    variant_layout 0: size=16 bytes, backend_repr=Memory { sized: true }, field_offsets=[Size(8 bytes)]
+    variant_layout 1: size=8 bytes, backend_repr=Memory { sized: true }, field_offsets=[Size(4 bytes)]
+
+=== TYPE LAYOUT: arg0_of(cat1_make_result) (`usize`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg1_of(cat1_make_result) (`u32`) ===
+  size: 4 bytes, abi_align: 4 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I32, false), valid_range: 0..=4294967295 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg2_of(cat1_make_result) (`bool`) ===
+  size: 1 bytes, abi_align: 1 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=1 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ret_of(cat6_maybe_uninit) (`u64`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg0_of(cat6_maybe_uninit) (`u64`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: ret_of(cat6_unsafe_cell_get) (`*mut u64`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+=== TYPE LAYOUT: arg0_of(cat6_unsafe_cell_get) (`&core::cell::UnsafeCell<u64>`) ===
+  size: 8 bytes, abi_align: 8 bytes, is_sized: true, is_zst: false
+  backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })
+  fields_shape: Primitive
+  variants: Single { index: 0 }
+
+==================================================================
+2. FUNCTION SIGNATURES, FN_ABI, REQUIRED_CONSTS, & MIR METADATA
+==================================================================
+=== FN `cat1_make_pair` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=2
+    FnAbi::arg[0]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_reorder_rust` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=16B), arg_count=3
+    FnAbi::arg[0]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`u16`, size=2B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=7, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_pair_c` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(24 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=24B), arg_count=3
+    FnAbi::arg[0]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`u16`, size=2B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=7, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_wrapper` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_packed` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(9 bytes), pointee_align: Some(Align(1 bytes)) }, meta_attrs: None, on_stack: false } (size=9B), arg_count=2
+    FnAbi::arg[0]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_tuple` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=2
+    FnAbi::arg[0]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_fixed_array` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(4 bytes)) }, meta_attrs: None, on_stack: false } (size=16B), arg_count=2
+    FnAbi::arg[0]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_array_repeat_zero` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(1 bytes)) }, meta_attrs: None, on_stack: false } (size=16B), arg_count=0
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=1, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_array_repeat_val` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(1 bytes)) }, meta_attrs: None, on_stack: false } (size=16B), arg_count=1
+    FnAbi::arg[0]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat1_slices_passthrough` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(32 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=32B), arg_count=2
+    FnAbi::arg[0]: ty=`&[u8]`, size=16B, mode=Pair(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`&mut [u8]`, size=16B, mode=Pair(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_option_usize` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: , arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=2
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`bool`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: Zext, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=4, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_option_nonzero` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=2
+    FnAbi::arg[0]: ty=`core::num::NonZero<usize>`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`bool`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: Zext, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=4, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_result` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=16B), arg_count=3
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`bool`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: Zext, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=4, local_decls=7, required_consts=0, mentioned_items=0
+
+=== FN `cat1_make_enums` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(56 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=56B), arg_count=2
+    FnAbi::arg[0]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=10, required_consts=0, mentioned_items=0
+
+=== FN `cat2_nested_tuple_proj` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`((u32, u64), u8)`, size=24B, mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(24 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false }
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat2_deref_field_proj` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`&Pair`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat2_reorder_field_proj` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=16B), arg_count=1
+    FnAbi::arg[0]: ty=`&ReorderRust`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat2_array_index` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=4B), arg_count=2
+    FnAbi::arg[0]: ty=`&[u32; 4]`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(4 bytes)) })
+    FnAbi::arg[1]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=5, required_consts=0, mentioned_items=0
+
+=== FN `cat2_slice_index` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=1B), arg_count=2
+    FnAbi::arg[0]: ty=`&[u8]`, size=16B, mode=Pair(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=6, required_consts=0, mentioned_items=0
+
+=== FN `cat2_raw_ptr_deref` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const Pair`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat2_raw_const_proj` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const Pair`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat2_raw_mut_proj` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*mut Pair`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat2_addr_of_macros` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=1
+    FnAbi::arg[0]: ty=`*mut Pair`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=4, required_consts=0, mentioned_items=0
+
+=== FN `cat2_packed_raw_proj` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const PackedPair`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat3_int_casts` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(24 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=24B), arg_count=3
+    FnAbi::arg[0]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`i32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=16, required_consts=0, mentioned_items=0
+
+=== FN `cat3_ptr_to_addr_as` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat3_ptr_to_addr_method` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3071 ~ core[3475]::ptr::const_ptr::{impl#0}::addr), [u64]))
+    [Call @ bb0[2]] callee=`core::ptr::const_ptr::<impl *const u64>::addr` (DefKind=AssocFn, sig=`fn(*const u64) -> usize`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat3_ptr_expose_provenance` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3072 ~ core[3475]::ptr::const_ptr::{impl#0}::expose_provenance), [u64]))
+    [Call @ bb0[2]] callee=`core::ptr::const_ptr::<impl *const u64>::expose_provenance` (DefKind=AssocFn, sig=`fn(*const u64) -> usize`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat3_addr_to_ptr_as` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat3_with_exposed_provenance` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3291 ~ core[3475]::ptr::with_exposed_provenance), [u64]))
+    [Call @ bb0[2]] callee=`core::ptr::with_exposed_provenance::<u64>` (DefKind=Fn, sig=`fn(usize) -> *const u64`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat3_without_provenance` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=3, local_decls=6, required_consts=0, mentioned_items=2
+    mentioned_item: Fn(FnDef(DefId(1:3283 ~ core[3475]::ptr::without_provenance), [u64]))
+    mentioned_item: Fn(FnDef(DefId(1:3287 ~ core[3475]::ptr::without_provenance_mut), [u64]))
+    [Call @ bb0[3]] callee=`core::ptr::without_provenance::<u64>` (DefKind=Fn, sig=`fn(usize) -> *const u64`, track_caller=false, mir_arg_count=1)
+    [Call @ bb1[4]] callee=`core::ptr::without_provenance_mut::<u64>` (DefKind=Fn, sig=`fn(usize) -> *mut u64`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat3_ref_to_raw_ptr` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(24 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=24B), arg_count=2
+    FnAbi::arg[0]: ty=`&u64`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+    FnAbi::arg[1]: ty=`&mut u64`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=10, required_consts=0, mentioned_items=0
+
+=== FN `cat3_array_to_slice_unsize` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(4 bytes)) }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=1
+    FnAbi::arg[0]: ty=`&[u32; 4]`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(4 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=4, required_consts=0, mentioned_items=0
+
+=== FN `cat3_slice_len` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`&[u8]`, size=16B, mode=Pair(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:15029 ~ core[3475]::slice::{impl#0}::len), [u8]))
+    [Call @ bb0[2]] callee=`core::slice::<impl [u8]>::len` (DefKind=AssocFn, sig=`fn(&'^0.Named(DefId(1:66049 ~ core[3475]::slice::{impl#0}::len::'_)) [u8]) -> usize`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat3_ptr_metadata_intrinsic` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const [u8]`, size=16B, mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat4_while_loop` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=5, local_decls=13, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:37504 ~ core[3475]::num::{impl#11}::wrapping_add), []))
+    [Call @ bb2[6]] callee=`core::num::<impl usize>::wrapping_add` (DefKind=AssocFn, sig=`fn(usize, usize) -> usize`, track_caller=false, mir_arg_count=2)
+
+=== FN `cat4_loop_break_continue` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=6, local_decls=14, required_consts=0, mentioned_items=0
+
+=== FN `cat4_for_range` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=8, local_decls=19, required_consts=0, mentioned_items=3
+    mentioned_item: Fn(FnDef(DefId(1:10007 ~ core[3475]::iter::traits::collect::IntoIterator::into_iter), [core::ops::Range<usize>]))
+    mentioned_item: Fn(FnDef(DefId(1:10184 ~ core[3475]::iter::traits::iterator::Iterator::next), [core::ops::Range<usize>]))
+    mentioned_item: Fn(FnDef(DefId(1:37504 ~ core[3475]::num::{impl#11}::wrapping_add), []))
+    [Call @ bb0[9]] callee=`<core::ops::Range<usize> as core::iter::IntoIterator>::into_iter` (DefKind=AssocFn, sig=`fn(core::ops::Range<usize>) -> Alias(AliasTy { args: [core::ops::Range<usize>], kind: Projection { def_id: DefId(1:10006 ~ core[3475]::iter::traits::collect::IntoIterator::IntoIter) }, .. })`, track_caller=false, mir_arg_count=1)
+    [Call @ bb2[6]] callee=`<core::ops::Range<usize> as core::iter::Iterator>::next` (DefKind=AssocFn, sig=`fn(&'^0.Named(DefId(1:64211 ~ core[3475]::iter::traits::iterator::Iterator::next::'_)) mut core::ops::Range<usize>) -> core::option::Option<Alias(AliasTy { args: [core::ops::Range<usize>], kind: Projection { def_id: DefId(1:10183 ~ core[3475]::iter::traits::iterator::Iterator::Item) }, .. })>`, track_caller=false, mir_arg_count=1)
+    [Downcast @ bb5[1]] name=Some("Some"), VariantIdx=1 (pretty.rs omits VariantIdx when name is Some!)
+    [Call @ bb5[7]] callee=`core::num::<impl usize>::wrapping_add` (DefKind=AssocFn, sig=`fn(usize, usize) -> usize`, track_caller=false, mir_arg_count=2)
+
+=== FN `cat4_match_int` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=4B), arg_count=1
+    FnAbi::arg[0]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=6, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat4_match_clike` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=1B), arg_count=1
+    FnAbi::arg[0]: ty=`CLike`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=6, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat4_match_data_enum` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`DataEnum`, size=16B, mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(16 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false }
+  MIR phase=Runtime(Optimized), basic_blocks=7, local_decls=9, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    [Downcast @ bb2[1]] name=Some("Pair"), VariantIdx=2 (pretty.rs omits VariantIdx when name is Some!)
+    [Downcast @ bb2[3]] name=Some("Pair"), VariantIdx=2 (pretty.rs omits VariantIdx when name is Some!)
+    [Call @ bb2[11]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Downcast @ bb3[1]] name=Some("Val"), VariantIdx=1 (pretty.rs omits VariantIdx when name is Some!)
+
+=== FN `cat4_match_option_usize` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`core::option::Option<usize>`, size=16B, mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: , arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=5, local_decls=4, required_consts=0, mentioned_items=0
+    [Downcast @ bb3[1]] name=Some("Some"), VariantIdx=1 (pretty.rs omits VariantIdx when name is Some!)
+
+=== FN `cat4_match_option_nonzero` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`core::option::Option<core::num::NonZero<usize>>`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=6, local_decls=5, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:1335 ~ core[3475]::num::nonzero::{impl#16}::get), [usize]))
+    [Downcast @ bb3[1]] name=Some("Some"), VariantIdx=1 (pretty.rs omits VariantIdx when name is Some!)
+    [Call @ bb3[4]] callee=`core::num::NonZero::<usize>::get` (DefKind=AssocFn, sig=`fn(core::num::NonZero<usize>) -> usize`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat4_arith_and_div_checks` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(24 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=24B), arg_count=3
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`u32`, size=4B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=14, required_consts=0, mentioned_items=0
+
+=== FN `callee_0` ===
+  vis: Public, safety: Safe, abi: Rust, inline: Never, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=0
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=1, required_consts=0, mentioned_items=0
+
+=== FN `callee_1` ===
+  vis: Public, safety: Safe, abi: Rust, inline: Never, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `callee_2` ===
+  vis: Public, safety: Safe, abi: Rust, inline: Never, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=2
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=5, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    [Call @ bb0[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+
+=== FN `callee_3` ===
+  vis: Public, safety: Safe, abi: Rust, inline: Never, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=3
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=3, local_decls=8, required_consts=0, mentioned_items=2
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    [Call @ bb0[5]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb1[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+
+=== FN `callee_7` ===
+  vis: Public, safety: Safe, abi: Rust, inline: Never, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=7
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[3]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[4]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[5]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[6]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=7, local_decls=20, required_consts=0, mentioned_items=6
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    mentioned_item: Fn(FnDef(DefId(1:37164 ~ core[3475]::num::{impl#9}::wrapping_add), []))
+    [Call @ bb0[9]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb1[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb2[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb3[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb4[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb5[4]] callee=`core::num::<impl u64>::wrapping_add` (DefKind=AssocFn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+
+=== FN `cat5_calls` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=6, local_decls=17, required_consts=0, mentioned_items=5
+    mentioned_item: Fn(FnDef(DefId(0:87 ~ probe_6cat[3243]::callee_0), []))
+    mentioned_item: Fn(FnDef(DefId(0:88 ~ probe_6cat[3243]::callee_1), []))
+    mentioned_item: Fn(FnDef(DefId(0:89 ~ probe_6cat[3243]::callee_2), []))
+    mentioned_item: Fn(FnDef(DefId(0:90 ~ probe_6cat[3243]::callee_3), []))
+    mentioned_item: Fn(FnDef(DefId(0:91 ~ probe_6cat[3243]::callee_7), []))
+    [Call @ bb0[1]] callee=`callee_0` (DefKind=Fn, sig=`fn() -> u64`, track_caller=false, mir_arg_count=0)
+    [Call @ bb1[3]] callee=`callee_1` (DefKind=Fn, sig=`fn(u64) -> u64`, track_caller=false, mir_arg_count=1)
+    [Call @ bb2[6]] callee=`callee_2` (DefKind=Fn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb3[9]] callee=`callee_3` (DefKind=Fn, sig=`fn(u64, u64, u64) -> u64`, track_caller=false, mir_arg_count=3)
+    [Call @ bb4[13]] callee=`callee_7` (DefKind=Fn, sig=`fn(u64, u64, u64, u64, u64, u64, u64) -> u64`, track_caller=false, mir_arg_count=7)
+
+=== FN `cat5_generic_id` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  generics_count: 1
+    where_predicate: Binder { value: TraitPredicate(<T as core::marker::Sized>, polarity:Positive), bound_vars: [] }
+    where_predicate: Binder { value: TraitPredicate(<T as core::marker::Copy>, polarity:Positive), bound_vars: [] }
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=2, required_consts=0, mentioned_items=0
+
+=== FN `cat5_call_generic` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=1
+    FnAbi::arg[0]: ty=`Pair`, size=16B, mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(0:93 ~ probe_6cat[3243]::cat5_generic_id), [Pair]))
+    [Call @ bb0[2]] callee=`cat5_generic_id::<Pair>` (DefKind=Fn, sig=`fn(Pair) -> Pair`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat5_trait_generic` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  generics_count: 1
+    where_predicate: Binder { value: TraitPredicate(<T as core::marker::Sized>, polarity:Positive), bound_vars: [] }
+    where_predicate: Binder { value: TraitPredicate(<T as ComputeTrait>, polarity:Positive), bound_vars: [] }
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=5, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(0:97 ~ probe_6cat[3243]::ComputeTrait::compute), [T/#0]))
+    [Call @ bb0[4]] callee=`<T as ComputeTrait>::compute` (DefKind=AssocFn, sig=`fn(T/#0, u64) -> u64`, track_caller=false, mir_arg_count=2)
+
+=== FN `cat5_trait_mono` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=2
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=5, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(0:100 ~ probe_6cat[3243]::cat5_trait_generic), [u64]))
+    [Call @ bb0[4]] callee=`cat5_trait_generic::<u64>` (DefKind=Fn, sig=`fn(u64, u64) -> u64`, track_caller=false, mir_arg_count=2)
+
+=== FN `cat5_tracked_callee` ===
+  vis: Public, safety: Safe, abi: Rust, inline: Never, flags: TRACK_CALLER
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=2
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`&core::panic::Location<'_>`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=4, local_decls=7, required_consts=0, mentioned_items=3
+    mentioned_item: Fn(FnDef(DefId(1:11279 ~ core[3475]::panic::location::{impl#6}::caller), ['{erased}]))
+    mentioned_item: Fn(FnDef(DefId(1:11282 ~ core[3475]::panic::location::{impl#6}::line), ['{erased}]))
+    mentioned_item: Fn(FnDef(DefId(1:37504 ~ core[3475]::num::{impl#11}::wrapping_add), []))
+    [Call @ bb0[1]] callee=`core::panic::Location::<'_>::caller` (DefKind=AssocFn, sig=`fn() -> &'static core::panic::Location<'static>`, track_caller=true, mir_arg_count=0)
+    [Call @ bb1[6]] callee=`core::panic::Location::<'_>::line` (DefKind=AssocFn, sig=`fn(&'^0.Named(DefId(1:64539 ~ core[3475]::panic::location::{impl#6}::line::'_)) core::panic::Location<'{erased}>) -> u32`, track_caller=false, mir_arg_count=1)
+    [Call @ bb2[3]] callee=`core::num::<impl usize>::wrapping_add` (DefKind=AssocFn, sig=`fn(usize, usize) -> usize`, track_caller=false, mir_arg_count=2)
+
+=== FN `cat5_call_tracked` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(0:103 ~ probe_6cat[3243]::cat5_tracked_callee), []))
+    [Call @ bb0[2]] callee=`cat5_tracked_callee` (DefKind=Fn, sig=`fn(usize) -> usize`, track_caller=true, mir_arg_count=1)
+
+=== FN `cat6_size_and_align` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=16B), arg_count=0
+  MIR phase=Runtime(Optimized), basic_blocks=3, local_decls=3, required_consts=0, mentioned_items=2
+    mentioned_item: Fn(FnDef(DefId(1:2641 ~ core[3475]::mem::size_of), [Pair]))
+    mentioned_item: Fn(FnDef(DefId(1:2651 ~ core[3475]::mem::align_of), [Pair]))
+    [Call @ bb0[1]] callee=`core::mem::size_of::<Pair>` (DefKind=Fn, sig=`fn() -> usize`, track_caller=false, mir_arg_count=0)
+    [Call @ bb1[1]] callee=`core::mem::align_of::<Pair>` (DefKind=Fn, sig=`fn() -> usize`, track_caller=false, mir_arg_count=0)
+
+=== FN `cat6_transmute` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Cast { pad_i32: false, cast: CastTarget { prefix: [None, None, None, None, None, None, None, None], rest_offset: None, rest: Uniform { unit: Reg { kind: Integer, size: Size(8 bytes) }, total: Size(8 bytes), is_consecutive: false }, attrs: ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None } } } (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=3, required_consts=0, mentioned_items=0
+
+=== FN `cat6_transmute_copy` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Cast { pad_i32: false, cast: CastTarget { prefix: [None, None, None, None, None, None, None, None], rest_offset: None, rest: Uniform { unit: Reg { kind: Integer, size: Size(8 bytes) }, total: Size(8 bytes), is_consecutive: false }, attrs: ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None } } } (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`&u64`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:2674 ~ core[3475]::mem::transmute_copy), [u64, [u32; 2_usize]]))
+    [Call @ bb0[2]] callee=`core::mem::transmute_copy::<u64, [u32; 2]>` (DefKind=Fn, sig=`unsafe fn(&'^0.Named(DefId(1:62467 ~ core[3475]::mem::transmute_copy::'_)) u64) -> [u32; 2_usize]`, track_caller=true, mir_arg_count=1)
+
+=== FN `cat6_ptr_read` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3324 ~ core[3475]::ptr::read), [u64]))
+    [Call @ bb0[2]] callee=`core::ptr::read::<u64>` (DefKind=Fn, sig=`unsafe fn(*const u64) -> u64`, track_caller=true, mir_arg_count=1)
+
+=== FN `cat6_ptr_write` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Ignore (size=0B), arg_count=2
+    FnAbi::arg[0]: ty=`*mut u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=5, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3328 ~ core[3475]::ptr::write), [u64]))
+    [Call @ bb0[4]] callee=`core::ptr::write::<u64>` (DefKind=Fn, sig=`unsafe fn(*mut u64, u64)`, track_caller=true, mir_arg_count=2)
+
+=== FN `cat6_ptr_copy` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Ignore (size=0B), arg_count=3
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`*mut u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=7, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3271 ~ core[3475]::ptr::copy), [u64]))
+    [Call @ bb0[6]] callee=`core::ptr::copy::<u64>` (DefKind=Fn, sig=`unsafe fn(*const u64, *mut u64, usize)`, track_caller=false, mir_arg_count=3)
+
+=== FN `cat6_ptr_copy_nonoverlapping` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Ignore (size=0B), arg_count=3
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`*mut u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=7, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3269 ~ core[3475]::ptr::copy_nonoverlapping), [u64]))
+    [Call @ bb0[6]] callee=`core::ptr::copy_nonoverlapping::<u64>` (DefKind=Fn, sig=`unsafe fn(*const u64, *mut u64, usize)`, track_caller=false, mir_arg_count=3)
+
+=== FN `cat6_ptr_write_bytes` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Ignore (size=0B), arg_count=3
+    FnAbi::arg[0]: ty=`*mut u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u8`, size=1B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=7, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:3273 ~ core[3475]::ptr::write_bytes), [u64]))
+    [Call @ bb0[6]] callee=`core::ptr::write_bytes::<u64>` (DefKind=Fn, sig=`unsafe fn(*mut u64, u8, usize)`, track_caller=false, mir_arg_count=3)
+
+=== FN `cat6_unreachable_unchecked` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Ignore (size=0B), arg_count=0
+  MIR phase=Runtime(Optimized), basic_blocks=1, local_decls=1, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:1554 ~ core[3475]::hint::unreachable_unchecked), []))
+    [Call @ bb0[0]] callee=`core::hint::unreachable_unchecked` (DefKind=Fn, sig=`unsafe fn() -> !`, track_caller=true, mir_arg_count=0)
+
+=== FN `cat6_maybe_uninit` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=4, local_decls=7, required_consts=0, mentioned_items=3
+    mentioned_item: Fn(FnDef(DefId(1:2424 ~ core[3475]::mem::maybe_uninit::{impl#3}::uninit), [u64]))
+    mentioned_item: Fn(FnDef(DefId(1:2426 ~ core[3475]::mem::maybe_uninit::{impl#3}::write), [u64]))
+    mentioned_item: Fn(FnDef(DefId(1:2429 ~ core[3475]::mem::maybe_uninit::{impl#3}::assume_init), [u64]))
+    [Call @ bb0[1]] callee=`core::mem::MaybeUninit::<u64>::uninit` (DefKind=AssocFn, sig=`fn() -> core::mem::MaybeUninit<u64>`, track_caller=false, mir_arg_count=0)
+    [Call @ bb1[5]] callee=`core::mem::MaybeUninit::<u64>::write` (DefKind=AssocFn, sig=`fn(&'^0.Named(DefId(1:62418 ~ core[3475]::mem::maybe_uninit::{impl#3}::write::'_)) mut core::mem::MaybeUninit<u64>, u64) -> &'^0.Named(DefId(1:62418 ~ core[3475]::mem::maybe_uninit::{impl#3}::write::'_)) mut u64`, track_caller=false, mir_arg_count=2)
+    [Call @ bb2[5]] callee=`core::mem::MaybeUninit::<u64>::assume_init` (DefKind=AssocFn, sig=`unsafe fn(core::mem::MaybeUninit<u64>) -> u64`, track_caller=true, mir_arg_count=1)
+
+=== FN `cat6_unsafe_cell_get` ===
+  vis: Public, safety: Safe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }) (size=8B), arg_count=1
+    FnAbi::arg[0]: ty=`&core::cell::UnsafeCell<u64>`, size=8B, mode=Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })
+  MIR phase=Runtime(Optimized), basic_blocks=2, local_decls=3, required_consts=0, mentioned_items=1
+    mentioned_item: Fn(FnDef(DefId(1:6360 ~ core[3475]::cell::{impl#61}::get), [u64]))
+    [Call @ bb0[2]] callee=`core::cell::UnsafeCell::<u64>::get` (DefKind=AssocFn, sig=`fn(&'^0.Named(DefId(1:63412 ~ core[3475]::cell::{impl#61}::get::'_)) core::cell::UnsafeCell<u64>) -> *mut u64`, track_caller=false, mir_arg_count=1)
+
+=== FN `cat6_direct_intrinsics` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Indirect { attrs: ArgAttributes { regular: CapturesAddress | NoAlias | NonNull | NoUndef, arg_ext: None, pointee_size: Size(32 bytes), pointee_align: Some(Align(8 bytes)) }, meta_attrs: None, on_stack: false } (size=32B), arg_count=3
+    FnAbi::arg[0]: ty=`*const u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`*mut u64`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[2]: ty=`usize`, size=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  MIR phase=Runtime(Optimized), basic_blocks=3, local_decls=26, required_consts=2, mentioned_items=2
+    required_const: Unevaluated(UnevaluatedConst { def: DefId(0:121 ~ probe_6cat[3243]::cat6_direct_intrinsics::{constant#0}), args: [usize], promoted: None }, usize) @ probe_6cat.rs:433:14: 433:59 (#0)
+    required_const: Unevaluated(UnevaluatedConst { def: DefId(0:122 ~ probe_6cat[3243]::cat6_direct_intrinsics::{constant#1}), args: [usize], promoted: None }, usize) @ probe_6cat.rs:434:14: 434:60 (#0)
+    mentioned_item: Fn(FnDef(DefId(1:2245 ~ core[3475]::intrinsics::copy), [u64]))
+    mentioned_item: Fn(FnDef(DefId(1:2247 ~ core[3475]::intrinsics::write_bytes), [u64]))
+    [Call @ bb0[22]] callee=`core::intrinsics::copy::<u64>` (DefKind=Fn, sig=`unsafe fn(*const u64, *mut u64, usize)`, track_caller=false, mir_arg_count=3)
+    [Call @ bb1[21]] callee=`core::intrinsics::write_bytes::<u64>` (DefKind=Fn, sig=`unsafe fn(*mut u64, u8, usize)`, track_caller=false, mir_arg_count=3)
+
+=== FN `cat6_direct_unreachable` ===
+  vis: Public, safety: Unsafe, abi: Rust, inline: None, flags: 
+  FnAbi: conv=Rust, c_variadic=false, ret_mode=Ignore (size=0B), arg_count=0
+  MIR phase=Runtime(PostCleanup), basic_blocks=1, local_decls=1, required_consts=0, mentioned_items=0
+

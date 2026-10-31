@@ -1,0 +1,376 @@
+========================================================================
+PART 1: MONOMORPHIZATION COLLECTION (`collect_and_partition_mono_items`)
+========================================================================
+Total CGUs: 1, Local MonoItem::Fn count: 70, Upstream (`core`) MonoItem::Fn count: 31
+
+--- Local Monomorphized Instances (70) ---
+  [local] `<u64 as ComputeTrait>::compute` (DefKind=AssocFn, track_caller=false)
+  [local] `callee_0` (DefKind=Fn, track_caller=false)
+  [local] `callee_1` (DefKind=Fn, track_caller=false)
+  [local] `callee_2` (DefKind=Fn, track_caller=false)
+  [local] `callee_3` (DefKind=Fn, track_caller=false)
+  [local] `callee_7` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_array_repeat_val` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_array_repeat_zero` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_enums` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_fixed_array` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_option_nonzero` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_option_usize` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_packed` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_pair` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_pair_c` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_reorder_rust` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_result` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_tuple` (DefKind=Fn, track_caller=false)
+  [local] `cat1_make_wrapper` (DefKind=Fn, track_caller=false)
+  [local] `cat1_slices_passthrough` (DefKind=Fn, track_caller=false)
+  [local] `cat2_addr_of_macros` (DefKind=Fn, track_caller=false)
+  [local] `cat2_array_index` (DefKind=Fn, track_caller=false)
+  [local] `cat2_deref_field_proj` (DefKind=Fn, track_caller=false)
+  [local] `cat2_nested_tuple_proj` (DefKind=Fn, track_caller=false)
+  [local] `cat2_packed_raw_proj` (DefKind=Fn, track_caller=false)
+  [local] `cat2_raw_const_proj` (DefKind=Fn, track_caller=false)
+  [local] `cat2_raw_mut_proj` (DefKind=Fn, track_caller=false)
+  [local] `cat2_raw_ptr_deref` (DefKind=Fn, track_caller=false)
+  [local] `cat2_reorder_field_proj` (DefKind=Fn, track_caller=false)
+  [local] `cat2_slice_index` (DefKind=Fn, track_caller=false)
+  [local] `cat3_addr_to_ptr_as` (DefKind=Fn, track_caller=false)
+  [local] `cat3_array_to_slice_unsize` (DefKind=Fn, track_caller=false)
+  [local] `cat3_int_casts` (DefKind=Fn, track_caller=false)
+  [local] `cat3_ptr_expose_provenance` (DefKind=Fn, track_caller=false)
+  [local] `cat3_ptr_metadata_intrinsic` (DefKind=Fn, track_caller=false)
+  [local] `cat3_ptr_to_addr_as` (DefKind=Fn, track_caller=false)
+  [local] `cat3_ptr_to_addr_method` (DefKind=Fn, track_caller=false)
+  [local] `cat3_ref_to_raw_ptr` (DefKind=Fn, track_caller=false)
+  [local] `cat3_slice_len` (DefKind=Fn, track_caller=false)
+  [local] `cat3_with_exposed_provenance` (DefKind=Fn, track_caller=false)
+  [local] `cat3_without_provenance` (DefKind=Fn, track_caller=false)
+  [local] `cat4_arith_and_div_checks` (DefKind=Fn, track_caller=false)
+  [local] `cat4_for_range` (DefKind=Fn, track_caller=false)
+  [local] `cat4_loop_break_continue` (DefKind=Fn, track_caller=false)
+  [local] `cat4_match_clike` (DefKind=Fn, track_caller=false)
+  [local] `cat4_match_data_enum` (DefKind=Fn, track_caller=false)
+  [local] `cat4_match_int` (DefKind=Fn, track_caller=false)
+  [local] `cat4_match_option_nonzero` (DefKind=Fn, track_caller=false)
+  [local] `cat4_match_option_usize` (DefKind=Fn, track_caller=false)
+  [local] `cat4_while_loop` (DefKind=Fn, track_caller=false)
+  [local] `cat5_call_generic` (DefKind=Fn, track_caller=false)
+  [local] `cat5_call_tracked` (DefKind=Fn, track_caller=false)
+  [local] `cat5_calls` (DefKind=Fn, track_caller=false)
+  [local GENERIC] `cat5_generic_id::<Pair>` (DefKind=Fn, track_caller=false)
+  [local] `cat5_tracked_callee` (DefKind=Fn, track_caller=true)
+  [local GENERIC] `cat5_trait_generic::<u64>` (DefKind=Fn, track_caller=false)
+  [local] `cat5_trait_mono` (DefKind=Fn, track_caller=false)
+  [local] `cat6_direct_intrinsics` (DefKind=Fn, track_caller=false)
+  [local] `cat6_direct_unreachable` (DefKind=Fn, track_caller=false)
+  [local] `cat6_maybe_uninit` (DefKind=Fn, track_caller=false)
+  [local] `cat6_ptr_copy` (DefKind=Fn, track_caller=false)
+  [local] `cat6_ptr_copy_nonoverlapping` (DefKind=Fn, track_caller=false)
+  [local] `cat6_ptr_read` (DefKind=Fn, track_caller=false)
+  [local] `cat6_ptr_write` (DefKind=Fn, track_caller=false)
+  [local] `cat6_ptr_write_bytes` (DefKind=Fn, track_caller=false)
+  [local] `cat6_size_and_align` (DefKind=Fn, track_caller=false)
+  [local] `cat6_transmute` (DefKind=Fn, track_caller=false)
+  [local] `cat6_transmute_copy` (DefKind=Fn, track_caller=false)
+  [local] `cat6_unreachable_unchecked` (DefKind=Fn, track_caller=false)
+  [local] `cat6_unsafe_cell_get` (DefKind=Fn, track_caller=false)
+
+--- Upstream (`core`) Monomorphized Instances Pulled into CGUs at mir-opt-level=0 (31) ---
+  [upstream] `<core::ops::Range<usize> as core::iter::IntoIterator>::into_iter` (track_caller=false)
+  [upstream] `<core::ops::Range<usize> as core::iter::range::RangeIteratorImpl>::spec_next` (track_caller=false)
+  [upstream] `<usize as core::iter::Step>::forward_unchecked` (track_caller=false)
+  [upstream] `core::cell::UnsafeCell::<u64>::get` (track_caller=false)
+  [upstream] `core::cmp::impls::<impl core::cmp::PartialOrd for usize>::lt` (track_caller=false)
+  [upstream] `core::hint::unreachable_unchecked` (track_caller=true)
+  [upstream] `core::hint::unreachable_unchecked::precondition_check` (track_caller=true)
+  [upstream] `core::iter::range::<impl core::iter::Iterator for core::ops::Range<usize>>::next` (track_caller=false)
+  [upstream] `core::mem::MaybeUninit::<u64>::assume_init` (track_caller=true)
+  [upstream] `core::mem::MaybeUninit::<u64>::uninit` (track_caller=false)
+  [upstream] `core::mem::MaybeUninit::<u64>::write` (track_caller=false)
+  [upstream] `core::mem::align_of::<Pair>` (track_caller=false)
+  [upstream] `core::mem::size_of::<Pair>` (track_caller=false)
+  [upstream] `core::mem::transmute_copy::<u64, [u32; 2]>` (track_caller=true)
+  [upstream] `core::num::<impl u64>::wrapping_add` (track_caller=false)
+  [upstream] `core::num::<impl u64>::wrapping_mul` (track_caller=false)
+  [upstream] `core::num::<impl usize>::wrapping_add` (track_caller=false)
+  [upstream] `core::num::NonZero::<usize>::get` (track_caller=false)
+  [upstream] `core::panic::Location::<'_>::caller` (track_caller=true)
+  [upstream] `core::panic::Location::<'_>::line` (track_caller=false)
+  [upstream] `core::ptr::const_ptr::<impl *const u64>::addr` (track_caller=false)
+  [upstream] `core::ptr::const_ptr::<impl *const u64>::expose_provenance` (track_caller=false)
+  [upstream] `core::ptr::copy::<u64>` (track_caller=false)
+  [upstream] `core::ptr::copy_nonoverlapping::<u64>` (track_caller=false)
+  [upstream] `core::ptr::read::<u64>` (track_caller=true)
+  [upstream] `core::ptr::with_exposed_provenance::<u64>` (track_caller=false)
+  [upstream] `core::ptr::without_provenance::<u64>` (track_caller=false)
+  [upstream] `core::ptr::without_provenance_mut::<u64>` (track_caller=false)
+  [upstream] `core::ptr::write::<u64>` (track_caller=true)
+  [upstream] `core::ptr::write_bytes::<u64>` (track_caller=false)
+  [upstream] `core::slice::<impl [u8]>::len` (track_caller=false)
+
+=== SUBSTITUTED MIR FOR INSTANCE `<u64 as ComputeTrait>::compute` (DefId=DefId(0:99 ~ probe_6cat[3243]::{impl#0}::compute), args=[]) ===
+  EarlyBinder::instantiate vs instantiate_mir_and_normalize_erasing_regions local_decls match: true
+  Concrete FnAbi: conv=Rust, ret=`u64` (size=8B, align=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg_count=2
+    FnAbi::arg[0]: ty=`u64`, size=8B, align=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, align=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  local _0: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _1: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _2: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _3: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _4: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  bb0:
+    stmt: StorageLive(_3)
+    stmt: _3 = copy _1
+    stmt: StorageLive(_4)
+    stmt: _4 = copy _2
+    term: _0 = core::num::<impl u64>::wrapping_mul(move _3, move _4) -> [return: bb1, unwind unreachable]
+      -> Resolved Call in Substituted Body: CoreHelperWrapper { category: "cat5:wrapping_mul", semantic_lowering: "dest = Mul(arg0, arg1)", type_args_summary: "none", track_caller: false }
+  bb1:
+    stmt: StorageDead(_4)
+    stmt: StorageDead(_3)
+    term: return
+
+=== SUBSTITUTED MIR FOR INSTANCE `cat5_generic_id::<Pair>` (DefId=DefId(0:93 ~ probe_6cat[3243]::cat5_generic_id), args=[Pair]) ===
+  EarlyBinder::instantiate vs instantiate_mir_and_normalize_erasing_regions local_decls match: true
+  Concrete FnAbi: conv=Rust, ret=`Pair` (size=16B, align=8B, mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg_count=1
+    FnAbi::arg[0]: ty=`Pair`, size=16B, align=8B, mode=Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  local _0: `Pair` (size=16B, align=8B, repr=ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }))
+  local _1: `Pair` (size=16B, align=8B, repr=ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }))
+  bb0:
+    stmt: _0 = copy _1
+    term: return
+
+=== SUBSTITUTED MIR FOR INSTANCE `cat5_trait_generic::<u64>` (DefId=DefId(0:100 ~ probe_6cat[3243]::cat5_trait_generic), args=[u64]) ===
+  EarlyBinder::instantiate vs instantiate_mir_and_normalize_erasing_regions local_decls match: true
+  Concrete FnAbi: conv=Rust, ret=`u64` (size=8B, align=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg_count=2
+    FnAbi::arg[0]: ty=`u64`, size=8B, align=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+    FnAbi::arg[1]: ty=`u64`, size=8B, align=8B, mode=Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })
+  local _0: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _1: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _2: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _3: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  local _4: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  bb0:
+    stmt: StorageLive(_3)
+    stmt: _3 = move _1
+    stmt: StorageLive(_4)
+    stmt: _4 = copy _2
+    term: _0 = <u64 as ComputeTrait>::compute(move _3, move _4) -> [return: bb1, unwind unreachable]
+      -> Resolved Call in Substituted Body: UserOrUninterceptedCall { resolved_instance: "<u64 as ComputeTrait>::compute", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[1]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+  bb1:
+    stmt: StorageDead(_4)
+    stmt: StorageDead(_3)
+    term: return
+
+========================================================================
+PART 2: POLYMORPHIC (`TypingEnv::post_analysis`) vs MONOMORPHIC ANALYSIS
+========================================================================
+=== POLYMORPHIC BODY `cat5_generic_id` ===
+  tcx.type_of(def_id).instantiate_identity(): `Unnormalized { value: FnDef(DefId(0:93 ~ probe_6cat[3243]::cat5_generic_id), [T/#0]), .. }`
+  param_env caller_bounds: [Binder { value: TraitPredicate(<T as core::marker::Copy>, polarity:Positive), bound_vars: [] }, Binder { value: TraitPredicate(<T as core::clone::Clone>, polarity:Positive), bound_vars: [] }, Binder { value: TraitPredicate(<T as core::marker::MetaSized>, polarity:Positive), bound_vars: [] }, Binder { value: TraitPredicate(<T as core::marker::Sized>, polarity:Positive), bound_vars: [] }]
+  required_consts count: 0
+  local _0: Place::ty=`T/#0` (kind=T/#0)
+    layout_of(val_ty) in post_analysis: `T` (LayoutError=TooGeneric(T/#0))
+    layout_of(*const val_ty) in post_analysis: `*const T` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+  local _1: Place::ty=`T/#0` (kind=T/#0)
+    layout_of(val_ty) in post_analysis: `T` (LayoutError=TooGeneric(T/#0))
+    layout_of(*const val_ty) in post_analysis: `*const T` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+
+=== POLYMORPHIC BODY `cat5_trait_generic` ===
+  tcx.type_of(def_id).instantiate_identity(): `Unnormalized { value: FnDef(DefId(0:100 ~ probe_6cat[3243]::cat5_trait_generic), [T/#0]), .. }`
+  param_env caller_bounds: [Binder { value: TraitPredicate(<T as ComputeTrait>, polarity:Positive), bound_vars: [] }, Binder { value: TraitPredicate(<T as core::marker::MetaSized>, polarity:Positive), bound_vars: [] }, Binder { value: TraitPredicate(<T as core::marker::Sized>, polarity:Positive), bound_vars: [] }]
+  required_consts count: 0
+  local _0: Place::ty=`u64` (kind=u64)
+    layout_of(val_ty) in post_analysis: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+    layout_of(*const val_ty) in post_analysis: `*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+  local _1: Place::ty=`T/#0` (kind=T/#0)
+    layout_of(val_ty) in post_analysis: `T` (LayoutError=TooGeneric(T/#0))
+    layout_of(*const val_ty) in post_analysis: `*const T` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+  local _2: Place::ty=`u64` (kind=u64)
+    layout_of(val_ty) in post_analysis: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+    layout_of(*const val_ty) in post_analysis: `*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+  local _3: Place::ty=`T/#0` (kind=T/#0)
+    layout_of(val_ty) in post_analysis: `T` (LayoutError=TooGeneric(T/#0))
+    layout_of(*const val_ty) in post_analysis: `*const T` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+  local _4: Place::ty=`u64` (kind=u64)
+    layout_of(val_ty) in post_analysis: `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+    layout_of(*const val_ty) in post_analysis: `*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+  [Polymorphic Call @ bb0] UserOrUninterceptedCall { resolved_instance: "<unresolved symbolic trait projection `<T as ComputeTrait>::compute`>", is_local: true, track_caller: false, fn_abi_summary: "Symbolic/Polymorphic (requires monomorphization or trait law)" }
+
+=== POLYMORPHIC `Src`/`Dst` BODY `core::mem::transmute_copy` vs MONOMORPHIZED `core::mem::transmute_copy::<u64, [u32; 2]>` ===
+  generics: [(0, "Src"), (1, "Dst")]
+  param_env caller_bounds: [Binder { value: TraitPredicate(<Dst as core::marker::Sized>, polarity:Positive), bound_vars: [] }, Binder { value: TraitPredicate(<Src as core::marker::Sized>, polarity:Positive), bound_vars: [] }]
+  [Poly] local _0: Place::ty=`Dst/#1` -> layout=`Dst` (LayoutError=TooGeneric(Dst/#1))
+  [Poly] local _1: Place::ty=`&'{erased} Src/#0` -> layout=`&Src` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }))
+  [Poly] local _2: Place::ty=`bool` -> layout=`bool` (size=1B, align=1B, repr=Scalar(Initialized { value: Int(I8, false), valid_range: 0..=1 }))
+  [Poly] local _3: Place::ty=`!` -> layout=`!` (size=0B, align=1B, repr=Memory { sized: true })
+  [Poly] local _4: Place::ty=`core::fmt::Arguments<'{erased}>` -> layout=`core::fmt::Arguments<'_>` (size=16B, align=8B, repr=ScalarPair(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }, Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2719 ~ core[3475]::mem::SizedTypeProperties::SIZE), args: [Src/#0], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Err(TooGeneric(/usr/local/google/home/joshlf/.cache/.anneal/toolchain/23a4e3877fe0044c7e541a12421842ca04975a36f159e7d3204f4a91d14ea681/rust/lib/rustlib/src/rust/library/core/src/mem/mod.rs:374:5: 374:37 (#0)))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000008))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2719 ~ core[3475]::mem::SizedTypeProperties::SIZE), args: [Dst/#1], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Err(TooGeneric(/usr/local/google/home/joshlf/.cache/.anneal/toolchain/23a4e3877fe0044c7e541a12421842ca04975a36f159e7d3204f4a91d14ea681/rust/lib/rustlib/src/rust/library/core/src/mem/mod.rs:374:5: 374:37 (#0)))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000008))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2720 ~ core[3475]::mem::SizedTypeProperties::ALIGN), args: [Dst/#1], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Err(TooGeneric(/usr/local/google/home/joshlf/.cache/.anneal/toolchain/23a4e3877fe0044c7e541a12421842ca04975a36f159e7d3204f4a91d14ea681/rust/lib/rustlib/src/rust/library/core/src/mem/mod.rs:529:5: 529:38 (#0)))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000004))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2720 ~ core[3475]::mem::SizedTypeProperties::ALIGN), args: [Src/#0], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Err(TooGeneric(/usr/local/google/home/joshlf/.cache/.anneal/toolchain/23a4e3877fe0044c7e541a12421842ca04975a36f159e7d3204f4a91d14ea681/rust/lib/rustlib/src/rust/library/core/src/mem/mod.rs:529:5: 529:38 (#0)))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000008))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2719 ~ core[3475]::mem::SizedTypeProperties::SIZE), args: [Dst/#1], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Err(TooGeneric(/usr/local/google/home/joshlf/.cache/.anneal/toolchain/23a4e3877fe0044c7e541a12421842ca04975a36f159e7d3204f4a91d14ea681/rust/lib/rustlib/src/rust/library/core/src/mem/mod.rs:374:5: 374:37 (#0)))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000008))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2719 ~ core[3475]::mem::SizedTypeProperties::SIZE), args: [u8], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Ok(Scalar(0x0000000000000001))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000001))
+  [required_const] poly_const=Unevaluated(UnevaluatedConst { def: DefId(1:2720 ~ core[3475]::mem::SizedTypeProperties::ALIGN), args: [u8], promoted: None }, usize)
+    -> eval in post_analysis (symbolic Src, Dst): Ok(Scalar(0x0000000000000001))
+    -> eval in fully_monomorphized (Src=u64, Dst=[u32; 2]): Ok(Scalar(0x0000000000000001))
+
+========================================================================
+PART 3: DEF_ID / INTRINSIC CALL INTERCEPTION ACROSS `probe_6cat.rs`
+========================================================================
+=== FUNCTION `cat3_int_casts` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt Cast IntToInt] `_4` = move _5 : `u8` (size=1B, align=1B, repr=Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })) -> `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  [bb0 Stmt Cast IntToInt] `_6` = move _7 : `i32` (size=4B, align=4B, repr=Scalar(Initialized { value: Int(I32, true), valid_range: 0..=4294967295 })) -> `i64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, true), valid_range: 0..=18446744073709551615 }))
+  [bb0 Stmt Cast IntToInt] `_8` = move _9 : `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })) -> `u32` (size=4B, align=4B, repr=Scalar(Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }))
+  [bb0 Stmt Cast IntToInt] `_10` = move _11 : `i32` (size=4B, align=4B, repr=Scalar(Initialized { value: Int(I32, true), valid_range: 0..=4294967295 })) -> `u32` (size=4B, align=4B, repr=Scalar(Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }))
+
+=== FUNCTION `cat3_ptr_to_addr_as` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt Cast PointerExposeProvenance] `_0` = move _2 : `*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })) -> `usize` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+
+=== FUNCTION `cat3_ptr_to_addr_method` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::ptr::const_ptr::<impl *const u64>::addr`
+    -> CoreHelperWrapper { category: "cat3:ptr::addr", semantic_lowering: "dest = PtrToAddr(arg0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat3_ptr_expose_provenance` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::ptr::const_ptr::<impl *const u64>::expose_provenance`
+    -> CoreHelperWrapper { category: "cat3:ptr::expose_provenance", semantic_lowering: "dest = PointerExposeProvenance(arg0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat3_addr_to_ptr_as` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt Cast PointerWithExposedProvenance] `_0` = move _2 : `usize` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })) -> `*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+
+=== FUNCTION `cat3_with_exposed_provenance` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::ptr::with_exposed_provenance::<u64>`
+    -> CoreHelperWrapper { category: "cat3:ptr::with_exposed_provenance", semantic_lowering: "dest = PointerWithExposedProvenance::<T>(arg0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat3_without_provenance` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_2`, mir_args=1, callee=`core::ptr::without_provenance::<u64>`
+    -> CoreHelperWrapper { category: "cat3:ptr::without_provenance", semantic_lowering: "dest = PtrWithoutProvenance::<*const T>(arg0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+  [bb1 Call] dest=`_4`, mir_args=1, callee=`core::ptr::without_provenance_mut::<u64>`
+    -> CoreHelperWrapper { category: "cat3:ptr::without_provenance_mut", semantic_lowering: "dest = PtrWithoutProvenance::<*mut T>(arg0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat3_ref_to_raw_ptr` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt Cast PtrToPtr] `_5` = move _6 : `*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })) -> `*const u8` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))
+
+=== FUNCTION `cat3_array_to_slice_unsize` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt Cast PointerCoercion(Unsize, AsCast)] `_2` = move _3 : `&[u32; 4]` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })) -> `&[u32]` (size=16B, align=8B, repr=ScalarPair(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+
+=== FUNCTION `cat3_slice_len` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::slice::<impl [u8]>::len`
+    -> CoreHelperWrapper { category: "cat3:slice::len", semantic_lowering: "dest = PtrMetadata(arg0)", type_args_summary: "T0=`u8` (size=1B, align=1B, repr=Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 }))", track_caller: false }
+
+=== FUNCTION `cat3_ptr_metadata_intrinsic` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt PtrMetadata] `_0` = PtrMetadata(move _2)
+
+=== FUNCTION `cat5_calls` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_2`, mir_args=0, callee=`callee_0`
+    -> UserOrUninterceptedCall { resolved_instance: "callee_0", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[]" }
+  [bb1 Call] dest=`_3`, mir_args=1, callee=`callee_1`
+    -> UserOrUninterceptedCall { resolved_instance: "callee_1", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+  [bb2 Call] dest=`_5`, mir_args=2, callee=`callee_2`
+    -> UserOrUninterceptedCall { resolved_instance: "callee_2", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[1]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+  [bb3 Call] dest=`_8`, mir_args=3, callee=`callee_3`
+    -> UserOrUninterceptedCall { resolved_instance: "callee_3", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[1]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[2]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+  [bb4 Call] dest=`_0`, mir_args=7, callee=`callee_7`
+    -> UserOrUninterceptedCall { resolved_instance: "callee_7", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[1]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[2]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[3]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[4]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[5]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[6]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+
+=== FUNCTION `cat5_generic_id` (phase=Runtime(Optimized)) ===
+
+=== FUNCTION `cat5_call_generic` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`cat5_generic_id::<Pair>`
+    -> UserOrUninterceptedCall { resolved_instance: "cat5_generic_id::<Pair>", is_local: true, track_caller: false, fn_abi_summary: "ret:`Pair`(Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`Pair`(Pair(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }, ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+
+=== FUNCTION `cat5_trait_generic` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=2, callee=`<T as ComputeTrait>::compute`
+    -> UserOrUninterceptedCall { resolved_instance: "<unresolved symbolic trait projection `<T as ComputeTrait>::compute`>", is_local: true, track_caller: false, fn_abi_summary: "Symbolic/Polymorphic (requires monomorphization or trait law)" }
+
+=== FUNCTION `cat5_trait_mono` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=2, callee=`cat5_trait_generic::<u64>`
+    -> UserOrUninterceptedCall { resolved_instance: "cat5_trait_generic::<u64>", is_local: true, track_caller: false, fn_abi_summary: "ret:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[1]:`u64`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None }))]" }
+
+=== FUNCTION `cat5_tracked_callee` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_2`, mir_args=0, callee=`core::panic::Location::<'_>::caller`
+    -> UserOrUninterceptedCall { resolved_instance: "core::panic::Location::<'_>::caller", is_local: false, track_caller: true, fn_abi_summary: "ret:`&core::panic::Location<'_>`(Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) })), args=[arg[0]:`&core::panic::Location<'_>`(Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) }))]" }
+  [bb1 Call] dest=`_5`, mir_args=1, callee=`core::panic::Location::<'_>::line`
+    -> UserOrUninterceptedCall { resolved_instance: "core::panic::Location::<'_>::line", is_local: false, track_caller: false, fn_abi_summary: "ret:`u32`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`&core::panic::Location<'_>`(Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) }))]" }
+  [bb2 Stmt Cast IntToInt] `_4` = move _5 : `u32` (size=4B, align=4B, repr=Scalar(Initialized { value: Int(I32, false), valid_range: 0..=4294967295 })) -> `usize` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))
+  [bb2 Call] dest=`_0`, mir_args=2, callee=`core::num::<impl usize>::wrapping_add`
+    -> CoreHelperWrapper { category: "cat4/5:wrapping_add", semantic_lowering: "dest = Add(arg0, arg1)", type_args_summary: "none", track_caller: false }
+
+=== FUNCTION `cat5_call_tracked` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`cat5_tracked_callee`
+    -> UserOrUninterceptedCall { resolved_instance: "cat5_tracked_callee", is_local: true, track_caller: true, fn_abi_summary: "ret:`usize`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), args=[arg[0]:`usize`(Direct(ArgAttributes { regular: NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: None })), arg[1]:`&core::panic::Location<'_>`(Direct(ArgAttributes { regular: NonNull | NoUndef, arg_ext: None, pointee_size: Size(0 bytes), pointee_align: Some(Align(8 bytes)) }))]" }
+
+=== FUNCTION `cat6_size_and_align` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_1`, mir_args=0, callee=`core::mem::size_of::<Pair>`
+    -> CoreZerocopyWrapper { category: "cat6:size_of", semantic_lowering: "dest = const 16_usize", type_args_summary: "T0=`Pair` (size=16B, align=8B, repr=ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }))", track_caller: false }
+  [bb1 Call] dest=`_2`, mir_args=0, callee=`core::mem::align_of::<Pair>`
+    -> CoreZerocopyWrapper { category: "cat6:align_of", semantic_lowering: "dest = const 8_usize", type_args_summary: "T0=`Pair` (size=16B, align=8B, repr=ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }))", track_caller: false }
+
+=== FUNCTION `cat6_transmute` (phase=Runtime(Optimized)) ===
+  [bb0 Stmt Cast Transmute] `_0` = move _2 : `u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })) -> `[u32; 2]` (size=8B, align=4B, repr=Memory { sized: true })
+
+=== FUNCTION `cat6_transmute_copy` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::mem::transmute_copy::<u64, [u32; 2]>`
+    -> CoreZerocopyWrapper { category: "cat6:transmute_copy", semantic_lowering: "dest = ReadBytes::<[u32; 2]>(src_ref as *const [u32; 2]) [assert size_of::<u64>() >= size_of::<[u32; 2]>()]", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })), T1=`[u32; 2]` (size=8B, align=4B, repr=Memory { sized: true })", track_caller: true }
+
+=== FUNCTION `cat6_ptr_read` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::ptr::read::<u64>`
+    -> CoreZerocopyWrapper { category: "cat6:ptr::read", semantic_lowering: "dest = AlignedLoad::<u64>(arg0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: true }
+
+=== FUNCTION `cat6_ptr_write` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=2, callee=`core::ptr::write::<u64>`
+    -> CoreZerocopyWrapper { category: "cat6:ptr::write", semantic_lowering: "AlignedStore::<u64>(arg0, arg1)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: true }
+
+=== FUNCTION `cat6_ptr_copy` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=3, callee=`core::ptr::copy::<u64>`
+    -> CoreZerocopyWrapper { category: "cat6:ptr::copy", semantic_lowering: "MemMove::<u64>(dst=arg1, src=arg0, count=arg2)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat6_ptr_copy_nonoverlapping` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=3, callee=`core::ptr::copy_nonoverlapping::<u64>`
+    -> CoreZerocopyWrapper { category: "cat6:ptr::copy_nonoverlapping", semantic_lowering: "MemCpyDisjoint::<u64>(dst=arg1, src=arg0, count=arg2)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat6_ptr_write_bytes` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=3, callee=`core::ptr::write_bytes::<u64>`
+    -> CoreZerocopyWrapper { category: "cat6:ptr::write_bytes", semantic_lowering: "MemSet::<u64>(dst=arg0, byte=arg1, count=arg2)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat6_unreachable_unchecked` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=0, callee=`core::hint::unreachable_unchecked`
+    -> CoreZerocopyWrapper { category: "cat6:hint::unreachable_unchecked", semantic_lowering: "AssertFalse / Unreachable obligation", type_args_summary: "none", track_caller: true }
+
+=== FUNCTION `cat6_maybe_uninit` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_2`, mir_args=0, callee=`core::mem::MaybeUninit::<u64>::uninit`
+    -> CoreZerocopyWrapper { category: "cat6:MaybeUninit::uninit", semantic_lowering: "dest = UninitValue::<T>()", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+  [bb1 Call] dest=`_3`, mir_args=2, callee=`core::mem::MaybeUninit::<u64>::write`
+    -> CoreZerocopyWrapper { category: "cat6:MaybeUninit::write", semantic_lowering: "*self_mut = InitValue::<T>(val); dest = &mut (*self_mut).value", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+  [bb2 Call] dest=`_0`, mir_args=1, callee=`core::mem::MaybeUninit::<u64>::assume_init`
+    -> CoreZerocopyWrapper { category: "cat6:MaybeUninit::assume_init", semantic_lowering: "dest = AssertInitialized::<T>(self_val)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: true }
+
+=== FUNCTION `cat6_unsafe_cell_get` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_0`, mir_args=1, callee=`core::cell::UnsafeCell::<u64>::get`
+    -> CoreZerocopyWrapper { category: "cat6:UnsafeCell::get", semantic_lowering: "dest = arg0 as *const UnsafeCell<T> as *mut T (offset 0)", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))", track_caller: false }
+
+=== FUNCTION `cat6_direct_intrinsics` (phase=Runtime(Optimized)) ===
+  [bb0 Call] dest=`_10`, mir_args=3, callee=`core::intrinsics::copy::<u64>`
+    -> DirectIntrinsic { name: "copy", semantic_lowering: "MemMove(dst, src, count * size_of::<T>()) [not lowered by LowerIntrinsics]", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))" }
+  [bb1 Stmt Intrinsic::CopyNonOverlapping] src=move _15 (`*const u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 }))), dst=move _16, count=move _17
+  [bb1 Call] dest=`_18`, mir_args=3, callee=`core::intrinsics::write_bytes::<u64>`
+    -> DirectIntrinsic { name: "write_bytes", semantic_lowering: "MemSet(dst, val, count * size_of::<T>()) [not lowered by LowerIntrinsics]", type_args_summary: "T0=`u64` (size=8B, align=8B, repr=Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }))" }
+  [bb2 Stmt RuntimeChecks] `_21` = RuntimeChecks(UbChecks) (sess.ub_checks()=false)
+  [required_const] Unevaluated(UnevaluatedConst { def: DefId(0:121 ~ probe_6cat[3243]::cat6_direct_intrinsics::{constant#0}), args: [usize], promoted: None }, usize) -> eval=Ok(Scalar(0x0000000000000010)) (ty=`usize`)
+  [required_const] Unevaluated(UnevaluatedConst { def: DefId(0:122 ~ probe_6cat[3243]::cat6_direct_intrinsics::{constant#1}), args: [usize], promoted: None }, usize) -> eval=Ok(Scalar(0x0000000000000008)) (ty=`usize`)
+
+=== FUNCTION `cat6_direct_unreachable` (phase=Runtime(PostCleanup)) ===
+  [bb0 TerminatorKind::Unreachable]
+
