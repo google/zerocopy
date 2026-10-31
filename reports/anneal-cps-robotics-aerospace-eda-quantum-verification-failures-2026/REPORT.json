@@ -1,0 +1,87 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "mir_to_x86_revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+        "reference_hardening_revision": "df55c524a051d59e7dd35564f282b30d29133392",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "trusted_core_revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal trusted verification boundary and refinement core"
+    },
+    {
+      "identity": {
+        "cade2015_doi": "10.1007/978-3-319-21401-6_36",
+        "cpp2017_doi": "10.1145/3018610.3018616",
+        "pldi2018_doi": "10.1145/3192366.3192406",
+        "repository": "LS-Lab/KeYmaeraX-release"
+      },
+      "name": "KeYmaera 3 and KeYmaera X differential dynamic logic provers and VeriPhy pipeline"
+    },
+    {
+      "identity": {
+        "arch_comp_nl_doi": "10.29007/5791",
+        "dreal_cade2013_doi": "10.1007/978-3-642-38574-2_14",
+        "flowstar_cav2013_doi": "10.1007/978-3-642-39799-8_18",
+        "spaceex_cav2011_doi": "10.1007/978-3-642-22110-1_30"
+      },
+      "name": "Continuous and hybrid reachability solvers (Flow*, SpaceEx, CORA, dReal)"
+    },
+    {
+      "identity": {
+        "ariane501_report": "ESA/CNES Inquiry Board Report (Lions et al., 1996-07-19)",
+        "b737max_report": "NTSB ASR-19-01 (2019-09-19) / KNKT.18.10.35.04 (2019-10-25)",
+        "mco_report": "NASA MCO Mishap Investigation Board Phase I Report (1999-11-10)",
+        "mpl_report": "JPL Special Review Board Report JPL D-18709 (2000-03-28)",
+        "patriot_report": "GAO/IMTEC-92-26 (1992-02-04)",
+        "therac25_doi": "10.1109/MC.1993.274940"
+      },
+      "name": "Aerospace, defense, medical, and industrial PLC safety postmortems"
+    },
+    {
+      "identity": {
+        "fdiv_doi": "10.1109/12.368006",
+        "fdiv_harrison_doi": "10.1023/A:1008712907154",
+        "transfuzz_usenix2024": "USENIX Security 2024 (Solt & Razavi, ISBN 978-1-939133-44-1)",
+        "vericert_oopsla2021_doi": "10.1145/3485509",
+        "verismith_fpga2020_doi": "10.1145/3373087.3375310"
+      },
+      "name": "Digital VLSI, RTL/gate equivalence, CDC, and HLS synthesis tool failures"
+    },
+    {
+      "identity": {
+        "cosmic_ray_nature2021_doi": "10.1038/s41586-021-03557-5",
+        "cosmic_ray_natphys2022_doi": "10.1038/s41567-021-01432-8",
+        "morphq_icse2022_doi": "10.1145/3510003.3510221",
+        "qdiff_ase2021_doi": "10.1109/ASE51524.2021.9678792",
+        "terhal_rmp2015_doi": "10.1103/RevModPhys.87.307"
+      },
+      "name": "Quantum circuit compilers (Qiskit, TKET, PyZX) and fault-tolerant surface-code decoders"
+    },
+    {
+      "identity": {
+        "clements_optica2016_doi": "10.1364/OPTICA.3.001460",
+        "mems_pullin_doi": "10.1109/T-ED.1967.15912",
+        "mzi_imperfect_optica2021_doi": "10.1364/OPTICA.424052",
+        "origami_science2014_doi": "10.1126/science.1252876",
+        "spice2_memo": "UCB/ERL M520 (Nagel, 1975-05-01)"
+      },
+      "name": "Analog SPICE simulators, silicon photonic MZI meshes, and programmable metamaterials"
+    }
+  ],
+  "topics": [
+    "anneal/architecture",
+    "anneal/behavior-codec",
+    "anneal/cps-verification",
+    "anneal/eda-hardware-verification",
+    "anneal/external-call",
+    "anneal/failure-postmortems",
+    "anneal/quantum-verification",
+    "anneal/refinement",
+    "anneal/trust-policy",
+    "verification/hybrid-systems",
+    "verification/soundness-failures"
+  ]
+}

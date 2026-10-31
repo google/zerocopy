@@ -1,0 +1,584 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 compiler branch (trusted/lean/Trusted/X86Semantics.lean)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      },
+      "name": "Rust compiler and standard library (core::sync::atomic, core::ptr::read_volatile/write_volatile)"
+    },
+    {
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+        "version": "7.58+1"
+      },
+      "name": "Herd7 and diy7 axiomatic weak-memory simulator (.cat models for RC11, LKMM, AArch64, RVWMO)"
+    },
+    {
+      "identity": {
+        "repository": "MPI-SWS/genmc",
+        "revision": "fab5bba7d9efaf76990227c2f59d62c11c7ea2a3"
+      },
+      "name": "GenMC stateless model checker for RC11, IMM, and LKMM"
+    },
+    {
+      "identity": {
+        "repository": "nidhugg/nidhugg",
+        "revision": "845a14632ff33f27ba78e72e0693668219197bb2"
+      },
+      "name": "Nidhugg stateless model checker for TSO, PSO, POWER, and ARM"
+    },
+    {
+      "identity": {
+        "repository": "hernanponcedeleon/Dat3M",
+        "revision": "b81ec6c55503e824bb0ddc4ebac6c6f0a63d56d8"
+      },
+      "name": "Dat3M / Dartagnan SMT bounded model checker for .cat memory models"
+    },
+    {
+      "identity": {
+        "repository": "tokio-rs/loom",
+        "revision": "948c8cc78b178ede6eeff3afc7d97f2f4ea08559"
+      },
+      "name": "Loom DPOR concurrency permutation model checker for Rust"
+    },
+    {
+      "identity": {
+        "repository": "awslabs/shuttle",
+        "revision": "cee89eb23a6eb883a3d8002c018326d709f240b1"
+      },
+      "name": "Shuttle randomized concurrency testing engine for Rust"
+    },
+    {
+      "identity": {
+        "repository": "MPI-SWS/kater",
+        "revision": "017fdbb530e421fd76cf39f2906354471b2ce96e"
+      },
+      "name": "Kater Kleene-algebra weak-memory metatheory and compilation verifier"
+    },
+    {
+      "identity": {
+        "repository": "weakmemory/imm",
+        "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+      },
+      "name": "IMM Coq intermediate memory model and atomic lowering proofs"
+    },
+    {
+      "identity": {
+        "repository": "snu-sf/promising2-coq",
+        "revision": "6b70a57d10666ec66bfa96b7801dd870f9054da9"
+      },
+      "name": "Promising 2.0 Coq operational weak-memory model"
+    },
+    {
+      "identity": {
+        "repository": "snu-sf/promising-arm",
+        "revision": "10291375ccd03152eadf739d280e2c59e10fa9af"
+      },
+      "name": "Promising-ARMv8 / RISC-V Coq operational architecture model"
+    },
+    {
+      "identity": {
+        "repository": "memorax/memorax",
+        "revision": "2f25c43f279bb315aba7ac3fcf7c37bbb7d1af5e"
+      },
+      "name": "Memorax weak-memory robustness and automatic fence-insertion tool"
+    },
+    {
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      },
+      "name": "Iris higher-order concurrent separation logic framework in Coq/Rocq"
+    },
+    {
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/gpfsl",
+        "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14"
+      },
+      "name": "GPFSL / iRC11 / ORC11 relaxed-memory separation logic"
+    },
+    {
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/iris/transfinite",
+        "revision": "dde9f193fb3d504be680480b2ca21052edae49df"
+      },
+      "name": "Transfinite Iris / Trillium / Fair-Iris liveness and refinement logic"
+    },
+    {
+      "identity": {
+        "repository": "kaist-cp/smr-verification",
+        "revision": "53fdc1648c17c5527c2499ed0ad10d55c01e1344"
+      },
+      "name": "smr-iris mechanized hazard pointers and epoch-based reclamation in Iris"
+    },
+    {
+      "identity": {
+        "repository": "boogie-org/boogie",
+        "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"
+      },
+      "name": "Boogie and CIVL layered concurrent refinement verifier"
+    },
+    {
+      "identity": {
+        "repository": "viperproject/voila",
+        "revision": "900470c4035812bde4f80defc5e4e2e79c1fcae6"
+      },
+      "name": "Voila automated TaDA atomic-triple verifier on Viper"
+    },
+    {
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      },
+      "name": "Verus deductive Rust verifier and tokenized_state_machines framework"
+    },
+    {
+      "identity": {
+        "repository": "microsoft/armada",
+        "revision": "da7497dcf506417df1899ac58850706a31e3acd5"
+      },
+      "name": "Armada multi-step refinement verifier for weak-memory concurrent systems"
+    },
+    {
+      "identity": {
+        "repository": "MattWindsor91/starling-tool",
+        "revision": "438fe7259e06aaf8433c259244fef2985de797a5"
+      },
+      "name": "Starling automated concurrent separation logic verifier"
+    },
+    {
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      },
+      "name": "VeriFast separation logic verifier with wait-level deadlock and termination tokens"
+    },
+    {
+      "identity": {
+        "repository": "open-s4c/libvsync",
+        "revision": "dd93f802704c9c941eb7397fa101039bf21118ff"
+      },
+      "name": "libvsync verified weak-memory synchronization primitives library"
+    },
+    {
+      "identity": {
+        "repository": "open-s4c/vsyncer",
+        "revision": "76569f0d2ee9a688da95b8025116b3a202e67321"
+      },
+      "name": "vsyncer weak-memory barrier optimizer and model-checking orchestrator"
+    },
+    {
+      "identity": {
+        "repository": "goblint/analyzer",
+        "revision": "1463f411ce87edd49198033856b2946fc3366fb2"
+      },
+      "name": "Goblint static abstract interpreter for multi-threaded and ISR-preempted C"
+    },
+    {
+      "identity": {
+        "repository": "rtic-rs/rtic",
+        "revision": "f1797184d6168e54c345b17019c237eea70b9ed4"
+      },
+      "name": "RTIC Stack Resource Policy (SRP) interrupt-driven concurrency framework for Rust"
+    },
+    {
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+      },
+      "name": "Asterinas framekernel and ostd unsafe TCB substrate"
+    },
+    {
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+      },
+      "name": "seL4 L4.verified Isabelle/HOL microkernel functional, IPC fastpath, and non-interference proofs"
+    },
+    {
+      "identity": {
+        "repository": "microsoft/verismo",
+        "revision": "6bc6dd326d8b9ca30ffec57a544b13b5fadf3cb3"
+      },
+      "name": "VeriSMo Verus-verified AMD SEV-SNP VMPL0 security module and VirtIO driver"
+    },
+    {
+      "identity": {
+        "repository": "matthias-brun/verified-nrkernel",
+        "revision": "1c861090537664b78544cda5d53711b1fcfa05e2"
+      },
+      "name": "Verified NR-OS page-table and hardware MMU/TLB verification in Verus"
+    },
+    {
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      },
+      "name": "Islaris Coq/Iris machine-code and ARMv8 VMSA page-table verifier"
+    },
+    {
+      "identity": {
+        "repository": "VeriGu/SeKVM-4.18",
+        "revision": "75e3591e663958c370c919aa36fbd484be341043"
+      },
+      "name": "SeKVM Coq-verified Linux KVM Arm64 hypervisor and SMMU isolation proofs"
+    },
+    {
+      "identity": {
+        "repository": "microsoft/komodo",
+        "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+      },
+      "name": "Komodo Vale/Dafny-verified ARM TrustZone enclave monitor"
+    },
+    {
+      "identity": {
+        "repository": "mars-research/atmosphere",
+        "revision": "bd485f22f1d5e4d1623e133700dc233086059603"
+      },
+      "name": "Atmosphere Verus-verified microkernel proof work"
+    },
+    {
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+      },
+      "name": "Kani Rust bit-precise bounded model checker"
+    },
+    {
+      "identity": {
+        "repository": "boogie-org/corral",
+        "revision": "33dd98eed1e2d5087c7c5df9a782652772af2b2e"
+      },
+      "name": "Corral / Static Driver Verifier (SDV) Windows driver model checker"
+    },
+    {
+      "identity": {
+        "repository": "ldv-klever/klever",
+        "revision": "49fef330955ea175fd73dd22f2670c68b811d51a"
+      },
+      "name": "Klever / LDV Linux kernel device driver verification framework"
+    },
+    {
+      "identity": {
+        "repository": "embassy-rs/embassy",
+        "revision": "14cf6a68ec0bfd0ecf873f7e3dbb2eb69013fa29"
+      },
+      "name": "Embassy async embedded Rust HAL and DMA runtime"
+    },
+    {
+      "identity": {
+        "repository": "rust-embedded/embedded-dma",
+        "revision": "37deca203dc3281fb459f0da92d41b6743a62a48"
+      },
+      "name": "embedded-dma ReadBuffer/WriteBuffer ownership traits for Rust DMA"
+    },
+    {
+      "identity": {
+        "repository": "mit-pdos/perennial",
+        "revision": "d62b13ac1ff88e21e9f1fbc18cbfeab30cc9ca8e"
+      },
+      "name": "Perennial concurrent crash-refinement separation logic in Coq/Iris"
+    },
+    {
+      "identity": {
+        "repository": "mit-pdos/go-journal",
+        "revision": "1d09d436fcbd943296f43372c3896714254838c0"
+      },
+      "name": "GoJournal verified concurrent crash-safe write-ahead logging system"
+    },
+    {
+      "identity": {
+        "repository": "mit-pdos/daisy-nfsd",
+        "revision": "68530c3b62abe31ce280e71a2b0d40026a70e5ee"
+      },
+      "name": "DaisyNFS verified concurrent crash-safe NFS server"
+    },
+    {
+      "identity": {
+        "repository": "mit-pdos/fscq",
+        "revision": "2c7ef9c268fd79a81b26b44ef720f8e6a1e938a0"
+      },
+      "name": "FSCQ / DFSCQ / SFSCQ Crash Hoare Logic file system in Coq"
+    },
+    {
+      "identity": {
+        "repository": "secure-foundations/veribetrkv-osdi2020",
+        "revision": "053dd16ab01939843a213e0590983fd22e2d0d4d"
+      },
+      "name": "VeriBetrKV Dafny-verified crash-safe B-epsilon-tree key-value store"
+    },
+    {
+      "identity": {
+        "repository": "microsoft/verified-storage",
+        "revision": "afcc157f40a1381773daa8be7333f5d123e96739"
+      },
+      "name": "Microsoft verified-storage Verus persistent-memory and NVMe storage engine"
+    },
+    {
+      "identity": {
+        "repository": "NICTA/cogent",
+        "revision": "49b6ceb0d0337198a0ce26944b1ae11dd93fcb9a"
+      },
+      "name": "Cogent linear type system and BilbyFS Isabelle/HOL certifying compiler"
+    },
+    {
+      "identity": {
+        "repository": "locore/yggdrasil",
+        "revision": "e1de61d798acafb9ae2d8387d176c4b091773623"
+      },
+      "name": "Yggdrasil push-button SMT crash-refinement file system verifier"
+    },
+    {
+      "identity": {
+        "repository": "uci-plrg/jaaru",
+        "revision": "640e2ad4d9089d0ff8a4fa17e2f4347b8f31449b"
+      },
+      "name": "Jaaru constraint-guided persistent-memory model checker"
+    },
+    {
+      "identity": {
+        "repository": "microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+      },
+      "name": "IronFleet Dafny/TLA+ distributed consensus and state-machine replication verifier"
+    },
+    {
+      "identity": {
+        "repository": "uwplse/verdi",
+        "revision": "7e1641b758d8f0032aa7de63620bc115330e0a6b"
+      },
+      "name": "Verdi Coq framework for verified distributed systems and Verdi-Raft"
+    },
+    {
+      "identity": {
+        "repository": "uwplse/cheerios",
+        "revision": "5c9318c269f9cae1c1c6583a44405969ac0be0dd"
+      },
+      "name": "Cheerios Coq-verified wire serialization library for Verdi"
+    },
+    {
+      "identity": {
+        "repository": "anvil-verifier/anvil",
+        "revision": "e83ea0f5516ce2ece26740266165180018741e66"
+      },
+      "name": "Anvil Verus-verified Kubernetes controller liveness and safety framework"
+    },
+    {
+      "identity": {
+        "repository": "logsem/aneris",
+        "revision": "59ae37946838df77fb2c573803b68462a3af9d0f"
+      },
+      "name": "Aneris Iris-based distributed separation logic in Coq"
+    },
+    {
+      "identity": {
+        "repository": "mit-pdos/grove",
+        "revision": "f3f405eaab259c391906e1088aac35216bac11a4"
+      },
+      "name": "Grove Perennial-based distributed crash-safe separation logic for Go"
+    },
+    {
+      "identity": {
+        "repository": "kenmcmil/ivy",
+        "revision": "8858a0241ed37141757b7a051acc24c58e49c2f3"
+      },
+      "name": "Ivy EPR decidable distributed protocol verifier"
+    },
+    {
+      "identity": {
+        "repository": "tokio-rs/turmoil",
+        "revision": "6a1f50223b5a1884bf8890053c85eec04a8af267"
+      },
+      "name": "Turmoil deterministic simulation testing (DST) framework for Tokio"
+    },
+    {
+      "identity": {
+        "repository": "madsim-rs/madsim",
+        "revision": "519950efb4711464f300ed7edf2967ed62d5f502"
+      },
+      "name": "MadSim deterministic simulation runtime for distributed Rust"
+    },
+    {
+      "identity": {
+        "repository": "apple/foundationdb",
+        "revision": "bcdefac96277de4a26d59cdf352d478391d347f9"
+      },
+      "name": "FoundationDB Flow deterministic simulation runtime"
+    },
+    {
+      "identity": {
+        "repository": "tigerbeetle/tigerbeetle",
+        "revision": "0450c32b2c3c3ab6114f3402cc601341cc8192aa"
+      },
+      "name": "TigerBeetle VOPR Viewstamped Replication deterministic simulator"
+    },
+    {
+      "identity": {
+        "repository": "anishathalye/porcupine",
+        "revision": "97cd067defd99df172053ba7f4ca5bbae57fe446"
+      },
+      "name": "Porcupine P-compositionality linearizability checker"
+    },
+    {
+      "identity": {
+        "repository": "jepsen-io/knossos",
+        "revision": "14ead19fb3d24745429e367c8ae9779e147ff6cb"
+      },
+      "name": "Knossos WGL/Wing-Gong linearizability history checker"
+    },
+    {
+      "identity": {
+        "repository": "stateright/stateright",
+        "revision": "ab8c8be9341505e0f71edbe5dd88ed275bd976a4"
+      },
+      "name": "Stateright Rust actor model checker and linearizability verifier"
+    },
+    {
+      "identity": {
+        "repository": "vrahli/Velisarios",
+        "revision": "6fb353b18610cd79210755fcc90123536c367aaa"
+      },
+      "name": "Velisarios Coq epistemic logic framework for PBFT Byzantine consensus"
+    },
+    {
+      "identity": {
+        "repository": "konnov/bymc",
+        "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+      },
+      "name": "ByMC parameterized threshold-automata Byzantine model checker"
+    },
+    {
+      "identity": {
+        "repository": "apalache-mc/apalache",
+        "revision": "9a13950e0ebddcb3d7a79cb9e854b0866e1c5712"
+      },
+      "name": "Apalache symbolic SMT model checker for TLA+"
+    },
+    {
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+        "version": "0.20.3"
+      },
+      "name": "Sail ISA specification compiler and Lean 4 backend"
+    },
+    {
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "a83603b6995428b9df2c464f98e18a7b0ae488fe"
+      },
+      "name": "Sail RISC-V golden ISA specification"
+    },
+    {
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+      },
+      "name": "Sail Armv8-A/v9.4-A ISA specification and Lean 4 extraction"
+    },
+    {
+      "identity": {
+        "repository": "rems-project/isla",
+        "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3"
+      },
+      "name": "Isla symbolic execution and axiomatic concurrency engine for Sail"
+    },
+    {
+      "identity": {
+        "repository": "alastairreid/asl-interpreter",
+        "revision": "16260979137c38339743a04b7fd5d9f0fa8a6ee5"
+      },
+      "name": "Arm Architecture Specification Language (ASL) interpreter"
+    },
+    {
+      "identity": {
+        "repository": "mit-plv/kami",
+        "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da"
+      },
+      "name": "Kami Coq Bluespec-style hardware specification and verification framework"
+    },
+    {
+      "identity": {
+        "repository": "mit-plv/koika",
+        "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0"
+      },
+      "name": "Koika Coq rule-based One-Rule-At-A-Time (ORAAT) hardware HDL"
+    },
+    {
+      "identity": {
+        "repository": "project-oak/silveroak",
+        "revision": "cccfdb4e19c5906256d2ed4487bf1a0aa2fab99e"
+      },
+      "name": "SilverOak Coq Cava hardware synthesis and OpenTitan peripheral verification"
+    },
+    {
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+      },
+      "name": "Bedrock2 Coq low-level systems and OpenTitan hardware-software co-verification stack"
+    },
+    {
+      "identity": {
+        "repository": "YosysHQ/sby",
+        "revision": "79fc9eddca5e33a28cc2f2cd19c9825efd9a7255"
+      },
+      "name": "SymbiYosys front-end driver for Yosys formal RTL verification"
+    },
+    {
+      "identity": {
+        "repository": "YosysHQ/riscv-formal",
+        "revision": "c992aa61fdfe0846c5ed90324c596202a1c69b76"
+      },
+      "name": "riscv-formal RVFI processor pipeline verification framework"
+    },
+    {
+      "identity": {
+        "repository": "uclid-org/uclid",
+        "revision": "a4e4e7a22780833c86d6a650af2fcf88a7d00a06"
+      },
+      "name": "UCLID5 Burch-Dill pipeline and hyperproperty hardware modeling system"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/concurrency",
+    "concurrency/weak-memory",
+    "concurrency/linearizability",
+    "concurrency/safe-memory-reclamation",
+    "verified-systems/os-kernels",
+    "verified-systems/device-drivers",
+    "verified-systems/crash-consistency",
+    "verified-systems/distributed-systems",
+    "hardware/isa-semantics",
+    "hardware/rtl-verification"
+  ]
+}

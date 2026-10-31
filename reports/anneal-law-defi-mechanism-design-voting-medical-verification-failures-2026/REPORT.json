@@ -1,0 +1,96 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+      },
+      "name": "Anneal reference corpus verification-hardening packages (BehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult)"
+    },
+    {
+      "identity": {
+        "block": "16817996",
+        "chain": "Ethereum Mainnet",
+        "date": "2023-03-13",
+        "proposal": "EIP-14",
+        "repository": "euler-xyz/euler-contracts"
+      },
+      "name": "Euler Finance donateToReserves missing checkLiquidity exploit"
+    },
+    {
+      "identity": {
+        "advisory": "GHSA-5824-cm3x-3c38",
+        "affected-versions": "0.2.15, 0.2.16, 0.3.0",
+        "date": "2023-07-30",
+        "repository": "vyperlang/vyper"
+      },
+      "name": "Vyper compiler @nonreentrant storage-slot allocation bug and Curve Finance pool exploits"
+    },
+    {
+      "identity": {
+        "incidents": "Wormhole (2022-02-02), Beanstalk (2022-04-17), Nomad (2022-08-01), Mango Markets (2022-10-11), Lendf.Me (2020-04-19)"
+      },
+      "name": "Cross-contract DeFi callback, governance, bridge-initialization, and oracle-manipulation exploits"
+    },
+    {
+      "identity": {
+        "tools": "Certora Prover (CVL HAVOC_ECF/HAVOC_ALL/rule_sanity), Runtime Verification KEVM, Aptos/Sui Move Prover and Move Bytecode Verifier"
+      },
+      "name": "Smart-contract formal verifier vacuity, external-call summary optimism, and bytecode/prover soundness failures"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3473582",
+        "repository": "CatalaLang/catala",
+        "venue": "ICFP 2021 / CC 2021"
+      },
+      "name": "Catala and Mlang statutory formalizations of French DGFiP M-language income tax and family benefits"
+    },
+    {
+      "identity": {
+        "australia-robodebt-royal-commission": "2023-07-07 (Social Security Act 1991 s 1073B)",
+        "uk-horizon-judgment": "[2019] EWHC 3408 (QB) (Bates & Others v Post Office Ltd, Horizon Issues Judgment No. 6)"
+      },
+      "name": "Australian Robodebt automated income-averaging scheme and UK Post Office Fujitsu Horizon accounting defects"
+    },
+    {
+      "identity": {
+        "knight-capital-sec-order": "Release No. 34-70694 (2013-10-16, incident 2012-08-01)",
+        "stv-verification": "Pattinson, Tiwari, Goré (ITP/IJCAR Coq STV tabulation verification)",
+        "swisspost-scytl": "Haines, Lewis, Pereira, Teague (IEEE S&P 2020, doi:10.1109/SP40000.2020.00055)",
+        "vcg-auction-failures": "Ausubel & Milgrom (2006) / New Zealand 1990 spectrum auction"
+      },
+      "name": "SwissPost/Scytl e-voting proof soundness bug, Australian Senate STV tabulation discrepancies, Knight Capital SMARS deployment failure, and VCG shill-bidding collapse"
+    },
+    {
+      "identity": {
+        "acas-x-keymaera": "Jeannin et al. (TACAS 2015 / EMSOFT 2015 / STTT 2017, doi:10.1007/s10009-016-0434-1)",
+        "alaris-gp-pvs": "Masci, Thimbleby et al. (CAV / FM / SAFECOMP PVS interactive number-entry verification)",
+        "therac-25": "Leveson & Turner (IEEE Computer 1993, doi:10.1109/MC.1993.274940)",
+        "uberlingen-tcas-ii": "BFU Investigation Report AX001-1-2/02 (incident 2002-07-01)"
+      },
+      "name": "Alaris GP infusion pump UI/rounding bugs, Therac-25 interlock race conditions, and TCAS II / ACAS X collision-avoidance failures"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/step-result",
+    "anneal/trust-policy",
+    "anneal/verification-failures",
+    "defi/smart-contracts",
+    "statutory-law/catala",
+    "mechanism-design/auctions",
+    "voting/cryptographic-verifiability",
+    "medical-devices/safety-critical",
+    "aviation/tcas-acas-x"
+  ]
+}

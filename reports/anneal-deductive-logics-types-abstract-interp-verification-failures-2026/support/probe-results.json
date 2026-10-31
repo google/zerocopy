@@ -1,0 +1,29 @@
+{
+  "witness_1_prophecy_vacuity": {
+    "anneal_productive_on_accepts": false,
+    "naive_vc_accepts_ensures_false": true
+  },
+  "witness_2_contradictory_pre": {
+    "anneal_inhabited_pre_accepts": false,
+    "productive_on_vacuously_holds": true,
+    "spec_on_vacuously_holds": true
+  },
+  "witness_3_antecedent_waiver": {
+    "anneal_positive_verification_result_accepts": false,
+    "antecedent_waiver_accepts_unwaived_bug": true
+  },
+  "witness_4_reentrancy_unwind": {
+    "anneal_external_call_boundary_inv_accepts": false,
+    "anneal_unwind_terminal_check_accepts": false,
+    "naive_normal_post_only_accepts": true
+  },
+  "witness_5_stacked_vs_tree_borrows": {
+    "stacked_borrows_accepts_two_phase_pattern": false,
+    "tree_borrows_accepts_two_phase_pattern": true,
+    "tree_borrows_state_after_conflicting_read": "Disabled"
+  },
+  "witness_6_ebpf_cve_2021_31440": {
+    "buggy_64_to_32_projection_sound": false,
+    "fixed_64_to_32_projection_sound": true
+  }
+}

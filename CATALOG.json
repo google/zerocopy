@@ -11026,6 +11026,316 @@
         "verification/staged-certification"
       ]
     },
+    "anneal-ai-safety-neural-planning-cad-media-iot-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "publication": "Debenedetti et al., arXiv:2503.18813 (2025)",
+            "repository": "google-research/camel-prompt-injection"
+          },
+          "name": "CaMeL capability and control/data-flow separation sandbox for LLM agents"
+        },
+        {
+          "identity": {
+            "organization": "Microsoft Research",
+            "publication": "Costa et al., arXiv:2505.23643 (2025)"
+          },
+          "name": "FIDES Flow Integrity Deterministic Enforcement System for AI agents"
+        },
+        {
+          "identity": {
+            "airgapagent_publication": "Bagdasarian et al., ACM CCS 2024",
+            "seagent_publication": "arXiv:2505.09143 (2025)"
+          },
+          "name": "SEAgent mandatory access control framework for LLM agents and AirGapAgent contextual-integrity sandbox"
+        },
+        {
+          "identity": {
+            "publication": "Cutler et al., OOPSLA 2024",
+            "repository": "cedar-policy/cedar-spec"
+          },
+          "name": "Cedar authorization policy language and Lean 4 formalization"
+        },
+        {
+          "identity": {
+            "invariant_repository": "invariantlabs-ai/invariant",
+            "llamafirewall_repository": "meta-llama/PurpleLlama",
+            "nemo_repository": "NVIDIA/NeMo-Guardrails",
+            "opa_repository": "open-policy-agent/opa"
+          },
+          "name": "Open Policy Agent (OPA / Rego), Invariant Guardrails, NeMo Guardrails (Colang), and Meta LlamaFirewall / CodeShield"
+        },
+        {
+          "identity": {
+            "guidance_repository": "guidance-ai/guidance",
+            "lmql_repository": "eth-sri/lmql",
+            "outlines_repository": "dottxt-ai/outlines"
+          },
+          "name": "Constrained decoding engines: LMQL, Guidance, Outlines, and OpenSandbox"
+        },
+        {
+          "identity": {
+            "ab_crown_repository": "Verified-Intelligence/alpha-beta-CROWN",
+            "eran_repository": "eth-sri/eran",
+            "marabou_repository": "NeuralNetworkVerification/Marabou",
+            "mnbab_repository": "eth-sri/mn-bab"
+          },
+          "name": "alpha-beta-CROWN, Marabou / Reluplex, ERAN (DeepZ / DeepPoly / GPUPoly / PRIMA), and MN-BaB neural network verifiers"
+        },
+        {
+          "identity": {
+            "nnenum_repository": "stanleybak/nnenum",
+            "nnv_repository": "verivital/nnv",
+            "oval_repository": "oval-group/oval-bab",
+            "verisig_repository": "verisig/verisig"
+          },
+          "name": "nnenum, NNV, OVAL, VeriNet, PyRAT, SAVer, FairSquare / VeriFair, and Verisig / ReachNN*"
+        },
+        {
+          "identity": {
+            "caisar_repository": "git.frama-c.com/pub/caisar",
+            "vehicle_repository": "vehicle-lang/vehicle",
+            "vnnlib_repository": "VNNLIB/VNNLIB-Standard"
+          },
+          "name": "VNN-LIB specification standard, Vehicle neuro-symbolic specification compiler, and CAISAR verification platform"
+        },
+        {
+          "identity": {
+            "inval_repository": "patrikhaslum/INVAL",
+            "isabelle_validator_publication": "Abdulaziz & Lammich, ITP 2018 / AFP AI_Planning_Languages_Semantics",
+            "val_repository": "KCL-Planning/VAL"
+          },
+          "name": "VAL, INVAL, and Abdulaziz & Lammich Isabelle/HOL verified PDDL plan validator"
+        },
+        {
+          "identity": {
+            "fast_downward_repository": "aibasel/downward",
+            "llm_modulo_publication": "Kambhampati et al., ICML 2024 (arXiv:2402.01817)",
+            "panda_repository": "panda-planner-dev/pandaPIValidator",
+            "shop3_repository": "shop-planner/shop3",
+            "unified_planning_repository": "aiplan4eu/unified-planning"
+          },
+          "name": "Fast Downward unsolvability certificates (helve), PANDA / pandaPIValidator, SHOP3, PRP (FOND), Unified Planning, ENHSP / POPF, and LLM-Modulo"
+        },
+        {
+          "identity": {
+            "caviar_publication": "Kourta et al., OOPSLA 2022",
+            "reincarnate_repository": "uwplse/reincarnate",
+            "szalinski_repository": "uwplse/szalinski"
+          },
+          "name": "Reincarnate / LambdaCAD (Coq-verified CSG-to-mesh compiler), Szalinski, and Caviar e-graph TRS"
+        },
+        {
+          "identity": {
+            "fidget_repository": "mkeeter/fidget",
+            "libfive_repository": "libfive/libfive",
+            "manifold_repository": "elalish/manifold",
+            "openscad_repository": "openscad/openscad"
+          },
+          "name": "Fidget, Libfive, Manifold, OpenSCAD, ImplicitCAD, and Curv geometric modeling kernels"
+        },
+        {
+          "identity": {
+            "camotics_repository": "CauldronDevelopmentLLC/CAMotics",
+            "fullcontrol_repository": "FullControlXYZ/fullcontrol",
+            "linuxcnc_repository": "LinuxCNC/linuxcnc",
+            "prusaslicer_repository": "prusa3d/PrusaSlicer"
+          },
+          "name": "VERICUT, NCSimul, CAMotics, LinuxCNC, PrusaSlicer, OrcaSlicer, Cura, IceSL, and FullControl GCode"
+        },
+        {
+          "identity": {
+            "autoknit_repository": "textiles-lab/autoknit",
+            "fold_repository": "edemaine/fold",
+            "knitout_repository": "textiles-lab/knitout",
+            "origami_simulator_repository": "amandaghassaei/OrigamiSimulator"
+          },
+          "name": "CMU Textiles Lab knitout, Autoknit, KnitSpeak, Radbend / TruTops, FOLD, Origami Simulator, and Freeform Origami"
+        },
+        {
+          "identity": {
+            "fds_repository": "firemodels/fds",
+            "ifcopenshell_repository": "IfcOpenShell/IfcOpenShell",
+            "opensees_repository": "OpenSees/OpenSees",
+            "topopt_publication": "Sigmund, Structural and Multidisciplinary Optimization (2001)"
+          },
+          "name": "Solibri, IfcOpenShell / ifctester (buildingSMART IDS), KBimCode / BERA, FDS+Evac / Pathfinder, OpenSees, and TopOpt"
+        },
+        {
+          "identity": {
+            "faial_repository": "umb-svl/faial",
+            "gator_repository": "cucapra/gator",
+            "halide_repository": "halide/Halide",
+            "ocio_repository": "AcademySoftwareFoundation/OpenColorIO",
+            "spirv_tools_repository": "KhronosGroup/SPIRV-Tools",
+            "wgpu_naga_repository": "gfx-rs/wgpu"
+          },
+          "name": "SPIRV-Tools (spirv-val), Naga / Tint, GPUVerify, Faial, GraphicsFuzz, Slang, Halide, Gator, and OpenColorIO / ACES"
+        },
+        {
+          "identity": {
+            "cassius_repository": "uwplse/cassius",
+            "fontbakery_repository": "fonttools/fontbakery",
+            "kiwi_repository": "nucleic/kiwi",
+            "taffy_repository": "DioxusLabs/taffy",
+            "typst_repository": "typst/typst"
+          },
+          "name": "Cassowary / Kiwi, Cassius / VizAssert, Taffy / Yoga, Knuth-Plass / Typst, and FreeType / FontBakery"
+        },
+        {
+          "identity": {
+            "astree_publication": "Feret, ESOP 2004 (Digital Filter Domains)",
+            "dsverifier_repository": "ssvlab/dsverifier",
+            "faust_repository": "grame-cncm/faust",
+            "rtsan_component": "llvm/llvm-project compiler-rt/lib/rtsan",
+            "strasheela_repository": "tanders/strasheela"
+          },
+          "name": "Faust, ChucK / Kronos, RealtimeSanitizer (rtsan), DSVerifier, Astree digital filter domain, Strasheela / Kulitta, and ITU-R BS.1770"
+        },
+        {
+          "identity": {
+            "archipelago_repository": "ArchipelagoMW/Archipelago",
+            "ceptre_repository": "chrisamaphone/ceptre",
+            "festival_publication": "Shoham & Schaeffer, IJCAI 2021",
+            "puzzlescript_repository": "increpare/PuzzleScript",
+            "xmage_repository": "magefree/mage"
+          },
+          "name": "PuzzleScript, Ceptre, Ludii, Machinations, Archipelago / ALttPR logic solvers, XMage / Forge, and Festival Sokoban solver"
+        },
+        {
+          "identity": {
+            "autotap_repository": "UChicagoSUPERgroup/autotap",
+            "hawatcher_publication": "Fu et al., USENIX Security 2021",
+            "iotguard_publication": "Celik et al., NDSS 2019",
+            "iotsan_publication": "Nguyen et al., ACM CoNEXT 2018",
+            "matter_repository": "project-chip/connectedhomeip",
+            "soteria_publication": "Celik et al., USENIX ATC 2018"
+          },
+          "name": "SOTERIA, IoTGuard, IoTSAN, MenShen, iRuler, SafeTAP / AutoTap, HAWatcher / IoTMon, and Matter 1.3 specification"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trust-model",
+        "anneal/refinement",
+        "anneal/abstract-interpretation",
+        "ai-safety/action-firewalls",
+        "ai-safety/information-flow-control",
+        "neural-networks/verification",
+        "neural-networks/abstract-interpretation",
+        "automated-planning/pddl-validation",
+        "automated-planning/htn-refinement",
+        "cad-cam/solid-modeling",
+        "cad-cam/gcode-verification",
+        "fabrication/knitout",
+        "fabrication/origami-kinematics",
+        "civil-engineering/bim-ifc-compliance",
+        "civil-engineering/structural-analysis",
+        "graphics/shader-verification",
+        "graphics/ui-constraint-layout",
+        "audio-dsp/filter-stability",
+        "music-theory/counterpoint-constraints",
+        "games/puzzle-solvability",
+        "iot/smart-home-verification"
+      ]
+    },
+    "anneal-ai-safety-neural-planning-cad-media-iot-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2003.03021",
+            "doi": "10.1007/978-3-030-88806-0_9",
+            "venue": "SAS 2021"
+          },
+          "name": "Exploiting Verified Neural Networks via Floating Point Numerical Error (Jia and Rinard, SAS 2021)"
+        },
+        {
+          "identity": {
+            "vnncomp-2021-arxiv": "2109.00498",
+            "vnncomp-2022-arxiv": "2212.10376",
+            "vnncomp-2023-arxiv": "2312.16760",
+            "vnncomp-2024-arxiv": "2412.19985"
+          },
+          "name": "International Verification of Neural Networks Competition (VNN-COMP 2021-2024)"
+        },
+        {
+          "identity": {
+            "agentdojo-arxiv": "2406.13352",
+            "camel-arxiv": "2503.18813",
+            "or-bench-arxiv": "2405.20947",
+            "xstest-arxiv": "2308.01263"
+          },
+          "name": "Agentic AI Guardrail Bypasses, CaMeL Capability Isolation, and Over-Refusal Benchmarks"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.09726",
+            "doi": "10.1109/ICTAI.2018.00079",
+            "venue": "ICTAI 2018"
+          },
+          "name": "A Formally Verified Validator for Classical Planning Problems and Solutions (Abdulaziz and Lammich, ICTAI 2018)"
+        },
+        {
+          "identity": {
+            "autoknit-doi": "10.1145/3197517.3201335",
+            "fidget-repository": "mkeeter/fidget",
+            "knitout-doi": "10.1145/2897824.2925940",
+            "manifold-repository": "elalish/manifold"
+          },
+          "name": "CAD/CSG Non-Manifold Kernels, CNC Rapid-Traverse Kinematics, and Knitout Machine Knitting Compilers"
+        },
+        {
+          "identity": {
+            "hartford-investigation": "Lev Zetlin Associates Report (1978)",
+            "sleipner-investigation": "SINTEF / Det Norske Veritas Sleipner A Inquiry (1991-1992)"
+          },
+          "name": "Hartford Civic Center Roof Collapse (1978) and Sleipner A Condeep Platform Sinking (1991) Forensic Reports"
+        },
+        {
+          "identity": {
+            "atmfd-cve": "CVE-2015-2426",
+            "freetype-cve": "CVE-2020-15999",
+            "graphicsfuzz-doi": "10.1145/3133917",
+            "venue": "OOPSLA 2017"
+          },
+          "name": "GraphicsFuzz Shader Compiler Testing and WebGPU/FreeType/ATMFD Memory Safety Advisories"
+        },
+        {
+          "identity": {
+            "iruler-venue": "USENIX Security 2019",
+            "soteria-venue": "USENIX ATC 2018"
+          },
+          "name": "SOTERIA and iRuler Smart-Home Trigger-Action Physical-Channel Vulnerability Analyzers"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal verification framework and trust boundary"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/refinement",
+        "anneal/soundness",
+        "anneal/trust-boundary",
+        "ai-safety/guardrails",
+        "ai-safety/prompt-injection",
+        "neural-verification/vnn-comp",
+        "neural-verification/floating-point-soundness",
+        "planning/pddl-validation",
+        "cad-cam/manifold-geometry",
+        "cad-cam/gcode-safety",
+        "structural-engineering/fea-verification",
+        "graphics/shader-compilers",
+        "typography/truetype-bytecode",
+        "audio-dsp/filter-stability",
+        "iot/trigger-action-verification"
+      ]
+    },
     "anneal-archive-read-only-behavior-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -11180,6 +11490,280 @@
         "verification/multi-crate"
       ]
     },
+    "anneal-backend-codegen-binaries-lifters-sandboxes-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal verification framework (trusted core refinement, Partial, Language, BehaviorCodec, ProductiveOn, VerificationResult, SmallStepMachine)"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean, trusted/audit/TrustedBoundary.lean",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler and single-source artifact audit branch"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1538788.1538814",
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert verified C compiler (Selection, RTLgen, Allocation/IRC, Stacking, Mach, Asm, Conventions1)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "repository": "CakeML/cakeml",
+            "venue": "JFP 2019 / ICFP 2017"
+          },
+          "name": "CakeML verified compiler backend (wordLang, stackLang, labLang, reg_alloc, lab_to_target)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3620665.3640367",
+            "repository": "bytecodealliance/wasmtime",
+            "subpath": "cranelift/isle/veri",
+            "venue": "ASPLOS 2024 / CMU-CS-23-126"
+          },
+          "name": "Cranelift ISLE, VeriISLE, and Crocus instruction-selection verification framework"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "subpath": "src/checker.rs"
+          },
+          "name": "regalloc2 SSA register allocator and symbolic dataflow equivalence checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428208",
+            "repository": "gricad-gitlab.univ-grenoble-alpes.fr/certicompil/Chamois-CompCert",
+            "venue": "OOPSLA 2020 / CPP 2022"
+          },
+          "name": "Chamois-CompCert (BTL superblock symbolic simulation scheduler, postpass bundle packer, peephole)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO57630.2024.10444836",
+            "hydra_venue": "OOPSLA 2024",
+            "repository": "minotaur-toolkit/minotaur",
+            "slothy_repository": "slothy-optimizer/slothy",
+            "souper_repository": "google/souper",
+            "stoke_doi": "10.1145/2451116.2451150"
+          },
+          "name": "Superoptimizers and peephole synthesizers (Souper, Minotaur, STOKE, Slothy, Hydra, Peek)"
+        },
+        {
+          "identity": {
+            "compcert_elf_doi": "10.1145/3385412.3385989",
+            "compcert_o_doi": "10.1145/3453483.3454097",
+            "dimsum_doi": "10.1145/3571219",
+            "linksem_doi": "10.1145/2983990.2983996"
+          },
+          "name": "Verified linkers and compositional open-module semantics (CompCertELF, linksem, CompCertO, DimSum, SepCompCert, CompCertM)"
+        },
+        {
+          "identity": {
+            "binrec_doi": "10.1145/3342195.3387550",
+            "bolt_doi": "10.1109/CGO.2019.8661201",
+            "egalito_doi": "10.1145/3373376.3378522",
+            "propeller_doi": "10.1145/3575693.3575727"
+          },
+          "name": "Post-link profile-guided binary optimizers and binary recompilers (LLVM BOLT, Google Propeller, Egalito, BinRec)"
+        },
+        {
+          "identity": {
+            "alive2_repository": "AliveToolkit/alive2",
+            "alive2_revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+            "graph_refine_repository": "seL4/graph-refine",
+            "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5",
+            "lnsym_repository": "leanprover/LNSym",
+            "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+          },
+          "name": "Translation validators for unverified industrial compilers (seL4 GraphRefine, Alive2, Tristan-Govereau-Morrisett, Necula TV, LNSym)"
+        },
+        {
+          "identity": {
+            "foxdec_repository": "ssrg-vt/FoxDec",
+            "islaris_repository": "rems-project/islaris",
+            "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+            "jasmin_repository": "jasmin-lang/jasmin",
+            "jasmin_revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+            "tina_doi": "10.1145/3293883.3295709",
+            "vale_repository": "project-everest/vale",
+            "vale_revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Binary lifters, decompilers, and inline-assembly bridges (TInA/RUSTInA, Islaris, Vale, Jasmin, HolBA, Myreen Decompilation into Logic, FoxDec, Remill/McSema)"
+        },
+        {
+          "identity": {
+            "agni_doi": "10.1145/3591280",
+            "certrbpf_repository": "future-proof-iot/CertFC",
+            "certrbpf_revision": "75690097c946c555cc4ce1e69d13ef86dc738180",
+            "faial_doi": "10.1007/978-3-030-81685-8_11",
+            "gpuverify_doi": "10.1145/2384616.2384625",
+            "jitterbug_repository": "uw-unsat/jitterbug",
+            "jitterbug_revision": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+            "prevail_repository": "vbpf/prevail",
+            "prevail_revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7",
+            "rocksalt_doi": "10.1145/2254064.2254111",
+            "veriwasm_doi": "10.14722/ndss.2021.24296",
+            "vwasm_venue": "USENIX Security 2022"
+          },
+          "name": "Sandboxing compilers, bytecode verifiers, and GPU/JIT verifiers (VeriWasm, vWasm, RockSalt, ARMor, WasmCert/veRA, PREVAIL, Jitterbug, CertrBPF, Agni, GPUVerify, Faial, Naga/Tint)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/backend-codegen",
+        "anneal/behavior-codec",
+        "anneal/binary-lifting",
+        "anneal/decompilation",
+        "anneal/ebpf",
+        "anneal/inline-asm",
+        "anneal/instruction-scheduling",
+        "anneal/instruction-selection",
+        "anneal/linking",
+        "anneal/register-allocation",
+        "anneal/sandboxing",
+        "anneal/superoptimization",
+        "anneal/translation-validation",
+        "anneal/trusted-computing-base",
+        "compcert",
+        "cranelift/isle",
+        "gpu/verification",
+        "wasm/sfi"
+      ]
+    },
+    "anneal-backend-codegen-binaries-lifters-sandboxes-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal verification framework workspace"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted refinement and small-step core"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler branch"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993532",
+            "venue": "PLDI 2011"
+          },
+          "name": "Yang et al., Finding and Understanding Bugs in C Compilers (Csmith evaluation of CompCert 1.6-1.8)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380",
+            "venue": "POPL 2019"
+          },
+          "name": "Wang, Wilke, and Shao, An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code (Stack-Aware CompCert)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462183",
+            "venue": "PLDI 2013"
+          },
+          "name": "Sewell, Myreen, and Klein, Translation Validation for a Verified OS Kernel (seL4 binary translation validation)"
+        },
+        {
+          "identity": {
+            "cves": "CVE-2021-32629, CVE-2022-31104, CVE-2022-39392, CVE-2023-26489, CVE-2023-30624",
+            "ghsas": "GHSA-hpqh-2wqx-7qp5, GHSA-jqwc-c49r-4w2x, GHSA-44mr-8vmm-wjhg, GHSA-ff4p-7xrq-q5r8, GHSA-c87w-297f-6568",
+            "repository": "bytecodealliance/wasmtime"
+          },
+          "name": "Wasmtime and Cranelift security advisories and instruction-selection/register-allocation postmortems"
+        },
+        {
+          "identity": {
+            "doi_crocus": "10.1145/3620665.3640369",
+            "doi_veriisle": "10.1145/3656427",
+            "venues": "ASPLOS 2024, PLDI 2024"
+          },
+          "name": "VeriISLE and Crocus verification of Cranelift ISLE instruction-lowering rules"
+        },
+        {
+          "identity": {
+            "issues": "rust-lang/rust#54341, rust-lang/rust#46606, rust-lang/rust#91899",
+            "repository": "rust-lang/rust",
+            "tool_repository": "Gankra/abi-cafe"
+          },
+          "name": "Rust and LLVM ABI marshaling (i128/repr(C)) and StackColoring (StorageLive/StorageDead) defect records"
+        },
+        {
+          "identity": {
+            "doi_ase2019": "10.1109/ASE.2019.00069",
+            "doi_icse2021": "10.1109/ICSE43902.2021.00069",
+            "venues": "ASE 2019, ICSE 2021"
+          },
+          "name": "Recoules et al., TInA and RUSTInA inline assembly lifting and interface compliance"
+        },
+        {
+          "identity": {
+            "doi_foxdec": "10.1145/3563322",
+            "doi_lifters": "10.1145/3385412.3385964",
+            "doi_veriwasm": "10.14722/ndss.2021.24295",
+            "venues": "PLDI 2020, NDSS 2021, OOPSLA 2022"
+          },
+          "name": "Binary lifter and SFI verifier postmortems (McSema/Remill SIV, VeriWasm, FoxDec)"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2021-29154",
+            "doi_graphicsfuzz": "10.1145/3133917",
+            "isbn_jitterbug": "978-1-939133-19-9",
+            "venues": "OSDI 2020 (Jitterbug), OOPSLA 2017 (GraphicsFuzz)"
+          },
+          "name": "Linux kernel eBPF JIT (CVE-2021-29154, Jitterbug) and GPU shader compiler (GraphicsFuzz) miscompilations"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/backend",
+        "anneal/codegen",
+        "anneal/register-allocation",
+        "anneal/abi",
+        "anneal/linking",
+        "anneal/binary-lifting",
+        "anneal/sandboxing",
+        "compcert/unverified-boundaries",
+        "cranelift/cves",
+        "ebpf/jit-verification",
+        "verification/failures"
+      ]
+    },
     "anneal-behavior-codec-and-progress-refinement-2026": {
       "observed_at": "2026-10-31",
       "subjects": [
@@ -11213,6 +11797,930 @@
         "anneal/compilation",
         "anneal/optimization",
         "lean/verification"
+      ]
+    },
+    "anneal-concurrency-weak-memory-kernels-storage-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler branch (trusted/lean/Trusted/X86Semantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler and standard library (core::sync::atomic, core::ptr::read_volatile/write_volatile)"
+        },
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+            "version": "7.58+1"
+          },
+          "name": "Herd7 and diy7 axiomatic weak-memory simulator (.cat models for RC11, LKMM, AArch64, RVWMO)"
+        },
+        {
+          "identity": {
+            "repository": "MPI-SWS/genmc",
+            "revision": "fab5bba7d9efaf76990227c2f59d62c11c7ea2a3"
+          },
+          "name": "GenMC stateless model checker for RC11, IMM, and LKMM"
+        },
+        {
+          "identity": {
+            "repository": "nidhugg/nidhugg",
+            "revision": "845a14632ff33f27ba78e72e0693668219197bb2"
+          },
+          "name": "Nidhugg stateless model checker for TSO, PSO, POWER, and ARM"
+        },
+        {
+          "identity": {
+            "repository": "hernanponcedeleon/Dat3M",
+            "revision": "b81ec6c55503e824bb0ddc4ebac6c6f0a63d56d8"
+          },
+          "name": "Dat3M / Dartagnan SMT bounded model checker for .cat memory models"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/loom",
+            "revision": "948c8cc78b178ede6eeff3afc7d97f2f4ea08559"
+          },
+          "name": "Loom DPOR concurrency permutation model checker for Rust"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/shuttle",
+            "revision": "cee89eb23a6eb883a3d8002c018326d709f240b1"
+          },
+          "name": "Shuttle randomized concurrency testing engine for Rust"
+        },
+        {
+          "identity": {
+            "repository": "MPI-SWS/kater",
+            "revision": "017fdbb530e421fd76cf39f2906354471b2ce96e"
+          },
+          "name": "Kater Kleene-algebra weak-memory metatheory and compilation verifier"
+        },
+        {
+          "identity": {
+            "repository": "weakmemory/imm",
+            "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+          },
+          "name": "IMM Coq intermediate memory model and atomic lowering proofs"
+        },
+        {
+          "identity": {
+            "repository": "snu-sf/promising2-coq",
+            "revision": "6b70a57d10666ec66bfa96b7801dd870f9054da9"
+          },
+          "name": "Promising 2.0 Coq operational weak-memory model"
+        },
+        {
+          "identity": {
+            "repository": "snu-sf/promising-arm",
+            "revision": "10291375ccd03152eadf739d280e2c59e10fa9af"
+          },
+          "name": "Promising-ARMv8 / RISC-V Coq operational architecture model"
+        },
+        {
+          "identity": {
+            "repository": "memorax/memorax",
+            "revision": "2f25c43f279bb315aba7ac3fcf7c37bbb7d1af5e"
+          },
+          "name": "Memorax weak-memory robustness and automatic fence-insertion tool"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          },
+          "name": "Iris higher-order concurrent separation logic framework in Coq/Rocq"
+        },
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/gpfsl",
+            "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14"
+          },
+          "name": "GPFSL / iRC11 / ORC11 relaxed-memory separation logic"
+        },
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/transfinite",
+            "revision": "dde9f193fb3d504be680480b2ca21052edae49df"
+          },
+          "name": "Transfinite Iris / Trillium / Fair-Iris liveness and refinement logic"
+        },
+        {
+          "identity": {
+            "repository": "kaist-cp/smr-verification",
+            "revision": "53fdc1648c17c5527c2499ed0ad10d55c01e1344"
+          },
+          "name": "smr-iris mechanized hazard pointers and epoch-based reclamation in Iris"
+        },
+        {
+          "identity": {
+            "repository": "boogie-org/boogie",
+            "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"
+          },
+          "name": "Boogie and CIVL layered concurrent refinement verifier"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/voila",
+            "revision": "900470c4035812bde4f80defc5e4e2e79c1fcae6"
+          },
+          "name": "Voila automated TaDA atomic-triple verifier on Viper"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          },
+          "name": "Verus deductive Rust verifier and tokenized_state_machines framework"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/armada",
+            "revision": "da7497dcf506417df1899ac58850706a31e3acd5"
+          },
+          "name": "Armada multi-step refinement verifier for weak-memory concurrent systems"
+        },
+        {
+          "identity": {
+            "repository": "MattWindsor91/starling-tool",
+            "revision": "438fe7259e06aaf8433c259244fef2985de797a5"
+          },
+          "name": "Starling automated concurrent separation logic verifier"
+        },
+        {
+          "identity": {
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          },
+          "name": "VeriFast separation logic verifier with wait-level deadlock and termination tokens"
+        },
+        {
+          "identity": {
+            "repository": "open-s4c/libvsync",
+            "revision": "dd93f802704c9c941eb7397fa101039bf21118ff"
+          },
+          "name": "libvsync verified weak-memory synchronization primitives library"
+        },
+        {
+          "identity": {
+            "repository": "open-s4c/vsyncer",
+            "revision": "76569f0d2ee9a688da95b8025116b3a202e67321"
+          },
+          "name": "vsyncer weak-memory barrier optimizer and model-checking orchestrator"
+        },
+        {
+          "identity": {
+            "repository": "goblint/analyzer",
+            "revision": "1463f411ce87edd49198033856b2946fc3366fb2"
+          },
+          "name": "Goblint static abstract interpreter for multi-threaded and ISR-preempted C"
+        },
+        {
+          "identity": {
+            "repository": "rtic-rs/rtic",
+            "revision": "f1797184d6168e54c345b17019c237eea70b9ed4"
+          },
+          "name": "RTIC Stack Resource Policy (SRP) interrupt-driven concurrency framework for Rust"
+        },
+        {
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+          },
+          "name": "Asterinas framekernel and ostd unsafe TCB substrate"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified Isabelle/HOL microkernel functional, IPC fastpath, and non-interference proofs"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/verismo",
+            "revision": "6bc6dd326d8b9ca30ffec57a544b13b5fadf3cb3"
+          },
+          "name": "VeriSMo Verus-verified AMD SEV-SNP VMPL0 security module and VirtIO driver"
+        },
+        {
+          "identity": {
+            "repository": "matthias-brun/verified-nrkernel",
+            "revision": "1c861090537664b78544cda5d53711b1fcfa05e2"
+          },
+          "name": "Verified NR-OS page-table and hardware MMU/TLB verification in Verus"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris Coq/Iris machine-code and ARMv8 VMSA page-table verifier"
+        },
+        {
+          "identity": {
+            "repository": "VeriGu/SeKVM-4.18",
+            "revision": "75e3591e663958c370c919aa36fbd484be341043"
+          },
+          "name": "SeKVM Coq-verified Linux KVM Arm64 hypervisor and SMMU isolation proofs"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/komodo",
+            "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+          },
+          "name": "Komodo Vale/Dafny-verified ARM TrustZone enclave monitor"
+        },
+        {
+          "identity": {
+            "repository": "mars-research/atmosphere",
+            "revision": "bd485f22f1d5e4d1623e133700dc233086059603"
+          },
+          "name": "Atmosphere Verus-verified microkernel proof work"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+          },
+          "name": "Kani Rust bit-precise bounded model checker"
+        },
+        {
+          "identity": {
+            "repository": "boogie-org/corral",
+            "revision": "33dd98eed1e2d5087c7c5df9a782652772af2b2e"
+          },
+          "name": "Corral / Static Driver Verifier (SDV) Windows driver model checker"
+        },
+        {
+          "identity": {
+            "repository": "ldv-klever/klever",
+            "revision": "49fef330955ea175fd73dd22f2670c68b811d51a"
+          },
+          "name": "Klever / LDV Linux kernel device driver verification framework"
+        },
+        {
+          "identity": {
+            "repository": "embassy-rs/embassy",
+            "revision": "14cf6a68ec0bfd0ecf873f7e3dbb2eb69013fa29"
+          },
+          "name": "Embassy async embedded Rust HAL and DMA runtime"
+        },
+        {
+          "identity": {
+            "repository": "rust-embedded/embedded-dma",
+            "revision": "37deca203dc3281fb459f0da92d41b6743a62a48"
+          },
+          "name": "embedded-dma ReadBuffer/WriteBuffer ownership traits for Rust DMA"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/perennial",
+            "revision": "d62b13ac1ff88e21e9f1fbc18cbfeab30cc9ca8e"
+          },
+          "name": "Perennial concurrent crash-refinement separation logic in Coq/Iris"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/go-journal",
+            "revision": "1d09d436fcbd943296f43372c3896714254838c0"
+          },
+          "name": "GoJournal verified concurrent crash-safe write-ahead logging system"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/daisy-nfsd",
+            "revision": "68530c3b62abe31ce280e71a2b0d40026a70e5ee"
+          },
+          "name": "DaisyNFS verified concurrent crash-safe NFS server"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/fscq",
+            "revision": "2c7ef9c268fd79a81b26b44ef720f8e6a1e938a0"
+          },
+          "name": "FSCQ / DFSCQ / SFSCQ Crash Hoare Logic file system in Coq"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/veribetrkv-osdi2020",
+            "revision": "053dd16ab01939843a213e0590983fd22e2d0d4d"
+          },
+          "name": "VeriBetrKV Dafny-verified crash-safe B-epsilon-tree key-value store"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/verified-storage",
+            "revision": "afcc157f40a1381773daa8be7333f5d123e96739"
+          },
+          "name": "Microsoft verified-storage Verus persistent-memory and NVMe storage engine"
+        },
+        {
+          "identity": {
+            "repository": "NICTA/cogent",
+            "revision": "49b6ceb0d0337198a0ce26944b1ae11dd93fcb9a"
+          },
+          "name": "Cogent linear type system and BilbyFS Isabelle/HOL certifying compiler"
+        },
+        {
+          "identity": {
+            "repository": "locore/yggdrasil",
+            "revision": "e1de61d798acafb9ae2d8387d176c4b091773623"
+          },
+          "name": "Yggdrasil push-button SMT crash-refinement file system verifier"
+        },
+        {
+          "identity": {
+            "repository": "uci-plrg/jaaru",
+            "revision": "640e2ad4d9089d0ff8a4fa17e2f4347b8f31449b"
+          },
+          "name": "Jaaru constraint-guided persistent-memory model checker"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Ironclad",
+            "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+          },
+          "name": "IronFleet Dafny/TLA+ distributed consensus and state-machine replication verifier"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/verdi",
+            "revision": "7e1641b758d8f0032aa7de63620bc115330e0a6b"
+          },
+          "name": "Verdi Coq framework for verified distributed systems and Verdi-Raft"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/cheerios",
+            "revision": "5c9318c269f9cae1c1c6583a44405969ac0be0dd"
+          },
+          "name": "Cheerios Coq-verified wire serialization library for Verdi"
+        },
+        {
+          "identity": {
+            "repository": "anvil-verifier/anvil",
+            "revision": "e83ea0f5516ce2ece26740266165180018741e66"
+          },
+          "name": "Anvil Verus-verified Kubernetes controller liveness and safety framework"
+        },
+        {
+          "identity": {
+            "repository": "logsem/aneris",
+            "revision": "59ae37946838df77fb2c573803b68462a3af9d0f"
+          },
+          "name": "Aneris Iris-based distributed separation logic in Coq"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/grove",
+            "revision": "f3f405eaab259c391906e1088aac35216bac11a4"
+          },
+          "name": "Grove Perennial-based distributed crash-safe separation logic for Go"
+        },
+        {
+          "identity": {
+            "repository": "kenmcmil/ivy",
+            "revision": "8858a0241ed37141757b7a051acc24c58e49c2f3"
+          },
+          "name": "Ivy EPR decidable distributed protocol verifier"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/turmoil",
+            "revision": "6a1f50223b5a1884bf8890053c85eec04a8af267"
+          },
+          "name": "Turmoil deterministic simulation testing (DST) framework for Tokio"
+        },
+        {
+          "identity": {
+            "repository": "madsim-rs/madsim",
+            "revision": "519950efb4711464f300ed7edf2967ed62d5f502"
+          },
+          "name": "MadSim deterministic simulation runtime for distributed Rust"
+        },
+        {
+          "identity": {
+            "repository": "apple/foundationdb",
+            "revision": "bcdefac96277de4a26d59cdf352d478391d347f9"
+          },
+          "name": "FoundationDB Flow deterministic simulation runtime"
+        },
+        {
+          "identity": {
+            "repository": "tigerbeetle/tigerbeetle",
+            "revision": "0450c32b2c3c3ab6114f3402cc601341cc8192aa"
+          },
+          "name": "TigerBeetle VOPR Viewstamped Replication deterministic simulator"
+        },
+        {
+          "identity": {
+            "repository": "anishathalye/porcupine",
+            "revision": "97cd067defd99df172053ba7f4ca5bbae57fe446"
+          },
+          "name": "Porcupine P-compositionality linearizability checker"
+        },
+        {
+          "identity": {
+            "repository": "jepsen-io/knossos",
+            "revision": "14ead19fb3d24745429e367c8ae9779e147ff6cb"
+          },
+          "name": "Knossos WGL/Wing-Gong linearizability history checker"
+        },
+        {
+          "identity": {
+            "repository": "stateright/stateright",
+            "revision": "ab8c8be9341505e0f71edbe5dd88ed275bd976a4"
+          },
+          "name": "Stateright Rust actor model checker and linearizability verifier"
+        },
+        {
+          "identity": {
+            "repository": "vrahli/Velisarios",
+            "revision": "6fb353b18610cd79210755fcc90123536c367aaa"
+          },
+          "name": "Velisarios Coq epistemic logic framework for PBFT Byzantine consensus"
+        },
+        {
+          "identity": {
+            "repository": "konnov/bymc",
+            "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+          },
+          "name": "ByMC parameterized threshold-automata Byzantine model checker"
+        },
+        {
+          "identity": {
+            "repository": "apalache-mc/apalache",
+            "revision": "9a13950e0ebddcb3d7a79cb9e854b0866e1c5712"
+          },
+          "name": "Apalache symbolic SMT model checker for TLA+"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+            "version": "0.20.3"
+          },
+          "name": "Sail ISA specification compiler and Lean 4 backend"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "a83603b6995428b9df2c464f98e18a7b0ae488fe"
+          },
+          "name": "Sail RISC-V golden ISA specification"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+          },
+          "name": "Sail Armv8-A/v9.4-A ISA specification and Lean 4 extraction"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/isla",
+            "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3"
+          },
+          "name": "Isla symbolic execution and axiomatic concurrency engine for Sail"
+        },
+        {
+          "identity": {
+            "repository": "alastairreid/asl-interpreter",
+            "revision": "16260979137c38339743a04b7fd5d9f0fa8a6ee5"
+          },
+          "name": "Arm Architecture Specification Language (ASL) interpreter"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/kami",
+            "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da"
+          },
+          "name": "Kami Coq Bluespec-style hardware specification and verification framework"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/koika",
+            "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0"
+          },
+          "name": "Koika Coq rule-based One-Rule-At-A-Time (ORAAT) hardware HDL"
+        },
+        {
+          "identity": {
+            "repository": "project-oak/silveroak",
+            "revision": "cccfdb4e19c5906256d2ed4487bf1a0aa2fab99e"
+          },
+          "name": "SilverOak Coq Cava hardware synthesis and OpenTitan peripheral verification"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+          },
+          "name": "Bedrock2 Coq low-level systems and OpenTitan hardware-software co-verification stack"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/sby",
+            "revision": "79fc9eddca5e33a28cc2f2cd19c9825efd9a7255"
+          },
+          "name": "SymbiYosys front-end driver for Yosys formal RTL verification"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/riscv-formal",
+            "revision": "c992aa61fdfe0846c5ed90324c596202a1c69b76"
+          },
+          "name": "riscv-formal RVFI processor pipeline verification framework"
+        },
+        {
+          "identity": {
+            "repository": "uclid-org/uclid",
+            "revision": "a4e4e7a22780833c86d6a650af2fcf88a7d00a06"
+          },
+          "name": "UCLID5 Burch-Dill pipeline and hyperproperty hardware modeling system"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/concurrency",
+        "concurrency/weak-memory",
+        "concurrency/linearizability",
+        "concurrency/safe-memory-reclamation",
+        "verified-systems/os-kernels",
+        "verified-systems/device-drivers",
+        "verified-systems/crash-consistency",
+        "verified-systems/distributed-systems",
+        "hardware/isa-semantics",
+        "hardware/rtl-verification"
+      ]
+    },
+    "anneal-concurrency-weak-memory-kernels-storage-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted core refinement and step-result definitions"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted.lean, trusted/lean/Trusted/Attributes.lean",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal main branch trust-tier attributes and boundary baseline"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "paths": "library/core/src/sync/atomic.rs, library/alloc/src/sync.rs, library/std/src/sync/mpsc/mod.rs",
+            "repository": "rust-lang/rust",
+            "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+          },
+          "name": "Rust standard library atomics, Arc, RwLock, and mpsc contracts"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MICRO.2016.7783747",
+            "publication": "MICRO-49 (2016)"
+          },
+          "name": "Counterexamples and Proof Loophole for the C/C++ to POWER and ARMv7 Trailing-Sync Compiler Mappings"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062352",
+            "publication": "PLDI 2017"
+          },
+          "name": "Repairing Sequential Consistency in C/C++11 (RC11)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386010",
+            "publication": "PLDI 2020"
+          },
+          "name": "Promising 2.0: Global Optimizations in Relaxed Memory Concurrency"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371102",
+            "publication": "POPL 2020"
+          },
+          "name": "RustBelt Meets Relaxed Memory"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3445814.3446748",
+            "publication": "ASPLOS 2021"
+          },
+          "name": "VSync: Push-Button Verification and Optimization for Synchronization Primitives on Weak Memory Models"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified formal specification and proof corpus"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-33-1",
+            "publication": "OSDI 2016"
+          },
+          "name": "Push-Button Verification of File Systems via Crash Refinement (Yggdrasil and FSCQ FUSE analysis)"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1109/TSE.2017.2655056",
+            "doi": "10.1145/2185376.2185383",
+            "publication": "ACM SIGCOMM CCR 2012 / IEEE TSE 2017"
+          },
+          "name": "Using Lightweight Modeling to Understand Chord and Reasoning About Identifier Spaces: How to Make Chord Correct"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2815400.2815428",
+            "publication": "SOSP 2015"
+          },
+          "name": "IronFleet: Proving Practical Distributed Systems Correct"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2737958",
+            "publication": "PLDI 2015"
+          },
+          "name": "Verdi: A Framework for Implementing and Formally Verifying Distributed Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2837614.2837622",
+            "publication": "POPL 2016"
+          },
+          "name": "Chapar: Certified Causally Consistent Distributed Key-Value Stores"
+        },
+        {
+          "identity": {
+            "path": "support/concurrency_systems_failure_canaries_probe.lean",
+            "sha256": "6e7eaf3daa9d1b427a53ef3a39335079e1dd54dec63e7fcec680962b09b88181"
+          },
+          "name": "Standalone Lean 4.34.1 Concurrency, Weak-Memory, Kernel, Storage, and Distributed Failure Canaries Probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "anneal/weak-memory",
+        "anneal/concurrency",
+        "anneal/os-kernels",
+        "anneal/crash-consistency",
+        "anneal/distributed-systems",
+        "verification/weak-memory",
+        "verification/concurrency",
+        "verification/reclamation",
+        "verification/os-kernels",
+        "verification/crash-refinement",
+        "verification/distributed-systems",
+        "rust/concurrency",
+        "rust/atomics",
+        "verified-systems/sel4"
+      ]
+    },
+    "anneal-cps-robotics-aerospace-eda-quantum-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted refinement and small-step core (trusted-core: trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 refinement and target semantics (mir-to-x86: trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/X86Semantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and elaborator toolchain"
+        },
+        {
+          "identity": {
+            "repository": "LS-Lab/KeYmaeraX-release",
+            "version": "5.1.1"
+          },
+          "name": "KeYmaera X differential dynamic logic theorem prover"
+        },
+        {
+          "identity": {
+            "benchmark_suite": "ARCH-COMP 2024-2026 Continuous and Hybrid Systems",
+            "repositories": "chenxin415/flowstar, TUMcps/CORA, JuliaReach/ReachabilityAnalysis.jl, dreal/dreal4, soarlab/FPTaylor, malyzajko/daisy, osqp/osqp, jump-dev/SumOfSquares.jl, hypro/hypro"
+          },
+          "name": "Flow*, CORA, JuliaReach, SpaceEx, HyPro, C2E2, DryVR, dReal4, FPTaylor, Daisy, OSQP, CVXGEN, and SumOfSquares.jl hybrid control and reachability ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "RobotLocomotion/drake, stack-of-tasks/pinocchio, loco-3d/crocoddyl, NVlabs/curobo, coal-library/coal, ompl/ompl, moveit/moveit2, snape/RVO2, rdiankov/openrave, leggedrobotics/ocs2, ethz-adrl/towr"
+          },
+          "name": "Drake, Pinocchio, Crocoddyl, cuRobo, Coal (HPP-FCL), OMPL, MoveIt 2, RVO2/ORCA, IKFast, OCS2, and TOWR robotics kinematics and planning ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "INRIA/velus, PARKAS/heptagon, Copilot-Language/copilot, NASA-SW-VnV/fret, nasa/ogma, NeuralNetworkVerification/Marabou, NASA-SW-VnV/CoCoSim, kind2-mc/kind2, nasa/fprime, nasa/cFS, CS-SI/Orekit",
+            "standard": "RTCA DO-178C / DO-333 / NASA NPR 7150.2D"
+          },
+          "name": "Ansys SCADE Suite, V\u00e9lus, Heptagon, Copilot, FRET, Ogma, Marabou (Reluplex/ACAS X), CoCoSim, Kind 2, F Prime, cFS, Polyspace, Astr\u00e9e, GMAT, and Orekit aerospace verification and flight-software ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "plcverif-oss/cern.plcverif, plc-lang/rusty, nucleron/matiec, thiagoralves/OpenPLC_v3",
+            "standards": "IEC 61131-3, CENELEC EN 50128 SIL 4, IEC 61850"
+          },
+          "name": "PLCverif, RuSt (plc-lang/rusty), MATIEC, OpenPLC, Prover iLock/Certifier, Atelier B/ClearSy, Arcade.PLC, aiT WCET, and IEC 61850 industrial safety ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "YosysHQ/yosys, YosysHQ/sby, berkeley-abc/abc, mit-plv/koika, mit-plv/kami, ymherklotz/vericert, ferrandi/PandA-bambu, cucapra/calyx, llvm/circt, parallaxsw/OpenSTA, asyncvlsi/act"
+          },
+          "name": "Yosys, SymbiYosys, ABC, K\u00f4ika, Kami, VeriCert, Bambu, LegUp, Vitis HLS, Calyx, CIRCT, JasperGold/VC Formal/Conformal, SpyGlass CDC/UPF, OpenSTA, and ACT/Balsa/Teak digital VLSI and hardware verification ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "The-OpenROAD-Project/OpenROAD, RTimothyEdwards/magic, RTimothyEdwards/netgen, KLayout/klayout, limbo018/DREAMPlace, cuhk-eda/CuGR"
+          },
+          "name": "OpenROAD, Magic VLSI, Netgen, KLayout, Calibre/Pegasus/IC Validator, DREAMPlace, and CuGR physical VLSI design and verification ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "inQWIRE/SQIR, zxcalc/pyzx, zxcalc/quizx, quantumlib/Stim, oscarhiggott/PyMatching, wuyue16pku/fusion-blossom, Qiskit/qiskit, CQCL/tket, UCLA-VAST/OLSQ2, latticesurgery-com/lattice-surgery-compiler, cda-tum/mqt-qcec, inQWIRE/QWIRE"
+          },
+          "name": "SQIR, VOQC, PyZX, QuiZX, Stim, PyMatching, Fusion Blossom, Qiskit SABRE, TKET, Enfield/OLSQ2, lsqecc, MQT-QCEC, Quipper, QWIRE, and CertiQ quantum compilation and error-correction ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "ariadne-cps/ariadne, Xyce/Xyce, sgherbst/msdsl, sgherbst/svreal, ucb-art/BAG_framework, ALIGN-analoglayout/ALIGN-public, magical-eda/MAGICAL, lava-nc/lava, brian-team/brian2, nengo/nengo"
+          },
+          "name": "SpaceEx-AMS/CORA-AMS/Ariadne, Xyce/Ngspice, SVReal/msdsl/Dragonfly, BAG2/ALIGN/MAGICAL, DELSIG, and Lava/Brian2/Nengo analog, mixed-signal, and neuromorphic ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "flaport/sax, BYUCamachoLab/simphony, fancompute/neuroptica, GuGroup/TorchONN, lightelligence/lightridge, gdsfactory/gdsfactory, NanoComp/meep, flexcompute/tidy3d, XanaduAI/strawberryfields, Quandela/Perceval"
+          },
+          "name": "SAX, Simphony, Neuroptica, TorchONN, Lightridge, GDSFactory, Nazca, Meep, Tidy3D, Strawberry Fields, and Perceval silicon-photonics and optical computing ecosystem"
+        },
+        {
+          "identity": {
+            "repositories": "ucl-bug/k-wave, bempp/bempp-cl, NanoComp/mpb, paulino-group/MERLIN2, amandaghassaei/OrigamiSimulator, sofa-framework/sofa, taichi-dev/difftaichi, topopt/TopOpt_in_PETSc"
+          },
+          "name": "k-Wave, Bempp-cl, MPB, MERLIN2, Origami Simulator, Crane, SOFA, DiffTaichi, TopOpt, and Sugar metamaterial, phased-array, origami, and soft-robotics ecosystem"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/trust-policy",
+        "cyber-physical-systems/reachability-and-cbfs",
+        "robotics/kinematics-and-optimal-control",
+        "aerospace/synchronous-dataflow-and-runtime-assurance",
+        "industrial-control/plc-and-railway-interlocking",
+        "eda/rtl-synthesis-and-formal-verification",
+        "vlsi/physical-design-drc-lvs",
+        "quantum-computing/zx-calculus-and-qec",
+        "analog-mixed-signal/real-number-modeling-and-neuromorphic",
+        "silicon-photonics/s-matrix-and-mzi-meshes",
+        "metamaterials/acoustic-em-and-origami-mechanics"
+      ]
+    },
+    "anneal-cps-robotics-aerospace-eda-quantum-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "mir_to_x86_revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+            "reference_hardening_revision": "df55c524a051d59e7dd35564f282b30d29133392",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+            "trusted_core_revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted verification boundary and refinement core"
+        },
+        {
+          "identity": {
+            "cade2015_doi": "10.1007/978-3-319-21401-6_36",
+            "cpp2017_doi": "10.1145/3018610.3018616",
+            "pldi2018_doi": "10.1145/3192366.3192406",
+            "repository": "LS-Lab/KeYmaeraX-release"
+          },
+          "name": "KeYmaera 3 and KeYmaera X differential dynamic logic provers and VeriPhy pipeline"
+        },
+        {
+          "identity": {
+            "arch_comp_nl_doi": "10.29007/5791",
+            "dreal_cade2013_doi": "10.1007/978-3-642-38574-2_14",
+            "flowstar_cav2013_doi": "10.1007/978-3-642-39799-8_18",
+            "spaceex_cav2011_doi": "10.1007/978-3-642-22110-1_30"
+          },
+          "name": "Continuous and hybrid reachability solvers (Flow*, SpaceEx, CORA, dReal)"
+        },
+        {
+          "identity": {
+            "ariane501_report": "ESA/CNES Inquiry Board Report (Lions et al., 1996-07-19)",
+            "b737max_report": "NTSB ASR-19-01 (2019-09-19) / KNKT.18.10.35.04 (2019-10-25)",
+            "mco_report": "NASA MCO Mishap Investigation Board Phase I Report (1999-11-10)",
+            "mpl_report": "JPL Special Review Board Report JPL D-18709 (2000-03-28)",
+            "patriot_report": "GAO/IMTEC-92-26 (1992-02-04)",
+            "therac25_doi": "10.1109/MC.1993.274940"
+          },
+          "name": "Aerospace, defense, medical, and industrial PLC safety postmortems"
+        },
+        {
+          "identity": {
+            "fdiv_doi": "10.1109/12.368006",
+            "fdiv_harrison_doi": "10.1023/A:1008712907154",
+            "transfuzz_usenix2024": "USENIX Security 2024 (Solt & Razavi, ISBN 978-1-939133-44-1)",
+            "vericert_oopsla2021_doi": "10.1145/3485509",
+            "verismith_fpga2020_doi": "10.1145/3373087.3375310"
+          },
+          "name": "Digital VLSI, RTL/gate equivalence, CDC, and HLS synthesis tool failures"
+        },
+        {
+          "identity": {
+            "cosmic_ray_natphys2022_doi": "10.1038/s41567-021-01432-8",
+            "cosmic_ray_nature2021_doi": "10.1038/s41586-021-03557-5",
+            "morphq_icse2022_doi": "10.1145/3510003.3510221",
+            "qdiff_ase2021_doi": "10.1109/ASE51524.2021.9678792",
+            "terhal_rmp2015_doi": "10.1103/RevModPhys.87.307"
+          },
+          "name": "Quantum circuit compilers (Qiskit, TKET, PyZX) and fault-tolerant surface-code decoders"
+        },
+        {
+          "identity": {
+            "clements_optica2016_doi": "10.1364/OPTICA.3.001460",
+            "mems_pullin_doi": "10.1109/T-ED.1967.15912",
+            "mzi_imperfect_optica2021_doi": "10.1364/OPTICA.424052",
+            "origami_science2014_doi": "10.1126/science.1252876",
+            "spice2_memo": "UCB/ERL M520 (Nagel, 1975-05-01)"
+          },
+          "name": "Analog SPICE simulators, silicon photonic MZI meshes, and programmable metamaterials"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/behavior-codec",
+        "anneal/cps-verification",
+        "anneal/eda-hardware-verification",
+        "anneal/external-call",
+        "anneal/failure-postmortems",
+        "anneal/quantum-verification",
+        "anneal/refinement",
+        "anneal/trust-policy",
+        "verification/hybrid-systems",
+        "verification/soundness-failures"
       ]
     },
     "anneal-cross-tool-error-provenance-specimens-v4-30-0-rc2": {
@@ -11311,6 +12819,738 @@
         "certificate/applicability",
         "certificate/dependency-closure",
         "verification/producer-isolation"
+      ]
+    },
+    "anneal-databases-networking-cloud-builds-tensor-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "trusted-core",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted refinement and small-step prefix core"
+        },
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 verified compilation pipeline"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+          },
+          "name": "Anneal trusted-boundary hardening corpus (BehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3587136.3587140",
+            "repository": "feldera/feldera",
+            "venue": "PVLDB 16(6) 2023"
+          },
+          "name": "DBSP and Feldera incremental view maintenance and SQL-to-circuit compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3035918.3056447",
+            "repository": "uwdb/Cosette",
+            "venue": "CIDR / SIGMOD 2017"
+          },
+          "name": "Cosette, UDP, EQUITAS, SPES, and WeTune SQL equivalence and rewrite verifiers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341301.3359632",
+            "repository": "mit-pdos/perennial",
+            "venue": "SOSP 2019 / OSDI 2022"
+          },
+          "name": "FSCQ, Perennial, DaisyNFS, Yggdrasil, VeriBetrKV, Cogent/BilbyFS, Flashix, Atmosphere, and SplinterDB crash-consistent storage systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2737958",
+            "repository": "uwplse/verdi",
+            "venue": "PLDI 2015 / SOSP 2015 / POPL 2016"
+          },
+          "name": "Verdi, IronFleet, Ivy, Aneris, Chapar, TLAPS, FoundationDB, and Jepsen/Elle distributed systems verifiers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3098822.3098828",
+            "repository": "batfish/batfish",
+            "venue": "SIGCOMM 2017 / NSDI 2020 / POPL 2014"
+          },
+          "name": "Batfish, Minesweeper, Bagpipe, NetKAT, p4v, Vera, Petr4, Poulet4, Gauntlet, APKeep, and NV/ShapeShifter networking verifiers"
+        },
+        {
+          "identity": {
+            "repository": "anvil-verifier/anvil",
+            "url": "https://www.usenix.org/conference/osdi24/presentation/sun",
+            "venue": "USENIX OSDI 2024"
+          },
+          "name": "Anvil, Sieve, K8s-TLA+, Tiros, Rehearsal, Checkov, and Conftest cloud IaC and controller verifiers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3649835",
+            "repository": "cedar-policy/cedar-spec",
+            "venue": "OOPSLA 2024"
+          },
+          "name": "Cedar (cedar-spec in Lean 4), Zelkova, Margrave, Zanzibar/SpiceDB/OpenFGA, OPA, and OpenDP/Chorus/Fuzz/DFuzz/CertiPriv"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3236774",
+            "repository": "snowleopard/build",
+            "venue": "ICFP 2018 / JFP 2020"
+          },
+          "name": "Build Systems a la Carte, Pluto, Salsa, Buck2 DICE, Adapton, Bazel Skyframe, and PubGrub"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523446",
+            "repository": "exo-lang/exo",
+            "venue": "PLDI 2022 / OSDI 2025"
+          },
+          "name": "Exo, Verified-Halide, MLIR-TV/VeriHLO, XLA GSPMD/PartIR/Shardy, Polly/isl, GPUVerify/Faial, and Tensat/Mirage"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454053",
+            "repository": "TimelyDataflow/timely-dataflow",
+            "venue": "SOSP 2013 / PLDI 2021"
+          },
+          "name": "Timely Dataflow, StreamBox, Flink ABS, Coqlex, VeriLex, Ausaf-Dyckhoff-Urban POSIX Regex, lean-regex, CoStar, and TRX"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290389",
+            "repository": "project-everest/everparse",
+            "venue": "USENIX Security 2019 / POPL 2019 / USENIX Security 2025"
+          },
+          "name": "EverParse/3D, Narcissus, Vest, Cambria, Boomerang, Buf, Temporal, Restate, and P Language"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/behavior-codec",
+        "anneal/domain-generalization",
+        "anneal/progress-refinement",
+        "anneal/trust-policy",
+        "authorization/cedar",
+        "authorization/zanzibar",
+        "build-systems/incremental",
+        "cloud/kubernetes-controllers",
+        "compilers/mlir-tensor",
+        "compilers/polyhedral",
+        "databases/ivm-dbsp",
+        "databases/query-equivalence",
+        "differential-privacy/verification",
+        "distributed-systems/consensus",
+        "networking/bgp-verification",
+        "networking/p4-sdn",
+        "parsing/verified-combinators",
+        "storage/crash-consistency",
+        "streaming/watermarks"
+      ]
+    },
+    "anneal-databases-networking-cloud-builds-tensor-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "mir-to-x86-revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted refinement, step-outcome, and boundary primitives (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean)"
+        },
+        {
+          "identity": {
+            "norec-doi": "10.1145/3368089.3409710",
+            "pqs-venue": "OSDI 2020",
+            "repository": "sqlancer/sqlancer",
+            "tlp-doi": "10.1145/3428279"
+          },
+          "name": "SQLancer (NoREC, TLP, PQS) query optimizer logic bug studies across PostgreSQL, MySQL, CockroachDB, SQLite, and TiDB"
+        },
+        {
+          "identity": {
+            "cosette-venue": "CIDR 2017 / PLDI 2017",
+            "dbsp-doi": "10.14778/3587136.3587137",
+            "udp-doi": "10.14778/3192965.3192971",
+            "wetune-doi": "10.1145/3514221.3526125"
+          },
+          "name": "Cosette, UDP, WeTune, and DBSP relational query equivalence and incremental view maintenance verifiers"
+        },
+        {
+          "identity": {
+            "elle-doi": "10.14778/3457390.3457396",
+            "fscq-doi": "10.1145/2815400.2815402",
+            "rocksdb-repository": "facebook/rocksdb",
+            "yggdrasil-venue": "OSDI 2016"
+          },
+          "name": "FSCQ, Yggdrasil, RocksDB DeleteRange compaction, and Jepsen/Elle distributed storage and consensus failure analyses"
+        },
+        {
+          "identity": {
+            "anvil-venue": "OSDI 2024",
+            "sieve-venue": "OSDI 2022"
+          },
+          "name": "Sieve and Anvil Kubernetes reconciliation controller stale-cache TOCTOU and liveness verification studies"
+        },
+        {
+          "identity": {
+            "gauntlet-arxiv": "2006.01074",
+            "gauntlet-venue": "OSDI 2020",
+            "petr4-doi": "10.1145/3434304",
+            "rfc": "RFC 3345"
+          },
+          "name": "Gauntlet and Petr4 P4 compiler miscompilation analyses and BGP RFC 3345 / Dispute Wheel route oscillation theory"
+        },
+        {
+          "identity": {
+            "casacuberta-doi": "10.1145/3548606.3560708",
+            "cedar-arxiv": "2403.04651",
+            "cedar-venue": "OOPSLA 2024",
+            "mironov-doi": "10.1145/2382196.2382264"
+          },
+          "name": "AWS Cedar Lean 4 Verification-Guided Development and floating-point differential privacy sensitivity/LSB attacks (Mironov 2012, Casacuberta et al. 2022)"
+        },
+        {
+          "identity": {
+            "bsalc-doi": "10.1145/3236774",
+            "nnsmith-doi": "10.1145/3575693.3575707",
+            "pluto-doi": "10.1145/2814270.2814316",
+            "tzer-doi": "10.1145/3533767.3534388"
+          },
+          "name": "Pluto, Build Systems a la Carte, Bazel/Ninja/Salsa incremental build soundness, NNSmith/Tzer/Halide/Triton/XLA tensor compiler bugs, and Cloudflare/StackOverflow ReDoS postmortems"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/external-calls",
+        "anneal/trust-policy",
+        "databases/sql-equivalence",
+        "databases/query-optimizers",
+        "databases/incremental-view-maintenance",
+        "storage/crash-consistency",
+        "storage/lsm-compaction",
+        "distributed-systems/consensus",
+        "distributed-systems/kubernetes-controllers",
+        "networking/p4-compilers",
+        "networking/bgp-convergence",
+        "security/authorization-policy",
+        "security/differential-privacy",
+        "build-systems/incremental-soundness",
+        "compilers/tensor-ml",
+        "verification/historical-failures"
+      ]
+    },
+    "anneal-deductive-logics-types-abstract-interp-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+            "trusted_core_worktree_revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal verification framework and 4-primitive trusted core"
+        },
+        {
+          "identity": {
+            "paths": "src/Lean/Elab/Tactic/BVDecide/, src/Std/Do/",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (bv_decide LRAT bit-blaster and Std.Do / mvcgen MPL)"
+        },
+        {
+          "identity": {
+            "icfp2022_doi": "10.1145/3547647",
+            "icfp2024_doi": "10.1145/3674640",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "70683bd4ab876179a23e5f994d02947b3e5c4f0d"
+          },
+          "name": "Aeneas functional translator and Lean 4 WP backend"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon ULLBC/LLBC extractor for rustc"
+        },
+        {
+          "identity": {
+            "pldi2022_doi": "10.1145/3519939.3523704",
+            "toplas2021_doi": "10.1145/3462205",
+            "zenodo": "6417462"
+          },
+          "name": "RustHorn and RustHornBelt prophetic functional translation"
+        },
+        {
+          "identity": {
+            "coma_esop2025_sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e",
+            "repository": "creusot-rs/creusot",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+          },
+          "name": "Creusot deductive Rust verifier and Coma intermediate verification language"
+        },
+        {
+          "identity": {
+            "repository": "formal-land/rocq-of-rust",
+            "revision": "ca1374ae2fdeb28b069fe77ba412db5604525261"
+          },
+          "name": "coq-of-rust (rocq-of-rust) monadic THIR-to-Rocq translator"
+        },
+        {
+          "identity": {
+            "git_blob": "670746012e99efc7b239bc5cd41f9ee2d967997b",
+            "repository": "Kha/electrolysis"
+          },
+          "name": "Electrolysis Rust-to-Lean lens translator"
+        },
+        {
+          "identity": {
+            "repository": "cryspen/hax",
+            "revision": "1ec88cdb2c8e546845e64eb2cd2321b4f58069c4"
+          },
+          "name": "hacspec and hax multi-backend Rust extraction engine"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594296",
+            "publication": "PLDI 2014",
+            "url": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf"
+          },
+          "name": "AutoCorres and AutoCorres2 C-to-Isabelle/HOL monadic abstraction"
+        },
+        {
+          "identity": {
+            "itrees_popl2020_doi": "10.1145/3371119",
+            "itrees_repository": "DeepSpec/InteractionTrees",
+            "itrees_revision": "a2bc2c38ad998dccadb932559c922139dd957c4f",
+            "vellvm_repository": "vellvm/vellvm",
+            "vellvm_revision": "506f1eb0be542611521985719b971fbce8498dc9"
+          },
+          "name": "Interaction Trees (ITrees) and Vellvm VIR semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571220",
+            "publication": "POPL 2023",
+            "url": "https://plv.mpi-sws.org/dimsum/paper.pdf"
+          },
+          "name": "DimSum and FreeSpec multi-language compositional event semantics"
+        },
+        {
+          "identity": {
+            "crucible_repository": "GaloisInc/crucible",
+            "crucible_revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4",
+            "saw_repository": "GaloisInc/saw-script",
+            "saw_revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+          },
+          "name": "SAW, Crucible, and crux-mir symbolic execution suite"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+          },
+          "name": "Kani Rust bit-precise model checker"
+        },
+        {
+          "identity": {
+            "rosette_pldi2014_doi": "10.1145/2594291.2594340",
+            "rosette_repository": "emina/rosette",
+            "rosette_revision": "373c8c35e4a7667f38fce10cf0b74ae17de07f1d",
+            "serval_repository": "uw-unsat/serval",
+            "serval_revision": "72adc4952a1e62330aea527214a26bd0c09cbd05",
+            "serval_sosp2019_doi": "10.1145/3341301.3359641"
+          },
+          "name": "Rosette solver-aided language and Serval verifier"
+        },
+        {
+          "identity": {
+            "holba_repository": "kth-step/HolBA",
+            "holba_revision": "ef22c1fd8da612c57f2e7f273cb14594a7e529d3",
+            "islaris_pldi2022_doi": "10.1145/3519939.3523434",
+            "islaris_repository": "rems-project/islaris",
+            "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+            "sail_repository": "rems-project/sail",
+            "sail_revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+          },
+          "name": "Sail, Islaris, and HolBA ISA symbolic evaluators"
+        },
+        {
+          "identity": {
+            "iris_jfp2018_doi": "10.1017/S0956796818000151",
+            "iris_lean_repository": "leanprover-community/iris-lean",
+            "iris_lean_revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+            "mosel_icfp2018_doi": "10.1145/3236772",
+            "rocq_iris_repository": "rocq-iris/iris",
+            "rocq_iris_revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          },
+          "name": "Iris, MoSeL, and iris-lean higher-order separation logic"
+        },
+        {
+          "identity": {
+            "popl2018_doi": "10.1145/3158154",
+            "popl2020_doi": "10.1145/3371102",
+            "repository": "iris/lambda-rust",
+            "revision": "186900b2cf948835873281646ce20c7e8f084f17"
+          },
+          "name": "RustBelt semantic type soundness and lifetime logic"
+        },
+        {
+          "identity": {
+            "refinedc_pldi2021_doi": "10.1145/3453483.3454036",
+            "refinedc_repository": "iris/refinedc",
+            "refinedc_revision": "d057583986651a28047164581f05fbee3a83ed9d",
+            "refinedrust_pldi2024_doi": "10.1145/3656423",
+            "refinedrust_repository": "lgaeher/refinedrust-dev",
+            "refinedrust_revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+            "vip_pldi2022_doi": "10.1145/3519939.3523702"
+          },
+          "name": "RefinedC, Caesium, VIP, and RefinedRust Lithium ownership type systems"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          },
+          "name": "Verified Software Toolchain (VST) for CompCert C"
+        },
+        {
+          "identity": {
+            "cn_popl2023_doi": "10.1145/3571194",
+            "fulminate_popl2025_doi": "10.1145/3704879",
+            "repository": "rems-project/cerberus",
+            "revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1"
+          },
+          "name": "Cerberus, CN, and Fulminate separation-logic C verification and runtime testing"
+        },
+        {
+          "identity": {
+            "foundational_arxiv": "2601.13727v1",
+            "repository": "verifast/verifast",
+            "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+          },
+          "name": "VeriFast symbolic-heap C and Rust verifier"
+        },
+        {
+          "identity": {
+            "prusti_oopsla2019_doi": "10.1145/3360573",
+            "prusti_repository": "prusti/prusti",
+            "prusti_revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+            "vercors_repository": "utwente-fmt/vercors",
+            "vercors_revision": "3300d5b007286225a33c17a233bda77db9471213",
+            "viper_repository": "viperproject/silver",
+            "viper_revision": "da1c8993b66feb39976e3609e2580a4661137a0f"
+          },
+          "name": "Viper, Prusti, and VerCors Implicit Dynamic Frames infrastructure"
+        },
+        {
+          "identity": {
+            "gillian_rust_pldi2025_doi": "10.1145/3729289",
+            "infer_repository": "facebook/infer",
+            "infer_revision": "5aac32c06952a2f3a6b7043e91457920f065833b",
+            "repository": "GillianPlatform/gillian-rust",
+            "revision": "83d739e83034d71162fb66b569041cf301123df7"
+          },
+          "name": "Gillian, Gillian-Rust, Smallfoot, and Infer/Pulse bi-abductive engines"
+        },
+        {
+          "identity": {
+            "ghostcell_icfp2021_doi": "10.1145/3473597",
+            "verus_oopsla2023_doi": "10.1145/3586037",
+            "verus_repository": "verus-lang/verus",
+            "verus_revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          },
+          "name": "Verus linear ghost permissions (Tracked, PCell, tokenized_state_machine) and GhostCell"
+        },
+        {
+          "identity": {
+            "aquascope_repository": "cognitive-engineering-lab/aquascope",
+            "aquascope_revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6",
+            "bsan_repository": "BorrowSanitizer/bsan",
+            "bsan_revision": "a2fd46ab89fc97ba1cf548645dd70acbeaa17d64",
+            "minirust_repository": "minirust/minirust",
+            "minirust_revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+            "miri_repository": "rust-lang/miri",
+            "miri_revision": "0e1a23b0794bec7860df8c06a774f4316746795a",
+            "oxide_arxiv": "1903.00982v4",
+            "polonius_repository": "rust-lang/polonius",
+            "polonius_revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df",
+            "sb_popl2020_doi": "10.1145/3371109",
+            "tb_pldi2025_doi": "10.1145/3735592"
+          },
+          "name": "Miri, Stacked Borrows, Tree Borrows, BorrowSanitizer, Polonius, Aquascope, Oxide, and MiniRust"
+        },
+        {
+          "identity": {
+            "cheri_morello_repository": "CTSRD-CHERI/sail-morello",
+            "cheri_morello_revision": "2305f656ff84619caf50107f49dae7be52aec72b",
+            "compcert_repository": "AbsInt/CompCert",
+            "compcert_revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03",
+            "quasi_concrete_popl2015_doi": "10.1145/2676726.2676985",
+            "rustc_repository": "rust-lang/rust",
+            "rustc_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "CompCert Memdata, CompCertS, Quasi-Concrete memory, CHERI/Morello, and Rust Strict/Exposed Provenance"
+        },
+        {
+          "identity": {
+            "austral_repository": "austral/austral",
+            "austral_revision": "0962d2a8a5d77f7daacd7f696819520733f4897d",
+            "effekt_oopsla2020_doi": "10.1145/3428194",
+            "effekt_repository": "effekt-lang/effekt",
+            "effekt_revision": "91c540b1067721bdd1bb5d463e42827f8316a1da",
+            "embassy_repository": "embassy-rs/embassy",
+            "embassy_revision": "14cf6a68ec0bfd0ecf873f7e3dbb2eb69013fa29",
+            "embedded_hal_repository": "rust-embedded/embedded-hal",
+            "embedded_hal_revision": "41f29f6bfced1cae0cbe712ba96ee32c075b3125",
+            "flux_pldi2023_doi": "10.1145/3591283",
+            "flux_repository": "flux-rs/flux",
+            "flux_revision": "6769bb9cbd1216380f542349494efafafd6104a3",
+            "fstar_repository": "FStarLang/FStar",
+            "fstar_revision": "e2b5042ffd8272ad6287e4ad8748d8e52dadd93d",
+            "karamel_repository": "FStarLang/karamel",
+            "karamel_revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+            "koka_eptcs2014_doi": "10.4204/EPTCS.153.8",
+            "koka_repository": "koka-lang/koka",
+            "koka_revision": "d23ee7cd73737c1da7a7a5fa837a2806facc3d6b",
+            "liquidhaskell_icfp2014_doi": "10.1145/2628136.2628161",
+            "liquidhaskell_repository": "ucsd-progsys/liquidhaskell",
+            "liquidhaskell_revision": "c0cca0b9f92d8cdaae7f8fc604f78c32b534b69d",
+            "no_panic_repository": "dtolnay/no-panic",
+            "no_panic_revision": "9a0b1097f77dfd5ee4352b6ff060f68d791730f7",
+            "stainless_repository": "EPFL-LARA/stainless",
+            "stainless_revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+            "vale_repository": "project-everest/vale",
+            "vale_revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Flux, Liquid Haskell, Stainless, F*/Low*/KaRaMeL, Austral, Vale, Koka, Effekt, and Rust typestate/effect analyzers"
+        },
+        {
+          "identity": {
+            "agni_cav2023_doi": "10.1007/978-3-031-37709-9_12",
+            "astree_esop2005_doi": "10.1007/978-3-540-31987-0_3",
+            "crab_repository": "seahorn/crab",
+            "crab_revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c",
+            "frama_c_repository": "git.frama-c.com/pub/frama-c",
+            "frama_c_revision": "ce0648c726122d4a7b5e8614a1a5b97777d9d226",
+            "goblint_repository": "goblint/analyzer",
+            "goblint_revision": "1463f411ce87edd49198033856b2946fc3366fb2",
+            "ikos_repository": "NASA-SW-VnV/ikos",
+            "ikos_revision": "ac7f7c1738976cabc58c6a53413df6e458995c38",
+            "llvm_knownbits_repository": "llvm/llvm-project",
+            "llvm_knownbits_revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+            "lockbud_repository": "BurtonQin/lockbud",
+            "lockbud_revision": "a1b5303cdbb1d4d0ad886359cc71418570e7c5fd",
+            "memcad_popl2008_doi": "10.1145/1328438.1328469",
+            "memcad_repository": "Antique-team/memcad",
+            "memcad_revision": "d95caa514f2b66b8c43c015799084d281944f028",
+            "mirai_repository": "endorlabs/MIRAI",
+            "mirai_revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b",
+            "mopsa_repository": "mopsa/mopsa-analyzer",
+            "mopsa_revision": "f168a9c025738d4940cfb6a281dde258c871da73",
+            "prevail_pldi2019_doi": "10.1145/3314221.3314590",
+            "prevail_repository": "vbpf/prevail",
+            "prevail_revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7",
+            "rudra_repository": "sslab-gatech/Rudra",
+            "rudra_revision": "fc9add2c4721c77490680462c7f0ad791af7cec7",
+            "rudra_sosp2021_doi": "10.1145/3477132.3483570",
+            "seahorn_repository": "seahorn/seahorn",
+            "seahorn_revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4",
+            "tvla_toplas2002_doi": "10.1145/514188.514190",
+            "verasco_popl2015_doi": "10.1145/2676726.2676966"
+          },
+          "name": "Verasco, Astree, Crab/SeaHorn, IKOS, MIRAI, eBPF tnum/Agni/PREVAIL, LLVM KnownBits, Frama-C Eva, Goblint, Mopsa, Rudra/SafeDrop/Lockbud, and TVLA/Forester/MemCAD"
+        },
+        {
+          "identity": {
+            "boogie_cav2021_doi": "10.1007/978-3-030-81688-9_33",
+            "boogie_repository": "boogie-org/boogie",
+            "boogie_revision": "751228a2cf2c78177f9a0d040904022294aea1b2",
+            "cakeml_icfp2017_doi": "10.1145/3110263",
+            "cakeml_repository": "CakeML/cakeml",
+            "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "ceta_tphols2009_doi": "10.1007/978-3-642-03359-9_31",
+            "dafny_repository": "dafny-lang/dafny",
+            "dafny_revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+            "dm4all_icfp2019_doi": "10.1145/3341708",
+            "sct_popl2001_doi": "10.1145/360204.360210",
+            "splean_repository": "verse-lab/splean",
+            "splean_revision": "e24286f51bd9ee207197d47ec587d592cdfb0ddc",
+            "terminator_pldi2006_doi": "10.1145/1133981.1134029",
+            "ultimate_cav2013_doi": "10.1007/978-3-642-39799-8_42",
+            "ultimate_repository": "ultimate-pa/ultimate",
+            "ultimate_revision": "82f536df1bea812c74d70a91d8e67c1770c3fefe",
+            "vcc_tphols2009_doi": "10.1007/978-3-642-03359-9_2",
+            "why3_repository": "why3/why3",
+            "why3_revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e"
+          },
+          "name": "DM4All, Why3, Boogie, CFML 2.0/SPLean, CakeML CF, AProVE/Ultimate Automizer, CeTA/IsaFoR, Foetus/SCT, Terminator/RankFinder, and Dafny/VCC"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-core",
+        "verification/deductive",
+        "verification/separation-logic",
+        "verification/functional-translation",
+        "verification/borrows-and-aliasing",
+        "verification/refinement-types",
+        "verification/typestates-and-effects",
+        "verification/abstract-interpretation",
+        "verification/vcgen-and-termination",
+        "rust/mir-semantics",
+        "lean4"
+      ]
+    },
+    "anneal-deductive-logics-types-abstract-interp-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal workspace and trusted verification boundary"
+        },
+        {
+          "identity": {
+            "issues": "#4053, #6534, #6537",
+            "repository": "dafny-lang/dafny",
+            "url": "https://github.com/dafny-lang/dafny/issues"
+          },
+          "name": "Dafny soundness issue tracker and prelude axiom bugs"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.05491v2",
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          },
+          "name": "Verus deductive verifier and soundness tracker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704",
+            "publication": "PLDI 2022",
+            "repository": "creusot-rs/creusot"
+          },
+          "name": "Creusot and RustHornBelt prophetic borrow verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647",
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          },
+          "name": "Aeneas and Charon functional translation pipeline"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656438",
+            "publication": "OOPSLA 2019 / PLDI 2024",
+            "repository": "viperproject/prusti-dev"
+          },
+          "name": "Prusti and Viper separation-logic encoding"
+        },
+        {
+          "identity": {
+            "label": "[F] Soundness",
+            "repository": "model-checking/kani",
+            "url": "https://github.com/model-checking/kani/issues"
+          },
+          "name": "Kani Rust model checker soundness tracker"
+        },
+        {
+          "identity": {
+            "issues": "#4478, #4485, #4487",
+            "repository": "FStarLang/FStar",
+            "url": "https://github.com/FStarLang/FStar/issues"
+          },
+          "name": "F* dependent type checker and VC simplifier soundness tracker"
+        },
+        {
+          "identity": {
+            "doi_popl18": "10.1145/3158154",
+            "doi_popl20": "10.1145/3371102",
+            "rust_issues": "rust-lang/rust#25760, rust-lang/rust#51780"
+          },
+          "name": "RustBelt and RustBelt Meets Relaxed Memory standard-library soundness analyses"
+        },
+        {
+          "identity": {
+            "doi_sb": "10.1145/3371109",
+            "doi_tb": "10.1145/3729338",
+            "publication": "POPL 2020 / PLDI 2025"
+          },
+          "name": "Stacked Borrows and Tree Borrows operational aliasing models"
+        },
+        {
+          "identity": {
+            "issues": "#25860, #84591, #100013",
+            "repository": "rust-lang/rust"
+          },
+          "name": "rustc borrow checker, implied bounds, and HRTB soundness tracker"
+        },
+        {
+          "identity": {
+            "doi_oopsla18": "10.1145/3276495",
+            "doi_pldi17": "10.1145/3062341.3062343",
+            "llvm_bugs": "llvm#34548, llvm#35229"
+          },
+          "name": "LLVM and C/Rust pointer-integer cast provenance miscompilations"
+        },
+        {
+          "identity": {
+            "commits": "581738a681b6, 049c4e13714e, 10bf4e83167c, 64620e0a1e71, 71b547f56124",
+            "cves": "CVE-2020-8835, CVE-2021-3490, CVE-2021-31440, CVE-2022-23222, CVE-2023-2163",
+            "doi_cav23": "10.1007/978-3-031-37709-9_12",
+            "doi_cgo22": "10.1109/CGO53902.2022.9741267",
+            "repository": "torvalds/linux"
+          },
+          "name": "Linux kernel eBPF abstract interpreter and Agni range-analysis verification"
+        },
+        {
+          "identity": {
+            "doi_cav16": "10.1007/978-3-319-41528-4_20",
+            "doi_oopsla23": "10.1145/3622852",
+            "doi_sosp15": "10.1145/2815400.2815428"
+          },
+          "name": "SMT quantifier instantiation instability and trigger selection studies"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/source-safety",
+        "anneal/tcb",
+        "verification/deductive",
+        "verification/soundness-bugs",
+        "verification/separation-logic",
+        "verification/abstract-interpretation",
+        "verification/smt-instability",
+        "rust/aliasing-models",
+        "rust/borrow-checking",
+        "rust/pointer-provenance",
+        "ebpf/verifier"
       ]
     },
     "anneal-error-provenance-classification-nightly-2026-06-03-v4-30-0-rc2": {
@@ -11758,6 +13998,275 @@
         "formal-verification/machine-code"
       ]
     },
+    "anneal-law-defi-mechanism-design-voting-medical-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal core refinement and small-step verification framework"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/X86Semantics.lean, trusted/audit/TrustedBoundary.lean",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler and boundary audit branch"
+        },
+        {
+          "identity": {
+            "paths": "reports/anneal-behavior-codec-and-progress-refinement-2026/, reports/anneal-structural-external-calls-and-tcb-mutation-testing-2026/, reports/anneal-tcb-realizability-proof-gated-compilation-and-audit-probes-2026/",
+            "repository": "joshlf/anneal",
+            "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+          },
+          "name": "Anneal trusted-boundary hardening corpus (BehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473582",
+            "repository": "CatalaLang/catala",
+            "venue": "ICFP 2021"
+          },
+          "name": "Catala legislative programming language and default calculus"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/351240.351267",
+            "repositories": "finos/common-domain-model, input-output-hk/marlowe-cardano, digital-asset/daml, actusfrf/actus-core",
+            "venue": "ICFP 2000 / FMBC 2020"
+          },
+          "name": "LexiFi MLFi, Marlowe, Daml, ISDA CDM, and ACTUS financial contract languages"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53288-8_7",
+            "repositories": "Certora/CertoraProver, a16z/halmos, runtimeverification/kontrol, AU-COBRA/ConCert",
+            "secondary_doi": "10.1109/SP46215.2023.10179346",
+            "venue": "CAV 2020 / CPP 2020 / IEEE S&P 2023"
+          },
+          "name": "Smart contract and DeFi economic security verifiers (Certora Prover, Halmos, KEVM/Kontrol, Move Prover, ConCert, Clockwork Finance)"
+        },
+        {
+          "identity": {
+            "repositories": "imandra-ai/imandra-docs, tigerbeetle/tigerbeetle, beancount/beancount, real-logic/simple-binary-encoding, OpenSourceRisk/Engine"
+          },
+          "name": "Financial market infrastructure and ledger engines (Imandra, TigerBeetle, Beancount, SBE, ORE/QuantLib)"
+        },
+        {
+          "identity": {
+            "afp_entries": "Stable_Matching, VCG",
+            "doi": "10.1073/pnas.1616385114",
+            "repositories": "ubc-tea/SATFC, JohnDickerson/KidneySolver",
+            "venue": "PNAS 2017 / Isabelle AFP"
+          },
+          "name": "Mechanism design, combinatorial auction, and matching verifiers (SATFC, ForMaRE VCG, KidneySolver, Isabelle Stable_Matching)"
+        },
+        {
+          "identity": {
+            "doi": "10.1257/aer.20190623",
+            "repositories": "gambitproject/gambit, google-deepmind/open_spiel, prismmodelchecker/prism-games, lomuscio/mcmas",
+            "venue": "AER 2020 / TACAS 2020 / CAV 2009"
+          },
+          "name": "Game-theoretic equilibrium and multi-agent verifiers (Gambit, OpenSpiel, PRISM-games, MCMAS, Calvano Q-learning)"
+        },
+        {
+          "identity": {
+            "afp_entry": "Social_Choice_Types",
+            "doi": "10.1007/978-3-662-48899-7_12",
+            "repositories": "verificatum/verificatum-vmn, microsoft/electionguard, OpenZeppelin/openzeppelin-contracts",
+            "venue": "VoteID / ITP / Isabelle AFP"
+          },
+          "name": "Verifiable voting, social choice, and governance frameworks (Verificatum, ElectionGuard, Belenios, Coq STV, Isabelle Social_Choice_Types, OpenZeppelin Governor)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/rssb.12089",
+            "repositories": "cqframework/clinical_quality_language, kind2-mc/kind2, masci/pvsio-web",
+            "specification": "HL7 CQL Release 1.5"
+          },
+          "name": "Clinical pathway, infusion pump, and adaptive trial tools (HL7 CQL, PROforma/Asbru/KIV, FDA GPCA PVS/Kind2, SPRINT/STAR, BOIN/CRM)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-21401-6_36",
+            "repositories": "LS-Lab/KeYmaeraX-release, NeuralNetworkVerification/Marabou, intel/ad-rss-lib, CommonRoad/commonocean-io",
+            "secondary_doi": "10.1007/978-3-319-63387-9_5",
+            "venue": "CADE 2015 / TACAS 2015 / CAV 2017 / CAV 2019"
+          },
+          "name": "Cyber-physical rules of the road and assurance cases (KeYmaera X ACAS X, Reluplex/Marabou, Mobileye RSS, CommonOcean COLREGs, NASA AdvoCATE)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3649835",
+            "repositories": "cedar-policy/cedar, cedar-policy/cedar-spec, open-policy-agent/opa, opensanctions/yente, eth-sri/monpoly",
+            "secondary_doi": "10.1145/2103656.2103669",
+            "venue": "OOPSLA 2024 / POPL 2012 / IEEE S&P 2014"
+          },
+          "name": "Policy-as-code, privacy compliance, and customs/sanctions engines (AWS Cedar, OPA/Rego, Jeeves, Legalease, OpenSanctions, MonPoly MFOTL)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/behavior-codec",
+        "anneal/external-call",
+        "anneal/productive-on",
+        "anneal/refinement",
+        "anneal/trust-policy",
+        "auctions/combinatorial",
+        "auctions/satfc",
+        "auctions/vcg",
+        "compliance/cedar",
+        "compliance/customs-tariffs",
+        "compliance/gdpr-hipaa",
+        "compliance/mfotl-monpoly",
+        "compliance/opa-rego",
+        "compliance/sanctions-ofac",
+        "contracts/actus",
+        "contracts/daml",
+        "contracts/isda-cdm",
+        "contracts/lexifi-mlfi",
+        "contracts/marlowe",
+        "cps/acas-x",
+        "cps/colregs-common-ocean",
+        "cps/keymaera-x",
+        "cps/marabou-reluplex",
+        "cps/mobileye-rss",
+        "defi/aeneas",
+        "defi/amm-solvency",
+        "defi/certora-cvl",
+        "defi/clockwork-finance",
+        "defi/concert-mi-cho-coq",
+        "defi/halmos-hevm",
+        "defi/kevm-kontrol",
+        "defi/move-prover",
+        "finance/beancount-ledger",
+        "finance/imandra-lob",
+        "finance/ore-quantlib",
+        "finance/sbe-quickfix",
+        "finance/tigerbeetle",
+        "game-theory/algorithmic-collusion",
+        "game-theory/gambit-openspiel",
+        "game-theory/mcmas",
+        "game-theory/prism-games",
+        "law/blawx-l4",
+        "law/catala",
+        "law/dgfip-m",
+        "law/openfisca-policyengine",
+        "matching/kidney-exchange",
+        "matching/stable-matching",
+        "medical/assurance-cases-advocate",
+        "medical/clinical-trials-boin-crm",
+        "medical/gpca-infusion-pump",
+        "medical/hl7-cql-fhir",
+        "medical/proforma-asbru-kiv",
+        "voting/belenios-helios",
+        "voting/electionguard",
+        "voting/openzeppelin-governor",
+        "voting/social-choice-isabelle",
+        "voting/stv-coq",
+        "voting/verificatum"
+      ]
+    },
+    "anneal-law-defi-mechanism-design-voting-medical-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+          },
+          "name": "Anneal reference corpus verification-hardening packages (BehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult)"
+        },
+        {
+          "identity": {
+            "block": "16817996",
+            "chain": "Ethereum Mainnet",
+            "date": "2023-03-13",
+            "proposal": "EIP-14",
+            "repository": "euler-xyz/euler-contracts"
+          },
+          "name": "Euler Finance donateToReserves missing checkLiquidity exploit"
+        },
+        {
+          "identity": {
+            "advisory": "GHSA-5824-cm3x-3c38",
+            "affected-versions": "0.2.15, 0.2.16, 0.3.0",
+            "date": "2023-07-30",
+            "repository": "vyperlang/vyper"
+          },
+          "name": "Vyper compiler @nonreentrant storage-slot allocation bug and Curve Finance pool exploits"
+        },
+        {
+          "identity": {
+            "incidents": "Wormhole (2022-02-02), Beanstalk (2022-04-17), Nomad (2022-08-01), Mango Markets (2022-10-11), Lendf.Me (2020-04-19)"
+          },
+          "name": "Cross-contract DeFi callback, governance, bridge-initialization, and oracle-manipulation exploits"
+        },
+        {
+          "identity": {
+            "tools": "Certora Prover (CVL HAVOC_ECF/HAVOC_ALL/rule_sanity), Runtime Verification KEVM, Aptos/Sui Move Prover and Move Bytecode Verifier"
+          },
+          "name": "Smart-contract formal verifier vacuity, external-call summary optimism, and bytecode/prover soundness failures"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473582",
+            "repository": "CatalaLang/catala",
+            "venue": "ICFP 2021 / CC 2021"
+          },
+          "name": "Catala and Mlang statutory formalizations of French DGFiP M-language income tax and family benefits"
+        },
+        {
+          "identity": {
+            "australia-robodebt-royal-commission": "2023-07-07 (Social Security Act 1991 s 1073B)",
+            "uk-horizon-judgment": "[2019] EWHC 3408 (QB) (Bates & Others v Post Office Ltd, Horizon Issues Judgment No. 6)"
+          },
+          "name": "Australian Robodebt automated income-averaging scheme and UK Post Office Fujitsu Horizon accounting defects"
+        },
+        {
+          "identity": {
+            "knight-capital-sec-order": "Release No. 34-70694 (2013-10-16, incident 2012-08-01)",
+            "stv-verification": "Pattinson, Tiwari, Gor\u00e9 (ITP/IJCAR Coq STV tabulation verification)",
+            "swisspost-scytl": "Haines, Lewis, Pereira, Teague (IEEE S&P 2020, doi:10.1109/SP40000.2020.00055)",
+            "vcg-auction-failures": "Ausubel & Milgrom (2006) / New Zealand 1990 spectrum auction"
+          },
+          "name": "SwissPost/Scytl e-voting proof soundness bug, Australian Senate STV tabulation discrepancies, Knight Capital SMARS deployment failure, and VCG shill-bidding collapse"
+        },
+        {
+          "identity": {
+            "acas-x-keymaera": "Jeannin et al. (TACAS 2015 / EMSOFT 2015 / STTT 2017, doi:10.1007/s10009-016-0434-1)",
+            "alaris-gp-pvs": "Masci, Thimbleby et al. (CAV / FM / SAFECOMP PVS interactive number-entry verification)",
+            "therac-25": "Leveson & Turner (IEEE Computer 1993, doi:10.1109/MC.1993.274940)",
+            "uberlingen-tcas-ii": "BFU Investigation Report AX001-1-2/02 (incident 2002-07-01)"
+          },
+          "name": "Alaris GP infusion pump UI/rounding bugs, Therac-25 interlock race conditions, and TCAS II / ACAS X collision-avoidance failures"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/step-result",
+        "anneal/trust-policy",
+        "anneal/verification-failures",
+        "defi/smart-contracts",
+        "statutory-law/catala",
+        "mechanism-design/auctions",
+        "voting/cryptographic-verifiability",
+        "medical-devices/safety-critical",
+        "aviation/tcas-acas-x"
+      ]
+    },
     "anneal-linux-elf-relocation-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -11930,6 +14439,308 @@
         "lean4",
         "formal-verification/memory-models",
         "formal-verification/cryptographic-constant-time"
+      ]
+    },
+    "anneal-mid-level-ir-optimizations-lowering-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler branch (theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc_mir_transform, rustc_monomorphize, rustc_codegen_llvm)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030",
+            "repository": "AliveToolkit/alive2",
+            "venue": "PLDI 2021"
+          },
+          "name": "Alive2 bounded translation validator for LLVM IR optimizations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "repository": "snu-sf/crellvm",
+            "venue": "PLDI 2018"
+          },
+          "name": "Crellvm credible compilation and relational simulation validator for LLVM"
+        },
+        {
+          "identity": {
+            "doi_icfp21": "10.1145/3473572",
+            "doi_pldi13": "10.1145/2491956.2462164",
+            "doi_popl12": "10.1145/2103656.2103709",
+            "repository": "vellvm/vellvm"
+          },
+          "name": "Vellvm and VIR interaction-tree LLVM IR semantics and vmem2reg pass"
+        },
+        {
+          "identity": {
+            "doi_cacm09": "10.1145/1538788.1538814",
+            "doi_oopsla23": "10.1145/3622840",
+            "doi_toplas14": "10.1145/2579080",
+            "repository": "AbsInt/CompCert"
+          },
+          "name": "CompCert, CompCertSSA, and Chamois-CompCert (RTLpath and BTL block simulation)"
+        },
+        {
+          "identity": {
+            "doi_egg": "10.1145/3434304",
+            "doi_egglog": "10.1145/3591239",
+            "doi_peggy": "10.1145/1480881.1480915",
+            "repository_egg": "egraphs-good/egg",
+            "repository_egglog": "egraphs-good/egglog",
+            "repository_wasmtime": "bytecodealliance/wasmtime"
+          },
+          "name": "Equality saturation and e-graph frameworks (Peggy, egg, egglog, Cranelift aegraphs)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/lean-mlir",
+            "revision": "ae0dd933",
+            "tag": "ITP24",
+            "venue": "ITP 2024"
+          },
+          "name": "Lean-MLIR SSA dialect semantics and peephole verification framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "repository": "CakeML/cakeml",
+            "venue": "JFP 2019"
+          },
+          "name": "CakeML verified multi-IR middle-end (flatLang, closLang, bvl, bvi, dataLang, wordLang)"
+        },
+        {
+          "identity": {
+            "doi_pldi25": "10.1145/3729269",
+            "doi_popl20": "10.1145/3371109",
+            "doi_popl22": "10.1145/3498687",
+            "repository": "rust-lang/miri"
+          },
+          "name": "Stacked Borrows, Tree Borrows, Miri, and SimulIris aliasing and protector verification"
+        },
+        {
+          "identity": {
+            "doi_diospyros": "10.1145/3445814.3446707",
+            "doi_pluto": "10.1145/1375581.1375595",
+            "doi_polyverify": "10.1145/3434321",
+            "doi_vegen": "10.1145/3445814.3446692",
+            "repository": "bondhugula/pluto"
+          },
+          "name": "Polyhedral and SIMD vectorization tools (PolyVerify, Pluto, ISL, Polly, Polygeist, HELIX, VeGen, Diospyros)"
+        },
+        {
+          "identity": {
+            "doi_certicoq": "10.1145/3473591",
+            "doi_maranget": "10.1145/1411304.1411311",
+            "doi_tapenade": "10.1145/2450153.2450158",
+            "repository_certicoq": "CertiCoq/certicoq",
+            "repository_enzyme": "EnzymeAD/Enzyme",
+            "repository_scilean": "lecopivo/SciLean"
+          },
+          "name": "High-level lowering and automatic differentiation tools (CertiCoq, Maranget, Enzyme, Tapenade, CertiGrad, SciLean)"
+        },
+        {
+          "identity": {
+            "doi_crown": "10.1007/978-3-031-37706-8_23",
+            "doi_laertes": "10.1145/3485495",
+            "doi_llreve": "10.1145/2642937.2642987",
+            "doi_symdiff": "10.1007/978-3-642-31424-7_54",
+            "doi_tce": "10.1109/ICSE.2015.103",
+            "doi_ucklee": "10.1007/978-3-642-22110-1_55",
+            "repository": "immunant/c2rust"
+          },
+          "name": "Relational equivalence and C-to-Rust migration tools (SymDiff, LLReve, UC-KLEE, C2Rust, CROWN, Laertes, TCE)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/optimization",
+        "anneal/lowering",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/mir",
+        "compiler/ssa",
+        "compiler/translation-validation",
+        "compiler/polyhedral",
+        "compiler/autodiff",
+        "rust/tree-borrows",
+        "rust/c2rust",
+        "lean/verification"
+      ]
+    },
+    "anneal-mid-level-ir-optimizations-lowering-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted core refinement and step semantics"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/X86Semantics.lean, trusted/audit/TrustedBoundary.lean",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86 refinement and target ISA semantics"
+        },
+        {
+          "identity": {
+            "authors": "Juneyoung Lee, Yoonseung Kim, YoungJu Song, Chung-Kil Hur, Sanjoy Das, David Majnemer, John Regehr, Nuno P. Lopes",
+            "doi": "10.1145/3062341.3062343",
+            "venue": "PLDI 2017",
+            "year": "2017"
+          },
+          "name": "Taming Undefined Behavior in LLVM (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "authors": "Juneyoung Lee, Chung-Kil Hur, Ralf Jung, Zhengyang Liu, John Regehr, Nuno P. Lopes",
+            "doi": "10.1145/3276495",
+            "venue": "OOPSLA 2018",
+            "year": "2018"
+          },
+          "name": "Reconciling High-Level Optimizations and Low-Level Code in LLVM (OOPSLA 2018)"
+        },
+        {
+          "identity": {
+            "authors": "Nuno P. Lopes, Juneyoung Lee, Chung-Kil Hur, Zhengyang Liu, John Regehr",
+            "doi": "10.1145/3453483.3454030",
+            "venue": "PLDI 2021",
+            "year": "2021"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "authors": "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer",
+            "doi": "10.1145/3371109",
+            "venue": "POPL 2020",
+            "year": "2020"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust (POPL 2020)"
+        },
+        {
+          "identity": {
+            "authors": "Neven Villani, Johannes Hostert, Ralf Jung, Derek Dreyer",
+            "doi": "10.1145/3735592",
+            "venue": "PLDI 2025",
+            "year": "2025"
+          },
+          "name": "Tree Borrows (PLDI 2025)"
+        },
+        {
+          "identity": {
+            "repository": "https://gitlab.mpi-sws.org/iris/simuliris",
+            "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982"
+          },
+          "name": "Simuliris mechanized Tree Borrows and Stacked Borrows refinement"
+        },
+        {
+          "identity": {
+            "authors": "Preston Briggs, Keith D. Cooper, Timothy J. Harvey, L. Taylor Simpson",
+            "doi": "10.1002/(SICI)1097-024X(199807)28:8<859::AID-SPE175>3.0.CO;2-Z",
+            "venue": "Software: Practice and Experience",
+            "year": "1998"
+          },
+          "name": "Practical Improvements to the Construction and Destruction of Static Single Assignment Form (SPE 1998)"
+        },
+        {
+          "identity": {
+            "authors": "Laurence Rideau, Bernard P. Serpette, Xavier Leroy",
+            "doi": "10.1007/s10817-008-9097-3",
+            "venue": "Journal of Automated Reasoning",
+            "year": "2008"
+          },
+          "name": "Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves (JAR 2008)"
+        },
+        {
+          "identity": {
+            "authors": "Benoit Boissinot, Alain Darte, Benoit Dupont de Dinechin, Christophe Guillon, Fabrice Rastello",
+            "doi": "10.1109/CGO.2009.19",
+            "venue": "CGO 2009",
+            "year": "2009"
+          },
+          "name": "Revisiting Out-of-SSA Translation for Correctness, Code Quality, and Efficiency (CGO 2009)"
+        },
+        {
+          "identity": {
+            "authors": "Jeehoon Kang, Yoonseung Kim, YoungJu Song, Juneyoung Lee, Sanghak Park, Mark Dongyeon Shin, Yonghyun Kim, Sungkeun Cho, Joonwon Choi, Chung-Kil Hur, Kwangkeun Yi",
+            "doi": "10.1145/3192366.3192398",
+            "venue": "PLDI 2018",
+            "year": "2018"
+          },
+          "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)"
+        },
+        {
+          "identity": {
+            "authors": "Yannick Zakowski, Calvin Beck, Irene Yoon, Ilia Zaichuk, Vadim Zaliva, Steve Zdancewic",
+            "doi": "10.1145/3473572",
+            "venue": "ICFP 2021",
+            "year": "2021"
+          },
+          "name": "Modular, Compositional, and Executable Formal Semantics for LLVM IR (Vellvm, ICFP 2021)"
+        },
+        {
+          "identity": {
+            "authors": "Hanliang Zhang, Cristina David, Yijun Yu, Meng Wang",
+            "doi": "10.1007/978-3-031-37709-9_22",
+            "venue": "CAV 2023",
+            "year": "2023"
+          },
+          "name": "Ownership Guided C to Rust Translation (CROWN, CAV 2023)"
+        },
+        {
+          "identity": {
+            "issues": "#24292, #28728, #54878, #63616, #63818, #63934, #110947, #118328, #120613, #141038, #146383",
+            "repository": "rust-lang/rust"
+          },
+          "name": "Rust compiler (rustc) MIR optimizer, coroutine lowering, and LLVM codegen issue archive"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/ir-optimizations",
+        "anneal/language-lowering",
+        "anneal/miscompilations",
+        "anneal/translation-validation",
+        "compilers/llvm-undef-poison",
+        "compilers/rustc-mir-opt",
+        "compilers/ssa-destruction",
+        "semantics/tree-borrows",
+        "semantics/stacked-borrows",
+        "semantics/forward-progress",
+        "verification/credible-compilation"
       ]
     },
     "anneal-minirust-assembly-coverage-and-adoption-synthesis-2026": {
@@ -12608,6 +15419,536 @@
         "x86-64/codegen"
       ]
     },
+    "anneal-security-crypto-zkp-wcet-parsers-ffi-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "joshlf/anneal",
+            "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+          },
+          "name": "Anneal trusted verification boundary and refinement primitives"
+        },
+        {
+          "identity": {
+            "paper": "Jasmin: High-Assurance and High-Speed Cryptography (CCS 2017 / POPL 2020)",
+            "repository": "jasmin-lang/jasmin",
+            "url": "https://github.com/jasmin-lang/jasmin"
+          },
+          "name": "Jasmin compiler and constant-time / speculative constant-time checker"
+        },
+        {
+          "identity": {
+            "paper": "Preservation of Cryptographic Constant-Time by Compilation (CCS 2018 / POPL 2020)",
+            "repository": "knothed/CompCert-ct",
+            "url": "https://github.com/knothed/CompCert-ct"
+          },
+          "name": "CompCert-CT constant-time preserving C compiler"
+        },
+        {
+          "identity": {
+            "paper": "FaCT: A DSL for Timing-Sensitive Computation (PLDI 2019)",
+            "repository": "PLSysSec/FaCT",
+            "url": "https://github.com/PLSysSec/FaCT"
+          },
+          "name": "FaCT constant-time domain-specific language and compiler"
+        },
+        {
+          "identity": {
+            "paper": "Verifying Constant-Time Implementations (USENIX Security 2016)",
+            "repository": "imdea-software/verifying-constant-time",
+            "url": "https://github.com/imdea-software/verifying-constant-time"
+          },
+          "name": "ct-verif product-program constant-time verifier"
+        },
+        {
+          "identity": {
+            "paper": "Binsec/Rel: Efficient Relational Symbolic Execution for Constant-Time at Binary-Level (S&P 2020) and Haunted RelSE (CAV 2021)",
+            "repository": "binsec/Rel",
+            "url": "https://github.com/binsec/Rel"
+          },
+          "name": "Binsec/Rel and Binsec/Haunted binary relational symbolic execution"
+        },
+        {
+          "identity": {
+            "companion_repository": "spectector/spectector",
+            "paper": "Blade (POPL 2021), Spectector (S&P 2020), Pitchfork (PLSysSec 2020)",
+            "repository": "PLSysSec/haybale-pitchfork"
+          },
+          "name": "Blade, Spectector, and Pitchfork speculative and LLVM constant-time analyzers"
+        },
+        {
+          "identity": {
+            "paper": "CacheAudit (TISSEC 2015), Constantine (CCS 2021), CHL (PLDI 2016), SecVerilog (ASPLOS 2015)",
+            "repository": "cacheaudit/cacheaudit"
+          },
+          "name": "CacheAudit, Constantine, SC-Eliminator, CHL/Blazer/Themis, SecVerilog/Silver/Iodine, and Jif/FlowCaml/LIO"
+        },
+        {
+          "identity": {
+            "companion_repositories": "project-everest/hacl-star, formosa-crypto/libjade",
+            "paper": "Fiat-Crypto (S&P 2019), HACL* (CCS 2017), EverCrypt (S&P 2020)",
+            "repository": "mit-plv/fiat-crypto"
+          },
+          "name": "Fiat-Crypto, HACL*, EverCrypt, Vale, and Libjade verified cryptographic primitive stacks"
+        },
+        {
+          "identity": {
+            "companion_repositories": "GaloisInc/cryptol, fmlab-iis/cryptoline",
+            "paper": "SAW/Cryptol (CAV 2017 / USENIX Security 2020), CryptoLine (CCS 2014 / 2019)",
+            "repository": "GaloisInc/saw-script"
+          },
+          "name": "Cryptol, SAW, and CryptoLine algebraic and bitvector cryptographic verifiers"
+        },
+        {
+          "identity": {
+            "companion_repositories": "SSProve/ssprove, secure-foundations/owl",
+            "paper": "EasyCrypt (CCS 2011), CryptoVerif (S&P 2006), SSProve (CSF 2021), Owl (S&P 2023)",
+            "repository": "easycrypt/easycrypt"
+          },
+          "name": "EasyCrypt, CryptoVerif, SSProve, FCF, CertiCrypt, CryptHOL, and Owl computational protocol proof systems"
+        },
+        {
+          "identity": {
+            "companion_repositories": "squirrel-prover/squirrel-prover, cryspen/libcrux, hacspec/hax",
+            "paper": "Tamarin (CAV 2013), ProVerif (CSFW 2001), Squirrel (CCS 2021), DY* (EuroS&P 2021)",
+            "repository": "tamarin-prover/tamarin-prover"
+          },
+          "name": "Tamarin Prover, ProVerif, DeepSec, Squirrel Prover, DY*, MLS*, Libcrux, and hax"
+        },
+        {
+          "identity": {
+            "companion_repositories": "formal-land/garden, reilabs/lampe, trailofbits/circomspect, risc0/risc0, succinctlabs/sp1, a16z/jolt",
+            "paper": "Picus/QED^2 (PLDI 2023), Coda (CAV 2024), Cairo (CPP 2022), Leo ACL2 (FMCAD 2021)",
+            "repository": "Veridise/Picus"
+          },
+          "name": "Picus (QED^2), Ecne, Coda, Garden, LAMPE, Circomspect, ZKAP, Korrect, Horus, Cairo Lean, Leo ACL2, and RISC Zero/SP1/Jolt ZKP verifiers"
+        },
+        {
+          "identity": {
+            "companion_repositories": "japaric/cargo-call-stack, t-crest/platin",
+            "paper": "CompCertS (POPL 2017), Stacking (POPL 2019), CerCo (JAR 2014), RAML (POPL 2012), TiML (OOPSLA 2017), Iris Time Credits (ICFP 2019)",
+            "repository": "aprove-developers/KoAT2-Releases"
+          },
+          "name": "AbsInt aiT, StackAnalyzer, CompCertS, Stacking, CerCo, RAML, TiML, Iris/CFML Time Credits, Bound-T, OTAWA, Chronos, Heptane, SWEET, Platin, RapiTime, KoAT, Cofloco, Loopus, Gasol, and cargo-call-stack"
+        },
+        {
+          "identity": {
+            "companion_repositories": "secure-foundations/vest, lthms/coq-comparse, google/zerocopy, AdaCore/RecordFlux, GaloisInc/daedalus, kaitai-io/kaitai_struct, zeek/spicy",
+            "paper": "EverParse (USENIX Security 2019), Vest (USENIX Security 2025), Narcissus (ICFP 2019), Comparse (CCS 2023)",
+            "repository": "project-everest/everparse"
+          },
+          "name": "EverParse (3d), Vest, Narcissus, Comparse, Google zerocopy, RecordFlux, DaeDaLus, Nail, Hammer, ASN1*, Kaitai Struct, and Spicy"
+        },
+        {
+          "identity": {
+            "companion_repositories": "PLSysSec/rlbox_sandboxing_api, RustCrypto/utils",
+            "paper": "DimSum (POPL 2023), CompCertM (POPL 2020), CompCertO (POPL 2021), VeriFFI (PLDI 2024), RLBox (USENIX Security 2020), Cerberus-CHERI (ASPLOS 2019)",
+            "repository": "CTSRD-CHERI/sail-cheri-riscv"
+          },
+          "name": "DimSum, SepCompCert, CompCertM, CompCertO, VeriFFI, RLBox, Sail-CHERI/Morello, Cerberus-CHERI/VIP-CHERI, Secret-Erasure CompCert, WYSIWYC/Zeroize-LLVM, and Rust zeroize"
+        }
+      ],
+      "topics": [
+        "anneal/trusted-boundary",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/verification-result",
+        "security/constant-time",
+        "security/speculative-constant-time",
+        "security/information-flow-control",
+        "cryptography/primitives",
+        "cryptography/protocol-verification",
+        "zkp/circuit-verification",
+        "zkvm/verification",
+        "wcet/resource-bounds",
+        "wcet/stack-analysis",
+        "parsers/verified-zero-copy",
+        "ffi/multi-language-semantics",
+        "hardware/cheri-capabilities",
+        "security/secret-zeroization"
+      ]
+    },
+    "anneal-security-crypto-zkp-wcet-parsers-ffi-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler branch (trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+          },
+          "name": "Anneal reference corpus hardening reports (PartialBehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult, TCBModel)"
+        },
+        {
+          "identity": {
+            "paper": "EuroS&P 2018 (Simon, Chisnall, Anderson); CANS 2016 (Kaufmann et al.); CCS 2024 / USENIX Security 2024 (Schneider et al.; Chen et al. GoFetch)",
+            "vulnerabilities": "KyberSlash1, KyberSlash2, Hertzbleed (CVE-2022-23823, CVE-2022-24436), Augury, GoFetch, CVE-2024-58262"
+          },
+          "name": "Compiler-induced constant-time violations and microarchitectural side-channel escapes (LLVM/Clang, GCC, MSVC, rustc, ML-KEM/Kyber, Apple Silicon DMP, x86 DVFS)"
+        },
+        {
+          "identity": {
+            "cves": "CVE-2014-3570, CVE-2015-3193, CVE-2017-7526, CVE-2017-13077 (KRACK), CVE-2020-1968 (Raccoon)",
+            "papers": "Lowe (1995) Needham-Schroeder; Bhargavan et al. (2014) 3SHAKE; Vanhoef & Piessens (CCS 2017) KRACK; Erbsen et al. (S&P 2019) Fiat-Crypto; Polyakov et al. (CAV 2018) CryptoLine"
+          },
+          "name": "Cryptographic multi-limb arithmetic carry-propagation bugs and symbolic protocol state-machine / side-channel gaps (OpenSSL, BoringSSL, libgcrypt, curve25519-dalek, ed25519-dalek, TLS 1.2/1.3, WPA2)"
+        },
+        {
+          "identity": {
+            "papers": "Chaliasos et al. (USENIX Security 2024) SoK: What Don't We Know? Understanding Security Vulnerabilities in SNARKs; Trail of Bits (2022) Frozen Heart",
+            "systems": "Circomlib (MiMC, BabyJubJub, Edwards2Montgomery, Num2Bits/AliasCheck), Tornado Cash, Semaphore, Aztec 2.0, Polygon zkEVM, Scroll, RISC Zero, SP1"
+          },
+          "name": "Zero-knowledge proof (R1CS, Plonkish, AIR, zkVM) under-constrained, over-constrained, and Fiat-Shamir transcript vulnerabilities"
+        },
+        {
+          "identity": {
+            "cves": "CVE-2009-2408 (X.509 null-prefix), CVE-2013-4787 / CVE-2013-8619 (Android Master Key ZIP differential), CVE-2014-7911 (Android Parcel deserialization), BIP-62 / BIP-66 (Bitcoin DER malleability)",
+            "papers": "Lundqvist & Stenstr\u00f6m (RTSS 1999) WCET timing anomalies; Koopman (2014) / Barr (2013) Toyota ETCS-i stack overflow postmortem; cargo-call-stack"
+          },
+          "name": "Out-of-order CPU WCET timing anomalies, embedded stack-analysis gaps, and wire-format parser malleability / differential vulnerabilities"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/step-result",
+        "anneal/trust-policy",
+        "security/constant-time",
+        "security/side-channels",
+        "cryptography/arithmetic",
+        "cryptography/protocols",
+        "zkp/under-constrained",
+        "zkp/zkvm",
+        "wcet/timing-anomalies",
+        "parsers/malleability",
+        "ffi/boundaries"
+      ]
+    },
+    "anneal-solvers-decision-procedures-certificates-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal verification framework (trusted/audit/TrustedBoundary.lean, trusted/lean/Trusted/Attributes.lean, trusted/lean/foundation-lock.json)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted refinement and small-step core (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and standard library (Init, Std.Tactic.BVDecide, omega, grind)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-72013-1_14",
+            "repository": "CakeML/cake_lpr",
+            "venue": "TACAS 2021"
+          },
+          "name": "cake_lpr and cake_pb verified LRAT/LPR and VeriPB pseudo-Boolean proof checkers in CakeML"
+        },
+        {
+          "identity": {
+            "repository": "arminbiere/cadical",
+            "suite": "CaDiCaL / Kissat / drat-trim / lrat-trim / LIDRUP / Certifaiger"
+          },
+          "name": "CDCL SAT solvers and clausal/AIGER certificate toolchains (CaDiCaL, Kissat, drat-trim, LIDRUP, Certifaiger)"
+        },
+        {
+          "identity": {
+            "repository": "bitwuzla/bitwuzla",
+            "suite": "Bitwuzla and Boolector"
+          },
+          "name": "Bitwuzla and Boolector SMT bitvector/array/floating-point solvers"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-63046-5_24",
+            "venue": "CADE-26 (2017) / TACAS 2021"
+          },
+          "name": "GRAT (gratchk/gratgen), FRAT (frat-rs/frat-elan), and IsaSAT clausal proof checkers and elaborators"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53288-8_27",
+            "suite": "DepQBF / QRAT-trim / CAQE / CertCheck / Pedant / FerpCheck / Manthan",
+            "venue": "CAV 2020 / SAT / CADE"
+          },
+          "name": "QBF, DQBF, and Boolean functional synthesis solvers and certifiers (DepQBF, CAQE, Pedant, FerpCheck, Manthan)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-37703-7_18",
+            "repository": "cvc5/cvc5",
+            "suite": "cvc5 / Carcara / Ethos / Alethe / LFSC",
+            "venue": "CAV 2023 / TACAS 2022"
+          },
+          "name": "cvc5 SMT/SyGuS solver, Alethe/Carcara proof checker, Ethos (Eunoia/CPC) checker, and LFSC"
+        },
+        {
+          "identity": {
+            "repository": "ufmg-smite/lean-smt",
+            "suite": "lean-smt / lean-auto / Duper / SMTCoq / Isabelle smt"
+          },
+          "name": "ITP SMT and superposition proof reconstruction bridges (lean-smt, lean-auto, Duper, SMTCoq, Isabelle smt)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-59250-3_12",
+            "repository": "scipopt/scip",
+            "suite": "VIPR / viprchk / SCIP-Exact / Coq Micromega / OpenSMT / Z3",
+            "venue": "IPCO 2017"
+          },
+          "name": "Linear, mixed-integer, and Farkas/cutting-plane arithmetic certifiers (VIPR, SCIP-Exact, Micromega, Z3, OpenSMT)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-24318-4_4",
+            "suite": "cvc5 libpoly / SMT-RAT / CArL / QEPCAD B / Sturm / Bernstein",
+            "venue": "SAT 2015 / ISSAC"
+          },
+          "name": "Cylindrical Algebraic Decomposition (CAD) and real algebraic root-isolation engines"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434304",
+            "repository": "egraphs-good/egg",
+            "suite": "egg / egglog / lean-egg / slotted-egraphs / Tensat / Herbie",
+            "venue": "POPL 2021 / PLDI 2023"
+          },
+          "name": "Equality saturation and relational e-graph engines (egg, egglog, lean-egg, slotted-egraphs, Tensat, Herbie)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-02959-2_10",
+            "suite": "CeTA / IsaFoR (CPF) / AAC_tactics / Souffl\u00e9 / Ascent",
+            "venue": "CADE-22 / CC 2022"
+          },
+          "name": "Certified term rewriting, AC normalization, and Datalog provenance systems (CeTA/IsaFoR, AAC_tactics, Souffl\u00e9, Ascent)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3319535.3354199",
+            "repository": "fmlab-iis/cryptoline",
+            "suite": "CryptoLine / Singular / Pacheck / Past\u00e8que / formosa-mlkem / formosa-mldsa / s2n-bignum",
+            "venue": "CCS 2019 / FMCAD 2020"
+          },
+          "name": "Cryptographic algebra, PAC ideal-membership, and verified bignum/PQC suites (CryptoLine, Past\u00e8que, Formosa, s2n-bignum)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3208976.3208980",
+            "suite": "RealCertify / CSDP / Clarabel.rs / CoqPrime / Mathlib Pratt-Pocklington",
+            "venue": "ISSAC 2018"
+          },
+          "name": "Positivstellensatz Sum-of-Squares (SOS) SDP certifiers and Pratt/Pocklington primality checkers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1941487.1941490",
+            "suite": "Gappa / FPTaylor / Flocq / VCFloat2 / Sollya / CoqInterval / PVS Bernstein / MetiTarski",
+            "venue": "ACM TOMS / TOPLAS / CPP"
+          },
+          "name": "IEEE-754 floating-point rounding-error and real Taylor/Remez polynomial certifiers"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-41528-4_22",
+            "suite": "Pono / AVR / ABC / btormc / Z3 Spacer / Eldarica / Golem / Mata / SPOT / CAVA / Ultimate Automizer / T2",
+            "venue": "CAV / TACAS / FMCAD"
+          },
+          "name": "Hardware/software IC3/PDR model checkers, Constrained Horn Clause (CHC) solvers, and automata/termination certifiers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454037",
+            "suite": "Souper / Alive2 / LEMUR / Loopy / CreuSAT / ParaDRAT",
+            "venue": "PLDI 2021 / ICLR 2024 / CADE"
+          },
+          "name": "Superoptimizers, LLM-guided invariant synthesizers, and self-verified SAT checkers (Souper, Alive2, LEMUR, Loopy, CreuSAT, ParaDRAT)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/certificates",
+        "anneal/decision-procedures",
+        "anneal/refinement",
+        "anneal/solvers",
+        "anneal/trusted-boundary",
+        "lean/kernel-reduction",
+        "sat/lrat",
+        "smt/alethe",
+        "verification/e-graphs",
+        "verification/floating-point",
+        "verification/model-checking"
+      ]
+    },
+    "anneal-solvers-decision-procedures-certificates-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal trusted core, audit inspector, and foundation lock"
+        },
+        {
+          "identity": {
+            "release": "v4.34.1",
+            "repository": "leanprover/lean4"
+          },
+          "name": "Lean 4 kernel reducer, native_decide/ofReduceBool boundary, and foundation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-72013-1_18",
+            "repository": "CakeML/cake_lpr",
+            "venue": "TACAS 2021"
+          },
+          "name": "cake_lpr verified propagation redundancy checker and drat-trim bug study"
+        },
+        {
+          "identity": {
+            "arxiv": "2211.09398",
+            "doi": "10.1613/jair.1.14714",
+            "venue": "JAIR 2023 / OOPSLA 2023"
+          },
+          "name": "VeriPB and CakePB certified pseudo-Boolean dominance and symmetry breaking"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-14186-7_6",
+            "venue": "SAT 2010"
+          },
+          "name": "Brummayer, Lonsing, and Biere automated testing and debugging of SAT and QBF solvers (QBFfuzz)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3385985",
+            "repository": "testsmt/yinyang",
+            "venue": "PLDI 2020 / OOPSLA 2020"
+          },
+          "name": "YinYang and OpFuzz semantic fusion and type-aware mutation testing of Z3 and CVC4/cvc5"
+        },
+        {
+          "identity": {
+            "arxiv": "2004.01980",
+            "doi": "10.1145/3368089.3409763",
+            "venue": "ESEC/FSE 2020"
+          },
+          "name": "Storm blackbox mutational fuzzing for critical soundness bugs in SMT solvers"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-13188-2_21",
+            "repository": "murxla/murxla",
+            "venue": "CAV 2022"
+          },
+          "name": "Murxla modular API fuzzer for SMT solvers (Bitwuzla, cvc5, Yices2, Z3)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.01556",
+            "doi": "10.1109/ICSE48619.2023.00161",
+            "venue": "ICSE 2023"
+          },
+          "name": "HistFuzz history-driven test program synthesis for SMT solvers"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.15796",
+            "repository": "ufmg-smite/lean-smt",
+            "venue": "CAV 2025"
+          },
+          "name": "Alethe / CPC SMT proof reconstruction in SMTCoq, Isabelle/HOL, and lean-smt"
+        },
+        {
+          "identity": {
+            "doi": "10.34727/2022/isbn.978-3-85448-053-2_13",
+            "repository": "egraphs-good/egg",
+            "venue": "FMCAD 2022"
+          },
+          "name": "egg equality saturation engine and Flatt et al. Small Proofs from Congruence Closure"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656430",
+            "venue": "PLDI 2024"
+          },
+          "name": "Slotted E-Graphs binder-aware equality saturation (Schneider, Koehler, Steuwer)"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/noti1173",
+            "venue": "Notices of the AMS 61(10), 2014"
+          },
+          "name": "Duran, Perez, and Varona study of Mathematica determinant and CAS soundness bugs"
+        },
+        {
+          "identity": {
+            "arxiv": "1105.4421",
+            "doi": "10.1016/j.tcs.2008.06.006",
+            "venue": "TCS 2008 / ITP 2011"
+          },
+          "name": "Peyrl & Parrilo and Monniaux & Corbineau exact rational Positivstellensatz SOS recovery"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3230733",
+            "venue": "ACM TOPLAS 41(1), 2018"
+          },
+          "name": "FPTaylor and Gappa floating-point error certification (Solovyev et al.; Melquiond)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-016-9376-4",
+            "venue": "JAR 2016 / CHC-COMP"
+          },
+          "name": "Spacer, Eldarica, and Golem CHC solvers and PyCHC certificate validation"
+        }
+      ],
+      "topics": [
+        "anneal/certificates",
+        "anneal/solvers",
+        "anneal/trusted-boundary",
+        "cas/soundness-failures",
+        "chc/soundness-failures",
+        "egraphs/equality-saturation",
+        "floating-point/certification",
+        "lean/kernel-reduction",
+        "sat/proof-checking",
+        "smt/soundness-failures",
+        "verification/failures",
+        "verification/postmortems"
+      ]
+    },
     "anneal-source-safety-reflection-probes-2026-10-14": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -12685,6 +16026,325 @@
         "anneal/mutation-testing",
         "anneal/canary-theorems",
         "lean/step-result"
+      ]
+    },
+    "anneal-synbio-crns-pde-physics-math-rail-real-world-tools-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "package": "anneal-trusted-lean",
+            "repository": "joshlf/anneal",
+            "scope": "trusted/lean/Trusted"
+          },
+          "name": "Anneal four-primitive trusted verification kernel architecture (Language, BehaviorCodec/Compiles/Abstracts, ProductiveOn/EventualBehaviorOf/StepResult.externalCall, VerificationResult/TrustPolicy)"
+        },
+        {
+          "identity": {
+            "doi_v1": "10.1126/science.aac7341",
+            "doi_v2": "10.1038/s41596-021-00675-2",
+            "repository_v1": "CIDAR-LAB/cello",
+            "repository_v2": "CIDAR-LAB/Cello-v2-core"
+          },
+          "name": "Cello and Cello 2.0 genetic logic synthesis compilers"
+        },
+        {
+          "identity": {
+            "eugene_doi": "10.1021/sb500356d",
+            "gec_doi": "10.1098/rsif.2009.0035",
+            "proto_doi": "10.1093/bioinformatics/btp467"
+          },
+          "name": "Genetic Engineering of Living Cells (GEC), Eugene, and MIT Proto BioCompiler"
+        },
+        {
+          "identity": {
+            "ibiosim_repository": "MyersResearchGroup/iBioSim",
+            "loica_repository": "RudgeLab/LOICA",
+            "sbol3_spec": "SBOL Version 3.1.0",
+            "synbiohub_repository": "SynBioHub/synbiohub"
+          },
+          "name": "SynBioHub, SBOL3, iBioSim, and LOICA genetic design ecosystem"
+        },
+        {
+          "identity": {
+            "crnplusplus_repository": "marko-vasic/crnPlusPlus",
+            "peppercorn_repository": "DNA-and-Natural-Algorithms-Group/peppercornenumerator",
+            "piperine_repository": "DNA-and-Natural-Algorithms-Group/piperine",
+            "visual_dsd_doi": "10.1098/rsif.2009.0062"
+          },
+          "name": "Visual DSD, Peppercorn, Piperine, and CRN++ molecular compilers"
+        },
+        {
+          "identity": {
+            "bionetgen_repository": "RuleWorld/bionetgen",
+            "catalyst_repository": "SciML/Catalyst.jl",
+            "crnt_doi": "10.1007/978-3-030-03858-8",
+            "prism_repository": "prismmodelchecker/prism",
+            "storm_repository": "stormchecker/storm"
+          },
+          "name": "PRISM, Storm, Catalyst.jl, Feinberg CRNT Toolbox, and BioNetGen reaction analyzers"
+        },
+        {
+          "identity": {
+            "cadnano_repository": "cadnano/cadnano2.5",
+            "daedalus_doi": "10.1126/science.aaf4388",
+            "isu_tas_doi": "10.1007/978-3-642-18305-8_14",
+            "xgrow_repository": "DNA-and-Natural-Algorithms-Group/xgrow"
+          },
+          "name": "Xgrow, ISU TAS, caDNAno, and DAEDALUS DNA self-assembly and origami tools"
+        },
+        {
+          "identity": {
+            "aquacore_doi": "10.1145/1250662.1250696",
+            "biocoder_doi": "10.1093/bioinformatics/btp658",
+            "mfsimstatic_repository": "UCRMicrofluidics/MFSimStatic",
+            "opendrop_repository": "GaudiLabs/OpenDrop",
+            "puddle_repository": "uwmisl/puddle"
+          },
+          "name": "Puddle, BioCoder, MFSimStatic, BioStream/AquaCore, and OpenDrop microfluidic toolchains"
+        },
+        {
+          "identity": {
+            "cobrapy_repository": "opencobra/cobrapy",
+            "equilibrator_gitlab": "elad.noor/equilibrator-api",
+            "memote_repository": "opencobra/memote",
+            "qsopt_ex_repository": "jonls/qsopt-ex",
+            "straindesign_repository": "klamt-lab/straindesign"
+          },
+          "name": "COBRApy, MEMOTE, CellNetAnalyzer/StrainDesign, eQuilibrator, and QSopt_ex metabolic verification suite"
+        },
+        {
+          "identity": {
+            "flowstar_doi": "10.1007/978-3-642-39799-8_18",
+            "loop_repository": "LoopKit/Loop",
+            "oref0_repository": "openaps/oref0",
+            "simglucose_repository": "jxx123/simglucose"
+          },
+          "name": "UVA/Padova T1DMS (simglucose), OpenAPS (oref0/oref1), Loop, and Flow* physiological reachability tools"
+        },
+        {
+          "identity": {
+            "lineardesign_repository": "LinearDesignSoftware/LinearDesign",
+            "linearfold_repository": "LinearFold/LinearFold",
+            "multistrand_repository": "DNA-and-Natural-Algorithms-Group/multistrand",
+            "nupack_doi": "10.1021/acssynbio.3c00125",
+            "viennarna_repository": "ViennaRNA/ViennaRNA"
+          },
+          "name": "NUPACK 4, ViennaRNA (Barriers/Treekin), LinearFold, LinearDesign, and Multistrand nucleic-acid folding compilers"
+        },
+        {
+          "identity": {
+            "algebraicpetri_repository": "AlgebraicJulia/AlgebraicPetri.jl",
+            "ewe_doi": "10.1016/S0304-3800(03)00364-3",
+            "mgdrive_repository": "MarshallLab/MGDrivE",
+            "slim_repository": "MesserLab/SLiM"
+          },
+          "name": "Ecopath with Ecosim (EwE), SLiM 4, MGDrivE, and AlgebraicPetri.jl ecological and compositional Petri frameworks"
+        },
+        {
+          "identity": {
+            "dedalus_repository": "DedalusProject/dedalus",
+            "devito_repository": "devitocodes/devito",
+            "dolfinx_repository": "FEniCS/dolfinx",
+            "enzyme_repository": "EnzymeAD/Enzyme",
+            "firedrake_repository": "firedrakeproject/firedrake",
+            "vcfloat_repository": "VeriNum/vcfloat"
+          },
+          "name": "Firedrake, FEniCSx/DOLFINx, Dedalus, Devito, VCFloat2/VST-Float, and Enzyme scientific computing compilers"
+        },
+        {
+          "identity": {
+            "alphageometry_repository": "google-deepmind/alphageometry",
+            "cakelpr_repository": "tanyongkiam/cake_lpr",
+            "flyspeck_repository": "flyspeck/flyspeck",
+            "kenzo_repository": "jromanf/kenzo",
+            "leanblueprint_repository": "PatrickMassot/leanblueprint",
+            "regina_repository": "regina-normal/regina",
+            "snappy_repository": "3-manifolds/SnapPy"
+          },
+          "name": "Flyspeck, Lean Blueprint, AlphaProof/AlphaGeometry 2, SnapPy, Regina, Kenzo, and CakeLPR mathematical proof tools"
+        },
+        {
+          "identity": {
+            "ortools_repository": "google/or-tools",
+            "prob2_repository": "hhu-stups/prob2_kernel",
+            "prover_ilock_doi": "10.1007/3-540-40922-X_8",
+            "sumo_repository": "eclipse-sumo/sumo",
+            "tulip_repository": "tulip-control/tulip-control",
+            "vipr_repository": "ambros-gleixner/VIPR"
+          },
+          "name": "Atelier B, Ovado, ProB, HLL/Prover iLock, EURIS, RobustRailS, OR-Tools, VIPR, NEMA TS2, TuLiP, and SUMO logistics and control tools"
+        },
+        {
+          "identity": {
+            "ananke_gitlab": "causal/ananke",
+            "bspl_repository": "munindar/bspl",
+            "causaleffect_repository": "santikka/causaleffect",
+            "dowhy_repository": "py-why/dowhy",
+            "opendp_repository": "opendp/opendp",
+            "pvsioweb_repository": "pvsioweb/pvsio-web",
+            "tumult_core_pypi": "tmlt.core",
+            "webppl_repository": "probmods/webppl"
+          },
+          "name": "PVSio-web, IVY, SCR/RSML-e, WebPPL-RSA, BSPL, Ananke, causaleffect, DoWhy, Dagitty, OpenDP, and Tumult Core HCI and epistemic tools"
+        },
+        {
+          "identity": {
+            "aerie_repository": "NASA-AMMOS/aerie",
+            "energytag_standard": "EnergyTag Granular Certificate Standard v2",
+            "europa_repository": "nasa/europa",
+            "matpower_repository": "MATPOWER/matpower",
+            "pact_spec": "WBCSD Pathfinder Framework v2.1",
+            "plexil_repository": "nasa/plexil",
+            "powermodels_repository": "lanl-ansi/PowerModels.jl"
+          },
+          "name": "PowerModels.jl, MATPOWER, WBCSD PACT, EnergyTag, ASPEN, CLASP, Aerie, EUROPA, PLEXIL, and NAIF SPICE grid and deep-space tools"
+        }
+      ],
+      "topics": [
+        "anneal/refinement",
+        "anneal/verification-result",
+        "anneal/trust-policy",
+        "anneal/behavior-codec",
+        "synthetic-biology/cello",
+        "synthetic-biology/sbol",
+        "synthetic-biology/ibiosim",
+        "chemical-reaction-networks/dsd",
+        "chemical-reaction-networks/crnt",
+        "chemical-reaction-networks/catalyst-jl",
+        "dna-nanotechnology/tile-assembly",
+        "dna-nanotechnology/dna-origami",
+        "microfluidics/ewod",
+        "microfluidics/puddle",
+        "metabolic-modeling/flux-balance-analysis",
+        "metabolic-modeling/cobrapy",
+        "physiological-control/artificial-pancreas",
+        "hybrid-systems/flowstar",
+        "rna-folding/nupack",
+        "rna-folding/viennarna",
+        "ecological-modeling/ecopath",
+        "ecological-modeling/slim",
+        "scientific-computing/firedrake",
+        "scientific-computing/fenicsx",
+        "scientific-computing/dedalus",
+        "scientific-computing/devito",
+        "floating-point/vcfloat",
+        "automatic-differentiation/enzyme",
+        "formal-mathematics/flyspeck",
+        "formal-mathematics/leanblueprint",
+        "formal-mathematics/alphaproof",
+        "computational-topology/snappy",
+        "computational-topology/regina",
+        "combinatorial-optimization/cakelpr",
+        "combinatorial-optimization/vipr",
+        "railway-signaling/atelier-b",
+        "railway-signaling/prob",
+        "railway-signaling/prover-ilock",
+        "traffic-control/nema-ts2",
+        "traffic-control/tulip",
+        "human-computer-interaction/pvsio-web",
+        "pragmatics/webppl-rsa",
+        "multi-agent-systems/bspl",
+        "causal-inference/do-calculus",
+        "causal-inference/ananke",
+        "differential-privacy/opendp",
+        "power-systems/powermodels-jl",
+        "carbon-accounting/pact",
+        "spacecraft-autonomy/aerie",
+        "spacecraft-autonomy/plexil",
+        "spacecraft-autonomy/spice"
+      ]
+    },
+    "anneal-synbio-crns-pde-physics-math-rail-verification-failures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR-to-x86-64 compiler branch (trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean)"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/science.aac7341",
+            "publication": "Science 352(6281):aac7341 (2016)",
+            "repository": "CIDARLAB/cello"
+          },
+          "name": "Cello 1.0 Verilog-to-DNA genetic circuit compiler and 60-circuit E. coli wet-lab benchmark (Nielsen et al. 2016)"
+        },
+        {
+          "identity": {
+            "doi_leakless": "10.1007/978-3-319-21999-8_9",
+            "doi_seesaw": "10.1126/science.1200520",
+            "doi_siphon": "10.1016/j.mbs.2006.11.007",
+            "publication": "Qian & Winfree (Science 2011); Thachuk, Winfree & Soloveichik (DNA 21, 2015); Angeli, De Leenheer & Sontag (Math. Biosci. 2007)"
+          },
+          "name": "DNA Strand-Displacement (DSD) cascades, Visual DSD pathway compilers, and stochastic Chemical Reaction Network (CRN) siphons"
+        },
+        {
+          "identity": {
+            "doi_llfba": "10.1016/j.bpj.2010.12.3707",
+            "doi_memote": "10.1038/s41587-020-0446-y",
+            "doi_mfsim": "10.1145/2743025",
+            "repository": "opencobra/memote"
+          },
+          "name": "Genome-Scale Metabolic Models (FBA / MEMOTE / QSopt_ex) and Digital Microfluidic Biochip synthesis (MFSim / EWOD)"
+        },
+        {
+          "identity": {
+            "arxiv_simpson": "math/9810059",
+            "doi_flyspeck": "10.1017/fmp.2017.1",
+            "doi_kempe": "10.2307/2369235",
+            "repository_minif2f": "openai/miniF2F",
+            "repository_putnambench": "trishullab/PutnamBench"
+          },
+          "name": "Mathematical proof certificates and autoformalization benchmarks (Kepler/Flyspeck, Kempe Four-Color erratum, Kapranov-Voevodsky/Simpson, MiniF2F, PutnamBench)"
+        },
+        {
+          "identity": {
+            "arxiv_ad_pitfalls": "2305.07542",
+            "doi_enzyme": "10.5555/3495724.3497463",
+            "repository": "EnzymeAD/Enzyme"
+          },
+          "name": "PDE numerical stencil compilers and LLVM-level Automatic Differentiation (Enzyme AD)"
+        },
+        {
+          "identity": {
+            "doi_prob_ertms": "10.1007/s10009-019-00548-6",
+            "emsd_report": "EMSD Investigation Report on Incident of the New Signalling System Testing on MTR Tsuen Wan Line on 18 March 2019 (July 2019)",
+            "lta_report": "Singapore LTA / MOT Joo Koon Collision Investigation Report (December 2017)"
+          },
+          "name": "Railway CBTC and interlocking formal verification and failure incidents (Hong Kong MTR Central 2019, Singapore MRT Joo Koon 2017, ERTMS/ETCS ProB & Atelier B)"
+        },
+        {
+          "identity": {
+            "bea_report": "BEA Official Report on the Accident on 20 January 1992 near Mont Sainte-Odile to the Airbus A320 registered F-GGED operated by Air Inter",
+            "nasa_mco_report": "Mars Climate Orbiter Mishap Investigation Board Phase I Report (10 November 1999)",
+            "nasa_spirit_report": "JPL Mars Exploration Rover Spirit Sol 18 Flash File System Anomaly Postmortem (2004)"
+          },
+          "name": "Safety-critical avionics HCI and deep-space autonomy incidents (Air Inter Flight 148, Mars Spirit Sol 18 Flash Anomaly, Mars Climate Orbiter)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/trust-policy",
+        "verification/failures",
+        "synthetic-biology/cello",
+        "chemical-reaction-networks",
+        "mathematics/formalization",
+        "numerical-analysis/pde",
+        "railway/interlocking",
+        "avionics/mode-confusion"
       ]
     },
     "anneal-synthesized-scaffolding-diagnostic-provenance-main-41f5b37": {

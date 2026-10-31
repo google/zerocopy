@@ -1,0 +1,113 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      },
+      "name": "Anneal verification framework workspace"
+    },
+    {
+      "identity": {
+        "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean",
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal trusted refinement and small-step core"
+    },
+    {
+      "identity": {
+        "paths": "trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean",
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 compiler branch"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/1993498.1993532",
+        "venue": "PLDI 2011"
+      },
+      "name": "Yang et al., Finding and Understanding Bugs in C Compilers (Csmith evaluation of CompCert 1.6-1.8)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3290380",
+        "venue": "POPL 2019"
+      },
+      "name": "Wang, Wilke, and Shao, An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code (Stack-Aware CompCert)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2491956.2462183",
+        "venue": "PLDI 2013"
+      },
+      "name": "Sewell, Myreen, and Klein, Translation Validation for a Verified OS Kernel (seL4 binary translation validation)"
+    },
+    {
+      "identity": {
+        "cves": "CVE-2021-32629, CVE-2022-31104, CVE-2022-39392, CVE-2023-26489, CVE-2023-30624",
+        "ghsas": "GHSA-hpqh-2wqx-7qp5, GHSA-jqwc-c49r-4w2x, GHSA-44mr-8vmm-wjhg, GHSA-ff4p-7xrq-q5r8, GHSA-c87w-297f-6568",
+        "repository": "bytecodealliance/wasmtime"
+      },
+      "name": "Wasmtime and Cranelift security advisories and instruction-selection/register-allocation postmortems"
+    },
+    {
+      "identity": {
+        "doi_crocus": "10.1145/3620665.3640369",
+        "doi_veriisle": "10.1145/3656427",
+        "venues": "ASPLOS 2024, PLDI 2024"
+      },
+      "name": "VeriISLE and Crocus verification of Cranelift ISLE instruction-lowering rules"
+    },
+    {
+      "identity": {
+        "issues": "rust-lang/rust#54341, rust-lang/rust#46606, rust-lang/rust#91899",
+        "repository": "rust-lang/rust",
+        "tool_repository": "Gankra/abi-cafe"
+      },
+      "name": "Rust and LLVM ABI marshaling (i128/repr(C)) and StackColoring (StorageLive/StorageDead) defect records"
+    },
+    {
+      "identity": {
+        "doi_ase2019": "10.1109/ASE.2019.00069",
+        "doi_icse2021": "10.1109/ICSE43902.2021.00069",
+        "venues": "ASE 2019, ICSE 2021"
+      },
+      "name": "Recoules et al., TInA and RUSTInA inline assembly lifting and interface compliance"
+    },
+    {
+      "identity": {
+        "doi_foxdec": "10.1145/3563322",
+        "doi_lifters": "10.1145/3385412.3385964",
+        "doi_veriwasm": "10.14722/ndss.2021.24295",
+        "venues": "PLDI 2020, NDSS 2021, OOPSLA 2022"
+      },
+      "name": "Binary lifter and SFI verifier postmortems (McSema/Remill SIV, VeriWasm, FoxDec)"
+    },
+    {
+      "identity": {
+        "cve": "CVE-2021-29154",
+        "doi_graphicsfuzz": "10.1145/3133917",
+        "isbn_jitterbug": "978-1-939133-19-9",
+        "venues": "OSDI 2020 (Jitterbug), OOPSLA 2017 (GraphicsFuzz)"
+      },
+      "name": "Linux kernel eBPF JIT (CVE-2021-29154, Jitterbug) and GPU shader compiler (GraphicsFuzz) miscompilations"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/backend",
+    "anneal/codegen",
+    "anneal/register-allocation",
+    "anneal/abi",
+    "anneal/linking",
+    "anneal/binary-lifting",
+    "anneal/sandboxing",
+    "compcert/unverified-boundaries",
+    "cranelift/cves",
+    "ebpf/jit-verification",
+    "verification/failures"
+  ]
+}

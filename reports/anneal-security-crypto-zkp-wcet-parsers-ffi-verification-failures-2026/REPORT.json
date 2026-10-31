@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 compiler branch (trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+      },
+      "name": "Anneal reference corpus hardening reports (PartialBehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult, TCBModel)"
+    },
+    {
+      "identity": {
+        "paper": "EuroS&P 2018 (Simon, Chisnall, Anderson); CANS 2016 (Kaufmann et al.); CCS 2024 / USENIX Security 2024 (Schneider et al.; Chen et al. GoFetch)",
+        "vulnerabilities": "KyberSlash1, KyberSlash2, Hertzbleed (CVE-2022-23823, CVE-2022-24436), Augury, GoFetch, CVE-2024-58262"
+      },
+      "name": "Compiler-induced constant-time violations and microarchitectural side-channel escapes (LLVM/Clang, GCC, MSVC, rustc, ML-KEM/Kyber, Apple Silicon DMP, x86 DVFS)"
+    },
+    {
+      "identity": {
+        "cves": "CVE-2014-3570, CVE-2015-3193, CVE-2017-7526, CVE-2017-13077 (KRACK), CVE-2020-1968 (Raccoon)",
+        "papers": "Lowe (1995) Needham-Schroeder; Bhargavan et al. (2014) 3SHAKE; Vanhoef & Piessens (CCS 2017) KRACK; Erbsen et al. (S&P 2019) Fiat-Crypto; Polyakov et al. (CAV 2018) CryptoLine"
+      },
+      "name": "Cryptographic multi-limb arithmetic carry-propagation bugs and symbolic protocol state-machine / side-channel gaps (OpenSSL, BoringSSL, libgcrypt, curve25519-dalek, ed25519-dalek, TLS 1.2/1.3, WPA2)"
+    },
+    {
+      "identity": {
+        "papers": "Chaliasos et al. (USENIX Security 2024) SoK: What Don't We Know? Understanding Security Vulnerabilities in SNARKs; Trail of Bits (2022) Frozen Heart",
+        "systems": "Circomlib (MiMC, BabyJubJub, Edwards2Montgomery, Num2Bits/AliasCheck), Tornado Cash, Semaphore, Aztec 2.0, Polygon zkEVM, Scroll, RISC Zero, SP1"
+      },
+      "name": "Zero-knowledge proof (R1CS, Plonkish, AIR, zkVM) under-constrained, over-constrained, and Fiat-Shamir transcript vulnerabilities"
+    },
+    {
+      "identity": {
+        "cves": "CVE-2009-2408 (X.509 null-prefix), CVE-2013-4787 / CVE-2013-8619 (Android Master Key ZIP differential), CVE-2014-7911 (Android Parcel deserialization), BIP-62 / BIP-66 (Bitcoin DER malleability)",
+        "papers": "Lundqvist & Stenström (RTSS 1999) WCET timing anomalies; Koopman (2014) / Barr (2013) Toyota ETCS-i stack overflow postmortem; cargo-call-stack"
+      },
+      "name": "Out-of-order CPU WCET timing anomalies, embedded stack-analysis gaps, and wire-format parser malleability / differential vulnerabilities"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/step-result",
+    "anneal/trust-policy",
+    "security/constant-time",
+    "security/side-channels",
+    "cryptography/arithmetic",
+    "cryptography/protocols",
+    "zkp/under-constrained",
+    "zkp/zkvm",
+    "wcet/timing-anomalies",
+    "parsers/malleability",
+    "ffi/boundaries"
+  ]
+}

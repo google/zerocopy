@@ -1,0 +1,154 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 compiler branch (theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      },
+      "name": "Rust compiler (rustc_mir_transform, rustc_monomorphize, rustc_codegen_llvm)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "repository": "AliveToolkit/alive2",
+        "venue": "PLDI 2021"
+      },
+      "name": "Alive2 bounded translation validator for LLVM IR optimizations"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3192366.3192377",
+        "repository": "snu-sf/crellvm",
+        "venue": "PLDI 2018"
+      },
+      "name": "Crellvm credible compilation and relational simulation validator for LLVM"
+    },
+    {
+      "identity": {
+        "doi_icfp21": "10.1145/3473572",
+        "doi_pldi13": "10.1145/2491956.2462164",
+        "doi_popl12": "10.1145/2103656.2103709",
+        "repository": "vellvm/vellvm"
+      },
+      "name": "Vellvm and VIR interaction-tree LLVM IR semantics and vmem2reg pass"
+    },
+    {
+      "identity": {
+        "doi_cacm09": "10.1145/1538788.1538814",
+        "doi_oopsla23": "10.1145/3622840",
+        "doi_toplas14": "10.1145/2579080",
+        "repository": "AbsInt/CompCert"
+      },
+      "name": "CompCert, CompCertSSA, and Chamois-CompCert (RTLpath and BTL block simulation)"
+    },
+    {
+      "identity": {
+        "doi_egg": "10.1145/3434304",
+        "doi_egglog": "10.1145/3591239",
+        "doi_peggy": "10.1145/1480881.1480915",
+        "repository_egg": "egraphs-good/egg",
+        "repository_egglog": "egraphs-good/egglog",
+        "repository_wasmtime": "bytecodealliance/wasmtime"
+      },
+      "name": "Equality saturation and e-graph frameworks (Peggy, egg, egglog, Cranelift aegraphs)"
+    },
+    {
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "ae0dd933",
+        "tag": "ITP24",
+        "venue": "ITP 2024"
+      },
+      "name": "Lean-MLIR SSA dialect semantics and peephole verification framework"
+    },
+    {
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "repository": "CakeML/cakeml",
+        "venue": "JFP 2019"
+      },
+      "name": "CakeML verified multi-IR middle-end (flatLang, closLang, bvl, bvi, dataLang, wordLang)"
+    },
+    {
+      "identity": {
+        "doi_pldi25": "10.1145/3729269",
+        "doi_popl20": "10.1145/3371109",
+        "doi_popl22": "10.1145/3498687",
+        "repository": "rust-lang/miri"
+      },
+      "name": "Stacked Borrows, Tree Borrows, Miri, and SimulIris aliasing and protector verification"
+    },
+    {
+      "identity": {
+        "doi_diospyros": "10.1145/3445814.3446707",
+        "doi_pluto": "10.1145/1375581.1375595",
+        "doi_polyverify": "10.1145/3434321",
+        "doi_vegen": "10.1145/3445814.3446692",
+        "repository": "bondhugula/pluto"
+      },
+      "name": "Polyhedral and SIMD vectorization tools (PolyVerify, Pluto, ISL, Polly, Polygeist, HELIX, VeGen, Diospyros)"
+    },
+    {
+      "identity": {
+        "doi_certicoq": "10.1145/3473591",
+        "doi_maranget": "10.1145/1411304.1411311",
+        "doi_tapenade": "10.1145/2450153.2450158",
+        "repository_certicoq": "CertiCoq/certicoq",
+        "repository_enzyme": "EnzymeAD/Enzyme",
+        "repository_scilean": "lecopivo/SciLean"
+      },
+      "name": "High-level lowering and automatic differentiation tools (CertiCoq, Maranget, Enzyme, Tapenade, CertiGrad, SciLean)"
+    },
+    {
+      "identity": {
+        "doi_crown": "10.1007/978-3-031-37706-8_23",
+        "doi_laertes": "10.1145/3485495",
+        "doi_llreve": "10.1145/2642937.2642987",
+        "doi_symdiff": "10.1007/978-3-642-31424-7_54",
+        "doi_tce": "10.1109/ICSE.2015.103",
+        "doi_ucklee": "10.1007/978-3-642-22110-1_55",
+        "repository": "immunant/c2rust"
+      },
+      "name": "Relational equivalence and C-to-Rust migration tools (SymDiff, LLReve, UC-KLEE, C2Rust, CROWN, Laertes, TCE)"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/optimization",
+    "anneal/lowering",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/mir",
+    "compiler/ssa",
+    "compiler/translation-validation",
+    "compiler/polyhedral",
+    "compiler/autodiff",
+    "rust/tree-borrows",
+    "rust/c2rust",
+    "lean/verification"
+  ]
+}

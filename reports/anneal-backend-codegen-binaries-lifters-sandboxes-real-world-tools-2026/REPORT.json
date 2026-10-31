@@ -1,0 +1,161 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean",
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal verification framework (trusted core refinement, Partial, Language, BehaviorCodec, ProductiveOn, VerificationResult, SmallStepMachine)"
+    },
+    {
+      "identity": {
+        "paths": "trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean, trusted/audit/TrustedBoundary.lean",
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 compiler and single-source artifact audit branch"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/1538788.1538814",
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      },
+      "name": "CompCert verified C compiler (Selection, RTLgen, Allocation/IRC, Stacking, Mach, Asm, Conventions1)"
+    },
+    {
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "repository": "CakeML/cakeml",
+        "venue": "JFP 2019 / ICFP 2017"
+      },
+      "name": "CakeML verified compiler backend (wordLang, stackLang, labLang, reg_alloc, lab_to_target)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3620665.3640367",
+        "repository": "bytecodealliance/wasmtime",
+        "subpath": "cranelift/isle/veri",
+        "venue": "ASPLOS 2024 / CMU-CS-23-126"
+      },
+      "name": "Cranelift ISLE, VeriISLE, and Crocus instruction-selection verification framework"
+    },
+    {
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "subpath": "src/checker.rs"
+      },
+      "name": "regalloc2 SSA register allocator and symbolic dataflow equivalence checker"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3428208",
+        "repository": "gricad-gitlab.univ-grenoble-alpes.fr/certicompil/Chamois-CompCert",
+        "venue": "OOPSLA 2020 / CPP 2022"
+      },
+      "name": "Chamois-CompCert (BTL superblock symbolic simulation scheduler, postpass bundle packer, peephole)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/CGO57630.2024.10444836",
+        "hydra_venue": "OOPSLA 2024",
+        "repository": "minotaur-toolkit/minotaur",
+        "slothy_repository": "slothy-optimizer/slothy",
+        "souper_repository": "google/souper",
+        "stoke_doi": "10.1145/2451116.2451150"
+      },
+      "name": "Superoptimizers and peephole synthesizers (Souper, Minotaur, STOKE, Slothy, Hydra, Peek)"
+    },
+    {
+      "identity": {
+        "compcert_elf_doi": "10.1145/3385412.3385989",
+        "compcert_o_doi": "10.1145/3453483.3454097",
+        "dimsum_doi": "10.1145/3571219",
+        "linksem_doi": "10.1145/2983990.2983996"
+      },
+      "name": "Verified linkers and compositional open-module semantics (CompCertELF, linksem, CompCertO, DimSum, SepCompCert, CompCertM)"
+    },
+    {
+      "identity": {
+        "binrec_doi": "10.1145/3342195.3387550",
+        "bolt_doi": "10.1109/CGO.2019.8661201",
+        "egalito_doi": "10.1145/3373376.3378522",
+        "propeller_doi": "10.1145/3575693.3575727"
+      },
+      "name": "Post-link profile-guided binary optimizers and binary recompilers (LLVM BOLT, Google Propeller, Egalito, BinRec)"
+    },
+    {
+      "identity": {
+        "alive2_repository": "AliveToolkit/alive2",
+        "alive2_revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+        "graph_refine_repository": "seL4/graph-refine",
+        "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5",
+        "lnsym_repository": "leanprover/LNSym",
+        "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+      },
+      "name": "Translation validators for unverified industrial compilers (seL4 GraphRefine, Alive2, Tristan-Govereau-Morrisett, Necula TV, LNSym)"
+    },
+    {
+      "identity": {
+        "foxdec_repository": "ssrg-vt/FoxDec",
+        "islaris_repository": "rems-project/islaris",
+        "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "jasmin_repository": "jasmin-lang/jasmin",
+        "jasmin_revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "tina_doi": "10.1145/3293883.3295709",
+        "vale_repository": "project-everest/vale",
+        "vale_revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      },
+      "name": "Binary lifters, decompilers, and inline-assembly bridges (TInA/RUSTInA, Islaris, Vale, Jasmin, HolBA, Myreen Decompilation into Logic, FoxDec, Remill/McSema)"
+    },
+    {
+      "identity": {
+        "agni_doi": "10.1145/3591280",
+        "certrbpf_repository": "future-proof-iot/CertFC",
+        "certrbpf_revision": "75690097c946c555cc4ce1e69d13ef86dc738180",
+        "faial_doi": "10.1007/978-3-030-81685-8_11",
+        "gpuverify_doi": "10.1145/2384616.2384625",
+        "jitterbug_repository": "uw-unsat/jitterbug",
+        "jitterbug_revision": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+        "prevail_repository": "vbpf/prevail",
+        "prevail_revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7",
+        "rocksalt_doi": "10.1145/2254064.2254111",
+        "veriwasm_doi": "10.14722/ndss.2021.24296",
+        "vwasm_venue": "USENIX Security 2022"
+      },
+      "name": "Sandboxing compilers, bytecode verifiers, and GPU/JIT verifiers (VeriWasm, vWasm, RockSalt, ARMor, WasmCert/veRA, PREVAIL, Jitterbug, CertrBPF, Agni, GPUVerify, Faial, Naga/Tint)"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/backend-codegen",
+    "anneal/behavior-codec",
+    "anneal/binary-lifting",
+    "anneal/decompilation",
+    "anneal/ebpf",
+    "anneal/inline-asm",
+    "anneal/instruction-scheduling",
+    "anneal/instruction-selection",
+    "anneal/linking",
+    "anneal/register-allocation",
+    "anneal/sandboxing",
+    "anneal/superoptimization",
+    "anneal/translation-validation",
+    "anneal/trusted-computing-base",
+    "compcert",
+    "cranelift/isle",
+    "gpu/verification",
+    "wasm/sfi"
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/external-calls",
+    "anneal/trust-policy",
+    "databases/sql-equivalence",
+    "databases/query-optimizers",
+    "databases/incremental-view-maintenance",
+    "storage/crash-consistency",
+    "storage/lsm-compaction",
+    "distributed-systems/consensus",
+    "distributed-systems/kubernetes-controllers",
+    "networking/p4-compilers",
+    "networking/bgp-convergence",
+    "security/authorization-policy",
+    "security/differential-privacy",
+    "build-systems/incremental-soundness",
+    "compilers/tensor-ml",
+    "verification/historical-failures"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal trusted refinement, step-outcome, and boundary primitives (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean)",
+      "identity": {
+        "mir-to-x86-revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14",
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "SQLancer (NoREC, TLP, PQS) query optimizer logic bug studies across PostgreSQL, MySQL, CockroachDB, SQLite, and TiDB",
+      "identity": {
+        "norec-doi": "10.1145/3368089.3409710",
+        "pqs-venue": "OSDI 2020",
+        "repository": "sqlancer/sqlancer",
+        "tlp-doi": "10.1145/3428279"
+      }
+    },
+    {
+      "name": "Cosette, UDP, WeTune, and DBSP relational query equivalence and incremental view maintenance verifiers",
+      "identity": {
+        "cosette-venue": "CIDR 2017 / PLDI 2017",
+        "dbsp-doi": "10.14778/3587136.3587137",
+        "udp-doi": "10.14778/3192965.3192971",
+        "wetune-doi": "10.1145/3514221.3526125"
+      }
+    },
+    {
+      "name": "FSCQ, Yggdrasil, RocksDB DeleteRange compaction, and Jepsen/Elle distributed storage and consensus failure analyses",
+      "identity": {
+        "elle-doi": "10.14778/3457390.3457396",
+        "fscq-doi": "10.1145/2815400.2815402",
+        "rocksdb-repository": "facebook/rocksdb",
+        "yggdrasil-venue": "OSDI 2016"
+      }
+    },
+    {
+      "name": "Sieve and Anvil Kubernetes reconciliation controller stale-cache TOCTOU and liveness verification studies",
+      "identity": {
+        "anvil-venue": "OSDI 2024",
+        "sieve-venue": "OSDI 2022"
+      }
+    },
+    {
+      "name": "Gauntlet and Petr4 P4 compiler miscompilation analyses and BGP RFC 3345 / Dispute Wheel route oscillation theory",
+      "identity": {
+        "gauntlet-arxiv": "2006.01074",
+        "gauntlet-venue": "OSDI 2020",
+        "petr4-doi": "10.1145/3434304",
+        "rfc": "RFC 3345"
+      }
+    },
+    {
+      "name": "AWS Cedar Lean 4 Verification-Guided Development and floating-point differential privacy sensitivity/LSB attacks (Mironov 2012, Casacuberta et al. 2022)",
+      "identity": {
+        "casacuberta-doi": "10.1145/3548606.3560708",
+        "cedar-arxiv": "2403.04651",
+        "cedar-venue": "OOPSLA 2024",
+        "mironov-doi": "10.1145/2382196.2382264"
+      }
+    },
+    {
+      "name": "Pluto, Build Systems a la Carte, Bazel/Ninja/Salsa incremental build soundness, NNSmith/Tzer/Halide/Triton/XLA tensor compiler bugs, and Cloudflare/StackOverflow ReDoS postmortems",
+      "identity": {
+        "bsalc-doi": "10.1145/3236774",
+        "nnsmith-doi": "10.1145/3575693.3575707",
+        "pluto-doi": "10.1145/2814270.2814316",
+        "tzer-doi": "10.1145/3533767.3534388"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

@@ -1,0 +1,214 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trust-model",
+    "anneal/refinement",
+    "anneal/abstract-interpretation",
+    "ai-safety/action-firewalls",
+    "ai-safety/information-flow-control",
+    "neural-networks/verification",
+    "neural-networks/abstract-interpretation",
+    "automated-planning/pddl-validation",
+    "automated-planning/htn-refinement",
+    "cad-cam/solid-modeling",
+    "cad-cam/gcode-verification",
+    "fabrication/knitout",
+    "fabrication/origami-kinematics",
+    "civil-engineering/bim-ifc-compliance",
+    "civil-engineering/structural-analysis",
+    "graphics/shader-verification",
+    "graphics/ui-constraint-layout",
+    "audio-dsp/filter-stability",
+    "music-theory/counterpoint-constraints",
+    "games/puzzle-solvability",
+    "iot/smart-home-verification"
+  ],
+  "subjects": [
+    {
+      "name": "CaMeL capability and control/data-flow separation sandbox for LLM agents",
+      "identity": {
+        "repository": "google-research/camel-prompt-injection",
+        "publication": "Debenedetti et al., arXiv:2503.18813 (2025)"
+      }
+    },
+    {
+      "name": "FIDES Flow Integrity Deterministic Enforcement System for AI agents",
+      "identity": {
+        "organization": "Microsoft Research",
+        "publication": "Costa et al., arXiv:2505.23643 (2025)"
+      }
+    },
+    {
+      "name": "SEAgent mandatory access control framework for LLM agents and AirGapAgent contextual-integrity sandbox",
+      "identity": {
+        "seagent_publication": "arXiv:2505.09143 (2025)",
+        "airgapagent_publication": "Bagdasarian et al., ACM CCS 2024"
+      }
+    },
+    {
+      "name": "Cedar authorization policy language and Lean 4 formalization",
+      "identity": {
+        "repository": "cedar-policy/cedar-spec",
+        "publication": "Cutler et al., OOPSLA 2024"
+      }
+    },
+    {
+      "name": "Open Policy Agent (OPA / Rego), Invariant Guardrails, NeMo Guardrails (Colang), and Meta LlamaFirewall / CodeShield",
+      "identity": {
+        "opa_repository": "open-policy-agent/opa",
+        "invariant_repository": "invariantlabs-ai/invariant",
+        "nemo_repository": "NVIDIA/NeMo-Guardrails",
+        "llamafirewall_repository": "meta-llama/PurpleLlama"
+      }
+    },
+    {
+      "name": "Constrained decoding engines: LMQL, Guidance, Outlines, and OpenSandbox",
+      "identity": {
+        "lmql_repository": "eth-sri/lmql",
+        "guidance_repository": "guidance-ai/guidance",
+        "outlines_repository": "dottxt-ai/outlines"
+      }
+    },
+    {
+      "name": "alpha-beta-CROWN, Marabou / Reluplex, ERAN (DeepZ / DeepPoly / GPUPoly / PRIMA), and MN-BaB neural network verifiers",
+      "identity": {
+        "ab_crown_repository": "Verified-Intelligence/alpha-beta-CROWN",
+        "marabou_repository": "NeuralNetworkVerification/Marabou",
+        "eran_repository": "eth-sri/eran",
+        "mnbab_repository": "eth-sri/mn-bab"
+      }
+    },
+    {
+      "name": "nnenum, NNV, OVAL, VeriNet, PyRAT, SAVer, FairSquare / VeriFair, and Verisig / ReachNN*",
+      "identity": {
+        "nnenum_repository": "stanleybak/nnenum",
+        "nnv_repository": "verivital/nnv",
+        "oval_repository": "oval-group/oval-bab",
+        "verisig_repository": "verisig/verisig"
+      }
+    },
+    {
+      "name": "VNN-LIB specification standard, Vehicle neuro-symbolic specification compiler, and CAISAR verification platform",
+      "identity": {
+        "vnnlib_repository": "VNNLIB/VNNLIB-Standard",
+        "vehicle_repository": "vehicle-lang/vehicle",
+        "caisar_repository": "git.frama-c.com/pub/caisar"
+      }
+    },
+    {
+      "name": "VAL, INVAL, and Abdulaziz & Lammich Isabelle/HOL verified PDDL plan validator",
+      "identity": {
+        "val_repository": "KCL-Planning/VAL",
+        "inval_repository": "patrikhaslum/INVAL",
+        "isabelle_validator_publication": "Abdulaziz & Lammich, ITP 2018 / AFP AI_Planning_Languages_Semantics"
+      }
+    },
+    {
+      "name": "Fast Downward unsolvability certificates (helve), PANDA / pandaPIValidator, SHOP3, PRP (FOND), Unified Planning, ENHSP / POPF, and LLM-Modulo",
+      "identity": {
+        "fast_downward_repository": "aibasel/downward",
+        "panda_repository": "panda-planner-dev/pandaPIValidator",
+        "shop3_repository": "shop-planner/shop3",
+        "unified_planning_repository": "aiplan4eu/unified-planning",
+        "llm_modulo_publication": "Kambhampati et al., ICML 2024 (arXiv:2402.01817)"
+      }
+    },
+    {
+      "name": "Reincarnate / LambdaCAD (Coq-verified CSG-to-mesh compiler), Szalinski, and Caviar e-graph TRS",
+      "identity": {
+        "reincarnate_repository": "uwplse/reincarnate",
+        "szalinski_repository": "uwplse/szalinski",
+        "caviar_publication": "Kourta et al., OOPSLA 2022"
+      }
+    },
+    {
+      "name": "Fidget, Libfive, Manifold, OpenSCAD, ImplicitCAD, and Curv geometric modeling kernels",
+      "identity": {
+        "fidget_repository": "mkeeter/fidget",
+        "libfive_repository": "libfive/libfive",
+        "manifold_repository": "elalish/manifold",
+        "openscad_repository": "openscad/openscad"
+      }
+    },
+    {
+      "name": "VERICUT, NCSimul, CAMotics, LinuxCNC, PrusaSlicer, OrcaSlicer, Cura, IceSL, and FullControl GCode",
+      "identity": {
+        "camotics_repository": "CauldronDevelopmentLLC/CAMotics",
+        "linuxcnc_repository": "LinuxCNC/linuxcnc",
+        "prusaslicer_repository": "prusa3d/PrusaSlicer",
+        "fullcontrol_repository": "FullControlXYZ/fullcontrol"
+      }
+    },
+    {
+      "name": "CMU Textiles Lab knitout, Autoknit, KnitSpeak, Radbend / TruTops, FOLD, Origami Simulator, and Freeform Origami",
+      "identity": {
+        "knitout_repository": "textiles-lab/knitout",
+        "autoknit_repository": "textiles-lab/autoknit",
+        "fold_repository": "edemaine/fold",
+        "origami_simulator_repository": "amandaghassaei/OrigamiSimulator"
+      }
+    },
+    {
+      "name": "Solibri, IfcOpenShell / ifctester (buildingSMART IDS), KBimCode / BERA, FDS+Evac / Pathfinder, OpenSees, and TopOpt",
+      "identity": {
+        "ifcopenshell_repository": "IfcOpenShell/IfcOpenShell",
+        "fds_repository": "firemodels/fds",
+        "opensees_repository": "OpenSees/OpenSees",
+        "topopt_publication": "Sigmund, Structural and Multidisciplinary Optimization (2001)"
+      }
+    },
+    {
+      "name": "SPIRV-Tools (spirv-val), Naga / Tint, GPUVerify, Faial, GraphicsFuzz, Slang, Halide, Gator, and OpenColorIO / ACES",
+      "identity": {
+        "spirv_tools_repository": "KhronosGroup/SPIRV-Tools",
+        "wgpu_naga_repository": "gfx-rs/wgpu",
+        "faial_repository": "umb-svl/faial",
+        "halide_repository": "halide/Halide",
+        "gator_repository": "cucapra/gator",
+        "ocio_repository": "AcademySoftwareFoundation/OpenColorIO"
+      }
+    },
+    {
+      "name": "Cassowary / Kiwi, Cassius / VizAssert, Taffy / Yoga, Knuth-Plass / Typst, and FreeType / FontBakery",
+      "identity": {
+        "kiwi_repository": "nucleic/kiwi",
+        "cassius_repository": "uwplse/cassius",
+        "taffy_repository": "DioxusLabs/taffy",
+        "typst_repository": "typst/typst",
+        "fontbakery_repository": "fonttools/fontbakery"
+      }
+    },
+    {
+      "name": "Faust, ChucK / Kronos, RealtimeSanitizer (rtsan), DSVerifier, Astree digital filter domain, Strasheela / Kulitta, and ITU-R BS.1770",
+      "identity": {
+        "faust_repository": "grame-cncm/faust",
+        "rtsan_component": "llvm/llvm-project compiler-rt/lib/rtsan",
+        "dsverifier_repository": "ssvlab/dsverifier",
+        "astree_publication": "Feret, ESOP 2004 (Digital Filter Domains)",
+        "strasheela_repository": "tanders/strasheela"
+      }
+    },
+    {
+      "name": "PuzzleScript, Ceptre, Ludii, Machinations, Archipelago / ALttPR logic solvers, XMage / Forge, and Festival Sokoban solver",
+      "identity": {
+        "puzzlescript_repository": "increpare/PuzzleScript",
+        "ceptre_repository": "chrisamaphone/ceptre",
+        "archipelago_repository": "ArchipelagoMW/Archipelago",
+        "xmage_repository": "magefree/mage",
+        "festival_publication": "Shoham & Schaeffer, IJCAI 2021"
+      }
+    },
+    {
+      "name": "SOTERIA, IoTGuard, IoTSAN, MenShen, iRuler, SafeTAP / AutoTap, HAWatcher / IoTMon, and Matter 1.3 specification",
+      "identity": {
+        "soteria_publication": "Celik et al., USENIX ATC 2018",
+        "iotguard_publication": "Celik et al., NDSS 2019",
+        "iotsan_publication": "Nguyen et al., ACM CoNEXT 2018",
+        "autotap_repository": "UChicagoSUPERgroup/autotap",
+        "hawatcher_publication": "Fu et al., USENIX Security 2021",
+        "matter_repository": "project-chip/connectedhomeip"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

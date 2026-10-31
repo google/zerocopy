@@ -1,0 +1,92 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal core verification framework (trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean, trusted/lean/Trusted/MirSemantics.lean)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 compiler branch (trusted/lean/Trusted/X86Semantics.lean, theory/Anneal/Compiler/NaiveCodegen.lean, theory/Anneal/Compiler/Peephole.lean)"
+    },
+    {
+      "identity": {
+        "doi": "10.1126/science.aac7341",
+        "publication": "Science 352(6281):aac7341 (2016)",
+        "repository": "CIDARLAB/cello"
+      },
+      "name": "Cello 1.0 Verilog-to-DNA genetic circuit compiler and 60-circuit E. coli wet-lab benchmark (Nielsen et al. 2016)"
+    },
+    {
+      "identity": {
+        "doi_leakless": "10.1007/978-3-319-21999-8_9",
+        "doi_seesaw": "10.1126/science.1200520",
+        "doi_siphon": "10.1016/j.mbs.2006.11.007",
+        "publication": "Qian & Winfree (Science 2011); Thachuk, Winfree & Soloveichik (DNA 21, 2015); Angeli, De Leenheer & Sontag (Math. Biosci. 2007)"
+      },
+      "name": "DNA Strand-Displacement (DSD) cascades, Visual DSD pathway compilers, and stochastic Chemical Reaction Network (CRN) siphons"
+    },
+    {
+      "identity": {
+        "doi_llfba": "10.1016/j.bpj.2010.12.3707",
+        "doi_memote": "10.1038/s41587-020-0446-y",
+        "doi_mfsim": "10.1145/2743025",
+        "repository": "opencobra/memote"
+      },
+      "name": "Genome-Scale Metabolic Models (FBA / MEMOTE / QSopt_ex) and Digital Microfluidic Biochip synthesis (MFSim / EWOD)"
+    },
+    {
+      "identity": {
+        "arxiv_simpson": "math/9810059",
+        "doi_flyspeck": "10.1017/fmp.2017.1",
+        "doi_kempe": "10.2307/2369235",
+        "repository_minif2f": "openai/miniF2F",
+        "repository_putnambench": "trishullab/PutnamBench"
+      },
+      "name": "Mathematical proof certificates and autoformalization benchmarks (Kepler/Flyspeck, Kempe Four-Color erratum, Kapranov-Voevodsky/Simpson, MiniF2F, PutnamBench)"
+    },
+    {
+      "identity": {
+        "arxiv_ad_pitfalls": "2305.07542",
+        "doi_enzyme": "10.5555/3495724.3497463",
+        "repository": "EnzymeAD/Enzyme"
+      },
+      "name": "PDE numerical stencil compilers and LLVM-level Automatic Differentiation (Enzyme AD)"
+    },
+    {
+      "identity": {
+        "doi_prob_ertms": "10.1007/s10009-019-00548-6",
+        "emsd_report": "EMSD Investigation Report on Incident of the New Signalling System Testing on MTR Tsuen Wan Line on 18 March 2019 (July 2019)",
+        "lta_report": "Singapore LTA / MOT Joo Koon Collision Investigation Report (December 2017)"
+      },
+      "name": "Railway CBTC and interlocking formal verification and failure incidents (Hong Kong MTR Central 2019, Singapore MRT Joo Koon 2017, ERTMS/ETCS ProB & Atelier B)"
+    },
+    {
+      "identity": {
+        "bea_report": "BEA Official Report on the Accident on 20 January 1992 near Mont Sainte-Odile to the Airbus A320 registered F-GGED operated by Air Inter",
+        "nasa_mco_report": "Mars Climate Orbiter Mishap Investigation Board Phase I Report (10 November 1999)",
+        "nasa_spirit_report": "JPL Mars Exploration Rover Spirit Sol 18 Flash File System Anomaly Postmortem (2004)"
+      },
+      "name": "Safety-critical avionics HCI and deep-space autonomy incidents (Air Inter Flight 148, Mars Spirit Sol 18 Flash Anomaly, Mars Climate Orbiter)"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/trust-policy",
+    "verification/failures",
+    "synthetic-biology/cello",
+    "chemical-reaction-networks",
+    "mathematics/formalization",
+    "numerical-analysis/pde",
+    "railway/interlocking",
+    "avionics/mode-confusion"
+  ]
+}

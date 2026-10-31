@@ -1,0 +1,139 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "branch": "trusted-core",
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal trusted refinement and small-step prefix core"
+    },
+    {
+      "identity": {
+        "branch": "mir-to-x86",
+        "repository": "joshlf/anneal",
+        "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+      },
+      "name": "Anneal MIR-to-x86-64 verified compilation pipeline"
+    },
+    {
+      "identity": {
+        "branch": "reference",
+        "repository": "google/zerocopy",
+        "revision": "df55c524a051d59e7dd35564f282b30d29133392"
+      },
+      "name": "Anneal trusted-boundary hardening corpus (BehaviorCodec, EventualBehaviorOf, StepResult.externalCall, ScopedVerificationResult)"
+    },
+    {
+      "identity": {
+        "doi": "10.14778/3587136.3587140",
+        "repository": "feldera/feldera",
+        "venue": "PVLDB 16(6) 2023"
+      },
+      "name": "DBSP and Feldera incremental view maintenance and SQL-to-circuit compiler"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3035918.3056447",
+        "repository": "uwdb/Cosette",
+        "venue": "CIDR / SIGMOD 2017"
+      },
+      "name": "Cosette, UDP, EQUITAS, SPES, and WeTune SQL equivalence and rewrite verifiers"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3341301.3359632",
+        "repository": "mit-pdos/perennial",
+        "venue": "SOSP 2019 / OSDI 2022"
+      },
+      "name": "FSCQ, Perennial, DaisyNFS, Yggdrasil, VeriBetrKV, Cogent/BilbyFS, Flashix, Atmosphere, and SplinterDB crash-consistent storage systems"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2737924.2737958",
+        "repository": "uwplse/verdi",
+        "venue": "PLDI 2015 / SOSP 2015 / POPL 2016"
+      },
+      "name": "Verdi, IronFleet, Ivy, Aneris, Chapar, TLAPS, FoundationDB, and Jepsen/Elle distributed systems verifiers"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3098822.3098828",
+        "repository": "batfish/batfish",
+        "venue": "SIGCOMM 2017 / NSDI 2020 / POPL 2014"
+      },
+      "name": "Batfish, Minesweeper, Bagpipe, NetKAT, p4v, Vera, Petr4, Poulet4, Gauntlet, APKeep, and NV/ShapeShifter networking verifiers"
+    },
+    {
+      "identity": {
+        "repository": "anvil-verifier/anvil",
+        "url": "https://www.usenix.org/conference/osdi24/presentation/sun",
+        "venue": "USENIX OSDI 2024"
+      },
+      "name": "Anvil, Sieve, K8s-TLA+, Tiros, Rehearsal, Checkov, and Conftest cloud IaC and controller verifiers"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3649835",
+        "repository": "cedar-policy/cedar-spec",
+        "venue": "OOPSLA 2024"
+      },
+      "name": "Cedar (cedar-spec in Lean 4), Zelkova, Margrave, Zanzibar/SpiceDB/OpenFGA, OPA, and OpenDP/Chorus/Fuzz/DFuzz/CertiPriv"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3236774",
+        "repository": "snowleopard/build",
+        "venue": "ICFP 2018 / JFP 2020"
+      },
+      "name": "Build Systems a la Carte, Pluto, Salsa, Buck2 DICE, Adapton, Bazel Skyframe, and PubGrub"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3519939.3523446",
+        "repository": "exo-lang/exo",
+        "venue": "PLDI 2022 / OSDI 2025"
+      },
+      "name": "Exo, Verified-Halide, MLIR-TV/VeriHLO, XLA GSPMD/PartIR/Shardy, Polly/isl, GPUVerify/Faial, and Tensat/Mirage"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3453483.3454053",
+        "repository": "TimelyDataflow/timely-dataflow",
+        "venue": "SOSP 2013 / PLDI 2021"
+      },
+      "name": "Timely Dataflow, StreamBox, Flink ABS, Coqlex, VeriLex, Ausaf-Dyckhoff-Urban POSIX Regex, lean-regex, CoStar, and TRX"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3290389",
+        "repository": "project-everest/everparse",
+        "venue": "USENIX Security 2019 / POPL 2019 / USENIX Security 2025"
+      },
+      "name": "EverParse/3D, Narcissus, Vest, Cambria, Boomerang, Buf, Temporal, Restate, and P Language"
+    }
+  ],
+  "topics": [
+    "anneal/architecture",
+    "anneal/behavior-codec",
+    "anneal/domain-generalization",
+    "anneal/progress-refinement",
+    "anneal/trust-policy",
+    "authorization/cedar",
+    "authorization/zanzibar",
+    "build-systems/incremental",
+    "cloud/kubernetes-controllers",
+    "compilers/mlir-tensor",
+    "compilers/polyhedral",
+    "databases/ivm-dbsp",
+    "databases/query-equivalence",
+    "differential-privacy/verification",
+    "distributed-systems/consensus",
+    "networking/bgp-verification",
+    "networking/p4-sdn",
+    "parsing/verified-combinators",
+    "storage/crash-consistency",
+    "streaming/watermarks"
+  ]
+}

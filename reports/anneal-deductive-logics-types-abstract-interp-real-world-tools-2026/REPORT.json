@@ -1,0 +1,367 @@
+{
+  "observed_at": "2026-10-31",
+  "subjects": [
+    {
+      "identity": {
+        "paths": "trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "trusted_core_worktree_revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal verification framework and 4-primitive trusted core"
+    },
+    {
+      "identity": {
+        "paths": "src/Lean/Elab/Tactic/BVDecide/, src/Std/Do/",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover (bv_decide LRAT bit-blaster and Std.Do / mvcgen MPL)"
+    },
+    {
+      "identity": {
+        "icfp2022_doi": "10.1145/3547647",
+        "icfp2024_doi": "10.1145/3674640",
+        "repository": "AeneasVerif/aeneas",
+        "revision": "70683bd4ab876179a23e5f994d02947b3e5c4f0d"
+      },
+      "name": "Aeneas functional translator and Lean 4 WP backend"
+    },
+    {
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      },
+      "name": "Charon ULLBC/LLBC extractor for rustc"
+    },
+    {
+      "identity": {
+        "pldi2022_doi": "10.1145/3519939.3523704",
+        "toplas2021_doi": "10.1145/3462205",
+        "zenodo": "6417462"
+      },
+      "name": "RustHorn and RustHornBelt prophetic functional translation"
+    },
+    {
+      "identity": {
+        "coma_esop2025_sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e",
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      },
+      "name": "Creusot deductive Rust verifier and Coma intermediate verification language"
+    },
+    {
+      "identity": {
+        "repository": "formal-land/rocq-of-rust",
+        "revision": "ca1374ae2fdeb28b069fe77ba412db5604525261"
+      },
+      "name": "coq-of-rust (rocq-of-rust) monadic THIR-to-Rocq translator"
+    },
+    {
+      "identity": {
+        "git_blob": "670746012e99efc7b239bc5cd41f9ee2d967997b",
+        "repository": "Kha/electrolysis"
+      },
+      "name": "Electrolysis Rust-to-Lean lens translator"
+    },
+    {
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "1ec88cdb2c8e546845e64eb2cd2321b4f58069c4"
+      },
+      "name": "hacspec and hax multi-backend Rust extraction engine"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2594291.2594296",
+        "publication": "PLDI 2014",
+        "url": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf"
+      },
+      "name": "AutoCorres and AutoCorres2 C-to-Isabelle/HOL monadic abstraction"
+    },
+    {
+      "identity": {
+        "itrees_popl2020_doi": "10.1145/3371119",
+        "itrees_repository": "DeepSpec/InteractionTrees",
+        "itrees_revision": "a2bc2c38ad998dccadb932559c922139dd957c4f",
+        "vellvm_repository": "vellvm/vellvm",
+        "vellvm_revision": "506f1eb0be542611521985719b971fbce8498dc9"
+      },
+      "name": "Interaction Trees (ITrees) and Vellvm VIR semantics"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3571220",
+        "publication": "POPL 2023",
+        "url": "https://plv.mpi-sws.org/dimsum/paper.pdf"
+      },
+      "name": "DimSum and FreeSpec multi-language compositional event semantics"
+    },
+    {
+      "identity": {
+        "crucible_repository": "GaloisInc/crucible",
+        "crucible_revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4",
+        "saw_repository": "GaloisInc/saw-script",
+        "saw_revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+      },
+      "name": "SAW, Crucible, and crux-mir symbolic execution suite"
+    },
+    {
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+      },
+      "name": "Kani Rust bit-precise model checker"
+    },
+    {
+      "identity": {
+        "rosette_pldi2014_doi": "10.1145/2594291.2594340",
+        "rosette_repository": "emina/rosette",
+        "rosette_revision": "373c8c35e4a7667f38fce10cf0b74ae17de07f1d",
+        "serval_repository": "uw-unsat/serval",
+        "serval_revision": "72adc4952a1e62330aea527214a26bd0c09cbd05",
+        "serval_sosp2019_doi": "10.1145/3341301.3359641"
+      },
+      "name": "Rosette solver-aided language and Serval verifier"
+    },
+    {
+      "identity": {
+        "holba_repository": "kth-step/HolBA",
+        "holba_revision": "ef22c1fd8da612c57f2e7f273cb14594a7e529d3",
+        "islaris_pldi2022_doi": "10.1145/3519939.3523434",
+        "islaris_repository": "rems-project/islaris",
+        "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "sail_repository": "rems-project/sail",
+        "sail_revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+      },
+      "name": "Sail, Islaris, and HolBA ISA symbolic evaluators"
+    },
+    {
+      "identity": {
+        "iris_jfp2018_doi": "10.1017/S0956796818000151",
+        "iris_lean_repository": "leanprover-community/iris-lean",
+        "iris_lean_revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+        "mosel_icfp2018_doi": "10.1145/3236772",
+        "rocq_iris_repository": "rocq-iris/iris",
+        "rocq_iris_revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      },
+      "name": "Iris, MoSeL, and iris-lean higher-order separation logic"
+    },
+    {
+      "identity": {
+        "popl2018_doi": "10.1145/3158154",
+        "popl2020_doi": "10.1145/3371102",
+        "repository": "iris/lambda-rust",
+        "revision": "186900b2cf948835873281646ce20c7e8f084f17"
+      },
+      "name": "RustBelt semantic type soundness and lifetime logic"
+    },
+    {
+      "identity": {
+        "refinedc_pldi2021_doi": "10.1145/3453483.3454036",
+        "refinedc_repository": "iris/refinedc",
+        "refinedc_revision": "d057583986651a28047164581f05fbee3a83ed9d",
+        "refinedrust_pldi2024_doi": "10.1145/3656423",
+        "refinedrust_repository": "lgaeher/refinedrust-dev",
+        "refinedrust_revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+        "vip_pldi2022_doi": "10.1145/3519939.3523702"
+      },
+      "name": "RefinedC, Caesium, VIP, and RefinedRust Lithium ownership type systems"
+    },
+    {
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+      },
+      "name": "Verified Software Toolchain (VST) for CompCert C"
+    },
+    {
+      "identity": {
+        "cn_popl2023_doi": "10.1145/3571194",
+        "fulminate_popl2025_doi": "10.1145/3704879",
+        "repository": "rems-project/cerberus",
+        "revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1"
+      },
+      "name": "Cerberus, CN, and Fulminate separation-logic C verification and runtime testing"
+    },
+    {
+      "identity": {
+        "foundational_arxiv": "2601.13727v1",
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      },
+      "name": "VeriFast symbolic-heap C and Rust verifier"
+    },
+    {
+      "identity": {
+        "prusti_oopsla2019_doi": "10.1145/3360573",
+        "prusti_repository": "prusti/prusti",
+        "prusti_revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+        "vercors_repository": "utwente-fmt/vercors",
+        "vercors_revision": "3300d5b007286225a33c17a233bda77db9471213",
+        "viper_repository": "viperproject/silver",
+        "viper_revision": "da1c8993b66feb39976e3609e2580a4661137a0f"
+      },
+      "name": "Viper, Prusti, and VerCors Implicit Dynamic Frames infrastructure"
+    },
+    {
+      "identity": {
+        "gillian_rust_pldi2025_doi": "10.1145/3729289",
+        "infer_repository": "facebook/infer",
+        "infer_revision": "5aac32c06952a2f3a6b7043e91457920f065833b",
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      },
+      "name": "Gillian, Gillian-Rust, Smallfoot, and Infer/Pulse bi-abductive engines"
+    },
+    {
+      "identity": {
+        "ghostcell_icfp2021_doi": "10.1145/3473597",
+        "verus_oopsla2023_doi": "10.1145/3586037",
+        "verus_repository": "verus-lang/verus",
+        "verus_revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      },
+      "name": "Verus linear ghost permissions (Tracked, PCell, tokenized_state_machine) and GhostCell"
+    },
+    {
+      "identity": {
+        "aquascope_repository": "cognitive-engineering-lab/aquascope",
+        "aquascope_revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6",
+        "bsan_repository": "BorrowSanitizer/bsan",
+        "bsan_revision": "a2fd46ab89fc97ba1cf548645dd70acbeaa17d64",
+        "minirust_repository": "minirust/minirust",
+        "minirust_revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "miri_repository": "rust-lang/miri",
+        "miri_revision": "0e1a23b0794bec7860df8c06a774f4316746795a",
+        "oxide_arxiv": "1903.00982v4",
+        "polonius_repository": "rust-lang/polonius",
+        "polonius_revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df",
+        "sb_popl2020_doi": "10.1145/3371109",
+        "tb_pldi2025_doi": "10.1145/3735592"
+      },
+      "name": "Miri, Stacked Borrows, Tree Borrows, BorrowSanitizer, Polonius, Aquascope, Oxide, and MiniRust"
+    },
+    {
+      "identity": {
+        "cheri_morello_repository": "CTSRD-CHERI/sail-morello",
+        "cheri_morello_revision": "2305f656ff84619caf50107f49dae7be52aec72b",
+        "compcert_repository": "AbsInt/CompCert",
+        "compcert_revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03",
+        "quasi_concrete_popl2015_doi": "10.1145/2676726.2676985",
+        "rustc_repository": "rust-lang/rust",
+        "rustc_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      },
+      "name": "CompCert Memdata, CompCertS, Quasi-Concrete memory, CHERI/Morello, and Rust Strict/Exposed Provenance"
+    },
+    {
+      "identity": {
+        "austral_repository": "austral/austral",
+        "austral_revision": "0962d2a8a5d77f7daacd7f696819520733f4897d",
+        "effekt_oopsla2020_doi": "10.1145/3428194",
+        "effekt_repository": "effekt-lang/effekt",
+        "effekt_revision": "91c540b1067721bdd1bb5d463e42827f8316a1da",
+        "embassy_repository": "embassy-rs/embassy",
+        "embassy_revision": "14cf6a68ec0bfd0ecf873f7e3dbb2eb69013fa29",
+        "embedded_hal_repository": "rust-embedded/embedded-hal",
+        "embedded_hal_revision": "41f29f6bfced1cae0cbe712ba96ee32c075b3125",
+        "flux_pldi2023_doi": "10.1145/3591283",
+        "flux_repository": "flux-rs/flux",
+        "flux_revision": "6769bb9cbd1216380f542349494efafafd6104a3",
+        "fstar_repository": "FStarLang/FStar",
+        "fstar_revision": "e2b5042ffd8272ad6287e4ad8748d8e52dadd93d",
+        "karamel_repository": "FStarLang/karamel",
+        "karamel_revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+        "koka_eptcs2014_doi": "10.4204/EPTCS.153.8",
+        "koka_repository": "koka-lang/koka",
+        "koka_revision": "d23ee7cd73737c1da7a7a5fa837a2806facc3d6b",
+        "liquidhaskell_icfp2014_doi": "10.1145/2628136.2628161",
+        "liquidhaskell_repository": "ucsd-progsys/liquidhaskell",
+        "liquidhaskell_revision": "c0cca0b9f92d8cdaae7f8fc604f78c32b534b69d",
+        "no_panic_repository": "dtolnay/no-panic",
+        "no_panic_revision": "9a0b1097f77dfd5ee4352b6ff060f68d791730f7",
+        "stainless_repository": "EPFL-LARA/stainless",
+        "stainless_revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+        "vale_repository": "project-everest/vale",
+        "vale_revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      },
+      "name": "Flux, Liquid Haskell, Stainless, F*/Low*/KaRaMeL, Austral, Vale, Koka, Effekt, and Rust typestate/effect analyzers"
+    },
+    {
+      "identity": {
+        "agni_cav2023_doi": "10.1007/978-3-031-37709-9_12",
+        "astree_esop2005_doi": "10.1007/978-3-540-31987-0_3",
+        "crab_repository": "seahorn/crab",
+        "crab_revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c",
+        "frama_c_repository": "git.frama-c.com/pub/frama-c",
+        "frama_c_revision": "ce0648c726122d4a7b5e8614a1a5b97777d9d226",
+        "goblint_repository": "goblint/analyzer",
+        "goblint_revision": "1463f411ce87edd49198033856b2946fc3366fb2",
+        "ikos_repository": "NASA-SW-VnV/ikos",
+        "ikos_revision": "ac7f7c1738976cabc58c6a53413df6e458995c38",
+        "llvm_knownbits_repository": "llvm/llvm-project",
+        "llvm_knownbits_revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "lockbud_repository": "BurtonQin/lockbud",
+        "lockbud_revision": "a1b5303cdbb1d4d0ad886359cc71418570e7c5fd",
+        "memcad_popl2008_doi": "10.1145/1328438.1328469",
+        "memcad_repository": "Antique-team/memcad",
+        "memcad_revision": "d95caa514f2b66b8c43c015799084d281944f028",
+        "mirai_repository": "endorlabs/MIRAI",
+        "mirai_revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b",
+        "mopsa_repository": "mopsa/mopsa-analyzer",
+        "mopsa_revision": "f168a9c025738d4940cfb6a281dde258c871da73",
+        "prevail_pldi2019_doi": "10.1145/3314221.3314590",
+        "prevail_repository": "vbpf/prevail",
+        "prevail_revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7",
+        "rudra_repository": "sslab-gatech/Rudra",
+        "rudra_revision": "fc9add2c4721c77490680462c7f0ad791af7cec7",
+        "rudra_sosp2021_doi": "10.1145/3477132.3483570",
+        "seahorn_repository": "seahorn/seahorn",
+        "seahorn_revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4",
+        "tvla_toplas2002_doi": "10.1145/514188.514190",
+        "verasco_popl2015_doi": "10.1145/2676726.2676966"
+      },
+      "name": "Verasco, Astree, Crab/SeaHorn, IKOS, MIRAI, eBPF tnum/Agni/PREVAIL, LLVM KnownBits, Frama-C Eva, Goblint, Mopsa, Rudra/SafeDrop/Lockbud, and TVLA/Forester/MemCAD"
+    },
+    {
+      "identity": {
+        "boogie_cav2021_doi": "10.1007/978-3-030-81688-9_33",
+        "boogie_repository": "boogie-org/boogie",
+        "boogie_revision": "751228a2cf2c78177f9a0d040904022294aea1b2",
+        "cakeml_icfp2017_doi": "10.1145/3110263",
+        "cakeml_repository": "CakeML/cakeml",
+        "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "ceta_tphols2009_doi": "10.1007/978-3-642-03359-9_31",
+        "dafny_repository": "dafny-lang/dafny",
+        "dafny_revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+        "dm4all_icfp2019_doi": "10.1145/3341708",
+        "sct_popl2001_doi": "10.1145/360204.360210",
+        "splean_repository": "verse-lab/splean",
+        "splean_revision": "e24286f51bd9ee207197d47ec587d592cdfb0ddc",
+        "terminator_pldi2006_doi": "10.1145/1133981.1134029",
+        "ultimate_cav2013_doi": "10.1007/978-3-642-39799-8_42",
+        "ultimate_repository": "ultimate-pa/ultimate",
+        "ultimate_revision": "82f536df1bea812c74d70a91d8e67c1770c3fefe",
+        "vcc_tphols2009_doi": "10.1007/978-3-642-03359-9_2",
+        "why3_repository": "why3/why3",
+        "why3_revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e"
+      },
+      "name": "DM4All, Why3, Boogie, CFML 2.0/SPLean, CakeML CF, AProVE/Ultimate Automizer, CeTA/IsaFoR, Foetus/SCT, Terminator/RankFinder, and Dafny/VCC"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/trusted-core",
+    "verification/deductive",
+    "verification/separation-logic",
+    "verification/functional-translation",
+    "verification/borrows-and-aliasing",
+    "verification/refinement-types",
+    "verification/typestates-and-effects",
+    "verification/abstract-interpretation",
+    "verification/vcgen-and-termination",
+    "rust/mir-semantics",
+    "lean4"
+  ]
+}
