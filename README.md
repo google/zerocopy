@@ -14,6 +14,10 @@ Before authoring or revising a report, also read [`FORMAT.md`](FORMAT.md). It
 defines report package structure, metadata, evidence roles, applicability,
 investigation boundaries, and revalidation expectations.
 
+When planning or executing a multi-round research or experimentation program to
+populate the corpus, load and follow
+[`skills/reference-research/SKILL.md`](skills/reference-research/SKILL.md).
+
 [`CATALOG.json`](CATALOG.json) is the generated machine-readable report index.
 Each immediate child directory of `reports/` is one report package containing
 `REPORT.json`, `REPORT.md`, and optional report-owned support material.
