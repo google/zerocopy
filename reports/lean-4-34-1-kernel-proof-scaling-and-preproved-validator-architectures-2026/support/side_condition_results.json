@@ -1,0 +1,57 @@
+[
+  {
+    "strategy": "50 Decls: Standard `omega` Tactic",
+    "mod": "SideCond_Omega50",
+    "elab_ms": 613.68,
+    "replay_ms": 171.299,
+    "replay_us": 171299,
+    "olean_bytes": 516760,
+    "decls": 100,
+    "dag_nodes": 14091,
+    "tree_nodes": 374710
+  },
+  {
+    "strategy": "50 Decls: Hybrid `decide` + `omega`",
+    "mod": "SideCond_DecideOmega50",
+    "elab_ms": 483.33,
+    "replay_ms": 70.361,
+    "replay_us": 70361,
+    "olean_bytes": 272728,
+    "decls": 65,
+    "dag_nodes": 7139,
+    "tree_nodes": 199040
+  },
+  {
+    "strategy": "50 Decls: Pre-Proved `Theory` Reflection (`rfl`)",
+    "mod": "SideCond_Refl50",
+    "elab_ms": 327.47,
+    "replay_ms": 3.312,
+    "replay_us": 3312,
+    "olean_bytes": 62856,
+    "decls": 50,
+    "dag_nodes": 1006,
+    "tree_nodes": 5500
+  },
+  {
+    "strategy": "50 Bundled Intervals: `omega` Tactic",
+    "mod": "SideCond_BatchOmega50",
+    "elab_ms": 517.29,
+    "replay_ms": 140.93,
+    "replay_us": 140930,
+    "olean_bytes": 444424,
+    "decls": 51,
+    "dag_nodes": 12567,
+    "tree_nodes": 343210
+  },
+  {
+    "strategy": "50 Bundled Intervals: `checkIntervalBatch_sound rfl`",
+    "mod": "SideCond_BatchRefl50",
+    "elab_ms": 259.79,
+    "replay_ms": 3.527,
+    "replay_us": 3527,
+    "olean_bytes": 3872,
+    "decls": 1,
+    "dag_nodes": 12,
+    "tree_nodes": 14
+  }
+]

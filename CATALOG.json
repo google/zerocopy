@@ -16481,6 +16481,101 @@
         "lake/dependencies"
       ]
     },
+    "anneal-two-stage-preaudit-olean-axiom-stubbing-and-conservativity-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "fd0a9b3a3a0bd2fc2be87312142eb288ee944b5b",
+            "secondary-revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal trust-boundary auditor, two-color @[vetted]/@[candidate] classifier, and foundation lock"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+          },
+          "name": "Anneal 11-module Trusted and Anneal corpus (including 8,315-line FunctionalTranslation.lean and 1,106-line MirLemmas.lean)"
+        },
+        {
+          "identity": {
+            "linux_x86_64_archive_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel, environment staging (SMap/finalizeImport), replay checker, and .olean compacted-region serializer"
+        },
+        {
+          "identity": {
+            "path": "reports/anneal-trusted-boundary-lean-4-34-1/PatchedTrustedBoundaryPrototype.lean",
+            "repository": "google/zerocopy",
+            "revision": "fc0ae5fb2fcfbe4fdeec0d7be11ef2f47228c698"
+          },
+          "name": "Prior Anneal single-stage trusted-boundary prototype on the reference corpus"
+        },
+        {
+          "identity": {
+            "lines": "1-452",
+            "path": "support/ConservativityModel.lean",
+            "sha256": "9fa5dc4018783b185275c3089870cc0241f3062680464eef782920b51bd5ed86"
+          },
+          "name": "Lean 4.34.1 mechanization of staged conservative extension, constructive cut-elimination, vacuous-helper immunity, and conditional candidate-feature summaries"
+        },
+        {
+          "identity": {
+            "lines": "1-230",
+            "path": "support/ProbeKernelReducibility.lean",
+            "sha256": "da91db6ea689fa75d6a78246bf59e40f9c1206584d5b595085204a4efe4856ea"
+          },
+          "name": "Executable Lean 4.34.1 probe of elaborator ReducibilityStatus vs. C++ kernel ReducibilityHints, constant_info::has_value(false) on .thmInfo, and proof-irrelevance short-circuiting"
+        },
+        {
+          "identity": {
+            "lines": "1-383",
+            "path": "support/ProbePrecompileThreats.lean",
+            "sha256": "e7b17d248439e9f621525f950accd83941d593c0d257aadf382c1f3abe41a1e7"
+          },
+          "name": "Executable Lean 4.34.1 adversarial threat probes for pre-compiled theory/Anneal/ artifacts (candidate laundering, waived obligations, levelParams arity/emptiness, and Lean.trustCompiler)"
+        },
+        {
+          "identity": {
+            "lines": "1-651",
+            "path": "support/ProbeTwoStagePreAudit.lean",
+            "sha256": "6710c085670f7ea7d46e9b2527ddc74d766dd88c64e27c048f91c0c6c1800848"
+          },
+          "name": "Executable Lean 4.34.1 prototype of Stage-1 preaudit, theory-lock.json generation, cross-stage realizeConst handling, and Stage-2 runtime-audit equivalence"
+        },
+        {
+          "identity": {
+            "lines": "1-430",
+            "path": "support/ProbeAxiomStubRuntime.lean",
+            "sha256": "21a5196ef1fbfd192a444a6b77e804b2e3a2bb4e81dbe99d77dbec043edda613"
+          },
+          "name": "Executable Lean 4.34.1 .olean theorem-to-axiom stubber, private proof-helper pruner, and multi-configuration runtime benchmark harness"
+        },
+        {
+          "identity": {
+            "lines": "1-1405",
+            "path": "support/SingleImportTwoStageBoundary.lean",
+            "sha256": "94b02641581a2b470df710a42fcaeae90c143404ae7b42f106280f3172eae422"
+          },
+          "name": "Unified single-import two-stage trust-boundary auditor, security regression suite, and byte-level .olean compaction analyzer"
+        }
+      ],
+      "topics": [
+        "anneal/trust-boundary",
+        "anneal/two-stage-audit",
+        "anneal/theory-lock",
+        "lean/kernel-replay",
+        "lean/olean-compaction",
+        "lean/reducibility",
+        "lean/module-system",
+        "verification/conservative-extension"
+      ]
+    },
     "anneal-v1-abs-end-to-end-fail-closed-controls-2026-09-28": {
       "observed_at": "2026-09-28",
       "subjects": [
@@ -24794,6 +24889,113 @@
         "lean4/whnf-reduction-scaling"
       ]
     },
+    "lean-4-34-1-kernel-proof-scaling-and-preproved-validator-architectures-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel, typechecker, and standard library"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal repository principles and agent instructions"
+        },
+        {
+          "identity": {
+            "branch": "trusted-core",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal trusted refinement algebra, MIR semantics, boundary checker, and proof generator"
+        },
+        {
+          "identity": {
+            "branch": "skeleton",
+            "repository": "joshlf/anneal",
+            "revision": "e75556f5767705404404c0675c6d2d9bcee41d6f"
+          },
+          "name": "Anneal functional translation and multi-function crate proof prototype"
+        },
+        {
+          "identity": {
+            "path": "support/UnifiedEndToEndStack.lean",
+            "sha256": "5cb80e03825037ecc1177ce6cf26d4bae9c63017434ed6b5e99ff48376e200b1"
+          },
+          "name": "Unified end-to-end 5-stage Lean 4.34.1 verification stack and soundness canaries"
+        },
+        {
+          "identity": {
+            "path": "support/run_unified_benchmark.py",
+            "results_path": "support/unified_benchmark_results.json",
+            "results_sha256": "116b056204c4a91721af14ebda3626049d554d5bb9fe3f00b7468321725595d1",
+            "sha256": "75481083294165f880aa91b84d6db22bdab445d9de1cb056e64ecb28bdb7504a"
+          },
+          "name": "Unified 5-stage benchmark generator and runner"
+        },
+        {
+          "identity": {
+            "path": "support/BenchmarkProofStrategies.lean",
+            "sha256": "0e6a9f9ef904a29e53a2fff4b2446599b4d22ecee97ebc80f19417e221725a81",
+            "suite_a_results_sha256": "defe94560343e972617ffa8f2933e3e1baaa8b5f38fe63189d5222e04f69f1b3",
+            "suite_a_runner_sha256": "1d9d9800835c05e755cc4542e3ba7c7518591cddefc47a79d0d5cb9d90ae3e1e",
+            "suite_b_results_sha256": "c29912a8a9bd0f00756d6a419c32f13f055e5153a386c420aa0f66fe9f849bdc",
+            "suite_b_runner_sha256": "687c86b7f521c1b51a78ce535fb67d0302b4627f73dc1915e7806987a45688ed"
+          },
+          "name": "Six pre-proved theorem architectures benchmark suite (Suite A and Suite B)"
+        },
+        {
+          "identity": {
+            "measure_kernel_sha256": "ac90f46e0a474d7f444d08daa7a7ef0186ea1c3fc43bbace0bfca6242aac3ecc",
+            "path": "support/ProbeSideConditionReflection.lean",
+            "results_sha256": "40b359e6eba5165fe39aa7e1609e2f18b7050da52ad9def8b818dcb9b78a6d1a",
+            "runner_sha256": "8a1a6256a028619f8ff77fef67c0250a68dd1963e6667484bbae92aeb6c564ee",
+            "sha256": "6f0c20ec262c0cdc604389d4d92b40331e6d3fea4d5db37fb51a9eb254e7c173"
+          },
+          "name": "Pre-proved GMP Nat side-condition reflection benchmark"
+        },
+        {
+          "identity": {
+            "path": "support/ProbePreprovedPasses.lean",
+            "sha256": "f3977937f95f16ae341d0e350adedbcc1c5ceeb3268ab8077ef1a6646b2964f7"
+          },
+          "name": "Pre-proved lowering passes, hint-driven translation validators, and loop cutpoint probe"
+        },
+        {
+          "identity": {
+            "path": "support/ProbePreprovedSummaries.lean",
+            "sha256": "7ea6bed3f8dcb2181ba6860fa424063e027ffa56b67874f3172bf56294773792"
+          },
+          "name": "Pre-proved stdlib and intrinsic Call1Summary probe and flat-tuple tree-size benchmark"
+        },
+        {
+          "identity": {
+            "path": "support/ProbeShardedCrateProof.lean",
+            "sha256": "402ec578ad1dc407312536f607182ff32e68655a43637ca5eed0585b7c12c811"
+          },
+          "name": "Sharded crate proof aggregation and incremental kernel replay probe"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/kernel",
+        "lean/typechecker",
+        "lean/whnf",
+        "lean/reflection",
+        "lean/replay",
+        "anneal/proof-scaling",
+        "anneal/translation-validation",
+        "anneal/summaries",
+        "anneal/incremental-verification"
+      ]
+    },
     "lean-4-34-1-unsafe-rec-noncomputable-and-state-map-whnf-scaling": {
       "observed_at": "2026-10-31",
       "subjects": [
@@ -29916,6 +30118,215 @@
         "anneal/experiments",
         "rust/representation",
         "verification/model-boundaries"
+      ]
+    },
+    "precompiled-theorems-split-phase-checking-and-reflective-schemas-prior-art-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "76fad1a1befa2e4c038d88c3a1bbbe873acb1322"
+          },
+          "name": "Anneal boundary auditor and verification pipeline (main)"
+        },
+        {
+          "identity": {
+            "branch": "trusted-core",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal Trusted.Refinement and Trusted.StepResult semantics (trusted-core)"
+        },
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR and x86-64 symbolic and WP evaluators (mir-to-x86)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel environment and typechecker (v4.34.1)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99"
+          },
+          "name": "Rocq Prover kernel opaque proof handling and SSReflect reflection"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          },
+          "name": "Verified Software Toolchain (VST-Floyd canonical forward symbolic execution)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9457-5",
+            "title": "VST-Floyd: A Separation Logic Tool to Verify Correctness of C Programs",
+            "venue": "Journal of Automated Reasoning 61(1-4), 2018"
+          },
+          "name": "VST-Floyd JAR 2018 publication"
+        },
+        {
+          "identity": {
+            "repository": "iris/refinedc",
+            "revision": "2e89846baeaa7f65cbe17e3ae7297a8ed5b4feca",
+            "secondary-revision": "d057583986651a28047164581f05fbee3a83ed9d"
+          },
+          "name": "RefinedC and Lithium automated separation-logic interpreter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "title": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types",
+            "venue": "PLDI 2021"
+          },
+          "name": "RefinedC PLDI 2021 publication"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422",
+            "repository": "lgaeher/refinedrust-dev",
+            "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+            "zenodo-record": "21636474"
+          },
+          "name": "RefinedRust development repository and PLDI 2024 artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523432",
+            "title": "Diaframe: Automated Verification of Fine-Grained Concurrent Programs in Iris",
+            "venue": "PLDI 2022"
+          },
+          "name": "Diaframe PLDI 2022 publication"
+        },
+        {
+          "identity": {
+            "iris-lean-repository": "leanprover-community/iris-lean",
+            "iris-lean-revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          },
+          "name": "Iris separation logic framework in Rocq and Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "68c9d77e53532cb258e09421952efe3957f40276"
+          },
+          "name": "HOL4 TheoryReader disk_thm persistence and Thm.compute / cv_compute"
+        },
+        {
+          "identity": {
+            "candle-doi": "10.4230/LIPIcs.ITP.2022.3",
+            "cv-compute-doi": "10.4230/LIPIcs.ITP.2021.27",
+            "cv-trans-doi": "10.4230/LIPIcs.ITP.2023.17",
+            "title": "Fast, Verified Computation for HOL and Verified Compilation to cv_compute"
+          },
+          "name": "HOL4 cv_compute and cv_trans ITP 2021 / 2022 / 2023 publications"
+        },
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "233b83c3202370e03c54de2bd090e4d34f677e91",
+            "secondary-revision": "b19af6934759eed622d7aca25092367f81656eee"
+          },
+          "name": "HOL Light stateless LCF kernel"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+            "secondary-revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "AWS s2n-bignum machine-code verification suite"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594296",
+            "repository": "seL4/l4v",
+            "revision": "12c300e75bb0ca0c82f76496fafacd7e614c0aba",
+            "venue": "PLDI 2014"
+          },
+          "name": "seL4 AutoCorres 5-phase C abstraction framework"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2019.21",
+            "repository": "lammich/isabelle_llvm",
+            "revision": "6be37a9c3cae74a1134dbef2979e312abb5f7f42",
+            "sepref-doi": "10.1007/978-3-319-22102-1_17"
+          },
+          "name": "Isabelle_LLVM and Sepref relational refinement framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3372885.3373824",
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+            "venue": "CPP 2020"
+          },
+          "name": "Metamath Zero (.mmb binary format and C verifier)"
+        },
+        {
+          "identity": {
+            "lambdapi-repository": "Deducteam/lambdapi",
+            "lambdapi-revision": "72cc2f10d391932fe078ba5a401765e29a1d4cb7",
+            "repository": "Deducteam/Dedukti",
+            "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0"
+          },
+          "name": "Dedukti and Lambdapi lambda-Pi-calculus modulo rewriting"
+        },
+        {
+          "identity": {
+            "doi": "10.6092/issn.1972-5787/1979",
+            "jar-doi": "10.1007/s10817-010-9183-1",
+            "title": "An Introduction to Small Scale Reflection in Coq"
+          },
+          "name": "SSReflect small-scale reflection JFR 2010 publication"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-08970-6_24",
+            "esop-doi": "10.1007/978-3-662-49498-1_19",
+            "repository": "gmalecha/mirror-core",
+            "revision": "b962fbca15b0b5a4653f66d29d7115bb04ebd4f3"
+          },
+          "name": "MirrorCore and RTac compositional computational reflection"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/audit",
+        "anneal/kernel-replay",
+        "anneal/theory",
+        "anneal/tcb",
+        "lean/kernel",
+        "lean/olean",
+        "lean/reflection",
+        "rocq/separate-compilation",
+        "vst/symbolic-execution",
+        "iris/lithium",
+        "refinedc",
+        "refinedrust",
+        "hol4/cv-compute",
+        "hol-light/s2n-bignum",
+        "isabelle/autocorres",
+        "isabelle/sepref",
+        "mm0/mmb",
+        "dedukti",
+        "ssreflect",
+        "mirrorcore/rtac"
       ]
     },
     "prefix-safety-outcomes-and-property-transfer": {
