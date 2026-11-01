@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "llvm/codegen",
+    "llvm/globalisel",
+    "llvm/selectiondag",
+    "llvm/register-allocation",
+    "llvm/machine-ssa",
+    "anneal/anllvm",
+    "anneal/translation-validation",
+    "anneal/proof-scaling",
+    "anneal/verified-compilation"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM 21.1.8 CodeGen, GlobalISel, SelectionDAG, and MC headers and llc tool",
+      "identity": {
+        "include_root": "/usr/include/llvm-21/llvm",
+        "package": "llvm-21-dev",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "Lean 4 C++ kernel and typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal repository principles and trusted refinement boundary",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "5-stage GlobalISel backend (IRTranslator, Legalizer, InstructionSelect, RegAlloc CertChecker, PrologEpilog/MC) Lean 4.34.1 soundness probe",
+      "identity": {
+        "path": "support/support_anllvm_globalisel_backend_probe.lean",
+        "sha256": "c4e879c2ce5be63796a63544ebbf69a2a4f8e30c7335c5a35ee9c8c28508ebd6"
+      }
+    },
+    {
+      "name": "End-to-end 10-pass 6-IR vertical pipeline (PreDropMir -> Mir -> AnLLVM -> AnMachineSSA -> PostRA -> FramedISA) and Stage-1 scaling Lean 4.34.1 probe",
+      "identity": {
+        "path": "support/support_end_to_end_mir_anllvm_isa_pipeline_probe.lean",
+        "sha256": "a4761a19ebd884f4b3481407a1486e283d71f96c9ef7139818ac42b225320dfb"
+      }
+    },
+    {
+      "name": "Empirical llc 21.1.8 GlobalISel vs. SelectionDAG pipeline structure and assembly outputs across x86-64 and aarch64",
+      "identity": {
+        "gisel_aarch64_asm_path": "support/gisel_aarch64-unknown-linux-gnu.s",
+        "gisel_aarch64_asm_sha256": "51b6b2da6c881cc712f8364381da30b5bb01eb4b50eaa5cb18bcd684122d77d8",
+        "gisel_aarch64_passes_path": "support/passes_gisel_aarch64-unknown-linux-gnu.txt",
+        "gisel_aarch64_passes_sha256": "0d4c15105dd59604b8fb8523e58ec9e525c382288c3fdb2f0ed5acc43f278194",
+        "gisel_x86_64_asm_path": "support/gisel_x86_64-unknown-linux-gnu.s",
+        "gisel_x86_64_asm_sha256": "900481fbf7df6c2df3c004bdd7731bf3a3376086fd609dcbcb4382b5e439a485",
+        "gisel_x86_64_passes_path": "support/passes_gisel_x86_64-unknown-linux-gnu.txt",
+        "gisel_x86_64_passes_sha256": "5e720d2f1b48d907b2ca6cc642c4c6d053a22ac17db33572f8d387c0555ba7bf",
+        "ir_probe_path": "support/backend_probe.ll",
+        "ir_probe_sha256": "9cef7daae14cf7c1ffe5a032ca96da07328507bb87ee29e4fe3e4b45291927f3",
+        "sdag_aarch64_asm_path": "support/sdag_aarch64-unknown-linux-gnu.s",
+        "sdag_aarch64_asm_sha256": "8866c96d9c0fe772772dc30a3482438404460e33b6c7fc7351c31cf703301b39",
+        "sdag_aarch64_passes_path": "support/passes_sdag_aarch64-unknown-linux-gnu.txt",
+        "sdag_aarch64_passes_sha256": "a4e817e1b3fc506fbebf28f61811865e9d795d44c6cc7604d3fb7b8da223b57c",
+        "sdag_x86_64_asm_path": "support/sdag_x86_64-unknown-linux-gnu.s",
+        "sdag_x86_64_asm_sha256": "8dac37611353c6f8fa1b646bf0e511274cf19b3622fd939c9889804c334d6ee3",
+        "sdag_x86_64_passes_path": "support/passes_sdag_x86_64-unknown-linux-gnu.txt",
+        "sdag_x86_64_passes_sha256": "227c5a44ed782292750265a6be4318d0241e10c8f2ce00595f7bb33e7aba2ecc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-01"
+}

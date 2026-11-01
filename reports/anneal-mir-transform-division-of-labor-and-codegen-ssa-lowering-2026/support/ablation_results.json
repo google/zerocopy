@@ -1,0 +1,320 @@
+{
+  "C0": {
+    "functions": {
+      "pattern1_large_aggregate_builder": {
+        "insts": 51,
+        "allocas": 8,
+        "memcpys": 7,
+        "bbs": 4,
+        "loads": 2,
+        "stores": 2
+      },
+      "pattern2_option_adapter_chain": {
+        "insts": 60,
+        "allocas": 7,
+        "memcpys": 0,
+        "bbs": 9,
+        "loads": 9,
+        "stores": 7
+      },
+      "pattern3_enum_state_machine": {
+        "insts": 113,
+        "allocas": 3,
+        "memcpys": 0,
+        "bbs": 21,
+        "loads": 16,
+        "stores": 30
+      },
+      "pattern4_scalar_cse_loop": {
+        "insts": 37,
+        "allocas": 2,
+        "memcpys": 0,
+        "bbs": 6,
+        "loads": 6,
+        "stores": 4
+      },
+      "pattern5_drop_elaboration": {
+        "insts": 39,
+        "allocas": 5,
+        "memcpys": 0,
+        "bbs": 6,
+        "loads": 6,
+        "stores": 9
+      }
+    },
+    "module_totals": {
+      "num_funcs": 20,
+      "insts": 454,
+      "allocas": 29,
+      "memcpys": 11,
+      "bbs": 79,
+      "loads": 55,
+      "stores": 78
+    }
+  },
+  "C2_raw": {
+    "functions": {
+      "pattern1_large_aggregate_builder": {
+        "insts": 29,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 3,
+        "stores": 6
+      },
+      "pattern2_option_adapter_chain": {
+        "insts": 118,
+        "allocas": 7,
+        "memcpys": 0,
+        "bbs": 25,
+        "loads": 19,
+        "stores": 21
+      },
+      "pattern3_enum_state_machine": {
+        "insts": 113,
+        "allocas": 3,
+        "memcpys": 0,
+        "bbs": 21,
+        "loads": 16,
+        "stores": 30
+      },
+      "pattern4_scalar_cse_loop": {
+        "insts": 35,
+        "allocas": 2,
+        "memcpys": 0,
+        "bbs": 6,
+        "loads": 6,
+        "stores": 4
+      },
+      "pattern5_drop_elaboration": {
+        "insts": 37,
+        "allocas": 5,
+        "memcpys": 0,
+        "bbs": 6,
+        "loads": 6,
+        "stores": 9
+      }
+    },
+    "module_totals": {
+      "num_funcs": 8,
+      "insts": 352,
+      "allocas": 18,
+      "memcpys": 1,
+      "bbs": 65,
+      "loads": 51,
+      "stores": 74
+    }
+  },
+  "C3_raw": {
+    "functions": {
+      "pattern1_large_aggregate_builder": {
+        "insts": 44,
+        "allocas": 1,
+        "memcpys": 1,
+        "bbs": 4,
+        "loads": 3,
+        "stores": 10
+      },
+      "pattern2_option_adapter_chain": {
+        "insts": 100,
+        "allocas": 6,
+        "memcpys": 0,
+        "bbs": 12,
+        "loads": 17,
+        "stores": 19
+      },
+      "pattern3_enum_state_machine": {
+        "insts": 69,
+        "allocas": 3,
+        "memcpys": 0,
+        "bbs": 7,
+        "loads": 9,
+        "stores": 19
+      },
+      "pattern4_scalar_cse_loop": {
+        "insts": 29,
+        "allocas": 2,
+        "memcpys": 0,
+        "bbs": 6,
+        "loads": 6,
+        "stores": 4
+      },
+      "pattern5_drop_elaboration": {
+        "insts": 30,
+        "allocas": 4,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 5,
+        "stores": 5
+      }
+    },
+    "module_totals": {
+      "num_funcs": 7,
+      "insts": 277,
+      "allocas": 16,
+      "memcpys": 1,
+      "bbs": 35,
+      "loads": 41,
+      "stores": 57
+    }
+  },
+  "C1": {
+    "functions": {
+      "pattern1_large_aggregate_builder": {
+        "insts": 34,
+        "allocas": 2,
+        "memcpys": 2,
+        "bbs": 1,
+        "loads": 0,
+        "stores": 8
+      },
+      "pattern2_option_adapter_chain": {
+        "insts": 119,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 17,
+        "loads": 8,
+        "stores": 0
+      },
+      "pattern3_enum_state_machine": {
+        "insts": 14,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 0,
+        "stores": 3
+      },
+      "pattern4_scalar_cse_loop": {
+        "insts": 10,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 1,
+        "loads": 1,
+        "stores": 0
+      },
+      "pattern5_drop_elaboration": {
+        "insts": 23,
+        "allocas": 3,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 0,
+        "stores": 3
+      }
+    },
+    "module_totals": {
+      "num_funcs": 6,
+      "insts": 203,
+      "allocas": 5,
+      "memcpys": 2,
+      "bbs": 28,
+      "loads": 10,
+      "stores": 14
+    }
+  },
+  "C2": {
+    "functions": {
+      "pattern1_large_aggregate_builder": {
+        "insts": 30,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 1,
+        "loads": 0,
+        "stores": 8
+      },
+      "pattern2_option_adapter_chain": {
+        "insts": 117,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 1,
+        "loads": 8,
+        "stores": 0
+      },
+      "pattern3_enum_state_machine": {
+        "insts": 14,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 0,
+        "stores": 3
+      },
+      "pattern4_scalar_cse_loop": {
+        "insts": 10,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 1,
+        "loads": 1,
+        "stores": 0
+      },
+      "pattern5_drop_elaboration": {
+        "insts": 23,
+        "allocas": 3,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 0,
+        "stores": 3
+      }
+    },
+    "module_totals": {
+      "num_funcs": 6,
+      "insts": 197,
+      "allocas": 3,
+      "memcpys": 0,
+      "bbs": 12,
+      "loads": 10,
+      "stores": 14
+    }
+  },
+  "C3": {
+    "functions": {
+      "pattern1_large_aggregate_builder": {
+        "insts": 30,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 1,
+        "loads": 0,
+        "stores": 8
+      },
+      "pattern2_option_adapter_chain": {
+        "insts": 119,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 25,
+        "loads": 8,
+        "stores": 0
+      },
+      "pattern3_enum_state_machine": {
+        "insts": 14,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 0,
+        "stores": 3
+      },
+      "pattern4_scalar_cse_loop": {
+        "insts": 10,
+        "allocas": 0,
+        "memcpys": 0,
+        "bbs": 1,
+        "loads": 1,
+        "stores": 0
+      },
+      "pattern5_drop_elaboration": {
+        "insts": 23,
+        "allocas": 3,
+        "memcpys": 0,
+        "bbs": 4,
+        "loads": 0,
+        "stores": 3
+      }
+    },
+    "module_totals": {
+      "num_funcs": 6,
+      "insts": 199,
+      "allocas": 3,
+      "memcpys": 0,
+      "bbs": 36,
+      "loads": 10,
+      "stores": 14
+    }
+  }
+}

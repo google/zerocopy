@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "rust/mir",
+    "rust/rustc-mir-transform",
+    "rust/rustc-codegen-ssa",
+    "rust/rustc-codegen-llvm",
+    "llvm/abi-lowering",
+    "llvm/niche-discriminants",
+    "anneal/anllvm",
+    "anneal/mir-semantics",
+    "anneal/verified-compilation"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_llvm, and rustc_ty_utils)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 opt optimizer and IR headers",
+      "identity": {
+        "include_root": "/usr/include/llvm-21/llvm",
+        "package": "llvm-21-dev",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "Lean 4 C++ kernel and typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal repository principles and MIR semantics",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "MIR optimization pass adaptation (MirSROA, DestinationPropagation, ElaborateDrops) Lean 4.34.1 soundness probe",
+      "identity": {
+        "path": "support/support_mir_transform_adaptation_probe.lean",
+        "sha256": "babfaffbfd0af65b0b9f0019767a793981a33ec378d6f548b22d8f7a007ff1d7"
+      }
+    },
+    {
+      "name": "MIR-to-AnLLVM single-pass RPO lowering (LocalAnalyzer, TagEncoding::Niche, PassMode::Cast, Transmute) Lean 4.34.1 soundness probe",
+      "identity": {
+        "path": "support/support_mir_to_anllvm_lowering_probe.lean",
+        "sha256": "bd801a91140089fe6bef519fbff256f93c418bb1052eb94d4e37f8d0c79c5d1a"
+      }
+    },
+    {
+      "name": "Empirical C0..C3 rustc MIR optimization vs. LLVM opt -O2 differential ablation suite",
+      "identity": {
+        "benchmark_rust_path": "support/bench_patterns.rs",
+        "benchmark_rust_sha256": "7b96a8a0e83fa5dc40b50ccd80afb4c37ca19998b99d985a8aa4e7b38faa5754",
+        "results_path": "support/ablation_results.json",
+        "results_sha256": "9b5ad4227e2d41178c02724a11907e5571e1d445ef415a2674e244f81bcedc1e",
+        "runner_path": "support/run_ablation.py",
+        "runner_sha256": "52c7dc11676fbca92241aac5497b68ea2691ff8e953987259613017b29d07475"
+      }
+    },
+    {
+      "name": "Empirical rustc_codegen_ssa / rustc_codegen_llvm MIR and pre-LLVM IR dump probe",
+      "identity": {
+        "llvm_ir_path": "support/empirical_probe_opt1_nollvm.ll",
+        "llvm_ir_sha256": "c861ba81baaaa02acc88bc1627c4f550e48216c4ba15d1e6747be8c71f3e4b07",
+        "mir_path": "support/empirical_probe_opt1.mir",
+        "mir_sha256": "695408cce539bc0b02a537dae9828457dc9ad77c19e32e04742983c28081be1a",
+        "rust_source_path": "support/empirical_probe.rs",
+        "rust_source_sha256": "5dcdd80399e1dbf24fc033bc9a016b7a171e3f36c0fd69af6923addb928e26e0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-01"
+}

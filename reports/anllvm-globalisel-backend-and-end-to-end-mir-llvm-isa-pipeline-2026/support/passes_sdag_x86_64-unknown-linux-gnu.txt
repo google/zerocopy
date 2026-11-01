@@ -1,0 +1,219 @@
+Pass Arguments:  -targetlibinfo -targetpassconfig -machinemoduleinfo -tti -tbaa -scoped-noalias-aa -assumption-cache-tracker -profile-summary-info -collector-metadata -machine-branch-prob -regalloc-evict -regalloc-priority -pre-isel-intrinsic-lowering -expand-large-div-rem -expand-fp -atomic-expand -lower-amx-intrinsics -lower-amx-type -verify -domtree -basic-aa -loops -loop-simplify -scalar-evolution -canon-freeze -iv-users -loop-reduce -basic-aa -aa -mergeicmps -loops -lazy-branch-prob -lazy-block-freq -expand-memcmp -gc-lowering -shadow-stack-gc-lowering -unreachableblockelim -loops -postdomtree -branch-prob -block-freq -consthoist -replace-with-veclib -lazy-branch-prob -lazy-block-freq -opt-remark-emitter -partially-inline-libcalls -post-inline-ee-instrument -scalarize-masked-mem-intrin -expand-reductions -interleaved-access -x86-partial-reduction -indirectbr-expand -loops -codegenprepare -domtree -dwarf-eh-prepare -basic-aa -aa -objc-arc-contract -callbrprepare -safe-stack -stack-protector -verify -basic-aa -aa -loops -postdomtree -branch-prob -debug-ata -lazy-branch-prob -lazy-block-freq -x86-isel -machinedomtree -x86argumentstackrebase -finalize-isel -x86-domain-reassignment -lazy-machine-block-freq -early-tailduplication -opt-phis -slotindexes -stack-coloring -localstackalloc -dead-mi-elimination -machinedomtree -machine-loops -machine-trace-metrics -early-ifcvt -lazy-machine-block-freq -machine-combiner -x86-cmov-conversion -machinedomtree -machine-loops -machine-block-freq -early-machinelicm -machinedomtree -machine-block-freq -machine-cse -machinepostdomtree -machine-cycles -machine-sink -peephole-opt -dead-mi-elimination -lrshrink -x86-fixup-setcc -lazy-machine-block-freq -x86-optimize-LEAs -x86-cf-opt -x86-avoid-SFB -x86-suppress-apx-for-relocation -x86-slh -x86-flags-copy-lowering -x86-dyn-alloca-expander -machinedomtree -machine-loops -tilepreconfig -detect-dead-lanes -init-undef -processimpdefs -unreachable-mbb-elimination -livevars -phi-node-elimination -twoaddressinstruction -slotindexes -liveintervals -register-coalescer -rename-independent-subregs -machine-scheduler -machine-block-freq -livedebugvars -livestacks -virtregmap -liveregmatrix -edge-bundles -spill-code-placement -lazy-machine-block-freq -machine-opt-remark-emitter -greedy -tileconfig -greedy -virtregrewriter -regallocscoringpass -stack-slot-coloring -machine-cp -machinelicm -lowertilecopy -edge-bundles -x86-codegen -machinedomtree -machine-domfrontier -x86-lvi-load -removeredundantdebugvalues -fixup-statepoint-caller-saved -postra-machine-sink -machine-block-freq -machinepostdomtree -lazy-machine-block-freq -machine-opt-remark-emitter -shrink-wrap -prologepilog -machine-latecleanup -branch-folder -lazy-machine-block-freq -tailduplication -machine-cp -postrapseudos -x86-pseudo -kcfi -machinedomtree -machine-loops -post-RA-sched -gc-analysis -machine-block-freq -machinepostdomtree -block-placement -fentry-insert -xray-instrumentation -patchable-function -reaching-defs-analysis -x86-execution-domain-fix -break-false-deps -lazy-machine-block-freq -x86-fixup-bw-insts -lazy-machine-block-freq -x86-fixup-LEAs -x86-fixup-inst-tuning -x86-fixup-vector-constants -x86-compress-evex -funclet-layout -remove-loads-into-fake-uses -stackmap-liveness -livedebugvalues -machine-sanmd -lazy-machine-block-freq -machine-opt-remark-emitter -stack-frame-layout -x86-seses -x86-return-thunks -cfi-instr-inserter -x86-lvi-ret -pseudo-probe-inserter -unpack-mi-bundles -lazy-machine-block-freq -machine-opt-remark-emitter -x86-asm-printer
+Target Library Information
+Target Pass Configuration
+Machine Module Information
+Target Transform Information
+Type-Based Alias Analysis
+Scoped NoAlias Alias Analysis
+Assumption Cache Tracker
+Profile summary info
+Create Garbage Collector Module Metadata
+Machine Branch Probability Analysis
+Default Regalloc Eviction Advisor
+Default Regalloc Priority Advisor
+  ModulePass Manager
+    Pre-ISel Intrinsic Lowering
+    FunctionPass Manager
+      Expand large div/rem
+      Expand fp
+      Expand Atomic instructions
+      Lower AMX intrinsics
+      Lower AMX type for load/store
+      Module Verifier
+      Dominator Tree Construction
+      Basic Alias Analysis (stateless AA impl)
+      Natural Loop Information
+      Canonicalize natural loops
+      Scalar Evolution Analysis
+      Loop Pass Manager
+        Canonicalize Freeze Instructions in Loops
+        Induction Variable Users
+        Loop Strength Reduction
+      Basic Alias Analysis (stateless AA impl)
+      Function Alias Analysis Results
+      Merge contiguous icmps into a memcmp
+      Natural Loop Information
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      Expand memcmp() to load/stores
+      Lower Garbage Collection Instructions
+      Shadow Stack GC Lowering
+      Remove unreachable blocks from the CFG
+      Natural Loop Information
+      Post-Dominator Tree Construction
+      Branch Probability Analysis
+      Block Frequency Analysis
+      Constant Hoisting
+      Replace intrinsics with calls to vector library
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      Optimization Remark Emitter
+      Partially inline calls to library functions
+      Instrument function entry/exit with calls to e.g. mcount() (post inlining)
+      Scalarize Masked Memory Intrinsics
+      Expand reduction intrinsics
+      Interleaved Access Pass
+      X86 Partial Reduction
+      Expand indirectbr instructions
+      Natural Loop Information
+      CodeGen Prepare
+      Dominator Tree Construction
+      Exception handling preparation
+      Basic Alias Analysis (stateless AA impl)
+      Function Alias Analysis Results
+      ObjC ARC contraction
+      Prepare callbr
+      Safe Stack instrumentation pass
+      Insert stack protectors
+      Module Verifier
+      Basic Alias Analysis (stateless AA impl)
+      Function Alias Analysis Results
+      Natural Loop Information
+      Post-Dominator Tree Construction
+      Branch Probability Analysis
+      Assignment Tracking Analysis
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      X86 DAG->DAG Instruction Selection
+      MachineDominator Tree Construction
+      Local Dynamic TLS Access Clean-up
+      X86 PIC Global Base Reg Initialization
+      Argument Stack Rebase
+      Finalize ISel and expand pseudo-instructions
+      X86 Domain Reassignment Pass
+      Lazy Machine Block Frequency Analysis
+      Early Tail Duplication
+      Optimize machine instruction PHIs
+      Slot index numbering
+      Merge disjoint stack slots
+      Local Stack Slot Allocation
+      Remove dead machine instructions
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Machine Trace Metrics
+      Early If-Conversion
+      Lazy Machine Block Frequency Analysis
+      Machine InstCombiner
+      X86 cmov Conversion
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Machine Block Frequency Analysis
+      Early Machine Loop Invariant Code Motion
+      MachineDominator Tree Construction
+      Machine Block Frequency Analysis
+      Machine Common Subexpression Elimination
+      MachinePostDominator Tree Construction
+      Machine Cycle Info Analysis
+      Machine code sinking
+      Peephole Optimizations
+      Remove dead machine instructions
+      Live Range Shrink
+      X86 Fixup SetCC
+      Lazy Machine Block Frequency Analysis
+      X86 LEA Optimize
+      X86 Optimize Call Frame
+      X86 Avoid Store Forwarding Blocks
+      X86 Suppress APX features for relocation
+      X86 speculative load hardening
+      X86 EFLAGS copy lowering
+      X86 DynAlloca Expander
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Tile Register Pre-configure
+      Detect Dead Lanes
+      Init Undef Pass
+      Process Implicit Definitions
+      Remove unreachable machine basic blocks
+      Live Variable Analysis
+      Eliminate PHI nodes for register allocation
+      Two-Address instruction pass
+      Slot index numbering
+      Live Interval Analysis
+      Register Coalescer
+      Rename Disconnected Subregister Components
+      Machine Instruction Scheduler
+      Machine Block Frequency Analysis
+      Debug Variable Analysis
+      Live Stack Slot Analysis
+      Virtual Register Map
+      Live Register Matrix
+      Bundle Machine CFG Edges
+      Spill Code Placement Analysis
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Greedy Register Allocator
+      Tile Register Configure
+      Greedy Register Allocator
+      Virtual Register Rewriter
+      Register Allocation Pass Scoring
+      Stack Slot Coloring
+      Machine Copy Propagation Pass
+      Machine Loop Invariant Code Motion
+      X86 Lower Tile Copy
+      Bundle Machine CFG Edges
+      X86 FP Stackifier
+      MachineDominator Tree Construction
+      Machine Dominance Frontier Construction
+      X86 Load Value Injection (LVI) Load Hardening
+      Remove Redundant DEBUG_VALUE analysis
+      Fixup Statepoint Caller Saved
+      PostRA Machine Sink
+      Machine Block Frequency Analysis
+      MachinePostDominator Tree Construction
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Shrink Wrapping analysis
+      Prologue/Epilogue Insertion & Frame Finalization
+      Machine Late Instructions Cleanup Pass
+      Control Flow Optimizer
+      Lazy Machine Block Frequency Analysis
+      Tail Duplication
+      Machine Copy Propagation Pass
+      Post-RA pseudo instruction expansion pass
+      X86 pseudo instruction expansion pass
+      Insert KCFI indirect call checks
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Post RA top-down list latency scheduler
+      Analyze Machine Code For Garbage Collection
+      Machine Block Frequency Analysis
+      MachinePostDominator Tree Construction
+      Branch Probability Basic Block Placement
+      Insert fentry calls
+      Insert XRay ops
+      Implement the 'patchable-function' attribute
+      ReachingDefAnalysis
+      X86 Execution Dependency Fix
+      BreakFalseDeps
+      X86 Indirect Branch Tracking
+      X86 vzeroupper inserter
+      Lazy Machine Block Frequency Analysis
+      X86 Byte/Word Instruction Fixup
+      Lazy Machine Block Frequency Analysis
+      X86 Atom pad short functions
+      X86 LEA Fixup
+      X86 Fixup Inst Tuning
+      X86 Fixup Vector Constants
+      Compressing EVEX instrs when possible
+      X86 Discriminate Memory Operands
+      X86 Insert Cache Prefetches
+      X86 insert wait instruction
+      Contiguously Lay Out Funclets
+      Remove Loads Into Fake Uses
+      StackMap Liveness Analysis
+      Live DEBUG_VALUE analysis
+      Machine Sanitizer Binary Metadata
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Stack Frame Layout Analysis
+      X86 Speculative Execution Side Effect Suppression
+      X86 Indirect Thunks
+      X86 Return Thunks
+      Check CFA info and insert CFI instructions if needed
+      X86 Load Value Injection (LVI) Ret-Hardening
+      Pseudo Probe Inserter
+      Unpack machine instruction bundles
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      X86 Assembly Printer
+      Free MachineFunction

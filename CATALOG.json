@@ -1666,6 +1666,182 @@
         "anneal/history"
       ]
     },
+    "anllvm-clean-slate-ir-semantics-and-llvm-pass-adaptation-2026": {
+      "observed_at": "2026-11-01",
+      "subjects": [
+        {
+          "identity": {
+            "include_root": "/usr/include/llvm-21/llvm",
+            "package": "llvm-21-dev",
+            "version": "21.1.8"
+          },
+          "name": "LLVM 21.1.8 IR, Analysis, and Transforms headers and opt/llc tools"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust compiler (rustc_codegen_ssa and rustc_codegen_llvm)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel and typechecker"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal repository principles and trusted refinement boundary"
+        },
+        {
+          "identity": {
+            "path": "support/support_clean_slate_llvm_ir_probe.lean",
+            "sha256": "fcc223ec1d1f32aeac617acbfed3ad1183dfc7ec2bcd2628185eec3eace17ee0"
+          },
+          "name": "Clean-slate AnLLVM-IR formal semantics and 7-modification Lean 4.34.1 soundness probe"
+        },
+        {
+          "identity": {
+            "path": "support/support_anllvm_middle_end_passes_probe.lean",
+            "sha256": "802f26cf0974d73ce80d89b9ea6263d9c36edc949ad3041d4c45a9b570ba9892"
+          },
+          "name": "AnLLVM middle-end pass pipeline (SROA+Mem2Reg, InstCombine+BDCE, MemorySSA GVN+DSE, SCEV+LICM) Lean 4.34.1 soundness probe"
+        },
+        {
+          "identity": {
+            "probe_a_in_path": "support/probe_a_ptrtoint_gvn.ll",
+            "probe_a_in_sha256": "6b79720edbffd0485d88fb8042c7213fe600bb08e1ab4fd6dd878cf99de0c021",
+            "probe_a_out_path": "support/probe_a_ptrtoint_gvn.opt.ll",
+            "probe_a_out_sha256": "6bb148aa3666678cf9bc2ebbeab82041f93aa2ea59d99cc57f0620c05a3f0311",
+            "probe_b_in_path": "support/probe_b_sroa_padding.ll",
+            "probe_b_in_sha256": "90d4129dd74c6ef387cf6ced554ea58f4b51f481c8c1e24b9580adb9552cbad9",
+            "probe_b_out_path": "support/probe_b_sroa_padding.opt.ll",
+            "probe_b_out_sha256": "9d961a4194424d9c73336906f7828317d2d0aa5b8758ecffd755ebf579e9cc6d",
+            "probe_c_in_path": "support/probe_c_unswitch_freeze.ll",
+            "probe_c_in_sha256": "97103fecb828362f389cc31efedb5be8327bf1a0d9a98d9c47febe0b20586778",
+            "probe_c_out_path": "support/probe_c_unswitch_freeze.opt.ll",
+            "probe_c_out_sha256": "d51708f213ee220836beea983f49f5988652a03f9ac5bb4b3b893049b6ca5745",
+            "probe_d_asm_path": "support/probe_d_lifetime_aa.s",
+            "probe_d_asm_sha256": "705a581e0d501ca9d38911b3b519346a4e6aa05c63b4d3dbda274a2096a6e327",
+            "probe_d_in_path": "support/probe_d_lifetime_aa.ll",
+            "probe_d_in_sha256": "d64dfce2777a7382ade73d7b6fd7407cf9e891887af6ffaab0b498e69b0a385b",
+            "probe_d_out_path": "support/probe_d_lifetime_aa.opt.ll",
+            "probe_d_out_sha256": "890bc620090aefd3de552e76ac78d60048fdc0406ccac37a6a40eb97d78d5a93",
+            "probe_e_in_path": "support/probe_e_mustprogress_loops.ll",
+            "probe_e_in_sha256": "f63071d1598c06ca3ce24e1747a628e0a94fe0e1bf2a82a0ebe00415ee7ba61c",
+            "probe_e_out_path": "support/probe_e_mustprogress_loops.opt.ll",
+            "probe_e_out_sha256": "a8e8303d74dce1d21794d9f17f82c3d4b2c8205a1279074aba804c207fe99f13"
+          },
+          "name": "Empirical LLVM 21.1.8 opt and llc semantic contradiction and pass behavior probes (Probes A-E)"
+        },
+        {
+          "identity": {
+            "benchmark_rust_path": "support/bench_suite.rs",
+            "benchmark_rust_sha256": "c9f5987e923164a09b33de14b4f98fb5a4ebe40958ec5e5917b52e9ddcdcf0c2",
+            "results_path": "support/ablation_results.json",
+            "results_sha256": "6368be3eb21c22bab21d734337d850dbaeadb514fb9dfac755b7727029bfe9b5",
+            "runner_path": "support/ablation_benchmark.py",
+            "runner_sha256": "04b2e01b2263965ef79a8b0c93813ea3d9084d7f2940087f08603ad717e40986"
+          },
+          "name": "Cumulative P0..P6 middle-end pass ablation benchmark on 6 Rust kernels across x86_64 and aarch64"
+        }
+      ],
+      "topics": [
+        "llvm/ir-semantics",
+        "llvm/poison-and-freeze",
+        "llvm/pointer-provenance",
+        "llvm/middle-end-passes",
+        "llvm/memoryssa",
+        "llvm/scalar-evolution",
+        "anneal/anllvm",
+        "anneal/translation-validation",
+        "anneal/verified-compilation"
+      ]
+    },
+    "anllvm-globalisel-backend-and-end-to-end-mir-llvm-isa-pipeline-2026": {
+      "observed_at": "2026-11-01",
+      "subjects": [
+        {
+          "identity": {
+            "include_root": "/usr/include/llvm-21/llvm",
+            "package": "llvm-21-dev",
+            "version": "21.1.8"
+          },
+          "name": "LLVM 21.1.8 CodeGen, GlobalISel, SelectionDAG, and MC headers and llc tool"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel and typechecker"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal repository principles and trusted refinement boundary"
+        },
+        {
+          "identity": {
+            "path": "support/support_anllvm_globalisel_backend_probe.lean",
+            "sha256": "c4e879c2ce5be63796a63544ebbf69a2a4f8e30c7335c5a35ee9c8c28508ebd6"
+          },
+          "name": "5-stage GlobalISel backend (IRTranslator, Legalizer, InstructionSelect, RegAlloc CertChecker, PrologEpilog/MC) Lean 4.34.1 soundness probe"
+        },
+        {
+          "identity": {
+            "path": "support/support_end_to_end_mir_anllvm_isa_pipeline_probe.lean",
+            "sha256": "a4761a19ebd884f4b3481407a1486e283d71f96c9ef7139818ac42b225320dfb"
+          },
+          "name": "End-to-end 10-pass 6-IR vertical pipeline (PreDropMir -> Mir -> AnLLVM -> AnMachineSSA -> PostRA -> FramedISA) and Stage-1 scaling Lean 4.34.1 probe"
+        },
+        {
+          "identity": {
+            "gisel_aarch64_asm_path": "support/gisel_aarch64-unknown-linux-gnu.s",
+            "gisel_aarch64_asm_sha256": "51b6b2da6c881cc712f8364381da30b5bb01eb4b50eaa5cb18bcd684122d77d8",
+            "gisel_aarch64_passes_path": "support/passes_gisel_aarch64-unknown-linux-gnu.txt",
+            "gisel_aarch64_passes_sha256": "0d4c15105dd59604b8fb8523e58ec9e525c382288c3fdb2f0ed5acc43f278194",
+            "gisel_x86_64_asm_path": "support/gisel_x86_64-unknown-linux-gnu.s",
+            "gisel_x86_64_asm_sha256": "900481fbf7df6c2df3c004bdd7731bf3a3376086fd609dcbcb4382b5e439a485",
+            "gisel_x86_64_passes_path": "support/passes_gisel_x86_64-unknown-linux-gnu.txt",
+            "gisel_x86_64_passes_sha256": "5e720d2f1b48d907b2ca6cc642c4c6d053a22ac17db33572f8d387c0555ba7bf",
+            "ir_probe_path": "support/backend_probe.ll",
+            "ir_probe_sha256": "9cef7daae14cf7c1ffe5a032ca96da07328507bb87ee29e4fe3e4b45291927f3",
+            "sdag_aarch64_asm_path": "support/sdag_aarch64-unknown-linux-gnu.s",
+            "sdag_aarch64_asm_sha256": "8866c96d9c0fe772772dc30a3482438404460e33b6c7fc7351c31cf703301b39",
+            "sdag_aarch64_passes_path": "support/passes_sdag_aarch64-unknown-linux-gnu.txt",
+            "sdag_aarch64_passes_sha256": "a4e817e1b3fc506fbebf28f61811865e9d795d44c6cc7604d3fb7b8da223b57c",
+            "sdag_x86_64_asm_path": "support/sdag_x86_64-unknown-linux-gnu.s",
+            "sdag_x86_64_asm_sha256": "8dac37611353c6f8fa1b646bf0e511274cf19b3622fd939c9889804c334d6ee3",
+            "sdag_x86_64_passes_path": "support/passes_sdag_x86_64-unknown-linux-gnu.txt",
+            "sdag_x86_64_passes_sha256": "227c5a44ed782292750265a6be4318d0241e10c8f2ce00595f7bb33e7aba2ecc"
+          },
+          "name": "Empirical llc 21.1.8 GlobalISel vs. SelectionDAG pipeline structure and assembly outputs across x86-64 and aarch64"
+        }
+      ],
+      "topics": [
+        "llvm/codegen",
+        "llvm/globalisel",
+        "llvm/selectiondag",
+        "llvm/register-allocation",
+        "llvm/machine-ssa",
+        "anneal/anllvm",
+        "anneal/translation-validation",
+        "anneal/proof-scaling",
+        "anneal/verified-compilation"
+      ]
+    },
     "anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026": {
       "observed_at": "2026-10-30",
       "subjects": [
@@ -14994,6 +15170,89 @@
         "anneal/compiler-optimizations",
         "lean4/step-indexed-refinement",
         "lean4/stutter-simulation"
+      ]
+    },
+    "anneal-mir-transform-division-of-labor-and-codegen-ssa-lowering-2026": {
+      "observed_at": "2026-11-01",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust compiler (rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_llvm, and rustc_ty_utils)"
+        },
+        {
+          "identity": {
+            "include_root": "/usr/include/llvm-21/llvm",
+            "package": "llvm-21-dev",
+            "version": "21.1.8"
+          },
+          "name": "LLVM 21.1.8 opt optimizer and IR headers"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel and typechecker"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal repository principles and MIR semantics"
+        },
+        {
+          "identity": {
+            "path": "support/support_mir_transform_adaptation_probe.lean",
+            "sha256": "babfaffbfd0af65b0b9f0019767a793981a33ec378d6f548b22d8f7a007ff1d7"
+          },
+          "name": "MIR optimization pass adaptation (MirSROA, DestinationPropagation, ElaborateDrops) Lean 4.34.1 soundness probe"
+        },
+        {
+          "identity": {
+            "path": "support/support_mir_to_anllvm_lowering_probe.lean",
+            "sha256": "bd801a91140089fe6bef519fbff256f93c418bb1052eb94d4e37f8d0c79c5d1a"
+          },
+          "name": "MIR-to-AnLLVM single-pass RPO lowering (LocalAnalyzer, TagEncoding::Niche, PassMode::Cast, Transmute) Lean 4.34.1 soundness probe"
+        },
+        {
+          "identity": {
+            "benchmark_rust_path": "support/bench_patterns.rs",
+            "benchmark_rust_sha256": "7b96a8a0e83fa5dc40b50ccd80afb4c37ca19998b99d985a8aa4e7b38faa5754",
+            "results_path": "support/ablation_results.json",
+            "results_sha256": "9b5ad4227e2d41178c02724a11907e5571e1d445ef415a2674e244f81bcedc1e",
+            "runner_path": "support/run_ablation.py",
+            "runner_sha256": "52c7dc11676fbca92241aac5497b68ea2691ff8e953987259613017b29d07475"
+          },
+          "name": "Empirical C0..C3 rustc MIR optimization vs. LLVM opt -O2 differential ablation suite"
+        },
+        {
+          "identity": {
+            "llvm_ir_path": "support/empirical_probe_opt1_nollvm.ll",
+            "llvm_ir_sha256": "c861ba81baaaa02acc88bc1627c4f550e48216c4ba15d1e6747be8c71f3e4b07",
+            "mir_path": "support/empirical_probe_opt1.mir",
+            "mir_sha256": "695408cce539bc0b02a537dae9828457dc9ad77c19e32e04742983c28081be1a",
+            "rust_source_path": "support/empirical_probe.rs",
+            "rust_source_sha256": "5dcdd80399e1dbf24fc033bc9a016b7a171e3f36c0fd69af6923addb928e26e0"
+          },
+          "name": "Empirical rustc_codegen_ssa / rustc_codegen_llvm MIR and pre-LLVM IR dump probe"
+        }
+      ],
+      "topics": [
+        "rust/mir",
+        "rust/rustc-mir-transform",
+        "rust/rustc-codegen-ssa",
+        "rust/rustc-codegen-llvm",
+        "llvm/abi-lowering",
+        "llvm/niche-discriminants",
+        "anneal/anllvm",
+        "anneal/mir-semantics",
+        "anneal/verified-compilation"
       ]
     },
     "anneal-nix-fixed-output-downloads-main-41f5b37": {

@@ -1,0 +1,471 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn probe_ssa_vs_alloca(_1: bool, _2: u64, _3: u64) -> u64 {
+    debug cond => _1;
+    debug x => _2;
+    debug y => _3;
+    let mut _0: u64;
+    let _4: u64;
+    let mut _6: u64;
+    let mut _7: u64;
+    scope 1 {
+        debug ssa_tmp => _4;
+        let mut _5: u64;
+        scope 2 {
+            debug acc => _5;
+            let _8: u64;
+            scope 3 {
+                debug pinned => _8;
+                let _9: *const u64;
+                scope 4 {
+                    debug ptr => _9;
+                    let _10: u64;
+                    scope 5 {
+                        debug loaded => _10;
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_4);
+        _4 = core::num::<impl u64>::wrapping_add(move _2, const 1_u64) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _5 = copy _4;
+        switchInt(copy _1) -> [0: bb4, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageLive(_6);
+        _6 = core::num::<impl u64>::wrapping_add(move _5, move _3) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        _5 = move _6;
+        StorageDead(_6);
+        goto -> bb6;
+    }
+
+    bb4: {
+        StorageLive(_7);
+        _7 = core::num::<impl u64>::wrapping_sub(move _5, move _3) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        _5 = move _7;
+        StorageDead(_7);
+        goto -> bb6;
+    }
+
+    bb6: {
+        StorageLive(_8);
+        _8 = copy _4;
+        StorageLive(_9);
+        _9 = &raw const _8;
+        StorageLive(_10);
+        _10 = copy _8;
+        _0 = core::num::<impl u64>::wrapping_add(move _5, move _10) -> [return: bb7, unwind continue];
+    }
+
+    bb7: {
+        StorageDead(_10);
+        StorageDead(_9);
+        StorageDead(_8);
+        StorageDead(_4);
+        return;
+    }
+}
+
+fn probe_scalar_pair_tuple(_1: (u64, u64)) -> (u64, u64) {
+    debug pair => _1;
+    let mut _0: (u64, u64);
+    let mut _2: u64;
+    let mut _3: u64;
+    let mut _4: u64;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = copy (_1.1: u64);
+        _2 = core::num::<impl u64>::wrapping_add(move _3, const 1_u64) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageLive(_4);
+        _4 = copy (_1.0: u64);
+        _0 = (move _2, move _4);
+        StorageDead(_4);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn probe_scalar_pair_slice(_1: &[u8]) -> usize {
+    debug slice => _1;
+    let mut _0: usize;
+
+    bb0: {
+        _0 = PtrMetadata(copy _1);
+        return;
+    }
+}
+
+fn probe_option_nonzero_scalar(_1: Option<NonZero<u64>>) -> u64 {
+    debug opt => _1;
+    let mut _0: u64;
+    let mut _2: isize;
+    let _3: core::num::NonZero<u64>;
+    scope 1 {
+        debug v => _3;
+    }
+
+    bb0: {
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb2, 1: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _0 = const 0_u64;
+        goto -> bb5;
+    }
+
+    bb3: {
+        StorageLive(_3);
+        _3 = copy ((_1 as Some).0: core::num::NonZero<u64>);
+        _0 = NonZero::<u64>::get(move _3) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_3);
+        goto -> bb5;
+    }
+
+    bb5: {
+        return;
+    }
+}
+
+fn probe_option_nonzero_pair(_1: Option<(NonZero<u64>, u64)>) -> u64 {
+    debug opt => _1;
+    let mut _0: u64;
+    let mut _2: isize;
+    let _3: core::num::NonZero<u64>;
+    let _4: u64;
+    let mut _5: u64;
+    scope 1 {
+        debug nz => _3;
+        debug extra => _4;
+    }
+
+    bb0: {
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb2, 1: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        _0 = const 0_u64;
+        goto -> bb6;
+    }
+
+    bb3: {
+        StorageLive(_3);
+        _3 = copy (((_1 as Some).0: (core::num::NonZero<u64>, u64)).0: core::num::NonZero<u64>);
+        StorageLive(_4);
+        _4 = copy (((_1 as Some).0: (core::num::NonZero<u64>, u64)).1: u64);
+        StorageLive(_5);
+        _5 = NonZero::<u64>::get(move _3) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        _0 = core::num::<impl u64>::wrapping_add(move _5, move _4) -> [return: bb5, unwind continue];
+    }
+
+    bb5: {
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        goto -> bb6;
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+const BoundedPayload::V10::{constant#0}: u8 = const 10_u8;
+
+const BoundedPayload::V11::{constant#0}: u8 = const 11_u8;
+
+const BoundedPayload::V12::{constant#0}: u8 = const 12_u8;
+
+fn <impl at . 68:21>::clone(_1: &BoundedPayload) -> BoundedPayload {
+    debug self => _1;
+    let mut _0: BoundedPayload;
+
+    bb0: {
+        _0 = copy (*_1);
+        return;
+    }
+}
+
+fn <impl at . 75:21>::clone(_1: &MultiNiche) -> MultiNiche {
+    debug self => _1;
+    let mut _0: MultiNiche;
+    scope 1 {
+    }
+
+    bb0: {
+        _0 = copy (*_1);
+        return;
+    }
+}
+
+fn probe_multi_niche_decode(_1: MultiNiche) -> u8 {
+    debug val => _1;
+    let mut _0: u8;
+    let mut _2: isize;
+    let _3: BoundedPayload;
+    scope 1 {
+        debug p => _3;
+    }
+
+    bb0: {
+        _2 = discriminant(_1);
+        switchInt(move _2) -> [0: bb5, 1: bb4, 2: bb3, 3: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        unreachable;
+    }
+
+    bb2: {
+        StorageLive(_3);
+        _3 = copy ((_1 as Untagged).0: BoundedPayload);
+        _0 = discriminant(_3);
+        StorageDead(_3);
+        goto -> bb6;
+    }
+
+    bb3: {
+        _0 = const 3_u8;
+        goto -> bb6;
+    }
+
+    bb4: {
+        _0 = const 2_u8;
+        goto -> bb6;
+    }
+
+    bb5: {
+        _0 = const 1_u8;
+        goto -> bb6;
+    }
+
+    bb6: {
+        return;
+    }
+}
+
+fn probe_multi_niche_encode(_1: u8, _2: BoundedPayload) -> MultiNiche {
+    debug which => _1;
+    debug p => _2;
+    let mut _0: MultiNiche;
+
+    bb0: {
+        switchInt(copy _1) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _0 = MultiNiche::Untagged(copy _2);
+        goto -> bb5;
+    }
+
+    bb2: {
+        _0 = const MultiNiche::TagC;
+        goto -> bb5;
+    }
+
+    bb3: {
+        _0 = const MultiNiche::TagB;
+        goto -> bb5;
+    }
+
+    bb4: {
+        _0 = const MultiNiche::TagA;
+        goto -> bb5;
+    }
+
+    bb5: {
+        return;
+    }
+}
+
+fn <impl at . 107:21>::clone(_1: &Padded) -> Padded {
+    debug self => _1;
+    let mut _0: Padded;
+    scope 1 {
+        scope 2 {
+        }
+    }
+
+    bb0: {
+        _0 = copy (*_1);
+        return;
+    }
+}
+
+fn probe_pass_mode_cast_modify(_1: Padded) -> Padded {
+    debug p => _1;
+    let mut _0: Padded;
+    let mut _2: u8;
+    let mut _3: u8;
+    let mut _4: u32;
+    let mut _5: u32;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = copy (_1.0: u8);
+        _2 = core::num::<impl u8>::wrapping_add(move _3, const 1_u8) -> [return: bb1, unwind terminate(abi)];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        (_1.0: u8) = move _2;
+        StorageDead(_2);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy (_1.1: u32);
+        _4 = core::num::<impl u32>::wrapping_add(move _5, const 2_u32) -> [return: bb2, unwind terminate(abi)];
+    }
+
+    bb2: {
+        StorageDead(_5);
+        (_1.1: u32) = move _4;
+        StorageDead(_4);
+        _0 = copy _1;
+        return;
+    }
+}
+
+fn probe_pass_mode_cast_construct(_1: u8, _2: u32) -> Padded {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: Padded;
+
+    bb0: {
+        _0 = Padded { a: copy _1, b: copy _2 };
+        return;
+    }
+}
+
+fn probe_pass_mode_cast_caller(_1: u8, _2: u32) -> Padded {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: Padded;
+    let _3: Padded;
+    scope 1 {
+        debug p => _3;
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = Padded { a: copy _1, b: copy _2 };
+        _0 = probe_pass_mode_cast_modify(move _3) -> [return: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        return;
+    }
+}
+
+fn probe_transmute_pair_to_u64(_1: (u32, u32)) -> u64 {
+    debug pair => _1;
+    let mut _0: u64;
+
+    bb0: {
+        _0 = copy _1 as u64 (Transmute);
+        return;
+    }
+}
+
+fn probe_transmute_u64_to_pair(_1: u64) -> (u32, u32) {
+    debug bits => _1;
+    let mut _0: (u32, u32);
+
+    bb0: {
+        _0 = copy _1 as (u32, u32) (Transmute);
+        return;
+    }
+}
+
+fn probe_transmute_padded_to_u64(_1: Padded) -> u64 {
+    debug p => _1;
+    let mut _0: u64;
+
+    bb0: {
+        _0 = copy _1 as u64 (Transmute);
+        return;
+    }
+}
+
+fn probe_checked_arith_and_assert(_1: u64, _2: u64, _3: u64) -> u64 {
+    debug x => _1;
+    debug y => _2;
+    debug z => _3;
+    let mut _0: u64;
+    let mut _4: u64;
+    let mut _5: (u64, bool);
+    let mut _6: (u64, bool);
+
+    bb0: {
+        StorageLive(_4);
+        _5 = AddWithOverflow(copy _1, copy _2);
+        assert(!move (_5.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, copy _2) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        _4 = move (_5.0: u64);
+        _6 = MulWithOverflow(copy _3, copy _4);
+        assert(!move (_6.1: bool), "attempt to compute `{} * {}`, which would overflow", move _4, copy _3) -> [success: bb2, unwind continue];
+    }
+
+    bb2: {
+        _0 = move (_6.0: u64);
+        StorageDead(_4);
+        return;
+    }
+}
+
+fn MultiNiche::Untagged(_1: BoundedPayload) -> MultiNiche {
+    let mut _0: MultiNiche;
+
+    bb0: {
+        _0 = MultiNiche::Untagged(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn MultiNiche::Untagged(_1: BoundedPayload) -> MultiNiche {
+    let mut _0: MultiNiche;
+
+    bb0: {
+        _0 = MultiNiche::Untagged(move _1);
+        return;
+    }
+}

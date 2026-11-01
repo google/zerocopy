@@ -1,0 +1,770 @@
+{
+  "P0": {
+    "module": {
+      "total_insts": 697,
+      "alloca": 44,
+      "load": 110,
+      "store": 109,
+      "load_store": 219,
+      "br_switch": 95,
+      "call": 74,
+      "phi": 0,
+      "gep": 86
+    },
+    "bench_roots": {
+      "total_insts": 338,
+      "alloca": 28,
+      "load": 68,
+      "store": 48,
+      "load_store": 116,
+      "br_switch": 45,
+      "call": 50,
+      "phi": 0,
+      "gep": 30
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 26,
+        "alloca": 2,
+        "load": 6,
+        "store": 4,
+        "load_store": 10,
+        "br_switch": 4,
+        "call": 4,
+        "phi": 0,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 66,
+        "alloca": 11,
+        "load": 10,
+        "store": 8,
+        "load_store": 18,
+        "br_switch": 6,
+        "call": 13,
+        "phi": 0,
+        "gep": 10
+      },
+      "bench_binary_search": {
+        "total_insts": 48,
+        "alloca": 3,
+        "load": 7,
+        "store": 7,
+        "load_store": 14,
+        "br_switch": 15,
+        "call": 4,
+        "phi": 0,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 42,
+        "alloca": 3,
+        "load": 10,
+        "store": 6,
+        "load_store": 16,
+        "br_switch": 4,
+        "call": 5,
+        "phi": 0,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 81,
+        "alloca": 3,
+        "load": 13,
+        "store": 9,
+        "load_store": 22,
+        "br_switch": 7,
+        "call": 8,
+        "phi": 0,
+        "gep": 17
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 75,
+        "alloca": 6,
+        "load": 22,
+        "store": 14,
+        "load_store": 36,
+        "br_switch": 9,
+        "call": 16,
+        "phi": 0,
+        "gep": 0
+      }
+    },
+    "x86_64_asm_insts": 733,
+    "aarch64_asm_insts": 718,
+    "description": "Baseline unoptimized (rustc -Copt-level=0)",
+    "pipeline": "none"
+  },
+  "P1": {
+    "module": {
+      "total_insts": 461,
+      "alloca": 10,
+      "load": 37,
+      "store": 28,
+      "load_store": 65,
+      "br_switch": 59,
+      "call": 64,
+      "phi": 33,
+      "gep": 47
+    },
+    "bench_roots": {
+      "total_insts": 257,
+      "alloca": 9,
+      "load": 27,
+      "store": 23,
+      "load_store": 50,
+      "br_switch": 35,
+      "call": 41,
+      "phi": 18,
+      "gep": 35
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 17,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 4,
+        "call": 4,
+        "phi": 2,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 98,
+        "alloca": 8,
+        "load": 20,
+        "store": 20,
+        "load_store": 40,
+        "br_switch": 5,
+        "call": 4,
+        "phi": 1,
+        "gep": 32
+      },
+      "bench_binary_search": {
+        "total_insts": 31,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 9,
+        "call": 4,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 27,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 4,
+        "call": 5,
+        "phi": 3,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 40,
+        "alloca": 1,
+        "load": 0,
+        "store": 1,
+        "load_store": 1,
+        "br_switch": 5,
+        "call": 8,
+        "phi": 1,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 44,
+        "alloca": 0,
+        "load": 4,
+        "store": 2,
+        "load_store": 6,
+        "br_switch": 8,
+        "call": 16,
+        "phi": 6,
+        "gep": 0
+      }
+    },
+    "x86_64_asm_insts": 653,
+    "aarch64_asm_insts": 606,
+    "description": "SROA + Mem2Reg + SimplifyCFG",
+    "pipeline": "function(sroa<modify-cfg>,simplifycfg)"
+  },
+  "P2": {
+    "module": {
+      "total_insts": 424,
+      "alloca": 10,
+      "load": 35,
+      "store": 25,
+      "load_store": 60,
+      "br_switch": 59,
+      "call": 65,
+      "phi": 33,
+      "gep": 43
+    },
+    "bench_roots": {
+      "total_insts": 244,
+      "alloca": 9,
+      "load": 25,
+      "store": 20,
+      "load_store": 45,
+      "br_switch": 35,
+      "call": 41,
+      "phi": 18,
+      "gep": 32
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 17,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 4,
+        "call": 4,
+        "phi": 2,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 91,
+        "alloca": 8,
+        "load": 19,
+        "store": 18,
+        "load_store": 37,
+        "br_switch": 5,
+        "call": 4,
+        "phi": 1,
+        "gep": 29
+      },
+      "bench_binary_search": {
+        "total_insts": 31,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 9,
+        "call": 4,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 26,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 4,
+        "call": 5,
+        "phi": 3,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 37,
+        "alloca": 1,
+        "load": 0,
+        "store": 1,
+        "load_store": 1,
+        "br_switch": 5,
+        "call": 8,
+        "phi": 1,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 42,
+        "alloca": 0,
+        "load": 3,
+        "store": 1,
+        "load_store": 4,
+        "br_switch": 8,
+        "call": 16,
+        "phi": 6,
+        "gep": 0
+      }
+    },
+    "x86_64_asm_insts": 642,
+    "aarch64_asm_insts": 598,
+    "description": "P1 + InstCombine + EarlyCSE",
+    "pipeline": "function(sroa<modify-cfg>,simplifycfg,instcombine<no-verify-fixpoint>,early-cse<memssa>)"
+  },
+  "P3": {
+    "module": {
+      "total_insts": 303,
+      "alloca": 0,
+      "load": 9,
+      "store": 1,
+      "load_store": 10,
+      "br_switch": 69,
+      "call": 5,
+      "phi": 42,
+      "gep": 7
+    },
+    "bench_roots": {
+      "total_insts": 230,
+      "alloca": 0,
+      "load": 7,
+      "store": 1,
+      "load_store": 8,
+      "br_switch": 59,
+      "call": 3,
+      "phi": 36,
+      "gep": 7
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 13,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 3,
+        "call": 1,
+        "phi": 2,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 64,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 19,
+        "call": 1,
+        "phi": 12,
+        "gep": 0
+      },
+      "bench_binary_search": {
+        "total_insts": 24,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 7,
+        "call": 0,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 22,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 3,
+        "call": 1,
+        "phi": 3,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 71,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 19,
+        "call": 0,
+        "phi": 9,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 36,
+        "alloca": 0,
+        "load": 4,
+        "store": 1,
+        "load_store": 5,
+        "br_switch": 8,
+        "call": 0,
+        "phi": 5,
+        "gep": 4
+      }
+    },
+    "x86_64_asm_insts": 343,
+    "aarch64_asm_insts": 308,
+    "description": "P1 + Inliner + SROA + InstCombine + SimplifyCFG",
+    "pipeline": "function(sroa<modify-cfg>,simplifycfg),cgscc(inline),function(sroa<modify-cfg>,instcombine<no-verify-fixpoint>,simplifycfg),globaldce"
+  },
+  "P4": {
+    "module": {
+      "total_insts": 260,
+      "alloca": 0,
+      "load": 8,
+      "store": 1,
+      "load_store": 9,
+      "br_switch": 57,
+      "call": 5,
+      "phi": 34,
+      "gep": 7
+    },
+    "bench_roots": {
+      "total_insts": 189,
+      "alloca": 0,
+      "load": 6,
+      "store": 1,
+      "load_store": 7,
+      "br_switch": 47,
+      "call": 3,
+      "phi": 28,
+      "gep": 7
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 13,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 3,
+        "call": 1,
+        "phi": 2,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 31,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 7,
+        "call": 1,
+        "phi": 4,
+        "gep": 0
+      },
+      "bench_binary_search": {
+        "total_insts": 24,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 7,
+        "call": 0,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 22,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 3,
+        "call": 1,
+        "phi": 3,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 64,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 19,
+        "call": 0,
+        "phi": 9,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 35,
+        "alloca": 0,
+        "load": 3,
+        "store": 1,
+        "load_store": 4,
+        "br_switch": 8,
+        "call": 0,
+        "phi": 5,
+        "gep": 4
+      }
+    },
+    "x86_64_asm_insts": 282,
+    "aarch64_asm_insts": 253,
+    "description": "P3 + GVN + MemCpyOpt + DSE + BDCE + ADCE + SCCP + CVP",
+    "pipeline": "function(sroa<modify-cfg>,simplifycfg),cgscc(inline),function(sroa<modify-cfg>,instcombine<no-verify-fixpoint>,simplifycfg,gvn<>,memcpyopt,dse,bdce,adce,sccp,correlated-propagation,instcombine<no-verify-fixpoint>,simplifycfg),globaldce"
+  },
+  "P5": {
+    "module": {
+      "total_insts": 230,
+      "alloca": 0,
+      "load": 8,
+      "store": 1,
+      "load_store": 9,
+      "br_switch": 49,
+      "call": 5,
+      "phi": 31,
+      "gep": 7
+    },
+    "bench_roots": {
+      "total_insts": 163,
+      "alloca": 0,
+      "load": 6,
+      "store": 1,
+      "load_store": 7,
+      "br_switch": 39,
+      "call": 3,
+      "phi": 26,
+      "gep": 7
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 14,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 2,
+        "call": 1,
+        "phi": 3,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 17,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 5,
+        "call": 1,
+        "phi": 1,
+        "gep": 0
+      },
+      "bench_binary_search": {
+        "total_insts": 23,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 6,
+        "call": 0,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 25,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 2,
+        "call": 1,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 50,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 18,
+        "call": 0,
+        "phi": 6,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 34,
+        "alloca": 0,
+        "load": 3,
+        "store": 1,
+        "load_store": 4,
+        "br_switch": 6,
+        "call": 0,
+        "phi": 6,
+        "gep": 4
+      }
+    },
+    "x86_64_asm_insts": 231,
+    "aarch64_asm_insts": 205,
+    "description": "P4 + Loop(LoopRotate + LICM + IndVarSimplify + LoopDeletion + LoopUnroll)",
+    "pipeline": "function(sroa<modify-cfg>,simplifycfg),cgscc(inline),function(sroa<modify-cfg>,instcombine<no-verify-fixpoint>,simplifycfg,gvn<>,memcpyopt,dse,bdce,adce,sccp,correlated-propagation,loop-mssa(loop-instsimplify,loop-simplifycfg,licm<no-allowspeculation>,loop-rotate<header-duplication;no-prepare-for-lto>,licm<allowspeculation>),loop(indvars,loop-deletion,loop-unroll-full),instcombine<no-verify-fixpoint>,jump-threading,correlated-propagation,simplifycfg<bonus-inst-threshold=1;forward-switch-cond;switch-range-to-icmp;switch-to-lookup;hoist-common-insts;sink-common-insts>,instcombine<no-verify-fixpoint>,adce,dse),globaldce"
+  },
+  "P6_scalar": {
+    "module": {
+      "total_insts": 235,
+      "alloca": 0,
+      "load": 8,
+      "store": 1,
+      "load_store": 9,
+      "br_switch": 49,
+      "call": 5,
+      "phi": 33,
+      "gep": 7
+    },
+    "bench_roots": {
+      "total_insts": 165,
+      "alloca": 0,
+      "load": 6,
+      "store": 1,
+      "load_store": 7,
+      "br_switch": 37,
+      "call": 3,
+      "phi": 26,
+      "gep": 7
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 14,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 2,
+        "call": 1,
+        "phi": 3,
+        "gep": 1
+      },
+      "bench_state_machine": {
+        "total_insts": 16,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 4,
+        "call": 1,
+        "phi": 1,
+        "gep": 0
+      },
+      "bench_binary_search": {
+        "total_insts": 23,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 6,
+        "call": 0,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 25,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 2,
+        "call": 1,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_option_result_chain": {
+        "total_insts": 53,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 17,
+        "call": 0,
+        "phi": 6,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 34,
+        "alloca": 0,
+        "load": 3,
+        "store": 1,
+        "load_store": 4,
+        "br_switch": 6,
+        "call": 0,
+        "phi": 6,
+        "gep": 4
+      }
+    },
+    "x86_64_asm_insts": 235,
+    "aarch64_asm_insts": 205,
+    "description": "LLVM 21.1.8 default<O2> (scalar only: -vectorize-loops=false -unroll-runtime=false)",
+    "pipeline": "default<O2>"
+  },
+  "P6": {
+    "module": {
+      "total_insts": 356,
+      "alloca": 0,
+      "load": 22,
+      "store": 1,
+      "load_store": 23,
+      "br_switch": 59,
+      "call": 11,
+      "phi": 53,
+      "gep": 25
+    },
+    "bench_roots": {
+      "total_insts": 286,
+      "alloca": 0,
+      "load": 20,
+      "store": 1,
+      "load_store": 21,
+      "br_switch": 47,
+      "call": 9,
+      "phi": 46,
+      "gep": 25
+    },
+    "per_fn": {
+      "bench_slice_sum": {
+        "total_insts": 56,
+        "alloca": 0,
+        "load": 5,
+        "store": 0,
+        "load_store": 5,
+        "br_switch": 6,
+        "call": 5,
+        "phi": 10,
+        "gep": 8
+      },
+      "bench_state_machine": {
+        "total_insts": 16,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 4,
+        "call": 1,
+        "phi": 1,
+        "gep": 0
+      },
+      "bench_binary_search": {
+        "total_insts": 23,
+        "alloca": 0,
+        "load": 1,
+        "store": 0,
+        "load_store": 1,
+        "br_switch": 6,
+        "call": 0,
+        "phi": 5,
+        "gep": 1
+      },
+      "bench_checksum_bits": {
+        "total_insts": 56,
+        "alloca": 0,
+        "load": 3,
+        "store": 0,
+        "load_store": 3,
+        "br_switch": 6,
+        "call": 3,
+        "phi": 11,
+        "gep": 4
+      },
+      "bench_option_result_chain": {
+        "total_insts": 53,
+        "alloca": 0,
+        "load": 0,
+        "store": 0,
+        "load_store": 0,
+        "br_switch": 17,
+        "call": 0,
+        "phi": 6,
+        "gep": 0
+      },
+      "bench_matrix_vec_loop": {
+        "total_insts": 82,
+        "alloca": 0,
+        "load": 11,
+        "store": 1,
+        "load_store": 12,
+        "br_switch": 8,
+        "call": 0,
+        "phi": 13,
+        "gep": 12
+      }
+    },
+    "x86_64_asm_insts": 331,
+    "aarch64_asm_insts": 296,
+    "description": "Full LLVM 21.1.8 default<O2> (including LoopVectorize + Runtime Unroll)",
+    "pipeline": "default<O2>"
+  }
+}
