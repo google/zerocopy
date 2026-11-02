@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793382164749,
+  "lastUpdate": 1793631433738,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23837,6 +23837,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1437,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "76854355+carloskiki@users.noreply.github.com",
+            "name": "Charles Edward Gagnon",
+            "username": "carloskiki"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "f61435de34bb62c67497bb3510225c5bc5f659be",
+          "message": "[docs] Clarify boxed slice DST allocation (#3912)",
+          "timestamp": "2026-11-02T13:48:31Z",
+          "tree_id": "c540c88b597ae1c15b3605b0f96713bc88c26874",
+          "url": "https://github.com/google/zerocopy/commit/f61435de34bb62c67497bb3510225c5bc5f659be"
+        },
+        "date": 1793631431419,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1655,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1812,
             "unit": "seconds"
           }
         ]
