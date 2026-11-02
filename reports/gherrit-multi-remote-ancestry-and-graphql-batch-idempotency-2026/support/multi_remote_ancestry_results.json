@@ -1,0 +1,202 @@
+{
+  "git_commits": {
+    "A_root": "48687afa6af674889b3a5f3a8ee18f7249089de6",
+    "B_stack_base": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+    "C1_stack": "ffdc5af3eccd6bb0753804757ca7f6811271a7d9",
+    "C2_stack": "707786ac64fac42f83d74d29495b707ca0d1111f",
+    "C3_stack_head": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+    "M1_local_main_ahead": "ebf67147150812bd11da5623b1aee04515a4064d",
+    "U1_upstream": "dadae3b51ba70a9db3280d935d332861b71af867",
+    "local_only_orphan": "57e51c757744c07c0aaba62ba7e7881532d0a954",
+    "local_only_root": "78c08f8e4e827fe5f644fdad85f25fc1ee655396"
+  },
+  "scenario_1_local_main_ahead_of_secondary_main": {
+    "head": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+    "patched_collect_commits": {
+      "collected_commits": [
+        {
+          "gherrit_id": "G1000000000000000000000000000001",
+          "oid": "ffdc5af3eccd6bb0753804757ca7f6811271a7d9",
+          "subject": "Feature commit 1"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000002",
+          "oid": "707786ac64fac42f83d74d29495b707ca0d1111f",
+          "subject": "Feature commit 2"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000003",
+          "oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+          "subject": "Feature commit 3"
+        }
+      ],
+      "collected_count": 3,
+      "default_branch": "main",
+      "head_oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+      "remote_name": "secondary",
+      "resolved_oid": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+      "resolved_ref": "refs/remotes/secondary/main",
+      "status": "ok"
+    },
+    "refs_heads_main": "ebf67147150812bd11da5623b1aee04515a4064d",
+    "refs_remotes_secondary_main": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+    "unpatched_collect_commits": {
+      "default_branch": "main",
+      "error": "The branch 'feature-stack' is not based on 'main'.\nGHerrit only supports stacked branches that share history with the default branch.\nMaybe you want to 'git rebase' on 'main' before pushing?",
+      "head_oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+      "remote_name": "secondary",
+      "resolved_oid": "ebf67147150812bd11da5623b1aee04515a4064d",
+      "resolved_ref": "refs/heads/main",
+      "status": "error"
+    }
+  },
+  "scenario_2_remote_main_behind_stack_base": {
+    "head": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+    "patched_after_remote_fast_forward_to_base": {
+      "collected_commits": [
+        {
+          "gherrit_id": "G1000000000000000000000000000001",
+          "oid": "ffdc5af3eccd6bb0753804757ca7f6811271a7d9",
+          "subject": "Feature commit 1"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000002",
+          "oid": "707786ac64fac42f83d74d29495b707ca0d1111f",
+          "subject": "Feature commit 2"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000003",
+          "oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+          "subject": "Feature commit 3"
+        }
+      ],
+      "collected_count": 3,
+      "default_branch": "main",
+      "head_oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+      "remote_name": "secondary",
+      "resolved_oid": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+      "resolved_ref": "refs/remotes/secondary/main",
+      "status": "ok"
+    },
+    "patched_when_remote_behind": {
+      "collected_commits": [
+        {
+          "gherrit_id": "G0000000000000000000000000000001",
+          "oid": "dadae3b51ba70a9db3280d935d332861b71af867",
+          "subject": "Upstream commit 1"
+        },
+        {
+          "gherrit_id": "G0000000000000000000000000000002",
+          "oid": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+          "subject": "Upstream commit 2 (stack base)"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000001",
+          "oid": "ffdc5af3eccd6bb0753804757ca7f6811271a7d9",
+          "subject": "Feature commit 1"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000002",
+          "oid": "707786ac64fac42f83d74d29495b707ca0d1111f",
+          "subject": "Feature commit 2"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000003",
+          "oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+          "subject": "Feature commit 3"
+        }
+      ],
+      "collected_count": 5,
+      "default_branch": "main",
+      "head_oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+      "remote_name": "secondary",
+      "resolved_oid": "48687afa6af674889b3a5f3a8ee18f7249089de6",
+      "resolved_ref": "refs/remotes/secondary/main",
+      "status": "ok"
+    },
+    "refs_remotes_secondary_main_before_ff": "48687afa6af674889b3a5f3a8ee18f7249089de6",
+    "stack_base": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+    "unpatched_when_local_main_also_behind": {
+      "collected_commits": [
+        {
+          "gherrit_id": "G0000000000000000000000000000001",
+          "oid": "dadae3b51ba70a9db3280d935d332861b71af867",
+          "subject": "Upstream commit 1"
+        },
+        {
+          "gherrit_id": "G0000000000000000000000000000002",
+          "oid": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+          "subject": "Upstream commit 2 (stack base)"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000001",
+          "oid": "ffdc5af3eccd6bb0753804757ca7f6811271a7d9",
+          "subject": "Feature commit 1"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000002",
+          "oid": "707786ac64fac42f83d74d29495b707ca0d1111f",
+          "subject": "Feature commit 2"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000003",
+          "oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+          "subject": "Feature commit 3"
+        }
+      ],
+      "collected_count": 5,
+      "default_branch": "main",
+      "head_oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+      "remote_name": "secondary",
+      "resolved_oid": "48687afa6af674889b3a5f3a8ee18f7249089de6",
+      "resolved_ref": "refs/heads/main",
+      "status": "ok"
+    },
+    "unpatched_when_local_main_reset_to_stack_base": {
+      "collected_commits": [
+        {
+          "gherrit_id": "G1000000000000000000000000000001",
+          "oid": "ffdc5af3eccd6bb0753804757ca7f6811271a7d9",
+          "subject": "Feature commit 1"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000002",
+          "oid": "707786ac64fac42f83d74d29495b707ca0d1111f",
+          "subject": "Feature commit 2"
+        },
+        {
+          "gherrit_id": "G1000000000000000000000000000003",
+          "oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+          "subject": "Feature commit 3"
+        }
+      ],
+      "collected_count": 3,
+      "default_branch": "main",
+      "head_oid": "e001d1096e482ebf1d87d6e8725a82632c806c32",
+      "remote_name": "secondary",
+      "resolved_oid": "0f6f302ba6295e983981dedd45962e152d3bbac7",
+      "resolved_ref": "refs/heads/main",
+      "status": "ok"
+    }
+  },
+  "scenario_3_local_only_fallback_orphan_rejection": {
+    "patched": {
+      "default_branch": "main",
+      "error": "The branch 'lonely-branch' is not based on 'main'.\nGHerrit only supports stacked branches that share history with the default branch.\nMaybe you want to 'git rebase' on 'main' before pushing?",
+      "head_oid": "57e51c757744c07c0aaba62ba7e7881532d0a954",
+      "remote_name": "origin",
+      "resolved_oid": "78c08f8e4e827fe5f644fdad85f25fc1ee655396",
+      "resolved_ref": "refs/heads/main",
+      "status": "error"
+    },
+    "unpatched": {
+      "default_branch": "main",
+      "error": "The branch 'lonely-branch' is not based on 'main'.\nGHerrit only supports stacked branches that share history with the default branch.\nMaybe you want to 'git rebase' on 'main' before pushing?",
+      "head_oid": "57e51c757744c07c0aaba62ba7e7881532d0a954",
+      "remote_name": "origin",
+      "resolved_oid": "78c08f8e4e827fe5f644fdad85f25fc1ee655396",
+      "resolved_ref": "refs/heads/main",
+      "status": "error"
+    }
+  }
+}

@@ -1765,6 +1765,89 @@
         "anneal/verified-compilation"
       ]
     },
+    "anllvm-five-primitive-ir-checkers-and-self-hosting-canaries-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and prelude environment"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+          },
+          "name": "Anneal universal refinement kernel and trusted boundary audit"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87"
+          },
+          "name": "Anneal AnLLVM optimizing compiler and RV64GC target semantics"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "Rust language reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler Runtime(PostCleanup) MIR passes"
+        },
+        {
+          "identity": {
+            "release": "llvmorg-21.1.8",
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+          },
+          "name": "LLVM 21.1.8 optimization and backend pass semantics"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Sail RISC-V Lean 4 instruction semantics"
+        },
+        {
+          "identity": {
+            "path": "support/anllvm_five_primitive_and_canaries_probe.lean",
+            "sha256": "16ee7f1ec68f3119eda7a5b8e7b2c3d67c55c7058a6253419db36f2e30f14177"
+          },
+          "name": "Self-contained Lean 4.34.1 prelude mechanization of AnLLVM primitives, checkers, and canaries"
+        },
+        {
+          "identity": {
+            "path": "support/lean_verification_output.txt",
+            "sha256": "f278eacfa9363b1b900010b7057bb2acde078440fdd3dbc5784e681e834e3bcc"
+          },
+          "name": "Lean 4.34.1 kernel axiom-audit output for AnLLVM probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/anllvm",
+        "anneal/certificate-checkers",
+        "anneal/memory-model",
+        "anneal/poison-semantics",
+        "anneal/rv64gc",
+        "anneal/self-hosting",
+        "anneal/trusted-boundary",
+        "lean/verification",
+        "llvm/translation-validation",
+        "rust/mir-optimizations"
+      ]
+    },
     "anllvm-globalisel-backend-and-end-to-end-mir-llvm-isa-pipeline-2026": {
       "observed_at": "2026-11-01",
       "subjects": [
@@ -22027,6 +22110,88 @@
         "anneal/coverage"
       ]
     },
+    "gherrit-multi-remote-ancestry-and-graphql-batch-idempotency-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/gherrit",
+            "revision": "2dbcbb6174ac3cf75dd7fcd0ab15cb27027b405d",
+            "version": "0.1.0-alpha"
+          },
+          "name": "GHerrit Stacked Pull Request Manager (current main branch)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/gherrit",
+            "revision": "86179afb27feabd50ddd7d2dc2493892885db8ba",
+            "version": "0.1.0-alpha"
+          },
+          "name": "GHerrit Batched GraphQL Pre-Push Implementation (Cargo-installed revision)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/gherrit",
+            "revision": "147340c2041654cba8cfc57a3e5c3115b4902ec3",
+            "version": "0.1.0-alpha"
+          },
+          "name": "GHerrit Pre-Modular Pre-Push Baseline"
+        },
+        {
+          "identity": {
+            "observed_version": "2.53.0.473.g4a7958ca14-goog",
+            "repository": "git/git",
+            "subcomponent": "githooks(5) pre-push and git-rev-list(1) merge-base ancestry"
+          },
+          "name": "Git Pre-Push Hook Protocol and Commit Ancestry Walker"
+        },
+        {
+          "identity": {
+            "api": "GitHub GraphQL API v4 (Mutation.createPullRequest, Mutation.updatePullRequest, RESOURCE_LIMITS_EXCEEDED)",
+            "specification": "GraphQL Specification (October 2021 Edition), Section 6.2.1 Serial Execution",
+            "url": "https://docs.github.com/en/graphql/reference/mutations"
+          },
+          "name": "GraphQL Specification and GitHub GraphQL API v4 Pull Request Mutations"
+        },
+        {
+          "identity": {
+            "artifact": "support/reproduce_multi_remote_ancestry.py",
+            "results_artifact": "support/multi_remote_ancestry_results.json",
+            "results_sha256": "48dec98a4367b5ef8e835b40a87d5ae18e2946c34aff1c46e635a941153ccbe9",
+            "sha256": "003e9a57ec1ba0d0672354a29f794fa2ce67f9cde7088e270714e783e823ac5c"
+          },
+          "name": "Multi-Remote Base-Branch Ancestry Reproducer Probe and Recorded Output"
+        },
+        {
+          "identity": {
+            "artifact": "support/simulate_graphql_batch_retry.py",
+            "results_artifact": "support/graphql_batch_retry_results.json",
+            "results_sha256": "fa21e18db4e00bb508030829d645859151b2a434b337c9dedd3e77e3700f201e",
+            "sha256": "51f6be70001fa525a9cb25178219f3e1e92a96c1fc9e927bb86c07a701b5bf2a"
+          },
+          "name": "GitHub GraphQL Batch createPullRequest Partial-Execution and Retry Simulation Probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/gherrit-fixes.patch",
+            "base_repository": "joshlf/gherrit",
+            "base_revision": "2dbcbb6174ac3cf75dd7fcd0ab15cb27027b405d",
+            "sha256": "49cb283abea7c01012813ccb710df1dde7455d738bc45bd6d36fba2bbcaf66d6"
+          },
+          "name": "Verified GHerrit Remote-Ancestry and Idempotent GraphQL Batch Retry Patch"
+        }
+      ],
+      "topics": [
+        "gherrit/pre-push",
+        "gherrit/multi-remote",
+        "gherrit/stacked-prs",
+        "git/ancestry-resolution",
+        "github/graphql-api",
+        "graphql/batch-mutations",
+        "graphql/idempotent-retry"
+      ]
+    },
     "gillian-rust-hybrid-resource-boundary-83d739e": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -25337,6 +25502,64 @@
         "anneal/translation-validation",
         "anneal/summaries",
         "anneal/incremental-verification"
+      ]
+    },
+    "lean-4-34-1-prelude-string-utf8-beq-and-recursor-traps-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel, Meta elaborator, LCNF compiler, and Init.Prelude library"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "beb778bb135474a67dc017c185d2753a60693d8c",
+            "rv64gc_branch_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87"
+          },
+          "name": "Anneal trusted audit boundary and compiler verification modules"
+        },
+        {
+          "identity": {
+            "arch": "x86_64",
+            "os": "linux",
+            "toolchain": "leanprover/lean4:v4.34.1"
+          },
+          "name": "Lean 4.34.1 prelude-only benchmark and diagnostic environment"
+        },
+        {
+          "identity": {
+            "path": "support/ProbePreludeTraps.lean",
+            "sha256": "a692c4682372e307f80d90ab5dc374f545216a568c694ed4f548ef373d54ae54"
+          },
+          "name": "Self-contained Lean 4.34.1 prelude-only positive verification probe"
+        },
+        {
+          "identity": {
+            "path": "support/run_benchmarks.py",
+            "results_path": "support/benchmark_results.json",
+            "results_sha256": "6c5c9df5e3461fa3cfd34b6182f5719c15da1bf089e4c88df0753b9e358acac2",
+            "sha256": "4e70b4a6aff0eecd85ee304e6e07c078262a8661fd46de482aaed7f45519baad"
+          },
+          "name": "Lean 4.34.1 prelude scaling benchmark and diagnostic runner"
+        }
+      ],
+      "topics": [
+        "lean/kernel",
+        "lean/prelude",
+        "lean/string-utf8",
+        "lean/smart-unfolding",
+        "lean/defeq-attr",
+        "lean/beq-dsimp",
+        "lean/lcnf-recursor",
+        "lean/whnf-cache",
+        "anneal/trusted-boundary",
+        "anneal/proof-scaling"
       ]
     },
     "lean-4-34-1-unsafe-rec-noncomputable-and-state-map-whnf-scaling": {
@@ -32049,6 +32272,87 @@
         "lowstar"
       ]
     },
+    "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+            "revision": "7188fa53123d7eb9ef8dbad02db2ca2cabdf9c62"
+          },
+          "name": "RISC-V ELF psABI specification"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Sail RISC-V Lean 4 ISA model"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "executable_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "platform": "x86_64-unknown-linux-gnu",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "llvm_objdump_21_sha256": "fa677a86e691b7c42c29bfd1690edf5c3e0b7d5b9b8bb0aaef19f795e15b9021",
+            "llvm_readelf_21_sha256": "bc93dae4a9c5584add48d2a5953232bc86eea82d2f3abe47b4c6c75ef006482a",
+            "repository": "llvm/llvm-project",
+            "revision": "85a90d119deb25b518867cd37d62c7b93b575a6f",
+            "rust_lld_21_sha256": "ed7d2923baca14739c3df6ce3393ba07116e7f529b785bcec2d1e25f90d28173",
+            "version": "21.1.8"
+          },
+          "name": "LLVM 21.1.8 binary utilities and ELF relocation definitions"
+        },
+        {
+          "identity": {
+            "executable_sha256": "328369968794f853dde737be961b290fe74cb21ff4f23de65ed52a281d360d40",
+            "package": "1:11.1.0+ds-2",
+            "version": "11.1.0"
+          },
+          "name": "QEMU RISC-V 64-bit user-mode emulator"
+        },
+        {
+          "identity": {
+            "elf_generator_probe": "support/gen_and_verify_rv64_elf.py",
+            "elf_generator_probe_sha256": "a238f78d9bc0995fdeb2ff0024eab6794cb6f0f56ccdea00cf7b72c8b329fb92",
+            "lean_proof_probe": "support/rv64_encoding_and_imm_proofs.lean",
+            "lean_proof_probe_sha256": "5e6951772faf79c18c384d261550e8945226bcf7b094b4ee8ac775ae7bb37442",
+            "linked_executable": "support/probe_rv64gc.elf",
+            "linked_executable_sha256": "5f588cb59db32198aafca550df6290a861238011ddce44a6df85de8dbec47377",
+            "probe_ledger": "support/probe_ledger.json",
+            "probe_ledger_sha256": "f5c09092ca69508507abfa4c63b43f1c6701533964f588ed9d387a04aae3e600",
+            "relocatable_object": "support/probe_rv64gc.o",
+            "relocatable_object_sha256": "c45f22f0de47bd13157603e4f0f72f06a727de7e229ae977875b56dfc692e119",
+            "verification_output": "support/verification_output.txt",
+            "verification_output_sha256": "6a7b0fc894105c3cc8b1a31e5d5be0da314587aa8ca50a4444f3007834affb66"
+          },
+          "name": "RV64GC encoding, immediate compensation, branch relaxation, and ELF64 ABI proofs and probes"
+        }
+      ],
+      "topics": [
+        "riscv64",
+        "elf64",
+        "assembly/relocations",
+        "abi/lp64d",
+        "compiler/branch-relaxation",
+        "verification/lean4",
+        "linux/syscall-abi"
+      ]
+    },
     "rls-rust-analyzer-architecture-evolution-2015-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -35298,6 +35602,75 @@
         "rustc/intrinsics",
         "rustc/pass-mode-cast",
         "rustc/build-std"
+      ]
+    },
+    "rustc-codegen-backend-cross-compiling-249-crate-rustc-rv64gc-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "toolchain_sysroot_revision": "19833af7224424e8b53e288097d56b6af43d5bcf",
+            "version": "1.101.0-nightly",
+            "workspace_revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust compiler (rustc_middle, rustc_type_ir, rustc_ty_utils, rustc_session, rustc_errors, rustc_codegen_ssa, rustc_driver, rustc_driver_impl, compiler/rustc)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "beb778bb135474a67dc017c185d2753a60693d8c",
+            "rv64gc_branch_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87"
+          },
+          "name": "Anneal RV64GC compiler and rustc_codegen_anneal backend"
+        },
+        {
+          "identity": {
+            "host_triple": "x86_64-unknown-linux-gnu",
+            "target_triple": "riscv64gc-unknown-linux-gnu",
+            "version": "1.101.0-nightly (19833af7224424e8b53e288097d56b6af43d5bcf 2026-10-20)"
+          },
+          "name": "Host rustc and bundled rust-lld linker"
+        },
+        {
+          "identity": {
+            "package": "1:10.0.2+ds-2+gl0",
+            "version": "10.0.2"
+          },
+          "name": "QEMU user-mode RISC-V 64-bit emulator (qemu-riscv64)"
+        },
+        {
+          "identity": {
+            "output_path": "support/rustc_codegen_traps_and_link_probe.out.txt",
+            "output_sha256": "ea1955e510459002e4e65a523dacda9d87f97024a3ea97d1bcc470dc0ba7edc8",
+            "path": "support/rustc_codegen_traps_and_link_probe.rs",
+            "sha256": "14feba43afc9f239ed0414c1f547b2f2616c94a7558691fe1051d5dc90968f6f"
+          },
+          "name": "Self-contained rustc_private query panic, monomorphization, and rust-lld linking probe"
+        },
+        {
+          "identity": {
+            "census_path": "support/rustc_249_crate_rv64gc_census.json",
+            "census_sha256": "3a7fed5832fbc0d62be45b38e354c7a5dcff5010db1fba9a9bf5c526adbceb74",
+            "recipe_path": "support/cross_compile_rustc_rv64gc_recipe.sh",
+            "recipe_sha256": "0192947785bab96819d45f6f541a846b35c049c40c9070a2b3f7abb33f91c71d"
+          },
+          "name": "Cross-compilation recipe and 249-crate RV64GC empirical census for compiler/rustc"
+        }
+      ],
+      "topics": [
+        "rust/codegen-backend",
+        "rust/rustc-codegen-ssa",
+        "rust/cross-compilation",
+        "rust/cargo-build-std",
+        "rust/trimmed-def-paths",
+        "rust/early-binder",
+        "riscv/rv64gc",
+        "elf/rust-lld-whole-archive",
+        "anneal/rustc-codegen-anneal",
+        "anneal/verified-compilation"
       ]
     },
     "rustc-configured-const-admission-and-post-monomorphization-ctfe": {

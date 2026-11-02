@@ -1,0 +1,25 @@
+{
+  "negative_probe_symtab_order": {
+    "object_sha256": "c88e37078a8e98adb980d69e91b350977472ff82db1e12d0fd82d133149df639",
+    "object_size_bytes": 840,
+    "lld_exit_code": 1,
+    "lld_stderr": "rust-lld: error: neg_symtab_order.o: symbol (2) has invalid binding: 0"
+  },
+  "negative_probe_direct_lo12": {
+    "object_sha256": "69219e192ce0fc955d582cbfd80de28329db063d344057112235c3c90f62bb07",
+    "object_size_bytes": 936,
+    "lld_exit_code": 1,
+    "lld_stderr": "rust-lld: error: neg_direct_lo12.o:(function _start: .text+0x4): R_RISCV_PCREL_LO12 relocation points to a symbol 'rodata_banner' in a different section '.rodata'\nrust-lld: error: neg_direct_lo12.o:(function _start: .text+0x4): R_RISCV_PCREL_LO12 relocation points to neg_direct_lo12.o:(rodata_banner) without an associated R_RISCV_PCREL_HI20 relocation"
+  },
+  "positive_probe_rv64gc": {
+    "object_file": "support/probe_rv64gc.o",
+    "object_sha256": "c45f22f0de47bd13157603e4f0f72f06a727de7e229ae977875b56dfc692e119",
+    "object_size_bytes": 6144,
+    "executable_file": "support/probe_rv64gc.elf",
+    "executable_sha256": "5f588cb59db32198aafca550df6290a861238011ddce44a6df85de8dbec47377",
+    "executable_size_bytes": 6304,
+    "lld_exit_code": 0,
+    "qemu_exit_code": 0,
+    "qemu_stdout": "RV64GC_ELF64_LP64D_VTABLE_LARGE_FRAME_ECALL_VERIFIED_OK\n"
+  }
+}

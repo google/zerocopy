@@ -1,0 +1,28 @@
+'Anneal.AnLlvmCore.MaskedWord.checkRefines_refl' depends on axioms: [propext, Quot.sound]
+'Anneal.AnLlvmCore.vecWord_map2_lane_isolated' does not depend on any axioms
+'Anneal.AnLlvmCore.evalIntToPtr_never_returns_unexposed' does not depend on any axioms
+'Anneal.AnLlvmCore.mkTargetCodec_rejects_invalid_abi_frame' does not depend on any axioms
+'Anneal.AnLlvmCore.PassCertChecker.withWitness_productiveSoundOn' does not depend on any axioms
+'Anneal.AnLlvmCore.PassCertChecker.seq2_productiveSoundOn' does not depend on any axioms
+'Anneal.AnLlvmCore.canary1_carry_borrow_shift_monotonicity_restored' depends on axioms: [propext, Quot.sound]
+'Anneal.AnLlvmCore.canary1ab_destProp_two_parameter_union' does not depend on any axioms
+'Anneal.AnLlvmCore.canary2abc_speculative_udiv_and_load_rejected' depends on axioms: [propext]
+'Anneal.AnLlvmCore.canary2_adjacent_twin_allocations_two_tier_inttoptr' does not depend on any axioms
+'Anneal.AnLlvmCore.canary3_alias_disjoint_blocks_all_four_exploits' depends on axioms: [propext]
+'Anneal.AnLlvmCore.canary5abc_sroa_padding_and_stackColoring' depends on axioms: [propext, Quot.sound]
+'Anneal.AnLlvmCore.ho1_dynamic_treeBorrows_diamond_write_disables_sibling_frozen' does not depend on any axioms
+'Anneal.AnLlvmCore.ho2ab_indvar_widen_and_loopVectorize_guards' depends on axioms: [propext]
+'Anneal.AnLlvmCore.ho3ab_tailCall_and_unwind_calleeSaved_guards' does not depend on any axioms
+'Anneal.AnLlvmCore.ho4_and_canary7b_postRa_input_and_flag_clobbers' does not depend on any axioms
+'Anneal.AnLlvmCore.ho5_scale256_fastScalarState_whnf_rfl' depends on axioms: [propext, Quot.sound]
+'Anneal.AnLlvmCore.ho6_singlePass_fails_cascading_displacement_twoRound_succeeds' does not depend on any axioms
+'Anneal.AnLlvmCore.dc15_fuelBounded_rust_checker_satisfies_twoStepImp' does not depend on any axioms
+'Anneal.AnLlvmCore.canary8ab_buggy_rust_checker_refutes_twoStepImp' depends on axioms: [propext]
+'Anneal.AnLlvmCore.ho7_stateful_toctou_two_read_spoofing' does not depend on any axioms
+'Anneal.AnLlvmCore.canary9_and_ho8_fallback_recovery' does not depend on any axioms
+'Anneal.AnLlvmCore.ho9b_and_canary10ab_integer_and_fuel_guards' does not depend on any axioms
+'Anneal.AnLlvmCore.nat_add_mod_no_wrap_zero_axioms' does not depend on any axioms
+'Anneal.AnLlvmCore.checkAddLeU64_implies_toNat_le' does not depend on any axioms
+'Anneal.AnLlvmCore.checkDisjointRangesU64Strict_implies_nat_disjoint' does not depend on any axioms
+'Anneal.AnLlvmCore.dc19_bootstrap_fixed_point_and_canaries_by_rfl' does not depend on any axioms
+'Anneal.AnLlvmCore.verifiedCompilationTheorem_decouples_compiler_from_source_specs' does not depend on any axioms

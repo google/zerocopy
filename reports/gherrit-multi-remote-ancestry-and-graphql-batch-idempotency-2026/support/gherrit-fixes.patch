@@ -1,0 +1,396 @@
+diff --git a/src/pre_push/batching.rs b/src/pre_push/batching.rs
+index b3891978..25bc6d1b 100644
+--- a/src/pre_push/batching.rs
++++ b/src/pre_push/batching.rs
+@@ -3,6 +3,7 @@ use std::{num::NonZeroUsize, ops::Range};
+ use serde_json::Value;
+ 
+ pub(super) const INITIAL_GRAPHQL_BATCH_LEN: NonZeroUsize = NonZeroUsize::new(64).unwrap();
++pub(super) const INITIAL_CREATE_PR_BATCH_LEN: NonZeroUsize = NonZeroUsize::new(12).unwrap();
+ pub(super) const MAX_GRAPHQL_QUERY_BYTES: usize = 256 * 1024;
+ 
+ #[derive(Debug)]
+@@ -38,13 +39,19 @@ impl BatchPlan {
+     }
+ 
+     pub fn reject(&mut self) -> Result<Backoff, ItemTooLarge> {
++        self.reject_after(0)
++    }
++
++    pub fn reject_after(&mut self, committed_prefix: usize) -> Result<Backoff, ItemTooLarge> {
+         let range = self.current().expect("cannot reject a completed batch plan");
+         let attempted = range.len();
+-        if attempted == 1 {
++        assert!(committed_prefix <= attempted, "committed prefix exceeds attempted batch");
++        if attempted == 1 && committed_prefix == 0 {
+             return Err(ItemTooLarge { index: range.start });
+         }
+ 
+-        let retry = NonZeroUsize::new(attempted / 2).expect("rejected batch has multiple items");
++        self.cursor += committed_prefix;
++        let retry = NonZeroUsize::new((attempted / 2).max(1)).expect("non-zero retry length");
+         self.batch_len = retry;
+         Ok(Backoff { attempted, retry: retry.get() })
+     }
+@@ -65,12 +72,13 @@ pub(super) fn classify_response(response: &Value) -> ResponseDisposition {
+     let Some(errors) = response.get("errors") else {
+         return ResponseDisposition::Success;
+     };
+-    let has_no_data = response.get("data").is_none_or(Value::is_null);
++    let has_valid_data_container =
++        response.get("data").is_none_or(|data| data.is_null() || data.is_object());
+     let has_only_resource_errors = errors
+         .as_array()
+         .is_some_and(|errors| !errors.is_empty() && errors.iter().all(is_resource_limit_error));
+ 
+-    if has_no_data && has_only_resource_errors {
++    if has_valid_data_container && has_only_resource_errors {
+         ResponseDisposition::RetryLimit
+     } else {
+         ResponseDisposition::Fatal
+@@ -189,6 +197,10 @@ mod tests {
+                 classify_response(&json!({ "data": null, "errors": [error] })),
+                 ResponseDisposition::RetryLimit
+             );
++            assert_eq!(
++                classify_response(&json!({ "data": {}, "errors": [error] })),
++                ResponseDisposition::RetryLimit
++            );
+         }
+     }
+ 
+@@ -202,12 +214,26 @@ mod tests {
+             json!({ "errors": [resource_error.clone(), fatal_error] }),
+             json!({ "errors": [] }),
+             json!({ "errors": "not an array" }),
+-            json!({ "data": {}, "errors": [resource_error] }),
++            json!({ "data": "not an object", "errors": [resource_error] }),
+         ] {
+             assert_eq!(classify_response(&response), ResponseDisposition::Fatal);
+         }
+     }
+ 
++    #[test]
++    fn advances_cursor_when_rejecting_after_partial_commit() {
++        let mut plan = BatchPlan::new(49, INITIAL_GRAPHQL_BATCH_LEN);
++        assert_eq!(plan.current(), Some(0..49));
++        assert_eq!(plan.reject_after(16), Ok(Backoff { attempted: 49, retry: 24 }));
++        assert_eq!(plan.current(), Some(16..40));
++        assert_eq!(plan.reject_after(16), Ok(Backoff { attempted: 24, retry: 12 }));
++        assert_eq!(plan.current(), Some(32..44));
++        plan.accept();
++        assert_eq!(plan.current(), Some(44..49));
++        plan.accept();
++        assert_eq!(plan.current(), None);
++    }
++
+     #[test]
+     fn accepts_responses_without_errors() {
+         assert_eq!(classify_response(&json!({ "data": {} })), ResponseDisposition::Success);
+diff --git a/src/pre_push/github.rs b/src/pre_push/github.rs
+index 0d71f14d..f69cb9ad 100644
+--- a/src/pre_push/github.rs
++++ b/src/pre_push/github.rs
+@@ -1,8 +1,13 @@
++use std::num::NonZeroUsize;
++
+ use color_eyre::eyre::{Context as _, Result, bail, eyre};
+ use serde::Deserialize;
+ use serde_json::{Value, json};
+ 
+-use super::reconcile::PullRequestState;
++use super::{
++    batching::{INITIAL_CREATE_PR_BATCH_LEN, INITIAL_GRAPHQL_BATCH_LEN},
++    reconcile::PullRequestState,
++};
+ 
+ const MAX_PULL_REQUEST_CANDIDATES: usize = 100;
+ 
+@@ -46,11 +51,38 @@ pub(super) trait BatchedOperation {
+     type Output;
+ 
+     const TYPE: OperationType;
++    const INITIAL_BATCH_LEN: NonZeroUsize = INITIAL_GRAPHQL_BATCH_LEN;
+ 
+     fn document(&self) -> String;
+     fn decode(&self, response: Value) -> Result<Self::Output>;
+ }
+ 
++/// Decodes the contiguous leading prefix of completed operations from a
++/// partial GraphQL response before a resource-limit error.
++pub(super) fn decode_partial_batch_prefix<O: BatchedOperation>(
++    operations: &[O],
++    response: &Value,
++) -> Vec<O::Output> {
++    let Some(data) = response.get("data").and_then(Value::as_object) else {
++        return Vec::new();
++    };
++    let mut outputs = Vec::new();
++    for (index, operation) in operations.iter().enumerate() {
++        let alias = format!("op{index}");
++        let Some(entry) = data.get(&alias) else {
++            break;
++        };
++        if entry.is_null() {
++            break;
++        }
++        match operation.decode(entry.clone()) {
++            Ok(output) => outputs.push(output),
++            Err(_) => break,
++        }
++    }
++    outputs
++}
++
+ /// Builds the exact GraphQL document sent for one adaptive batch.
+ pub(super) fn batch_document<O: BatchedOperation>(operations: &[O]) -> String {
+     let body = operations
+@@ -270,12 +302,17 @@ impl CreatePullRequest {
+     ) -> Self {
+         Self { repository_id, base_branch, head_branch, title, body }
+     }
++
++    pub(super) fn head_branch(&self) -> &str {
++        &self.head_branch
++    }
+ }
+ 
+ impl BatchedOperation for CreatePullRequest {
+     type Output = CreatedPullRequest;
+ 
+     const TYPE: OperationType = OperationType::Mutation;
++    const INITIAL_BATCH_LEN: NonZeroUsize = INITIAL_CREATE_PR_BATCH_LEN;
+ 
+     fn document(&self) -> String {
+         let fields = [
+diff --git a/src/pre_push/mod.rs b/src/pre_push/mod.rs
+index e93f0ddc..1232ccc2 100644
+--- a/src/pre_push/mod.rs
++++ b/src/pre_push/mod.rs
+@@ -40,14 +40,14 @@ mod refs {
+ mod remote;
+ 
+ use batching::{
+-    BatchPlan, INITIAL_GRAPHQL_BATCH_LEN, MAX_GRAPHQL_QUERY_BYTES, ResponseDisposition,
+-    classify_response, query_exceeds_limit,
++    BatchPlan, MAX_GRAPHQL_QUERY_BYTES, ResponseDisposition, classify_response,
++    query_exceeds_limit,
+ };
+ use body::PrBody;
+ use github::{
+     BatchedOperation, CreatePullRequest, CreatedPullRequest, FindPullRequest,
+     PullRequest as PrState, RepositoryIdQuery, UpdatePullRequest, batch_document,
+-    decode_batch_response,
++    decode_batch_response, decode_partial_batch_prefix,
+ };
+ use publication::{PushTarget, plan_push, push_batches};
+ use reconcile::{
+@@ -146,15 +146,15 @@ pub async fn run(repo: &util::Repo, github_endpoint: &GithubEndpoint) -> Result<
+ fn collect_commits(repo: &util::Repo) -> Result<Vec<Commit>> {
+     let head = repo.rev_parse_single("HEAD")?;
+     let default_branch = repo.find_default_branch_on_default_remote();
+-    let default_ref = repo.rev_parse_single(format!("refs/heads/{}", default_branch).as_str())?;
++    let (default_ref, display_target) = repo.resolve_default_branch_ref(&default_branch)?;
+ 
+     let commits = repo.commits_between(default_ref, head).map_err(|err| match err {
+         util::CommitsBetweenError::NotAncestor => {
+             let branch_name = repo.current_branch().name().unwrap_or("current branch");
+             eyre!(
+-                "The branch '{branch_name}' is not based on '{default_branch}'.\n\
++                "The branch '{branch_name}' is not based on '{display_target}'.\n\
+                  GHerrit only supports stacked branches that share history with the default branch.\n\
+-                 Maybe you want to 'git rebase' on '{default_branch}' before pushing?"
++                 Maybe you want to 'git rebase' on '{display_target}' before pushing?"
+             )
+         }
+         util::CommitsBetweenError::Eyre(e) => e,
+@@ -448,7 +448,7 @@ async fn sync_prs(
+     let new_prs = if !creations.is_empty() {
+         log::info!("Creating {num_creations} PRs...");
+         let repo_id = fetch_repo_id(octocrab, &remote).await?;
+-        let created = batch_create_prs(octocrab, &repo_id, creations).await?;
++        let created = batch_create_prs(repo, &remote, octocrab, &repo_id, creations).await?;
+         assert_eq!(created.len(), num_creations);
+         log::info!("Created {num_creations} PRs.");
+         created
+@@ -647,24 +647,109 @@ async fn batch_update_prs(octocrab: &Octocrab, updates: Vec<PrUpdate>) -> Result
+ ///
+ /// Returns the newly-created PRs keyed by their head branches.
+ async fn batch_create_prs(
++    repo: &util::Repo,
++    remote: &util::Remote,
+     octocrab: &Octocrab,
+     repo_id: &str,
+     creations: impl IntoIterator<Item = BatchCreate>,
+ ) -> Result<HashMap<String, CreatedPullRequest>> {
+-    let creations = creations.into_iter().map(|create| {
+-        CreatePullRequest::new(
+-            repo_id.to_string(),
+-            create.base_branch,
+-            create.head_branch,
+-            create.title,
+-            create.body,
+-        )
+-    });
+-    Ok(run_batched_graphql(octocrab, creations)
+-        .await?
++    let operations: Vec<CreatePullRequest> = creations
+         .into_iter()
+-        .map(|created| (created.head_branch.clone(), created))
+-        .collect())
++        .map(|create| {
++            CreatePullRequest::new(
++                repo_id.to_string(),
++                create.base_branch,
++                create.head_branch,
++                create.title,
++                create.body,
++            )
++        })
++        .collect();
++    if operations.is_empty() {
++        return Ok(HashMap::new());
++    }
++
++    let mut created_map = HashMap::with_capacity(operations.len());
++    let mut batches = BatchPlan::new(operations.len(), CreatePullRequest::INITIAL_BATCH_LEN);
++    while let Some(range) = batches.current() {
++        let chunk = &operations[range];
++        let query = batch_document(chunk);
++        if query_exceeds_limit(&query) {
++            let backoff = batches.reject_after(0).map_err(|item| {
++                eyre!(
++                    "GraphQL operation at item {} exceeds GitHub resource limits. Cannot sync.",
++                    item.index
++                )
++            })?;
++            log::warn!(
++                "Backing off GraphQL batch size from {} to {}.",
++                backoff.attempted,
++                backoff.retry
++            );
++            continue;
++        }
++
++        let request_payload = serde_json::json!({ "query": query });
++        let response: serde_json::Value = octocrab
++            .graphql(&request_payload)
++            .await
++            .wrap_err("GraphQL batched operation failed")?;
++
++        match classify_response(&response) {
++            ResponseDisposition::Success => {
++                for created in decode_batch_response(chunk, response)? {
++                    created_map.insert(created.head_branch.clone(), created);
++                }
++                batches.accept();
++            }
++            ResponseDisposition::RetryLimit => {
++                let partial = decode_partial_batch_prefix(chunk, &response);
++                let mut committed_prefix = partial.len();
++                for created in partial {
++                    created_map.insert(created.head_branch.clone(), created);
++                }
++                if committed_prefix == 0 {
++                    let heads: Vec<String> =
++                        chunk.iter().map(|op| op.head_branch().to_string()).collect();
++                    let observed = batch_fetch_prs(repo, octocrab, &heads).await?;
++                    let by_head = pull_requests_by_head(&observed);
++                    for head in &heads {
++                        if let Some(&pr) = by_head.get(head.as_str()) {
++                            created_map.insert(
++                                head.clone(),
++                                CreatedPullRequest {
++                                    head_branch: head.clone(),
++                                    number: pr.number,
++                                    url: remote.pr_url(pr.number),
++                                    node_id: pr.node_id.clone(),
++                                },
++                            );
++                            committed_prefix += 1;
++                        } else {
++                            break;
++                        }
++                    }
++                }
++                let backoff = batches.reject_after(committed_prefix).map_err(|item| {
++                    eyre!(
++                        "GraphQL operation at item {} exceeds GitHub resource limits. Cannot sync.",
++                        item.index
++                    )
++                })?;
++                log::warn!(
++                    "Backing off GraphQL batch size from {} to {} ({committed_prefix} already committed).",
++                    backoff.attempted,
++                    backoff.retry
++                );
++            }
++            ResponseDisposition::Fatal => {
++                let errors = response.get("errors").expect("fatal response has errors");
++                log::error!("GraphQL errors: {errors}");
++                bail!("GraphQL errors: {errors:?}");
++            }
++        }
++    }
++    Ok(created_map)
+ }
+ 
+ async fn batch_fetch_prs(
+@@ -712,11 +797,12 @@ where
+     //
+     // [1] https://docs.github.com/en/graphql/overview/rate-limits-and-query-limits-for-the-graphql-api#node-limit
+     // [2] https://github.blog/changelog/2025-09-01-graphql-api-resource-limits/
+-    let mut batches = BatchPlan::new(operations.len(), INITIAL_GRAPHQL_BATCH_LEN);
++    let mut batches = BatchPlan::new(operations.len(), O::INITIAL_BATCH_LEN);
+     while let Some(range) = batches.current() {
+         let chunk = &operations[range];
+         let query = batch_document(chunk);
+ 
++        let mut committed_prefix = 0usize;
+         // Attempt to perform the query. Returns:
+         // - Ok(Some(response)): Success
+         // - Ok(None): Heuristic or API limit hit (needs backoff)
+@@ -746,8 +832,11 @@ where
+             match classify_response(&response) {
+                 ResponseDisposition::Success => {}
+                 ResponseDisposition::RetryLimit => {
++                    let partial = decode_partial_batch_prefix(chunk, &response);
++                    committed_prefix = partial.len();
++                    outputs.extend(partial);
+                     log::warn!(
+-                        "Hit GitHub resource limit with GraphQL batch of size {}",
++                        "Hit GitHub resource limit with GraphQL batch of size {} ({committed_prefix} completed before limit)",
+                         chunk.len()
+                     );
+                     return Ok(None);
+@@ -764,7 +853,7 @@ where
+         .await?;
+ 
+         let Some(response) = response else {
+-            match batches.reject() {
++            match batches.reject_after(committed_prefix) {
+                 Ok(backoff) => log::warn!(
+                     "Backing off GraphQL batch size from {} to {}.",
+                     backoff.attempted,
+diff --git a/src/util/repository.rs b/src/util/repository.rs
+index 92e02127..4078c161 100644
+--- a/src/util/repository.rs
++++ b/src/util/repository.rs
+@@ -124,6 +124,17 @@ impl Repo {
+         branches.first().cloned().unwrap_or_else(|| "main".to_string())
+     }
+ 
++    pub fn resolve_default_branch_ref(&self, default_branch: &str) -> Result<(Id<'_>, String)> {
++        let remote_name = self.default_remote_name();
++        let remote_ref = format!("refs/remotes/{remote_name}/{default_branch}");
++        if let Ok(id) = self.rev_parse_single(remote_ref.as_str()) {
++            return Ok((id, format!("{remote_name}/{default_branch}")));
++        }
++        let local_ref = format!("refs/heads/{default_branch}");
++        let id = self.rev_parse_single(local_ref.as_str())?;
++        Ok((id, default_branch.to_string()))
++    }
++
+     pub fn is_a_default_branch_on_default_remote(&self, branch_name: &str) -> bool {
+         let branches = self.find_default_branches(&self.default_remote_name());
+         branches.iter().any(|b| b == branch_name)

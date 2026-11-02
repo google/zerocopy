@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "gherrit/pre-push",
+    "gherrit/multi-remote",
+    "gherrit/stacked-prs",
+    "git/ancestry-resolution",
+    "github/graphql-api",
+    "graphql/batch-mutations",
+    "graphql/idempotent-retry"
+  ],
+  "subjects": [
+    {
+      "name": "GHerrit Stacked Pull Request Manager (current main branch)",
+      "identity": {
+        "repository": "joshlf/gherrit",
+        "branch": "main",
+        "revision": "2dbcbb6174ac3cf75dd7fcd0ab15cb27027b405d",
+        "version": "0.1.0-alpha"
+      }
+    },
+    {
+      "name": "GHerrit Batched GraphQL Pre-Push Implementation (Cargo-installed revision)",
+      "identity": {
+        "repository": "joshlf/gherrit",
+        "revision": "86179afb27feabd50ddd7d2dc2493892885db8ba",
+        "version": "0.1.0-alpha"
+      }
+    },
+    {
+      "name": "GHerrit Pre-Modular Pre-Push Baseline",
+      "identity": {
+        "repository": "joshlf/gherrit",
+        "revision": "147340c2041654cba8cfc57a3e5c3115b4902ec3",
+        "version": "0.1.0-alpha"
+      }
+    },
+    {
+      "name": "Git Pre-Push Hook Protocol and Commit Ancestry Walker",
+      "identity": {
+        "repository": "git/git",
+        "subcomponent": "githooks(5) pre-push and git-rev-list(1) merge-base ancestry",
+        "observed_version": "2.53.0.473.g4a7958ca14-goog"
+      }
+    },
+    {
+      "name": "GraphQL Specification and GitHub GraphQL API v4 Pull Request Mutations",
+      "identity": {
+        "specification": "GraphQL Specification (October 2021 Edition), Section 6.2.1 Serial Execution",
+        "api": "GitHub GraphQL API v4 (Mutation.createPullRequest, Mutation.updatePullRequest, RESOURCE_LIMITS_EXCEEDED)",
+        "url": "https://docs.github.com/en/graphql/reference/mutations"
+      }
+    },
+    {
+      "name": "Multi-Remote Base-Branch Ancestry Reproducer Probe and Recorded Output",
+      "identity": {
+        "artifact": "support/reproduce_multi_remote_ancestry.py",
+        "sha256": "003e9a57ec1ba0d0672354a29f794fa2ce67f9cde7088e270714e783e823ac5c",
+        "results_artifact": "support/multi_remote_ancestry_results.json",
+        "results_sha256": "48dec98a4367b5ef8e835b40a87d5ae18e2946c34aff1c46e635a941153ccbe9"
+      }
+    },
+    {
+      "name": "GitHub GraphQL Batch createPullRequest Partial-Execution and Retry Simulation Probe",
+      "identity": {
+        "artifact": "support/simulate_graphql_batch_retry.py",
+        "sha256": "51f6be70001fa525a9cb25178219f3e1e92a96c1fc9e927bb86c07a701b5bf2a",
+        "results_artifact": "support/graphql_batch_retry_results.json",
+        "results_sha256": "fa21e18db4e00bb508030829d645859151b2a434b337c9dedd3e77e3700f201e"
+      }
+    },
+    {
+      "name": "Verified GHerrit Remote-Ancestry and Idempotent GraphQL Batch Retry Patch",
+      "identity": {
+        "artifact": "support/gherrit-fixes.patch",
+        "base_repository": "joshlf/gherrit",
+        "base_revision": "2dbcbb6174ac3cf75dd7fcd0ab15cb27027b405d",
+        "sha256": "49cb283abea7c01012813ccb710df1dde7455d738bc45bd6d36fba2bbcaf66d6"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

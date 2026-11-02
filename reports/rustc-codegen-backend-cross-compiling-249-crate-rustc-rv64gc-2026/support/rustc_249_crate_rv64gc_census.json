@@ -1,0 +1,1325 @@
+{
+  "target_triple": "riscv64gc-unknown-linux-gnu",
+  "manifest": "compiler/rustc/Cargo.toml",
+  "cargo_flags": [
+    "--target",
+    "riscv64gc-unknown-linux-gnu",
+    "--no-default-features",
+    "-Z",
+    "build-std=core,compiler_builtins,alloc,std,panic_abort,proc_macro"
+  ],
+  "wall_clock_build_seconds": 55.14,
+  "totals": {
+    "target_crate_count": 249,
+    "library_crate_count": 248,
+    "binary_crate_count": 1,
+    "total_cgus": 11558,
+    "library_mono_items": 931256,
+    "total_mono_items_including_rustc_main": 931257
+  },
+  "artifacts": {
+    "librustc_driver_so": {
+      "relative_path": "riscv64gc-unknown-linux-gnu/debug/librustc_driver.so",
+      "file_size_bytes": 691909736,
+      "elf_type": "ET_DYN",
+      "elf_machine": "EM_RISCV (243)",
+      "elf_flags": "0x5 (EF_RISCV_RVC | EF_RISCV_FLOAT_ABI_DOUBLE)",
+      "dynsym_entries": 907100,
+      "symtab_entries": 907101,
+      "sections": {
+        ".dynsym": {
+          "size_bytes": 21770400,
+          "ent_size_bytes": 24
+        },
+        ".gnu.hash": {
+          "size_bytes": 6632660
+        },
+        ".hash": {
+          "size_bytes": 7256808
+        },
+        ".dynstr": {
+          "size_bytes": 206276438
+        },
+        ".rodata": {
+          "size_bytes": 3595240
+        },
+        ".text": {
+          "size_bytes": 218328228
+        },
+        ".dynamic": {
+          "size_bytes": 112
+        },
+        ".data": {
+          "size_bytes": 1128
+        },
+        ".rustc": {
+          "size_bytes": 150
+        },
+        ".symtab": {
+          "size_bytes": 21770424,
+          "ent_size_bytes": 24
+        },
+        ".strtab": {
+          "size_bytes": 206276447
+        }
+      }
+    },
+    "rustc_main": {
+      "relative_path": "riscv64gc-unknown-linux-gnu/debug/rustc-main",
+      "file_size_bytes": 2520,
+      "elf_type": "ET_EXEC",
+      "elf_machine": "EM_RISCV (243)",
+      "elf_flags": "0x5 (EF_RISCV_RVC | EF_RISCV_FLOAT_ABI_DOUBLE)",
+      "entry_point_vaddr": "0x10078",
+      "qemu_riscv64_version_stdout": "rustc 1.101.0-nightly (anneal-rv64gc)\n",
+      "qemu_riscv64_exit_code": 0
+    }
+  },
+  "crates_by_mono_items_desc": [
+    {
+      "crate_name": "rustc_query_impl",
+      "cgus": 256,
+      "mono_items": 86455
+    },
+    {
+      "crate_name": "rustc_borrowck",
+      "cgus": 256,
+      "mono_items": 60175
+    },
+    {
+      "crate_name": "rustc_trait_selection",
+      "cgus": 256,
+      "mono_items": 56937
+    },
+    {
+      "crate_name": "rustc_middle",
+      "cgus": 256,
+      "mono_items": 53129
+    },
+    {
+      "crate_name": "rustc_hir_analysis",
+      "cgus": 256,
+      "mono_items": 43685
+    },
+    {
+      "crate_name": "rustc_mir_transform",
+      "cgus": 256,
+      "mono_items": 42450
+    },
+    {
+      "crate_name": "rustc_hir_typeck",
+      "cgus": 256,
+      "mono_items": 40639
+    },
+    {
+      "crate_name": "rustc_resolve",
+      "cgus": 256,
+      "mono_items": 36110
+    },
+    {
+      "crate_name": "rustc_attr_parsing",
+      "cgus": 256,
+      "mono_items": 28574
+    },
+    {
+      "crate_name": "rustc_metadata",
+      "cgus": 256,
+      "mono_items": 27977
+    },
+    {
+      "crate_name": "rustc_lint",
+      "cgus": 256,
+      "mono_items": 21766
+    },
+    {
+      "crate_name": "rustc_ast_lowering",
+      "cgus": 256,
+      "mono_items": 21129
+    },
+    {
+      "crate_name": "rustc_infer",
+      "cgus": 256,
+      "mono_items": 21007
+    },
+    {
+      "crate_name": "rustc_codegen_ssa",
+      "cgus": 256,
+      "mono_items": 19841
+    },
+    {
+      "crate_name": "rustc_driver_impl",
+      "cgus": 256,
+      "mono_items": 17622
+    },
+    {
+      "crate_name": "rustc_mir_build",
+      "cgus": 256,
+      "mono_items": 16645
+    },
+    {
+      "crate_name": "rustc_parse",
+      "cgus": 256,
+      "mono_items": 15893
+    },
+    {
+      "crate_name": "rustc_builtin_macros",
+      "cgus": 256,
+      "mono_items": 15493
+    },
+    {
+      "crate_name": "rustc_expand",
+      "cgus": 256,
+      "mono_items": 14980
+    },
+    {
+      "crate_name": "rustc_const_eval",
+      "cgus": 256,
+      "mono_items": 14344
+    },
+    {
+      "crate_name": "std",
+      "cgus": 16,
+      "mono_items": 13052
+    },
+    {
+      "crate_name": "rustc_session",
+      "cgus": 256,
+      "mono_items": 11905
+    },
+    {
+      "crate_name": "rustc_passes",
+      "cgus": 256,
+      "mono_items": 11895
+    },
+    {
+      "crate_name": "regex_automata",
+      "cgus": 16,
+      "mono_items": 11420
+    },
+    {
+      "crate_name": "rustc_target",
+      "cgus": 256,
+      "mono_items": 11279
+    },
+    {
+      "crate_name": "rustc_ty_utils",
+      "cgus": 256,
+      "mono_items": 10910
+    },
+    {
+      "crate_name": "rustc_monomorphize",
+      "cgus": 256,
+      "mono_items": 9832
+    },
+    {
+      "crate_name": "rustc_errors",
+      "cgus": 256,
+      "mono_items": 8848
+    },
+    {
+      "crate_name": "rustc_ast",
+      "cgus": 187,
+      "mono_items": 8432
+    },
+    {
+      "crate_name": "rustc_public",
+      "cgus": 256,
+      "mono_items": 8147
+    },
+    {
+      "crate_name": "jiff",
+      "cgus": 16,
+      "mono_items": 6602
+    },
+    {
+      "crate_name": "rustc_public_bridge",
+      "cgus": 165,
+      "mono_items": 6233
+    },
+    {
+      "crate_name": "rustc_interface",
+      "cgus": 256,
+      "mono_items": 5812
+    },
+    {
+      "crate_name": "rustc_mir_dataflow",
+      "cgus": 225,
+      "mono_items": 5645
+    },
+    {
+      "crate_name": "rustc_pattern_analysis",
+      "cgus": 177,
+      "mono_items": 5564
+    },
+    {
+      "crate_name": "tracing_subscriber",
+      "cgus": 16,
+      "mono_items": 5524
+    },
+    {
+      "crate_name": "rustc_span",
+      "cgus": 229,
+      "mono_items": 5464
+    },
+    {
+      "crate_name": "rustc_incremental",
+      "cgus": 222,
+      "mono_items": 5207
+    },
+    {
+      "crate_name": "object",
+      "cgus": 16,
+      "mono_items": 4981
+    },
+    {
+      "crate_name": "regex_syntax",
+      "cgus": 16,
+      "mono_items": 4975
+    },
+    {
+      "crate_name": "rustc_traits",
+      "cgus": 191,
+      "mono_items": 4360
+    },
+    {
+      "crate_name": "rustc_ast_passes",
+      "cgus": 149,
+      "mono_items": 4083
+    },
+    {
+      "crate_name": "annotate_snippets",
+      "cgus": 16,
+      "mono_items": 4033
+    },
+    {
+      "crate_name": "core",
+      "cgus": 16,
+      "mono_items": 3521
+    },
+    {
+      "crate_name": "icu_locale_core",
+      "cgus": 16,
+      "mono_items": 3334
+    },
+    {
+      "crate_name": "rustc_privacy",
+      "cgus": 184,
+      "mono_items": 3196
+    },
+    {
+      "crate_name": "wasmparser",
+      "cgus": 10,
+      "mono_items": 3192
+    },
+    {
+      "crate_name": "schemars",
+      "cgus": 8,
+      "mono_items": 3150
+    },
+    {
+      "crate_name": "ruzstd",
+      "cgus": 16,
+      "mono_items": 3042
+    },
+    {
+      "crate_name": "ar_archive_writer",
+      "cgus": 9,
+      "mono_items": 3034
+    },
+    {
+      "crate_name": "rustc_proc_macro",
+      "cgus": 156,
+      "mono_items": 2963
+    },
+    {
+      "crate_name": "aho_corasick",
+      "cgus": 9,
+      "mono_items": 2934
+    },
+    {
+      "crate_name": "proc_macro",
+      "cgus": 9,
+      "mono_items": 2897
+    },
+    {
+      "crate_name": "gimli",
+      "cgus": 10,
+      "mono_items": 2885
+    },
+    {
+      "crate_name": "rustc_attr_ir",
+      "cgus": 118,
+      "mono_items": 2531
+    },
+    {
+      "crate_name": "rustc_transmute",
+      "cgus": 143,
+      "mono_items": 2497
+    },
+    {
+      "crate_name": "pulldown_cmark",
+      "cgus": 9,
+      "mono_items": 2496
+    },
+    {
+      "crate_name": "compiler_builtins",
+      "cgus": 9,
+      "mono_items": 2456
+    },
+    {
+      "crate_name": "rustc_hir",
+      "cgus": 149,
+      "mono_items": 2292
+    },
+    {
+      "crate_name": "rustc_data_structures",
+      "cgus": 214,
+      "mono_items": 2139
+    },
+    {
+      "crate_name": "gsgdt",
+      "cgus": 6,
+      "mono_items": 2028
+    },
+    {
+      "crate_name": "thorin",
+      "cgus": 8,
+      "mono_items": 1872
+    },
+    {
+      "crate_name": "rustc_thread_pool",
+      "cgus": 132,
+      "mono_items": 1807
+    },
+    {
+      "crate_name": "wasm_encoder",
+      "cgus": 4,
+      "mono_items": 1803
+    },
+    {
+      "crate_name": "rustix",
+      "cgus": 6,
+      "mono_items": 1764
+    },
+    {
+      "crate_name": "fluent_bundle",
+      "cgus": 5,
+      "mono_items": 1685
+    },
+    {
+      "crate_name": "object",
+      "cgus": 5,
+      "mono_items": 1657
+    },
+    {
+      "crate_name": "rustc_symbol_mangling",
+      "cgus": 144,
+      "mono_items": 1648
+    },
+    {
+      "crate_name": "serde_json",
+      "cgus": 6,
+      "mono_items": 1618
+    },
+    {
+      "crate_name": "rustc_ast_pretty",
+      "cgus": 116,
+      "mono_items": 1479
+    },
+    {
+      "crate_name": "zerotrie",
+      "cgus": 4,
+      "mono_items": 1471
+    },
+    {
+      "crate_name": "rustc_error_messages",
+      "cgus": 147,
+      "mono_items": 1348
+    },
+    {
+      "crate_name": "alloc",
+      "cgus": 4,
+      "mono_items": 1144
+    },
+    {
+      "crate_name": "rustc_log",
+      "cgus": 121,
+      "mono_items": 1121
+    },
+    {
+      "crate_name": "icu_provider",
+      "cgus": 4,
+      "mono_items": 1114
+    },
+    {
+      "crate_name": "rustc_type_ir",
+      "cgus": 84,
+      "mono_items": 1102
+    },
+    {
+      "crate_name": "tracing_core",
+      "cgus": 2,
+      "mono_items": 1012
+    },
+    {
+      "crate_name": "rustc_feature",
+      "cgus": 79,
+      "mono_items": 962
+    },
+    {
+      "crate_name": "miniz_oxide",
+      "cgus": 4,
+      "mono_items": 954
+    },
+    {
+      "crate_name": "gimli",
+      "cgus": 5,
+      "mono_items": 862
+    },
+    {
+      "crate_name": "nix",
+      "cgus": 3,
+      "mono_items": 862
+    },
+    {
+      "crate_name": "rustc_hir_id",
+      "cgus": 90,
+      "mono_items": 851
+    },
+    {
+      "crate_name": "measureme",
+      "cgus": 2,
+      "mono_items": 839
+    },
+    {
+      "crate_name": "getopts",
+      "cgus": 3,
+      "mono_items": 802
+    },
+    {
+      "crate_name": "intl_pluralrules",
+      "cgus": 2,
+      "mono_items": 800
+    },
+    {
+      "crate_name": "parking_lot",
+      "cgus": 3,
+      "mono_items": 683
+    },
+    {
+      "crate_name": "rustc_abi",
+      "cgus": 69,
+      "mono_items": 683
+    },
+    {
+      "crate_name": "rustc_hir_pretty",
+      "cgus": 60,
+      "mono_items": 668
+    },
+    {
+      "crate_name": "bstr",
+      "cgus": 2,
+      "mono_items": 641
+    },
+    {
+      "crate_name": "jobserver",
+      "cgus": 2,
+      "mono_items": 638
+    },
+    {
+      "crate_name": "tempfile",
+      "cgus": 2,
+      "mono_items": 632
+    },
+    {
+      "crate_name": "unic_langid_impl",
+      "cgus": 2,
+      "mono_items": 599
+    },
+    {
+      "crate_name": "regex",
+      "cgus": 2,
+      "mono_items": 588
+    },
+    {
+      "crate_name": "rustc_demangle",
+      "cgus": 3,
+      "mono_items": 523
+    },
+    {
+      "crate_name": "rustc_demangle",
+      "cgus": 3,
+      "mono_items": 523
+    },
+    {
+      "crate_name": "crossbeam_epoch",
+      "cgus": 1,
+      "mono_items": 505
+    },
+    {
+      "crate_name": "blake3",
+      "cgus": 2,
+      "mono_items": 499
+    },
+    {
+      "crate_name": "rustc_parse_format",
+      "cgus": 61,
+      "mono_items": 495
+    },
+    {
+      "crate_name": "crossbeam_utils",
+      "cgus": 1,
+      "mono_items": 492
+    },
+    {
+      "crate_name": "icu_locale_fallback",
+      "cgus": 1,
+      "mono_items": 461
+    },
+    {
+      "crate_name": "writeable",
+      "cgus": 1,
+      "mono_items": 414
+    },
+    {
+      "crate_name": "type_map",
+      "cgus": 1,
+      "mono_items": 394
+    },
+    {
+      "crate_name": "rustc_expand_queries",
+      "cgus": 72,
+      "mono_items": 358
+    },
+    {
+      "crate_name": "flate2",
+      "cgus": 1,
+      "mono_items": 339
+    },
+    {
+      "crate_name": "intl_memoizer",
+      "cgus": 1,
+      "mono_items": 335
+    },
+    {
+      "crate_name": "rand",
+      "cgus": 1,
+      "mono_items": 327
+    },
+    {
+      "crate_name": "zerocopy",
+      "cgus": 1,
+      "mono_items": 323
+    },
+    {
+      "crate_name": "miniz_oxide",
+      "cgus": 1,
+      "mono_items": 303
+    },
+    {
+      "crate_name": "rustc_lint_defs",
+      "cgus": 32,
+      "mono_items": 273
+    },
+    {
+      "crate_name": "parking_lot_core",
+      "cgus": 1,
+      "mono_items": 269
+    },
+    {
+      "crate_name": "rand_chacha",
+      "cgus": 1,
+      "mono_items": 267
+    },
+    {
+      "crate_name": "nu_ansi_term",
+      "cgus": 1,
+      "mono_items": 256
+    },
+    {
+      "crate_name": "std_detect",
+      "cgus": 1,
+      "mono_items": 256
+    },
+    {
+      "crate_name": "tracing_log",
+      "cgus": 1,
+      "mono_items": 252
+    },
+    {
+      "crate_name": "punycode",
+      "cgus": 1,
+      "mono_items": 249
+    },
+    {
+      "crate_name": "tracing_tree",
+      "cgus": 1,
+      "mono_items": 244
+    },
+    {
+      "crate_name": "anstream",
+      "cgus": 1,
+      "mono_items": 243
+    },
+    {
+      "crate_name": "rustc_next_trait_solver",
+      "cgus": 16,
+      "mono_items": 243
+    },
+    {
+      "crate_name": "rustc_structures",
+      "cgus": 44,
+      "mono_items": 237
+    },
+    {
+      "crate_name": "thread_local",
+      "cgus": 1,
+      "mono_items": 220
+    },
+    {
+      "crate_name": "unicode_security",
+      "cgus": 1,
+      "mono_items": 219
+    },
+    {
+      "crate_name": "bitflags",
+      "cgus": 1,
+      "mono_items": 208
+    },
+    {
+      "crate_name": "rustc_lexer",
+      "cgus": 31,
+      "mono_items": 206
+    },
+    {
+      "crate_name": "serde_core",
+      "cgus": 1,
+      "mono_items": 203
+    },
+    {
+      "crate_name": "memchr",
+      "cgus": 1,
+      "mono_items": 190
+    },
+    {
+      "crate_name": "find_msvc_tools",
+      "cgus": 1,
+      "mono_items": 186
+    },
+    {
+      "crate_name": "rand_xoshiro",
+      "cgus": 1,
+      "mono_items": 186
+    },
+    {
+      "crate_name": "fastrand",
+      "cgus": 1,
+      "mono_items": 185
+    },
+    {
+      "crate_name": "serde",
+      "cgus": 1,
+      "mono_items": 179
+    },
+    {
+      "crate_name": "memchr",
+      "cgus": 1,
+      "mono_items": 177
+    },
+    {
+      "crate_name": "serde_path_to_error",
+      "cgus": 1,
+      "mono_items": 171
+    },
+    {
+      "crate_name": "zerovec",
+      "cgus": 1,
+      "mono_items": 161
+    },
+    {
+      "crate_name": "simd_adler32",
+      "cgus": 1,
+      "mono_items": 148
+    },
+    {
+      "crate_name": "sharded_slab",
+      "cgus": 1,
+      "mono_items": 145
+    },
+    {
+      "crate_name": "log",
+      "cgus": 1,
+      "mono_items": 144
+    },
+    {
+      "crate_name": "addr2line",
+      "cgus": 1,
+      "mono_items": 143
+    },
+    {
+      "crate_name": "rustc_graphviz",
+      "cgus": 33,
+      "mono_items": 137
+    },
+    {
+      "crate_name": "fluent_syntax",
+      "cgus": 1,
+      "mono_items": 133
+    },
+    {
+      "crate_name": "itertools",
+      "cgus": 1,
+      "mono_items": 128
+    },
+    {
+      "crate_name": "sha2",
+      "cgus": 1,
+      "mono_items": 128
+    },
+    {
+      "crate_name": "shlex",
+      "cgus": 1,
+      "mono_items": 126
+    },
+    {
+      "crate_name": "fluent_langneg",
+      "cgus": 1,
+      "mono_items": 121
+    },
+    {
+      "crate_name": "memmap2",
+      "cgus": 1,
+      "mono_items": 119
+    },
+    {
+      "crate_name": "thin_vec",
+      "cgus": 1,
+      "mono_items": 114
+    },
+    {
+      "crate_name": "rustc_apfloat",
+      "cgus": 1,
+      "mono_items": 113
+    },
+    {
+      "crate_name": "unicode_normalization",
+      "cgus": 1,
+      "mono_items": 105
+    },
+    {
+      "crate_name": "ryu",
+      "cgus": 1,
+      "mono_items": 104
+    },
+    {
+      "crate_name": "rand_core",
+      "cgus": 1,
+      "mono_items": 103
+    },
+    {
+      "crate_name": "tracing",
+      "cgus": 1,
+      "mono_items": 100
+    },
+    {
+      "crate_name": "rustc_serialize",
+      "cgus": 33,
+      "mono_items": 96
+    },
+    {
+      "crate_name": "libc",
+      "cgus": 1,
+      "mono_items": 95
+    },
+    {
+      "crate_name": "icu_list",
+      "cgus": 1,
+      "mono_items": 92
+    },
+    {
+      "crate_name": "hashbrown",
+      "cgus": 1,
+      "mono_items": 91
+    },
+    {
+      "crate_name": "unicode_script",
+      "cgus": 1,
+      "mono_items": 88
+    },
+    {
+      "crate_name": "rustc_arena",
+      "cgus": 22,
+      "mono_items": 86
+    },
+    {
+      "crate_name": "libloading",
+      "cgus": 1,
+      "mono_items": 81
+    },
+    {
+      "crate_name": "panic_unwind",
+      "cgus": 1,
+      "mono_items": 77
+    },
+    {
+      "crate_name": "sha1",
+      "cgus": 1,
+      "mono_items": 74
+    },
+    {
+      "crate_name": "unicode_width",
+      "cgus": 1,
+      "mono_items": 74
+    },
+    {
+      "crate_name": "once_cell",
+      "cgus": 1,
+      "mono_items": 73
+    },
+    {
+      "crate_name": "dyn_clone",
+      "cgus": 1,
+      "mono_items": 67
+    },
+    {
+      "crate_name": "potential_utf",
+      "cgus": 1,
+      "mono_items": 67
+    },
+    {
+      "crate_name": "hashbrown",
+      "cgus": 1,
+      "mono_items": 65
+    },
+    {
+      "crate_name": "rustc_stable_hash",
+      "cgus": 1,
+      "mono_items": 65
+    },
+    {
+      "crate_name": "foldhash",
+      "cgus": 1,
+      "mono_items": 60
+    },
+    {
+      "crate_name": "anstyle",
+      "cgus": 1,
+      "mono_items": 57
+    },
+    {
+      "crate_name": "getrandom",
+      "cgus": 1,
+      "mono_items": 57
+    },
+    {
+      "crate_name": "adler2",
+      "cgus": 1,
+      "mono_items": 50
+    },
+    {
+      "crate_name": "adler2",
+      "cgus": 1,
+      "mono_items": 50
+    },
+    {
+      "crate_name": "tinystr",
+      "cgus": 1,
+      "mono_items": 49
+    },
+    {
+      "crate_name": "ctrlc",
+      "cgus": 1,
+      "mono_items": 44
+    },
+    {
+      "crate_name": "anstyle_parse",
+      "cgus": 1,
+      "mono_items": 43
+    },
+    {
+      "crate_name": "datafrog",
+      "cgus": 1,
+      "mono_items": 43
+    },
+    {
+      "crate_name": "libc",
+      "cgus": 1,
+      "mono_items": 42
+    },
+    {
+      "crate_name": "linux_raw_sys",
+      "cgus": 1,
+      "mono_items": 37
+    },
+    {
+      "crate_name": "crc32fast",
+      "cgus": 1,
+      "mono_items": 36
+    },
+    {
+      "crate_name": "unicase",
+      "cgus": 1,
+      "mono_items": 36
+    },
+    {
+      "crate_name": "rustc_ast_ir",
+      "cgus": 4,
+      "mono_items": 34
+    },
+    {
+      "crate_name": "termize",
+      "cgus": 1,
+      "mono_items": 33
+    },
+    {
+      "crate_name": "twox_hash",
+      "cgus": 1,
+      "mono_items": 32
+    },
+    {
+      "crate_name": "unicode_properties",
+      "cgus": 1,
+      "mono_items": 27
+    },
+    {
+      "crate_name": "odht",
+      "cgus": 1,
+      "mono_items": 24
+    },
+    {
+      "crate_name": "colorchoice",
+      "cgus": 1,
+      "mono_items": 22
+    },
+    {
+      "crate_name": "ppv_lite86",
+      "cgus": 1,
+      "mono_items": 21
+    },
+    {
+      "crate_name": "rustc_baked_icu_data",
+      "cgus": 14,
+      "mono_items": 21
+    },
+    {
+      "crate_name": "rustc_crate_store",
+      "cgus": 6,
+      "mono_items": 18
+    },
+    {
+      "crate_name": "unicode_ident",
+      "cgus": 1,
+      "mono_items": 16
+    },
+    {
+      "crate_name": "scoped_tls",
+      "cgus": 1,
+      "mono_items": 15
+    },
+    {
+      "crate_name": "typenum",
+      "cgus": 1,
+      "mono_items": 15
+    },
+    {
+      "crate_name": "leb128fmt",
+      "cgus": 1,
+      "mono_items": 14
+    },
+    {
+      "crate_name": "smallvec",
+      "cgus": 1,
+      "mono_items": 14
+    },
+    {
+      "crate_name": "polonius_engine",
+      "cgus": 1,
+      "mono_items": 11
+    },
+    {
+      "crate_name": "allocator_api2",
+      "cgus": 1,
+      "mono_items": 10
+    },
+    {
+      "crate_name": "constant_time_eq",
+      "cgus": 1,
+      "mono_items": 8
+    },
+    {
+      "crate_name": "tracing_serde",
+      "cgus": 1,
+      "mono_items": 8
+    },
+    {
+      "crate_name": "pulldown_cmark_escape",
+      "cgus": 1,
+      "mono_items": 7
+    },
+    {
+      "crate_name": "rustc_fs_util",
+      "cgus": 3,
+      "mono_items": 7
+    },
+    {
+      "crate_name": "anstyle_query",
+      "cgus": 1,
+      "mono_items": 6
+    },
+    {
+      "crate_name": "elsa",
+      "cgus": 1,
+      "mono_items": 6
+    },
+    {
+      "crate_name": "rustc_hashes",
+      "cgus": 2,
+      "mono_items": 6
+    },
+    {
+      "crate_name": "matchers",
+      "cgus": 1,
+      "mono_items": 5
+    },
+    {
+      "crate_name": "rustc_hash",
+      "cgus": 1,
+      "mono_items": 5
+    },
+    {
+      "crate_name": "rustc_ty_walk",
+      "cgus": 1,
+      "mono_items": 5
+    },
+    {
+      "crate_name": "self_cell",
+      "cgus": 1,
+      "mono_items": 5
+    },
+    {
+      "crate_name": "indexmap",
+      "cgus": 1,
+      "mono_items": 4
+    },
+    {
+      "crate_name": "digest",
+      "cgus": 1,
+      "mono_items": 3
+    },
+    {
+      "crate_name": "generic_array",
+      "cgus": 1,
+      "mono_items": 3
+    },
+    {
+      "crate_name": "md5",
+      "cgus": 1,
+      "mono_items": 3
+    },
+    {
+      "crate_name": "rustc_index",
+      "cgus": 1,
+      "mono_items": 3
+    },
+    {
+      "crate_name": "rustc_literal_escaper",
+      "cgus": 1,
+      "mono_items": 3
+    },
+    {
+      "crate_name": "rustc_literal_escaper",
+      "cgus": 1,
+      "mono_items": 3
+    },
+    {
+      "crate_name": "ena",
+      "cgus": 1,
+      "mono_items": 2
+    },
+    {
+      "crate_name": "lock_api",
+      "cgus": 1,
+      "mono_items": 2
+    },
+    {
+      "crate_name": "panic_abort",
+      "cgus": 1,
+      "mono_items": 2
+    },
+    {
+      "crate_name": "arrayvec",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "block_buffer",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "crypto_common",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "litemap",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "rustc_main",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "utf8parse",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "yoke",
+      "cgus": 1,
+      "mono_items": 1
+    },
+    {
+      "crate_name": "arrayref",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "cfg_if",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "cfg_if",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "crossbeam_deque",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "either",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "equivalent",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "fnv",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "icu_locale_fallback_data",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "is_terminal_polyfill",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "itoa",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "lazy_static",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "pathdiff",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "pin_project_lite",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "ref_cast",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "rustc_driver",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "rustc_error_codes",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "rustc_hash",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "rustc_std_workspace_alloc",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "rustc_std_workspace_core",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "scopeguard",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "stable_deref_trait",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "thiserror",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "tinyvec",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "tinyvec_macros",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "unic_langid",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "unic_langid_macros",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "unwind",
+      "cgus": 1,
+      "mono_items": 0
+    },
+    {
+      "crate_name": "zerofrom",
+      "cgus": 1,
+      "mono_items": 0
+    }
+  ]
+}

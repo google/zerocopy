@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/anllvm",
+    "anneal/certificate-checkers",
+    "anneal/memory-model",
+    "anneal/poison-semantics",
+    "anneal/rv64gc",
+    "anneal/self-hosting",
+    "anneal/trusted-boundary",
+    "lean/verification",
+    "llvm/translation-validation",
+    "rust/mir-optimizations"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 kernel and prelude environment",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal universal refinement kernel and trusted boundary audit",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Anneal AnLLVM optimizing compiler and RV64GC target semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87"
+      }
+    },
+    {
+      "name": "Rust language reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Rust compiler Runtime(PostCleanup) MIR passes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 optimization and backend pass semantics",
+      "identity": {
+        "release": "llvmorg-21.1.8",
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 instruction semantics",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Self-contained Lean 4.34.1 prelude mechanization of AnLLVM primitives, checkers, and canaries",
+      "identity": {
+        "path": "support/anllvm_five_primitive_and_canaries_probe.lean",
+        "sha256": "16ee7f1ec68f3119eda7a5b8e7b2c3d67c55c7058a6253419db36f2e30f14177"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 kernel axiom-audit output for AnLLVM probe",
+      "identity": {
+        "path": "support/lean_verification_output.txt",
+        "sha256": "f278eacfa9363b1b900010b7057bb2acde078440fdd3dbc5784e681e834e3bcc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

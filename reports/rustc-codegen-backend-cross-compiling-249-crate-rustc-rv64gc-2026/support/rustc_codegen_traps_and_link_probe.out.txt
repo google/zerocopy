@@ -1,0 +1,8 @@
+[probe:poly] symbol=_RINvCsiDGrpK3tNLd_18sample_probe_crate13poly_size_addAyj4_EB2_ raw_ty=T/#0 inst_ty=[u64; 4_usize] size_bytes=32
+[probe:poly] symbol=_RINvCsiDGrpK3tNLd_18sample_probe_crate13poly_size_addmEB2_ raw_ty=T/#0 inst_ty=u32 size_bytes=4
+[probe:safe_path] crate=sample_probe_crate cgus=1 closures_verified=2 must_produce_diag=false
+[probe:trimmed_ice] verified DiagCtxtInner::drop ICE on unwrapped tcx.def_path_str: "`trimmed_def_paths` called, diagnostics were expected but none were emitted. Use `with_no_trimmed_paths` for debugging."
+[probe:closure_item_name_ice] verified tcx.item_name(closure_def_id) ICE: "item_name: no name for DefPath { ... data: Closure }"
+[probe:link_case_a] without --whole-archive: rustc_driver_impl_main present_in_dynsym=false
+[probe:link_case_b] with --whole-archive + STB_LOCAL across CGUs: failed as expected (undefined symbol: cgu1_internal_helper)
+[probe:link_case_c] with --whole-archive + STB_GLOBAL across CGUs: rustc_driver_impl_main present_in_dynsym=true

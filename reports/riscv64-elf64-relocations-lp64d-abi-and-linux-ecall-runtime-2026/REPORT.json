@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "riscv64",
+    "elf64",
+    "assembly/relocations",
+    "abi/lp64d",
+    "compiler/branch-relaxation",
+    "verification/lean4",
+    "linux/syscall-abi"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V ELF psABI specification",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "7188fa53123d7eb9ef8dbad02db2ca2cabdf9c62"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 ISA model",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "platform": "x86_64-unknown-linux-gnu",
+        "executable_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 binary utilities and ELF relocation definitions",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "version": "21.1.8",
+        "revision": "85a90d119deb25b518867cd37d62c7b93b575a6f",
+        "rust_lld_21_sha256": "ed7d2923baca14739c3df6ce3393ba07116e7f529b785bcec2d1e25f90d28173",
+        "llvm_readelf_21_sha256": "bc93dae4a9c5584add48d2a5953232bc86eea82d2f3abe47b4c6c75ef006482a",
+        "llvm_objdump_21_sha256": "fa677a86e691b7c42c29bfd1690edf5c3e0b7d5b9b8bb0aaef19f795e15b9021"
+      }
+    },
+    {
+      "name": "QEMU RISC-V 64-bit user-mode emulator",
+      "identity": {
+        "version": "11.1.0",
+        "package": "1:11.1.0+ds-2",
+        "executable_sha256": "328369968794f853dde737be961b290fe74cb21ff4f23de65ed52a281d360d40"
+      }
+    },
+    {
+      "name": "RV64GC encoding, immediate compensation, branch relaxation, and ELF64 ABI proofs and probes",
+      "identity": {
+        "lean_proof_probe": "support/rv64_encoding_and_imm_proofs.lean",
+        "lean_proof_probe_sha256": "5e6951772faf79c18c384d261550e8945226bcf7b094b4ee8ac775ae7bb37442",
+        "elf_generator_probe": "support/gen_and_verify_rv64_elf.py",
+        "elf_generator_probe_sha256": "a238f78d9bc0995fdeb2ff0024eab6794cb6f0f56ccdea00cf7b72c8b329fb92",
+        "relocatable_object": "support/probe_rv64gc.o",
+        "relocatable_object_sha256": "c45f22f0de47bd13157603e4f0f72f06a727de7e229ae977875b56dfc692e119",
+        "linked_executable": "support/probe_rv64gc.elf",
+        "linked_executable_sha256": "5f588cb59db32198aafca550df6290a861238011ddce44a6df85de8dbec47377",
+        "probe_ledger": "support/probe_ledger.json",
+        "probe_ledger_sha256": "f5c09092ca69508507abfa4c63b43f1c6701533964f588ed9d387a04aae3e600",
+        "verification_output": "support/verification_output.txt",
+        "verification_output_sha256": "6a7b0fc894105c3cc8b1a31e5d5be0da314587aa8ca50a4444f3007834affb66"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

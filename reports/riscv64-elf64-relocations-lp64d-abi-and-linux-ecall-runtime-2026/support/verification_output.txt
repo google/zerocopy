@@ -1,0 +1,442 @@
+=== 1. NEGATIVE PROBE A: .symtab STB_LOCAL-After-STB_GLOBAL Rejection ===
+Command: rust-lld -flavor gnu -m elf64lriscv -static -e _start neg_symtab_order.o -o neg_symtab_order.elf
+Exit code: 1
+Stderr:
+rust-lld: error: neg_symtab_order.o: symbol (2) has invalid binding: 0
+
+=== 2. NEGATIVE PROBE B: Direct R_RISCV_PCREL_LO12_I (r_sym -> .rodata) Rejection ===
+Command: rust-lld -flavor gnu -m elf64lriscv -static -e _start neg_direct_lo12.o -o neg_direct_lo12.elf
+Exit code: 1
+Stderr:
+rust-lld: error: neg_direct_lo12.o:(function _start: .text+0x4): R_RISCV_PCREL_LO12 relocation points to a symbol 'rodata_banner' in a different section '.rodata'
+rust-lld: error: neg_direct_lo12.o:(function _start: .text+0x4): R_RISCV_PCREL_LO12 relocation points to neg_direct_lo12.o:(rodata_banner) without an associated R_RISCV_PCREL_HI20 relocation
+
+=== 3. POSITIVE PROBE: llvm-readelf -h -S -s -r probe_rv64gc.o ===
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           RISC-V
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          5568 (bytes into file)
+  Flags:                             0x5, RVC, double-float ABI
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         9
+  Section header string table index: 8
+There are 9 section headers, starting at offset 0x15c0:
+
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .text             PROGBITS        0000000000000000 000040 0011f4 00  AX  0   0  4
+  [ 2] .rodata           PROGBITS        0000000000000000 001238 000038 00   A  0   0  8
+  [ 3] .data.rel.ro      PROGBITS        0000000000000000 001270 000028 00  WA  0   0  8
+  [ 4] .rela.text        RELA            0000000000000000 001298 0000d8 18   I  6   1  8
+  [ 5] .rela.data.rel.ro RELA            0000000000000000 001370 000030 18   I  6   3  8
+  [ 6] .symtab           SYMTAB          0000000000000000 0013a0 000120 18      7  11  8
+  [ 7] .strtab           STRTAB          0000000000000000 0014c0 0000a9 00      0   0  1
+  [ 8] .shstrtab         STRTAB          0000000000000000 001569 000053 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  R (retain), p (processor specific)
+
+Relocation section '.rela.text' at offset 0x1298 contains 9 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+00000000000010cc  0000000300000013 R_RISCV_CALL_PLT       0000000000000014 callee_with_large_frame + 0
+0000000000001124  0000000500000017 R_RISCV_PCREL_HI20     0000000000000000 trait_vtable + 0
+0000000000001128  0000000700000018 R_RISCV_PCREL_LO12_I   0000000000001124 .Lpcrel_hi_vtable + 0
+0000000000001180  0000000600000017 R_RISCV_PCREL_HI20     0000000000000020 tls_slot_data + 0
+0000000000001184  0000000800000019 R_RISCV_PCREL_LO12_S   0000000000001180 .Lpcrel_hi_store + 0
+0000000000001188  0000000600000017 R_RISCV_PCREL_HI20     0000000000000020 tls_slot_data + 0
+000000000000118c  0000000900000018 R_RISCV_PCREL_LO12_I   0000000000001188 .Lpcrel_hi_tls + 0
+00000000000011d0  0000000400000017 R_RISCV_PCREL_HI20     0000000000000000 rodata_banner + 0
+00000000000011d4  0000000a00000018 R_RISCV_PCREL_LO12_I   00000000000011d0 .Lpcrel_hi_banner + 0
+
+Relocation section '.rela.data.rel.ro' at offset 0x1370 contains 2 entries:
+    Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+0000000000000000  0000000100000002 R_RISCV_64             0000000000000000 drop_noop + 0
+0000000000000018  0000000200000002 R_RISCV_64             0000000000000004 vtable_method_add + 0
+
+Symbol table '.symtab' contains 12 entries:
+   Num:    Value          Size Type    Bind   Vis       Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND 
+     1: 0000000000000000     4 FUNC    LOCAL  DEFAULT     1 drop_noop
+     2: 0000000000000004    16 FUNC    LOCAL  DEFAULT     1 vtable_method_add
+     3: 0000000000000014  4272 FUNC    LOCAL  DEFAULT     1 callee_with_large_frame
+     4: 0000000000000000    56 OBJECT  LOCAL  DEFAULT     2 rodata_banner
+     5: 0000000000000000    32 OBJECT  LOCAL  DEFAULT     3 trait_vtable
+     6: 0000000000000020     8 OBJECT  LOCAL  DEFAULT     3 tls_slot_data
+     7: 0000000000001124     0 NOTYPE  LOCAL  DEFAULT     1 .Lpcrel_hi_vtable
+     8: 0000000000001180     0 NOTYPE  LOCAL  DEFAULT     1 .Lpcrel_hi_store
+     9: 0000000000001188     0 NOTYPE  LOCAL  DEFAULT     1 .Lpcrel_hi_tls
+    10: 00000000000011d0     0 NOTYPE  LOCAL  DEFAULT     1 .Lpcrel_hi_banner
+    11: 00000000000010c4   304 FUNC    GLOBAL DEFAULT     1 _start
+
+=== 4. POSITIVE PROBE: llvm-objdump -d -r probe_rv64gc.o (with 1,030-NOP span elided) ===
+
+probe_rv64gc.o:	file format elf64-littleriscv
+
+Disassembly of section .text:
+
+0000000000000000 <drop_noop>:
+       0:      	ret
+
+0000000000000004 <vtable_method_add>:
+       4:      	fence
+       8:      	ld	t0, 0x0(a0)
+       c:      	add	a0, t0, a1
+      10:      	ret
+
+0000000000000014 <callee_with_large_frame>:
+      14:      	lui	t4, 0xfffff
+      18:      	addi	t4, t4, 0x560
+      1c:      	add	t4, sp, t4
+      20:      	add	sp, t4, zero
+      24:      	lui	t4, 0x1
+      28:      	addi	t4, t4, -0x568
+      2c:      	add	t4, sp, t4
+      30:      	sd	ra, 0x0(t4)
+      34:      	lui	t4, 0x1
+      38:      	addi	t4, t4, -0x570
+      3c:      	add	t4, sp, t4
+      40:      	sd	s0, 0x0(t4)
+      44:      	lui	t4, 0x1
+      48:      	addi	t4, t4, -0x6a0
+      4c:      	add	t4, sp, t4
+      50:      	sd	a0, 0x0(t4)
+      54:      	lui	t3, 0x1
+      58:      	addi	t3, t3, -0x6a0
+      5c:      	add	t3, sp, t3
+      60:      	ld	t0, 0x0(t3)
+      64:      	beqz	t0, 0x6c <callee_with_large_frame+0x58>
+      68:      	j	0x1088 <callee_with_large_frame+0x1074>
+      6c:      	nop
+      70:      	nop
+      74:      	nop
+    ... [1027 identical `nop` instructions omitted (4,108 bytes)] ...
+    1084:      	li	a0, 0x63
+    1088:      	add	a0, t0, a1
+    108c:      	xor	a1, t0, a1
+    1090:      	lui	t4, 0x1
+    1094:      	addi	t4, t4, -0x568
+    1098:      	add	t4, sp, t4
+    109c:      	ld	ra, 0x0(t4)
+    10a0:      	lui	t4, 0x1
+    10a4:      	addi	t4, t4, -0x570
+    10a8:      	add	t4, sp, t4
+    10ac:      	ld	s0, 0x0(t4)
+    10b0:      	lui	t4, 0x1
+    10b4:      	addi	t4, t4, -0x560
+    10b8:      	add	t4, sp, t4
+    10bc:      	add	sp, t4, zero
+    10c0:      	ret
+
+00000000000010c4 <_start>:
+    10c4:      	li	a0, 0x28
+    10c8:      	li	a1, 0x2
+    10cc:      	auipc	ra, 0x0
+		00000000000010cc:  R_RISCV_CALL_PLT	callee_with_large_frame
+    10d0:      	jalr	ra <_start+0x8>
+    10d4:      	li	t0, 0x2a
+    10d8:      	beq	a0, t0, 0x10e8 <_start+0x24>
+    10dc:      	li	a0, 0x1
+    10e0:      	li	a7, 0x5d
+    10e4:      	ecall
+    10e8:      	beq	a1, t0, 0x10f8 <_start+0x34>
+    10ec:      	li	a0, 0x2
+    10f0:      	li	a7, 0x5d
+    10f4:      	ecall
+    10f8:      	li	a0, 0x0
+    10fc:      	li	a1, 0x400
+    1100:      	li	a2, 0x3
+    1104:      	li	a3, 0x22
+    1108:      	li	a4, -0x1
+    110c:      	li	a5, 0x0
+    1110:      	li	a7, 0xde
+    1114:      	ecall
+    1118:      	add	s1, a0, zero
+    111c:      	li	t0, 0x64
+    1120:      	sd	t0, 0x0(s1)
+
+0000000000001124 <.Lpcrel_hi_vtable>:
+    1124:      	auipc	t0, 0x0
+		0000000000001124:  R_RISCV_PCREL_HI20	trait_vtable
+    1128:      	mv	t0, t0
+		0000000000001128:  R_RISCV_PCREL_LO12_I	.Lpcrel_hi_vtable
+    112c:      	ld	t1, 0x8(t0)
+    1130:      	li	t2, 0x10
+    1134:      	beq	t1, t2, 0x1144 <.Lpcrel_hi_vtable+0x20>
+    1138:      	li	a0, 0x3
+    113c:      	li	a7, 0x5d
+    1140:      	ecall
+    1144:      	ld	t1, 0x10(t0)
+    1148:      	li	t2, 0x8
+    114c:      	beq	t1, t2, 0x115c <.Lpcrel_hi_vtable+0x38>
+    1150:      	li	a0, 0x4
+    1154:      	li	a7, 0x5d
+    1158:      	ecall
+    115c:      	ld	t1, 0x18(t0)
+    1160:      	add	a0, s1, zero
+    1164:      	li	a1, 0x17
+    1168:      	jalr	t1
+    116c:      	li	t2, 0x7b
+    1170:      	beq	a0, t2, 0x1180 <.Lpcrel_hi_store>
+    1174:      	li	a0, 0x5
+    1178:      	li	a7, 0x5d
+    117c:      	ecall
+
+0000000000001180 <.Lpcrel_hi_store>:
+    1180:      	auipc	t0, 0x0
+		0000000000001180:  R_RISCV_PCREL_HI20	tls_slot_data
+    1184:      	sd	a0, 0x0(t0)
+		0000000000001184:  R_RISCV_PCREL_LO12_S	.Lpcrel_hi_store
+
+0000000000001188 <.Lpcrel_hi_tls>:
+    1188:      	auipc	tp, 0x0
+		0000000000001188:  R_RISCV_PCREL_HI20	tls_slot_data
+    118c:      	mv	tp, tp
+		000000000000118c:  R_RISCV_PCREL_LO12_I	.Lpcrel_hi_tls
+    1190:      	ld	t1, 0x0(tp)
+    1194:      	li	t2, 0x7b
+    1198:      	beq	t1, t2, 0x11a8 <.Lpcrel_hi_tls+0x20>
+    119c:      	li	a0, 0x6
+    11a0:      	li	a7, 0x5d
+    11a4:      	ecall
+    11a8:      	addi	a0, s1, 0x40
+    11ac:      	li	a1, 0x8
+    11b0:      	li	a2, 0x0
+    11b4:      	li	a7, 0x116
+    11b8:      	ecall
+    11bc:      	li	t2, 0x8
+    11c0:      	beq	a0, t2, 0x11d0 <.Lpcrel_hi_banner>
+    11c4:      	li	a0, 0x7
+    11c8:      	li	a7, 0x5d
+    11cc:      	ecall
+
+00000000000011d0 <.Lpcrel_hi_banner>:
+    11d0:      	auipc	a1, 0x0
+		00000000000011d0:  R_RISCV_PCREL_HI20	rodata_banner
+    11d4:      	mv	a1, a1
+		00000000000011d4:  R_RISCV_PCREL_LO12_I	.Lpcrel_hi_banner
+    11d8:      	li	a0, 0x1
+    11dc:      	li	a2, 0x38
+    11e0:      	li	a7, 0x40
+    11e4:      	ecall
+    11e8:      	li	a0, 0x0
+    11ec:      	li	a7, 0x5d
+    11f0:      	ecall
+
+=== 5. LINKED EXECUTABLE: llvm-readelf -h -S -s probe_rv64gc.elf ===
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              EXEC (Executable file)
+  Machine:                           RISC-V
+  Version:                           0x1
+  Entry point address:               0x1228C
+  Start of program headers:          64 (bytes into file)
+  Start of section headers:          5728 (bytes into file)
+  Flags:                             0x5, RVC, double-float ABI
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         6
+  Size of section headers:           64 (bytes)
+  Number of section headers:         9
+  Section header string table index: 7
+There are 9 section headers, starting at offset 0x1660:
+
+Section Headers:
+  [Nr] Name              Type            Address          Off    Size   ES Flg Lk Inf Al
+  [ 0]                   NULL            0000000000000000 000000 000000 00      0   0  0
+  [ 1] .rodata           PROGBITS        0000000000010190 000190 000038 00   A  0   0  8
+  [ 2] .text             PROGBITS        00000000000111c8 0001c8 0011f4 00  AX  0   0  4
+  [ 3] .data.rel.ro      PROGBITS        00000000000133c0 0013c0 000028 00  WA  0   0  8
+  [ 4] .relro_padding    NOBITS          00000000000133e8 0013e8 000c18 00  WA  0   0  1
+  [ 5] .comment          PROGBITS        0000000000000000 0013e8 00005e 01  MS  0   0  1
+  [ 6] .symtab           SYMTAB          0000000000000000 001448 000120 18      8  11  8
+  [ 7] .shstrtab         STRTAB          0000000000000000 001568 00004e 00      0   0  1
+  [ 8] .strtab           STRTAB          0000000000000000 0015b6 0000a9 00      0   0  1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  R (retain), p (processor specific)
+
+Symbol table '.symtab' contains 12 entries:
+   Num:    Value          Size Type    Bind   Vis       Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND 
+     1: 00000000000111c8     4 FUNC    LOCAL  DEFAULT     2 drop_noop
+     2: 00000000000111cc    16 FUNC    LOCAL  DEFAULT     2 vtable_method_add
+     3: 00000000000111dc  4272 FUNC    LOCAL  DEFAULT     2 callee_with_large_frame
+     4: 0000000000010190    56 OBJECT  LOCAL  DEFAULT     1 rodata_banner
+     5: 00000000000133c0    32 OBJECT  LOCAL  DEFAULT     3 trait_vtable
+     6: 00000000000133e0     8 OBJECT  LOCAL  DEFAULT     3 tls_slot_data
+     7: 00000000000122ec     0 NOTYPE  LOCAL  DEFAULT     2 .Lpcrel_hi_vtable
+     8: 0000000000012348     0 NOTYPE  LOCAL  DEFAULT     2 .Lpcrel_hi_store
+     9: 0000000000012350     0 NOTYPE  LOCAL  DEFAULT     2 .Lpcrel_hi_tls
+    10: 0000000000012398     0 NOTYPE  LOCAL  DEFAULT     2 .Lpcrel_hi_banner
+    11: 000000000001228c   304 FUNC    GLOBAL DEFAULT     2 _start
+
+=== 6. LINKED EXECUTABLE DISASSEMBLY: llvm-objdump -d probe_rv64gc.elf ===
+
+probe_rv64gc.elf:	file format elf64-littleriscv
+
+Disassembly of section .text:
+
+00000000000111c8 <drop_noop>:
+   111c8:      	ret
+
+00000000000111cc <vtable_method_add>:
+   111cc:      	fence
+   111d0:      	ld	t0, 0x0(a0)
+   111d4:      	add	a0, t0, a1
+   111d8:      	ret
+
+00000000000111dc <callee_with_large_frame>:
+   111dc:      	lui	t4, 0xfffff
+   111e0:      	addi	t4, t4, 0x560
+   111e4:      	add	t4, sp, t4
+   111e8:      	add	sp, t4, zero
+   111ec:      	lui	t4, 0x1
+   111f0:      	addi	t4, t4, -0x568
+   111f4:      	add	t4, sp, t4
+   111f8:      	sd	ra, 0x0(t4)
+   111fc:      	lui	t4, 0x1
+   11200:      	addi	t4, t4, -0x570
+   11204:      	add	t4, sp, t4
+   11208:      	sd	s0, 0x0(t4)
+   1120c:      	lui	t4, 0x1
+   11210:      	addi	t4, t4, -0x6a0
+   11214:      	add	t4, sp, t4
+   11218:      	sd	a0, 0x0(t4)
+   1121c:      	lui	t3, 0x1
+   11220:      	addi	t3, t3, -0x6a0
+   11224:      	add	t3, sp, t3
+   11228:      	ld	t0, 0x0(t3)
+   1122c:      	beqz	t0, 0x11234 <callee_with_large_frame+0x58>
+   11230:      	j	0x12250 <callee_with_large_frame+0x1074>
+   11234:      	nop
+   11238:      	nop
+   1123c:      	nop
+    ... [1027 identical `nop` instructions omitted (4,108 bytes)] ...
+   1224c:      	li	a0, 0x63
+   12250:      	add	a0, t0, a1
+   12254:      	xor	a1, t0, a1
+   12258:      	lui	t4, 0x1
+   1225c:      	addi	t4, t4, -0x568
+   12260:      	add	t4, sp, t4
+   12264:      	ld	ra, 0x0(t4)
+   12268:      	lui	t4, 0x1
+   1226c:      	addi	t4, t4, -0x570
+   12270:      	add	t4, sp, t4
+   12274:      	ld	s0, 0x0(t4)
+   12278:      	lui	t4, 0x1
+   1227c:      	addi	t4, t4, -0x560
+   12280:      	add	t4, sp, t4
+   12284:      	add	sp, t4, zero
+   12288:      	ret
+
+000000000001228c <_start>:
+   1228c:      	li	a0, 0x28
+   12290:      	li	a1, 0x2
+   12294:      	auipc	ra, 0xfffff
+   12298:      	jalr	-0xb8(ra) <callee_with_large_frame>
+   1229c:      	li	t0, 0x2a
+   122a0:      	beq	a0, t0, 0x122b0 <_start+0x24>
+   122a4:      	li	a0, 0x1
+   122a8:      	li	a7, 0x5d
+   122ac:      	ecall
+   122b0:      	beq	a1, t0, 0x122c0 <_start+0x34>
+   122b4:      	li	a0, 0x2
+   122b8:      	li	a7, 0x5d
+   122bc:      	ecall
+   122c0:      	li	a0, 0x0
+   122c4:      	li	a1, 0x400
+   122c8:      	li	a2, 0x3
+   122cc:      	li	a3, 0x22
+   122d0:      	li	a4, -0x1
+   122d4:      	li	a5, 0x0
+   122d8:      	li	a7, 0xde
+   122dc:      	ecall
+   122e0:      	add	s1, a0, zero
+   122e4:      	li	t0, 0x64
+   122e8:      	sd	t0, 0x0(s1)
+
+00000000000122ec <.Lpcrel_hi_vtable>:
+   122ec:      	auipc	t0, 0x1
+   122f0:      	addi	t0, t0, 0xd4
+   122f4:      	ld	t1, 0x8(t0)
+   122f8:      	li	t2, 0x10
+   122fc:      	beq	t1, t2, 0x1230c <.Lpcrel_hi_vtable+0x20>
+   12300:      	li	a0, 0x3
+   12304:      	li	a7, 0x5d
+   12308:      	ecall
+   1230c:      	ld	t1, 0x10(t0)
+   12310:      	li	t2, 0x8
+   12314:      	beq	t1, t2, 0x12324 <.Lpcrel_hi_vtable+0x38>
+   12318:      	li	a0, 0x4
+   1231c:      	li	a7, 0x5d
+   12320:      	ecall
+   12324:      	ld	t1, 0x18(t0)
+   12328:      	add	a0, s1, zero
+   1232c:      	li	a1, 0x17
+   12330:      	jalr	t1
+   12334:      	li	t2, 0x7b
+   12338:      	beq	a0, t2, 0x12348 <.Lpcrel_hi_store>
+   1233c:      	li	a0, 0x5
+   12340:      	li	a7, 0x5d
+   12344:      	ecall
+
+0000000000012348 <.Lpcrel_hi_store>:
+   12348:      	auipc	t0, 0x1
+   1234c:      	sd	a0, 0x98(t0)
+
+0000000000012350 <.Lpcrel_hi_tls>:
+   12350:      	auipc	tp, 0x1
+   12354:      	addi	tp, tp, 0x90
+   12358:      	ld	t1, 0x0(tp)
+   1235c:      	li	t2, 0x7b
+   12360:      	beq	t1, t2, 0x12370 <.Lpcrel_hi_tls+0x20>
+   12364:      	li	a0, 0x6
+   12368:      	li	a7, 0x5d
+   1236c:      	ecall
+   12370:      	addi	a0, s1, 0x40
+   12374:      	li	a1, 0x8
+   12378:      	li	a2, 0x0
+   1237c:      	li	a7, 0x116
+   12380:      	ecall
+   12384:      	li	t2, 0x8
+   12388:      	beq	a0, t2, 0x12398 <.Lpcrel_hi_banner>
+   1238c:      	li	a0, 0x7
+   12390:      	li	a7, 0x5d
+   12394:      	ecall
+
+0000000000012398 <.Lpcrel_hi_banner>:
+   12398:      	auipc	a1, 0xffffe
+   1239c:      	addi	a1, a1, -0x208
+   123a0:      	li	a0, 0x1
+   123a4:      	li	a2, 0x38
+   123a8:      	li	a7, 0x40
+   123ac:      	ecall
+   123b0:      	li	a0, 0x0
+   123b4:      	li	a7, 0x5d
+   123b8:      	ecall
+
+=== 7. QEMU-RISCV64 EXECUTION: qemu-riscv64 ./probe_rv64gc.elf ===
+Exit code: 0
+Stdout: RV64GC_ELF64_LP64D_VTABLE_LARGE_FRAME_ECALL_VERIFIED_OK

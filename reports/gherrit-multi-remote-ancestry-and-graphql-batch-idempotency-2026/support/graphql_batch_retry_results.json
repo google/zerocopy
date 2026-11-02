@@ -1,0 +1,563 @@
+{
+  "experiment_1_unpatched_single_push_null_data_on_limit": {
+    "outcome": {
+      "backoff_trace": [
+        {
+          "attempted": 49,
+          "cursor": 0,
+          "retry": 24
+        }
+      ],
+      "errors": [
+        {
+          "message": "A pull request already exists for owner:G01.",
+          "path": [
+            "op0"
+          ],
+          "type": "UNPROCESSABLE"
+        }
+      ],
+      "failed_at_range": [
+        0,
+        24
+      ],
+      "server_pr_count": 16,
+      "status": "fatal_error"
+    },
+    "server_requests": [
+      {
+        "batch_size": 49,
+        "heads": [
+          "G01",
+          "G49"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 49,
+        "committed_count": 16,
+        "committed_heads": [
+          "G01",
+          "G16"
+        ],
+        "data_is_null": true,
+        "errors": [
+          {
+            "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+            "type": "RESOURCE_LIMITS_EXCEEDED"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G01",
+          "G49"
+        ],
+        "total_prs_on_server": 16
+      },
+      {
+        "batch_size": 24,
+        "committed_count": 0,
+        "committed_heads": [],
+        "data_is_null": false,
+        "errors": [
+          {
+            "message": "A pull request already exists for owner:G01.",
+            "type": "UNPROCESSABLE"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G01",
+          "G24"
+        ],
+        "total_prs_on_server": 16
+      }
+    ]
+  },
+  "experiment_2_unpatched_single_push_partial_data_on_limit": {
+    "outcome": {
+      "backoff_trace": [],
+      "errors": [
+        {
+          "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+          "path": [
+            "op16"
+          ],
+          "type": "RESOURCE_LIMITS_EXCEEDED"
+        }
+      ],
+      "failed_at_range": [
+        0,
+        49
+      ],
+      "server_pr_count": 16,
+      "status": "fatal_error"
+    },
+    "server_requests": [
+      {
+        "batch_size": 49,
+        "heads": [
+          "G01",
+          "G49"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 49,
+        "committed_count": 16,
+        "committed_heads": [
+          "G01",
+          "G16"
+        ],
+        "data_is_null": false,
+        "errors": [
+          {
+            "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+            "type": "RESOURCE_LIMITS_EXCEEDED"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G01",
+          "G49"
+        ],
+        "total_prs_on_server": 16
+      }
+    ]
+  },
+  "experiment_3_unpatched_external_push_retry_loop": {
+    "empirical_3_pass_progression_0_16_32_49": [
+      {
+        "pass": 1,
+        "prs_after": 16,
+        "prs_before": 0,
+        "status": "fatal_error"
+      },
+      {
+        "pass": 2,
+        "prs_after": 32,
+        "prs_before": 16,
+        "status": "fatal_error"
+      },
+      {
+        "pass": 3,
+        "prs_after": 49,
+        "prs_before": 32,
+        "status": "ok"
+      }
+    ],
+    "strict_k16_4_pass_progression_0_16_32_48_49": [
+      {
+        "pass": 1,
+        "prs_after": 16,
+        "prs_before": 0,
+        "status": "fatal_error"
+      },
+      {
+        "pass": 2,
+        "prs_after": 32,
+        "prs_before": 16,
+        "status": "fatal_error"
+      },
+      {
+        "pass": 3,
+        "prs_after": 48,
+        "prs_before": 32,
+        "status": "fatal_error"
+      },
+      {
+        "pass": 4,
+        "prs_after": 49,
+        "prs_before": 48,
+        "status": "ok"
+      }
+    ]
+  },
+  "experiment_4a_patched_idempotent_retry_from_64_null_data": {
+    "outcome": {
+      "backoff_trace": [
+        {
+          "attempted_range": [
+            0,
+            49
+          ],
+          "harvested_from_data": 0,
+          "harvested_from_requery": 16,
+          "new_batch_len": 24,
+          "new_cursor": 16
+        },
+        {
+          "attempted_range": [
+            16,
+            40
+          ],
+          "harvested_from_data": 0,
+          "harvested_from_requery": 16,
+          "new_batch_len": 12,
+          "new_cursor": 32
+        }
+      ],
+      "server_pr_count": 49,
+      "status": "ok"
+    },
+    "server_requests": [
+      {
+        "batch_size": 49,
+        "heads": [
+          "G01",
+          "G49"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 49,
+        "committed_count": 16,
+        "committed_heads": [
+          "G01",
+          "G16"
+        ],
+        "data_is_null": true,
+        "errors": [
+          {
+            "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+            "type": "RESOURCE_LIMITS_EXCEEDED"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G01",
+          "G49"
+        ],
+        "total_prs_on_server": 16
+      },
+      {
+        "batch_size": 49,
+        "heads": [
+          "G01",
+          "G49"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 24,
+        "committed_count": 16,
+        "committed_heads": [
+          "G17",
+          "G32"
+        ],
+        "data_is_null": true,
+        "errors": [
+          {
+            "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+            "type": "RESOURCE_LIMITS_EXCEEDED"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G17",
+          "G40"
+        ],
+        "total_prs_on_server": 32
+      },
+      {
+        "batch_size": 24,
+        "heads": [
+          "G17",
+          "G40"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 12,
+        "committed_count": 12,
+        "committed_heads": [
+          "G33",
+          "G44"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G33",
+          "G44"
+        ],
+        "total_prs_on_server": 44
+      },
+      {
+        "batch_size": 5,
+        "committed_count": 5,
+        "committed_heads": [
+          "G45",
+          "G49"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G45",
+          "G49"
+        ],
+        "total_prs_on_server": 49
+      },
+      {
+        "batch_size": 49,
+        "kind": "UpdatePullRequest",
+        "result": "SUCCESS"
+      }
+    ]
+  },
+  "experiment_4b_patched_idempotent_retry_from_64_partial_data": {
+    "outcome": {
+      "backoff_trace": [
+        {
+          "attempted_range": [
+            0,
+            49
+          ],
+          "harvested_from_data": 16,
+          "harvested_from_requery": 0,
+          "new_batch_len": 24,
+          "new_cursor": 16
+        },
+        {
+          "attempted_range": [
+            16,
+            40
+          ],
+          "harvested_from_data": 16,
+          "harvested_from_requery": 0,
+          "new_batch_len": 12,
+          "new_cursor": 32
+        }
+      ],
+      "server_pr_count": 49,
+      "status": "ok"
+    },
+    "server_requests": [
+      {
+        "batch_size": 49,
+        "heads": [
+          "G01",
+          "G49"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 49,
+        "committed_count": 16,
+        "committed_heads": [
+          "G01",
+          "G16"
+        ],
+        "data_is_null": false,
+        "errors": [
+          {
+            "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+            "type": "RESOURCE_LIMITS_EXCEEDED"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G01",
+          "G49"
+        ],
+        "total_prs_on_server": 16
+      },
+      {
+        "batch_size": 24,
+        "committed_count": 16,
+        "committed_heads": [
+          "G17",
+          "G32"
+        ],
+        "data_is_null": false,
+        "errors": [
+          {
+            "message": "Wait a few minutes before you try again; Exceeded GraphQL resource limits",
+            "type": "RESOURCE_LIMITS_EXCEEDED"
+          }
+        ],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G17",
+          "G40"
+        ],
+        "total_prs_on_server": 32
+      },
+      {
+        "batch_size": 12,
+        "committed_count": 12,
+        "committed_heads": [
+          "G33",
+          "G44"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G33",
+          "G44"
+        ],
+        "total_prs_on_server": 44
+      },
+      {
+        "batch_size": 5,
+        "committed_count": 5,
+        "committed_heads": [
+          "G45",
+          "G49"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G45",
+          "G49"
+        ],
+        "total_prs_on_server": 49
+      },
+      {
+        "batch_size": 49,
+        "kind": "UpdatePullRequest",
+        "result": "SUCCESS"
+      }
+    ]
+  },
+  "experiment_5_patched_initial_create_batch_len_12": {
+    "outcome": {
+      "backoff_trace": [],
+      "server_pr_count": 49,
+      "status": "ok"
+    },
+    "server_requests": [
+      {
+        "batch_size": 49,
+        "heads": [
+          "G01",
+          "G49"
+        ],
+        "kind": "FindPullRequest",
+        "result": "SUCCESS"
+      },
+      {
+        "batch_size": 12,
+        "committed_count": 12,
+        "committed_heads": [
+          "G01",
+          "G12"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G01",
+          "G12"
+        ],
+        "total_prs_on_server": 12
+      },
+      {
+        "batch_size": 12,
+        "committed_count": 12,
+        "committed_heads": [
+          "G13",
+          "G24"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G13",
+          "G24"
+        ],
+        "total_prs_on_server": 24
+      },
+      {
+        "batch_size": 12,
+        "committed_count": 12,
+        "committed_heads": [
+          "G25",
+          "G36"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G25",
+          "G36"
+        ],
+        "total_prs_on_server": 36
+      },
+      {
+        "batch_size": 12,
+        "committed_count": 12,
+        "committed_heads": [
+          "G37",
+          "G48"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G37",
+          "G48"
+        ],
+        "total_prs_on_server": 48
+      },
+      {
+        "batch_size": 1,
+        "committed_count": 1,
+        "committed_heads": [
+          "G49",
+          "G49"
+        ],
+        "data_is_null": false,
+        "errors": [],
+        "kind": "CreatePullRequest",
+        "range_heads": [
+          "G49",
+          "G49"
+        ],
+        "total_prs_on_server": 49
+      },
+      {
+        "batch_size": 49,
+        "kind": "UpdatePullRequest",
+        "result": "SUCCESS"
+      }
+    ]
+  },
+  "server_create_limit_per_request": 16,
+  "stack_size": 49,
+  "unpatched_batch_plan_halving_slices": [
+    [
+      0,
+      49
+    ],
+    [
+      0,
+      24
+    ],
+    [
+      0,
+      12
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      0,
+      1
+    ]
+  ]
+}

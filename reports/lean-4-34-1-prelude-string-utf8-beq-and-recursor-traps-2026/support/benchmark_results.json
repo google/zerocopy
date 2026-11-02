@@ -1,0 +1,690 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "positive_probe": {
+    "path": "support/ProbePreludeTraps.lean",
+    "returncode": 0,
+    "elapsed_ms": 314.89
+  },
+  "benchmark_1_string_oflist_scaling": {
+    "baseline_startup_ms": 65.77,
+    "scaling_table": [
+      {
+        "n_chars": 32,
+        "n_bytes": 16,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 114.42
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 84.07
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 111.98
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 110.65
+          }
+        }
+      },
+      {
+        "n_chars": 56,
+        "n_bytes": 28,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 130.46
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 107.19
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 122.66
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 120.67
+          }
+        }
+      },
+      {
+        "n_chars": 58,
+        "n_bytes": 29,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 130.61
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 109.58
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 126.5
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 124.27
+          }
+        }
+      },
+      {
+        "n_chars": 64,
+        "n_bytes": 32,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 139.12
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 116.86
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 127.71
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 121.9
+          }
+        }
+      },
+      {
+        "n_chars": 70,
+        "n_bytes": 35,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 143.85
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 119.66
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 133.21
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 127.78
+          }
+        }
+      },
+      {
+        "n_chars": 74,
+        "n_bytes": 37,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 145.17
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 122.18
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 132.54
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 125.98
+          }
+        }
+      },
+      {
+        "n_chars": 75,
+        "n_bytes": 37,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 145.13
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 123.79
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 134.8
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 127.64
+          }
+        }
+      },
+      {
+        "n_chars": 80,
+        "n_bytes": 40,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 148.65
+          },
+          "rfl_flat_literal": {
+            "status": "ok",
+            "elapsed_ms": 124.9
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 140.24
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 124.81
+          }
+        }
+      },
+      {
+        "n_chars": 82,
+        "n_bytes": 41,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 148.55
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 129.65
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 142.98
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 125.76
+          }
+        }
+      },
+      {
+        "n_chars": 118,
+        "n_bytes": 59,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 131.58
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 129.72
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 162.82
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 127.15
+          }
+        }
+      },
+      {
+        "n_chars": 125,
+        "n_bytes": 62,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 134.94
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 123.13
+          },
+          "congrArg_hex_literal": {
+            "status": "ok",
+            "elapsed_ms": 163.45
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 124.67
+          }
+        }
+      },
+      {
+        "n_chars": 126,
+        "n_bytes": 63,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 130.5
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 124.79
+          },
+          "congrArg_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 150.47
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 126.81
+          }
+        }
+      },
+      {
+        "n_chars": 256,
+        "n_bytes": 128,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 154.87
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 153.69
+          },
+          "congrArg_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 133.95
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 123.29
+          }
+        }
+      },
+      {
+        "n_chars": 512,
+        "n_bytes": 256,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 167.82
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 196.96
+          },
+          "congrArg_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 134.56
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 126.4
+          }
+        }
+      },
+      {
+        "n_chars": 1042,
+        "n_bytes": 521,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 166.96
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 258.38
+          },
+          "congrArg_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 135.15
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 134.97
+          }
+        }
+      },
+      {
+        "n_chars": 2048,
+        "n_bytes": 1024,
+        "modes": {
+          "rfl_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 174.15
+          },
+          "rfl_flat_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 383.34
+          },
+          "congrArg_hex_literal": {
+            "status": "maxRecDepth",
+            "elapsed_ms": 134.8
+          },
+          "congrArg_chunked_oflist": {
+            "status": "ok",
+            "elapsed_ms": 132.45
+          }
+        }
+      }
+    ],
+    "exact_thresholds": {
+      "rfl_flat_literal_max_n_chars": [
+        {
+          "n_chars": 80,
+          "status": "ok"
+        },
+        {
+          "n_chars": 81,
+          "status": "ok"
+        },
+        {
+          "n_chars": 82,
+          "status": "maxRecDepth"
+        },
+        {
+          "n_chars": 83,
+          "status": "maxRecDepth"
+        }
+      ],
+      "congrArg_flat_literal_max_n_chars": [
+        {
+          "n_chars": 124,
+          "status": "ok"
+        },
+        {
+          "n_chars": 125,
+          "status": "ok"
+        },
+        {
+          "n_chars": 126,
+          "status": "maxRecDepth"
+        },
+        {
+          "n_chars": 127,
+          "status": "maxRecDepth"
+        }
+      ],
+      "rfl_hex_literal_max_n_chars": [
+        {
+          "n_chars": 54,
+          "status": "ok"
+        },
+        {
+          "n_chars": 56,
+          "status": "maxRecDepth"
+        },
+        {
+          "n_chars": 57,
+          "status": "maxRecDepth"
+        },
+        {
+          "n_chars": 58,
+          "status": "maxRecDepth"
+        },
+        {
+          "n_chars": 60,
+          "status": "maxRecDepth"
+        }
+      ],
+      "congrArg_hex_literal_max_n_chars": [
+        {
+          "n_chars": 123,
+          "status": "ok"
+        },
+        {
+          "n_chars": 124,
+          "status": "ok"
+        },
+        {
+          "n_chars": 125,
+          "status": "ok"
+        },
+        {
+          "n_chars": 126,
+          "status": "maxRecDepth"
+        }
+      ]
+    }
+  },
+  "benchmark_2_option_accumulator_and_pipeline": {
+    "lazy_ite_option_accumulator": [
+      {
+        "n_steps": 6,
+        "status": "ok",
+        "elapsed_ms": 125.54,
+        "reduction_nat_rec": 962,
+        "reduction_option_rec": 254,
+        "reduction_beq": 126
+      },
+      {
+        "n_steps": 8,
+        "status": "ok",
+        "elapsed_ms": 208.76,
+        "reduction_nat_rec": 4018,
+        "reduction_option_rec": 1022,
+        "reduction_beq": 510
+      },
+      {
+        "n_steps": 10,
+        "status": "ok",
+        "elapsed_ms": 556.78,
+        "reduction_nat_rec": 16290,
+        "reduction_option_rec": 4094,
+        "reduction_beq": 2046
+      },
+      {
+        "n_steps": 12,
+        "status": "ok",
+        "elapsed_ms": 1944.64,
+        "reduction_nat_rec": 65426,
+        "reduction_option_rec": 16382,
+        "reduction_beq": 8190
+      },
+      {
+        "n_steps": 14,
+        "status": "ok",
+        "elapsed_ms": 7609.52,
+        "reduction_nat_rec": 262018,
+        "reduction_option_rec": 65534,
+        "reduction_beq": 32766
+      },
+      {
+        "n_steps": 15,
+        "status": "ok",
+        "elapsed_ms": 15946.32,
+        "reduction_nat_rec": 524154,
+        "reduction_option_rec": 131070,
+        "reduction_beq": 65534
+      },
+      {
+        "n_steps": 16,
+        "status": "error",
+        "elapsed_ms": 16501.86,
+        "reduction_nat_rec": 539692,
+        "reduction_option_rec": 134938,
+        "reduction_beq": 67471
+      }
+    ],
+    "strict_fvar_option_accumulator": [
+      {
+        "n_steps": 6,
+        "status": "ok",
+        "elapsed_ms": 89.99,
+        "reduction_nat_rec": 158,
+        "reduction_option_rec": 14,
+        "reduction_beq": 12
+      },
+      {
+        "n_steps": 8,
+        "status": "ok",
+        "elapsed_ms": 94.45,
+        "reduction_nat_rec": 274,
+        "reduction_option_rec": 18,
+        "reduction_beq": 16
+      },
+      {
+        "n_steps": 10,
+        "status": "ok",
+        "elapsed_ms": 97.0,
+        "reduction_nat_rec": 422,
+        "reduction_option_rec": 22,
+        "reduction_beq": 20
+      },
+      {
+        "n_steps": 12,
+        "status": "ok",
+        "elapsed_ms": 99.9,
+        "reduction_nat_rec": 602,
+        "reduction_option_rec": 26,
+        "reduction_beq": 24
+      },
+      {
+        "n_steps": 14,
+        "status": "ok",
+        "elapsed_ms": 107.47,
+        "reduction_nat_rec": 814,
+        "reduction_option_rec": 30,
+        "reduction_beq": 28
+      },
+      {
+        "n_steps": 16,
+        "status": "ok",
+        "elapsed_ms": 112.69,
+        "reduction_nat_rec": 1058,
+        "reduction_option_rec": 34,
+        "reduction_beq": 32
+      },
+      {
+        "n_steps": 64,
+        "status": "ok",
+        "elapsed_ms": 473.89,
+        "reduction_nat_rec": 16514,
+        "reduction_option_rec": 130,
+        "reduction_beq": 128
+      },
+      {
+        "n_steps": 128,
+        "status": "ok",
+        "elapsed_ms": 1681.21,
+        "reduction_nat_rec": 65794,
+        "reduction_option_rec": 258,
+        "reduction_beq": 256
+      }
+    ],
+    "strict_monolithic_nat_rec": [
+      {
+        "n_steps": 64,
+        "status": "ok",
+        "elapsed_ms": 88.98,
+        "nat_rec_unfoldings": 65
+      },
+      {
+        "n_steps": 128,
+        "status": "ok",
+        "elapsed_ms": 100.56,
+        "nat_rec_unfoldings": 129
+      },
+      {
+        "n_steps": 170,
+        "status": "ok",
+        "elapsed_ms": 110.69,
+        "nat_rec_unfoldings": 171
+      },
+      {
+        "n_steps": 171,
+        "status": "ok",
+        "elapsed_ms": 114.4,
+        "nat_rec_unfoldings": 172
+      },
+      {
+        "n_steps": 256,
+        "status": "maxRecDepth",
+        "elapsed_ms": 83.75,
+        "nat_rec_unfoldings": 249
+      },
+      {
+        "n_steps": 512,
+        "status": "maxRecDepth",
+        "elapsed_ms": 83.54,
+        "nat_rec_unfoldings": 249
+      },
+      {
+        "n_steps": 1024,
+        "status": "maxRecDepth",
+        "elapsed_ms": 82.85,
+        "nat_rec_unfoldings": 249
+      }
+    ],
+    "compositional_per_block_foldr": [
+      {
+        "n_steps": 64,
+        "n_blocks": 1,
+        "block_size": 64,
+        "status": "ok",
+        "elapsed_ms": 91.76
+      },
+      {
+        "n_steps": 256,
+        "n_blocks": 4,
+        "block_size": 64,
+        "status": "ok",
+        "elapsed_ms": 90.66
+      },
+      {
+        "n_steps": 512,
+        "n_blocks": 8,
+        "block_size": 64,
+        "status": "ok",
+        "elapsed_ms": 91.49
+      },
+      {
+        "n_steps": 1024,
+        "n_blocks": 16,
+        "block_size": 64,
+        "status": "ok",
+        "elapsed_ms": 93.42
+      }
+    ]
+  },
+  "benchmark_3_diagnostic_reproductions": {
+    "q1_string_toUTF8_unknown_in_prelude": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:3:7: error(lean.unknownIdentifier): Unknown constant `String.toUTF8`"
+    },
+    "q1_string_toUTF8_opaque_in_module": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:3:0: error: Not a definitional equality: the left-hand side\n  \"Hi\".toUTF8.data.toList\nis not definitionally equal to the right-hand side\n  [72, 105]\n<probe>.lean:3:68: error: Type mismatch\n  rfl\nhas type\n  ?m.11 = ?m.11\nbut is expected to have type\n  \"Hi\".toUTF8.data.toList = [72, 105]"
+    },
+    "q1_string_single_field_ctor_mismatch": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:5:4: error: Insufficient number of fields for `\u27e8...\u27e9` constructor: Constructor `String.ofByteArray` has 2 explicit field, but only 1 was provided"
+    },
+    "q2_string_oflist_75_chars_rfl_max_rec_depth": {
+      "returncode": 1,
+      "status": "maxRecDepth",
+      "output": "<probe>.lean:16:0: error: maximum recursion depth has been reached\nuse `set_option maxRecDepth <num>` to increase limit\nuse `set_option diagnostics true` to get diagnostic information"
+    },
+    "q3_dsimp_beq_partial_unfolding_mismatch": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:13:6: error: Tactic `rewrite` failed: motive is not type correct:\n  fun _a => (if _a = true then val else locals idx) = val\nError: Application type mismatch: The argument\n  instDecidableEqBool (idx == idx) true\nhas type\n  Decidable ((idx == idx) = true)\nbut is expected to have type\n  Decidable (_a = true)\nin the application\n  @ite (Option Nat) (_a = true) (instDecidableEqBool (idx == idx) true)\n\nExplanation: The rewrite tactic rewrites an expression 'e' using an equality 'a = b' by the following process. First, it looks for all 'a' in 'e'. Second, it tries to abstract these occurrences of 'a' to create a function 'm := fun _a => ...', called the *motive*, with the property that 'm a' is definitionally equal to 'e'. Third, we observe that 'congrArg' implies that 'm a = m b', which can be used with lemmas such as 'Eq.mpr' to change the goal. However, if 'e' depends on specific properties of 'a', then the motive 'm' might not typecheck.\n\nPossible solutions: use rewrite's 'occs' configuration option to limit which occurrences are rewritten, or use 'simp' or 'conv' mode, which have strategies for certain kinds of dependencies (these tactics can handle proofs and 'Decidable' instances whose types depend on the rewritten term, and 'simp' can apply user-defined '@[congr]' theorems as well).\n\nlocals : LocalEnv\nidx : Nat\nval : Option Nat\nh : decide (idx = idx) = true\n\u22a2 (if decide (idx = idx) = true then val else locals idx) = val"
+    },
+    "q4_list_rec_codegen_rejection": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:4:4: error: code generator does not support recursor `List.rec` yet, consider using 'match ... with' and/or structural recursion"
+    },
+    "q4_unsafe_rec_emission_inspection": {
+      "returncode": 0,
+      "status": "ok",
+      "output": "recDefSum: has_unsafe_rec=true\nfoldrDefSum: has_unsafe_rec=false\nnatRecDefSum: has_unsafe_rec=false\nrecThmTrivial: has_unsafe_rec=false"
+    },
+    "q6_section_field_keyword_error": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:8:10: error: unexpected token ':'; expected command"
+    },
+    "q6_nat_lxor_and_tactic_unavailability": {
+      "returncode": 1,
+      "status": "error",
+      "output": "<probe>.lean:4:7: error(lean.unknownIdentifier): Unknown constant `Nat.lxor`"
+    }
+  }
+}
