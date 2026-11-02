@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "anneal/audit",
+    "anneal/trusted-boundary",
+    "lean/sf-in-lean",
+    "lean/comparator",
+    "lean/comparator-autograder",
+    "lean/lean4export",
+    "lean/match-deduplication",
+    "lean/realize-const"
+  ],
+  "subjects": [
+    {
+      "name": "Software Foundations in Lean 4 (sf-in-lean)",
+      "identity": {
+        "repository": "plclub/sf-in-lean",
+        "revision": "13e9425b4647402a09316c1d39fa555e9bc3c257"
+      }
+    },
+    {
+      "name": "comparator-autograder",
+      "identity": {
+        "repository": "plclub/comparator-autograder",
+        "revision": "facc6c7498298d2286f18c9fc5eb5e902551b6aa"
+      }
+    },
+    {
+      "name": "comparator-autograder-lib",
+      "identity": {
+        "repository": "plclub/comparator-autograder-lib",
+        "revision": "57f6879141b701cc02fe99d7a7e834c38409a6bc"
+      }
+    },
+    {
+      "name": "xhalo32/comparator fork (ignore-missing-4.34.0)",
+      "identity": {
+        "branch": "ignore-missing-4.34.0",
+        "repository": "xhalo32/comparator",
+        "revision": "a6cc98304bd7f3ad3d030fc37a75e4b872342da6",
+        "upstream_repository": "leanprover/comparator",
+        "upstream_revision": "d03acab154d269c06e60e4de7e4cc85deebff94b",
+        "upstream_tag": "v4.34.0"
+      }
+    },
+    {
+      "name": "lean4export",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "076e8e57707e813375e8f9da8bf989799ace9680"
+      }
+    },
+    {
+      "name": "Anneal trusted boundary auditor (TrustedBoundary.lean)",
+      "identity": {
+        "path": "trusted/audit/TrustedBoundary.lean",
+        "repository": "joshlf/anneal",
+        "revision": "f938c18db56c49e82dde95506894a9b58b76b227"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Executable probe for comparator, comparator-autograder, and matcher deduplication",
+      "identity": {
+        "artifact": "support/ProbeComparatorAndMatcherDedup.lean",
+        "sha256": "80816e083d1d9273697f2d014a73b7c520562b84595d5cbdfb9aa6ab517dadce"
+      }
+    },
+    {
+      "name": "Executable probe for TrustedBoundary.lean defects and verified fixes",
+      "identity": {
+        "artifact": "support/ProbeTrustedBoundaryFixes.lean",
+        "sha256": "7f07d9f881ac61e7170c578b8ab6295bccd0408109021a8a57bbeb46bd69a805"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

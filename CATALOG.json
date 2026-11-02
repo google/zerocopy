@@ -36601,6 +36601,251 @@
         "cakeml"
       ]
     },
+    "sf-in-lean-comparator-autograder-matcher-dedup-and-anneal-audit-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "plclub/sf-in-lean",
+            "revision": "13e9425b4647402a09316c1d39fa555e9bc3c257"
+          },
+          "name": "Software Foundations in Lean 4 (sf-in-lean)"
+        },
+        {
+          "identity": {
+            "repository": "plclub/comparator-autograder",
+            "revision": "facc6c7498298d2286f18c9fc5eb5e902551b6aa"
+          },
+          "name": "comparator-autograder"
+        },
+        {
+          "identity": {
+            "repository": "plclub/comparator-autograder-lib",
+            "revision": "57f6879141b701cc02fe99d7a7e834c38409a6bc"
+          },
+          "name": "comparator-autograder-lib"
+        },
+        {
+          "identity": {
+            "branch": "ignore-missing-4.34.0",
+            "repository": "xhalo32/comparator",
+            "revision": "a6cc98304bd7f3ad3d030fc37a75e4b872342da6",
+            "upstream_repository": "leanprover/comparator",
+            "upstream_revision": "d03acab154d269c06e60e4de7e4cc85deebff94b",
+            "upstream_tag": "v4.34.0"
+          },
+          "name": "xhalo32/comparator fork (ignore-missing-4.34.0)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "076e8e57707e813375e8f9da8bf989799ace9680"
+          },
+          "name": "lean4export"
+        },
+        {
+          "identity": {
+            "path": "trusted/audit/TrustedBoundary.lean",
+            "repository": "joshlf/anneal",
+            "revision": "f938c18db56c49e82dde95506894a9b58b76b227"
+          },
+          "name": "Anneal trusted boundary auditor (TrustedBoundary.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/ProbeComparatorAndMatcherDedup.lean",
+            "sha256": "80816e083d1d9273697f2d014a73b7c520562b84595d5cbdfb9aa6ab517dadce"
+          },
+          "name": "Executable probe for comparator, comparator-autograder, and matcher deduplication"
+        },
+        {
+          "identity": {
+            "artifact": "support/ProbeTrustedBoundaryFixes.lean",
+            "sha256": "7f07d9f881ac61e7170c578b8ab6295bccd0408109021a8a57bbeb46bd69a805"
+          },
+          "name": "Executable probe for TrustedBoundary.lean defects and verified fixes"
+        }
+      ],
+      "topics": [
+        "anneal/audit",
+        "anneal/trusted-boundary",
+        "lean/sf-in-lean",
+        "lean/comparator",
+        "lean/comparator-autograder",
+        "lean/lean4export",
+        "lean/match-deduplication",
+        "lean/realize-const"
+      ]
+    },
+    "sf-in-lean-literate-verification-verso-and-anneal-tutor-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "plclub/sf-in-lean",
+            "revision": "13e9425b4647402a09316c1d39fa555e9bc3c257"
+          },
+          "name": "Software Foundations in Lean (sf-in-lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/verso",
+            "revision": "cad4b633e75ea769b851f12f9ca3b4f0dfcc625f",
+            "version": "v4.34.0"
+          },
+          "name": "Verso documentation engine"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/subverso",
+            "revision": "9b90b7f938d6169246325df002351014f49945ef"
+          },
+          "name": "SubVerso syntax and tactic-state highlighter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/illuminate",
+            "revision": "a1a61c9678da010e958ed24cdfa6f635b85f172a"
+          },
+          "name": "Illuminate animation and diagram engine"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "f938c18db56c49e82dde95506894a9b58b76b227",
+            "tutor_branch_revision": "6b7c210c6c70f2f1710424dd07b4829742ff9154"
+          },
+          "name": "Anneal repository and Tutor branch"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "artifact": "support/ProbeRecallAndMatcherExt.lean",
+            "sha256": "855cd6e5df5b844d228b91a0c790b9efcb62939b5bbd0db16bc214fbb442c40f"
+          },
+          "name": "Recall and matcherExt empirical probe"
+        },
+        {
+          "identity": {
+            "artifact": "support/ProbeExperimentAndTutorAudit.lean",
+            "sha256": "dd71a980db642a3ef2f774abe87b4aee74688135f86a24b03607ece66004f479"
+          },
+          "name": "Experiment state-rollback and Tutor drift audit probe"
+        }
+      ],
+      "topics": [
+        "anneal/tutor",
+        "anneal/trusted-boundary",
+        "lean/sf-in-lean",
+        "lean/verso",
+        "lean/subverso",
+        "lean/illuminate",
+        "lean/literate-verification",
+        "lean/declaration-drift",
+        "lean/elaborator-state"
+      ]
+    },
+    "sf-in-lean-semantics-hoare-vc-custom-tactics-and-plausible-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Software Foundations in Lean 4 across LF/CustomTactics.lean, HL/Slang.lean, HL/Imp.lean, HL/Equiv.lean, HL/Hoare.lean, HL/Hoare2.lean, TS/Smallstep.lean, TS/Stlc.lean, TS/StlcProp.lean, TS/References.lean, and TS/AttributeDecls.lean, plus open PR #449 on inversion hypothesis naming.",
+            "pr_449_revision": "0f74845c92a17fc896ab5893106ce2c0e3fbba3b",
+            "revision": "13e9425b4647402a09316c1d39fa555e9bc3c257",
+            "url": "https://github.com/plclub/sf-in-lean"
+          },
+          "name": "plclub/sf-in-lean"
+        },
+        {
+          "identity": {
+            "chamelean_pr_56_revision": "f48022651ffaa28b272b7328d07bf9450947c97a",
+            "kind": "repository",
+            "notes": "Property-based random testing framework for Lean 4 (Testable, SampleableExt, Arbitrary, Shrinkable, subtypeVarTestable at priority 2000, and UInt*/BitVec Arbitrary sizing) plus PR #56 integrating Chamelean constrained generators and enumerators.",
+            "revision": "118aa17ee84656b8bd727fef7c458ee8c833385c",
+            "url": "https://github.com/leanprover-community/plausible",
+            "version": "v4.34.0"
+          },
+          "name": "leanprover-community/plausible"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Lean 4 Computer Science Library labeled transition systems (Cslib/Foundations/Semantics/LTS/Basic.lean, Simulation.lean, Bisimulation.lean) and lambda-calculus typing derivations.",
+            "revision": "f7ec4db9f911a26c8c331fd48d1d464efde9e2a4",
+            "url": "https://github.com/leanprover/cslib"
+          },
+          "name": "leanprover/cslib"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "mir_pme_branch_revision": "ebac418ccf7c234ae402cf76a491c903bff3be4f",
+            "miri_diff_branch_revision": "f6ec1fc98057607437bef9bb4ecdad3aaa7623e5",
+            "notes": "Anneal main branch (trusted/audit/TrustedBoundary.lean, trusted/cargo-anneal/foundation-lock.json, theory/Anneal/Verification/BuildingBlocks.lean) and active feature branches for MIR PME operational semantics and Miri differential testing.",
+            "revision": "f938c18db56c49e82dde95506894a9b58b76b227",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Lean 4.34.1 toolchain used to execute all support probes, measure DAG object counts, and inspect kernel replay and transitive axiom closures.",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        },
+        {
+          "identity": {
+            "kind": "file",
+            "notes": "Self-contained runnable Lean v4.34.1 probe mechanizing Hoare rules vs. FullDCom vs. SparseAnnotations.awp, optimizeAExp and optMirConstPropStmt under structural induction/cases vs. fun_induction/fun_cases, STLCRef store typing and cyclic heap typing, and exact transitive axiom closures of omega, lia, and grind.",
+            "path": "reports/sf-in-lean-semantics-hoare-vc-custom-tactics-and-plausible-2026/support/ProbeHoareWpFunIndAndReferences.lean",
+            "sha256": "aa086a55e108e6e6853dc5e65deda05ccd7f72219b16ac8dc822c37cd2e78065"
+          },
+          "name": "support/ProbeHoareWpFunIndAndReferences.lean"
+        },
+        {
+          "identity": {
+            "kind": "file",
+            "notes": "Self-contained runnable Lean v4.34.1 probe mechanizing LF/CustomTactics.lean (inversion, Issue #447 / PR #449 diagnosis, inversion_fixed, apply ... at ...), the 14-snippet TrustedBoundary.lean preflight and foundation-lock.json elaboration matrix, and Plausible negative canaries and specification falsification.",
+            "path": "reports/sf-in-lean-semantics-hoare-vc-custom-tactics-and-plausible-2026/support/ProbeInversionBoundaryAndPlausible.lean",
+            "sha256": "b8078e5e1503c87961468156fd30e099ebe0fb4177cb4a0606eeeb001a917f14"
+          },
+          "name": "support/ProbeInversionBoundaryAndPlausible.lean"
+        }
+      ],
+      "topics": [
+        "anneal/memory-model",
+        "anneal/negative-canaries",
+        "anneal/semantics",
+        "anneal/trusted-boundary",
+        "anneal/verification-conditions",
+        "lean/cslib",
+        "lean/custom-tactics",
+        "lean/fun-induction",
+        "lean/plausible",
+        "lean/sf-in-lean"
+      ]
+    },
     "simuliris-tree-borrows-selected-kernel-replay-e3abfcdc": {
       "observed_at": "2026-10-14",
       "subjects": [
