@@ -367,6 +367,55 @@ struct SplitAtNotKnownLayout([u8]);
 #[repr(C)]
 struct SplitAtSized(u8);
 
+//
+// HasNullPointerOptimization errors
+//
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: must have #[repr(transparent)] in order to guarantee the null pointer optimization
+#[zerocopy(crate = "zerocopy_renamed")]
+struct NpoNoRepr(&'static u8);
+
+// Rust does not guarantee the null pointer optimization for `repr(C)` structs.
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: must have #[repr(transparent)] in order to guarantee the null pointer optimization
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct NpoReprC(&'static u8);
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: must have exactly one field
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct NpoNoFields;
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: must have exactly one field
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct NpoTwoFields(&'static u8, core::marker::PhantomData<()>);
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: the trait bound `u8: HasNullPointerOptimization` is not satisfied
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct NpoNotNpo(u8);
+
+// Rust only guarantees the null pointer optimization for pointers to `Sized`
+// types.
+#[derive(HasNullPointerOptimization)]
+//~[msrv]^ ERROR: the size for values of type `[u8]` cannot be known at compilation time
+//~[stable, nightly]^^ ERROR: the trait bound `&'static [u8]: HasNullPointerOptimization` is not satisfied
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct NpoUnsizedReferent(&'static [u8]);
+
+#[derive(HasNullPointerOptimization)]
+//~[msrv, stable, nightly]^ ERROR: the trait bound `Option<&'static u8>: HasNullPointerOptimization` is not satisfied
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct NpoOption(Option<&'static u8>);
+
 #[derive(KnownLayout)]
 #[zerocopy(crate = "zerocopy_renamed"typo)]
 //~[msrv, stable, nightly]^ ERROR: `crate` attribute requires a path as the value

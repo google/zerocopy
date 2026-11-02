@@ -88,46 +88,78 @@ error: this conflicts with another representation hint
 353 | #[repr(C, packed(2))]
     |        ^
 
-error: `crate` attribute requires a path as the value
-   --> $DIR/struct.rs:371:20
+error: must have #[repr(transparent)] in order to guarantee the null pointer optimization
+   --> $DIR/struct.rs:374:10
     |
-371 | #[zerocopy(crate = "zerocopy_renamed"typo)]
+374 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have #[repr(transparent)] in order to guarantee the null pointer optimization
+   --> $DIR/struct.rs:380:10
+    |
+380 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have exactly one field
+   --> $DIR/struct.rs:386:10
+    |
+386 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: must have exactly one field
+   --> $DIR/struct.rs:392:10
+    |
+392 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: `crate` attribute requires a path as the value
+   --> $DIR/struct.rs:420:20
+    |
+420 | #[zerocopy(crate = "zerocopy_renamed"typo)]
     |                    ^^^^^^^^^^^^^^^^^^^^^^
 
 error: `crate` attribute requires a valid module path
-   --> $DIR/struct.rs:377:20
+   --> $DIR/struct.rs:426:20
     |
-377 | #[zerocopy(crate = "Self::foo")]
+426 | #[zerocopy(crate = "Self::foo")]
     |                    ^^^^^^^^^^^
 
 error: `crate` attribute requires a valid module path
-   --> $DIR/struct.rs:383:20
+   --> $DIR/struct.rs:432:20
     |
-383 | #[zerocopy(crate = "::crate::foo")]
+432 | #[zerocopy(crate = "::crate::foo")]
     |                    ^^^^^^^^^^^^^^
 
 error: `crate` attribute requires a valid module path
-   --> $DIR/struct.rs:389:20
+   --> $DIR/struct.rs:438:20
     |
-389 | #[zerocopy(crate = "foo::crate::bar")]
+438 | #[zerocopy(crate = "foo::crate::bar")]
     |                    ^^^^^^^^^^^^^^^^^
 
 error: `crate` attribute requires a valid module path
-   --> $DIR/struct.rs:395:20
+   --> $DIR/struct.rs:444:20
     |
-395 | #[zerocopy(crate = "foo::super::bar")]
+444 | #[zerocopy(crate = "foo::super::bar")]
     |                    ^^^^^^^^^^^^^^^^^
 
 error: `crate` attribute requires a valid module path
-   --> $DIR/struct.rs:401:20
+   --> $DIR/struct.rs:450:20
     |
-401 | #[zerocopy(crate = "foo::Self::bar")]
+450 | #[zerocopy(crate = "foo::Self::bar")]
     |                    ^^^^^^^^^^^^^^^^
 
 error: `crate` attribute requires a valid module path
-   --> $DIR/struct.rs:407:20
+   --> $DIR/struct.rs:456:20
     |
-407 | #[zerocopy(crate = "foo::self")]
+456 | #[zerocopy(crate = "foo::self")]
     |                    ^^^^^^^^^^^
 
 error[E0692]: transparent struct cannot have other repr hints
@@ -341,7 +373,36 @@ error[E0271]: type mismatch resolving `<u8 as zerocopy_renamed::KnownLayout>::Po
     = help: see issue #48214
     = note: this error originates in the derive macro `SplitAt` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 39 previous errors
+error[E0277]: the trait bound `u8: HasNullPointerOptimization` is not satisfied
+   --> $DIR/struct.rs:398:10
+    |
+398 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `HasNullPointerOptimization` is not implemented for `u8`
+    |
+    = help: see issue #48214
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+   --> $DIR/struct.rs:406:10
+    |
+406 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time
+    |
+    = help: the trait `Sized` is not implemented for `[u8]`
+    = note: required because of the requirements on the impl of `HasNullPointerOptimization` for `&'static [u8]`
+    = help: see issue #48214
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `Option<&'static u8>: HasNullPointerOptimization` is not satisfied
+   --> $DIR/struct.rs:413:10
+    |
+413 | #[derive(HasNullPointerOptimization)]
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `HasNullPointerOptimization` is not implemented for `Option<&'static u8>`
+    |
+    = help: see issue #48214
+    = note: this error originates in the derive macro `HasNullPointerOptimization` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 46 previous errors
 
 Some errors have detailed explanations: E0271, E0277, E0692.
 For more information about an error, try `rustc --explain E0271`.

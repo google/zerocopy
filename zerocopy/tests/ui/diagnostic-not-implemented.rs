@@ -9,7 +9,10 @@
 include!("../include.rs");
 
 use util::NotZerocopy;
-use zerocopy::{FromBytes, FromZeros, Immutable, IntoBytes, KnownLayout, TryFromBytes, Unaligned};
+use zerocopy::{
+    FromBytes, FromZeros, HasNullPointerOptimization, Immutable, IntoBytes, KnownLayout,
+    TryFromBytes, Unaligned,
+};
 
 fn main() {
     // We expect the proper diagnostic to be emitted on Rust 1.78.0 and later.
@@ -17,6 +20,8 @@ fn main() {
     //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: FromBytes` is not satisfied
     takes_from_zeros::<NotZerocopy>();
     //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: FromZeros` is not satisfied
+    takes_has_null_pointer_optimization::<NotZerocopy>();
+    //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: HasNullPointerOptimization` is not satisfied
     takes_immutable::<NotZerocopy>();
     //~[msrv, stable, nightly]^ ERROR: the trait bound `NotZerocopy: Immutable` is not satisfied
     takes_into_bytes::<NotZerocopy>();
@@ -76,6 +81,7 @@ fn main() {
 
 fn takes_from_bytes<T: FromBytes>() {}
 fn takes_from_zeros<T: FromZeros>() {}
+fn takes_has_null_pointer_optimization<T: HasNullPointerOptimization>() {}
 fn takes_immutable<T: Immutable>() {}
 fn takes_into_bytes<T: IntoBytes>() {}
 fn takes_known_layout<T: KnownLayout>() {}

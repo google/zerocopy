@@ -163,6 +163,34 @@ struct BadIntoBytesStructPadding {
 
 util_assert_not_impl_any!(BadIntoBytesStructPadding: imp::IntoBytes);
 
+// Invalid struct for HasNullPointerOptimization (must be `repr(transparent)`).
+#[derive(imp::HasNullPointerOptimization)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+struct BadHasNullPointerOptimizationRepr(&'static u8);
+
+util_assert_not_impl_any!(BadHasNullPointerOptimizationRepr: imp::HasNullPointerOptimization);
+
+// Invalid struct for HasNullPointerOptimization (must have exactly one field).
+#[derive(imp::HasNullPointerOptimization)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct BadHasNullPointerOptimizationFields(&'static u8, imp::PhantomData<()>);
+
+util_assert_not_impl_any!(BadHasNullPointerOptimizationFields: imp::HasNullPointerOptimization);
+
+// Invalid struct for HasNullPointerOptimization (field must be
+// `HasNullPointerOptimization`).
+#[derive(imp::HasNullPointerOptimization)]
+#[zerocopy(on_error = "skip")]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(transparent)]
+struct BadHasNullPointerOptimizationField(u8);
+
+util_assert_not_impl_any!(BadHasNullPointerOptimizationField: imp::HasNullPointerOptimization);
+
 #[derive(imp::most_traits)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]

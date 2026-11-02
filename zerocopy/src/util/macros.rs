@@ -20,6 +20,9 @@
 ///   initialized sequence of bytes constitutes a valid instance of `$ty`.
 /// - If an `is_safe` impl is provided, then the impl of `is_safe` must only
 ///   return `true` if its argument refers to a valid `$ty`.
+///
+/// When implementing `HasNullPointerOptimization`, `NonZeroValidity` is
+/// `MaybeInvalid`, which is always sound.
 macro_rules! unsafe_impl {
     // Implement `$trait` for `$ty` with no bounds.
     ($(#[$attr:meta])* $ty:ty: $trait:ident $(; |$candidate:ident| $is_safe:expr)?) => {{
@@ -154,6 +157,13 @@ macro_rules! unsafe_impl {
         {
             true
         }
+    };
+    (@method HasNullPointerOptimization) => {
+        #[allow(clippy::missing_inline_in_public_items, dead_code)]
+        #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+        fn only_derive_is_allowed_to_implement_this_trait() {}
+
+        type NonZeroValidity = crate::util::npo::MaybeInvalid;
     };
     (@method $trait:ident) => {
         #[allow(clippy::missing_inline_in_public_items, dead_code)]
@@ -327,6 +337,30 @@ macro_rules! opt_fn {
 /// return type. Designed for use with `unsafe_impl_for_power_set`.
 macro_rules! opt_unsafe_fn {
     ($($args:ident),* -> $ret:ident) => { Option<unsafe fn($($args),*) -> $ret> };
+}
+
+/// Expands to an `extern "C" fn` type with the given argument types and return
+/// type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! bare_extern_c_fn {
+    ($($args:ident),* -> $ret:ident) => { extern "C" fn($($args),*) -> $ret };
+}
+
+/// Expands to an `unsafe extern "C" fn` type with the given argument types and
+/// return type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! bare_unsafe_extern_c_fn {
+    ($($args:ident),* -> $ret:ident) => { unsafe extern "C" fn($($args),*) -> $ret };
+}
+
+/// Expands to a `fn` type with the given argument types and return type.
+/// Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! bare_fn {
+    ($($args:ident),* -> $ret:ident) => { fn($($args),*) -> $ret };
+}
+
+/// Expands to an `unsafe fn` type with the given argument types and return
+/// type. Designed for use with `unsafe_impl_for_power_set`.
+macro_rules! bare_unsafe_fn {
+    ($($args:ident),* -> $ret:ident) => { unsafe fn($($args),*) -> $ret };
 }
 
 // This `allow` is needed because, when testing, we export this macro so it can

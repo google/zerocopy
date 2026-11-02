@@ -33,6 +33,7 @@ use_as_trait_name!(
     ByteHash => super::derive::derive_hash,
     ByteEq => super::derive::derive_eq,
     SplitAt => super::derive::derive_split_at,
+    HasNullPointerOptimization => super::derive::derive_has_null_pointer_optimization,
 );
 
 /// Test that the given derive input expands to the expected output.
@@ -1066,6 +1067,81 @@ fn test_split_at() {
         } expands to {
             ::core::compile_error! {
                 "must have #[repr(C)] or #[repr(transparent)] in order to guarantee this type's layout is splitable"
+            }
+        } no_build
+    }
+}
+
+#[test]
+fn test_has_null_pointer_optimization() {
+    test! {
+        HasNullPointerOptimization {
+            #[repr(transparent)]
+            struct Foo<'a, T: Copy>(&'a T) where Self: Sized;
+        } expands to "expected/has_null_pointer_optimization.expected.rs"
+    }
+
+    test! {
+        HasNullPointerOptimization {
+            #[repr(C)]
+            struct Foo<'a>(&'a u8);
+        } expands to {
+            ::core::compile_error! {
+                "must have #[repr(transparent)] in order to guarantee the null pointer optimization"
+            }
+        } no_build
+    }
+
+    test! {
+        HasNullPointerOptimization {
+            struct Foo<'a>(&'a u8);
+        } expands to {
+            ::core::compile_error! {
+                "must have #[repr(transparent)] in order to guarantee the null pointer optimization"
+            }
+        } no_build
+    }
+
+    test! {
+        HasNullPointerOptimization {
+            #[repr(transparent)]
+            struct Foo;
+        } expands to {
+            ::core::compile_error! {
+                "must have exactly one field"
+            }
+        } no_build
+    }
+
+    test! {
+        HasNullPointerOptimization {
+            #[repr(transparent)]
+            struct Foo<'a>(&'a u8, ::core::marker::PhantomData<()>);
+        } expands to {
+            ::core::compile_error! {
+                "must have exactly one field"
+            }
+        } no_build
+    }
+
+    test! {
+        HasNullPointerOptimization {
+            #[repr(transparent)]
+            enum Foo { A(&'static u8) }
+        } expands to {
+            ::core::compile_error! {
+                "can only be applied to structs"
+            }
+        } no_build
+    }
+
+    test! {
+        HasNullPointerOptimization {
+            #[repr(transparent)]
+            union Foo { a: &'static u8 }
+        } expands to {
+            ::core::compile_error! {
+                "can only be applied to structs"
             }
         } no_build
     }
