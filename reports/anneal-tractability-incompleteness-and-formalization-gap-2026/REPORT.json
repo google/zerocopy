@@ -1,0 +1,28 @@
+{
+  "observed_at": "2026-11-02",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      },
+      "name": "Anneal verification framework (trusted/lean/Trusted/Refinement.lean, trusted/audit/TrustedBoundary.lean)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/tcb-audit",
+    "anneal/decidability",
+    "anneal/incompleteness",
+    "lean/verification"
+  ]
+}
