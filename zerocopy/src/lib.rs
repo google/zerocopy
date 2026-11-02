@@ -3888,22 +3888,26 @@ pub unsafe trait FromZeros: TryFromBytes {
         Ok(unsafe { Box::from_raw(ptr) })
     }
 
-    /// Creates a `Box<[Self]>` (a boxed slice) from zeroed bytes.
+    /// Creates a `Box<Self>` from zeroed bytes with `count` trailing elements.
     ///
-    /// This function is useful for allocating large values of `[Self]` on the
+    /// `Self` may be a slice or a [slice DST]. `count` specifies the number of
+    /// elements in the trailing slice.
+    ///
+    /// This function is useful for allocating large values of `Self` on the
     /// heap and zero-initializing them, without ever creating a temporary
-    /// instance of `[Self; _]` on the stack. For example,
-    /// `u8::new_box_slice_zeroed(1048576)` will allocate the slice directly on
-    /// the heap; it does not require storing the slice on the stack.
+    /// instance on the stack. For example,
+    /// `<[u8]>::new_box_zeroed_with_elems(1048576)` will allocate the slice
+    /// directly on the heap; it does not require storing the slice on the
+    /// stack.
     ///
     /// On systems that use a heap implementation that supports allocating from
-    /// pre-zeroed memory, using `new_box_slice_zeroed` may have performance
-    /// benefits.
+    /// pre-zeroed memory, using `new_box_zeroed_with_elems` may have
+    /// performance benefits.
     ///
-    /// If `Self` is a zero-sized type, then this function will return a
-    /// `Box<[Self]>` that has the correct `len`. Such a box cannot contain any
-    /// actual information, but its `len()` property will report the correct
-    /// value.
+    /// If the trailing slice element type is zero-sized, the returned box still
+    /// has `count` trailing elements.
+    ///
+    /// [slice DST]: KnownLayout#dynamically-sized-types
     ///
     /// # Errors
     ///
