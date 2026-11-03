@@ -28581,6 +28581,138 @@
         "proof-assistants"
       ]
     },
+    "metal-typechain-language-isolated-kernels-1995-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Sergio Benitez",
+            "doi": "10.1145/2993600.2993604",
+            "publication": "Short Paper: Rusty Types for Solid Safety, Proceedings of the 2016 ACM Workshop on Programming Languages and Analysis for Security (PLAS 2016), pages 69-75",
+            "sha256": "45c51690c06855c927f64e4da52774f3982173af9ce7f30aecf81a3e5028521a",
+            "url": "https://sergio.bz/papers/pla22s-benitezA.pdf",
+            "year": "2016"
+          },
+          "name": "Metal (Rusty Types for Solid Safety)"
+        },
+        {
+          "identity": {
+            "authors": "Sergio Benitez, Jonathan Cogan, Alejandro Russo",
+            "doi": "10.1145/3411506.3417600",
+            "publication": "Short Paper: Blockcheck the Typechain, Proceedings of the 15th ACM SIGPLAN Workshop on Programming Languages and Analysis for Security (PLAS 2020), pages 45-49",
+            "sha256": "7e76fe7b6c6f49d9b89d161de57588234ed9e351e4dea015145d70b742ffd0a0",
+            "url": "https://sergio.bz/papers/plas20-benitez.pdf",
+            "year": "2020"
+          },
+          "name": "Typechain (Blockcheck the Typechain)"
+        },
+        {
+          "identity": {
+            "authors": "Brian N. Bershad, Stefan Savage, Przemyslaw Pardyak, Emin Gun Sirer, Marc E. Fiuczynski, David Becker, Craig Chambers, Susan Eggers",
+            "doi": "10.1145/224056.224077",
+            "publication": "Extensibility, Safety and Performance in the SPIN Operating System, Proceedings of the 15th ACM Symposium on Operating Systems Principles (SOSP 1995), pages 267-283",
+            "sha256": "9e1dbd98482c67aef6213349db7838878169b1cad604e40879fb4217703923c6",
+            "year": "1995"
+          },
+          "name": "SPIN extensible operating system"
+        },
+        {
+          "identity": {
+            "authors": "Wilson C. Hsieh, Marc E. Fiuczynski, Charles Garrett, Stefan Savage, David Becker, Brian N. Bershad",
+            "publication": "Language Support for Extensible Operating Systems, Workshop on Compiler Support for System Software (WCSSS 1996), pages 1-7",
+            "sha256": "051111c947d58f528e0573bdb1a88459c76157921b443d69ffc5000d2639be4d",
+            "year": "1996"
+          },
+          "name": "SPIN language support vs software fault isolation"
+        },
+        {
+          "identity": {
+            "authors": "Karl Crary, David Walker, Greg Morrisett",
+            "doi": "10.1145/292540.292564",
+            "publication": "Typed Memory Management in a Calculus of Capabilities, 26th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL 1999) / ACM TOPLAS 22(4):701-771 (2000)",
+            "sha256": "4092218c82e451d60746cee161af8031c2ba228ae4eca22be543dfc866bac70f",
+            "url": "https://www.cs.cmu.edu/~crary/papers/2000/regions/capabilities.pdf",
+            "year": "1999"
+          },
+          "name": "Calculus of Capabilities (CL)"
+        },
+        {
+          "identity": {
+            "authors": "Greg Morrisett, Amal Ahmed, Matthew Fluet",
+            "doi": "10.1007/11417170_22",
+            "publication": "L3: A Linear Language with Locations, Typed Lambda Calculi and Applications (TLCA 2005), LNCS 3461, pages 293-307",
+            "year": "2005"
+          },
+          "name": "L3 linear locations with aliasing"
+        },
+        {
+          "identity": {
+            "authors": "Manuel Fahndrich, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, Steven Levi",
+            "doi": "10.1145/1217935.1217953",
+            "publication": "Language Support for Fast and Reliable Message-based Communication in Singularity OS, Proceedings of the 1st ACM SIGOPS/EuroSys European Conference on Computer Systems (EuroSys 2006), pages 177-190",
+            "sha256": "3786a10efb28618520c5e5b789996e8de45225db4d53d12e39dc95ff3ccfeca5",
+            "year": "2006"
+          },
+          "name": "Singularity channel contracts and Exchange Heap (Sing#)"
+        },
+        {
+          "identity": {
+            "authors": "Galen C. Hunt, James R. Larus",
+            "doi": "10.1145/1243418.1243424",
+            "publication": "Singularity: Rethinking the Software Stack, ACM SIGOPS Operating Systems Review 41(2):37-49",
+            "sha256": "1da2c58082d7b28544086636e50e7d1d1a449f3556ba8e351d81ac1370f3b8a2",
+            "year": "2007"
+          },
+          "name": "Singularity operating system architecture"
+        },
+        {
+          "identity": {
+            "index-sha256": "d2331812d73c7fc4af3f80a7338eb5ecb6a577ede218a51d67c112f7b75e4c90",
+            "instructor": "Sergio Benitez",
+            "syllabus-sha256": "24c692a06e472c1f60f3bc49a8f4839199c571ded6164abcf8074d0d9f597d3e",
+            "term": "Winter 2018",
+            "url": "https://cs140e.sergio.bz/"
+          },
+          "name": "Stanford CS140e Operating Systems in Rust (ROS)"
+        },
+        {
+          "identity": {
+            "commit-date": "2026-10-20",
+            "compiler": "rustc",
+            "revision": "19833af72",
+            "version": "1.101.0-nightly"
+          },
+          "name": "Rust compiler (MIR NLL / Polonius borrow checker)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal Rust-to-Lean verification system"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "systems/isolation",
+        "systems/language-based-isolation",
+        "rust/ownership-and-borrowing",
+        "rust/nll-borrow-checking",
+        "type-systems/capabilities",
+        "type-systems/linear-types",
+        "type-systems/typestate",
+        "kernels/extensibility",
+        "anneal/verification-boundaries",
+        "lean4/mechanized-semantics"
+      ]
+    },
     "minimal-proof-interchange-and-encoding-obligations-2026-10-14": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -29426,6 +29558,145 @@
         "rust/static-semantics",
         "rust/library-soundness",
         "rust/callbacks"
+      ]
+    },
+    "modern-sfi-lfi-and-ring0-wasm-kernels-2020-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "lfi-project/lfi-verifier",
+            "revision": "ecb5ff31b2deb83052a8f3dbad58bc6c595632f4",
+            "url": "https://github.com/lfi-project/lfi-verifier"
+          },
+          "name": "LFI Verifier"
+        },
+        {
+          "identity": {
+            "repository": "lfi-project/lfi-runtime",
+            "revision": "3b78c956368eb78d5d2241cec5d650e13f57f5cb",
+            "url": "https://github.com/lfi-project/lfi-runtime"
+          },
+          "name": "LFI Runtime"
+        },
+        {
+          "identity": {
+            "repository": "lfi-project/lfi-rewriter",
+            "revision": "1389430d371cf614e1d3ff8f7487d54d560692d9",
+            "url": "https://github.com/lfi-project/lfi-rewriter"
+          },
+          "name": "LFI Rewriter and Post-Link Prefix Padder"
+        },
+        {
+          "identity": {
+            "repository": "zyedidia/lfi",
+            "revision": "70f7c9e1ea905eb79f3e440506d7a8286ad7ec53",
+            "url": "https://github.com/zyedidia/lfi"
+          },
+          "name": "LFI Toolchain Workspace"
+        },
+        {
+          "identity": {
+            "branch": "lfi-research",
+            "repository": "lfi-project/lfi",
+            "revision": "749401bc68463ffaee2349ae9e37731ece8eda5d",
+            "url": "https://github.com/lfi-project/lfi"
+          },
+          "name": "LFI Research Codebase (ASPLOS 2024 / FMCAD 2025)"
+        },
+        {
+          "identity": {
+            "repository": "lfi-project/lfi-specification",
+            "revision": "1a44e55c839f79df2e207639a9f0272038302b3f",
+            "url": "https://github.com/lfi-project/lfi-specification"
+          },
+          "name": "LFI Formal Specification"
+        },
+        {
+          "identity": {
+            "branch": "kage01",
+            "repository": "jnwatson/kage",
+            "revision": "5583be54dfa35b74a3860a43fc89cb034a2184bc",
+            "url": "https://github.com/jnwatson/kage"
+          },
+          "name": "Kage In-Kernel Linux Driver Sandbox"
+        },
+        {
+          "identity": {
+            "repository": "nebulet/nebulet",
+            "revision": "a22b0198247ea0045b0f87aa31f849f8ffe15f66",
+            "url": "https://github.com/nebulet/nebulet"
+          },
+          "name": "Nebulet Ring-0 WebAssembly Microkernel"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.15636v1",
+            "authors": "Zachary Yedidia",
+            "doi": "10.1145/3620666.3651336",
+            "venue": "ASPLOS 2024"
+          },
+          "name": "Lightweight Fault Isolation: Practical, Efficient, and Secure Software Sandboxing (ASPLOS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2508.15898v1",
+            "authors": "Matthew Sotoudeh and Zachary Yedidia",
+            "venue": "FMCAD 2025"
+          },
+          "name": "Automated Formal Verification of a Software Fault Isolation System (FMCAD 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2011.09265v1",
+            "authors": " Elliott Wen and Gerald Weber",
+            "venue": "2020 (arXiv / USENIX ATC track)"
+          },
+          "name": "Wasmachine: Bring the Edge up to Speed with a WebAssembly OS"
+        },
+        {
+          "identity": {
+            "authors": "Evan Johnson, Evan Laufer, Zijie Zhao, Dan Gohman, Shravan Narayan, Stefan Savage, Deian Stefan, and Fraser Brown",
+            "doi": "10.1109/SP46215.2023.10179396",
+            "venue": "IEEE S&P 2023"
+          },
+          "name": "WaVe: A Verifiably Secure WebAssembly Sandboxing Runtime (IEEE S&P 2023)"
+        },
+        {
+          "identity": {
+            "authors": "Yongzhe Huang, Vikram Narayanan, David Detweiler, Kaiming Huang, Gang Tan, Trent Jaeger, and Anton Burtsev",
+            "isbn": "978-1-939133-28-1",
+            "url": "https://www.usenix.org/conference/osdi22/presentation/huang",
+            "venue": "USENIX OSDI 2022"
+          },
+          "name": "KSplit: Automating Device Driver Isolation (OSDI 2022)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "sfi",
+        "sfi/lfi",
+        "sfi/aarch64",
+        "sfi/x86-64",
+        "sfi/binary-verification",
+        "sfi/spectre",
+        "wasm/ring0-kernels",
+        "kernel-isolation/drivers",
+        "lean4/formal-verification"
       ]
     },
     "modular-effects-coq-kernel-replay-and-assumption-closure-2026": {
@@ -37217,6 +37488,165 @@
         "lean/fun-induction",
         "lean/plausible",
         "lean/sf-in-lean"
+      ]
+    },
+    "sfi-foundational-extensible-kernels-1993-2011": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/168619.168635",
+            "pdf_sha256": "0a90c74469b5f9d91df78c526be289979caafe94be3f8594e54980a340cb367b",
+            "publication": "SOSP 1993",
+            "year": "1993"
+          },
+          "name": "Efficient Software-Based Fault Isolation (Wahbe, Lucco, Anderson & Graham)"
+        },
+        {
+          "identity": {
+            "pdf_sha256": "a315f62e6911a3a8203ee03964e9717905ab6b8793ac8d0f81e187d1f2cfd770",
+            "publication": "USENIX Security 2006",
+            "tr_2005_067_sha256": "f84a2fa4067fe22acfccff50c22b68cbb486c7332cdac382fdc13d52add2d16a",
+            "tr_2006_035_sha256": "36541cf6f37db9cf8ad99e0da27832159ffd4705c56d97c40f3996a5fcb1f1dc",
+            "year": "2006"
+          },
+          "name": "Evaluating SFI for a CISC Architecture (McCamant & Morrisett / PittSFIeld)"
+        },
+        {
+          "identity": {
+            "acl2_artifact": "pittsfield-proof-2009-10-30.tar.gz",
+            "acl2_sha256": "6dac51fc4605d29f7143b41fd6a7af91d17b6e7dcb07a76f01894cccd1aa6ca1",
+            "artifact": "pittsfield-0.7.tar.gz",
+            "sha256": "4f127e246c6f8539854c4a40230e535897848b8295d72aa93db0064a09619dea"
+          },
+          "name": "PittSFIeld 0.7 binary rewriter, verifier, and ACL2 formalization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/224056.224076",
+            "pdf_sha256": "1f7d1ab466e0c7041b25083628637b61a65400a1b9834c82ab38d28ccbc8a0e9",
+            "publication": "SOSP 1995",
+            "year": "1995"
+          },
+          "name": "Exokernel: An Operating System Architecture for Application-Level Resource Management (Engler, Kaashoek & O'Toole)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/248156.248161",
+            "pdf_sha256": "00d1904f69f53e4101ffab91a15f4679edc37c3a9142df98c0c3c70b64fb39fe",
+            "publication": "SIGCOMM 1996",
+            "year": "1996"
+          },
+          "name": "ASHs: Application-Specific Handlers for High-Performance Messaging (Wallach, Engler & Kaashoek)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/248156.248162",
+            "dpf_source_artifact": "dpf.tar.gz",
+            "dpf_source_sha256": "862c2a870249e230d68c131d5237ee74c3f70248cd6c9d2a5ff12168d614364b",
+            "pdf_sha256": "85277b0223647be89d8823d2ad0fca58b4966f4bad5ad1f69fc72b1f378b7f47",
+            "publication": "SIGCOMM 1996",
+            "year": "1996"
+          },
+          "name": "DPF: Fast, Flexible Message Demultiplexing using Dynamic Code Generation (Engler & Kaashoek)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/268998.266644",
+            "pdf_sha256": "e9b7b77188f333da5725151db7900bddc9cab5fa3489b0b238726bfb329ea98e",
+            "publication": "SOSP 1997",
+            "year": "1997"
+          },
+          "name": "Application Performance and Flexibility on Exokernel Systems (Kaashoek et al.)"
+        },
+        {
+          "identity": {
+            "repository": "pdos/xok",
+            "revision": "490cd2496ebbd2b4032c191a036c5711d118e3b9",
+            "snapshot_artifact": "exopc-06-22-2000.tar.gz",
+            "snapshot_sha256": "18a9bdfb7283424c303af4c3cb5aacc8dc17fb0a2f6fa9e19ecfb90a428228a4"
+          },
+          "name": "MIT PDOS XOK / Exokernel source repository and snapshot"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/238721.238779",
+            "pdf_sha256": "71ce26d61d7513fcad22278c6824c12971014864c3574d310f966123ca16b27c",
+            "publication": "OSDI 1996",
+            "year": "1996"
+          },
+          "name": "Dealing With Disaster: Surviving Misbehaving Kernel Extensions (Seltzer, Endo, Small & Smith / VINO)"
+        },
+        {
+          "identity": {
+            "pdf_sha256": "a73d7a340b49f7d0bb4e2b710433ef8d93e59028aa1047cbef039f2d884bb126",
+            "publication": "USENIX COOTS 1997",
+            "year": "1997"
+          },
+          "name": "MiSFIT: A Tool for Constructing Safe Extensible C++ Systems (Small & Seltzer)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/945445.945466",
+            "pdf_sha256": "2e3bb82bba1668e6668d3f1f654d7663e03d70ff2a28c4ce941d7be996ff5efb",
+            "publication": "SOSP 2003",
+            "year": "2003"
+          },
+          "name": "Improving the Reliability of Commodity Operating Systems (Swift, Bershad & Levy / Nooks)"
+        },
+        {
+          "identity": {
+            "pdf_sha256": "3bf476041fd12b3bd00f17d88caa06ecaf7ff41498761f5b1e39f555f094b981",
+            "publication": "OSDI 2006",
+            "year": "2006"
+          },
+          "name": "XFI: Software Guards for System Address Spaces (Erlingsson, Abadi, Vrable, Budiu & Necula)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1629575.1629581",
+            "pdf_sha256": "e52566208e8ea7bb8074f5fea67b5480ec381d1cf19c8ada55e111b75e3a16ad",
+            "publication": "SOSP 2009",
+            "year": "2009"
+          },
+          "name": "Fast Byte-Granularity Software Fault Isolation (Castro et al. / BGI)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2043556.2043568",
+            "pdf_sha256": "2a5e520a4d77fd03f85732deed039ead2a6b25980d38583400e270361ed332d4",
+            "publication": "SOSP 2011",
+            "year": "2011"
+          },
+          "name": "Software Fault Isolation with API Integrity and Multi-Principal Modules (Mao et al. / LXFI)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal deductive Rust-to-Lean-4 verification toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "os/software-fault-isolation",
+        "os/extensible-kernels",
+        "os/exokernel",
+        "os/control-flow-integrity",
+        "os/capabilities",
+        "os/transactional-recovery",
+        "verification/differential-determinism",
+        "verification/trusted-computing-base",
+        "anneal/execution-boundaries",
+        "lean/mechanized-models"
       ]
     },
     "simuliris-tree-borrows-selected-kernel-replay-e3abfcdc": {

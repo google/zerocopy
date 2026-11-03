@@ -1,0 +1,159 @@
+{
+  "topics": [
+    "os/software-fault-isolation",
+    "os/extensible-kernels",
+    "os/exokernel",
+    "os/control-flow-integrity",
+    "os/capabilities",
+    "os/transactional-recovery",
+    "verification/differential-determinism",
+    "verification/trusted-computing-base",
+    "anneal/execution-boundaries",
+    "lean/mechanized-models"
+  ],
+  "subjects": [
+    {
+      "name": "Efficient Software-Based Fault Isolation (Wahbe, Lucco, Anderson & Graham)",
+      "identity": {
+        "doi": "10.1145/168619.168635",
+        "publication": "SOSP 1993",
+        "year": "1993",
+        "pdf_sha256": "0a90c74469b5f9d91df78c526be289979caafe94be3f8594e54980a340cb367b"
+      }
+    },
+    {
+      "name": "Evaluating SFI for a CISC Architecture (McCamant & Morrisett / PittSFIeld)",
+      "identity": {
+        "publication": "USENIX Security 2006",
+        "year": "2006",
+        "pdf_sha256": "a315f62e6911a3a8203ee03964e9717905ab6b8793ac8d0f81e187d1f2cfd770",
+        "tr_2005_067_sha256": "f84a2fa4067fe22acfccff50c22b68cbb486c7332cdac382fdc13d52add2d16a",
+        "tr_2006_035_sha256": "36541cf6f37db9cf8ad99e0da27832159ffd4705c56d97c40f3996a5fcb1f1dc"
+      }
+    },
+    {
+      "name": "PittSFIeld 0.7 binary rewriter, verifier, and ACL2 formalization",
+      "identity": {
+        "artifact": "pittsfield-0.7.tar.gz",
+        "sha256": "4f127e246c6f8539854c4a40230e535897848b8295d72aa93db0064a09619dea",
+        "acl2_artifact": "pittsfield-proof-2009-10-30.tar.gz",
+        "acl2_sha256": "6dac51fc4605d29f7143b41fd6a7af91d17b6e7dcb07a76f01894cccd1aa6ca1"
+      }
+    },
+    {
+      "name": "Exokernel: An Operating System Architecture for Application-Level Resource Management (Engler, Kaashoek & O'Toole)",
+      "identity": {
+        "doi": "10.1145/224056.224076",
+        "publication": "SOSP 1995",
+        "year": "1995",
+        "pdf_sha256": "1f7d1ab466e0c7041b25083628637b61a65400a1b9834c82ab38d28ccbc8a0e9"
+      }
+    },
+    {
+      "name": "ASHs: Application-Specific Handlers for High-Performance Messaging (Wallach, Engler & Kaashoek)",
+      "identity": {
+        "doi": "10.1145/248156.248161",
+        "publication": "SIGCOMM 1996",
+        "year": "1996",
+        "pdf_sha256": "00d1904f69f53e4101ffab91a15f4679edc37c3a9142df98c0c3c70b64fb39fe"
+      }
+    },
+    {
+      "name": "DPF: Fast, Flexible Message Demultiplexing using Dynamic Code Generation (Engler & Kaashoek)",
+      "identity": {
+        "doi": "10.1145/248156.248162",
+        "publication": "SIGCOMM 1996",
+        "year": "1996",
+        "pdf_sha256": "85277b0223647be89d8823d2ad0fca58b4966f4bad5ad1f69fc72b1f378b7f47",
+        "dpf_source_artifact": "dpf.tar.gz",
+        "dpf_source_sha256": "862c2a870249e230d68c131d5237ee74c3f70248cd6c9d2a5ff12168d614364b"
+      }
+    },
+    {
+      "name": "Application Performance and Flexibility on Exokernel Systems (Kaashoek et al.)",
+      "identity": {
+        "doi": "10.1145/268998.266644",
+        "publication": "SOSP 1997",
+        "year": "1997",
+        "pdf_sha256": "e9b7b77188f333da5725151db7900bddc9cab5fa3489b0b238726bfb329ea98e"
+      }
+    },
+    {
+      "name": "MIT PDOS XOK / Exokernel source repository and snapshot",
+      "identity": {
+        "repository": "pdos/xok",
+        "revision": "490cd2496ebbd2b4032c191a036c5711d118e3b9",
+        "snapshot_artifact": "exopc-06-22-2000.tar.gz",
+        "snapshot_sha256": "18a9bdfb7283424c303af4c3cb5aacc8dc17fb0a2f6fa9e19ecfb90a428228a4"
+      }
+    },
+    {
+      "name": "Dealing With Disaster: Surviving Misbehaving Kernel Extensions (Seltzer, Endo, Small & Smith / VINO)",
+      "identity": {
+        "doi": "10.1145/238721.238779",
+        "publication": "OSDI 1996",
+        "year": "1996",
+        "pdf_sha256": "71ce26d61d7513fcad22278c6824c12971014864c3574d310f966123ca16b27c"
+      }
+    },
+    {
+      "name": "MiSFIT: A Tool for Constructing Safe Extensible C++ Systems (Small & Seltzer)",
+      "identity": {
+        "publication": "USENIX COOTS 1997",
+        "year": "1997",
+        "pdf_sha256": "a73d7a340b49f7d0bb4e2b710433ef8d93e59028aa1047cbef039f2d884bb126"
+      }
+    },
+    {
+      "name": "Improving the Reliability of Commodity Operating Systems (Swift, Bershad & Levy / Nooks)",
+      "identity": {
+        "doi": "10.1145/945445.945466",
+        "publication": "SOSP 2003",
+        "year": "2003",
+        "pdf_sha256": "2e3bb82bba1668e6668d3f1f654d7663e03d70ff2a28c4ce941d7be996ff5efb"
+      }
+    },
+    {
+      "name": "XFI: Software Guards for System Address Spaces (Erlingsson, Abadi, Vrable, Budiu & Necula)",
+      "identity": {
+        "publication": "OSDI 2006",
+        "year": "2006",
+        "pdf_sha256": "3bf476041fd12b3bd00f17d88caa06ecaf7ff41498761f5b1e39f555f094b981"
+      }
+    },
+    {
+      "name": "Fast Byte-Granularity Software Fault Isolation (Castro et al. / BGI)",
+      "identity": {
+        "doi": "10.1145/1629575.1629581",
+        "publication": "SOSP 2009",
+        "year": "2009",
+        "pdf_sha256": "e52566208e8ea7bb8074f5fea67b5480ec381d1cf19c8ada55e111b75e3a16ad"
+      }
+    },
+    {
+      "name": "Software Fault Isolation with API Integrity and Multi-Principal Modules (Mao et al. / LXFI)",
+      "identity": {
+        "doi": "10.1145/2043556.2043568",
+        "publication": "SOSP 2011",
+        "year": "2011",
+        "pdf_sha256": "2a5e520a4d77fd03f85732deed039ead2a6b25980d38583400e270361ed332d4"
+      }
+    },
+    {
+      "name": "Anneal deductive Rust-to-Lean-4 verification toolchain",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

@@ -1,0 +1,139 @@
+{
+  "topics": [
+    "sfi",
+    "sfi/lfi",
+    "sfi/aarch64",
+    "sfi/x86-64",
+    "sfi/binary-verification",
+    "sfi/spectre",
+    "wasm/ring0-kernels",
+    "kernel-isolation/drivers",
+    "lean4/formal-verification"
+  ],
+  "subjects": [
+    {
+      "name": "LFI Verifier",
+      "identity": {
+        "repository": "lfi-project/lfi-verifier",
+        "revision": "ecb5ff31b2deb83052a8f3dbad58bc6c595632f4",
+        "url": "https://github.com/lfi-project/lfi-verifier"
+      }
+    },
+    {
+      "name": "LFI Runtime",
+      "identity": {
+        "repository": "lfi-project/lfi-runtime",
+        "revision": "3b78c956368eb78d5d2241cec5d650e13f57f5cb",
+        "url": "https://github.com/lfi-project/lfi-runtime"
+      }
+    },
+    {
+      "name": "LFI Rewriter and Post-Link Prefix Padder",
+      "identity": {
+        "repository": "lfi-project/lfi-rewriter",
+        "revision": "1389430d371cf614e1d3ff8f7487d54d560692d9",
+        "url": "https://github.com/lfi-project/lfi-rewriter"
+      }
+    },
+    {
+      "name": "LFI Toolchain Workspace",
+      "identity": {
+        "repository": "zyedidia/lfi",
+        "revision": "70f7c9e1ea905eb79f3e440506d7a8286ad7ec53",
+        "url": "https://github.com/zyedidia/lfi"
+      }
+    },
+    {
+      "name": "LFI Research Codebase (ASPLOS 2024 / FMCAD 2025)",
+      "identity": {
+        "repository": "lfi-project/lfi",
+        "branch": "lfi-research",
+        "revision": "749401bc68463ffaee2349ae9e37731ece8eda5d",
+        "url": "https://github.com/lfi-project/lfi"
+      }
+    },
+    {
+      "name": "LFI Formal Specification",
+      "identity": {
+        "repository": "lfi-project/lfi-specification",
+        "revision": "1a44e55c839f79df2e207639a9f0272038302b3f",
+        "url": "https://github.com/lfi-project/lfi-specification"
+      }
+    },
+    {
+      "name": "Kage In-Kernel Linux Driver Sandbox",
+      "identity": {
+        "repository": "jnwatson/kage",
+        "branch": "kage01",
+        "revision": "5583be54dfa35b74a3860a43fc89cb034a2184bc",
+        "url": "https://github.com/jnwatson/kage"
+      }
+    },
+    {
+      "name": "Nebulet Ring-0 WebAssembly Microkernel",
+      "identity": {
+        "repository": "nebulet/nebulet",
+        "revision": "a22b0198247ea0045b0f87aa31f849f8ffe15f66",
+        "url": "https://github.com/nebulet/nebulet"
+      }
+    },
+    {
+      "name": "Lightweight Fault Isolation: Practical, Efficient, and Secure Software Sandboxing (ASPLOS 2024)",
+      "identity": {
+        "authors": "Zachary Yedidia",
+        "venue": "ASPLOS 2024",
+        "doi": "10.1145/3620666.3651336",
+        "arxiv": "2402.15636v1"
+      }
+    },
+    {
+      "name": "Automated Formal Verification of a Software Fault Isolation System (FMCAD 2025)",
+      "identity": {
+        "authors": "Matthew Sotoudeh and Zachary Yedidia",
+        "venue": "FMCAD 2025",
+        "arxiv": "2508.15898v1"
+      }
+    },
+    {
+      "name": "Wasmachine: Bring the Edge up to Speed with a WebAssembly OS",
+      "identity": {
+        "authors": " Elliott Wen and Gerald Weber",
+        "venue": "2020 (arXiv / USENIX ATC track)",
+        "arxiv": "2011.09265v1"
+      }
+    },
+    {
+      "name": "WaVe: A Verifiably Secure WebAssembly Sandboxing Runtime (IEEE S&P 2023)",
+      "identity": {
+        "authors": "Evan Johnson, Evan Laufer, Zijie Zhao, Dan Gohman, Shravan Narayan, Stefan Savage, Deian Stefan, and Fraser Brown",
+        "venue": "IEEE S&P 2023",
+        "doi": "10.1109/SP46215.2023.10179396"
+      }
+    },
+    {
+      "name": "KSplit: Automating Device Driver Isolation (OSDI 2022)",
+      "identity": {
+        "authors": "Yongzhe Huang, Vikram Narayanan, David Detweiler, Kaiming Huang, Gang Tan, Trent Jaeger, and Anton Burtsev",
+        "venue": "USENIX OSDI 2022",
+        "isbn": "978-1-939133-28-1",
+        "url": "https://www.usenix.org/conference/osdi22/presentation/huang"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

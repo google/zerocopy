@@ -1,0 +1,576 @@
+[
+  {
+    "name": "Baseline_x86_64_Unsandboxed_Load",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 3,
+    "instructions": [
+      {
+        "asm": "movq\t(%rax), %rcx",
+        "bytes": [
+          "48",
+          "8b",
+          "08"
+        ],
+        "len": 3
+      }
+    ]
+  },
+  {
+    "name": "NaCl_or_LFI_BaseReg_x86_64_Load",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 2,
+    "total_bytes": 6,
+    "instructions": [
+      {
+        "asm": "movl\t%eax, %eax",
+        "bytes": [
+          "89",
+          "c0"
+        ],
+        "len": 2
+      },
+      {
+        "asm": "movq\t(%r14,%rax), %rcx",
+        "bytes": [
+          "49",
+          "8b",
+          "0c",
+          "06"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_Segue_GS_Addr32_x86_64_Load",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 5,
+    "instructions": [
+      {
+        "asm": "movq\t%gs:(%eax), %rcx",
+        "bytes": [
+          "65",
+          "67",
+          "48",
+          "8b",
+          "08"
+        ],
+        "len": 5
+      }
+    ]
+  },
+  {
+    "name": "Baseline_AArch64_Unsandboxed_Load",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 4,
+    "instructions": [
+      {
+        "asm": "ldr\tx0, [x1]",
+        "bytes": [
+          "20",
+          "00",
+          "40",
+          "f9"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_Uxtw_SingleInst_Load_2024_x21",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 4,
+    "instructions": [
+      {
+        "asm": "ldr\tx0, [x21, w1, uxtw]",
+        "bytes": [
+          "a0",
+          "4a",
+          "61",
+          "f8"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_Uxtw_SingleInst_Load_2025_x27",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 4,
+    "instructions": [
+      {
+        "asm": "ldr\tx0, [x27, w1, uxtw]",
+        "bytes": [
+          "60",
+          "4b",
+          "61",
+          "f8"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_x86_64_Segue_Load_ImmDisp",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 6,
+    "instructions": [
+      {
+        "asm": "movq\t%gs:16(%eax), %rcx",
+        "bytes": [
+          "65",
+          "67",
+          "48",
+          "8b",
+          "48",
+          "10"
+        ],
+        "len": 6
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_AddrReg_Load_ImmDisp_2024_x18",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 2,
+    "total_bytes": 8,
+    "instructions": [
+      {
+        "asm": "add\tx18, x21, w1, uxtw",
+        "bytes": [
+          "b2",
+          "42",
+          "21",
+          "8b"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "ldr\tx0, [x18, #16]",
+        "bytes": [
+          "40",
+          "0a",
+          "40",
+          "f9"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_AddrReg_Load_ImmDisp_2025_x28",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 2,
+    "total_bytes": 8,
+    "instructions": [
+      {
+        "asm": "add\tx28, x27, w1, uxtw",
+        "bytes": [
+          "7c",
+          "43",
+          "21",
+          "8b"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "ldr\tx0, [x28, #16]",
+        "bytes": [
+          "80",
+          "0b",
+          "40",
+          "f9"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "NaCl_x86_64_32B_Bundle_Indirect_Jump",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 3,
+    "total_bytes": 8,
+    "instructions": [
+      {
+        "asm": "andl\t$4294967264, %eax",
+        "bytes": [
+          "83",
+          "e0",
+          "e0"
+        ],
+        "len": 3
+      },
+      {
+        "asm": "addq\t%r15, %rax",
+        "bytes": [
+          "4c",
+          "01",
+          "f8"
+        ],
+        "len": 3
+      },
+      {
+        "asm": "jmpq\t*%rax",
+        "bytes": [
+          "ff",
+          "e0"
+        ],
+        "len": 2
+      }
+    ]
+  },
+  {
+    "name": "LFI_x86_64_Macroinst_Indirect_Jump",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 3,
+    "total_bytes": 10,
+    "instructions": [
+      {
+        "asm": "andl\t$4294967264, %eax",
+        "bytes": [
+          "83",
+          "e0",
+          "e0"
+        ],
+        "len": 3
+      },
+      {
+        "asm": "leaq\t(%r14,%rax), %r11",
+        "bytes": [
+          "4d",
+          "8d",
+          "1c",
+          "06"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "jmpq\t*%r11",
+        "bytes": [
+          "41",
+          "ff",
+          "e3"
+        ],
+        "len": 3
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_BundleFree_Indirect_Jump_x21_x18",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 2,
+    "total_bytes": 8,
+    "instructions": [
+      {
+        "asm": "add\tx18, x21, w1, uxtw",
+        "bytes": [
+          "b2",
+          "42",
+          "21",
+          "8b"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "br\tx18",
+        "bytes": [
+          "40",
+          "02",
+          "1f",
+          "d6"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_BundleFree_Return_x27_x30",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 2,
+    "total_bytes": 8,
+    "instructions": [
+      {
+        "asm": "add\tx30, x27, w30, uxtw",
+        "bytes": [
+          "7e",
+          "43",
+          "3e",
+          "8b"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "ret",
+        "bytes": [
+          "c0",
+          "03",
+          "5f",
+          "d6"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_Metered_16B_Bundle_Indirect_Jump",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 3,
+    "total_bytes": 12,
+    "instructions": [
+      {
+        "asm": "add\tx18, x21, w1, uxtw",
+        "bytes": [
+          "b2",
+          "42",
+          "21",
+          "8b"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "and\tx24, x18, #0xfffffffffffffff0",
+        "bytes": [
+          "58",
+          "ee",
+          "7c",
+          "92"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "br\tx24",
+        "bytes": [
+          "00",
+          "03",
+          "1f",
+          "d6"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_RuntimeCall_Trampoline_2024_x21",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 4,
+    "total_bytes": 16,
+    "instructions": [
+      {
+        "asm": "mov\tw22, w30",
+        "bytes": [
+          "f6",
+          "03",
+          "1e",
+          "2a"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "ldr\tx30, [x21]",
+        "bytes": [
+          "be",
+          "02",
+          "40",
+          "f9"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "blr\tx30",
+        "bytes": [
+          "c0",
+          "03",
+          "3f",
+          "d6"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "add\tx30, x21, w22, uxtw",
+        "bytes": [
+          "be",
+          "42",
+          "36",
+          "8b"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_AArch64_RuntimeCall_Trampoline_2025_x27",
+    "triple": "aarch64-unknown-linux-gnu",
+    "instruction_count": 4,
+    "total_bytes": 16,
+    "instructions": [
+      {
+        "asm": "mov\tw26, w30",
+        "bytes": [
+          "fa",
+          "03",
+          "1e",
+          "2a"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "ldr\tx30, [x27]",
+        "bytes": [
+          "7e",
+          "03",
+          "40",
+          "f9"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "blr\tx30",
+        "bytes": [
+          "c0",
+          "03",
+          "3f",
+          "d6"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "add\tx30, x27, w26, uxtw",
+        "bytes": [
+          "7e",
+          "43",
+          "3a",
+          "8b"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "LFI_x86_64_RuntimeCall_Trampoline",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 3,
+    "instructions": [
+      {
+        "asm": "callq\t*(%r14)",
+        "bytes": [
+          "41",
+          "ff",
+          "16"
+        ],
+        "len": 3
+      }
+    ]
+  },
+  {
+    "name": "LFI_x86_64_Postlink_CS_Prefix_Padding_Example",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 1,
+    "total_bytes": 4,
+    "instructions": [
+      {
+        "asm": "addq\t$8, %rax",
+        "bytes": [
+          "48",
+          "83",
+          "c0",
+          "08"
+        ],
+        "len": 4
+      }
+    ]
+  },
+  {
+    "name": "Nebulet_Ring0_Wasm_GuardPage_Load_x86_64",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 2,
+    "total_bytes": 7,
+    "instructions": [
+      {
+        "asm": "movl\t%eax, %eax",
+        "bytes": [
+          "89",
+          "c0"
+        ],
+        "len": 2
+      },
+      {
+        "asm": "movq\t16(%rdi,%rax), %rcx",
+        "bytes": [
+          "48",
+          "8b",
+          "4c",
+          "07",
+          "10"
+        ],
+        "len": 5
+      }
+    ]
+  },
+  {
+    "name": "BranchChecked_Software_BoundsCheck_With_LFENCE_x86_64",
+    "triple": "x86_64-unknown-linux-gnu",
+    "instruction_count": 6,
+    "total_bytes": 16,
+    "instructions": [
+      {
+        "asm": "movl\t%eax, %eax",
+        "bytes": [
+          "89",
+          "c0"
+        ],
+        "len": 2
+      },
+      {
+        "asm": "cmpq\t%rsi, %rax",
+        "bytes": [
+          "48",
+          "39",
+          "f0"
+        ],
+        "len": 3
+      },
+      {
+        "asm": "jae\t.Ltmp0",
+        "bytes": [
+          "73",
+          "0a"
+        ],
+        "len": 2
+      },
+      {
+        "asm": "lfence",
+        "bytes": [
+          "0f",
+          "ae",
+          "e8"
+        ],
+        "len": 3
+      },
+      {
+        "asm": "movq\t(%rdi,%rax), %rcx",
+        "bytes": [
+          "48",
+          "8b",
+          "0c",
+          "07"
+        ],
+        "len": 4
+      },
+      {
+        "asm": "ud2",
+        "bytes": [
+          "0f",
+          "0b"
+        ],
+        "len": 2
+      }
+    ]
+  }
+]

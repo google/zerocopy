@@ -1,0 +1,132 @@
+{
+  "topics": [
+    "systems/isolation",
+    "systems/language-based-isolation",
+    "rust/ownership-and-borrowing",
+    "rust/nll-borrow-checking",
+    "type-systems/capabilities",
+    "type-systems/linear-types",
+    "type-systems/typestate",
+    "kernels/extensibility",
+    "anneal/verification-boundaries",
+    "lean4/mechanized-semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Metal (Rusty Types for Solid Safety)",
+      "identity": {
+        "authors": "Sergio Benitez",
+        "publication": "Short Paper: Rusty Types for Solid Safety, Proceedings of the 2016 ACM Workshop on Programming Languages and Analysis for Security (PLAS 2016), pages 69-75",
+        "doi": "10.1145/2993600.2993604",
+        "url": "https://sergio.bz/papers/pla22s-benitezA.pdf",
+        "sha256": "45c51690c06855c927f64e4da52774f3982173af9ce7f30aecf81a3e5028521a",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Typechain (Blockcheck the Typechain)",
+      "identity": {
+        "authors": "Sergio Benitez, Jonathan Cogan, Alejandro Russo",
+        "publication": "Short Paper: Blockcheck the Typechain, Proceedings of the 15th ACM SIGPLAN Workshop on Programming Languages and Analysis for Security (PLAS 2020), pages 45-49",
+        "doi": "10.1145/3411506.3417600",
+        "url": "https://sergio.bz/papers/plas20-benitez.pdf",
+        "sha256": "7e76fe7b6c6f49d9b89d161de57588234ed9e351e4dea015145d70b742ffd0a0",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "SPIN extensible operating system",
+      "identity": {
+        "authors": "Brian N. Bershad, Stefan Savage, Przemyslaw Pardyak, Emin Gun Sirer, Marc E. Fiuczynski, David Becker, Craig Chambers, Susan Eggers",
+        "publication": "Extensibility, Safety and Performance in the SPIN Operating System, Proceedings of the 15th ACM Symposium on Operating Systems Principles (SOSP 1995), pages 267-283",
+        "doi": "10.1145/224056.224077",
+        "sha256": "9e1dbd98482c67aef6213349db7838878169b1cad604e40879fb4217703923c6",
+        "year": "1995"
+      }
+    },
+    {
+      "name": "SPIN language support vs software fault isolation",
+      "identity": {
+        "authors": "Wilson C. Hsieh, Marc E. Fiuczynski, Charles Garrett, Stefan Savage, David Becker, Brian N. Bershad",
+        "publication": "Language Support for Extensible Operating Systems, Workshop on Compiler Support for System Software (WCSSS 1996), pages 1-7",
+        "sha256": "051111c947d58f528e0573bdb1a88459c76157921b443d69ffc5000d2639be4d",
+        "year": "1996"
+      }
+    },
+    {
+      "name": "Calculus of Capabilities (CL)",
+      "identity": {
+        "authors": "Karl Crary, David Walker, Greg Morrisett",
+        "publication": "Typed Memory Management in a Calculus of Capabilities, 26th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL 1999) / ACM TOPLAS 22(4):701-771 (2000)",
+        "doi": "10.1145/292540.292564",
+        "url": "https://www.cs.cmu.edu/~crary/papers/2000/regions/capabilities.pdf",
+        "sha256": "4092218c82e451d60746cee161af8031c2ba228ae4eca22be543dfc866bac70f",
+        "year": "1999"
+      }
+    },
+    {
+      "name": "L3 linear locations with aliasing",
+      "identity": {
+        "authors": "Greg Morrisett, Amal Ahmed, Matthew Fluet",
+        "publication": "L3: A Linear Language with Locations, Typed Lambda Calculi and Applications (TLCA 2005), LNCS 3461, pages 293-307",
+        "doi": "10.1007/11417170_22",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "Singularity channel contracts and Exchange Heap (Sing#)",
+      "identity": {
+        "authors": "Manuel Fahndrich, Mark Aiken, Chris Hawblitzel, Orion Hodson, Galen Hunt, James R. Larus, Steven Levi",
+        "publication": "Language Support for Fast and Reliable Message-based Communication in Singularity OS, Proceedings of the 1st ACM SIGOPS/EuroSys European Conference on Computer Systems (EuroSys 2006), pages 177-190",
+        "doi": "10.1145/1217935.1217953",
+        "sha256": "3786a10efb28618520c5e5b789996e8de45225db4d53d12e39dc95ff3ccfeca5",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Singularity operating system architecture",
+      "identity": {
+        "authors": "Galen C. Hunt, James R. Larus",
+        "publication": "Singularity: Rethinking the Software Stack, ACM SIGOPS Operating Systems Review 41(2):37-49",
+        "doi": "10.1145/1243418.1243424",
+        "sha256": "1da2c58082d7b28544086636e50e7d1d1a449f3556ba8e351d81ac1370f3b8a2",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Stanford CS140e Operating Systems in Rust (ROS)",
+      "identity": {
+        "instructor": "Sergio Benitez",
+        "url": "https://cs140e.sergio.bz/",
+        "index-sha256": "d2331812d73c7fc4af3f80a7338eb5ecb6a577ede218a51d67c112f7b75e4c90",
+        "syllabus-sha256": "24c692a06e472c1f60f3bc49a8f4839199c571ded6164abcf8074d0d9f597d3e",
+        "term": "Winter 2018"
+      }
+    },
+    {
+      "name": "Rust compiler (MIR NLL / Polonius borrow checker)",
+      "identity": {
+        "compiler": "rustc",
+        "version": "1.101.0-nightly",
+        "revision": "19833af72",
+        "commit-date": "2026-10-20"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification system",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}
