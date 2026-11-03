@@ -1,0 +1,346 @@
+{
+  "schema_version": "1.0",
+  "probe_name": "ct_compiler_and_time_protection_probe",
+  "lean_mechanization_summary": {
+    "artifact": "support/CompilerPreservationTimeProtectionAndAnnealCtGate.lean",
+    "lean_version": "v4.34.1",
+    "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "total_theorems": 31,
+    "axioms_used": [],
+    "zero_sorryAx": true,
+    "zero_classical_choice": true,
+    "zero_ofReduceBool": true
+  },
+  "compiler_leakage_catalog": [
+    {
+      "hazard_id": "cmov_or_select_to_diamond_branch",
+      "pass_stage": "RTL / SelectionDAG / MachineSSA lowering",
+      "primary_sources": [
+        "Simon, Chisnall & Anderson (EuroS&P 2018, DOI 10.1109/EuroSP.2018.00029)",
+        "Barthe et al. (CompCert-CT, POPL 2020, DOI 10.1145/3371075)",
+        "Schneider, Lain, Ivan & Puddu (ASIA CCS 2025, DOI 10.1145/3678890.3678916)"
+      ],
+      "source_pattern": "Branchless bitwise mask or conditional move: r_ret := cmov(c_sec, v1, v2)",
+      "lowered_target_pattern": "Conditional jump: bnez c_sec, L_true; mov r_ret, v2; j L_join; L_true: mov r_ret, v1",
+      "functional_correctness_preserved": true,
+      "source_bytecode_ct_certificate_valid": true,
+      "target_leakage_channel": "Instruction-cache (L1-I) + Branch Predictor Unit (BPU) + architectural PC trace",
+      "schneider_2025_empirical_incidence": {
+        "x86_64_clang_O3_broken_primitives_pct": 43.8,
+        "aarch64_clang_O3_broken_primitives_pct": 37.5,
+        "riscv64_clang_O3_broken_primitives_pct": 62.5,
+        "rustc_nightly_broken_primitives_pct": 31.3
+      },
+      "compcert_ct_defense": "RTL Selection / RTLgen preserves branchless Iexec selectivity; CTSimulates proves L_tgt(s) == L_src(s)",
+      "jasmin_defense": "No synthetic control-flow lowering; cmov/setcc map 1:1 to target assembly instructions",
+      "anneal_target_byte_gate_rejection": {
+        "rejected": true,
+        "rejecting_obligation": "ob7a_archConstantTime",
+        "lean_theorem": "cmov_to_branch_lowering_breaks_ct & consumer_bound_machine_byte_ct_cert_defeats_bad_compiler"
+      }
+    },
+    {
+      "hazard_id": "dead_store_elimination_of_secret_scrub",
+      "pass_stage": "DeadStoreElimination (DSE) / DeadCode (CompCert) / LLVM DSE",
+      "primary_sources": [
+        "Simon, Chisnall & Anderson (EuroS&P 2018, DOI 10.1109/EuroSP.2018.00029)",
+        "Besson, Dang, Jensen & Pichardie (CSF 2019, DOI 10.1109/CSF.2019.00026)",
+        "Almeida et al. (Jasmin, CCS 2023, DOI 10.1145/3576915.3623157)"
+      ],
+      "source_pattern": "Explicit secret zeroization before return: stack[sec_slot] := 0; ret",
+      "lowered_target_pattern": "Store elided because stack[sec_slot] is dead in standard C/Rust abstract machine after ret",
+      "functional_correctness_preserved": true,
+      "source_bytecode_ct_certificate_valid": true,
+      "target_leakage_channel": "Residual secret on shared Ring-0 kernel stack or heap frame read by subsequent extension",
+      "compcert_ct_defense": "Standard CompCert-CT (POPL 2020) models PC/memory-address leakage only, NOT post-return memory value erasure",
+      "besson_csf2019_defense": "Information-Flow-Preserving (IFP) semantics + insert_erase patch + observables blocking DSE on secret-tainted locations",
+      "jasmin_defense": "Explicit stack-zeroization annotations (#[sct=...]) lowered to non-elidable target stores",
+      "anneal_target_byte_gate_rejection": {
+        "rejected": true,
+        "rejecting_obligation": "ob7c_secretExitAndSpillScrubbing",
+        "lean_theorem": "dead_store_elimination_breaks_secret_scrubbing & consumer_bound_machine_byte_ct_cert_defeats_bad_compiler"
+      }
+    },
+    {
+      "hazard_id": "register_allocator_secret_spill_to_unscrubbed_stack",
+      "pass_stage": "Register Allocation (IRC / Linear Scan) & Frame Stacking (CompCert Allocation + Stacking)",
+      "primary_sources": [
+        "Barthe et al. (CompCert-CT, POPL 2020, DOI 10.1145/3371075, Section 4.3)",
+        "Besson, Dang, Jensen & Pichardie (CSF 2019, DOI 10.1109/CSF.2019.00026, Section 5)",
+        "Almeida et al. (Jasmin, POPL 2020, DOI 10.1145/3371076)"
+      ],
+      "source_pattern": "Pure register secret computation: r_sec := op(k_sec); r_sec := 0; ret (zero source memory accesses)",
+      "lowered_target_pattern": "Spill store: stack[spill_slot] := r_sec; ... reload r_sec := stack[spill_slot]; r_sec := 0; ret (spill_slot unscrubbed)",
+      "functional_correctness_preserved": true,
+      "source_bytecode_ct_certificate_valid": true,
+      "target_leakage_channel": "Silent secret copy in stack spill slot + L1-D cache line dirtied by spill store",
+      "compcert_ct_defense": "Proves spill slots are private and constant-offset (preserving address-trace CT), but does NOT zero spill slot contents before ret",
+      "besson_csf2019_defense": "Tracks secret taint into Tir.Stack slots and injects Msetstack 0 before Lreturn for every secret-tainted spill slot",
+      "jasmin_defense": "Programmer controls all spills explicitly in Jasmin source; compiler never introduces implicit stack spills",
+      "anneal_target_byte_gate_rejection": {
+        "rejected": true,
+        "rejecting_obligation": "ob7c_secretExitAndSpillScrubbing",
+        "lean_theorem": "secret_register_spill_breaks_memory_erasure & consumer_bound_machine_byte_ct_cert_defeats_bad_compiler"
+      }
+    },
+    {
+      "hazard_id": "speculative_bounds_check_bypass_and_secret_gadget",
+      "pass_stage": "Branch generation + speculative load lowering (Spectre-v1 / Spectre-PHT / SLS)",
+      "primary_sources": [
+        "Almeida et al. (Jasmin SCT, CCS 2023, DOI 10.1145/3576915.3623157)",
+        "Cauligi et al. (Blade, POPL 2020, DOI 10.1145/3371073)",
+        "Vassena et al. (Swivel, USENIX Security 2021)"
+      ],
+      "source_pattern": "Architecturally in-bounds check: if idx < len then load(arr[idx])",
+      "lowered_target_pattern": "Conditional branch without array_index_mask_nospec or lfence before secret-transmitting load",
+      "functional_correctness_preserved": true,
+      "source_bytecode_ct_certificate_valid": true,
+      "target_leakage_channel": "Transient speculative execution loads secret and transmits via L1-D cache line state",
+      "compcert_ct_defense": "Out of scope for sequential CompCert-CT (POPL 2020); addressed in Jasmin SCT (CCS 2023)",
+      "jasmin_defense": "Speculative Constant-Time (SCT) type system + selective #msf (misspeculation flag) masking",
+      "anneal_target_byte_gate_rejection": {
+        "rejected": true,
+        "rejecting_obligation": "ob7b_speculativeConstantTime",
+        "lean_theorem": "drop_ob7b_unsound & anneal_ob7_four_subobligations_necessary"
+      }
+    }
+  ],
+  "seven_obligation_gate_verification": {
+    "total_checks_in_gate": 10,
+    "all_single_fault_mutations_rejected": true,
+    "rejection_matrix": [
+      {
+        "violated_check": "ob1_byteBinding",
+        "ob7_sideChannelFreedom": true,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob2_privilegeSafety",
+        "ob7_sideChannelFreedom": true,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob3_helperContract",
+        "ob7_sideChannelFreedom": true,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob4_abiPreservation",
+        "ob7_sideChannelFreedom": true,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob5_irqDiscipline",
+        "ob7_sideChannelFreedom": true,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob6_boundedFuelTermination",
+        "ob7_sideChannelFreedom": true,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob7a_archConstantTime",
+        "ob7_sideChannelFreedom": false,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob7b_speculativeConstantTime",
+        "ob7_sideChannelFreedom": false,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob7c_secretExitAndSpillScrubbing",
+        "ob7_sideChannelFreedom": false,
+        "admitCtKernelExtension": false
+      },
+      {
+        "violated_check": "ob7d_secretIndependentFuelTiming",
+        "ob7_sideChannelFreedom": false,
+        "admitCtKernelExtension": false
+      }
+    ]
+  },
+  "time_protection_vs_hybrid_cost_model": {
+    "arm_cortex_a9_1ghz": {
+      "hardware_parameters": {
+        "clock_ghz": 1.0,
+        "l1d_flush_cycles_clean": 3900,
+        "l1d_flush_cycles_dirty": 10900,
+        "l1d_flush_cycles_padded_wcet": 11200,
+        "l1i_flush_cycles": 500,
+        "bpu_flush_cycles": 500,
+        "tlb_flush_cycles": 500,
+        "kernel_entry_exit_cycles": 2100,
+        "total_time_protected_switch_cycles": 14800,
+        "dirty_minus_clean_leakage_cycles_without_padding": 7000,
+        "in_extension_ob7c_scrub_cycles": 12,
+        "timer_tick_period_cycles_10ms": 10000000
+      },
+      "duration_sweep": [
+        {
+          "extension_execution_cycles": 100,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 29600.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 12.15,
+          "hybrid_overhead_pct": 12.148,
+          "throughput_speedup_hybrid_vs_per_call_flush": 264.83
+        },
+        {
+          "extension_execution_cycles": 500,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 5920.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 12.74,
+          "hybrid_overhead_pct": 2.548,
+          "throughput_speedup_hybrid_vs_per_call_flush": 58.7
+        },
+        {
+          "extension_execution_cycles": 1000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 2960.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 13.48,
+          "hybrid_overhead_pct": 1.348,
+          "throughput_speedup_hybrid_vs_per_call_flush": 30.19
+        },
+        {
+          "extension_execution_cycles": 5000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 592.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 19.4,
+          "hybrid_overhead_pct": 0.388,
+          "throughput_speedup_hybrid_vs_per_call_flush": 6.89
+        },
+        {
+          "extension_execution_cycles": 10000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 296.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 26.8,
+          "hybrid_overhead_pct": 0.268,
+          "throughput_speedup_hybrid_vs_per_call_flush": 3.95
+        },
+        {
+          "extension_execution_cycles": 50000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 59.2,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 86.0,
+          "hybrid_overhead_pct": 0.172,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.59
+        },
+        {
+          "extension_execution_cycles": 100000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 29.6,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 160.0,
+          "hybrid_overhead_pct": 0.16,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.29
+        },
+        {
+          "extension_execution_cycles": 500000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 5.92,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 752.0,
+          "hybrid_overhead_pct": 0.1504,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.06
+        },
+        {
+          "extension_execution_cycles": 1000000,
+          "per_call_full_tp_flush_cycles": 29600,
+          "per_call_full_tp_overhead_pct": 2.96,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 1492.0,
+          "hybrid_overhead_pct": 0.1492,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.03
+        }
+      ]
+    },
+    "x86_64_haswell_3_4ghz": {
+      "hardware_parameters": {
+        "clock_ghz": 3.4,
+        "l1d_flush_cycles_clean": 3060,
+        "l1d_flush_cycles_dirty": 4080,
+        "l1d_flush_cycles_padded_wcet": 4420,
+        "l1i_flush_cycles": 5100,
+        "bpu_flush_cycles": 4080,
+        "tlb_flush_cycles": 1020,
+        "kernel_entry_exit_cycles": 680,
+        "total_time_protected_switch_cycles": 15300,
+        "dirty_minus_clean_leakage_cycles_without_padding": 1020,
+        "in_extension_ob7c_scrub_cycles": 8,
+        "timer_tick_period_cycles_10ms": 34000000
+      },
+      "duration_sweep": [
+        {
+          "extension_execution_cycles": 100,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 30600.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 8.04,
+          "hybrid_overhead_pct": 8.045,
+          "throughput_speedup_hybrid_vs_per_call_flush": 284.14
+        },
+        {
+          "extension_execution_cycles": 500,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 6120.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 8.22,
+          "hybrid_overhead_pct": 1.645,
+          "throughput_speedup_hybrid_vs_per_call_flush": 61.19
+        },
+        {
+          "extension_execution_cycles": 1000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 3060.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 8.45,
+          "hybrid_overhead_pct": 0.845,
+          "throughput_speedup_hybrid_vs_per_call_flush": 31.34
+        },
+        {
+          "extension_execution_cycles": 5000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 612.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 10.25,
+          "hybrid_overhead_pct": 0.205,
+          "throughput_speedup_hybrid_vs_per_call_flush": 7.11
+        },
+        {
+          "extension_execution_cycles": 10000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 306.0,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 12.5,
+          "hybrid_overhead_pct": 0.125,
+          "throughput_speedup_hybrid_vs_per_call_flush": 4.05
+        },
+        {
+          "extension_execution_cycles": 50000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 61.2,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 30.5,
+          "hybrid_overhead_pct": 0.061,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.61
+        },
+        {
+          "extension_execution_cycles": 100000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 30.6,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 53.0,
+          "hybrid_overhead_pct": 0.053,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.31
+        },
+        {
+          "extension_execution_cycles": 500000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 6.12,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 233.0,
+          "hybrid_overhead_pct": 0.0466,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.06
+        },
+        {
+          "extension_execution_cycles": 1000000,
+          "per_call_full_tp_flush_cycles": 30600,
+          "per_call_full_tp_overhead_pct": 3.06,
+          "hybrid_ob7c_scrub_plus_amortised_tick_cycles": 458.0,
+          "hybrid_overhead_pct": 0.0458,
+          "throughput_speedup_hybrid_vs_per_call_flush": 1.03
+        }
+      ]
+    }
+  }
+}

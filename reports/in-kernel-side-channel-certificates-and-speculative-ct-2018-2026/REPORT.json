@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "ebpf/certificates",
+    "ebpf/verifier",
+    "security/constant-time",
+    "security/spectre",
+    "security/sfi",
+    "verification/pcc",
+    "verification/hyperproperties",
+    "wasm/ct-wasm"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel eBPF verifier Spectre v1 and v4 sanitization",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "0fcb05b72344f40806cbe810de8872f1698bf053"
+      }
+    },
+    {
+      "name": "CT-Wasm constant-time WebAssembly type system",
+      "identity": {
+        "doi": "10.1145/3290390",
+        "publication": "PACMPL 3 POPL Article 77 2019"
+      }
+    },
+    {
+      "name": "Jasmin constant-time cryptographic language and compiler",
+      "identity": {
+        "doi": "10.1145/3371075",
+        "publication": "ACM CCS 2017 and PACMPL 4 POPL Article 7 2020"
+      }
+    },
+    {
+      "name": "Pitchfork speculative constant-time semantics and verification",
+      "identity": {
+        "doi": "10.1145/3385412.3385970",
+        "publication": "ACM PLDI 2020"
+      }
+    },
+    {
+      "name": "Blade automatic speculative leak elimination via minimal cut-set SLH",
+      "identity": {
+        "doi": "10.1145/3434330",
+        "publication": "PACMPL 5 POPL Article 49 2021"
+      }
+    },
+    {
+      "name": "Jasmin SCT speculative constant-time typing and compilation",
+      "identity": {
+        "doi": "10.1109/SP46215.2023.10179418",
+        "publication": "IEEE S&P 2021, IEEE S&P 2023, and PACMPL 9 POPL 2025 (10.1145/3704885)"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

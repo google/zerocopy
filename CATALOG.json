@@ -19978,6 +19978,136 @@
         "operating-systems/rust"
       ]
     },
+    "compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3371075",
+            "publication": "POPL 2020",
+            "repository": "CompCert-CT/CompCert",
+            "year": "2020"
+          },
+          "name": "Formal Verification of a Constant-Time Preserving C Compiler (Barthe, Blazy, Gr\u00e9goire, Hutin, Laporte, Pichardie & Trieu / CompCert-CT)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133956.3134078",
+            "publication": "CCS 2017",
+            "repository": "jasmin-lang/jasmin",
+            "year": "2017"
+          },
+          "name": "Jasmin: High-Assurance and High-Speed Cryptography (Almeida, Barbosa, Barthe, Blot, Gr\u00e9goire, Laporte, Oliveira, Pacheco, Schmidt & Strub)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371076",
+            "publication": "POPL 2020",
+            "repository": "jasmin-lang/jasmin",
+            "year": "2020"
+          },
+          "name": "CompCert-Kv / The Last Mile: High-Assurance and High-Speed Cryptographic Implementations (Almeida et al. / Jasmin Coq Compiler)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3576915.3623157",
+            "publication": "CCS 2023",
+            "repository": "jasmin-lang/jasmin",
+            "year": "2023"
+          },
+          "name": "Formally Verifying that Speculative Constant-Time is Preserved by Compilation (Almeida et al. / Jasmin SCT)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2019.00026",
+            "publication": "CSF 2019",
+            "year": "2019"
+          },
+          "name": "Information-Flow Preservation in Compiler Optimisations and Register Spilling (Besson, Dang, Jensen & Pichardie)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/EuroSP.2018.00029",
+            "publication": "EuroS&P 2018",
+            "year": "2018"
+          },
+          "name": "What You Get is What You C: Controlling Side Effects in Mainstream C Compilers (Simon, Chisnall & Anderson)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3678890.3678916",
+            "publication": "ASIA CCS 2025",
+            "year": "2025"
+          },
+          "name": "Breaking Bad: How Compilers Break Constant-Time Implementations (Schneider, Lain, Ivan & Puddu)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3302424.3303976",
+            "publication": "EuroSys 2019",
+            "repository": "seL4/seL4",
+            "year": "2019"
+          },
+          "name": "Time Protection: The Missing OS Abstraction (Ge, Yarom, Cock & Heiser / seL4 Time Protection)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
+            "rv64_compiler_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87",
+            "x86_compiler_revision": "3a89578"
+          },
+          "name": "Anneal Trusted Verification Boundary and PassCompiler / CertChecker"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken AArch64 Consumer-Bound Certificate Checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "artifact": "support/CompilerPreservationTimeProtectionAndAnnealCtGate.lean",
+            "sha256": "0c938c519b35f40c85a09cee169aa3c607804c17003044cd12e104aab1e6ea0e"
+          },
+          "name": "Mechanized Lean 4 Model of Compiler Constant-Time Preservation, seL4 Time Protection, and the 7-Obligation Ring-0 Admission Gate"
+        },
+        {
+          "identity": {
+            "artifact": "support/ct_compiler_and_time_protection_probe.py",
+            "results_artifact": "support/ct_compiler_and_time_protection_probe_results.json",
+            "results_sha256": "e766a131fdc4868601f4b9af24b0233d8ac7edec059811ec5ca716ce7dc79c86",
+            "sha256": "81e2f91f6e28522d6267a88ac21f0fca72504fd028b62669bb8bbeb0fc8e36a7"
+          },
+          "name": "Empirical Compiler Leakage and seL4 Time Protection Cycle-Cost Probe"
+        }
+      ],
+      "topics": [
+        "os/extensible-kernels",
+        "os/time-protection",
+        "security/constant-time",
+        "security/side-channels",
+        "security/secret-erasure",
+        "compilers/constant-time-preservation",
+        "proof/certificates",
+        "proof/consumer-binding",
+        "compcert-ct",
+        "jasmin",
+        "sel4",
+        "anneal/execution-boundaries",
+        "lean/mechanized-models",
+        "lean/axioms"
+      ]
+    },
     "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026": {
       "observed_at": "2026-10-30",
       "subjects": [
@@ -23008,6 +23138,78 @@
         "lake/workspace-setup",
         "lake/server",
         "lean/version-difference"
+      ]
+    },
+    "in-kernel-side-channel-certificates-and-speculative-ct-2018-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "0fcb05b72344f40806cbe810de8872f1698bf053"
+          },
+          "name": "Linux kernel eBPF verifier Spectre v1 and v4 sanitization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290390",
+            "publication": "PACMPL 3 POPL Article 77 2019"
+          },
+          "name": "CT-Wasm constant-time WebAssembly type system"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371075",
+            "publication": "ACM CCS 2017 and PACMPL 4 POPL Article 7 2020"
+          },
+          "name": "Jasmin constant-time cryptographic language and compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3385970",
+            "publication": "ACM PLDI 2020"
+          },
+          "name": "Pitchfork speculative constant-time semantics and verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434330",
+            "publication": "PACMPL 5 POPL Article 49 2021"
+          },
+          "name": "Blade automatic speculative leak elimination via minimal cut-set SLH"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46215.2023.10179418",
+            "publication": "IEEE S&P 2021, IEEE S&P 2023, and PACMPL 9 POPL 2025 (10.1145/3704885)"
+          },
+          "name": "Jasmin SCT speculative constant-time typing and compilation"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "ebpf/certificates",
+        "ebpf/verifier",
+        "security/constant-time",
+        "security/spectre",
+        "security/sfi",
+        "verification/pcc",
+        "verification/hyperproperties",
+        "wasm/ct-wasm"
       ]
     },
     "independent-kernels-and-model-checking-certificates": {
@@ -37976,6 +38178,190 @@
         "verification/trusted-computing-base",
         "anneal/execution-boundaries",
         "lean/mechanized-models"
+      ]
+    },
+    "side-channel-freedom-foundations-and-leakage-contracts-1996-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.3233/JCS-1996-42-304",
+            "publication": "Journal of Computer Security (JCS), Vol. 4, No. 2-3, pp. 167-187",
+            "year": "1996"
+          },
+          "name": "A Sound Type System for Secure Flow Analysis (Volpano, Smith & Irvine)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0960129511000193",
+            "publication": "CSFW 2004 / Mathematical Structures in Computer Science (MSCS), Vol. 21, No. 6, pp. 1207-1252",
+            "year": "2011"
+          },
+          "name": "Secure Information Flow by Self-Composition (Barthe, D'Argenio & Rezk)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11547662_24",
+            "publication": "SAS 2005, LNCS Vol. 3672, pp. 352-367",
+            "year": "2005"
+          },
+          "name": "Secure Information Flow as a Safety Problem (Terauchi & Aiken)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964003",
+            "publication": "POPL 2004, pp. 14-25",
+            "year": "2004"
+          },
+          "name": "Simple Relational Correctness Proofs for Static Analyses and Program Transformations (Benton / Relational Hoare Logic)"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/JCS-2009-0393",
+            "publication": "Journal of Computer Security (JCS), Vol. 18, No. 6, pp. 1157-1210",
+            "year": "2010"
+          },
+          "name": "Hyperproperties (Clarkson & Schneider)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-22110-1_17",
+            "publication": "CAV 2011, LNCS Vol. 6806, pp. 200-215",
+            "year": "2011"
+          },
+          "name": "Relational Verification Using Product Programs (Barthe, Crespo & Kunz)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-32-4",
+            "publication": "USENIX Security 2016, pp. 53-70",
+            "repository": "imdea-software/verifying-constant-time",
+            "revision": "36e166781b0aa7398c12b335c7a4cd118b73568e",
+            "year": "2016"
+          },
+          "name": "Verifying Constant-Time Implementations (Almeida, Barbosa, Barthe, Dupressoir & Emmi / ct-verif)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314605",
+            "publication": "PLDI 2019, pp. 174-189",
+            "year": "2019"
+          },
+          "name": "FaCT: A DSL for Timing-Sensitive Computation (Cauligi et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290390",
+            "publication": "POPL 2019, PACMPL Vol. 3, Article 70",
+            "year": "2019"
+          },
+          "name": "CT-Wasm: Type-Driven Secure Cryptography for the Web Ecosystem (Watt et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40001.2021.00036",
+            "publication": "IEEE S&P 2021, pp. 1317-1334",
+            "year": "2021"
+          },
+          "name": "Hardware-Software Contracts for Secure Speculation (Guarnieri, K\u00f6pf, Morales, Reineke & S\u00e1nchez)"
+        },
+        {
+          "identity": {
+            "eprint": "2024/1049",
+            "primary_url": "https://kyberslash.cr.yp.to/",
+            "year": "2024"
+          },
+          "name": "KyberSlash: Exploiting Secret-Dependent Division Timings in Kyber Implementations (Bernstein et al.)"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2022-23823",
+            "isbn": "978-1-939133-31-1",
+            "publication": "USENIX Security 2022, pp. 679-697",
+            "year": "2022"
+          },
+          "name": "Hertzbleed: Turning Power Side-Channel Attacks Into Remote Timing Attacks (Wang et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46214.2022.9833570",
+            "publication": "IEEE S&P 2022, pp. 1491-1508",
+            "year": "2022"
+          },
+          "name": "Augury: Using Data Memory-Dependent Prefetchers to Leak Data at Rest (Vicarte et al.)"
+        },
+        {
+          "identity": {
+            "primary_url": "https://gofetch.fail/",
+            "publication": "USENIX Security 2024",
+            "year": "2024"
+          },
+          "name": "GoFetch: Breaking Constant-Time Cryptographic Implementations Using Data Memory-Dependent Prefetchers (Chen et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2756550",
+            "publication": "USENIX Security 2013 / ACM TISSEC Vol. 18, No. 1, Article 4",
+            "year": "2015"
+          },
+          "name": "CacheAudit: A Tool for the Static Analysis of Cache Side Channels (Doychev, K\u00f6pf, Mauborgne & Reineke)"
+        },
+        {
+          "identity": {
+            "arm_spec": "Arm Architecture Reference Manual DDI 0487 (FEAT_DIT / PSTATE.DIT)",
+            "intel_spec": "Intel Data Operand Independent Timing (DOIT) ISA Guidance (IA32_UARCH_MISC_CTL[DOITM])",
+            "riscv_spec": "RISC-V Cryptography Extensions Volume I v1.0.1 (Zkt Extension)"
+          },
+          "name": "Hardware Data-Independent Timing Specifications (ARMv8.4-DIT FEAT_DIT, Intel DOITM IA32_UARCH_MISC_CTL, RISC-V Zkt)"
+        },
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/Refinement.lean;trusted/lean/Trusted/StepResult.lean;theory/Anneal/Refinement.lean",
+            "repository": "AeneasVerif/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal Trusted Verification Boundary (SmallStepMachine, Language.WellFormedOn, TrustPolicy, CertChecker)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "artifact": "support/SideChannelFoundationsAndContracts.lean",
+            "sha256": "9379877d4981d854613426ffb543993809cfffdc2d6c91dca426fa050a76ebf9",
+            "theorems": "26 primary theorems verified with 0 sorryAx, 0 Classical.choice, 0 Lean.ofReduceBool"
+          },
+          "name": "Mechanized 2-Safety Hyperproperty, Synchronized Product, Security Type System, and 5-Level Leakage Contract Model"
+        },
+        {
+          "identity": {
+            "artifact": "support/side_channel_cert_probe.py",
+            "results_artifact": "support/side_channel_cert_probe_results.json",
+            "results_sha256": "dc3db043866334fbec84e4a50db3e837387f58b7cd0dd173b4ac3a7351ba052b",
+            "sha256": "51aecb762f4a18da50a8f7fb8c6503c8469a4d2e2e03948ccc328bc6e807cb00"
+          },
+          "name": "Empirical Side-Channel Certificate Verification Benchmark Probe"
+        }
+      ],
+      "topics": [
+        "security/constant-time",
+        "security/noninterference",
+        "security/hyperproperties",
+        "security/type-systems",
+        "security/leakage-contracts",
+        "security/microarchitectural-side-channels",
+        "verification/relational",
+        "verification/product-programs",
+        "verification/self-composition",
+        "proof/certificates",
+        "anneal/execution-boundaries",
+        "lean/mechanized-models",
+        "lean/axioms"
       ]
     },
     "simuliris-tree-borrows-selected-kernel-replay-e3abfcdc": {

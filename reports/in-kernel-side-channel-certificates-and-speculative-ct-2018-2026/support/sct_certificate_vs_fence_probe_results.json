@@ -1,0 +1,255 @@
+{
+  "total_workloads": 6,
+  "total_public_loads_across_workloads": 58,
+  "total_naive_lfence_barriers": 50,
+  "total_linux_ax_patch_instructions": 348,
+  "total_blade_min_cut_slh_protects": 13,
+  "total_sfi_masked_loads": 13,
+  "spectre_v4_stl_stack_spill_evaluation": {
+    "shared_slot_overwrite_gadget": {
+      "passes_v1_overwrite_sct_cert": true,
+      "passes_v1_v4_sticky_sct_cert": false,
+      "stl_bypass_addr_trace_run1": 3,
+      "stl_bypass_addr_trace_run2": 5,
+      "leaks_secret_under_spectre_v4_stl": true
+    },
+    "linux_bpf_st_nospec_fence_mitigation": {
+      "lfence_barriers_per_speculative_stack_store": 1,
+      "estimated_cycle_overhead_per_spill_reload": 18,
+      "leaks_secret_under_spectre_v4_stl": false
+    },
+    "jasmin_sct_sticky_disjoint_stack_slots": {
+      "passes_v1_v4_sticky_sct_cert": true,
+      "lfence_barriers_inserted": 0,
+      "extra_stack_frame_bytes_per_secret_spill": 8,
+      "extra_cert_bits_per_stack_slot": 2,
+      "stl_bypass_addr_trace_run1": 0,
+      "stl_bypass_addr_trace_run2": 0,
+      "leaks_secret_under_spectre_v4_stl": false
+    }
+  },
+  "workloads": [
+    {
+      "workload": "l2_l3_l4_packet_parser",
+      "description": "Ring-0 Ethernet/VLAN/IPv4/TCP packet parser (8 blocks, 12 packet loads, 3 transmitter-feeding header-offset loads)",
+      "cfg_stats": {
+        "num_blocks": 5,
+        "num_instrs": 24,
+        "num_branches": 3,
+        "num_public_loads": 13,
+        "unmitigated_passes_sct_cert": false
+      },
+      "scheme1_naive_per_branch_lfence": {
+        "lfence_barriers_inserted": 6,
+        "extra_instructions": 6,
+        "estimated_cycle_overhead": 54
+      },
+      "scheme2_linux_sanitize_ptr_alu": {
+        "bpf_reg_ax_patch_instructions": 78,
+        "speculative_verifier_states_explored": 40,
+        "estimated_cycle_overhead": 39
+      },
+      "scheme3_blade_min_cut_slh_with_sct_cert": {
+        "slh_protect_instructions_inserted": 3,
+        "unprotected_safe_loads_spared": 10,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 34,
+        "sct_certificate_bytes": 10,
+        "estimated_cycle_overhead": 6
+      },
+      "scheme4_sfi_bitwise_mask_with_sct_cert": {
+        "masked_loads_inserted": 3,
+        "lfence_barriers_inserted": 0,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 31,
+        "sct_certificate_bytes": 10,
+        "estimated_cycle_overhead": 3
+      }
+    },
+    {
+      "workload": "bpf_cgroup_firewall_acl",
+      "description": "Multi-field cgroup socket/packet firewall with 6 bounds/protocol branches, 8 packet loads, and 2 public map lookups",
+      "cfg_stats": {
+        "num_blocks": 5,
+        "num_instrs": 20,
+        "num_branches": 3,
+        "num_public_loads": 10,
+        "unmitigated_passes_sct_cert": false
+      },
+      "scheme1_naive_per_branch_lfence": {
+        "lfence_barriers_inserted": 6,
+        "extra_instructions": 6,
+        "estimated_cycle_overhead": 54
+      },
+      "scheme2_linux_sanitize_ptr_alu": {
+        "bpf_reg_ax_patch_instructions": 60,
+        "speculative_verifier_states_explored": 40,
+        "estimated_cycle_overhead": 30
+      },
+      "scheme3_blade_min_cut_slh_with_sct_cert": {
+        "slh_protect_instructions_inserted": 3,
+        "unprotected_safe_loads_spared": 7,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 30,
+        "sct_certificate_bytes": 10,
+        "estimated_cycle_overhead": 6
+      },
+      "scheme4_sfi_bitwise_mask_with_sct_cert": {
+        "masked_loads_inserted": 3,
+        "lfence_barriers_inserted": 0,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 27,
+        "sct_certificate_bytes": 10,
+        "estimated_cycle_overhead": 3
+      }
+    },
+    {
+      "workload": "xdp_ddos_syn_cookie_filter",
+      "description": "XDP DDoS filter reading secret kernel SYN-cookie key, mixing with 6 packet header words, scrubbing secret registers via self-XOR, and emitting public telemetry",
+      "cfg_stats": {
+        "num_blocks": 4,
+        "num_instrs": 25,
+        "num_branches": 1,
+        "num_public_loads": 6,
+        "unmitigated_passes_sct_cert": false
+      },
+      "scheme1_naive_per_branch_lfence": {
+        "lfence_barriers_inserted": 2,
+        "extra_instructions": 2,
+        "estimated_cycle_overhead": 36
+      },
+      "scheme2_linux_sanitize_ptr_alu": {
+        "bpf_reg_ax_patch_instructions": 36,
+        "speculative_verifier_states_explored": 8,
+        "estimated_cycle_overhead": 36
+      },
+      "scheme3_blade_min_cut_slh_with_sct_cert": {
+        "slh_protect_instructions_inserted": 2,
+        "unprotected_safe_loads_spared": 4,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 31,
+        "sct_certificate_bytes": 8,
+        "estimated_cycle_overhead": 6
+      },
+      "scheme4_sfi_bitwise_mask_with_sct_cert": {
+        "masked_loads_inserted": 2,
+        "lfence_barriers_inserted": 0,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 29,
+        "sct_certificate_bytes": 8,
+        "estimated_cycle_overhead": 4
+      }
+    },
+    {
+      "workload": "chacha20_poly1305_pkt_aead",
+      "description": "Constant-time AEAD packet authenticator with 8 packet loads, secret key mixing, branchless cmov selection, and self-XOR scrubbing",
+      "cfg_stats": {
+        "num_blocks": 3,
+        "num_instrs": 25,
+        "num_branches": 1,
+        "num_public_loads": 7,
+        "unmitigated_passes_sct_cert": true
+      },
+      "scheme1_naive_per_branch_lfence": {
+        "lfence_barriers_inserted": 2,
+        "extra_instructions": 2,
+        "estimated_cycle_overhead": 72
+      },
+      "scheme2_linux_sanitize_ptr_alu": {
+        "bpf_reg_ax_patch_instructions": 42,
+        "speculative_verifier_states_explored": 6,
+        "estimated_cycle_overhead": 84
+      },
+      "scheme3_blade_min_cut_slh_with_sct_cert": {
+        "slh_protect_instructions_inserted": 0,
+        "unprotected_safe_loads_spared": 7,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 28,
+        "sct_certificate_bytes": 6,
+        "estimated_cycle_overhead": 4
+      },
+      "scheme4_sfi_bitwise_mask_with_sct_cert": {
+        "masked_loads_inserted": 0,
+        "lfence_barriers_inserted": 0,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 28,
+        "sct_certificate_bytes": 6,
+        "estimated_cycle_overhead": 0
+      }
+    },
+    {
+      "workload": "cve_2021_33624_branch_prune_cfg",
+      "description": "Exact diamond-join CFG from CVE-2021-33624 (commit 9183671af6db) where architectural branch pruning skipped sanitize_ptr_alu on shared join block B2",
+      "cfg_stats": {
+        "num_blocks": 3,
+        "num_instrs": 11,
+        "num_branches": 1,
+        "num_public_loads": 2,
+        "unmitigated_passes_sct_cert": false
+      },
+      "scheme1_naive_per_branch_lfence": {
+        "lfence_barriers_inserted": 2,
+        "extra_instructions": 2,
+        "estimated_cycle_overhead": 18
+      },
+      "scheme2_linux_sanitize_ptr_alu": {
+        "bpf_reg_ax_patch_instructions": 12,
+        "speculative_verifier_states_explored": 6,
+        "estimated_cycle_overhead": 6
+      },
+      "scheme3_blade_min_cut_slh_with_sct_cert": {
+        "slh_protect_instructions_inserted": 1,
+        "unprotected_safe_loads_spared": 1,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 15,
+        "sct_certificate_bytes": 6,
+        "estimated_cycle_overhead": 2
+      },
+      "scheme4_sfi_bitwise_mask_with_sct_cert": {
+        "masked_loads_inserted": 1,
+        "lfence_barriers_inserted": 0,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 14,
+        "sct_certificate_bytes": 6,
+        "estimated_cycle_overhead": 1
+      }
+    },
+    {
+      "workload": "scaled_diamond_pipeline_d16",
+      "description": "16-stage diamond conditional inspection pipeline (33 blocks, 2^16 = 65,536 speculative paths, 20 loads of which 4 feed transmitters)",
+      "cfg_stats": {
+        "num_blocks": 33,
+        "num_instrs": 98,
+        "num_branches": 16,
+        "num_public_loads": 20,
+        "unmitigated_passes_sct_cert": false
+      },
+      "scheme1_naive_per_branch_lfence": {
+        "lfence_barriers_inserted": 32,
+        "extra_instructions": 32,
+        "estimated_cycle_overhead": 288
+      },
+      "scheme2_linux_sanitize_ptr_alu": {
+        "bpf_reg_ax_patch_instructions": 120,
+        "speculative_verifier_states_explored": 1000000,
+        "estimated_cycle_overhead": 60
+      },
+      "scheme3_blade_min_cut_slh_with_sct_cert": {
+        "slh_protect_instructions_inserted": 4,
+        "unprotected_safe_loads_spared": 16,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 150,
+        "sct_certificate_bytes": 66,
+        "estimated_cycle_overhead": 20
+      },
+      "scheme4_sfi_bitwise_mask_with_sct_cert": {
+        "masked_loads_inserted": 4,
+        "lfence_barriers_inserted": 0,
+        "sct_cert_verified_single_pass": true,
+        "single_pass_verifier_steps": 146,
+        "sct_certificate_bytes": 66,
+        "estimated_cycle_overhead": 4
+      }
+    }
+  ]
+}

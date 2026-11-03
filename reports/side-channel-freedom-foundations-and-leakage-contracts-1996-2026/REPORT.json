@@ -1,0 +1,184 @@
+{
+  "topics": [
+    "security/constant-time",
+    "security/noninterference",
+    "security/hyperproperties",
+    "security/type-systems",
+    "security/leakage-contracts",
+    "security/microarchitectural-side-channels",
+    "verification/relational",
+    "verification/product-programs",
+    "verification/self-composition",
+    "proof/certificates",
+    "anneal/execution-boundaries",
+    "lean/mechanized-models",
+    "lean/axioms"
+  ],
+  "subjects": [
+    {
+      "name": "A Sound Type System for Secure Flow Analysis (Volpano, Smith & Irvine)",
+      "identity": {
+        "doi": "10.3233/JCS-1996-42-304",
+        "publication": "Journal of Computer Security (JCS), Vol. 4, No. 2-3, pp. 167-187",
+        "year": "1996"
+      }
+    },
+    {
+      "name": "Secure Information Flow by Self-Composition (Barthe, D'Argenio & Rezk)",
+      "identity": {
+        "doi": "10.1017/S0960129511000193",
+        "publication": "CSFW 2004 / Mathematical Structures in Computer Science (MSCS), Vol. 21, No. 6, pp. 1207-1252",
+        "year": "2011"
+      }
+    },
+    {
+      "name": "Secure Information Flow as a Safety Problem (Terauchi & Aiken)",
+      "identity": {
+        "doi": "10.1007/11547662_24",
+        "publication": "SAS 2005, LNCS Vol. 3672, pp. 352-367",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "Simple Relational Correctness Proofs for Static Analyses and Program Transformations (Benton / Relational Hoare Logic)",
+      "identity": {
+        "doi": "10.1145/964001.964003",
+        "publication": "POPL 2004, pp. 14-25",
+        "year": "2004"
+      }
+    },
+    {
+      "name": "Hyperproperties (Clarkson & Schneider)",
+      "identity": {
+        "doi": "10.3233/JCS-2009-0393",
+        "publication": "Journal of Computer Security (JCS), Vol. 18, No. 6, pp. 1157-1210",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "Relational Verification Using Product Programs (Barthe, Crespo & Kunz)",
+      "identity": {
+        "doi": "10.1007/978-3-642-22110-1_17",
+        "publication": "CAV 2011, LNCS Vol. 6806, pp. 200-215",
+        "year": "2011"
+      }
+    },
+    {
+      "name": "Verifying Constant-Time Implementations (Almeida, Barbosa, Barthe, Dupressoir & Emmi / ct-verif)",
+      "identity": {
+        "isbn": "978-1-931971-32-4",
+        "publication": "USENIX Security 2016, pp. 53-70",
+        "repository": "imdea-software/verifying-constant-time",
+        "revision": "36e166781b0aa7398c12b335c7a4cd118b73568e",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "FaCT: A DSL for Timing-Sensitive Computation (Cauligi et al.)",
+      "identity": {
+        "doi": "10.1145/3314221.3314605",
+        "publication": "PLDI 2019, pp. 174-189",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "CT-Wasm: Type-Driven Secure Cryptography for the Web Ecosystem (Watt et al.)",
+      "identity": {
+        "doi": "10.1145/3290390",
+        "publication": "POPL 2019, PACMPL Vol. 3, Article 70",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Hardware-Software Contracts for Secure Speculation (Guarnieri, Köpf, Morales, Reineke & Sánchez)",
+      "identity": {
+        "doi": "10.1109/SP40001.2021.00036",
+        "publication": "IEEE S&P 2021, pp. 1317-1334",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "KyberSlash: Exploiting Secret-Dependent Division Timings in Kyber Implementations (Bernstein et al.)",
+      "identity": {
+        "eprint": "2024/1049",
+        "primary_url": "https://kyberslash.cr.yp.to/",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Hertzbleed: Turning Power Side-Channel Attacks Into Remote Timing Attacks (Wang et al.)",
+      "identity": {
+        "cve": "CVE-2022-23823",
+        "isbn": "978-1-939133-31-1",
+        "publication": "USENIX Security 2022, pp. 679-697",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Augury: Using Data Memory-Dependent Prefetchers to Leak Data at Rest (Vicarte et al.)",
+      "identity": {
+        "doi": "10.1109/SP46214.2022.9833570",
+        "publication": "IEEE S&P 2022, pp. 1491-1508",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "GoFetch: Breaking Constant-Time Cryptographic Implementations Using Data Memory-Dependent Prefetchers (Chen et al.)",
+      "identity": {
+        "publication": "USENIX Security 2024",
+        "primary_url": "https://gofetch.fail/",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "CacheAudit: A Tool for the Static Analysis of Cache Side Channels (Doychev, Köpf, Mauborgne & Reineke)",
+      "identity": {
+        "doi": "10.1145/2756550",
+        "publication": "USENIX Security 2013 / ACM TISSEC Vol. 18, No. 1, Article 4",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Hardware Data-Independent Timing Specifications (ARMv8.4-DIT FEAT_DIT, Intel DOITM IA32_UARCH_MISC_CTL, RISC-V Zkt)",
+      "identity": {
+        "arm_spec": "Arm Architecture Reference Manual DDI 0487 (FEAT_DIT / PSTATE.DIT)",
+        "intel_spec": "Intel Data Operand Independent Timing (DOIT) ISA Guidance (IA32_UARCH_MISC_CTL[DOITM])",
+        "riscv_spec": "RISC-V Cryptography Extensions Volume I v1.0.1 (Zkt Extension)"
+      }
+    },
+    {
+      "name": "Anneal Trusted Verification Boundary (SmallStepMachine, Language.WellFormedOn, TrustPolicy, CertChecker)",
+      "identity": {
+        "paths": "trusted/lean/Trusted/Refinement.lean;trusted/lean/Trusted/StepResult.lean;theory/Anneal/Refinement.lean",
+        "repository": "AeneasVerif/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Mechanized 2-Safety Hyperproperty, Synchronized Product, Security Type System, and 5-Level Leakage Contract Model",
+      "identity": {
+        "artifact": "support/SideChannelFoundationsAndContracts.lean",
+        "sha256": "9379877d4981d854613426ffb543993809cfffdc2d6c91dca426fa050a76ebf9",
+        "theorems": "26 primary theorems verified with 0 sorryAx, 0 Classical.choice, 0 Lean.ofReduceBool"
+      }
+    },
+    {
+      "name": "Empirical Side-Channel Certificate Verification Benchmark Probe",
+      "identity": {
+        "artifact": "support/side_channel_cert_probe.py",
+        "results_artifact": "support/side_channel_cert_probe_results.json",
+        "results_sha256": "dc3db043866334fbec84e4a50db3e837387f58b7cd0dd173b4ac3a7351ba052b",
+        "sha256": "51aecb762f4a18da50a8f7fb8c6503c8469a4d2e2e03948ccc328bc6e807cb00"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}
