@@ -21072,6 +21072,134 @@
         "cakeml"
       ]
     },
+    "deductive-proof-object-and-refinement-certificate-kernels-2013-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462183",
+            "publication": "PLDI 2013",
+            "repository": "seL4/graph-refine",
+            "year": "2013"
+          },
+          "name": "Translation Validation for a Verified OS Kernel (Sewell, Myreen & Klein / seL4 graph-refine)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/FMCAD.2012.6462558",
+            "publication": "FMCAD 2012",
+            "year": "2012"
+          },
+          "name": "Decompilation into Logic \u2014 Improved (Myreen, Gordon & Slind)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2872362.2872404",
+            "publication": "ASPLOS 2016",
+            "repository": "seL4/cogent",
+            "year": "2016"
+          },
+          "name": "Cogent: Verifying High-Assurance File System Implementations (Amani et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2951913.2951940",
+            "publication": "ICFP 2016",
+            "repository": "seL4/cogent",
+            "year": "2016"
+          },
+          "name": "Refinement through Restraint: Bringing Down the Cost of Verification (O'Connor et al. / Cogent Value-Update Semantics)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571240",
+            "publication": "POPL 2023",
+            "repository": "seL4/cogent",
+            "year": "2023"
+          },
+          "name": "Dargent: A Silver Bullet for Verified Data Layout Refinement (Chen et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3623759.3624544",
+            "publication": "PLOS 2023",
+            "repository": "CakeML/pancake",
+            "year": "2023"
+          },
+          "name": "Pancake: Verified Systems Programming Made Sweeter (Aman Pohjola et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3372885.3373826",
+            "publication": "CPP 2020",
+            "repository": "digama0/mm0",
+            "year": "2020"
+          },
+          "name": "Metamath Zero: Designing a Theorem Prover Prover (Carneiro / mm0-c .mmb verifier)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
+            "rv64_compiler_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87",
+            "x86_compiler_revision": "3a89578"
+          },
+          "name": "Anneal Trusted Verification Boundary and PassCompiler / CertChecker"
+        },
+        {
+          "identity": {
+            "branch": "anneal-kernel",
+            "repository": "google/zerocopy",
+            "revision": "234131c52963cca4e2725dbfc02feb5214de81f4"
+          },
+          "name": "Anneal Kernel Branch Prototype (SpecificationHolds, wp_prove_orthogonal, SpecLayout)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+          },
+          "name": "Kraken AArch64 Consumer-Bound Certificate Checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1"
+        },
+        {
+          "identity": {
+            "artifact": "support/DeductiveAndRefinementCertificateKernels.lean",
+            "sha256": "ba4489aefa33160d171cd2037cef7442e5f0d0593ebcd73f0ab6badc82f4c023"
+          },
+          "name": "Mechanized Lean 4 Proof-Object, Cogent Linear Refinement, and Ring-0 Admission Gate Model"
+        },
+        {
+          "identity": {
+            "artifact": "support/certificate_substrate_probe.py",
+            "results_artifact": "support/certificate_substrate_probe_results.json",
+            "sha256": "b972cf5d83a0716a3008655aeeb3f6f3308e3ff8ea3ebfa906062315dc7a3def"
+          },
+          "name": "Empirical Ring-0 Certificate Substrate Benchmark Probe"
+        }
+      ],
+      "topics": [
+        "os/extensible-kernels",
+        "os/capabilities",
+        "proof/certificates",
+        "proof/consumer-binding",
+        "verification/translation-validation",
+        "verification/trusted-computing-base",
+        "sel4",
+        "cogent",
+        "metamath-zero",
+        "anneal/execution-boundaries",
+        "lean/mechanized-models",
+        "lean/axioms"
+      ]
+    },
     "diagnostic-format-controls-nightly-2026-05-31-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -21164,6 +21292,106 @@
         "build/invalidation",
         "incremental-computation/early-cutoff",
         "verification/reuse"
+      ]
+    },
+    "ebpf-certificate-verifying-kernels-and-verified-jits-2014-2026": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "0fcb05b72344f40806cbe810de8872f1698bf053"
+          },
+          "name": "Linux kernel eBPF verifier and post-check fixups"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314590",
+            "publication": "PLDI 2019",
+            "repository": "vbpf/prevail",
+            "revision": "b88da311df4d99175ca2d5fe91d9fe2a43fb11b7"
+          },
+          "name": "PREVAIL eBPF abstract interpreter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3763799",
+            "publication": "PACMPL 9 OOPSLA2 Article 410 2025"
+          },
+          "name": "VeRefine flow-sensitive refinement type checker for eBPF"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-31980-1_25",
+            "publication": "TACAS 2006"
+          },
+          "name": "Abstraction-Carrying Code"
+        },
+        {
+          "identity": {
+            "publication": "USENIX OSDI 2014",
+            "url": "https://www.usenix.org/conference/osdi14/technical-sessions/presentation/wang_xi"
+          },
+          "name": "Jitk in-kernel verified cBPF JIT compiler"
+        },
+        {
+          "identity": {
+            "publication": "USENIX OSDI 2020",
+            "repository": "uw-unsat/jitterbug",
+            "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+          },
+          "name": "Jitterbug verified Linux eBPF JIT synthesis and verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-13188-2_15",
+            "publication": "CAV 2022 and CAV 2024",
+            "repository": "future-proof-iot/CertFC",
+            "revision": "75690097c946c555cc4ce1e69d13ef86dc738180"
+          },
+          "name": "CertrBPF verified rBPF interpreter and CompCert JIT"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.07508",
+            "publication": "ACM CCSW 2024",
+            "revision": "710b33fe3cecb2624e4b1e4a2653692e3dc57638"
+          },
+          "name": "SafeBPF hardware-assisted MTE and SFI eBPF sandboxing"
+        },
+        {
+          "identity": {
+            "publication": "USENIX ATC 2025",
+            "repository": "rex-rs/rex",
+            "revision": "9188a85bc40b54c98d661d512648f9efa1310f2b"
+          },
+          "name": "Rex safe Rust kernel extensions and panic cleanup runtime"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "ebpf/verifier",
+        "ebpf/certificates",
+        "ebpf/jit",
+        "verification/pcc",
+        "verification/abstract-interpretation",
+        "verification/refinement-types",
+        "security/sfi",
+        "rust/kernel-extensions"
       ]
     },
     "editor-engines-current-source-review": {
@@ -30664,6 +30892,107 @@
         "certificates/typed-assembly",
         "certificates/property-scope",
         "twam"
+      ]
+    },
+    "pcc-tal-verve-foundational-certificate-kernels-1996-2016": {
+      "observed_at": "2026-11-02",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/238721.238781",
+            "publication": "OSDI 1996, pp. 229-243",
+            "sha256": "259080d93293f69c26cbc96545c89171f99250bf981d9855c867c19de62edaf1"
+          },
+          "name": "Necula and Lee Safe Kernel Extensions Without Run-Time Checking (OSDI 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/277650.277752",
+            "publication": "PLDI 1998, pp. 333-344",
+            "sha256": "3786c9e25fa576d25a2f1b9d281163e0716e030f7d9b5cf20fd6058c8a90dedb"
+          },
+          "name": "Necula and Lee The Design and Implementation of a Certifying Compiler (PLDI 1998)"
+        },
+        {
+          "identity": {
+            "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+            "publication": "CMU-CS-98-154, September 1998",
+            "sha256": "2e90089ee85c46c80f32e9ac69e4b75261fb7733d8519be5120587136168fc23"
+          },
+          "name": "Necula Compiling with Proofs (CMU-CS-98-154)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/349299.349315",
+            "publication": "PLDI 2000, pp. 95-107",
+            "sha256": "796b107a04e1765e1fd8fe72801cf03fbb28d47d042ca0bce8e24d96fa60d3b2"
+          },
+          "name": "Colby, Lee, Necula, Blau, Plesko, and Cline A Certifying Compiler for Java (PLDI 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2001.932501",
+            "publication": "LICS 2001, pp. 247-256",
+            "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+          },
+          "name": "Appel Foundational Proof-Carrying Code (LICS 2001)"
+        },
+        {
+          "identity": {
+            "artifact_archive": "https://flint.cs.yale.edu/flint/publications/safpcc.coq8.tar.gz",
+            "artifact_sha256": "1aa2b2d9562818e4d960d3fd25a3afb04ed5a52ecb286b0f2f47680d5a481854",
+            "doi": "10.1109/LICS.2002.1029819",
+            "publication": "LICS 2002, pp. 89-100",
+            "sha256": "7cd6d8a1f3a568854caec22dc425c26455ac60f526617fd1b65ba097adbc1eda"
+          },
+          "name": "Hamid, Shao, Trifonov, Monnier, and Ni A Syntactic Approach to Foundational Proof-Carrying Code (LICS 2002)"
+        },
+        {
+          "identity": {
+            "artifact_archive": "https://flint.cs.yale.edu/flint/publications/rtpcc.coq.tar.gz",
+            "artifact_sha256": "9e49279920de0be865df4db85e1b7ca45b1bf6b7a490fcf7cb67f8f4e6e26a5a",
+            "doi": "10.1007/978-3-540-30142-4_9",
+            "publication": "TPHOLs 2004, LNCS 3223, pp. 118-135",
+            "sha256": "d44a8c650c57d50f8e2dbfe21dc8cb82623599a7706d27181b6eb84eba8c4592"
+          },
+          "name": "Hamid and Shao Interfacing Hoare Logic and Type Systems for Foundational Proof-Carrying Code (TPHOLs 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1806596.1806610",
+            "publication": "PLDI 2010, pp. 99-110",
+            "repository": "https://github.com/Microsoft/Ironclad",
+            "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691",
+            "sha256": "01c92b63b3fc5efd487605229655566a9bca4dffe29458f93c3e5d2883087072"
+          },
+          "name": "Yang and Hawblitzel Safe to the Last Instruction: Automated Verification of a Type-Safe Operating System (PLDI 2010)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-33-1",
+            "publication": "OSDI 2016, pp. 653-669",
+            "sha256": "46e7696765ce06d6fef0a40e06483fc9ae4e6379902487d2da151f070249235a"
+          },
+          "name": "Gu et al. CertiKOS: An Extensible Architecture for Building Certified Concurrent OS Kernels (OSDI 2016)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "certificates/pcc",
+        "certificates/foundational-pcc",
+        "certificates/typed-assembly",
+        "certificates/verve-nucleus-seam",
+        "certificates/cap-tal-interfacing",
+        "kernels/certified-extension-admission",
+        "kernels/certikos",
+        "lean/mechanized-metatheory"
       ]
     },
     "persistent-data-structures-snapshot-space-costs-1989-2026": {

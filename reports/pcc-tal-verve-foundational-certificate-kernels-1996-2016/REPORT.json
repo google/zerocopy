@@ -1,0 +1,101 @@
+{
+  "topics": [
+    "certificates/pcc",
+    "certificates/foundational-pcc",
+    "certificates/typed-assembly",
+    "certificates/verve-nucleus-seam",
+    "certificates/cap-tal-interfacing",
+    "kernels/certified-extension-admission",
+    "kernels/certikos",
+    "lean/mechanized-metatheory"
+  ],
+  "subjects": [
+    {
+      "name": "Necula and Lee Safe Kernel Extensions Without Run-Time Checking (OSDI 1996)",
+      "identity": {
+        "doi": "10.1145/238721.238781",
+        "publication": "OSDI 1996, pp. 229-243",
+        "sha256": "259080d93293f69c26cbc96545c89171f99250bf981d9855c867c19de62edaf1"
+      }
+    },
+    {
+      "name": "Necula and Lee The Design and Implementation of a Certifying Compiler (PLDI 1998)",
+      "identity": {
+        "doi": "10.1145/277650.277752",
+        "publication": "PLDI 1998, pp. 333-344",
+        "sha256": "3786c9e25fa576d25a2f1b9d281163e0716e030f7d9b5cf20fd6058c8a90dedb"
+      }
+    },
+    {
+      "name": "Necula Compiling with Proofs (CMU-CS-98-154)",
+      "identity": {
+        "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+        "publication": "CMU-CS-98-154, September 1998",
+        "sha256": "2e90089ee85c46c80f32e9ac69e4b75261fb7733d8519be5120587136168fc23"
+      }
+    },
+    {
+      "name": "Colby, Lee, Necula, Blau, Plesko, and Cline A Certifying Compiler for Java (PLDI 2000)",
+      "identity": {
+        "doi": "10.1145/349299.349315",
+        "publication": "PLDI 2000, pp. 95-107",
+        "sha256": "796b107a04e1765e1fd8fe72801cf03fbb28d47d042ca0bce8e24d96fa60d3b2"
+      }
+    },
+    {
+      "name": "Appel Foundational Proof-Carrying Code (LICS 2001)",
+      "identity": {
+        "doi": "10.1109/LICS.2001.932501",
+        "publication": "LICS 2001, pp. 247-256",
+        "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+      }
+    },
+    {
+      "name": "Hamid, Shao, Trifonov, Monnier, and Ni A Syntactic Approach to Foundational Proof-Carrying Code (LICS 2002)",
+      "identity": {
+        "doi": "10.1109/LICS.2002.1029819",
+        "publication": "LICS 2002, pp. 89-100",
+        "sha256": "7cd6d8a1f3a568854caec22dc425c26455ac60f526617fd1b65ba097adbc1eda",
+        "artifact_archive": "https://flint.cs.yale.edu/flint/publications/safpcc.coq8.tar.gz",
+        "artifact_sha256": "1aa2b2d9562818e4d960d3fd25a3afb04ed5a52ecb286b0f2f47680d5a481854"
+      }
+    },
+    {
+      "name": "Hamid and Shao Interfacing Hoare Logic and Type Systems for Foundational Proof-Carrying Code (TPHOLs 2004)",
+      "identity": {
+        "doi": "10.1007/978-3-540-30142-4_9",
+        "publication": "TPHOLs 2004, LNCS 3223, pp. 118-135",
+        "sha256": "d44a8c650c57d50f8e2dbfe21dc8cb82623599a7706d27181b6eb84eba8c4592",
+        "artifact_archive": "https://flint.cs.yale.edu/flint/publications/rtpcc.coq.tar.gz",
+        "artifact_sha256": "9e49279920de0be865df4db85e1b7ca45b1bf6b7a490fcf7cb67f8f4e6e26a5a"
+      }
+    },
+    {
+      "name": "Yang and Hawblitzel Safe to the Last Instruction: Automated Verification of a Type-Safe Operating System (PLDI 2010)",
+      "identity": {
+        "doi": "10.1145/1806596.1806610",
+        "publication": "PLDI 2010, pp. 99-110",
+        "sha256": "01c92b63b3fc5efd487605229655566a9bca4dffe29458f93c3e5d2883087072",
+        "repository": "https://github.com/Microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+      }
+    },
+    {
+      "name": "Gu et al. CertiKOS: An Extensible Architecture for Building Certified Concurrent OS Kernels (OSDI 2016)",
+      "identity": {
+        "isbn": "978-1-931971-33-1",
+        "publication": "OSDI 2016, pp. 653-669",
+        "sha256": "46e7696765ce06d6fef0a40e06483fc9ae4e6379902487d2da151f070249235a"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "https://github.com/leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "ebpf/verifier",
+    "ebpf/certificates",
+    "ebpf/jit",
+    "verification/pcc",
+    "verification/abstract-interpretation",
+    "verification/refinement-types",
+    "security/sfi",
+    "rust/kernel-extensions"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel eBPF verifier and post-check fixups",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "0fcb05b72344f40806cbe810de8872f1698bf053"
+      }
+    },
+    {
+      "name": "PREVAIL eBPF abstract interpreter",
+      "identity": {
+        "doi": "10.1145/3314221.3314590",
+        "publication": "PLDI 2019",
+        "repository": "vbpf/prevail",
+        "revision": "b88da311df4d99175ca2d5fe91d9fe2a43fb11b7"
+      }
+    },
+    {
+      "name": "VeRefine flow-sensitive refinement type checker for eBPF",
+      "identity": {
+        "doi": "10.1145/3763799",
+        "publication": "PACMPL 9 OOPSLA2 Article 410 2025"
+      }
+    },
+    {
+      "name": "Abstraction-Carrying Code",
+      "identity": {
+        "doi": "10.1007/978-3-540-31980-1_25",
+        "publication": "TACAS 2006"
+      }
+    },
+    {
+      "name": "Jitk in-kernel verified cBPF JIT compiler",
+      "identity": {
+        "publication": "USENIX OSDI 2014",
+        "url": "https://www.usenix.org/conference/osdi14/technical-sessions/presentation/wang_xi"
+      }
+    },
+    {
+      "name": "Jitterbug verified Linux eBPF JIT synthesis and verification",
+      "identity": {
+        "publication": "USENIX OSDI 2020",
+        "repository": "uw-unsat/jitterbug",
+        "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+      }
+    },
+    {
+      "name": "CertrBPF verified rBPF interpreter and CompCert JIT",
+      "identity": {
+        "doi": "10.1007/978-3-031-13188-2_15",
+        "publication": "CAV 2022 and CAV 2024",
+        "repository": "future-proof-iot/CertFC",
+        "revision": "75690097c946c555cc4ce1e69d13ef86dc738180"
+      }
+    },
+    {
+      "name": "SafeBPF hardware-assisted MTE and SFI eBPF sandboxing",
+      "identity": {
+        "arxiv": "2409.07508",
+        "publication": "ACM CCSW 2024",
+        "revision": "710b33fe3cecb2624e4b1e4a2653692e3dc57638"
+      }
+    },
+    {
+      "name": "Rex safe Rust kernel extensions and panic cleanup runtime",
+      "identity": {
+        "publication": "USENIX ATC 2025",
+        "repository": "rex-rs/rex",
+        "revision": "9188a85bc40b54c98d661d512648f9efa1310f2b"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

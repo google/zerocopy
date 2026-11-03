@@ -1,0 +1,126 @@
+{
+  "sizes": [
+    16,
+    64,
+    256,
+    1024,
+    4096
+  ],
+  "substrates": {
+    "16": {
+      "image_bytes": 64,
+      "mmb_proof_stream": {
+        "cert_bytes": 239,
+        "verifier_state_bytes": 248,
+        "peak_stack_slots": 3,
+        "heap_slots": 28,
+        "verification_steps": 53,
+        "verify_time_us": 28.75
+      },
+      "extracted_cert_checker": {
+        "cert_bytes": 32,
+        "verifier_state_bytes": 64,
+        "verification_steps": 16,
+        "verify_time_us": 5.37
+      },
+      "signed_daemon_attestation": {
+        "cert_bytes": 128,
+        "verifier_state_bytes": 128,
+        "verification_steps": 3,
+        "verify_time_us": 7.62
+      }
+    },
+    "64": {
+      "image_bytes": 256,
+      "mmb_proof_stream": {
+        "cert_bytes": 533,
+        "verifier_state_bytes": 680,
+        "peak_stack_slots": 3,
+        "heap_slots": 82,
+        "verification_steps": 203,
+        "verify_time_us": 66.99
+      },
+      "extracted_cert_checker": {
+        "cert_bytes": 56,
+        "verifier_state_bytes": 64,
+        "verification_steps": 64,
+        "verify_time_us": 6.72
+      },
+      "signed_daemon_attestation": {
+        "cert_bytes": 128,
+        "verifier_state_bytes": 128,
+        "verification_steps": 6,
+        "verify_time_us": 4.22
+      }
+    },
+    "256": {
+      "image_bytes": 1024,
+      "mmb_proof_stream": {
+        "cert_bytes": 1709,
+        "verifier_state_bytes": 2408,
+        "peak_stack_slots": 3,
+        "heap_slots": 298,
+        "verification_steps": 803,
+        "verify_time_us": 246.0
+      },
+      "extracted_cert_checker": {
+        "cert_bytes": 152,
+        "verifier_state_bytes": 64,
+        "verification_steps": 256,
+        "verify_time_us": 18.2
+      },
+      "signed_daemon_attestation": {
+        "cert_bytes": 128,
+        "verifier_state_bytes": 128,
+        "verification_steps": 18,
+        "verify_time_us": 4.22
+      }
+    },
+    "1024": {
+      "image_bytes": 4096,
+      "mmb_proof_stream": {
+        "cert_bytes": 6413,
+        "verifier_state_bytes": 9320,
+        "peak_stack_slots": 3,
+        "heap_slots": 1162,
+        "verification_steps": 3203,
+        "verify_time_us": 1128.04
+      },
+      "extracted_cert_checker": {
+        "cert_bytes": 536,
+        "verifier_state_bytes": 64,
+        "verification_steps": 1024,
+        "verify_time_us": 82.05
+      },
+      "signed_daemon_attestation": {
+        "cert_bytes": 128,
+        "verifier_state_bytes": 128,
+        "verification_steps": 66,
+        "verify_time_us": 6.44
+      }
+    },
+    "4096": {
+      "image_bytes": 16384,
+      "mmb_proof_stream": {
+        "cert_bytes": 25229,
+        "verifier_state_bytes": 36968,
+        "peak_stack_slots": 3,
+        "heap_slots": 4618,
+        "verification_steps": 12803,
+        "verify_time_us": 5257.28
+      },
+      "extracted_cert_checker": {
+        "cert_bytes": 2072,
+        "verifier_state_bytes": 64,
+        "verification_steps": 4096,
+        "verify_time_us": 339.21
+      },
+      "signed_daemon_attestation": {
+        "cert_bytes": 128,
+        "verifier_state_bytes": 128,
+        "verification_steps": 258,
+        "verify_time_us": 17.53
+      }
+    }
+  }
+}

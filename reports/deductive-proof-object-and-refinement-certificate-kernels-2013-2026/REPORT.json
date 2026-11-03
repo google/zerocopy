@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "os/extensible-kernels",
+    "os/capabilities",
+    "proof/certificates",
+    "proof/consumer-binding",
+    "verification/translation-validation",
+    "verification/trusted-computing-base",
+    "sel4",
+    "cogent",
+    "metamath-zero",
+    "anneal/execution-boundaries",
+    "lean/mechanized-models",
+    "lean/axioms"
+  ],
+  "subjects": [
+    {
+      "name": "Translation Validation for a Verified OS Kernel (Sewell, Myreen & Klein / seL4 graph-refine)",
+      "identity": {
+        "doi": "10.1145/2491956.2462183",
+        "publication": "PLDI 2013",
+        "year": "2013",
+        "repository": "seL4/graph-refine"
+      }
+    },
+    {
+      "name": "Decompilation into Logic — Improved (Myreen, Gordon & Slind)",
+      "identity": {
+        "doi": "10.1109/FMCAD.2012.6462558",
+        "publication": "FMCAD 2012",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Cogent: Verifying High-Assurance File System Implementations (Amani et al.)",
+      "identity": {
+        "doi": "10.1145/2872362.2872404",
+        "publication": "ASPLOS 2016",
+        "year": "2016",
+        "repository": "seL4/cogent"
+      }
+    },
+    {
+      "name": "Refinement through Restraint: Bringing Down the Cost of Verification (O'Connor et al. / Cogent Value-Update Semantics)",
+      "identity": {
+        "doi": "10.1145/2951913.2951940",
+        "publication": "ICFP 2016",
+        "year": "2016",
+        "repository": "seL4/cogent"
+      }
+    },
+    {
+      "name": "Dargent: A Silver Bullet for Verified Data Layout Refinement (Chen et al.)",
+      "identity": {
+        "doi": "10.1145/3571240",
+        "publication": "POPL 2023",
+        "year": "2023",
+        "repository": "seL4/cogent"
+      }
+    },
+    {
+      "name": "Pancake: Verified Systems Programming Made Sweeter (Aman Pohjola et al.)",
+      "identity": {
+        "doi": "10.1145/3623759.3624544",
+        "publication": "PLOS 2023",
+        "year": "2023",
+        "repository": "CakeML/pancake"
+      }
+    },
+    {
+      "name": "Metamath Zero: Designing a Theorem Prover Prover (Carneiro / mm0-c .mmb verifier)",
+      "identity": {
+        "doi": "10.1145/3372885.3373826",
+        "publication": "CPP 2020",
+        "year": "2020",
+        "repository": "digama0/mm0"
+      }
+    },
+    {
+      "name": "Anneal Trusted Verification Boundary and PassCompiler / CertChecker",
+      "identity": {
+        "repository": "AeneasVerif/anneal",
+        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
+        "rv64_compiler_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87",
+        "x86_compiler_revision": "3a89578"
+      }
+    },
+    {
+      "name": "Anneal Kernel Branch Prototype (SpecificationHolds, wp_prove_orthogonal, SpecLayout)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "anneal-kernel",
+        "revision": "234131c52963cca4e2725dbfc02feb5214de81f4"
+      }
+    },
+    {
+      "name": "Kraken AArch64 Consumer-Bound Certificate Checker",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Mechanized Lean 4 Proof-Object, Cogent Linear Refinement, and Ring-0 Admission Gate Model",
+      "identity": {
+        "artifact": "support/DeductiveAndRefinementCertificateKernels.lean",
+        "sha256": "ba4489aefa33160d171cd2037cef7442e5f0d0593ebcd73f0ab6badc82f4c023"
+      }
+    },
+    {
+      "name": "Empirical Ring-0 Certificate Substrate Benchmark Probe",
+      "identity": {
+        "artifact": "support/certificate_substrate_probe.py",
+        "sha256": "b972cf5d83a0716a3008655aeeb3f6f3308e3ff8ea3ebfa906062315dc7a3def",
+        "results_artifact": "support/certificate_substrate_probe_results.json"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}
