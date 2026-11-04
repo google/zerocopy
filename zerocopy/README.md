@@ -138,6 +138,10 @@ for network parsing.
   Adds support for the unstable `f16` and `f128` types. These types are
   not yet fully implemented and may not be supported on all platforms.
 
+- **`defmt`**
+  Implements `defmt::Format` for the `byteorder` types. Enabling this
+  feature raises the MSRV to that of the `defmt` crate.
+
 [duplicate-import-errors]: https://github.com/google/zerocopy/issues/1587
 [simd-layout]: https://rust-lang.github.io/unsafe-code-guidelines/layout/packed-simd-vectors.html
 

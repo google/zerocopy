@@ -93,13 +93,13 @@ documented guarantees do not hold.
 circumstances. This implicitly relied on syn having the same MSRV policy, which
 it does not. See #1085 and #1088. -->
 
-Without the `derive` feature enabled, zerocopy's minimum supported Rust version
+Without `derive` or `defmt` enabled, zerocopy's minimum supported Rust version
 (MSRV) is encoded the `package.rust-version` field in its `Cargo.toml` file. For
 zerocopy, we consider an increase in MSRV to be a semver-breaking change, and
 will only increase our MSRV during semver-breaking version changes (e.g., 0.1 ->
 0.2, 1.0 -> 2.0, etc).
 
-For zerocopy with the `derive` feature enabled, and for the zerocopy-derive
+For zerocopy with `derive` or `defmt` enabled, and for the zerocopy-derive
 crate, we inherit the maximum MSRV any of our dependencies. As of this writing
 (2024-10-03), at least one dependency (syn) does *not* consider MSRV increases
 to be semver-breaking changes. Thus, using the `derive` feature may result in
