@@ -821,6 +821,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "zerocopy-kani-macros"
+version = "0.0.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "zmij"
 version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"

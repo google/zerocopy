@@ -9,6 +9,7 @@
 [workspace]
 members = [
     "cargo-zerocopy",
+    "kani-macros",
     "generate-readme",
     "ui-runner",
 ]
