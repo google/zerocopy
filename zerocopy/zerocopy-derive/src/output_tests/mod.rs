@@ -344,6 +344,66 @@ fn test_into_bytes_struct_homogeneous_generic() {
 }
 
 #[test]
+fn test_into_bytes_struct_unused_const_generic() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>(u8, u8);
+        } expands to "expected/into_bytes_struct_unused_const_generic.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_used_const_generic() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>([u32; N], u32);
+        } expands to "expected/into_bytes_struct_used_const_generic.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_used_const_generic_raw_ident() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const r#N: usize>([u8; N], u8);
+        } expands to "expected/into_bytes_struct_used_const_generic_raw_ident.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_unused_const_generic_self_field() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>(core::marker::PhantomData<Self>, u8);
+        } expands to "expected/into_bytes_struct_unused_const_generic_self_field.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_unused_const_generic_macro_field() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>(some_macro!(), u8);
+        } expands to "expected/into_bytes_struct_unused_const_generic_macro_field.expected.rs"
+    }
+}
+
+#[test]
+fn test_into_bytes_struct_unused_const_generic_trailing_str() {
+    test! {
+        IntoBytes {
+            #[repr(C)]
+            struct Foo<const N: usize>(u8, str);
+        } expands to "expected/into_bytes_struct_unused_const_generic_trailing_str.expected.rs"
+    }
+}
+
+#[test]
 fn test_into_bytes_enum() {
     macro_rules! test_repr {
         ($(#[$attr:meta])*) => {
