@@ -1,0 +1,18 @@
+name = "aesop"
+defaultTargets = ["Aesop"]
+testDriver = "AesopTest"
+precompileModules = false # We would like to turn this on, but it breaks the Mathlib cache.
+platformIndependent = true
+
+[[require]]
+name = "batteries"
+scope = "leanprover-community"
+rev = "v4.31.0"
+
+[[lean_lib]]
+name = "Aesop"
+
+[[lean_lib]]
+name = "AesopTest"
+globs = ["AesopTest.+"]
+leanOptions = {linter.unusedVariables = false}

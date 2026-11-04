@@ -1,0 +1,33 @@
+name = "importGraph"
+description = "Tools to analyse and visualise the import structure of Lean packages and their files."
+license = "Apache-2.0"
+licenseFiles = ["LICENSE"]
+
+defaultTargets = ["ImportGraph", "graph"]
+testRunner = "ImportGraphTest"
+
+[[require]]
+name = "Cli"
+scope = "leanprover"
+rev = "v4.31.0"
+
+[[lean_lib]]
+name = "ImportGraph"
+
+# `lake exe graph` constructs import graphs in `.dot` or graphical formats.
+[[lean_exe]]
+name = "graph"
+root = "MainGraph"
+# Enables the use of the Lean interpreter by the executable (e.g., `runFrontend`)
+# at the expense of increased binary size on Linux.
+# Remove this line if you do not need such functionality.
+supportInterpreter = true
+
+# `lake exe unused_transitive_imports` prints unused transitive imports from amongst a given list of modules.
+[[lean_exe]]
+name = "unused_transitive_imports"
+root = "MainUnusedTransitiveImports"
+supportInterpreter = true
+
+[[lean_lib]]
+name = "ImportGraphTest"
