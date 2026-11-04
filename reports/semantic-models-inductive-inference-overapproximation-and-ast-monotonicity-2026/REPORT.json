@@ -1,0 +1,103 @@
+{
+  "topics": [
+    "anneal/refinement",
+    "anneal/syntactic-completeness",
+    "semantic-models/inductive-inference",
+    "semantic-models/overapproximation",
+    "semantic-models/crate-monotonicity",
+    "compiler-verification/static-analysis",
+    "lean/verification"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Language Identification in the Limit",
+      "identity": {
+        "authors": "E. Mark Gold",
+        "doi": "10.1016/S0019-9958(67)91165-5",
+        "venue": "Information and Control 10(5), pp. 447-474",
+        "year": "1967"
+      }
+    },
+    {
+      "name": "Inductive Inference of Formal Languages from Positive Data",
+      "identity": {
+        "authors": "Dana Angluin",
+        "doi": "10.1016/S0019-9958(80)90285-5",
+        "venue": "Information and Control 45(2), pp. 117-135",
+        "year": "1980"
+      }
+    },
+    {
+      "name": "Toward a Mathematical Theory of Inductive Inference",
+      "identity": {
+        "authors": "Lenore Blum, Manuel Blum",
+        "doi": "10.1016/S0019-9958(75)90261-2",
+        "venue": "Information and Control 28(2), pp. 125-155",
+        "year": "1975"
+      }
+    },
+    {
+      "name": "Assessing Test Data Adequacy through Program Inference",
+      "identity": {
+        "authors": "Elaine J. Weyuker",
+        "doi": "10.1145/69575.357231",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS) 5(4), pp. 641-655",
+        "year": "1983"
+      }
+    },
+    {
+      "name": "Axiomatizing Software Test Data Adequacy",
+      "identity": {
+        "authors": "Elaine J. Weyuker",
+        "doi": "10.1109/TSE.1986.6313008",
+        "venue": "IEEE Transactions on Software Engineering SE-12(12), pp. 1128-1138",
+        "year": "1986"
+      }
+    },
+    {
+      "name": "Classes of Recursively Enumerable Sets and Their Decision Problems",
+      "identity": {
+        "authors": "Henry Gordon Rice",
+        "doi": "10.2307/1990888",
+        "venue": "Transactions of the American Mathematical Society 74(2), pp. 358-366",
+        "year": "1953"
+      }
+    },
+    {
+      "name": "Abstract Interpretation: A Unified Lattice Model for Static Analysis of Programs by Construction or Approximation of Fixpoints",
+      "identity": {
+        "authors": "Patrick Cousot, Radhia Cousot",
+        "doi": "10.1145/512950.512973",
+        "venue": "POPL 1977, pp. 238-252",
+        "year": "1977"
+      }
+    },
+    {
+      "name": "The Next 700 Programming Languages",
+      "identity": {
+        "authors": "Peter J. Landin",
+        "doi": "10.1145/365230.365257",
+        "venue": "Communications of the ACM 9(3), pp. 157-166",
+        "year": "1966"
+      }
+    },
+    {
+      "name": "Types are Not Sets",
+      "identity": {
+        "authors": "James H. Morris Jr.",
+        "doi": "10.1145/512927.512938",
+        "venue": "POPL 1973, pp. 120-124",
+        "year": "1973"
+      }
+    }
+  ],
+  "observed_at": "2026-11-04"
+}
