@@ -1,0 +1,42 @@
+.container {
+  composes: -menuItemFullButton from './shared.module.css';
+
+  &:hover {
+    color: var(--header-tint);
+  }
+}
+
+.selected {
+  composes: container;
+  color: var(--header-tint);
+  font-weight: 600;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  composes: -menuItemTitle from './shared.module.css';
+}
+
+.description {
+  padding-left: 2em;
+}
+
+.checkmark {
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+  margin-right: 0.5em;
+}
+
+.selected .checkmark,
+.selected:hover .checkmark {
+  opacity: 1;
+}
+
+.container:hover .checkmark {
+  opacity: 0.5;
+  color: var(--header-tint);
+}

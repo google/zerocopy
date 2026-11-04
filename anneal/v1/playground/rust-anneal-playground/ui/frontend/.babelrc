@@ -1,0 +1,17 @@
+{
+  "presets": [
+    [ "@babel/preset-env", {
+      "corejs": "3",
+      "modules": false,
+      "useBuiltIns": "entry",
+    }],
+    [ "@babel/react", {
+      "runtime": "automatic",
+    }],
+  ],
+  "plugins": [
+    ["babel-plugin-react-compiler", {
+      "compilationMode": "annotation",
+    }],
+  ],
+}
