@@ -885,7 +885,8 @@ unsafe impl<T: HasTag<Client> + ?Sized, Client> HasTag<Client> for ReadOnly<T> {
 // `project` satisfies its post-condition – namely, that the returned pointer
 // refers to a non-strict subset of the bytes of `slf`'s referent, and has the
 // same provenance as `slf` – because all intermediate operations satisfy those
-// same conditions.
+// same conditions. The wrapper casts only change the pointer type, and
+// `T::project` must not modify the referent, so neither does this projection.
 unsafe impl<T, Client, Field, const VARIANT_ID: i128, const FIELD_ID: i128>
     HasField<Client, Field, VARIANT_ID, FIELD_ID> for ReadOnly<T>
 where
@@ -910,14 +911,29 @@ where
     }
 }
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// has the same fields at the same offsets. `is_projectable` simply delegates to
-// `T::is_projectable`, which is sound because a `Ptr<'_, ReadOnly<T>, I>` will
-// be projectable exactly when a `Ptr<'_, T, I>` referent is.
+// SAFETY: The `HasField` impl above projects to `ReadOnly<T::Type>` at the
+// same address as `T`'s field. `ReadOnly` preserves layout and validity, and
+// `HasField::project` must not modify the referent. We delegate the tag check
+// to `T`'s exclusive projection; its input is a shared tag pointer with the
+// same alignment and validity as ours. When that check succeeds, the exclusive
+// projection establishes the field's output alignment and validity.
+//
+// If `I::Aliasing` is `Exclusive`, wrapping both types preserves exclusivity
+// and the permitted mutations. If it is `Shared`, both `ReadOnly<T>` and
+// `ReadOnly<T::Type>` prohibit interior mutation. Thus, retained shared aliases
+// cannot invalidate the source or destination validity, and the projected
+// pointer satisfies `Shared` even when the unwrapped types have incompatible
+// interior mutability. No exclusive pointer is constructed for this case.
 unsafe impl<T, Client, Field, I, const VARIANT_ID: i128, const FIELD_ID: i128>
     ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID> for ReadOnly<T>
 where
-    T: ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID> + ?Sized,
+    T: ProjectField<
+            Client,
+            Field,
+            (invariant::Exclusive, I::Alignment, I::Validity),
+            VARIANT_ID,
+            FIELD_ID,
+        > + ?Sized,
     I: invariant::Invariants,
 {
     #[allow(clippy::missing_inline_in_public_items)]
@@ -927,15 +943,25 @@ where
     {
     }
 
-    type Invariants = <T as ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID>>::Invariants;
+    type Invariants = (
+        I::Aliasing,
+        <T::Invariants as invariant::Invariants>::Alignment,
+        <T::Invariants as invariant::Invariants>::Validity,
+    );
 
-    type Error = <T as ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID>>::Error;
+    type Error = T::Error;
 
     #[inline(always)]
     fn is_projectable<'a>(
         ptr: Ptr<'a, <Self as HasTag<Client>>::Tag, (invariant::Shared, I::Alignment, I::Validity)>,
     ) -> Result<(), Self::Error> {
-        <T as ProjectField<Client, Field, I, VARIANT_ID, FIELD_ID>>::is_projectable(ptr)
+        <T as ProjectField<
+            Client,
+            Field,
+            (invariant::Exclusive, I::Alignment, I::Validity),
+            VARIANT_ID,
+            FIELD_ID,
+        >>::is_projectable(ptr)
     }
 }
 

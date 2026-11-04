@@ -1,0 +1,67 @@
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:32:17
+   |
+24 | union Overlapping {
+   | ----------------- doesn't satisfy `_: ProjectField<_, _, (Shared, Aligned, Uninit), _, _>`
+...
+32 |     let _ = ptr.project::<ProjectDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `Overlapping: zerocopy_renamed::ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), _, _>`
+note: the trait `zerocopy_renamed::ProjectField` must be implemented
+  --> src/lib.rs:1354:0
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, Uninit)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:34:17
+   |
+24 | union Overlapping {
+   | ----------------- doesn't satisfy `_: ProjectField<_, _, (Shared, Aligned, Uninit), _, _>`
+...
+34 |     let _ = ptr.project::<TryFromBytesDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `Overlapping: zerocopy_renamed::ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Uninit), _, _>`
+note: the trait `zerocopy_renamed::ProjectField` must be implemented
+  --> src/lib.rs:1354:0
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, _)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:39:17
+   |
+24 | union Overlapping {
+   | ----------------- doesn't satisfy `_: ProjectField<_, _, (Shared, Aligned, Initialized), _, _>`
+...
+39 |     let _ = ptr.project::<ProjectDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `Overlapping: zerocopy_renamed::ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), _, _>`
+note: the trait `zerocopy_renamed::ProjectField` must be implemented
+  --> src/lib.rs:1354:0
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0599]: the method `project` exists for struct `Ptr<'_, Overlapping, (Shared, Aligned, _)>`, but its trait bounds were not satisfied
+  --> $DIR/project_union_shared.rs:41:17
+   |
+24 | union Overlapping {
+   | ----------------- doesn't satisfy `_: ProjectField<_, _, (Shared, Aligned, Initialized), _, _>`
+...
+41 |     let _ = ptr.project::<TryFromBytesDerive, _, { REPR_C_UNION_VARIANT_ID }, { BYTE }>();
+   |                 ^^^^^^^
+   |
+   = note: the following trait bounds were not satisfied:
+           `Overlapping: zerocopy_renamed::ProjectField<_, _, (Shared, Aligned, zerocopy_renamed::invariant::Initialized), _, _>`
+note: the trait `zerocopy_renamed::ProjectField` must be implemented
+  --> src/lib.rs:1354:0
+   = note: the full name for the type has been written to '/long-type-HASH.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0599`.
