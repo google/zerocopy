@@ -97,7 +97,28 @@ macro_rules! test {
 }
 
 fn pretty_print(ts: TokenStream) -> String {
-    prettyplease::unparse(&syn::parse_file(&ts.to_string()).unwrap())
+    let pretty = prettyplease::unparse(&syn::parse_file(&ts.to_string()).unwrap());
+    normalize_generated_code_clippy_policy(pretty)
+}
+
+// The generated-code Clippy policy is tested directly below. Keep it out of the
+// expansion snapshots so changes to the lint-group policy don't rewrite every
+// expected derive output.
+fn normalize_generated_code_clippy_policy(pretty: String) -> String {
+    pretty
+        .lines()
+        .filter(|line| line.trim() != "#[deny(clippy::all, clippy::pedantic, clippy::nursery)]")
+        .map(|line| format!("{}\n", line))
+        .collect()
+}
+
+#[test]
+fn test_downstream_generated_code_does_not_lower_clippy_lints() {
+    let policy = crate::util::generated_code_lints().to_string().replace(' ', "");
+    assert!(!policy.contains("clippy::all"));
+    assert!(!policy.contains("clippy::pedantic"));
+    assert!(!policy.contains("clippy::nursery"));
+    assert!(!policy.contains("clippy::restriction"));
 }
 
 #[track_caller]

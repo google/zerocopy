@@ -911,7 +911,32 @@ impl BoolExt for bool {
     }
 }
 
-pub(crate) fn allow_generated_code() -> TokenStream {
+fn lint_generated_code() -> bool {
+    // Cargo tracks environment variables referenced by `option_env!`, so
+    // changing this value causes the host-built proc macro to be rebuilt.
+    option_env!("ZEROCOPY_DERIVE_LINT_GENERATED_CODE").is_some()
+}
+
+pub(crate) fn generated_code_lints() -> TokenStream {
+    let clippy = if lint_generated_code() {
+        quote! {
+            // Exercise the useful general Clippy groups on generated code in
+            // zerocopy CI. We deliberately omit `clippy::restriction`: that
+            // group is policy-specific and contains mutually incompatible
+            // lints.
+            #[deny(clippy::all, clippy::pedantic, clippy::nursery)]
+            // These diagnose duplicate bounds copied verbatim from caller
+            // syntax. Preserving those bounds in generated impls is intentional;
+            // linting the caller's declaration remains the caller's policy.
+            #[allow(
+                clippy::trait_duplication_in_bounds,
+                clippy::type_repetition_in_bounds,
+            )]
+        }
+    } else {
+        quote! {}
+    };
+
     quote! {
         #[allow(
             // FIXME(#553): Add a test that generates a warning when
@@ -926,16 +951,17 @@ pub(crate) fn allow_generated_code() -> TokenStream {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
+            // This restriction lint predates the generated-code Clippy pass.
             clippy::missing_inline_in_public_items,
         )]
+        #clippy
     }
 }
-
 pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) -> TokenStream {
     let items = items.into_iter().flatten();
-    let allow = allow_generated_code();
+    let lint_policy = generated_code_lints();
     quote! {
-        #allow
+        #lint_policy
         #[deny(ambiguous_associated_items)]
         // While there are not currently any warnings that this suppresses
         // (that we're aware of), it's good future-proofing hygiene.
