@@ -9,7 +9,6 @@
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo {
         fn only_derive_is_allowed_to_implement_this_trait() {}

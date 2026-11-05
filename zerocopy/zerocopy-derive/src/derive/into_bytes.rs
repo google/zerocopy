@@ -224,7 +224,7 @@ fn derive_into_bytes_union(ctx: &Ctx, unn: &DataUnion) -> Result<TokenStream, Er
         let error_message = "requires --cfg zerocopy_derive_union_into_bytes;
 please let us know you use this feature: https://github.com/google/zerocopy/discussions/1802";
         quote!(
-            #[allow(unused_attributes, unexpected_cfgs)]
+            #[allow(unexpected_cfgs)]
             const _: () = {
                 #[cfg(not(zerocopy_derive_union_into_bytes))]
                 #core::compile_error!(#error_message);
