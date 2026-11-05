@@ -9,7 +9,6 @@
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     unsafe impl<T, const N: usize> ::zerocopy::IntoBytes for Foo<T, { N }>
     where
