@@ -1,0 +1,789 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_metadata": {
+    "title": "Single-Agent vs. Swarm Conceptual Model Refinement: Controlled Empirical Comparison on Anneal's MIR Verification Pipeline",
+    "observed_at": "2026-11-05",
+    "target_repository": "joshlf/anneal",
+    "implementation_revision": "572f1e80580daa4b052ce5646bb675484d9bb957",
+    "design_and_skill_revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254",
+    "pinned_rustc_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "pinned_rustc_version": "nightly-2026-03-15",
+    "pinned_lean_version": "v4.28.0"
+  },
+  "baseline_repository_metrics": {
+    "revisions": {
+      "572f1e80580daa4b052ce5646bb675484d9bb957": {
+        "trusted/lean/Trusted/MirAst.lean": {
+          "lines": 282,
+          "bytes": 11345,
+          "sha256": "a8f289cd80b354757491d5f3b45f3cf60789031b3cfd9897641a73331d9e8ffc"
+        },
+        "trusted/lean/Trusted/MirSemantics.lean": {
+          "lines": 1150,
+          "bytes": 48826,
+          "sha256": "f679659d884ab1bff5067c77cd4c8a92c0829b8a08cbc81737259adca50980c3"
+        },
+        "trusted/lean/Trusted/Refinement.lean": {
+          "lines": 288,
+          "bytes": 13350,
+          "sha256": "5e4d7b356178a78c8ce927fae3ae6b31dcdf14f735a189f7ec3b7dc4574f0ae3"
+        },
+        "trusted/lean/Trusted/StepResult.lean": {
+          "lines": 164,
+          "bytes": 6692,
+          "sha256": "d6a6d5d1865b7718921bf92ecdff92fa22c4e312ddd06037f78dc5c4f147d8e4"
+        },
+        "trusted/rustc-capture/src/extract.rs": {
+          "lines": 709,
+          "bytes": 30531,
+          "sha256": "355aad45538815385820aa4cd730ef52c42c1f5e3cfd0eefcaafa205fab340dd"
+        },
+        "trusted/rustc-capture/src/hook.rs": {
+          "lines": 137,
+          "bytes": 6045,
+          "sha256": "1d810dad2de522c22503c665112076f8b801efcfa7206fecd84fc542b50820f9"
+        },
+        "trusted/rustc-capture/src/ir.rs": {
+          "lines": 235,
+          "bytes": 7251,
+          "sha256": "df5fb840a869530d2c780d13f5c2d489a51e159b6471dbd65341b01136f97b26"
+        },
+        "trusted/rustc-capture/src/items.rs": {
+          "lines": 1126,
+          "bytes": 41753,
+          "sha256": "7ea464db02fb13b54a133e00f1866c7532abc355cc27c5a297cce9dbb35c982e"
+        },
+        "trusted/rustc-capture/src/lean.rs": {
+          "lines": 336,
+          "bytes": 12529,
+          "sha256": "78a55eab0a634f856998d54c4faa9c74fe8dbaccd2a9014d8b4ba80d6d3c0c69"
+        },
+        "trusted/rustc-capture/src/main.rs": {
+          "lines": 570,
+          "bytes": 21652,
+          "sha256": "1191d8ee12afd73aa50b114ff3c6a98ccf7b443435a6151797ef37dc1f849995"
+        },
+        "trusted/rustc-capture/src/spec.rs": {
+          "lines": 156,
+          "bytes": 5915,
+          "sha256": "cf19c52df123b3e94dc79083f1301fbfd17aca95a5a5771c4bf93f7779c86d6e"
+        },
+        "trusted/audit/TrustedBoundary.lean": {
+          "lines": 823,
+          "bytes": 39515,
+          "sha256": "7534e9c4571d5769af1f2028adb6688071fdad81ddb7cc084372f587a11cc96a"
+        },
+        "trusted/cargo-anneal/src/lib.rs": {
+          "lines": 1054,
+          "bytes": 35958,
+          "sha256": "f16bb48ad5079ca5fc866229f95fcfd4fec1413094d948281d4644b512112efb"
+        },
+        "theory/Anneal/MirLemmas.lean": {
+          "lines": 3829,
+          "bytes": 150616,
+          "sha256": "473ade75e099abb69e5badb6ba9082521f4d25abb3d9c300c1dc7e031b49438b"
+        },
+        "theory/Anneal/Refinement.lean": {
+          "lines": 287,
+          "bytes": 11943,
+          "sha256": "9cfd65c2320bbd4cc716ca20c9cf1b320092bd67fba693f59c0349096e73faad"
+        },
+        "theory/Anneal/StepResult.lean": {
+          "lines": 721,
+          "bytes": 26545,
+          "sha256": "d3bcf7409368d71e24dfeed16b725534282bab3cb57a3f8a1fcfa07344e2d23d"
+        }
+      },
+      "d79b0c070cf4115b523fe6ee62c1e72504de2254": {
+        "skills/model-refinement/SKILL.md": {
+          "lines": 307,
+          "bytes": 18518,
+          "sha256": "a219d993410dcd67b0783f05681e686bc1fb2e2fe4378acc32daf751e5a190e9"
+        },
+        "skills/swarm-model-refinement/SKILL.md": {
+          "lines": 336,
+          "bytes": 22461,
+          "sha256": "157092de1eabf6686a47b97c7a62e50649cfc5ec508555bc3e66e1da9f4691aa"
+        },
+        "docs/architecture.md": {
+          "lines": 366,
+          "bytes": 20731,
+          "sha256": "191f598ffc8b306a25c27d00af1302309a45a764508376546e93e7f4e59005b8"
+        }
+      }
+    },
+    "aggregates_572f1e80": {
+      "trusted_lean_lines": 1884,
+      "trusted_rustc_capture_lines": 3269,
+      "trusted_audit_lines": 823,
+      "trusted_cargo_anneal_lines": 1054,
+      "total_trusted_lines": 7030,
+      "theory_anneal_lines": 4837,
+      "proveCrateOpt_hardcoded_shapes": 9,
+      "beqMirBodyFuel_bound": 8
+    }
+  },
+  "workflow_comparison_summary": {
+    "single_agent_model_refinement": {
+      "skill_path": "skills/model-refinement/SKILL.md",
+      "skill_lines": 307,
+      "agent_count": 1,
+      "passes": 2,
+      "candidates_explored": [
+        "M1 (Thin-Capture / Heavy-Stage-2 Reference Interpreter)",
+        "M2 (Single-IR Direct Verification without Stage 3)",
+        "M3 (Total Indexed Capture + Stratified Flat Stage 2 + Verified Stage 3 Lowering)",
+        "M3' (Pass-2 Self-Critiqued Final Design)"
+      ],
+      "macro_simplifications_found": 5,
+      "macro_simplifications_total": 5,
+      "micro_defects_resolved": 0,
+      "micro_defects_active_in_final_design": 10,
+      "micro_defects_not_triggered_only_because_prerequisite_omitted": 2,
+      "micro_defects_total": 12,
+      "holdout_isolation": false,
+      "unanchored_fresh_critics": 0
+    },
+    "swarm_model_refinement": {
+      "skill_path": "skills/swarm-model-refinement/SKILL.md",
+      "skill_lines": 336,
+      "agent_count": 12,
+      "topology": {
+        "coordinator_synthesizer": 1,
+        "divergent_architects": 3,
+        "challenger_roles": 4,
+        "sealed_holdout_stitcher": 1,
+        "unanchored_fresh_critics": 3
+      },
+      "passes": 3,
+      "candidates_explored": [
+        "Architect Alpha (Radical Minimizer: 2-stage pipeline, BodyId flat table, Obligation.assumed)",
+        "Architect Beta (Structural Generalizer: Place/ProjectionElem, MentionedItem, stratified AdmissibleAdtInv, lowerBody)",
+        "Architect Gamma (Pragmatic Incumbent Defender: TrustedBoundary.lean audit discipline, multi-config CONFIGS analysis, two-stage ConstsTotal/MonoAdmitted)",
+        "Candidate 001 (Pass-1 Synthesis)",
+        "Candidate 002 (Pass-2 Repair Synthesis)",
+        "Candidate 003 (Pass-3 Converged Fixed-Point Design)"
+      ],
+      "macro_simplifications_found": 5,
+      "macro_simplifications_total": 5,
+      "micro_defects_resolved": 12,
+      "micro_defects_active_in_final_design": 0,
+      "micro_defects_total": 12,
+      "holdout_isolation": true,
+      "discovery_cases_count": 10,
+      "blind_holdout_cases_count": 10,
+      "reserve_holdout_cases_count": 4,
+      "reclassified_holdout_to_discovery_count": 6,
+      "unanchored_fresh_critics": 3
+    }
+  },
+  "macro_architectural_simplifications": [
+    {
+      "id": "M-1",
+      "title": "Eliminating CaptureProfile and Multi-Version Capture Subcrates",
+      "baseline_target": "docs/architecture.md:38-47, 69-72, 134-156, 206-298",
+      "description": "Eliminate the 3-tuple CaptureProfile = (schema_version, rustc_version, SemProfile) and multi-version subcrate hierarchy (rustc-capture-v1_85/, v1_86/) in favor of one pinned toolchain (toolchain-manifest.json) and a single parameterized Crate.layout : LayoutEnv record.",
+      "single_agent_m3_prime": "Converged: replaced CaptureProfile and versioned subcrates with a single rustc-capture crate and TargetLayout record (pass1-analysis.md:178-183, pass2-final-design.md:9-19).",
+      "swarm_candidate_003": "Converged: replaced CaptureProfile and versioned subcrates with a single rustc-capture binary and LayoutEnv = { ptrBits, maxTypeSize } (final-design.md:27-35, 92-104)."
+    },
+    {
+      "id": "M-2",
+      "title": "Removing Dead TargetSem, TargetArtifact, TargetLang, and rustcCodec Scaffolding",
+      "baseline_target": "trusted/lean/Trusted/MirSemantics.lean:1045-1108, 1131-1140; trusted/lean/Trusted/Refinement.lean:231-288",
+      "description": "Remove the 5 unprovable target-compilation definitions (TargetArtifact, rustc, opaque TargetSem, TargetLang, rustcCodec) that existed solely to state an always-waived Obligation.compiles, replacing them with a primitive Obligation.assumed item constructor.",
+      "single_agent_m3_prime": "Converged: replaced Obligation.compiles + TargetSem/TargetArtifact/TargetLang/rustcCodec with Obligation.assumed (id : TCBItem) (pass1-analysis.md:191-194, pass2-final-design.md:111-116).",
+      "swarm_candidate_003": "Converged: replaced Obligation.compiles + TargetSem/TargetArtifact/TargetLang/rustcCodec with Obligation.assumed (item : TCBItem) and TCBItem.rustcLowering (fn : FnId) (body : BodyId) (final-design.md:72-90, 622-655)."
+    },
+    {
+      "id": "M-3",
+      "title": "Removing MirBody from TCBItem and Breaking the Terminator/MirBody Mutual Induction via BodyId Tables",
+      "baseline_target": "trusted/lean/Trusted/MirAst.lean:193-260; theory/Anneal/MirLemmas.lean:1-260",
+      "description": "Replace recursive MirBody values inside Terminator.call, Rvalue.constBlock, and TCBItem with flat BodyId indices into Crate.bodies : List BodyDecl, breaking the mutual inductive cycle and eliminating the 200-line fuel-bounded beqMirBodyFuel 8 comparator.",
+      "single_agent_m3_prime": "Converged on flat BodyId table and TCBItem.rustcLowering String BodyId (pass1-analysis.md:195-204, pass2-final-design.md:45-62).",
+      "swarm_candidate_003": "Converged on flat BodyId table (Crate.bodies : List BodyDecl) and TCBItem.rustcLowering FnId BodyId with structural beqCrate (final-design.md:92-198, 622-635)."
+    },
+    {
+      "id": "M-4",
+      "title": "Replacing the 9-Entry Whole-Crate beqCrate Lookup Table with Compositional Stage 3 Lowering",
+      "baseline_target": "theory/Anneal/MirLemmas.lean:3752-3795; docs/architecture.md:158-204",
+      "description": "Replace the brittle 9-shape whole-crate lookup table (proveCrateOpt) with compositional per-function verification and a verified Stage 3 MIR-to-MIR cleanup pass (lowerBody + lowerBody_simulates).",
+      "single_agent_m3_prime": "Converged on replacing the 9-entry table with Stage 3 lowerBody : MirBody -> MirBody and lowerBody_simulates (pass1-analysis.md:208-219, pass2-final-design.md:154-174).",
+      "swarm_candidate_003": "Converged on compositional per-function verification and in-place Stage 3 lowerBody with block-entry backward simulation lowerBody_simulates (final-design.md:880-955)."
+    },
+    {
+      "id": "M-5",
+      "title": "First-Order Trusted Specification ASTs, Static 8-Line Proof.lean, and Demand-Driven .unsupported Capture",
+      "baseline_target": "trusted/rustc-capture/src/spec.rs:1-156; trusted/cargo-anneal/src/lib.rs:52-63; docs/architecture.md:300-355",
+      "description": "Emit contract and invariant specifications as first-order ASTs inside Mir.lean (Trusted.Crate) rather than generating per-crate theorem statements in Proof.lean, keep Proof.lean a static 8-line file, and translate unrecognized MIR constructs to syntax-total .unsupported nodes that step to .failed on demand.",
+      "single_agent_m3_prime": "Converged on first-order Trusted/Spec.lean ASTs, static 8-line Proof.lean, and syntax-total .unsupported constructors (pass1-analysis.md:220-232, pass2-final-design.md:83-109, 176-188).",
+      "swarm_candidate_003": "Converged on first-order SpecExpr/InvariantSpec/RequiresSpec/PostSpec in MirAst.lean, static 8-line Proof.lean, and syntax-total .unsupported nodes stepping to .failed (final-design.md:145-198, 560-620)."
+    }
+  ],
+  "defect_discovery_matrix": [
+    {
+      "id": "D-01",
+      "number": 1,
+      "title": "Baseline extract.rs Partial-Move Bug and Single-Agent Omission of Partial-Move Deinitialization",
+      "category": "soundness",
+      "severity": "critical",
+      "origin": "baseline-codebase",
+      "baseline_locations": [
+        "trusted/rustc-capture/src/extract.rs:458-485",
+        "trusted/lean/Trusted/MirSemantics.lean:491-510",
+        "trusted/lean/Trusted/MirSemantics.lean:589-597"
+      ],
+      "single_agent_m3_prime_status": "missed",
+      "single_agent_evidence": "Single-agent M3' generalized Rvalue.field0 to Rvalue.field (src : LocalId) (fieldIdx : Nat) (pass1-analysis.md:327) without Place projections or MirVal.uninit leaves, preserving non-destructive field extraction on Operand::Move(_1.0).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 0 (baseline extract.rs:474-480)",
+        "pass_caught": "Pass 0 (Architect Beta + Discovery D5 + Holdout H1)",
+        "pass_resolved": "Pass 2 / Pass 3 (Candidate 002 / Candidate 003)",
+        "candidate_001_state": "partial-overcorrection (introduced Place + MirVal.uninit + updateProj, but failed to guard whole-aggregate reads in evalProjFuel; see D-02)",
+        "candidate_002_state": "mostly-resolved (guarded direct whole-aggregate reads via isFullyInitFuel, leaving intermediate .deref hop; see D-03)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-beta"],
+        "challengers": ["challenger-1 (F1.1)"],
+        "holdout_cases": ["D5", "H1 (S4)"],
+        "fresh_critics": ["fresh-critic-001 (C3)"]
+      },
+      "counterexample_rust_or_lean": "struct Pair(NonCopy, NonCopy); let _a = move (_1.0); let _b = move (_1.0); // In baseline extract.rs:474-480, both Move(_1.0) lower to Rvalue.field0 1, leaving _1 initialized so the illegal second move of _1.0 succeeds instead of stepping to .failed.",
+      "root_cause": "Baseline extract.rs rewrote both Operand::Copy(_1.0) and Operand::Move(_1.0) into Rvalue::Field0(1), and evalMirStmt for .assign dst (.field0 src) never updated src. Single-agent M3' kept flat local-indexed Rvalue.field without sub-place deinitialization.",
+      "verified_resolution_in_candidate_003": "Represent places as Place = { local : LocalId, proj : List ProjElem }, represent uninitialized leaves via MirVal.uninit inside MirVal.adt / MirVal.tuple, and have evalOperand (.move srcPlace) write MirVal.uninit to the moved sub-place via writePlace s srcPlace .uninit."
+    },
+    {
+      "id": "D-02",
+      "number": 2,
+      "title": "Swarm Pass-1 Partial-Move Over-Correction / Unchecked Whole-Aggregate Read After Partial Move",
+      "category": "soundness",
+      "severity": "critical",
+      "origin": "swarm-pass-1-regression",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:491-507"
+      ],
+      "single_agent_m3_prime_status": "unaddressed-prerequisite",
+      "single_agent_evidence": "Single-agent M3' never introduced Place projections or partial-move deinitialization (pass2-final-design.md:21-43), so it never reached sub-tree initialization checks.",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 1 (Candidate 001)",
+        "pass_caught": "Pass 1 Falsification",
+        "pass_resolved": "Pass 2 (Candidate 002)",
+        "candidate_001_state": "defective (evalProjFuel and resolveRefTargetFuel only rejected .uninit at top level, allowing Copy(_1), Move(_1), PlaceMention(_1), or &_1 when _1 = .adt id [.uninit, v1])",
+        "candidate_002_state": "resolved for direct reads via recursive isFullyInitFuel (depthFuel c) v",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": [],
+        "challengers": ["challenger-1 (F1.1)"],
+        "holdout_cases": ["H1 (S4)", "D5"],
+        "fresh_critics": ["fresh-critic-001 (C3)"]
+      },
+      "counterexample_rust_or_lean": "let _a = move (_1.0); let _whole = move _1; // After moving _1.0, _1 holds .adt id [.uninit, .usize 9]. Reading sibling _1.1 is valid, but reading or borrowing whole _1 must step to .failed.",
+      "root_cause": "When Candidate 001 replaced whole-local deinitialization (which would have broken sibling _1.1 reads) with leaf-level MirVal.uninit inside MirVal.adt, its terminal [] arm of evalProjFuel returned some v without checking whether nested fields of v contained .uninit, and Rvalue.ref / Stmt.placeMention only called resolveRefTarget.",
+      "verified_resolution_in_candidate_003": "Define total fuel-bounded MirVal.isFullyInitFuel (depthFuel c) v that recursively checks all .adt and .tuple children for .uninit, enforce it at the terminal [] arm of evalProjFuel, and require evalPlace c s place = some _ in both Rvalue.ref and Stmt.placeMention."
+    },
+    {
+      "id": "D-03",
+      "number": 3,
+      "title": "Intermediate .deref Hop on Partially-Moved Struct and Rvalue.ref Borrow Bypass",
+      "category": "soundness",
+      "severity": "high",
+      "origin": "swarm-pass-2-regression",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:598-635"
+      ],
+      "single_agent_m3_prime_status": "unaddressed-prerequisite",
+      "single_agent_evidence": "Single-agent M3' had no Place projection evaluator or multi-step .deref projection chain (pass2-final-design.md:21-43).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 1 / Pass 2 (Candidate 001 / Candidate 002)",
+        "pass_caught": "Pass 2 Falsification",
+        "pass_resolved": "Pass 3 (Candidate 003)",
+        "candidate_001_state": "defective (no recursive initialization check at all)",
+        "candidate_002_state": "defective (evalProjFuel .deref :: rest concatenated targetProj ++ rest, checking isFullyInitFuel only at the final leaf _1.1 rather than the dereferenced intermediate aggregate _1)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": [],
+        "challengers": ["challenger-1 (P2.2)"],
+        "holdout_cases": ["H1", "H5"],
+        "fresh_critics": ["fresh-critic-002 (FC2-3)"]
+      },
+      "counterexample_rust_or_lean": "let r = &_1; let _a = move (_1.0); let _x = (*r).1; // When r holds .ref 0 gen (LocalId.mk 1) [], evaluating (*r).1 concatenated [] ++ [.field 1] = [.field 1] on _1, bypassing the requirement that the dereferenced reference target *r itself be a fully initialized aggregate.",
+      "root_cause": "In Candidate 002, the .deref :: rest arm of evalProjFuel jumped directly to evalProjFuel c s fuel rootVal (targetProj ++ rest), so isFullyInitFuel was only tested on the final projected field rather than on the intermediate dereferenced referent targetVal.",
+      "verified_resolution_in_candidate_003": "In the .deref :: rest arm of evalProjFuel, first evaluate evalProjFuel c s fuel rootVal targetProj to some targetVal (which runs isFullyInitFuel on targetVal at the end of targetProj), and only then evaluate rest on targetVal."
+    },
+    {
+      "id": "D-04",
+      "number": 4,
+      "title": "Polymorphic Dead-Branch PME Hole (Body::mentioned_items) and Two-Stage ConstsTotal vs. MonoAdmitted",
+      "category": "soundness",
+      "severity": "critical",
+      "origin": "baseline-codebase",
+      "baseline_locations": [
+        "trusted/rustc-capture/src/extract.rs:140-210",
+        "trusted/lean/Trusted/MirSemantics.lean:946-960"
+      ],
+      "single_agent_m3_prime_status": "introduced",
+      "single_agent_evidence": "Single-agent M3' both missed Body::mentioned_items (failing to capture dead-branch PME items erased from basic_blocks and required_consts) and collapsed Baseline's two-stage ConstsTotal + MonoAdmitted into a single-stage ConstsEvaluated predicate (pass2-final-design.md:31-35).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 0 (baseline extract.rs missed mentioned_items; Candidate 001 collapsed ConstsTotal + MonoAdmitted)",
+        "pass_caught": "Pass 0 (Architect Beta + D8/H5) and Pass 1 Falsification (Challenger 1 F1.3 + Stitcher H3/S2 + Fresh Critic 001 C2)",
+        "pass_resolved": "Pass 2 / Pass 3 (Candidate 002 / Candidate 003)",
+        "candidate_001_state": "defective (added MentionedItem capture, but collapsed ConstsTotal and MonoAdmitted into a single universal ExecNormal predicate over all tySizes, making every conditional PME guard const { assert!(size_of::<T>() == 8) } unverifiable)",
+        "candidate_002_state": "partially-repaired (restored two-stage ConstsTotal + MonoAdmitted, but introduced vacuous implication in ConstsTotal; see D-05)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-beta", "architect-gamma"],
+        "challengers": ["challenger-1 (F1.3)"],
+        "holdout_cases": ["D8", "H3 (S2)", "H5 (S2)"],
+        "fresh_critics": ["fresh-critic-001 (C2)"]
+      },
+      "counterexample_rust_or_lean": "pub fn dead_branch_pme<T>() { if false { let _ = Fail::<T>::C; } } // SimplifyConstCondition + RemoveDeadBlocks erase the dead block and drain Body::required_consts before Runtime(PostCleanup), leaving Fail::<T>::C only in Body::mentioned_items.",
+      "root_cause": "rustc's SimplifyConstCondition and RemoveDeadBlocks passes remove dead blocks and unused required_consts entries before PostCleanup MIR, recording surviving type-check obligations in Body::mentioned_items. Furthermore, conditional PME guards unwind under invalid tySizes and succeed under valid tySizes, requiring two-stage ConstsTotal (succeeds OR unwinds for all ValidTySizes) + MonoAdmitted (succeeds at active s.tySizes).",
+      "verified_resolution_in_candidate_003": "Extract both Body::required_consts and Body::mentioned_items into BodyDecl.mentionedItems : List MentionedItem, and enforce both ConstsTotal c body (every transitive mentioned const either ConstSucceeds or ConstUnwinds across all ValidTySizes) and MonoAdmitted c s.tySizes body (every transitive mentioned const ConstSucceeds and MentionedItem.tyLayout has a valid layout at active s.tySizes)."
+    },
+    {
+      "id": "D-05",
+      "number": 5,
+      "title": "Vacuous ConstsTotal Implication on Unsized/Unsupported Types and Empty Generic Substitution in Pass 2",
+      "category": "soundness",
+      "severity": "critical",
+      "origin": "swarm-pass-2-regression",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:946-960"
+      ],
+      "single_agent_m3_prime_status": "missed",
+      "single_agent_evidence": "Single-agent M3' used single-stage ConstsEvaluated without generic type-argument substitution or layout totality checks (pass2-final-design.md:31-35).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 2 (Candidate 002)",
+        "pass_caught": "Pass 2 Falsification",
+        "pass_resolved": "Pass 3 (Candidate 003)",
+        "candidate_001_state": "not-yet-present (Candidate 001 had single-stage ConstsEvaluated)",
+        "candidate_002_state": "defective (ConstsTotal used universal implication mapOpt (evalTyByteSize ...) = some argSizes -> ... and called instantiateBody c cid [] with empty type arguments)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": [],
+        "challengers": ["challenger-1 (P2.1)"],
+        "holdout_cases": ["H3", "H5", "R3"],
+        "fresh_critics": ["fresh-critic-002 (FC2-1)"]
+      },
+      "counterexample_rust_or_lean": "MentionedItem.constItem cid [.unsupported] // Because evalTyByteSize c tySizes .unsupported = none, the antecedent mapOpt (evalTyByteSize c tySizes) typeArgs = some argSizes is false, making the implication in Candidate 002's ConstsTotal vacuously True! And for any generic const with typeParamCount = 1, instantiateBody c cid [] returned none.",
+      "root_cause": "In Candidate 002, the synthesizer wrote ConstsTotal with mapOpt (evalTyByteSize c tySizes) typeArgs = some argSizes on the left-hand side of an implication (->) instead of a positive existential conjunction (exists argSizes, ... /\\ ...), and hardcoded [] instead of typeArgs in instantiateBody c cid [].",
+      "verified_resolution_in_candidate_003": "Define ConstsTotal using positive existential quantification in both arms (.constItem cid typeArgs requires exists argSizes constBody, mapOpt (evalTyByteSize c tySizes) typeArgs = some argSizes /\\ instantiateBody c cid typeArgs = some constBody /\\ (ConstSucceeds ... \\/ ConstUnwinds ...); .tyLayout ty requires exists sz, evalTyByteSize c tySizes ty = some sz) and close ReachableMentioned transitively over mentioned items of referenced constants."
+    },
+    {
+      "id": "D-06",
+      "number": 6,
+      "title": "Unconstrained tySizes Exceeding isize::MAX and Unbounded MirVal.usize Inputs Exceeding usize::MAX",
+      "category": "soundness",
+      "severity": "high",
+      "origin": "baseline-codebase",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:367-371",
+        "trusted/lean/Trusted/MirSemantics.lean:946-967"
+      ],
+      "single_agent_m3_prime_status": "missed",
+      "single_agent_evidence": "Single-agent M3' quantified over unconstrained (tySizes : Nat -> Nat) and defined MirVal.usize without bounding values by 2^ptrBits - 1 in validStep or ValidTySizes (pass2-final-design.md:31-39).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 0 (baseline MirSemantics.lean:370, 947)",
+        "pass_caught": "Pass 0 / Pass 1 (Architect Alpha, Architect Beta, D8, H9, R1)",
+        "pass_resolved": "Pass 2 / Pass 3 (Candidate 002 / Candidate 003)",
+        "candidate_001_state": "partial (bounded MirVal.usize and LayoutEnv, but used 2 ^ ... exponentiation rejected by TrustedBoundary.lean; see D-10)",
+        "candidate_002_state": "resolved",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-alpha", "architect-beta"],
+        "challengers": ["challenger-1 (F1.3)", "challenger-2 (F2.1)"],
+        "holdout_cases": ["D8", "H9", "R1"],
+        "fresh_critics": ["fresh-critic-001 (C8)"]
+      },
+      "counterexample_rust_or_lean": "pub fn size_check<T>() -> usize { core::mem::size_of::<T>() + 0 } // Without ValidTySizes (tySizes idx <= isize::MAX), tySizes 0 = 2^64 causes size_of::<T>() to exceed usize::MAX even though rustc rejects any monomorphization whose layout size exceeds isize::MAX.",
+      "root_cause": "Baseline MirSemantics.lean modeled MirVal.usize as an unbounded Nat in validStep (| .usize, .usize _ => True) and quantified over arbitrary Nat -> Nat in ConstsTotal and initMirState without bounding type sizes by rustc's Layout::from_size_align_unchecked invariant (size <= isize::MAX).",
+      "verified_resolution_in_candidate_003": "Record Explicit integer bounds in LayoutEnv (ptrBits = 64, maxTypeSize = 9223372036854775807) without exponentiation, enforce val <= c.layout.usizeMax in validStep for .usize, and constrain both ConstsTotal and initMirState by ValidTySizes c tySizes (forall idx, tySizes idx <= c.layout.maxTypeSize)."
+    },
+    {
+      "id": "D-07",
+      "number": 7,
+      "title": "AdmissibleAdtInv defaultAdtInv Failure on Nested Structs and Pass-1 Omission of FieldAccess",
+      "category": "soundness",
+      "severity": "critical",
+      "origin": "baseline-codebase",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:1000-1007"
+      ],
+      "single_agent_m3_prime_status": "missed",
+      "single_agent_evidence": "Single-agent M3' retained baseline AdmissibleAdtInv checking fields under defaultAdtInv (pass2-final-design.md:94-103), which fails whenever a public struct wraps a private-field ADT with a non-trivial invariant.",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 0 (baseline MirSemantics.lean:1005) and Pass 1 (Candidate 001 dropped FieldAccess and InvariantSpec)",
+        "pass_caught": "Pass 0 (Architect Beta + D7/H4) and Pass 1 Falsification (Challenger 2 F2.2 + Stitcher S1b + Fresh Critic 001 C1)",
+        "pass_resolved": "Pass 2 / Pass 3 (Candidate 002 / Candidate 003)",
+        "candidate_001_state": "defective (dropped FieldAccess and InvariantSpec from AdtDecl, breaking NonZero representation invariant enforcement)",
+        "candidate_002_state": "resolved",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-beta"],
+        "challengers": ["challenger-2 (F2.2)"],
+        "holdout_cases": ["D7", "H4 (S1b)"],
+        "fresh_critics": ["fresh-critic-001 (C1)"]
+      },
+      "counterexample_rust_or_lean": "pub struct NonZero(usize); // private field, invariant: self.0 != 0\npub struct PublicWrapper { pub inner: NonZero } // all fields public!\n// Baseline AdmissibleAdtInv checks PublicWrapper under defaultAdtInv, which admits inner = NonZero(0), making any invariant on PublicWrapper that relies on inner.0 != 0 unprovable or unsound.",
+      "root_cause": "Baseline AdmissibleAdtInv evaluated field validity using defaultAdtInv (which strips invariants from all nested ADTs, even those with private fields that safe callers cannot forge). Then Candidate 001 over-simplified AdtDecl by dropping FieldAccess and InvariantSpec altogether.",
+      "verified_resolution_in_candidate_003": "Restore FieldAccess (.pubSafe | .restricted) and InvariantSpec on AdtDecl, and define stratified AdmissibleAdtInv: for any struct where allFieldsPubSafe = true, any field vector fieldVals whose elements each satisfy the full crate invariant validFuel c adtInv s 0 0 (depthFuel c) must satisfy adtInv decl.id (.adt decl.id fieldVals)."
+    },
+    {
+      "id": "D-08",
+      "number": 8,
+      "title": "Compiler-Inserted TerminatorKind::Assert Stepping to .unwind Instead of .failed (Masking Overflow UB)",
+      "category": "soundness",
+      "severity": "critical",
+      "origin": "swarm-pass-2-regression",
+      "baseline_locations": [
+        "trusted/rustc-capture/src/extract.rs:580-630",
+        "trusted/lean/Trusted/MirSemantics.lean:772-775"
+      ],
+      "single_agent_m3_prime_status": "missed",
+      "single_agent_evidence": "Single-agent M3' neither modeled Terminator.assert nor distinguished compiler-inserted overflow assertions from user panic calls across debug/release profiles (pass2-final-design.md:21-43).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 2 (Candidate 002)",
+        "pass_caught": "Pass 2 Falsification",
+        "pass_resolved": "Pass 3 (Candidate 003)",
+        "candidate_001_state": "stepped Terminator.assert failure to .failed, but lacked two-stage ConstUnwinds distinction for Callee.panic",
+        "candidate_002_state": "defective (changed Terminator.assert failure to step to .terminated .unwind to appease H3, which allowed arithmetic overflow in bad_overflow to verify as safe unwind instead of .failed UB)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": [],
+        "challengers": ["challenger-1 (P2.3)"],
+        "holdout_cases": ["H3", "H9", "R2"],
+        "fresh_critics": ["fresh-critic-002 (FC2-5)"]
+      },
+      "counterexample_rust_or_lean": "pub unsafe fn bad_overflow(x: usize) -> usize {\n    let y = x + 1;\n    if y == 0 { unsafe { core::hint::unreachable_unchecked() } } else { y }\n}\n// Under -C overflow-checks=on, x + 1 emits CheckedAdd + TerminatorKind::Assert. If Assert failure steps to .terminated .unwind (which satisfies isSafe), bad_overflow(usize::MAX) verifies as safe in debug mode, but in release mode usize::MAX + 1 wraps to 0 and executes unreachable_unchecked() UB!",
+      "root_cause": "In Pass 2, to make const { assert!(size_of::<T>() == 8); } step to .terminated .unwind under H3, the synthesizer changed Terminator.assert failure from .failed to .terminated .unwind. However, rustc lowers user assert!(...) to SwitchInt + core::panicking::panic (Callee.panic), whereas TerminatorKind::Assert is emitted for compiler-inserted arithmetic overflow, bounds, and division-by-zero checks that may be elided in release builds.",
+      "verified_resolution_in_candidate_003": "Step Terminator.assert failure strictly to .failed (so any unguarded arithmetic overflow, division by zero, or bounds check failure is a verification failure), while stepping Callee.panic to .terminated .unwind (so explicit user panics and const { assert!(...) } blocks unwind cleanly)."
+    },
+    {
+      "id": "D-09",
+      "number": 9,
+      "title": "Cross-Config -C overflow-checks MIR Divergence and #[cfg(debug_assertions)] LocalDefId Index Shifting",
+      "category": "completeness",
+      "severity": "high",
+      "origin": "baseline-codebase",
+      "baseline_locations": [
+        "trusted/rustc-capture/src/main.rs:325-328",
+        "trusted/rustc-capture/src/items.rs:1-120"
+      ],
+      "single_agent_m3_prime_status": "introduced",
+      "single_agent_evidence": "Single-agent M3' retained baseline CONFIGS with differing overflow_checks and keyed BodyId directly by raw rustc LocalDefId.local_def_index (pass1-analysis.md:201, pass2-final-design.md:48), which shifts whenever #[cfg(debug_assertions)] introduces a helper item.",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 0 (baseline main.rs:325-328) and Pass 1 (Candidate 001 raw LocalDefId indexing)",
+        "pass_caught": "Pass 1 Falsification (Challenger 2 F2.4 + Fresh Critic 001 C7) and Pass 2 Falsification (Fresh Critic 002 FC2-5)",
+        "pass_resolved": "Pass 3 (Candidate 003)",
+        "candidate_001_state": "defective (used raw LocalDefId index as BodyId and kept mismatched overflow-checks in CONFIGS)",
+        "candidate_002_state": "partial (replaced raw LocalDefId with dense reachability-interned BodyId, but still varied -C overflow-checks across CONFIGS)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-gamma"],
+        "challengers": ["challenger-2 (F2.4)"],
+        "holdout_cases": ["H9", "H10"],
+        "fresh_critics": ["fresh-critic-001 (C7)", "fresh-critic-002 (FC2-5)"]
+      },
+      "counterexample_rust_or_lean": "pub fn add_one(x: usize) -> usize { x + 1 }\n// Under baseline CONFIGS: debug (-Coverflow-checks=on) emits Rvalue::BinaryOp(AddWithOverflow) returning (usize, bool) + TerminatorKind::Assert; release (-Coverflow-checks=off) emits Rvalue::BinaryOp(Add) returning usize. Requiring byte-identical Mir.lean across both rejects every crate containing +, -, or *!",
+      "root_cause": "Baseline main.rs varied both debug_assertions and overflow_checks across CONFIGS while requiring identical PostCleanup MIR. Because checked arithmetic changes MIR statement/terminator shapes (and requires MirTy.tuple / MirVal.tuple for (T, bool)) while #[cfg(debug_assertions)] shifts raw LocalDefId numbers, every arithmetic crate or debug-only item caused spurious capture failure.",
+      "verified_resolution_in_candidate_003": "Pin -C overflow-checks=on and -Z mir-preserve-ub in both CONFIGS passes (varying only -C debug-assertions=on vs off to reject cfg-dependent divergence in verified items), add MirTy.tuple and MirVal.tuple for CheckedBinOp outputs, and assign dense 0-based BodyId/AdtId/SpanId in deterministic pre-order reachability traversal from Crate.fns."
+    },
+    {
+      "id": "D-10",
+      "number": 10,
+      "title": "TrustedBoundary.lean Syntax Whitelist and foundation-lock.json Import Rejections",
+      "category": "audit-boundary",
+      "severity": "critical",
+      "origin": "single-and-swarm-design",
+      "baseline_locations": [
+        "trusted/audit/TrustedBoundary.lean:206-290",
+        "trusted/audit/TrustedBoundary.lean:510-590"
+      ],
+      "single_agent_m3_prime_status": "introduced",
+      "single_agent_evidence": "Single-agent M3' assumed BEq/DecidableEq could be derived on MirBody once the mutual cycle was broken (pass1-analysis.md:195) and used standard arithmetic syntax without auditing TrustedBoundary.lean's closed allowlists allowedCommandSyntaxKinds and allowedNotationSyntaxKinds.",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 1 (Candidate 001 used import Init.Data.String.Basic, unary -Int.ofNat, and 2 ^ ...)",
+        "pass_caught": "Pass 1 Falsification (Challenger 2 F2.1 + Stitcher H6/S6 + Fresh Critic 001 C8/C10) and Pass 3 Polish (Fresh Critic 003 Section 1.2 item 1 caught x notin xs)",
+        "pass_resolved": "Pass 2 / Pass 3 (Candidate 002 / Candidate 003)",
+        "candidate_001_state": "defective (used import Init.Data.String.Basic, unary negation -Int.ofNat, and exponentiation 2 ^ ...)",
+        "candidate_002_state": "resolved (removed Init.Data.String.Basic, unary -, and ^; NoDupIds x notin xs polished in Pass 3)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-gamma"],
+        "challengers": ["challenger-2 (F2.1)", "challenger-4 (C10)"],
+        "holdout_cases": ["H6 (S6)"],
+        "fresh_critics": ["fresh-critic-001 (C8, C10)", "fresh-critic-003 (Section 1.2 item 1)"]
+      },
+      "counterexample_rust_or_lean": "-- In SourceRole.trusted (trusted/lean/Trusted/*.lean):\nimport Init.Data.String.Basic -- rejected by foundation-lock.json transitive .olean module check\nderiving DecidableEq, Repr -- excluded from allowedCommandSyntaxKinds (derivingClass, line 218)\n-(Int.ofNat n), 2 ^ 64, x ∉ xs -- excluded from allowedNotationSyntaxKinds (lines 274-280)",
+      "root_cause": "TrustedBoundary.lean enforces closed syntax and .olean environment allowlists on SourceRole.trusted: derivingClass is excluded from allowedCommandSyntaxKinds (line 218), and unary negation, exponentiation, and not-in notation are excluded from allowedNotationSyntaxKinds (lines 274-280) to prevent macro-expansion and typeclass synthesis surprises inside the TCB.",
+      "verified_resolution_in_candidate_003": "Import only Init.Core, Init.Data.List.Basic, and Init.Data.Option.Basic; replace String identifiers with Interned Idx wrappers (FnId, AdtId, BodyId, SpanId); write explicit structural BEq functions in theory/; represent signed integers via Sign = .pos | .neg; store precomputed maxTypeSize = 9223372036854775807; and write NoDupIds using (x in xs -> False)."
+    },
+    {
+      "id": "D-11",
+      "number": 11,
+      "title": "Frame-Relative returnRefsOk and resolveLocal Bounds Across Nested Callee Returns",
+      "category": "completeness",
+      "severity": "high",
+      "origin": "swarm-pass-1-regression",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:320-348",
+        "trusted/lean/Trusted/MirSemantics.lean:742-764"
+      ],
+      "single_agent_m3_prime_status": "missed",
+      "single_agent_evidence": "Single-agent M3' left returnRefsOk and resolveRef unspecified at nested call boundaries while proposing to generalize Place projections (pass2-final-design.md:21-43).",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 1 (Candidate 001 resolveRefLocal bound bug) and Pass 2 (Candidate 002 targetFrameId = 0 hardcoding in returnRefsOk)",
+        "pass_caught": "Pass 1 Falsification (F1.2, C5, H2/S3) and Pass 2 Falsification (P2.2, FC2-2, H2)",
+        "pass_resolved": "Pass 3 (Candidate 003)",
+        "candidate_001_state": "defective (resolveRefLocal passed activeBody.localCount as bound, rejecting caller-owned synthetic locals at root.index >= activeBody.localCount)",
+        "candidate_002_state": "defective (removed localCount bound from resolveLocal, but defined returnRefsOk as a Prop instead of Bool and hardcoded targetFrameId = 0 /\\ b.localCount <= root.index, rejecting nested helpers fn id_ref(r: &usize) -> &usize { r } when caller local has root.index = 1 < b.localCount)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": [],
+        "challengers": ["challenger-1 (F1.2, P2.2)"],
+        "holdout_cases": ["H2 (S3)", "R4"],
+        "fresh_critics": ["fresh-critic-001 (C5)", "fresh-critic-002 (FC2-2)"]
+      },
+      "counterexample_rust_or_lean": "fn id_ref<'a>(r: &'a usize) -> &'a usize { r }\npub fn caller(x: usize) -> usize { let p = id_ref(&x); *p }\n// In caller (frameId = 0), x is at LocalId 1. Inside id_ref (frameId = 1, localCount = 2), r holds .ref 0 gen (LocalId.mk 1) []. At id_ref's Terminator.return_, Candidate 002 checked b.localCount <= root.index (2 <= 1 = false), stepping a valid Rust helper call to .failed!",
+      "root_cause": "At root return (s.frameId = 0), a returned reference must point to an external caller-owned synthetic referent (targetFrameId = 0 and root.index >= rootBody.localCount). At a nested callee return (s.frameId > 0), however, a valid returned reference may point to any strictly older activation frame (targetFrameId < s.frameId), including the caller's own local variables (0 < root.index < callerBody.localCount).",
+      "verified_resolution_in_candidate_003": "Define MirVal.returnRefsOk as a total computable Bool that checks targetFrameId == 0 && decide (localCount <= root.index) when s.frameId == 0, and decide (targetFrameId < s.frameId) when s.frameId > 0 (preventing escaping references to the dying callee frame s.frameId while allowing references to any caller frame)."
+    },
+    {
+      "id": "D-12",
+      "number": 12,
+      "title": "Root Terminator.return_ PC-Canonicalization in MirReturn.state and In-Place Stage 3 lowerBody Simulation",
+      "category": "soundness",
+      "severity": "high",
+      "origin": "single-and-swarm-design",
+      "baseline_locations": [
+        "trusted/lean/Trusted/MirSemantics.lean:740-745",
+        "trusted/lean/Trusted/MirSemantics.lean:1011-1016"
+      ],
+      "single_agent_m3_prime_status": "introduced",
+      "single_agent_evidence": "Single-agent M3' proposed Stage 3 lowerBody coalescing trivial goto chains and stripping Stmt.nop / StorageLive / StorageDead (pass1-analysis.md:211-218, pass2-final-design.md:154-174) while leaving root Terminator.return_ returning raw ⟨retVal, s⟩, which makes lowerBody_simulates mathematically unprovable because s.block, s.stmtIdx, s.curBody, and s.localGens differ in MirReturn.state.",
+      "swarm_lifecycle": {
+        "pass_introduced": "Pass 1 (Candidate 001 proposed lowerBody stripping nop/storageLive/storageDead and coalescing blocks without canonicalizing MirReturn.state)",
+        "pass_caught": "Pass 1 Falsification (Challenger 2 F2.3, Challenger 3 F3.1, Stitcher H8/S5, Fresh Critic 001 C9) and Pass 2 Falsification (Fresh Critic 002 FC2-4)",
+        "pass_resolved": "Pass 2 / Pass 3 (Candidate 002 / Candidate 003)",
+        "candidate_001_state": "defective (lowerBody stripped storageLive/storageDead and changed stmtIdx at return while MirReturn.state exposed raw s)",
+        "candidate_002_state": "mostly-resolved (canonicalized block := 0, stmtIdx := 0, curBody := none at root return and kept storageLive/storageDead, but stated lowerBody_simulates for arbitrary mid-block states s where s.stmtIdx is out of bounds in lowered block)",
+        "candidate_003_state": "resolved"
+      },
+      "attributed_mechanisms": {
+        "architects": ["architect-beta"],
+        "challengers": ["challenger-2 (F2.3)", "challenger-3 (F3.1)"],
+        "holdout_cases": ["H8 (S5)"],
+        "fresh_critics": ["fresh-critic-001 (C9)", "fresh-critic-002 (FC2-4)"]
+      },
+      "counterexample_rust_or_lean": "-- Block 0 in raw body b: [Stmt.nop] + Terminator.return_\n-- Block 0 in lowerBody b: [] + Terminator.return_\n-- Without PC-canonicalization at root return, b terminates with r.state.stmtIdx = 1 whereas lowerBody b terminates with r.state.stmtIdx = 0, falsifying ExecNormal c (lowerBody b) s P -> ExecNormal c b s P for any postcondition P inspecting MirReturn.state!",
+      "root_cause": "EnsuresRetLibInv evaluates r.value.valid c adtInv r.state on the terminal MirReturn.state, which only inspects frame-0 locals and localGens above localCount, but raw MirReturn.mk retVal s also embeds control-flow coordinates (s.block, s.stmtIdx, s.curBody). Any Stage 3 pass that removes Stmt.nop or short-circuits goto chains alters (s.block, s.stmtIdx) at root return unless root Terminator.return_ canonicalizes those fields.",
+      "verified_resolution_in_candidate_003": "At root Terminator.return_ (s.stack = []), emit .terminated (.normal ⟨retVal, { s with block := 0, stmtIdx := 0, curBody := none }⟩); keep Stmt.storageLive and Stmt.storageDead intact in lowerBody so s.localGens stays identical; preserve b.blocks.length via in-place block updates; and state lowerBody_simulates with block-entry precondition hEntry : s.stmtIdx = 0 /\\ s.curBody = none."
+    }
+  ],
+  "mechanism_attribution": {
+    "divergent_architects": {
+      "architect_alpha": {
+        "role": "Radical Minimizer (Eliminate / Inline / Collapse)",
+        "primary_contributions": [
+          "Eliminated CaptureProfile and multi-version subcrate hierarchy (M-1)",
+          "Replaced TargetArtifact/TargetSem/TargetLang/rustc/rustcCodec with Obligation.assumed (M-2)",
+          "Replaced embedded MirBody in TCBItem and Terminator with flat BodyId table (M-3)",
+          "Bounded ValidTySizes by isize::MAX (D-06)"
+        ],
+        "blind_spots_if_used_alone": [
+          "Collapsed Stage 3 into direct WP over raw MIR without verified lowering (M-4)",
+          "Dropped MentionedItem dead-branch PME tracking (D-04)",
+          "Dropped FieldAccess and stratified AdmissibleAdtInv (D-07)"
+        ]
+      },
+      "architect_beta": {
+        "role": "Structural Generalizer (Unify / Parameterize / Stratify)",
+        "primary_contributions": [
+          "Unified field0, copyDeref, and partial moves into first-class Place = { local, proj } with MirVal.uninit leaves (D-01)",
+          "Uncovered Body::mentioned_items requirement for dead-branch polymorphic PME items erased by SimplifyConstCondition / RemoveDeadBlocks (D-04)",
+          "Formulated stratified AdmissibleAdtInv over nested private-invariant ADTs (D-07)",
+          "Designed verified Stage 3 MIR-to-MIR cleanup pass lowerBody + lowerBody_simulates (M-4, D-12)"
+        ],
+        "blind_spots_if_used_alone": [
+          "Initial evalProjFuel omitted recursive isFullyInitFuel check at [] (D-02)",
+          "Initial lowerBody omitted root return PC-canonicalization (D-12)"
+        ]
+      },
+      "architect_gamma": {
+        "role": "Pragmatic Incumbent Defender (Incremental Hardening & Audit Preservation)",
+        "primary_contributions": [
+          "Audited TrustedBoundary.lean forbiddenCommandKinds, forbiddenSyntaxKinds, and foundation-lock.json transitive .olean module rules (D-10)",
+          "Defended two-stage ConstsTotal (succeeds OR unwinds across all tySizes) vs. MonoAdmitted (succeeds at active s.tySizes) (D-04)",
+          "Identified multi-config CONFIGS hazards between debug and release profiles (D-09)"
+        ],
+        "blind_spots_if_used_alone": [
+          "Initially tolerant of keeping legacy TargetSem scaffolding until challenged by Alpha and Challenger 4"
+        ]
+      }
+    },
+    "challenger_roles": {
+      "challenger_1_semantic_soundness": {
+        "focus": "Rust / MIR UB, partial moves, references, PME / CTFE, arithmetic overflow",
+        "defects_caught": ["D-01", "D-02", "D-03", "D-04", "D-05", "D-06", "D-08", "D-11"],
+        "key_findings": ["F1.1 (partial-move whole-struct read)", "F1.2 (resolveRefLocal caller local bound)", "F1.3 (two-stage ConstsTotal vs MonoAdmitted)", "P2.1 (vacuous ConstsTotal implication & instantiateBody [])", "P2.2 (frame-relative returnRefsOk)", "P2.3 (Terminator.assert .unwind soundness bug)"]
+      },
+      "challenger_2_extractor_and_kernel_boundary": {
+        "focus": "rustc PostCleanup MIR fidelity, TrustedBoundary.lean syntax/import rules, CONFIGS determinism",
+        "defects_caught": ["D-06", "D-07", "D-09", "D-10", "D-12"],
+        "key_findings": ["F2.1 (TrustedBoundary.lean String/negation/exponentiation rejection)", "F2.2 (dropped FieldAccess/InvariantSpec and AdmissibleAdtInv)", "F2.3 (MirReturn.state PC sensitivity)", "F2.4 (#[cfg(debug_assertions)] LocalDefId shift and CONFIGS overflow-checks)"]
+      },
+      "challenger_3_stage3_proof_ergonomics": {
+        "focus": "Stage 3 lowerBody simulation, fuel-free proof scaling, MirReturn equality",
+        "defects_caught": ["D-12"],
+        "key_findings": ["F3.1 (lowerBody_simulates falsity without root return PC canonicalization and storageLive/storageDead preservation)"]
+      },
+      "challenger_4_conceptual_parsimony": {
+        "focus": "Concept count minimization, elimination of vestigial fields and prohibited deriving clauses",
+        "defects_caught": ["D-10"],
+        "key_findings": ["F4.1/F4.2 (Trusted/Spec.lean merge into MirAst.lean, removal of unused TyParamDecl.name and deriving clauses)"]
+      }
+    },
+    "holdout_stitcher_and_exposure_accounting": {
+      "pass_0_reclassification_audit": {
+        "initial_holdouts_inspected": 10,
+        "reclassified_to_discovery_count": 6,
+        "reclassified_items": [
+          "D1: id_copy and id_move (already present in theory/Anneal/MirLemmas.lean:3755-3762)",
+          "D2: alloc_passthrough (already present in theory/Anneal/MirLemmas.lean:3763-3766)",
+          "D3: pme_concrete_transmute (already present in theory/Anneal/MirLemmas.lean:3767-3768)",
+          "D4: inline_const_pme (already present in theory/Anneal/MirLemmas.lean:3769-3770)",
+          "D7: NonZero 3-function library crate (already present in theory/Anneal/MirLemmas.lean:3773-3780)",
+          "D9/D10: CaptureProfile removal and static Proof.lean (already explicit in docs/architecture.md)"
+        ],
+        "rationale": "Any agent reading the repository had already observed these 6 shapes in MirLemmas.lean or docs/architecture.md; keeping them in the blind holdout set would have created a false sense of out-of-sample confirmation."
+      },
+      "discovery_set": [
+        "D1: Basic scalar/generic copy and move functions (id_copy, id_move)",
+        "D2: Opaque reference passthrough (alloc_passthrough)",
+        "D3: Concrete transmute size check (pme_concrete_transmute)",
+        "D4: Inline const block PME check (inline_const_pme)",
+        "D5: Multi-field structs and partial moves (Operand::Move(_1.0) followed by sibling read _1.1)",
+        "D6: Multi-hop projections (_1.0.1, (*_1).0) and mutable reference dereference writes (*_1 = v)",
+        "D7: Single-field and multi-field ADT representation invariants (NonZero, BoundedPair) and AdmissibleAdtInv",
+        "D8: Polymorphic dead-branch PME (if false { let _ = Fail::<T>::C; }) via Body::mentioned_items",
+        "D9: Single-toolchain capture manifest and elimination of CaptureProfile",
+        "D10: First-order specification capture and static 8-line Proof.lean"
+      ],
+      "blind_holdout_set": [
+        "H1 (S4): Multi-field partial move + sibling field read + whole-aggregate use-after-partial-move",
+        "H2 (S3): Nested call returning reference to caller's frame across callee activation (fn id_ref(r: &usize) -> &usize)",
+        "H3 (S2): Generic constant block with conditional panic (const { assert!(size_of::<T>() == 8) })",
+        "H4 (S1b): Public struct with nested private-invariant field (PublicWrapper { pub inner: NonZero })",
+        "H5 (S2): Dead-branch polymorphic const reference (Body::mentioned_items vs required_consts)",
+        "H6 (S6): TrustedBoundary.lean syntax whitelist and foundation-lock.json .olean import audit",
+        "H7 (S3): Reference generation invalidation via re-entry (StorageDead + StorageLive of same local index)",
+        "H8 (S5): Stage 3 lowerBody non-vacuity and terminal state projection (MirReturn.state PC canonicalization)",
+        "H9: tySizes upper bound (isize::MAX) and arithmetic overflow interaction",
+        "H10: Unsupported construct inside uncalled private helper vs called helper (reachable capture)"
+      ],
+      "reserve_holdout_set": [
+        "R1: Generic array [T; N] multiplication overflow in evalTyByteSize vs maxTypeSize",
+        "R2: Recursion cycle in callee graph or cyclic ADT layout fuel exhaustion (stackDepth <= bodyCount)",
+        "R3: Polymorphic const item referencing another generic const item (transitive MentionedItem substitution)",
+        "R4: Returning a tuple/struct containing a nested reference to a callee-local variable (recursive MirVal.returnRefsOk)"
+      ],
+      "pass_evaluations": {
+        "pass_1": {
+          "candidate": "Candidate 001",
+          "verdict": "REJECT",
+          "holdouts_passed": 2,
+          "holdouts_partial": 2,
+          "holdouts_failed": 6,
+          "failed_or_partial_ids": ["H1", "H2", "H3", "H4", "H5", "H6", "H8", "H10"]
+        },
+        "pass_2": {
+          "candidate": "Candidate 002",
+          "verdict": "REJECT",
+          "holdouts_passed": 8,
+          "holdouts_partial": 0,
+          "holdouts_failed": 2,
+          "failed_or_partial_ids": ["H2", "H3"],
+          "reserve_holdouts_triggered": ["R2", "R3"]
+        },
+        "pass_3": {
+          "candidate": "Candidate 003",
+          "verdict": "ACCEPT",
+          "holdouts_passed": 10,
+          "holdouts_partial": 0,
+          "holdouts_failed": 0,
+          "reserve_holdouts_passed": 4,
+          "reserve_holdouts_total": 4
+        }
+      }
+    },
+    "unanchored_fresh_critics": {
+      "fresh_critic_001": {
+        "target": "Candidate 001 (Pass 1)",
+        "findings_count": 10,
+        "finding_ids": ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"],
+        "defects_caught": ["D-01", "D-02", "D-04", "D-06", "D-07", "D-09", "D-10", "D-11", "D-12"]
+      },
+      "fresh_critic_002": {
+        "target": "Candidate 002 (Pass 2)",
+        "findings_count": 5,
+        "finding_ids": ["FC2-1", "FC2-2", "FC2-3", "FC2-4", "FC2-5"],
+        "defects_caught": ["D-03", "D-05", "D-08", "D-09", "D-11", "D-12"],
+        "unique_discoveries": [
+          "FC2-3 (D-03): Intermediate .deref hop (*r).1 bypassing isFullyInitFuel on partially-moved aggregate *r",
+          "FC2-5 (D-09): Cross-config -C overflow-checks divergence between debug and release in CONFIGS for every +, -, *"
+        ]
+      },
+      "fresh_critic_003": {
+        "target": "Candidate 003 (Pass 3)",
+        "findings_count": 3,
+        "blocking_defects_count": 0,
+        "polish_items": [
+          "Section 1.2 item 1 (D-10): x notin xs in NoDupIds expands to «term_∉_» rejected by TrustedBoundary.lean; replaced with (x in xs -> False)",
+          "Section 1.2 item 2 (D-11): Explicit callerBase := 0 vs rootBody.localCount documentation on nested returnRefsOk",
+          "Section 1.2 item 3 (D-12): Explicit hEntry : s.stmtIdx = 0 /\\ s.curBody = none hypothesis on lowerBody_simulates"
+        ]
+      }
+    },
+    "multi_pass_regression_transition_matrix": {
+      "pass_0_baseline_and_single_agent_m3_prime": {
+        "active_defects_in_single_agent_m3_prime": ["D-01", "D-04", "D-05", "D-06", "D-07", "D-08", "D-09", "D-10", "D-11", "D-12"],
+        "count_active": 10,
+        "untriggered_second_order_defects": ["D-02", "D-03"],
+        "notes": "Single-agent M3' stopped after one self-critique pass, leaving 10 defects unresolved and avoiding D-02/D-03 only because it never implemented partial-move deinitialization or multi-step Place projections."
+      },
+      "pass_1_candidate_001": {
+        "active_defects": ["D-02", "D-03", "D-04", "D-06", "D-07", "D-09", "D-10", "D-11", "D-12"],
+        "newly_introduced_by_pass_1_synthesis": ["D-02", "D-03", "D-04 (single-stage ConstsEvaluated)", "D-07 (dropped FieldAccess/InvariantSpec)", "D-10 (String/negation/exponentiation)", "D-11 (resolveRefLocal bound)", "D-12 (un-canonicalized MirReturn.state under lowerBody)"],
+        "count_active": 9,
+        "count_newly_introduced": 7
+      },
+      "pass_2_candidate_002": {
+        "defects_repaired_from_pass_1": ["D-01", "D-02", "D-06", "D-07", "D-10"],
+        "active_defects": ["D-03", "D-05", "D-08", "D-09", "D-11", "D-12 (mid-block hEntry)"],
+        "newly_introduced_by_pass_2_repair": [
+          "D-05 (vacuous ConstsTotal implication & instantiateBody c cid [])",
+          "D-08 (Terminator.assert failure stepping to .terminated .unwind instead of .failed)",
+          "D-11 (returnRefsOk hardcoded targetFrameId = 0 /\\ b.localCount <= root.index)"
+        ],
+        "count_active": 6,
+        "count_newly_introduced": 3
+      },
+      "pass_3_candidate_003": {
+        "defects_repaired_from_pass_2": ["D-03", "D-04", "D-05", "D-08", "D-09", "D-11", "D-12"],
+        "active_defects": [],
+        "count_active": 0,
+        "count_newly_introduced": 0
+      }
+    }
+  }
+}

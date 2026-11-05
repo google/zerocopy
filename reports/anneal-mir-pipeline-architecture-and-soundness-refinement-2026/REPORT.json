@@ -1,0 +1,64 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/mir-semantics",
+    "anneal/refinement",
+    "anneal/trusted-boundary",
+    "anneal/trusted-computing-base",
+    "rust/mir/partial-moves",
+    "rust/mir/place-mention",
+    "rust/mir/post-monomorphization-errors",
+    "rust/mir/assert-terminator",
+    "lean/olean-audit",
+    "lean/mechanized-models"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal formal verification system (simplify-trusted branch)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "572f1e80580daa4b052ce5646bb675484d9bb957"
+      }
+    },
+    {
+      "name": "Anneal architecture documentation (main branch)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254"
+      }
+    },
+    {
+      "name": "Rust compiler (nightly-2026-03-19)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "fd0c901b00ee1e08a250039cdb90258603497e20",
+        "version": "1.96.0-nightly"
+      }
+    },
+    {
+      "name": "Rust compiler (nightly-2026-05-31)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.28.0)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+        "version": "v4.28.0"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

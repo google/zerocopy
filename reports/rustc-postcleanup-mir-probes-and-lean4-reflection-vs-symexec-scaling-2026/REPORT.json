@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "rustc",
+    "mir",
+    "runtime-postcleanup",
+    "two-phase-borrows",
+    "ptr-metadata",
+    "drop-elaboration",
+    "lean4",
+    "kernel-reduction",
+    "computational-reflection",
+    "symbolic-execution",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (nightly-2026-03-19)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.96.0-nightly",
+        "revision": "fd0c901b00ee1e08a250039cdb90258603497e20",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "rust-lang/rust (nightly-2026-05-31)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.98.0-nightly",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.28.0-rc1)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.28.0-rc1",
+        "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.28.0)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.28.0",
+        "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.34.1)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    },
+    {
+      "name": "joshlf/anneal",
+      "identity": {
+        "kind": "repository",
+        "repository": "joshlf/anneal",
+        "revision": "572f1e80580daa4b052ce5646bb675484d9bb957",
+        "url": "https://github.com/joshlf/anneal"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

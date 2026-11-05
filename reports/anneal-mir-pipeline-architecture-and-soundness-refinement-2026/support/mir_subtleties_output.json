@@ -1,0 +1,367 @@
+{
+  "specimen": "mir_subtleties_specimen.rs",
+  "toolchains": {
+    "+nightly-2026-03-19": {
+      "dead_branch_pme": {
+        "after_simplify_const_condition_has_fail_const": true,
+        "after_simplify_const_condition_has_switch_int": false,
+        "after_simplify_locals_has_fail_const": false,
+        "built_has_fail_const": true,
+        "monomorphize_u8_exit_code": 1,
+        "monomorphize_u8_triggers_e0080": true,
+        "runtime_optimized_has_fail_const_in_bbs": false,
+        "runtime_post_cleanup_has_fail_const_in_dead_bb": true
+      },
+      "partial_move_sibling": {
+        "has_move_field_0": true,
+        "has_move_field_1": true,
+        "has_storage_dead_on_root_param": false,
+        "runtime_post_cleanup_move_and_storage_lines": [
+          "_2 = move (_1.0: NonCopy);",
+          "_3 = move (_1.1: NonCopy);"
+        ]
+      },
+      "place_mention_raw_ptr": {
+        "built_has_place_mention": true,
+        "default_runtime_post_cleanup_has_place_mention": false,
+        "default_runtime_post_cleanup_lines": [
+          "fn place_mention_raw_ptr(_1: *const usize) -> () {",
+          "debug p => _1;",
+          "let mut _0: ();",
+          "scope 1 {",
+          "}",
+          "bb0: {",
+          "_0 = const ();",
+          "return;",
+          "}",
+          "}"
+        ],
+        "preserve_ub_runtime_optimized_has_place_mention": true,
+        "preserve_ub_runtime_post_cleanup_has_place_mention": true,
+        "preserve_ub_runtime_post_cleanup_lines": [
+          "fn place_mention_raw_ptr(_1: *const usize) -> () {",
+          "debug p => _1;",
+          "let mut _0: ();",
+          "scope 1 {",
+          "}",
+          "bb0: {",
+          "PlaceMention((*_1));",
+          "_0 = const ();",
+          "return;",
+          "}",
+          "}"
+        ]
+      },
+      "profiles": {
+        "debug_assertions_no__overflow_checks_no": {
+          "bad_overflow_has_assert_terminator": false,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": false,
+          "checked_add_has_assert_terminator": false,
+          "checked_add_has_wrapping_add": true,
+          "debug_only_helper_present": false,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=no",
+            "-Coverflow-checks=no"
+          ]
+        },
+        "debug_assertions_no__overflow_checks_yes": {
+          "bad_overflow_has_assert_terminator": true,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": true,
+          "checked_add_has_assert_terminator": true,
+          "checked_add_has_wrapping_add": false,
+          "debug_only_helper_present": false,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=no",
+            "-Coverflow-checks=yes"
+          ]
+        },
+        "debug_assertions_yes__overflow_checks_no": {
+          "bad_overflow_has_assert_terminator": false,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": false,
+          "checked_add_has_assert_terminator": false,
+          "checked_add_has_wrapping_add": true,
+          "debug_only_helper_present": true,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "debug_only_helper",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=yes",
+            "-Coverflow-checks=no"
+          ]
+        },
+        "debug_assertions_yes__overflow_checks_yes": {
+          "bad_overflow_has_assert_terminator": true,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": true,
+          "checked_add_has_assert_terminator": true,
+          "checked_add_has_wrapping_add": false,
+          "debug_only_helper_present": true,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "debug_only_helper",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=yes",
+            "-Coverflow-checks=yes"
+          ]
+        }
+      },
+      "version": {
+        "LLVM version": "22.1.0",
+        "binary": "rustc",
+        "commit-date": "2026-03-18",
+        "commit-hash": "fd0c901b00ee1e08a250039cdb90258603497e20",
+        "headline": "rustc 1.96.0-nightly (fd0c901b0 2026-03-18)",
+        "host": "x86_64-unknown-linux-gnu",
+        "release": "1.96.0-nightly"
+      }
+    },
+    "+nightly-2026-05-31": {
+      "dead_branch_pme": {
+        "after_simplify_const_condition_has_fail_const": true,
+        "after_simplify_const_condition_has_switch_int": false,
+        "after_simplify_locals_has_fail_const": false,
+        "built_has_fail_const": true,
+        "monomorphize_u8_exit_code": 1,
+        "monomorphize_u8_triggers_e0080": true,
+        "runtime_optimized_has_fail_const_in_bbs": false,
+        "runtime_post_cleanup_has_fail_const_in_dead_bb": true
+      },
+      "partial_move_sibling": {
+        "has_move_field_0": true,
+        "has_move_field_1": true,
+        "has_storage_dead_on_root_param": false,
+        "runtime_post_cleanup_move_and_storage_lines": [
+          "_2 = move (_1.0: NonCopy);",
+          "_3 = move (_1.1: NonCopy);"
+        ]
+      },
+      "place_mention_raw_ptr": {
+        "built_has_place_mention": true,
+        "default_runtime_post_cleanup_has_place_mention": false,
+        "default_runtime_post_cleanup_lines": [
+          "fn place_mention_raw_ptr(_1: *const usize) -> () {",
+          "debug p => _1;",
+          "let mut _0: ();",
+          "scope 1 {",
+          "}",
+          "bb0: {",
+          "_0 = const ();",
+          "return;",
+          "}",
+          "}"
+        ],
+        "preserve_ub_runtime_optimized_has_place_mention": true,
+        "preserve_ub_runtime_post_cleanup_has_place_mention": true,
+        "preserve_ub_runtime_post_cleanup_lines": [
+          "fn place_mention_raw_ptr(_1: *const usize) -> () {",
+          "debug p => _1;",
+          "let mut _0: ();",
+          "scope 1 {",
+          "}",
+          "bb0: {",
+          "PlaceMention((*_1));",
+          "_0 = const ();",
+          "return;",
+          "}",
+          "}"
+        ]
+      },
+      "profiles": {
+        "debug_assertions_no__overflow_checks_no": {
+          "bad_overflow_has_assert_terminator": false,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": false,
+          "checked_add_has_assert_terminator": false,
+          "checked_add_has_wrapping_add": true,
+          "debug_only_helper_present": false,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=no",
+            "-Coverflow-checks=no"
+          ]
+        },
+        "debug_assertions_no__overflow_checks_yes": {
+          "bad_overflow_has_assert_terminator": true,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": true,
+          "checked_add_has_assert_terminator": true,
+          "checked_add_has_wrapping_add": false,
+          "debug_only_helper_present": false,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=no",
+            "-Coverflow-checks=yes"
+          ]
+        },
+        "debug_assertions_yes__overflow_checks_no": {
+          "bad_overflow_has_assert_terminator": false,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": false,
+          "checked_add_has_assert_terminator": false,
+          "checked_add_has_wrapping_add": true,
+          "debug_only_helper_present": true,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "debug_only_helper",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=yes",
+            "-Coverflow-checks=no"
+          ]
+        },
+        "debug_assertions_yes__overflow_checks_yes": {
+          "bad_overflow_has_assert_terminator": true,
+          "bad_overflow_has_unreachable_call": true,
+          "checked_add_has_add_with_overflow": true,
+          "checked_add_has_assert_terminator": true,
+          "checked_add_has_wrapping_add": false,
+          "debug_only_helper_present": true,
+          "emitted_fn_order": [
+            "partial_move_sibling",
+            "place_mention_raw_ptr",
+            "dead_branch_pme",
+            "debug_only_helper",
+            "checked_add",
+            "bad_overflow",
+            "explicit_assert",
+            "NonCopy",
+            "NonCopy",
+            "Pair",
+            "Pair",
+            "Fail",
+            "Fail"
+          ],
+          "explicit_assert_has_assert_terminator": false,
+          "explicit_assert_has_panic_call": true,
+          "explicit_assert_has_switch_int": true,
+          "flags": [
+            "-Cdebug-assertions=yes",
+            "-Coverflow-checks=yes"
+          ]
+        }
+      },
+      "version": {
+        "LLVM version": "22.1.6",
+        "binary": "rustc",
+        "commit-date": "2026-05-30",
+        "commit-hash": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "headline": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "host": "x86_64-unknown-linux-gnu",
+        "release": "1.98.0-nightly"
+      }
+    }
+  }
+}

@@ -15068,6 +15068,70 @@
         "assembly/verification"
       ]
     },
+    "anneal-mir-pipeline-architecture-and-soundness-refinement-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "572f1e80580daa4b052ce5646bb675484d9bb957"
+          },
+          "name": "Anneal formal verification system (simplify-trusted branch)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254"
+          },
+          "name": "Anneal architecture documentation (main branch)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fd0c901b00ee1e08a250039cdb90258603497e20",
+            "version": "1.96.0-nightly"
+          },
+          "name": "Rust compiler (nightly-2026-03-19)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler (nightly-2026-05-31)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+            "version": "v4.28.0"
+          },
+          "name": "Lean 4 theorem prover (v4.28.0)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (v4.34.1)"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/mir-semantics",
+        "anneal/refinement",
+        "anneal/trusted-boundary",
+        "anneal/trusted-computing-base",
+        "rust/mir/partial-moves",
+        "rust/mir/place-mention",
+        "rust/mir/post-monomorphization-errors",
+        "rust/mir/assert-terminator",
+        "lean/olean-audit",
+        "lean/mechanized-models"
+      ]
+    },
     "anneal-mir-to-x86-rustc-capture-and-byte-provenance-semantics": {
       "observed_at": "2026-10-31",
       "subjects": [
@@ -36124,6 +36188,139 @@
         "verus"
       ]
     },
+    "rust-verifier-mir-ir-boundaries-borrows-loops-traits-and-bytes-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "572f1e80580daa4b052ce5646bb675484d9bb957"
+          },
+          "name": "Anneal verification framework (simplify-trusted small-TCB kernel)"
+        },
+        {
+          "identity": {
+            "design_branch_revision": "be61ec573335d549398b5d2d0c5bea3ef25d0c1f",
+            "repository": "joshlf/anneal",
+            "revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254"
+          },
+          "name": "Anneal verification framework (main / three-stage architecture docs)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
+          },
+          "name": "Anneal verification framework (skeleton functional-translation and memory prototype)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "1e08453924610c19d74c245a7308f17c1008e2db",
+            "version": "0.1.210"
+          },
+          "name": "Charon MIR/ULLBC/LLBC extractor"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+          },
+          "name": "Aeneas symbolic interpreter and Lean 4 translation backend"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+          },
+          "name": "Creusot verifier (fMIR, Coma, and Pearlite)"
+        },
+        {
+          "identity": {
+            "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+            "zenodo": "21636474"
+          },
+          "name": "RefinedRust / Radium / Caesium / Lithium verification artifact"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+          },
+          "name": "Verus verifier (VIR, AIR, and tracked raw-pointer permissions)"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+          },
+          "name": "Kani Rust Verifier (MIR to CBMC Goto-programs)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+          },
+          "name": "MiniRust operational semantics specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_codegen_ssa)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+          },
+          "name": "zerocopy safe transmutation library"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+            "version": "v4.28.0"
+          },
+          "name": "Lean 4 theorem prover (v4.28.0 baseline)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (v4.34.1 target)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/mir-semantics",
+        "anneal/pme",
+        "anneal/stage3-canonicalization",
+        "aeneas",
+        "charon",
+        "creusot",
+        "kani",
+        "lean",
+        "minirust",
+        "refinedrust",
+        "rust/mir",
+        "verification/borrows",
+        "verification/loops",
+        "verus",
+        "zerocopy/transmute"
+      ]
+    },
     "rust-volatile-memory-access-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -36835,6 +37032,83 @@
         "rust/post-monomorphization-errors",
         "zerocopy/static-assert",
         "anneal/rustc-capture"
+      ]
+    },
+    "rustc-postcleanup-mir-probes-and-lean4-reflection-vs-symexec-scaling-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "toolchain",
+            "repository": "rust-lang/rust",
+            "revision": "fd0c901b00ee1e08a250039cdb90258603497e20",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.96.0-nightly"
+          },
+          "name": "rust-lang/rust (nightly-2026-03-19)"
+        },
+        {
+          "identity": {
+            "kind": "toolchain",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (nightly-2026-05-31)"
+        },
+        {
+          "identity": {
+            "kind": "toolchain",
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "4.28.0-rc1"
+          },
+          "name": "leanprover/lean4 (v4.28.0-rc1)"
+        },
+        {
+          "identity": {
+            "kind": "toolchain",
+            "repository": "leanprover/lean4",
+            "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "4.28.0"
+          },
+          "name": "leanprover/lean4 (v4.28.0)"
+        },
+        {
+          "identity": {
+            "kind": "toolchain",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1)"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "repository": "joshlf/anneal",
+            "revision": "572f1e80580daa4b052ce5646bb675484d9bb957",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal"
+        }
+      ],
+      "topics": [
+        "rustc",
+        "mir",
+        "runtime-postcleanup",
+        "two-phase-borrows",
+        "ptr-metadata",
+        "drop-elaboration",
+        "lean4",
+        "kernel-reduction",
+        "computational-reflection",
+        "symbolic-execution",
+        "anneal"
       ]
     },
     "safe-byte-correspondence-three-routes-lean4-31-rust1-99": {
@@ -38797,6 +39071,73 @@
         "proof-assumptions",
         "program-refinement",
         "memory-logic"
+      ]
+    },
+    "single-vs-swarm-model-refinement-empirical-comparison-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Anneal MIR capture and Lean 4 TCB verification stack (simplify-trusted baseline evaluated by both refinement workflows)",
+            "repository": "joshlf/anneal",
+            "revision": "572f1e80580daa4b052ce5646bb675484d9bb957",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal"
+        },
+        {
+          "identity": {
+            "kind": "repository",
+            "notes": "Anneal architecture documentation (docs/architecture.md) and skill specifications (skills/model-refinement/SKILL.md and skills/swarm-model-refinement/SKILL.md)",
+            "repository": "joshlf/anneal",
+            "revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal"
+        },
+        {
+          "identity": {
+            "kind": "toolchain",
+            "notes": "Pinned Rust compiler whose Runtime(PostCleanup) MIR, CTFE, and layout invariants govern Stage 1 capture and Stage 2 operational semantics",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "kind": "toolchain",
+            "notes": "Lean 4 proof assistant kernel and .olean environment audited by TrustedBoundary.lean",
+            "repository": "leanprover/lean4",
+            "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "v4.28.0"
+          },
+          "name": "lean4"
+        },
+        {
+          "identity": {
+            "kind": "concept",
+            "notes": "Controlled empirical comparison between single-agent iterative model refinement (model-refinement) and multi-agent adversarial falsification with sealed holdouts and unanchored fresh critics (swarm-model-refinement)",
+            "skills": "skills/model-refinement/SKILL.md, skills/swarm-model-refinement/SKILL.md"
+          },
+          "name": "single-agent-vs-swarm-model-refinement"
+        }
+      ],
+      "topics": [
+        "adversarial-falsification",
+        "conceptual-modeling",
+        "lean-4",
+        "mir-semantics",
+        "model-refinement",
+        "multi-agent-systems",
+        "program-verification",
+        "rust-verification",
+        "swarm-orchestration",
+        "trusted-computing-base"
       ]
     },
     "smt-certificates-reconstruction-and-root-binding-2026-10-14": {
