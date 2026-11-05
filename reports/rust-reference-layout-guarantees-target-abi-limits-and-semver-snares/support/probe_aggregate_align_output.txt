@@ -1,0 +1,24 @@
+RC: 0
+STDOUT:
+print-type-size type: `ReprCU8`: 4 bytes, alignment: 4 bytes
+print-type-size     field `.0`: 1 bytes
+print-type-size     end padding: 3 bytes
+print-type-size type: `TransU8`: 4 bytes, alignment: 4 bytes
+print-type-size     field `.0`: 1 bytes
+print-type-size     end padding: 3 bytes
+print-type-size type: `PackedReprCU8`: 1 bytes, alignment: 1 bytes
+print-type-size     field `.0`: 1 bytes
+
+STDERR:
+warning: the feature `lang_items` is internal to the compiler or standard library
+ --> support/probe_aggregate_align_clean.rs:1:21
+  |
+1 | #![feature(no_core, lang_items, auto_traits)]
+  |                     ^^^^^^^^^^
+  |
+  = note: using it is strongly discouraged
+  = note: `#[warn(internal_features)]` on by default
+
+warning: 1 warning emitted
+
+

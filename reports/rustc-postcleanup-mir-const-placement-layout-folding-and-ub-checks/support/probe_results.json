@@ -1,0 +1,3542 @@
+{
+  "nightly-2026-05-31": {
+    "dbg-yes_ubc-yes": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": true,
+          "basic_block_count": 2
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 10
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 10
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 12
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    },
+    "dbg-yes_ubc-no": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 10
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 10
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    },
+    "dbg-no_ubc-yes": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": true,
+          "basic_block_count": 2
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    },
+    "dbg-no_ubc-no": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    }
+  },
+  "nightly-2026-09-30": {
+    "dbg-yes_ubc-yes": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": true,
+          "basic_block_count": 2
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 10
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 10
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 12
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    },
+    "dbg-yes_ubc-no": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 10
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 10
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    },
+    "dbg-no_ubc-yes": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": true,
+          "basic_block_count": 2
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": true,
+          "has_null_assert": true,
+          "basic_block_count": 3
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    },
+    "dbg-no_ubc-no": {
+      "probe_deref_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_write_u32": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "probe_deref_u8": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "call_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "call_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 2
+        }
+      },
+      "body_slice_from_raw_parts": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 9
+        }
+      },
+      "body_ptr_read": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "body_ptr_write": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "body_ptr_copy_nonoverlapping": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 8
+        }
+      },
+      "body_non_null_new_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_unreachable_unchecked": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_u32_unchecked_add": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": false,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 6
+        }
+      },
+      "body_check_library_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": true,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      },
+      "body_runtime_checks_intrinsics": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": true,
+          "has_check_language_ub_call": false,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 1
+        }
+      },
+      "local_ub_checks-check_language_ub": {
+        "runtime_post_cleanup": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": true,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        },
+        "runtime_optimized": {
+          "has_ub_checks_operand": true,
+          "has_overflow_checks_operand": false,
+          "has_check_language_ub_call": true,
+          "has_precondition_check_call": false,
+          "has_const_eval_select_call": false,
+          "has_misaligned_assert": false,
+          "has_null_assert": false,
+          "basic_block_count": 5
+        }
+      }
+    }
+  }
+}

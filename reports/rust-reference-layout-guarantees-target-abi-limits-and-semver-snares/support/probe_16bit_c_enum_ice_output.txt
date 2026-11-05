@@ -1,0 +1,66 @@
+RC: 101
+STDERR:
+warning: the feature `lang_items` is internal to the compiler or standard library
+ --> support/probe_16bit_c_enum_ice.rs:1:21
+  |
+1 | #![feature(no_core, lang_items)]
+  |                     ^^^^^^^^^^
+  |
+  = note: using it is strongly discouraged
+  = note: `#[warn(internal_features)]` on by default
+
+
+thread 'rustc' (3639443) panicked at /rustc-dev/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/layout.rs:877:13:
+layout decided on a larger discriminant type (I32) than typeck (I16)
+stack backtrace:
+   0:     0x7ff3bf2a2b39 - <<std[101bcc562b039d88]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[34752699eafec3ec]::fmt::Display>::fmt
+   1:     0x7ff3bfa2a548 - core[34752699eafec3ec]::fmt::write
+   2:     0x7ff3bf2b9636 - <std[101bcc562b039d88]::sys::stdio::unix::Stderr as std[101bcc562b039d88]::io::Write>::write_fmt
+   3:     0x7ff3bf278d5e - std[101bcc562b039d88]::panicking::default_hook::{closure#0}
+   4:     0x7ff3bf296473 - std[101bcc562b039d88]::panicking::default_hook
+   5:     0x7ff3be092331 - std[101bcc562b039d88]::panicking::update_hook::<alloc[c8182525a12656f8]::boxed::Box<rustc_driver_impl[c9187ee63147f5a1]::install_ice_hook::{closure#1}>>::{closure#0}
+   6:     0x7ff3bf296752 - std[101bcc562b039d88]::panicking::panic_with_hook
+   7:     0x7ff3bf278e22 - std[101bcc562b039d88]::panicking::panic_handler::{closure#0}
+   8:     0x7ff3bf26d349 - std[101bcc562b039d88]::sys::backtrace::__rust_end_short_backtrace::<std[101bcc562b039d88]::panicking::panic_handler::{closure#0}, !>
+   9:     0x7ff3bf27a88d - __rustc[605069567983e01e]::rust_begin_unwind
+  10:     0x7ff3bbd7442c - core[34752699eafec3ec]::panicking::panic_fmt
+  11:     0x7ff3c08a1211 - rustc_ty_utils[ac7753b76fe4a3b0]::layout::layout_of_uncached
+  12:     0x7ff3c088e866 - rustc_ty_utils[ac7753b76fe4a3b0]::layout::layout_of
+  13:     0x7ff3c088e791 - rustc_query_impl[dbe67884329a2243]::query_impl::layout_of::invoke_provider_fn::__rust_begin_short_backtrace
+  14:     0x7ff3c016cbfc - rustc_query_impl[dbe67884329a2243]::execution::try_execute_query::<rustc_middle[9b75262572261193]::query::caches::DefaultCache<rustc_middle[9b75262572261193]::ty::PseudoCanonicalInput<rustc_middle[9b75262572261193]::ty::Ty>, rustc_middle[9b75262572261193]::query::erase::ErasedData<[u8; 16usize]>>, false>
+  15:     0x7ff3c016c848 - rustc_query_impl[dbe67884329a2243]::query_impl::layout_of::execute_query_non_incr::__rust_end_short_backtrace
+  16:     0x7ff3c016acb8 - <rustc_mir_transform[ac6923870766899e]::known_panics_lint::KnownPanicsLint as rustc_mir_transform[ac6923870766899e]::pass_manager::MirLint>::run_lint
+  17:     0x7ff3bfa0ab4d - rustc_mir_transform[ac6923870766899e]::run_analysis_to_runtime_passes
+  18:     0x7ff3bff5d0b6 - rustc_mir_transform[ac6923870766899e]::mir_drops_elaborated_and_const_checked
+  19:     0x7ff3bff5cb73 - rustc_query_impl[dbe67884329a2243]::query_impl::mir_drops_elaborated_and_const_checked::invoke_provider_fn::__rust_begin_short_backtrace
+  20:     0x7ff3bff6b86d - rustc_query_impl[dbe67884329a2243]::execution::try_execute_query::<rustc_data_structures[722be2f55153753b]::vec_cache::VecCache<rustc_span[9308ff3252c2cf73]::def_id::LocalDefId, rustc_middle[9b75262572261193]::query::erase::ErasedData<[u8; 8usize]>, rustc_middle[9b75262572261193]::dep_graph::graph::DepNodeIndex>, false>
+  21:     0x7ff3bff6b083 - rustc_query_impl[dbe67884329a2243]::query_impl::mir_drops_elaborated_and_const_checked::execute_query_non_incr::__rust_end_short_backtrace
+  22:     0x7ff3bff689c8 - <rustc_middle[9b75262572261193]::ty::context::TyCtxt>::par_hir_body_owners::<rustc_interface[1d601d0d3d2ff64e]::passes::run_required_analyses::{closure#2}::{closure#0}>::{closure#0}
+  23:     0x7ff3bff67b94 - rustc_interface[1d601d0d3d2ff64e]::passes::analysis
+  24:     0x7ff3c0b9ac06 - rustc_query_impl[dbe67884329a2243]::execution::try_execute_query::<rustc_middle[9b75262572261193]::query::caches::SingleCache<rustc_middle[9b75262572261193]::query::erase::ErasedData<[u8; 0usize]>>, false>
+  25:     0x7ff3c0b9a8e9 - rustc_query_impl[dbe67884329a2243]::query_impl::analysis::execute_query_non_incr::__rust_end_short_backtrace
+  26:     0x7ff3c0bda7db - rustc_interface[1d601d0d3d2ff64e]::interface::run_compiler::<(), rustc_driver_impl[c9187ee63147f5a1]::run_compiler::{closure#0}>::{closure#1}
+  27:     0x7ff3c0b8babe - std[101bcc562b039d88]::sys::backtrace::__rust_begin_short_backtrace::<rustc_interface[1d601d0d3d2ff64e]::util::run_in_thread_with_globals<rustc_interface[1d601d0d3d2ff64e]::util::run_in_thread_pool_with_globals<rustc_interface[1d601d0d3d2ff64e]::interface::run_compiler<(), rustc_driver_impl[c9187ee63147f5a1]::run_compiler::{closure#0}>::{closure#1}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()>
+  28:     0x7ff3c0b8c1ad - <std[101bcc562b039d88]::thread::lifecycle::spawn_unchecked<rustc_interface[1d601d0d3d2ff64e]::util::run_in_thread_with_globals<rustc_interface[1d601d0d3d2ff64e]::util::run_in_thread_pool_with_globals<rustc_interface[1d601d0d3d2ff64e]::interface::run_compiler<(), rustc_driver_impl[c9187ee63147f5a1]::run_compiler::{closure#0}>::{closure#1}, ()>::{closure#0}, ()>::{closure#0}::{closure#0}, ()>::{closure#1} as core[34752699eafec3ec]::ops::function::FnOnce<()>>::call_once::{shim:vtable#0}
+  29:     0x7ff3c0b8cfac - <std[101bcc562b039d88]::sys::thread::unix::Thread>::new::thread_start
+  30:     0x7ff3ba29e678 - start_thread
+                               at ./nptl/pthread_create.c:454:8
+  31:     0x7ff3ba31cd98 - __GI___clone3
+                               at /build/reproducible-path/glibc-2.43/misc/../sysdeps/unix/sysv/linux/x86_64/clone3.S:78:0
+  32:                0x0 - <unknown>
+
+error: the compiler unexpectedly panicked. This is a bug
+
+note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly
+
+note: rustc 1.98.0-nightly (f8a08b688 2026-05-30) running on x86_64-unknown-linux-gnu
+
+note: compiler flags: --crate-type lib -Z unstable-options
+
+query stack during panic:
+#0 [layout_of] computing layout of `CEnum`
+#1 [mir_drops_elaborated_and_const_checked] elaborating drops for `use_enum`
+... and 1 other queries... use `env RUST_BACKTRACE=1` to see the full query stack
+warning: 1 warning emitted
+
+

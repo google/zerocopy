@@ -1,0 +1,1637 @@
+################################################################################
+### DEF: NAMED_RUST_SIZE (Const { is_type_const: false })
+################################################################################
+=== ITEM `NAMED_RUST_SIZE` (Const { is_type_const: false }) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `NAMED_RUST_SIZE` (Const { is_type_const: false }) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `NAMED_RUST_SIZE` (Const { is_type_const: false }) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `NAMED_RUST_SIZE` (Const { is_type_const: false }) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: S::<T>::OK (AssocConst { is_type_const: false })
+################################################################################
+=== ITEM `S::<T>::OK` (AssocConst { is_type_const: false }) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(Eq, Move(_2), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _1) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_3, target=None)
+=== ITEM `S::<T>::OK` (AssocConst { is_type_const: false }) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(Eq, Move(_2), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _1) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_3, target=None)
+=== ITEM `S::<T>::OK` (AssocConst { is_type_const: false }) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(Eq, Move(_2), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _1) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_3, target=None)
+=== ITEM `S::<T>::OK` (AssocConst { is_type_const: false }) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(Eq, Move(_2), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _1) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_3, target=None)
+
+################################################################################
+### DEF: q2_1_const_block_size_of_generic (Fn)
+################################################################################
+=== ITEM `q2_1_const_block_size_of_generic` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_const_block_size_of_generic` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_const_block_size_of_generic` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_const_block_size_of_generic` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_const_block_size_of_generic::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_1_const_block_size_of_generic::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_1_const_block_size_of_generic::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_1_const_block_size_of_generic::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_1_const_block_size_of_generic::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[3]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+
+################################################################################
+### DEF: q2_1_const_block_size_of_mono (Fn)
+################################################################################
+=== ITEM `q2_1_const_block_size_of_mono` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_const_block_size_of_mono` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_const_block_size_of_mono` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_const_block_size_of_mono` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Unevaluated(def=q2_1_const_block_size_of_mono::{constant#0}, def_kind=InlineConst, args=[()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_const_block_size_of_mono::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_1_const_block_size_of_mono::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc9, meta: 50 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_1_const_block_size_of_mono::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc9, meta: 50 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_1_const_block_size_of_mono::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc9, meta: 50 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_1_const_block_size_of_mono::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[3]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc9, meta: 50 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+
+################################################################################
+### DEF: q2_1_layout_folding_pathways (Fn)
+################################################################################
+=== ITEM `q2_1_layout_folding_pathways` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Repeat(Constant(Const::Val(val=Scalar(0x00), ty=u8) [is_required_const=false]), count=8_usize))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_5, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_4 = &_5)
+    stmt[1]: Assign(_3 = &(*_4))
+    stmt[2]: FakeRead(ForLet(None), _3)
+    stmt[3]: AscribeUserType(_3, o, UserTypeProjection { base: UserType(1), projs: [] })
+    stmt[6]: Assign(_6 = Use(Copy(_1), retag=Yes))
+    stmt[10]: Assign(_9 = &_2)
+    stmt[11]: Assign(_8 = move _9 as &[u8] (PointerCoercion(Unsize, Implicit)))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:15029 ~ core[3475]::slice::{impl#0}::len), [u8])) [is_required_const=false]), args=[Move(_8)], dest=_7, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_10 = Use(Copy(_3), retag=Yes))
+    stmt[3]: Assign(_0 = (move _6, move _7, move _10))
+    terminator: return
+=== ITEM `q2_1_layout_folding_pathways` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_layout_folding_pathways, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&'{erased} usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Repeat(Constant(Const::Val(val=Scalar(0x00), ty=u8) [is_required_const=false]), count=8_usize))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[8]: Assign(_11 = Use(Constant(Const::Unevaluated(def=q2_1_layout_folding_pathways, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&'{erased} usize) [is_required_const=true]), retag=Yes))
+    stmt[9]: Assign(_4 = &(*_11))
+    stmt[10]: Assign(_3 = &(*_4))
+    stmt[11]: FakeRead(ForLet(None), _3)
+    stmt[12]: AscribeUserType(_3, o, UserTypeProjection { base: UserType(1), projs: [] })
+    stmt[15]: Assign(_6 = Use(Copy(_1), retag=Yes))
+    stmt[19]: Assign(_9 = &_2)
+    stmt[20]: Assign(_8 = move _9 as &[u8] (PointerCoercion(Unsize, Implicit)))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:15029 ~ core[3475]::slice::{impl#0}::len), [u8])) [is_required_const=false]), args=[Move(_8)], dest=_7, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[2]: Assign(_10 = Use(Copy(_3), retag=Yes))
+    stmt[3]: Assign(_0 = (move _6, move _7, move _10))
+    terminator: return
+  promoted fragments: 1
+  --- promoted[promoted[0]] ---
+=== ITEM `q2_1_layout_folding_pathways` (Fn) @ promoted_fragment (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_0 = &_1)
+    terminator: return
+=== ITEM `q2_1_layout_folding_pathways` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_layout_folding_pathways, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&'{erased} usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Repeat(Constant(Const::Val(val=Scalar(0x00), ty=u8) [is_required_const=false]), count=8_usize))
+    stmt[6]: Assign(_11 = Use(Constant(Const::Unevaluated(def=q2_1_layout_folding_pathways, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&'{erased} usize) [is_required_const=true]), retag=Yes))
+    stmt[7]: Assign(_4 = &(*_11))
+    stmt[8]: Assign(_3 = &(*_4))
+    stmt[11]: Assign(_6 = Use(Copy(_1), retag=Yes))
+    stmt[15]: Assign(_9 = &_2)
+    stmt[16]: Assign(_8 = move _9 as &[u8] (PointerCoercion(Unsize, Implicit)))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:15029 ~ core[3475]::slice::{impl#0}::len), [u8])) [is_required_const=false]), args=[Move(_8)], dest=_7, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[2]: Assign(_10 = Use(Copy(_3), retag=Yes))
+    stmt[3]: Assign(_0 = (move _6, move _7, move _10))
+    terminator: return
+=== ITEM `q2_1_layout_folding_pathways` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_layout_folding_pathways, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&'{erased} usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=NAMED_RUST_SIZE, def_kind=Const { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Repeat(Constant(Const::Val(val=Scalar(0x00), ty=u8) [is_required_const=false]), count=8_usize))
+    stmt[6]: Assign(_11 = Use(Constant(Const::Unevaluated(def=q2_1_layout_folding_pathways, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&'{erased} usize) [is_required_const=true]), retag=Yes))
+    stmt[7]: Assign(_4 = &(*_11))
+    stmt[8]: Assign(_3 = &(*_4))
+    stmt[11]: Assign(_6 = Use(Copy(_1), retag=Yes))
+    stmt[15]: Assign(_9 = &_2)
+    stmt[16]: Assign(_8 = move _9 as &[u8] (PointerCoercion(Unsize, Implicit)))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:15029 ~ core[3475]::slice::{impl#0}::len), [u8])) [is_required_const=false]), args=[Move(_8)], dest=_7, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[2]: Assign(_10 = Use(Copy(_3), retag=Yes))
+    stmt[3]: Assign(_0 = (move _6, move _7, move _10))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_layout_folding_pathways::{constant#0} (AnonConst)
+################################################################################
+=== ITEM `q2_1_layout_folding_pathways::{constant#0}` (AnonConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_layout_folding_pathways::{constant#0}` (AnonConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_layout_folding_pathways::{constant#0}` (AnonConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_layout_folding_pathways::{constant#0}` (AnonConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_generic (Fn)
+################################################################################
+=== ITEM `q2_1_offset_of_generic` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[7]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[9]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[10]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_offset_of_generic` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[7]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[9]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[10]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_offset_of_generic` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[7]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[8]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_offset_of_generic` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_generic::{constant#1}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[7]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[8]: Assign(_0 = (move _3, move _4))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_generic::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_1_offset_of_generic::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [Wrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_generic::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [Wrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_generic::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [Wrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_generic::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [Wrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_generic::{constant#1} (InlineConst)
+################################################################################
+=== ITEM `q2_1_offset_of_generic::{constant#1}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCWrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_generic::{constant#1}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCWrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_generic::{constant#1}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCWrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_generic::{constant#1}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCWrapper<T/#0>])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_mono (Fn)
+################################################################################
+=== ITEM `q2_1_offset_of_mono` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[7]: Assign(_3 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[8]: FakeRead(ForLet(None), _3)
+    stmt[10]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[12]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[14]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[15]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+=== ITEM `q2_1_offset_of_mono` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=3)
+    [0] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+    [2] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[7]: Assign(_3 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[8]: FakeRead(ForLet(None), _3)
+    stmt[10]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[12]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[14]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[15]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+=== ITEM `q2_1_offset_of_mono` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=3)
+    [0] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+    [2] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: Assign(_3 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[7]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[9]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[11]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[12]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+=== ITEM `q2_1_offset_of_mono` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=3)
+    [0] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+    [1] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+    [2] Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#1}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: Assign(_3 = Use(Constant(Const::Unevaluated(def=q2_1_offset_of_mono::{constant#2}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[7]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[9]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[11]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[12]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_mono::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_1_offset_of_mono::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_mono::{constant#1} (InlineConst)
+################################################################################
+=== ITEM `q2_1_offset_of_mono::{constant#1}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#1}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#1}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#1}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprCStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_0, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_1_offset_of_mono::{constant#2} (InlineConst)
+################################################################################
+=== ITEM `q2_1_offset_of_mono::{constant#2}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [NestedRust])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: Assign(_3 = BinaryOp(AddWithOverflow, Copy(_1), Copy(_2)))
+    terminator: assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, move _2) -> [success: bb3, unwind: bb4]
+  bb3 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_3.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#2}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [NestedRust])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: Assign(_3 = BinaryOp(AddWithOverflow, Copy(_1), Copy(_2)))
+    terminator: assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, move _2) -> [success: bb3, unwind: bb4]
+  bb3 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_3.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#2}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [NestedRust])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: Assign(_3 = BinaryOp(AddWithOverflow, Copy(_1), Copy(_2)))
+    terminator: assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, move _2) -> [success: bb3, unwind continue]
+  bb3 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_3.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_1_offset_of_mono::{constant#2}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[1]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [NestedRust])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2214 ~ core[3475]::intrinsics::offset_of), [ReprRustStruct])) [is_required_const=false]), args=[Constant(Const::Val(val=Scalar(0x00000000), ty=u32) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x00000001), ty=u32) [is_required_const=false])], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: Assign(_3 = BinaryOp(AddWithOverflow, Copy(_1), Copy(_2)))
+    terminator: assert(!move (_3.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, move _2) -> [success: bb3, unwind continue]
+  bb3 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_3.0: usize)), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_size_align_generic (Fn)
+################################################################################
+=== ITEM `q2_1_size_align_generic` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _1)
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _2)
+    stmt[2]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[4]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_size_align_generic` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _1)
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _2)
+    stmt[2]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[4]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_size_align_generic` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[3]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_size_align_generic` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [T/#0])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[3]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_0 = (move _3, move _4))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_size_align_mono (Fn)
+################################################################################
+=== ITEM `q2_1_size_align_mono` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _1)
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _2)
+    stmt[2]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[4]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_size_align_mono` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _1)
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[0]: FakeRead(ForLet(None), _2)
+    stmt[2]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[4]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_size_align_mono` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[3]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_0 = (move _3, move _4))
+    terminator: return
+=== ITEM `q2_1_size_align_mono` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2651 ~ core[3475]::mem::align_of), [ReprRustStruct])) [is_required_const=false]), args=[], dest=_2, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: Assign(_3 = Use(Copy(_1), retag=Yes))
+    stmt[3]: Assign(_4 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_0 = (move _3, move _4))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_size_align_val_generic (Fn)
+################################################################################
+=== ITEM `q2_1_size_align_val_generic` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [T/#0])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _2)
+    stmt[4]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [T/#0])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _4)
+    stmt[3]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[6]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_generic` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [T/#0])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _2)
+    stmt[4]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [T/#0])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _4)
+    stmt[3]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[6]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_generic` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [T/#0])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[3]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [T/#0])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[5]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_generic` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [T/#0])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[3]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [T/#0])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[5]: Assign(_0 = (move _6, move _7))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_size_align_val_mono (Fn)
+################################################################################
+=== ITEM `q2_1_size_align_val_mono` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _2)
+    stmt[4]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _4)
+    stmt[3]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[6]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_mono` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _2)
+    stmt[4]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _4)
+    stmt[3]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[6]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_mono` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[3]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[5]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_mono` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[3]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [ReprRustStruct])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[5]: Assign(_0 = (move _6, move _7))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_size_align_val_slice (Fn)
+################################################################################
+=== ITEM `q2_1_size_align_val_slice` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _2)
+    stmt[4]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _4)
+    stmt[3]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[6]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_slice` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _2)
+    stmt[4]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[1]: FakeRead(ForLet(None), _4)
+    stmt[3]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[5]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[6]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_slice` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[3]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[5]: Assign(_0 = (move _6, move _7))
+    terminator: return
+=== ITEM `q2_1_size_align_val_slice` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[2]: Assign(_3 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2643 ~ core[3475]::mem::size_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_3)], dest=_2, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[3]: Assign(_5 = &(*_1))
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2653 ~ core[3475]::mem::align_of_val), [[ReprRustStruct]])) [is_required_const=false]), args=[Move(_5)], dest=_4, target=Some(bb2))
+  bb2 (reachable=true):
+    stmt[2]: Assign(_6 = Use(Copy(_2), retag=Yes))
+    stmt[4]: Assign(_7 = Use(Copy(_4), retag=Yes))
+    stmt[5]: Assign(_0 = (move _6, move _7))
+    terminator: return
+
+################################################################################
+### DEF: q2_1_target_consts (Fn)
+################################################################################
+=== ITEM `q2_1_target_consts` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[7]: Assign(_3 = Use(Constant(Const::Val(val=Scalar(0x01), ty=bool) [is_required_const=false]), retag=Yes))
+    stmt[8]: FakeRead(ForLet(None), _3)
+    stmt[10]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[12]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[14]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[15]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+=== ITEM `q2_1_target_consts` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]
+    [1] Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[4]: Assign(_2 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: FakeRead(ForLet(None), _2)
+    stmt[7]: Assign(_3 = Use(Constant(Const::Val(val=Scalar(0x01), ty=bool) [is_required_const=false]), retag=Yes))
+    stmt[8]: FakeRead(ForLet(None), _3)
+    stmt[10]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[12]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[14]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[15]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+=== ITEM `q2_1_target_consts` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]
+    [1] Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: Assign(_3 = Use(Constant(Const::Val(val=Scalar(0x01), ty=bool) [is_required_const=false]), retag=Yes))
+    stmt[7]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[9]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[11]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[12]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+=== ITEM `q2_1_target_consts` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=2)
+    [0] Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]
+    [1] Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::BITS, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=u32) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_2 = Use(Constant(Const::Unevaluated(def=core::num::<impl usize>::MAX, def_kind=AssocConst { is_type_const: false }, args=[], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[5]: Assign(_3 = Use(Constant(Const::Val(val=Scalar(0x01), ty=bool) [is_required_const=false]), retag=Yes))
+    stmt[7]: Assign(_4 = Use(Copy(_1), retag=Yes))
+    stmt[9]: Assign(_5 = Use(Copy(_2), retag=Yes))
+    stmt[11]: Assign(_6 = Use(Copy(_3), retag=Yes))
+    stmt[12]: Assign(_0 = (move _4, move _5, move _6))
+    terminator: return
+
+################################################################################
+### DEF: q2_2a_value_const_block (Fn)
+################################################################################
+=== ITEM `q2_2a_value_const_block` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[3]: AscribeUserType(_1, o, UserTypeProjection { base: UserType(1), projs: [] })
+    stmt[4]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[3]: AscribeUserType(_1, o, UserTypeProjection { base: UserType(1), projs: [] })
+    stmt[4]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2a_value_const_block::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_2a_value_const_block::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(AddWithOverflow, Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x0000000000000002), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_1.1: bool), "attempt to compute `{} + {}`, which would overflow", const 1_usize, const 2_usize) -> [success: bb1, unwind: bb2]
+  bb1 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_1.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(AddWithOverflow, Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x0000000000000002), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_1.1: bool), "attempt to compute `{} + {}`, which would overflow", const 1_usize, const 2_usize) -> [success: bb1, unwind: bb2]
+  bb1 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_1.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(AddWithOverflow, Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x0000000000000002), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_1.1: bool), "attempt to compute `{} + {}`, which would overflow", const 1_usize, const 2_usize) -> [success: bb1, unwind continue]
+  bb1 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_1.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_1 = BinaryOp(AddWithOverflow, Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false]), Constant(Const::Val(val=Scalar(0x0000000000000002), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_1.1: bool), "attempt to compute `{} + {}`, which would overflow", const 1_usize, const 2_usize) -> [success: bb1, unwind continue]
+  bb1 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_1.0: usize)), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2a_value_const_block_generic (Fn)
+################################################################################
+=== ITEM `q2_2a_value_const_block_generic` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[3]: AscribeUserType(_1, o, UserTypeProjection { base: UserType(1), projs: [] })
+    stmt[4]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block_generic` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _1)
+    stmt[3]: AscribeUserType(_1, o, UserTypeProjection { base: UserType(1), projs: [] })
+    stmt[4]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block_generic` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block_generic` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2a_value_const_block_generic::{constant#0}, def_kind=InlineConst, args=[T/#0, usize], promoted=None, ty=usize) [is_required_const=true]), retag=Yes))
+    stmt[2]: Assign(_0 = Use(Copy(_1), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2a_value_const_block_generic::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_2a_value_const_block_generic::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(AddWithOverflow, Copy(_1), Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_2.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, const 1_usize) -> [success: bb2, unwind: bb3]
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_2.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block_generic::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(AddWithOverflow, Copy(_1), Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_2.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, const 1_usize) -> [success: bb2, unwind: bb3]
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_2.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block_generic::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(AddWithOverflow, Copy(_1), Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_2.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, const 1_usize) -> [success: bb2, unwind continue]
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_2.0: usize)), retag=Yes))
+    terminator: return
+=== ITEM `q2_2a_value_const_block_generic::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[1]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_1, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(AddWithOverflow, Copy(_1), Constant(Const::Val(val=Scalar(0x0000000000000001), ty=usize) [is_required_const=false])))
+    terminator: assert(!move (_2.1: bool), "attempt to compute `{} + {}`, which would overflow", move _1, const 1_usize) -> [success: bb2, unwind continue]
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Move((_2.0: usize)), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2b_live_stmt_const_block (Fn)
+################################################################################
+=== ITEM `q2_2b_live_stmt_const_block` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2b_live_stmt_const_block` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2b_live_stmt_const_block` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2b_live_stmt_const_block` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=q2_2b_live_stmt_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2b_live_stmt_const_block::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_2b_live_stmt_const_block::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2b_live_stmt_const_block::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2b_live_stmt_const_block::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2b_live_stmt_const_block::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[3]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+
+################################################################################
+### DEF: q2_2c_if_false_const_block (Fn)
+################################################################################
+=== ITEM `q2_2c_if_false_const_block` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2c_if_false_const_block` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2c_if_false_const_block` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2c_if_false_const_block` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=q2_2c_if_false_const_block::{constant#0}, def_kind=InlineConst, args=[T/#0, ()], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[3]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_2c_if_false_const_block::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_2c_if_false_const_block::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2c_if_false_const_block::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2c_if_false_const_block::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2c_if_false_const_block::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[3]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+
+################################################################################
+### DEF: q2_2d_post_return_const_block (Fn)
+################################################################################
+=== ITEM `q2_2d_post_return_const_block` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2d_post_return_const_block` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2d_post_return_const_block` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2d_post_return_const_block` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2d_post_return_const_block::{constant#0} (InlineConst)
+################################################################################
+=== ITEM `q2_2d_post_return_const_block::{constant#0}` (InlineConst) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2d_post_return_const_block::{constant#0}` (InlineConst) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2d_post_return_const_block::{constant#0}` (InlineConst) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+=== ITEM `q2_2d_post_return_const_block::{constant#0}` (InlineConst) @ mir_for_ctfe (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[3]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:2641 ~ core[3475]::mem::size_of), [T/#0])) [is_required_const=false]), args=[], dest=_3, target=Some(bb1))
+  bb1 (reachable=true):
+    stmt[0]: Assign(_2 = BinaryOp(Eq, Move(_3), Constant(Const::Val(val=Scalar(0x0000000000000008), ty=usize) [is_required_const=false])))
+    terminator: switchInt(move _2) -> [0: bb3, otherwise: bb2]
+  bb2 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+  bb3 (reachable=true):
+    stmt[2]: ConstEvalCounter
+    terminator: Call(func=Constant(Const::Val(val=ZeroSized, ty=FnDef(DefId(2:11429 ~ core[3475]::panicking::panic), [])) [is_required_const=false]), args=[Constant(Const::Val(val=Slice { alloc_id: alloc11, meta: 37 }, ty=&'{erased} str) [is_required_const=false])], dest=_4, target=None)
+
+################################################################################
+### DEF: q2_2e_named_assoc_const_if_false (Fn)
+################################################################################
+=== ITEM `q2_2e_named_assoc_const_if_false` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_2)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_if_false` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_2)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_if_false` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_2)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_if_false` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_2)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+
+################################################################################
+### DEF: q2_2e_named_assoc_const_live (Fn)
+################################################################################
+=== ITEM `q2_2e_named_assoc_const_live` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_1)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_live` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_1)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_live` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_1)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_live` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: PlaceMention(_1)
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2e_named_assoc_const_post_return (Fn)
+################################################################################
+=== ITEM `q2_2e_named_assoc_const_post_return` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_post_return` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_post_return` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_post_return` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=0)
+  bb0 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: return
+
+################################################################################
+### DEF: q2_2e_named_assoc_const_value_bind_dead (Fn)
+################################################################################
+=== ITEM `q2_2e_named_assoc_const_value_bind_dead` (Fn) @ mir_built (phase=Built) ===
+  required_consts: None
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _2)
+    stmt[3]: AscribeUserType(_2, o, UserTypeProjection { base: UserType(2), projs: [] })
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_value_bind_dead` (Fn) @ mir_promoted (phase=Analysis(Initial)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: FakeRead(ForLet(None), _2)
+    stmt[3]: AscribeUserType(_2, o, UserTypeProjection { base: UserType(2), projs: [] })
+    stmt[4]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_value_bind_dead` (Fn) @ mir_drops_elaborated_and_const_checked (phase=Runtime(PostCleanup)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+=== ITEM `q2_2e_named_assoc_const_value_bind_dead` (Fn) @ optimized_mir (phase=Runtime(Optimized)) ===
+  required_consts: Some(len=1)
+    [0] Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]
+  bb0 (reachable=true):
+    stmt[1]: Assign(_1 = Use(Constant(Const::Val(val=Scalar(0x00), ty=bool) [is_required_const=false]), retag=Yes))
+    terminator: switchInt(move _1) -> [0: bb2, otherwise: bb1]
+  bb1 (reachable=true):
+    stmt[1]: Assign(_2 = Use(Constant(Const::Unevaluated(def=S::<T>::OK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=()) [is_required_const=true]), retag=Yes))
+    stmt[2]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb2 (reachable=true):
+    stmt[0]: Assign(_0 = Use(Constant(Const::Val(val=ZeroSized, ty=()) [is_required_const=false]), retag=Yes))
+    terminator: goto -> bb3
+  bb3 (reachable=true):
+    terminator: return
+

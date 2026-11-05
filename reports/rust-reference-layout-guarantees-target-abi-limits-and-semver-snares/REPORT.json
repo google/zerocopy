@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "rust/layout",
+    "rust/reference-guarantees",
+    "rust/repr-c",
+    "rust/repr-transparent",
+    "rust/niche-optimization",
+    "rust/target-data-layout",
+    "rust/calling-conventions",
+    "rust/semver-snares",
+    "zerocopy/soundness-policy",
+    "anneal/forward-compatibility"
+  ],
+  "subjects": [
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+        "bundled_with": "rustc 1.99.1"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+        "bundled_with": "rustc 1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1 (2026-10-13)"
+      }
+    },
+    {
+      "name": "zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

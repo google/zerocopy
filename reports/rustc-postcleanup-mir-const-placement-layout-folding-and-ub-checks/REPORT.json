@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "rust/mir",
+    "rust/mir-phases",
+    "rust/const-eval",
+    "rust/required-consts",
+    "rust/ub-checks",
+    "rust/layout-folding",
+    "anneal/rustc-capture",
+    "anneal/forward-compatibility"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+        "version": "1.101.0-nightly (2026-09-29)"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+        "bundled_with": "rustc 1.99.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

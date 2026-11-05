@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "anneal/forward-compatibility",
+    "anneal/mir-semantics",
+    "anneal/rustc-capture",
+    "anneal/refinement-lattice",
+    "anneal/trust-policy",
+    "rust/layout",
+    "rust/transmute",
+    "lean4/mechanization",
+    "zerocopy/soundness-policy"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+        "bundled_with": "rustc 1.99.1"
+      }
+    },
+    {
+      "name": "zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

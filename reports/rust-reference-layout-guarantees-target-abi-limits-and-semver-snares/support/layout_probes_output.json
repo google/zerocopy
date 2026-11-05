@@ -1,0 +1,1894 @@
+{
+  "stable_1_99_1": {
+    "compiler_mode": "stable_1_99_1",
+    "primitives_and_pointers": {
+      "bool": {
+        "size": 1,
+        "align": 1
+      },
+      "u8": {
+        "size": 1,
+        "align": 1
+      },
+      "i8": {
+        "size": 1,
+        "align": 1
+      },
+      "u16": {
+        "size": 2,
+        "align": 2
+      },
+      "i16": {
+        "size": 2,
+        "align": 2
+      },
+      "u32": {
+        "size": 4,
+        "align": 4
+      },
+      "i32": {
+        "size": 4,
+        "align": 4
+      },
+      "u64": {
+        "size": 8,
+        "align": 8
+      },
+      "i64": {
+        "size": 8,
+        "align": 8
+      },
+      "u128": {
+        "size": 16,
+        "align": 16
+      },
+      "i128": {
+        "size": 16,
+        "align": 16
+      },
+      "usize": {
+        "size": 8,
+        "align": 8
+      },
+      "isize": {
+        "size": 8,
+        "align": 8
+      },
+      "f32": {
+        "size": 4,
+        "align": 4
+      },
+      "f64": {
+        "size": 8,
+        "align": 8
+      },
+      "char": {
+        "size": 4,
+        "align": 4
+      },
+      "unit": {
+        "size": 0,
+        "align": 1
+      },
+      "empty_enum_never_equiv": {
+        "size": 0,
+        "align": 1
+      },
+      "thin_ptr_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "fn_ptr": {
+        "size": 8,
+        "align": 8
+      },
+      "wide_ptr_slice": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_str": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_dyn": {
+        "size": 16,
+        "align": 8
+      }
+    },
+    "wide_pointer_words": {
+      "word0_is_data_ptr": true,
+      "word1_len_metadata": 5
+    },
+    "arrays_and_slices": {
+      "array_u32_0": {
+        "size": 0,
+        "align": 4
+      },
+      "array_u32_3": {
+        "size": 12,
+        "align": 4
+      },
+      "slice_u32_3_val": {
+        "size": 12,
+        "align": 4
+      }
+    },
+    "tuples_and_repr_rust": {
+      "unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "nested_unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "tuple_with_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "empty_rust_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_unit_fields_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_with_align4_field": {
+        "size": 0,
+        "align": 4
+      },
+      "single_variant_zst_enum": {
+        "size": 0,
+        "align": 1
+      },
+      "single_u64": {
+        "size": 8,
+        "align": 8,
+        "off0": 0
+      },
+      "pair_u32": {
+        "size": 8,
+        "align": 4,
+        "off0": 0,
+        "off1": 4
+      },
+      "triple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 6,
+        "off1_u32": 0,
+        "off2_u16": 4
+      },
+      "tuple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 4,
+        "off1_u32": 0,
+        "off2_u16": 6
+      }
+    },
+    "repr_c_transparent_packed_align": {
+      "empty_c": {
+        "size": 0,
+        "align": 1
+      },
+      "c_with_zst_align1": {
+        "size": 2,
+        "align": 1,
+        "off_a": 0,
+        "off_z": 1,
+        "off_b": 1
+      },
+      "c_with_zst_align4": {
+        "size": 8,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4,
+        "off_b": 4
+      },
+      "c_trailing_zst_align4": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4
+      },
+      "transparent_over_u32": {
+        "size": 4,
+        "align": 4,
+        "off_inner": 0
+      },
+      "transparent_over_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "rust_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 1,
+        "off_c": 5
+      },
+      "c_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 1,
+        "off_c": 5
+      },
+      "c_packed2_het": {
+        "size": 8,
+        "align": 2,
+        "off_a": 0,
+        "off_b": 2,
+        "off_c": 6
+      },
+      "rust_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 6,
+        "off_b": 0,
+        "off_c": 4
+      },
+      "c_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 4,
+        "off_c": 8
+      },
+      "generic_outer_c_packed2_over_c_align16": {
+        "size": 18,
+        "align": 2,
+        "off_x": 0,
+        "off_inner": 2
+      }
+    },
+    "unions": {
+      "rust_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "c_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "rust_packed_union": {
+        "size": 4,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 0
+      },
+      "c_align16_union": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 0
+      }
+    },
+    "enums_and_niches": {
+      "c_enum_fieldless": {
+        "size": 4,
+        "align": 4
+      },
+      "u8_enum_fieldless": {
+        "size": 1,
+        "align": 1
+      },
+      "c_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "c_u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "rust_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_ref_u8": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_mut_ref_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_ref_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_box_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_box_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_fn_ptr": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_nonnull_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_nonnull_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_nonzero_u8": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_nonzero_u32": {
+        "size": 4,
+        "align": 4,
+        "none_is_zero": true
+      },
+      "opt_nonzero_i32": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_nonzero_u128": {
+        "size": 16,
+        "align": 16
+      },
+      "opt_nonzero_usize": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_transparent_nonnull": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_manually_drop_ref": {
+        "size": 8,
+        "align": 8
+      },
+      "res_nonzero_u32_unit": {
+        "size": 4,
+        "align": 4,
+        "err_is_zero": true
+      },
+      "res_unit_nonzero_u32": {
+        "size": 4,
+        "align": 4
+      },
+      "res_nonzero_u8_zst_align4": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_unsafecell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_cell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_maybe_uninit_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_bool": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_char": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_ordering": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_infallible": {
+        "size": 0,
+        "align": 1
+      },
+      "opt_opt_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_tuple_nz32_u32": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_array_nz32_2": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_user_bounded_enum": {
+        "size": 1,
+        "align": 1
+      }
+    },
+    "unsized_dsts": {
+      "c_dst_u32_len0": {
+        "size": 4,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len1": {
+        "size": 8,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len3": {
+        "size": 16,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "rust_dst_u16_len2": {
+        "size": 12,
+        "align": 4,
+        "off_a": 4,
+        "off_b": 0,
+        "off_tail": 6
+      },
+      "c_packed2_dst_u32_len1": {
+        "size": 6,
+        "align": 2,
+        "tail_offset": 2
+      },
+      "outer_packed2_over_inner_c_dst_u32_len1": {
+        "size": 10,
+        "align": 2,
+        "off_inner": 2,
+        "off_tail": 6
+      },
+      "c_dst_dyn_u8": {
+        "size": 2,
+        "align": 1,
+        "tail_offset": 1
+      },
+      "c_dst_dyn_u64": {
+        "size": 16,
+        "align": 8,
+        "tail_offset": 8
+      },
+      "c_dst_dyn_align32": {
+        "size": 64,
+        "align": 32,
+        "tail_offset": 32
+      }
+    }
+  },
+  "nightly_2026_05_31_default": {
+    "compiler_mode": "nightly_2026_05_31_default",
+    "primitives_and_pointers": {
+      "bool": {
+        "size": 1,
+        "align": 1
+      },
+      "u8": {
+        "size": 1,
+        "align": 1
+      },
+      "i8": {
+        "size": 1,
+        "align": 1
+      },
+      "u16": {
+        "size": 2,
+        "align": 2
+      },
+      "i16": {
+        "size": 2,
+        "align": 2
+      },
+      "u32": {
+        "size": 4,
+        "align": 4
+      },
+      "i32": {
+        "size": 4,
+        "align": 4
+      },
+      "u64": {
+        "size": 8,
+        "align": 8
+      },
+      "i64": {
+        "size": 8,
+        "align": 8
+      },
+      "u128": {
+        "size": 16,
+        "align": 16
+      },
+      "i128": {
+        "size": 16,
+        "align": 16
+      },
+      "usize": {
+        "size": 8,
+        "align": 8
+      },
+      "isize": {
+        "size": 8,
+        "align": 8
+      },
+      "f32": {
+        "size": 4,
+        "align": 4
+      },
+      "f64": {
+        "size": 8,
+        "align": 8
+      },
+      "char": {
+        "size": 4,
+        "align": 4
+      },
+      "unit": {
+        "size": 0,
+        "align": 1
+      },
+      "never": {
+        "size": 0,
+        "align": 1
+      },
+      "empty_enum_never_equiv": {
+        "size": 0,
+        "align": 1
+      },
+      "thin_ptr_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "fn_ptr": {
+        "size": 8,
+        "align": 8
+      },
+      "wide_ptr_slice": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_str": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_dyn": {
+        "size": 16,
+        "align": 8
+      }
+    },
+    "wide_pointer_words": {
+      "word0_is_data_ptr": true,
+      "word1_len_metadata": 5
+    },
+    "arrays_and_slices": {
+      "array_u32_0": {
+        "size": 0,
+        "align": 4
+      },
+      "array_u32_3": {
+        "size": 12,
+        "align": 4
+      },
+      "slice_u32_3_val": {
+        "size": 12,
+        "align": 4
+      }
+    },
+    "tuples_and_repr_rust": {
+      "unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "nested_unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "tuple_with_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "empty_rust_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_unit_fields_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_with_align4_field": {
+        "size": 0,
+        "align": 4
+      },
+      "single_variant_zst_enum": {
+        "size": 0,
+        "align": 1
+      },
+      "single_u64": {
+        "size": 8,
+        "align": 8,
+        "off0": 0
+      },
+      "pair_u32": {
+        "size": 8,
+        "align": 4,
+        "off0": 0,
+        "off1": 4
+      },
+      "triple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 6,
+        "off1_u32": 0,
+        "off2_u16": 4
+      },
+      "tuple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 4,
+        "off1_u32": 0,
+        "off2_u16": 6
+      }
+    },
+    "repr_c_transparent_packed_align": {
+      "empty_c": {
+        "size": 0,
+        "align": 1
+      },
+      "c_with_zst_align1": {
+        "size": 2,
+        "align": 1,
+        "off_a": 0,
+        "off_z": 1,
+        "off_b": 1
+      },
+      "c_with_zst_align4": {
+        "size": 8,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4,
+        "off_b": 4
+      },
+      "c_trailing_zst_align4": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4
+      },
+      "transparent_over_u32": {
+        "size": 4,
+        "align": 4,
+        "off_inner": 0
+      },
+      "transparent_over_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "rust_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 1,
+        "off_c": 5
+      },
+      "c_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 1,
+        "off_c": 5
+      },
+      "c_packed2_het": {
+        "size": 8,
+        "align": 2,
+        "off_a": 0,
+        "off_b": 2,
+        "off_c": 6
+      },
+      "rust_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 6,
+        "off_b": 0,
+        "off_c": 4
+      },
+      "c_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 4,
+        "off_c": 8
+      },
+      "generic_outer_c_packed2_over_c_align16": {
+        "size": 18,
+        "align": 2,
+        "off_x": 0,
+        "off_inner": 2
+      }
+    },
+    "unions": {
+      "rust_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "c_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "rust_packed_union": {
+        "size": 4,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 0
+      },
+      "c_align16_union": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 0
+      }
+    },
+    "enums_and_niches": {
+      "c_enum_fieldless": {
+        "size": 4,
+        "align": 4
+      },
+      "u8_enum_fieldless": {
+        "size": 1,
+        "align": 1
+      },
+      "c_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "c_u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "rust_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_ref_u8": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_mut_ref_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_ref_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_box_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_box_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_fn_ptr": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_nonnull_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_nonnull_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_nonzero_u8": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_nonzero_u32": {
+        "size": 4,
+        "align": 4,
+        "none_is_zero": true
+      },
+      "opt_nonzero_i32": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_nonzero_u128": {
+        "size": 16,
+        "align": 16
+      },
+      "opt_nonzero_usize": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_transparent_nonnull": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_manually_drop_ref": {
+        "size": 8,
+        "align": 8
+      },
+      "res_nonzero_u32_unit": {
+        "size": 4,
+        "align": 4,
+        "err_is_zero": true
+      },
+      "res_unit_nonzero_u32": {
+        "size": 4,
+        "align": 4
+      },
+      "res_nonzero_u8_zst_align4": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_unsafecell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_cell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_maybe_uninit_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_bool": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_char": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_ordering": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_infallible": {
+        "size": 0,
+        "align": 1
+      },
+      "opt_opt_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_tuple_nz32_u32": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_array_nz32_2": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_user_bounded_enum": {
+        "size": 1,
+        "align": 1
+      }
+    },
+    "unsized_dsts": {
+      "c_dst_u32_len0": {
+        "size": 4,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len1": {
+        "size": 8,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len3": {
+        "size": 16,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "rust_dst_u16_len2": {
+        "size": 12,
+        "align": 4,
+        "off_a": 4,
+        "off_b": 0,
+        "off_tail": 6
+      },
+      "c_packed2_dst_u32_len1": {
+        "size": 6,
+        "align": 2,
+        "tail_offset": 2
+      },
+      "outer_packed2_over_inner_c_dst_u32_len1": {
+        "size": 10,
+        "align": 2,
+        "off_inner": 2,
+        "off_tail": 6
+      },
+      "c_dst_dyn_u8": {
+        "size": 2,
+        "align": 1,
+        "tail_offset": 1
+      },
+      "c_dst_dyn_u64": {
+        "size": 16,
+        "align": 8,
+        "tail_offset": 8
+      },
+      "c_dst_dyn_align32": {
+        "size": 64,
+        "align": 32,
+        "tail_offset": 32
+      }
+    }
+  },
+  "nightly_2026_05_31_randomize_seed42": {
+    "compiler_mode": "nightly_2026_05_31_randomize_seed42",
+    "primitives_and_pointers": {
+      "bool": {
+        "size": 1,
+        "align": 1
+      },
+      "u8": {
+        "size": 1,
+        "align": 1
+      },
+      "i8": {
+        "size": 1,
+        "align": 1
+      },
+      "u16": {
+        "size": 2,
+        "align": 2
+      },
+      "i16": {
+        "size": 2,
+        "align": 2
+      },
+      "u32": {
+        "size": 4,
+        "align": 4
+      },
+      "i32": {
+        "size": 4,
+        "align": 4
+      },
+      "u64": {
+        "size": 8,
+        "align": 8
+      },
+      "i64": {
+        "size": 8,
+        "align": 8
+      },
+      "u128": {
+        "size": 16,
+        "align": 16
+      },
+      "i128": {
+        "size": 16,
+        "align": 16
+      },
+      "usize": {
+        "size": 8,
+        "align": 8
+      },
+      "isize": {
+        "size": 8,
+        "align": 8
+      },
+      "f32": {
+        "size": 4,
+        "align": 4
+      },
+      "f64": {
+        "size": 8,
+        "align": 8
+      },
+      "char": {
+        "size": 4,
+        "align": 4
+      },
+      "unit": {
+        "size": 0,
+        "align": 1
+      },
+      "never": {
+        "size": 0,
+        "align": 1
+      },
+      "empty_enum_never_equiv": {
+        "size": 0,
+        "align": 1
+      },
+      "thin_ptr_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "fn_ptr": {
+        "size": 8,
+        "align": 8
+      },
+      "wide_ptr_slice": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_str": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_dyn": {
+        "size": 16,
+        "align": 8
+      }
+    },
+    "wide_pointer_words": {
+      "word0_is_data_ptr": true,
+      "word1_len_metadata": 5
+    },
+    "arrays_and_slices": {
+      "array_u32_0": {
+        "size": 0,
+        "align": 4
+      },
+      "array_u32_3": {
+        "size": 12,
+        "align": 4
+      },
+      "slice_u32_3_val": {
+        "size": 12,
+        "align": 4
+      }
+    },
+    "tuples_and_repr_rust": {
+      "unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "nested_unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "tuple_with_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "empty_rust_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_unit_fields_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_with_align4_field": {
+        "size": 0,
+        "align": 4
+      },
+      "single_variant_zst_enum": {
+        "size": 0,
+        "align": 1
+      },
+      "single_u64": {
+        "size": 8,
+        "align": 8,
+        "off0": 0
+      },
+      "pair_u32": {
+        "size": 8,
+        "align": 4,
+        "off0": 0,
+        "off1": 4
+      },
+      "triple_het": {
+        "size": 12,
+        "align": 4,
+        "off0_u8": 0,
+        "off1_u32": 4,
+        "off2_u16": 8
+      },
+      "tuple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 4,
+        "off1_u32": 0,
+        "off2_u16": 6
+      }
+    },
+    "repr_c_transparent_packed_align": {
+      "empty_c": {
+        "size": 0,
+        "align": 1
+      },
+      "c_with_zst_align1": {
+        "size": 2,
+        "align": 1,
+        "off_a": 0,
+        "off_z": 1,
+        "off_b": 1
+      },
+      "c_with_zst_align4": {
+        "size": 8,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4,
+        "off_b": 4
+      },
+      "c_trailing_zst_align4": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4
+      },
+      "transparent_over_u32": {
+        "size": 4,
+        "align": 4,
+        "off_inner": 0
+      },
+      "transparent_over_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "rust_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 6,
+        "off_b": 2,
+        "off_c": 0
+      },
+      "c_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 1,
+        "off_c": 5
+      },
+      "c_packed2_het": {
+        "size": 8,
+        "align": 2,
+        "off_a": 0,
+        "off_b": 2,
+        "off_c": 6
+      },
+      "rust_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 8,
+        "off_b": 4,
+        "off_c": 0
+      },
+      "c_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 4,
+        "off_c": 8
+      },
+      "generic_outer_c_packed2_over_c_align16": {
+        "size": 18,
+        "align": 2,
+        "off_x": 0,
+        "off_inner": 2
+      }
+    },
+    "unions": {
+      "rust_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "c_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "rust_packed_union": {
+        "size": 4,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 0
+      },
+      "c_align16_union": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 0
+      }
+    },
+    "enums_and_niches": {
+      "c_enum_fieldless": {
+        "size": 4,
+        "align": 4
+      },
+      "u8_enum_fieldless": {
+        "size": 1,
+        "align": 1
+      },
+      "c_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "c_u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "rust_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_ref_u8": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_mut_ref_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_ref_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_box_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_box_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_fn_ptr": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_nonnull_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_nonnull_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_nonzero_u8": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_nonzero_u32": {
+        "size": 4,
+        "align": 4,
+        "none_is_zero": true
+      },
+      "opt_nonzero_i32": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_nonzero_u128": {
+        "size": 16,
+        "align": 16
+      },
+      "opt_nonzero_usize": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_transparent_nonnull": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_manually_drop_ref": {
+        "size": 8,
+        "align": 8
+      },
+      "res_nonzero_u32_unit": {
+        "size": 4,
+        "align": 4,
+        "err_is_zero": true
+      },
+      "res_unit_nonzero_u32": {
+        "size": 4,
+        "align": 4
+      },
+      "res_nonzero_u8_zst_align4": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_unsafecell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_cell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_maybe_uninit_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_bool": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_char": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_ordering": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_infallible": {
+        "size": 0,
+        "align": 1
+      },
+      "opt_opt_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_tuple_nz32_u32": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_array_nz32_2": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_user_bounded_enum": {
+        "size": 1,
+        "align": 1
+      }
+    },
+    "unsized_dsts": {
+      "c_dst_u32_len0": {
+        "size": 4,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len1": {
+        "size": 8,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len3": {
+        "size": 16,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "rust_dst_u16_len2": {
+        "size": 12,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 4,
+        "off_tail": 8
+      },
+      "c_packed2_dst_u32_len1": {
+        "size": 6,
+        "align": 2,
+        "tail_offset": 2
+      },
+      "outer_packed2_over_inner_c_dst_u32_len1": {
+        "size": 10,
+        "align": 2,
+        "off_inner": 2,
+        "off_tail": 6
+      },
+      "c_dst_dyn_u8": {
+        "size": 2,
+        "align": 1,
+        "tail_offset": 1
+      },
+      "c_dst_dyn_u64": {
+        "size": 16,
+        "align": 8,
+        "tail_offset": 8
+      },
+      "c_dst_dyn_align32": {
+        "size": 64,
+        "align": 32,
+        "tail_offset": 32
+      }
+    }
+  },
+  "nightly_2026_05_31_randomize_seed7": {
+    "compiler_mode": "nightly_2026_05_31_randomize_seed7",
+    "primitives_and_pointers": {
+      "bool": {
+        "size": 1,
+        "align": 1
+      },
+      "u8": {
+        "size": 1,
+        "align": 1
+      },
+      "i8": {
+        "size": 1,
+        "align": 1
+      },
+      "u16": {
+        "size": 2,
+        "align": 2
+      },
+      "i16": {
+        "size": 2,
+        "align": 2
+      },
+      "u32": {
+        "size": 4,
+        "align": 4
+      },
+      "i32": {
+        "size": 4,
+        "align": 4
+      },
+      "u64": {
+        "size": 8,
+        "align": 8
+      },
+      "i64": {
+        "size": 8,
+        "align": 8
+      },
+      "u128": {
+        "size": 16,
+        "align": 16
+      },
+      "i128": {
+        "size": 16,
+        "align": 16
+      },
+      "usize": {
+        "size": 8,
+        "align": 8
+      },
+      "isize": {
+        "size": 8,
+        "align": 8
+      },
+      "f32": {
+        "size": 4,
+        "align": 4
+      },
+      "f64": {
+        "size": 8,
+        "align": 8
+      },
+      "char": {
+        "size": 4,
+        "align": 4
+      },
+      "unit": {
+        "size": 0,
+        "align": 1
+      },
+      "never": {
+        "size": 0,
+        "align": 1
+      },
+      "empty_enum_never_equiv": {
+        "size": 0,
+        "align": 1
+      },
+      "thin_ptr_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "fn_ptr": {
+        "size": 8,
+        "align": 8
+      },
+      "wide_ptr_slice": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_str": {
+        "size": 16,
+        "align": 8
+      },
+      "wide_ptr_dyn": {
+        "size": 16,
+        "align": 8
+      }
+    },
+    "wide_pointer_words": {
+      "word0_is_data_ptr": true,
+      "word1_len_metadata": 5
+    },
+    "arrays_and_slices": {
+      "array_u32_0": {
+        "size": 0,
+        "align": 4
+      },
+      "array_u32_3": {
+        "size": 12,
+        "align": 4
+      },
+      "slice_u32_3_val": {
+        "size": 12,
+        "align": 4
+      }
+    },
+    "tuples_and_repr_rust": {
+      "unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "nested_unit_tuple": {
+        "size": 0,
+        "align": 1
+      },
+      "tuple_with_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "empty_rust_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_unit_fields_struct": {
+        "size": 0,
+        "align": 1
+      },
+      "zst_with_align4_field": {
+        "size": 0,
+        "align": 4
+      },
+      "single_variant_zst_enum": {
+        "size": 0,
+        "align": 1
+      },
+      "single_u64": {
+        "size": 8,
+        "align": 8,
+        "off0": 0
+      },
+      "pair_u32": {
+        "size": 8,
+        "align": 4,
+        "off0": 4,
+        "off1": 0
+      },
+      "triple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 2,
+        "off1_u32": 4,
+        "off2_u16": 0
+      },
+      "tuple_het": {
+        "size": 8,
+        "align": 4,
+        "off0_u8": 4,
+        "off1_u32": 0,
+        "off2_u16": 6
+      }
+    },
+    "repr_c_transparent_packed_align": {
+      "empty_c": {
+        "size": 0,
+        "align": 1
+      },
+      "c_with_zst_align1": {
+        "size": 2,
+        "align": 1,
+        "off_a": 0,
+        "off_z": 1,
+        "off_b": 1
+      },
+      "c_with_zst_align4": {
+        "size": 8,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4,
+        "off_b": 4
+      },
+      "c_trailing_zst_align4": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_z": 4
+      },
+      "transparent_over_u32": {
+        "size": 4,
+        "align": 4,
+        "off_inner": 0
+      },
+      "transparent_over_align4_zst": {
+        "size": 0,
+        "align": 4
+      },
+      "rust_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 3,
+        "off_c": 1
+      },
+      "c_packed1_het": {
+        "size": 7,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 1,
+        "off_c": 5
+      },
+      "c_packed2_het": {
+        "size": 8,
+        "align": 2,
+        "off_a": 0,
+        "off_b": 2,
+        "off_c": 6
+      },
+      "rust_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 8,
+        "off_b": 4,
+        "off_c": 0
+      },
+      "c_align16_het": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 4,
+        "off_c": 8
+      },
+      "generic_outer_c_packed2_over_c_align16": {
+        "size": 18,
+        "align": 2,
+        "off_x": 0,
+        "off_inner": 2
+      }
+    },
+    "unions": {
+      "rust_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "c_union": {
+        "size": 4,
+        "align": 4,
+        "off_a": 0,
+        "off_b": 0,
+        "off_c": 0
+      },
+      "rust_packed_union": {
+        "size": 4,
+        "align": 1,
+        "off_a": 0,
+        "off_b": 0
+      },
+      "c_align16_union": {
+        "size": 16,
+        "align": 16,
+        "off_a": 0,
+        "off_b": 0
+      }
+    },
+    "enums_and_niches": {
+      "c_enum_fieldless": {
+        "size": 4,
+        "align": 4
+      },
+      "u8_enum_fieldless": {
+        "size": 1,
+        "align": 1
+      },
+      "c_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "c_u8_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "rust_enum_with_fields": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_ref_u8": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_mut_ref_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_ref_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_box_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_box_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_fn_ptr": {
+        "size": 8,
+        "align": 8,
+        "none_is_zero": true
+      },
+      "opt_nonnull_u8": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_nonnull_slice_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_nonzero_u8": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_nonzero_u32": {
+        "size": 4,
+        "align": 4,
+        "none_is_zero": true
+      },
+      "opt_nonzero_i32": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_nonzero_u128": {
+        "size": 16,
+        "align": 16
+      },
+      "opt_nonzero_usize": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_transparent_nonnull": {
+        "size": 8,
+        "align": 8
+      },
+      "opt_manually_drop_ref": {
+        "size": 8,
+        "align": 8
+      },
+      "res_nonzero_u32_unit": {
+        "size": 4,
+        "align": 4,
+        "err_is_zero": true
+      },
+      "res_unit_nonzero_u32": {
+        "size": 4,
+        "align": 4
+      },
+      "res_nonzero_u8_zst_align4": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_unsafecell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_cell_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_maybe_uninit_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_bool": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_char": {
+        "size": 4,
+        "align": 4
+      },
+      "opt_ordering": {
+        "size": 1,
+        "align": 1
+      },
+      "opt_infallible": {
+        "size": 0,
+        "align": 1
+      },
+      "opt_opt_ref_u8": {
+        "size": 16,
+        "align": 8
+      },
+      "opt_tuple_nz32_u32": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_array_nz32_2": {
+        "size": 8,
+        "align": 4
+      },
+      "opt_user_bounded_enum": {
+        "size": 1,
+        "align": 1
+      }
+    },
+    "unsized_dsts": {
+      "c_dst_u32_len0": {
+        "size": 4,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len1": {
+        "size": 8,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "c_dst_u32_len3": {
+        "size": 16,
+        "align": 4,
+        "tail_offset": 4
+      },
+      "rust_dst_u16_len2": {
+        "size": 12,
+        "align": 4,
+        "off_a": 4,
+        "off_b": 0,
+        "off_tail": 6
+      },
+      "c_packed2_dst_u32_len1": {
+        "size": 6,
+        "align": 2,
+        "tail_offset": 2
+      },
+      "outer_packed2_over_inner_c_dst_u32_len1": {
+        "size": 10,
+        "align": 2,
+        "off_inner": 2,
+        "off_tail": 6
+      },
+      "c_dst_dyn_u8": {
+        "size": 2,
+        "align": 1,
+        "tail_offset": 1
+      },
+      "c_dst_dyn_u64": {
+        "size": 16,
+        "align": 8,
+        "tail_offset": 8
+      },
+      "c_dst_dyn_align32": {
+        "size": 64,
+        "align": 32,
+        "tail_offset": 32
+      }
+    }
+  }
+}
