@@ -22267,6 +22267,103 @@
         "research/issue-3732-j023"
       ]
     },
+    "fuel-step-indexing-clocks-and-tcb-recursion-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "4a7bcfdcc0f50274edd5874ba9b204cc2dac7032"
+          },
+          "name": "Anneal formal verification system (simplify-trusted branch, two-layer structural/fuel split and BodyId table)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "5a48fba09794839a06cee0bc4fa56f98f1fbb38e"
+          },
+          "name": "Anneal formal verification system (recursive MirBody and beqMirBodyFuel baseline)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "ebac418ccf7c234ae402cf76a491c903bff3be4f"
+          },
+          "name": "Anneal formal verification system (Nat.rec and MirVal.rec TCB recursion baseline)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (v4.34.1)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-49498-1_23",
+            "url": "https://cakeml.org/esop16.pdf"
+          },
+          "name": "Owens, Myreen, Kumar, and Tan (ESOP 2016) \u2014 Functional Big-Step Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3579834",
+            "url": "https://dl.acm.org/doi/10.1145/3579834"
+          },
+          "name": "Chargu\u00e9raud, Campbell, Ligtvoet, and\u00e9nez/OmniSemantics (TOPLAS 2023) \u2014 Omnisemantics: Smoother Handling of Nondeterminism"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/504709.504712",
+            "url": "https://dl.acm.org/doi/10.1145/504709.504712"
+          },
+          "name": "Appel and McAllester (TOPLAS 2001) \u2014 An Indexed Model of Recursive Types for Foundational Proof-Carrying Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151",
+            "url": "https://doi.org/10.1017/S0956796818000151"
+          },
+          "name": "Jung, Krebbers, Jourdan, Bizjak, Birkedal, and Dreyer (JFP 2018) \u2014 Iris from the Ground Up"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371119",
+            "url": "https://dl.acm.org/doi/10.1145/3371119"
+          },
+          "name": "Xia, Zakowski, He, Hur, Malecha, Pierce, and Zdancewic (POPL 2020) \u2014 Interaction Trees"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.ic.2007.12.004",
+            "url": "https://xavierleroy.org/publi/coindsem-journal.pdf"
+          },
+          "name": "Leroy and Grall (Information and Computation 2009) \u2014 Coinductive Big-Step Operational Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009866",
+            "url": "https://dl.acm.org/doi/10.1145/3009837.3009866"
+          },
+          "name": "Amin and Rompf (POPL 2017) \u2014 Type Soundness Proofs with Definitional Interpreters"
+        }
+      ],
+      "topics": [
+        "anneal/mir-semantics",
+        "anneal/trusted-computing-base",
+        "anneal/semantic-polarity",
+        "anneal/step-indexing",
+        "lean/termination",
+        "lean/kernel-reduction",
+        "lean/mechanized-models",
+        "verification/fuel-semantics",
+        "verification/functional-big-step",
+        "verification/omnisemantics",
+        "verification/coinductive-semantics",
+        "verification/logical-relations"
+      ]
+    },
     "functional-core-effect-boundaries-1988-2026": {
       "observed_at": "2026-09-30",
       "subjects": [
