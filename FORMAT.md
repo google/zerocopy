@@ -87,6 +87,16 @@ search for.
 `subjects` is a non-empty array identifying the concrete things directly examined
 and relevant to the report's claims.
 
+Subjects must be durable, independently resolvable technical artifacts or
+systems—such as published upstream repository revisions, released toolchains, or
+specifications—not local worktrees, unpushed or throwaway experiment commits,
+unmerged branches, task or issue tracker items, or prior states of the
+`reference` branch itself. When an investigation uses a throwaway prototype,
+local experiment, or counterfactual design variant to test a property, record the
+durable upstream systems or toolchains it characterizes in `subjects` and
+preserve the experimental formulation and runnable probe inside `REPORT.md` and
+the package's support material.
+
 Each subject has exactly:
 
 - `name`: a non-empty human-recognizable label;
@@ -165,6 +175,19 @@ Use one H1 report title and, by default, these top-level sections in this order:
 Keep this order unless the subject genuinely requires a different presentation.
 The section names describe responsibilities, not fields in a database.
 
+A report must be intelligible without shared task context. It is acceptable if a
+reader cannot tell why a report was commissioned, but its technical meaning must
+not depend on the authoring conversation, an active engineering task, an issue or
+audit checklist, a pull request stack, or one of many throwaway experiments.
+Every identifier and reference in `REPORT.md` must have a stable, self-contained
+referent: do not use task-, issue-, or audit-local labels (such as checklist row
+IDs, round numbers, or workstream names), and do not refer to types, predicates,
+functions, or paths from throwaway experiments or unmerged branches as if a
+reader could look them up externally. Even when citing a durable upstream
+revision, state or quote the relevant definition, signature, or invariant in
+`REPORT.md` whenever a bare symbol name or line range would be ambiguous or
+opaque without checking out that exact tree.
+
 ### Summary
 
 Give the smallest useful statement of what a future agent should retain. Lead
@@ -177,6 +200,10 @@ State what the findings apply to and how the subjects identified in `REPORT.json
 relate to one another. Include relevant configuration, feature flags, invocation
 mode, input class, host or target constraints, dependency combinations, or other
 scope boundaries.
+
+When a report covers multiple versions or revisions of a subject, state the
+covered versions explicitly and distinguish behavior shared across them from
+behavior specific to particular versions.
 
 Separate exact observation from broader applicability. If a result is claimed for
 subjects or configurations beyond those directly examined, state the argument or
@@ -271,9 +298,15 @@ implying that the report generalizes indefinitely.
 
 ## Corrections and newer subjects
 
-A newer upstream version does not invalidate a report about an older precisely
-identified subject. Add a distinct report package when preserving newer behavior
-is useful.
+A newer upstream version does not invalidate findings about an older precisely
+identified subject, and consumers of the corpus may remain pinned to older
+versions. When preserving behavior across multiple versions is useful and the
+topic remains coherent, prefer collapsing or updating the report package to
+cover the examined versions—listing each covered version in `REPORT.json`
+`subjects` and documenting clearly under **Applicability** and **Findings**
+which behaviors are shared and which differ between versions. Use a separate
+report package when the topic is distinct or the newer subject has diverged so
+substantially that combining them would obscure either version.
 
 If the corpus's account of its identified subject is wrong, correct the existing
 report package in the current tree. Git history provides provenance for the

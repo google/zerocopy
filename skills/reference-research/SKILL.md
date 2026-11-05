@@ -59,7 +59,9 @@ requirements:
   than reading the full file into context) and read the relevant existing
   packages under `reports/`. Reuse established findings instead of rediscovering
   them; schedule new work on a covered topic only when targeting an unexamined
-  boundary, a newer upstream revision, or a revalidation probe.
+  boundary, a newer upstream revision, or a revalidation probe, and note any
+  existing topic package that the new findings or version coverage should update
+  and coalesce into.
 
 - **Brainstorm and update open questions:** Derive concrete research and
   experimental questions from four sources:
@@ -77,10 +79,15 @@ requirements:
     required trial-and-error and formulate the questions and probes that would
     have resolved that friction upfront.
 
-If the caller supplied preliminary findings, treat claims that already satisfy
-`FORMAT.md` (pinned subject identities, primary-source citations, and
-reproducible probes) as established, and turn any unpinned, unverified, or
-incomplete claims into open questions for the next round.
+Separate durable technical questions from task-local context. If the prompt,
+retrospective, or preliminary findings refer to local worktrees, unmerged
+branches, throwaway experiment commits, pull request stacks, issue or audit
+checklist IDs, or undefined project-internal symbols, do not carry those
+ephemeral references forward as if future readers will recognize them. Treat
+claims that already satisfy `FORMAT.md` (durable upstream subject identities,
+self-contained definitions, primary-source citations, and reproducible probes)
+as established, and turn any unpinned, context-dependent, or incomplete claims
+into open questions or self-contained probes for the next round.
 
 If the authorized stopping boundary is **brainstorm / plan only**, present the
 resulting question set and proposed investigation tracks and stop.
@@ -95,11 +102,12 @@ point:
   isolates noisy exploration, spawn parallel subagents—one per track. Give each
   subagent a self-contained brief containing:
   - Its assigned questions and scope boundaries;
-  - The exact target subjects and revisions to inspect or execute;
+  - The exact durable upstream subjects and revisions to inspect or execute;
   - The required `FORMAT.md` evidence roles (`normative`, `documentation`,
     `source`, `execution`, `derived`) and instructions to build standalone,
-    reproducible probes or minimal reproducers where empirical or mechanized
-    verification bears on the answer;
+    reproducible probes or minimal reproducers and to record self-contained
+    definitions of any experimental types, predicates, or harnesses rather than
+    citing local branch names, throwaway commits, or undefined internal symbols;
   - An isolated scratch directory for its working files and round report;
   - Explicit instructions to list any newly discovered premises, edge cases,
     cross-track seams, or unresolved questions at the end of its round report.
@@ -134,12 +142,30 @@ evidence across all rounds into corpus report packages:
 - **Group by durable subject and topic, not discovery history:**
   - Partition the findings into a natural set of self-contained report packages
     (`reports/<package>/REPORT.json`, `REPORT.md`, and optional `support/`
-    material) according to `FORMAT.md`.
+    material) according to `FORMAT.md`. When findings extend or revalidate a
+    topic already covered in the corpus, prefer updating and coalescing into that
+    report package—listing all covered versions in `REPORT.json` `subjects` and
+    stating clearly under `Applicability` and `Findings` which behaviors are
+    shared and which differ across versions—rather than creating separate
+    per-version packages.
+  - Make every report self-contained for a cold reader. It is fine if the
+    *reason* a report was written is not apparent, but its *meaning* must be
+    unambiguous without assuming shared context. Pin `REPORT.json` `subjects`
+    only to durable, externally resolvable upstream revisions or release
+    artifacts (never local worktrees, unmerged branches, throwaway experiment
+    commits, or prior commits of `reference`). When a finding comes from a
+    throwaway experiment, local prototype, or counterfactual design variant,
+    define the mechanism or model inline in `REPORT.md` and preserve the
+    standalone probe in `support/` rather than citing an ephemeral commit,
+    branch name, or undefined symbol as if a reader could look it up externally.
+    Even for durable upstream subjects, include the relevant signature,
+    definition, or invariant in `REPORT.md` whenever a bare symbol name or line
+    range would be opaque without checking out that tree.
   - Fold refinements, corrections, and follow-up probes from later rounds
     directly into the claims they qualify. Do not organize `REPORT.md`
     chronologically by round (`Round 1`, `Round 2`) or expose internal track
-    identifiers (`WS1`, `Track 3`), subagent conversation links, or temporary
-    scratch paths.
+    identifiers (`WS1`, `Track 3`), issue or audit checklist IDs, subagent
+    conversation links, or temporary scratch paths.
   - Preserve high-value executable artifacts (mechanized proofs, compiler or
     toolchain probes, minimal reproducers, verification scripts, and golden
     specimens) in `reports/<package>/support/` so future agents can rerun cheap
