@@ -54,10 +54,12 @@ At the start of the program—and again after each round completes—compare wha
 already established against the governing scope and `FORMAT.md`'s evidentiary
 requirements:
 
-- **Check the existing corpus first:** Inspect `CATALOG.json` and relevant
-  existing packages under `reports/`. Reuse established findings instead of
-  rediscovering them; schedule new work on a covered topic only when targeting
-  an unexamined boundary, a newer upstream revision, or a revalidation probe.
+- **Check the existing corpus first:** Query `CATALOG.json` programmatically
+  (filtering by package name, `topics`, or `subjects` with Python or `jq` rather
+  than reading the full file into context) and read the relevant existing
+  packages under `reports/`. Reuse established findings instead of rediscovering
+  them; schedule new work on a covered topic only when targeting an unexamined
+  boundary, a newer upstream revision, or a revalidation probe.
 
 - **Brainstorm and update open questions:** Derive concrete research and
   experimental questions from four sources:
