@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/integration-tests",
+    "anneal/rustc-capture",
+    "anneal/dual-profile-mir",
+    "anneal/boundary-audit",
+    "rustc/mir-capture",
+    "lean/olean-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal (simplify-trusted)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5d2b5702871baf19c1a42d327ed2e80b231f34d2",
+        "paths": "trusted/rustc-capture, trusted/cargo-anneal, trusted/audit"
+      }
+    },
+    {
+      "name": "Zerocopy Anneal V1 and V2 integration test frameworks",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6",
+        "paths": "anneal/v1, tools/cargo-anneal"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

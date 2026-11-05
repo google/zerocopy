@@ -14013,6 +14013,52 @@
         "lean/source-navigation"
       ]
     },
+    "anneal-integration-test-harness-capture-and-boundary-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/rustc-capture, trusted/cargo-anneal, trusted/audit",
+            "repository": "joshlf/anneal",
+            "revision": "5d2b5702871baf19c1a42d327ed2e80b231f34d2"
+          },
+          "name": "Anneal (simplify-trusted)"
+        },
+        {
+          "identity": {
+            "paths": "anneal/v1, tools/cargo-anneal",
+            "repository": "google/zerocopy",
+            "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+          },
+          "name": "Zerocopy Anneal V1 and V2 integration test frameworks"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/integration-tests",
+        "anneal/rustc-capture",
+        "anneal/dual-profile-mir",
+        "anneal/boundary-audit",
+        "rustc/mir-capture",
+        "lean/olean-audit"
+      ]
+    },
     "anneal-interactive-model-probes-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -14524,6 +14570,44 @@
         "voting/cryptographic-verifiability",
         "medical-devices/safety-critical",
         "aviation/tcas-acas-x"
+      ]
+    },
+    "anneal-lean-verification-scaling-attribution-and-mutation-oracles-2026": {
+      "observed_at": "2026-11-05",
+      "subjects": [
+        {
+          "identity": {
+            "paths": "trusted/lean/Trusted/MirSemantics.lean, trusted/lean/Trusted/StepResult.lean, theory/Anneal/Lowering.lean, theory/Anneal/MirLemmas.lean",
+            "repository": "joshlf/anneal",
+            "revision": "5d2b5702871baf19c1a42d327ed2e80b231f34d2"
+          },
+          "name": "Anneal (simplify-trusted)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "rustc"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/integration-tests",
+        "anneal/negative-attribution",
+        "anneal/mutation-testing",
+        "anneal/canary-theorems",
+        "lean/kernel-scaling",
+        "lean/step-result"
       ]
     },
     "anneal-linux-elf-relocation-main-41f5b37": {

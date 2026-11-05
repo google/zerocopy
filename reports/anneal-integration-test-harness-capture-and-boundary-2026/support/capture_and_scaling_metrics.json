@@ -1,0 +1,116 @@
+{
+  "determinism_probe": {
+    "shallow_rel_dir": "det_a/sample",
+    "deep_rel_dir": "det_b/very/deep/nested/sub/directory/for/path/sensitivity/check",
+    "byte_identical": true,
+    "sha256": "44e0972a75b52b1a7a1dd9dab8a8bd0f9366f18b3ab7fe0415de46352e79d594",
+    "size_bytes": 792,
+    "shallow_wall_s": 0.0218,
+    "shallow_rss_kb": 78460,
+    "deep_wall_s": 0.0232,
+    "deep_rss_kb": 78464
+  },
+  "dual_profile_and_diagnostic_probes": {
+    "checked_add": {
+      "returncode": 1,
+      "wall_s": 0.0231,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: its MIR differs between the debug and release configurations"
+    },
+    "wrapping_add": {
+      "returncode": 0,
+      "wall_s": 0.0232,
+      "rss_kb": 78464,
+      "stderr": "",
+      "mir_bytes": 1087
+    },
+    "debug_assert": {
+      "returncode": 1,
+      "wall_s": 0.0229,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: its MIR differs between the debug and release configurations"
+    },
+    "div_by_var": {
+      "returncode": 0,
+      "wall_s": 0.0231,
+      "rss_kb": 78464,
+      "stderr": "",
+      "mir_bytes": 1699
+    },
+    "cfg_debug_assertions": {
+      "returncode": 1,
+      "wall_s": 0.0217,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: its MIR differs between the debug and release configurations"
+    },
+    "enum_decl": {
+      "returncode": 1,
+      "wall_s": 0.0169,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: item `E` (DefId(0:3 ~ sample[f687]::E)) is an unsupported kind (Enum)"
+    },
+    "unsafe_trait": {
+      "returncode": 1,
+      "wall_s": 0.0171,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: trait `T` (DefId(0:3 ~ sample[f687]::T)) is `unsafe`"
+    },
+    "requires_on_safe_fn": {
+      "returncode": 1,
+      "wall_s": 0.0167,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: safe function `f` (DefId(0:3 ~ sample[f687]::f)) has a `requires` clause; only `unsafe fn` items may declare preconditions"
+    },
+    "bad_spec_syntax": {
+      "returncode": 1,
+      "wall_s": 0.0164,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: unsupported Anneal block on `f` (DefId(0:3 ~ sample[f687]::f)): unsupported `ensures` clause `result == x + 1`; expected `result == <ident>`"
+    },
+    "invariant_on_multi_field": {
+      "returncode": 1,
+      "wall_s": 0.0189,
+      "rss_kb": 78464,
+      "stderr": "anneal-rustc-capture: unsupported crate: struct `S` (DefId(0:3 ~ sample[f687]::S)) declares an Anneal `invariant` clause, which is only supported on single-field `usize` structs"
+    },
+    "mut_ref_arg": {
+      "returncode": 0,
+      "wall_s": 0.023,
+      "rss_kb": 78460,
+      "stderr": "",
+      "mir_bytes": 803
+    },
+    "raw_ptr_deref": {
+      "returncode": 0,
+      "wall_s": 0.0232,
+      "rss_kb": 78460,
+      "stderr": "",
+      "mir_bytes": 825
+    },
+    "private_uncalled_fn": {
+      "returncode": 0,
+      "wall_s": 0.0227,
+      "rss_kb": 78460,
+      "stderr": "",
+      "mir_bytes": 1353
+    }
+  },
+  "workspace_manifest_metrics": {
+    "cargo_lock_total_packages": 129,
+    "crates_io_packages": 127,
+    "workspace_member_packages": [
+      "anneal-audit",
+      "cargo-anneal"
+    ],
+    "excluded_bins": [
+      "trusted/rustc-capture"
+    ],
+    "allowed_crate_files": [
+      "Cargo.toml",
+      "Cargo.lock",
+      "src/lib.rs",
+      ".anneal/Mir.lean",
+      ".anneal/Proof.lean"
+    ]
+  }
+}

@@ -1,0 +1,228 @@
+{
+  "cold_prefix_compilation": {
+    "total_wall_s": 15.1317,
+    "max_rss_kb": 437348,
+    "total_olean_bytes": 17961912,
+    "modules": [
+      {
+        "module": "Trusted.Refinement",
+        "wall_s": 0.4404,
+        "rss_kb": 182940,
+        "olean_bytes": 333080
+      },
+      {
+        "module": "Trusted.StepResult",
+        "wall_s": 0.4436,
+        "rss_kb": 181244,
+        "olean_bytes": 343784
+      },
+      {
+        "module": "Trusted.MirAst",
+        "wall_s": 0.8758,
+        "rss_kb": 184808,
+        "olean_bytes": 1030976
+      },
+      {
+        "module": "Trusted.MirSemantics",
+        "wall_s": 1.1583,
+        "rss_kb": 195328,
+        "olean_bytes": 1445000
+      },
+      {
+        "module": "Trusted",
+        "wall_s": 0.2073,
+        "rss_kb": 182380,
+        "olean_bytes": 1435728
+      },
+      {
+        "module": "Anneal.Refinement",
+        "wall_s": 0.2995,
+        "rss_kb": 181416,
+        "olean_bytes": 335728
+      },
+      {
+        "module": "Anneal.StepResult",
+        "wall_s": 0.4357,
+        "rss_kb": 181568,
+        "olean_bytes": 359200
+      },
+      {
+        "module": "Anneal.Lowering",
+        "wall_s": 2.7076,
+        "rss_kb": 244172,
+        "olean_bytes": 3198224
+      },
+      {
+        "module": "Anneal.MirLemmas",
+        "wall_s": 8.7411,
+        "rss_kb": 437348,
+        "olean_bytes": 8680184
+      },
+      {
+        "module": "Anneal",
+        "wall_s": 0.2628,
+        "rss_kb": 193860,
+        "olean_bytes": 820008
+      }
+    ]
+  },
+  "warm_per_crate_scaling": {
+    "1": {
+      "fn_count": 1,
+      "capture_wall_s": 0.023,
+      "mir_lean_bytes": 800,
+      "mir_compile_wall_s": 0.0972,
+      "mir_compile_rss_kb": 181252,
+      "proof_compile_wall_s": 0.1076,
+      "proof_compile_rss_kb": 200840,
+      "total_warm_wall_s": 0.2278,
+      "per_fn_warm_ms": 227.8
+    },
+    "5": {
+      "fn_count": 5,
+      "capture_wall_s": 0.0284,
+      "mir_lean_bytes": 3104,
+      "mir_compile_wall_s": 0.1494,
+      "mir_compile_rss_kb": 182480,
+      "proof_compile_wall_s": 0.1852,
+      "proof_compile_rss_kb": 210744,
+      "total_warm_wall_s": 0.363,
+      "per_fn_warm_ms": 72.6
+    },
+    "10": {
+      "fn_count": 10,
+      "capture_wall_s": 0.0229,
+      "mir_lean_bytes": 5984,
+      "mir_compile_wall_s": 0.1678,
+      "mir_compile_rss_kb": 183320,
+      "proof_compile_wall_s": 0.3758,
+      "proof_compile_rss_kb": 221640,
+      "total_warm_wall_s": 0.5665,
+      "per_fn_warm_ms": 56.65
+    },
+    "20": {
+      "fn_count": 20,
+      "capture_wall_s": 0.024,
+      "mir_lean_bytes": 11814,
+      "mir_compile_wall_s": 0.2477,
+      "mir_compile_rss_kb": 185960,
+      "proof_compile_wall_s": 1.0167,
+      "proof_compile_rss_kb": 285296,
+      "total_warm_wall_s": 1.2884,
+      "per_fn_warm_ms": 64.42
+    },
+    "50": {
+      "fn_count": 50,
+      "capture_wall_s": 0.0303,
+      "mir_lean_bytes": 29304,
+      "mir_compile_wall_s": 0.5934,
+      "mir_compile_rss_kb": 198432,
+      "proof_compile_wall_s": 5.0401,
+      "proof_compile_rss_kb": 703120,
+      "total_warm_wall_s": 5.6638,
+      "per_fn_warm_ms": 113.28
+    }
+  },
+  "negative_attribution_mechanisms": {
+    "m1_standard_proveCrate_rfl_error": "Application type mismatch: The argument rfl has type ?m.2 = ?m.2 but is expected to have type Anneal.checkCrate Mir.crate = [] in the application Anneal.proveCrate Mir.crate rfl",
+    "m2_decide_error": "tactic 'decide' proved that the proposition Anneal.checkCrate Mir.crate = [] is false",
+    "m3_lean_json_is_unreduced": true,
+    "m4_lean_run_proveCrateOpt_wall_s": 0.224,
+    "m4_lean_run_proveCrateOpt_rss_kb": 195120,
+    "cases": {
+      "neg_wrong_spec_body": {
+        "scope": "id",
+        "message": "unproved function body"
+      },
+      "neg_nonzero_violates_inv": {
+        "scope": "make_nonzero",
+        "message": "unproved safe NonZeroUsize function"
+      },
+      "neg_nonzero_pub_field": {
+        "scope": "crate",
+        "message": "unsupported ADT inventory"
+      },
+      "neg_multi_fn_second_fails": {
+        "scope": "bad_id",
+        "message": "unproved function body"
+      },
+      "synthetic_empty_crate": {
+        "scope": "crate",
+        "message": "crate defines no public functions"
+      },
+      "synthetic_dup_body_id": {
+        "scope": "crate",
+        "message": "duplicate body IDs"
+      },
+      "synthetic_dup_fn_name": {
+        "scope": "crate",
+        "message": "duplicate function names"
+      },
+      "synthetic_fn_verified_waiver": {
+        "scope": "crate",
+        "message": "disallowed fnVerified TCB waiver"
+      },
+      "synthetic_missing_tcb_waiver": {
+        "scope": "id",
+        "message": "missing TCBItem.rustcLowering waiver"
+      }
+    }
+  },
+  "tcb_mutation_testing": {
+    "target_file": "trusted/lean/Trusted/MirSemantics.lean",
+    "total_mutants": 8,
+    "killed_by_existing_theory": 7,
+    "killed_with_canary": 8,
+    "mutants": {
+      "M1_binop_eq_usize_inverted": {
+        "location": "Trusted/MirSemantics.lean:evalRvalue (.binaryOp .eq)",
+        "killed_by": "Anneal.MirLemmas",
+        "wall_s": 11.5515,
+        "error_line": "Anneal/MirLemmas.lean:1943:39: Application type mismatch in ExecNormal.step rfl"
+      },
+      "M2_move_skips_deinitPlace": {
+        "location": "Trusted/MirSemantics.lean:evalOperand (.move)",
+        "killed_by": "Anneal.MirLemmas",
+        "wall_s": 11.7376,
+        "error_line": "Anneal/MirLemmas.lean:2434:28: Type mismatch in move deinitialization lemma"
+      },
+      "M3_storage_live_fails_to_bump_gen": {
+        "location": "Trusted/MirSemantics.lean:evalMirStmt (.storageLive)",
+        "killed_by": "Anneal.MirLemmas",
+        "wall_s": 11.6305,
+        "error_line": "Anneal/MirLemmas.lean:2195:14: Application type mismatch in generation bump proof"
+      },
+      "M4_return_skips_returnRefsOk": {
+        "location": "Trusted/MirSemantics.lean:evalMirTerminator (.return_)",
+        "killed_by": "Anneal.MirLemmas",
+        "wall_s": 11.5313,
+        "error_line": "Anneal/MirLemmas.lean:3348:15: unsolved goals in return reference validity proof"
+      },
+      "M5_unreachable_unwinds_instead_of_failed": {
+        "location": "Trusted/MirSemantics.lean:evalMirTerminator (.unreachable)",
+        "killed_by": "Anneal.MirLemmas",
+        "wall_s": 11.5594,
+        "error_line": "Anneal/MirLemmas.lean:155:27: Type mismatch (StepResult.terminated .unwind vs StepResult.failed)"
+      },
+      "M6_assert_mismatch_fails_instead_of_unwinds": {
+        "location": "Trusted/MirSemantics.lean:evalMirTerminator (.assert)",
+        "killed_by": "Anneal.Lowering",
+        "wall_s": 3.4214,
+        "error_line": "Anneal/Lowering.lean:511:32: Type mismatch (StepResult.failed vs StepResult.terminated .unwind)"
+      },
+      "M7_admissible_adt_inv_flipped": {
+        "location": "Trusted/MirSemantics.lean:AdmissibleAdtInv",
+        "killed_by": "Anneal.MirLemmas",
+        "wall_s": 11.8602,
+        "error_line": "Anneal/MirLemmas.lean:949:50: Type mismatch (Bool.false = Bool.true)"
+      },
+      "M8_default_trust_policy_allows_fnVerified": {
+        "location": "Trusted/MirSemantics.lean:1169 (defaultTrustPolicy.isAllowed)",
+        "killed_by_existing_theory": "SURVIVED",
+        "existing_theory_wall_s": 11.9383,
+        "killed_by_canary": "LitmusAndAttributionCanaries.canary_defaultTrustPolicy_rejects_fnVerified_waiver",
+        "canary_error_line": "LitmusAndAttributionCanaries.lean:49:2: Type mismatch: h has type defaultTrustPolicy.isAllowed (TCBItem.fnVerified fnName bodyId) but is expected to have type False"
+      }
+    }
+  }
+}
