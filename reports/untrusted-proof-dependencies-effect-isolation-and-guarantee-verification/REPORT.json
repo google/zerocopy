@@ -1,0 +1,159 @@
+{
+  "topics": [
+    "anneal/audit",
+    "anneal/trust-boundary",
+    "anneal/trusted-boundary",
+    "build/sandboxing",
+    "lake/configuration",
+    "lake/security",
+    "lean/elaboration-effects",
+    "lean/kernel-replay",
+    "lean/macros",
+    "lean/module-system",
+    "lean/olean-compaction",
+    "security/capability-sandboxing",
+    "security/landlock",
+    "security/seccomp-bpf",
+    "systems/bubblewrap",
+    "verification/agda-safe",
+    "verification/comparator",
+    "verification/coqchk",
+    "verification/external-kernels",
+    "verification/mm0",
+    "verification/safe-haskell",
+    "verification/safeverify",
+    "verification/untrusted-dependencies"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Trust Model and Two-Phase Boundary Auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "287e7ad5182f74f25fcaf9098840f5f39aa601d6"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel, Elaborator, Module System, and Lake Build System",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "SafeVerify .olean Submission Verifier",
+      "identity": {
+        "repository": "GasStationManager/SafeVerify",
+        "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+      }
+    },
+    {
+      "name": "Comparator Sandboxed Export and Multi-Kernel Proof Verifier",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "lean4checker Standalone Environment Replay Verifier",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "lean4export NDJSON Kernel Declaration Exporter",
+      "identity": {
+        "format_version": "3.1.0",
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "nanoda_lib Independent Rust Lean 4 Kernel Typechecker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "8de7e0c4ed3052745a7f8725164efd9e76d84c56",
+        "version": "v0.4.31"
+      }
+    },
+    {
+      "name": "Lean4Lean Pure Lean 4 Kernel Reimplementation",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Lean Kernel Arena 24-Implementation Benchmark and Conformance Suite",
+      "identity": {
+        "repository": "leanprover/lean-kernel-arena",
+        "revision": "a6a56d26c0c94df807368d218725e9414ab4209e"
+      }
+    },
+    {
+      "name": "BSVKey Axiom-Discipline Auditor",
+      "identity": {
+        "repository": "BSVKey/bsvkey-axiom-proofs",
+        "revision": "180479de363d3f7a81652df4f41f6f999d66fc64"
+      }
+    },
+    {
+      "name": "Agda Typechecker, --safe Flag, and Reflection Interpreter",
+      "identity": {
+        "repository": "agda/agda",
+        "revision": "ec45c73baa385bd90ad8db80f0a9d21cdafe8dc5"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler Safe Haskell Subsystem",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "37ad47105079d55e0da68f3c660f9bbd2e18047a"
+      }
+    },
+    {
+      "name": "Rocq Prover Standalone Checker coqchk and .vo Validator",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "4402a03e266932251cbd32d1fc5fd1125e64ce8d"
+      }
+    },
+    {
+      "name": "MetaRocq Verified Kernel Typechecker and Erasure Pipeline",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "51b14e4bb5f45808f00f60208ff8dbf31f3ad6f56"
+      }
+    },
+    {
+      "name": "Metamath Zero Specification-Separated Proof Verifier mm0-c",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "Watt WebAssembly Sandbox for Rust Procedural Macros",
+      "identity": {
+        "repository": "dtolnay/watt",
+        "revision": "8f16788f649efcfb6c1995d5c7357e2504d426fb"
+      }
+    },
+    {
+      "name": "Cackle ELF/Linker API Capability Checker for Rust Dependency Graphs",
+      "identity": {
+        "repository": "davidlattimore/cackle",
+        "revision": "f9f09eeb1f016aaf50adb8e7503efeef3d28595d"
+      }
+    },
+    {
+      "name": "Endo Hardened JavaScript SES Compartment and LavaMoat Policy System",
+      "identity": {
+        "repository": "endojs/endo",
+        "revision": "679d9afaa4acd089f578055118b6711a22537f05"
+      }
+    }
+  ],
+  "observed_at": "2026-11-06"
+}
