@@ -2,7 +2,7 @@
   "topics": [
     "verification",
     "verification/smt-certificates",
-    "mathlib/bitvec",
+    "lean/mathlib/bitvec",
     "lean/kernel",
     "lean/tactics"
   ],

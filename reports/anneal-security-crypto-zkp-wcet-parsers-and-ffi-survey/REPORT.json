@@ -14,26 +14,26 @@
     "security/constant-time",
     "security/speculative-constant-time",
     "security/information-flow-control",
-    "cryptography/primitives",
-    "cryptography/protocol-verification",
-    "zkp/circuit-verification",
-    "zkvm/verification",
-    "wcet/resource-bounds",
-    "wcet/stack-analysis",
-    "parsers/verified-zero-copy",
-    "ffi/multi-language-semantics",
-    "hardware/cheri-capabilities",
+    "security/cryptography/primitives",
+    "security/cryptography/protocol-verification",
+    "security/zkp/circuit-verification",
+    "security/zkvm/verification",
+    "verification/wcet/resource-bounds",
+    "verification/wcet/stack-analysis",
+    "verification/parsers/verified-zero-copy",
+    "rust/ffi/multi-language-semantics",
+    "isa/hardware/cheri-capabilities",
     "security/secret-zeroization",
     "anneal",
     "anneal/step-result",
     "security/side-channels",
-    "cryptography/arithmetic",
-    "cryptography/protocols",
-    "zkp/under-constrained",
-    "zkp/zkvm",
-    "wcet/timing-anomalies",
-    "parsers/malleability",
-    "ffi/boundaries"
+    "security/cryptography/arithmetic",
+    "security/cryptography/protocols",
+    "security/zkp/under-constrained",
+    "security/zkp/zkvm",
+    "verification/wcet/timing-anomalies",
+    "verification/parsers/malleability",
+    "rust/ffi/boundaries"
   ],
   "subjects": [
     {
@@ -204,7 +204,7 @@
       "name": "Out-of-order CPU WCET timing anomalies, embedded stack-analysis gaps, and wire-format parser malleability / differential vulnerabilities",
       "identity": {
         "cves": "CVE-2009-2408 (X.509 null-prefix), CVE-2013-4787 / CVE-2013-8619 (Android Master Key ZIP differential), CVE-2014-7911 (Android Parcel deserialization), BIP-62 / BIP-66 (Bitcoin DER malleability)",
-        "papers": "Lundqvist & Stenstr\u00f6m (RTSS 1999) WCET timing anomalies; Koopman (2014) / Barr (2013) Toyota ETCS-i stack overflow postmortem; cargo-call-stack"
+        "papers": "Lundqvist & Stenström (RTSS 1999) WCET timing anomalies; Koopman (2014) / Barr (2013) Toyota ETCS-i stack overflow postmortem; cargo-call-stack"
       }
     }
   ],

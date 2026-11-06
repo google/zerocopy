@@ -19,7 +19,43 @@ REQUIRED_ROOT_DIRS = ("tools", "tests")
 METADATA_KEYS = frozenset({"topics", "subjects", "observed_at"})
 SUBJECT_KEYS = frozenset({"name", "identity"})
 TOPIC_RE = re.compile(r"^[a-z0-9][a-z0-9._+-]*(?:/[a-z0-9][a-z0-9._+-]*)*$")
+TOPIC_NAMESPACES = frozenset(
+    {
+        "aeneas",
+        "agents",
+        "anneal",
+        "build",
+        "cargo",
+        "charon",
+        "compilers",
+        "domains",
+        "exocrate",
+        "isa",
+        "kraken",
+        "lake",
+        "lean",
+        "llvm",
+        "minirust",
+        "rust",
+        "rustc",
+        "security",
+        "smt",
+        "systems",
+        "vcs",
+        "verification",
+        "zerocopy",
+    }
+)
 PACKAGE_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+REQUIRED_REPORT_SECTIONS = (
+    "## Summary",
+    "## Applicability",
+    "## Findings",
+    "## Boundaries",
+    "## Evidence",
+    "## Revalidation",
+)
+FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 
 
 @dataclass(frozen=True)
@@ -176,6 +212,16 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
                         f"topics[{idx}]={topic!r} must be lowercase slash-separated retrieval labels",
                     )
                 )
+            else:
+                namespace = topic.split("/", 1)[0]
+                if namespace not in TOPIC_NAMESPACES:
+                    allowed = ", ".join(sorted(TOPIC_NAMESPACES))
+                    problems.append(
+                        Problem(
+                            path,
+                            f"topics[{idx}]={topic!r} top-level namespace {namespace!r} must be one of: {allowed}",
+                        )
+                    )
             if topic in seen:
                 problems.append(Problem(path, f"duplicate topic {topic!r}"))
             seen.add(topic)
@@ -261,6 +307,54 @@ def _root_structure(root: Path) -> tuple[dict[str, Entry], list[Problem]]:
     return entries, problems
 
 
+def _validate_prose(text: str, path: Path) -> list[Problem]:
+    problems: list[Problem] = []
+    fence_char: str | None = None
+    fence_len = 0
+    h1s: list[tuple[int, str]] = []
+    h2s: list[tuple[int, str]] = []
+
+    for idx, raw_line in enumerate(text.splitlines()):
+        line = raw_line.rstrip()
+        match = FENCE_RE.match(line)
+        if match:
+            delim, rest = match.group(1), match.group(2)
+            if fence_char is None:
+                if "`" not in delim or "`" not in rest:
+                    fence_char = delim[0]
+                    fence_len = len(delim)
+                    continue
+            elif delim[0] == fence_char and len(delim) >= fence_len and not rest.strip():
+                fence_char = None
+                fence_len = 0
+                continue
+        if fence_char is not None:
+            continue
+        if line == "#" or line.startswith("# "):
+            h1s.append((idx, line))
+        elif line == "##" or line.startswith("## "):
+            h2s.append((idx, line))
+
+    if len(h1s) != 1 or not h1s[0][1][2:].strip():
+        problems.append(
+            Problem(path, "REPORT.md must contain exactly one top-level '# <title>' heading")
+        )
+    actual_h2s = tuple(heading for _, heading in h2s)
+    if actual_h2s != REQUIRED_REPORT_SECTIONS:
+        expected = ", ".join(REQUIRED_REPORT_SECTIONS)
+        problems.append(
+            Problem(
+                path,
+                f"REPORT.md must contain exact top-level sections in order ({expected}); found {list(actual_h2s)}",
+            )
+        )
+    elif len(h1s) == 1 and h1s[0][0] > h2s[0][0]:
+        problems.append(
+            Problem(path, "REPORT.md top-level '# <title>' heading must appear before '## Summary'")
+        )
+    return problems
+
+
 def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
     entries, problems = _directory_entries(package)
     if problems:
@@ -282,9 +376,11 @@ def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
 
     if prose_path is not None:
         try:
-            _read_text(prose_path)
+            prose_text = _read_text(prose_path)
         except ValidationFailure as exc:
             problems.append(Problem(prose_path, str(exc)))
+        else:
+            problems.extend(_validate_prose(prose_text, prose_path))
 
     if problems or metadata is None:
         return None, problems

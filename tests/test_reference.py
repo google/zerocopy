@@ -49,7 +49,18 @@ def make_root(tmp_path: Path) -> Path:
     return root
 
 
-def add_report(root: Path, name="example", metadata=None, prose="# Example\n") -> Path:
+DEFAULT_PROSE = """# Example
+
+## Summary
+## Applicability
+## Findings
+## Boundaries
+## Evidence
+## Revalidation
+"""
+
+
+def add_report(root: Path, name="example", metadata=None, prose=DEFAULT_PROSE) -> Path:
     package = root / "reports" / name
     package.mkdir(parents=True)
     (package / "REPORT.json").write_text(
@@ -196,6 +207,7 @@ class ReferenceToolTests(unittest.TestCase):
             (valid_metadata(extra="x"), "unknown metadata keys"),
             (valid_metadata(topics=[]), "'topics' must be a non-empty array"),
             (valid_metadata(topics=["Lean/Bad"]), "lowercase slash-separated"),
+            (valid_metadata(topics=["unknown/subtopic"]), "top-level namespace 'unknown'"),
             (valid_metadata(topics=["lean", "lean"]), "duplicate topic"),
             (valid_metadata(subjects=[]), "'subjects' must be a non-empty array"),
             (valid_metadata(subjects=[{"name": "X", "identity": {}}]), "identity must be a non-empty object"),
@@ -389,6 +401,77 @@ class ReferenceToolTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("reference check passed", result.stdout)
+
+    def test_all_canonical_topic_namespaces_are_accepted(self):
+        root = make_root(self.tmp_path)
+        topics = []
+        for ns in sorted(reference.TOPIC_NAMESPACES):
+            topics.append(ns)
+            topics.append(f"{ns}/subtopic")
+        add_report(root, metadata=valid_metadata(topics=topics))
+        refresh_catalog(root)
+        self.assertEqual(reference._check_root(root), [])
+
+    def test_prose_section_validation(self):
+        cases = [
+            (
+                "## Summary\n## Applicability\n## Findings\n## Boundaries\n## Evidence\n## Revalidation\n",
+                "exactly one top-level '# <title>' heading",
+            ),
+            (
+                "# Title 1\n# Title 2\n## Summary\n## Applicability\n## Findings\n## Boundaries\n## Evidence\n## Revalidation\n",
+                "exactly one top-level '# <title>' heading",
+            ),
+            (
+                "# Title\n## Summary\n## Applicability\n## Findings\n## Boundaries\n## Evidence\n",
+                "must contain exact top-level sections in order",
+            ),
+            (
+                "# Title\n## Applicability\n## Summary\n## Findings\n## Boundaries\n## Evidence\n## Revalidation\n",
+                "must contain exact top-level sections in order",
+            ),
+            (
+                "# Title\n## Summary\n## Applicability\n## Findings\n## Extra\n## Boundaries\n## Evidence\n## Revalidation\n",
+                "must contain exact top-level sections in order",
+            ),
+            (
+                "## Summary\n# Title\n## Applicability\n## Findings\n## Boundaries\n## Evidence\n## Revalidation\n",
+                "must appear before '## Summary'",
+            ),
+        ]
+        for idx, (prose, needle) in enumerate(cases):
+            with self.subTest(needle=needle, idx=idx):
+                root = make_root(self.tmp_path / f"prose-{idx}")
+                add_report(root, prose=prose)
+                root_entries, _ = reference._root_structure(root)
+                _, problems = reference._load_reports(root, root_entries)
+                self.assertTrue(any(needle in p.message for p in problems), [p.message for p in problems])
+
+    def test_prose_headings_inside_fenced_code_blocks_are_ignored(self):
+        root = make_root(self.tmp_path)
+        prose = """# Example Title
+
+## Summary
+
+```markdown
+# Not a title
+## Not a section
+```
+
+## Applicability
+### Subheading is allowed
+## Findings
+~~~sh
+# shell comment
+## another comment
+~~~
+## Boundaries
+## Evidence
+## Revalidation
+"""
+        add_report(root, prose=prose)
+        refresh_catalog(root)
+        self.assertEqual(reference._check_root(root), [])
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@
     "rustc/mir-keys",
     "rustc/monomorphization",
     "rustc/tyctxt",
-    "x86-64/codegen"
+    "isa/x86-64/codegen"
   ],
   "subjects": [
     {

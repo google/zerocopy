@@ -12,15 +12,14 @@
     "anneal/refinement",
     "anneal/behavior-codec",
     "anneal/concurrency",
-    "concurrency/weak-memory",
-    "concurrency/linearizability",
-    "concurrency/safe-memory-reclamation",
-    "verified-systems/os-kernels",
-    "verified-systems/device-drivers",
-    "verified-systems/crash-consistency",
-    "verified-systems/distributed-systems",
-    "hardware/isa-semantics",
-    "hardware/rtl-verification",
+    "systems/concurrency/weak-memory",
+    "systems/concurrency/linearizability",
+    "systems/concurrency/safe-memory-reclamation",
+    "systems/device-drivers",
+    "systems/crash-consistency",
+    "systems/distributed-systems",
+    "isa/hardware/isa-semantics",
+    "isa/hardware/rtl-verification",
     "anneal/weak-memory",
     "anneal/os-kernels",
     "anneal/crash-consistency",
@@ -33,7 +32,7 @@
     "verification/distributed-systems",
     "rust/concurrency",
     "rust/atomics",
-    "verified-systems/sel4"
+    "systems/sel4"
   ],
   "subjects": [
     {

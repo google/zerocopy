@@ -14,16 +14,16 @@
     "anneal/solvers",
     "anneal/trusted-boundary",
     "lean/kernel-reduction",
-    "sat/lrat",
+    "smt/sat/lrat",
     "smt/alethe",
     "verification/e-graphs",
     "verification/floating-point",
     "verification/model-checking",
-    "cas/soundness-failures",
-    "chc/soundness-failures",
-    "egraphs/equality-saturation",
-    "floating-point/certification",
-    "sat/proof-checking",
+    "smt/cas/soundness-failures",
+    "smt/chc/soundness-failures",
+    "compilers/egraphs/equality-saturation",
+    "verification/floating-point/certification",
+    "smt/sat/proof-checking",
     "smt/soundness-failures",
     "verification/failures",
     "verification/postmortems"
@@ -141,19 +141,19 @@
       }
     },
     {
-      "name": "Certified term rewriting, AC normalization, and Datalog provenance systems (CeTA/IsaFoR, AAC_tactics, Souffl\u00e9, Ascent)",
+      "name": "Certified term rewriting, AC normalization, and Datalog provenance systems (CeTA/IsaFoR, AAC_tactics, Soufflé, Ascent)",
       "identity": {
         "doi": "10.1007/978-3-642-02959-2_10",
-        "suite": "CeTA / IsaFoR (CPF) / AAC_tactics / Souffl\u00e9 / Ascent",
+        "suite": "CeTA / IsaFoR (CPF) / AAC_tactics / Soufflé / Ascent",
         "venue": "CADE-22 / CC 2022"
       }
     },
     {
-      "name": "Cryptographic algebra, PAC ideal-membership, and verified bignum/PQC suites (CryptoLine, Past\u00e8que, Formosa, s2n-bignum)",
+      "name": "Cryptographic algebra, PAC ideal-membership, and verified bignum/PQC suites (CryptoLine, Pastèque, Formosa, s2n-bignum)",
       "identity": {
         "doi": "10.1145/3319535.3354199",
         "repository": "fmlab-iis/cryptoline",
-        "suite": "CryptoLine / Singular / Pacheck / Past\u00e8que / formosa-mlkem / formosa-mldsa / s2n-bignum",
+        "suite": "CryptoLine / Singular / Pacheck / Pastèque / formosa-mlkem / formosa-mldsa / s2n-bignum",
         "venue": "CCS 2019 / FMCAD 2020"
       }
     },

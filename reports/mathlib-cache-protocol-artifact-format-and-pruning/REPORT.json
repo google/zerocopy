@@ -1,6 +1,6 @@
 {
   "topics": [
-    "mathlib/data",
+    "lean/mathlib/data",
     "lake/artifact-cache",
     "build/caching"
   ],

@@ -78,6 +78,12 @@ slash-separated labels when hierarchy is useful, for example:
 ]
 ```
 
+The first `/`-separated segment of every topic must be one of the canonical
+top-level namespaces enforced by `tools/reference.py`: `aeneas`, `agents`,
+`anneal`, `build`, `cargo`, `charon`, `compilers`, `domains`, `exocrate`, `isa`,
+`kraken`, `lake`, `lean`, `llvm`, `minirust`, `rust`, `rustc`, `security`,
+`smt`, `systems`, `vcs`, `verification`, or `zerocopy`.
+
 Topics are navigation aids only. They do not establish applicability, dependency,
 ownership, or authority. Prefer established names a future agent is likely to
 search for.
@@ -155,11 +161,10 @@ current on that date.
 
 ## `REPORT.md`
 
-Write ordinary UTF-8 Markdown. The validator deliberately does not parse its
-headings or prose. Authors and reviewers are responsible for the semantic
-contract below.
-
-Use one H1 report title and, by default, these top-level sections in this order:
+Write ordinary UTF-8 Markdown. `tools/reference.py` validates that `REPORT.md`
+contains one top-level H1 report title followed by these six H2 sections in this
+exact order (outside fenced code blocks; `###` and deeper subheadings may be
+used freely inside sections):
 
 ```markdown
 # Report title
@@ -172,21 +177,24 @@ Use one H1 report title and, by default, these top-level sections in this order:
 ## Revalidation
 ```
 
-Keep this order unless the subject genuinely requires a different presentation.
-The section names describe responsibilities, not fields in a database.
+The validator does not interpret prose inside those sections; authors and
+reviewers are responsible for the semantic contract below.
 
 A report must be intelligible without shared task context. It is acceptable if a
 reader cannot tell why a report was commissioned, but its technical meaning must
 not depend on the authoring conversation, an active engineering task, an issue or
-audit checklist, a pull request stack, or one of many throwaway experiments.
-Every identifier and reference in `REPORT.md` must have a stable, self-contained
-referent: do not use task-, issue-, or audit-local labels (such as checklist row
-IDs, round numbers, or workstream names), and do not refer to types, predicates,
-functions, or paths from throwaway experiments or unmerged branches as if a
-reader could look them up externally. Even when citing a durable upstream
-revision, state or quote the relevant definition, signature, or invariant in
-`REPORT.md` whenever a bare symbol name or line range would be ambiguous or
-opaque without checking out that exact tree.
+audit checklist, a pull request stack, a local workstation checkout, or one of
+many throwaway experiments. Every identifier and reference in `REPORT.md` must
+have a stable, self-contained referent: do not use task-, issue-, or audit-local
+labels (such as `#3730`, checklist row IDs, round numbers, or workstream names),
+and do not refer to types, predicates, functions, or local workstation paths from
+throwaway experiments or unmerged branches as if a reader could look them up
+externally. (Concrete paths whose role is self-explanatory in place—such as
+`/tmp/...` in a reproduction command or `/Users/runner/...` when documenting an
+unstripped build-host rpath or `DW_AT_comp_dir` entry in a released binary—are
+fine.) Even when citing a durable upstream revision, state or quote the relevant
+definition, signature, or invariant in `REPORT.md` whenever a bare symbol name or
+line range would be ambiguous or opaque without checking out that exact tree.
 
 ### Summary
 

@@ -142,12 +142,15 @@ evidence across all rounds into corpus report packages:
 - **Group by durable subject and topic, not discovery history:**
   - Partition the findings into a natural set of self-contained report packages
     (`reports/<package>/REPORT.json`, `REPORT.md`, and optional `support/`
-    material) according to `FORMAT.md`. When findings extend or revalidate a
-    topic already covered in the corpus, prefer updating and coalescing into that
-    report package—listing all covered versions in `REPORT.json` `subjects` and
-    stating clearly under `Applicability` and `Findings` which behaviors are
-    shared and which differ across versions—rather than creating separate
-    per-version packages.
+    material) according to `FORMAT.md`, using only the canonical top-level
+    `topics` namespaces and the six required H2 sections (`## Summary`,
+    `## Applicability`, `## Findings`, `## Boundaries`, `## Evidence`,
+    `## Revalidation`) enforced by `tools/reference.py check`. When findings
+    extend or revalidate a topic already covered in the corpus, prefer updating
+    and coalescing into that report package—listing all covered versions in
+    `REPORT.json` `subjects` and stating clearly under `Applicability` and
+    `Findings` which behaviors are shared and which differ across
+    versions—rather than creating separate per-version packages.
   - Make every report self-contained for a cold reader. It is fine if the
     *reason* a report was written is not apparent, but its *meaning* must be
     unambiguous without assuming shared context. Pin `REPORT.json` `subjects`
@@ -157,10 +160,14 @@ evidence across all rounds into corpus report packages:
     throwaway experiment, local prototype, or counterfactual design variant,
     define the mechanism or model inline in `REPORT.md` and preserve the
     standalone probe in `support/` rather than citing an ephemeral commit,
-    branch name, or undefined symbol as if a reader could look it up externally.
-    Even for durable upstream subjects, include the relevant signature,
-    definition, or invariant in `REPORT.md` whenever a bare symbol name or line
-    range would be opaque without checking out that tree.
+    branch name, local workstation path, or undefined symbol as if a reader
+    could look it up externally (whereas concrete paths whose role is
+    self-explanatory in place, such as `/tmp/...` in a reproduction command or
+    an embedded build-host path like `/Users/runner/...` inside a binary
+    relocation finding, are fine). Even for durable upstream subjects, include
+    the relevant signature, definition, or invariant in `REPORT.md` whenever a
+    bare symbol name or line range would be opaque without checking out that
+    tree.
   - Fold refinements, corrections, and follow-up probes from later rounds
     directly into the claims they qualify. Do not organize `REPORT.md`
     chronologically by round (`Round 1`, `Round 2`) or expose internal track

@@ -17,7 +17,7 @@
     "verification/abstract-interpretation",
     "verification/vcgen-and-termination",
     "rust/mir-semantics",
-    "lean4",
+    "lean",
     "anneal/source-safety",
     "anneal/tcb",
     "verification/soundness-bugs",
@@ -25,7 +25,7 @@
     "rust/aliasing-models",
     "rust/borrow-checking",
     "rust/pointer-provenance",
-    "ebpf/verifier"
+    "systems/ebpf/verifier"
   ],
   "subjects": [
     {

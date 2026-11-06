@@ -4,16 +4,16 @@
     "anneal/refinement",
     "anneal/behavior-codec",
     "anneal/trust-policy",
-    "cyber-physical-systems/reachability-and-cbfs",
-    "robotics/kinematics-and-optimal-control",
-    "aerospace/synchronous-dataflow-and-runtime-assurance",
-    "industrial-control/plc-and-railway-interlocking",
-    "eda/rtl-synthesis-and-formal-verification",
-    "vlsi/physical-design-drc-lvs",
-    "quantum-computing/zx-calculus-and-qec",
-    "analog-mixed-signal/real-number-modeling-and-neuromorphic",
-    "silicon-photonics/s-matrix-and-mzi-meshes",
-    "metamaterials/acoustic-em-and-origami-mechanics",
+    "domains/cps/reachability-and-cbfs",
+    "domains/robotics/kinematics-and-optimal-control",
+    "domains/aerospace/synchronous-dataflow-and-runtime-assurance",
+    "domains/industrial-control/plc-and-railway-interlocking",
+    "domains/eda/rtl-synthesis-and-formal-verification",
+    "domains/vlsi/physical-design-drc-lvs",
+    "domains/quantum-computing/zx-calculus-and-qec",
+    "domains/analog-mixed-signal/real-number-modeling-and-neuromorphic",
+    "domains/silicon-photonics/s-matrix-and-mzi-meshes",
+    "domains/metamaterials/acoustic-em-and-origami-mechanics",
     "anneal/architecture",
     "anneal/cps-verification",
     "anneal/eda-hardware-verification",
@@ -74,7 +74,7 @@
       }
     },
     {
-      "name": "Ansys SCADE Suite, V\u00e9lus, Heptagon, Copilot, FRET, Ogma, Marabou (Reluplex/ACAS X), CoCoSim, Kind 2, F Prime, cFS, Polyspace, Astr\u00e9e, GMAT, and Orekit aerospace verification and flight-software ecosystem",
+      "name": "Ansys SCADE Suite, Vélus, Heptagon, Copilot, FRET, Ogma, Marabou (Reluplex/ACAS X), CoCoSim, Kind 2, F Prime, cFS, Polyspace, Astrée, GMAT, and Orekit aerospace verification and flight-software ecosystem",
       "identity": {
         "repositories": "INRIA/velus, PARKAS/heptagon, Copilot-Language/copilot, NASA-SW-VnV/fret, nasa/ogma, NeuralNetworkVerification/Marabou, NASA-SW-VnV/CoCoSim, kind2-mc/kind2, nasa/fprime, nasa/cFS, CS-SI/Orekit",
         "standard": "RTCA DO-178C / DO-333 / NASA NPR 7150.2D"
@@ -88,7 +88,7 @@
       }
     },
     {
-      "name": "Yosys, SymbiYosys, ABC, K\u00f4ika, Kami, VeriCert, Bambu, LegUp, Vitis HLS, Calyx, CIRCT, JasperGold/VC Formal/Conformal, SpyGlass CDC/UPF, OpenSTA, and ACT/Balsa/Teak digital VLSI and hardware verification ecosystem",
+      "name": "Yosys, SymbiYosys, ABC, Kôika, Kami, VeriCert, Bambu, LegUp, Vitis HLS, Calyx, CIRCT, JasperGold/VC Formal/Conformal, SpyGlass CDC/UPF, OpenSTA, and ACT/Balsa/Teak digital VLSI and hardware verification ecosystem",
       "identity": {
         "repositories": "YosysHQ/yosys, YosysHQ/sby, berkeley-abc/abc, mit-plv/koika, mit-plv/kami, ymherklotz/vericert, ferrandi/PandA-bambu, cucapra/calyx, llvm/circt, parallaxsw/OpenSTA, asyncvlsi/act"
       }

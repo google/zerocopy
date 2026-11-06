@@ -16,7 +16,7 @@
     "llvm/vellvm",
     "rust/pin-unpin",
     "rust/tree-borrows",
-    "sel4/graph-refine",
+    "systems/sel4/graph-refine",
     "verification/binary-translation-validation"
   ],
   "subjects": [

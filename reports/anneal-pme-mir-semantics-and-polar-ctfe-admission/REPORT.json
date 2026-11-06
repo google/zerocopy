@@ -12,7 +12,7 @@
     "rustc/const-eval",
     "rustc/mir",
     "rustc/monomorphization",
-    "x86-64/conformance",
+    "isa/x86-64/conformance",
     "zerocopy/transmute-ref"
   ],
   "subjects": [
