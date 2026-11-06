@@ -1,0 +1,42 @@
+{
+  "schema": "anneal-reference/library-vs-closed-comparison/v1",
+  "dimensions": [
+    {
+      "dimension": "verified subject",
+      "closed_program": "fixed composition inside the theorem's program boundary",
+      "library_open_module": "one component with some client/context left abstract"
+    },
+    {
+      "dimension": "environment",
+      "closed_program": "may still include abstract I/O or external events chosen by the whole-program semantics",
+      "library_open_module": "includes program context/modules constrained by an explicit interface or relation"
+    },
+    {
+      "dimension": "reuse",
+      "closed_program": "new composition commonly requires a new global theorem or proof adaptation",
+      "library_open_module": "component proof can be reused with contexts that discharge the interface assumptions"
+    },
+    {
+      "dimension": "composition obligation",
+      "closed_program": "composition is already fixed for the theorem",
+      "library_open_module": "requires linking/composition theorem plus compatibility of assumptions and guarantees"
+    },
+    {
+      "dimension": "specification risk",
+      "closed_program": "global proof may rely on cross-component invariants unavailable as reusable contracts",
+      "library_open_module": "underspecified interface can hide behavior needed by future clients"
+    },
+    {
+      "dimension": "examined example",
+      "closed_program": "CompCert 3.18 whole-program semantic preservation",
+      "library_open_module": "RustBelt semantic library typing; Compositional CompCert/open-module refinements"
+    }
+  ],
+  "reusable_questions": [
+    "What code is fixed inside the theorem's program boundary?",
+    "What code or context remains abstract or quantified?",
+    "What interface assumptions and guarantees govern that boundary?",
+    "What theorem justifies linking independently proved components?",
+    "What assumptions remain after composition before the final system theorem?"
+  ]
+}

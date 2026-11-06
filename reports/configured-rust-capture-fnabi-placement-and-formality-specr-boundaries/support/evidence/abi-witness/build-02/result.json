@@ -1,0 +1,18 @@
+{
+  "exit_code": 0,
+  "spawned": true,
+  "child_pid": 8513,
+  "seconds": 0.7458153750000001,
+  "stop_reason": null,
+  "controller_failure": null,
+  "remaining_group_after_parent_wait": [],
+  "max_observed_group_rss_bytes": 239616000,
+  "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+  "output_bytes": 1106060,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "tools_before_after": "All5 frozen tool hashes/sizes unchanged",
+  "observer_sha256": "c1c6ecdcdd07d779c50f83ad3b55bf789d905288d87d283e0b1cffa7fed6cc41",
+  "observer_bytes": 1103224,
+  "observer_or_fixture_invocations": 0
+}

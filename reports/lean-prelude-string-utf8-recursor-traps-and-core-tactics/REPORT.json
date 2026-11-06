@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "lean/kernel",
+    "lean/tactics",
+    "verification/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 C++ kernel, Meta elaborator, LCNF compiler, and Init.Prelude library",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal trusted audit boundary and compiler verification modules",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

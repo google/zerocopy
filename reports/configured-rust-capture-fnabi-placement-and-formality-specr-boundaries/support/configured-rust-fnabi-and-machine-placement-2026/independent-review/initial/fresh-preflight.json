@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "bindings": {
+    "original_public_manifest_sha256": "49219fcca8820d9d5f864d569e3b52c5156fb53110d05f8232b590e5f4fec5ea",
+    "raw_projected_file_bindings": 901,
+    "public_file_bindings": 925,
+    "windows_target_files": 45,
+    "observer_sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+    "actual_driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+  },
+  "python": {
+    "path": "/usr/bin/python3",
+    "resolved": "/usr/bin/python3",
+    "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2"
+  },
+  "settings": "Requested gpt-6.1-sol/medium; effective settings not exposed",
+  "source_helpers_executed": "Exact private originals, no edits/copies"
+}

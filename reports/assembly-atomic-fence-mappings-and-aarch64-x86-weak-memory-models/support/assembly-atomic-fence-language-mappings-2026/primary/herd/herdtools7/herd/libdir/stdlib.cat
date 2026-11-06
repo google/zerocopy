@@ -1,0 +1,105 @@
+stdlib
+(*************************)
+(* Herd standard library *)
+(*************************)
+
+(* Empty set of events *)
+let emptyset = domain 0
+
+(* Backward compatibility *)
+let NDATA = ADDR
+
+let partition = classes-loc
+let tag2instrs = tag2events
+
+(* Aliases *)
+let PoD = B
+let BR = PoD
+
+(* Basic relations *)
+let po-loc = po & loc
+let rfe = rf & ext
+let rfi = rf & int
+
+(* co0 *)
+let co0 = loc & ((IW * (W\IW)) | ((W\FW) * FW))
+
+(* Id relation on set *)
+let toid(s) = [s]
+
+(* Turn a fence set into a fence relation *)
+let fencerel(B) = (po & (_ * B)) ;  po
+
+(* Control+cfence *)
+let ctrlcfence(ctrl,CFENCE) = (ctrl & (_ * CFENCE)) ; po
+
+(* Backward compatibility *)
+let inv-field = try inv-domain with 0
+
+let singleton-domain(r) =
+  domain(r) \ domain(r; ((r^-1; r) \ id))
+
+let oa-changes(s, r) =
+  let sr = [s & W & PTE]; r in
+  singleton-domain(sr) & domain(sr \ same-oa(sr))
+
+(* Some utilities (cpp11) *)
+
+let imply (A, B) = ~A | B
+(* nodetour eliminates the triangle: *)
+(*    .--R2--> c --R3--.             *)
+(*   /                  v            *)
+(*  a --------R1-------> b           *)
+
+let nodetour (R1, R2, R3) = R1 \ ( R2; R3 )
+
+let singlestep (R) = nodetour(R, R, R)
+procedure subseteq(A, B) =
+ empty (A \ B)
+end
+
+procedure inclusion(r1, r2) =
+  empty r1 \ r2
+end
+
+procedure total(r,E) =
+  let rt = (r | r^-1)
+  call inclusion((E*E),rt)
+end
+
+(*Union of domain and range*)
+let udr r = domain r | range r
+
+(***************)
+(* Set library *)
+(***************)
+
+(* Apply function f to each member of a set or relation *)
+let map f =
+  let rec do_map S = match S with
+  || {} -> {}
+  || e ++ S -> f e ++ do_map S
+  end in
+  do_map
+
+let LKW = try LKW with emptyset
+
+(* For architectures where virtual memory is not yet implemented *)
+let PTE = try PTE with emptyset
+
+(* For architectures that do not have exclusives or LL/SC or LR/SC *)
+let EX = try EX with emptyset
+
+(* For architectures that do not have atomic instructions *)
+let X = try X with emptyset
+
+(* Define pairs of exclusives *)
+let lxsx = [R & EX]; po \ (po; [M & EX]; po); [W & EX]
+
+(* Define atomic operations, this includes:                    *)
+(* 1. The explicit memory events of atomic instructions.       *)
+(* 2. The implicit memory events of hardware updates of a PTE. *)
+let amo = [Exp & R & X]; (same-instance \ id) & loc; [Exp & W & X]
+    | [NExp & PTE & R]; iico_data & loc; [NExp & PTE & W]
+
+let rmw = amo | lxsx

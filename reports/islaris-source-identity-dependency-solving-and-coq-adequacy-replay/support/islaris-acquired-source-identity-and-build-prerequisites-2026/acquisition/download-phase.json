@@ -1,0 +1,166 @@
+{
+  "container": "958bc0cf81bbe54e4868d4bc1cc5c29875e76466274e591047f8555faee7391c",
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "958bc0cf81bbe54e4868d4bc1cc5c29875e76466274e591047f8555faee7391c",
+    "/usr/bin/env",
+    "-u",
+    "OPAMCONFIRMLEVEL",
+    "-u",
+    "OPAMERRLOGLEN",
+    "-u",
+    "OPAMPRECISETRACKING",
+    "-u",
+    "OPAMYES",
+    "OPAMWITHTEST=false",
+    "OPAMWITHDOC=false",
+    "TMPDIR=/solve/acquire-tmp",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5",
+    "900",
+    "/usr/bin/opam",
+    "install",
+    "--root=/solve/opam",
+    "--use-internal-solver",
+    "--no-self-upgrade",
+    "--switch=islaris-dry",
+    "--download-only",
+    "--no-depexts",
+    "--skip-updates",
+    "--yes",
+    "--jobs=1",
+    "--json=/solve/acquire-result.json",
+    "--cudf=/solve/acquire",
+    "ocaml-variants.4.14.0+options",
+    "ocaml-option-flambda.1",
+    "coq.8.19.0",
+    "coq-core.8.19.0",
+    "coq-stdlib.8.19.0",
+    "coqide-server.8.19.0",
+    "dune.3.9.1",
+    "dune-site.3.9.1",
+    "dune-private-libs.3.9.1",
+    "dyn.3.9.1",
+    "stdune.3.9.1",
+    "ordering.3.9.1",
+    "coq-lithium.dev.2024-09-11.0.7945a29d",
+    "coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+    "coq-record-update.0.3.3",
+    "coq-bbv.1.5",
+    "isla-lang.dev",
+    "islaris.dev",
+    "coq-sail.0.17",
+    "coq-sail-riscv.0.5",
+    "sail.0.17",
+    "libsail.0.17",
+    "sail_manifest.0.17",
+    "sail_ocaml_backend.0.17",
+    "sail_c_backend.0.17",
+    "sail_smt_backend.0.17",
+    "sail_sv_backend.0.17",
+    "sail_lem_backend.0.17",
+    "sail_coq_backend.0.17",
+    "sail_latex_backend.0.17",
+    "sail_doc_backend.0.17",
+    "sail_output.0.17"
+  ],
+  "phase": "stopped-retained",
+  "source_only": true,
+  "install_or_build_authorized": false,
+  "observations": [
+    {
+      "seconds": 0.0391047919401899,
+      "status": 0,
+      "host_free_bytes": 56607907840,
+      "source_root_bytes": 97958462
+    },
+    {
+      "seconds": 10.16515937494114,
+      "status": 0,
+      "host_free_bytes": 56606760960,
+      "source_root_bytes": 171275003
+    },
+    {
+      "seconds": 20.272202666965313,
+      "status": 0,
+      "host_free_bytes": 56387616768,
+      "source_root_bytes": 267045641
+    },
+    {
+      "seconds": 30.532138707931153,
+      "status": 0,
+      "host_free_bytes": 56377524224,
+      "source_root_bytes": 354889121
+    },
+    {
+      "seconds": 40.68876020796597,
+      "status": 0,
+      "host_free_bytes": 56037183488,
+      "source_root_bytes": 618890056
+    },
+    {
+      "seconds": 50.93878174992278,
+      "status": 0,
+      "host_free_bytes": 55845744640,
+      "source_root_bytes": 703989530
+    },
+    {
+      "seconds": 61.74009558290709,
+      "status": 0,
+      "host_free_bytes": 55761223680,
+      "source_root_bytes": 764546710
+    },
+    {
+      "seconds": 71.90198474994395,
+      "status": 0,
+      "host_free_bytes": 55602434048,
+      "source_root_bytes": 903755650
+    },
+    {
+      "seconds": 82.13558954198379,
+      "status": 0,
+      "host_free_bytes": 55327539200,
+      "source_root_bytes": 1084129019
+    },
+    {
+      "seconds": 92.3695684169652,
+      "status": 0,
+      "host_free_bytes": 55133868032,
+      "source_root_bytes": 1244769173
+    },
+    {
+      "seconds": 102.72333895799238,
+      "status": 0,
+      "host_free_bytes": 54885437440,
+      "source_root_bytes": 1478358702
+    }
+  ],
+  "host_docker_exec_pid": 68554,
+  "status": 0,
+  "host_seconds": 107.59214533295017,
+  "final_stop": {
+    "status": 0,
+    "stdout": "958bc0cf81bbe54e4868d4bc1cc5c29875e76466274e591047f8555faee7391c\n",
+    "stderr": ""
+  },
+  "stopped_readback": true,
+  "oom_killed": false,
+  "stdout": {
+    "bytes": 11406,
+    "sha256": "a4d38a68a6c302360b649d2b3a863c71ab50b04e5752ce786bcbd9b1f45b0e75"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "native_json_copy": {
+    "status": 0,
+    "stderr": ""
+  }
+}

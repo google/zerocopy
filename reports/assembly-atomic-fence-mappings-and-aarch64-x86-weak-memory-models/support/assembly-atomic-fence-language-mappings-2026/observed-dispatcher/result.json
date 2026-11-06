@@ -1,0 +1,128 @@
+{
+  "status": "compile-only-completed",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+  "source_sha256": "70f3aaabb9c84b6dcbad33675981395c1864e04fc5654b77bc3e898f1a55b9aa",
+  "targets": [
+    {
+      "label": "x86_64",
+      "target": "x86_64-unknown-linux-gnu",
+      "flags": []
+    },
+    {
+      "label": "aarch64",
+      "target": "aarch64-unknown-linux-gnu",
+      "flags": [
+        "-march=armv8-a",
+        "-mno-outline-atomics"
+      ]
+    },
+    {
+      "label": "aarch64-lse",
+      "target": "aarch64-unknown-linux-gnu",
+      "flags": [
+        "-march=armv8.1-a+lse",
+        "-mno-outline-atomics"
+      ]
+    }
+  ],
+  "commands": 7,
+  "function_counts": {
+    "x86_64": 17,
+    "aarch64": 17,
+    "aarch64-lse": 17
+  },
+  "files": {
+    "aarch64-asm.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-asm.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-ir.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-ir.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-lse-asm.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-lse-asm.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-lse-ir.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-lse-ir.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "aarch64-lse.ll": {
+      "bytes": 6221,
+      "sha256": "01219e213b22367f5c9e5111a922b4af5e694b3e2eaae295e7acfcc3459aef78"
+    },
+    "aarch64-lse.s": {
+      "bytes": 5785,
+      "sha256": "184e6e7af52024617eb9f97db6dd2ce26e02e99b5e76ad4bde21ef38e1bbc1c0"
+    },
+    "aarch64.ll": {
+      "bytes": 6133,
+      "sha256": "48976d523a7f13ccad66b1fb4f0cdaff87f29fb5c0506ce9df044eacf6bce86b"
+    },
+    "aarch64.s": {
+      "bytes": 6532,
+      "sha256": "5cebbf701dd96ac2c2905adcd677d1666c6e7587551749e68044e2e55f12bbc0"
+    },
+    "assembly-bodies.json": {
+      "bytes": 4236,
+      "sha256": "8593902476620b2b6256517f324ec8fc0bf7a3ccc51b4b1091cf6f8ddaa7695d"
+    },
+    "clang-version.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clang-version.stdout": {
+      "bytes": 158,
+      "sha256": "a856ec74c559401131ad608625ef252fb2db6c78bc0c480c1c4c782ee4896db1"
+    },
+    "commands.json": {
+      "bytes": 4664,
+      "sha256": "8bcbe982c5c45b35f331e48272b5774527f51c4744866ea8b2fd85800f72148f"
+    },
+    "x86_64-asm.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "x86_64-asm.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "x86_64-ir.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "x86_64-ir.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "x86_64.ll": {
+      "bytes": 6210,
+      "sha256": "c8fb1cdd5ac9a967066ded753d56e8664ba042121a0531305ecaa3181a25bd8e"
+    },
+    "x86_64.s": {
+      "bytes": 5852,
+      "sha256": "cb676208ad2414a8ec24477786460a61fa5bcf5b5bdda43908f1305c151b30d0"
+    },
+    "xcrun_db": {
+      "bytes": 495,
+      "sha256": "1865dbfa1feba4ab70a004b4bc7ed034dacbfb87c56b0596a43cdf68f9c907a0"
+    }
+  }
+}

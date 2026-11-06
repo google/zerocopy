@@ -1,0 +1,149 @@
+[
+  {
+    "key": "ctfe",
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/const_eval.md",
+    "returned_utf8_sha256": "3fe15c831b2ba84a56027f5ac6601a74ddb41e612008d8b32fea7b0bde01462d"
+  },
+  {
+    "key": "coercions",
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/type-coercions.md",
+    "returned_utf8_sha256": "75d07f1492ec3af3011b25aee419aac4583ce17eb91b58d42cefe5e1e01b96f1"
+  },
+  {
+    "key": "method-resolution",
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/expressions/method-call-expr.md",
+    "returned_utf8_sha256": "517cb05b767ce076f78f5b06ff961cc5c28382b7c2cd67d8af504e8492f504fe"
+  },
+  {
+    "key": "cfg",
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/conditional-compilation.md",
+    "returned_utf8_sha256": "06a483bc73386b3d93eca07b2d4fdef6eb459179dfb928af06402c275e73d70c"
+  },
+  {
+    "key": "statics",
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/items/static-items.md",
+    "returned_utf8_sha256": "5b57dfdd5a40d0db31922cbe7373ef9f35fa70eeede84dad3a5cf23e682be18c"
+  },
+  {
+    "key": "tls",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "library/std/src/thread/local.rs",
+    "returned_utf8_sha256": "8ec8b844aea709576794bc22d7efc54eebb610d58de3ed13d422c87034aaeda2"
+  },
+  {
+    "key": "mir-origin",
+    "repository": "AeneasVerif/charon",
+    "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+    "path": "charon/src/bin/charon-driver/translate/get_mir.rs",
+    "returned_utf8_sha256": "93628e31c7bc7e7adf3fbbce1d44abd9b6faf6608d5791cd928200cc4b982d23"
+  },
+  {
+    "key": "reader",
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+    "path": "src/llbc/LlbcOfJson.ml",
+    "returned_utf8_sha256": "977067d8222d7fdb09bc4e089d5a73de9f53fce4a7f8411cabdc7c78c00f1fb6"
+  },
+  {
+    "key": "charon-export",
+    "repository": "AeneasVerif/charon",
+    "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+    "path": "charon/src/export.rs",
+    "returned_utf8_sha256": "1078d21c33c001a1f054d2f8957a25119d6bba0a95b77b82ba7d6b0745645199"
+  },
+  {
+    "key": "aeneas-reader-owner",
+    "repository": "AeneasVerif/charon",
+    "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+    "path": "charon-ml/src/OfJson.ml",
+    "returned_utf8_sha256": "a07c03f49fc75f6c826f6488d34493b281110b850d5afa67951984ad224edb76"
+  },
+  {
+    "key": "charon-driver",
+    "repository": "AeneasVerif/charon",
+    "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+    "path": "charon/src/bin/charon-driver/driver.rs",
+    "returned_utf8_sha256": "1c3b133ec3f39c2b1e52b710585b932c95888e2c72d682c675c8df3b8b86d527"
+  },
+  {
+    "key": "rust-adjust",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_middle/src/ty/adjustment.rs",
+    "returned_utf8_sha256": "fe914ce97f362019f472deffd8efe836c049fb214c6d2ba519dfa40e1d03f09c"
+  },
+  {
+    "key": "rust-thir-expr",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_mir_build/src/thir/cx/expr.rs",
+    "returned_utf8_sha256": "4dcbd5a7f18c740bfa3cddbbcb56e6347d3122b1531532dfcf10d5ad42bb65f6"
+  },
+  {
+    "key": "rust-eval-query",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_const_eval/src/const_eval/eval_queries.rs",
+    "returned_utf8_sha256": "f7df9969b81ace1fe56031bc279598e938b8b871a755270f8d003a182a01e8da"
+  },
+  {
+    "key": "rust-intern",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_const_eval/src/interpret/intern.rs",
+    "returned_utf8_sha256": "17d753e17d4da212e951544a5b48525b110e1eea86bab1093a8d18f2fc59542f"
+  },
+  {
+    "key": "rust-allocation",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_middle/src/mir/interpret/allocation.rs",
+    "returned_utf8_sha256": "9feacb2c6d874507fcb5556923a6fe0b0560df7bd7e7b3cfa3c79247de91f3ae"
+  },
+  {
+    "key": "rust-validity",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_const_eval/src/interpret/validity.rs",
+    "returned_utf8_sha256": "7c038fb90de6b06a67124f8ab603d32bb73b68eb0cce9ad2d8766c9c171c5676"
+  },
+  {
+    "key": "rust-mir-rvalue",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_mir_build/src/builder/expr/as_rvalue.rs",
+    "returned_utf8_sha256": "135006276f60d7aa65ccede00091b7171e9c97ce3dace03983b0906b67f28d7f"
+  },
+  {
+    "key": "rust-mir-place",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_mir_build/src/builder/expr/as_place.rs",
+    "returned_utf8_sha256": "f62336bffceefe6124bf4866815ab3828fcae25a54086d77ded47520f767a926"
+  },
+  {
+    "key": "rust-mir-scope",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_mir_build/src/builder/scope.rs",
+    "returned_utf8_sha256": "465837dad835a099b1485ca01284ca18fabfaeeb8a0050ea2445876b147cd3f2"
+  },
+  {
+    "key": "rust-hir-desugar",
+    "repository": "rust-lang/rust",
+    "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+    "path": "compiler/rustc_ast_lowering/src/expr.rs",
+    "returned_utf8_sha256": "6ed2267b8c5ad3c99e2cf5866a885078a25de476f96e75677558c350f1c4d3d0"
+  }
+]

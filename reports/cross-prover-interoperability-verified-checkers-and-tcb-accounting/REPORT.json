@@ -1,0 +1,626 @@
+{
+  "topics": [
+    "lean",
+    "lean/kernel",
+    "lean/olean",
+    "verification/smt-certificates",
+    "anneal/tcb-audit",
+    "agents/proof-engineering"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 Kernel Export Format and Serializer (lean4export)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "Extensional-to-Intensional Lean 4 Kernel Translator (lean4less)",
+      "identity": {
+        "repository": "rish987/lean4less",
+        "revision": "5b66bbc4af5c2c11313fcfb5098630dadaf19281"
+      }
+    },
+    {
+      "name": "Lean 4 to Dedukti Translator (lean2dk main branch)",
+      "identity": {
+        "repository": "rish987/lean2dk",
+        "branch": "main",
+        "revision": "471208f18c29420e25750503648469fc95d2ac8f"
+      }
+    },
+    {
+      "name": "Lean 4 to Dedukti Translator with Lazy-Delta and Eta-Memoization Patches (lean2dk claude-stable branch)",
+      "identity": {
+        "repository": "rish987/lean2dk",
+        "branch": "claude-stable",
+        "revision": "29f985670008c29e852d61c562b8c10c84f7c5fb"
+      }
+    },
+    {
+      "name": "Rocq Kernel Importer for Lean 4 Exported Environments (rocq-lean-import)",
+      "identity": {
+        "repository": "rocq-community/rocq-lean-import",
+        "revision": "2d28bbe80e7361bf3ac54f5ef099207fc61ce837"
+      }
+    },
+    {
+      "name": "Kernel Proof Term Pivot Translator (babel-formal)",
+      "identity": {
+        "repository": "LLM4Rocq/babel-formal",
+        "revision": "71c2aa9bc78e6d41c5421f8ae8e9f551c12f570b"
+      }
+    },
+    {
+      "name": "MiniRust Specification-to-Rust Transpiler (specr)",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "version": "v0.1.41"
+      }
+    },
+    {
+      "name": "Lean 4 Type-Shape and Constant-Index Search Engine (loogle)",
+      "identity": {
+        "repository": "nomeata/loogle",
+        "revision": "9f11169aaebf1ed1e7dcc4077f2aafe0fcf66fd0"
+      }
+    },
+    {
+      "name": "Hybrid BM25 and FAISS Informalization Search Engine for Lean 4 (lean-explore)",
+      "identity": {
+        "repository": "justincasher/lean-explore",
+        "revision": "17b9d6c87a2bf0dc4ea27de05da8a1c9965391b7"
+      }
+    },
+    {
+      "name": "In-Editor LeanSearch, LeanStateSearch, and Loogle Client (LeanSearchClient)",
+      "identity": {
+        "repository": "leanprover-community/LeanSearchClient",
+        "revision": "c61286b7b63cbfd563b28e11e81d0a18233a044a"
+      }
+    },
+    {
+      "name": "Pantograph Machine-to-Machine Lean 4 Proof Search Server",
+      "identity": {
+        "repository": "lenianiva/Pantograph",
+        "revision": "0789692d65e365c027d171074bf747f1d40328d0",
+        "version": "v0.3.19"
+      }
+    },
+    {
+      "name": "PyPantograph Python Interface and Tree-Search Harness",
+      "identity": {
+        "repository": "stanford-centaur/PyPantograph",
+        "revision": "a098035e29f7910a627b8440145b51246ec38484"
+      }
+    },
+    {
+      "name": "LeanDojo-v2 Offline InfoTree Tracer and Pantograph Agent Framework",
+      "identity": {
+        "repository": "lean-dojo/LeanDojo-v2",
+        "revision": "baed5eae6e87a65a446d9f54af07aab2154e7599"
+      }
+    },
+    {
+      "name": "Lean 4 Model Context Protocol Server and ScratchPool Orchestrator (lean-lsp-mcp)",
+      "identity": {
+        "repository": "oOo0oOo/lean-lsp-mcp",
+        "revision": "bd95db58fe684ec0c3f5f875c81bac949abc8929",
+        "version": "v0.32.0"
+      }
+    },
+    {
+      "name": "Lean 4 JSON Command and ProofSnapshot REPL (leanprover-community/repl)",
+      "identity": {
+        "repository": "leanprover-community/repl",
+        "revision": "6a2be396449a5213a36748ca7682d16d54a1ca4a"
+      }
+    },
+    {
+      "name": "LeanInteract Python REPL Process Pool and ReplaySessionCache",
+      "identity": {
+        "repository": "augustepoiroux/LeanInteract",
+        "revision": "768e18ebcb5c7ec34d308768a785389eeac37798",
+        "version": "v0.11.6"
+      }
+    },
+    {
+      "name": "Kimina High-Throughput Header-Cached Lean 4 Verification Server",
+      "identity": {
+        "repository": "Project-Numina/kimina-lean-server",
+        "revision": "fb2393de3461db35eda4c714e3fd21187e92ec90"
+      }
+    },
+    {
+      "name": "Lean 4 SMT Cooperating Proof Calculus Reconstruction Engine (lean-smt)",
+      "identity": {
+        "repository": "ufmg-smite/lean-smt",
+        "revision": "db545bebe2de1e06dc2df62a6ff6c20e5736bfc0",
+        "no_mathlib_revision": "7e54df3e5b7f78e5e6170ffab8ebe813904262b0"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel and Metaprogramming Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rocq Prover kernel opaque proof handling and SSReflect reflection",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99"
+      }
+    },
+    {
+      "name": "Verified Software Toolchain (VST-Floyd canonical forward symbolic execution)",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+      }
+    },
+    {
+      "name": "VST-Floyd JAR 2018 publication",
+      "identity": {
+        "doi": "10.1007/s10817-018-9457-5",
+        "title": "VST-Floyd: A Separation Logic Tool to Verify Correctness of C Programs",
+        "venue": "Journal of Automated Reasoning 61(1-4), 2018"
+      }
+    },
+    {
+      "name": "RefinedC PLDI 2021 publication",
+      "identity": {
+        "doi": "10.1145/3453483.3454036",
+        "title": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types",
+        "venue": "PLDI 2021"
+      }
+    },
+    {
+      "name": "RefinedRust development repository and PLDI 2024 artifact",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "repository": "lgaeher/refinedrust-dev",
+        "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+        "zenodo-record": "21636474"
+      }
+    },
+    {
+      "name": "Diaframe PLDI 2022 publication",
+      "identity": {
+        "doi": "10.1145/3519939.3523432",
+        "title": "Diaframe: Automated Verification of Fine-Grained Concurrent Programs in Iris",
+        "venue": "PLDI 2022"
+      }
+    },
+    {
+      "name": "Iris separation logic framework in Rocq and Lean 4",
+      "identity": {
+        "iris-lean-repository": "leanprover-community/iris-lean",
+        "iris-lean-revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "HOL4 TheoryReader disk_thm persistence and Thm.compute / cv_compute",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "68c9d77e53532cb258e09421952efe3957f40276"
+      }
+    },
+    {
+      "name": "HOL4 cv_compute and cv_trans ITP 2021 / 2022 / 2023 publications",
+      "identity": {
+        "candle-doi": "10.4230/LIPIcs.ITP.2022.3",
+        "cv-compute-doi": "10.4230/LIPIcs.ITP.2021.27",
+        "cv-trans-doi": "10.4230/LIPIcs.ITP.2023.17",
+        "title": "Fast, Verified Computation for HOL and Verified Compilation to cv_compute"
+      }
+    },
+    {
+      "name": "seL4 AutoCorres 5-phase C abstraction framework",
+      "identity": {
+        "doi": "10.1145/2594291.2594296",
+        "repository": "seL4/l4v",
+        "revision": "12c300e75bb0ca0c82f76496fafacd7e614c0aba",
+        "venue": "PLDI 2014"
+      }
+    },
+    {
+      "name": "Isabelle_LLVM and Sepref relational refinement framework",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2019.21",
+        "repository": "lammich/isabelle_llvm",
+        "revision": "6be37a9c3cae74a1134dbef2979e312abb5f7f42",
+        "sepref-doi": "10.1007/978-3-319-22102-1_17"
+      }
+    },
+    {
+      "name": "Metamath Zero (.mmb binary format and C verifier)",
+      "identity": {
+        "doi": "10.1145/3372885.3373824",
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+        "venue": "CPP 2020"
+      }
+    },
+    {
+      "name": "Dedukti and Lambdapi lambda-Pi-calculus modulo rewriting",
+      "identity": {
+        "lambdapi-repository": "Deducteam/lambdapi",
+        "lambdapi-revision": "72cc2f10d391932fe078ba5a401765e29a1d4cb7",
+        "repository": "Deducteam/Dedukti",
+        "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0"
+      }
+    },
+    {
+      "name": "SSReflect small-scale reflection JFR 2010 publication",
+      "identity": {
+        "doi": "10.6092/issn.1972-5787/1979",
+        "jar-doi": "10.1007/s10817-010-9183-1",
+        "title": "An Introduction to Small Scale Reflection in Coq"
+      }
+    },
+    {
+      "name": "MirrorCore and RTac compositional computational reflection",
+      "identity": {
+        "doi": "10.1007/978-3-319-08970-6_24",
+        "esop-doi": "10.1007/978-3-662-49498-1_19",
+        "repository": "gmalecha/mirror-core",
+        "revision": "b962fbca15b0b5a4653f66d29d7115bb04ebd4f3"
+      }
+    },
+    {
+      "name": "Deducteam/lambdapi",
+      "identity": {
+        "repository": "Deducteam/lambdapi",
+        "revision": "72cc2f10d391932fe078ba5a401765e29a1d4cb7"
+      }
+    },
+    {
+      "name": "Deducteam/Dedukti",
+      "identity": {
+        "repository": "Deducteam/Dedukti",
+        "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0"
+      }
+    },
+    {
+      "name": "digama0/mm0",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "metamath/metamath-exe",
+      "identity": {
+        "repository": "metamath/metamath-exe",
+        "revision": "9898f5d1bb27045d764dd01672862a1c2a3b4f5e"
+      }
+    },
+    {
+      "name": "MM0 resource encoding source specimen",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+        "path": "examples/separation_logic.mm1",
+        "sha256": "ec879399fb3da2a778464095b13d048732fc21f6506089a0fd14bd00eaa84d37",
+        "scope": "source/library burden with admitted dependency, no compiled proof closure"
+      }
+    },
+    {
+      "name": "Metamath Zero thesis",
+      "identity": {
+        "url": "https://digama0.github.io/mm0/thesis.pdf",
+        "sha256": "09dda6d4b199b102f28f8139ed44a5d288476f37028bf730b16d8a7b60d7882b",
+        "scope": "sections1.2,1.6,2.2.7; encoding and original measurement context"
+      }
+    },
+    {
+      "name": "Lean4Lean",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "MetaRocq",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c"
+      }
+    },
+    {
+      "name": "CakeML Candle proof sources",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "Candle extended correctness paper",
+      "identity": {
+        "doi": "10.1007/s10817-025-09743-8",
+        "publication": "Journal of Automated Reasoning 69, article 32 (2025)"
+      }
+    },
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Lean native compiler wrapper",
+      "identity": {
+        "artifact": "Lean 4.31 leanc executable",
+        "sha256": "ed65823bba1ffbab1c386ec9b013091fe427a56b50a0beef1eab5bed1a3523a3"
+      }
+    },
+    {
+      "name": "Derived native checker",
+      "identity": {
+        "artifact": "macOS arm64 executable generated from report source",
+        "sha256": "78e73da1f985cf584b7e3c443d06c820ffefe33d2adf5bc59e53f78ad295b173",
+        "bridge": "unverified Lean C and native compilation"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    },
+    {
+      "name": "Lean4.30rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+      }
+    },
+    {
+      "name": "Lean4.31",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+      }
+    },
+    {
+      "name": "Lean4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Nanoda",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "e0d76f5ec30bba244023466875b4845a57fd3ea5"
+      }
+    },
+    {
+      "name": "Comparator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "IC3ref",
+      "identity": {
+        "repository": "arbrad/IC3ref",
+        "revision": "07174c2c8e12109ed659318a3805e46a6479eabd"
+      }
+    },
+    {
+      "name": "Certifaiger",
+      "identity": {
+        "repository": "Froleyks/certifaiger",
+        "revision": "29d6d3fe4cbac4b9fb6535326c8caf01ff2bd1a4"
+      }
+    },
+    {
+      "name": "Isabelle",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+      }
+    },
+    {
+      "name": "HOL Light kernel",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+      }
+    },
+    {
+      "name": "A Metalanguage for Interactive Proof in LCF",
+      "identity": {
+        "doi": "10.1145/512760.512773",
+        "venue": "POPL 1978"
+      }
+    },
+    {
+      "name": "Edinburgh LCF: A Mechanised Logic of Computation",
+      "identity": {
+        "doi": "10.1007/3-540-09724-4",
+        "series": "Lecture Notes in Computer Science 78"
+      }
+    },
+    {
+      "name": "LCF: A Way of Doing Proofs with a Machine",
+      "identity": {
+        "doi": "10.1007/3-540-09526-8_11",
+        "venue": "MFCS 1979"
+      }
+    },
+    {
+      "name": "Logic and Computation: Interactive Proof with Cambridge LCF",
+      "identity": {
+        "chapter_doi": "10.1017/CBO9780511526602.008",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Anneal design contract and reference-corpus artifact evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Rocq kernel and assumption accounting",
+      "identity": {
+        "project": "Rocq/Coq",
+        "documentation": "8.20.1"
+      }
+    },
+    {
+      "name": "CompCert verified compiler and verified-verifier methodology",
+      "identity": {
+        "project": "CompCert",
+        "version": "3.18",
+        "released": "2026-08-31"
+      }
+    },
+    {
+      "name": "seL4 functional and binary verification trust boundary",
+      "identity": {
+        "project": "seL4",
+        "functional_correctness_publication": "SOSP 2009",
+        "binary_validation_publication": "PLDI 2013"
+      }
+    },
+    {
+      "name": "CakeML end-to-end verified compilation and proof checking",
+      "identity": {
+        "project": "CakeML",
+        "assurance_model": "HOL4-to-machine-code verified pipeline"
+      }
+    },
+    {
+      "name": "rustc-1.95-to-1.98-nightly",
+      "identity": {
+        "toolchains": "1.95.0-nightly (efc9e1b50 2026-02-06), 1.96.0-nightly (02c7f9bec 2026-04-10), 1.97.0-nightly (bf4fbfb7a 2026-04-11), 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "primary_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      }
+    },
+    {
+      "name": "charon",
+      "identity": {
+        "versions": "0.1.174 (5096e36339dc62d885fb3b7bf6e1bd98000514e0) and 0.1.210 (1e08453924610c19d74c245a7308f17c1008e2db)",
+        "charon_0_1_174_sha256": "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836",
+        "charon_0_1_210_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47"
+      }
+    },
+    {
+      "name": "RISC Zero receipt verification implementation",
+      "identity": {
+        "repository": "risc0/risc0",
+        "revision": "3bbcd44d6459b9ef6ac0df3846dc9215514934e8"
+      }
+    },
+    {
+      "name": "SP1 normal/mock verification implementation",
+      "identity": {
+        "repository": "succinctlabs/sp1",
+        "revision": "02fa30185ecd658174b211d56128b14867ab8e81"
+      }
+    },
+    {
+      "name": "RISC Zero zkVM: Scalable, Transparent Arguments of RISC-V Integrity",
+      "identity": {
+        "version": "DRAFT August 11, 2023",
+        "url": "https://dev.risczero.com/proof-system-in-detail.pdf",
+        "pages": "35"
+      }
+    },
+    {
+      "name": "RISC Zero documented security, development and setup interfaces",
+      "identity": {
+        "version": "API 3.0",
+        "security_model": "https://dev.risczero.com/api/security-model",
+        "development": "https://dev.risczero.com/api/generating-proofs/dev-mode",
+        "trusted_setup": "https://dev.risczero.com/api/trusted-setup-ceremony"
+      }
+    },
+    {
+      "name": "CairoZero retained Lean3 proof-producing compiler",
+      "identity": {
+        "repository": "starkware-libs/formal-proofs",
+        "revision": "d0dd8279612a248cbc6bf6d286030bf0bb2a37ff"
+      }
+    },
+    {
+      "name": "Oeuf source and reflection/serialization interfaces",
+      "identity": {
+        "repository": "uwplse/oeuf",
+        "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f"
+      }
+    },
+    {
+      "name": "Verdict policy DSL and selected DER interface",
+      "identity": {
+        "repository": "secure-foundations/verdict",
+        "revision": "9bc18bc5a287c1608dcb74a6eee7b9ca94a62b67"
+      }
+    },
+    {
+      "name": "QuickChick checker proof interfaces",
+      "identity": {
+        "repository": "QuickChick/QuickChick",
+        "revision": "e35dc8e917f0e36b4ab7cbc66b7d0f7131122588"
+      }
+    },
+    {
+      "name": "A Proof-Producing Compiler for Blockchain Applications",
+      "identity": {
+        "arxiv": "2501.15002v1",
+        "url": "https://arxiv.org/pdf/2501.15002v1"
+      }
+    },
+    {
+      "name": "Oeuf: Minimizing the Coq Extraction TCB",
+      "identity": {
+        "doi": "10.1145/3167089",
+        "url": "https://homes.cs.washington.edu/~djg/papers/oeuf2018.pdf"
+      }
+    },
+    {
+      "name": "Towards Practical, End-to-End Formally Verified X.509 Certificate Validators with Verdict",
+      "identity": {
+        "publication": "USENIX Security 2025",
+        "url": "https://verified.how/papers/verdict.pdf",
+        "pages": "17"
+      }
+    },
+    {
+      "name": "Computing Correctly with Inductive Relations",
+      "identity": {
+        "doi": "10.1145/3519939.3523707",
+        "publication": "PLDI 2022",
+        "url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "role": "source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "VERSION",
+      "blob": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+      "anchors": [
+        "line 1: version=3.18"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Smallstep.v",
+      "blob": "cefab134fdce4f3ea2f970db49a99d987c05d3a1",
+      "anchors": [
+        "compose_forward_simulations around lines 1003-1043",
+        "compose_backward_simulation around lines 1566 onward",
+        "forward_to_backward_simulation around lines 1863 onward",
+        "factor_forward_simulation around lines 2004 onward"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "driver/Compiler.v",
+      "blob": "60fc74fec1411216425004f6d63567354e146e9c",
+      "anchors": [
+        "cstrategy_semantic_preservation around lines 344-416",
+        "c_semantic_preservation around lines 419-434",
+        "transf_c_program_correct around lines 446-453",
+        "separate_transf_c_program_correct around lines 466 onward"
+      ]
+    },
+    {
+      "role": "documentation",
+      "subject": "CompCert 3.18",
+      "version": "3.18",
+      "released": "2026-08-31",
+      "locator": "https://compcert.org/doc/",
+      "anchors": [
+        "Compiler: composing the passes together; whole-compiler semantic preservation theorems"
+      ]
+    },
+    {
+      "role": "documentation",
+      "subject": "CompCert manual",
+      "version": "3.18",
+      "locator": "https://compcert.org/man/manual001.html",
+      "anchors": [
+        "semantic preservation theorem",
+        "per-pass proof composition",
+        "compile-time failure permitted"
+      ]
+    },
+    {
+      "role": "published-result",
+      "authors": [
+        "Jean-Baptiste Tristan",
+        "Xavier Leroy"
+      ],
+      "title": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+      "publication": "POPL 2008",
+      "doi": "10.1145/1328438.1328444",
+      "author_copy": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+      "anchors": [
+        "§2.1 equations (1)-(2) and Theorem 1",
+        "§2.2 definedness constraints"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+'Modular.compose' depends on axioms: [propext]
+'Modular.accepted_composition' depends on axioms: [propext]
+'Modular.changed_implementation_fails' depends on axioms: [propext]
+'Modular.target_substitution_fails' depends on axioms: [propext]
+'Modular.associated_type_substitution_fails' depends on axioms: [propext]
+'Modular.dynamic_substitution_fails' depends on axioms: [propext]
+'Modular.narrowed_coverage_fails' depends on axioms: [propext]
+'Modular.weakened_adequacy_fails' depends on axioms: [propext]
+'Modular.legitimate_relink' does not depend on any axioms

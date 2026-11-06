@@ -1,0 +1,1 @@
+{"source_operation":"owned array store and outside-field read","source_import":"manual mapping to finite array/store/select","smt_assertions":{"distinct changed framed":"outside-footprint premise","not frame equality":"negated obligation"},"interpretation":"A solver model is not yet a concrete Rust trace; source replay is separate."}

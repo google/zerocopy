@@ -1,0 +1,578 @@
+{
+  "package": "cslib-bignum-lean-port-and-s2n-bignum-hol-light-comparison",
+  "observed_at": "2026-10-29",
+  "repositories": {
+    "cslib_bignum": {
+      "repository": "cslib-community/bignum",
+      "url": "https://github.com/cslib-community/bignum",
+      "revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+      "tree": "6fe245fd8e1402612605c1d6b31dbfc24846ca4d",
+      "lean_toolchain": "leanprover/lean4:v4.36.0-rc1",
+      "recent_commits": [
+        {
+          "commit": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+          "tree": "6fe245fd8e1402612605c1d6b31dbfc24846ca4d",
+          "date": "2026-10-28",
+          "subject": "Bignum.Relational: Add more lemmas"
+        },
+        {
+          "commit": "326f8115471014696dacb39ac1cd58da8ad5fc4c",
+          "tree": "fd46979b79c068a1e5d6268e803cab59a1e83958",
+          "date": "2026-10-28",
+          "subject": "Bignum.Relational: Add more lemmas"
+        },
+        {
+          "commit": "ec0d5faca35e3cdd256491701c11c559c4819d63",
+          "tree": "e60265817f8ca12622f1a07315c32aaab5576d80",
+          "date": "2026-10-28",
+          "subject": "Bignum.Relational: Renamed from \"Relation\""
+        },
+        {
+          "commit": "91c637211f0689816d8acf1caa336677bd52f1f7",
+          "tree": "531aea2acd89700770bbb6ff6a1431a07110d3a8",
+          "date": "2026-10-28",
+          "subject": "Bignum.Relation: Refactor names and types"
+        },
+        {
+          "commit": "674f0a99b8132da8820b16d7319d0e94954be8d0",
+          "tree": "5bf3e3512cfb6fbb2f1145c70b66a5410813b493",
+          "date": "2026-10-27",
+          "subject": "Bignum.Relation.Lemmas: Add basic lemmas about Ensures"
+        },
+        {
+          "commit": "b71f815a6fe698e6db10ce90fdb33636bbfc16b3",
+          "tree": "4cff21a57e8294d86c73d9135c04f071ed9dbed2",
+          "date": "2026-10-27",
+          "subject": "Bignum.BitVec.MatchBV: Do not expose section"
+        },
+        {
+          "commit": "997b9044b6a8f397fd3ce8f4af5d6debe5e8b224",
+          "tree": "505b844b62cb0d65a31c367b2e17978c1dbf50a6",
+          "date": "2026-10-27",
+          "subject": "Bignum: Remove legacy ArmOld.lean"
+        },
+        {
+          "commit": "4b799508320060897290f47d371c825e002f0f24",
+          "tree": "78f3567f16d7f0a75a1605eb57e681d0e6d40749",
+          "date": "2026-10-22",
+          "subject": "BignumTest.Tutorial.Simple: Fix precondition"
+        },
+        {
+          "commit": "d05fddf1158eafa66029975fd9f58e90bf2707f3",
+          "tree": "c670532b758f78994684ab936770e392d60229a4",
+          "date": "2026-10-22",
+          "subject": "Bignum.Relation: Fix the definition of Ensures"
+        },
+        {
+          "commit": "bbdcd121192554b001868e7159649b2022cf4f57",
+          "tree": "55950fe51794e8eee7f21c53f077e87795e83348",
+          "date": "2026-10-22",
+          "subject": "Bignum.Arm.Semantics: Fix State.decode"
+        },
+        {
+          "commit": "6325d36fd81fb82ef48bb2170af84f351a30bf52",
+          "tree": "b3672856265bbd2c8dd063b5603f69112ae4357c",
+          "date": "2026-10-22",
+          "subject": "Bignum.Arm.Decode: New submodule"
+        },
+        {
+          "commit": "4110f7abf27b93ba0e45c4cd99d3b64dd0b8aff4",
+          "tree": "442ab03f0fb922e0e6f39081a449e32a17b03902",
+          "date": "2026-10-21",
+          "subject": "Bignum: Fix some comments"
+        },
+        {
+          "commit": "947c7ca1bcd644f0dd667bafc64bd22cbe762c6a",
+          "tree": "7b08712b268b640105c7ee3969a92c6be2632ee9",
+          "date": "2026-10-21",
+          "subject": "Bignum.Component.RelationalLemmas: Cleanup"
+        },
+        {
+          "commit": "5c042a0ae758969d41593903bcde39ce38837857",
+          "tree": "16cdfe07f994376733e102fa398b7aada554f5de",
+          "date": "2026-10-21",
+          "subject": "Bignum.Relation: Add Eventually, Hoare, Ensures"
+        },
+        {
+          "commit": "26ef744e134a3d08a3e6636bd5393d8734b2139a",
+          "tree": "56bf4eedc91eba7fe7974e850c3adefe83d9d80b",
+          "date": "2026-10-21",
+          "subject": "Bignum.Component: Add more lemmas about extra components"
+        }
+      ],
+      "files": [
+        {
+          "path": ".github/workflows/lean_action_ci.yml",
+          "sha256": "3b0d49449c2e6d4ee04ce6e57c23dde1a836314b502351f1f6203477e2aafe8f",
+          "bytes": 487,
+          "lines": 21
+        },
+        {
+          "path": ".gitignore",
+          "sha256": "fca63c34b6739e3be0e1a4448d94516f95e28c8f6827ed6386e38b5a03deaeb0",
+          "bytes": 21,
+          "lines": 3
+        },
+        {
+          "path": "Bignum.lean",
+          "sha256": "70af771c90d1f7fcfa2a6df177a4bc15b6f59d1f75c62aa9c5982d9b9dea42a4",
+          "bytes": 247,
+          "lines": 9
+        },
+        {
+          "path": "Bignum/Arm.lean",
+          "sha256": "804f8625ab558cfd9d2048505fe3e8a07facc52961ea873117d3f5474f88d3ef",
+          "bytes": 304,
+          "lines": 11
+        },
+        {
+          "path": "Bignum/Arm/Abbrev.lean",
+          "sha256": "614a101449a302d22710bf00ebeee800fb3b835be8197490d2891157fe338d90",
+          "bytes": 3061,
+          "lines": 148
+        },
+        {
+          "path": "Bignum/Arm/Component.lean",
+          "sha256": "de29e281a15f9ceada7cbbf89a6ca00cbd1118c81a2091635cf303217b2ac741",
+          "bytes": 946,
+          "lines": 32
+        },
+        {
+          "path": "Bignum/Arm/Condition.lean",
+          "sha256": "d2d2a03014639a91e6c2af9bb667f9af0199c7ca9cc0c9309b18bd2c2f277cdc",
+          "bytes": 2347,
+          "lines": 136
+        },
+        {
+          "path": "Bignum/Arm/Decode.lean",
+          "sha256": "20bc454795832c69ea10ba46d4f4984254533b0225e8e6e7ef94f7cfd6e9a94d",
+          "bytes": 1404,
+          "lines": 48
+        },
+        {
+          "path": "Bignum/Arm/Instruction.lean",
+          "sha256": "709d2d2b0613497bfa71e5f2df6e86f2036cf32e2b3457db24a29e61589e24b8",
+          "bytes": 2506,
+          "lines": 97
+        },
+        {
+          "path": "Bignum/Arm/Operand.lean",
+          "sha256": "1cadd1b472598f435ee87e8f3be58596286c54b05c4c4ace73ebbc4b5b4a0931",
+          "bytes": 1853,
+          "lines": 87
+        },
+        {
+          "path": "Bignum/Arm/Semantics.lean",
+          "sha256": "6a8aaa9208285bad0d8cb893d0f57d81cb0d1949400a9bda455f4e75a0d482d0",
+          "bytes": 1165,
+          "lines": 39
+        },
+        {
+          "path": "Bignum/Arm/State.lean",
+          "sha256": "9d79ccff7ce86a16365166382c7d81241a06bd1ce82ee730d1bc7274735fa391",
+          "bytes": 6784,
+          "lines": 244
+        },
+        {
+          "path": "Bignum/Arm/StateLemmas.lean",
+          "sha256": "e6d42fa83a4524a1a65e542afd61dc48c710671e2b4d18f9866aa719ce6dc3ce",
+          "bytes": 4538,
+          "lines": 158
+        },
+        {
+          "path": "Bignum/BitVec.lean",
+          "sha256": "90144e361cab463103360b1580e27dd40ee670864c19798f51cacfb74792191e",
+          "bytes": 269,
+          "lines": 10
+        },
+        {
+          "path": "Bignum/BitVec/Basic.lean",
+          "sha256": "4e26f65db35baf56b9d45c956612b7d1d0f43ca3ec61eaa123430bf7e751b776",
+          "bytes": 1461,
+          "lines": 56
+        },
+        {
+          "path": "Bignum/BitVec/Lemmas.lean",
+          "sha256": "88a96a8155613c584d97b2c6cd92b454744c7a857d643f09bcc60871c0c04ab2",
+          "bytes": 3193,
+          "lines": 82
+        },
+        {
+          "path": "Bignum/BitVec/MatchBV.lean",
+          "sha256": "4c09cbbcaee7099897ed6bc498402b8d40a61909e723d213682e0542083c4a31",
+          "bytes": 4669,
+          "lines": 170
+        },
+        {
+          "path": "Bignum/Component.lean",
+          "sha256": "dec30e2709b8499c1c0a0e33c611c5752899fdf7c5e8c344cca6783b07e4e6a0",
+          "bytes": 414,
+          "lines": 13
+        },
+        {
+          "path": "Bignum/Component/Basic.lean",
+          "sha256": "206e9d81b0089ddca9242f5b31283b4242dc2eea35dfbed19803bbae83336d1a",
+          "bytes": 4342,
+          "lines": 135
+        },
+        {
+          "path": "Bignum/Component/BasicLemmas.lean",
+          "sha256": "5820c035d87aa517ce1587f51e94ee2e7dae2c5dd51c329a0913d9625f529e3c",
+          "bytes": 3689,
+          "lines": 118
+        },
+        {
+          "path": "Bignum/Component/Extra.lean",
+          "sha256": "6f72cec1b8d368329724841f0db55fc720fc7ecdc4866c0d017d5890e6a9cbd7",
+          "bytes": 4479,
+          "lines": 190
+        },
+        {
+          "path": "Bignum/Component/ExtraLemmas.lean",
+          "sha256": "3f88d16672b14d1a80f58ec675c1eba2dc1294e16fdcaced34b7c512fdab3ed9",
+          "bytes": 2673,
+          "lines": 92
+        },
+        {
+          "path": "Bignum/Component/Relational.lean",
+          "sha256": "d9d11bc9b1a3314e5d55a86e70820e70fed05d720e4a94c7c2e6e6c4c50f5f15",
+          "bytes": 1016,
+          "lines": 47
+        },
+        {
+          "path": "Bignum/Component/RelationalLemmas.lean",
+          "sha256": "4f712a90cfe9a2d08f4f043489e9dac537ae0b1b2f897b8deac0ba17cd071104",
+          "bytes": 3600,
+          "lines": 96
+        },
+        {
+          "path": "Bignum/Memory.lean",
+          "sha256": "0db4943f51b40469a1089a95b740120e6f0bd89887dc4d9990f704eeba1756b7",
+          "bytes": 233,
+          "lines": 9
+        },
+        {
+          "path": "Bignum/Memory/Basic.lean",
+          "sha256": "1499962490d1354229d54f0f89e6917797a0906a3482f4c45f08e8c0a7e2a395",
+          "bytes": 5728,
+          "lines": 192
+        },
+        {
+          "path": "Bignum/Memory/Lemmas.lean",
+          "sha256": "824de8c765489f04ddf9addc3cbd87850efafec290b58ecd563fb8c0b86e615c",
+          "bytes": 17403,
+          "lines": 466
+        },
+        {
+          "path": "Bignum/Relational.lean",
+          "sha256": "eecf9a2c6fdd896cde0899ee11be16f0a9380d035312707abf8ade10746211b6",
+          "bytes": 241,
+          "lines": 9
+        },
+        {
+          "path": "Bignum/Relational/Basic.lean",
+          "sha256": "dead9eda0c0f0e7cf25ad86eb064aacd31a395126828bf5da8152400687fc8fb",
+          "bytes": 2352,
+          "lines": 108
+        },
+        {
+          "path": "Bignum/Relational/Lemmas.lean",
+          "sha256": "462dc7dc520477193a74c2f6141269fabf1cb86a404196ff209781fd8985afe4",
+          "bytes": 7853,
+          "lines": 236
+        },
+        {
+          "path": "Bignum/Safety.lean",
+          "sha256": "a24c34d8842b22342777febe7ced531ddedad4d458004e515ade7eeac1b36f99",
+          "bytes": 198,
+          "lines": 8
+        },
+        {
+          "path": "Bignum/Safety/Basic.lean",
+          "sha256": "e70d48ba1881d21bc96958d087104531e102d1006931a0eb576c161b507b21c7",
+          "bytes": 685,
+          "lines": 25
+        },
+        {
+          "path": "BignumTest/Arm/Condition.lean",
+          "sha256": "8c2b52564a8fd91639599be138ed03fa99695341424936bc74ce442f0c1fda30",
+          "bytes": 2870,
+          "lines": 67
+        },
+        {
+          "path": "BignumTest/Arm/ExtendedType.lean",
+          "sha256": "dac5d6f3af45afc33c830d47000753b55140035311cbf6792716fa94189342ac",
+          "bytes": 1019,
+          "lines": 31
+        },
+        {
+          "path": "BignumTest/Arm/OffsetType.lean",
+          "sha256": "7d16c3c94265b00e376a79a6a5d953c74249e509917db63a90908a0b74e2d201",
+          "bytes": 1459,
+          "lines": 36
+        },
+        {
+          "path": "BignumTest/Arm/ShiftType.lean",
+          "sha256": "1255aa95470d05df801f84b5f0eed55d06656dbd12bfc9f97d5e8c9f41e91f28",
+          "bytes": 695,
+          "lines": 23
+        },
+        {
+          "path": "BignumTest/Arm/State.lean",
+          "sha256": "59e4354a741181e93e5d5941b54715a132ad327a6f041bf9989a6ccfe8edf12a",
+          "bytes": 34216,
+          "lines": 726
+        },
+        {
+          "path": "BignumTest/BitVec.lean",
+          "sha256": "5d8cb107142d174adce84dc39b9c12438e5f843f4454a6cae20044c269721ca5",
+          "bytes": 1228,
+          "lines": 42
+        },
+        {
+          "path": "BignumTest/Component/Basic.lean",
+          "sha256": "6024eb7c95b83b1b4e937748064708140809811a11970156a37980208e5948db",
+          "bytes": 3897,
+          "lines": 144
+        },
+        {
+          "path": "BignumTest/Component/Extra.lean",
+          "sha256": "8a352a6ff78dc7ef041e4a44d179b82dedc2a84685b27ab7d19244ace5dabfb4",
+          "bytes": 6260,
+          "lines": 189
+        },
+        {
+          "path": "BignumTest/Memory.lean",
+          "sha256": "9d9a765f74443677d2ccf406e1c4272e075d26fc20508d542ed5f64ade5d94ff",
+          "bytes": 2285,
+          "lines": 72
+        },
+        {
+          "path": "BignumTest/Tutorial/Simple.lean",
+          "sha256": "c0cc223ef78bff12e27b86edd4e423f95dc00e4efd2d3c76b084931e6a21d0d5",
+          "bytes": 745,
+          "lines": 28
+        },
+        {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "bytes": 11357,
+          "lines": 201
+        },
+        {
+          "path": "README.md",
+          "sha256": "f2f10e57dd7cc990e4300a8d3bffb39831e1fc580c3865e1592c3e87747c7146",
+          "bytes": 1104,
+          "lines": 29
+        },
+        {
+          "path": "docs/.gitignore",
+          "sha256": "b3ad09fc93f83fdbd0bee771258dd4a58d3798fd7e6048611dde5a804bb43f1e",
+          "bytes": 7,
+          "lines": 1
+        },
+        {
+          "path": "docs/lake-manifest.json",
+          "sha256": "6a50ada1946ab1cc24bf4500245aa76809326f4fb090ba1817d5532ca47e3b8e",
+          "bytes": 2506,
+          "lines": 84
+        },
+        {
+          "path": "docs/lakefile.toml",
+          "sha256": "5488f53b611adbd5a638e91f3f6d408f83573768143d96edf5c06338a88616b4",
+          "bytes": 172,
+          "lines": 12
+        },
+        {
+          "path": "docs/lean-toolchain",
+          "sha256": "964acf49a540b2fbb4d25edc186eb68236afd8020473dfad7ccb08dc6ffa1d66",
+          "bytes": 28,
+          "lines": 1
+        },
+        {
+          "path": "lake-manifest.json",
+          "sha256": "58fe6f639ff8fad50f2c91b57542c14f5e66308f7adee0f95a73c5e924f8caf1",
+          "bytes": 471,
+          "lines": 16
+        },
+        {
+          "path": "lakefile.toml",
+          "sha256": "150d03be2746b5b00d3fb3ff93bc0c82c65dc9911b69e96674b3160f415892f4",
+          "bytes": 493,
+          "lines": 30
+        },
+        {
+          "path": "lean-toolchain",
+          "sha256": "964acf49a540b2fbb4d25edc186eb68236afd8020473dfad7ccb08dc6ffa1d66",
+          "bytes": 28,
+          "lines": 1
+        }
+      ]
+    },
+    "s2n_bignum": {
+      "repository": "awslabs/s2n-bignum",
+      "url": "https://github.com/awslabs/s2n-bignum",
+      "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+      "tree": "b49c3ae7b88ed6657765ddf897595c5fa33264f5",
+      "prior_corpus_baseline_revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+      "inspected_files": [
+        {
+          "path": "common/components.ml",
+          "sha256": "b0a4f788c0d251d7d2ea0ddefb95e12e707cf67e1d743606404c74fa9189d76a",
+          "bytes": 152681,
+          "lines": 3521
+        },
+        {
+          "path": "common/maychange.ml",
+          "sha256": "1bf18fd4649bee175a0ede8228f362954a3413b3632bcd2612c058217fb6bde6",
+          "bytes": 10478,
+          "lines": 262
+        },
+        {
+          "path": "common/relational.ml",
+          "sha256": "91834ae036acb6a2b0cc83e4bdf33bf1d336cac271b1d886abf78af054947914",
+          "bytes": 160998,
+          "lines": 3582
+        },
+        {
+          "path": "common/relational_n.ml",
+          "sha256": "d667b4816e31873baa4e53e29996ffc9da1e6c0711f4e88b1c9b1ad14fb6bb17",
+          "bytes": 22638,
+          "lines": 553
+        },
+        {
+          "path": "common/safety.ml",
+          "sha256": "976043e609ba9793dfd93af8b85a45ff3e6de9361f6276cbdf301a65b5463fb8",
+          "bytes": 14352,
+          "lines": 347
+        },
+        {
+          "path": "common/consttime.ml",
+          "sha256": "94f651ba387cc6bad6d1e77e5209ca7febbf697db0e553b88b19a7ec44f70121",
+          "bytes": 49290,
+          "lines": 1187
+        },
+        {
+          "path": "common/code_loading.ml",
+          "sha256": "9a199b200b34627d5dbc31d4575a6e50580b61dd9f6735722e1f952c9435cf55",
+          "bytes": 7976,
+          "lines": 199
+        },
+        {
+          "path": "arm/proofs/base.ml",
+          "sha256": "7efeb7505948866f3a72f8d18beafd8cb6913505362d874259d4040443e55535",
+          "bytes": 3204,
+          "lines": 86
+        },
+        {
+          "path": "arm/proofs/arm.ml",
+          "sha256": "6823fbad25be538665d137fdd714fb3fb46c03afb9e918b8a4304ad015bc8ad4",
+          "bytes": 65580,
+          "lines": 1469
+        },
+        {
+          "path": "arm/proofs/decode.ml",
+          "sha256": "e1973d35b08aa2f7e6486969306e87ae02fd8b6ce7c26ba3d94ed8c1cc96f184",
+          "bytes": 101686,
+          "lines": 2285
+        },
+        {
+          "path": "arm/proofs/instruction.ml",
+          "sha256": "c1d78851a491a05b87f3031437573bd7a8e63090420de45ece6cc2f9028a41d7",
+          "bytes": 173276,
+          "lines": 4179
+        },
+        {
+          "path": "arm/proofs/consttime.ml",
+          "sha256": "72bcf744851a888000d46ddf85e03b1f8b74bad1bea48954232cf1b71c2985c4",
+          "bytes": 1546,
+          "lines": 37
+        },
+        {
+          "path": "arm/tutorial/simple.ml",
+          "sha256": "45a46037be6d329f328704814c32d2055455bc67512fee6c926b7f94ccacc821",
+          "bytes": 4661,
+          "lines": 120
+        },
+        {
+          "path": "x86/proofs/base.ml",
+          "sha256": "6aec0a36255b39ac718e48393fa1b0580841d0670d5904585e41d00ed61af895",
+          "bytes": 2545,
+          "lines": 68
+        },
+        {
+          "path": "x86/proofs/x86.ml",
+          "sha256": "daa84c1661610a9b95af0b4ad88bf15297fffd22735fd6004c331ed353cfd005",
+          "bytes": 274596,
+          "lines": 6250
+        }
+      ]
+    },
+    "kraken": {
+      "repository": "AeneasVerif/kraken",
+      "url": "https://github.com/AeneasVerif/kraken",
+      "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+      "tree": "4462246ba04a358fb3ef52cc8d8bc78875367546",
+      "inspected_files": [
+        {
+          "path": "Kraken/OmniSemantics.lean",
+          "sha256": "87e19661dcc00b0149c10e77f1c1e5bb75ecbb0e29a69046b8ab0fcae50d60d6",
+          "bytes": 2439,
+          "lines": 62
+        },
+        {
+          "path": "Kraken/Mem.lean",
+          "sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01",
+          "bytes": 5902,
+          "lines": 129
+        },
+        {
+          "path": "Kraken/AArch64/Semantics.lean",
+          "sha256": "5ab0b8ad46550ed69e67fac81350f50aeadc1cf37402b90d923c92e61b3b2fd8",
+          "bytes": 42877,
+          "lines": 1044
+        }
+      ]
+    },
+    "anneal_private": {
+      "repository": "joshlf/anneal-private",
+      "url": "https://github.com/joshlf/anneal-private",
+      "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+      "tree": "219dfb9655e7b1a2754d3590cdbbec224ac790a0",
+      "inspected_files": [
+        {
+          "path": "trusted/lean/Trusted/Refinement.lean",
+          "sha256": "7ebb33d7c22ef20c009c4161d0f37c6fe7d2d4fab47154037ff3a3adec93b448",
+          "bytes": 27133,
+          "lines": 550
+        },
+        {
+          "path": "trusted/lean/Trusted/StepResult.lean",
+          "sha256": "c9b9201a3cbaa406c797881e108b60b920dc33a4dce08c4cc389512394160837",
+          "bytes": 8009,
+          "lines": 187
+        },
+        {
+          "path": "trusted/lean/Trusted/MirAst.lean",
+          "sha256": "44087560378e54b5a7cb82beeb79c798232f5d00de500ac747a3bd768fc9fe20",
+          "bytes": 15626,
+          "lines": 373
+        },
+        {
+          "path": "trusted/lean/Trusted/MirSemantics.lean",
+          "sha256": "78e59693908e974533b7ca32dc6f14c7e5cf6a33dc4b2d74c5b70d73b784d47a",
+          "bytes": 37451,
+          "lines": 850
+        }
+      ]
+    }
+  },
+  "support_artifacts": [
+    {
+      "path": "support/cslib_bignum_component_and_ensures_probe.lean",
+      "sha256": "c9618e915e52d85585303445562521842949449aaa0949d39ff0fea1f6f234d2",
+      "bytes": 58446,
+      "lines": 1320
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "status": "pass",
+  "host": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64"
+  },
+  "trials": [
+    {
+      "trial": 0,
+      "file": "KernelBase.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBase.lean"
+      ],
+      "exit": 0,
+      "seconds": 2.0498560410924256,
+      "stdout": "RestrictedWasm.sampleValidation : Bool\n",
+      "stderr": ""
+    },
+    {
+      "trial": 0,
+      "file": "KernelBench.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBench.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.7590409580152482,
+      "stdout": "'kernel_samples_checked' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 0,
+      "file": "WasmArtifact.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmArtifact.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.26999508403241634,
+      "stdout": "'actual_admitted' depends on axioms: [propext]\n'actual_correct' depends on axioms: [propext]\n'changed_constant_rejected' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'changed_predicate_rejected' depends on axioms: [propext]\n'changed_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'unknown_opcode_rejected' depends on axioms: [propext]\n'wrong_section_length_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n'missing_end_rejected' depends on axioms: [propext]\n'trailing_custom_rejected' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 1,
+      "file": "KernelBase.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBase.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.19761783396825194,
+      "stdout": "RestrictedWasm.sampleValidation : Bool\n",
+      "stderr": ""
+    },
+    {
+      "trial": 1,
+      "file": "KernelBench.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBench.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.7622931249206886,
+      "stdout": "'kernel_samples_checked' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 1,
+      "file": "WasmArtifact.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmArtifact.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.28279025002848357,
+      "stdout": "'actual_admitted' depends on axioms: [propext]\n'actual_correct' depends on axioms: [propext]\n'changed_constant_rejected' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'changed_predicate_rejected' depends on axioms: [propext]\n'changed_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'unknown_opcode_rejected' depends on axioms: [propext]\n'wrong_section_length_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n'missing_end_rejected' depends on axioms: [propext]\n'trailing_custom_rejected' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 2,
+      "file": "KernelBase.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBase.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.18760149995796382,
+      "stdout": "RestrictedWasm.sampleValidation : Bool\n",
+      "stderr": ""
+    },
+    {
+      "trial": 2,
+      "file": "KernelBench.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBench.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.7519084579544142,
+      "stdout": "'kernel_samples_checked' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 2,
+      "file": "WasmArtifact.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmArtifact.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.28091799991670996,
+      "stdout": "'actual_admitted' depends on axioms: [propext]\n'actual_correct' depends on axioms: [propext]\n'changed_constant_rejected' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'changed_predicate_rejected' depends on axioms: [propext]\n'changed_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'unknown_opcode_rejected' depends on axioms: [propext]\n'wrong_section_length_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n'missing_end_rejected' depends on axioms: [propext]\n'trailing_custom_rejected' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 3,
+      "file": "KernelBase.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBase.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.22807770792860538,
+      "stdout": "RestrictedWasm.sampleValidation : Bool\n",
+      "stderr": ""
+    },
+    {
+      "trial": 3,
+      "file": "KernelBench.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBench.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.8033309170277789,
+      "stdout": "'kernel_samples_checked' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 3,
+      "file": "WasmArtifact.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmArtifact.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.2652495000511408,
+      "stdout": "'actual_admitted' depends on axioms: [propext]\n'actual_correct' depends on axioms: [propext]\n'changed_constant_rejected' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'changed_predicate_rejected' depends on axioms: [propext]\n'changed_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'unknown_opcode_rejected' depends on axioms: [propext]\n'wrong_section_length_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n'missing_end_rejected' depends on axioms: [propext]\n'trailing_custom_rejected' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 4,
+      "file": "KernelBase.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBase.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.19875887501984835,
+      "stdout": "RestrictedWasm.sampleValidation : Bool\n",
+      "stderr": ""
+    },
+    {
+      "trial": 4,
+      "file": "KernelBench.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/KernelBench.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.7636439999332651,
+      "stdout": "'kernel_samples_checked' depends on axioms: [propext]\n",
+      "stderr": ""
+    },
+    {
+      "trial": 4,
+      "file": "WasmArtifact.lean",
+      "command": [
+        "$TOOL/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmArtifact.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.2794120410690084,
+      "stdout": "'actual_admitted' depends on axioms: [propext]\n'actual_correct' depends on axioms: [propext]\n'changed_constant_rejected' depends on axioms: [propext]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'changed_predicate_rejected' depends on axioms: [propext]\n'changed_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'unknown_opcode_rejected' depends on axioms: [propext]\n'wrong_section_length_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n'missing_end_rejected' depends on axioms: [propext]\n'trailing_custom_rejected' depends on axioms: [propext]\n",
+      "stderr": ""
+    }
+  ],
+  "summaries": {
+    "KernelBase.lean": {
+      "n": 5,
+      "median_seconds": 0.19875887501984835,
+      "min_seconds": 0.18760149995796382,
+      "max_seconds": 2.0498560410924256
+    },
+    "KernelBench.lean": {
+      "n": 5,
+      "median_seconds": 0.7622931249206886,
+      "min_seconds": 0.7519084579544142,
+      "max_seconds": 0.8033309170277789
+    },
+    "WasmArtifact.lean": {
+      "n": 5,
+      "median_seconds": 0.2794120410690084,
+      "min_seconds": 0.2652495000511408,
+      "max_seconds": 0.28279025002848357
+    }
+  },
+  "node_median_ms_per_256": 0.0069903330000000066,
+  "comparison": "Same 256 inputs from {0,1,2,3}^4 and equality to source predicate. KernelBench uses by decide (kernel reduction/checking), including process/import/elaboration overhead; Node timings cover repeated warmed calls plus JS source comparison, excluding process startup. Not an isolated kernel-vs-engine ratio or broad performance claim.",
+  "trust": "Lean logical checking vs Node/V8+Wasm interpretation+host I/O. Generic compiler theorem and canonical module-byte admission checked; full external specification and engine implementation not mechanically connected.",
+  "sources": {
+    "WasmValidator.lean": "2f15898226c8ab57515804aebda32c9d60f2ec2f1445b7ac99360547f05cdfd3",
+    "WasmArtifact.lean": "552b51f20940bc1c1a97db07a6ff43a3e96580f1c396c28e81093175a130262a",
+    "KernelBase.lean": "572089ee3f87ee98d4a2c183273e213686f7521f3ca839124297b3e05443ae3f",
+    "KernelBench.lean": "7c05460bc682db480d971499f8fd7dab7aa1444f59dc47a98c2cd0131bed9e8a",
+    "boolean4.wasm": "fd0023c344d5d55bb4c7c8f4920764bf5c198777c3411bffea0d99b550cfe158",
+    "execute_wasm.mjs": "abd3694f62a3753ffd28f242950531947f8d3f7070987ec13d1d792cec45f458"
+  }
+}

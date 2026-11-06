@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "rust/layout",
+    "rust/repr-c",
+    "rust/repr-transparent",
+    "rust/target-data-layout",
+    "rustc/abi"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and paired Linux target libraries",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+        "version": "1.89.0",
+        "compiler_host": "aarch64-unknown-linux-gnu",
+        "compiler_sha256": "93c98482c1bdedf3789c2bd0a86ff82a7075a58528abbca2990066f4e8faedb7",
+        "llvm_version": "20.1.7"
+      }
+    },
+    {
+      "name": "Owned valid target fixtures and pre-execution oracle",
+      "identity": {
+        "artifact": "preparation-manifest.json",
+        "sha256": "6d9eb9dad9f4885c19d7a32336bd69ba468a07c146972ee671ba6300adce55a6"
+      }
+    },
+    {
+      "name": "Native AArch64 Linux fixture executable",
+      "identity": {
+        "artifact": "valid-aarch64",
+        "sha256": "b693e1947614e60776d31994adcb6c67bb9e72fa700c7e49783dccc43287a055",
+        "target": "aarch64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Emulated big-endian s390x Linux fixture executable",
+      "identity": {
+        "artifact": "valid-s390x",
+        "sha256": "06d1cb88a0300840e1bef51af0e0552aa090c39012cf4105b8f269e4b78099ab",
+        "target": "s390x-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "QEMU s390x user-mode emulator",
+      "identity": {
+        "version": "7.2.22",
+        "debian_package": "qemu-user 1:7.2+dfsg-7+deb12u18+b3 arm64",
+        "binary_sha256": "f1796dc51e3dfdbca9ed24ea9b089b24d4827f07d0cdc34e06ae4fccb452fd58"
+      }
+    },
+    {
+      "name": "s390x GCC cross-link driver",
+      "identity": {
+        "version": "12.2.0",
+        "debian_package": "gcc-12-s390x-linux-gnu 12.2.0-14cross1 arm64",
+        "binary_sha256": "702a7ac06147e3762eac71a5d1414616cf622bf073031fb8c8c8e7ae95e93a96"
+      }
+    },
+    {
+      "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Rust Reference aggregate-layout contract",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-05-31 rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-09-30 rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+        "version": "1.101.0-nightly",
+        "rustc_sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

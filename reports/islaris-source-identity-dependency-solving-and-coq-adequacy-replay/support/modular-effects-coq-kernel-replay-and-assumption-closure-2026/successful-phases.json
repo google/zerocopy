@@ -1,0 +1,58 @@
+[
+  {
+    "label": "generate-makefile-root",
+    "exit_code": 0,
+    "elapsed_seconds": 2.077,
+    "stdout_bytes": 117,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "core-build",
+    "exit_code": 0,
+    "elapsed_seconds": 68.383,
+    "stdout_bytes": 583,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "audit-core",
+    "exit_code": 0,
+    "elapsed_seconds": 8.129,
+    "stdout_bytes": 11859,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "heaplang-build",
+    "exit_code": 0,
+    "elapsed_seconds": 44.292,
+    "stdout_bytes": 304,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "audit-heaplang",
+    "exit_code": 0,
+    "elapsed_seconds": 8.117,
+    "stdout_bytes": 10174,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "islaris-build",
+    "exit_code": 0,
+    "elapsed_seconds": 46.262,
+    "stdout_bytes": 412,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "audit-islaris",
+    "exit_code": 0,
+    "elapsed_seconds": 4.095,
+    "stdout_bytes": 3646,
+    "stderr_bytes": 0
+  },
+  {
+    "label": "recursive-coqchk",
+    "exit_code": 0,
+    "elapsed_seconds": 60.373,
+    "stdout_bytes": 183,
+    "stderr_bytes": 3854444
+  }
+]

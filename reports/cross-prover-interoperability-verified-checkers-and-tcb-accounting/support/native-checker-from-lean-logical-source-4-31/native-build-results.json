@@ -1,0 +1,25 @@
+[
+  {
+    "stage": "ArithmeticModel",
+    "exit": 0,
+    "seconds": 0.5514410829999999
+  },
+  {
+    "stage": "CheckerMain",
+    "exit": 0,
+    "seconds": 0.40131204200000004
+  },
+  {
+    "stage": "native-link",
+    "exit": 0,
+    "seconds": 0.838748958,
+    "argv": [
+      "$LEAN431_BIN/leanc",
+      "-O2",
+      "-o",
+      "$SCRATCH/intermediate/checker",
+      "$SCRATCH/intermediate/ArithmeticModel.c",
+      "$SCRATCH/intermediate/CheckerMain.c"
+    ]
+  }
+]

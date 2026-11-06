@@ -1,0 +1,109 @@
+{
+  "coverage_kind": "bounded refinement/permission/CHC and actual Lean-VC route comparison",
+  "topics": {
+    "R046": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "RustHorn's clause correspondence has a narrower formal subject than its compiler",
+        "Thrust's CHC backend accepts a satisfiable clause system under trusted contracts"
+      ],
+      "remaining_research": [
+        "Full RustHorn invariant/genericity/recursion implementation coverage beyond selected compiler/solver boundaries."
+      ],
+      "future_engineering": [
+        "Implement/check an Anneal-compatible acceptance interface and run matched real-program comparisons."
+      ],
+      "answered_subquestions": [
+        "RustHorn's clause correspondence has a narrower formal subject than its compiler",
+        "Thrust's CHC backend accepts a satisfiable clause system under trusted contracts"
+      ]
+    },
+    "R047": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Refinement inference relies on an ownership and call-interface premise",
+        "Current Flux separates shape inference, refinement checking and trusted bodies",
+        "Thrust's CHC backend accepts a satisfiable clause system under trusted contracts"
+      ],
+      "remaining_research": [
+        "Full ghost/higher-order/unsafe operation feature inventory and formal supplements."
+      ],
+      "future_engineering": [
+        "Implement/check an Anneal-compatible acceptance interface and run matched real-program comparisons."
+      ],
+      "answered_subquestions": [
+        "Refinement inference relies on an ownership and call-interface premise",
+        "Current Flux separates shape inference, refinement checking and trusted bodies",
+        "Thrust's CHC backend accepts a satisfiable clause system under trusted contracts"
+      ]
+    },
+    "R048": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Prusti makes borrowing recovery into permission and deferred-contract obligations"
+      ],
+      "remaining_research": [
+        "Exact fractional-permission/Viper semantics and certificate/unsafe-support audit."
+      ],
+      "future_engineering": [
+        "Implement/check an Anneal-compatible acceptance interface and run matched real-program comparisons."
+      ],
+      "answered_subquestions": [
+        "Prusti makes borrowing recovery into permission and deferred-contract obligations"
+      ]
+    },
+    "R060": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Checked inference should retain its proposed solution and model meaning"
+      ],
+      "remaining_research": [
+        "MIRAI, Infer, SeaHorn and SMACK actual engines/results/certificate interfaces not examined."
+      ],
+      "future_engineering": [
+        "Implement/check an Anneal-compatible acceptance interface and run matched real-program comparisons."
+      ],
+      "answered_subquestions": [
+        "Checked inference should retain its proposed solution and model meaning"
+      ]
+    },
+    "R090": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Flux's Lean route checks the generated proposition, with explicit modes and cache binding"
+      ],
+      "remaining_research": [
+        "Complete certificate/Lean encoding, allowed-assumption and compatible resource/source-semantics audit beyond the inspected VC acceptance route."
+      ],
+      "future_engineering": [
+        "Implement/check an Anneal-compatible acceptance interface and run matched real-program comparisons."
+      ],
+      "answered_subquestions": [
+        "Flux's Lean route checks the generated proposition, with explicit modes and cache binding"
+      ]
+    },
+    "T019": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Checked inference should retain its proposed solution and model meaning",
+        "Flux's Lean route checks the generated proposition, with explicit modes and cache binding"
+      ],
+      "remaining_research": [
+        "Concrete certified abstract-interpretation/invariant-certificate literature and checking theorems were not examined; only the proposed-solution versus acceptance distinction is established."
+      ],
+      "future_engineering": [
+        "Implement/check an Anneal-compatible acceptance interface and run matched real-program comparisons."
+      ],
+      "answered_subquestions": [
+        "Checked inference should retain its proposed solution and model meaning",
+        "Flux's Lean route checks the generated proposition, with explicit modes and cache binding"
+      ]
+    }
+  }
+}

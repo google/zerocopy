@@ -1,0 +1,53 @@
+opam-version: "2.0"
+name: "conf-zlib"
+version: "1"
+synopsis: "Virtual package relying on zlib"
+description:
+  "This package can only install if the zlib library is installed on the system."
+maintainer: "tim@gfxmonk.net"
+authors: ["Jean-loup Gailly" "Mark Adler"]
+license: "zlib"
+homepage: "http://www.zlib.net/"
+bug-reports: "https://github.com/ocaml/opam-repository/issues"
+depends: [
+  "conf-pkg-config" {build}
+  (("host-arch-x86_64" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-mingw-w64-zlib-x86_64"
+      {os = "win32" & os-distribution != "cygwinports"}) |
+   ("host-arch-x86_32" {os = "win32" & os-distribution != "cygwinports"} &
+    "conf-mingw-w64-zlib-i686"
+      {os = "win32" & os-distribution != "cygwinports"}))
+]
+flags: conf
+build: [
+  "pkgconf" {os = "win32" & os-distribution != "cygwinports"}
+  "pkg-config" {os != "win32" | os-distribution = "cygwinports"}
+  "--personality=i686-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_32:installed}
+  "--personality=x86_64-w64-mingw32"
+    {os = "win32" & os-distribution != "cygwinports" &
+     host-arch-x86_64:installed}
+  "zlib"
+]
+depexts: [
+  ["zlib-dev"] {os-distribution = "alpine"}
+  ["zlib1g-dev"] {os-family = "debian"}
+  ["zlib1g-dev"] {os-family = "ubuntu"}
+  ["zlib-devel" "zlib-static"]
+    {os-distribution = "centos" & os-version < "10"}
+  ["zlib-ng-compat-devel" "zlib-ng-compat-static"]
+    {os-distribution = "centos" & os-version >= "10"}
+  ["zlib-devel"] {os-family = "fedora" & os-version < "40"}
+  ["zlib-ng-compat-devel" "zlib-ng-compat-static"]
+    {os-family = "fedora" & os-version >= "40"}
+  ["zlib-devel"] {os-distribution = "ol"}
+  ["zlib"] {os-distribution = "nixos"}
+  ["zlib"] {os-distribution = "homebrew" & os = "macos"}
+  ["zlib"] {os-family = "arch"}
+  ["zlib"] {os = "win32" & os-distribution = "cygwinports"}
+  ["zlib-devel"] {os = "cygwin"}
+  ["zlib-ng-compat-devel"] {os-family = "opensuse"}
+  ["zlib-devel"] {os-family = "suse" & os-version < "16"}
+  ["zlib-ng-compat-devel"] {os-family = "suse" & os-version >= "16"}
+]

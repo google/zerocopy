@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-10-15",
+  "fresh_primary": [
+    {
+      "name": "Katamaran",
+      "doi": "10.1145/3547628",
+      "url": "https://katamaran-project.github.io/articles/2022-08-symbolic-execution-vcgen.pdf",
+      "coordinates": [
+        "Lemmas 2.1, 5.1, 6.1",
+        "Section 6.2 Table 1"
+      ],
+      "identity_limit": "31-page author PDF identified by DOI/URL, no new byte hash",
+      "role": "documentation; source theorem/published measurements, not reproduced"
+    },
+    {
+      "name": "CakeML backend manuscript",
+      "url": "https://cakeml.org/jfp19.pdf",
+      "printed-date": "2018-11-19",
+      "pdf-pages": 59,
+      "coordinates": [
+        "Sections 2.3-2.4",
+        "Sections 10-12"
+      ],
+      "identity_limit": "Author manuscript URL and printed date/page count, no new byte hash",
+      "role": "documentation; behavioral theorem and historical bootstrap cost"
+    },
+    {
+      "name": "Lean4Lean",
+      "arxiv": "2403.14064v3",
+      "url": "https://arxiv.org/abs/2403.14064v3",
+      "coordinates": [
+        "abstract"
+      ],
+      "role": "documentation; external checker and partial proof-status/cost claim"
+    },
+    {
+      "name": "hax documentation",
+      "repository": "cryspen/hax",
+      "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5",
+      "path": "docs/dev/architecture.md",
+      "blob": "4491c64185044fc3dce318b4b02031be9a88b0a3",
+      "role": "source documentation"
+    },
+    {
+      "name": "hax documentation",
+      "repository": "cryspen/hax",
+      "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5",
+      "path": "docs/manual/lean/quick_start.md",
+      "blob": "715bd5bc5cfa4c96d60bdb0ff5b8552ec812b1e2",
+      "role": "source documentation"
+    },
+    {
+      "name": "hax documentation",
+      "repository": "cryspen/hax",
+      "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5",
+      "path": "docs/manual/lean/tutorial/panic-freedom.md",
+      "blob": "c5622ab470f2e7164ca16b09fad41864c04e1acb",
+      "role": "source documentation"
+    },
+    {
+      "name": "Electrolysis README",
+      "repository": "Kha/electrolysis",
+      "path": "README.md",
+      "blob": "670746012e99efc7b239bc5cd41f9ee2d967997b",
+      "url": "https://github.com/Kha/electrolysis/blob/master/README.md",
+      "identity_limit": "Exact blob identified; complete commit was not established",
+      "role": "documentation; no claimed current compatibility"
+    }
+  ]
+}

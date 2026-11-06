@@ -1,0 +1,100 @@
+[
+  {
+    "repository": "rems-project/islaris",
+    "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "sail-riscv/riscv64_test.v",
+    "upstream_git_blob": "fe3efe4e5820478236314ec71d1bc5ef8dfd1986",
+    "upstream_sha256": "511f92c0c320323a54e56d08c1200c085e627d31f0164ac550b1a3f0d7fb3eec",
+    "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail-riscv/riscv64_test.v",
+    "retained": "support/upstream/islaris-sail-riscv-test-fragment.v",
+    "line_ranges": [
+      [
+        1,
+        83
+      ],
+      [
+        190,
+        225
+      ]
+    ],
+    "retained_sha256": "ddb3e93c0c8da8aa64c8f763be24c654597386cd70adae9cd461e59fa2b00153",
+    "retention": "source fragment"
+  },
+  {
+    "repository": "rems-project/islaris",
+    "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "examples/riscv64_test.v",
+    "upstream_git_blob": "c6068b6d96bb6fd294abb70e4a9f2048839a2888",
+    "upstream_sha256": "0fb6b00a444bf7250517980a06aa8f76372c2cc97a8cc4bc631880e90ec3932f",
+    "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/examples/riscv64_test.v",
+    "retained": "support/upstream/islaris-trace-test-fragment.v",
+    "line_ranges": [
+      [
+        1,
+        132
+      ]
+    ],
+    "retained_sha256": "6ba92c352b7282113cdeeb2a353d98520240a075dc13e0de8b1581ff90b05900",
+    "retention": "source fragment"
+  },
+  {
+    "repository": "rems-project/islaris",
+    "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "sail-riscv/README.md",
+    "upstream_git_blob": "19cb5e001223e491cb308919b558b87da77972c4",
+    "upstream_sha256": "69a31fca4dee47b57e07835047e6125d57fbd2e7c838fe875aa0576ea3292d53",
+    "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail-riscv/README.md",
+    "retained": "support/upstream/islaris-sail-riscv-README.md",
+    "line_ranges": null,
+    "retained_sha256": "69a31fca4dee47b57e07835047e6125d57fbd2e7c838fe875aa0576ea3292d53",
+    "retention": "complete small primary file"
+  },
+  {
+    "repository": "rems-project/islaris",
+    "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "deps/Makefile",
+    "upstream_git_blob": "d5be9d0d0174279ff509d3d2ad5cab06f4cc47ca",
+    "upstream_sha256": "fac5f21a338267dc9da4fea4cf2c3d8baf1cdc9942230075c007217aa2468609",
+    "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/deps/Makefile",
+    "retained": "support/upstream/islaris-deps-Makefile",
+    "line_ranges": null,
+    "retained_sha256": "fac5f21a338267dc9da4fea4cf2c3d8baf1cdc9942230075c007217aa2468609",
+    "retention": "complete small primary file"
+  },
+  {
+    "repository": "rems-project/islaris",
+    "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "theories/dune",
+    "upstream_git_blob": "cd830b43b80a3d7b5d7ef20af0daf3cf4b9c541f",
+    "upstream_sha256": "c00da9e0925ce40756bf889abb75a2facc0e696eacf4a9a45e9f23fd238814af",
+    "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/theories/dune",
+    "retained": "support/upstream/islaris-theories-dune",
+    "line_ranges": null,
+    "retained_sha256": "c00da9e0925ce40756bf889abb75a2facc0e696eacf4a9a45e9f23fd238814af",
+    "retention": "complete small primary file"
+  },
+  {
+    "repository": "rems-project/coq-sail",
+    "revision": "169934e27ceafe393ed4d365985f7b12d974d56e",
+    "path": "coq-sail.opam",
+    "upstream_git_blob": "72cc3eab61c1565cf5eb83f77b51e1a3c6a1fc5d",
+    "upstream_sha256": "bd9484be042f1a2ae204da25d48b58e30d8cf5c8441556d5d099078690fe8e89",
+    "url": "https://github.com/rems-project/coq-sail/blob/169934e27ceafe393ed4d365985f7b12d974d56e/coq-sail.opam",
+    "retained": "support/upstream/coq-sail.opam",
+    "line_ranges": null,
+    "retained_sha256": "bd9484be042f1a2ae204da25d48b58e30d8cf5c8441556d5d099078690fe8e89",
+    "retention": "complete small primary file"
+  },
+  {
+    "repository": "riscv/sail-riscv",
+    "revision": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+    "path": "coq-sail-riscv.opam",
+    "upstream_git_blob": "a9879f228a663fc0e1fd733e9d8d7dff43b329d8",
+    "upstream_sha256": "1c087733f65fed93902d4f78914f1ce14f946e2ea118132db3070c95c8765cc8",
+    "url": "https://github.com/riscv/sail-riscv/blob/837ede9b39fae2aa97849da89c4b3b5a93344890/coq-sail-riscv.opam",
+    "retained": "support/upstream/coq-sail-riscv.opam",
+    "line_ranges": null,
+    "retained_sha256": "1c087733f65fed93902d4f78914f1ce14f946e2ea118132db3070c95c8765cc8",
+    "retention": "complete small primary file"
+  }
+]

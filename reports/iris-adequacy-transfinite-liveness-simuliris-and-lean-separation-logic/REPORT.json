@@ -1,0 +1,237 @@
+{
+  "topics": [
+    "verification",
+    "verification/iris",
+    "verification/separation-logic",
+    "minirust/semantics",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Iris source",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Historical RustBelt lifetime implementation",
+      "identity": {
+        "repository": "iris/lambda-rust",
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "Iris 3.1 conceptual foundation",
+      "identity": {
+        "publication": "Iris from the Ground Up",
+        "doi": "10.1017/S0956796818000151",
+        "version": "Iris 3.1"
+      }
+    },
+    {
+      "name": "RustBelt use of Iris for Rust ownership and borrowing",
+      "identity": {
+        "publication": "RustBelt: Securing the Foundations of the Rust Programming Language",
+        "doi": "10.1145/3158154",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "Aeneas draft first-order sequential separation logic",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "pull_request": "1352",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      }
+    },
+    {
+      "name": "Iris-Lean implementation status",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47"
+      }
+    },
+    {
+      "name": "iris-lean",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "commit": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+        "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816",
+        "lean_toolchain": "leanprover/lean4:v4.29.0"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "specr",
+      "identity": {
+        "repository": "minirust/specr",
+        "commit": "15200eb5e6"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Transfinite Iris source",
+      "identity": {
+        "revision": "dde9f193fb3d504be680480b2ca21052edae49df",
+        "url": "https://gitlab.mpi-sws.org/iris/transfinite"
+      }
+    },
+    {
+      "name": "Transfinite Iris PLDI final paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454031",
+        "artifact": "2021-pldi-transfinite-iris-final.pdf",
+        "sha256": "9fa709124b9c058076809816475c26212776a3084ea6322267af562978523427"
+      }
+    },
+    {
+      "name": "Transfinite Iris technical documentation",
+      "identity": {
+        "artifact": "2021-pldi-transfinite-iris-final-appendix.pdf",
+        "version": "May 14 2021",
+        "sha256": "d9cbc16acd64e3a2deea0afcba45a117bf137dc002066a10a33bd5d197f191b8"
+      }
+    },
+    {
+      "name": "Simuliris",
+      "identity": {
+        "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
+        "archive_sha256": "06dbeeb1ddda80ffe93b26fd20d8597f9c9a63767ae2a7e74e4dae696952fb9b",
+        "url": "https://gitlab.mpi-sws.org/iris/simuliris"
+      }
+    },
+    {
+      "name": "Iris",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b",
+        "package": "rocq-iris.dev.2026-09-10.3.b3495ef9",
+        "archive_sha256": "3b45252c8b915dcee1149dd0d185391898cc836619b7c4e1fc1f636acb23057b"
+      }
+    },
+    {
+      "name": "stdpp",
+      "identity": {
+        "repository": "rocq-iris/stdpp",
+        "revision": "c3186aad493872e3a9774ac0b42ca2f591b05835",
+        "package": "rocq-stdpp.dev.2026-09-09.1.c3186aad",
+        "archive_sha256": "e9588be3a78ad1b54a045a3237e5ae2ca7e0db8aebf1e0cfe8e90a6a64e0e6f2"
+      }
+    },
+    {
+      "name": "Rocq native checker and compiler",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "version": "9.2.0",
+        "source_archive_sha256": "a45280ab4fbaac7540b136a6b073b4a6db15739ec1e149bded43fa6f4fc25f20",
+        "native_checker_sha256": "d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9"
+      }
+    },
+    {
+      "name": "Owned observation-only audit annotations",
+      "identity": {
+        "artifact": "PlannedAuditFramework.v + PlannedAuditResources.v + PlannedAuditExamples.v, concatenated in that order",
+        "sha256": "d5a95c12243012b279d7f7a8c1d427c297987a09f00754f2c62998e8fd083c54"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "RustBelt lifetime archive",
+      "identity": {
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+      }
+    },
+    {
+      "name": "RustHornBelt 2022 prophecy artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6417462",
+        "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+      }
+    },
+    {
+      "name": "RefinedRust 2026-v2 resource/Lithium source",
+      "identity": {
+        "doi": "10.5281/zenodo.21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Diaframe 2022 source artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6414787",
+        "artifact": "diaframe-artifact-source.tgz",
+        "sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12"
+      }
+    },
+    {
+      "name": "Quiver",
+      "identity": {
+        "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+        "url": "https://gitlab.mpi-sws.org/iris/quiver"
+      }
+    },
+    {
+      "name": "Quiver PLDI 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656413",
+        "sha256": "f868c976531a9ed386d4a396ede212d948a843fef946be1b7712b338c227df3f"
+      }
+    },
+    {
+      "name": "Program Logics a la Carte source artifact",
+      "identity": {
+        "zenodo": "14180355",
+        "version": "v2",
+        "archive": "the_artifact.zip",
+        "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378"
+      }
+    },
+    {
+      "name": "Logical Relations a la Carte thesis",
+      "identity": {
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Jonas-Thesis.pdf",
+        "document_date": "March 2026",
+        "source_commit_cited_not_accessed": "5ed76562ee78badeb8768e7cb00c1ea37557b709"
+      }
+    },
+    {
+      "name": "MiniRust memory interface",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Lean",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

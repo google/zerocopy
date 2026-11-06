@@ -1,0 +1,28 @@
+{
+  "label": "copied-audit-hashes",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "sha256sum",
+    "PlannedAuditFramework.v",
+    "PlannedAuditResources.v",
+    "PlannedAuditExamples.v"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.075,
+  "stdout_bytes": 269,
+  "stderr_bytes": 45,
+  "stdout_sha256": "b23567575439987695017eeb7836a9b2f2c92f8f8b682f1955d9b6e292565a1e",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

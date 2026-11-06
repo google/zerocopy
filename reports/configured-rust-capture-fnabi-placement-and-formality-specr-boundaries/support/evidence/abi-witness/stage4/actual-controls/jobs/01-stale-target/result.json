@@ -1,0 +1,16 @@
+{
+  "id": "01-stale-target",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "selected built-in target"
+  },
+  "seconds": 0.32445495799999996,
+  "fresh_observer": null,
+  "candidate_sha256": "14c0c965165d28d2bd4012a4e010de8d93aff57010b5f4cd8530107c071e9c31",
+  "stdout_sha256": "1a6231d140d80e51c5c8777b08d97dc8cf54056481cb1b00b42fa59c8ab34ced",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

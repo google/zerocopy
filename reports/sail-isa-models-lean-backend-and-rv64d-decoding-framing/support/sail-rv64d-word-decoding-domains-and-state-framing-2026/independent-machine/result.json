@@ -1,0 +1,73 @@
+{
+  "argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5",
+    "120",
+    "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+    "-j1",
+    "-M4500",
+    "--tstack=400000",
+    "-t0",
+    "-R",
+    "/home/opam/anneal-sail-output/machine-independent",
+    "-o",
+    "/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.olean",
+    "/home/opam/anneal-sail-output/machine-independent/MachineDecodeFinal2.lean"
+  ],
+  "cwd": "/home/opam/anneal-sail-output/machine-independent",
+  "lean_path": "/home/opam/anneal-sail-output/machine-independent/imports:/home/opam/anneal-sail-output/machine-independent",
+  "lean_num_threads": "1",
+  "status": 0,
+  "seconds": 3.4959795749746263,
+  "maxrss_kib": 1624336,
+  "verified_originals": 152,
+  "verified_import_copies": 143,
+  "files": {
+    "MachineDecodeFinal2.lean": {
+      "bytes": 4626,
+      "sha256": "fe89f0f6f1bf36db7877a9848e9c68d81d8ed130c354a9f6f7e2c7dee6c96965"
+    },
+    "MachineDecodeFinal2.olean": {
+      "bytes": 2470904,
+      "sha256": "c8401aabc472b3a5c367a32b5248f7a5310957aeec8be745002ca99f6d49bcae"
+    },
+    "stdout": {
+      "bytes": 17684,
+      "sha256": "1be18bfacae3f49d2a34fa2df21a6d962616a6232a1d69100d35daefa6e1f2ac"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "preflight.json": {
+      "bytes": 34614,
+      "sha256": "cb6ad773fb8820fbeb6643d2a3ea921045c39fa1e627fe1118273bed105a2590"
+    },
+    "Proof.lean": {
+      "bytes": 3744,
+      "sha256": "f62057489d30152c39dcfab87c5b7ecbb43dd2e6bbe14d0368c4cbc832b6f2d4"
+    },
+    "Proof.olean": {
+      "bytes": 297080,
+      "sha256": "a37ef2b0d8f2ed3613a85ae666e89771464e2453df0929f9f80fb44397faa3bf"
+    },
+    "Controls.lean": {
+      "bytes": 9930,
+      "sha256": "7c9301d8c6080cd8cd1cf1a4ae356532b92de8378e416fd7ed48f35945d5635b"
+    },
+    "Controls.olean": {
+      "bytes": 254400,
+      "sha256": "b2fbb76b44f7eb0ad57ca724d959a62dc0ddd7594df0db0a4b26b129fe9aa0b7"
+    },
+    "ByteDiagnostic5.lean": {
+      "bytes": 8161,
+      "sha256": "5a71c58874e82df4788df8e1f9489567f70e38d14d8b6dde112dfd5f0ae16446"
+    },
+    "ByteDiagnostic5.olean": {
+      "bytes": 1995952,
+      "sha256": "b0ace1a1595a984ae81b48d9c47b38c6769136597a529efaa8d13894375dc35e"
+    }
+  },
+  "matches_author_artifact": true
+}

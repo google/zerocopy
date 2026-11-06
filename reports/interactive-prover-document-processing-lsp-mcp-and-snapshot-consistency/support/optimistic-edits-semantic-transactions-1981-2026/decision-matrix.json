@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "derived conditional design aid; not adopted Anneal policy",
+  "operations": [
+    {
+      "operation": "pure_text_transform_independent_of_semantic_query",
+      "basis": ["authoritative document identity/version", "write scope"],
+      "mismatch": ["reject", "recompute"],
+      "semantic_note": "Do not attach a proof-context claim unless the transform actually depends on such context."
+    },
+    {
+      "operation": "proof_or_source_edit_derived_from_goal_or_diagnostic",
+      "basis": ["document/source identity", "model/import/obligation context or transitive root generation", "write scope"],
+      "mismatch": ["reject", "recompute from fresh query", "explicit non-current fork"],
+      "semantic_note": "Text applicability does not establish that the proposition or model is unchanged."
+    },
+    {
+      "operation": "multi_file_semantic_refactor",
+      "basis": ["coherent project/model generation or atomically checked dependency vector", "all target authorities"],
+      "mismatch": ["reject", "recompute", "explicit non-current fork"],
+      "semantic_note": "Independent per-file checks can admit a cross-file semantic mixture."
+    },
+    {
+      "operation": "scratch_proof_exploration",
+      "basis": ["pinned immutable semantic generation", "explicit non-current label"],
+      "mismatch": ["retain as fork", "revalidate deliberately before porting"],
+      "semantic_note": "Expensive exploration may remain useful without authority over current state."
+    },
+    {
+      "operation": "verified_result_acceptance_or_publication",
+      "basis": ["current semantic generation", "exact verification-result identity", "accepted scope"],
+      "mismatch": ["reject stale result", "rerun verification on current basis"],
+      "semantic_note": "Proof success and current-generation applicability are separate checks."
+    }
+  ],
+  "rebase_rule": "A successful textual rebase may construct a new candidate but does not transfer the original observation's semantic authority. Reinterpret and verify the candidate against current semantic state before acceptance."
+}

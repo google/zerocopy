@@ -1,0 +1,47 @@
+894: def base_E_enabled := false
+895: 
+896: def regidx_bit_width := 5
+897: 
+898: def encdec_reg_backwards (arg_ : (BitVec 5)) : SailM regidx := do
+899:   let r := arg_
+900:   if (((not base_E_enabled) || ((BitVec.access r 4) == 0#1)) : Bool)
+901:   then (pure (Regidx (Sail.BitVec.extractLsb r (regidx_bit_width -i 1) 0)))
+902:   else
+903:     (do
+904:       sail_assert false "Pattern match failure at unknown location"
+905:       throw Error.Exit)
+
+5655: 
+5656: def _get_Seccfg_MLPE (v : (BitVec 64)) : (BitVec 1) :=
+5657:   (Sail.BitVec.extractLsb v 10 10)
+5658: 
+
+6063:     (pure (((hartSupports Ext_Zvfhmin) && (← (currentlyEnabled Ext_Zve32f))) || (← (currentlyEnabled
+6064:             Ext_Zvfh))))
+6065:   | .Ext_Smcntrpmf => (pure ((hartSupports Ext_Smcntrpmf) && (← (currentlyEnabled Ext_Zicntr))))
+6066:   | .Ext_Sdtrig => (pure (hartSupports Ext_Sdtrig))
+6067:   | .Ext_Zicfilp =>
+6068:     (pure ((← (currentlyEnabled Ext_Zicsr)) && ((hartSupports Ext_Zicfilp) && (← (get_xLPE
+6069:               (← readReg cur_privilege))))))
+6070:   | .Ext_Svnapot => (pure ((hartSupports Ext_Svnapot) && (← (currentlyEnabled Ext_Sv39))))
+6071:   | .Ext_Svpbmt => (pure ((hartSupports Ext_Svpbmt) && (← (currentlyEnabled Ext_Sv39))))
+6072:   | .Ext_Svrsw60t59b => (pure ((hartSupports Ext_Svrsw60t59b) && (← (currentlyEnabled Ext_Sv39))))
+
+6206: termination_by (let _ := idx
+6207: 3).toNat
+6208: def get_xLPE (p : Privilege) : SailM Bool := do
+6209:   match p with
+6210:   | .Machine => (pure (bool_bit_backwards (_get_Seccfg_MLPE (← readReg mseccfg))))
+6211:   | .Supervisor => (pure (bool_bit_backwards (_get_MEnvcfg_LPE (← readReg menvcfg))))
+6212:   | .User =>
+6213:     (do
+6214:       if ((← (currentlyEnabled Ext_S)) : Bool)
+6215:       then (pure (bool_bit_backwards (_get_SEnvcfg_LPE (← (read_senvcfg ())))))
+6216:       else (pure (bool_bit_backwards (_get_MEnvcfg_LPE (← readReg menvcfg)))))
+6217:   | .VirtualSupervisor => (pure (bool_bit_backwards (_get_HEnvcfg_LPE (← (read_henvcfg ())))))
+6218:   | .VirtualUser => (pure (bool_bit_backwards (_get_SEnvcfg_LPE (← (read_senvcfg ())))))
+6219: termination_by (let _ := p
+6220: 2).toNat
+6221: def is_hstateen_accessible (_ : Unit) : SailM Bool := do
+6222:   (pure ((← (currentlyEnabled Ext_H)) && ((← (currentlyEnabled Ext_Smstateen)) || (← (currentlyEnabled
+6223:             Ext_Ssstateen)))))

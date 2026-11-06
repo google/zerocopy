@@ -1,0 +1,43 @@
+# Stage5 host FnAbi / LLVM / object oracles
+
+*Authored by an AI agent acting on joshlf's behalf.*
+
+These are actual compile-only observations of the original `subjects.rs` and `vectors.rs`, built with the exact May1 compiler `f53b654a8882fd5fc036c4ca7a4ff41ce32497a6`, `aarch64-apple-darwin` / `apple-m1`, edition2021, opt0/opt2, panicabort, one compiler thread/codegen unit. Full argv/env/PID/status/streams and all three output hashes are retained per job. No fixture, unresolved foreign call, or SIMD value was executed. `host-summary.json` binds each source, earlier actual FnAbi packet, LLVM IR, assembly, and object. `artifact-comparison.json` records every function/range/raw byte/relocation/header. Offsets below are section-relative and half-open.
+
+## H1. Extent and byte binding
+
+All four actual compiler processes exited0 and were waited/reaped, with no resource or monitor failure. The ordinary stderr streams are empty. The vector compile-only streams contain exactly the parent-reviewed six-warning bundle SHA256 `078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8`. The observer's five-warning bundle is distinct. The first vector O0 STOP remains unchanged; there was no O0 retry. The extra unused-`simd_ffi` lint is explained by the pinned driver's post-codegen `report_unused_features`, which the observer's `after_analysis` stop skips; see `vector-warning-diagnosis.json` and retained diff.
+
+The four `__text` sections contain616/252/20/16 bytes (896 total), and154/63/5/4 instructions (226 total). The bounded reader independently extracts MachO section/symbol/relocation bytes. Every disassembler word matches its raw little-endian object word, and every emitted assembly instruction matches reader text modulo whitespace/immediate spelling; unresolved BL operands are compared through actual symbol-bound `ARM64_RELOC_BRANCH26` records. All text bytes are covered. At opt2 four ordinary definitions and the system vector share symbol addresses with their emitted aliases. There is no reassembly or verified decoder/assembler theorem. These are MH_OBJECT files, without final link/callee resolution or an executable image.
+
+The26 ordinary FnAbi queries are20 exported nongeneric definitions plus two unused generic instances and four function-pointer alias queries. All20 exported symbols occur in each ordinary object; opt2 uses16 bodies plus four aliases. Opt0 additionally emits two internal `Location` helper bodies. Query-only generic instances and type aliases need not emit code, and this observation does not claim that they did.
+
+## H2. Indirect24-byte results and hidden location
+
+`Big` has three `u64` fields, size24/alignment8. C/system/Rust FnAbi results are indirect; the corresponding IR returns `void` with a leading `ptr sret([24 x i8]) align8` and an input pointer. The actual C body at opt0 `[0x1c,0x34)` saves incoming `x8` in `x9`, reads16 bytes through `q0` from `x0` and the remaining8 from `x0+16`, and stores into that result pointer. Opt2 `[0,0x14)` stores directly through `x8`. Rust/system opt0 have equal body bytes at `[0xdc,0xf4)` and `[0x170,0x188)`; opt2 binds them as aliases to the C body. Equal machine bodies do not equate all Rust/C source contracts or FnAbi semantic attributes.
+
+The `abi_track` instance has two FnAbi arguments but fixed source count1; the `TrackFn` query has one argument. IR preserves the hidden pointer. Opt0 `[0x1e0,0x218)` moves `x1` into the local caller helper, with two exact internal BL relocations. Opt2 `[0xa8,0xb4)` reads `w8` from `x1+16`, xors it with `x0`, and returns. This directly observes the selected hidden-location use; no emitted function-pointer call/thunk or every tracked-caller context is covered.
+
+## H3. Twelve scalars and actual outgoing call
+
+The selected FnAbi/IR list all12 `u64` arguments. The object shows the placement that FnAbi alone does not enumerate. At both levels `abi_stack_driver` subtracts48 from SP, saves FP/LR at newSP+32, and sets FP=newSP+32. With entrySP=S, FP=S−16. Incoming ninth–twelfth arguments are read from S+[0,8,16,24], then written to outgoing newSP+[0,8,16,24]. `x0`–`x7` pass through unchanged. Opt0 `[0x12c,0x170)` uses individual loads/stores; opt2 `[0x78,0xa8)` uses a16-byte `q0` load/store and paired registers. The actual calls are BL words `0x94000000` at0x15c/0x94 with external PC-relative length4 branch26 relocations to `_abi_opaque_twelve`, followed by `add x0,x0,#1`, restore, and return. The IR opt2 `tail call` annotation is not an observed machine tail branch.
+
+This is an unresolved compile-only call. A future linked caller/callee must meet the exact C ABI, stack alignment/accessibility, typed argument, result, register-preservation, and memory/resource contracts. No foreign implementation, link resolution, native interoperability, or whole-program safety follows from these bytes.
+
+## H4. Variadic extras differ from an ordinary scalar call
+
+IR declares `_abi_opaque_vararg(i32, ...)` and calls it with fixed `i32 1` plus `i32 x`, `double y`, and null pointer. The alias query with extras has fixed_count1 / four FnAbi arguments; query extras are not extra fixed LLVM declaration parameters. On this Darwin target, actual `abi_vararg_driver` opt0 `[0x230,0x268)` and opt2 `[0xcc,0xfc)` place the extras at outgoingSP+0,+8,+16, materialize `w0=1`, perform a symbol-bound BL at0x254/0xe8, add1, restore, and return. The integer input is materialized with a64-bit store; only the declared32-bit value is asserted, not meaningful arbitrary upper bits or padding bytes. The floating value is stored from `d0` and the pointer from `xzr`. No varargs call executes; this target-specific observation cannot be transferred to Windows or other ABIs.
+
+## H5. Aggregate, narrow, and reference contrasts
+
+The HFA query is a consecutive four-F32 aggregate cast, represented in IR as `[4 x float]`, distinct from SIMD `<4 x i32>`. Opt0 `[0x40,0x7c)` explicitly stores/loads `s0`–`s3`; opt2 `[0x20,0x24)` reduces to `ret`. C Pair uses `[2 x i64]`, while the Rust tuple uses separate `i64,i32` parameters and `{i64,i32}` result. Pair handling does not certify deterministic padding, and no padding bytes are read natively here. Slice IR splits data/length, with actual `mov x0,x1; ret`. The unit argument/result disappears in IR (`void ()`).
+
+C/system narrow IR has `zeroext i8`, `signext i16`, `zeroext i1`; Rust leaves the first two extension attributes absent. At opt0 both bodies explicitly mask/sign-extend. At opt2 C relies on the boundary extensions (e.g. `sxtw x9,w1`), while Rust still masks to8 bits and uses `sxth`. These are valid-calling-contract observations, not permission to supply invalid or unextended native operands.
+
+FnAbi attributes are not a literal final-IR attribute list. The pinned LLVM adapter always emits alignment/extensions/InReg, but applies other regular/capture/dereferenceability attributes only when optimizing; `dereferenceable(8)` can replace explicit nonnull. Opt2 IR for `abi_shared` is `ptr noalias noundef readonly align8 captures(none) dereferenceable(8)`; `abi_unique` lacks readonly; interior `&UnsafeCell<u64>` has nonnull/alignment without noalias/dereferenceable8. The optimizer adds further body-derived properties and may strengthen captures or coalesce bodies. Shared/raw/interior identity bodies can compile to the same `ret` despite distinct contracts. No ownership, alias, initialization or Rust validity theorem is inferred from a printed attribute.
+
+## H6. Experimental vector boundary and trust
+
+C/system vector IR is direct `<4 x i32>` identity and emits `ret`; opt2 aliases system to C. This identity body alone does not discriminate the physical incoming-vector register assignment or prove an FFI interoperability contract. Rust vector IR is indirect16-byte input/result, and the actual body `[0x4,0x10)` is `ldr q0,[x0]; str q0,[x8]; ret` at both levels. The original compiler warns that C/system V4 parameter/result definitions are not FFI-safe; repr_simd/simd_ffi remains experimental. Nothing suppresses these warnings or broadens them into portable C support.
+
+The selected reader is Apple LLVM21.0.0 (`83b32f39…0773c`); actual backend code is enclosed by exact202,329,432-byte rustc driver SHA256 `dcaea7cc…969d`, with defined AArch64/X86 target symbols, pinned default source dispatch, and no command backend override. Neither symbol presence nor source inspection proves source-to-binary correspondence. Direct library dependencies are OS/shared-cache entries with no standalone hashes; OS/runtime trust remains explicit. A complete verified frontend/backend/ABI/ISA relation, all downstream callees, all configurations, and target-generic shadow-space rules remain outside these bounded observations.

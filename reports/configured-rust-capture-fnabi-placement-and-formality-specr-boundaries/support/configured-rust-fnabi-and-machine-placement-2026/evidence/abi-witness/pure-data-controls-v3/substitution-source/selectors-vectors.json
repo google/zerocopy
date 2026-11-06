@@ -1,0 +1,23 @@
+{
+  "schema": "e33-proposed-selectors-v1",
+  "selections": [
+    {
+      "path": "abi_vectors::abi_c_vector",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_vectors::abi_system_vector",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    },
+    {
+      "path": "abi_vectors::abi_rust_vector",
+      "query": "instance",
+      "type_args": [],
+      "extra_args": []
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "command": [
+    "<APRIL1_TOOLCHAIN>/bin/cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "-j1",
+    "-p",
+    "a-mir-formality",
+    "--example",
+    "owned_e07"
+  ],
+  "environment_overrides": {
+    "CARGO_HOME": "<TASK_ROOT>/cargo-home",
+    "CARGO_TARGET_DIR": "<TASK_ROOT>/target",
+    "TMPDIR": "<TASK_ROOT>/tmp",
+    "CLANG_MODULE_CACHE_PATH": "<TASK_ROOT>/clang-cache",
+    "RUSTUP_HOME": "<EXECUTION_ROOT>/toolchains/rustup",
+    "RUSTUP_TOOLCHAIN": "nightly-2026-04-01",
+    "RUSTC": "<APRIL1_TOOLCHAIN>/bin/rustc",
+    "RUSTDOC": "<APRIL1_TOOLCHAIN>/bin/rustdoc",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0"
+  },
+  "exit": 0,
+  "elapsed_ns": 70004387625,
+  "peak_target_bytes": 769675341,
+  "operational_stop": null,
+  "source_lock_sha256": "13d9b85df332458b4a5df3b0f189cef707608180087055cbf3b30477ff7b7049"
+}

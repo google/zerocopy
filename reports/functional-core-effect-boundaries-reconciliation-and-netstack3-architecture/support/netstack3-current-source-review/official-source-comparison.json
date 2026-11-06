@@ -1,0 +1,114 @@
+{
+  "repository": "fuchsia/fuchsia",
+  "observed_at": "2026-09-30",
+  "official_remote": "https://fuchsia.googlesource.com/fuchsia/",
+  "refs_at_collection": {
+    "HEAD": "f451e09f5f389476792eab843b35d08f3785a859",
+    "refs/heads/main": "f451e09f5f389476792eab843b35d08f3785a859",
+    "refs/heads/master": "f451e09f5f389476792eab843b35d08f3785a859"
+  },
+  "selected_main_commit": "955de750a2aae45faa99e02e29715b794dd3b544",
+  "old_commit": "c480400b0e6cb9a9b36384935639fb3e6566bd68",
+  "old_commit_time": "Tue Sep 29 22:56:53 2026 -0700",
+  "new_commit": "955de750a2aae45faa99e02e29715b794dd3b544",
+  "new_commit_time": "Wed Sep 30 13:15:57 2026 -0700",
+  "range_log_count": 91,
+  "range_first_commit": "955de750a2aae45faa99e02e29715b794dd3b544",
+  "range_last_commit": "6984760d563834aced9bf234c627f80a74ca7bc9",
+  "range_last_parent": "c480400b0e6cb9a9b36384935639fb3e6566bd68",
+  "netstack_tree_snapshots": [
+    {
+      "path": "src/connectivity/network/netstack3",
+      "old_id": "226dfa85fb3f0abf60502abb67251aa33a570059",
+      "new_id": "345cb5dfa3f0454cbad71df63928795074b2b2a0"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core",
+      "old_id": "4607ecef9d52e8f346b92f0a0117144105aac428",
+      "new_id": "7363733ac9ed34d5d92f15a971cdc92d47421564"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/filter",
+      "old_id": "7d21669859ec50cddcd65b16953bc2b680e0fc6f",
+      "new_id": "189ecf495f37a79ac86b0f8e01201e552bf8c8cc"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/filter/src",
+      "old_id": "ae463ac24cc702ef19896e54d1d942d9452f67d9",
+      "new_id": "fbfaef184d4e19f2cc68a29eeca85ed9730580e8"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/ip",
+      "old_id": "dbc5b37eeddb100824b7aedaf062e4a38d81a3c1",
+      "new_id": "bfd13ef6a084f5059c1bcbff12c666d77c11a414"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/ip/src",
+      "old_id": "aaf760fe18932d0dbf2fddc36c6054e4c9735450",
+      "new_id": "c84ab68543a0fe7e5fec12b3cd73655e085d4440"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/ip/src/base",
+      "old_id": "2c2d607aca27eb97e5517e90ab54591b0d6784a3",
+      "new_id": "b82d003ef86934f425e0d31e9681375f140c8962"
+    }
+  ],
+  "netstack_changed_paths": [
+    {
+      "path": "src/connectivity/network/netstack3/core/filter/src/logic.rs",
+      "old_id": "9424d1c255a43ffd80fffc8ff9f1bdb95efb447a",
+      "new_id": "97ccaae10c4c6daf1076ccf96f9fa5eb6fcdd995",
+      "old_type": "blob",
+      "new_type": "blob"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/ip/src/base/tests.rs",
+      "old_id": "6ab184de0ae48aca0600890a0d1d488e548b9631",
+      "new_id": "bc213737eb092e2a730fbf1c528131630a3ba60e",
+      "old_type": "blob",
+      "new_type": "blob"
+    },
+    {
+      "path": "src/connectivity/network/netstack3/core/ip/src/base.rs",
+      "old_id": "83622aa653caec80c4cf23cedc53f49aed406894",
+      "new_id": "d485be4e0bc166de5b31145d620a49f284cb3524",
+      "old_type": "blob",
+      "new_type": "blob"
+    }
+  ],
+  "notable_commit": {
+    "commit": "76ab45a89c9f0ccc6e0bef3867a9ffcc775f8e10",
+    "message": "[netstack3] Add method for splitting device-layer IP metadata",
+    "tree_diff": [
+      {
+        "old_path": "src/connectivity/network/netstack3/core/filter/src/logic.rs",
+        "new_path": "src/connectivity/network/netstack3/core/filter/src/logic.rs",
+        "old_id": "9424d1c255a43ffd80fffc8ff9f1bdb95efb447a",
+        "new_id": "97ccaae10c4c6daf1076ccf96f9fa5eb6fcdd995"
+      },
+      {
+        "old_path": "src/connectivity/network/netstack3/core/ip/src/base.rs",
+        "new_path": "src/connectivity/network/netstack3/core/ip/src/base.rs",
+        "old_id": "83622aa653caec80c4cf23cedc53f49aed406894",
+        "new_id": "d485be4e0bc166de5b31145d620a49f284cb3524"
+      },
+      {
+        "old_path": "src/connectivity/network/netstack3/core/ip/src/base/tests.rs",
+        "new_path": "src/connectivity/network/netstack3/core/ip/src/base/tests.rs",
+        "old_id": "6ab184de0ae48aca0600890a0d1d488e548b9631",
+        "new_id": "bc213737eb092e2a730fbf1c528131630a3ba60e"
+      }
+    ]
+  },
+  "selected_main_ref_observation": "955de750a2aae45faa99e02e29715b794dd3b544",
+  "selection_note": "Official main HEAD observation was 955de750; refs_at_collection moved afterward, so this is a fixed observed source snapshot.",
+  "unchanged_tree_ids": {
+    "src/connectivity/network/netstack3/docs": "03551d41d5da4b004820fa8bc3c48fab09b6551b",
+    "src/connectivity/network/netstack3/src": "32a2eb980ce0d1924231193fe5e1924ed8e89dce",
+    "src/connectivity/network/netstack3/core/tcp": "0fb652b1d7c74daba82e5598e18850c54b23d627",
+    "src/connectivity/network/netstack3/core/udp": "e5f524fccb2c9260d6e22887fc54d0662851e479",
+    "src/connectivity/network/netstack3/core/device": "30e1f3b701609b4d6984e83095a91c598e1d7996",
+    "src/connectivity/network/netstack3/core/lock-order": "b8f2a3d3455a6dd879c9489c468f7539f5b7fe6a",
+    "src/connectivity/network/netstack3/core/sync": "ad9b3e049cadfa21177d96d4558e68dc0a31e3c7"
+  }
+}

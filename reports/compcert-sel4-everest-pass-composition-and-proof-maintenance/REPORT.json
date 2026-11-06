@@ -1,0 +1,165 @@
+{
+  "topics": [
+    "verification",
+    "verification/compcert",
+    "verification/refinement",
+    "aeneas/translation",
+    "aeneas/loops-termination"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 verified compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008"
+      }
+    },
+    {
+      "name": "seL4 L4.verified proof corpus",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+      }
+    },
+    {
+      "name": "seL4 verification manifest",
+      "identity": {
+        "repository": "seL4/verification-manifest",
+        "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"
+      }
+    },
+    {
+      "name": "HACL* verified cryptographic library",
+      "identity": {
+        "repository": "hacl-star/hacl-star",
+        "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+      }
+    },
+    {
+      "name": "KaRaMeL extraction compiler",
+      "identity": {
+        "repository": "FStarLang/karamel",
+        "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+      }
+    },
+    {
+      "name": "Project Everest integration repository",
+      "identity": {
+        "repository": "project-everest/everest",
+        "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+      }
+    },
+    {
+      "name": "Modularity, Code Specialization, and Zero-Cost Abstractions for Program Verification",
+      "identity": {
+        "doi": "10.1145/3607844",
+        "publication": "PACMPL 7 (ICFP 2023)"
+      }
+    },
+    {
+      "name": "seL4 L4.verified pinned and observed master",
+      "identity": {
+        "repository": "seL4/l4v",
+        "branch": "master",
+        "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+      }
+    },
+    {
+      "name": "seL4 verification manifest pinned and observed master",
+      "identity": {
+        "repository": "seL4/verification-manifest",
+        "branch": "master",
+        "revision": "f1f7a4289585e9610733ea041c1849e46af9701b"
+      }
+    },
+    {
+      "name": "CompCert selected master source",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "branch": "master",
+        "revision": "66a9fd06ef88619cc94765ca995a1018f7259b5c"
+      }
+    },
+    {
+      "name": "HACL* pinned and observed main",
+      "identity": {
+        "repository": "hacl-star/hacl-star",
+        "branch": "main",
+        "revision": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+      }
+    },
+    {
+      "name": "KaRaMeL pinned and observed master",
+      "identity": {
+        "repository": "FStarLang/karamel",
+        "branch": "master",
+        "revision": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+      }
+    },
+    {
+      "name": "Project Everest pinned and observed master",
+      "identity": {
+        "repository": "project-everest/everest",
+        "branch": "master",
+        "revision": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+      }
+    },
+    {
+      "name": "Aeneas divergence and partial-function model selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Rust termination terminology at the Anneal Rust pin",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "publication": "PACMPL 6 (ICFP 2022), Article 116",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "publication": "PACMPL 8 (ICFP 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq",
+      "identity": {
+        "doi": "10.1145/3371119",
+        "publication": "Proc. ACM Program. Lang. 4 (POPL), Article 51",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq",
+      "identity": {
+        "doi": "10.1145/3571254",
+        "publication": "Proc. ACM Program. Lang. 7 (POPL), 1770-1800",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

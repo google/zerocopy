@@ -1,0 +1,401 @@
+    { OpExt.Imm ($1,$4) }
+
+%inline op_ext_reg_w:
+| wreg op_ext_shift0
+    { OpExt.Reg ($1,$2) }
+
+%inline op_ext_w:
+| op_ext_imm { $1 }
+| op_ext_reg_w { $1 }
+
+%inline op_ext_reg_x:
+| xreg op_ext_shift0
+    { OpExt.Reg ($1,$2) }
+
+%inline op_ext_x:
+| op_ext_imm { $1 }
+| op_ext_reg_x { $1 }
+
+op_ext_c:
+| op_ext_imm { $1 }
+| creg op_ext_shift0
+    { OpExt.Reg ($1,$2) }
+
+%inline add_sub_sext:
+| TOK_SXTB { Ext.SXTB }
+| TOK_SXTH { Ext.SXTH }
+| TOK_SXTW { Ext.SXTW }
+| TOK_SXTX { Ext.SXTX }
+| TOK_UXTB { Ext.UXTB }
+| TOK_UXTH { Ext.UXTH }
+| TOK_UXTW { Ext.UXTW }
+| TOK_UXTX { Ext.UXTX }
+
+
+%inline add_sub_ext:
+| add_sub_sext { $1,None }
+| add_sub_sext k { $1,Some $2 }
+/*
+kr0_no_shift_opt:
+| { None }
+| COMMA k { Some (K $2) }
+| COMMA xreg { Some (RV (V64,$2)) }
+| COMMA wreg { Some (RV (V32,$2)) }
+| COMMA wreg COMMA TOK_SXTW { Some (RV (V32,$2)) }
+*/
+
+/* Beware: for w-indexed accesses SXTW is considered always present.
+   Far from ideal, one simple to get correct assembly output for
+   the litmus tool. */
+kwr:
+| k { K $1 }
+| wreg { RV (V32,$1) }
+
+mem_sext:
+| TOK_UXTW { MemExt.UXTW }
+| TOK_LSL { MemExt.LSL }
+| TOK_SXTW { MemExt.SXTW }
+| TOK_SXTX { MemExt.SXTX }
+
+mem_idx:
+| LBRK cxreg RBRK
+    { $2,(MetaConst.zero,Idx)  }
+| LBRK cxreg COMMA k RBRK
+    { $2,($4,Idx) }
+| LBRK cxreg COMMA k COMMA TOK_MUL TOK_VL RBRK
+    { $2,($4,Idx) }
+| LBRK cxreg RBRK COMMA k
+    { $2,($5,PostIdx) }
+| LBRK cxreg COMMA k RBRK BANG
+    { $2,($4,PreIdx) }
+
+mreg:
+| xreg { V64,$1 }
+| wreg { V32,$1 }
+(* (ab)use V128 to indicate Z regester *)
+| zreg { V128,$1 }
+
+mem_ea:
+| mem_idx
+    {
+      let r,idx = $1 in
+      r,MemExt.Imm idx
+    }
+| LBRK cxreg COMMA mreg RBRK
+    {
+      let open MemExt in
+      let v,r = $4 in
+      match v with
+      | V32|V64 -> $2,Reg (v,r,LSL,MetaConst.zero)
+      | V128 -> $2,ZReg (r,LSL,MetaConst.zero)
+    }
+| LBRK cxreg COMMA mreg COMMA mem_sext RBRK
+    {
+      let open MemExt in
+      let v,r = $4 in
+      match v with
+      | V32|V64 -> $2,Reg (v,r,$6,MetaConst.zero)
+      | V128 -> $2,ZReg (r,$6,MetaConst.zero)
+    }
+| LBRK cxreg COMMA mreg COMMA mem_sext k RBRK
+    {
+      let open MemExt in
+      let v,r = $4 in
+      match v with
+      | V32|V64 -> $2,Reg (v,r,$6,$7)
+      | V128 -> $2,ZReg (r,$6,$7)
+    }
+
+shift:
+| TOK_LSL NUM  { S_LSL(MetaConst.Int $2)  }
+| TOK_LSR NUM  { S_LSR(MetaConst.Int $2)  }
+| TOK_ASR NUM  { S_ASR(MetaConst.Int $2)  }
+| TOK_MSL NUM  { S_MSL(MetaConst.Int $2)  }
+
+zeroopt:
+| { () }
+| COMMA NUM { if $2 <> 0 then raise Parsing.Parse_error }
+
+ldp_instr:
+| LDP
+  { (fun v r1 r2 (r3,idx) -> I_LDP ((`Pa),v,r1,r2,r3,idx)) }
+| LDNP
+  { (fun v r1 r2 (r3,idx) -> I_LDP ((`PaN),v,r1,r2,r3,idx)) }
+| LDAP
+  { (fun v r1 r2 (r3,idx) -> I_LDP ((`PaA),v,r1,r2,r3,idx)) }
+| LDIAPP
+  {
+   (fun v r1 r2 (r3,idx) ->
+     match v,idx with
+     | (_,(MetaConst.Int 0,Idx))
+     | (V32,(MetaConst.Int 8,PostIdx))
+     | (V64,(MetaConst.Int 16,PostIdx))
+          ->
+            I_LDP ((`PaIQ),v,r1,r2,r3,idx)
+      | _,_ -> raise Parsing.Parse_error)
+  }
+
+ldp_simd_instr:
+| LDP
+  { ( fun v r1 r2 (r3,idx) -> I_LDP_SIMD (TT,v,r1,r2,r3,idx)) }
+| LDNP
+  { ( fun v r1 r2 (r3,idx) -> I_LDP_SIMD (NT,v,r1,r2,r3,idx)) }
+
+stp_instr:
+| STP
+  { (fun v r1 r2 (r3,idx) -> I_STP ((`Pa),v,r1,r2,r3,idx)) }
+| STNP
+  { (fun v r1 r2 (r3,idx) -> I_STP ((`PaN),v,r1,r2,r3,idx)) }
+| STLP
+  { (fun v r1 r2 (r3,idx) -> I_STP ((`PaL),v,r1,r2,r3,idx)) }
+| STILP
+    {
+     (fun v r1 r2 (r3,idx) ->
+      match v,idx with
+      | (_,(MetaConst.Int 0,Idx))
+      | (V32,(MetaConst.Int (-8),PreIdx))
+      | (V64,(MetaConst.Int (-16),PreIdx))
+          ->
+            I_STP ((`PaIL),v,r1,r2,r3,idx)
+      | _, _ -> raise Parsing.Parse_error)
+    }
+
+stp_simd_instr:
+| STP
+  { ( fun v r1 r2 (r3,idx) -> I_STP_SIMD (TT,v,r1,r2,r3,idx)) }
+| STNP
+  { ( fun v r1 r2 (r3,idx) -> I_STP_SIMD (NT,v,r1,r2,r3,idx)) }
+
+cond:
+| TOK_EQ { EQ }
+| TOK_NE { NE }
+| TOK_GE { GE }
+| TOK_GT { GT }
+| TOK_LE { LE }
+| TOK_LT { LT }
+| TOK_CS { CS }
+| TOK_CC { CC }
+| TOK_MI { MI }
+| TOK_PL { PL }
+| TOK_VS { VS }
+| TOK_VC { VC }
+| TOK_HI { HI }
+| TOK_LS { LS }
+| TOK_AL { AL }
+
+%inline tok_instr_shift:
+| TOK_ASR { ASR }
+| TOK_LSL { LSL }
+| TOK_LSR { LSR}
+| TOK_ROR { ROR }
+
+%inline tok_instr_shiftv:
+| TOK_ASRV { ASR }
+| TOK_LSLV { LSL }
+| TOK_LSRV { LSR }
+| TOK_RORV { ROR }
+
+%inline tok_add_sub:
+| TOK_ADD  { ADD }
+| TOK_ADDS { ADDS }
+| TOK_SUB  { SUB }
+| TOK_SUBS { SUBS }
+
+%inline tok_add_sub_ext:
+| TOK_ADD  { Ext.ADD }
+| TOK_ADDS { Ext.ADDS }
+| TOK_SUB  { Ext.SUB }
+| TOK_SUBS { Ext.SUBS }
+
+label_addr:
+| NAME      { BranchTarget.Lbl $1 }
+| DOT NUM   { BranchTarget.Offset $2 }
+
+one_instr:
+| i=instr EOF { i }
+
+instr:
+| NOP { I_NOP }
+| HINT NUM { I_NOP }
+| HLT NUM { I_NOP }
+/* Branch */
+| TOK_B label_addr { I_B $2 }
+| BR xreg { I_BR $2 }
+| BL label_addr { I_BL $2 }
+| BLR xreg { I_BLR $2 }
+| RET  { I_RET None }
+| RET xreg { I_RET (Some $2) }
+| ERET { I_ERET }
+| BEQ label_addr { I_BC (EQ, $2) }
+| BNE label_addr { I_BC (NE, $2) }
+| BLE label_addr { I_BC (LE, $2) }
+| BLT label_addr { I_BC (LT, $2) }
+| BGE label_addr { I_BC (GE, $2) }
+| BGT label_addr { I_BC (GT, $2) }
+| BCS label_addr { I_BC (CS, $2) }
+| BCC label_addr { I_BC (CC, $2) }
+| BMI label_addr { I_BC (MI, $2) }
+| BPL label_addr { I_BC (PL, $2) }
+| BVS label_addr { I_BC (VS, $2) }
+| BVC label_addr { I_BC (VC, $2) }
+| BHI label_addr { I_BC (HI, $2) }
+| BLS label_addr { I_BC (LS, $2) }
+| BAL label_addr { I_BC (AL, $2) }
+| CBZ reg COMMA label_addr { let v,r = $2 in I_CBZ (v,r,$4) }
+| CBNZ reg COMMA label_addr { let v,r = $2 in I_CBNZ (v,r,$4) }
+| TBNZ reg COMMA NUM COMMA label_addr
+  { let v,r = $2 in I_TBNZ (v,r,MetaConst.Int $4,$6) }
+| TBZ reg COMMA NUM COMMA label_addr
+  { let v,r = $2 in I_TBZ (v,r,MetaConst.Int $4,$6) }
+/* Memory */
+| LDR wxreg COMMA mem_ea
+  { let (v,r)   = $2 and (ra,ext) = $4 in I_LDR (v,r,ra,ext) }
+| LDR creg COMMA mem_ea
+  { let (ra,ext) = $4 in I_LDR (V128,$2,ra,ext) }
+| LDRSW xreg COMMA mem_ea
+  { let r = $2 and (ra,ext) = $4 in I_LDRSW (r,ra,ext) }
+| LDRSB reg COMMA mem_ea
+  { let (v, s) = $2 and (ra,ext) = $4 in I_LDRS ((v,B),s,ra,ext) }
+| LDRSH reg COMMA mem_ea
+  { let (v, s) = $2 and (ra,ext) = $4 in I_LDRS ((v,H),s,ra,ext) }
+| LDUR reg COMMA LBRK cxreg k0 RBRK
+  { let v,r = $2 in I_LDUR (v,r,$5,$6)}
+
+| instr=ldp_instr r1=wreg COMMA r2=wreg COMMA ea=mem_idx
+  { instr V32 r1 r2 ea }
+| instr=ldp_instr r1=xreg COMMA r2=xreg COMMA ea=mem_idx
+  { instr V64 r1 r2 ea }
+| instr=stp_instr r1=wreg COMMA r2=wreg COMMA ea=mem_idx
+  { instr V32 r1 r2 ea }
+| instr=stp_instr r1=xreg COMMA r2=xreg COMMA ea=mem_idx
+  { instr V64 r1 r2 ea }
+| LDPSW  r1=xreg COMMA r2=xreg COMMA  ea=mem_idx
+    {
+      let ra,idx = ea in
+      I_LDPSW (r1,r2,ra,idx)
+    }
+| LDXP wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_LDXP (V32,XP,$2,$4,$7) }
+| LDXP xreg COMMA xreg COMMA LBRK cxreg RBRK
+  { I_LDXP (V64,XP,$2,$4,$7) }
+| LDAXP wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_LDXP (V32,AXP,$2,$4,$7) }
+| LDAXP xreg COMMA xreg COMMA LBRK cxreg RBRK
+  { I_LDXP (V64,AXP,$2,$4,$7) }
+| STXP wreg COMMA wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_STXP (V32,YY,$2,$4,$6,$9) }
+| STXP wreg COMMA xreg COMMA xreg COMMA LBRK cxreg RBRK
+  { I_STXP (V64,YY,$2,$4,$6,$9) }
+| STLXP wreg COMMA wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_STXP (V32,LY,$2,$4,$6,$9) }
+| STLXP wreg COMMA xreg COMMA xreg COMMA LBRK cxreg RBRK
+  { I_STXP (V64,LY,$2,$4,$6,$9) }
+| LDRB wreg COMMA mem_ea
+  { let (ra,idx) = $4 in I_LDRBH (B,$2,ra,idx) }
+| LDRH wreg COMMA mem_ea
+  { let ra,idx = $4 in I_LDRBH (H,$2,ra,idx) }
+| LDAR reg COMMA LBRK cxreg RBRK
+  { let v,r = $2 in I_LDAR (v,AA,r,$5) }
+| LDARB wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (B,AA,$2,$5) }
+| LDARH wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (H,AA,$2,$5) }
+| LDXR reg COMMA LBRK cxreg RBRK
+    { let v,r = $2 in I_LDAR (v,XX,r,$5) }
+| LDXRB wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (B,XX,$2,$5) }
+| LDXRH wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (H,XX,$2,$5) }
+| LDAXR reg COMMA LBRK cxreg RBRK
+  { let v,r = $2 in I_LDAR (v,AX,r,$5) }
+| LDAXRB wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (B,AX,$2,$5) }
+| LDAXRH wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (H,AX,$2,$5) }
+| LDAPR reg COMMA LBRK cxreg RBRK
+  { let v,r = $2 in I_LDAR (v,AQ,r,$5) }
+| LDAPRB wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (B,AQ,$2,$5) }
+| LDAPRH wreg COMMA LBRK cxreg RBRK
+  { I_LDARBH (H,AQ,$2,$5) }
+| STR wxreg COMMA mem_ea
+  { let (v,r)   = $2 and (ra,ext) = $4 in I_STR (v,r,ra,ext) }
+| STR creg COMMA mem_ea
+  { let (ra,ext) = $4 in I_STR (V128,$2,ra,ext) }
+| STRB wreg COMMA mem_ea
+  { let (ra,idx) = $4 in I_STRBH (B,$2,ra,idx) }
+| STRH wreg COMMA mem_ea
+  { let (ra,idx) = $4 in I_STRBH (H,$2,ra,idx) }
+| STLR reg COMMA LBRK cxreg RBRK
+  { let v,r = $2 in I_STLR (v,r,$5) }
+| STLRB wreg COMMA LBRK cxreg RBRK
+  { I_STLRBH (B,$2,$5) }
+| STLRH wreg COMMA LBRK cxreg RBRK
+  { I_STLRBH (H,$2,$5) }
+| STXR wreg COMMA reg COMMA LBRK cxreg RBRK
+  { let v,r = $4 in I_STXR (v,YY,$2,r,$7) }
+| STXRB wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_STXRBH (B,YY,$2,$4,$7) }
+| STXRH wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_STXRBH (H,YY,$2,$4,$7) }
+| STLXR wreg COMMA reg COMMA LBRK cxreg RBRK
+  { let v,r = $4 in I_STXR (v,LY,$2,r,$7) }
+| STLXRB wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_STXRBH (B,LY,$2,$4,$7) }
+| STLXRH wreg COMMA wreg COMMA LBRK cxreg RBRK
+  { I_STXRBH (H,LY,$2,$4,$7) }
+   /* Neon extension Memory */
+| LD1 vregs1 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+  { I_LD1 ($2, $3, $6, $8) }
+| LDAP1 vregs1 INDEX COMMA LBRK xreg RBRK
+  { I_LDAP1 ($2, $3, $6, K (MetaConst.zero)) }
+| LD1 vregs COMMA LBRK xreg RBRK kx0_no_shift
+  { I_LD1M ($2, $5, $7) }
+| LD1R vregs1 COMMA LBRK xreg RBRK kx0_no_shift
+  { I_LD1R ($2, $5, $7) }
+| LD2 vregs2 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+  { I_LD2 ($2, $3, $6, $8) }
+| LD2 vregs2 COMMA LBRK xreg RBRK kx0_no_shift
+  { I_LD2M ($2, $5, $7) }
+| LD2R vregs2 COMMA LBRK xreg RBRK kx0_no_shift
+  { I_LD2R ($2, $5, $7) }
+| LD3 vregs3 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+   { I_LD3 ($2, $3, $6, $8) }
+| LD3 vregs3 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_LD3M ($2, $5, $7)}
+| LD3R vregs3 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_LD3R ($2, $5, $7) }
+| LD4 vregs4 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+   { I_LD4 ($2, $3, $6, $8) }
+| LD4 vregs4 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_LD4M ($2, $5, $7) }
+| LD4R vregs4 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_LD4R ($2, $5, $7) }
+| ST1 vregs1 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST1 ($2, $3, $6, $8) }
+| STL1 vregs1 INDEX COMMA LBRK xreg RBRK
+  { I_STL1 ($2, $3, $6,  K (MetaConst.zero)) }
+| ST1 vregs COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST1M ($2, $5, $7) }
+| ST2 vregs2 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST2 ($2, $3, $6, $8) }
+| ST2 vregs2 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST2M ($2, $5, $7) }
+| ST3 vregs3 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST3 ($2, $3, $6, $8) }
+| ST3 vregs3 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST3M ($2, $5, $7) }
+| ST4 vregs4 INDEX COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST4 ($2, $3, $6, $8) }
+| ST4 vregs4 COMMA LBRK xreg RBRK kx0_no_shift
+   { I_ST4M ($2, $5, $7) }
+| ldp_simd_instr sreg COMMA sreg COMMA mem_idx
+  { $1 VSIMD32 $2 $4 $6 }
+| ldp_simd_instr dreg COMMA dreg COMMA mem_idx
+  { $1 VSIMD64 $2 $4 $6 }
+| ldp_simd_instr qreg COMMA qreg COMMA mem_idx
+  { $1 VSIMD128 $2 $4 $6 }
+| stp_simd_instr sreg COMMA sreg COMMA mem_idx
+  { $1 VSIMD32 $2 $4 $6 }
+| stp_simd_instr dreg COMMA dreg COMMA mem_idx
+  { $1 VSIMD64 $2 $4 $6 }

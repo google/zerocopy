@@ -1,0 +1,11 @@
+{
+  "status": "PASS all45 actual installed files rehashed; no compiler/target query",
+  "parent_receipt_sha256": "7fa5209409ec071efd04e77529a27216d4764f486bc0af4016505356acb06b46",
+  "owned_exact_receipt_copy_sha256": "7fa5209409ec071efd04e77529a27216d4764f486bc0af4016505356acb06b46",
+  "parent_install_result_sha256": "07698fadc0b70bf2736d273267f0ff5abac4050681d378913d9d3f44b7ddbfe5",
+  "files": 45,
+  "total_bytes": 116133518,
+  "archive_sha256": "0e217c42f8f89e98b255461f96d75b6aef812a9d192d9eb1826a4ff336e050e2",
+  "target": "x86_64-pc-windows-msvc",
+  "compiler_or_observer_invocations": 0
+}

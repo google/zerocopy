@@ -1,0 +1,147 @@
+
+${WORKSPACE}/work/execution/abi-witness/stage5/codegen/host-subjects-opt2/abi_subjects.o:	file format mach-o arm64
+
+Sections:
+Idx Name          Size     VMA              Type
+  0 __text        000000fc 0000000000000000 TEXT
+
+SYMBOL TABLE:
+0000000000000000 l     F __TEXT,__text ltmp0
+0000000000000000 g     F __TEXT,__text _abi_c_big
+0000000000000014 g     F __TEXT,__text _abi_c_fp
+0000000000000020 g     F __TEXT,__text _abi_c_hfa
+0000000000000024 g     F __TEXT,__text _abi_c_narrow
+000000000000003c g     F __TEXT,__text _abi_c_pair
+0000000000000044 g     F __TEXT,__text _abi_c_raw
+0000000000000048 g     F __TEXT,__text _abi_interior
+0000000000000000 g     F __TEXT,__text _abi_rust_big
+000000000000004c g     F __TEXT,__text _abi_rust_narrow
+0000000000000064 g     F __TEXT,__text _abi_rust_tuple
+0000000000000068 g     F __TEXT,__text _abi_shared
+0000000000000070 g     F __TEXT,__text _abi_slice
+0000000000000078 g     F __TEXT,__text _abi_stack_driver
+0000000000000000 g     F __TEXT,__text _abi_system_big
+0000000000000024 g     F __TEXT,__text _abi_system_narrow
+000000000000003c g     F __TEXT,__text _abi_system_pair
+00000000000000a8 g     F __TEXT,__text _abi_track
+00000000000000b4 g     F __TEXT,__text _abi_unique
+00000000000000c8 g     F __TEXT,__text _abi_unit
+00000000000000cc g     F __TEXT,__text _abi_vararg_driver
+0000000000000000         *UND* _abi_opaque_twelve
+0000000000000000         *UND* _abi_opaque_vararg
+Contents of section __TEXT,__text:
+ 0000 0000c03d 0001803d 090840f9 090900f9  ...=...=..@.....
+ 0010 c0035fd6 00c0221e 2028601e c0035fd6  .._...". (`..._.
+ 0020 c0035fd6 e803002a 297c4093 280108ca  .._....*)|@.(...
+ 0030 e903022a 000109ca c0035fd6 e103012a  ...*......_....*
+ 0040 c0035fd6 c0035fd6 c0035fd6 081c4092  .._..._..._...@.
+ 0050 293c4093 280108ca e903022a 000109ca  )<@.(......*....
+ 0060 c0035fd6 c0035fd6 000040f9 c0035fd6  .._..._...@..._.
+ 0070 e00301aa c0035fd6 ffc300d1 fd7b02a9  ......_......{..
+ 0080 fd830091 a007c03d a82742a9 e82701a9  .......=.'B..'..
+ 0090 e003803d 00000094 00040091 fd7b42a9  ...=.........{B.
+ 00a0 ffc30091 c0035fd6 281040b9 000008ca  ......_.(.@.....
+ 00b0 c0035fd6 080040f9 08050091 080000f9  .._...@.........
+ 00c0 e00308aa c0035fd6 c0035fd6 ffc300d1  ......_..._.....
+ 00d0 fd7b02a9 fd830091 ff0b00f9 e00700fd  .{..............
+ 00e0 e00300f9 20008052 00000094 00040091  .... ..R........
+ 00f0 fd7b42a9 ffc30091 c0035fd6           .{B......._.
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 <ltmp0>:
+       0: 3dc00000     	ldr	q0, [x0]
+       4: 3d800100     	str	q0, [x8]
+       8: f9400809     	ldr	x9, [x0, #0x10]
+       c: f9000909     	str	x9, [x8, #0x10]
+      10: d65f03c0     	ret
+
+0000000000000014 <_abi_c_fp>:
+      14: 1e22c000     	fcvt	d0, s0
+      18: 1e602820     	fadd	d0, d1, d0
+      1c: d65f03c0     	ret
+
+0000000000000020 <_abi_c_hfa>:
+      20: d65f03c0     	ret
+
+0000000000000024 <_abi_system_narrow>:
+      24: 2a0003e8     	mov	w8, w0
+      28: 93407c29     	sxtw	x9, w1
+      2c: ca080128     	eor	x8, x9, x8
+      30: 2a0203e9     	mov	w9, w2
+      34: ca090100     	eor	x0, x8, x9
+      38: d65f03c0     	ret
+
+000000000000003c <_abi_system_pair>:
+      3c: 2a0103e1     	mov	w1, w1
+      40: d65f03c0     	ret
+
+0000000000000044 <_abi_c_raw>:
+      44: d65f03c0     	ret
+
+0000000000000048 <_abi_interior>:
+      48: d65f03c0     	ret
+
+000000000000004c <_abi_rust_narrow>:
+      4c: 92401c08     	and	x8, x0, #0xff
+      50: 93403c29     	sxth	x9, w1
+      54: ca080128     	eor	x8, x9, x8
+      58: 2a0203e9     	mov	w9, w2
+      5c: ca090100     	eor	x0, x8, x9
+      60: d65f03c0     	ret
+
+0000000000000064 <_abi_rust_tuple>:
+      64: d65f03c0     	ret
+
+0000000000000068 <_abi_shared>:
+      68: f9400000     	ldr	x0, [x0]
+      6c: d65f03c0     	ret
+
+0000000000000070 <_abi_slice>:
+      70: aa0103e0     	mov	x0, x1
+      74: d65f03c0     	ret
+
+0000000000000078 <_abi_stack_driver>:
+      78: d100c3ff     	sub	sp, sp, #0x30
+      7c: a9027bfd     	stp	x29, x30, [sp, #0x20]
+      80: 910083fd     	add	x29, sp, #0x20
+      84: 3dc007a0     	ldr	q0, [x29, #0x10]
+      88: a94227a8     	ldp	x8, x9, [x29, #0x20]
+      8c: a90127e8     	stp	x8, x9, [sp, #0x10]
+      90: 3d8003e0     	str	q0, [sp]
+      94: 94000000     	bl	0x94 <_abi_stack_driver+0x1c>
+		0000000000000094:  ARM64_RELOC_BRANCH26	_abi_opaque_twelve
+      98: 91000400     	add	x0, x0, #0x1
+      9c: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+      a0: 9100c3ff     	add	sp, sp, #0x30
+      a4: d65f03c0     	ret
+
+00000000000000a8 <_abi_track>:
+      a8: b9401028     	ldr	w8, [x1, #0x10]
+      ac: ca080000     	eor	x0, x0, x8
+      b0: d65f03c0     	ret
+
+00000000000000b4 <_abi_unique>:
+      b4: f9400008     	ldr	x8, [x0]
+      b8: 91000508     	add	x8, x8, #0x1
+      bc: f9000008     	str	x8, [x0]
+      c0: aa0803e0     	mov	x0, x8
+      c4: d65f03c0     	ret
+
+00000000000000c8 <_abi_unit>:
+      c8: d65f03c0     	ret
+
+00000000000000cc <_abi_vararg_driver>:
+      cc: d100c3ff     	sub	sp, sp, #0x30
+      d0: a9027bfd     	stp	x29, x30, [sp, #0x20]
+      d4: 910083fd     	add	x29, sp, #0x20
+      d8: f9000bff     	str	xzr, [sp, #0x10]
+      dc: fd0007e0     	str	d0, [sp, #0x8]
+      e0: f90003e0     	str	x0, [sp]
+      e4: 52800020     	mov	w0, #0x1                ; =1
+      e8: 94000000     	bl	0xe8 <_abi_vararg_driver+0x1c>
+		00000000000000e8:  ARM64_RELOC_BRANCH26	_abi_opaque_vararg
+      ec: 91000400     	add	x0, x0, #0x1
+      f0: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+      f4: 9100c3ff     	add	sp, sp, #0x30
+      f8: d65f03c0     	ret

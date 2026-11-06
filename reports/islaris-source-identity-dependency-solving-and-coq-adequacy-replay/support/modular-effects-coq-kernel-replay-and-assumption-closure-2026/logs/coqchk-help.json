@@ -1,0 +1,27 @@
+{
+  "label": "coqchk-help",
+  "argv": [
+    "docker",
+    "exec",
+    "--user",
+    "opam",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "coqchk",
+    "--help"
+  ],
+  "status": "finished",
+  "exit_code": 1,
+  "elapsed_seconds": 0.041,
+  "stdout_bytes": 0,
+  "stderr_bytes": 1203,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "4a85489dc8fb18ade1bf9cce7e4af452d84117ab79f298f2d0a6b9abba4583de"
+}

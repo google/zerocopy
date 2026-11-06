@@ -1,0 +1,36 @@
+{
+  "tag_observation": "v2.39.5 resolved through official git/git commits API",
+  "revision": "cc7d11c16782041a6bb73e2fb56417b7d4c6d186",
+  "entries": [
+    {
+      "repository": "git/git",
+      "revision": "cc7d11c16782041a6bb73e2fb56417b7d4c6d186",
+      "path": "Documentation/config/url.txt",
+      "git_blob": "e5566c371d1691e48ebff5f8ef4ffe3389370998",
+      "local_path": "primary/git--Documentation--config--url.txt",
+      "display_url": "https://github.com/git/git/blob/cc7d11c16782041a6bb73e2fb56417b7d4c6d186/Documentation/config/url.txt",
+      "bytes": 1638,
+      "sha256": "81d930103f13438235ec02b77cb568bb0b4f604297f7a88509bbb16b07391759"
+    },
+    {
+      "repository": "git/git",
+      "revision": "cc7d11c16782041a6bb73e2fb56417b7d4c6d186",
+      "path": "Documentation/config/protocol.txt",
+      "git_blob": "a9bf187a933a243a6a0b8b0e38f730f8f50bed2d",
+      "local_path": "primary/git--Documentation--config--protocol.txt",
+      "display_url": "https://github.com/git/git/blob/cc7d11c16782041a6bb73e2fb56417b7d4c6d186/Documentation/config/protocol.txt",
+      "bytes": 2098,
+      "sha256": "b4001aa0e3692094503602a1507b9d9aaec906f429b51789faf293cbe83c7ff6"
+    },
+    {
+      "repository": "git/git",
+      "revision": "cc7d11c16782041a6bb73e2fb56417b7d4c6d186",
+      "path": "Documentation/git-config.txt",
+      "git_blob": "7a2bcb2f6cb6f94b677d47de49ae8c6d0b98f2b8",
+      "local_path": "primary/git--Documentation--git-config.txt",
+      "display_url": "https://github.com/git/git/blob/cc7d11c16782041a6bb73e2fb56417b7d4c6d186/Documentation/git-config.txt",
+      "bytes": 19752,
+      "sha256": "6af050cd3296846626187d90dcd8d888294f02ae93479d00e1b409147c19122a"
+    }
+  ]
+}

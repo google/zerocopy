@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/artifact-binding",
+    "anneal/conditional-verification",
+    "anneal/interprocedural",
+    "anneal/obligation-inventory",
+    "anneal/post-monomorphization-errors",
+    "anneal/public-mir-discovery",
+    "anneal/rustc-capture",
+    "lean/symbolic-evaluation",
+    "rustc/effective-visibilities",
+    "rustc/mir",
+    "rustc/mir-keys",
+    "rustc/monomorphization",
+    "rustc/tyctxt",
+    "x86-64/codegen"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification architecture and trust boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal TrustedBoundary.lean audit checker",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f938c18db56c49e82dde95506894a9b58b76b227"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_privacy, rustc_resolve, rustc_passes, rustc_monomorphize)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

@@ -1,0 +1,83 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "id": "compcert-3.18-source",
+      "role": "source",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+      },
+      "paths": [
+        {
+          "path": "VERSION",
+          "blob": "5fd2882f6f042e89ce617586ce5041f5762c1766"
+        },
+        {
+          "path": "driver/Compiler.v",
+          "blob": "60fc74fec1411216425004f6d63567354e146e9c"
+        }
+      ],
+      "supports": [
+        "exact version identity",
+        "whole-compiler semantic-preservation proof boundary"
+      ]
+    },
+    {
+      "id": "compcert-c-doc",
+      "role": "documentation",
+      "identity": {
+        "version": "3.18",
+        "released": "2026-08-31"
+      },
+      "locator": "https://compcert.org/compcert-C.html",
+      "supports": [
+        "assembly AST output",
+        "ordinary assembler/linker invocation",
+        "assembling/linking not formally verified"
+      ]
+    },
+    {
+      "id": "sel4-binary-validation",
+      "role": "publication",
+      "identity": {
+        "publication": "PLDI 2013",
+        "authors": "Sewell; Myreen; Klein"
+      },
+      "locator": "https://trustworthy.systems/publications/nictaabstracts/Sewell_MK_13.abstract",
+      "supports": [
+        "C-to-binary refinement",
+        "compilation/linking validation",
+        "assembly and volatile-access exclusions"
+      ]
+    },
+    {
+      "id": "cakeml-silver",
+      "role": "publication",
+      "identity": {
+        "doi": "10.1145/3314221.3314622",
+        "publication": "PLDI 2019"
+      },
+      "locator": "https://pldi19.sigplan.org/details/pldi-2019-papers/16/Verified-Compilation-on-a-Verified-Processor",
+      "supports": [
+        "compiler/hardware semantic compatibility",
+        "hardware-level theorem",
+        "Silver subject identity"
+      ]
+    },
+    {
+      "id": "cakeml-backend",
+      "role": "background",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "year": "2019"
+      },
+      "locator": "https://www.cambridge.org/core/journals/journal-of-functional-programming/article/verified-cakeml-compiler-backend/E43ED3EA740D2DF970067F4E2BB9EF7D",
+      "supports": [
+        "verified machine-code compiler backend context"
+      ]
+    }
+  ],
+  "observation_date": "2026-09-27",
+  "execution_evidence": false
+}

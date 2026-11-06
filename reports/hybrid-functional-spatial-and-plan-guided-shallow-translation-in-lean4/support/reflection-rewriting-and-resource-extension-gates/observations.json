@@ -1,0 +1,14 @@
+{
+  "invocation": [
+    "lean",
+    "InvariantGate.lean"
+  ],
+  "version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+  "host": "macOS-27.0.1-arm64-arm-64bit",
+  "exit_code": 0,
+  "stdout_file": "InvariantGate.stdout",
+  "stderr_file": "InvariantGate.stderr",
+  "fixture_sha256": "8b8b7e85c94460e2f090f757dd9906490ba39725796cf8e723ed9f1d203abf78",
+  "observed_at": "2026-10-14"
+}

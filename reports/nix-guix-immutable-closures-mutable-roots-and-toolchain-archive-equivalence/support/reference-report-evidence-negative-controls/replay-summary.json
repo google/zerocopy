@@ -1,0 +1,7 @@
+{
+  "copied_inputs_dir": "temporary copy under the Meta conversation Data directory",
+  "checker": "support/check-evidence.py",
+  "returncode": 0,
+  "stdout": "{\n  \"baseline_rfl_has_no_goals\": true,\n  \"fresh_server_reports_dependency_mismatch\": true,\n  \"fresh_server_reports_open_goal_after_dependency_change\": true,\n  \"memory_floor_at_least_20_percent\": true,\n  \"post_apply_has_two_goals\": true,\n  \"pre_edit_apply_has_one_goal\": true,\n  \"rss_below_3_5_gib\": true,\n  \"same_server_still_reports_no_goals_after_dependency_change\": true,\n  \"servers_stopped\": true,\n  \"two_server_sample_present\": true\n}\n",
+  "stderr": ""
+}

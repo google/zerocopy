@@ -1,0 +1,2 @@
+[WARNING] Running as root is not recommended
+Fatal error: exception Sys_error("/home/opam/anneal-cross-output/controls/objects/missing.o: No such file or directory")

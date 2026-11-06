@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "before_after_regular_files": 115763,
+  "before_after_entries": 154231,
+  "all_content_hashes_identical": true,
+  "all_types_permissions_owners_sizes_symlink_targets_identical": true,
+  "before_after_scope": "entire /solve/opam and /owned-inputs; /audit intentionally excluded",
+  "current_switch_state_file_present": false,
+  "package_install_build_bin_directories_empty": true,
+  "package_pin_claim_basis": "parent native pre/post acquisition list/pin receipts are empty; full underlying opam state remains byte-identical throughout this read-only audit; no opam command was rerun"
+}

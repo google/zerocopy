@@ -1,0 +1,31 @@
+@unprot_shared_delete_read_escaped
+     : ∀ (Σ : iprop.gFunctors) (H : logical_state.sborGS Σ),
+         interface.bi_emp_valid
+           (gen_log_rel.gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True)
+              unprot_shared_delete_read_escaped_opt unprot_shared_delete_read_escaped_unopt)
+Closed under the global context
+unprot_shared_delete_read_escaped_ctx
+     : behavior.ctx_ref unprot_shared_delete_read_escaped_opt unprot_shared_delete_read_escaped_unopt
+Axioms:
+IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}
+Classical_Prop.classic : ∀ P : Prop, P ∨ ¬ P
+@prot_mutable_reorder_write_up_activated_paper
+     : ∀ (Σ : iprop.gFunctors) (H : logical_state.sborGS Σ),
+         interface.bi_emp_valid
+           (gen_log_rel.gen_log_rel logical_state.rrel (λ _ : language.thread_id, interface.bi_pure True)
+              prot_mutable_reorder_write_up_activated_paper_opt prot_mutable_reorder_write_up_activated_paper_unopt)
+Closed under the global context
+prot_mutable_reorder_write_up_activated_paper_ctx
+     : behavior.ctx_ref prot_mutable_reorder_write_up_activated_paper_opt
+         prot_mutable_reorder_write_up_activated_paper_unopt
+Axioms:
+IndefiniteDescription.constructive_indefinite_description : ∀ (A : Type) (P : A → Prop), (∃ x : A, P x) → {x : A | P x}
+Classical_Prop.classic : ∀ P : Prop, P ∨ ¬ P
+read_reorder
+     : ∀ (x1 x2 : String.string) (l1 : locations.loc) (tg1 sz1 : nat) (l2 : locations.loc) 
+         (tg2 sz2 : nat) (erest : lang_base.expr) (P : gmap String.string (language.func lang.bor_lang)),
+         x1 ≠ x2
+         → equivalence_def.eventually_equal P (source x1 x2 l1 tg1 sz1 l2 tg2 sz2 erest)
+             (target x1 x2 l1 tg1 sz1 l2 tg2 sz2 erest)
+Closed under the global context
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=10 start_bytes=32106313 peak_bytes=32106413 final_bytes=32109248

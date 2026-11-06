@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-10-14",
+  "method": "shutil.which in inherited PATH",
+  "tools": {
+    "sail": null,
+    "isla": null,
+    "coqc": null,
+    "jasminc": null,
+    "dafny": null,
+    "fstar.exe": null,
+    "ocaml": null,
+    "python3": "/usr/bin/python3"
+  },
+  "scope": "availability only; no installation or upstream execution"
+}

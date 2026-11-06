@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/cryptography"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "repository": "leanprover/lean4"
+      }
+    },
+    {
+      "name": "Anneal verification framework and trusted boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Beneficial-AI-Foundation/FloatSpec",
+      "identity": {
+        "toolchain": "leanprover/lean4:v4.28.0-rc1 (PR #8 targets v4.34.0-rc2)",
+        "repository": "Beneficial-AI-Foundation/FloatSpec",
+        "revision": "158263e983ec3925e02b10f5b312498bf414e0f1"
+      }
+    },
+    {
+      "name": "opencompl/fp-lean",
+      "identity": {
+        "toolchain": "leanprover/lean4:nightly-2026-01-14",
+        "repository": "opencompl/fp-lean",
+        "revision": "c3124f3c23afb5a70efb90983015b99801985058"
+      }
+    },
+    {
+      "name": "leanprover/SampCert",
+      "identity": {
+        "toolchain": "leanprover/lean4:v4.34.1",
+        "repository": "leanprover/SampCert",
+        "revision": "a2c53bb5ff790e729e252958060699b7eff898b9"
+      }
+    },
+    {
+      "name": "Verified-zkEVM/VCV-io",
+      "identity": {
+        "toolchain": "leanprover/lean4:v4.35.0",
+        "repository": "Verified-zkEVM/VCV-io",
+        "revision": "aae1c9cbd6c00311091d691b74f2d0032d76d9bd"
+      }
+    },
+    {
+      "name": "Verified-zkEVM/ArkLib",
+      "identity": {
+        "toolchain": "leanprover/lean4:v4.34.1",
+        "repository": "Verified-zkEVM/ArkLib",
+        "revision": "bc367f8d53f603a48c5502e1ad7d39b7b3be725c"
+      }
+    },
+    {
+      "name": "GaloisInc/cryptol",
+      "identity": {
+        "repository": "GaloisInc/cryptol",
+        "revision": "76f7fabbec7e3f184f15b408b34619ad37a36ec8"
+      }
+    },
+    {
+      "name": "GaloisInc/saw-script",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

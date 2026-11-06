@@ -1,0 +1,62 @@
+{
+  "sha256": "7d9929992f94b4206054b3990d62a37372a0908312add05e5bbaeb731ba5f772",
+  "bytes": 456,
+  "header": {
+    "magic": "0xfeedfacf",
+    "cpu": 16777228,
+    "cpu_subtype": 0,
+    "filetype": 1,
+    "commands": 4,
+    "command_bytes": 280,
+    "flags": 8192
+  },
+  "sections": [
+    {
+      "name": "__text",
+      "segment": "__TEXT",
+      "address": 0,
+      "bytes": 16,
+      "file_offset": 312,
+      "alignment_log2": 2,
+      "flags": 2147484672,
+      "data_hex": "c0035fd60000c03d0001803dc0035fd6",
+      "sha256": "2af80547ec0ef3530a8589a4e0b60b5d0544e91daa3b5aeed1502b620f941a00",
+      "relocations": []
+    }
+  ],
+  "symbols": [
+    {
+      "index": 0,
+      "name": "ltmp0",
+      "n_type": 14,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 0
+    },
+    {
+      "index": 1,
+      "name": "_abi_c_vector",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 0
+    },
+    {
+      "index": 2,
+      "name": "_abi_rust_vector",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 4
+    },
+    {
+      "index": 3,
+      "name": "_abi_system_vector",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 0
+    }
+  ],
+  "scope": "Untrusted bounded MachO metadata reader; exact raw bytes retained. No machine operational semantics or compiler correctness theorem."
+}

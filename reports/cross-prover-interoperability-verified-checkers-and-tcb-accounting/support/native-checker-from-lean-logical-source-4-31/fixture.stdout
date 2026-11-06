@@ -1,0 +1,10 @@
+{"accepted":true,"reason":"checked-selected-statement"}
+{"accepted":false,"reason":"checked-selected-statement"}
+{"accepted":false,"reason":"checked-selected-statement"}
+{"accepted":false,"reason":"literal-out-of-byte-range"}
+{"accepted":false,"reason":"Natural number expected"}
+{"accepted":false,"reason":"unsupported-IR-node"}
+{"accepted":false,"reason":"unsupported-IR-node"}
+{"accepted":false,"reason":"array expected"}
+{"accepted":false,"reason":"offset 8: unexpected end of input"}
+{"accepted":false,"reason":"depth-limit"}

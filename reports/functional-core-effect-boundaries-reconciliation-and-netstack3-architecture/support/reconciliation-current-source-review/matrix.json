@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "7aba064d95afec974b2478feca6f8c1a1c0b3088",
+  "baseline_count": 581,
+  "current_count": 603,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.md",
+      "json_sha256": "21a96ce39b4681d3e6b6e426f51bf2eacf9aa434d142b128654be618abdeb086",
+      "md_sha256": "94a758764628ac63b8da6cddb01e8b68806d0f095b734fd69929da2f87a2c342"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.md",
+      "json_sha256": "f054483f37f575e10f0f5fb1127c3227225e5da9fbb9f613a19c4b5fb8080ba0",
+      "md_sha256": "e4897cbaaf4f6fb2a7c1449163b5530968daaaac3f53d20b09c42c1ecb90c6c5"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v70/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v70/REPORT.md",
+      "json_sha256": "9f47bf070b63536ed0560f6a5db246134172a564ac80eff5a9e684b2091def3a",
+      "md_sha256": "430f47fedfc99187d28b4cf58a3b5283a313e63846cc6d5a89fe1fd0b5a7db50"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v71/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v71/REPORT.md",
+      "json_sha256": "fb0e6b84da881a5f418495286344e987ae0d1827d736e2bf154bcb2e36e05f49",
+      "md_sha256": "e9081fe187cfa79e2c32c743f356f789d9aa81cc4e92cedf334d290a2f8e7a42"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/editor-engines-current-source-review/REPORT.json",
+      "report_md": "reports/editor-engines-current-source-review/REPORT.md",
+      "json_sha256": "728cca801b5fb052c3e037b8b10653e905544e069a3d5b75643f41bb83f2c8f0",
+      "md_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/haskell-hls-hie-bios-current-source-review/REPORT.json",
+      "report_md": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "json_sha256": "35a6762ee7dec7ccc16fd9b7dca9c01fa2047889b62dc35441d2ef497942f33f",
+      "md_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325"
+    },
+    {
+      "report_json": "reports/kotlin-swift-current-source-review/REPORT.json",
+      "report_md": "reports/kotlin-swift-current-source-review/REPORT.md",
+      "json_sha256": "d453c04998bcea1aed701bdb47fad2702733b3d23ed49453ab66f413b681bc53",
+      "md_sha256": "25c957729ccbc6921c7fdb5532493a78d719d9e496e7d035fcab0fa55388e42e"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/netstack3-current-source-review/REPORT.json",
+      "report_md": "reports/netstack3-current-source-review/REPORT.md",
+      "json_sha256": "52b2e22a22dfa151525046827ee20f9ad0ce133970815c4df86e91c840c4d8d1",
+      "md_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e"
+    },
+    {
+      "report_json": "reports/ninja-current-source-review/REPORT.json",
+      "report_md": "reports/ninja-current-source-review/REPORT.md",
+      "json_sha256": "90685322eb2a019f64c23444ce92b866887e0c3421a9fe3df312e3e9b5905ceb",
+      "md_sha256": "de2a0cd8f661113207d587efae30e9bafdce58d2b9a8e89322bdae8a9264d732"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/tock-asterinas-current-source-review/REPORT.json",
+      "report_md": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "json_sha256": "de4abd4dfb0e1cc7a6cc6e34e02fcfc12c8946274565fd0055e6ff0271839760",
+      "md_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "inventory_id": "R510",
+  "cohort": "Kubernetes controller-runtime 8564dc35 + client-go 6d1d0250",
+  "title": "Reconciliation loops, event streams, and repairable watcher state",
+  "report_json": "reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.json",
+  "report_md": "reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.md",
+  "evidence_map_path": "reports/reconciliation-event-hints-repair-loops-2005-2026/support/evidence-map.json",
+  "frozen_json_sha256": "e75f38d7968ad635d3d59a277ccfbc42c184cba9ac47fb899751e3461dcb5247",
+  "frozen_md_sha256": "1e3c6993b22e218350b5385f414feab4f4abf81db5925452105c9b600c9c4a1a",
+  "frozen_evidence_map_sha256": "3c36679a011bf8e25bb612b4fbaf46a17ca17eaade9f86c334b84309e81d3c28",
+  "frozen_subjects_exact": [
+    {
+      "name": "Kubernetes controller-runtime",
+      "identity": {
+        "repository": "kubernetes-sigs/controller-runtime",
+        "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+      }
+    },
+    {
+      "name": "Kubernetes client-go Reflector",
+      "identity": {
+        "repository": "kubernetes/kubernetes",
+        "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"
+      }
+    },
+    {
+      "name": "Kubernetes WatchList KEP 3157",
+      "identity": {
+        "repository": "kubernetes/enhancements",
+        "revision": "914ed6950576832c8579899f092909d27623492e"
+      }
+    },
+    {
+      "name": "Kubernetes controller and API documentation",
+      "identity": {
+        "repository": "kubernetes/website",
+        "revision": "367a7a21bbef6b2d3c57d5fe113bee9bdb658889"
+      }
+    },
+    {
+      "name": "Linux inotify manual",
+      "identity": {
+        "project": "Linux man-pages",
+        "release": "6.19",
+        "release_date": "2026-02-14",
+        "page": "inotify(7)"
+      }
+    },
+    {
+      "name": "Anneal redesign",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Anneal direct save/format/watch-loop reference report",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "2cec790eeec883e83ac66dcfa021c51ad65ad4f1",
+        "package": "anneal-3730-editor-save-format-watch-loop-2026-09-29",
+        "report_blob": "ca2c4e0f92eb9432002b240a986073417a177b48"
+      }
+    }
+  ],
+  "claim_locator": {
+    "heading": "## Summary",
+    "line": 5
+  },
+  "inventory_claim_excerpt_exact_or_normalized": "A reliable reactive tool should separate what wakes work up from what makes the resulting state true. Kubernetes makes this separation explicit: controller events enqueue a key, but reconciliation is level-based and rereads current state rather than interpreting the event as the authoritative transition. Its client caches use an event stream for efficiency, but they are built around a recoverable snapshot-plus-version protocol: if watch history is unavailable, the client rebu",
+  "full_summary_exact": "A reliable reactive tool should separate **what wakes work up** from **what makes the resulting state true**. Kubernetes makes this separation explicit: controller events enqueue a key, but reconciliation is level-based and rereads current state rather than interpreting the event as the authoritative transition. Its client caches use an event stream for efficiency, but they are built around a recoverable snapshot-plus-version protocol: if watch history is unavailable, the client rebuilds from a fresh list. Linux inotify supplies the complementary local-filesystem lesson: events may be coalesced, its queue can overflow and lose events, and its own documentation recommends consistency checks and cache rebuilding.\n\nFor Anneal, these mechanisms support a narrower design than a Kubernetes-like control plane. File-system and protocol notifications should normally be **hints that mark a semantic scope dirty and trigger validation or reconciliation**. The reconciler should reread the authority appropriate to the operation—saved source, an editor document snapshot, imported artifact identity, or a canonical publication pointer—before deciding what work is needed. Duplicate hints may be coalesced. Uncertain gaps, watcher overflow, reconnects, or process reincarnation should force a scoped rescan rather than attempting to reconstruct truth from missing deltas.\n\nThis does not imply that every Anneal operation should be a perpetual controller or that every cache needs a durable event log. A single-user local tool can usually keep one canonical publication authority, use in-memory dirty queues and immutable generation artifacts, and perform explicit revalidation at session/open/reconnect/publication boundaries. Reconciliation repairs observation drift; it does not by itself resolve competing writers, prove semantic freshness, or make a side effect idempotent. Those obligations still require operation-specific identity, compare-before-publish/fencing, and safe staging.",
+  "summary_paragraphs": [
+    {
+      "number": 1,
+      "exact_excerpt": "A reliable reactive tool should separate **what wakes work up** from **what makes the resulting state true**. Kubernetes makes this separation explicit: controller events enqueue a key, but reconciliation is level-based and rereads current state rather than interpreting the event as the authoritative transition. Its client caches use an event stream for efficiency, but they are built around a recoverable snapshot-plus-version protocol: if watch history is unavailable, the client rebuilds from a fresh list. Linux inotify supplies the complementary local-filesystem lesson: events may be coalesced, its queue can overflow and lose events, and its own documentation recommends consistency checks and cache rebuilding.",
+      "evidence_ids": [
+        "controller-runtime-level-based",
+        "kubernetes-reflector",
+        "linux-inotify"
+      ],
+      "source_result": "mapped_source_blobs_unchanged_no_behavior_conclusion",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 2,
+      "exact_excerpt": "For Anneal, these mechanisms support a narrower design than a Kubernetes-like control plane. File-system and protocol notifications should normally be **hints that mark a semantic scope dirty and trigger validation or reconciliation**. The reconciler should reread the authority appropriate to the operation—saved source, an editor document snapshot, imported artifact identity, or a canonical publication pointer—before deciding what work is needed. Duplicate hints may be coalesced. Uncertain gaps, watcher overflow, reconnects, or process reincarnation should force a scoped rescan rather than attempting to reconstruct truth from missing deltas.",
+      "evidence_ids": [
+        "controller-runtime-level-based",
+        "kubernetes-reflector",
+        "anneal-design"
+      ],
+      "source_result": "derived_anneal_claim_unassessed",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 3,
+      "exact_excerpt": "This does not imply that every Anneal operation should be a perpetual controller or that every cache needs a durable event log. A single-user local tool can usually keep one canonical publication authority, use in-memory dirty queues and immutable generation artifacts, and perform explicit revalidation at session/open/reconnect/publication boundaries. Reconciliation repairs observation drift; it does not by itself resolve competing writers, prove semantic freshness, or make a side effect idempotent. Those obligations still require operation-specific identity, compare-before-publish/fencing, and safe staging.",
+      "evidence_ids": [
+        "anneal-design",
+        "anneal-watch-loop-probe"
+      ],
+      "source_result": "derived_anneal_claim_unassessed",
+      "runtime_result": "unexecuted_in_this_review"
+    }
+  ],
+  "mapped_files": [
+    {
+      "repository": "kubernetes-sigs/controller-runtime",
+      "old_commit": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "selected_current_commit": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "path": "pkg/reconcile/reconcile.go",
+      "old_blob_sha1": "88303ae781a1e6baf0d5ca5e935bcc4f1416aaf4",
+      "new_blob_sha1": "88303ae781a1e6baf0d5ca5e935bcc4f1416aaf4"
+    },
+    {
+      "repository": "kubernetes-sigs/controller-runtime",
+      "old_commit": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "selected_current_commit": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "path": "pkg/doc.go",
+      "old_blob_sha1": "64693b4829d2212fc4f0504a9f22b758ccbdd5e5",
+      "new_blob_sha1": "64693b4829d2212fc4f0504a9f22b758ccbdd5e5"
+    },
+    {
+      "repository": "kubernetes/kubernetes",
+      "old_commit": "6d1d025050cb63ae5b8e53037aced205e6a28410",
+      "selected_current_commit": "08147af84478f859c2e2234d71ceace8bdb412c7",
+      "path": "staging/src/k8s.io/client-go/tools/cache/reflector.go",
+      "old_blob_sha1": "82de01f9ae5f73ca1cd58491156afd7fd9ccb457",
+      "new_blob_sha1": "82de01f9ae5f73ca1cd58491156afd7fd9ccb457"
+    }
+  ],
+  "official_observation_sha256": "5029f220a4bd9c2a9e664bb939a42e7217d2512ab2ac30e38fbb46cf5deda2eb",
+  "source_result": "controller_runtime_same_pin_reflector_mapped_blob_unchanged_broader_behavior_unresolved",
+  "runtime_result": "unexecuted_in_this_review",
+  "anneal_product_result": "unassessed",
+  "full_source_archive_sha256": null
+}

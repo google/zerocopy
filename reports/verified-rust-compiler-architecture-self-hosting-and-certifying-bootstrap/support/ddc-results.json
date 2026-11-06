@@ -1,0 +1,9 @@
+{
+  "bad_compiler_result": true,
+  "deliberately_bad_compiler_source_passes_ddc": true,
+  "diverse_second_stage_detects_hidden_infection": true,
+  "hidden_infection_passes_regeneration": true,
+  "independent_intended_result": false,
+  "scope": "original finite illustration, no actual DDC/compiler experiment",
+  "source_correspondence_does_not_imply_application_checker_soundness": true
+}

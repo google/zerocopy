@@ -1,0 +1,13 @@
+{
+  "command": [
+    "$TOOL/lean",
+    "$TASK_ROOT/work/research/tcb-last-gap-closure/support/ProphecyReplay.lean"
+  ],
+  "returncode": 0,
+  "seconds": 0.382307583,
+  "stdout": "'Replay.apply_sound' depends on axioms: [propext]\n'Replay.run_sound' depends on axioms: [propext]\n'Replay.check_sound' depends on axioms: [propext]\n'Replay.trace_frame' does not depend on any axioms\n",
+  "stderr": "",
+  "source_sha256": "aa6201426e441dae131cdf38b878554ed4b9f5e02ee0eca38674d83a07a622ca",
+  "checker_pin": "5045d0056413266e57c625dcd7c365b10e377c52",
+  "scope": "Original finite selected prophecy-resource adapter, not execution of Gillian or full Rust metatheory."
+}

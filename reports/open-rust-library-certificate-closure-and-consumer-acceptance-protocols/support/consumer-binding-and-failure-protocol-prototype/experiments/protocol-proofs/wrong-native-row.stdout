@@ -1,0 +1,6 @@
+wrong-native-row.lean:101:83: error: Tactic `decide` proved that the proposition
+  checkInstrumented capturedSource proposedIR rows = true
+is false
+theorem consumerAccepted : Claim expectedSourceHash actualSourceHash capturedSource proposedIR :=
+⟨rfl, instrumented_sound capturedSource proposedIR rows acceptance⟩
+'consumerAccepted' depends on axioms: [propext, sorryAx]

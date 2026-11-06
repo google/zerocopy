@@ -1,0 +1,82 @@
+{
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "project": "Tock",
+      "kind": "source",
+      "repository": "tock/tock",
+      "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+      "paths": [
+        {"path": "kernel/src/lib.rs", "blob": "49f9ca34fcb2683eec5765a8364ed43423f04d16"},
+        {"path": "kernel/src/capabilities.rs", "blob": "dddcedda97d0e4010dc368182fff8d5181815eaa"},
+        {"path": "kernel/src/grant.rs", "blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5"},
+        {"path": "capsules/core/src/lib.rs", "blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5"},
+        {"path": "boards/components/README.md", "blob": "b0436be7f565778880c0938ac22df58a2dfc085b"}
+      ],
+      "url": "https://github.com/tock/tock/tree/eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"
+    },
+    {
+      "project": "Tock",
+      "kind": "documentation",
+      "repository": "tock/book",
+      "revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923",
+      "paths": [
+        {"path": "src/doc/overview.md", "blob": "21246fe6c30792b332d4ee790e9b0334cb20c790"},
+        {"path": "src/doc/threat_model/threat_model.md", "blob": "02a0a0d4a58bdb70ab6fcfab5bdc8d3661e38bff"},
+        {"path": "src/doc/threat_model/capsule_isolation.md", "blob": "811684cc0e33f07783cbb05c24f1b0db7ba6b574"},
+        {"path": "src/doc/soundness.md", "blob": "eef0494587a4231fb9e70c24de45ea0fe99b4518"}
+      ],
+      "url": "https://github.com/tock/book/tree/760025b0d8a1d5ff14d6015c1c50ac4e30490923"
+    },
+    {
+      "project": "Tock",
+      "kind": "paper",
+      "title": "Multiprogramming a 64 kB Computer Safely and Efficiently",
+      "publication": "SOSP 2017",
+      "doi": "10.1145/3132747.3132786",
+      "url": "https://tockos.org/assets/papers/tock-sosp2017.pdf"
+    },
+    {
+      "project": "Tock",
+      "kind": "paper",
+      "title": "Tock: From Research to Securing 10 Million Computers",
+      "publication": "SOSP 2025",
+      "doi": "10.1145/3731569.3764828",
+      "url": "https://www.amitlevy.com/papers/2025-sosp-tock.pdf"
+    },
+    {
+      "project": "Asterinas",
+      "kind": "source-and-documentation",
+      "repository": "asterinas/asterinas",
+      "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "paths": [
+        {"path": "kernel/src/lib.rs", "blob": "62268709b2bf43da148c61faf4e73e8b52605ee2"},
+        {"path": "ostd/src/lib.rs", "blob": "c8c1219b61357a703c0fc3b70ba7018178aa5d09"},
+        {"path": "book/src/kernel/the-framekernel-architecture.md", "blob": "dd077b771efe76a4758b82681597305509fc24d5"},
+        {"path": "book/src/ostd/soundness/README.md", "blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e"},
+        {"path": "book/src/ostd/soundness/what-soundness-means.md", "blob": "3be761f6c0f341c351302948f12d98154cfa70e0"},
+        {"path": "book/src/ostd/soundness/safe-policy-injection.md", "blob": "1d9db11917f249374813862830882055d5aa854f"}
+      ],
+      "url": "https://github.com/asterinas/asterinas/tree/a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+    },
+    {
+      "project": "Asterinas",
+      "kind": "paper",
+      "title": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB",
+      "publication": "2025 USENIX Annual Technical Conference",
+      "pages": "307-323",
+      "url": "https://www.usenix.org/conference/atc25/presentation/peng-yuke"
+    },
+    {
+      "project": "Anneal",
+      "kind": "applicability-constraint",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": [
+        {"path": "anneal/PRINCIPLES.md", "blob": "d5339a95254eae14ac201139d07d9d36d48a19fb"},
+        {"path": "anneal/DESIGN.md", "blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"}
+      ],
+      "url": "https://github.com/google/zerocopy/tree/cc135f46155b72e4b51188525c2974a3b84acf92/anneal"
+    }
+  ]
+}

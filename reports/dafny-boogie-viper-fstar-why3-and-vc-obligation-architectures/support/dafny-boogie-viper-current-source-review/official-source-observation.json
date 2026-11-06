@@ -1,0 +1,256 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-09-30",
+  "repositories": [
+    {
+      "repository": "dafny-lang/dafny",
+      "pinned_commit": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+      "selected_current_commit": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+      "default_branch": "master",
+      "raw_ref_path": "dafny-refs.txt",
+      "raw_ref_sha256": "7d2e292d3117a92a06626562b74d0918309849a25e281bd93e20104048af481a",
+      "refs": {
+        "HEAD": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+        "refs/heads/master": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "changed_paths": []
+      },
+      "mapped_file": {
+        "path": "Source/DafnyCore/Verifier/BoogieGenerator.cs",
+        "old_blob_sha1": "f097f9c6be4b349b913c9df6853687fb57047fdf",
+        "current_blob_sha1": "f097f9c6be4b349b913c9df6853687fb57047fdf",
+        "content_sha256": "45bcfd0ae5449246253c8c277e63cf42327b3ae48ac77443ee1d6e095b29fb87",
+        "size": 240842,
+        "snapshot_path": "snapshots/dafny/Source/DafnyCore/Verifier/BoogieGenerator.cs",
+        "raw_url": "https://raw.githubusercontent.com/dafny-lang/dafny/5f717bf447b19d38cad1b69b1bf9a9f102feccfb/Source/DafnyCore/Verifier/BoogieGenerator.cs"
+      },
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/dafny-lang/dafny/releases/latest",
+        "tag_name": "v4.11.0",
+        "published_at": "2025-08-25T19:53:51Z",
+        "html_url": "https://github.com/dafny-lang/dafny/releases/tag/v4.11.0",
+        "tag_ref_object_sha": "a04eea4dab324219e438f94ccc5ff0abcad11d86",
+        "peeled_commit": "fcb2042d6d043a2634f0854338c08feeaaaf4ae2",
+        "tag_ref_type": "annotated",
+        "raw_tag_ref_path": "dafny-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "6d82333612537cf498e0fd6fb393dfc4fc25142e0488ab0c6063dfc08704aa2e",
+        "relation_to_main": {
+          "status": "diverged",
+          "ahead_by": 68,
+          "behind_by": 3,
+          "total_commits": 68
+        }
+      }
+    },
+    {
+      "repository": "boogie-org/boogie",
+      "pinned_commit": "fcecf73a49d11ad3ab16729abd03169e5ecfd938",
+      "selected_current_commit": "fcecf73a49d11ad3ab16729abd03169e5ecfd938",
+      "default_branch": "master",
+      "raw_ref_path": "boogie-refs.txt",
+      "raw_ref_sha256": "11b82ec7771ea23940101cc1b27016a5d616540845ad1b87d6d174c6e3346b91",
+      "refs": {
+        "HEAD": "fcecf73a49d11ad3ab16729abd03169e5ecfd938",
+        "refs/heads/master": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "changed_paths": []
+      },
+      "mapped_file": {
+        "path": "README.md",
+        "old_blob_sha1": "422b2f8869a30ae6c5fd8056a159c1000f2da4ff",
+        "current_blob_sha1": "422b2f8869a30ae6c5fd8056a159c1000f2da4ff",
+        "content_sha256": "c953f52cbefde95c3f570db41e9eabd496b1713ff9c41ae24569ba95627ab2bd",
+        "size": 4574,
+        "snapshot_path": "snapshots/boogie/README.md",
+        "raw_url": "https://raw.githubusercontent.com/boogie-org/boogie/fcecf73a49d11ad3ab16729abd03169e5ecfd938/README.md"
+      },
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/boogie-org/boogie/releases/latest",
+        "tag_name": "v3.5.7",
+        "published_at": "2026-07-26T13:03:27Z",
+        "html_url": "https://github.com/boogie-org/boogie/releases/tag/v3.5.7",
+        "tag_ref_object_sha": "01a4d1fe1b380c6343c1909ef38ffc510b812957",
+        "peeled_commit": "01a4d1fe1b380c6343c1909ef38ffc510b812957",
+        "tag_ref_type": "lightweight",
+        "raw_tag_ref_path": "boogie-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "7bb50acbbc080ffb4a7e55da8c35ce4d3c7f6b2070a7bcb0ba1266d13e3d49b8",
+        "relation_to_main": {
+          "status": "ahead",
+          "ahead_by": 14,
+          "behind_by": 0,
+          "total_commits": 14
+        }
+      }
+    },
+    {
+      "repository": "viperproject/silver",
+      "pinned_commit": "da1c8993b66feb39976e3609e2580a4661137a0f",
+      "selected_current_commit": "da1c8993b66feb39976e3609e2580a4661137a0f",
+      "default_branch": "master",
+      "raw_ref_path": "silver-refs.txt",
+      "raw_ref_sha256": "78fa89e7184c30561067f5dae69e2fe29f946a09360bc49dd1fa48a77a00f017",
+      "refs": {
+        "HEAD": "da1c8993b66feb39976e3609e2580a4661137a0f",
+        "refs/heads/master": "da1c8993b66feb39976e3609e2580a4661137a0f"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "changed_paths": []
+      },
+      "mapped_file": {
+        "path": "src/main/scala/viper/silver/verifier/VerificationResult.scala",
+        "old_blob_sha1": "95980f6c5d21d2bf264ec388ddd6a885f5b494f0",
+        "current_blob_sha1": "95980f6c5d21d2bf264ec388ddd6a885f5b494f0",
+        "content_sha256": "e9f6f50bd066b86ba39b88c008d868d39797b8847ea66f8363efd019a35f5e1d",
+        "size": 5411,
+        "snapshot_path": "snapshots/silver/src/main/scala/viper/silver/verifier/VerificationResult.scala",
+        "raw_url": "https://raw.githubusercontent.com/viperproject/silver/da1c8993b66feb39976e3609e2580a4661137a0f/src/main/scala/viper/silver/verifier/VerificationResult.scala"
+      },
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/viperproject/silver/releases/latest",
+        "tag_name": "v.21.07-release",
+        "published_at": "2021-07-29T12:16:56Z",
+        "html_url": "https://github.com/viperproject/silver/releases/tag/v.21.07-release",
+        "tag_ref_object_sha": "8da1aea1e1027a9e9f4672e03159b0f91659d5b9",
+        "peeled_commit": "3ea54220f1d2bc4adcc3151fa2080c198dbbd641",
+        "tag_ref_type": "annotated",
+        "raw_tag_ref_path": "silver-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "e29082c1837ad67c35f51d5bbac4babc2d6a5f3bae8b85324d81b49c7d91b927",
+        "relation_to_main": {
+          "status": "ahead",
+          "ahead_by": 905,
+          "behind_by": 0,
+          "total_commits": 905
+        }
+      }
+    },
+    {
+      "repository": "viperproject/silicon",
+      "pinned_commit": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed",
+      "selected_current_commit": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed",
+      "default_branch": "master",
+      "raw_ref_path": "silicon-refs.txt",
+      "raw_ref_sha256": "2102bd15613ade266fd3b38a249c131e83bda45ca0a6e72f6c8b2e384a486792",
+      "refs": {
+        "HEAD": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed",
+        "refs/heads/master": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "changed_paths": []
+      },
+      "mapped_file": {
+        "path": "README.md",
+        "old_blob_sha1": "d4983b9cdbd67dcc0bce44d67c3fa55bf299540d",
+        "current_blob_sha1": "d4983b9cdbd67dcc0bce44d67c3fa55bf299540d",
+        "content_sha256": "08035fdf3f2de817b9d12a3715f20caba6edc994617c70b2cd97a5e0d19da2a1",
+        "size": 4504,
+        "snapshot_path": "snapshots/silicon/README.md",
+        "raw_url": "https://raw.githubusercontent.com/viperproject/silicon/6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed/README.md"
+      },
+      "release": {
+        "status": "not_found",
+        "api_url": "https://api.github.com/repos/viperproject/silicon/releases/latest",
+        "http_status": 404
+      }
+    },
+    {
+      "repository": "viperproject/carbon",
+      "pinned_commit": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2",
+      "selected_current_commit": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2",
+      "default_branch": "master",
+      "raw_ref_path": "carbon-refs.txt",
+      "raw_ref_sha256": "208337a4cf75dccd99fa26e0ceed78bd18027af68fc544838d1427e53cb55c76",
+      "refs": {
+        "HEAD": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2",
+        "refs/heads/master": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "changed_paths": []
+      },
+      "mapped_file": {
+        "path": "README.md",
+        "old_blob_sha1": "3146d1b9a61dfa66d547c18e08cecde8a7317dee",
+        "current_blob_sha1": "3146d1b9a61dfa66d547c18e08cecde8a7317dee",
+        "content_sha256": "30cf5490de4ff07115e19e0a888f6fd60c2b644cbe45156eb6d01fbc4825c056",
+        "size": 1232,
+        "snapshot_path": "snapshots/carbon/README.md",
+        "raw_url": "https://raw.githubusercontent.com/viperproject/carbon/6421cfda16d35f37cb9a7966f04fcd2d96abdda2/README.md"
+      },
+      "release": {
+        "status": "not_found",
+        "api_url": "https://api.github.com/repos/viperproject/carbon/releases/latest",
+        "http_status": 404
+      }
+    },
+    {
+      "repository": "viperproject/viperserver",
+      "pinned_commit": "4cc5bbbe18d4a83e4b398da3904ba9696256611b",
+      "selected_current_commit": "4cc5bbbe18d4a83e4b398da3904ba9696256611b",
+      "default_branch": "master",
+      "raw_ref_path": "viperserver-refs.txt",
+      "raw_ref_sha256": "6051b497a5aa16f533112a63aa42a53ed51adf844d6443f7530436c83b3c93d0",
+      "refs": {
+        "HEAD": "4cc5bbbe18d4a83e4b398da3904ba9696256611b",
+        "refs/heads/master": "4cc5bbbe18d4a83e4b398da3904ba9696256611b"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "changed_paths": []
+      },
+      "mapped_file": {
+        "path": "README.md",
+        "old_blob_sha1": "a35027560fcf3580590277758797a0c41bb43d2d",
+        "current_blob_sha1": "a35027560fcf3580590277758797a0c41bb43d2d",
+        "content_sha256": "26d47a4d06dbb42c7c7e3d9fc0b4ef6e20a01490a380b9c14916ccb9585312b8",
+        "size": 2823,
+        "snapshot_path": "snapshots/viperserver/README.md",
+        "raw_url": "https://raw.githubusercontent.com/viperproject/viperserver/4cc5bbbe18d4a83e4b398da3904ba9696256611b/README.md"
+      },
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/viperproject/viperserver/releases/latest",
+        "tag_name": "v.26.08-release",
+        "published_at": "2026-09-07T15:47:57Z",
+        "html_url": "https://github.com/viperproject/viperserver/releases/tag/v.26.08-release",
+        "tag_ref_object_sha": "7f07f320e713555959860b08e062545adfb123f2",
+        "peeled_commit": "99be0e6df388579d77368a41f29a8bae1a2c4400",
+        "tag_ref_type": "annotated",
+        "raw_tag_ref_path": "viperserver-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "bbbd1bc5a2d6d1a5ef795ac1186b899030426bda3ffaa93e27fdfbd772f64a27",
+        "relation_to_main": {
+          "status": "ahead",
+          "ahead_by": 2,
+          "behind_by": 0,
+          "total_commits": 2
+        }
+      }
+    }
+  ]
+}

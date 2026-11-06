@@ -1,0 +1,400 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "f64e634e06aaf8b7eae2fefb3a9d7f2ebf82d3b2",
+  "baseline_count": 581,
+  "current_count": 607,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.md",
+      "json_sha256": "21a96ce39b4681d3e6b6e426f51bf2eacf9aa434d142b128654be618abdeb086",
+      "md_sha256": "94a758764628ac63b8da6cddb01e8b68806d0f095b734fd69929da2f87a2c342"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.md",
+      "json_sha256": "f054483f37f575e10f0f5fb1127c3227225e5da9fbb9f613a19c4b5fb8080ba0",
+      "md_sha256": "e4897cbaaf4f6fb2a7c1449163b5530968daaaac3f53d20b09c42c1ecb90c6c5"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v70/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v70/REPORT.md",
+      "json_sha256": "9f47bf070b63536ed0560f6a5db246134172a564ac80eff5a9e684b2091def3a",
+      "md_sha256": "430f47fedfc99187d28b4cf58a3b5283a313e63846cc6d5a89fe1fd0b5a7db50"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v71/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v71/REPORT.md",
+      "json_sha256": "fb0e6b84da881a5f418495286344e987ae0d1827d736e2bf154bcb2e36e05f49",
+      "md_sha256": "e9081fe187cfa79e2c32c743f356f789d9aa81cc4e92cedf334d290a2f8e7a42"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v72/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v72/REPORT.md",
+      "json_sha256": "68ed4fadad0e0eeefc57c796a6cee5b88f507ec39b9eb8e58f94b0321004c6e8",
+      "md_sha256": "9283147055fa8a420df53b2459953444da7f7d72e5dd171873d1946e93fda17b"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v73/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v73/REPORT.md",
+      "json_sha256": "8a026c993b3558eac4dfa1a06fa437f2c6fd62c4d915c40cd471a107b1a9f4e1",
+      "md_sha256": "42af42bb1dab3d653dc8618cb4f12437011f9ade249839c8be76b79838ce0618"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/buck2-current-source-review/REPORT.json",
+      "report_md": "reports/buck2-current-source-review/REPORT.md",
+      "json_sha256": "19c124566341695397f622669907c794ba490acf49b5111ac1cf28a91a2e8a5f",
+      "md_sha256": "7dbf54839ec28471927febb6d520d2d29ff8ade274acc0d854be518827d0e5f7"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/editor-engines-current-source-review/REPORT.json",
+      "report_md": "reports/editor-engines-current-source-review/REPORT.md",
+      "json_sha256": "728cca801b5fb052c3e037b8b10653e905544e069a3d5b75643f41bb83f2c8f0",
+      "md_sha256": "5156bc18b65bf0bf04dfeccb337abd4612e36092680e5b91f19d718bc38bfca9"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/haskell-hls-hie-bios-current-source-review/REPORT.json",
+      "report_md": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "json_sha256": "35a6762ee7dec7ccc16fd9b7dca9c01fa2047889b62dc35441d2ef497942f33f",
+      "md_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325"
+    },
+    {
+      "report_json": "reports/kotlin-swift-current-source-review/REPORT.json",
+      "report_md": "reports/kotlin-swift-current-source-review/REPORT.md",
+      "json_sha256": "d453c04998bcea1aed701bdb47fad2702733b3d23ed49453ab66f413b681bc53",
+      "md_sha256": "25c957729ccbc6921c7fdb5532493a78d719d9e496e7d035fcab0fa55388e42e"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/netstack3-current-source-review/REPORT.json",
+      "report_md": "reports/netstack3-current-source-review/REPORT.md",
+      "json_sha256": "52b2e22a22dfa151525046827ee20f9ad0ce133970815c4df86e91c840c4d8d1",
+      "md_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e"
+    },
+    {
+      "report_json": "reports/ninja-current-source-review/REPORT.json",
+      "report_md": "reports/ninja-current-source-review/REPORT.md",
+      "json_sha256": "90685322eb2a019f64c23444ce92b866887e0c3421a9fe3df312e3e9b5905ceb",
+      "md_sha256": "de2a0cd8f661113207d587efae30e9bafdce58d2b9a8e89322bdae8a9264d732"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/reconciliation-current-source-review/REPORT.json",
+      "report_md": "reports/reconciliation-current-source-review/REPORT.md",
+      "json_sha256": "3fa31ba7722ed07cd1441067a8594d2e571503c9e866c86882087937771b6061",
+      "md_sha256": "4790e30980e3be2b0a3bba10caf3e8af7222e274b9b055c071d3282af5e3f3ac"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/tock-asterinas-current-source-review/REPORT.json",
+      "report_md": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "json_sha256": "de4abd4dfb0e1cc7a6cc6e34e02fcfc12c8946274565fd0055e6ff0271839760",
+      "md_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "inventory_id": "R386",
+  "cohort": "SerAPI 6196f9f5 + Rocq LSP/Flèche 2e0c43c3",
+  "title": "Coq/Rocq document processing: STM, SerAPI, Flèche, and semantic-service boundaries",
+  "report_json": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/REPORT.json",
+  "report_md": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/REPORT.md",
+  "evidence_map_path": "reports/coq-rocq-stm-serapi-fleche-architecture-2013-2026/evidence-map.json",
+  "frozen_json_sha256": "53391a3d81a04a46c1c359cb5d915e86f4932eb90d231665ae10bf7b01c33938",
+  "frozen_md_sha256": "9af670719de07700e601d65010dd05ef637fea52b98af7a3302b83a3aca005e1",
+  "frozen_evidence_map_sha256": "201f4ee455d7128033dbeda45259d697d40c68d9348e0e83b74d50f653fdf0c4",
+  "frozen_subjects_exact": [
+    {
+      "name": "Coq State Transaction Machine and asynchronous document processing",
+      "identity": {
+        "publication": "Barras, Tankink, Tassi, Asynchronous Processing of Coq Documents: From the Kernel up to the User Interface",
+        "arxiv": "1506.05605",
+        "doi": "10.1007/978-3-319-22102-1_4",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "SerAPI document-control and serialization interface",
+      "identity": {
+        "repository": "rocq-archive/coq-serapi",
+        "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+      }
+    },
+    {
+      "name": "Rocq LSP and Flèche document engine",
+      "identity": {
+        "repository": "rocq-community/rocq-lsp",
+        "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+      }
+    },
+    {
+      "name": "Anneal design contract used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md;anneal/DESIGN.md"
+      }
+    }
+  ],
+  "claim_locator": {
+    "heading": "## Summary",
+    "line": 5
+  },
+  "inventory_claim_excerpt_exact_or_normalized": "Coq/Rocq's interactive architecture evolved through three distinct layers that are easy to collapse into one story: a prover-internal document model, a machine-facing protocol over that model, and a later reusable incremental document engine. Their differences matter more to Anneal than the shared fact that each can sit behind an editor or client.",
+  "full_summary_exact": "Coq/Rocq's interactive architecture evolved through three distinct layers that are easy to collapse into one story: a prover-internal document model, a machine-facing protocol over that model, and a later reusable incremental document engine. Their differences matter more to Anneal than the shared fact that each can sit behind an editor or client.\n\nThe first major change was semantic, not transport-level. Coq's State Transaction Machine (STM) replaced the classic single-focus command loop with a document graph whose edges are commands and whose nodes represent prover states. Proof tasks could then be separated from the document spine, delayed, prioritized, and in suitable cases checked out of order. The 2015 STM paper reports large responsiveness and parallel-checking improvements on the Odd Order development, but those gains came only after Coq itself learned which work was independent, which commands had global effects, how to restore state, and how to execute commands atomically. A client protocol could not infer those facts from command text alone.\n\nSerAPI made that machinery much easier to automate. It serialized Coq's internal structures and exposed document operations such as `Add`, `Exec`, `Cancel`, and `Query`. That was a major interface improvement, but it did not turn the underlying state machine into immutable snapshots. SerAPI's own protocol documentation says that parsing an added sentence depends on its parent state, because commands such as `Notation` can change parsing; it also records a hard STM limitation where cancelling an unexecuted suffix can force execution of earlier work. State or sentence identifiers were therefore handles into a semantic machine, not self-contained proofs that a result described a particular immutable document version.\n\nRocq LSP and its Flèche engine move further toward a document service. At the pinned current revision, Flèche explicitly stores a document URI, language identifier, integer version, contents, node list, completion status, external environment, and root Rocq state. Individual nodes retain full Rocq states and cache statistics. The service supports continuous or on-demand checking, positional requests keyed by `VersionedTextDocumentIdentifier`, cache-aware recovery, interruptions, multiple workspaces, and a lower-latency Petanque interface. Project configuration is part of the environment: Rocq LSP reads `_RocqProject` or `_CoqProject`, and Flèche's document environment carries workspace and file state used to build the root prover state.\n\nThis progression supports a narrow conclusion for Anneal. Anneal can and should own **external context identity and result authority**: exact source/model snapshot, toolchain and plugin identity, project/build configuration, generated inputs, requested operation, process generation, supersession, cancellation of obsolete work, and the rule that decides whether a result may be accepted or published. It should not manufacture **prover- or translator-internal reuse semantics** above an opaque command interface. Reusing a long-lived Charon, Aeneas, Lean, or other semantic process is sound only to the extent that the upstream interface defines the lifetime, invalidation, dependency, interruption, and version semantics needed for the claim Anneal is making. Where that contract is absent or too weak, versioned whole-input execution remains the conservative backend.\n\nThe same boundary applies to interactive recovery. Flèche deliberately keeps partially broken documents useful and may automatically admit unfinished proof fragments for editor continuity. That is good IDE behavior and bad evidence for an ordinary Anneal success unless a separate authoritative check establishes the final result. Responsiveness state and verification state must therefore remain different concepts even when both are produced by one daemon.",
+  "summary_paragraphs": [
+    {
+      "number": 1,
+      "exact_excerpt": "Coq/Rocq's interactive architecture evolved through three distinct layers that are easy to collapse into one story: a prover-internal document model, a machine-facing protocol over that model, and a later reusable incremental document engine. Their differences matter more to Anneal than the shared fact that each can sit behind an editor or client.",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 2,
+      "exact_excerpt": "The first major change was semantic, not transport-level. Coq's State Transaction Machine (STM) replaced the classic single-focus command loop with a document graph whose edges are commands and whose nodes represent prover states. Proof tasks could then be separated from the document spine, delayed, prioritized, and in suitable cases checked out of order. The 2015 STM paper reports large responsiveness and parallel-checking improvements on the Odd Order development, but those gains came only after Coq itself learned which work was independent, which commands had global effects, how to restore state, and how to execute commands atomically. A client protocol could not infer those facts from command text alone.",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 3,
+      "exact_excerpt": "SerAPI made that machinery much easier to automate. It serialized Coq's internal structures and exposed document operations such as `Add`, `Exec`, `Cancel`, and `Query`. That was a major interface improvement, but it did not turn the underlying state machine into immutable snapshots. SerAPI's own protocol documentation says that parsing an added sentence depends on its parent state, because commands such as `Notation` can change parsing; it also records a hard STM limitation where cancelling an unexecuted suffix can force execution of earlier work. State or sentence identifiers were therefore handles into a semantic machine, not self-contained proofs that a result described a particular immutable document version.",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 4,
+      "exact_excerpt": "Rocq LSP and its Flèche engine move further toward a document service. At the pinned current revision, Flèche explicitly stores a document URI, language identifier, integer version, contents, node list, completion status, external environment, and root Rocq state. Individual nodes retain full Rocq states and cache statistics. The service supports continuous or on-demand checking, positional requests keyed by `VersionedTextDocumentIdentifier`, cache-aware recovery, interruptions, multiple workspaces, and a lower-latency Petanque interface. Project configuration is part of the environment: Rocq LSP reads `_RocqProject` or `_CoqProject`, and Flèche's document environment carries workspace and file state used to build the root prover state.",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 5,
+      "exact_excerpt": "This progression supports a narrow conclusion for Anneal. Anneal can and should own **external context identity and result authority**: exact source/model snapshot, toolchain and plugin identity, project/build configuration, generated inputs, requested operation, process generation, supersession, cancellation of obsolete work, and the rule that decides whether a result may be accepted or published. It should not manufacture **prover- or translator-internal reuse semantics** above an opaque command interface. Reusing a long-lived Charon, Aeneas, Lean, or other semantic process is sound only to the extent that the upstream interface defines the lifetime, invalidation, dependency, interruption, and version semantics needed for the claim Anneal is making. Where that contract is absent or too weak, versioned whole-input execution remains the conservative backend.",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 6,
+      "exact_excerpt": "The same boundary applies to interactive recovery. Flèche deliberately keeps partially broken documents useful and may automatically admit unfinished proof fragments for editor continuity. That is good IDE behavior and bad evidence for an ordinary Anneal success unless a separate authoritative check establishes the final result. Responsiveness state and verification state must therefore remain different concepts even when both are produced by one daemon.",
+      "runtime_result": "unexecuted_in_this_review"
+    }
+  ],
+  "evidence_claims": [
+    {
+      "number": 1,
+      "exact_claim": "Coq STM replaced a linear command-state history with an explicit DAG/state-transaction model that separates proof tasks and supports prioritized/out-of-order work.",
+      "evidence_ids": [
+        "E1"
+      ],
+      "mapped_source_paths": {},
+      "source_result": "historical_or_derived_no_current_source_recheck",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 2,
+      "exact_claim": "The 2015 authors report roughly 10x better reactivity on the Odd Order development and roughly 4x faster full checking on 12 cores.",
+      "evidence_ids": [
+        "E1"
+      ],
+      "mapped_source_paths": {},
+      "source_result": "historical_or_derived_no_current_source_recheck",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 3,
+      "exact_claim": "PIDE protocol connectivity could be demonstrated with Coq while full proof processing still required prover-side document-processing reform.",
+      "evidence_ids": [
+        "E2"
+      ],
+      "mapped_source_paths": {},
+      "source_result": "historical_or_derived_no_current_source_recheck",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 4,
+      "exact_claim": "SerAPI exposes Add/Exec/Cancel/Query over Coq document state and serializes internal Coq structures for machine clients.",
+      "evidence_ids": [
+        "E3",
+        "E4"
+      ],
+      "mapped_source_paths": {
+        "E3": [
+          "README.md",
+          "serapi/serapi_protocol.mli"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 5,
+      "exact_claim": "SerAPI parsing depends on the parent state and its Cancel operation inherits a documented hard STM limitation for non-executed document parts.",
+      "evidence_ids": [
+        "E3"
+      ],
+      "mapped_source_paths": {
+        "E3": [
+          "serapi/serapi_protocol.mli"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 6,
+      "exact_claim": "Current Rocq LSP is built on Flèche and supports incremental/continuous and on-demand checking, cache-aware recovery, interruptions, multiple workspaces, and a Petanque low-latency interface.",
+      "evidence_ids": [
+        "E5"
+      ],
+      "mapped_source_paths": {
+        "E5": [
+          "README.md"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 7,
+      "exact_claim": "Flèche documents explicitly carry version, contents, node states, completion status, an external workspace/files environment, and a root Rocq state; nodes retain full Rocq states.",
+      "evidence_ids": [
+        "E5"
+      ],
+      "mapped_source_paths": {
+        "E5": [
+          "fleche/doc.ml"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 8,
+      "exact_claim": "Rocq LSP positional goal requests use VersionedTextDocumentIdentifier and may execute the document to the requested source position.",
+      "evidence_ids": [
+        "E5"
+      ],
+      "mapped_source_paths": {
+        "E5": [
+          "etc/doc/PROTOCOL.md"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 9,
+      "exact_claim": "Rocq LSP reads _RocqProject/_CoqProject and supports interactive recovery that may automatically admit unfinished proof fragments.",
+      "evidence_ids": [
+        "E5"
+      ],
+      "mapped_source_paths": {
+        "E5": [
+          "etc/doc/USER_MANUAL.md"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 10,
+      "exact_claim": "Anneal must keep verification identity/scope precise and must not turn missing evidence, unsupported semantics, or failed tools into ordinary verification success.",
+      "evidence_ids": [
+        "E6"
+      ],
+      "mapped_source_paths": {},
+      "source_result": "historical_or_derived_no_current_source_recheck",
+      "runtime_result": "unexecuted_in_this_review"
+    },
+    {
+      "number": 11,
+      "exact_claim": "Anneal should own external semantic-context identity and result acceptance while relying on fine-grained internal reuse only where the upstream component defines sufficient version/invalidation/dependency semantics.",
+      "evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E5",
+        "E6"
+      ],
+      "mapped_source_paths": {
+        "E3": [
+          "serapi/serapi_protocol.mli"
+        ],
+        "E5": [
+          "fleche/doc.ml",
+          "etc/doc/PROTOCOL.md"
+        ]
+      },
+      "source_result": "same_pinned_commit_no_forward_range",
+      "runtime_result": "unexecuted_in_this_review"
+    }
+  ],
+  "official_observation_sha256": "c2709bc893c991c6a14a1035befa4c59f6fd2a775e61b14c7b61a585594403ee",
+  "source_result": "both_default_branches_same_as_pins_zero_forward_comparison",
+  "runtime_result": "unexecuted_in_this_review",
+  "anneal_product_result": "unassessed"
+}

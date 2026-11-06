@@ -1,0 +1,17 @@
+{
+  "root": "<MAY1_TOOLCHAIN>",
+  "commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "role": "Post-execution source/runtime identity; exact earlier version capture and parent-owned unmodified executable used throughout",
+  "files": [
+    {
+      "path": "bin/rustc",
+      "bytes": 412504,
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988"
+    },
+    {
+      "path": "lib/librustc_driver-16d1e96e5b674978.dylib",
+      "bytes": 202329432,
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+    }
+  ]
+}

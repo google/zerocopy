@@ -1,0 +1,409 @@
+{
+  "status": "proposal only; no command executed; parent must separately grant and construct the bounded network-enabled/no-host-mounts environment",
+  "preconditions": [
+    "actual frozen opam/image/metadata/overlays verified",
+    "fresh repository-only empty switch; overlay/main priority",
+    "same platform as published solve",
+    "source inputs root-owned 0755/0644 and consumer unwritable; owned writable cache/output",
+    "strip inherited OPAM variables except explicitly declared controls; tests/docs false",
+    "explicit timeout, network allowlist and aggregate disk/resource monitoring",
+    "exact 74 selection remains required; stop on source/identity/transport failure"
+  ],
+  "environment": {
+    "OPAMWITHTEST": "false",
+    "OPAMWITHDOC": "false",
+    "OPAMJOBS": "1"
+  },
+  "argv": [
+    "/usr/bin/opam",
+    "install",
+    "--root=/acquire/opam",
+    "--use-internal-solver",
+    "--switch=islaris-dry",
+    "--download-only",
+    "--no-depexts",
+    "--skip-updates",
+    "--yes",
+    "--jobs=1",
+    "--json=/acquire/download-only.json",
+    "--cudf=/acquire/islaris",
+    "ocaml-variants.4.14.0+options",
+    "ocaml-option-flambda.1",
+    "coq.8.19.0",
+    "coq-core.8.19.0",
+    "coq-stdlib.8.19.0",
+    "coqide-server.8.19.0",
+    "dune.3.9.1",
+    "dune-site.3.9.1",
+    "dune-private-libs.3.9.1",
+    "dyn.3.9.1",
+    "stdune.3.9.1",
+    "ordering.3.9.1",
+    "coq-lithium.dev.2024-09-11.0.7945a29d",
+    "coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+    "coq-record-update.0.3.3",
+    "coq-bbv.1.5",
+    "isla-lang.dev",
+    "islaris.dev",
+    "coq-sail.0.17",
+    "coq-sail-riscv.0.5",
+    "sail.0.17",
+    "libsail.0.17",
+    "sail_manifest.0.17",
+    "sail_ocaml_backend.0.17",
+    "sail_c_backend.0.17",
+    "sail_smt_backend.0.17",
+    "sail_sv_backend.0.17",
+    "sail_lem_backend.0.17",
+    "sail_coq_backend.0.17",
+    "sail_latex_backend.0.17",
+    "sail_doc_backend.0.17",
+    "sail_output.0.17"
+  ],
+  "expected_roots": [
+    "ocaml-variants.4.14.0+options",
+    "ocaml-option-flambda.1",
+    "coq.8.19.0",
+    "coq-core.8.19.0",
+    "coq-stdlib.8.19.0",
+    "coqide-server.8.19.0",
+    "dune.3.9.1",
+    "dune-site.3.9.1",
+    "dune-private-libs.3.9.1",
+    "dyn.3.9.1",
+    "stdune.3.9.1",
+    "ordering.3.9.1",
+    "coq-lithium.dev.2024-09-11.0.7945a29d",
+    "coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+    "coq-record-update.0.3.3",
+    "coq-bbv.1.5",
+    "isla-lang.dev",
+    "islaris.dev",
+    "coq-sail.0.17",
+    "coq-sail-riscv.0.5",
+    "sail.0.17",
+    "libsail.0.17",
+    "sail_manifest.0.17",
+    "sail_ocaml_backend.0.17",
+    "sail_c_backend.0.17",
+    "sail_smt_backend.0.17",
+    "sail_sv_backend.0.17",
+    "sail_lem_backend.0.17",
+    "sail_coq_backend.0.17",
+    "sail_latex_backend.0.17",
+    "sail_doc_backend.0.17",
+    "sail_output.0.17"
+  ],
+  "expected_selected": [
+    {
+      "name": "conf-pkg-config",
+      "version": "5"
+    },
+    {
+      "name": "base-threads",
+      "version": "base"
+    },
+    {
+      "name": "conf-findutils",
+      "version": "1"
+    },
+    {
+      "name": "base-unix",
+      "version": "base"
+    },
+    {
+      "name": "base-bigarray",
+      "version": "base"
+    },
+    {
+      "name": "ocaml-option-flambda",
+      "version": "1"
+    },
+    {
+      "name": "conf-gmp",
+      "version": "5"
+    },
+    {
+      "name": "conf-linux-libc-dev",
+      "version": "0"
+    },
+    {
+      "name": "conf-zlib",
+      "version": "1"
+    },
+    {
+      "name": "ocaml-variants",
+      "version": "4.14.0+options"
+    },
+    {
+      "name": "ocaml-config",
+      "version": "2"
+    },
+    {
+      "name": "ocaml",
+      "version": "4.14.0"
+    },
+    {
+      "name": "ocamlfind",
+      "version": "1.9.8"
+    },
+    {
+      "name": "ocamlbuild",
+      "version": "0.16.1"
+    },
+    {
+      "name": "num",
+      "version": "1.6"
+    },
+    {
+      "name": "dune",
+      "version": "3.9.1"
+    },
+    {
+      "name": "cmdliner",
+      "version": "1.3.0"
+    },
+    {
+      "name": "zarith",
+      "version": "1.14"
+    },
+    {
+      "name": "base-bytes",
+      "version": "base"
+    },
+    {
+      "name": "yojson",
+      "version": "3.0.0"
+    },
+    {
+      "name": "stdlib-shims",
+      "version": "0.3.0"
+    },
+    {
+      "name": "sexplib0",
+      "version": "v0.16.0"
+    },
+    {
+      "name": "sail_manifest",
+      "version": "0.17"
+    },
+    {
+      "name": "ppx_derivers",
+      "version": "1.2.1"
+    },
+    {
+      "name": "pprint",
+      "version": "20230830"
+    },
+    {
+      "name": "pp",
+      "version": "2.0.0"
+    },
+    {
+      "name": "ordering",
+      "version": "3.9.1"
+    },
+    {
+      "name": "ocamlgraph",
+      "version": "2.2.0"
+    },
+    {
+      "name": "ocaml-compiler-libs",
+      "version": "v0.12.4"
+    },
+    {
+      "name": "menhirSdk",
+      "version": "20260209"
+    },
+    {
+      "name": "menhirLib",
+      "version": "20260209"
+    },
+    {
+      "name": "menhirGLR",
+      "version": "20260209"
+    },
+    {
+      "name": "menhirCST",
+      "version": "20260209"
+    },
+    {
+      "name": "linenoise",
+      "version": "1.5.1"
+    },
+    {
+      "name": "csexp",
+      "version": "1.5.2"
+    },
+    {
+      "name": "base64",
+      "version": "3.5.2"
+    },
+    {
+      "name": "lem",
+      "version": "2026-05-01"
+    },
+    {
+      "name": "coq-core",
+      "version": "8.19.0"
+    },
+    {
+      "name": "omd",
+      "version": "1.3.2"
+    },
+    {
+      "name": "integers",
+      "version": "0.8.0"
+    },
+    {
+      "name": "dyn",
+      "version": "3.9.1"
+    },
+    {
+      "name": "ott",
+      "version": "0.34"
+    },
+    {
+      "name": "ppxlib",
+      "version": "0.35.0"
+    },
+    {
+      "name": "menhir",
+      "version": "20260209"
+    },
+    {
+      "name": "linksem",
+      "version": "0.8"
+    },
+    {
+      "name": "coqide-server",
+      "version": "8.19.0"
+    },
+    {
+      "name": "coq-stdlib",
+      "version": "8.19.0"
+    },
+    {
+      "name": "stdune",
+      "version": "3.9.1"
+    },
+    {
+      "name": "bisect_ppx",
+      "version": "2.8.3"
+    },
+    {
+      "name": "isla-lang",
+      "version": "dev"
+    },
+    {
+      "name": "coq",
+      "version": "8.19.0"
+    },
+    {
+      "name": "dune-private-libs",
+      "version": "3.9.1"
+    },
+    {
+      "name": "coq-stdpp",
+      "version": "dev.2024-09-10.3.a1a12e00"
+    },
+    {
+      "name": "coq-record-update",
+      "version": "0.3.3"
+    },
+    {
+      "name": "coq-bbv",
+      "version": "1.5"
+    },
+    {
+      "name": "dune-site",
+      "version": "3.9.1"
+    },
+    {
+      "name": "coq-stdpp-bitvector",
+      "version": "dev.2024-09-10.3.a1a12e00"
+    },
+    {
+      "name": "coq-iris",
+      "version": "dev.2024-09-10.1.6f24ed4b"
+    },
+    {
+      "name": "coq-sail",
+      "version": "0.17"
+    },
+    {
+      "name": "libsail",
+      "version": "0.17"
+    },
+    {
+      "name": "coq-stdpp-unstable",
+      "version": "dev.2024-09-10.3.a1a12e00"
+    },
+    {
+      "name": "sail_sv_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_smt_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_output",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_ocaml_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_lem_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_latex_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_doc_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_coq_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail_c_backend",
+      "version": "0.17"
+    },
+    {
+      "name": "sail",
+      "version": "0.17"
+    },
+    {
+      "name": "coq-lithium",
+      "version": "dev.2024-09-11.0.7945a29d"
+    },
+    {
+      "name": "coq-sail-riscv",
+      "version": "0.5"
+    },
+    {
+      "name": "islaris",
+      "version": "dev"
+    }
+  ],
+  "forbidden_changes": [
+    "no moving opam update",
+    "no source-directory pins or dev-repo flag",
+    "no URI/checksum/version/formula substitution",
+    "no no-checksums",
+    "no build or installation in acquisition phase"
+  ],
+  "next_boundary": "network disabled and verified source/cache manifests frozen before any separate build grant"
+}

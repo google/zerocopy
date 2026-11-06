@@ -1,0 +1,76 @@
+The following actions would be simulated:
+  - install conf-findutils       1                         [required by lem]
+  - install ocaml-option-flambda 1
+  - install conf-gmp             5                         [required by coq-sail-riscv, libsail]
+  - install base-bigarray        base                      [required by omd]
+  - install conf-pkg-config      5                         [required by zarith, conf-zlib]
+  - install base-unix            base                      [required by dune, stdune]
+  - install conf-linux-libc-dev  0                         [required by coq-core]
+  - install base-threads         base                      [required by dune]
+  - install ocaml-variants       4.14.0+options
+  - install conf-zlib            1                         [required by coq-sail-riscv, libsail]
+  - install ocaml-config         2                         [required by ocaml]
+  - install ocaml                4.14.0                    [required by ordering, dune-private-libs, coq-sail-riscv, etc.]
+  - install ocamlfind            1.9.8                     [required by coq-core, coq-sail-riscv]
+  - install ocamlbuild           0.16.1                    [required by coq-sail-riscv]
+  - install num                  1.6                       [required by lem]
+  - install dune                 3.9.1
+  - install cmdliner             1.3.0                     [required by islaris]
+  - install zarith               1.14                      [required by coq-core]
+  - install base-bytes           base                      [required by omd]
+  - install yojson               3.0.0                     [required by libsail]
+  - install stdlib-shims         0.3.0                     [required by integers]
+  - install sexplib0             v0.16.0                   [required by ppxlib]
+  - install sail_manifest        0.17
+  - install ppx_derivers         1.2.1                     [required by ppxlib]
+  - install pprint               20230830                  [required by islaris, isla-lang, libsail]
+  - install pp                   2.0.0                     [required by dyn, dune-private-libs, stdune]
+  - install ordering             3.9.1
+  - install ocamlgraph           2.2.0                     [required by ott]
+  - install ocaml-compiler-libs  v0.12.4                   [required by ppxlib]
+  - install menhirSdk            20260209                  [required by menhir]
+  - install menhirLib            20260209                  [required by menhir]
+  - install menhirGLR            20260209                  [required by menhir]
+  - install menhirCST            20260209                  [required by menhir]
+  - install linenoise            1.5.1                     [required by sail]
+  - install csexp                1.5.2                     [required by dune-private-libs, stdune]
+  - install base64               3.5.2                     [required by sail_doc_backend, sail_ocaml_backend]
+  - install lem                  2026-05-01                [required by libsail]
+  - install coq-core             8.19.0
+  - install omd                  1.3.2                     [required by sail_doc_backend, sail_latex_backend]
+  - install integers             0.8.0                     [required by islaris]
+  - install dyn                  3.9.1
+  - install ott                  0.34                      [required by islaris, isla-lang, libsail]
+  - install ppxlib               0.35.0                    [required by bisect_ppx]
+  - install menhir               20260209                  [required by islaris, isla-lang, libsail]
+  - install linksem              0.8                       [required by libsail]
+  - install coqide-server        8.19.0
+  - install coq-stdlib           8.19.0
+  - install stdune               3.9.1
+  - install bisect_ppx           2.8.3                     [required by libsail]
+  - install isla-lang            dev
+  - install coq                  8.19.0
+  - install dune-private-libs    3.9.1
+  - install coq-stdpp            dev.2024-09-10.3.a1a12e00
+  - install coq-record-update    0.3.3
+  - install coq-bbv              1.5
+  - install dune-site            3.9.1
+  - install coq-stdpp-bitvector  dev.2024-09-10.3.a1a12e00
+  - install coq-iris             dev.2024-09-10.1.6f24ed4b
+  - install coq-sail             0.17
+  - install libsail              0.17
+  - install coq-stdpp-unstable   dev.2024-09-10.3.a1a12e00
+  - install sail_sv_backend      0.17
+  - install sail_smt_backend     0.17
+  - install sail_output          0.17
+  - install sail_ocaml_backend   0.17
+  - install sail_lem_backend     0.17
+  - install sail_latex_backend   0.17
+  - install sail_doc_backend     0.17
+  - install sail_coq_backend     0.17
+  - install sail_c_backend       0.17
+  - install sail                 0.17
+  - install coq-lithium          dev.2024-09-11.0.7945a29d
+  - install coq-sail-riscv       0.5
+  - install islaris              dev
+===== 74 to install =====

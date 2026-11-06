@@ -23,13 +23,13 @@ All four layers, their separating counterexamples, the universal $N$-slot differ
 
 ## Applicability
 
-This report examines the foundational software fault isolation (SFI) and extensible operating system architectures published between 1993 and 2011 identified in `REPORT.json`, together with their preserved source implementations (`pittsfield-0.7.tar.gz`, `pittsfield-proof-2009-10-30.tar.gz`, `pdos/xok@490cd2496ebbd2b4032c191a036c5711d118e3b9`, `dpf.tar.gz`) and their structural correspondence to the Anneal Rust-to-Lean-4 verification toolchain (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`) and Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`).
+This report examines the foundational software fault isolation (SFI) and extensible operating system architectures published between 1993 and 2011 identified in `REPORT.json`, together with their preserved source implementations (`pittsfield-0.7.tar.gz`, `pittsfield-proof-2009-10-30.tar.gz`, `pdos/xok@490cd2496ebbd2b4032c191a036c5711d118e3b9`, `dpf.tar.gz`) and their structural correspondence to the Anneal Rust-to-Lean-4 verification toolchain (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`) and Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`).
 
 The subjects relate as a **capability-and-invariant progression across shared-address-space extension substrates**:
 - **Instruction-level SFI substrates** (Wahbe et al. 1993 on MIPS R3000 and DEC Alpha; PittSFIeld 2006 on IA-32 x86) define the bit-masking, alignment, and register-reservation rules for confining untrusted machine code within a contiguous virtual memory region.
 - **Exokernel downloaded-code subsystems** (Aegis 1995, ASH 1996, DPF 1996, XOK/`XN` 1997) apply instruction-level sandboxing, bounded loop counters, dynamic code generation, and deterministic bytecode interpretation (`sys/ubb/interp.c`) to untrusted handlers and filesystem metadata functions inside an extensible kernel.
 - **Commodity kernel extension isolation systems** (VINO 1996, MiSFIT 1997, Nooks 2003, XFI 2006, BGI 2009, LXFI 2011) address the gap between raw memory-range sandboxing and monolithic kernel invariants (return-address integrity, in-place kernel synchronization objects, confused-deputy helpers, multi-principal driver instances, and mid-operation extension aborts).
-- **Anneal (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`)** serves as the static compile-time reference point against which runtime SFI guards, dynamic typestate tables, differential determinism, and compensating undo logs are compared.
+- **Anneal (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`)** serves as the static compile-time reference point against which runtime SFI guards, dynamic typestate tables, differential determinism, and compensating undo logs are compared.
 
 Observations from primary papers (`documentation`) and historical source trees (`source`) apply directly to the cited architectures and revisions. The mechanized theorems in [`support/FoundationalSfiKernels.lean`](support/FoundationalSfiKernels.lean) (`execution` + `derived`) apply to the formal state-transition models defined in that file and verified under Lean `v4.34.1` on `x86_64-unknown-linux-gnu`.
 
@@ -191,7 +191,7 @@ How Nooks, BGI, and LXFI resolve these obstacles:
 
 ### 4. Layer 4 — Kernel Extension Abort, Timeout, and Cancellation Recovery (Four-Way Architectural Comparison)
 
-**Basis:** `documentation` (Seltzer et al. OSDI 1996 §3; Swift et al. SOSP 2003 §3.4) + `source` (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc` `trusted/lean/Trusted/Refinement.lean`) + `execution` + `derived` ([`support/FoundationalSfiKernels.lean`](support/FoundationalSfiKernels.lean) `Layer4_VinoTransactionalGrafts`).
+**Basis:** `documentation` (Seltzer et al. OSDI 1996 §3; Swift et al. SOSP 2003 §3.4) + `source` (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b` `trusted/lean/Trusted/Refinement.lean`) + `execution` + `derived` ([`support/FoundationalSfiKernels.lean`](support/FoundationalSfiKernels.lean) `Layer4_VinoTransactionalGrafts`).
 
 #### 4.1 Why Layers 1–3 Fail Under Mid-Operation Extension Abort (`sfi_cfi_api_abort_without_undo_deadlocks_and_corrupts`)
 Suppose a kernel extension (a VINO "graft" or driver callback) satisfies Layer 1 (memory confinement), Layer 2 (bounded instruction fuel), and Layer 3 (CFI + capability-checked kernel helper calls). During execution, the extension legitimately calls a kernel helper to acquire a shared kernel lock (`AcquireLock 1`) and updates the first half of a paired kernel invariant (`AddPrimary 50`, leaving `primaryTable = 150 ≠ shadowAccounting = 100`), and then aborts—either because a subsequent memory access faults on an unmapped guard page (`#PF`) or because its instruction/time budget expires (`fuel = 0`).
@@ -214,13 +214,13 @@ In [`support/FoundationalSfiKernels.lean`](support/FoundationalSfiKernels.lean) 
 
 ---
 
-### 5. Structural Correspondence to Anneal (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`)
+### 5. Structural Correspondence to Anneal (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`)
 
-**Basis:** `source` (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc` `README.md`, `PRINCIPLES.md`, `trusted/audit/src/lib.rs`, `trusted/lean/Trusted/Attributes.lean`, `trusted/lean/Trusted/Refinement.lean`) + `derived`.
+**Basis:** `source` (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b` `README.md`, `PRINCIPLES.md`, `trusted/audit/src/lib.rs`, `trusted/lean/Trusted/Attributes.lean`, `trusted/lean/Trusted/Refinement.lean`) + `derived`.
 
 Inspecting Anneal's source tree reveals a direct mapping between the 1993–2011 runtime SFI/kernel-extension hierarchy and Anneal's compile-time verification architecture:
 
-| Runtime SFI / Kernel Mechanism (1993–2011) | Failure Mode Addressed | Anneal Compile-Time Equivalent (`joshlf/anneal@e6a0b2da5ec3`) |
+| Runtime SFI / Kernel Mechanism (1993–2011) | Failure Mode Addressed | Anneal Compile-Time Equivalent (`joshlf/anneal@c065b55a3a14`) |
 | :--- | :--- | :--- |
 | **Layer 1: Wahbe SFI / PittSFIeld / XFI `mrguard` & `ScopedStack`** | Out-of-bounds memory reads/writes, stack-frame return-address corruption, unaligned mid-instruction jumps | **Safe Rust + `#[anneal::trusted]` Audit (`trusted/audit/src/lib.rs`):** Safe Rust's affine borrow checker and bounds checking statically eliminate arbitrary pointer arithmetic, buffer overflows, and stack frame corruption; `cargo anneal audit` flags every `unsafe` block and `#[anneal::trusted]` item as an explicit verification obligation. |
 | **Layer 2: Exokernel ASH Loop Counters & XN `INST_BUDGET` + Deterministic UDFs** | Non-termination in kernel handlers; nondeterministic/stateful metadata ownership spoofing | **Pure Functional LLBC Translation + `SafeProgram.terminates` (`trusted/lean/Trusted/Refinement.lean:45`):** Aeneas compiles Rust functions into pure, deterministic mathematical functions in Lean 4; `SafeProgram.terminates : ∀ s, ∃ s', step s = some s'` statically proves total termination without runtime fuel counters. |
@@ -234,7 +234,7 @@ Inspecting Anneal's source tree reveals a direct mapping between the 1993–2011
 1. **Hardware MMU / MPK / Virtualization Isolation (`not examined`):**
    This report focuses on software-enforced fault isolation, capability-mediated API proxies, and software transactional recovery (plus Nooks's hybrid `CR3` XPD model as the historical baseline for XFI/BGI/LXFI). Hardware virtualization (`VT-x`, `SVM`), Extended Page Tables (`EPT`), ARM Pointer Authentication (`PAC`), and Intel Memory Protection Keys (`MPK`/`PKRU`) were **not examined** here.
 2. **Original VINO, MiSFIT, XFI, BGI, and LXFI Source Trees (`unknown` / `not examined`):**
-   While we directly inspected the primary source trees for PittSFIeld (`pittsfield-0.7.tar.gz`, `pittsfield-proof-2009-10-30.tar.gz`), Exokernel/XOK (`pdos/xok@490cd2496ebbd2b4032c191a036c5711d118e3b9`), DPF (`dpf.tar.gz`), and Anneal (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`), the proprietary Microsoft Research implementations of XFI and BGI (built on the Phoenix compiler and Windows kernel) and the Harvard VINO/MiSFIT and MIT LXFI source trees were **not examined** directly; findings for those systems are grounded in their published SOSP/OSDI/USENIX papers (`documentation`) and our mechanized Lean 4 models (`execution` + `derived`).
+   While we directly inspected the primary source trees for PittSFIeld (`pittsfield-0.7.tar.gz`, `pittsfield-proof-2009-10-30.tar.gz`), Exokernel/XOK (`pdos/xok@490cd2496ebbd2b4032c191a036c5711d118e3b9`), DPF (`dpf.tar.gz`), and Anneal (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`), the proprietary Microsoft Research implementations of XFI and BGI (built on the Phoenix compiler and Windows kernel) and the Harvard VINO/MiSFIT and MIT LXFI source trees were **not examined** directly; findings for those systems are grounded in their published SOSP/OSDI/USENIX papers (`documentation`) and our mechanized Lean 4 models (`execution` + `derived`).
 3. **Differential Determinism Does Not Verify Intra-LibOS Semantic Correctness (`known not to apply`):**
    As proved in `xn_differential_determinism_intra_libos_boundary` in [`support/FoundationalSfiKernels.lean`](support/FoundationalSfiKernels.lean), XOK's `XN` differential determinism check (`udf_alloc`/`udf_write`/`udf_dealloc` around a pure `owns-udf_T`) is **known not to apply** to intra-LibOS semantic correctness: if a LibOS supplies a buggy `owns-udf_T` whose computed block set disagrees with the LibOS's own user-space file reader, the LibOS can corrupt or lose its own blocks without violating global inter-LibOS block disjointness.
 4. **Exception-Table Landing Pads + Stack RAII `Drop` Do Not Roll Back Committed Shared-State Mutations (`known not to apply`):**
@@ -273,7 +273,7 @@ Inspecting Anneal's source tree reveals a direct mapping between the 1993–2011
   - `src/exopc/sys/kern/scode.c:1–295` (`scode_CheckProg`, `scode_instrument_branches`).
 - **MIT PDOS Dynamic Packet Filter (`dpf.tar.gz`, SHA-256 `862c2a870249e230d68c131d5237ee74c3f70248cd6c9d2a5ff12168d614364b`):**
   - `src/dpf/{tree.c,optimize.c,gen.c,ir.c}` (`coalesce_atoms`, `or_insert`, `check_shifts`).
-- **Anneal (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`):**
+- **Anneal (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`):**
   - `trusted/audit/src/lib.rs` (static scanner rejecting unapproved `unsafe` and auditing `#[anneal::trusted]`);
   - `trusted/lean/Trusted/Attributes.lean` (`isValid`, `precondition`, `postcondition`, `spec`);
   - `trusted/lean/Trusted/Refinement.lean:44–56` (`SafeProgram.terminates`, `Refines`).
@@ -289,10 +289,10 @@ Inspecting Anneal's source tree reveals a direct mapping between the 1993–2011
 1. **Re-verify the Preserved Lean 4.34.1 Mechanization (`support/FoundationalSfiKernels.lean`):**
    Run the Lean `v4.34.1` compiler directly on the preserved support file:
    ```bash
-   lean reports/sfi-foundational-extensible-kernels-1993-2011/support/FoundationalSfiKernels.lean
+   lean support/FoundationalSfiKernels.lean
    ```
    Confirm that the command exits with status `0`, emits zero warnings, and that the `#print axioms` output for all 40 theorems lists only `[propext, Quot.sound]` or `does not depend on any axioms` (never `sorryAx`, `Classical.choice`, or `Lean.ofReduceBool`).
 2. **Re-check XOK `XN` Differential Determinism and ASH Sandboxing in `pdos/xok`:**
    If comparing against another revision of `pdos/xok`, diff `src/exopc/sys/ubb/{ubs.h,check.c,interp.c,udf.c}` and `src/exopc/sys/kern/scode.c` against commit `490cd2496ebbd2b4032c191a036c5711d118e3b9`. Check whether `INST_BUDGET`, `udf_check`'s opcode whitelist, `check_addr`'s metadata-block confinement, or the `set_Sub`/`set_eq` checks in `udf_alloc`/`udf_write`/`udf_dealloc` have changed.
 3. **Re-check Anneal's Static Admission Obligations (`joshlf/anneal`):**
-   If Anneal's `trusted/lean/Trusted/Refinement.lean` or `trusted/audit/src/lib.rs` changes from commit `e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`, inspect whether `SafeProgram.terminates` still requires total transition steps (`∀ s, ∃ s', step s = some s'`) and whether `Refines` still enforces lock-step abstract state simulation without partial-mutation abort paths.
+   If Anneal's `trusted/lean/Trusted/Refinement.lean` or `trusted/audit/src/lib.rs` changes from commit `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`, inspect whether `SafeProgram.terminates` still requires total transition steps (`∀ s, ∃ s', step s = some s'`) and whether `Refines` still enforces lock-step abstract state simulation without partial-mutation abort paths.

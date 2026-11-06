@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "mathlib/data",
+    "lake/artifact-cache",
+    "build/caching"
+  ],
+  "subjects": [
+    {
+      "name": "Mathlib cache artifact construction selected through Aeneas",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "input-revision": "v4.30.0-rc2",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Aeneas Lean dependency graph selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Anneal consumption of the selected Mathlib cache",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/flake.nix"
+      }
+    },
+    {
+      "name": "Lean module-import syntax used to assess pruning completeness",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "component": "Lean.Parser.Module"
+      }
+    },
+    {
+      "name": "Mathlib selected matched tag",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "tag": "v4.34.1",
+        "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean selected matched tag",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/e33_consumer_windows.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "windows-subjects-opt2",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/capture-subjects-o2-01/reference.json",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01"
+  ],
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "LC_ALL": "C",
+    "LANG": "C"
+  },
+  "cwd": "${WORKSPACE}",
+  "consumer_sha256": "710ddfdac53cda6e50198cd3f3a642712676d69db7d1474d47d589bcb1cd3810",
+  "candidate_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+  "run_path": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01"
+}

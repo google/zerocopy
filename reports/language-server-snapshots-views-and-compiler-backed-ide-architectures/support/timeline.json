@@ -1,0 +1,72 @@
+{
+  "schema": "anneal-reference/timeline/v1",
+  "scope": "J009 RLS to rust-analyzer architecture history",
+  "events": [
+    {
+      "date": "2015-10-13",
+      "event": "RFC 1317 starts",
+      "status": "design intent",
+      "significance": "RLS already targets low-latency incomplete-source IDE work through compiler reuse, database/work queue, and proposed lazy/persistent compilation."
+    },
+    {
+      "date": "2016-02-11",
+      "event": "RFC 1317 accepted into rust-lang/rfcs",
+      "status": "accepted project decision",
+      "significance": "Compiler-as-library becomes the official architectural direction for Rust language-server work."
+    },
+    {
+      "period": "2016-2019",
+      "event": "RLS matures around rustc save-analysis and build orchestration",
+      "status": "implementation history",
+      "significance": "Precise compiler facts are indexed cross-crate, but semantic refresh remains tied substantially to crate/build work; VFS, cancellation/squashing and Racer fallbacks mitigate but do not remove that shape."
+    },
+    {
+      "period": "late 2017-2018",
+      "event": "rust-analyzer begins as error-resilient parsing experiment and grows into useful IDE",
+      "status": "project retrospective",
+      "significance": "Separate front-end provides a laboratory for editor-first semantics and state."
+    },
+    {
+      "date": "2019-12-04",
+      "event": "IDE team compares RLS and rust-analyzer",
+      "status": "project-team analysis",
+      "significance": "RLS precision is contrasted with rust-analyzer performance/flexible API; hybrid save-analysis plus long-term library-ification is considered."
+    },
+    {
+      "date": "2020-04-20",
+      "event": "rust-analyzer first-release account and RFC 2912 start",
+      "status": "project-author account / proposal",
+      "significance": "Persistent on-demand queries are presented as a fundamental architecture shift; semantic limitations are acknowledged."
+    },
+    {
+      "date": "2020-05-29",
+      "event": "RFC 2912 accepted into rust-lang/rfcs",
+      "status": "accepted project decision",
+      "significance": "Rust chooses rust-analyzer transition while explicitly accepting temporary duplicate semantics and pursuing shared libraries."
+    },
+    {
+      "date": "2022-02-21",
+      "event": "rust-analyzer joins Rust organization",
+      "status": "official project transition",
+      "significance": "Organizational ownership catches up with the technical direction."
+    },
+    {
+      "date": "2022-07-01",
+      "event": "RLS deprecation announced",
+      "status": "official project decision",
+      "significance": "Rust explicitly attributes replacement to RLS architectural limits for interactive latency/quality."
+    },
+    {
+      "date": "2025-03-17",
+      "event": "rust-analyzer moves more state onto newer salsa, including crate graph",
+      "status": "implementation evolution",
+      "significance": "Fine-grained persistent incrementality remains a core direction rather than a temporary bridge."
+    },
+    {
+      "date": "2026-09-27",
+      "event": "Current inspected rust-analyzer and rustc-dev-guide revisions",
+      "status": "current structure",
+      "significance": "Distinct editor/compiler front-end contexts coexist with substantial shared rustc semantic libraries, especially trait solving."
+    }
+  ]
+}

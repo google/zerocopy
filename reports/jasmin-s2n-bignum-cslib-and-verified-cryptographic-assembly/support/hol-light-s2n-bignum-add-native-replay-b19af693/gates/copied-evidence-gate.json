@@ -1,0 +1,8 @@
+{
+  "bignum_add.o": true,
+  "bignum_add.obj": true,
+  "signature_inputs690": true,
+  "generator_exit0": true,
+  "arm_generated_copy": true,
+  "x86_generated_copy": true
+}

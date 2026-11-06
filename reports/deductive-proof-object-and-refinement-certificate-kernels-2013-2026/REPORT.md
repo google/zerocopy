@@ -23,10 +23,10 @@ This report synthesizes these four paradigms from primary sources and mechanizes
 
 This report applies directly to:
 
-- **Anneal's Trusted Verification Boundary (`AeneasVerif/anneal`, `trusted/lean/Trusted/` and `theory/Anneal/Refinement.lean`)**:
+- **Anneal's Trusted Verification Boundary (`joshlf/anneal`, `trusted/lean/Trusted/` and `theory/Anneal/Refinement.lean`)**:
   Specifically `Trusted.Refinement` (`Language`, `VerifiedOn`, `Obligation`, `EmittedArtifact`, `StrictUnitTheorem`), `Trusted.StepResult` (`StepResult`, `SmallStepMachine`, `ReachesPrefix`, `EventualBehaviorOf`), `Trusted.MirSemantics` (`CrateTheorem`), `Trusted.Rv64Semantics` (`encodeRv64ElfBytes`, `Rv64ArchState`), `Trusted.X86Semantics` (`X86State`, `AdmissibleLibInv`, `CrateTheorem`), `Anneal.PassCompiler`, `Anneal.CertChecker`, and the outer audit gate `trusted/audit/src/lib.rs` (`verify_emitted_artifacts`).
-- **Anneal's Kernel Verification Prototype (`google/zerocopy` branch `anneal-kernel`, commit `234131c52963cca4e2725dbfc02feb5214de81f4`)**:
-  Specifically `anneal/src/Anneal.lean` (`Anneal.SpecificationHolds`, `Anneal.wp_prove_orthogonal`, `SpecLayout`, `SpecSliceDstLayout`) and `anneal/src/generate.rs`.
+- **Anneal's Kernel Verification Prototype (`google/zerocopy` branch `anneal-kernel`, commit `8fb35253fbc703cb2cd0997f4efcda76cf9062b6`)**:
+  Specifically `anneal/src/Anneal.lean` (`Anneal.SpecHolds (defined inline as `∀ x, ∃ y, f x = some y ∧ Rel x y`)`, `Anneal.wp_prove_orthogonal`, `SpecLayout`, `SpecSliceDstLayout`) and `anneal/src/generate.rs`.
 - **Kraken's Consumer-Bound Byte-Certificate Checker (`AeneasVerif/kraken`, commit `8af78062037bc237b341d20252aafd1797c1bcb7`)**:
   Specifically how consumer-bound byte checking extends from single-leaf AArch64 functions to full Ring-0 kernel extensions with host-kernel helper calls and linear capability transfer.
 
@@ -111,12 +111,12 @@ Mario Carneiro's **Metamath Zero (`MM0`)** (*Metamath Zero: Designing a Theorem 
 
 #### 3.2 Exact Mapping to Anneal's Trusted Verification Boundary
 
-Inspecting `AeneasVerif/anneal` (`e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`, `7677632ab267e6d7075fc9ddca7280ddf0296f87`, `3a89578`) and `google/zerocopy` (`anneal-kernel` `234131c52963cca4e2725dbfc02feb5214de81f4`) establishes how Anneal implements consumer-bound proof and certificate verification:
+Inspecting `joshlf/anneal` (`c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`, `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`, `3a89578`) and `google/zerocopy` (`anneal-kernel` `8fb35253fbc703cb2cd0997f4efcda76cf9062b6`) establishes how Anneal implements consumer-bound proof and certificate verification:
 
-- **`anneal/src/Anneal.lean` (`234131c52963cca4e2725dbfc02feb5214de81f4`)**:
-  - `Anneal.SpecificationHolds` (`lines 34–38`) and `Anneal.wp_prove_orthogonal` (`lines 60–65`) decouple total termination/progress (`∃ y, m = .ok y`) from functional postcondition correctness (`∀ y, m = .ok y → P y`).
+- **`anneal/src/Anneal.lean` (`8fb35253fbc703cb2cd0997f4efcda76cf9062b6`)**:
+  - `Anneal.SpecHolds (defined inline as `∀ x, ∃ y, f x = some y ∧ Rel x y`)` (`lines 34–38`) and `Anneal.wp_prove_orthogonal` (`lines 60–65`) decouple total termination/progress (`∃ y, m = .ok y`) from functional postcondition correctness (`∀ y, m = .ok y → P y`).
   - `SpecLayout`, `Layout`, `HasStaticLayout` (`lines 260–376`), and `SpecSliceDstLayout`/`reprCSliceDstSize` (`lines 414–502`) formalize layout and alignment invariants for zero-copy pointer conversions.
-- **`trusted/lean/Trusted/Refinement.lean` (`7677632ab267e6d7075fc9ddca7280ddf0296f87`)**:
+- **`trusted/lean/Trusted/Refinement.lean` (`c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`)**:
   - `Partial (B : Type u)` (`lines 106–108`): Constructive partiality carrier (`defined : Prop`, `val : defined → B`) avoiding `Classical.choice`, with `Partial.ub` (`118–119`) and `Partial.bot` (`127–128`).
   - `Language (SemObs : Type w)` (`lines 201–210`) & `Language.VerifiedOn` (`lines 329–334`): Conjoins `SpineSpecOn`, `NonVacuousOn`, and `ProductiveOn`.
   - Constructor-gated `Obligation (P : Prop)` (`lines 545–548` with `private mk ::`).
@@ -225,7 +225,7 @@ In Section 4 of [`support/DeductiveAndRefinementCertificateKernels.lean`](suppor
 - **seL4 Binary Translation Validation**: Sewell, Myreen & Klein, PLDI 2013 (`10.1145/2491956.2462183`); Myreen, Gordon & Slind, FMCAD 2012 (`10.1109/FMCAD.2012.6462558`); `seL4/graph-refine`.
 - **Cogent, Dargent & Pancake**: Amani et al., ASPLOS 2016 (`10.1145/2872362.2872404`); O'Connor et al., ICFP 2016 (`10.1145/2951913.2951940`); Chen et al., POPL 2023 (`10.1145/3571240`); Aman Pohjola et al., PLOS 2023 (`10.1145/3623759.3624544`).
 - **Metamath Zero (`.mmb`)**: Carneiro, CPP 2020 (`10.1145/3372885.3373826`); `digama0/mm0` (`mm0-c/verifier.c`, `mm0-c/verifier.h`).
-- **Anneal & Kraken**: `AeneasVerif/anneal` (`trusted/lean/Trusted/Refinement.lean`, `trusted/lean/Trusted/StepResult.lean`, `trusted/lean/Trusted/MirSemantics.lean`, `trusted/lean/Trusted/Rv64Semantics.lean`, `trusted/lean/Trusted/X86Semantics.lean`, `theory/Anneal/Refinement.lean`, `trusted/audit/src/lib.rs`); `google/zerocopy` (`anneal-kernel` branch `234131c52963cca4e2725dbfc02feb5214de81f4`, `anneal/src/Anneal.lean`); `AeneasVerif/kraken` (`8af78062037bc237b341d20252aafd1797c1bcb7`).
+- **Anneal & Kraken**: `joshlf/anneal` (`trusted/lean/Trusted/Refinement.lean`, `trusted/lean/Trusted/StepResult.lean`, `trusted/lean/Trusted/MirSemantics.lean`, `trusted/lean/Trusted/Rv64Semantics.lean`, `trusted/lean/Trusted/X86Semantics.lean`, `theory/Anneal/Refinement.lean`, `trusted/audit/src/lib.rs`); `google/zerocopy` (`anneal-kernel` branch `8fb35253fbc703cb2cd0997f4efcda76cf9062b6`, `anneal/src/Anneal.lean`); `AeneasVerif/kraken` (`8af78062037bc237b341d20252aafd1797c1bcb7`).
 
 ---
 

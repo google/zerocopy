@@ -1,0 +1,4 @@
+error: could not match term to any of the original problem premises: (not (>= (select source 0) 2))
+  [34m-->[39m in file [4m[34mbool_validate.0.translated.alethe[39m[0m
+  [1mnote:[0m checking failed on step [33ma12[39m with rule [33massume[39m
+

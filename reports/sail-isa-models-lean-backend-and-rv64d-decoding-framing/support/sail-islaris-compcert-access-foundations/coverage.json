@@ -1,0 +1,65 @@
+{
+  "package": "sail-islaris-compcert-access-foundations",
+  "observed_at": "2026-10-14",
+  "agenda": [
+    {
+      "id": "AS18",
+      "status": "partial",
+      "sections": [
+        "Findings / Sail generation changes the semantic input, not the need to identify it"
+      ],
+      "answered_scope": [
+        "Primary model/backend inventory; actual Lean rewrite/support configuration and architectural effects",
+        "FakeReal default and opt-in real-number configuration identified"
+      ],
+      "stronger_unestablished_claims": [
+        "Generated Lean defines a verified Sail translation or hardware relation",
+        "All backends/models/effects are covered by one scalar model theorem"
+      ],
+      "unexamined_gaps": [
+        "No exact generated Lean ISA import/decode/proof of arithmetic, underspecification, or fault case",
+        "Independent generator/runtime/backend correctness not audited"
+      ]
+    },
+    {
+      "id": "AS19",
+      "status": "partial",
+      "sections": [
+        "Findings / Islaris adequacy is over traces; validating their ISA origin is another theorem"
+      ],
+      "answered_scope": [
+        "Pinned trace adequacy statement, full-width trace operations/MMIO branch, ignored tags/kinds",
+        "Published RISC-V validation scope separated from unfinished admitted Arm-link experiment"
+      ],
+      "stronger_unestablished_claims": [
+        "Iris trace proof validates pruning/opcode semantics automatically",
+        "Arm optional validation is established because RISC-V validation exists"
+      ],
+      "unexamined_gaps": [
+        "No actual Isla trace generation/validation or common load/store proof",
+        "RISC-V validation source/dependency closure and practical branch/access mutants not executed"
+      ]
+    },
+    {
+      "id": "AS23",
+      "status": "partial",
+      "sections": [
+        "Findings / CompCert provides an enforced full-width permission mechanism with another pointer model",
+        "Findings / Executed finite fixtures separate the predicates without simulating an upstream tool"
+      ],
+      "answered_scope": [
+        "CompCert selected for precise missing range-permission obligation; source checks every chunk byte plus alignment before assembly step",
+        "Owned finite fixtures separate defined bytes, mapping, permissions, and logical lifetime"
+      ],
+      "stronger_unestablished_claims": [
+        "CompCert block model supplies Rust provenance or real page-table correctness",
+        "Finite fixtures constitute CompCert execution or common-case proof"
+      ],
+      "unexamined_gaps": [
+        "Actual CompCert common-program positive/negative proof unexecuted",
+        "ACL2/K/HolBA/CakeML/bedrock2 and other RISC-V foundations deferred"
+      ]
+    }
+  ],
+  "interpretation": "Statuses describe only the explicit answered scopes. Unexamined research is separate from stronger implementation/theorem claims."
+}

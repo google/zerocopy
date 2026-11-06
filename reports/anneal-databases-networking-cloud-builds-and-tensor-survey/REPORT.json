@@ -1,0 +1,220 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/behavior-codec",
+    "anneal/domain-generalization",
+    "anneal/progress-refinement",
+    "anneal/trust-policy",
+    "authorization/cedar",
+    "authorization/zanzibar",
+    "build-systems/incremental",
+    "cloud/kubernetes-controllers",
+    "compilers/mlir-tensor",
+    "compilers/polyhedral",
+    "databases/ivm-dbsp",
+    "databases/query-equivalence",
+    "differential-privacy/verification",
+    "distributed-systems/consensus",
+    "networking/bgp-verification",
+    "networking/p4-sdn",
+    "parsing/verified-combinators",
+    "storage/crash-consistency",
+    "streaming/watermarks",
+    "anneal",
+    "anneal/refinement",
+    "anneal/external-calls",
+    "databases/sql-equivalence",
+    "databases/query-optimizers",
+    "databases/incremental-view-maintenance",
+    "storage/lsm-compaction",
+    "distributed-systems/kubernetes-controllers",
+    "networking/p4-compilers",
+    "networking/bgp-convergence",
+    "security/authorization-policy",
+    "security/differential-privacy",
+    "build-systems/incremental-soundness",
+    "compilers/tensor-ml",
+    "verification/historical-failures"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal trusted Lean verification root (trusted/lean/Trusted.lean, trusted/lean/Trusted/Attributes.lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal design, architecture, and trust-model specification (docs/architecture.md, docs/design.md, docs/trust-model.md)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal verification framework and robust-code specification (skills/robust-code/SKILL.md)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaborator toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "identity": {
+        "doi": "10.14778/3587136.3587140",
+        "repository": "feldera/feldera",
+        "venue": "PVLDB 16(6) 2023"
+      },
+      "name": "DBSP and Feldera incremental view maintenance and SQL-to-circuit compiler"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3035918.3056447",
+        "repository": "uwdb/Cosette",
+        "venue": "CIDR / SIGMOD 2017"
+      },
+      "name": "Cosette, UDP, EQUITAS, SPES, and WeTune SQL equivalence and rewrite verifiers"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3341301.3359632",
+        "repository": "mit-pdos/perennial",
+        "venue": "SOSP 2019 / OSDI 2022"
+      },
+      "name": "FSCQ, Perennial, DaisyNFS, Yggdrasil, VeriBetrKV, Cogent/BilbyFS, Flashix, Atmosphere, and SplinterDB crash-consistent storage systems"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2737924.2737958",
+        "repository": "uwplse/verdi",
+        "venue": "PLDI 2015 / SOSP 2015 / POPL 2016"
+      },
+      "name": "Verdi, IronFleet, Ivy, Aneris, Chapar, TLAPS, FoundationDB, and Jepsen/Elle distributed systems verifiers"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3098822.3098828",
+        "repository": "batfish/batfish",
+        "venue": "SIGCOMM 2017 / NSDI 2020 / POPL 2014"
+      },
+      "name": "Batfish, Minesweeper, Bagpipe, NetKAT, p4v, Vera, Petr4, Poulet4, Gauntlet, APKeep, and NV/ShapeShifter networking verifiers"
+    },
+    {
+      "identity": {
+        "repository": "anvil-verifier/anvil",
+        "url": "https://www.usenix.org/conference/osdi24/presentation/sun",
+        "venue": "USENIX OSDI 2024"
+      },
+      "name": "Anvil, Sieve, K8s-TLA+, Tiros, Rehearsal, Checkov, and Conftest cloud IaC and controller verifiers"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3649835",
+        "repository": "cedar-policy/cedar-spec",
+        "venue": "OOPSLA 2024"
+      },
+      "name": "Cedar (cedar-spec in Lean 4), Zelkova, Margrave, Zanzibar/SpiceDB/OpenFGA, OPA, and OpenDP/Chorus/Fuzz/DFuzz/CertiPriv"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3236774",
+        "repository": "snowleopard/build",
+        "venue": "ICFP 2018 / JFP 2020"
+      },
+      "name": "Build Systems a la Carte, Pluto, Salsa, Buck2 DICE, Adapton, Bazel Skyframe, and PubGrub"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3519939.3523446",
+        "repository": "exo-lang/exo",
+        "venue": "PLDI 2022 / OSDI 2025"
+      },
+      "name": "Exo, Verified-Halide, MLIR-TV/VeriHLO, XLA GSPMD/PartIR/Shardy, Polly/isl, GPUVerify/Faial, and Tensat/Mirage"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3453483.3454053",
+        "repository": "TimelyDataflow/timely-dataflow",
+        "venue": "SOSP 2013 / PLDI 2021"
+      },
+      "name": "Timely Dataflow, StreamBox, Flink ABS, Coqlex, VeriLex, Ausaf-Dyckhoff-Urban POSIX Regex, lean-regex, CoStar, and TRX"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3290389",
+        "repository": "project-everest/everparse",
+        "venue": "USENIX Security 2019 / POPL 2019 / USENIX Security 2025"
+      },
+      "name": "EverParse/3D, Narcissus, Vest, Cambria, Boomerang, Buf, Temporal, Restate, and P Language"
+    },
+    {
+      "name": "SQLancer (NoREC, TLP, PQS) query optimizer logic bug studies across PostgreSQL, MySQL, CockroachDB, SQLite, and TiDB",
+      "identity": {
+        "norec-doi": "10.1145/3368089.3409710",
+        "pqs-venue": "OSDI 2020",
+        "repository": "sqlancer/sqlancer",
+        "tlp-doi": "10.1145/3428279"
+      }
+    },
+    {
+      "name": "Cosette, UDP, WeTune, and DBSP relational query equivalence and incremental view maintenance verifiers",
+      "identity": {
+        "cosette-venue": "CIDR 2017 / PLDI 2017",
+        "dbsp-doi": "10.14778/3587136.3587137",
+        "udp-doi": "10.14778/3192965.3192971",
+        "wetune-doi": "10.1145/3514221.3526125"
+      }
+    },
+    {
+      "name": "FSCQ, Yggdrasil, RocksDB DeleteRange compaction, and Jepsen/Elle distributed storage and consensus failure analyses",
+      "identity": {
+        "elle-doi": "10.14778/3457390.3457396",
+        "fscq-doi": "10.1145/2815400.2815402",
+        "rocksdb-repository": "facebook/rocksdb",
+        "yggdrasil-venue": "OSDI 2016"
+      }
+    },
+    {
+      "name": "Sieve and Anvil Kubernetes reconciliation controller stale-cache TOCTOU and liveness verification studies",
+      "identity": {
+        "anvil-venue": "OSDI 2024",
+        "sieve-venue": "OSDI 2022"
+      }
+    },
+    {
+      "name": "Gauntlet and Petr4 P4 compiler miscompilation analyses and BGP RFC 3345 / Dispute Wheel route oscillation theory",
+      "identity": {
+        "gauntlet-arxiv": "2006.01074",
+        "gauntlet-venue": "OSDI 2020",
+        "petr4-doi": "10.1145/3434304",
+        "rfc": "RFC 3345"
+      }
+    },
+    {
+      "name": "AWS Cedar Lean 4 Verification-Guided Development and floating-point differential privacy sensitivity/LSB attacks (Mironov 2012, Casacuberta et al. 2022)",
+      "identity": {
+        "casacuberta-doi": "10.1145/3548606.3560708",
+        "cedar-arxiv": "2403.04651",
+        "cedar-venue": "OOPSLA 2024",
+        "mironov-doi": "10.1145/2382196.2382264"
+      }
+    },
+    {
+      "name": "Pluto, Build Systems a la Carte, Bazel/Ninja/Salsa incremental build soundness, NNSmith/Tzer/Halide/Triton/XLA tensor compiler bugs, and Cloudflare/StackOverflow ReDoS postmortems",
+      "identity": {
+        "bsalc-doi": "10.1145/3236774",
+        "nnsmith-doi": "10.1145/3575693.3575707",
+        "pluto-doi": "10.1145/2814270.2814316",
+        "tzer-doi": "10.1145/3533767.3534388"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

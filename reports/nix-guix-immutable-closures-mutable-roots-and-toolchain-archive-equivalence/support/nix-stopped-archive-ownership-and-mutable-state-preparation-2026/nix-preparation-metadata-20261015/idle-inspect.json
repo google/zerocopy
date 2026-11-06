@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "inspect",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5"
+  ],
+  "status": 0,
+  "seconds": 0.057617749902419746,
+  "stdout_bytes": 7677,
+  "stdout_sha256": "9eeb76d95d55e726bfeb4a9fc2a14677afd30540ee89874235a494cbcf04fb23"
+}

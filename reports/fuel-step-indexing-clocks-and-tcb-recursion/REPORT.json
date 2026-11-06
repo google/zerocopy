@@ -1,0 +1,97 @@
+{
+  "topics": [
+    "anneal/mir-semantics",
+    "anneal/trusted-computing-base",
+    "anneal/semantic-polarity",
+    "anneal/step-indexing",
+    "lean/termination",
+    "lean/kernel-reduction",
+    "lean/mechanized-models",
+    "verification/fuel-semantics",
+    "verification/functional-big-step",
+    "verification/omnisemantics",
+    "verification/coinductive-semantics",
+    "verification/logical-relations"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal formal verification system (architecture, design, and trust boundary specifications)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal formal verification system (role-aware TCB syntax allowlist and prelude boundary)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Anneal formal verification system (origin/main baseline)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Owens, Myreen, Kumar, and Tan (ESOP 2016) — Functional Big-Step Semantics",
+      "identity": {
+        "doi": "10.1007/978-3-662-49498-1_23",
+        "url": "https://cakeml.org/esop16.pdf"
+      }
+    },
+    {
+      "name": "Charguéraud, Campbell, Ligtvoet, and collaborators (TOPLAS 2023) — Omnisemantics: Smoother Handling of Nondeterminism",
+      "identity": {
+        "doi": "10.1145/3579834",
+        "url": "https://dl.acm.org/doi/10.1145/3579834"
+      }
+    },
+    {
+      "name": "Appel and McAllester (TOPLAS 2001) — An Indexed Model of Recursive Types for Foundational Proof-Carrying Code",
+      "identity": {
+        "doi": "10.1145/504709.504712",
+        "url": "https://dl.acm.org/doi/10.1145/504709.504712"
+      }
+    },
+    {
+      "name": "Jung, Krebbers, Jourdan, Bizjak, Birkedal, and Dreyer (JFP 2018) — Iris from the Ground Up",
+      "identity": {
+        "doi": "10.1017/S0956796818000151",
+        "url": "https://doi.org/10.1017/S0956796818000151"
+      }
+    },
+    {
+      "name": "Xia, Zakowski, He, Hur, Malecha, Pierce, and Zdancewic (POPL 2020) — Interaction Trees",
+      "identity": {
+        "doi": "10.1145/3371119",
+        "url": "https://dl.acm.org/doi/10.1145/3371119"
+      }
+    },
+    {
+      "name": "Leroy and Grall (Information and Computation 2009) — Coinductive Big-Step Operational Semantics",
+      "identity": {
+        "doi": "10.1016/j.ic.2007.12.004",
+        "url": "https://xavierleroy.org/publi/coindsem-journal.pdf"
+      }
+    },
+    {
+      "name": "Amin and Rompf (POPL 2017) — Type Soundness Proofs with Definitional Interpreters",
+      "identity": {
+        "doi": "10.1145/3009837.3009866",
+        "url": "https://dl.acm.org/doi/10.1145/3009837.3009866"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

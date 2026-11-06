@@ -1,0 +1,227 @@
+[
+    {
+        "Id": "25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013",
+        "Created": "2026-10-14T22:22:04.398906416Z",
+        "Path": "opam",
+        "Args": [
+            "exec",
+            "--",
+            "/bin/sleep",
+            "infinity"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 1809612,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-14T22:22:17.276826386Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+        "ResolvConfPath": "/var/lib/docker/containers/25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013/hostname",
+        "HostsPath": "/var/lib/docker/containers/25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013/hosts",
+        "LogPath": "/var/lib/docker/containers/25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013/25eb1b523db2497066f28642e5490138770460c2b34cde58d22d65299e02b013-json.log",
+        "Name": "/anneal-formal-experiments-20261014",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {
+                    "max-file": "5",
+                    "max-size": "20m"
+                }
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 8409579520,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 3221225472,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 6442450944,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": 512,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "<TASK_FORMAL_TOOLS>",
+                    "Target": "/work"
+                }
+            ],
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "<TASK_FORMAL_TOOLS>",
+                "Destination": "/work",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "25eb1b523db2",
+            "Domainname": "",
+            "User": "root",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "OPAMROOT=/home/opam/.opam",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "HOME=/home/opam",
+                "OPAMYES=1",
+                "OPAMCONFIRMLEVEL=unsafe-yes",
+                "OPAMERRLOGLEN=0",
+                "OPAMPRECISETRACKING=1"
+            ],
+            "Cmd": [
+                "/bin/sleep",
+                "infinity"
+            ],
+            "Image": "ocaml/opam@sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+            "Volumes": null,
+            "WorkingDir": "/work",
+            "Entrypoint": [
+                "opam",
+                "exec",
+                "--"
+            ],
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "SandboxID": "3b6c0d21b0bfd99f40f279a1ce1c164b79aecd8268c14e5f5b86ddcde50208db",
+            "SandboxKey": "/var/run/docker/netns/3b6c0d21b0bf",
+            "Ports": {},
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "f379b2ac09c53a29a11498f95151958e94239606ab5d5d13d5166ca576c0dca9",
+                    "EndpointID": "c7fabce98cd2b0bdad093472bd80b3f9a4c8c54419da63719a6b0955c8d6abbc",
+                    "Gateway": "192.168.215.1",
+                    "IPAddress": "192.168.215.3",
+                    "MacAddress": "3e:d2:dc:17:28:a8",
+                    "IPPrefixLen": 24,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+            "size": 9917,
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux"
+            }
+        }
+    }
+]

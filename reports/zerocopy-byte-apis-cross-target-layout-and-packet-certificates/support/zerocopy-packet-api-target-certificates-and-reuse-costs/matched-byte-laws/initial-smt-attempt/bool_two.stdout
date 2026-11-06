@@ -1,0 +1,2 @@
+sat
+(((select source 0) 2) ((select source 1) 0) ((select current 0) 2) ((select current 1) 0) ((select source_init 0) true) ((select source_read 0) true) ((select source_init 1) false) ((select source_read 1) false) ((select current_init 0) true) ((select current_read 0) true) ((select current_init 1) false) ((select current_read 1) false) ((select write_authority 0) false) ((select write_authority 1) false) (changed 1) (framed 1) (replacement 0))

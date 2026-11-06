@@ -1,0 +1,27 @@
+{
+  "command": [
+    "$TOOL/lean",
+    "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmValidator.lean"
+  ],
+  "exit": 1,
+  "elapsed_seconds": 0.45232320798095316,
+  "source_sha256": "0250782644b1a1af5769b707af407a057269ff6943b4bc8a4f77c5d0b518e0e0",
+  "version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "identities": [
+    {
+      "path": "$TOOL/lean",
+      "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+    },
+    {
+      "path": "$TOOL/Init.olean",
+      "sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+    },
+    {
+      "path": "$TOOL/libleanshared.dylib",
+      "sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50"
+    }
+  ],
+  "stdout": "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmValidator.lean:62:8: error(lean.unknownIdentifier): Unknown constant `Nat.land_comm`\n'RestrictedWasm.compiler_correct' depends on axioms: [propext, sorryAx]\n'RestrictedWasm.body_roundtrip' depends on axioms: [propext, Quot.sound]\n'RestrictedWasm.module_roundtrip' depends on axioms: [propext, Quot.sound]\n'RestrictedWasm.accepted_bytes' depends on axioms: [propext]\n'RestrictedWasm.bound_module_correct' depends on axioms: [propext, sorryAx]\n'RestrictedWasm.literal_accepted' depends on axioms: [propext, Quot.sound]\n'RestrictedWasm.admit_sound' depends on axioms: [propext, sorryAx]\n'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]\n'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]\n'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]\n[0, 97, 115, 109, 1, 0, 0, 0, 1, 9, 1, 96, 4, 127, 127, 127, 127, 1, 127, 3, 2, 1, 0, 7, 12, 1, 8, 118, 97, 108, 105,\n 100, 97, 116, 101, 0, 0, 10, 27, 1, 25, 0, 32, 0, 65, 2, 73, 32, 1, 65, 2, 73, 113, 32, 2, 65, 2, 73, 32, 3, 65, 2, 73,\n 113, 113, 11]\n",
+  "stderr": "",
+  "assurance": "Original restricted-grammar experiment; Lean4.34.1 acceptance; no arbitrary Rust/Node engine correctness theorem"
+}

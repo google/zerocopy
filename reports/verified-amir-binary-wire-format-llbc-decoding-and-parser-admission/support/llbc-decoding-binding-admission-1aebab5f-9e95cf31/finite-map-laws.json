@@ -1,0 +1,53 @@
+{
+  "repository": "leanprover/lean4",
+  "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+  "release": "v4.35.0",
+  "proof_status": "upstream theorem source inspected; not independently compiled",
+  "maps": [
+    {
+      "type": "HashMap",
+      "lookup_update": "getElem?_insert: (m.insert k v)[a]? = if k == a then some v else m[a]?",
+      "erase": "getElem?_erase: (m.erase k)[a]? = if k == a then none else m[a]?",
+      "domain": "mem_insert; contains_eq_isSome_getElem?",
+      "extensional_interface": "Equiv.of_forall_getElem?_eq under LawfulBEq; equiv_iff_toList_perm",
+      "assumptions": "EquivBEq + LawfulHashable; actual-key extensionality uses LawfulBEq"
+    },
+    {
+      "type": "DHashMap",
+      "lookup_update": "get?_insert transports v : β k with cast(congrArg β (eq_of_beq h))",
+      "domain": "mem_iff_isSome_get?",
+      "assumptions": "LawfulBEq for dependent optional lookup"
+    },
+    {
+      "type": "ExtHashMap",
+      "lookup_update": "same constant-valued optional lookup law",
+      "extensional_interface": "ext_getElem? gives equality from pointwise lookup under LawfulBEq; ext_getKey_getElem? also needs representative-key agreement under weaker equivalence",
+      "implementation": "ExtDHashMap is Quotient(DHashMap.isSetoid); sound/exact and invariant lift",
+      "tradeoff": "order-dependent bucket iteration cannot descend freely to quotient"
+    },
+    {
+      "type": "TreeMap",
+      "lookup_update": "getElem?_insert/erase use cmp k a = .eq",
+      "domain": "contains_eq_isSome_getElem?",
+      "extensional_interface": "Equiv.getElem?_eq; equiv_iff_toList_eq",
+      "assumptions": "TransCmp for shown laws; identifier equality/comparator coherence separate"
+    },
+    {
+      "type": "Array",
+      "lookup_update": "getElem?_set requires i < size and changes exactly slot i",
+      "domain": "getElem?_eq_none_iff; size_set; size_push",
+      "extensional_interface": "ext; ext'; ext_getElem?",
+      "application_gap": "Array(Option β) has in-bounds holes distinct from out-of-bounds"
+    }
+  ],
+  "graph_refinement_not_proved": {
+    "actual_consumer": "Aeneas SCC.Make: ordered map/set adjacency -> local int labels -> OCamlgraph Concrete -> SCCs -> deterministic reorder",
+    "requirements": [
+      "ID/vertex injectivity and inverse consistency",
+      "closed endpoints",
+      "reachability/SCC partition and condensation properties",
+      "ordering separate from connectivity"
+    ],
+    "important_current_check": "SCC source asserts pairwise disjointness and coverage before/after reorder; assertions are not full SCC correctness"
+  }
+}

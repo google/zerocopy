@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/bin/curl",
+    "--fail",
+    "--location",
+    "--silent",
+    "--show-error",
+    "--max-time",
+    "180",
+    "--max-filesize",
+    "134217728",
+    "https://codeload.github.com/ocaml/opam-repository/tar.gz/56aefa37456aa263913289a4174daca01c4b9339",
+    "--output",
+    "work/execution/cross-foundation-runtime/acquisition/opam-metadata.tar.gz"
+  ],
+  "exit_code": 0,
+  "seconds": 1.1380670000000004,
+  "bytes": 4192671,
+  "sha256": "d8d7ea6302a67e0bbf2678a106fe47fa3da24473cd05830f69238f38fcf8fa17"
+}

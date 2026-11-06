@@ -1,0 +1,10 @@
+experimental-features = nix-command
+allow-import-from-derivation = false
+allow-unsafe-native-code-during-evaluation = false
+max-jobs = 0
+cores = 1
+builders =
+sandbox = true
+substituters = https://cache.nixos.org https://jasmin.cachix.org
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= jasmin.cachix.org-1:aA5r1ovq4HYKUa+8QHVvIP7K6Fi9L75b0SaN/sooWSY=
+build-users-group =

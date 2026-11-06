@@ -1,0 +1,3 @@
+'Rust.Storage.arrayDecoder_initialized' depends on axioms: [propext, Quot.sound]
+'Rust.Storage.arrayDecoder_run_length' depends on axioms: [propext]
+'Rust.Storage.arrayDecoder_output_length' depends on axioms: [propext]

@@ -1,0 +1,2039 @@
+[
+  {
+    "name": "conf-pkg-config",
+    "version": "5",
+    "repository": "main",
+    "metadata_path": "packages/conf-pkg-config/conf-pkg-config.5/opam",
+    "input_metadata_sha256": "7826bafd660abb2925edb6821518c34aeee31eab692a45345c7331dc58a69816",
+    "input_git_blob": "0a0fe26820f308a819d81f8b85da690f94891b82",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/conf-pkg-config/conf-pkg-config.5/opam"
+    },
+    "source_sections": [
+      "extra-source \"install-shim.sh\" {\n  src: \"https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/install-shim.sh\"\n  checksum: [\n    \"sha256=9f99322c38b0889f5b1dafbb35ab31dc012ae98c4f98b0f740a89f943142d961\"\n    \"sha512=0b76a529454b00027b5768fa6ead1b8dda6bc3adab55f4288a702f4cc5d7b280be938cced6841b1556e8cf98f56ecc95b7b22006859d7a91f0ef852aea74e88c\"\n  ]\n}",
+      "extra-source \"write-config.sh\" {\n  src: \"https://raw.githubusercontent.com/dra27/mingw-w64-shims/refs/tags/1.0.1/write-config.sh\"\n  checksum: [\n    \"sha256=b6cc5f98c2cfc23a7bc7774038621a2e7e7b94ed3d3080db40bc455a2575fc7a\"\n    \"sha512=00c4e7c605e46c8fb4d24c40da0a9317e31e3ec723a7aac59546b1cfb180024cc76dbd27c2aca8d223047ad4b0a4bcd047443fc64a6e218a21931aaa672c3e71\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/conf-pkg-config/conf-pkg-config.5.opam",
+    "native_metadata_sha256": "22d7749f8159cf3890aca86542453c21f8b4bb77d82263b16881b34f8dfeaf03",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "base-threads",
+    "version": "base",
+    "repository": "main",
+    "metadata_path": "packages/base-threads/base-threads.base/opam",
+    "input_metadata_sha256": "a5b244c2c60ab1bf3bd88ee1afe92633995a0175357f97ce1eb71823aee2b4fa",
+    "input_git_blob": "914ff50cebf133808eb86c44686748a506d6f691",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/base-threads/base-threads.base/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/base-threads/base-threads.base.opam",
+    "native_metadata_sha256": "0a5b0ca49ac7c9323e3a8d13475c7ff599657c823f212ab918ca6e861109bdc8",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "conf-findutils",
+    "version": "1",
+    "repository": "main",
+    "metadata_path": "packages/conf-findutils/conf-findutils.1/opam",
+    "input_metadata_sha256": "bf62672d3cbf2ff9c54b45444d0bd049f3ed33549e90da2df1057ad38699ee95",
+    "input_git_blob": "20c9af373a7f10f9b3ec4630eb8deaa442b2dd7a",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/conf-findutils/conf-findutils.1/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/conf-findutils/conf-findutils.1.opam",
+    "native_metadata_sha256": "bca912244ed20a5398e3b194b3a73b412c8fc0de42fe6024c45b3f881e6857c6",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "base-unix",
+    "version": "base",
+    "repository": "main",
+    "metadata_path": "packages/base-unix/base-unix.base/opam",
+    "input_metadata_sha256": "1d2840a3234a0779097702bc1cbea68d33efbdbb6045fdc3982171678faea094",
+    "input_git_blob": "b973540bcb7fb9d23b2c4d67be5eb919510ad681",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/base-unix/base-unix.base/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/base-unix/base-unix.base.opam",
+    "native_metadata_sha256": "d9be5574ae09e7711bccd09fcbed23e2e579879d1d9b223b529ffd79aad126e7",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "base-bigarray",
+    "version": "base",
+    "repository": "main",
+    "metadata_path": "packages/base-bigarray/base-bigarray.base/opam",
+    "input_metadata_sha256": "6588f15cd2501e66a16b7a4fcf22d9abacfa7ff632c3e4857f91b9abfcfb0778",
+    "input_git_blob": "39e9af21a8c94376c93a8dfeb3d7c5095b2336f6",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/base-bigarray/base-bigarray.base/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/base-bigarray/base-bigarray.base.opam",
+    "native_metadata_sha256": "d89c794cf4f46430b74478beb512c095728d0c50e2c52cd16a296b7bc5296e02",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocaml-option-flambda",
+    "version": "1",
+    "repository": "main",
+    "metadata_path": "packages/ocaml-option-flambda/ocaml-option-flambda.1/opam",
+    "input_metadata_sha256": "c9d63cb2ac8dac11eadddb0bb74ed801a4fdf4782e01cab286c707934c4f4392",
+    "input_git_blob": "2c66cb41064ac28a35cffa4dfc7a7cd11b08750b",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocaml-option-flambda/ocaml-option-flambda.1/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocaml-option-flambda/ocaml-option-flambda.1.opam",
+    "native_metadata_sha256": "0225d9e738a95a20f3f211506ad7e2ff82837333ecbbcfd9fb1f7fae7cd3dfb5",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "conf-gmp",
+    "version": "5",
+    "repository": "main",
+    "metadata_path": "packages/conf-gmp/conf-gmp.5/opam",
+    "input_metadata_sha256": "0b84f83c98bc73e52fe57b44dc5f7eef62def903cda780ce4d3123756a86d5b1",
+    "input_git_blob": "24e361425ef98e17e22815469e2c32235d5db3f2",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/conf-gmp/conf-gmp.5/opam"
+    },
+    "source_sections": [
+      "extra-source \"test.c\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4\"\n  checksum: [\n    \"sha256=54a30735f1f271a2531526747e75716f4490dd7bc1546efd6498ccfe3cc4d6fb\"\n    \"md5=2fd2970c293c36222a6d299ec155823f\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/conf-gmp/conf-gmp.5.opam",
+    "native_metadata_sha256": "fa5a99aed98bc2fac1bfcc6faaeeb2dcf1ddc6f69288db82b46f5e55c72ab133",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "conf-linux-libc-dev",
+    "version": "0",
+    "repository": "main",
+    "metadata_path": "packages/conf-linux-libc-dev/conf-linux-libc-dev.0/opam",
+    "input_metadata_sha256": "2c043efebe9b71371ede4d02ccfed211d07665d04af58ece56f7831071e9a0fa",
+    "input_git_blob": "a201d09b1358ae88d8bed66b10cb18145a058261",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/conf-linux-libc-dev/conf-linux-libc-dev.0/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/conf-linux-libc-dev/conf-linux-libc-dev.0.opam",
+    "native_metadata_sha256": "8eb737b9314a1e16ce2bdb18063cb105c2fb8a61086a88a1c282706ed11357a9",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "conf-zlib",
+    "version": "1",
+    "repository": "main",
+    "metadata_path": "packages/conf-zlib/conf-zlib.1/opam",
+    "input_metadata_sha256": "725c88ca2ec7d825bd9dc7cddf2555dbf6c108feb9965db613ea27868a99385d",
+    "input_git_blob": "b14d5917e801548051e4b5dac1847f9080be4dd5",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/conf-zlib/conf-zlib.1/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/conf-zlib/conf-zlib.1.opam",
+    "native_metadata_sha256": "19f9b304630407c21c15d3f6c48f2b5120536cdaed3c22048b690452910430ae",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocaml-variants",
+    "version": "4.14.0+options",
+    "repository": "main",
+    "metadata_path": "packages/ocaml-variants/ocaml-variants.4.14.0+options/opam",
+    "input_metadata_sha256": "817b92187a023603902535d54afc56c429e67f4e7a06543d65240799a06d6fcb",
+    "input_git_blob": "19cf36fc382a5c3c9fd1b70c1ab09bea919a79c1",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocaml-variants/ocaml-variants.4.14.0+options/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/ocaml/archive/4.14.0.tar.gz\"\n  checksum: \"sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8\"\n}",
+      "extra-source \"ocaml-variants.install\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/ocaml/8c17fd444391392c5f9801241374d749c080c1a8/ocaml-variants.install\"\n  checksum: [\n    \"sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678\"\n    \"md5=3e969b841df1f51ca448e6e6295cb451\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocaml-variants/ocaml-variants.4.14.0+options.opam",
+    "native_metadata_sha256": "b9a0349ffebf816b1e30f5789fd280aa947e87e5f29b9dfc6a1c595c641c3522",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocaml-config",
+    "version": "2",
+    "repository": "main",
+    "metadata_path": "packages/ocaml-config/ocaml-config.2/opam",
+    "input_metadata_sha256": "5c713ed479ba809f4d64533cab058000e369f14425fe5491221ec6993a894e3f",
+    "input_git_blob": "4122be5289db1a97cbdfe0dc670fa82ecea85e01",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocaml-config/ocaml-config.2/opam"
+    },
+    "source_sections": [
+      "extra-source \"ocaml-config.install\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/ocaml/363fb9f5a2fb87dbd5f8cc579af87dd04e14343b/tools/opam/ocaml-config.install\"\n  checksum: [\n    \"sha256=6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051\"\n    \"md5=8e50c5e2517d3463b3aad649748cafd7\"\n  ]\n}",
+      "extra-source \"gen_ocaml_config.ml.in\" {\n  src:\n    \"https://raw.githubusercontent.com/ocaml/ocaml/749a918bb85033b0a6370b85a7c6a4be33620c58/tools/opam/gen_ocaml_config.ml.in\"\n  checksum: [\n    \"sha256=22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29\"\n    \"md5=a4b41e3236593d8271295b84b0969172\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocaml-config/ocaml-config.2.opam",
+    "native_metadata_sha256": "70e4abeb2f5cc7e0d117afc6c81d45050446c5d3de1301ed6e2faa706a0d38dc",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocaml",
+    "version": "4.14.0",
+    "repository": "main",
+    "metadata_path": "packages/ocaml/ocaml.4.14.0/opam",
+    "input_metadata_sha256": "a3a56bff965f8e96b7c5bfd97ba3afce507329084a98a55181a825829fd16996",
+    "input_git_blob": "e8748d1ef49a403dcce66dc278fdb7a08ae0a1aa",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocaml/ocaml.4.14.0/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocaml/ocaml.4.14.0.opam",
+    "native_metadata_sha256": "b7b3b3e46465c2d999b17c98a9db17b39fff94aa09edc84ebded51ceb493410a",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocamlfind",
+    "version": "1.9.8",
+    "repository": "main",
+    "metadata_path": "packages/ocamlfind/ocamlfind.1.9.8/opam",
+    "input_metadata_sha256": "b6180836d0c101bb4d2f029196ad194090ab9fc7549a0b514408b820e11e142b",
+    "input_git_blob": "e0aebc71b902966d2fc205ff89e4dcf1e8b7d012",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocamlfind/ocamlfind.1.9.8/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz\"\n  checksum: [\n    \"md5=ca770e5806032a96131b670f6e07f146\"\n    \"sha512=8967986de2ab4ec5993f437b0a4206742adf37aa7a292a3bba0a04438d78539b84d001191e60b2d5bde98a695b38cba2593b7051f7749adbdb964a0df3c4b661\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocamlfind/ocamlfind.1.9.8.opam",
+    "native_metadata_sha256": "2e636364764594cb34e1cd45a82c7451c1d2fba8e39639f8a803210d143cf4d1",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocamlbuild",
+    "version": "0.16.1",
+    "repository": "main",
+    "metadata_path": "packages/ocamlbuild/ocamlbuild.0.16.1/opam",
+    "input_metadata_sha256": "de1f5bf2745606bea4ce99dd8f0c86cf62a61e64f0cab383e6c58d5822663f0e",
+    "input_git_blob": "ba51b4c0e44fedd688dfce398b859fb7ead391cd",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocamlbuild/ocamlbuild.0.16.1/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz\"\n  checksum: [\n    \"sha512=e918b9a0081f271e507c7a4f4d5d5a7cdf818ca51c52acec1bac85ddad5f6cad078cb3c568252fbcf5401c2d75323ed8f50fdd881bda1c9632840320408393ae\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocamlbuild/ocamlbuild.0.16.1.opam",
+    "native_metadata_sha256": "d1fe9fc86f3889692c4688cca824b9f7571e9b9aeb100fc039b295a57e602a9f",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "num",
+    "version": "1.6",
+    "repository": "main",
+    "metadata_path": "packages/num/num.1.6/opam",
+    "input_metadata_sha256": "eedda5ca27861ae8c920827b074edb5a1f52477589478ec0f5bf6970a63e4b75",
+    "input_git_blob": "78638b00265db4b1905c89535d7878af1005702d",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/num/num.1.6/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz\"\n  checksum: [\n    \"sha256=b5cce325449aac746d5ca963d84688a627cca5b38d41e636cf71c68b60495b3e\"\n    \"sha512=5cb32dfa9a9f0ad375bfd89079e9b1422979f3c089f61ef2300ad9cc64fb1fc25ed1f86b0267eb017f12ae41a574a959df5bfa39ab22c2be2f1ac84c3c671bdf\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/num/num.1.6.opam",
+    "native_metadata_sha256": "287b250b6421ddb8bd28e31b3dd6c79ab4a482b214d194133e059b41b602799c",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "dune",
+    "version": "3.9.1",
+    "repository": "overlay",
+    "metadata_path": "packages/dune/dune.3.9.1/opam",
+    "input_metadata_sha256": "77310c9d602eb9657ccb40ae697320354a2e0818960499361ed05977bf232c61",
+    "input_git_blob": "f8343afc12e86ae74056f97bedc32aaea8d57d13",
+    "origin": {
+      "package": "dune",
+      "version": "3.9.1",
+      "path": "repository/packages/dune/dune.3.9.1/opam",
+      "origin": {
+        "record": 24,
+        "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dune/dune.3.9.1/opam",
+        "git_blob": "f8343afc12e86ae74056f97bedc32aaea8d57d13"
+      },
+      "original": {
+        "bytes": 2196,
+        "sha256": "77310c9d602eb9657ccb40ae697320354a2e0818960499361ed05977bf232c61",
+        "git_blob": "f8343afc12e86ae74056f97bedc32aaea8d57d13"
+      },
+      "materialized": {
+        "bytes": 2196,
+        "sha256": "77310c9d602eb9657ccb40ae697320354a2e0818960499361ed05977bf232c61",
+        "git_blob": "f8343afc12e86ae74056f97bedc32aaea8d57d13"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/dune/dune.3.9.1.opam",
+    "native_metadata_sha256": "81b6e729c7bdcb0f24604ca26c77f88a90d2275795b8527bef9937f49ee9c155",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "cmdliner",
+    "version": "1.3.0",
+    "repository": "main",
+    "metadata_path": "packages/cmdliner/cmdliner.1.3.0/opam",
+    "input_metadata_sha256": "1eb8baaa3169745b52b6950f23767f2371f007f9f93d39d7442d0adc1448dffd",
+    "input_git_blob": "a44943d88c8290258d5af1228e1e4257314c4d3b",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/cmdliner/cmdliner.1.3.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://erratique.ch/software/cmdliner/releases/cmdliner-1.3.0.tbz\"\n  checksum:\n    \"sha512=4c46bc334444ff772637deae2f5ba03645d7a1b7db523470a1246acfce79b971c764d964cbb02388639b3161b279700d9ade95da550446fb32aa4849c8a8f283\"\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/cmdliner/cmdliner.1.3.0.opam",
+    "native_metadata_sha256": "a784c99ed0ac1cb110309e65dbb7d6378d6dbe7673371b80a129467c3e3c06f7",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "zarith",
+    "version": "1.14",
+    "repository": "main",
+    "metadata_path": "packages/zarith/zarith.1.14/opam",
+    "input_metadata_sha256": "9c859185d289c38dcb1c216aea751afa28bebf5d653e8af3d10aabb252ebe4bb",
+    "input_git_blob": "9039620fbbcc7469d30e573f0f097b55838f82fc",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/zarith/zarith.1.14/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz\"\n  checksum: [\n    \"sha256=5db9dcbd939153942a08581fabd846d0f3f2b8c67fe68b855127e0472d4d1859\"\n    \"sha512=8a7f3e82dfa5699c8dda54dd5398c712f3ac4fe04f5208d43d8ba198fb8152de5f91cbb59c15c0a4ba010d4dfcc79f52e405bdd0abbf2798167e9e4216bcb3dd\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/zarith/zarith.1.14.opam",
+    "native_metadata_sha256": "afd6782f14483672c86d87fa4b64dd55744058f978ffee49631f7aa33b57bb81",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "base-bytes",
+    "version": "base",
+    "repository": "main",
+    "metadata_path": "packages/base-bytes/base-bytes.base/opam",
+    "input_metadata_sha256": "0a7ed34c742ddc72e8fed9b16314091884b60a758ff0d32f6ee140b857df9506",
+    "input_git_blob": "103dca96579f4d2c5672302a482db276b59f6a1b",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/base-bytes/base-bytes.base/opam"
+    },
+    "source_sections": [],
+    "source_status": "no url/extra-source section in input metadata",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/base-bytes/base-bytes.base.opam",
+    "native_metadata_sha256": "47c839112ab180204d60082624253bf4272bc42c246bccce113af5dd79258735",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "yojson",
+    "version": "3.0.0",
+    "repository": "main",
+    "metadata_path": "packages/yojson/yojson.3.0.0/opam",
+    "input_metadata_sha256": "41a25f885b8ab0ae3276ac1797bf68b43d994c0134d66b5aa84b3638ded29eaa",
+    "input_git_blob": "6946038b97cdce3c1cf0b7d16573ba3455a6b780",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/yojson/yojson.3.0.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml-community/yojson/releases/download/3.0.0/yojson-3.0.0.tbz\"\n  checksum: [\n    \"sha256=99414da7609b92a02474ef4b49ecda15edc8cbba5229341b124e7e4695c39610\"\n    \"sha512=896d0ea829a36ccadba6628800369c1a3ab9e7c64dbda8b76331889c9db481cd64e137f467481ae80a8dd5fca45d748bfa71f58641806cc1bb1a007f8291789f\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/yojson/yojson.3.0.0.opam",
+    "native_metadata_sha256": "a5bd2912c0ac30cb0c44bfece72a30f8dad639978ee38e7dbfb9f23fbd2406ac",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "stdlib-shims",
+    "version": "0.3.0",
+    "repository": "main",
+    "metadata_path": "packages/stdlib-shims/stdlib-shims.0.3.0/opam",
+    "input_metadata_sha256": "989d63adfbdb1ee0bfc15da7fe9407dae696c10bfc0e7a11298b9fcf1bba7dcb",
+    "input_git_blob": "8c96957107f414900e9667a3471390a94800ecce",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/stdlib-shims/stdlib-shims.0.3.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml/stdlib-shims/releases/download/0.3.0/stdlib-shims-0.3.0.tbz\"\n  checksum: [\n    \"sha256=babf72d3917b86f707885f0c5528e36c63fccb698f4b46cf2bab5c7ccdd6d84a\"\n    \"sha512=1151d7edc8923516e9a36995a3f8938d323aaade759ad349ed15d6d8501db61ffbe63277e97c4d86149cf371306ac23df0f581ec7e02611f58335126e1870980\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/stdlib-shims/stdlib-shims.0.3.0.opam",
+    "native_metadata_sha256": "f1ac3b7905dd5ff7f7f5fc78f3d7c040b68ad09ab2c6abf08278827d87e76f8e",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sexplib0",
+    "version": "v0.16.0",
+    "repository": "main",
+    "metadata_path": "packages/sexplib0/sexplib0.v0.16.0/opam",
+    "input_metadata_sha256": "179dac23c4d77373ba5b46d696f8b77db57f2baa42dc8101b58716b8f7c62084",
+    "input_git_blob": "d9c5f049da2fadeffe19a84e08c1e7afd47c840a",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/sexplib0/sexplib0.v0.16.0/opam"
+    },
+    "source_sections": [
+      "url {\nsrc: \"https://ocaml.janestreet.com/ocaml-core/v0.16/files/sexplib0-v0.16.0.tar.gz\"\nchecksum: \"sha256=86dba26468194512f789f2fb709063515a9cb4e5c4461c021c239a369590701d\"\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sexplib0/sexplib0.v0.16.0.opam",
+    "native_metadata_sha256": "2e3dc7c394d532acabcfe72e85701546a9061462f135b40b98f41838bc7dd27b",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_manifest",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_manifest/sail_manifest.0.17/opam",
+    "input_metadata_sha256": "4466bb2f9f607c02f4e13a3a33231d41670c292d3e64070d56a690d2026b7c2e",
+    "input_git_blob": "d03d26fa500083f4a782b6fcc2271c91df522f5d",
+    "origin": {
+      "package": "sail_manifest",
+      "version": "0.17",
+      "path": "repository/packages/sail_manifest/sail_manifest.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_manifest.opam",
+        "git_blob": "f15bfc4a92573139803798396c6b995c6dc508c1"
+      },
+      "original": {
+        "bytes": 902,
+        "sha256": "9bcebeebd4819f69c79ec851ed85b8318fe90ea6d7e651fc992e924503d56bfe",
+        "git_blob": "f15bfc4a92573139803798396c6b995c6dc508c1"
+      },
+      "materialized": {
+        "bytes": 1078,
+        "sha256": "4466bb2f9f607c02f4e13a3a33231d41670c292d3e64070d56a690d2026b7c2e",
+        "git_blob": "d03d26fa500083f4a782b6fcc2271c91df522f5d"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_manifest/sail_manifest.0.17.opam",
+    "native_metadata_sha256": "77545c811f0e467d918f48e5dc23760d0f8c7401bdea61994cba320e001f8f66",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ppx_derivers",
+    "version": "1.2.1",
+    "repository": "main",
+    "metadata_path": "packages/ppx_derivers/ppx_derivers.1.2.1/opam",
+    "input_metadata_sha256": "95969d319b1d464289cac2767be445a65b6f7107b9d9772b3de37a17287978ef",
+    "input_git_blob": "d06e23b2169a30b9dddbdcd5a52d2131a15f03fd",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ppx_derivers/ppx_derivers.1.2.1/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml-ppx/ppx_derivers/archive/1.2.1.tar.gz\"\n  checksum: [\n    \"sha256=b6595ee187dea792b31fc54a0e1524ab1e48bc6068d3066c45215a138cc73b95\"\n    \"md5=5dc2bf130c1db3c731fe0fffc5648b41\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ppx_derivers/ppx_derivers.1.2.1.opam",
+    "native_metadata_sha256": "19e14fd51829f50fe3b5f1935e7896d5c8fcbe04a417f70d628bcfa01e6dab06",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "pprint",
+    "version": "20230830",
+    "repository": "main",
+    "metadata_path": "packages/pprint/pprint.20230830/opam",
+    "input_metadata_sha256": "8a8404c1e8988009779fa98183a3bb8c8c9286be7c261e1a6fc4b4bc99a66fda",
+    "input_git_blob": "d69becc4500e7feeaa575fbefd4cfb9bc3d97850",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/pprint/pprint.20230830/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/fpottier/pprint/archive/20230830.tar.gz\"\n  checksum: [\n    \"md5=449216484e93e5691c76f14c87c5a711\"\n    \"sha512=7c58275cf9951283cf5051c2cf4c98084e8d562a8172a6379d9831a8fc95c9a19fc06710350217da2ea90fd2b17994142b10d1a9f8dab17b2bbf3e47e76c9f5f\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/pprint/pprint.20230830.opam",
+    "native_metadata_sha256": "90da8a548a8f417d48ce5e05d8492816e4444a335d7d9652d1f8925e63c8e011",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "pp",
+    "version": "2.0.0",
+    "repository": "main",
+    "metadata_path": "packages/pp/pp.2.0.0/opam",
+    "input_metadata_sha256": "18ad945de750f1607922e6d239d17e5205afa6d8bf3de23ce8355d07fe428d8c",
+    "input_git_blob": "3eb5751287ebad966cfcd661eb8b3dd0d27aca56",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/pp/pp.2.0.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml-dune/pp/releases/download/2.0.0/pp-2.0.0.tbz\"\n  checksum: [\n    \"sha256=8651351518b092b4a2def4e08171c276152f92fb6a84a8b19b6b929ccdb44419\"\n    \"sha512=78cb68f35c0b975dd1e91bd83d5e33bcec1ee642431585d55864c483c70a032755dfcf21ec5697691e7e7554381ddb580639fd149e28ba6f74d04d2ee43d360d\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/pp/pp.2.0.0.opam",
+    "native_metadata_sha256": "6094a14e19f4431a9e04b798b56fd447876123d4527214641e622d652de8320c",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ordering",
+    "version": "3.9.1",
+    "repository": "overlay",
+    "metadata_path": "packages/ordering/ordering.3.9.1/opam",
+    "input_metadata_sha256": "5141668ab7a61e18a2fadc43edbf81299e1c6dfc00a73549356dc1af7686a1a4",
+    "input_git_blob": "799c37131dbb205bef96469228ccc565d2c1c2fa",
+    "origin": {
+      "package": "ordering",
+      "version": "3.9.1",
+      "path": "repository/packages/ordering/ordering.3.9.1/opam",
+      "origin": {
+        "record": 29,
+        "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/ordering/ordering.3.9.1/opam",
+        "git_blob": "799c37131dbb205bef96469228ccc565d2c1c2fa"
+      },
+      "original": {
+        "bytes": 1063,
+        "sha256": "5141668ab7a61e18a2fadc43edbf81299e1c6dfc00a73549356dc1af7686a1a4",
+        "git_blob": "799c37131dbb205bef96469228ccc565d2c1c2fa"
+      },
+      "materialized": {
+        "bytes": 1063,
+        "sha256": "5141668ab7a61e18a2fadc43edbf81299e1c6dfc00a73549356dc1af7686a1a4",
+        "git_blob": "799c37131dbb205bef96469228ccc565d2c1c2fa"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ordering/ordering.3.9.1.opam",
+    "native_metadata_sha256": "89b28e227c6236797f157be8f3c04b0c4b6668c37be80f4eab7edaf4eefb3f92",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocamlgraph",
+    "version": "2.2.0",
+    "repository": "main",
+    "metadata_path": "packages/ocamlgraph/ocamlgraph.2.2.0/opam",
+    "input_metadata_sha256": "85b6881baaa296ea0b706d37f8abba0b53a0208984573b37aef1ea8d1b47c724",
+    "input_git_blob": "c01c0966f8699ab53894c86a1107888aaaf65440",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocamlgraph/ocamlgraph.2.2.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz\"\n  checksum: [\n    \"sha256=b0956210863cc24f480203ba3c2ef06dfae5579536a05744364e7de58822b230\"\n    \"sha512=257cdd5fb90337b3e3682cade1269c1d181f3124e569a731909f49bbfbe581ab529ac401472fb9ef57166ac34d8ebadfa6a32c93665f38f5a335982d5e5dc0e1\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocamlgraph/ocamlgraph.2.2.0.opam",
+    "native_metadata_sha256": "d1594d71c1c90404d00e426387da3decb1cc196c7c7e4b3c6860cd91971d864a",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ocaml-compiler-libs",
+    "version": "v0.12.4",
+    "repository": "main",
+    "metadata_path": "packages/ocaml-compiler-libs/ocaml-compiler-libs.v0.12.4/opam",
+    "input_metadata_sha256": "47b66d3fafde7421e300f71ea39a1edbbe0a62587a7cd020d77121eae4349e73",
+    "input_git_blob": "a2df8c615492e13c3d4a181c79009a64a0aeba54",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocaml-compiler-libs/ocaml-compiler-libs.v0.12.4/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/janestreet/ocaml-compiler-libs/releases/download/v0.12.4/ocaml-compiler-libs-v0.12.4.tbz\"\n  checksum: [\n    \"sha256=4ec9c9ec35cc45c18c7a143761154ef1d7663036a29297f80381f47981a07760\"\n    \"sha512=978dba8dfa61f98fa24fda7a9c26c2e837081f37d1685fe636dc19cfc3278a940cf01a10293504b185c406706bc1008bc54313d50f023bcdea6d5ac6c0788b35\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ocaml-compiler-libs/ocaml-compiler-libs.v0.12.4.opam",
+    "native_metadata_sha256": "0dfa7802a63f91bc055a64f5efbe9b243965b85ae1689401ed533c39e3ca536f",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "menhirSdk",
+    "version": "20260209",
+    "repository": "main",
+    "metadata_path": "packages/menhirSdk/menhirSdk.20260209/opam",
+    "input_metadata_sha256": "d156371771edf0ddc552dd3e251b2df8bd815a7553f0947100dfe39f67b09397",
+    "input_git_blob": "bec0e571ce2729d9da9fd4cf2915668402d47856",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/menhirSdk/menhirSdk.20260209/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz\"\n  checksum: [\n    \"md5=e993231085db95ab011ffe0cd606d9dd\"\n    \"sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/menhirSdk/menhirSdk.20260209.opam",
+    "native_metadata_sha256": "cdbfc928a599fdd09413207398794145f5d16a56e587a1f18612b99e2e62864e",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "menhirLib",
+    "version": "20260209",
+    "repository": "main",
+    "metadata_path": "packages/menhirLib/menhirLib.20260209/opam",
+    "input_metadata_sha256": "c2bed0c21ebcd9e52ff6c5343cd05f17dcb7559223316afc3c9be1b9a42113e3",
+    "input_git_blob": "2f7da4a7d887791dbf97eb802076b2a33eb03402",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/menhirLib/menhirLib.20260209/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz\"\n  checksum: [\n    \"md5=e993231085db95ab011ffe0cd606d9dd\"\n    \"sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/menhirLib/menhirLib.20260209.opam",
+    "native_metadata_sha256": "008379e8e7a143087f3c31f19294bfdbe8e1e898d0d1a1fa9ffd9a27fe8fc0a6",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "menhirGLR",
+    "version": "20260209",
+    "repository": "main",
+    "metadata_path": "packages/menhirGLR/menhirGLR.20260209/opam",
+    "input_metadata_sha256": "50be5cfd852901aebae8f14cb0ac420afdbb1c94fb53fe81b25214ad342aec1f",
+    "input_git_blob": "7206306559058eef311cf970bad5f0f0d50c636f",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/menhirGLR/menhirGLR.20260209/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz\"\n  checksum: [\n    \"md5=e993231085db95ab011ffe0cd606d9dd\"\n    \"sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/menhirGLR/menhirGLR.20260209.opam",
+    "native_metadata_sha256": "7734db0123820d0ffb8d9890ee1343fd0016419108c868989e35e938549551ea",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "menhirCST",
+    "version": "20260209",
+    "repository": "main",
+    "metadata_path": "packages/menhirCST/menhirCST.20260209/opam",
+    "input_metadata_sha256": "be6f0a8e689874e3abad1c84ad6077c39c9588d0815b1702ebbcd7540bae6fe4",
+    "input_git_blob": "e73eaaba2746dd4998b543eed278d8323d676ae3",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/menhirCST/menhirCST.20260209/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz\"\n  checksum: [\n    \"md5=e993231085db95ab011ffe0cd606d9dd\"\n    \"sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/menhirCST/menhirCST.20260209.opam",
+    "native_metadata_sha256": "de19400fdccb30b824df5bb8d70a4b611b9ad79f269430e9a2d173258c1db635",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "linenoise",
+    "version": "1.5.1",
+    "repository": "main",
+    "metadata_path": "packages/linenoise/linenoise.1.5.1/opam",
+    "input_metadata_sha256": "2fc9f3a21ada162b627518b923ab617f09b7e1f89451b475c5796316faac6fae",
+    "input_git_blob": "4728da619b04094049fe0124c29dfa33c9616ced",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/linenoise/linenoise.1.5.1/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz\"\n  checksum: [\n    \"sha256=eef172cb98282b7a8be182f3493f4687ed3a3f833d3c2707d07d188bf9dede37\"\n    \"sha512=b316b034ba712f13c8727a890c5356a52119d6f5e7040273259109bfac6813c383670295942d39441b9b9e792f3b53250400da000bbe0c6848df5643e27018ac\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/linenoise/linenoise.1.5.1.opam",
+    "native_metadata_sha256": "114596cedc9d088ea0b4d92eb4cc646c17b2bd7caa52c2ffef9ec94a068c9f47",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "csexp",
+    "version": "1.5.2",
+    "repository": "main",
+    "metadata_path": "packages/csexp/csexp.1.5.2/opam",
+    "input_metadata_sha256": "f2cc6a37e347cd9147f1477eba1705354b360a43014ea46b8cad9ff4a971a0ed",
+    "input_git_blob": "7d511ab80b48e00c0081faf879d170eb654bc921",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/csexp/csexp.1.5.2/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz\"\n  checksum: [\n    \"sha256=1a14dd04bb4379a41990248550628c77913a9c07f3c35c1370b6960e697787ff\"\n    \"sha512=be281018bcfc20d4db14894ef51c4b836d6338d2fdfe22e63d46f405f8dea7349e16f1c0ecd65f73d4c85a2a80e618cdbb8c9dafcbb9f229f04f1adca5b1973c\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/csexp/csexp.1.5.2.opam",
+    "native_metadata_sha256": "06aeb45c7ebef91ebded5546153dc44b34a055eadb3dc66dab9759b6d034c62f",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "base64",
+    "version": "3.5.2",
+    "repository": "main",
+    "metadata_path": "packages/base64/base64.3.5.2/opam",
+    "input_metadata_sha256": "c393b2c2aa299c544ffd5593a9967e6104668ac4f49dbfc4ec8470f64721fd27",
+    "input_git_blob": "831013a334abc12578f6d99915e716e79f85f843",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/base64/base64.3.5.2/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/mirage/ocaml-base64/releases/download/v3.5.2/base64-3.5.2.tbz\"\n  checksum: [\n    \"sha256=b3f5ce301aa72c7032ef90be2332d72ff3962922c00ee2aec6bcade187a2f59b\"\n    \"sha512=82148a1fefec9493aaeac032c8d46b9548369d7fd90a57865e009a32c8a0eef950f0f8dbb52b74bb46880a590a0b49f2daa7ab4857233734aee8e383f5a164ec\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/base64/base64.3.5.2.opam",
+    "native_metadata_sha256": "5e0aa3602d5d884848d746295d30411839b0a1214a1a1a9b6cea341837cfb9cd",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "lem",
+    "version": "2026-05-01",
+    "repository": "main",
+    "metadata_path": "packages/lem/lem.2026-05-01/opam",
+    "input_metadata_sha256": "baa7a5ce91651ebaca236fe7ec987c5f53a8d858d365b584753a9bff6636de6c",
+    "input_git_blob": "9f9ba574df8371ccd90362fe3c873a61b3edb111",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/lem/lem.2026-05-01/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/rems-project/lem/archive/refs/tags/2026-05-01.tar.gz\"\n  checksum: [\n    \"sha256=87782e0887613d5ec3d52831762f4537cd46f4817b03ec37e80831f52a5b7f03\"\n    \"sha512=5372418b2451ad44a91e8324926661b19fb402b7a33981977bc680be9d33f9c2ccaa2d2bf146c573fcfc5eb4d660cf06c6ac8278313ec52c560ee86b3fc5cfc6\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/lem/lem.2026-05-01.opam",
+    "native_metadata_sha256": "aa8921999cfb02b623d953d2229495177a2801d34da6e13735b1d66745dd384a",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-core",
+    "version": "8.19.0",
+    "repository": "main",
+    "metadata_path": "packages/coq-core/coq-core.8.19.0/opam",
+    "input_metadata_sha256": "069650b2c568e6abd395e051bf9af8fad5796d310c4bc2d6170a58fd84cf49aa",
+    "input_git_blob": "9abce880a319ed7d5606b2f3f7d2404624c489f8",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/coq-core/coq-core.8.19.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz\"\n  checksum: [\n    \"md5=64b49dbc3205477bd7517642c0b9cbb6\"\n    \"sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-core/coq-core.8.19.0.opam",
+    "native_metadata_sha256": "8d20e526a594beb7481d7d55f47da867b8e56a154d0faf407b5dcf5ef87126ab",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "omd",
+    "version": "1.3.2",
+    "repository": "main",
+    "metadata_path": "packages/omd/omd.1.3.2/opam",
+    "input_metadata_sha256": "d12f6a0b8b6cf889de836d002b32a4260a97bc6cb8b57a45b8f7742c6f14c184",
+    "input_git_blob": "3a805c0652bc1e26cef89dbd06c8821060dfc80d",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/omd/omd.1.3.2/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/opam-source-archives/raw/main/omd-1.3.2.tbz\"\n  checksum: [\n    \"sha256=6023e1642631f08f678eb5725820879ed7bb5a3ffee777cdedebc28c1f85fadb\"\n    \"sha512=fa2070a5f5d30b2cc422937ac4158bb087134a69d47fa15df403afb1c0c60a73dd436c949faa8d44e0b65bdee039779d86191b55085b717253f91ef20a69ef98\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/omd/omd.1.3.2.opam",
+    "native_metadata_sha256": "c99fdc9267f3ac9dce4eceaa0fa2cf676a868f0a8dc80c89460a6d1c7f963055",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "integers",
+    "version": "0.8.0",
+    "repository": "main",
+    "metadata_path": "packages/integers/integers.0.8.0/opam",
+    "input_metadata_sha256": "4f22722065335a87751d776222868c049d4c9596aca8cc279bb49776c35e64a4",
+    "input_git_blob": "4603306fe612b3f24008ab7f2b32c28952774b1a",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/integers/integers.0.8.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/yallop/ocaml-integers/archive/0.8.0.tar.gz\"\n  checksum: [\n    \"sha256=04a1a6d5cc1ecfd3f354a83caed27e59995bb26adec64d88193ccc36268929fa\"\n    \"md5=5155b252a1143ebe7f895003a7103f5e\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/integers/integers.0.8.0.opam",
+    "native_metadata_sha256": "c6b452c1a9e6593b9dfed88a55eae239ad52fb4696096468b347876aef9ee2c6",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "dyn",
+    "version": "3.9.1",
+    "repository": "overlay",
+    "metadata_path": "packages/dyn/dyn.3.9.1/opam",
+    "input_metadata_sha256": "09c5c82bd59144d5319463b897c9c0e01d2e87893d4417c97ca87b317f5cb95b",
+    "input_git_blob": "96a767969c56aed042da9fb1cfd9aed45978011b",
+    "origin": {
+      "package": "dyn",
+      "version": "3.9.1",
+      "path": "repository/packages/dyn/dyn.3.9.1/opam",
+      "origin": {
+        "record": 28,
+        "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dyn/dyn.3.9.1/opam",
+        "git_blob": "96a767969c56aed042da9fb1cfd9aed45978011b"
+      },
+      "original": {
+        "bytes": 1100,
+        "sha256": "09c5c82bd59144d5319463b897c9c0e01d2e87893d4417c97ca87b317f5cb95b",
+        "git_blob": "96a767969c56aed042da9fb1cfd9aed45978011b"
+      },
+      "materialized": {
+        "bytes": 1100,
+        "sha256": "09c5c82bd59144d5319463b897c9c0e01d2e87893d4417c97ca87b317f5cb95b",
+        "git_blob": "96a767969c56aed042da9fb1cfd9aed45978011b"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/dyn/dyn.3.9.1.opam",
+    "native_metadata_sha256": "18a94a0d44d1f5af7146cdcb0cff2eafd8e7de0531cd29608b16b4f4c1c55498",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ott",
+    "version": "0.34",
+    "repository": "main",
+    "metadata_path": "packages/ott/ott.0.34/opam",
+    "input_metadata_sha256": "5639f8fa16a76a9dbf348f4c9aa8a02bde730a4d5a82ec630164c6b3480a8bb6",
+    "input_git_blob": "8ca8b7288fe13efc035eb1566aee36e94f44fb21",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ott/ott.0.34/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ott-lang/ott/archive/0.34.tar.gz\"\n  checksum: \"sha512=371b59c0dc35207f8e85a939f03ae63fc654df50540ed5e656c5a40c5062ebfdfb1e02cfd499074f9d0b43afc165606b57dec4c96a4ca44ee91d1c1dcfa4deaf\"\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ott/ott.0.34.opam",
+    "native_metadata_sha256": "c26810da1757645f39597fe571542ed3255412894269bb4fd34d51cbdd336460",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "ppxlib",
+    "version": "0.35.0",
+    "repository": "main",
+    "metadata_path": "packages/ppxlib/ppxlib.0.35.0/opam",
+    "input_metadata_sha256": "14083fa7c14edfd8ed2dd746b1d59634f99dcc4f9a70a3c903a5143f3e19f9bc",
+    "input_git_blob": "b31b35838458d54cc101a52c1ceff77fb19c3d38",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ppxlib/ppxlib.0.35.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/ocaml-ppx/ppxlib/releases/download/0.35.0/ppxlib-0.35.0.tbz\"\n  checksum: [\n    \"sha256=d9d959fc9f84260487e45684dc741898a92fc5506b61a7f5cac65d21832db925\"\n    \"sha512=e428b1e3b89261c7efdaa18016264d1afbf067cb9b0d41124b04796c2487ac7ca8ee9a24a60d56f20d1774cb44aaa9ecf1512f17455812ba8d62d4ef93616ee7\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/ppxlib/ppxlib.0.35.0.opam",
+    "native_metadata_sha256": "35fb0efa7044c5d786691ed12b6e46e9b0777dc0507b7a3e813a519fb54f116a",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "menhir",
+    "version": "20260209",
+    "repository": "main",
+    "metadata_path": "packages/menhir/menhir.20260209/opam",
+    "input_metadata_sha256": "3e6d0eb2ab9f55919c85fe7dad59c5a47d9a00de9c25fb13c1d2d9d9535d6ae0",
+    "input_git_blob": "78601bfd304353ebfffda23bf3a574ccca9df40b",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/menhir/menhir.20260209/opam"
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://gitlab.inria.fr/fpottier/menhir/-/archive/20260209/archive.tar.gz\"\n  checksum: [\n    \"md5=e993231085db95ab011ffe0cd606d9dd\"\n    \"sha512=aafad186f328ae8dd4cc69af0f30c1a0b208cf5148a7a94c150099be03838503c5ec12918de26cd7f794b5a72f114bc1bae8d81058bd0ea10372a3b06818687e\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/menhir/menhir.20260209.opam",
+    "native_metadata_sha256": "eb862ab077cf137a2b6fcaf5fd76610b8a9604de26194a3c000ba43bbf80ebcf",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "linksem",
+    "version": "0.8",
+    "repository": "main",
+    "metadata_path": "packages/linksem/linksem.0.8/opam",
+    "input_metadata_sha256": "838d6565481cea6edb34b49a9f206d8d9b997201b3408085f80003e93f0d4598",
+    "input_git_blob": "6f57095a60c07768895e3a4a0114c8fd26395a1c",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/linksem/linksem.0.8/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/rems-project/linksem/archive/0.8.tar.gz\"\n  checksum: [\n    \"md5=2075c56715539b3b8f54ae65cc808b8c\"\n    \"sha512=f7c16e4036a1440a6a8d13707a43f0f9f9db0c68489215f948cc300b6a164dba5bf852e58f89503e9d9f38180ee658d9478156ca1a1ef64d6861eec5f9cf43d2\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/linksem/linksem.0.8.opam",
+    "native_metadata_sha256": "7c4b964bfdba78403fe00fc44d666fc434cb925574cd7ce0ea338b3ebcdb1188",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coqide-server",
+    "version": "8.19.0",
+    "repository": "main",
+    "metadata_path": "packages/coqide-server/coqide-server.8.19.0/opam",
+    "input_metadata_sha256": "fdaa6be2967037144a5e3930b563119dd3dc01928c004216991171c8bef25764",
+    "input_git_blob": "db0b810010173b13665e05b41cbbad977d883ffd",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/coqide-server/coqide-server.8.19.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz\"\n  checksum: [\n    \"md5=64b49dbc3205477bd7517642c0b9cbb6\"\n    \"sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coqide-server/coqide-server.8.19.0.opam",
+    "native_metadata_sha256": "4a67b236cc458d607eeaa4998be193c344dfff7cf873f1f73ae46f467dd0b8ab",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-stdlib",
+    "version": "8.19.0",
+    "repository": "main",
+    "metadata_path": "packages/coq-stdlib/coq-stdlib.8.19.0/opam",
+    "input_metadata_sha256": "cdd28436fe5e962cd634a9293870c6e986579b5eddb7537680332514fb711caa",
+    "input_git_blob": "45432c826ebe4a7ea11364b37bb9ec4baa960798",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/coq-stdlib/coq-stdlib.8.19.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz\"\n  checksum: [\n    \"md5=64b49dbc3205477bd7517642c0b9cbb6\"\n    \"sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-stdlib/coq-stdlib.8.19.0.opam",
+    "native_metadata_sha256": "74c3a0f372527d7c87d74dc89dd43fc949d43ea4402e4c70118bc20e206e24d2",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "stdune",
+    "version": "3.9.1",
+    "repository": "overlay",
+    "metadata_path": "packages/stdune/stdune.3.9.1/opam",
+    "input_metadata_sha256": "76922ca66fe0b1e52edc6d15725170edcdcbbda544499eab8aef1fb1af4d684f",
+    "input_git_blob": "1b01f1b9d7a75f0b6a3e481d4262b8aaeec9f49a",
+    "origin": {
+      "package": "stdune",
+      "version": "3.9.1",
+      "path": "repository/packages/stdune/stdune.3.9.1/opam",
+      "origin": {
+        "record": 27,
+        "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/stdune/stdune.3.9.1/opam",
+        "git_blob": "1b01f1b9d7a75f0b6a3e481d4262b8aaeec9f49a"
+      },
+      "original": {
+        "bytes": 1247,
+        "sha256": "76922ca66fe0b1e52edc6d15725170edcdcbbda544499eab8aef1fb1af4d684f",
+        "git_blob": "1b01f1b9d7a75f0b6a3e481d4262b8aaeec9f49a"
+      },
+      "materialized": {
+        "bytes": 1247,
+        "sha256": "76922ca66fe0b1e52edc6d15725170edcdcbbda544499eab8aef1fb1af4d684f",
+        "git_blob": "1b01f1b9d7a75f0b6a3e481d4262b8aaeec9f49a"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/stdune/stdune.3.9.1.opam",
+    "native_metadata_sha256": "d8c7526faa3677a263ab277e9e407542f9d8ce3b10800f7e4c629189e52516fb",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "bisect_ppx",
+    "version": "2.8.3",
+    "repository": "main",
+    "metadata_path": "packages/bisect_ppx/bisect_ppx.2.8.3/opam",
+    "input_metadata_sha256": "27daa3933f46c7bab2d406fafd9178baa0bd5b73bf93ccc367ea5966ee3a604b",
+    "input_git_blob": "899080995ea41f83bd5afa8a563da0083347d569",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/bisect_ppx/bisect_ppx.2.8.3/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/aantron/bisect_ppx/archive/2.8.3.tar.gz\"\n  checksum: [\n    \"sha256=27ddeb2f60fbae50dc504e63e63cd5f012689084a76d5fdd4d1371d5341ff8db\"\n    \"md5=8c755c13e8d90f665986d842a41669f5\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/bisect_ppx/bisect_ppx.2.8.3.opam",
+    "native_metadata_sha256": "b6612fb6b1b114f83559f4d41bddcd13c63829bb0b2bfd6387daa3c9f96156b9",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "isla-lang",
+    "version": "dev",
+    "repository": "overlay",
+    "metadata_path": "packages/isla-lang/isla-lang.dev/opam",
+    "input_metadata_sha256": "63b64178ac9fdbc266e20cce39417c7a81ada8e21098316dcc79bf06651d496b",
+    "input_git_blob": "7c3e4d66c0e128bb817171745659bdb44564077a",
+    "origin": {
+      "package": "isla-lang",
+      "version": "dev",
+      "path": "repository/packages/isla-lang/isla-lang.dev/opam",
+      "origin": {
+        "record": 8,
+        "url": "https://github.com/rems-project/isla-lang/blob/bda86c9f0bd28bbaa2481f50ddc986ede342805a/isla-lang.opam",
+        "git_blob": "64dda5b8d7ee494cd391efc5bc9fada1689f2ea6"
+      },
+      "original": {
+        "bytes": 728,
+        "sha256": "c1e76dc0cb1c8193235f7a3d7c581e20aad6c5fb89df25a1ace1c2329fedbd5b",
+        "git_blob": "64dda5b8d7ee494cd391efc5bc9fada1689f2ea6"
+      },
+      "materialized": {
+        "bytes": 909,
+        "sha256": "63b64178ac9fdbc266e20cce39417c7a81ada8e21098316dcc79bf06651d496b",
+        "git_blob": "7c3e4d66c0e128bb817171745659bdb44564077a"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/isla-lang.git#bda86c9f0bd28bbaa2481f50ddc986ede342805a\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/isla-lang/isla-lang.dev.opam",
+    "native_metadata_sha256": "0155efc4990e058aaf418fc1f15c38e253fb41ec845cf4abe0ab2d8242d04b19",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq",
+    "version": "8.19.0",
+    "repository": "main",
+    "metadata_path": "packages/coq/coq.8.19.0/opam",
+    "input_metadata_sha256": "7290cb19d19390a737e013d9153c2991f13c53386bc365075fa6ff4f8cf72d17",
+    "input_git_blob": "9e12ad86aa1318d50b81b17ef55cbd4113522040",
+    "origin": {
+      "repository": "ocaml/opam-repository",
+      "revision": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/coq/coq.8.19.0/opam"
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/coq/coq/releases/download/V8.19.0/coq-8.19.0.tar.gz\"\n  checksum: [\n    \"md5=64b49dbc3205477bd7517642c0b9cbb6\"\n    \"sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq/coq.8.19.0.opam",
+    "native_metadata_sha256": "538568638934b713af4e354f0e2781bed07d056f544368c96eab1936a5b0b5f9",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "dune-private-libs",
+    "version": "3.9.1",
+    "repository": "overlay",
+    "metadata_path": "packages/dune-private-libs/dune-private-libs.3.9.1/opam",
+    "input_metadata_sha256": "c09c5a0c5d10490effc01f0bcfca1be0ec14744ad33d4f839d9bf141056248f1",
+    "input_git_blob": "8df4dde33b3cd382b715d49c0ee934862920c4cd",
+    "origin": {
+      "package": "dune-private-libs",
+      "version": "3.9.1",
+      "path": "repository/packages/dune-private-libs/dune-private-libs.3.9.1/opam",
+      "origin": {
+        "record": 25,
+        "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dune-private-libs/dune-private-libs.3.9.1/opam",
+        "git_blob": "8df4dde33b3cd382b715d49c0ee934862920c4cd"
+      },
+      "original": {
+        "bytes": 1377,
+        "sha256": "c09c5a0c5d10490effc01f0bcfca1be0ec14744ad33d4f839d9bf141056248f1",
+        "git_blob": "8df4dde33b3cd382b715d49c0ee934862920c4cd"
+      },
+      "materialized": {
+        "bytes": 1377,
+        "sha256": "c09c5a0c5d10490effc01f0bcfca1be0ec14744ad33d4f839d9bf141056248f1",
+        "git_blob": "8df4dde33b3cd382b715d49c0ee934862920c4cd"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/dune-private-libs/dune-private-libs.3.9.1.opam",
+    "native_metadata_sha256": "46edf2a781493d72ac86d2d20e024d1a21b8981554e9c9e92f284dceb2e7b277",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-stdpp",
+    "version": "dev.2024-09-10.3.a1a12e00",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00/opam",
+    "input_metadata_sha256": "a970f83e80050755ca1283c4af37c84402fc4169195dc92a01f62556cf2f426a",
+    "input_git_blob": "b75c429358ea7e45b6778553a72abd6b6420f1e9",
+    "origin": {
+      "package": "coq-stdpp",
+      "version": "dev.2024-09-10.3.a1a12e00",
+      "path": "repository/packages/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00/opam",
+      "origin": {
+        "record": 2,
+        "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00/opam",
+        "git_blob": "b75c429358ea7e45b6778553a72abd6b6420f1e9"
+      },
+      "original": {
+        "bytes": 1838,
+        "sha256": "a970f83e80050755ca1283c4af37c84402fc4169195dc92a01f62556cf2f426a",
+        "git_blob": "b75c429358ea7e45b6778553a72abd6b6420f1e9"
+      },
+      "materialized": {
+        "bytes": 1838,
+        "sha256": "a970f83e80050755ca1283c4af37c84402fc4169195dc92a01f62556cf2f426a",
+        "git_blob": "b75c429358ea7e45b6778553a72abd6b6420f1e9"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url { src: \"git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00.opam",
+    "native_metadata_sha256": "fce4c9547e0414cd4cb4d8ed4acc19091d140d25e4713c2a45febfc987a8e304",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-record-update",
+    "version": "0.3.3",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-record-update/coq-record-update.0.3.3/opam",
+    "input_metadata_sha256": "8dc6411864d9d8005b8b6eaf7f6116a1140a68ea85181f4725a6d597aeca6fa3",
+    "input_git_blob": "4a1220d63bd01e6b76d6bbd6aaf53031f4740b67",
+    "origin": {
+      "package": "coq-record-update",
+      "version": "0.3.3",
+      "path": "repository/packages/coq-record-update/coq-record-update.0.3.3/opam",
+      "origin": {
+        "record": 7,
+        "url": "https://github.com/rocq-prover/opam/blob/564ab90f5874c0c91cee746c4706bc2ba686a5a9/released/packages/coq-record-update/coq-record-update.0.3.3/opam",
+        "git_blob": "4a1220d63bd01e6b76d6bbd6aaf53031f4740b67"
+      },
+      "original": {
+        "bytes": 1148,
+        "sha256": "8dc6411864d9d8005b8b6eaf7f6116a1140a68ea85181f4725a6d597aeca6fa3",
+        "git_blob": "4a1220d63bd01e6b76d6bbd6aaf53031f4740b67"
+      },
+      "materialized": {
+        "bytes": 1148,
+        "sha256": "8dc6411864d9d8005b8b6eaf7f6116a1140a68ea85181f4725a6d597aeca6fa3",
+        "git_blob": "4a1220d63bd01e6b76d6bbd6aaf53031f4740b67"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src:\n    \"https://github.com/tchajed/coq-record-update/archive/v0.3.3.tar.gz\"\n  checksum:\n    \"sha512=fb88f33ba716d068506d31047969fff40630adc7df7f21a016c8d92ff3c802007ce4efc0ae93c5456b76544040c323ae4d66755c8b425087504ddb1146a8b81a\"\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-record-update/coq-record-update.0.3.3.opam",
+    "native_metadata_sha256": "3ba594a4c668ddf81216e9a460439f696d547b662914cc36d8eb6c8b6c8449d8",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-bbv",
+    "version": "1.5",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-bbv/coq-bbv.1.5/opam",
+    "input_metadata_sha256": "f1f29f0742aa743eafa0f3f084cb408e4b18e6535e3acb35371808145b539501",
+    "input_git_blob": "2629b27ebfaf9b53206b5d856fe2a8720c269f04",
+    "origin": {
+      "package": "coq-bbv",
+      "version": "1.5",
+      "path": "repository/packages/coq-bbv/coq-bbv.1.5/opam",
+      "origin": {
+        "record": 5,
+        "url": "https://github.com/rocq-prover/opam/blob/564ab90f5874c0c91cee746c4706bc2ba686a5a9/released/packages/coq-bbv/coq-bbv.1.5/opam",
+        "git_blob": "2629b27ebfaf9b53206b5d856fe2a8720c269f04"
+      },
+      "original": {
+        "bytes": 975,
+        "sha256": "f1f29f0742aa743eafa0f3f084cb408e4b18e6535e3acb35371808145b539501",
+        "git_blob": "2629b27ebfaf9b53206b5d856fe2a8720c269f04"
+      },
+      "materialized": {
+        "bytes": 975,
+        "sha256": "f1f29f0742aa743eafa0f3f084cb408e4b18e6535e3acb35371808145b539501",
+        "git_blob": "2629b27ebfaf9b53206b5d856fe2a8720c269f04"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/mit-plv/bbv/archive/v1.5.tar.gz\"\n  checksum: \"sha512=43bf2c300b5a24275fecd4888ddda0a2ef88ceb22835130bf5fe61d00ddfd7c8634b70e35a45043f69d2f3ef783ee3295e6e1cd6b8b4645ab008d6c1afa36c33\"\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-bbv/coq-bbv.1.5.opam",
+    "native_metadata_sha256": "a43f7968699b32ab9521aa7335bc50bd3e0d357894d18233bc975e5061833076",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "dune-site",
+    "version": "3.9.1",
+    "repository": "overlay",
+    "metadata_path": "packages/dune-site/dune-site.3.9.1/opam",
+    "input_metadata_sha256": "8aa0cbb0ac5659936b5047f415a6458b31d1f10c05cbce19711f77e7f69ef00a",
+    "input_git_blob": "693ad70898fdaa96b82fa10e6436d718c621ffc5",
+    "origin": {
+      "package": "dune-site",
+      "version": "3.9.1",
+      "path": "repository/packages/dune-site/dune-site.3.9.1/opam",
+      "origin": {
+        "record": 26,
+        "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dune-site/dune-site.3.9.1/opam",
+        "git_blob": "693ad70898fdaa96b82fa10e6436d718c621ffc5"
+      },
+      "original": {
+        "bytes": 1084,
+        "sha256": "8aa0cbb0ac5659936b5047f415a6458b31d1f10c05cbce19711f77e7f69ef00a",
+        "git_blob": "693ad70898fdaa96b82fa10e6436d718c621ffc5"
+      },
+      "materialized": {
+        "bytes": 1084,
+        "sha256": "8aa0cbb0ac5659936b5047f415a6458b31d1f10c05cbce19711f77e7f69ef00a",
+        "git_blob": "693ad70898fdaa96b82fa10e6436d718c621ffc5"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url {\n  src: \"https://github.com/ocaml/dune/releases/download/3.9.1/dune-3.9.1.tbz\"\n  checksum: [\n    \"sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878\"\n    \"sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979\"\n  ]\n}"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/dune-site/dune-site.3.9.1.opam",
+    "native_metadata_sha256": "2b045ece80fa1d55984e3fa409c7359a6b7a545590a80ec4fd0fb4b8c6ca69ac",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-stdpp-bitvector",
+    "version": "dev.2024-09-10.3.a1a12e00",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00/opam",
+    "input_metadata_sha256": "fd446f6a28adbd2bd3634d6b28778d0d58defd0e71c15bbfa224e432e4098f80",
+    "input_git_blob": "b2f78b5c2885c6bd12e4e92cc513fa932314487e",
+    "origin": {
+      "package": "coq-stdpp-bitvector",
+      "version": "dev.2024-09-10.3.a1a12e00",
+      "path": "repository/packages/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00/opam",
+      "origin": {
+        "record": 4,
+        "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00/opam",
+        "git_blob": "b2f78b5c2885c6bd12e4e92cc513fa932314487e"
+      },
+      "original": {
+        "bytes": 952,
+        "sha256": "fd446f6a28adbd2bd3634d6b28778d0d58defd0e71c15bbfa224e432e4098f80",
+        "git_blob": "b2f78b5c2885c6bd12e4e92cc513fa932314487e"
+      },
+      "materialized": {
+        "bytes": 952,
+        "sha256": "fd446f6a28adbd2bd3634d6b28778d0d58defd0e71c15bbfa224e432e4098f80",
+        "git_blob": "b2f78b5c2885c6bd12e4e92cc513fa932314487e"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url { src: \"git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00.opam",
+    "native_metadata_sha256": "c66490a46ea940934a55e6eb8c3f7b4d3cf4fc38dc57adb5ea5603d24a6eee6e",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-iris",
+    "version": "dev.2024-09-10.1.6f24ed4b",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b/opam",
+    "input_metadata_sha256": "a9b34c4cb82890f7ec40eb723f850b72bba6b8bcbc6c57fef1a8daf9b4058d15",
+    "input_git_blob": "030b2c78246cf7c4f35eeb3570827b03acf1692e",
+    "origin": {
+      "package": "coq-iris",
+      "version": "dev.2024-09-10.1.6f24ed4b",
+      "path": "repository/packages/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b/opam",
+      "origin": {
+        "record": 1,
+        "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b/opam",
+        "git_blob": "030b2c78246cf7c4f35eeb3570827b03acf1692e"
+      },
+      "original": {
+        "bytes": 1383,
+        "sha256": "a9b34c4cb82890f7ec40eb723f850b72bba6b8bcbc6c57fef1a8daf9b4058d15",
+        "git_blob": "030b2c78246cf7c4f35eeb3570827b03acf1692e"
+      },
+      "materialized": {
+        "bytes": 1383,
+        "sha256": "a9b34c4cb82890f7ec40eb723f850b72bba6b8bcbc6c57fef1a8daf9b4058d15",
+        "git_blob": "030b2c78246cf7c4f35eeb3570827b03acf1692e"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url { src: \"git+https://gitlab.mpi-sws.org/iris/iris.git#6f24ed4baa4d61967a95bac834eab2c66f3b76fa\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b.opam",
+    "native_metadata_sha256": "eb45c0d8e293c29852264101aed7b6c5a8ac8742723edd2f9eb99b07f36a0005",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-sail",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-sail/coq-sail.0.17/opam",
+    "input_metadata_sha256": "163a3eefb82a7078fe834cd4b897f303668f492ef8fe4d852f34e3ffe7e1c342",
+    "input_git_blob": "72c819e4fa6413283bffb4dc86dbbafe417f4477",
+    "origin": {
+      "package": "coq-sail",
+      "version": "0.17",
+      "path": "repository/packages/coq-sail/coq-sail.0.17/opam",
+      "origin": {
+        "repository": "rems-project/coq-sail",
+        "revision": "169934e27ceafe393ed4d365985f7b12d974d56e",
+        "path": "coq-sail.opam",
+        "upstream_git_blob": "72cc3eab61c1565cf5eb83f77b51e1a3c6a1fc5d",
+        "upstream_sha256": "bd9484be042f1a2ae204da25d48b58e30d8cf5c8441556d5d099078690fe8e89",
+        "url": "https://github.com/rems-project/coq-sail/blob/169934e27ceafe393ed4d365985f7b12d974d56e/coq-sail.opam",
+        "retained": "support/upstream/coq-sail.opam",
+        "line_ranges": null,
+        "retained_sha256": "bd9484be042f1a2ae204da25d48b58e30d8cf5c8441556d5d099078690fe8e89",
+        "retention": "complete small primary file"
+      },
+      "original": {
+        "bytes": 1639,
+        "sha256": "bd9484be042f1a2ae204da25d48b58e30d8cf5c8441556d5d099078690fe8e89",
+        "git_blob": "72cc3eab61c1565cf5eb83f77b51e1a3c6a1fc5d"
+      },
+      "materialized": {
+        "bytes": 1819,
+        "sha256": "163a3eefb82a7078fe834cd4b897f303668f492ef8fe4d852f34e3ffe7e1c342",
+        "git_blob": "72c819e4fa6413283bffb4dc86dbbafe417f4477"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/coq-sail.git#169934e27ceafe393ed4d365985f7b12d974d56e\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-sail/coq-sail.0.17.opam",
+    "native_metadata_sha256": "b9bead47aa142c9fe26045b5f397352bd2c9a309472b618b366e0498e4d176a6",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "libsail",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/libsail/libsail.0.17/opam",
+    "input_metadata_sha256": "6e0f3eea9dfb37267ae728dd6606239b562a9c1c7bc7ef58442a11411a839419",
+    "input_git_blob": "ba18da141aa2f5633cda4bbbc8788e53af1df82f",
+    "origin": {
+      "package": "libsail",
+      "version": "0.17",
+      "path": "repository/packages/libsail/libsail.0.17/opam",
+      "origin": {
+        "record": 9,
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/libsail.opam",
+        "git_blob": "f0c2d441d35f3ca21ae870710392545687090e42"
+      },
+      "original": {
+        "bytes": 1693,
+        "sha256": "95c154cb61c40759a4dcc54b2f1785de561fe613aa8314943c61ee7583dc4fd2",
+        "git_blob": "f0c2d441d35f3ca21ae870710392545687090e42"
+      },
+      "materialized": {
+        "bytes": 1869,
+        "sha256": "6e0f3eea9dfb37267ae728dd6606239b562a9c1c7bc7ef58442a11411a839419",
+        "git_blob": "ba18da141aa2f5633cda4bbbc8788e53af1df82f"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/libsail/libsail.0.17.opam",
+    "native_metadata_sha256": "d855a2d97045f2b1fd360ecd40391ffa5d24afa0389af67ac2f49c48aed91d9e",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-stdpp-unstable",
+    "version": "dev.2024-09-10.3.a1a12e00",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00/opam",
+    "input_metadata_sha256": "69bf98cf943b61729f3f75bb411916a246517b25fea30def9fc86b5c01e7e9bc",
+    "input_git_blob": "a4262615fad1e54df2765287ae8405a990566b17",
+    "origin": {
+      "package": "coq-stdpp-unstable",
+      "version": "dev.2024-09-10.3.a1a12e00",
+      "path": "repository/packages/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00/opam",
+      "origin": {
+        "record": 3,
+        "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00/opam",
+        "git_blob": "a4262615fad1e54df2765287ae8405a990566b17"
+      },
+      "original": {
+        "bytes": 820,
+        "sha256": "69bf98cf943b61729f3f75bb411916a246517b25fea30def9fc86b5c01e7e9bc",
+        "git_blob": "a4262615fad1e54df2765287ae8405a990566b17"
+      },
+      "materialized": {
+        "bytes": 820,
+        "sha256": "69bf98cf943b61729f3f75bb411916a246517b25fea30def9fc86b5c01e7e9bc",
+        "git_blob": "a4262615fad1e54df2765287ae8405a990566b17"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url { src: \"git+https://gitlab.mpi-sws.org/iris/stdpp.git#a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00.opam",
+    "native_metadata_sha256": "97509fc0f31d9b2b396af48bfa63245e0cfa01f64be0d534472f61617b53b57d",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_sv_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_sv_backend/sail_sv_backend.0.17/opam",
+    "input_metadata_sha256": "a4c220060841460245a11bd867706b068e547e74d6f2c21e264bc6c94616ffa0",
+    "input_git_blob": "f08ad182f193c56fb62928f233fd6ffd9f555bcb",
+    "origin": {
+      "package": "sail_sv_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_sv_backend/sail_sv_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_sv_backend.opam",
+        "git_blob": "fb2938d04da3019b35588db7c043c962c45b3428"
+      },
+      "original": {
+        "bytes": 929,
+        "sha256": "74516f10fd001b22a82fdaf398ea9ce1c1dc23180a717820795bfcbfeb76fa0a",
+        "git_blob": "fb2938d04da3019b35588db7c043c962c45b3428"
+      },
+      "materialized": {
+        "bytes": 1105,
+        "sha256": "a4c220060841460245a11bd867706b068e547e74d6f2c21e264bc6c94616ffa0",
+        "git_blob": "f08ad182f193c56fb62928f233fd6ffd9f555bcb"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_sv_backend/sail_sv_backend.0.17.opam",
+    "native_metadata_sha256": "1df4a27cb98ec10df89e1817687750bcc6098e67f139e29279d98804241e538a",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_smt_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_smt_backend/sail_smt_backend.0.17/opam",
+    "input_metadata_sha256": "d3938ffa7bd4363b4d37596e131645c192495869d73be847bd80b88550e5480e",
+    "input_git_blob": "1be313943ed50e63a4d9cd23c0cf2d496e1768b2",
+    "origin": {
+      "package": "sail_smt_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_smt_backend/sail_smt_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_smt_backend.opam",
+        "git_blob": "e2c52957721ea7ef569922a596f0ce3ae09e9a70"
+      },
+      "original": {
+        "bytes": 917,
+        "sha256": "fc91a71131cc26e6cd47bb97e9d2d8ba3f2cd4312b8359c155242f957dc0e9fe",
+        "git_blob": "e2c52957721ea7ef569922a596f0ce3ae09e9a70"
+      },
+      "materialized": {
+        "bytes": 1093,
+        "sha256": "d3938ffa7bd4363b4d37596e131645c192495869d73be847bd80b88550e5480e",
+        "git_blob": "1be313943ed50e63a4d9cd23c0cf2d496e1768b2"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_smt_backend/sail_smt_backend.0.17.opam",
+    "native_metadata_sha256": "40a7057feb2f10c9c0aa0d02b384c5137095e76c8e1828774b052c13fd987b8b",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_output",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_output/sail_output.0.17/opam",
+    "input_metadata_sha256": "f96c9e6095d52b7c69f5c8daa646b0f63e05edc82c5008ba7289510129ef32f4",
+    "input_git_blob": "ceb7ae177947487147a4475f6cc759a36a6e2368",
+    "origin": {
+      "package": "sail_output",
+      "version": "0.17",
+      "path": "repository/packages/sail_output/sail_output.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_output.opam",
+        "git_blob": "784851af8598d0be16048ab8698c0e6d105a70dd"
+      },
+      "original": {
+        "bytes": 922,
+        "sha256": "fdc8d2abea6eb53fb2189f94f1a3c544d290ecf26ab1bd4f0c7e8169a4528c6a",
+        "git_blob": "784851af8598d0be16048ab8698c0e6d105a70dd"
+      },
+      "materialized": {
+        "bytes": 1098,
+        "sha256": "f96c9e6095d52b7c69f5c8daa646b0f63e05edc82c5008ba7289510129ef32f4",
+        "git_blob": "ceb7ae177947487147a4475f6cc759a36a6e2368"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_output/sail_output.0.17.opam",
+    "native_metadata_sha256": "76f07448a4c2f886596124317711041b3be7cf524c003fd6196e8332646f35b4",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_ocaml_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_ocaml_backend/sail_ocaml_backend.0.17/opam",
+    "input_metadata_sha256": "8cadd54c59b0aef4a3ca4623dd4d8e7d505725746b7f1c014e97a17a396a8533",
+    "input_git_blob": "9a06fc8965f4f0892eaf90693c07df6fb221025e",
+    "origin": {
+      "package": "sail_ocaml_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_ocaml_backend/sail_ocaml_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_ocaml_backend.opam",
+        "git_blob": "7f8d7c426f83d8a94d51ff671d3bc5e964655d94"
+      },
+      "original": {
+        "bytes": 945,
+        "sha256": "931a7a21efad9286a483945b79781cabb238404b81653e28a8defdd63a12b596",
+        "git_blob": "7f8d7c426f83d8a94d51ff671d3bc5e964655d94"
+      },
+      "materialized": {
+        "bytes": 1121,
+        "sha256": "8cadd54c59b0aef4a3ca4623dd4d8e7d505725746b7f1c014e97a17a396a8533",
+        "git_blob": "9a06fc8965f4f0892eaf90693c07df6fb221025e"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_ocaml_backend/sail_ocaml_backend.0.17.opam",
+    "native_metadata_sha256": "21a243c97a77ca7ab2cbf4712b522cd3a74b9dbce3db0b11ae53efd95b13fb4e",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_lem_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_lem_backend/sail_lem_backend.0.17/opam",
+    "input_metadata_sha256": "f5313ae5170724ff791fca42c9d1b80cd9689e366a55dd9b4f37317dc03cbada",
+    "input_git_blob": "f33a2cf92c4603862feff853fadbaf00f73e7574",
+    "origin": {
+      "package": "sail_lem_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_lem_backend/sail_lem_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_lem_backend.opam",
+        "git_blob": "ddfe87526b05b7d1f5acf7d3d4adf8544f53d7c0"
+      },
+      "original": {
+        "bytes": 919,
+        "sha256": "0a8124703c6613cd93676f845bb7c527a8a428f215eed9c89af5dd93766cf4c4",
+        "git_blob": "ddfe87526b05b7d1f5acf7d3d4adf8544f53d7c0"
+      },
+      "materialized": {
+        "bytes": 1095,
+        "sha256": "f5313ae5170724ff791fca42c9d1b80cd9689e366a55dd9b4f37317dc03cbada",
+        "git_blob": "f33a2cf92c4603862feff853fadbaf00f73e7574"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_lem_backend/sail_lem_backend.0.17.opam",
+    "native_metadata_sha256": "37046441bfee11801e40230c9c007ddcb2d04f8d3816ae535e0d3853387ba810",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_latex_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_latex_backend/sail_latex_backend.0.17/opam",
+    "input_metadata_sha256": "d3eb49032f88890026fe64ddbee16530ab16823efe8788c9d5cf5de6d488569a",
+    "input_git_blob": "6c27008178178c6e673888282e311b5494610449",
+    "origin": {
+      "package": "sail_latex_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_latex_backend/sail_latex_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_latex_backend.opam",
+        "git_blob": "14e0a7af732e1ef050fb7058c3c1ab0ac60c6808"
+      },
+      "original": {
+        "bytes": 953,
+        "sha256": "7e905f6d22160543f952c58aaa5e374c523c56841ae22a80169c69fb2de31bd6",
+        "git_blob": "14e0a7af732e1ef050fb7058c3c1ab0ac60c6808"
+      },
+      "materialized": {
+        "bytes": 1129,
+        "sha256": "d3eb49032f88890026fe64ddbee16530ab16823efe8788c9d5cf5de6d488569a",
+        "git_blob": "6c27008178178c6e673888282e311b5494610449"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_latex_backend/sail_latex_backend.0.17.opam",
+    "native_metadata_sha256": "c1bb711f481eec80321c49681233bcf6d30590fb2e7937587b401ab648c5eeb9",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_doc_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_doc_backend/sail_doc_backend.0.17/opam",
+    "input_metadata_sha256": "bf5d20623b462b25d8afc7a4f9f09114b3b6bb190818a12e01d19d034f5806a6",
+    "input_git_blob": "9739814974f444c12d394bf20e80b1f7bd18afeb",
+    "origin": {
+      "package": "sail_doc_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_doc_backend/sail_doc_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_doc_backend.opam",
+        "git_blob": "dcc3354ae69ccdfbefacd39e0d690d8c774668b6"
+      },
+      "original": {
+        "bytes": 981,
+        "sha256": "c754bb2026305515bcfbe1aad186af44a3bdff3f619a90dff8a3f6baa1d2dff5",
+        "git_blob": "dcc3354ae69ccdfbefacd39e0d690d8c774668b6"
+      },
+      "materialized": {
+        "bytes": 1157,
+        "sha256": "bf5d20623b462b25d8afc7a4f9f09114b3b6bb190818a12e01d19d034f5806a6",
+        "git_blob": "9739814974f444c12d394bf20e80b1f7bd18afeb"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_doc_backend/sail_doc_backend.0.17.opam",
+    "native_metadata_sha256": "35812f1bfe7ec4178fb35bf0d425bbcb9e286d468b9eaab7aab1c6b73eac7dca",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_coq_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_coq_backend/sail_coq_backend.0.17/opam",
+    "input_metadata_sha256": "05aa1ac71e8c81ecd48f5b2f48498d5f13f075a5bd42fe1c63bb55be48626a06",
+    "input_git_blob": "0f482509225fd26e714728f9bc65c63f4cfc0e85",
+    "origin": {
+      "package": "sail_coq_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_coq_backend/sail_coq_backend.0.17/opam",
+      "origin": {
+        "record": 13,
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_coq_backend.opam",
+        "git_blob": "8cc4a82dcab3e1f55465df185bfe10f82993a3ed"
+      },
+      "original": {
+        "bytes": 919,
+        "sha256": "3a56a7e1444dd67a517ab7d15bea76a883a0db299b61cd720119be239c10cd0b",
+        "git_blob": "8cc4a82dcab3e1f55465df185bfe10f82993a3ed"
+      },
+      "materialized": {
+        "bytes": 1095,
+        "sha256": "05aa1ac71e8c81ecd48f5b2f48498d5f13f075a5bd42fe1c63bb55be48626a06",
+        "git_blob": "0f482509225fd26e714728f9bc65c63f4cfc0e85"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_coq_backend/sail_coq_backend.0.17.opam",
+    "native_metadata_sha256": "860d959f3f7e7452542612bb976b3ff86735a604cea22cda8eb112dcba86bb83",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail_c_backend",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail_c_backend/sail_c_backend.0.17/opam",
+    "input_metadata_sha256": "d3938ffa7bd4363b4d37596e131645c192495869d73be847bd80b88550e5480e",
+    "input_git_blob": "1be313943ed50e63a4d9cd23c0cf2d496e1768b2",
+    "origin": {
+      "package": "sail_c_backend",
+      "version": "0.17",
+      "path": "repository/packages/sail_c_backend/sail_c_backend.0.17/opam",
+      "origin": {
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_c_backend.opam",
+        "git_blob": "e2c52957721ea7ef569922a596f0ce3ae09e9a70"
+      },
+      "original": {
+        "bytes": 917,
+        "sha256": "fc91a71131cc26e6cd47bb97e9d2d8ba3f2cd4312b8359c155242f957dc0e9fe",
+        "git_blob": "e2c52957721ea7ef569922a596f0ce3ae09e9a70"
+      },
+      "materialized": {
+        "bytes": 1093,
+        "sha256": "d3938ffa7bd4363b4d37596e131645c192495869d73be847bd80b88550e5480e",
+        "git_blob": "1be313943ed50e63a4d9cd23c0cf2d496e1768b2"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail_c_backend/sail_c_backend.0.17.opam",
+    "native_metadata_sha256": "03462a4c3605f2980c8ed7521e3f53a890ea38ecf1d4611158fdd90c8031fe92",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "sail",
+    "version": "0.17",
+    "repository": "overlay",
+    "metadata_path": "packages/sail/sail.0.17/opam",
+    "input_metadata_sha256": "dd258a7ea08c3ac754ee3b08ec5ce9ae2886c2bf867abdbe06c0b028b5078740",
+    "input_git_blob": "9b6b56b8784075d38913746111eaf3988455363a",
+    "origin": {
+      "package": "sail",
+      "version": "0.17",
+      "path": "repository/packages/sail/sail.0.17/opam",
+      "origin": {
+        "record": 6,
+        "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail.opam",
+        "git_blob": "ff7a190ac8f8118fb07bc12210eacc8cd957bad4"
+      },
+      "original": {
+        "bytes": 1921,
+        "sha256": "e81a9948790344f69e67d5572d61c0f234c209b32f8186fde03c7a2036dff64c",
+        "git_blob": "ff7a190ac8f8118fb07bc12210eacc8cd957bad4"
+      },
+      "materialized": {
+        "bytes": 2097,
+        "sha256": "dd258a7ea08c3ac754ee3b08ec5ce9ae2886c2bf867abdbe06c0b028b5078740",
+        "git_blob": "9b6b56b8784075d38913746111eaf3988455363a"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/sail/sail.0.17.opam",
+    "native_metadata_sha256": "50a46732fe6da69c6e1c58c1f455e274259fe751e452c61d9e2429bb68ca69c4",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-lithium",
+    "version": "dev.2024-09-11.0.7945a29d",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d/opam",
+    "input_metadata_sha256": "fd0388ea316ef21988347d3ea1570fcbe5fb7808c9ee798b55236d89a9a06906",
+    "input_git_blob": "cee69110bb151599a6c40849ea8dc0b1fcde1ba0",
+    "origin": {
+      "package": "coq-lithium",
+      "version": "dev.2024-09-11.0.7945a29d",
+      "path": "repository/packages/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d/opam",
+      "origin": {
+        "record": 0,
+        "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d/opam",
+        "git_blob": "cee69110bb151599a6c40849ea8dc0b1fcde1ba0"
+      },
+      "original": {
+        "bytes": 857,
+        "sha256": "fd0388ea316ef21988347d3ea1570fcbe5fb7808c9ee798b55236d89a9a06906",
+        "git_blob": "cee69110bb151599a6c40849ea8dc0b1fcde1ba0"
+      },
+      "materialized": {
+        "bytes": 857,
+        "sha256": "fd0388ea316ef21988347d3ea1570fcbe5fb7808c9ee798b55236d89a9a06906",
+        "git_blob": "cee69110bb151599a6c40849ea8dc0b1fcde1ba0"
+      },
+      "adaptation": "byte-identical upstream metadata",
+      "added_source_url": null
+    },
+    "source_sections": [
+      "url { src: \"git+https://gitlab.mpi-sws.org/iris/refinedc.git#7945a29d1647970709a9b5ad2ffc53c757e130cc\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d.opam",
+    "native_metadata_sha256": "8805ff41adee7f9b8c06e4d7c7c8bf5b545d4c978755950fd5fe1b10ad5dc7ac",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "coq-sail-riscv",
+    "version": "0.5",
+    "repository": "overlay",
+    "metadata_path": "packages/coq-sail-riscv/coq-sail-riscv.0.5/opam",
+    "input_metadata_sha256": "5f341f2c5ad38d47f34cdef9204cd0b6fa5ac4cb669026725312143e3450d795",
+    "input_git_blob": "990ecb6b80ab0eac6c71a7c9ef913a618ca71ff5",
+    "origin": {
+      "package": "coq-sail-riscv",
+      "version": "0.5",
+      "path": "repository/packages/coq-sail-riscv/coq-sail-riscv.0.5/opam",
+      "origin": {
+        "repository": "riscv/sail-riscv",
+        "revision": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+        "path": "coq-sail-riscv.opam",
+        "upstream_git_blob": "a9879f228a663fc0e1fd733e9d8d7dff43b329d8",
+        "upstream_sha256": "1c087733f65fed93902d4f78914f1ce14f946e2ea118132db3070c95c8765cc8",
+        "url": "https://github.com/riscv/sail-riscv/blob/837ede9b39fae2aa97849da89c4b3b5a93344890/coq-sail-riscv.opam",
+        "retained": "support/upstream/coq-sail-riscv.opam",
+        "line_ranges": null,
+        "retained_sha256": "1c087733f65fed93902d4f78914f1ce14f946e2ea118132db3070c95c8765cc8",
+        "retention": "complete small primary file"
+      },
+      "original": {
+        "bytes": 836,
+        "sha256": "1c087733f65fed93902d4f78914f1ce14f946e2ea118132db3070c95c8765cc8",
+        "git_blob": "a9879f228a663fc0e1fd733e9d8d7dff43b329d8"
+      },
+      "materialized": {
+        "bytes": 1011,
+        "sha256": "5f341f2c5ad38d47f34cdef9204cd0b6fa5ac4cb669026725312143e3450d795",
+        "git_blob": "990ecb6b80ab0eac6c71a7c9ef913a618ca71ff5"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/riscv/sail-riscv.git#837ede9b39fae2aa97849da89c4b3b5a93344890\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/coq-sail-riscv/coq-sail-riscv.0.5.opam",
+    "native_metadata_sha256": "7cbd37a269191aa24fdacb32dbdca0fd6e584251fc6459dc58a64c1407d22ad7",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  },
+  {
+    "name": "islaris",
+    "version": "dev",
+    "repository": "overlay",
+    "metadata_path": "packages/islaris/islaris.dev/opam",
+    "input_metadata_sha256": "7920f29d5a1803b26ad85e20516d125b4339f6733ad391321c81ab56f836e225",
+    "input_git_blob": "3fe675a412aae08c275586528d1030a7f7089f61",
+    "origin": {
+      "package": "islaris",
+      "version": "dev",
+      "path": "repository/packages/islaris/islaris.dev/opam",
+      "origin": {
+        "record": 30,
+        "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/islaris.opam",
+        "git_blob": "1d2a1f4a65ac2213e89e6be4fafdac6972693899"
+      },
+      "original": {
+        "bytes": 1001,
+        "sha256": "73698a8ef01363603e56fddb112ad82d550b50f78761316a33409b9cca156cee",
+        "git_blob": "1d2a1f4a65ac2213e89e6be4fafdac6972693899"
+      },
+      "materialized": {
+        "bytes": 1180,
+        "sha256": "7920f29d5a1803b26ad85e20516d125b4339f6733ad391321c81ab56f836e225",
+        "git_blob": "3fe675a412aae08c275586528d1030a7f7089f61"
+      },
+      "adaptation": "append immutable url section only",
+      "added_source_url": "git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+    },
+    "source_sections": [
+      "url { src: \"git+https://github.com/rems-project/islaris.git#c978e10f50db5c40f0fdf113f5f76a779782c6f9\" }"
+    ],
+    "source_status": "declared coordinates only; no package source bytes acquired",
+    "auxiliary_metadata_files": [],
+    "native_metadata_path": "support/selected-metadata/islaris/islaris.dev.opam",
+    "native_metadata_sha256": "f42a2d95c88b906fe95cd0778aaac44d3b825fb4f312d19223d99cf4ea41b003",
+    "native_metadata_note": "exact opam show --raw slice; name/version normalization is opam output, not upstream bytes"
+  }
+]

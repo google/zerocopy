@@ -1,0 +1,47 @@
+{
+  "schema": "anneal-reference/ffi-trust-layer-matrix/v1",
+  "layers": [
+    {
+      "layer": "language_declaration",
+      "question": "What does the verified-language program declare?",
+      "examples": ["Rust extern item type and safety", "Rust ABI spelling", "foreign static mutability contract"],
+      "failure_if_omitted": "The proof may call a foreign item under a signature or safety premise different from the source program."
+    },
+    {
+      "layer": "binary_binding_and_calling_convention",
+      "question": "Which native definition is called, and how are values transferred across the boundary?",
+      "examples": ["link_name/ordinal", "target ABI", "variadicness", "unwind convention", "register/stack/shared-buffer convention"],
+      "failure_if_omitted": "A correct logical contract can be attached to the wrong symbol or to an incompatible machine-level call boundary."
+    },
+    {
+      "layer": "semantic_contract",
+      "question": "Which results, state changes, traces, failures, divergence, and memory effects may the foreign operation produce?",
+      "examples": ["CompCert extcall_sem relation", "CakeML basis_ffi_oracle"],
+      "failure_if_omitted": "ABI agreement alone gives no functional or effect guarantee."
+    },
+    {
+      "layer": "frame_and_resource_constraints",
+      "question": "Which caller-owned resources must foreign code preserve?",
+      "examples": ["CompCert extcall_properties memory/frame conditions", "CakeML private-machine-state preservation around FFI interference"],
+      "failure_if_omitted": "A return value may satisfy the functional contract while the foreign code corrupts unrelated memory or proof resources."
+    },
+    {
+      "layer": "implementation_adequacy",
+      "question": "Why does the concrete foreign implementation realize the abstract semantic contract?",
+      "examples": ["verified system-call implementation", "validated shim", "audited/trusted library premise"],
+      "failure_if_omitted": "The theorem remains conditional on the foreign implementation behaving as specified."
+    },
+    {
+      "layer": "environment_and_link_assumptions",
+      "question": "Which loader, OS, device, filesystem, command-line, or deployment assumptions connect the implementation to reality?",
+      "examples": ["CakeML installed-state assumptions", "symbol resolution", "external-world state"],
+      "failure_if_omitted": "The verified implementation may be linked or executed in an environment outside the theorem's modeled boundary."
+    }
+  ],
+  "system_patterns": {
+    "rust": "The language/reference side specifies declaration, safety, ABI, and some link identity, but an extern declaration is explicitly an unchecked import whose implementation is elsewhere.",
+    "compcert": "External behavior is parameterized by a relation over arguments, memory, result, trace, and post-memory plus required structural properties; compiler correctness is relative to that external-call semantics.",
+    "cakeml": "An FFI oracle specifies external calls and world state; the PLDI 2019 development shows how a concrete system-call implementation can discharge a large FFI/environment assumption by proving refinement from machine execution to that oracle contract."
+  },
+  "anneal_review_rule": "For every FFI edge, record the declaration identity, effective native binding, ABI/call representation, semantic contract, frame/resource obligations, concrete-implementation adequacy status, and residual environment assumptions. Treat any absent layer as an explicit unsupported case or trust premise rather than silently inheriting it from ABI compatibility."
+}

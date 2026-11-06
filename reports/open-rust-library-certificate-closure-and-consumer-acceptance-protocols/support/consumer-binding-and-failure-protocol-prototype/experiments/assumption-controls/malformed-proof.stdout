@@ -1,0 +1,4 @@
+malformed-proof.lean:101:113: error: Tactic `decide` proved that the proposition
+  False
+is false
+'consumerAccepted' depends on axioms: [propext, sorryAx]

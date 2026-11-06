@@ -1,0 +1,14 @@
+{
+  "lean_binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+  "rustc_binary_sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0",
+  "versions": {
+    "lean": "Lean (version 4.31.0, arm64-apple-darwin24.6.0, commit 68218e876d2a38b1985b8590fff244a83c321783, Release)",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1"
+  },
+  "host": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64"
+  },
+  "rust_stdlib_and_shared_runtime": "not fully hashed"
+}

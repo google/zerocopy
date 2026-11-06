@@ -1,0 +1,48 @@
+{
+  "schema": "anneal-reference/history-matrix/v1",
+  "subject": "Why3 proof-session evolution",
+  "events": [
+    {
+      "release": "0.70",
+      "date": "2011-07-06",
+      "change": "Added batch why3replayer for sessions created in the IDE.",
+      "significance": "Established replay as a separate current-execution operation over durable sessions."
+    },
+    {
+      "release": "0.71",
+      "date": "2011-10-13",
+      "change": "Added old/new subgoal pairing based on stored goal shapes; stored prover versions and marked proofs obsolete across prover-version changes.",
+      "significance": "Separated repair matching from current proof currency."
+    },
+    {
+      "release": "0.72",
+      "date": "2012-05-11",
+      "change": "Added multiple prover versions and prover-upgrade support.",
+      "significance": "Made external tool identity an explicit maintenance boundary."
+    },
+    {
+      "release": "0.73",
+      "date": "2012-07-19",
+      "change": "Changed session format with backward readability; added obsolete-only replay.",
+      "significance": "Preserved durable workflow across session-format evolution and made stale work addressable."
+    },
+    {
+      "release": "0.84",
+      "date": "2014-09-01",
+      "change": "Split session into why3session.xml and why3shapes; shapes/checksums sidecar described as unnecessary for replay and useful for tracking obsolete goals after input modifications.",
+      "significance": "Made matching metadata visibly auxiliary to replay evidence."
+    },
+    {
+      "release": "1.7.0",
+      "date": "2023-11-24",
+      "change": "Expanded session update/create operations, bench, and replay --ignore-shapes.",
+      "significance": "Continued treating proof maintenance and matching as explicit manipulable workflow state."
+    },
+    {
+      "release": "1.8.2",
+      "date": "2025-09-16",
+      "change": "Current release used for documented session/reload/replay semantics; session file-identifier fix recorded.",
+      "significance": "Current observation anchor."
+    }
+  ]
+}

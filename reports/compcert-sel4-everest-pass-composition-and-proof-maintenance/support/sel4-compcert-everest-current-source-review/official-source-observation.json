@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "observed_at_utc": "2026-09-30",
+  "repositories": [
+    {
+      "repository": "seL4/l4v",
+      "pinned_commit": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+      "selected_current_commit": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+      "default_branch": "master",
+      "raw_ref_path": "seL4--l4v-refs.txt",
+      "raw_ref_sha256": "a44d61a1507b509932ca6d4a695b9b641e97918c25e491d638e4561df344bd7a",
+      "refs": {
+        "HEAD": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+        "refs/heads/master": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "changed_files": []
+      },
+      "mapped_files": [
+        {
+          "source_id": "sel4-l4v-readme",
+          "path": "README.md",
+          "pinned_blob_sha1": "03421c4b7db4e9756efde5f46f19e60970fc7288",
+          "current_blob_sha1": "03421c4b7db4e9756efde5f46f19e60970fc7288",
+          "content_sha256": "0c25141c8a78f325cc6a2f22cf326a991767781a19027359324712af29ab0539",
+          "size": 8872,
+          "snapshot_path": "snapshots/seL4--l4v/README.md",
+          "old_raw_url": "https://raw.githubusercontent.com/seL4/l4v/6b4076aeb35f7803b7c232963e5f996545e3acb5/README.md",
+          "new_raw_url": "https://raw.githubusercontent.com/seL4/l4v/6b4076aeb35f7803b7c232963e5f996545e3acb5/README.md"
+        },
+        {
+          "source_id": "sel4-l4v-setup",
+          "path": "docs/setup.md",
+          "pinned_blob_sha1": "c20d7ba4fb16845977b4d205d725cb6c52a64eb9",
+          "current_blob_sha1": "c20d7ba4fb16845977b4d205d725cb6c52a64eb9",
+          "content_sha256": "32726adb3afff052cefcb55823dd8b954481fab5c9c3ef530e3ecc92106f1605",
+          "size": 9249,
+          "snapshot_path": "snapshots/seL4--l4v/docs/setup.md",
+          "old_raw_url": "https://raw.githubusercontent.com/seL4/l4v/6b4076aeb35f7803b7c232963e5f996545e3acb5/docs/setup.md",
+          "new_raw_url": "https://raw.githubusercontent.com/seL4/l4v/6b4076aeb35f7803b7c232963e5f996545e3acb5/docs/setup.md"
+        }
+      ],
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/seL4/l4v/releases/latest",
+        "tag_name": "seL4-16.0.0",
+        "published_at": "2026-07-22T11:22:47Z",
+        "html_url": "https://github.com/seL4/l4v/releases/tag/seL4-16.0.0",
+        "tag_ref_object_sha": "0d4cc5d902deaa275d1019dccb39f230934bfaa1",
+        "peeled_commit": "611fc6472917bc1ce38164da5eef0026c2a862e5",
+        "tag_ref_type": "annotated",
+        "raw_tag_ref_path": "seL4--l4v-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "211b60e4221a1f3c56b2a0838e9ff98bd230fbfe27167301e448e37fa50e36a3",
+        "relation_to_pinned": {
+          "status": "ahead",
+          "ahead_by": 92,
+          "behind_by": 0,
+          "total_commits": 92
+        }
+      }
+    },
+    {
+      "repository": "seL4/verification-manifest",
+      "pinned_commit": "f1f7a4289585e9610733ea041c1849e46af9701b",
+      "selected_current_commit": "f1f7a4289585e9610733ea041c1849e46af9701b",
+      "default_branch": "master",
+      "raw_ref_path": "seL4--verification-manifest-refs.txt",
+      "raw_ref_sha256": "a74fcc1a503e95536904512d5cb352cd242fabbd9dee4ac1c13fec9d78950cb6",
+      "refs": {
+        "HEAD": "f1f7a4289585e9610733ea041c1849e46af9701b",
+        "refs/heads/master": "f1f7a4289585e9610733ea041c1849e46af9701b"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "changed_files": []
+      },
+      "mapped_files": [
+        {
+          "source_id": "sel4-verification-manifest",
+          "path": "README.md",
+          "pinned_blob_sha1": "2b3f4a193bbb3012f9b7711f06bbb3dc2c98e352",
+          "current_blob_sha1": "2b3f4a193bbb3012f9b7711f06bbb3dc2c98e352",
+          "content_sha256": "718470e018538a1766e4cc38974cfe39d24005f1af5d22a723230bfc88b3c16e",
+          "size": 2403,
+          "snapshot_path": "snapshots/seL4--verification-manifest/README.md",
+          "old_raw_url": "https://raw.githubusercontent.com/seL4/verification-manifest/f1f7a4289585e9610733ea041c1849e46af9701b/README.md",
+          "new_raw_url": "https://raw.githubusercontent.com/seL4/verification-manifest/f1f7a4289585e9610733ea041c1849e46af9701b/README.md"
+        }
+      ],
+      "release": {
+        "status": "not_found",
+        "api_url": "https://api.github.com/repos/seL4/verification-manifest/releases/latest",
+        "http_status": 404
+      }
+    },
+    {
+      "repository": "AbsInt/CompCert",
+      "pinned_commit": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "selected_current_commit": "66a9fd06ef88619cc94765ca995a1018f7259b5c",
+      "default_branch": "master",
+      "raw_ref_path": "AbsInt--CompCert-refs.txt",
+      "raw_ref_sha256": "b27c742c0a37c2a73ee45d93d419652c655c03ee1938424042ad0990163cd603",
+      "refs": {
+        "HEAD": "66a9fd06ef88619cc94765ca995a1018f7259b5c",
+        "refs/heads/master": "66a9fd06ef88619cc94765ca995a1018f7259b5c"
+      },
+      "compare": {
+        "status": "ahead",
+        "ahead_by": 4,
+        "behind_by": 0,
+        "total_commits": 4,
+        "returned_file_count": 5,
+        "changed_files": [
+          {
+            "path": "cfrontend/CPragmas.ml",
+            "status": "modified",
+            "blob_sha": "571de6cd62176284c263cf929e126ea1333f7fa8"
+          },
+          {
+            "path": "common/Switch.v",
+            "status": "modified",
+            "blob_sha": "804f83f94c3764b4accc2f0127dd919fb1a07f86"
+          },
+          {
+            "path": "common/Switchaux.ml",
+            "status": "modified",
+            "blob_sha": "ffb0fe03c32256f11c7bd2b334e4fb174f59c81e"
+          },
+          {
+            "path": "cparser/Lexer.mll",
+            "status": "modified",
+            "blob_sha": "74c72186abfe8c45c9f78f0615c14547db342296"
+          },
+          {
+            "path": "test",
+            "status": "modified",
+            "blob_sha": "71c682d6b3a74e1a7d5da30285b5735761031da3"
+          }
+        ]
+      },
+      "mapped_files": [
+        {
+          "source_id": "compcert-core",
+          "path": "VERSION",
+          "pinned_blob_sha1": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+          "current_blob_sha1": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+          "content_sha256": "57a92d905a7ff1b7712a55fa61567c2662bad62c5023ea7a49d71b0a55b0dd6b",
+          "size": 35,
+          "snapshot_path": "snapshots/AbsInt--CompCert/VERSION",
+          "old_raw_url": "https://raw.githubusercontent.com/AbsInt/CompCert/74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6/VERSION",
+          "new_raw_url": "https://raw.githubusercontent.com/AbsInt/CompCert/66a9fd06ef88619cc94765ca995a1018f7259b5c/VERSION"
+        },
+        {
+          "source_id": "compcert-core",
+          "path": "common/Smallstep.v",
+          "pinned_blob_sha1": "cefab134fdce4f3ea2f970db49a99d987c05d3a1",
+          "current_blob_sha1": "cefab134fdce4f3ea2f970db49a99d987c05d3a1",
+          "content_sha256": "3279079eafb097a919f1e774a44200a59017a7f7edc665cc708b30c026c3e1b3",
+          "size": 74444,
+          "snapshot_path": "snapshots/AbsInt--CompCert/common/Smallstep.v",
+          "old_raw_url": "https://raw.githubusercontent.com/AbsInt/CompCert/74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6/common/Smallstep.v",
+          "new_raw_url": "https://raw.githubusercontent.com/AbsInt/CompCert/66a9fd06ef88619cc94765ca995a1018f7259b5c/common/Smallstep.v"
+        },
+        {
+          "source_id": "compcert-core",
+          "path": "driver/Compiler.v",
+          "pinned_blob_sha1": "60fc74fec1411216425004f6d63567354e146e9c",
+          "current_blob_sha1": "60fc74fec1411216425004f6d63567354e146e9c",
+          "content_sha256": "1782a975c8df642a54d28c891405714145997c1cfe4d227f07a4c4d71ff525fb",
+          "size": 20511,
+          "snapshot_path": "snapshots/AbsInt--CompCert/driver/Compiler.v",
+          "old_raw_url": "https://raw.githubusercontent.com/AbsInt/CompCert/74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6/driver/Compiler.v",
+          "new_raw_url": "https://raw.githubusercontent.com/AbsInt/CompCert/66a9fd06ef88619cc94765ca995a1018f7259b5c/driver/Compiler.v"
+        }
+      ],
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/AbsInt/CompCert/releases/latest",
+        "tag_name": "v3.18",
+        "published_at": "2026-08-30T08:53:14Z",
+        "html_url": "https://github.com/AbsInt/CompCert/releases/tag/v3.18",
+        "tag_ref_object_sha": "14d616046360a0b2611ebdfc2f98368af402e1f7",
+        "peeled_commit": "14d616046360a0b2611ebdfc2f98368af402e1f7",
+        "tag_ref_type": "lightweight",
+        "raw_tag_ref_path": "AbsInt--CompCert-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "7d9caf76f5cd57eb17bef8c0793d9eca6f0ad04d6ba4be60c3648ba04dfd32cd",
+        "relation_to_pinned": {
+          "status": "ahead",
+          "ahead_by": 14,
+          "behind_by": 0,
+          "total_commits": 14
+        }
+      }
+    },
+    {
+      "repository": "hacl-star/hacl-star",
+      "pinned_commit": "504c2987452f87fe44bce9b9f12e19d6e051761f",
+      "selected_current_commit": "504c2987452f87fe44bce9b9f12e19d6e051761f",
+      "default_branch": "main",
+      "raw_ref_path": "hacl-star--hacl-star-refs.txt",
+      "raw_ref_sha256": "3f5e258019230d3ab4d658ffa87a2aae09c2bcd81aec9fda2b996254c7d2892d",
+      "refs": {
+        "HEAD": "504c2987452f87fe44bce9b9f12e19d6e051761f",
+        "refs/heads/main": "504c2987452f87fe44bce9b9f12e19d6e051761f"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "changed_files": []
+      },
+      "mapped_files": [
+        {
+          "source_id": "hacl-readme",
+          "path": "README.md",
+          "pinned_blob_sha1": "8815628e9cea88ca1cbb777e5f30cab98b66e012",
+          "current_blob_sha1": "8815628e9cea88ca1cbb777e5f30cab98b66e012",
+          "content_sha256": "8d53aa2d1b9e036873544bbce3284b04d3425f91a8860a3f5b570455997b94ae",
+          "size": 5973,
+          "snapshot_path": "snapshots/hacl-star--hacl-star/README.md",
+          "old_raw_url": "https://raw.githubusercontent.com/hacl-star/hacl-star/504c2987452f87fe44bce9b9f12e19d6e051761f/README.md",
+          "new_raw_url": "https://raw.githubusercontent.com/hacl-star/hacl-star/504c2987452f87fe44bce9b9f12e19d6e051761f/README.md"
+        }
+      ],
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/hacl-star/hacl-star/releases/latest",
+        "tag_name": "ocaml-v0.4.5",
+        "published_at": "2022-01-28T13:40:49Z",
+        "html_url": "https://github.com/hacl-star/hacl-star/releases/tag/ocaml-v0.4.5",
+        "tag_ref_object_sha": "172edb4f76cc5ab1f0afaf24a192424df39bd415",
+        "peeled_commit": "d3f857dc195918692bc7d9c99d650c9d41104245",
+        "tag_ref_type": "annotated",
+        "raw_tag_ref_path": "hacl-star--hacl-star-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "b2bcd3ba3cc4d6f5a290957faab22c1e22db4580efedd3e90ee38a77f7e6680e",
+        "relation_to_pinned": {
+          "status": "ahead",
+          "ahead_by": 2898,
+          "behind_by": 0,
+          "total_commits": 2898
+        }
+      }
+    },
+    {
+      "repository": "FStarLang/karamel",
+      "pinned_commit": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+      "selected_current_commit": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+      "default_branch": "master",
+      "raw_ref_path": "FStarLang--karamel-refs.txt",
+      "raw_ref_sha256": "72de545c0d7ef8868d7a8c046dd67d1dc29636c146e99fca5071628e4d2fcab4",
+      "refs": {
+        "HEAD": "9abbb865b10a0cd5c557da81c024c3965cb6ff53",
+        "refs/heads/master": "9abbb865b10a0cd5c557da81c024c3965cb6ff53"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "changed_files": []
+      },
+      "mapped_files": [
+        {
+          "source_id": "karamel-docs",
+          "path": "README.md",
+          "pinned_blob_sha1": "3c0396bb78ad3b8c252da3a0518eba029b2e7cc9",
+          "current_blob_sha1": "3c0396bb78ad3b8c252da3a0518eba029b2e7cc9",
+          "content_sha256": "639e6a406cde0bbe7964484b9b05caecf979e6a4d85e1ed06353a045193eeb48",
+          "size": 3381,
+          "snapshot_path": "snapshots/FStarLang--karamel/README.md",
+          "old_raw_url": "https://raw.githubusercontent.com/FStarLang/karamel/9abbb865b10a0cd5c557da81c024c3965cb6ff53/README.md",
+          "new_raw_url": "https://raw.githubusercontent.com/FStarLang/karamel/9abbb865b10a0cd5c557da81c024c3965cb6ff53/README.md"
+        },
+        {
+          "source_id": "karamel-docs",
+          "path": "DESIGN.md",
+          "pinned_blob_sha1": "1c61b9572744fa0fbb8f602129ea15aadaac6a36",
+          "current_blob_sha1": "1c61b9572744fa0fbb8f602129ea15aadaac6a36",
+          "content_sha256": "ca75ed2512a064185440c9fc44eeec74b0d7b3ff335d179489200905ea15ec84",
+          "size": 4746,
+          "snapshot_path": "snapshots/FStarLang--karamel/DESIGN.md",
+          "old_raw_url": "https://raw.githubusercontent.com/FStarLang/karamel/9abbb865b10a0cd5c557da81c024c3965cb6ff53/DESIGN.md",
+          "new_raw_url": "https://raw.githubusercontent.com/FStarLang/karamel/9abbb865b10a0cd5c557da81c024c3965cb6ff53/DESIGN.md"
+        }
+      ],
+      "release": {
+        "status": "found",
+        "api_url": "https://api.github.com/repos/FStarLang/karamel/releases/latest",
+        "tag_name": "v0.9.6.0",
+        "published_at": "2018-05-17T20:46:58Z",
+        "html_url": "https://github.com/FStarLang/karamel/releases/tag/v0.9.6.0",
+        "tag_ref_object_sha": "34cff2cd74a1f63a06551dd2e7627ef0878e07ee",
+        "peeled_commit": "34cff2cd74a1f63a06551dd2e7627ef0878e07ee",
+        "tag_ref_type": "lightweight",
+        "raw_tag_ref_path": "FStarLang--karamel-release-tag-refs.txt",
+        "raw_tag_ref_sha256": "d1eefad0d4206d5b05b52cc9758c3712b1d000e477ef503946bca1948b25c387",
+        "relation_to_pinned": {
+          "status": "ahead",
+          "ahead_by": 3002,
+          "behind_by": 0,
+          "total_commits": 3002
+        }
+      }
+    },
+    {
+      "repository": "project-everest/everest",
+      "pinned_commit": "2a3f67dab56be02d1793b2801ef08f368423a3ac",
+      "selected_current_commit": "2a3f67dab56be02d1793b2801ef08f368423a3ac",
+      "default_branch": "master",
+      "raw_ref_path": "project-everest--everest-refs.txt",
+      "raw_ref_sha256": "d08883f89fcdc7ff135cf32cb4ed54654606a1259550df772200232308b7ebd2",
+      "refs": {
+        "HEAD": "2a3f67dab56be02d1793b2801ef08f368423a3ac",
+        "refs/heads/master": "2a3f67dab56be02d1793b2801ef08f368423a3ac"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "changed_files": []
+      },
+      "mapped_files": [
+        {
+          "source_id": "everest-readme",
+          "path": "README.md",
+          "pinned_blob_sha1": "ce627659804164d6250a5ec1397c403c14af4418",
+          "current_blob_sha1": "ce627659804164d6250a5ec1397c403c14af4418",
+          "content_sha256": "7fd2bcb610c6f30900e75a1d568cba5c3767e55f4012f6d9f662422fb6a6d2b7",
+          "size": 7573,
+          "snapshot_path": "snapshots/project-everest--everest/README.md",
+          "old_raw_url": "https://raw.githubusercontent.com/project-everest/everest/2a3f67dab56be02d1793b2801ef08f368423a3ac/README.md",
+          "new_raw_url": "https://raw.githubusercontent.com/project-everest/everest/2a3f67dab56be02d1793b2801ef08f368423a3ac/README.md"
+        }
+      ],
+      "release": {
+        "status": "not_found",
+        "api_url": "https://api.github.com/repos/project-everest/everest/releases/latest",
+        "http_status": 404
+      }
+    }
+  ]
+}

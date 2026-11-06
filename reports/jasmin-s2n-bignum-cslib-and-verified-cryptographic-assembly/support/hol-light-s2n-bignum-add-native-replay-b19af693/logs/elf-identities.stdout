@@ -1,0 +1,46 @@
+[
+  {
+    "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/generic/bignum_add.o",
+    "object_bytes": 1528,
+    "sha256": "0f94fe2090387f5f63afc80049732384d3badbcd89aae7ffc5200e1c53ec53eb",
+    "machine": 62,
+    "text_section_index": 1,
+    "text_file_offset": 64,
+    "text_bytes": 185,
+    "text_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+    "text_hex": "f30f1efa4d31d24839d7480f42d74c39c74c0f42c74c39c272474829d74c29c248ffc24d85c074254a8b04d14b1304d14a8904d649ffc249ffc875eceb0f4a8b04d14883d0004a8904d649ffc248ffca75ecb8000000004883d0004885ff7543c34c29c74929d04885d274144a8b04d14b1304d14a8904d649ffc248ffca75ec4b8b04d14883d0004a8904d649ffc249ffc875ecb8000000004883d0004885ff7501c34a8904d64831c0eb044a8904d649ffc248ffcf75f4c3",
+    "bignum_add_symbols": [
+      {
+        "name": "bignum_add",
+        "section_index": 1,
+        "value": 0,
+        "size": 185,
+        "info": 18,
+        "other": 0,
+        "equals_entire_text": true
+      }
+    ]
+  },
+  {
+    "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/generic/bignum_add.obj",
+    "object_bytes": 1592,
+    "sha256": "a81541b03aa800d646b113b6da1d81363f0d8921bc74ddceae76a82a9d5d7f73",
+    "machine": 62,
+    "text_section_index": 1,
+    "text_file_offset": 64,
+    "text_bytes": 215,
+    "text_sha256": "18fc6c30fba62f3376f71f511658d8ac79684350bfe9c397632931406557247b",
+    "text_hex": "f30f1efa57564889cf4889d64c89c24c89c94c8b4424384c8b4c24404d31d24839d7480f42d74c39c74c0f42c74c39c272494829d74c29c248ffc24d85c074254a8b04d14b1304d14a8904d649ffc249ffc875eceb0f4a8b04d14883d0004a8904d649ffc248ffca75ecb8000000004883d0004885ff75475e5fc34c29c74929d04885d274144a8b04d14b1304d14a8904d649ffc248ffca75ec4b8b04d14883d0004a8904d649ffc249ffc875ecb8000000004883d0004885ff75035e5fc34a8904d64831c0eb044a8904d649ffc248ffcf75f45e5fc3",
+    "bignum_add_symbols": [
+      {
+        "name": "bignum_add",
+        "section_index": 1,
+        "value": 0,
+        "size": 215,
+        "info": 18,
+        "other": 0,
+        "equals_entire_text": true
+      }
+    ]
+  }
+]

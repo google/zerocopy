@@ -1,0 +1,17 @@
+{
+  "repository": "FStarLang/FStar",
+  "observed_at": "2026-09-30",
+  "ref_query": "git ls-remote https://github.com/FStarLang/FStar.git HEAD refs/heads/master refs/tags/v2026.09.27 'refs/tags/v2026.09.27^{}'",
+  "refs": {
+    "HEAD": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+    "refs/heads/master": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+    "refs/tags/v2026.09.27": "48268f3522ec8da089bbeb5f4e1674d50280a9c7",
+    "refs/tags/v2026.09.27^{}": "7deb38a27c86990664c6b41e4b6093597acdebd4"
+  },
+  "pinned_commit": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+  "pinned_commit_author_date": "2026-09-29T23:36:07Z",
+  "pinned_commit_committer_date": "2026-09-29T23:36:07Z",
+  "latest_release_page": "https://github.com/FStarLang/FStar/releases/tag/v2026.09.27",
+  "release_commit": "7deb38a27c86990664c6b41e4b6093597acdebd4",
+  "newer_source_commit_observed": false
+}

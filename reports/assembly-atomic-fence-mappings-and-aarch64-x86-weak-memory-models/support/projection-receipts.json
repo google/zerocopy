@@ -1,0 +1,1387 @@
+{
+  "method": "UTF-8 byte replacement of exact acquired tool/container display prefixes only; original hashes are not rewritten",
+  "mapping_labels": [
+    "<MAY1_TOOLCHAIN>",
+    "<HERD_INPUTS>",
+    "<HERD_SOURCE_INVENTORY>",
+    "<HERD_SOURCE>",
+    "<MOUNTED_HERD_SOURCE>",
+    "<OWNED_CONTAINER>"
+  ],
+  "files": [
+    {
+      "origin": "actual-herd/annotation_controls.ll",
+      "public_path": "evidence/annotation_controls.ll",
+      "raw_sha256": "4a8b162377058b605e999daa30eca1b9a395a7871e82cc06dc618d54ab0ed56b",
+      "raw_bytes": 2274,
+      "public_sha256": "4a8b162377058b605e999daa30eca1b9a395a7871e82cc06dc618d54ab0ed56b",
+      "public_bytes": 2274,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/annotation_controls.rs",
+      "public_path": "evidence/annotation_controls.rs",
+      "raw_sha256": "db0a82cd94e2cb1725a692f4bc5cd87f42f48cc567ffbd1afb56286d9b6b3e73",
+      "raw_bytes": 1056,
+      "public_sha256": "db0a82cd94e2cb1725a692f4bc5cd87f42f48cc567ffbd1afb56286d9b6b3e73",
+      "public_bytes": 1056,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/annotation_controls.s",
+      "public_path": "evidence/annotation_controls.s",
+      "raw_sha256": "85fcef2d61a3bf027ff1697a3c55c1c0a981b63a84f290b6c85a7e5405547638",
+      "raw_bytes": 721,
+      "public_sha256": "85fcef2d61a3bf027ff1697a3c55c1c0a981b63a84f290b6c85a7e5405547638",
+      "public_bytes": 721,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/atomic_wrappers-initial.rs",
+      "public_path": "evidence/atomic_wrappers-initial.rs",
+      "raw_sha256": "0c7a1f79dbebf446ad84a96d9ed5da7d29d21b310377ec0c60a4acbb3672bc4b",
+      "raw_bytes": 1201,
+      "public_sha256": "0c7a1f79dbebf446ad84a96d9ed5da7d29d21b310377ec0c60a4acbb3672bc4b",
+      "public_bytes": 1201,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/atomic_wrappers-initial.s",
+      "public_path": "evidence/atomic_wrappers-initial.s",
+      "raw_sha256": "aaecf6632dd4a51c27ff822f0a254ecc17f2644a4b01bfa5b7040d4d05fff9b1",
+      "raw_bytes": 958,
+      "public_sha256": "aaecf6632dd4a51c27ff822f0a254ecc17f2644a4b01bfa5b7040d4d05fff9b1",
+      "public_bytes": 958,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/atomic_wrappers.rs",
+      "public_path": "evidence/atomic_wrappers.rs",
+      "raw_sha256": "955a0c49776c08a18e10644f439452d8fc2e908205859c64c056e6fb1afd6aaf",
+      "raw_bytes": 1549,
+      "public_sha256": "955a0c49776c08a18e10644f439452d8fc2e908205859c64c056e6fb1afd6aaf",
+      "public_bytes": 1549,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/atomic_wrappers.s",
+      "public_path": "evidence/atomic_wrappers.s",
+      "raw_sha256": "33f56cb99f627b5012ea9b4fc50c491a8da2841eb0f7ca542c47edd8b0ccd13a",
+      "raw_bytes": 1271,
+      "public_sha256": "33f56cb99f627b5012ea9b4fc50c491a8da2841eb0f7ca542c47edd8b0ccd13a",
+      "public_bytes": 1271,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/concurrent_assembly.rs",
+      "public_path": "evidence/concurrent_assembly.rs",
+      "raw_sha256": "3c142e4b3204fc4d3e849f968464a2792d84a805a88b3d44595b12a020b53249",
+      "raw_bytes": 4416,
+      "public_sha256": "3c142e4b3204fc4d3e849f968464a2792d84a805a88b3d44595b12a020b53249",
+      "public_bytes": 4416,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/concurrent_assembly.s",
+      "public_path": "evidence/concurrent_assembly.s",
+      "raw_sha256": "46d487ff17c820dcee97ec431e733be06718b8260f3666027dc078f488531a6e",
+      "raw_bytes": 47827,
+      "public_sha256": "94dad50063d455f4568af66ff2d09a1867c6377dadba68c6ff58ea5fc8dc79e9",
+      "public_bytes": 47533,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/herd-source.sha256",
+      "public_path": "evidence/herd-source.sha256",
+      "raw_sha256": "fe98c51b56b0ec4db9b794516b0eb2982cdc72ed56f38c683650794e19af84b6",
+      "raw_bytes": 730535,
+      "public_sha256": "fe98c51b56b0ec4db9b794516b0eb2982cdc72ed56f38c683650794e19af84b6",
+      "public_bytes": 730535,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/input-identities.json",
+      "public_path": "evidence/input-identities.json",
+      "raw_sha256": "7f41fea240ee4df4a2305d15baa34ae40f4ebe55205d1d27c05ad32dc506b5e4",
+      "raw_bytes": 1394,
+      "public_sha256": "7f41fea240ee4df4a2305d15baa34ae40f4ebe55205d1d27c05ad32dc506b5e4",
+      "public_bytes": 1394,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/MP-r0-a0.litmus",
+      "public_path": "evidence/inputs/MP-r0-a0.litmus",
+      "raw_sha256": "889b80c9d7ee39e890d2a03cadc9c709442ebaa762bb38917bbe7c9abf62b7dc",
+      "raw_bytes": 246,
+      "public_sha256": "889b80c9d7ee39e890d2a03cadc9c709442ebaa762bb38917bbe7c9abf62b7dc",
+      "public_bytes": 246,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/MP-r0-a1.litmus",
+      "public_path": "evidence/inputs/MP-r0-a1.litmus",
+      "raw_sha256": "4ee7578d6ef29f1020aef104b8556817f3119ceb8217f1e990f44efca58ea92e",
+      "raw_bytes": 247,
+      "public_sha256": "4ee7578d6ef29f1020aef104b8556817f3119ceb8217f1e990f44efca58ea92e",
+      "public_bytes": 247,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/MP-r0-p1.litmus",
+      "public_path": "evidence/inputs/MP-r0-p1.litmus",
+      "raw_sha256": "69cd86540246be0cfa8b2df3d5b5400f2e68c3c053fa33323698b53746ecc04e",
+      "raw_bytes": 248,
+      "public_sha256": "69cd86540246be0cfa8b2df3d5b5400f2e68c3c053fa33323698b53746ecc04e",
+      "public_bytes": 248,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/MP-r1-a0.litmus",
+      "public_path": "evidence/inputs/MP-r1-a0.litmus",
+      "raw_sha256": "531288c6b1521830d1ce7a9391c02e1129111773e84e545ab2701b0aadade4e0",
+      "raw_bytes": 247,
+      "public_sha256": "531288c6b1521830d1ce7a9391c02e1129111773e84e545ab2701b0aadade4e0",
+      "public_bytes": 247,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/MP-r1-a1.litmus",
+      "public_path": "evidence/inputs/MP-r1-a1.litmus",
+      "raw_sha256": "08d31b450012503a4139651108d75a3aff3047dcd5268900678a867d7f02de02",
+      "raw_bytes": 248,
+      "public_sha256": "08d31b450012503a4139651108d75a3aff3047dcd5268900678a867d7f02de02",
+      "public_bytes": 248,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/MP-r1-p1.litmus",
+      "public_path": "evidence/inputs/MP-r1-p1.litmus",
+      "raw_sha256": "4fc5dc2f80d006f2e0d69354821dfdaa8d439c055eac635ecafee563943dc59d",
+      "raw_bytes": 249,
+      "public_sha256": "4fc5dc2f80d006f2e0d69354821dfdaa8d439c055eac635ecafee563943dc59d",
+      "public_bytes": 249,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/SB-STLR-LDAPR.litmus",
+      "public_path": "evidence/inputs/SB-STLR-LDAPR.litmus",
+      "raw_sha256": "22761e426ada031cead7c770e91818da82fcfbf62bdfa0da9d1803a3d0d2397d",
+      "raw_bytes": 224,
+      "public_sha256": "22761e426ada031cead7c770e91818da82fcfbf62bdfa0da9d1803a3d0d2397d",
+      "public_bytes": 224,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/SB-STLR-LDAR.litmus",
+      "public_path": "evidence/inputs/SB-STLR-LDAR.litmus",
+      "raw_sha256": "22372ea85d2326476b6298fd3ba697bd7a714ea182bded512a9d001a8da0b8c2",
+      "raw_bytes": 221,
+      "public_sha256": "22372ea85d2326476b6298fd3ba697bd7a714ea182bded512a9d001a8da0b8c2",
+      "public_bytes": 221,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/SB-dmb.litmus",
+      "public_path": "evidence/inputs/SB-dmb.litmus",
+      "raw_sha256": "eec9b1c31bb8af18b933a17c123746af408ff40e0ae804f63ccc06bac809b62e",
+      "raw_bytes": 236,
+      "public_sha256": "eec9b1c31bb8af18b933a17c123746af408ff40e0ae804f63ccc06bac809b62e",
+      "public_bytes": 236,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/inputs/SB.litmus",
+      "public_path": "evidence/inputs/SB.litmus",
+      "raw_sha256": "da62bac53a8af15350065f0e5cf715df65a1ab0f75cd3d185bf9651cd330be83",
+      "raw_bytes": 203,
+      "public_sha256": "da62bac53a8af15350065f0e5cf715df65a1ab0f75cd3d185bf9651cd330be83",
+      "public_bytes": 203,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/may1-tool-identities.json",
+      "public_path": "evidence/may1-tool-identities.json",
+      "raw_sha256": "ffdc51e30b5d3c943b6ced7ee1f944dbfb240ed7a510f2f32f94fa283f4edf27",
+      "raw_bytes": 572,
+      "public_sha256": "ffdc51e30b5d3c943b6ced7ee1f944dbfb240ed7a510f2f32f94fa283f4edf27",
+      "public_bytes": 572,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-a0.json",
+      "public_path": "evidence/runs/MP-r0-a0.json",
+      "raw_sha256": "02a3a63284cd73aa79d5012e6135cd7f3b6f946a454e0a32238ce2b10792db0d",
+      "raw_bytes": 563,
+      "public_sha256": "aedfa6acd1072be4adc4f0eeab67513b0d89915484e41c73d0412696796c9bbd",
+      "public_bytes": 521,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-a0.stderr",
+      "public_path": "evidence/runs/MP-r0-a0.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-a0.stdout",
+      "public_path": "evidence/runs/MP-r0-a0.stdout",
+      "raw_sha256": "c115b46dc7af1e7357d31c0b6b7e8aba9b2fca0d1a693988674471a8a07953a7",
+      "raw_bytes": 261,
+      "public_sha256": "c115b46dc7af1e7357d31c0b6b7e8aba9b2fca0d1a693988674471a8a07953a7",
+      "public_bytes": 261,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-a1.json",
+      "public_path": "evidence/runs/MP-r0-a1.json",
+      "raw_sha256": "b46296e84358e4c7ff214a83810ee8eadc0e13c5ec570e84f71ab0b607d31507",
+      "raw_bytes": 563,
+      "public_sha256": "f6673dc73c6ce16fd07b777dd81fb49b032dc4a7b28684b7b11aaada6380f7a5",
+      "public_bytes": 521,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-a1.stderr",
+      "public_path": "evidence/runs/MP-r0-a1.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-a1.stdout",
+      "public_path": "evidence/runs/MP-r0-a1.stdout",
+      "raw_sha256": "4682f16e0032180b2c0acc5fe96194614bf793705c321343f88521413ddd4adb",
+      "raw_bytes": 261,
+      "public_sha256": "4682f16e0032180b2c0acc5fe96194614bf793705c321343f88521413ddd4adb",
+      "public_bytes": 261,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-p1.json",
+      "public_path": "evidence/runs/MP-r0-p1.json",
+      "raw_sha256": "6d38569200694b0ab9d24ffd80576f06340c03cc4b366b218397bcbddb8bb6a3",
+      "raw_bytes": 475,
+      "public_sha256": "7c39d28cfd1c3e80bcb35c5f1be38809fccf72c58552733eee961b177c5243ac",
+      "public_bytes": 433,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-p1.stderr",
+      "public_path": "evidence/runs/MP-r0-p1.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r0-p1.stdout",
+      "public_path": "evidence/runs/MP-r0-p1.stdout",
+      "raw_sha256": "ac41b4a171cbf64fc2f0a8f766606375153df4b85e6cd692347c2d4cb09c340e",
+      "raw_bytes": 261,
+      "public_sha256": "ac41b4a171cbf64fc2f0a8f766606375153df4b85e6cd692347c2d4cb09c340e",
+      "public_bytes": 261,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-a0.json",
+      "public_path": "evidence/runs/MP-r1-a0.json",
+      "raw_sha256": "6375563f7aa570c00e0054d53c245d68d819e43773a7a1e2a4aefb744fd8995c",
+      "raw_bytes": 563,
+      "public_sha256": "4576860801d8f8172299620848595b7094235991a57988be6b746bc534310881",
+      "public_bytes": 521,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-a0.stderr",
+      "public_path": "evidence/runs/MP-r1-a0.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-a0.stdout",
+      "public_path": "evidence/runs/MP-r1-a0.stdout",
+      "raw_sha256": "d11eff6895a1ab97052350d40ab18517ef07a1877e684a9fa577c88a4fb3f454",
+      "raw_bytes": 261,
+      "public_sha256": "d11eff6895a1ab97052350d40ab18517ef07a1877e684a9fa577c88a4fb3f454",
+      "public_bytes": 261,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-a1.json",
+      "public_path": "evidence/runs/MP-r1-a1.json",
+      "raw_sha256": "db66c4ae464759d8c98d434098bf6a0e637bfd204344e16e644aa5331172ef5e",
+      "raw_bytes": 563,
+      "public_sha256": "afd0ae93aadfd0e137c0fb1138252868aba9cb93969c1f6337146c3db4403a96",
+      "public_bytes": 521,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-a1.stderr",
+      "public_path": "evidence/runs/MP-r1-a1.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-a1.stdout",
+      "public_path": "evidence/runs/MP-r1-a1.stdout",
+      "raw_sha256": "4ce16358e97cd7378ea38c0eb4c96601b3f94ff639443f899d4fcae22faf5e21",
+      "raw_bytes": 241,
+      "public_sha256": "4ce16358e97cd7378ea38c0eb4c96601b3f94ff639443f899d4fcae22faf5e21",
+      "public_bytes": 241,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-p1.json",
+      "public_path": "evidence/runs/MP-r1-p1.json",
+      "raw_sha256": "1458e960615251be2323b58c4359df811cdae06d81fd96d9473e057a0611aaff",
+      "raw_bytes": 476,
+      "public_sha256": "0da2a24e214b360d6a25e1b9ae16161b030a5477c759eeb9900400dbf897227e",
+      "public_bytes": 434,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-p1.stderr",
+      "public_path": "evidence/runs/MP-r1-p1.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/MP-r1-p1.stdout",
+      "public_path": "evidence/runs/MP-r1-p1.stdout",
+      "raw_sha256": "5b132eb710be02804cc174e2a8de2d3671bd030db9a2784eba561dc0c83448c1",
+      "raw_bytes": 241,
+      "public_sha256": "5b132eb710be02804cc174e2a8de2d3671bd030db9a2784eba561dc0c83448c1",
+      "public_bytes": 241,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB-STLR-LDAPR.json",
+      "public_path": "evidence/runs/SB-STLR-LDAPR.json",
+      "raw_sha256": "b5b6e45b2d7959ebd179522be7421ebf8d4a4ff5522aa74c6718a92dc4a7a149",
+      "raw_bytes": 480,
+      "public_sha256": "46c64cfbed0053513ff35732064baf4586f3e072a4839f01d159ecc733f08ec0",
+      "public_bytes": 438,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/SB-STLR-LDAPR.stderr",
+      "public_path": "evidence/runs/SB-STLR-LDAPR.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB-STLR-LDAPR.stdout",
+      "public_path": "evidence/runs/SB-STLR-LDAPR.stdout",
+      "raw_sha256": "1d0f93fbac85255c9204d208d1ac5ff59314c6227d8c02eb3b1e56d665202d39",
+      "raw_bytes": 276,
+      "public_sha256": "1d0f93fbac85255c9204d208d1ac5ff59314c6227d8c02eb3b1e56d665202d39",
+      "public_bytes": 276,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB-STLR-LDAR.json",
+      "public_path": "evidence/runs/SB-STLR-LDAR.json",
+      "raw_sha256": "29e1fbe59b1d6dad4cbaf9df26080d7dcb8235dfa47346807bb6a4a58e7db5f4",
+      "raw_bytes": 478,
+      "public_sha256": "64ca554ff7e12aba205c65477505ecc233b75d77ffcc8d4331258995902fc0e8",
+      "public_bytes": 436,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/SB-STLR-LDAR.stderr",
+      "public_path": "evidence/runs/SB-STLR-LDAR.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB-STLR-LDAR.stdout",
+      "public_path": "evidence/runs/SB-STLR-LDAR.stdout",
+      "raw_sha256": "f7b25020f5c6b2f0e14244144a40e0665dbd52326c03e7dda759f8d19e9cf61a",
+      "raw_bytes": 253,
+      "public_sha256": "f7b25020f5c6b2f0e14244144a40e0665dbd52326c03e7dda759f8d19e9cf61a",
+      "public_bytes": 253,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB-dmb.json",
+      "public_path": "evidence/runs/SB-dmb.json",
+      "raw_sha256": "411bf1151a0713221f30d22c23014125775c29a5e841889f988056f234769afd",
+      "raw_bytes": 562,
+      "public_sha256": "0a8eb7e7836a1d5437ccb04314b40abf23bea15bf930c3f67fa60e167f52127c",
+      "public_bytes": 520,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/SB-dmb.stderr",
+      "public_path": "evidence/runs/SB-dmb.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB-dmb.stdout",
+      "public_path": "evidence/runs/SB-dmb.stdout",
+      "raw_sha256": "8d15fe99ac82749705502c67ed6f48d9117783958245efea1cfc9362a278a1e0",
+      "raw_bytes": 284,
+      "public_sha256": "8d15fe99ac82749705502c67ed6f48d9117783958245efea1cfc9362a278a1e0",
+      "public_bytes": 284,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB.json",
+      "public_path": "evidence/runs/SB.json",
+      "raw_sha256": "741c979f46a5cd87ebd6f1db0f71f2ea27899ac5b4a2187a4f0a2b93fdb0ff6c",
+      "raw_bytes": 557,
+      "public_sha256": "98fd5e14e1c9fd44957ad17589e003ec58795e82c95400f132dccbbe5e2ad1b1",
+      "public_bytes": 515,
+      "substitutions": [
+        {
+          "source_label": "<HERD_INPUTS>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/SB.stderr",
+      "public_path": "evidence/runs/SB.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/SB.stdout",
+      "public_path": "evidence/runs/SB.stdout",
+      "raw_sha256": "63aeb0096174bf4682a1f5a62ba48d1283ae6cffce7f269c1a9f6408b786d95c",
+      "raw_bytes": 243,
+      "public_sha256": "63aeb0096174bf4682a1f5a62ba48d1283ae6cffce7f269c1a9f6408b786d95c",
+      "public_bytes": 243,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/annotation-compile.json",
+      "public_path": "evidence/runs/annotation-compile.json",
+      "raw_sha256": "9868e4ae6312b7e838e5e5e53dbd5adebeab78f7d4de76547a32ed08401c773d",
+      "raw_bytes": 603,
+      "public_sha256": "34ee9a16c5f1810e60d52e0b293b99c36c869b518964d097e68f7ffcdf7b0261",
+      "public_bytes": 456,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/annotation-compile.stderr",
+      "public_path": "evidence/runs/annotation-compile.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/annotation-compile.stdout",
+      "public_path": "evidence/runs/annotation-compile.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/concurrent-build.json",
+      "public_path": "evidence/runs/concurrent-build.json",
+      "raw_sha256": "dcb32fa76de69838b701d78b7bd941c464ecb4684a4bde294168f867f8faa86c",
+      "raw_bytes": 537,
+      "public_sha256": "efd4b89eca14785c735c1948047caf25caf97b5a6c4758b6a6a02089d251c47e",
+      "public_bytes": 390,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/concurrent-build.stderr",
+      "public_path": "evidence/runs/concurrent-build.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/concurrent-build.stdout",
+      "public_path": "evidence/runs/concurrent-build.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/concurrent-native.json",
+      "public_path": "evidence/runs/concurrent-native.json",
+      "raw_sha256": "20727e7cd4d0eba0c1c0dee65c7d05d89a387bbeabfaa0fd5c51102b7f61cc66",
+      "raw_bytes": 357,
+      "public_sha256": "20727e7cd4d0eba0c1c0dee65c7d05d89a387bbeabfaa0fd5c51102b7f61cc66",
+      "public_bytes": 357,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/concurrent-native.stderr",
+      "public_path": "evidence/runs/concurrent-native.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/concurrent-native.stdout",
+      "public_path": "evidence/runs/concurrent-native.stdout",
+      "raw_sha256": "cefb35040e407e97c2a8fb5ec80a78cfd5f393c72a685ea70c034a9d11fbb2be",
+      "raw_bytes": 385,
+      "public_sha256": "cefb35040e407e97c2a8fb5ec80a78cfd5f393c72a685ea70c034a9d11fbb2be",
+      "public_bytes": 385,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/final-rustc-atomic-asm.json",
+      "public_path": "evidence/runs/final-rustc-atomic-asm.json",
+      "raw_sha256": "b1865d8da0df5ff9535a68445f2c7f939ca624ed4e43f317cd77178b1754630c",
+      "raw_bytes": 587,
+      "public_sha256": "1cdd80474458efd5df8fc8858b126c00b1b2199871d61e810e12dc59c66e5c5a",
+      "public_bytes": 440,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/final-rustc-atomic-asm.stderr",
+      "public_path": "evidence/runs/final-rustc-atomic-asm.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/final-rustc-atomic-asm.stdout",
+      "public_path": "evidence/runs/final-rustc-atomic-asm.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/herd-binary-hash.json",
+      "public_path": "evidence/runs/herd-binary-hash.json",
+      "raw_sha256": "ef3d0cd460d4d88b53d31eaee6beecf3a6bb05448cf308bc66549898d56be8c4",
+      "raw_bytes": 393,
+      "public_sha256": "1d53d6948887c60f4d67e0634d2d14974638c33e07c3833ebde72ba67633252e",
+      "public_bytes": 367,
+      "substitutions": [
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/herd-binary-hash.stderr",
+      "public_path": "evidence/runs/herd-binary-hash.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/herd-binary-hash.stdout",
+      "public_path": "evidence/runs/herd-binary-hash.stdout",
+      "raw_sha256": "b7576518410d7fb0970dbbfd914f8b56496f76243b277252fcb0f61c4ebf0381",
+      "raw_bytes": 127,
+      "public_sha256": "cfc0ba16aedb8feae61dabb859d4cc663eeef3f6075bcc8d430b5479d558192e",
+      "public_bytes": 118,
+      "substitutions": [
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/herd-version.json",
+      "public_path": "evidence/runs/herd-version.json",
+      "raw_sha256": "6f20d8e3339bdcc29b0260034f4d51c32690c648b495b3eda97d11f13a0bbaba",
+      "raw_bytes": 452,
+      "public_sha256": "936e2b92a3fbd373f8e6df7032c461ccf844d5ae891a116a753a5fe325d49153",
+      "public_bytes": 426,
+      "substitutions": [
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/herd-version.stderr",
+      "public_path": "evidence/runs/herd-version.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/herd-version.stdout",
+      "public_path": "evidence/runs/herd-version.stdout",
+      "raw_sha256": "664406a7a93b81b1524934be54deacfd105b3485cd846ed2f88406fdab36fd82",
+      "raw_bytes": 22,
+      "public_sha256": "664406a7a93b81b1524934be54deacfd105b3485cd846ed2f88406fdab36fd82",
+      "public_bytes": 22,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-cpu-query.json",
+      "public_path": "evidence/runs/host-cpu-query.json",
+      "raw_sha256": "32501b0c545a58ff380b382df83ea2ac6138e50434f9a380e9b2ccae1e66af9c",
+      "raw_bytes": 297,
+      "public_sha256": "32501b0c545a58ff380b382df83ea2ac6138e50434f9a380e9b2ccae1e66af9c",
+      "public_bytes": 297,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-cpu-query.stderr",
+      "public_path": "evidence/runs/host-cpu-query.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-cpu-query.stdout",
+      "public_path": "evidence/runs/host-cpu-query.stdout",
+      "raw_sha256": "cf8be25367c4600921f057a468612c25380ea7eb82253b1dc25fb2454be26b73",
+      "raw_bytes": 13,
+      "public_sha256": "cf8be25367c4600921f057a468612c25380ea7eb82253b1dc25fb2454be26b73",
+      "public_bytes": 13,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-os.json",
+      "public_path": "evidence/runs/host-os.json",
+      "raw_sha256": "7e9fa901369c073d669fd3a7089d03bc98037e205c2d265a7765d19802b264ed",
+      "raw_bytes": 279,
+      "public_sha256": "7e9fa901369c073d669fd3a7089d03bc98037e205c2d265a7765d19802b264ed",
+      "public_bytes": 279,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-os.stderr",
+      "public_path": "evidence/runs/host-os.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-os.stdout",
+      "public_path": "evidence/runs/host-os.stdout",
+      "raw_sha256": "2035e21f9b58eea2c669f2bab5c2c90d87c1cdcb4dc8ccf96d8f25e64870ce9d",
+      "raw_bytes": 7,
+      "public_sha256": "2035e21f9b58eea2c669f2bab5c2c90d87c1cdcb4dc8ccf96d8f25e64870ce9d",
+      "public_bytes": 7,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-process-arch.json",
+      "public_path": "evidence/runs/host-process-arch.json",
+      "raw_sha256": "22b5946ba9c6ea0e5c55543bceaf2de4a49f3bb4eb338483ed973bd40664cb64",
+      "raw_bytes": 253,
+      "public_sha256": "22b5946ba9c6ea0e5c55543bceaf2de4a49f3bb4eb338483ed973bd40664cb64",
+      "public_bytes": 253,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-process-arch.stderr",
+      "public_path": "evidence/runs/host-process-arch.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/host-process-arch.stdout",
+      "public_path": "evidence/runs/host-process-arch.stdout",
+      "raw_sha256": "f69162950f235e3cdbbad33f1f912d1a504be90d8a37d002c735d6f3e3882265",
+      "raw_bytes": 5,
+      "public_sha256": "f69162950f235e3cdbbad33f1f912d1a504be90d8a37d002c735d6f3e3882265",
+      "public_bytes": 5,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/rustc-atomic-asm.json",
+      "public_path": "evidence/runs/rustc-atomic-asm.json",
+      "raw_sha256": "06e200501b625122e28486a2a2e5cb3ed73ef6e0718f368ef9f6766571d8859d",
+      "raw_bytes": 406,
+      "public_sha256": "a84a6a82126a17250a89fc517f54b0672ca85c028645cffd300d42434c6a472b",
+      "public_bytes": 259,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/rustc-atomic-asm.stderr",
+      "public_path": "evidence/runs/rustc-atomic-asm.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/rustc-atomic-asm.stdout",
+      "public_path": "evidence/runs/rustc-atomic-asm.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/rustc-cfg.json",
+      "public_path": "evidence/runs/rustc-cfg.json",
+      "raw_sha256": "02629a3823001d92993756af5fae1e3b15958ed8f36d6e2fedb8d683055908c3",
+      "raw_bytes": 274,
+      "public_sha256": "f750897101f488724f982cc4c351ae319bf8b055daaa6ebe0a26ff65074ce11b",
+      "public_bytes": 127,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/rustc-cfg.stderr",
+      "public_path": "evidence/runs/rustc-cfg.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/rustc-cfg.stdout",
+      "public_path": "evidence/runs/rustc-cfg.stdout",
+      "raw_sha256": "447034d49f786d000ef517d335d158940bbd551fe7fee61ce389f9998d64092a",
+      "raw_bytes": 1787,
+      "public_sha256": "447034d49f786d000ef517d335d158940bbd551fe7fee61ce389f9998d64092a",
+      "public_bytes": 1787,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/rustc-version.json",
+      "public_path": "evidence/runs/rustc-version.json",
+      "raw_sha256": "10125d844a694fcf9b827e74d5a2cf50fd613eb393d7a174819e271d8efaf808",
+      "raw_bytes": 257,
+      "public_sha256": "7dc9881b0831652d6e099985d90c36d0a5bc6db1ba95982b0b2e95fff5022703",
+      "public_bytes": 110,
+      "substitutions": [
+        {
+          "source_label": "<MAY1_TOOLCHAIN>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/rustc-version.stderr",
+      "public_path": "evidence/runs/rustc-version.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/rustc-version.stdout",
+      "public_path": "evidence/runs/rustc-version.stdout",
+      "raw_sha256": "a2f7423ca7c9f25f0d41c0c053d7a0998c3e78e9daf5f23ef52f3b30b271b5c8",
+      "raw_bytes": 208,
+      "public_sha256": "a2f7423ca7c9f25f0d41c0c053d7a0998c3e78e9daf5f23ef52f3b30b271b5c8",
+      "public_bytes": 208,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/source-verify.json",
+      "public_path": "evidence/runs/source-verify.json",
+      "raw_sha256": "4507970bbb9042faef0f0be82a418cf14cf2cc4a8343b2b8b660fd8e6d367aed",
+      "raw_bytes": 426,
+      "public_sha256": "5f3e86c685d71d75eb167fb68a0493bf40160a27d9e5c4b38b4c664ad5cf4778",
+      "public_bytes": 387,
+      "substitutions": [
+        {
+          "source_label": "<HERD_SOURCE_INVENTORY>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "actual-herd/runs/source-verify.stderr",
+      "public_path": "evidence/runs/source-verify.stderr",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "actual-herd/runs/source-verify.stdout",
+      "public_path": "evidence/runs/source-verify.stdout",
+      "raw_sha256": "b6abf8e3c9636d71f5c5ac30c13c223b632e33674aebbec47400eec898ab0507",
+      "raw_bytes": 322575,
+      "public_sha256": "b6abf8e3c9636d71f5c5ac30c13c223b632e33674aebbec47400eec898ab0507",
+      "public_bytes": 322575,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64.cat",
+      "raw_sha256": "1d6bcac1194cded0f89717f3bf892c2105d8a17e7aff0304fa79ebc240b07d1d",
+      "raw_bytes": 6677,
+      "public_sha256": "1d6bcac1194cded0f89717f3bf892c2105d8a17e7aff0304fa79ebc240b07d1d",
+      "public_bytes": 6677,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64bbm.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64bbm.cat",
+      "raw_sha256": "f0026e08c5b3923fb7ac9d3fbbd57e06226b22381a4263d3402d02508b724915",
+      "raw_bytes": 3491,
+      "public_sha256": "f0026e08c5b3923fb7ac9d3fbbd57e06226b22381a4263d3402d02508b724915",
+      "public_bytes": 3491,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64deps.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64deps.cat",
+      "raw_sha256": "89595e6fbb1b875a562144a70d67b31d149c41ca9ec088f50198d4adc616a3b7",
+      "raw_bytes": 3655,
+      "public_sha256": "89595e6fbb1b875a562144a70d67b31d149c41ca9ec088f50198d4adc616a3b7",
+      "public_bytes": 3655,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64fences.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64fences.cat",
+      "raw_sha256": "6929b8da3d3ec6230997a4cdb99da6f9f8f0640cd5637ccfbefd749c8f6a7219",
+      "raw_bytes": 1969,
+      "public_sha256": "6929b8da3d3ec6230997a4cdb99da6f9f8f0640cd5637ccfbefd749c8f6a7219",
+      "public_bytes": 1969,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64hwreqs.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64hwreqs.cat",
+      "raw_sha256": "0d24db3b580dcaee96b025c3e9ad6b33217e4e34dd79a3765703eaaede1f1697",
+      "raw_bytes": 6569,
+      "public_sha256": "0d24db3b580dcaee96b025c3e9ad6b33217e4e34dd79a3765703eaaede1f1697",
+      "public_bytes": 6569,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64loc.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64loc.cat",
+      "raw_sha256": "2583f3f79362ee94336271f0fb11ca6a262a023486bc66ed30c3d9de54c90fa5",
+      "raw_bytes": 901,
+      "public_sha256": "2583f3f79362ee94336271f0fb11ca6a262a023486bc66ed30c3d9de54c90fa5",
+      "public_bytes": 901,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64memattrs.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64memattrs.cat",
+      "raw_sha256": "72d8ce52407221d677763d64c1af5dba352340335ed9013a6c11c8c0440f385c",
+      "raw_bytes": 3182,
+      "public_sha256": "72d8ce52407221d677763d64c1af5dba352340335ed9013a6c11c8c0440f385c",
+      "public_bytes": 3182,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64show.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64show.cat",
+      "raw_sha256": "2d2e08a27b81f7aa9df143b6ac5737816c485de7ce35e09a0be16da4f86cc857",
+      "raw_bytes": 340,
+      "public_sha256": "2d2e08a27b81f7aa9df143b6ac5737816c485de7ce35e09a0be16da4f86cc857",
+      "public_bytes": 340,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/aarch64util.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/aarch64util.cat",
+      "raw_sha256": "c9148abc267240a3e4866c866928c7260d9a3435ad5eb9e48d3e5a9e40af35f2",
+      "raw_bytes": 5725,
+      "public_sha256": "c9148abc267240a3e4866c866928c7260d9a3435ad5eb9e48d3e5a9e40af35f2",
+      "public_bytes": 5725,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/cos-no-opt.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/cos-no-opt.cat",
+      "raw_sha256": "2c3d73a446502c08788e7fecd8ccfce3af7482da0da1b542b3a4890a160840df",
+      "raw_bytes": 281,
+      "public_sha256": "2c3d73a446502c08788e7fecd8ccfce3af7482da0da1b542b3a4890a160840df",
+      "public_bytes": 281,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/cos-ok-opt.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/cos-ok-opt.cat",
+      "raw_sha256": "5d63ea4237c7a905cc60e739f5011dc4c7bb2e35c5f6072393d11a25a4967982",
+      "raw_bytes": 878,
+      "public_sha256": "5d63ea4237c7a905cc60e739f5011dc4c7bb2e35c5f6072393d11a25a4967982",
+      "public_bytes": 878,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/cos.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/cos.cat",
+      "raw_sha256": "0c0efa30bae59a171bc676fe8002108dee7294a17ede5d9c26ce7ae4c370fbb9",
+      "raw_bytes": 137,
+      "public_sha256": "0c0efa30bae59a171bc676fe8002108dee7294a17ede5d9c26ce7ae4c370fbb9",
+      "public_bytes": 137,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/cross.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/cross.cat",
+      "raw_sha256": "8b2dbe9cc3175d5bd8067ab80b4c6024949c743d16e47b13f8230c52ca06bbde",
+      "raw_bytes": 754,
+      "public_sha256": "8b2dbe9cc3175d5bd8067ab80b4c6024949c743d16e47b13f8230c52ca06bbde",
+      "public_bytes": 754,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/enumerations.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/enumerations.cat",
+      "raw_sha256": "1bd204d83ce0cd1a7be1af56c0ee8eb870821455f76ef1518303033179f74af1",
+      "raw_bytes": 3661,
+      "public_sha256": "1bd204d83ce0cd1a7be1af56c0ee8eb870821455f76ef1518303033179f74af1",
+      "public_bytes": 3661,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/libdir/stdlib.cat",
+      "public_path": "upstream/herdtools7/herd/libdir/stdlib.cat",
+      "raw_sha256": "aaf710a8c80bfa9ae673ca9b8ec0a467c773705b9e5b8e6352edf90b30494755",
+      "raw_bytes": 2400,
+      "public_sha256": "aaf710a8c80bfa9ae673ca9b8ec0a467c773705b9e5b8e6352edf90b30494755",
+      "public_bytes": 2400,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/AArch64Sem.ml",
+      "public_path": "upstream/herdtools7/herd/AArch64Sem.ml",
+      "raw_sha256": "4006108c09ce94b1d9f5f7518b50461bc9b6d50675ca35705728502837d1720a",
+      "raw_bytes": 211893,
+      "public_sha256": "4006108c09ce94b1d9f5f7518b50461bc9b6d50675ca35705728502837d1720a",
+      "public_bytes": 211893,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/AArch64Annot.ml",
+      "public_path": "upstream/herdtools7/herd/AArch64Annot.ml",
+      "raw_sha256": "cc206cba0a57d808d0cf45259d8f25132bd780df7e698d687c544fe23a0f85a8",
+      "raw_bytes": 2327,
+      "public_sha256": "cc206cba0a57d808d0cf45259d8f25132bd780df7e698d687c544fe23a0f85a8",
+      "public_bytes": 2327,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/lib/AArch64Base.ml",
+      "public_path": "upstream/herdtools7/lib/AArch64Base.ml",
+      "raw_sha256": "a6d4dd2124c5176bc6cf88a6dc22da6aeeeda39edd1f95c29f79aa8224124f30",
+      "raw_bytes": 124239,
+      "public_sha256": "a6d4dd2124c5176bc6cf88a6dc22da6aeeeda39edd1f95c29f79aa8224124f30",
+      "public_bytes": 124239,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/opts.ml",
+      "public_path": "upstream/herdtools7/herd/opts.ml",
+      "raw_sha256": "d1a8c41304cd1b6a61742bc54f8f5bb55040c2d3dca20be422ae0cb44e57cbe8",
+      "raw_bytes": 5172,
+      "public_sha256": "d1a8c41304cd1b6a61742bc54f8f5bb55040c2d3dca20be422ae0cb44e57cbe8",
+      "public_bytes": 5172,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herd/herd.ml",
+      "public_path": "upstream/herdtools7/herd/herd.ml",
+      "raw_sha256": "5fc79937a2e339ee4cffa22d2c59e73d94543974b6871b1375d6bff4010e06c7",
+      "raw_bytes": 29978,
+      "public_sha256": "5fc79937a2e339ee4cffa22d2c59e73d94543974b6871b1375d6bff4010e06c7",
+      "public_bytes": 29978,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/VERSION.txt",
+      "public_path": "upstream/herdtools7/VERSION.txt",
+      "raw_sha256": "fb6d2c3384b6f28ca0f0ce17e29ac1f7c31695bab2f2ea83d93f00f0bf0b99e8",
+      "raw_bytes": 8,
+      "public_sha256": "fb6d2c3384b6f28ca0f0ce17e29ac1f7c31695bab2f2ea83d93f00f0bf0b99e8",
+      "public_bytes": 8,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/LICENSE.txt",
+      "public_path": "upstream/herdtools7/LICENSE.txt",
+      "raw_sha256": "5d8a5818161ab38b77226b7caa758fde63f1aaabdf87ea773e1620b62a5b9537",
+      "raw_bytes": 22456,
+      "public_sha256": "5d8a5818161ab38b77226b7caa758fde63f1aaabdf87ea773e1620b62a5b9537",
+      "public_bytes": 22456,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/INSTALL.md",
+      "public_path": "upstream/herdtools7/INSTALL.md",
+      "raw_sha256": "127d35a0f40631189e48a6f102837478c59d789232a95be0ea02af595261d499",
+      "raw_bytes": 1497,
+      "public_sha256": "127d35a0f40631189e48a6f102837478c59d789232a95be0ea02af595261d499",
+      "public_bytes": 1497,
+      "substitutions": []
+    },
+    {
+      "origin": "herdtools7@9574394/herdtools7.opam",
+      "public_path": "upstream/herdtools7/herdtools7.opam",
+      "raw_sha256": "f7ff75012fbfc81e0ffd04aa07b41eeb93e3488ced76a034dbd2cc2406bed132",
+      "raw_bytes": 1147,
+      "public_sha256": "f7ff75012fbfc81e0ffd04aa07b41eeb93e3488ced76a034dbd2cc2406bed132",
+      "public_bytes": 1147,
+      "substitutions": []
+    },
+    {
+      "origin": "reference@2dafab9/src/inline-assembly.md",
+      "public_path": "upstream/rust-reference/inline-assembly.md",
+      "raw_sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e",
+      "raw_bytes": 74833,
+      "public_sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e",
+      "public_bytes": 74833,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/container-resource.json",
+      "public_path": "evidence/environment/container-resource.json",
+      "raw_sha256": "5c881ba843bde4c0ae8836fe9865bd88010dbcbfb443a3cc7e1ce6a7b5f1a712",
+      "raw_bytes": 681,
+      "public_sha256": "ac6bfffe7edbc2fc6871c3707830987d91aee0add7a8fda33b38ce3f5f09ad48",
+      "public_bytes": 664,
+      "substitutions": [
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "parent/herd-verified-build-parent-note.json",
+      "public_path": "evidence/build/herd-verified-build-parent-note.json",
+      "raw_sha256": "2086d6095b227bbcddaee5fbca8ce640cc624b62dc95459d1d947cea1e2b5605",
+      "raw_bytes": 1388,
+      "public_sha256": "0bb3b6575cf0ee5776f63f1972701b0704ebb7142a6321929fc9844c0cc3951f",
+      "public_bytes": 1362,
+      "substitutions": [
+        {
+          "source_label": "<HERD_SOURCE>",
+          "occurrences": 1
+        },
+        {
+          "source_label": "<OWNED_CONTAINER>",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "origin": "parent/herd-verified-build.stdout",
+      "public_path": "evidence/build/herd-verified-build.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/herd-verified-build.stderr",
+      "public_path": "evidence/build/herd-verified-build.stderr",
+      "raw_sha256": "b66f449cdf871eab56cd8cee5c9de2310968a1d6f4f74ca2ad5b5de4c80b479b",
+      "raw_bytes": 98,
+      "public_sha256": "b66f449cdf871eab56cd8cee5c9de2310968a1d6f4f74ca2ad5b5de4c80b479b",
+      "public_bytes": 98,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/herd-dependencies.stdout",
+      "public_path": "evidence/build/herd-dependencies.stdout",
+      "raw_sha256": "db26ac98e9f29af32931ceac0c5a9087c0b48685fa28f530e5d7fbb132f1745f",
+      "raw_bytes": 4281,
+      "public_sha256": "db26ac98e9f29af32931ceac0c5a9087c0b48685fa28f530e5d7fbb132f1745f",
+      "public_bytes": 4281,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/herd-dependencies.stderr",
+      "public_path": "evidence/build/herd-dependencies.stderr",
+      "raw_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "raw_bytes": 45,
+      "public_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "public_bytes": 45,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/herd-build.stdout",
+      "public_path": "evidence/build/prior-diagnostics/herd-build.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/herd-build.stderr",
+      "public_path": "evidence/build/prior-diagnostics/herd-build.stderr",
+      "raw_sha256": "cab1533d74c711a00818a6cea345842ee1d64fd278234ee9bab6fd7138be49bc",
+      "raw_bytes": 768,
+      "public_sha256": "61b69aaedbbbe4da2a7ae524c389265e5e6a0ce1cba7da7fd25c8e2e2a9805c9",
+      "public_bytes": 674,
+      "substitutions": [
+        {
+          "source_label": "<MOUNTED_HERD_SOURCE>",
+          "occurrences": 2
+        }
+      ]
+    },
+    {
+      "origin": "parent/herd-container-build.stdout",
+      "public_path": "evidence/build/prior-diagnostics/herd-container-build.stdout",
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "raw_bytes": 0,
+      "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "public_bytes": 0,
+      "substitutions": []
+    },
+    {
+      "origin": "parent/herd-container-build.stderr",
+      "public_path": "evidence/build/prior-diagnostics/herd-container-build.stderr",
+      "raw_sha256": "e9d770921c34c4a316c05ba9f0a10637a8e65e0331b28e2ccad93111a395c366",
+      "raw_bytes": 228,
+      "public_sha256": "e9d770921c34c4a316c05ba9f0a10637a8e65e0331b28e2ccad93111a395c366",
+      "public_bytes": 228,
+      "substitutions": []
+    }
+  ],
+  "excluded": [
+    {
+      "origin": "actual-herd/concurrent_assembly",
+      "sha256": "0e0192997852c3a7816ac52bc4ac9b3e61e5fdbf2887ab9ece4a950396c2ac83",
+      "bytes": 496224,
+      "reason": "native executable read for identity only; omitted, never executed by this reporting task"
+    },
+    {
+      "origin": "whole upstream and tool caches/binaries",
+      "reason": "selected source closure, full source hash inventory, tool identities and output retained"
+    }
+  ],
+  "native_leaf_extract": {
+    "origin": "actual-herd/concurrent_assembly.s",
+    "start_byte": 93,
+    "end_byte_exclusive": 887,
+    "sha256": "efb94d941e053b7dc275e7969caf061dcf39561d6dbb128c4fd0118a87f5075e",
+    "bytes": 794
+  },
+  "assembly_projection_boundary": "Whole concurrent assembly has two private std-library path strings replaced in .asciz data; instruction lines unchanged. It is not the original executable or a byte-identical whole assembly artifact."
+}

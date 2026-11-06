@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "rustc/driver",
+    "rustc/mir",
+    "rust/reference-guarantees",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "release": "1.98.0-nightly",
+        "commit-date": "2026-05-30"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-05-31 rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-09-30 rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+        "version": "1.101.0-nightly",
+        "rustc_sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d"
+      }
+    }
+  ],
+  "observed_at": "2026-10-01"
+}

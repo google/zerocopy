@@ -1,0 +1,172 @@
+{
+  "topics": [
+    "minirust/semantics",
+    "minirust/tooling",
+    "rust/unsafe",
+    "verification/iris",
+    "verification/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust actual-core source",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "Specr transpiler and libspecr",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220"
+      }
+    },
+    {
+      "name": "Requested nightly successful core compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "version": "1.97.0-nightly",
+        "distribution_date": "2026-05-01"
+      }
+    },
+    {
+      "name": "Alternate-host compiler incompatibility observation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Cargo used for exact locked closure",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "MiniRust operational specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "RustBelt original LambdaRust source archive",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Aeneas configuration and prior-corpus comparison",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+      }
+    },
+    {
+      "name": "Gillian dual contract emitter",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "Lean proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Specr associated with generated runtime source",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348"
+      }
+    },
+    {
+      "name": "Pinned Rust compiler and Miri",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "toolchain": "nightly-2026-05-01",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Actual emitted one-field union program",
+      "identity": {
+        "artifact": "evidence/cases/union_wide_one_field/minirust.json",
+        "sha256": "777d5f58831da2911bf7c9c3265f5edbd18a8af649f9a96d4e680458ceae3327"
+      }
+    },
+    {
+      "name": "a-mir-formality judgments and MiniRust code generation",
+      "identity": {
+        "repository": "rust-lang/a-mir-formality",
+        "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+      }
+    },
+    {
+      "name": "Charon feature-boundary comparison",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Rust unsafe-trait contract comparison",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "End-to-End Executable Rust Specification plan",
+      "identity": {
+        "url": "https://goals.rust-lang.org/2026/executable-spec.html",
+        "retrieved": "2026-10-14"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 source archive",
+      "identity": {
+        "artifact": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+      }
+    },
+    {
+      "name": "Formalization of Rust Drop Elaboration thesis",
+      "identity": {
+        "document_url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Viktor-Thesis.pdf",
+        "author": "Viktor Fukala",
+        "date": "2024-08-05"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,78 @@
+{
+  "status": "pass",
+  "runs": [
+    {
+      "name": "base",
+      "exit": 0,
+      "expected": "accept",
+      "command": [
+        "$TOOL/lean",
+        "-o",
+        "Modular.olean",
+        "Modular.lean"
+      ]
+    },
+    {
+      "name": "changed-body",
+      "exit": 1,
+      "expected": "reject",
+      "command": [
+        "$TOOL/lean",
+        "changed-body.lean"
+      ]
+    },
+    {
+      "name": "wrong-target",
+      "exit": 1,
+      "expected": "reject",
+      "command": [
+        "$TOOL/lean",
+        "wrong-target.lean"
+      ]
+    },
+    {
+      "name": "wrong-associated-type",
+      "exit": 1,
+      "expected": "reject",
+      "command": [
+        "$TOOL/lean",
+        "wrong-associated-type.lean"
+      ]
+    },
+    {
+      "name": "wrong-vtable",
+      "exit": 1,
+      "expected": "reject",
+      "command": [
+        "$TOOL/lean",
+        "wrong-vtable.lean"
+      ]
+    },
+    {
+      "name": "narrowed-domain",
+      "exit": 1,
+      "expected": "reject",
+      "command": [
+        "$TOOL/lean",
+        "narrowed-domain.lean"
+      ]
+    },
+    {
+      "name": "weakened-post",
+      "exit": 1,
+      "expected": "reject",
+      "command": [
+        "$TOOL/lean",
+        "weakened-post.lean"
+      ]
+    }
+  ],
+  "source_sha256": "b4768930f94676ce96fdb2808e3e755552b7e85e6f80f723f1c762e2b570396f",
+  "lean_version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "runtime_hashes": {
+    "lean": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+    "Init.olean": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22",
+    "libleanshared.dylib": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50"
+  },
+  "scope": "Semantic selected-callee composition in owned finite arithmetic. Rust dictionary/associated-type/vtable capture, ABI and model correspondence remain premises. Expected failing elaborations are rejection controls, not proof evidence."
+}

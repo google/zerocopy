@@ -1,0 +1,60 @@
+{
+  "entries": [
+    {
+      "id": "T009",
+      "title": "Independent checker diversity",
+      "question": "Distinguish independent algorithms from ports sharing implementation structure; examine correlated failures and disagreement policies.",
+      "rationale": "Distinguish independent algorithms from ports sharing implementation structure; examine correlated failures and disagreement policies.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Actual implementation-family differences, shared interfaces, all-selected disagreement policy and exact kernel incident/source applicability.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "independent-kernels-and-model-checking-certificates",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T011",
+      "title": "External proof search with reconstruction",
+      "question": "Study Isabelle\u2019s Sledgehammer and related systems: what must be reconstructed through kernel inferences? [Isabelle study](https://isabelle.in.tum.de/~blanchet/h4qed.pdf).",
+      "rationale": "Study Isabelle\u2019s Sledgehammer and related systems: what must be reconstructed through kernel inferences? [Isabelle study](https://isabelle.in.tum.de/~blanchet/h4qed.pdf).",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "External discovery versus host-kernel Metis/SMT replay and explicit oracle branch.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "independent-kernels-and-model-checking-certificates",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T018",
+      "title": "Model-checking certificates",
+      "question": "Compare inductive invariants, IC3/PDR evidence, bounded traces, completeness bounds, and liveness certificates.",
+      "rationale": "Compare inductive invariants, IC3/PDR evidence, bounded traces, completeness bounds, and liveness certificates.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "IC3 final invariant, BMC/completeness obligations, witness circuits and current finite-circuit liveness checker conditions.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "independent-kernels-and-model-checking-certificates",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    },
+    {
+      "id": "T020",
+      "title": "Proof by reflection",
+      "question": "Compare verified decision procedures with proof reconstruction, including quotation correctness and kernel versus native evaluation.",
+      "rationale": "Compare verified decision procedures with proof reconstruction, including quotation correctness and kernel versus native evaluation.",
+      "issue": 3866,
+      "scope": "answered_bounded",
+      "answered_scope": "Reflected semantic checker versus reconstructed host proof; quotation, kernel/VM/native execution frontiers.",
+      "genuine_unexamined_scope": [],
+      "future_engineering": "Instantiate the selected mechanism and complete artifact/runtime/interpretation premises for deployment; no universal Rust implementation prerequisite is inferred for a bounded design/literature answer.",
+      "report": "independent-kernels-and-model-checking-certificates",
+      "section": "Findings",
+      "authority": "report-level scope; parent owns global disposition/publication"
+    }
+  ]
+}

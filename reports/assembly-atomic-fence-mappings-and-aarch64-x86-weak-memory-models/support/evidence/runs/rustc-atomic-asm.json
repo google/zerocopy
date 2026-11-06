@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "<MAY1_TOOLCHAIN>/bin/rustc",
+    "atomic_wrappers.rs",
+    "--edition=2021",
+    "--emit=asm",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "debuginfo=0",
+    "-o",
+    "atomic_wrappers.s"
+  ],
+  "exit": 0,
+  "seconds": 0.20586262503638864
+}

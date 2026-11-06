@@ -1,0 +1,40 @@
+{
+  "role": "execution; bounded host-specific probes",
+  "working_directory": "package directory",
+  "results": [
+    {
+      "command": [
+        "rustc",
+        "--version",
+        "--verbose"
+      ],
+      "exit_code": 0,
+      "stdout": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: aarch64-apple-darwin\nrelease: 1.99.0\nLLVM version: 23.1.1\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rustc",
+        "--edition=2021",
+        "./async_drop_probe.rs",
+        "-o",
+        "./async-drop-probe"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "./async-drop-probe"
+      ],
+      "exit_code": 0,
+      "stdout": "unpolled=1; suspended_before_drop=1; suspended_after_drop=2\n",
+      "stderr": ""
+    }
+  ],
+  "unexpected_failure": false,
+  "input_sha256": {
+    "async_drop_probe.rs": "e020a09d9384bf327ad9b00f273f7532c1d1261d229ea347f690416795161876"
+  }
+}

@@ -1,0 +1,21 @@
+import Lean
+import Std.Tactic.BVDecide.LRAT.Checker
+import Std.Tactic.BVDecide.LRAT.Parser
+open Std.Sat Std.Tactic.BVDecide
+
+def sourceCnf : CNF Nat := ⟨#[[(1, true)], [(1, false)]]⟩
+def changedCnf : CNF Nat := ⟨#[[(1, true)], [(2, false)]]⟩
+def goodCertificate : Array LRAT.IntAction := #[.addEmpty 3 #[1, 2]]
+def missingHint : Array LRAT.IntAction := #[.addEmpty 3 #[1]]
+
+theorem goodAccepted : LRAT.check goodCertificate sourceCnf = true := by decide
+theorem missingRejected : LRAT.check missingHint sourceCnf = false := by decide
+theorem changedRejected : LRAT.check goodCertificate changedCnf = false := by decide
+theorem sourceUnsat : sourceCnf.Unsat := LRAT.check_sound goodCertificate sourceCnf (by decide)
+
+#eval LRAT.check goodCertificate sourceCnf
+#eval LRAT.check missingHint sourceCnf
+#eval LRAT.check goodCertificate changedCnf
+#eval LRAT.parseLRATProof "3 0 1 2 0\n".toUTF8
+#print axioms goodAccepted
+#print axioms sourceUnsat

@@ -1,0 +1,46 @@
+--- run_stage4.py
++++ run_stage4_resume.py
+@@ -1,5 +1,6 @@
+ """One authorized fixed job at a time; consumer/source/flags remain unchanged.
+-Stops on any diagnostic, unexpected verdict or resource/controller issue.
++Retains exact parent-classified five vector warnings; stops on all others.
++Original STOP and capture bytes remain immutable; no O0 recapture permitted.
+ """
+ from pathlib import Path
+ import hashlib,json,os,re,subprocess,sys,time
+@@ -18,21 +19,12 @@
+ }
+ def output_bytes():return sum(p.stat().st_size for p in S.rglob('*') if p.is_file())
+ def known_internal_warning(data,profile):
+- if not profile.startswith('host-vectors-') or len(data)>8192:return False
+- try:lines=data.decode('utf-8').splitlines()
+- except UnicodeDecodeError:return False
+- headlines=[x for x in lines if x.startswith('warning: the feature ')]
+- if not 1<=len(headlines)<=2:return False
+- for x in lines:
+-  if not x:continue
+-  if x in ['warning: the feature `repr_simd` is internal to the compiler or standard library','warning: the feature `simd_ffi` is internal to the compiler or standard library','  = note: using it is strongly discouraged','  = note: `#[warn(internal_features)]` on by default']:continue
+-  if re.fullmatch(r'\s*--> '+re.escape(str(B/'vectors.rs'))+r':\d+:\d+',x):continue
+-  if re.fullmatch(r'\s*(?:\d+ )?\|.*',x):continue
+-  if x=='warning: '+str(len(headlines))+(' warning emitted' if len(headlines)==1 else ' warnings emitted'):continue
+-  return False
+- return '  = note: using it is strongly discouraged' in lines and '  = note: `#[warn(internal_features)]` on by default' in lines
++ return profile.startswith('host-vectors-') and hashlib.sha256(data).hexdigest()=='79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec'
+ def job(name):
+- assert name in JOBS and not (S/'STOP.json').exists()
++ assert name in ['check-vectors-o0','capture-vectors-o2','check-vectors-o2']
++ assert not (S/'RESUMED_STOP.json').exists()
++ assert h(S/'STOP.json')=='c2c8e753d3bb624322372d7f43bbde9db8b276bc848234f3c1be672f6a84e355'
++ assert h(S/'runs/capture-vectors-o0/stderr')=='79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec'
+  assert h(B/'e33_consumer_v3.py')=='c0c476f3fe9e1497f4484b4de4c493194cd82d2fd93f5853fbfd7241f7aeb6da'
+  assert h(B/'e33_data_v3.py')=='b9246631d37955add31da62f891eb9d0e0ec201a8a532ca3ccf385f8bced6018'
+  assert h(B/'observer-v3')=='f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b'
+@@ -61,7 +53,7 @@
+  if output_bytes()>=268435456:stop='stage output budget'
+  result={'job':name,'mode':mode,'profile':profile,'consumer_exit':p.returncode,'seconds':time.monotonic()-started,'stop':stop,'anticipated_internal_features_warning':anticipated_diagnostic,'stdout_sha256':h(R/'stdout'),'stderr_sha256':h(R/'stderr'),'fresh_reference_sha256':h(run/'reference.json') if (run/'reference.json').is_file() else None,'fresh_observer_result':json.loads((run/'result.json').read_text()) if (run/'result.json').is_file() else None,'CLI_json':json.loads(p.stdout) if p.stdout else None,'additional_output_bytes':output_bytes()}
+  (R/'result.json').write_text(json.dumps(result,indent=2)+'\n')
+- if stop:(S/'STOP.json').write_text(json.dumps(result,indent=2)+'\n')
++ if stop:(S/'RESUMED_STOP.json').write_text(json.dumps(result,indent=2)+'\n')
+  print(json.dumps(result,indent=2))
+  return 70 if stop else 0
+ if __name__=='__main__':

@@ -1,0 +1,353 @@
+{
+  "topics": [
+    "verification",
+    "verification/compcert",
+    "verification/cakeml",
+    "verification/refinement",
+    "rustc/codegen",
+    "isa/binary-lifting"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_cranelift)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "additional_revisions": "8006091eb71ae7d9e9bccb66c6122c9d68af4466, 49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Wasmtime and Cranelift code generator (ISLE, aegraphs, MachBuffer, unwind)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "additional_revisions": "4c2d5fb3f42f77be866b51ca7b89c803bf42694f"
+      }
+    },
+    {
+      "name": "regalloc2 register allocator and symbolic checker",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27"
+      }
+    },
+    {
+      "name": "OpenCompl lean-mlir and alive-lean SSA/BitVec semantics",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+      }
+    },
+    {
+      "name": "seL4 graph-refine binary translation validator",
+      "identity": {
+        "repository": "seL4/graph-refine",
+        "revision": "6c6f2612b17f48ddfe41ee62ff1b077e320b9c89"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (RTL, BTL, Linear, Stacking, Asm, Linking)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "f9573fb9b8ba4b4cecebe1ef3cb8b2ef9ce1fc03",
+        "additional_revisions": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6, a6f2857fc1be9e628f8b1462bc29224fb1edeb82"
+      }
+    },
+    {
+      "name": "Vellvm Coq formalization of LLVM IR",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "519c979ff9ab75ef58285bc2697f439bd04c1881"
+      }
+    },
+    {
+      "name": "Intermediate Memory Model (IMM) Coq mechanization",
+      "identity": {
+        "repository": "weakmemory/imm",
+        "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+      }
+    },
+    {
+      "name": "herdtools7 axiomatic hardware memory models",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+      }
+    },
+    {
+      "name": "Rust Compiler MIR Syntax and Semantics (ProjectionElem, Rvalue, TerminatorKind)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Rust Compiler PR #154341 (Merge Retag statement into Use rvalue)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+        "pull_request": "154341"
+      }
+    },
+    {
+      "name": "Rust Compiler Baseline Pinned by Anneal Trusted Core",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "The Rust Reference (Slice Layout and Undefined Behavior)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "AbsInt/CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "path": "driver/Compiler.v"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "path": "compiler/proofs/compilerProofScript.sml"
+      }
+    },
+    {
+      "name": "CertiRocq/certirocq",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+        "path": "theories/Compiler/correctness.v"
+      }
+    },
+    {
+      "name": "Tristan/Leroy verified validators",
+      "identity": {
+        "primary_url": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+        "doi": "10.1145/1328897.1328444",
+        "publication": "POPL2008",
+        "coordinates": "section2.1 Theorem1 and section2.2;11-page author PDF"
+      }
+    },
+    {
+      "name": "CakeML primary bootstrap description",
+      "identity": {
+        "primary_url": "https://cakeml.org/",
+        "inspection": "project documentation;no release binary inspected"
+      }
+    },
+    {
+      "name": "Hornof/Jim PEPM1999 Cyclone",
+      "identity": {
+        "primary_url": "https://www.brics.dk/NS/99/1/BRICS-NS-99-1.pdf",
+        "publication": "BRICS NS-99-1,PEPM1999,printedpp60-74",
+        "coordinates": "AppendixA printedp73 Safety theorem;\u00a73 printedp66 TAL/T"
+      }
+    },
+    {
+      "name": "Compiling for Runtime Code Generation",
+      "identity": {
+        "primary_url": "https://www.cs.cornell.edu/talc/papers/compile_rtcg-tr.pdf",
+        "publication": "Cornell TR2000-1824,October2000",
+        "coordinates": "\u00a76.2 p13-14;AppendixA p21"
+      }
+    },
+    {
+      "name": "Primary TAL/T project description",
+      "identity": {
+        "primary_url": "https://www.cs.cornell.edu/info/people/fms/rtcg.html",
+        "inspection": "Static type-checking statement; no distribution build"
+      }
+    },
+    {
+      "name": "CertiRocq/certirocq",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "906241771e0ac0088403dec12a0027213f114dd1",
+        "paths": "Compiler/correctness.v;LambdaBox_to_LambdaANF/anf_toplevel.v;Compiler/metarocq_pipeline.v;Compiler/pipeline.v"
+      }
+    },
+    {
+      "name": "WebAssembly/spec",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "340650f2f620169685814774bc5b019d05d4d3d7",
+        "paths": "document/core/binary/{modules,instructions,values}.rst;exec/numerics.rst",
+        "boundary": "Primary normative interpretation inspected; full external-spec connection assumed"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1",
+        "identity_record": "wasm-lean-check.json; executable, Init.olean, shared library"
+      }
+    },
+    {
+      "name": "Original WasmValidator.lean",
+      "identity": {
+        "artifact": "WasmValidator.lean",
+        "sha256": "2f15898226c8ab57515804aebda32c9d60f2ec2f1445b7ac99360547f05cdfd3",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original WasmArtifact.lean",
+      "identity": {
+        "artifact": "WasmArtifact.lean",
+        "sha256": "552b51f20940bc1c1a97db07a6ff43a3e96580f1c396c28e81093175a130262a",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original boolean4.wasm",
+      "identity": {
+        "artifact": "boolean4.wasm",
+        "sha256": "fd0023c344d5d55bb4c7c8f4920764bf5c198777c3411bffea0d99b550cfe158",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original execute_wasm.mjs",
+      "identity": {
+        "artifact": "execute_wasm.mjs",
+        "sha256": "abd3694f62a3753ffd28f242950531947f8d3f7070987ec13d1d792cec45f458",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Observed Node engine",
+      "identity": {
+        "version": "24.21.0",
+        "v8": "13.6.233.17-node.53",
+        "executable_sha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e",
+        "boundary": "Native execution observed; engine, JS harness and hardware not verified"
+      }
+    },
+    {
+      "name": "CakeML selected LPR checker/executable theorem",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "Fully Countering Trusting Trust through Diverse Double-Compiling",
+      "identity": {
+        "publication": "Wheeler dissertation, Fall 2009",
+        "url": "https://dwheeler.com/trusting-trust/dissertation/html/wheeler-trusting-trust-ddc.html",
+        "errata": "https://dwheeler.com/trusting-trust/dissertation-errata.html",
+        "errata_date": "2019-07-25"
+      }
+    },
+    {
+      "name": "Wheeler primary Proof1 formal input",
+      "identity": {
+        "artifact": "ddc.in",
+        "url": "https://dwheeler.com/trusting-trust/dissertation/ddc.in"
+      }
+    },
+    {
+      "name": "A Verified Proof Checker for Higher-Order Logic",
+      "identity": {
+        "author": "Oskar Abrahamsson",
+        "version": "author preprint dated October 28, 2019; related JLAMP 2020 publication",
+        "url": "https://cakeml.org/jlamp20.pdf",
+        "pages": "31"
+      }
+    },
+    {
+      "name": "Li/Owens/Slind ESOP2007 primary paper",
+      "identity": {
+        "primary_url": "https://link.springer.com/chapter/10.1007/978-3-540-71316-6_15",
+        "doi": "10.1007/978-3-540-71316-6_15",
+        "inspection": "full15-page primary PDF;sections2,4",
+        "sha256": "f077d7ef766635bf34c4ea3c46297b0fde5ec88135695034d2c0fd903752bd1c"
+      }
+    },
+    {
+      "name": "Blech/Poetzsch-Heffter code-generation paper",
+      "identity": {
+        "primary_url": "https://jblech.net/wp-content/uploads/2013/07/BlechPoetzsch-HeffterCOCV07.pdf",
+        "doi": "10.1016/j.entcs.2007.09.008",
+        "publication": "ENTCS190(4),2007",
+        "coordinates": "sections2.3,3.2,4;17-page author PDF"
+      }
+    },
+    {
+      "name": "Myreen/Slind/Gordon extensible compilation",
+      "identity": {
+        "primary_url": "https://www.cl.cam.ac.uk/~mom22/extensible-compilation.pdf",
+        "doi": "10.1007/978-3-642-00722-4_2",
+        "publication": "CC2009",
+        "coordinates": "section2;15-page author PDF"
+      }
+    },
+    {
+      "name": "Myreen/Owens pure and stateful ML translation",
+      "identity": {
+        "primary_url": "https://www.cl.cam.ac.uk/~mom22/jfp14.pdf",
+        "doi": "10.1017/S0956796813000282",
+        "publication": "JFP24(2-3),2014",
+        "coordinates": "sections4.3-4.4;32-page author PDF"
+      }
+    },
+    {
+      "name": "Monadic CakeML synthesis",
+      "identity": {
+        "primary_url": "https://cakeml.org/jar20.pdf",
+        "publication": "JAR2020 author paper",
+        "coordinates": "sections3.3-3.5;20-page PDF"
+      }
+    },
+    {
+      "name": "HOL-Theorem-Prover/HOL",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "166fd15df77be1f2e79dc8592a933b1a65540526",
+        "path": "examples/machine-code/compiler/codegenLib.sml"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "path": "translator/ml_translatorScript.sml"
+      }
+    },
+    {
+      "name": "kth-step/HolBA",
+      "identity": {
+        "repository": "kth-step/HolBA",
+        "revision": "c20c5aeae7c4464c3a5032ee66d9e31324937fe1",
+        "path": "src/theory/tools/lifter/bir_inst_liftingScript.sml"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

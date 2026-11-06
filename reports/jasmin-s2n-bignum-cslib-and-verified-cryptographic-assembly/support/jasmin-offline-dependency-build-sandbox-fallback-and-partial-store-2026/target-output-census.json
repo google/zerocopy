@@ -1,0 +1,552 @@
+[
+  {
+    "drv": "/nix/store/fs3q1hxa80yp14xfw4rr7rak0xzxl9i4-ocaml4.14.4-elpi-2.0.7.drv",
+    "name": "ocaml4.14.4-elpi-2.0.7",
+    "output": "out",
+    "path": "/nix/store/zhx9f0rh3xibpnv4026zxn5ybbvza2q9-ocaml4.14.4-elpi-2.0.7",
+    "drv_validpath": {
+      "id": 742,
+      "path": "/nix/store/fs3q1hxa80yp14xfw4rr7rak0xzxl9i4-ocaml4.14.4-elpi-2.0.7.drv",
+      "hash": "sha256:d2a43dc2e20f9c0ca2b87547349b528c7eeac62d236d270c09da4a9d5fcc39e5",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 4280,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1x674yw45v47m2paxphnf1biqd27k2d3wzzsl8py9bk9c01qd9l9"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/zhx9f0rh3xibpnv4026zxn5ybbvza2q9-ocaml4.14.4-elpi-2.0.7"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/h2xp9vk3q48w88r4jj06yyr7vd0dpw35-rocq-core9.0-elpi-2.5.2.drv",
+    "name": "rocq-core9.0-elpi-2.5.2",
+    "output": "out",
+    "path": "/nix/store/kkzb6af498dhw88sdgc7y3mb40wy39k5-rocq-core9.0-elpi-2.5.2",
+    "drv_validpath": {
+      "id": 744,
+      "path": "/nix/store/h2xp9vk3q48w88r4jj06yyr7vd0dpw35-rocq-core9.0-elpi-2.5.2.drv",
+      "hash": "sha256:d0488363fdac988a6d253e4d4f2d02da418e893e79595524b79be92182049168",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3256,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1da19p58kzipzhc36zkqkkxvr1nnyldzfgbyiw90bw6zbk5xvqvs"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/kkzb6af498dhw88sdgc7y3mb40wy39k5-rocq-core9.0-elpi-2.5.2"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/knfyj86y2pl21chrknr496n2pwpshq87-rocq-core9.0-hierarchy-builder-1.9.1.drv",
+    "name": "rocq-core9.0-hierarchy-builder-1.9.1",
+    "output": "out",
+    "path": "/nix/store/d6iw084h4ippi1nhh5xv3acf6w11aakw-rocq-core9.0-hierarchy-builder-1.9.1",
+    "drv_validpath": {
+      "id": 746,
+      "path": "/nix/store/knfyj86y2pl21chrknr496n2pwpshq87-rocq-core9.0-hierarchy-builder-1.9.1.drv",
+      "hash": "sha256:1187969d4aac3ff52b76e4f3ef6ae0513da879b73206295c06f25571bf1b8e01",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2440,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:01l6c1m3i3rfffpm5ividm477xy68xijdfdhhbksady9zfqd5hz3"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/d6iw084h4ippi1nhh5xv3acf6w11aakw-rocq-core9.0-hierarchy-builder-1.9.1"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/6rzgdnd3g59dh5kjwslaiq9mjgxfsmq7-coq9.0-mathcomp-boot-2.4.0.drv",
+    "name": "coq9.0-mathcomp-boot-2.4.0",
+    "output": "out",
+    "path": "/nix/store/4w63n2gjvfya8gl0bdam91ab6rnbd4f5-coq9.0-mathcomp-boot-2.4.0",
+    "drv_validpath": {
+      "id": 748,
+      "path": "/nix/store/6rzgdnd3g59dh5kjwslaiq9mjgxfsmq7-coq9.0-mathcomp-boot-2.4.0.drv",
+      "hash": "sha256:732fa1d2fee611e2f78a081b34d8c457d5d954b73adeee3990a57db1f3d5f90a",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2920,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:01cz9bw310c028njizlwxwdgfs0gnm5hy6dx70q683fx0iflrpki"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/4w63n2gjvfya8gl0bdam91ab6rnbd4f5-coq9.0-mathcomp-boot-2.4.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/2z6kh1grqzv5c36mj3fvk9dbx47afrmm-coq9.0-mathcomp-fingroup-2.4.0.drv",
+    "name": "coq9.0-mathcomp-fingroup-2.4.0",
+    "output": "out",
+    "path": "/nix/store/v0cw5qw110z623i7pmd1l09hvfpj41zl-coq9.0-mathcomp-fingroup-2.4.0",
+    "drv_validpath": {
+      "id": 750,
+      "path": "/nix/store/2z6kh1grqzv5c36mj3fvk9dbx47afrmm-coq9.0-mathcomp-fingroup-2.4.0.drv",
+      "hash": "sha256:a4735d6c3730713384d4f31cc27f5b132b359c0527e7fa97394c89fc2a59c1c5",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3096,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1zpdmcwrw8xavw6a4bgzc9hj1ljrc9j3v9ssqvligzdz3xkvzizl"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/v0cw5qw110z623i7pmd1l09hvfpj41zl-coq9.0-mathcomp-fingroup-2.4.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/ajrzwqnskdnfmmlms6czafdbbarzmg4w-coq9.0-mathcomp-order-2.4.0.drv",
+    "name": "coq9.0-mathcomp-order-2.4.0",
+    "output": "out",
+    "path": "/nix/store/vcnz700kvyv5vnvhwq9y0cmvvknkdih7-coq9.0-mathcomp-order-2.4.0",
+    "drv_validpath": {
+      "id": 749,
+      "path": "/nix/store/ajrzwqnskdnfmmlms6czafdbbarzmg4w-coq9.0-mathcomp-order-2.4.0.drv",
+      "hash": "sha256:7897252ac7822576fa0b072fb2211a52d6688fc59a99003f452cb6f7da2bbe4b",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2816,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1k5yad3dqvw2fvrs033bz9mg3mk9r6ww4sdn03b05ncmp7yck3vz"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/vcnz700kvyv5vnvhwq9y0cmvvknkdih7-coq9.0-mathcomp-order-2.4.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/49ybahayrjykab0j3kjfkbxfzd3j711m-coq9.0-mathcomp-algebra-2.4.0.drv",
+    "name": "coq9.0-mathcomp-algebra-2.4.0",
+    "output": "out",
+    "path": "/nix/store/71ginv15dqw700k5s0wn8gf11b4gs5l7-coq9.0-mathcomp-algebra-2.4.0",
+    "drv_validpath": {
+      "id": 751,
+      "path": "/nix/store/49ybahayrjykab0j3kjfkbxfzd3j711m-coq9.0-mathcomp-algebra-2.4.0.drv",
+      "hash": "sha256:184bcc13285a3c08f272989d6732556173f107630ab591c54b13040e0bcaf594",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3264,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1h8l1k2x625gm9gwc83308p3qryhsg8czhs43bfgfgvk43kjvlj3"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/71ginv15dqw700k5s0wn8gf11b4gs5l7-coq9.0-mathcomp-algebra-2.4.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/6g0jvi4pwd2nqbkm60qkj9sa87gcr41c-rocq-core9.0-stdlib-9.0.0.drv",
+    "name": "rocq-core9.0-stdlib-9.0.0",
+    "output": "out",
+    "path": "/nix/store/hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0",
+    "drv_validpath": {
+      "id": 754,
+      "path": "/nix/store/6g0jvi4pwd2nqbkm60qkj9sa87gcr41c-rocq-core9.0-stdlib-9.0.0.drv",
+      "hash": "sha256:e2d9ae86b057a96d79c26acfc95a2945561c9d3f0030fe9890ba0e9e1c4c7818",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2520,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1lsscc437jixgs74myv22phlc3kw0czy2jfggr39zarr6615na0c"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/90fa443xbknqmm99fcjiq5wd37g8miyj-coq9.0-mathcomp-ssreflect-2.4.0.drv",
+    "name": "coq9.0-mathcomp-ssreflect-2.4.0",
+    "output": "out",
+    "path": "/nix/store/sq4ng99s0j3czph9xm9a49vfxdlpl53v-coq9.0-mathcomp-ssreflect-2.4.0",
+    "drv_validpath": {
+      "id": 752,
+      "path": "/nix/store/90fa443xbknqmm99fcjiq5wd37g8miyj-coq9.0-mathcomp-ssreflect-2.4.0.drv",
+      "hash": "sha256:90114e3fe9811e7e3736dea773ac9b6298b55737c93d1ffced1545488dd6c326",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2992,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:0yzp35lxnj9xc3rgc32yg6h2yl94h6g65lx2s2j5sdcbd16ik70h"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/sq4ng99s0j3czph9xm9a49vfxdlpl53v-coq9.0-mathcomp-ssreflect-2.4.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/3fzp0yhf84a013kdgdb8z396s6yygwxb-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae.drv",
+    "name": "coq9.0-mathcomp2.4-word-3.5-git-86ed49ae",
+    "output": "out",
+    "path": "/nix/store/f0j45rkg327yrv5xdw0xa8r0abl1x52x-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae",
+    "drv_validpath": {
+      "id": 756,
+      "path": "/nix/store/3fzp0yhf84a013kdgdb8z396s6yygwxb-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae.drv",
+      "hash": "sha256:6944508dd618cba85973a773511502a36455b7e64325e52de0f5d2d073415d26",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3672,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:05b8xgxyjq0cqp2nbv6smmy2kys86759764b1rkbj6l3q5h9xrbn"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/f0j45rkg327yrv5xdw0xa8r0abl1x52x-coq9.0-mathcomp2.4-word-3.5-git-86ed49ae"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/57v55i784s4d94g1asrbpq8qvl379z6w-coq9.0-coq-ext-lib-0.13.1.drv",
+    "name": "coq9.0-coq-ext-lib-0.13.1",
+    "output": "out",
+    "path": "/nix/store/kdsvnwjp3iyfz2s7m8qaks6ksh7w1mbm-coq9.0-coq-ext-lib-0.13.1",
+    "drv_validpath": {
+      "id": 758,
+      "path": "/nix/store/57v55i784s4d94g1asrbpq8qvl379z6w-coq9.0-coq-ext-lib-0.13.1.drv",
+      "hash": "sha256:6174bdd17de88db2e43e2ee834e35ed73f75e2355b010762e163f2bd85d27896",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2392,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1hmka8vqmvymrwhxi1gfr78pk9n3wdq8qjfgiiz3hwwsq4y6a98w"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/kdsvnwjp3iyfz2s7m8qaks6ksh7w1mbm-coq9.0-coq-ext-lib-0.13.1"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/8v31lkzghdy483b31xw6nrg458b4y3zx-setupHook.sh.drv",
+    "name": "setupHook.sh",
+    "output": "out",
+    "path": "/nix/store/1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh",
+    "drv_validpath": {
+      "id": 778,
+      "path": "/nix/store/8v31lkzghdy483b31xw6nrg458b4y3zx-setupHook.sh.drv",
+      "hash": "sha256:f8fcaffe87380ebb05526cc4cc1aeb1e5f94f48fe47153c0c9c489f0450922d6",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2024,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:0d5fz0bc350hnskczn2nz8r6i4rfq04zp8s2n523qdql0ckgk8ym"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+    "name": "easycrypt-2026.09",
+    "output": "out",
+    "path": "/nix/store/6pd3q95qxhypqqrgaiqb6wwc9g0l2609-easycrypt-2026.09",
+    "drv_validpath": {
+      "id": 1922,
+      "path": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+      "hash": "sha256:cdbde6705d26be13f4abf7ce8bb3740af5932dda23150d67c5b15cef93cbf385",
+      "registrationTime": 1792075858,
+      "deriver": null,
+      "narSize": 4320,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:024cr6b5vbf6l3k2rrfl2qizgr5vj0gzwx5g037ml3s5qm3qasci"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/6pd3q95qxhypqqrgaiqb6wwc9g0l2609-easycrypt-2026.09"
+      }
+    ],
+    "registered": true,
+    "validpath": {
+      "id": 2335,
+      "path": "/nix/store/6pd3q95qxhypqqrgaiqb6wwc9g0l2609-easycrypt-2026.09",
+      "hash": "sha256:5da60afaf1c45459837decd6ce3675be732c45f2d750013a144e0ffac5f50f57",
+      "registrationTime": 1792078742,
+      "deriver": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+      "narSize": 57956152,
+      "ultimate": 1,
+      "sigs": null,
+      "ca": null
+    },
+    "references": [
+      "/nix/store/1d7pw8w4n3ls92bg629njr9afbc995nd-ocaml5.4.1-menhirLib-20260203",
+      "/nix/store/2qvvkpri6x7y6281ynp4hh7vhbzplzzm-ocaml-5.4.1",
+      "/nix/store/2ry78zzn3a59n1rgh7n5kizncn55c0f8-ocaml5.4.1-num-1.6",
+      "/nix/store/360yf75scgrr38h9p595dg5dhz037dlh-ocaml5.4.1-camlp-streams-5.0.1",
+      "/nix/store/4w037q8rkfxs2ig1yhq41g8ninqmhlac-gmp-with-cxx-6.3.0",
+      "/nix/store/6pd3q95qxhypqqrgaiqb6wwc9g0l2609-easycrypt-2026.09",
+      "/nix/store/76jq0mngg7m8zv5yjz1qgg0xspzi8x2w-python3-3.13.15",
+      "/nix/store/7vk7y82k774yrgjas6rknfzmjzncp5a9-pcre2-10.48",
+      "/nix/store/bjk38qs79irxsjl0557nckcn014qld31-gcc-15.3.0-lib",
+      "/nix/store/da9w73w81f7lrvvsw5k0szd96ssq9ww1-ocaml5.4.1-pcre2-8.0.4",
+      "/nix/store/mygp7vcv5nqjrv2wc1y4vcmgppkba65z-ocaml5.4.1-zarith-1.14",
+      "/nix/store/pbjg9k27s3v1wp5s8c6pb23s0m69yjwz-bash-5.3p9",
+      "/nix/store/qnhzsyh1lfphxmaljrncabx6fgmkn98v-python3.13-pyyaml-6.0.3",
+      "/nix/store/rdw68d5m5g912iscy9zlnxii53xis5cs-ocaml5.4.1-bitwuzla-cxx-0.8.2",
+      "/nix/store/rmf4c9cql1s0w3bhisk5lf1r44nfagnv-ocaml5.4.1-batteries-3.11.0",
+      "/nix/store/s7mnqvr1ikjkqf0li81rsy3khjm8sl49-zlib-1.3.2",
+      "/nix/store/shf3m6di7sgrl1c9pk3rdf0zlw9ml671-glibc-2.42-84",
+      "/nix/store/wk8pzfr4ny9adj2smv7cizmv5cjlbs5n-why3-1.8.2"
+    ],
+    "registration_utc": "2026-10-15T15:39:02+00:00"
+  },
+  {
+    "drv": "/nix/store/ggvw9v47w53p9c8xq9ijqc8ql4fg6gj7-ocaml4.14.4-camlidl-1.12.drv",
+    "name": "ocaml4.14.4-camlidl-1.12",
+    "output": "out",
+    "path": "/nix/store/cm942qr65k803vy00jym6k810xb5rzh2-ocaml4.14.4-camlidl-1.12",
+    "drv_validpath": {
+      "id": 780,
+      "path": "/nix/store/ggvw9v47w53p9c8xq9ijqc8ql4fg6gj7-ocaml4.14.4-camlidl-1.12.drv",
+      "hash": "sha256:ac82afe3444f0018a237cbbfad3f0912603d108e9b8eba8dd61f34ea43c94030",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3016,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:0rc1sizc8a51jwy0ki3kbw96x2r4za57sxhdh2hpk7zjh2qd2w72"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/cm942qr65k803vy00jym6k810xb5rzh2-ocaml4.14.4-camlidl-1.12"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/znry7fvjp9lgkzs81258hydcvxm74f4g-ocaml4.14.4-mlgmpidl-1.3.0.drv",
+    "name": "ocaml4.14.4-mlgmpidl-1.3.0",
+    "output": "out",
+    "path": "/nix/store/k858w21zwd3sa8nsp3wvknad73hi2zik-ocaml4.14.4-mlgmpidl-1.3.0",
+    "drv_validpath": {
+      "id": 784,
+      "path": "/nix/store/znry7fvjp9lgkzs81258hydcvxm74f4g-ocaml4.14.4-mlgmpidl-1.3.0.drv",
+      "hash": "sha256:3ee1900a764494009f0b60eb2a5a1d02ddedaa739866e5180f3b348fc1e0081e",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2792,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:1kcxfaz6w7cpdbpxiyaxnd5f1hgx280vni9ciw8jalij0nmyq8ji"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/k858w21zwd3sa8nsp3wvknad73hi2zik-ocaml4.14.4-mlgmpidl-1.3.0"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/nc9vda46ipnh1w6wz8fl6kjm7ifn1545-ocaml4.14.4-apron-0.9.15.drv",
+    "name": "ocaml4.14.4-apron-0.9.15",
+    "output": "dev",
+    "path": "/nix/store/80afbqa0gr8h9n71jl7j7prlg4wwifpg-ocaml4.14.4-apron-0.9.15-dev",
+    "drv_validpath": {
+      "id": 786,
+      "path": "/nix/store/nc9vda46ipnh1w6wz8fl6kjm7ifn1545-ocaml4.14.4-apron-0.9.15.drv",
+      "hash": "sha256:f0e94bb8604871579fd88a816bf52ee1bbd40e984204df6a13b2aa82657257e0",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3432,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:15h496mamb34qvynmvflc08aw7n4m4x4lp3fndiszfswblm3ank4"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "dev",
+        "path": "/nix/store/80afbqa0gr8h9n71jl7j7prlg4wwifpg-ocaml4.14.4-apron-0.9.15-dev"
+      },
+      {
+        "id": "out",
+        "path": "/nix/store/r5xa6cr20nsizra4h8hswbcan4i3r5cn-ocaml4.14.4-apron-0.9.15"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/nc9vda46ipnh1w6wz8fl6kjm7ifn1545-ocaml4.14.4-apron-0.9.15.drv",
+    "name": "ocaml4.14.4-apron-0.9.15",
+    "output": "out",
+    "path": "/nix/store/r5xa6cr20nsizra4h8hswbcan4i3r5cn-ocaml4.14.4-apron-0.9.15",
+    "drv_validpath": {
+      "id": 786,
+      "path": "/nix/store/nc9vda46ipnh1w6wz8fl6kjm7ifn1545-ocaml4.14.4-apron-0.9.15.drv",
+      "hash": "sha256:f0e94bb8604871579fd88a816bf52ee1bbd40e984204df6a13b2aa82657257e0",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 3432,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:15h496mamb34qvynmvflc08aw7n4m4x4lp3fndiszfswblm3ank4"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "dev",
+        "path": "/nix/store/80afbqa0gr8h9n71jl7j7prlg4wwifpg-ocaml4.14.4-apron-0.9.15-dev"
+      },
+      {
+        "id": "out",
+        "path": "/nix/store/r5xa6cr20nsizra4h8hswbcan4i3r5cn-ocaml4.14.4-apron-0.9.15"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/yyv2cf39abkqs7mzygvslyr8glyvq8rj-coq9.0-paco-4.2.3.drv",
+    "name": "coq9.0-paco-4.2.3",
+    "output": "out",
+    "path": "/nix/store/vl17mw9sz43gnc7836nzq0cmhaaww8bn-coq9.0-paco-4.2.3",
+    "drv_validpath": {
+      "id": 760,
+      "path": "/nix/store/yyv2cf39abkqs7mzygvslyr8glyvq8rj-coq9.0-paco-4.2.3.drv",
+      "hash": "sha256:505b6db602c136b1579b6f1e435d22c0f5d371e626916c2115fc52076807d05f",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2352,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:0jxk0fci0khi4xc3qk0zdpljrbf97m3r7d8hvklv439a1nypgngw"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/vl17mw9sz43gnc7836nzq0cmhaaww8bn-coq9.0-paco-4.2.3"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  },
+  {
+    "drv": "/nix/store/qxmngacfgm5r48na2mgv1qdv023pfmpw-coq9.0-InteractionTrees-5.2.1.drv",
+    "name": "coq9.0-InteractionTrees-5.2.1",
+    "output": "out",
+    "path": "/nix/store/9xkpcgw45njnh24vlrsb2y3i49bnqa5p-coq9.0-InteractionTrees-5.2.1",
+    "drv_validpath": {
+      "id": 762,
+      "path": "/nix/store/qxmngacfgm5r48na2mgv1qdv023pfmpw-coq9.0-InteractionTrees-5.2.1.drv",
+      "hash": "sha256:ebc63567c04e9a691abb63aba04b7a2c236b3c316d38d39784f330845447adf2",
+      "registrationTime": 1792075857,
+      "deriver": null,
+      "narSize": 2544,
+      "ultimate": null,
+      "sigs": null,
+      "ca": "text:sha256:0ddqmwk016ln72q67dga96mraxs2wbp8y9sbyb1sdj3l48mkbggq"
+    },
+    "derivation_output_mappings": [
+      {
+        "id": "out",
+        "path": "/nix/store/9xkpcgw45njnh24vlrsb2y3i49bnqa5p-coq9.0-InteractionTrees-5.2.1"
+      }
+    ],
+    "registered": false,
+    "validpath": null,
+    "references": [],
+    "registration_utc": null
+  }
+]

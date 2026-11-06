@@ -1,0 +1,2414 @@
+{
+  "wire_format": "AMIR_v3",
+  "portable_driver_source": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/compiler-upgrade-trial/direct_mir_driver_portable.rs",
+  "portable_driver_sha256": "aec4749f1adaf228cf85cfe90cae90d3cd2a3f02f8eef25da668684c48d89fda",
+  "portable_driver_adaptation_cost": {
+    "conditional_cfg_blocks": 5,
+    "conditional_loc": 36,
+    "api_differences_handled": [
+      "1.95 -> 1.96: #[derive(Eq)] helper method renamed from assert_receiver_is_total_eq to assert_fields_are_eq",
+      "1.97 -> 1.98: StatementKind::Retag(rk, place) (0x31) removed and folded into Rvalue::Use(op, WithRetag) (0x10/0x11)",
+      "1.97 -> 1.98: Instance::resolve_drop_in_place renamed to Instance::resolve_drop_glue"
+    ]
+  },
+  "charon_0_1_174_to_0_1_210_comparative_study": {
+    "charon_binaries": [
+      {
+        "version": "0.1.174",
+        "pinned_toolchain": "nightly_1_95_2026_02_06 (efc9e1b50 2026-02-06)",
+        "charon_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon",
+        "charon_sha256": "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836",
+        "charon_driver_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver",
+        "charon_driver_sha256": "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0",
+        "upstream_commit": "5096e36339dc62d885fb3b7bf6e1bd98000514e0"
+      },
+      {
+        "version": "0.1.210",
+        "pinned_toolchain": "nightly_1_98_2026_05_30 (f8a08b688 2026-05-30)",
+        "charon_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "charon_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+        "charon_driver_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver",
+        "charon_driver_sha256": "8831ba28df3e3ef594c80adc90fcd9bb5993e23107e739145383159356722363",
+        "upstream_commit": "1e08453924610c19d74c245a7308f17c1008e2db"
+      }
+    ],
+    "shared_corpus_extractions": [
+      {
+        "charon_version": "0.1.174",
+        "config_id": "default_ullbc",
+        "subject": "cleanup_subject",
+        "exit_code": 0,
+        "elapsed_ms": 111,
+        "out_file_sha256": "d08ee39f951078f6efd325bfa99c9fcc69ad5496cc26b3936745b4dd72faa9fc",
+        "fun_decl_count": 16,
+        "transparent_fun_count": 7,
+        "opaque_fun_count": 9,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 8,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "default_ullbc",
+        "subject": "place_mention_probe",
+        "exit_code": 0,
+        "elapsed_ms": 70,
+        "out_file_sha256": "ad8453db9dd218c09fd8d637323f76307d694b3c3fe83559841754b8b83f0ea0",
+        "fun_decl_count": 4,
+        "transparent_fun_count": 4,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 2
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "default_ullbc",
+        "subject": "zerocopy_layout_holdout",
+        "exit_code": 0,
+        "elapsed_ms": 175,
+        "out_file_sha256": "3204c617d20f1efe3b7d71d00c32401b9e92fd265159b80445b4dc9af9d36a34",
+        "fun_decl_count": 34,
+        "transparent_fun_count": 12,
+        "opaque_fun_count": 16,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 22,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "default_ullbc",
+        "subject": "loop_prefix_probe",
+        "exit_code": 0,
+        "elapsed_ms": 71,
+        "out_file_sha256": "15275bb7a2bfa0d37c9a4ba41f0c93bdaf536fb007a4c9040bd74b67f5008be5",
+        "fun_decl_count": 4,
+        "transparent_fun_count": 2,
+        "opaque_fun_count": 2,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 2,
+        "place_mention_block_count": 1
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "default_ullbc",
+        "subject": "dep_layout_core",
+        "exit_code": 2,
+        "elapsed_ms": 74,
+        "out_file_sha256": null,
+        "fun_decl_count": 0,
+        "transparent_fun_count": 0,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "cleanup_subject",
+        "exit_code": 0,
+        "elapsed_ms": 113,
+        "out_file_sha256": "aaf4b9886ee7f2de88d6a4cb7f7fe872d09b681ac5d814b8583d6ab672bb95c3",
+        "fun_decl_count": 16,
+        "transparent_fun_count": 11,
+        "opaque_fun_count": 5,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": true,
+        "unwind_resume_block_count": 12,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "place_mention_probe",
+        "exit_code": 0,
+        "elapsed_ms": 65,
+        "out_file_sha256": "03d05a87258f1a9181d62c77964ffad1cd9d927f0c6f09ed995f0dc949af83ed",
+        "fun_decl_count": 4,
+        "transparent_fun_count": 4,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 2
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "zerocopy_layout_holdout",
+        "exit_code": 0,
+        "elapsed_ms": 192,
+        "out_file_sha256": "50d9773ef2aa17aae1b339483930d32bd6fea99a389e2309e3a944ff3672a851",
+        "fun_decl_count": 38,
+        "transparent_fun_count": 14,
+        "opaque_fun_count": 18,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 24,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "loop_prefix_probe",
+        "exit_code": 0,
+        "elapsed_ms": 71,
+        "out_file_sha256": "4454e7599ae0a43213c33543bcf11c62823f7d9098d917872f5e565f0dd220fe",
+        "fun_decl_count": 4,
+        "transparent_fun_count": 2,
+        "opaque_fun_count": 2,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 2,
+        "place_mention_block_count": 1
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "dep_layout_core",
+        "exit_code": 2,
+        "elapsed_ms": 70,
+        "out_file_sha256": null,
+        "fun_decl_count": 0,
+        "transparent_fun_count": 0,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "cleanup_subject",
+        "exit_code": 0,
+        "elapsed_ms": 114,
+        "out_file_sha256": "25b03ea7940807e95086a7ecb2a641dbcfe386dded3e0602f3d17f9dd33a756f",
+        "fun_decl_count": 16,
+        "transparent_fun_count": 11,
+        "opaque_fun_count": 5,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": true,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "place_mention_probe",
+        "exit_code": 0,
+        "elapsed_ms": 68,
+        "out_file_sha256": "366c322c04d49ba1edc3e7ca9311f269b4a26ce5c402a6c71b90e9e10c2a0181",
+        "fun_decl_count": 4,
+        "transparent_fun_count": 4,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "zerocopy_layout_holdout",
+        "exit_code": 0,
+        "elapsed_ms": 196,
+        "out_file_sha256": "0cd4c6695e8bc2f7b48c533203eec156cdef34e739bc6e610c5178fc5ff7f8c0",
+        "fun_decl_count": 38,
+        "transparent_fun_count": 14,
+        "opaque_fun_count": 18,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "loop_prefix_probe",
+        "exit_code": 0,
+        "elapsed_ms": 71,
+        "out_file_sha256": "b87f3b7bb9a3310b1debed55f88f25d14f8a0b439a25e987010b9a0c1de21e20",
+        "fun_decl_count": 4,
+        "transparent_fun_count": 2,
+        "opaque_fun_count": 2,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.174",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "dep_layout_core",
+        "exit_code": 2,
+        "elapsed_ms": 70,
+        "out_file_sha256": null,
+        "fun_decl_count": 0,
+        "transparent_fun_count": 0,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "default_ullbc",
+        "subject": "cleanup_subject",
+        "exit_code": 0,
+        "elapsed_ms": 89,
+        "out_file_sha256": "b61fa29a223b42626ee80d0b7b31c6806748f322ddfaeb5b0cb552fcd84b1724",
+        "fun_decl_count": 17,
+        "transparent_fun_count": 6,
+        "opaque_fun_count": 9,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 8,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "default_ullbc",
+        "subject": "place_mention_probe",
+        "exit_code": 0,
+        "elapsed_ms": 76,
+        "out_file_sha256": "15c484ff5635e2be84cfa3eb3cba4c780d2b8d4061f4eea135540b4fe776a640",
+        "fun_decl_count": 3,
+        "transparent_fun_count": 3,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 2
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "default_ullbc",
+        "subject": "zerocopy_layout_holdout",
+        "exit_code": 0,
+        "elapsed_ms": 107,
+        "out_file_sha256": "52b3f38d4195bbe800f1c61899a45209728b9aef5e71986925de36dafb0c539c",
+        "fun_decl_count": 36,
+        "transparent_fun_count": 11,
+        "opaque_fun_count": 16,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 22,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "default_ullbc",
+        "subject": "loop_prefix_probe",
+        "exit_code": 0,
+        "elapsed_ms": 78,
+        "out_file_sha256": "bca5e5efea6a8d14cd6ca9e9b7b467438ceb08dc66921ab583a0a50e4bd62231",
+        "fun_decl_count": 3,
+        "transparent_fun_count": 1,
+        "opaque_fun_count": 2,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 2,
+        "place_mention_block_count": 1
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "default_ullbc",
+        "subject": "dep_layout_core",
+        "exit_code": 2,
+        "elapsed_ms": 83,
+        "out_file_sha256": null,
+        "fun_decl_count": 0,
+        "transparent_fun_count": 0,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "cleanup_subject",
+        "exit_code": 0,
+        "elapsed_ms": 86,
+        "out_file_sha256": "f1339197d9e8f1c868406be0056067d6572715b8bfb50bcea6c5a239d1420d35",
+        "fun_decl_count": 17,
+        "transparent_fun_count": 10,
+        "opaque_fun_count": 5,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": true,
+        "unwind_resume_block_count": 12,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "place_mention_probe",
+        "exit_code": 0,
+        "elapsed_ms": 75,
+        "out_file_sha256": "40430e53e2e78ab3f63cff3e7dbf374dd5269afa40be031e79a2bae3ce05b2cc",
+        "fun_decl_count": 3,
+        "transparent_fun_count": 3,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 2
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "zerocopy_layout_holdout",
+        "exit_code": 0,
+        "elapsed_ms": 109,
+        "out_file_sha256": "8cc8759e9e49e516e0188a722e28e9eac71d48bc2ae5c29617bdce4765943be3",
+        "fun_decl_count": 40,
+        "transparent_fun_count": 13,
+        "opaque_fun_count": 18,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 24,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "loop_prefix_probe",
+        "exit_code": 0,
+        "elapsed_ms": 73,
+        "out_file_sha256": "078d2449f66fb907d2db0b6e2d97838fae8184c238b13dd113e1641a63d07dff",
+        "fun_decl_count": 3,
+        "transparent_fun_count": 1,
+        "opaque_fun_count": 2,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 2,
+        "place_mention_block_count": 1
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_preserve_ub_ullbc",
+        "subject": "dep_layout_core",
+        "exit_code": 2,
+        "elapsed_ms": 81,
+        "out_file_sha256": null,
+        "fun_decl_count": 0,
+        "transparent_fun_count": 0,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "cleanup_subject",
+        "exit_code": 0,
+        "elapsed_ms": 86,
+        "out_file_sha256": "8dc17d455901d70048ccc95e5478541a2a15de4b8e6a6b4e2bea5bbf4a07d2c3",
+        "fun_decl_count": 17,
+        "transparent_fun_count": 10,
+        "opaque_fun_count": 5,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": true,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "place_mention_probe",
+        "exit_code": 0,
+        "elapsed_ms": 69,
+        "out_file_sha256": "4506fb54fe58e26fc9a94c4b5d68a28c9be5922e08b7328d637857760e0e4796",
+        "fun_decl_count": 3,
+        "transparent_fun_count": 3,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "zerocopy_layout_holdout",
+        "exit_code": 0,
+        "elapsed_ms": 114,
+        "out_file_sha256": "607c55e05b668e23b6f77c42109ab2273128f44e8dba2ec8d7dff8cb7f6517bb",
+        "fun_decl_count": 40,
+        "transparent_fun_count": 13,
+        "opaque_fun_count": 18,
+        "has_drop_in_place_bodies": true,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "loop_prefix_probe",
+        "exit_code": 0,
+        "elapsed_ms": 74,
+        "out_file_sha256": "25a69465082a737d4a774e61940110eeb3db470bd298bfb330f108b2e46e8c3e",
+        "fun_decl_count": 3,
+        "transparent_fun_count": 1,
+        "opaque_fun_count": 2,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      },
+      {
+        "charon_version": "0.1.210",
+        "config_id": "precise_drops_structured_llbc",
+        "subject": "dep_layout_core",
+        "exit_code": 2,
+        "elapsed_ms": 78,
+        "out_file_sha256": null,
+        "fun_decl_count": 0,
+        "transparent_fun_count": 0,
+        "opaque_fun_count": 0,
+        "has_drop_in_place_bodies": false,
+        "has_core_mem_drop_body": false,
+        "unwind_resume_block_count": 0,
+        "place_mention_block_count": 0
+      }
+    ],
+    "upstream_rustc_bump_commits": [
+      {
+        "commit": "5096e3636113c1e4da8a27c8d90b88dbadf87150",
+        "date": "2026-02-23 14:28:43 +0000",
+        "subject": "Bump rustc to 2026-02-07",
+        "shortstat": "17 files changed, 1104 insertions(+), 581 deletions(-)",
+        "total_files_changed": 17,
+        "non_ui_rust_source_files_changed": 5,
+        "rust_source_files": [
+          "charon/hax-frontend/src/constant_utils/uneval.rs",
+          "charon/hax-frontend/src/types/mir.rs",
+          "charon/hax-frontend/src/types/ty.rs",
+          "charon/src/bin/charon-driver/translate/get_mir.rs",
+          "charon/src/bin/charon-driver/translate/translate_generics.rs"
+        ]
+      },
+      {
+        "commit": "ce70ecf7ae10942d843118caa42ca8c36ea85369",
+        "date": "2026-05-28 01:40:54 +0200",
+        "subject": "Bump rustc to 2026-02-22",
+        "shortstat": "34 files changed, 1862 insertions(+), 1565 deletions(-)",
+        "total_files_changed": 34,
+        "non_ui_rust_source_files_changed": 10,
+        "rust_source_files": [
+          "charon/src/ast/expressions.rs",
+          "charon/src/ast/hash_cons.rs",
+          "charon/src/bin/charon-driver/main.rs",
+          "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+          "charon/src/bin/generate-ml/main.rs",
+          "charon/src/lib.rs",
+          "charon/src/pretty/fmt_with_ctx.rs",
+          "charon/src/transform/mod.rs",
+          "charon/src/transform/resugar/reconstruct_boxes.rs",
+          "charon/src/transform/simplify_output/index_to_function_calls.rs"
+        ]
+      },
+      {
+        "commit": "3a01e03640569b0681db78cea3301cbf902d5883",
+        "date": "2026-05-31 18:29:22 +0100",
+        "subject": "Bump rustc to `nightly-2026-04-18`",
+        "shortstat": "37 files changed, 2152 insertions(+), 2331 deletions(-)",
+        "total_files_changed": 37,
+        "non_ui_rust_source_files_changed": 18,
+        "rust_source_files": [
+          "charon/rustc_trait_elaboration/src/elaboration.rs",
+          "charon/rustc_trait_elaboration/src/predicates.rs",
+          "charon/src/bin/charon-driver/hax/constant_utils/uneval.rs",
+          "charon/src/bin/charon-driver/hax/rustc_utils.rs",
+          "charon/src/bin/charon-driver/hax/types/def_id.rs",
+          "charon/src/bin/charon-driver/hax/types/mod.rs",
+          "charon/src/bin/charon-driver/hax/types/new/full_def.rs",
+          "charon/src/bin/charon-driver/hax/types/new/item_ref.rs",
+          "charon/src/bin/charon-driver/hax/types/ty.rs",
+          "charon/src/bin/charon-driver/main.rs",
+          "charon/src/bin/charon-driver/translate/get_mir.rs",
+          "charon/src/bin/charon-driver/translate/resolve_path.rs",
+          "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+          "charon/src/bin/charon-driver/translate/translate_crate.rs",
+          "charon/src/bin/charon-driver/translate/translate_predicates.rs",
+          "charon/src/transform/typecheck_and_unify.rs",
+          "charon/tests/crate_data.rs",
+          "charon/tests/layout.rs"
+        ]
+      },
+      {
+        "commit": "3e16db29b4058dbf1f906591e9c7b89164b081bf",
+        "date": "2026-05-31 21:25:18 +0100",
+        "subject": "Bump rustc to `nightly-2026-05-31`",
+        "shortstat": "55 files changed, 832 insertions(+), 1269 deletions(-)",
+        "total_files_changed": 55,
+        "non_ui_rust_source_files_changed": 17,
+        "rust_source_files": [
+          "charon/rustc_trait_elaboration/src/ctx.rs",
+          "charon/rustc_trait_elaboration/src/elaboration.rs",
+          "charon/rustc_trait_elaboration/src/item_ref.rs",
+          "charon/rustc_trait_elaboration/src/predicates.rs",
+          "charon/rustc_trait_elaboration/src/utils.rs",
+          "charon/src/bin/charon-driver/driver.rs",
+          "charon/src/bin/charon-driver/hax/constant_utils/uneval.rs",
+          "charon/src/bin/charon-driver/hax/rustc_utils.rs",
+          "charon/src/bin/charon-driver/hax/traits.rs",
+          "charon/src/bin/charon-driver/hax/types/def_id.rs",
+          "charon/src/bin/charon-driver/hax/types/new/item_ref.rs",
+          "charon/src/bin/charon-driver/hax/types/new/synthetic_items.rs",
+          "charon/src/bin/charon-driver/hax/types/ty.rs",
+          "charon/src/bin/charon-driver/translate/translate_bodies.rs",
+          "charon/src/bin/charon-driver/translate/translate_predicates.rs",
+          "charon/src/bin/charon-driver/translate/translate_types.rs",
+          "charon/src/pretty/formatter.rs"
+        ]
+      },
+      {
+        "commit": "1e0845396e80ea41c2990bfa0827f009f0028402",
+        "date": "2026-06-02 13:51:10 +0200",
+        "subject": "Bump rustc to translate poly drop glue",
+        "shortstat": "51 files changed, 1007 insertions(+), 278 deletions(-)",
+        "total_files_changed": 51,
+        "non_ui_rust_source_files_changed": 5,
+        "rust_source_files": [
+          "charon/src/bin/charon-driver/hax/rustc_utils.rs",
+          "charon/src/bin/charon-driver/hax/types/new/full_def.rs",
+          "charon/src/bin/charon-driver/main.rs",
+          "charon/src/bin/charon-driver/translate/translate_drops.rs",
+          "charon/src/options.rs"
+        ]
+      }
+    ],
+    "charon_driver_diff_stat_0_1_174_to_0_1_210": [
+      "charon/src/bin/charon-driver/driver.rs             |   75 +-",
+      " charon/src/bin/charon-driver/hax/constant_utils.rs |  110 ++",
+      " .../bin/charon-driver/hax/constant_utils/uneval.rs |  409 +++++",
+      " charon/src/bin/charon-driver/hax/index_vec.rs      |   64 +",
+      " charon/src/bin/charon-driver/hax/mod.rs            |   32 +",
+      " charon/src/bin/charon-driver/hax/prelude.rs        |   19 +",
+      " charon/src/bin/charon-driver/hax/rustc_utils.rs    |  323 ++++",
+      " charon/src/bin/charon-driver/hax/sinto.rs          |  113 ++",
+      " charon/src/bin/charon-driver/hax/state.rs          |  282 ++++",
+      " charon/src/bin/charon-driver/hax/traits.rs         |  256 +++",
+      " charon/src/bin/charon-driver/hax/types/def_id.rs   |  690 ++++++++",
+      " charon/src/bin/charon-driver/hax/types/mir.rs      |  190 +++",
+      " charon/src/bin/charon-driver/hax/types/mod.rs      |   34 +",
+      " .../bin/charon-driver/hax/types/new/full_def.rs    | 1341 ++++++++++++++++",
+      " .../bin/charon-driver/hax/types/new/item_ref.rs    |  275 ++++",
+      " charon/src/bin/charon-driver/hax/types/new/mod.rs  |    9 +",
+      " .../charon-driver/hax/types/new/synthetic_items.rs |  197 +++",
+      " charon/src/bin/charon-driver/hax/types/ty.rs       | 1684 ++++++++++++++++++++",
+      " .../bin/charon-driver/hax/utils/error_macros.rs    |  143 ++",
+      " charon/src/bin/charon-driver/hax/utils/mod.rs      |    5 +",
+      " charon/src/bin/charon-driver/hax/utils/type_map.rs |   61 +",
+      " charon/src/bin/charon-driver/main.rs               |  126 +-",
+      " charon/src/bin/charon-driver/translate/get_mir.rs  |    7 +-",
+      " .../bin/charon-driver/translate/resolve_path.rs    |   20 +-",
+      " .../charon-driver/translate/translate_bodies.rs    |  619 +++++--",
+      " .../charon-driver/translate/translate_closures.rs  |   53 +-",
+      " .../charon-driver/translate/translate_constants.rs |   18 +-",
+      " .../bin/charon-driver/translate/translate_crate.rs |  456 ++++--",
+      " .../bin/charon-driver/translate/translate_ctx.rs   |   60 +-",
+      " .../bin/charon-driver/translate/translate_drops.rs |  169 +-",
+      " .../charon-driver/translate/translate_functions.rs |   69 +-",
+      " .../charon-driver/translate/translate_generics.rs  |  333 ++--",
+      " .../bin/charon-driver/translate/translate_items.rs |  849 +++++-----",
+      " .../bin/charon-driver/translate/translate_meta.rs  |  137 +-",
+      " .../translate/translate_predicates.rs              |  374 +++--",
+      " .../translate/translate_trait_objects.rs           |  859 ++++++----",
+      " .../bin/charon-driver/translate/translate_types.rs |  392 +++--",
+      " 37 files changed, 9026 insertions(+), 1827 deletions(-)"
+    ],
+    "offline_source_rebuild_probe": {
+      "checkout_commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+      "command": "cargo check --offline --manifest-path charon/Cargo.toml (with LD_LIBRARY_PATH set for 1.98.0-nightly)",
+      "exit_code": 101,
+      "elapsed_ms": 176,
+      "stderr_tail_lines": [
+        "error: failed to download `annotate-snippets v0.12.12`",
+        "Caused by:",
+        "attempting to make an HTTP request, but --offline was specified"
+      ],
+      "observed_status": "offline_cargo_check_failed_see_stderr"
+    }
+  },
+  "toolchain_trials": [
+    {
+      "toolchain_id": "nightly_1_95_2026_02_06",
+      "version": "1.95.0-nightly (efc9e1b50 2026-02-06)",
+      "rustc_sha256": "695da1df6ac1e5c463770020c78b218680c1588bfe3c00eff7a3c251f274a0b2",
+      "mir_use_arity": 1,
+      "has_retag_stmt": true,
+      "drop_glue_api": "Instance::resolve_drop_in_place",
+      "derive_eq_helper_name": "assert_receiver_is_total_eq",
+      "driver_compile_exit_code": 0,
+      "driver_compile_elapsed_ms": 2049,
+      "driver_compile_max_rss_bytes": 534597632,
+      "driver_binary_sha256": "ae24ce62154a49148d8dd5750391dc5a3ecfb5d630214fa0606208ebd8717b85",
+      "prebuilt_charon_0_1_174_probe": {
+        "exit_code": 0,
+        "compatible_without_rebuild": true,
+        "stderr_summary": ""
+      },
+      "prebuilt_charon_0_1_210_probe": {
+        "exit_code": 127,
+        "compatible_without_rebuild": false,
+        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
+      },
+      "subject_runs": [
+        {
+          "subject": "cleanup_subject",
+          "exit_code": 0,
+          "elapsed_ms": 30,
+          "max_rss_bytes": 101830656,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "7ba385a103e0cb8926d50953fe27c0bbf25bda972b20ebdff5190d586d2e092c",
+          "out_bodies_sha256": "105d7a0763a185364c0ad1452cb578d9dac0d16aec0b1e400b5fbafcbc75abe6",
+          "out_amir_sha256": "dd7bbee4da6f7ae153e04644f97fd053a6e86fdddd1bc4fc75b67eef7e101738",
+          "out_amir_size_bytes": 1067,
+          "amir_v3_fp16": [
+            28,
+            93
+          ],
+          "amir_v3_body_count": 9,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "partial_init_0_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_0_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_reinit_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    107
+                  ]
+                ],
+                "log1": [
+                  2,
+                  163
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  3,
+                  2
+                ]
+              },
+              "partial_reinit_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  10
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  2
+                ]
+              }
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "place_mention_probe",
+          "exit_code": 0,
+          "elapsed_ms": 17,
+          "max_rss_bytes": 79077376,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "072f8868b5b6ff8aa93bc01ba57c33c85a989126d22f938ac558fc257806a200",
+          "out_bodies_sha256": "48dd0caf17092fb10906f5e8f678174f8b6e0c5155a897132677bdae6147b833",
+          "out_amir_sha256": "aeeca5ab0e10de103a985e9dcb1a60ef6fcdd2b5398eafb9f9688ddceed51ccb",
+          "out_amir_size_bytes": 194,
+          "amir_v3_fp16": [
+            211,
+            235
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "ub_boundary_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "ub_boundary_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "match_wildcard_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "match_wildcard_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "assign_underscore_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "assign_underscore_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "zerocopy_layout_holdout",
+          "exit_code": 0,
+          "elapsed_ms": 34,
+          "max_rss_bytes": 104484864,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "8b963ea5be4a446620d52c333b72ce097d97cbe1adf58de56e01d6ca6dc7e45d",
+          "out_bodies_sha256": "96ef09dfa3f366ac66efee6abeaaf3be328c3cfcc766737099c066360432bc7e",
+          "out_amir_sha256": "d8fe8e96486745b8cda79af744d5c9cbcc571628a6fbc57689c427b28d27de2e",
+          "out_amir_size_bytes": 2154,
+          "amir_v3_fp16": [
+            210,
+            34
+          ],
+          "amir_v3_body_count": 10,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "align_to_6_0": [
+                "Err",
+                "SizeError"
+              ],
+              "align_to_8_4": [
+                "Ok",
+                8
+              ],
+              "align_to_6_4": [
+                "Ok",
+                8
+              ],
+              "align_to_13_4": [
+                "Ok",
+                16
+              ],
+              "align_to_usize_max_minus_1_4": [
+                "Err",
+                "SizeError"
+              ],
+              "extend_valid_slice": [
+                "Ok",
+                [
+                  4,
+                  8,
+                  true
+                ],
+                8
+              ],
+              "extend_valid_sized": [
+                "Ok",
+                [
+                  8,
+                  18,
+                  false
+                ],
+                8
+              ],
+              "extend_err_already_slice": [
+                "Err",
+                "SizeError"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "loop_prefix_probe",
+          "exit_code": 0,
+          "elapsed_ms": 24,
+          "max_rss_bytes": 95842304,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "1e1c9773133ee9a784eb1e4abd6f20618bbda64f3e4410d67fcebcffbe70a1cc",
+          "out_bodies_sha256": "56260e92d47bce0194217a717e90b845cb08b8c4e6133f76f978503a65387152",
+          "out_amir_sha256": "7f04c69386d23b2da04692c55ab88e66e8aa2a8355327c82674e1d317133c762",
+          "out_amir_size_bytes": 249,
+          "amir_v3_fp16": [
+            205,
+            88
+          ],
+          "amir_v3_body_count": 1,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "bad_prefix_invalid_ptr": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "terminating_target8_step4": [
+                "returned",
+                [
+                  "scalar",
+                  2
+                ]
+              ],
+              "unbounded_step23_status": "running",
+              "unbounded_step23_bb": 4
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "dep_layout_core",
+          "exit_code": 0,
+          "elapsed_ms": 26,
+          "max_rss_bytes": 99753984,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "afadd9d20f0ccb433bfb4c7741efc43d05de7258a950a0a91eb941764ff6b4f0",
+          "out_bodies_sha256": "82153f513b2e94c8d76612b6aef75113af98426f886c927adcb12a41a86bc881",
+          "out_amir_sha256": "124f3596087c1c03a913143dc0f4105280f153ca392feedc56244b404e276fb8",
+          "out_amir_size_bytes": 416,
+          "amir_v3_fp16": [
+            67,
+            255
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": false,
+            "reason": "missing_sym_55"
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "dep_inline_align_10": [
+                "returned",
+                [
+                  "scalar",
+                  14
+                ]
+              ],
+              "dep_inline_align_24": [
+                "returned",
+                [
+                  "scalar",
+                  28
+                ]
+              ]
+            },
+            "mismatches": {}
+          }
+        }
+      ]
+    },
+    {
+      "toolchain_id": "nightly_1_96_2026_04_10",
+      "version": "1.96.0-nightly (02c7f9bec 2026-04-10)",
+      "rustc_sha256": "246056779cdc44dff63aa9a0c249bf5c3e1dc90262e27f7bed12f8d1966eeb8f",
+      "mir_use_arity": 1,
+      "has_retag_stmt": true,
+      "drop_glue_api": "Instance::resolve_drop_in_place",
+      "derive_eq_helper_name": "assert_fields_are_eq",
+      "driver_compile_exit_code": 0,
+      "driver_compile_elapsed_ms": 2109,
+      "driver_compile_max_rss_bytes": 529379328,
+      "driver_binary_sha256": "c309b2926e56651bb59b36ff0f068d610c6aef41da318c2ec31a897c150d8620",
+      "prebuilt_charon_0_1_174_probe": {
+        "exit_code": 127,
+        "compatible_without_rebuild": false,
+        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
+      },
+      "prebuilt_charon_0_1_210_probe": {
+        "exit_code": 127,
+        "compatible_without_rebuild": false,
+        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
+      },
+      "subject_runs": [
+        {
+          "subject": "cleanup_subject",
+          "exit_code": 0,
+          "elapsed_ms": 31,
+          "max_rss_bytes": 89333760,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "f9a0a1b483ff52ee10118e6aac80d7bd82c67dd924106e025da6e7f31f15b609",
+          "out_bodies_sha256": "57adfde96bffe82cc15d67e28450481383044bbc6cf29e04d91a743e36f5dfba",
+          "out_amir_sha256": "dd7bbee4da6f7ae153e04644f97fd053a6e86fdddd1bc4fc75b67eef7e101738",
+          "out_amir_size_bytes": 1067,
+          "amir_v3_fp16": [
+            28,
+            93
+          ],
+          "amir_v3_body_count": 9,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "partial_init_0_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_0_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_reinit_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    107
+                  ]
+                ],
+                "log1": [
+                  2,
+                  163
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  3,
+                  2
+                ]
+              },
+              "partial_reinit_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  10
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  2
+                ]
+              }
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "place_mention_probe",
+          "exit_code": 0,
+          "elapsed_ms": 21,
+          "max_rss_bytes": 65400832,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "15a5c2598d4286214e7454cce011a9c5b660e4b0dfdeb0e5305f44920f91a4c9",
+          "out_bodies_sha256": "48dd0caf17092fb10906f5e8f678174f8b6e0c5155a897132677bdae6147b833",
+          "out_amir_sha256": "aeeca5ab0e10de103a985e9dcb1a60ef6fcdd2b5398eafb9f9688ddceed51ccb",
+          "out_amir_size_bytes": 194,
+          "amir_v3_fp16": [
+            211,
+            235
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "ub_boundary_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "ub_boundary_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "match_wildcard_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "match_wildcard_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "assign_underscore_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "assign_underscore_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "zerocopy_layout_holdout",
+          "exit_code": 0,
+          "elapsed_ms": 37,
+          "max_rss_bytes": 94748672,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "60a4ea9e01993ebf88ef54c3cc7e87db45657b035de8d323a444bbe38e8ee673",
+          "out_bodies_sha256": "4c7559d7faab7641c330ff8a4debf4c7ad50aba485df6be06b057eee387e4b13",
+          "out_amir_sha256": "d8fe8e96486745b8cda79af744d5c9cbcc571628a6fbc57689c427b28d27de2e",
+          "out_amir_size_bytes": 2154,
+          "amir_v3_fp16": [
+            210,
+            34
+          ],
+          "amir_v3_body_count": 10,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "align_to_6_0": [
+                "Err",
+                "SizeError"
+              ],
+              "align_to_8_4": [
+                "Ok",
+                8
+              ],
+              "align_to_6_4": [
+                "Ok",
+                8
+              ],
+              "align_to_13_4": [
+                "Ok",
+                16
+              ],
+              "align_to_usize_max_minus_1_4": [
+                "Err",
+                "SizeError"
+              ],
+              "extend_valid_slice": [
+                "Ok",
+                [
+                  4,
+                  8,
+                  true
+                ],
+                8
+              ],
+              "extend_valid_sized": [
+                "Ok",
+                [
+                  8,
+                  18,
+                  false
+                ],
+                8
+              ],
+              "extend_err_already_slice": [
+                "Err",
+                "SizeError"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "loop_prefix_probe",
+          "exit_code": 0,
+          "elapsed_ms": 25,
+          "max_rss_bytes": 84336640,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "3ddda1a4f9da09a925059fc28357991f69a558a81b2ad0eeec71c42ffc194bce",
+          "out_bodies_sha256": "56260e92d47bce0194217a717e90b845cb08b8c4e6133f76f978503a65387152",
+          "out_amir_sha256": "7f04c69386d23b2da04692c55ab88e66e8aa2a8355327c82674e1d317133c762",
+          "out_amir_size_bytes": 249,
+          "amir_v3_fp16": [
+            205,
+            88
+          ],
+          "amir_v3_body_count": 1,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "bad_prefix_invalid_ptr": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "terminating_target8_step4": [
+                "returned",
+                [
+                  "scalar",
+                  2
+                ]
+              ],
+              "unbounded_step23_status": "running",
+              "unbounded_step23_bb": 4
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "dep_layout_core",
+          "exit_code": 0,
+          "elapsed_ms": 27,
+          "max_rss_bytes": 88190976,
+          "rusage_children_ru_maxrss_bytes": 534597632,
+          "rusage_before_kb": 522068,
+          "rusage_after_kb": 522068,
+          "out_json_sha256": "4c445bc490ecea6795fe5c5ddbb4436a709231e0faaae3946b4dbf6fac495c70",
+          "out_bodies_sha256": "fbb6bdf4085ae10bc0f0daeaa31d7c08ce7c98649de8cc685e6578dd10f8277a",
+          "out_amir_sha256": "124f3596087c1c03a913143dc0f4105280f153ca392feedc56244b404e276fb8",
+          "out_amir_size_bytes": 416,
+          "amir_v3_fp16": [
+            67,
+            255
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": false,
+            "reason": "missing_sym_55"
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "dep_inline_align_10": [
+                "returned",
+                [
+                  "scalar",
+                  14
+                ]
+              ],
+              "dep_inline_align_24": [
+                "returned",
+                [
+                  "scalar",
+                  28
+                ]
+              ]
+            },
+            "mismatches": {}
+          }
+        }
+      ]
+    },
+    {
+      "toolchain_id": "nightly_1_97_2026_04_11",
+      "version": "1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+      "rustc_sha256": "d016bff4364bfd554a6d94aa269f3e5e6a9b65e1bd461a3567e7b26299626eb8",
+      "mir_use_arity": 1,
+      "has_retag_stmt": true,
+      "drop_glue_api": "Instance::resolve_drop_in_place",
+      "derive_eq_helper_name": "assert_fields_are_eq",
+      "driver_compile_exit_code": 0,
+      "driver_compile_elapsed_ms": 2107,
+      "driver_compile_max_rss_bytes": 543203328,
+      "driver_binary_sha256": "f82c3d85419787e89019ce1dec0cad96b66f14b5da99558f705f07c4b9e5915b",
+      "prebuilt_charon_0_1_174_probe": {
+        "exit_code": 127,
+        "compatible_without_rebuild": false,
+        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
+      },
+      "prebuilt_charon_0_1_210_probe": {
+        "exit_code": 127,
+        "compatible_without_rebuild": false,
+        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
+      },
+      "subject_runs": [
+        {
+          "subject": "cleanup_subject",
+          "exit_code": 0,
+          "elapsed_ms": 31,
+          "max_rss_bytes": 102674432,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "8d429fbc3965c00a28f8c714dcd0d32a7ab0cfc892d5cb5972fb695a5d72f3e8",
+          "out_bodies_sha256": "a37f85845ce7994c882a2db4c1817c7c7786059f2313286e9a5a3941501c7500",
+          "out_amir_sha256": "dd7bbee4da6f7ae153e04644f97fd053a6e86fdddd1bc4fc75b67eef7e101738",
+          "out_amir_size_bytes": 1067,
+          "amir_v3_fp16": [
+            28,
+            93
+          ],
+          "amir_v3_body_count": 9,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "partial_init_0_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_0_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_reinit_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    107
+                  ]
+                ],
+                "log1": [
+                  2,
+                  163
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  3,
+                  2
+                ]
+              },
+              "partial_reinit_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  10
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  2
+                ]
+              }
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "place_mention_probe",
+          "exit_code": 0,
+          "elapsed_ms": 19,
+          "max_rss_bytes": 79724544,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "73f0073f73d31ff6460c1b447731ff3edb9b74ae416ed5151c23cdfba6fe5ee4",
+          "out_bodies_sha256": "48dd0caf17092fb10906f5e8f678174f8b6e0c5155a897132677bdae6147b833",
+          "out_amir_sha256": "aeeca5ab0e10de103a985e9dcb1a60ef6fcdd2b5398eafb9f9688ddceed51ccb",
+          "out_amir_size_bytes": 194,
+          "amir_v3_fp16": [
+            211,
+            235
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "ub_boundary_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "ub_boundary_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "match_wildcard_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "match_wildcard_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "assign_underscore_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "assign_underscore_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "zerocopy_layout_holdout",
+          "exit_code": 0,
+          "elapsed_ms": 37,
+          "max_rss_bytes": 108277760,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "e01b3af7c10bf62f8475620556ebbba73d8aca505eb46c0bec06fac3fac784a5",
+          "out_bodies_sha256": "4c7559d7faab7641c330ff8a4debf4c7ad50aba485df6be06b057eee387e4b13",
+          "out_amir_sha256": "d8fe8e96486745b8cda79af744d5c9cbcc571628a6fbc57689c427b28d27de2e",
+          "out_amir_size_bytes": 2154,
+          "amir_v3_fp16": [
+            210,
+            34
+          ],
+          "amir_v3_body_count": 10,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "align_to_6_0": [
+                "Err",
+                "SizeError"
+              ],
+              "align_to_8_4": [
+                "Ok",
+                8
+              ],
+              "align_to_6_4": [
+                "Ok",
+                8
+              ],
+              "align_to_13_4": [
+                "Ok",
+                16
+              ],
+              "align_to_usize_max_minus_1_4": [
+                "Err",
+                "SizeError"
+              ],
+              "extend_valid_slice": [
+                "Ok",
+                [
+                  4,
+                  8,
+                  true
+                ],
+                8
+              ],
+              "extend_valid_sized": [
+                "Ok",
+                [
+                  8,
+                  18,
+                  false
+                ],
+                8
+              ],
+              "extend_err_already_slice": [
+                "Err",
+                "SizeError"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "loop_prefix_probe",
+          "exit_code": 0,
+          "elapsed_ms": 26,
+          "max_rss_bytes": 97157120,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "3df90a4ef2b78f9fb74c456c2ec61c17956eb99bc41465d894493affb94293e1",
+          "out_bodies_sha256": "56260e92d47bce0194217a717e90b845cb08b8c4e6133f76f978503a65387152",
+          "out_amir_sha256": "7f04c69386d23b2da04692c55ab88e66e8aa2a8355327c82674e1d317133c762",
+          "out_amir_size_bytes": 249,
+          "amir_v3_fp16": [
+            205,
+            88
+          ],
+          "amir_v3_body_count": 1,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "bad_prefix_invalid_ptr": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "terminating_target8_step4": [
+                "returned",
+                [
+                  "scalar",
+                  2
+                ]
+              ],
+              "unbounded_step23_status": "running",
+              "unbounded_step23_bb": 4
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "dep_layout_core",
+          "exit_code": 0,
+          "elapsed_ms": 29,
+          "max_rss_bytes": 101494784,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "284429526061e6276e686b4eb00729f0698ecd7be2608f0e7f63811bc6cecc50",
+          "out_bodies_sha256": "fd01bc8b9093bb81840e5c6875ed2a90d565acbc89855bfddc74f21f40f7f15b",
+          "out_amir_sha256": "124f3596087c1c03a913143dc0f4105280f153ca392feedc56244b404e276fb8",
+          "out_amir_size_bytes": 416,
+          "amir_v3_fp16": [
+            67,
+            255
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": false,
+            "reason": "missing_sym_55"
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "dep_inline_align_10": [
+                "returned",
+                [
+                  "scalar",
+                  14
+                ]
+              ],
+              "dep_inline_align_24": [
+                "returned",
+                [
+                  "scalar",
+                  28
+                ]
+              ]
+            },
+            "mismatches": {}
+          }
+        }
+      ]
+    },
+    {
+      "toolchain_id": "nightly_1_98_2026_05_30",
+      "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+      "rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+      "mir_use_arity": 2,
+      "has_retag_stmt": false,
+      "drop_glue_api": "Instance::resolve_drop_glue",
+      "derive_eq_helper_name": "assert_fields_are_eq",
+      "driver_compile_exit_code": 0,
+      "driver_compile_elapsed_ms": 2096,
+      "driver_compile_max_rss_bytes": 541544448,
+      "driver_binary_sha256": "8f20fff0b962020f4dc7a9cd8cdb2859b89fe909b3247790dd1cd8b1b15ed55e",
+      "prebuilt_charon_0_1_174_probe": {
+        "exit_code": 127,
+        "compatible_without_rebuild": false,
+        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
+      },
+      "prebuilt_charon_0_1_210_probe": {
+        "exit_code": 0,
+        "compatible_without_rebuild": true,
+        "stderr_summary": ""
+      },
+      "subject_runs": [
+        {
+          "subject": "cleanup_subject",
+          "exit_code": 0,
+          "elapsed_ms": 32,
+          "max_rss_bytes": 103223296,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "90b2a0dba20084da1d0dd28e49850c97a80d58ffc5c9fcdf3d5bc58e299cb5e9",
+          "out_bodies_sha256": "bff7c0ff14ada801a7053ed215b228790c9be193503ecef413ea47a910407917",
+          "out_amir_sha256": "d6244df6c9e113e6e91b520d26425ce55d7d5778bca94f81debf551369eabed2",
+          "out_amir_size_bytes": 1066,
+          "amir_v3_fp16": [
+            167,
+            56
+          ],
+          "amir_v3_body_count": 9,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "partial_init_0_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_0_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  1
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    105
+                  ]
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_init_1_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  2,
+                  161
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  1,
+                  2
+                ]
+              },
+              "partial_reinit_0": {
+                "status": [
+                  "returned",
+                  [
+                    "scalar",
+                    107
+                  ]
+                ],
+                "log1": [
+                  2,
+                  163
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  3,
+                  2
+                ]
+              },
+              "partial_reinit_1": {
+                "status": [
+                  "unwound"
+                ],
+                "log1": [
+                  1,
+                  10
+                ],
+                "log2": [
+                  1,
+                  2
+                ],
+                "obs_events": [
+                  10,
+                  2
+                ]
+              }
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "place_mention_probe",
+          "exit_code": 0,
+          "elapsed_ms": 18,
+          "max_rss_bytes": 81072128,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "78ac2bf58a3f05154f17efab03b6d44be8dfd1f734e22f3af9ee91ac935b9dba",
+          "out_bodies_sha256": "4603e7d36b8c4b2683cb94d8d5dd17638e5bbf31eb1711e05a5be170bf4504ea",
+          "out_amir_sha256": "7e96e186ff83c62741007819c7429fd22811011a11ac0b5cf00e135c85a8376d",
+          "out_amir_size_bytes": 194,
+          "amir_v3_fp16": [
+            62,
+            110
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "ub_boundary_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "ub_boundary_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "match_wildcard_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "match_wildcard_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "assign_underscore_probe_valid_True": [
+                "returned",
+                [
+                  "scalar",
+                  0
+                ]
+              ],
+              "assign_underscore_probe_valid_False": [
+                "failed",
+                "invalid_ptr_deref"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "zerocopy_layout_holdout",
+          "exit_code": 0,
+          "elapsed_ms": 34,
+          "max_rss_bytes": 107757568,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "f475a43f21e2bc4cf1a2422de33f3ccb6193a13264df91214cf7ade8ed817260",
+          "out_bodies_sha256": "ff91285386e6c1d74702b72a5f5b55560604cc7272973fc86108237bfbf6cfb8",
+          "out_amir_sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+          "out_amir_size_bytes": 2154,
+          "amir_v3_fp16": [
+            227,
+            80
+          ],
+          "amir_v3_body_count": 10,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "align_to_6_0": [
+                "Err",
+                "SizeError"
+              ],
+              "align_to_8_4": [
+                "Ok",
+                8
+              ],
+              "align_to_6_4": [
+                "Ok",
+                8
+              ],
+              "align_to_13_4": [
+                "Ok",
+                16
+              ],
+              "align_to_usize_max_minus_1_4": [
+                "Err",
+                "SizeError"
+              ],
+              "extend_valid_slice": [
+                "Ok",
+                [
+                  4,
+                  8,
+                  true
+                ],
+                8
+              ],
+              "extend_valid_sized": [
+                "Ok",
+                [
+                  8,
+                  18,
+                  false
+                ],
+                8
+              ],
+              "extend_err_already_slice": [
+                "Err",
+                "SizeError"
+              ]
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "loop_prefix_probe",
+          "exit_code": 0,
+          "elapsed_ms": 24,
+          "max_rss_bytes": 96653312,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "1ce81d25a92829a359591bfc777baab18109cb9534e4848ab646d5ec7254da32",
+          "out_bodies_sha256": "a6ea8ea251cb6a993b19d8a9b3529d7bb54b9a8823fe6f797dc584bd7c500ed6",
+          "out_amir_sha256": "fd3ea80c1a3aee77ceddf873658a1b9c96ac1f3996055779075415487d96d7ba",
+          "out_amir_size_bytes": 249,
+          "amir_v3_fp16": [
+            13,
+            126
+          ],
+          "amir_v3_body_count": 1,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": true
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "bad_prefix_invalid_ptr": [
+                "failed",
+                "invalid_ptr_deref"
+              ],
+              "terminating_target8_step4": [
+                "returned",
+                [
+                  "scalar",
+                  2
+                ]
+              ],
+              "unbounded_step23_status": "running",
+              "unbounded_step23_bb": 4
+            },
+            "mismatches": {}
+          }
+        },
+        {
+          "subject": "dep_layout_core",
+          "exit_code": 0,
+          "elapsed_ms": 27,
+          "max_rss_bytes": 102322176,
+          "rusage_children_ru_maxrss_bytes": 543203328,
+          "rusage_before_kb": 530472,
+          "rusage_after_kb": 530472,
+          "out_json_sha256": "b571164f57725a218293a87bd94643270929a4e8b1f41d56599e9c82115025e1",
+          "out_bodies_sha256": "7e67599f062da22b09fc8e49c89b33fc17ef90716899f5eb54f6864a4ba9ddce",
+          "out_amir_sha256": "992afb3e68f03e1dabe745c99171237087eeeae19080859c482a342b493776ed",
+          "out_amir_size_bytes": 416,
+          "amir_v3_fp16": [
+            199,
+            248
+          ],
+          "amir_v3_body_count": 3,
+          "boundary_1_2_accepted": true,
+          "legacy_structural_shape_check": {
+            "legacy_shape_accepted": false,
+            "reason": "missing_sym_55"
+          },
+          "c0_semantic_oracle": {
+            "c0_oracle_accepted": true,
+            "reason": "ok",
+            "outcomes": {
+              "dep_inline_align_10": [
+                "returned",
+                [
+                  "scalar",
+                  14
+                ]
+              ],
+              "dep_inline_align_24": [
+                "returned",
+                [
+                  "scalar",
+                  28
+                ]
+              ]
+            },
+            "mismatches": {}
+          }
+        }
+      ]
+    }
+  ],
+  "cross_toolchain_amir_v3_and_c0_comparison": {
+    "cleanup_subject": {
+      "1_95_to_1_97_byte_identical": true,
+      "1_97_to_1_98_opcode_diff": {
+        "pre_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 44,
+          "assign_use_retag_yes_0x11_count": 0
+        },
+        "rustc_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 4,
+          "assign_use_retag_yes_0x11_count": 41
+        },
+        "explanation": "In 1.95-1.97, Rvalue::Use(op) is 1-field (0x10 AssignUseNoRetag) and retags are standalone StatementKind::Retag(rk, place) statements (0x31 RetagStmt). In 1.98, StatementKind::Retag was removed and folded into Rvalue::Use(op, WithRetag::Yes) (0x11) vs WithRetag::No (0x10)."
+      },
+      "all_4_toolchains_c0_semantically_equivalent": true,
+      "c0_outcomes": {
+        "partial_init_0_0": "{'status': ('returned', ('scalar', 105)), 'log1': (1, 1), 'log2': (1, 2), 'obs_events': [1, 2]}",
+        "partial_init_0_1": "{'status': ('unwound',), 'log1': (1, 1), 'log2': (1, 2), 'obs_events': [1, 2]}",
+        "partial_init_1_0": "{'status': ('returned', ('scalar', 105)), 'log1': (2, 161), 'log2': (1, 2), 'obs_events': [10, 1, 2]}",
+        "partial_init_1_1": "{'status': ('unwound',), 'log1': (2, 161), 'log2': (1, 2), 'obs_events': [10, 1, 2]}",
+        "partial_reinit_0": "{'status': ('returned', ('scalar', 107)), 'log1': (2, 163), 'log2': (1, 2), 'obs_events': [10, 3, 2]}",
+        "partial_reinit_1": "{'status': ('unwound',), 'log1': (1, 10), 'log2': (1, 2), 'obs_events': [10, 2]}"
+      }
+    },
+    "place_mention_probe": {
+      "1_95_to_1_97_byte_identical": true,
+      "1_97_to_1_98_opcode_diff": {
+        "pre_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 13,
+          "assign_use_retag_yes_0x11_count": 0
+        },
+        "rustc_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 0,
+          "assign_use_retag_yes_0x11_count": 13
+        },
+        "explanation": "In 1.95-1.97, Rvalue::Use(op) is 1-field (0x10 AssignUseNoRetag) and retags are standalone StatementKind::Retag(rk, place) statements (0x31 RetagStmt). In 1.98, StatementKind::Retag was removed and folded into Rvalue::Use(op, WithRetag::Yes) (0x11) vs WithRetag::No (0x10)."
+      },
+      "all_4_toolchains_c0_semantically_equivalent": true,
+      "c0_outcomes": {
+        "ub_boundary_probe_valid_True": "('returned', ('scalar', 0))",
+        "ub_boundary_probe_valid_False": "('failed', 'invalid_ptr_deref')",
+        "match_wildcard_probe_valid_True": "('returned', ('scalar', 0))",
+        "match_wildcard_probe_valid_False": "('failed', 'invalid_ptr_deref')",
+        "assign_underscore_probe_valid_True": "('returned', ('scalar', 0))",
+        "assign_underscore_probe_valid_False": "('failed', 'invalid_ptr_deref')"
+      }
+    },
+    "zerocopy_layout_holdout": {
+      "1_95_to_1_97_byte_identical": true,
+      "1_97_to_1_98_opcode_diff": {
+        "pre_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 96,
+          "assign_use_retag_yes_0x11_count": 0
+        },
+        "rustc_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 0,
+          "assign_use_retag_yes_0x11_count": 96
+        },
+        "explanation": "In 1.95-1.97, Rvalue::Use(op) is 1-field (0x10 AssignUseNoRetag) and retags are standalone StatementKind::Retag(rk, place) statements (0x31 RetagStmt). In 1.98, StatementKind::Retag was removed and folded into Rvalue::Use(op, WithRetag::Yes) (0x11) vs WithRetag::No (0x10)."
+      },
+      "all_4_toolchains_c0_semantically_equivalent": true,
+      "c0_outcomes": {
+        "align_to_6_0": "('Err', 'SizeError')",
+        "align_to_8_4": "('Ok', 8)",
+        "align_to_6_4": "('Ok', 8)",
+        "align_to_13_4": "('Ok', 16)",
+        "align_to_usize_max_minus_1_4": "('Err', 'SizeError')",
+        "extend_valid_slice": "('Ok', (4, 8, True), 8)",
+        "extend_valid_sized": "('Ok', (8, 18, False), 8)",
+        "extend_err_already_slice": "('Err', 'SizeError')"
+      }
+    },
+    "loop_prefix_probe": {
+      "1_95_to_1_97_byte_identical": true,
+      "1_97_to_1_98_opcode_diff": {
+        "pre_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 14,
+          "assign_use_retag_yes_0x11_count": 0
+        },
+        "rustc_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 0,
+          "assign_use_retag_yes_0x11_count": 14
+        },
+        "explanation": "In 1.95-1.97, Rvalue::Use(op) is 1-field (0x10 AssignUseNoRetag) and retags are standalone StatementKind::Retag(rk, place) statements (0x31 RetagStmt). In 1.98, StatementKind::Retag was removed and folded into Rvalue::Use(op, WithRetag::Yes) (0x11) vs WithRetag::No (0x10)."
+      },
+      "all_4_toolchains_c0_semantically_equivalent": true,
+      "c0_outcomes": {
+        "bad_prefix_invalid_ptr": "('failed', 'invalid_ptr_deref')",
+        "terminating_target8_step4": "('returned', ('scalar', 2))",
+        "unbounded_step23_status": "running",
+        "unbounded_step23_bb": "4"
+      }
+    },
+    "dep_layout_core": {
+      "1_95_to_1_97_byte_identical": true,
+      "1_97_to_1_98_opcode_diff": {
+        "pre_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 14,
+          "assign_use_retag_yes_0x11_count": 0
+        },
+        "rustc_1_98": {
+          "retag_stmt_0x31_count": 0,
+          "assign_use_no_retag_0x10_count": 1,
+          "assign_use_retag_yes_0x11_count": 13
+        },
+        "explanation": "In 1.95-1.97, Rvalue::Use(op) is 1-field (0x10 AssignUseNoRetag) and retags are standalone StatementKind::Retag(rk, place) statements (0x31 RetagStmt). In 1.98, StatementKind::Retag was removed and folded into Rvalue::Use(op, WithRetag::Yes) (0x11) vs WithRetag::No (0x10)."
+      },
+      "all_4_toolchains_c0_semantically_equivalent": true,
+      "c0_outcomes": {
+        "dep_inline_align_10": "('returned', ('scalar', 14))",
+        "dep_inline_align_24": "('returned', ('scalar', 28))"
+      }
+    }
+  },
+  "semantic_drift_negative_controls": [
+    {
+      "control_id": "drift_control_strip_place_mention",
+      "subject": "place_mention_probe",
+      "simulate_drift_mode": "strip_place_mention",
+      "exit_code": 0,
+      "out_amir_sha256": "f7593f5dbb2aaeb1635e8775f6faddc069e7f95146c17d749c84d8b004cff024",
+      "out_amir_size_bytes": 188,
+      "amir_v3_fp16": [
+        141,
+        183
+      ],
+      "boundary_1_2_accepted": true,
+      "legacy_structural_shape_accepted": false,
+      "c0_oracle_accepted": false,
+      "c0_rejection_reason": "executed_c0_place_mention_mismatch(['match_wildcard_probe_valid_False', 'assign_underscore_probe_valid_False'])",
+      "c0_mismatches": {
+        "match_wildcard_probe_valid_False": "{'actual': ('returned', ('scalar', 0)), 'expected': ('failed', 'invalid_ptr_deref')}",
+        "assign_underscore_probe_valid_False": "{'actual': ('returned', ('scalar', 0)), 'expected': ('failed', 'invalid_ptr_deref')}"
+      }
+    },
+    {
+      "control_id": "drift_control_strip_cleanup_drop",
+      "subject": "cleanup_subject",
+      "simulate_drift_mode": "strip_cleanup_drop",
+      "exit_code": 0,
+      "out_amir_sha256": "4f343cfd9f8ebd4ea6f54388b45975288c003a378305b7c1574b8f160ef75cae",
+      "out_amir_size_bytes": 1038,
+      "amir_v3_fp16": [
+        107,
+        237
+      ],
+      "boundary_1_2_accepted": true,
+      "legacy_structural_shape_accepted": false,
+      "c0_oracle_accepted": false,
+      "c0_rejection_reason": "executed_c0_cleanup_mismatch(['partial_init_0_1', 'partial_init_1_1', 'partial_reinit_1'])",
+      "c0_mismatches": {
+        "partial_init_0_1": "{'actual': {'status': ('unwound',), 'log1': (0, 0), 'log2': (0, 0), 'obs_events': []}, 'expected': {'status': ('unwound',), 'log1': (1, 1), 'log2': (1, 2), 'obs_events': [1, 2]}}",
+        "partial_init_1_1": "{'actual': {'status': ('unwound',), 'log1': (2, 161), 'log2': (0, 0), 'obs_events': [10, 1]}, 'expected': {'status': ('unwound',), 'log1': (2, 161), 'log2': (1, 2), 'obs_events': [10, 1, 2]}}",
+        "partial_reinit_1": "{'actual': {'status': ('unwound',), 'log1': (1, 10), 'log2': (0, 0), 'obs_events': [10]}, 'expected': {'status': ('unwound',), 'log1': (1, 10), 'log2': (1, 2), 'obs_events': [10, 2]}}"
+      }
+    },
+    {
+      "control_id": "drift_control_alter_reinit_constant",
+      "subject": "cleanup_subject",
+      "simulate_drift_mode": "alter_reinit_constant",
+      "exit_code": 0,
+      "out_amir_sha256": "4f197602d4ecc80385c17ec0de70b9bc08b8606065c6ab159d771d416e6c93c9",
+      "out_amir_size_bytes": 1066,
+      "amir_v3_fp16": [
+        43,
+        43
+      ],
+      "boundary_1_2_accepted": true,
+      "legacy_structural_shape_accepted": true,
+      "c0_oracle_accepted": false,
+      "c0_rejection_reason": "executed_c0_cleanup_mismatch(['partial_reinit_0'])",
+      "c0_mismatches": {
+        "partial_reinit_0": "{'actual': {'status': ('returned', ('scalar', 107)), 'log1': (2, 164), 'log2': (1, 2), 'obs_events': [10, 4, 2]}, 'expected': {'status': ('returned', ('scalar', 107)), 'log1': (2, 163), 'log2': (1, 2), 'obs_events': [10, 3, 2]}}"
+      }
+    },
+    {
+      "control_id": "drift_control_swap_extend_slice_branch",
+      "subject": "zerocopy_layout_holdout",
+      "simulate_drift_mode": "swap_extend_slice_branch",
+      "exit_code": 0,
+      "out_amir_sha256": "1e70c4241c8240d21d899587e63e787b627f66f2bce36694d56ffd41529a7b60",
+      "out_amir_size_bytes": 2154,
+      "amir_v3_fp16": [
+        115,
+        234
+      ],
+      "boundary_1_2_accepted": true,
+      "legacy_structural_shape_accepted": true,
+      "c0_oracle_accepted": false,
+      "c0_rejection_reason": "executed_c0_zerocopy_mismatch(['extend_valid_slice', 'extend_valid_sized'])",
+      "c0_mismatches": {
+        "extend_valid_slice": "{'actual': ('Ok', (4, 12, True), 8), 'expected': ('Ok', (4, 8, True), 8)}",
+        "extend_valid_sized": "{'actual': ('Ok', (8, 8, False), 8), 'expected': ('Ok', (8, 18, False), 8)}"
+      }
+    }
+  ]
+}

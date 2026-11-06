@@ -1,0 +1,1047 @@
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:37:4: warning: This simp argument is unused:
+  EStateM.set
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.s̵e̵t̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:37:36: warning: This simp argument is unused:
+  EStateM.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.m̵a̵p̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:37:49: warning: This simp argument is unused:
+  EStateM.seqRight
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵q̵R̵i̵g̵h̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:38:26: warning: This simp argument is unused:
+  Functor.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, F̵u̵n̵c̵t̵o̵r̵.̵m̵a̵p̵,̵ ̵get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+      throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:40:4: warning: This simp argument is unused:
+  throw
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,̵ ̵t̵h̵r̵o̵w̵The, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:40:11: warning: This simp argument is unused:
+  throwThe
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw, t̵h̵r̵o̵w̵T̵h̵e̵,̵ ̵MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:40:21: warning: This simp argument is unused:
+  MonadExceptOf.throw
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw, throwThe, M̵o̵n̵a̵d̵Ex̵c̵e̵p̵t̵O̵f̵.̵t̵h̵r̵o̵w̵,̵ ̵E̵StateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:40:42: warning: This simp argument is unused:
+  EStateM.throw
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, E̵S̵t̵a̵t̵e̵M̵.̵t̵hr̵o̵w̵,̵ ̵h̵1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:66:4: warning: This simp argument is unused:
+  EStateM.set
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.s̵e̵t̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:66:36: warning: This simp argument is unused:
+  EStateM.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.m̵a̵p̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:66:49: warning: This simp argument is unused:
+  EStateM.seqRight
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵q̵R̵i̵g̵h̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:67:26: warning: This simp argument is unused:
+  Functor.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, F̵u̵n̵c̵t̵o̵r̵.̵m̵a̵p̵,̵ ̵get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+      throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:69:4: warning: This simp argument is unused:
+  throw
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,̵ ̵t̵h̵r̵o̵w̵The, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:69:11: warning: This simp argument is unused:
+  throwThe
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw, t̵h̵r̵o̵w̵T̵h̵e̵,̵ ̵MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:69:21: warning: This simp argument is unused:
+  MonadExceptOf.throw
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw, throwThe, M̵o̵n̵a̵d̵Ex̵c̵e̵p̵t̵O̵f̵.̵t̵h̵r̵o̵w̵,̵ ̵E̵StateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:69:42: warning: This simp argument is unused:
+  EStateM.throw
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, E̵S̵t̵a̵t̵e̵M̵.̵t̵hr̵o̵w̵,̵ ̵h̵1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:81:31: warning: This simp argument is unused:
+  EStateM.pure
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲ E̵S̵t̵a̵t̵e̵M̵.̵p̵u̵r̵e̵,̵  ̲ ̲EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:82:4: warning: This simp argument is unused:
+  EStateM.set
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.s̵e̵t̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:82:17: warning: This simp argument is unused:
+  EStateM.modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.mo̵d̵i̵f̵y̵G̵e̵t̵,̵ ̵E̵S̵t̵at̵e̵M̵.̵m̵a̵p, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:82:36: warning: This simp argument is unused:
+  EStateM.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.m̵a̵p̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:82:49: warning: This simp argument is unused:
+  EStateM.seqRight
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵q̵R̵i̵g̵h̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:83:15: warning: This simp argument is unused:
+  Pure.pure
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, P̵u̵r̵e̵.̵p̵u̵r̵e̵,̵ ̵Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:83:26: warning: This simp argument is unused:
+  Functor.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, F̵u̵n̵c̵t̵o̵r̵.̵m̵a̵p̵,̵ ̵get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+      throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:83:52: warning: This simp argument is unused:
+  modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, m̵o̵d̵i̵f̵y̵G̵e̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:84:22: warning: This simp argument is unused:
+  MonadStateOf.modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, M̵o̵n̵a̵d̵S̵t̵a̵t̵e̵O̵f̵.̵modifyG̵e̵t̵, m̵o̵d̵i̵f̵y̵,̵
+  ̵ ̵ ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:84:46: warning: This simp argument is unused:
+  modify
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, m̵o̵d̵i̵f̵y̵,̵
+  ̵ ̵ ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:99:4: warning: This simp argument is unused:
+  EStateM.set
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.s̵e̵t̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:99:17: warning: This simp argument is unused:
+  EStateM.modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.mo̵d̵i̵f̵y̵G̵e̵t̵,̵ ̵E̵S̵t̵at̵e̵M̵.̵m̵a̵p, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:99:36: warning: This simp argument is unused:
+  EStateM.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.m̵a̵p̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:99:49: warning: This simp argument is unused:
+  EStateM.seqRight
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵q̵R̵i̵g̵h̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̵  ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:100:26: warning: This simp argument is unused:
+  Functor.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, F̵u̵n̵c̵t̵o̵r̵.̵m̵a̵p̵,̵ ̵get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify,
+      throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:100:52: warning: This simp argument is unused:
+  modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, m̵o̵d̵i̵f̵y̵G̵e̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify,
+  ̵  ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:101:22: warning: This simp argument is unused:
+  MonadStateOf.modifyGet
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, M̵o̵n̵a̵d̵S̵t̵a̵t̵e̵O̵f̵.̵modifyG̵e̵t̵, m̵o̵d̵i̵f̵y̵,̵
+  ̵ ̵ ̵ ̵ ̵throw,
+  ̲  ̲ ̲ ̲throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:101:46: warning: This simp argument is unused:
+  modify
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get,
+  ̲  ̲ ̲ ̲MonadStateOf.modifyGet, m̵o̵d̵i̵f̵y̵,̵
+  ̵ ̵ ̵ ̵ ̵throw, throwThe, MonadExceptOf.throw, EStateM.throw, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:130:35: warning: This simp argument is unused:
+  Std.ExtDHashMap.get?_insert
+
+Hint: Omit it from the simp argument list.
+  simp [fixtureWrap, emptyState,̵ ̵S̵t̵d̵.̵E̵x̵t̵D̵H̵a̵s̵h̵M̵a̵p̵.̵g̵e̵t̵?̵_̵i̵n̵s̵e̵r̵t̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/controls-parent-1/Controls.lean:203:39: warning: This simp argument is unused:
+  Std.ExtDHashMap.get?_insert
+
+Hint: Omit it from the simp argument list.
+  simp [fixtureMissing2, emptyState,̵ ̵S̵t̵d̵.̵E̵x̵t̵D̵H̵a̵s̵h̵M̵a̵p̵.̵g̵e̵t̵?̵_̵i̵n̵s̵e̵r̵t̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'AnnealSail.Controls.add_wraps' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.Controls.sub_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.Controls.sub_differs_from_add' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.Controls.rd4_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.Controls.rd4_observation' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.Controls.missing1_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.Controls.missing2_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,36 @@
+[
+  {
+    "repository": "google/zerocopy",
+    "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+    "path": "zerocopy/src/pointer/ptr.rs",
+    "git_blob": "2a492171d6e87394667acca510a9a551138827f1",
+    "sha256": "eca76e67328cd86b6dd2eba35b5f4b3a83a6c7751c8c295852cf83c468e4205a"
+  },
+  {
+    "repository": "google/zerocopy",
+    "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+    "path": "zerocopy/src/pointer/inner.rs",
+    "git_blob": "eeef49f948544cd83952195e9b3afff378ac65f1",
+    "sha256": "452495e5e44aa811cd7ae723cc7b9892fd205c387ee746d5b8e37df3f9d58096"
+  },
+  {
+    "repository": "google/zerocopy",
+    "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+    "path": "zerocopy/src/pointer/mod.rs",
+    "git_blob": "910a91c19bb42a2a7c4970c4fd9b6c362b8b7695",
+    "sha256": "53d6e1468205ebc8ac9f7438f7aefccb8c156bb21ea752c9307f0f2cd473ede4"
+  },
+  {
+    "repository": "google/zerocopy",
+    "revision": "cce761ad53785973ec2f4a6b13715b770b340c87",
+    "path": "zerocopy/src/pointer/invariant.rs",
+    "git_blob": "e798feb4f1f0c90d9f048afc75791f4614fe59a5",
+    "sha256": "a5ed83dad776e25101d4a7af3f041a9583444658b0f8cc21810dfc672069525e"
+  },
+  {
+    "repository": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/behavior-considered-undefined.md",
+    "git_blob": "ff34d0af28ca3ec42f548abf6cd3bce5840a6798"
+  }
+]

@@ -1,0 +1,213 @@
+{
+  "status": "PASS all23 exact hashes+package fields",
+  "packages": [
+    {
+      "name": "libpython3.11-minimal",
+      "version": "3.11.2-6+deb12u9",
+      "filename": "pool/updates/main/p/python3.11/libpython3.11-minimal_3.11.2-6+deb12u9_arm64.deb",
+      "sha256": "dd9847d2f77c5a924b1d3dd953b81f161db9374c94d03b9216191925350928c3",
+      "bytes": 813684,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libpython3.11-minimal_3.11.2-6+deb12u9_arm64.deb"
+    },
+    {
+      "name": "python3.11-minimal",
+      "version": "3.11.2-6+deb12u9",
+      "filename": "pool/updates/main/p/python3.11/python3.11-minimal_3.11.2-6+deb12u9_arm64.deb",
+      "sha256": "617855dbf3299e03873926c75d61feaf3d36924586aecc1951a0b965a95bc694",
+      "bytes": 1861676,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/python3.11-minimal_3.11.2-6+deb12u9_arm64.deb"
+    },
+    {
+      "name": "python3-minimal",
+      "version": "3.11.2-1+b1",
+      "filename": "pool/main/p/python3-defaults/python3-minimal_3.11.2-1+b1_arm64.deb",
+      "sha256": "f01c94963ace8a6fec59300427c95fc4ac204d752567dd2e4b36ee930755110f",
+      "bytes": 26296,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/python3-minimal_3.11.2-1+b1_arm64.deb"
+    },
+    {
+      "name": "media-types",
+      "version": "10.0.0",
+      "filename": "pool/main/m/media-types/media-types_10.0.0_all.deb",
+      "sha256": "aaa46dcb3b39948ae2e0fdb72cfcb2f48c0b59f19785a3da8045c05eb19955dd",
+      "bytes": 26136,
+      "architecture": "all",
+      "actual_downloaded_path": "/var/cache/apt/archives/media-types_10.0.0_all.deb"
+    },
+    {
+      "name": "libpython3.11-stdlib",
+      "version": "3.11.2-6+deb12u9",
+      "filename": "pool/updates/main/p/python3.11/libpython3.11-stdlib_3.11.2-6+deb12u9_arm64.deb",
+      "sha256": "9937cbe3f647aa89a590fec647438ce02098c113d1c6f70e4cb1230c368d42a4",
+      "bytes": 1750132,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libpython3.11-stdlib_3.11.2-6+deb12u9_arm64.deb"
+    },
+    {
+      "name": "python3.11",
+      "version": "3.11.2-6+deb12u9",
+      "filename": "pool/updates/main/p/python3.11/python3.11_3.11.2-6+deb12u9_arm64.deb",
+      "sha256": "f8d1726c2f5c61b42dbf7652cd9c01da23e55029e3c384a9f1802334fd964091",
+      "bytes": 575032,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/python3.11_3.11.2-6+deb12u9_arm64.deb"
+    },
+    {
+      "name": "libpython3-stdlib",
+      "version": "3.11.2-1+b1",
+      "filename": "pool/main/p/python3-defaults/libpython3-stdlib_3.11.2-1+b1_arm64.deb",
+      "sha256": "3ceea13a9d2eff6e850d47b4f03ebd0162acb2aa5646a84ccbe77783be104302",
+      "bytes": 9296,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libpython3-stdlib_3.11.2-1+b1_arm64.deb"
+    },
+    {
+      "name": "python3",
+      "version": "3.11.2-1+b1",
+      "filename": "pool/main/p/python3-defaults/python3_3.11.2-1+b1_arm64.deb",
+      "sha256": "d31a6f8bdea49711f221baee0e27197c314d0cbe748c020262d32650aca5f017",
+      "bytes": 26284,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/python3_3.11.2-1+b1_arm64.deb"
+    },
+    {
+      "name": "libicu72",
+      "version": "72.1-3+deb12u1",
+      "filename": "pool/main/i/icu/libicu72_72.1-3+deb12u1_arm64.deb",
+      "sha256": "4f5d892fd81110435e45ed0a5f1b12899d7ff989d51db283cbc043f5631646d8",
+      "bytes": 9202292,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libicu72_72.1-3+deb12u1_arm64.deb"
+    },
+    {
+      "name": "libxml2",
+      "version": "2.9.14+dfsg-1.3~deb12u6",
+      "filename": "pool/main/libx/libxml2/libxml2_2.9.14+dfsg-1.3~deb12u6_arm64.deb",
+      "sha256": "0bc00975e459387535a4bbabe98a398f0e77c9ab82474face18d01ae8ed0dae4",
+      "bytes": 620500,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libxml2_2.9.14+dfsg-1.3~deb12u6_arm64.deb"
+    },
+    {
+      "name": "libarchive13",
+      "version": "3.6.2-1+deb12u5",
+      "filename": "pool/updates/main/liba/libarchive/libarchive13_3.6.2-1+deb12u5_arm64.deb",
+      "sha256": "0be76b2a5c9f1ff3f97ed44731175a5bf69fe0b89a8ebfb3cee7ad77777ee918",
+      "bytes": 318348,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libarchive13_3.6.2-1+deb12u5_arm64.deb"
+    },
+    {
+      "name": "libjsoncpp25",
+      "version": "1.9.5-4",
+      "filename": "pool/main/libj/libjsoncpp/libjsoncpp25_1.9.5-4_arm64.deb",
+      "sha256": "6d2f5cbc0b8ae2c263262fc1f3d891ebc46f9dcc73d0c4013eddb20e20079a91",
+      "bytes": 72340,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libjsoncpp25_1.9.5-4_arm64.deb"
+    },
+    {
+      "name": "librhash0",
+      "version": "1.4.3-3",
+      "filename": "pool/main/r/rhash/librhash0_1.4.3-3_arm64.deb",
+      "sha256": "9ec3a2819dd2b66837b11bb961347aca9f5c7fc215e0709f78ec7e5da4748a53",
+      "bytes": 130904,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/librhash0_1.4.3-3_arm64.deb"
+    },
+    {
+      "name": "libuv1",
+      "version": "1.44.2-1+deb12u1",
+      "filename": "pool/main/libu/libuv1/libuv1_1.44.2-1+deb12u1_arm64.deb",
+      "sha256": "96022663d045c9599cf664b98db45e254b05b0661860ad89f1501b7dbf0da258",
+      "bytes": 129764,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libuv1_1.44.2-1+deb12u1_arm64.deb"
+    },
+    {
+      "name": "cmake-data",
+      "version": "3.25.1-1",
+      "filename": "pool/main/c/cmake/cmake-data_3.25.1-1_all.deb",
+      "sha256": "8371f9694da94fd551a3ea653e2e25d99747471ca0b48cc029bf5c792ea590a3",
+      "bytes": 2026484,
+      "architecture": "all",
+      "actual_downloaded_path": "/var/cache/apt/archives/cmake-data_3.25.1-1_all.deb"
+    },
+    {
+      "name": "cmake",
+      "version": "3.25.1-1",
+      "filename": "pool/main/c/cmake/cmake_3.25.1-1_arm64.deb",
+      "sha256": "457c1e246b50bbfc2cd6f0f0d1da09889c8bc24677b9acb8946c4c778eaa74e5",
+      "bytes": 6806404,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/cmake_3.25.1-1_arm64.deb"
+    },
+    {
+      "name": "libgmpxx4ldbl",
+      "version": "2:6.2.1+dfsg1-1.1",
+      "filename": "pool/main/g/gmp/libgmpxx4ldbl_6.2.1+dfsg1-1.1_arm64.deb",
+      "sha256": "0fba438311ded8f8b0f2c713f9156e9742b3e04a666a928fa3043a9d099e9839",
+      "bytes": 338308,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libgmpxx4ldbl_2%3a6.2.1+dfsg1-1.1_arm64.deb"
+    },
+    {
+      "name": "libgmp-dev",
+      "version": "2:6.2.1+dfsg1-1.1",
+      "filename": "pool/main/g/gmp/libgmp-dev_6.2.1+dfsg1-1.1_arm64.deb",
+      "sha256": "dc63dc94971ab55e43988ded69c74f7de265b36f91ed9346c2560fbe12c2246f",
+      "bytes": 622216,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libgmp-dev_2%3a6.2.1+dfsg1-1.1_arm64.deb"
+    },
+    {
+      "name": "libpkgconf3",
+      "version": "1.8.1-1",
+      "filename": "pool/main/p/pkgconf/libpkgconf3_1.8.1-1_arm64.deb",
+      "sha256": "8638db13be90ebceb2f3feb23780564f279b4e8b14b8b3000ad02c8ff27b1f02",
+      "bytes": 35320,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/libpkgconf3_1.8.1-1_arm64.deb"
+    },
+    {
+      "name": "pkgconf-bin",
+      "version": "1.8.1-1",
+      "filename": "pool/main/p/pkgconf/pkgconf-bin_1.8.1-1_arm64.deb",
+      "sha256": "6cd07c60b8d60978fa7e43d3b9d1d35e57c5750ea61d67fca451e145aaab8d1b",
+      "bytes": 28892,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/pkgconf-bin_1.8.1-1_arm64.deb"
+    },
+    {
+      "name": "pkgconf",
+      "version": "1.8.1-1",
+      "filename": "pool/main/p/pkgconf/pkgconf_1.8.1-1_arm64.deb",
+      "sha256": "e51f35ecd6a544e072c758f060c7724344b513869b6514d1a493fa14429777b0",
+      "bytes": 25864,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/pkgconf_1.8.1-1_arm64.deb"
+    },
+    {
+      "name": "pkg-config",
+      "version": "1.8.1-1",
+      "filename": "pool/main/p/pkgconf/pkg-config_1.8.1-1_arm64.deb",
+      "sha256": "9fa52c7b352fec0bfdb4cfb17f64bb17939207e04c88022635f43a8c9ad2fc11",
+      "bytes": 13688,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/pkg-config_1.8.1-1_arm64.deb"
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.4+dfsg2-5",
+      "filename": "pool/main/libz/libzstd/zstd_1.5.4+dfsg2-5_arm64.deb",
+      "sha256": "97a58383b0ad55cc8183e59cbb112f2eb55c3dc1e90de816fa5cfb983d5c2ff0",
+      "bytes": 584044,
+      "architecture": "arm64",
+      "actual_downloaded_path": "/var/cache/apt/archives/zstd_1.5.4+dfsg2-5_arm64.deb"
+    }
+  ],
+  "prior_failure_disposition": "Two APT cache filenames include encoded epoch2%3a absent from repository Filename. No install began. Actual archive identities checked by complete exact SHA set and independent dpkg-deb package/version/architecture; original failure streams preserved."
+}

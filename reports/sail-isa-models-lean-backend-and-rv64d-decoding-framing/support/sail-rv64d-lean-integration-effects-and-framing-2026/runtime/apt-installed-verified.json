@@ -1,0 +1,97 @@
+{
+  "status": "PASS all23 exact installed package versions",
+  "packages": [
+    {
+      "name": "libpython3.11-minimal",
+      "version": "3.11.2-6+deb12u9"
+    },
+    {
+      "name": "python3.11-minimal",
+      "version": "3.11.2-6+deb12u9"
+    },
+    {
+      "name": "python3-minimal",
+      "version": "3.11.2-1+b1"
+    },
+    {
+      "name": "media-types",
+      "version": "10.0.0"
+    },
+    {
+      "name": "libpython3.11-stdlib",
+      "version": "3.11.2-6+deb12u9"
+    },
+    {
+      "name": "python3.11",
+      "version": "3.11.2-6+deb12u9"
+    },
+    {
+      "name": "libpython3-stdlib",
+      "version": "3.11.2-1+b1"
+    },
+    {
+      "name": "python3",
+      "version": "3.11.2-1+b1"
+    },
+    {
+      "name": "libicu72",
+      "version": "72.1-3+deb12u1"
+    },
+    {
+      "name": "libxml2",
+      "version": "2.9.14+dfsg-1.3~deb12u6"
+    },
+    {
+      "name": "libarchive13",
+      "version": "3.6.2-1+deb12u5"
+    },
+    {
+      "name": "libjsoncpp25",
+      "version": "1.9.5-4"
+    },
+    {
+      "name": "librhash0",
+      "version": "1.4.3-3"
+    },
+    {
+      "name": "libuv1",
+      "version": "1.44.2-1+deb12u1"
+    },
+    {
+      "name": "cmake-data",
+      "version": "3.25.1-1"
+    },
+    {
+      "name": "cmake",
+      "version": "3.25.1-1"
+    },
+    {
+      "name": "libgmpxx4ldbl",
+      "version": "2:6.2.1+dfsg1-1.1"
+    },
+    {
+      "name": "libgmp-dev",
+      "version": "2:6.2.1+dfsg1-1.1"
+    },
+    {
+      "name": "libpkgconf3",
+      "version": "1.8.1-1"
+    },
+    {
+      "name": "pkgconf-bin",
+      "version": "1.8.1-1"
+    },
+    {
+      "name": "pkgconf",
+      "version": "1.8.1-1"
+    },
+    {
+      "name": "pkg-config",
+      "version": "1.8.1-1"
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.4+dfsg2-5"
+    }
+  ]
+}

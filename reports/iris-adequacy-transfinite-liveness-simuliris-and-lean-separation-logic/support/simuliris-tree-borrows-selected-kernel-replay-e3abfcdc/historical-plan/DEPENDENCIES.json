@@ -1,0 +1,77 @@
+{
+  "status": "proposed exact environment; no installation or compilation performed",
+  "ocaml": {
+    "version": "4.14.4",
+    "basis": "Parent selected patch release; Simuliris CI names4.14.0; all inspected package lower bounds are satisfied. Not an already-executed Simuliris build."
+  },
+  "dune": {
+    "version": "3.17.2",
+    "basis": "Satisfies Rocq runtime>=3.8<3.24 and Equations/Rocq-Elpi>=3.13; no need current latest."
+  },
+  "rocq": {
+    "runtime": "9.2.0",
+    "core": "9.2.0",
+    "coq_core_compat": "9.2.0",
+    "stdlib_proposed": "9.2.0",
+    "source_url": "https://github.com/rocq-prover/rocq/releases/download/V9.2.0/rocq-9.2.0.tar.gz",
+    "source_sha256": "a45280ab4fbaac7540b136a6b073b4a6db15739ec1e149bded43fa6f4fc25f20",
+    "stdlib_url": "https://github.com/coq/stdlib/releases/download/V9.2.0/stdlib-9.2.0.tar.gz",
+    "stdlib_sha256": "f2ee1cb0b9af3e7b20625f0e9ec4becb7a27bb453d53b9bc0ea3d67bc8b3142c",
+    "gates": "runtime OCaml>=4.14.0,Dune>=3.8<3.24; Equations needs stdlib>=9.1 and coq-core>=9.2 compatibility package; stdlib9.2.0 is an explicit proposed pin, not an artifact lockfile fact."
+  },
+  "iris": {
+    "package": "rocq-iris.dev.2026-09-10.3.b3495ef9",
+    "revision": "b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b",
+    "repository": "https://github.com/rocq-iris/iris",
+    "archive_candidate_url": "https://github.com/rocq-iris/iris/archive/b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b.tar.gz",
+    "archive_sha256": "not acquired in this planning task; parent must hash actual archive",
+    "opam_snapshot": "3c21518b509d33676776c36e160de1d76835b801",
+    "metadata_sha256": "bec95f6c10b8cf47a989e1bf88e35dfe05e2e6979ab57c7c8360689534b2b9d0",
+    "gate": "Rocq core>=9.0<9.4; stdlib>=9.0; exact stdpp version ORdev; rocq-elpi>=3"
+  },
+  "stdpp": {
+    "package": "rocq-stdpp.dev.2026-09-09.1.c3186aad",
+    "revision": "c3186aad493872e3a9774ac0b42ca2f591b05835",
+    "repository": "https://github.com/rocq-iris/stdpp",
+    "archive_candidate_url": "https://github.com/rocq-iris/stdpp/archive/c3186aad493872e3a9774ac0b42ca2f591b05835.tar.gz",
+    "archive_sha256": "not acquired in this planning task; parent must hash actual archive",
+    "opam_snapshot": "3c21518b509d33676776c36e160de1d76835b801",
+    "metadata_sha256": "90373147396e6e5645375ac285e2a9739e01c8da7f7227bf04b86593fea58d16",
+    "gate": "Rocq core>=9.0<9.4; stdlib>=9.0"
+  },
+  "equations": {
+    "package": "rocq-equations.1.3.2+9.2",
+    "metadata_git_blob": "0425d1c488ba32f54dbf3d58e21572da5507a3a2",
+    "source_url": "https://github.com/mattam82/Coq-Equations/archive/refs/tags/v1.3.2-9.2.tar.gz",
+    "source_sha512": "04fb7a776b5ef6c3e34d8bdb9fe5e8873b03bff5616ae563eccba4121ad92bb2f49c9a8e2f178cb168ba71426c6ee1ac9f8dee72107dad62923c9006f03fbb9e",
+    "gate": "Rocq core>=9.2<9.3; coq-core>=9.2; stdlib>=9.1; OCaml>=4.10; Dune>=3.13"
+  },
+  "rocq_elpi": {
+    "package": "rocq-elpi.3.5.1",
+    "metadata_git_blob": "91485f08c714e6c498a39c80408eb3120c419dd8",
+    "source_url": "https://github.com/LPCIC/coq-elpi/releases/download/v3.5.1/rocq-elpi-3.5.1.tar.gz",
+    "source_sha512": "59ed01cbc164d3f135a680a83839269c768cdfe21e44f807bf4511b1fd8658dd32c2120be7d71ad7db91cd5ba5de8eae740aee22c346aa77d41928cf5ee0c11f",
+    "gate": "Rocq core>=9.0+rc1<9.4; OCaml>=4.10; Dune>=3.13<3.24; Elpi>=3.7.1<3.8"
+  },
+  "elpi": {
+    "package": "elpi.3.7.3",
+    "metadata_git_blob": "1a800a40fef8d672ef073102f1a51a6306905947",
+    "metadata_x_commit_hash": "444696c089fabaa25225395ad06ca8144fe9f88f",
+    "source_url": "https://github.com/LPCIC/elpi/releases/download/v3.7.3/elpi-3.7.3.tbz",
+    "source_sha256": "6c68078b96d4c179734d829b25aad06c36e7fabd1c6385d2d6c0074a5112f7b9",
+    "gate": "OCaml>=4.13; Dune>=2.9; additional ordinary dependencies explicitly recorded in primary-package-metadata.json"
+  },
+  "not_required_by_selected_imports": [
+    "rocq-iris-heap-lang",
+    "rocq-stdpp-bitvector",
+    "rocq-stdpp-unstable",
+    "ITree",
+    "Paco"
+  ],
+  "remaining_setup_conditions": [
+    "Parent acquires/hashes exact Iris/stdpp source archives and reviews actual build/install scripts",
+    "Parent freezes full resolved transitive package versions/metadata/source hashes before install, not just direct versions",
+    "Fresh selected environment/tool identity check and explicit READY before agent container/build actions",
+    "No mixing with existing Coq8.19/Elpi2/Iris2024 prefix"
+  ]
+}

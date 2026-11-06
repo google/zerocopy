@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "aeneas/translation",
+    "aeneas/lean-backend",
+    "charon/llbc"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas translation pipeline selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Charon input producer pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "rust-toolchain": "nightly-2026-05-31",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Aeneas OCaml pipeline and Lean primitives",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Aeneas-paired Charon input producer",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Charon comment metadata consumed by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "minirust/semantics",
+    "minirust/places-values",
+    "minirust/intrinsics",
+    "rust/layout",
+    "rust/validity"
+  ],
+  "subjects": [
+    {
+      "name": "minirust",
+      "identity": {
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "rust",
+      "identity": {
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "rustc-layout-probe",
+      "identity": {
+        "darwin_rustc": "1.99.0 (b940084d7eb6a299eb4bfeb8e34901bc051e7ac4)",
+        "linux_rustc": "1.101.0-nightly (19833af7224424e8b53e288097d56b6af43d5bcf)"
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "MiniRust core and minimize importer",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Rust compiler and core/alloc source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust wasm32 standard-library component",
+      "identity": {
+        "artifact": "rust-std-1.99.0-wasm32-unknown-unknown.tar.xz",
+        "sha256": "b760b0c9b08a6843c05de0098bd6802e23178ff473c4715ae57c1d679125bf22"
+      }
+    },
+    {
+      "name": "Node WebAssembly execution environment",
+      "identity": {
+        "version": "24.21.0",
+        "v8": "13.6.233.17-node.53"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Rust exposed-provenance API documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "url": "https://doc.rust-lang.org/std/ptr/fn.with_exposed_provenance.html"
+      }
+    },
+    {
+      "name": "Lean proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Rust atomic documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+        "path": "library/core/src/sync/atomic.rs"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "lean/kernel",
+    "lean/mechanization",
+    "anneal/tcb-audit"
+  ],
+  "subjects": [
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Anneal repository principles and agent instructions",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal verification framework and trusted boundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Lean 4.30.0-rc2 persistent collections",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

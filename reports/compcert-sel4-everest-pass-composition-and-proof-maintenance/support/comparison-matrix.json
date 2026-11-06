@@ -1,0 +1,42 @@
+{
+  "schema": "anneal-reference/operational-functional-comparison/v1",
+  "observed_at": "2026-09-27",
+  "dimensions": [
+    {
+      "dimension": "primary object",
+      "operational_semantics": "A transition/evaluation relation over source-level or low-level machine states and observable behavior.",
+      "functional_translation": "A translated term/function intended to represent the supported source computation in a proof-friendly target language.",
+      "obligation": "State which semantics is authoritative and prove or assume the relation from source executions to target evaluations."
+    },
+    {
+      "dimension": "mutable state and borrowing",
+      "operational_semantics": "State, memory, ownership resources, or borrows remain explicit components of execution.",
+      "functional_translation": "State changes can become functional inputs/outputs; Aeneas uses ownership-centric values and backward functions to reconstruct values returned through mutable borrows.",
+      "obligation": "Show that the functionalized state flow covers every source behavior relevant to the theorem."
+    },
+    {
+      "dimension": "control flow",
+      "operational_semantics": "Branches, loops, divergence, and stuck states are represented by execution rules or traces.",
+      "functional_translation": "Branches become target conditionals; loops/recursion require a target representation and may require termination or partiality machinery.",
+      "obligation": "Preserve finite, diverging, and failing behaviors according to the claimed correctness relation rather than comparing only final return values."
+    },
+    {
+      "dimension": "environment and effects",
+      "operational_semantics": "Nondeterministic input, I/O, externals, and other effects can appear directly in the behavior relation.",
+      "functional_translation": "Effects must be rejected, modeled in the target, threaded explicitly, or isolated behind assumptions/models.",
+      "obligation": "Do not silently replace an effectful source operation with a pure deterministic target function unless a separate equivalence/irrelevance argument justifies it."
+    },
+    {
+      "dimension": "proof ergonomics",
+      "operational_semantics": "Source correspondence is direct, but proofs may carry explicit machine/memory/resource reasoning.",
+      "functional_translation": "Target proofs can use ordinary functional reasoning and theorem-prover automation over the translated program.",
+      "obligation": "Count translator/model correctness in the trusted or proved chain; easier target proofs do not erase that bridge."
+    },
+    {
+      "dimension": "typical correctness evidence",
+      "operational_semantics": "Simulation/refinement between source and target transition systems, as in CompCert.",
+      "functional_translation": "A proof that the translated function simulates/refines source semantics, a per-run certificate/validator, or an explicit trust assumption for the translator.",
+      "obligation": "Distinguish a theorem about the translated term from a theorem connecting that term back to the source program."
+    }
+  ]
+}

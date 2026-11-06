@@ -1,0 +1,1291 @@
+[WARNING] Running as root is not recommended
+File "hol_loader.ml", line 30, characters 41-65:
+30 | let file_loader = ref (fun (s:string) -> failwith "uninitialized"; false);;
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+Warning 21 [nonreturning-statement]: this statement never returns (or has an unsound type.)
+File "./hol_loader.ml", line 30, characters 41-65:
+30 | let file_loader = ref (fun (s:string) -> failwith "uninitialized"; false);;
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+Warning 21 [nonreturning-statement]: this statement never returns (or has an unsound type.)
++ camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo 'hol_lib_inlined.ml' > /tmp/ocamlpp473e71
+    * HOL-Light syntax in effect *
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", line 238, characters 19-71:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Tyapp ("fun", dty::rty::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", lines 235-239, characters 4-53:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Abs ((Const (_, _)|Comb (_, _)|Abs (_, _)), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", lines 330-334, characters 4-65:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Abs ((Const (_, _)|Comb (_, _)|Abs (_, _)), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", lines 443-456, characters 4-22:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Abs (Var (_, _), _), Abs ((Const (_, _)|Comb (_, _)|Abs (_, _)), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", line 594, characters 45-57:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Const (_, _)|Comb (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/basics.ml", line 150, characters 18-24:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/basics.ml", lines 172-174, characters 2-29:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: ("fun", ty::_::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/nets.ml", line 93, characters 52-61:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/printer.ml", lines 662-667, characters 6-35:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/printer.ml", lines 669-677, characters 6-31:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_::r::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/preterm.ml", lines 365-374, characters 4-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Typing (_, _)
+
+File "/home/opam/anneal-cross-sources/hol-light/preterm.ml", lines 382-392, characters 4-41:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Typing (_, _)
+
+File "/home/opam/anneal-cross-sources/hol-light/parser.ml", line 288, characters 16-53:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Combp (Combp (Varp ("", _), _), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/parser.ml", line 344, characters 16-24:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Resword _
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 169, characters 17-23:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 174, characters 17-23:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 186, characters 21-27:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 305, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 310, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 344, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 349, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 387, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 392, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 134, characters 24-26:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 135, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 177, characters 31-35:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 246, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 337, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 359, characters 28-32:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 378, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 388, characters 14-23:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 437, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 442, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 448, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 454, characters 14-24:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 462, characters 13-17:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 468, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 489, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 502, characters 16-20:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 508, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 532, characters 39-48:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 538, characters 32-36:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 544, characters 34-38:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 555, characters 16-25:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 559, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 566, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 591, characters 29-33:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 721, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 734, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 888, characters 16-20:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", lines 983-984, characters 2-7:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    ((_, (_, _, _)), [], _)::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", lines 991-992, characters 2-16:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    ((_, (_, _, _)), (_, _)::_, _)::_
+
+File "/home/opam/anneal-cross-sources/hol-light/itab.ml", line 21, characters 10-12:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/simp.ml", lines 95-117, characters 2-50:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (Comb (Const ("", _), t), Comb (Comb (Const ("", _), _), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_defs.ml", lines 84-89, characters 6-22:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_defs.ml", line 262, characters 32-35:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: t::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/canon.ml", line 117, characters 6-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_not_forall::pth_not_exists::pth_not_exu::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 234, characters 30-36:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 246, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 252, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 269, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 274, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 304, characters 17-23:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 329, characters 31-37:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", lines 431-435, characters 16-76:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 318-321, characters 8-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var_ (_, _)|Const_ (_, _, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 459-460, characters 18-38:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", line 1093, characters 18-34:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", line 1121, characters 18-34:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", line 1602, characters 19-36:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 1755-1756, characters 4-53:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 1784-1790, characters 12-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (hs1, [])
+
+File "/home/opam/anneal-cross-sources/hol-light/nums.ml", line 156, characters 4-39:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    NOT_SUC::num_INDUCTION::num_Axiom::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/nums.ml", line 261, characters 8-71:
+Warning 10 [non-unit-statement]: this expression should have type unit.
+
+File "/home/opam/anneal-cross-sources/hol-light/nums.ml", line 286, characters 39-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Const (_, _)|Comb (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", line 222, characters 6-58:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (NUMERAL_tm, Comb (BIT0_tm, (Var (_, _)|Const (_, _)|Abs (_, _))))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 259-262, characters 4-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Comb (Const ("", _), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 280-292, characters 6-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Const ("", _), Const ("", _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 399-401, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 403-405, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 395-405, characters 6-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: 4
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 418-420, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 422-424, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 414-424, characters 6-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: 4
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 573-581, characters 10-32:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 584-589, characters 12-75:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 592-595, characters 12-76:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 598-601, characters 12-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 699-700, characters 16-48:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (_, Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 926-929, characters 20-58:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_, Comb (_, Comb (_, Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 933-953, characters 14-56:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (Comb (_, ltm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 977-981, characters 14-60:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: tm3::tm4::tm5::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 958-981, characters 14-60:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (Comb (_, ltm),
+      Comb
+        (Comb (_, ptm),
+        Comb (Comb (_, mtm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 895-981, characters 6-60:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Const ("", _)
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 1531-1560, characters 2-32:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_0::pth_even::pth_odd::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/normalizer.ml", lines 95-535, characters 4-59:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pthm_01::pthm_02::pthm_03::pthm_04::pthm_05::pthm_06::pthm_07::pthm_08::
+    pthm_09::pthm_10::pthm_11::pthm_12::pthm_13::pthm_14::pthm_15::pthm_16::
+    pthm_17::pthm_18::pthm_19::pthm_20::pthm_21::pthm_22::pthm_23::pthm_24::
+    pthm_25::pthm_26::pthm_27::pthm_28::pthm_29::pthm_30::pthm_31::pthm_32::
+    pthm_33::pthm_34::pthm_35::pthm_36::pthm_37::pthm_38::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/grobner.ml", lines 552-558, characters 10-25:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (vars, [])
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_types.ml", lines 796-801, characters 8-69:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (_, ty1::ty2::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_types.ml", lines 807-810, characters 8-73:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (_, ty1::ty2::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 763, characters 12-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: h_tm::n_tm::t_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 764, characters 12-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_init::pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 791, characters 12-33:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    h_tm::m_tm::n_tm::t_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 792, characters 12-31:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 821, characters 12-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: h_tm::l_tm::t_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 822, characters 12-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_init::pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 850, characters 12-33:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    f_tm::l_tm::m_tm::n_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 851, characters 12-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_init::pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realax.ml", line 149, characters 6-47:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    DIST_TRIANGLE::DIST_ADD2::DIST_ADD2_REV::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realax.ml", lines 1299-1303, characters 4-68:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    HREAL_OF_NUM_EQ::HREAL_OF_NUM_LE::HREAL_OF_NUM_ADD::HREAL_OF_NUM_MUL::
+    HREAL_LE_REFL::HREAL_LE_TRANS::HREAL_LE_ANTISYM::HREAL_LE_TOTAL::
+    HREAL_LE_ADD::HREAL_LE_EXISTS::HREAL_ARCH::HREAL_ADD_SYM::
+    HREAL_ADD_ASSOC::HREAL_ADD_LID::HREAL_ADD_LCANCEL::HREAL_MUL_SYM::
+    HREAL_MUL_ASSOC::HREAL_MUL_LID::HREAL_ADD_LDISTRIB::HREAL_MUL_LINV::
+    HREAL_INV_0::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realax.ml", lines 1739-1745, characters 4-70:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    REAL_ADD_SYM::REAL_ADD_ASSOC::REAL_ADD_LID::REAL_ADD_LINV::REAL_MUL_SYM::
+    REAL_MUL_ASSOC::REAL_MUL_LID::REAL_ADD_LDISTRIB::REAL_LE_REFL::
+    REAL_LE_ANTISYM::REAL_LE_TRANS::REAL_LE_TOTAL::REAL_LE_LADD_IMP::
+    REAL_LE_MUL::REAL_INV_0::REAL_MUL_LINV::REAL_OF_NUM_EQ::REAL_OF_NUM_LE::
+    REAL_OF_NUM_ADD::REAL_OF_NUM_MUL::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 234-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_eq1a::pth_eq1b::pth_eq2a::pth_eq2b::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 223-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_gt1::pth_gt2a::pth_gt2b::pth_gt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 212-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_ge1::pth_ge2a::pth_ge2b::pth_ge3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 200-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_lt1::pth_lt2a::pth_lt2b::pth_lt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 187-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_le1::pth_le2a::pth_le2b::pth_le3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 284-346, characters 2-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth1::pth2::pth3::pth4::pth5::pth6::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realarith.ml", lines 266-268, characters 6-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    REAL_LT_CONV::REAL_LE_CONV::REAL_GT_CONV::REAL_GE_CONV::REAL_EQ_CONV::
+    REAL_NOT_LT_CONV::REAL_NOT_LE_CONV::REAL_NOT_GT_CONV::REAL_NOT_GE_CONV::
+    _::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 927-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_eq1a::pth_eq1b::pth_eq2a::pth_eq2b::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 916-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_gt1::pth_gt2a::pth_gt2b::pth_gt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 905-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_ge1::pth_ge2a::pth_ge2b::pth_ge3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 893-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_lt1::pth_lt2a::pth_lt2b::pth_lt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 880-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_le1::pth_le2a::pth_le2b::pth_le3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 977-1039, characters 2-46:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth1::pth2::pth3::pth4::pth5::pth6::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/iterate.ml", line 1945, characters 6-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: pth_0::pth_1::pth_2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/iterate.ml", line 2793, characters 6-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: pth_0::pth_1::pth_2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/cart.ml", lines 434-439, characters 6-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (_, [])
+
+File "/home/opam/anneal-cross-sources/hol-light/cart.ml", lines 410-440, characters 2-34:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_num::pth0::pth1::pth_one::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/define.ml", line 500, characters 8-29:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: simp1::simp2::simp3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/define.ml", lines 726-728, characters 8-50:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+File "hol_loader.ml", line 30, characters 41-65:
+30 | let file_loader = ref (fun (s:string) -> failwith "uninitialized"; false);;
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+Warning 21 [nonreturning-statement]: this statement never returns (or has an unsound type.)
++ as  -o 'hol_loader.o' '/tmp/camlasm3e80c7.s'
++ camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo 'hol_lib_inlined.ml' > /tmp/ocamlppb527cf
+    * HOL-Light syntax in effect *
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", line 238, characters 19-71:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Tyapp ("fun", dty::rty::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", lines 235-239, characters 4-53:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Abs ((Const (_, _)|Comb (_, _)|Abs (_, _)), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", lines 330-334, characters 4-65:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Abs ((Const (_, _)|Comb (_, _)|Abs (_, _)), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", lines 443-456, characters 4-22:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Abs (Var (_, _), _), Abs ((Const (_, _)|Comb (_, _)|Abs (_, _)), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/fusion.ml", line 594, characters 45-57:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Const (_, _)|Comb (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/basics.ml", line 150, characters 18-24:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/basics.ml", lines 172-174, characters 2-29:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: ("fun", ty::_::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/nets.ml", line 93, characters 52-61:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/printer.ml", lines 662-667, characters 6-35:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/printer.ml", lines 669-677, characters 6-31:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_::r::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/preterm.ml", lines 365-374, characters 4-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Typing (_, _)
+
+File "/home/opam/anneal-cross-sources/hol-light/preterm.ml", lines 382-392, characters 4-41:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Typing (_, _)
+
+File "/home/opam/anneal-cross-sources/hol-light/parser.ml", line 288, characters 16-53:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Combp (Combp (Varp ("", _), _), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/parser.ml", line 344, characters 16-24:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Resword _
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 169, characters 17-23:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 174, characters 17-23:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 186, characters 21-27:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 305, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 310, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 344, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 349, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 387, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/drule.ml", line 392, characters 19-25:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 134, characters 24-26:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 135, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 177, characters 31-35:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 246, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 337, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 359, characters 28-32:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 378, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 388, characters 14-23:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 437, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 442, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 448, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 454, characters 14-24:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 462, characters 13-17:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 468, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 489, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 502, characters 16-20:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 508, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 532, characters 39-48:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 538, characters 32-36:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 544, characters 34-38:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 555, characters 16-25:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th1::th2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 559, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 566, characters 25-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 591, characters 29-33:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 721, characters 14-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 734, characters 10-14:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", line 888, characters 16-20:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: th::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", lines 983-984, characters 2-7:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    ((_, (_, _, _)), [], _)::_
+
+File "/home/opam/anneal-cross-sources/hol-light/tactics.ml", lines 991-992, characters 2-16:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    ((_, (_, _, _)), (_, _)::_, _)::_
+
+File "/home/opam/anneal-cross-sources/hol-light/itab.ml", line 21, characters 10-12:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: _::_
+
+File "/home/opam/anneal-cross-sources/hol-light/simp.ml", lines 95-117, characters 2-50:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (Comb (Const ("", _), t), Comb (Comb (Const ("", _), _), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_defs.ml", lines 84-89, characters 6-22:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_defs.ml", line 262, characters 32-35:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: t::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/canon.ml", line 117, characters 6-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_not_forall::pth_not_exists::pth_not_exu::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 234, characters 30-36:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 246, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 252, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 269, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 274, characters 23-29:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 304, characters 17-23:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", line 329, characters 31-37:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/meson.ml", lines 431-435, characters 16-76:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 318-321, characters 8-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var_ (_, _)|Const_ (_, _, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 459-460, characters 18-38:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", line 1093, characters 18-34:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", line 1121, characters 18-34:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", line 1602, characters 19-36:
+Warning 52 [fragile-literal-pattern]: Code should not depend on the actual
+  values of this constructor's arguments.
+  They are only for information and may change in future versions.
+  (see manual section 13.5.3)
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 1755-1756, characters 4-53:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
+
+File "/home/opam/anneal-cross-sources/hol-light/impconv.ml", lines 1784-1790, characters 12-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (hs1, [])
+
+File "/home/opam/anneal-cross-sources/hol-light/nums.ml", line 156, characters 4-39:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    NOT_SUC::num_INDUCTION::num_Axiom::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/nums.ml", line 261, characters 8-71:
+Warning 10 [non-unit-statement]: this expression should have type unit.
+
+File "/home/opam/anneal-cross-sources/hol-light/nums.ml", line 286, characters 39-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Const (_, _)|Comb (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", line 222, characters 6-58:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (NUMERAL_tm, Comb (BIT0_tm, (Var (_, _)|Const (_, _)|Abs (_, _))))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 259-262, characters 4-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Comb (Const ("", _), _)
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 280-292, characters 6-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Const ("", _), Const ("", _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 399-401, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 403-405, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 395-405, characters 6-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: 4
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 418-420, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 422-424, characters 13-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    (Var (_, _)|Const (_, _)|Abs (_, _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 414-424, characters 6-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: 4
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 573-581, characters 10-32:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 584-589, characters 12-75:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 592-595, characters 12-76:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 598-601, characters 12-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_,
+      Comb (Comb (_, atm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _)))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 699-700, characters 16-48:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (_, Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 926-929, characters 20-58:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (_, Comb (_, Comb (_, Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 933-953, characters 14-56:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb (Comb (_, ltm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 977-981, characters 14-60:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: tm3::tm4::tm5::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 958-981, characters 14-60:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    Comb
+      (Comb (_, ltm),
+      Comb
+        (Comb (_, ptm),
+        Comb (Comb (_, mtm), Comb ((Var (_, _)|Const (_, _)|Abs (_, _)), _))))
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 895-981, characters 6-60:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: Const ("", _)
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_num.ml", lines 1531-1560, characters 2-32:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_0::pth_even::pth_odd::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/normalizer.ml", lines 95-535, characters 4-59:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pthm_01::pthm_02::pthm_03::pthm_04::pthm_05::pthm_06::pthm_07::pthm_08::
+    pthm_09::pthm_10::pthm_11::pthm_12::pthm_13::pthm_14::pthm_15::pthm_16::
+    pthm_17::pthm_18::pthm_19::pthm_20::pthm_21::pthm_22::pthm_23::pthm_24::
+    pthm_25::pthm_26::pthm_27::pthm_28::pthm_29::pthm_30::pthm_31::pthm_32::
+    pthm_33::pthm_34::pthm_35::pthm_36::pthm_37::pthm_38::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/grobner.ml", lines 552-558, characters 10-25:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (vars, [])
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_types.ml", lines 796-801, characters 8-69:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (_, ty1::ty2::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/ind_types.ml", lines 807-810, characters 8-73:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (_, ty1::ty2::_::_)
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 763, characters 12-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: h_tm::n_tm::t_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 764, characters 12-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_init::pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 791, characters 12-33:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    h_tm::m_tm::n_tm::t_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 792, characters 12-31:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 821, characters 12-28:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: h_tm::l_tm::t_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 822, characters 12-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_init::pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 850, characters 12-33:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    f_tm::l_tm::m_tm::n_tm::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/lists.ml", line 851, characters 12-40:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_init::pth_base::pth_step::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realax.ml", line 149, characters 6-47:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    DIST_TRIANGLE::DIST_ADD2::DIST_ADD2_REV::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realax.ml", lines 1299-1303, characters 4-68:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    HREAL_OF_NUM_EQ::HREAL_OF_NUM_LE::HREAL_OF_NUM_ADD::HREAL_OF_NUM_MUL::
+    HREAL_LE_REFL::HREAL_LE_TRANS::HREAL_LE_ANTISYM::HREAL_LE_TOTAL::
+    HREAL_LE_ADD::HREAL_LE_EXISTS::HREAL_ARCH::HREAL_ADD_SYM::
+    HREAL_ADD_ASSOC::HREAL_ADD_LID::HREAL_ADD_LCANCEL::HREAL_MUL_SYM::
+    HREAL_MUL_ASSOC::HREAL_MUL_LID::HREAL_ADD_LDISTRIB::HREAL_MUL_LINV::
+    HREAL_INV_0::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realax.ml", lines 1739-1745, characters 4-70:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    REAL_ADD_SYM::REAL_ADD_ASSOC::REAL_ADD_LID::REAL_ADD_LINV::REAL_MUL_SYM::
+    REAL_MUL_ASSOC::REAL_MUL_LID::REAL_ADD_LDISTRIB::REAL_LE_REFL::
+    REAL_LE_ANTISYM::REAL_LE_TRANS::REAL_LE_TOTAL::REAL_LE_LADD_IMP::
+    REAL_LE_MUL::REAL_INV_0::REAL_MUL_LINV::REAL_OF_NUM_EQ::REAL_OF_NUM_LE::
+    REAL_OF_NUM_ADD::REAL_OF_NUM_MUL::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 234-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_eq1a::pth_eq1b::pth_eq2a::pth_eq2b::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 223-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_gt1::pth_gt2a::pth_gt2b::pth_gt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 212-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_ge1::pth_ge2a::pth_ge2b::pth_ge3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 200-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_lt1::pth_lt2a::pth_lt2b::pth_lt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 187-246, characters 2-52:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_le1::pth_le2a::pth_le2b::pth_le3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/calc_int.ml", lines 284-346, characters 2-51:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth1::pth2::pth3::pth4::pth5::pth6::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/realarith.ml", lines 266-268, characters 6-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    REAL_LT_CONV::REAL_LE_CONV::REAL_GT_CONV::REAL_GE_CONV::REAL_EQ_CONV::
+    REAL_NOT_LT_CONV::REAL_NOT_LE_CONV::REAL_NOT_GT_CONV::REAL_NOT_GE_CONV::
+    _::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 927-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_eq1a::pth_eq1b::pth_eq2a::pth_eq2b::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 916-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_gt1::pth_gt2a::pth_gt2b::pth_gt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 905-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_ge1::pth_ge2a::pth_ge2b::pth_ge3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 893-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_lt1::pth_lt2a::pth_lt2b::pth_lt3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 880-939, characters 2-37:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_le1::pth_le2a::pth_le2b::pth_le3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/int.ml", lines 977-1039, characters 2-46:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth1::pth2::pth3::pth4::pth5::pth6::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/iterate.ml", line 1945, characters 6-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: pth_0::pth_1::pth_2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/iterate.ml", line 2793, characters 6-27:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: pth_0::pth_1::pth_2::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/cart.ml", lines 434-439, characters 6-18:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: (_, [])
+
+File "/home/opam/anneal-cross-sources/hol-light/cart.ml", lines 410-440, characters 2-34:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched:
+    pth_num::pth0::pth1::pth_one::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/define.ml", line 500, characters 8-29:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: simp1::simp2::simp3::_::_
+
+File "/home/opam/anneal-cross-sources/hol-light/define.ml", lines 726-728, characters 8-50:
+Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+  Here is an example of a case that is not matched: []
++ as  -o 'hol_lib.o' '/tmp/camlasm485a4d.s'

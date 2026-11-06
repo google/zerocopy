@@ -1,0 +1,125 @@
+{
+  "schema": "e33-preparation-consumer-catalog-v1",
+  "authority": "Future reviewed consumer independently fixes a request ID and this catalog digest. Candidate artifacts cannot select or replace that authority.",
+  "execution_status": "UNPERFORMED; preparation grant only",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "tools": "source-identities.json",
+  "observer_source_sha256": "6d203c833d496d1950b21def146d99eba0d6986649d42a32e0a4d549f1b83eba",
+  "profiles": [
+    {
+      "id": "host-subjects-opt0",
+      "enabled_for_execution": false,
+      "source": {
+        "path": "subjects.rs",
+        "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+      },
+      "selectors": {
+        "path": "selectors-subjects.json",
+        "sha256": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19"
+      },
+      "crate_name": "abi_subjects",
+      "target": "aarch64-apple-darwin",
+      "edition": "2021",
+      "optimization": 0,
+      "target_cpu": "apple-m1",
+      "target_features": "",
+      "panic": "abort",
+      "incremental": false,
+      "codegen_units": 1,
+      "compiler_threads": 1,
+      "extra_flags": []
+    },
+    {
+      "id": "host-subjects-opt2",
+      "enabled_for_execution": false,
+      "source": {
+        "path": "subjects.rs",
+        "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+      },
+      "selectors": {
+        "path": "selectors-subjects.json",
+        "sha256": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19"
+      },
+      "crate_name": "abi_subjects",
+      "target": "aarch64-apple-darwin",
+      "edition": "2021",
+      "optimization": 2,
+      "target_cpu": "apple-m1",
+      "target_features": "",
+      "panic": "abort",
+      "incremental": false,
+      "codegen_units": 1,
+      "compiler_threads": 1,
+      "extra_flags": []
+    },
+    {
+      "id": "host-vectors-opt0",
+      "enabled_for_execution": false,
+      "source": {
+        "path": "vectors.rs",
+        "sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8"
+      },
+      "selectors": {
+        "path": "selectors-vectors.json",
+        "sha256": "226282517f938453a434a0981e1490f817c27efe947da6af8ea288f910b9cebe"
+      },
+      "crate_name": "abi_vectors",
+      "target": "aarch64-apple-darwin",
+      "edition": "2021",
+      "optimization": 0,
+      "target_cpu": "apple-m1",
+      "target_features": "",
+      "panic": "abort",
+      "incremental": false,
+      "codegen_units": 1,
+      "compiler_threads": 1,
+      "extra_flags": []
+    },
+    {
+      "id": "host-vectors-opt2",
+      "enabled_for_execution": false,
+      "source": {
+        "path": "vectors.rs",
+        "sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8"
+      },
+      "selectors": {
+        "path": "selectors-vectors.json",
+        "sha256": "226282517f938453a434a0981e1490f817c27efe947da6af8ea288f910b9cebe"
+      },
+      "crate_name": "abi_vectors",
+      "target": "aarch64-apple-darwin",
+      "edition": "2021",
+      "optimization": 2,
+      "target_cpu": "apple-m1",
+      "target_features": "",
+      "panic": "abort",
+      "incremental": false,
+      "codegen_units": 1,
+      "compiler_threads": 1,
+      "extra_flags": []
+    }
+  ],
+  "optional_later_profile": {
+    "id": "windows-subjects-opt2",
+    "execution_status": "NOT authorized; matching std/core not installed; backend support unqueried",
+    "source": {
+      "path": "subjects.rs",
+      "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+    },
+    "selectors": {
+      "path": "selectors-subjects.json",
+      "sha256": "cbd98138ab30a97addf35798fa3c784cb4f6374909395e064a1c04620e820b19"
+    },
+    "crate_name": "abi_subjects",
+    "target": "x86_64-pc-windows-msvc",
+    "edition": "2021",
+    "optimization": 2,
+    "target_cpu": "x86-64",
+    "target_features": "",
+    "panic": "abort",
+    "incremental": false,
+    "codegen_units": 1,
+    "compiler_threads": 1,
+    "purpose": "Actual Rust IR/asm/obj observations of indirect aggregates, >4 scalar arguments and caller shadow-space/stack accesses; no link or execution."
+  }
+}

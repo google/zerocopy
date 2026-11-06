@@ -1,0 +1,65 @@
+[
+  {
+    "phase": "native-eval-gate",
+    "path": "source-after.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "native-eval-gate",
+    "path": "source-readback.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "cache-acquisition",
+    "path": "source-after.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "cache-acquisition",
+    "path": "source-preflight.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "coqword-data-gate",
+    "path": "source-after.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "coqword-data-gate",
+    "path": "source-before.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "coqword-data-gate",
+    "path": "coqword-data-readback.stdout",
+    "bytes": 96768,
+    "sha256": "cb660b6232fa9cefc3a42b86e07a81cf839b6e151cea0b976abcfea96a6cbe7f",
+    "reason": "bulk source readback tar excluded; full source identity manifests and verification/receipt hashes retained"
+  },
+  {
+    "phase": "bootstrap",
+    "path": "image-export.tar",
+    "bytes": 154112512,
+    "sha256": null,
+    "reason": "OCI binary layer export excluded; manifest/config/layer digest binding retained"
+  },
+  {
+    "phase": "provisioning",
+    "path": "source-readback.stdout",
+    "bytes": 8208896,
+    "sha256": "c11d8e35f70c2bab57093288371ee9fc7df7064dbf0e6e6b4ee261851b671eab",
+    "reason": "bulk source tar excluded; source identity manifest retained"
+  }
+]

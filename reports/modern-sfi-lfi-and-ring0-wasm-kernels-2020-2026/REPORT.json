@@ -1,14 +1,11 @@
 {
   "topics": [
-    "sfi",
-    "sfi/lfi",
-    "sfi/aarch64",
-    "sfi/x86-64",
-    "sfi/binary-verification",
-    "sfi/spectre",
-    "wasm/ring0-kernels",
-    "kernel-isolation/drivers",
-    "lean4/formal-verification"
+    "systems",
+    "systems/sfi-lfi",
+    "systems/os-kernels",
+    "systems/sandboxing",
+    "isa/aarch64",
+    "isa/x86-64"
   ],
   "subjects": [
     {
@@ -97,7 +94,7 @@
     {
       "name": "Wasmachine: Bring the Edge up to Speed with a WebAssembly OS",
       "identity": {
-        "authors": " Elliott Wen and Gerald Weber",
+        "authors": "Elliott Wen and Gerald Weber",
         "venue": "2020 (arXiv / USENIX ATC track)",
         "arxiv": "2011.09265v1"
       }
@@ -120,18 +117,18 @@
       }
     },
     {
-      "name": "Anneal",
-      "identity": {
-        "repository": "joshlf/anneal",
-        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
-      }
-    },
-    {
       "name": "Lean 4",
       "identity": {
         "repository": "leanprover/lean4",
         "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
         "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
       }
     }
   ],

@@ -1,0 +1,212 @@
+[
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/separation_logic.mm1",
+    "git_blob": "a800891330bac6c84d6895385d6ffc14c1e8de29",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/separation_logic.mm1",
+    "bytes": 55623,
+    "sha256": "ec879399fb3da2a778464095b13d048732fc21f6506089a0fd14bd00eaa84d37",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/hol.mm0",
+    "git_blob": "e8ce518e20af56864a10de274232786f3dce2108",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hol.mm0",
+    "bytes": 10327,
+    "sha256": "4f20167798f060a0d481adef8c1a2fad06147551b7e43104052d93d0a5e0fb35",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/hol.mm1",
+    "git_blob": "511223ba723d5a7990fb1129bc8e49d8cf1de749",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hol.mm1",
+    "bytes": 23298,
+    "sha256": "9ee924d7b06e5db199fe93ed82c1d65df80a595a903def7daf742192b0e240ba",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/hello_mmc.mm0",
+    "git_blob": "30afc2421f00c46e6f27db56dd2f800b315c0b33",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hello_mmc.mm0",
+    "bytes": 182,
+    "sha256": "66152cb595a91f0d034e04e4ce5effa68dffab592daac6c69678b0f3d3c5eb3d",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/hello_mmc.mm1",
+    "git_blob": "08914f76578628d5b86d724a53f11531765e9f0c",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/hello_mmc.mm1",
+    "bytes": 1137,
+    "sha256": "92d4d0ad3909d1511199e85cdb5789ab47245c845fc4ef78629669cbfea5801f",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/compiler.mm0",
+    "git_blob": "99e158fee7bb46e41306b99d98a2bef9cea6c266",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/compiler.mm0",
+    "bytes": 512,
+    "sha256": "87b89d9c5cbc6c999f027289445135be87cc47e4688b41e4a93409a594d58034",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/compiler.mm1",
+    "git_blob": "27fe3da92d0968a46ce3751beb404e428340bba5",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/compiler.mm1",
+    "bytes": 1373,
+    "sha256": "7b2b5f804df819ef8efe152140243a320f8ee7d6fddc694c896554b04839a8bf",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/x86.mm0",
+    "git_blob": "ccba288b81b5a4aabf17b7df7318c6d00e25de9a",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/x86.mm0",
+    "bytes": 77303,
+    "sha256": "73c2ce9133f33a521d0ac547ea95b5a69e99ad67a26841b9c9f883d00e66ea2e",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "mm0.md",
+    "git_blob": "06fc2d122166d91fd025bebdb6403ced06c5081f",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/mm0.md",
+    "bytes": 28303,
+    "sha256": "ccea6dcd3b19c4b83f1bebf735738cd8cb97517643fca3f0eb4e8ebfd61492f1",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/build.sh",
+    "git_blob": "704ba273e34e538b2434658c7403dd18b516b07e",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/build.sh",
+    "bytes": 543,
+    "sha256": "8b7379eb8c6f777d6322861984099abc6b623a06dd0f9f6536318f05b1de9fdd",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/assembler-new.mm1",
+    "git_blob": "f607ab1e1ef8f2cfd12d91e2bc1e4ab257d02ba5",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/assembler-new.mm1",
+    "bytes": 37672,
+    "sha256": "7b6b13e3e478d7c9c57432d6327e6cb23c55006d391faabcb8c75d71deede626",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/x86.mm1",
+    "git_blob": "5201cde97f567942ae4171b7c9f32b7f33998796",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/x86.mm1",
+    "bytes": 289071,
+    "sha256": "d5faa8c19707698bf5fc77dee1d144a30e69429646580266e429cfb451faec8b",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/peano_hex.mm1",
+    "git_blob": "5f8f9eee4a934c30daf23f2900dc9d1179499dfe",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/peano_hex.mm1",
+    "bytes": 39061,
+    "sha256": "76fe94b569ecbf0aa051af20afe9c207bf8ec0b562c83c4f5d841118f2cc2d94",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/peano_hex.mm0",
+    "git_blob": "cf43dddb05a532aacb01f4653d614abb4110f797",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/peano_hex.mm0",
+    "bytes": 5852,
+    "sha256": "e2f5e461c568e0e3ef784b507e9111272b38956093df98b943ccc4cd806e351b",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/peano.mm1",
+    "git_blob": "cf308fd2ae8a60fbe2ce6414765255f37028a68d",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/peano.mm1",
+    "bytes": 335771,
+    "sha256": "13fd383aa02e434cba1350e9a8f12c440b5114d22f26506fece4aecdf1370079",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/peano.mm0",
+    "git_blob": "9fed058fbdc8e82fed0ca51a0c18ef060ed7fad3",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/peano.mm0",
+    "bytes": 27158,
+    "sha256": "463a7d6e4f4791313dedcfd737053dcf2cc07b466371e263c38a994c6fb72052",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "mm0-c/verifier.c",
+    "git_blob": "d9b16ce840dc4af5c427f9cfec065ccbd66b0c67",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/mm0-c/verifier.c",
+    "bytes": 31817,
+    "sha256": "71428a117c96a37b81e183ce57ef34b71e99efecba019e65a47ce27dd4faa4b5",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "README.md",
+    "git_blob": "f9eaf70a5d3885e7d28142609887a38735c7d77e",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/README.md",
+    "bytes": 10855,
+    "sha256": "a62a362b425e74cdfa0881c74a5ca08adc7951876d770757b6a2f9f6d5994e46",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/assembler-old.mm1",
+    "git_blob": "b635e340a8a5949d97576ba5960122493357f41c",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/assembler-old.mm1",
+    "bytes": 33426,
+    "sha256": "065e74ad5d8ee065cecbc66eaa0c745c52971212c81d6c48399ca720cf956379",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/compiler-new.mm1",
+    "git_blob": "641ffd0e11dbb5e1cae30e83fc49028004ce3d42",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/compiler-new.mm1",
+    "bytes": 75380,
+    "sha256": "94b010bb51c3257144e8cec85c887fcab26b11d43a5283efc1cfdc3ac63c0592",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  },
+  {
+    "repository": "digama0/mm0",
+    "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+    "path": "examples/x86_determ.mm1",
+    "git_blob": "430a6eba2708b8ea82512c3d5ed1a00e8a27e7b8",
+    "url": "https://raw.githubusercontent.com/digama0/mm0/0d414c0bfdaaeb7fea571895127abc1fa5a3d956/examples/x86_determ.mm1",
+    "bytes": 32676,
+    "sha256": "20f0309a7f4a7550fcf4e66318accf80624e95686d432cb1c6d2a31f08025782",
+    "inspection_role": "Source retrieval; substantive selected symbol scopes are stated in the appendices. No claim of complete-file proof or dependency audit."
+  }
+]

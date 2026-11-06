@@ -1,0 +1,133 @@
+{
+  "topics": [
+    "charon/determinism",
+    "charon/cargo-extraction",
+    "charon/llbc",
+    "aeneas/determinism"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas-pinned Charon 0.1.210 source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Separate standalone Charon 0.1.210 source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Standalone Charon nightly-2026.09.30 source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "2804f2dbc349a4c80201f7c528adf70f8d1ee5fa",
+        "tag": "nightly-2026.09.30",
+        "version": "0.1.274"
+      }
+    },
+    {
+      "name": "Charon upstream source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+      }
+    },
+    {
+      "name": "Charon dependency source (three-file comparison)",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "1aebab5f03a58067e5dc0ede2fec584117f54964"
+      }
+    },
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03",
+        "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    },
+    {
+      "name": "Charon June 3 release/source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "version": "0.1.210",
+        "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Charon June 2 release/source",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "6101d742777bf9f9b48979ac1ad4d2c07dfe10db",
+        "binary_sha256": "094ba2dc1d23f82be5ad2bb378e94ce8c66ca9d13c551edfeb8597b392558272"
+      }
+    },
+    {
+      "name": "Aeneas release selecting the Charon baseline",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Anneal authority instantiating the checklist",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "google/zerocopy library source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "subtree_git_oid": "574add5aabfa15dd2d16a4646f01f6f944d124d8"
+      }
+    },
+    {
+      "name": "Pinned Charon/Cargo/rustc toolchain",
+      "identity": {
+        "charon_repository": "AeneasVerif/charon",
+        "charon_revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "cargo_binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Aeneas short-name importer source",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "src_Main_ml_git_oid": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

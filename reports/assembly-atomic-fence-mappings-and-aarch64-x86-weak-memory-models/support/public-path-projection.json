@@ -1,0 +1,67 @@
+{
+  "purpose": "Explicit display-path privacy projection in compiler argv and LLVM source provenance. Historical producer hashes remain original observations; regenerated package manifest binds public bytes. Program/source and assembly instruction bytes are unchanged.",
+  "replacements": [
+    {
+      "meaning": "task workspace prefix",
+      "public": "<task-workspace>"
+    }
+  ],
+  "files": [
+    {
+      "path": "support/observed/aarch64-lse.ll",
+      "raw_sha256": "01219e213b22367f5c9e5111a922b4af5e694b3e2eaae295e7acfcc3459aef78",
+      "public_sha256": "44ded7b0f826f5da86b6da2418d7be9d11bafa078428fffb2e2490c92edfddc7",
+      "raw_bytes": 6221,
+      "public_bytes": 6095
+    },
+    {
+      "path": "support/observed/aarch64.ll",
+      "raw_sha256": "48976d523a7f13ccad66b1fb4f0cdaff87f29fb5c0506ce9df044eacf6bce86b",
+      "public_sha256": "e9c0bed7cb54381d7245120fea8979e108db246e2687c08e2fddecba5a7a2ce5",
+      "raw_bytes": 6133,
+      "public_bytes": 6007
+    },
+    {
+      "path": "support/observed/commands.json",
+      "raw_sha256": "fc2dabb26f1d00dc48abcd7ff1ee991ce8d49a780a25b418e6e3725cf7c041be",
+      "public_sha256": "a73298d6da1f76ed79b576a8aa016c8e634a77d5323337271f23fb80f0bae060",
+      "raw_bytes": 4909,
+      "public_bytes": 4153
+    },
+    {
+      "path": "support/observed/x86_64.ll",
+      "raw_sha256": "c8fb1cdd5ac9a967066ded753d56e8664ba042121a0531305ecaa3181a25bd8e",
+      "public_sha256": "afa75cb40eb5eee02baf0b3b2697900aaf9a434460a82029f5d69beea1e9c2bb",
+      "raw_bytes": 6210,
+      "public_bytes": 6084
+    },
+    {
+      "path": "support/observed-dispatcher/aarch64-lse.ll",
+      "raw_sha256": "01219e213b22367f5c9e5111a922b4af5e694b3e2eaae295e7acfcc3459aef78",
+      "public_sha256": "44ded7b0f826f5da86b6da2418d7be9d11bafa078428fffb2e2490c92edfddc7",
+      "raw_bytes": 6221,
+      "public_bytes": 6095
+    },
+    {
+      "path": "support/observed-dispatcher/aarch64.ll",
+      "raw_sha256": "48976d523a7f13ccad66b1fb4f0cdaff87f29fb5c0506ce9df044eacf6bce86b",
+      "public_sha256": "e9c0bed7cb54381d7245120fea8979e108db246e2687c08e2fddecba5a7a2ce5",
+      "raw_bytes": 6133,
+      "public_bytes": 6007
+    },
+    {
+      "path": "support/observed-dispatcher/commands.json",
+      "raw_sha256": "8bcbe982c5c45b35f331e48272b5774527f51c4744866ea8b2fd85800f72148f",
+      "public_sha256": "4153ebeaafeede4a1e5412ea84c93db82c8bea09705abd9a2664f1da806b43bc",
+      "raw_bytes": 4664,
+      "public_bytes": 3908
+    },
+    {
+      "path": "support/observed-dispatcher/x86_64.ll",
+      "raw_sha256": "c8fb1cdd5ac9a967066ded753d56e8664ba042121a0531305ecaa3181a25bd8e",
+      "public_sha256": "afa75cb40eb5eee02baf0b3b2697900aaf9a434460a82029f5d69beea1e9c2bb",
+      "raw_bytes": 6210,
+      "public_bytes": 6084
+    }
+  ]
+}

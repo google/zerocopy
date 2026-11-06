@@ -1,0 +1,56 @@
+[
+  {
+    "path": "reference-inline-assembly.md",
+    "url": "https://raw.githubusercontent.com/rust-lang/reference/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md",
+    "bytes": 74833,
+    "sha256": "a8bc41de14978228eeae4c4881291aacb70338084eaba86e6628020f9410c21e"
+  },
+  {
+    "path": "reference-codegen.md",
+    "url": "https://raw.githubusercontent.com/rust-lang/reference/2dafab96d919d6ab2884488e970bf95610ff83eb/src/attributes/codegen.md",
+    "bytes": 52868,
+    "sha256": "0adae17a6e03a6400098b3a395544495f2f02fd65992c4c9b584b96fe905da97"
+  },
+  {
+    "path": "reference-external-blocks.md",
+    "url": "https://raw.githubusercontent.com/rust-lang/reference/2dafab96d919d6ab2884488e970bf95610ff83eb/src/items/external-blocks.md",
+    "bytes": 23215,
+    "sha256": "304c39c4f0737c1abc22ec2735bac4d96bb51b7986a4771215325cc52b842b62"
+  },
+  {
+    "path": "reference-functions.md",
+    "url": "https://raw.githubusercontent.com/rust-lang/reference/2dafab96d919d6ab2884488e970bf95610ff83eb/src/items/functions.md",
+    "bytes": 28223,
+    "sha256": "9dcf49ccf23e4b8c1123466626e08750c4186fb21d28fbec3a67194d0c82e905"
+  },
+  {
+    "path": "reference-type-layout.md",
+    "url": "https://raw.githubusercontent.com/rust-lang/reference/2dafab96d919d6ab2884488e970bf95610ff83eb/src/type-layout.md",
+    "bytes": 29607,
+    "sha256": "0a789fdcf98cf73c9393d3fb639f1ad43dcab37c990c351fe6d195005db03152"
+  },
+  {
+    "path": "rust-abi.rs",
+    "url": "https://raw.githubusercontent.com/rust-lang/rust/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/compiler/rustc_ty_utils/src/abi.rs",
+    "bytes": 31702,
+    "sha256": "ae3176d6f9f772a551c785796a5fefa8cfe0ca3fe56ade2b7b4a720e65dc501f"
+  },
+  {
+    "path": "rust-callconv-mod.rs",
+    "url": "https://raw.githubusercontent.com/rust-lang/rust/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/compiler/rustc_target/src/callconv/mod.rs",
+    "bytes": 39721,
+    "sha256": "9b8618a657c0dcc8fb916f8ae5f49b2583cc42a06e9b05da892e46690f918350"
+  },
+  {
+    "path": "aapcs64.rst",
+    "url": "https://raw.githubusercontent.com/ARM-software/abi-aa/ec3e2fb69065768aa1caf298813a7808b50bc264/aapcs64/aapcs64.rst",
+    "bytes": 201396,
+    "sha256": "7f4e6a9c02bd88184f92d5309e062539babccc1fa90c4e4676d26b58df965dbd"
+  },
+  {
+    "path": "microsoft-x64.md",
+    "url": "https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/281a0a0eae55fe97f5decd244db18ed5096d4687/docs/build/x64-calling-convention.md",
+    "bytes": 18835,
+    "sha256": "043986cc9256b62c29b4b18fba978cfece03da69e8680054d210d40b625d89c0"
+  }
+]

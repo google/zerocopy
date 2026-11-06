@@ -1,0 +1,56 @@
+{
+  "accepted_pairs": [
+    [
+      "ub",
+      "ub"
+    ],
+    [
+      "ub",
+      "poison"
+    ],
+    [
+      "ub",
+      0
+    ],
+    [
+      "ub",
+      1
+    ],
+    [
+      "poison",
+      "poison"
+    ],
+    [
+      "poison",
+      0
+    ],
+    [
+      "poison",
+      1
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "assertions": {
+    "defined_source_cannot_refine_to_wrong_value": true,
+    "poison_source_cannot_refine_to_immediate_ub": true,
+    "restricted_input_check_misses_later_difference": true,
+    "source_failure_not_reflected_by_safe_refined_target": true,
+    "source_ub_refines_to_defined_target": true,
+    "weak_target_policy_accepts_wrong_functional_result": true
+  },
+  "outcomes": [
+    "ub",
+    "poison",
+    0,
+    1
+  ],
+  "pairs_checked": 16,
+  "scope": "original four-outcome semantics and five-input illustration; no upstream proof"
+}

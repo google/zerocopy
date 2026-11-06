@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+    "--file-headers",
+    "--section-headers",
+    "--syms",
+    "--reloc",
+    "--full-contents",
+    "--disassemble",
+    "--show-all-symbols",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-codegen/subjects-opt2-01/abi_subjects.o"
+  ],
+  "status": 0,
+  "before": {
+    "tool": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+    "object": "e60f2c51f131496d62fca49ce5c56ee0b28d1f36a9e490f5e9d4e4b2616b4e77"
+  },
+  "after": {
+    "tool": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+    "object": "e60f2c51f131496d62fca49ce5c56ee0b28d1f36a9e490f5e9d4e4b2616b4e77"
+  }
+}

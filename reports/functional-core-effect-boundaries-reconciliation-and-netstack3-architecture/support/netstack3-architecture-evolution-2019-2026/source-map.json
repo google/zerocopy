@@ -1,0 +1,71 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68",
+      "role": "current documentation/source basis",
+      "paths": [
+        "src/connectivity/network/netstack3/docs/CORE_BINDINGS.md",
+        "src/connectivity/network/netstack3/docs/STATIC_TYPING.md",
+        "src/connectivity/network/netstack3/docs/TENETS_AND_DESIGN_DECISIONS.md",
+        "src/connectivity/network/netstack3/docs/IMPROVEMENTS.md",
+        "src/connectivity/network/netstack3/docs/CONTROL_FLOW.md"
+      ]
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3",
+      "role": "historical source",
+      "focus": "UDP socket ID consolidation and accepted runtime invalid-state errors"
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d",
+      "role": "historical source",
+      "focus": "TCP connection status source-of-truth moved from bindings to core"
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "afe2e7ac4506c2f272c1b4a940cd2206b5756c19",
+      "role": "historical source",
+      "focus": "post-split netstack3_ip organization"
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "a06fa769e2417889de925accc793d4e527280bc1",
+      "role": "historical source",
+      "focus": "netstack3_device extraction"
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d",
+      "role": "historical source",
+      "focus": "multicast-forwarding dynamic state and lock/context integration"
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "09c560576ca357ffc0853c6251048af2a61b1543",
+      "role": "historical/current-near source",
+      "focus": "socket destruction notification and resource-reference lifecycle"
+    },
+    {
+      "repository": "fuchsia/fuchsia",
+      "revision": "d8e2be4f1380f1bcd25f1f1b4f9909f10760485c",
+      "role": "source snapshot",
+      "path": "src/connectivity/network/netstack3/core/tcp/src/socket.rs",
+      "focus": "PrimaryRc/StrongRc/WeakRc, DeadOnArrival, deferred destruction"
+    }
+  ],
+  "public_urls": [
+    "https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/connectivity/network/netstack3/docs/CORE_BINDINGS.md",
+    "https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/connectivity/network/netstack3/docs/STATIC_TYPING.md",
+    "https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/connectivity/network/netstack3/docs/TENETS_AND_DESIGN_DECISIONS.md",
+    "https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/connectivity/network/netstack3/docs/IMPROVEMENTS.md",
+    "https://fuchsia.googlesource.com/fuchsia/+/4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3",
+    "https://fuchsia.googlesource.com/fuchsia/+/40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d",
+    "https://fuchsia.googlesource.com/fuchsia/+/1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d",
+    "https://fuchsia.googlesource.com/fuchsia/+/09c560576ca357ffc0853c6251048af2a61b1543"
+  ],
+  "execution_evidence": "none; this is an architecture/history/source synthesis"
+}

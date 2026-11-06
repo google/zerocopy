@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "lake/readonly-dependencies",
+    "lake/build",
+    "lake/server-launch"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 / Lake v4.30.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Anneal V1 Lake relocation remediation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "64bd6d6f1142022eb9297e880214ceb2d87ef72a"
+      }
+    },
+    {
+      "name": "Anneal trace-prefix rewrite utility examined as historical remediation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/rewrite-lake-vendor.py"
+      }
+    },
+    {
+      "name": "synthetic Lake producer/consumer fixture",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/research/lake-probes.md"
+      }
+    },
+    {
+      "name": "Aeneas Lean package selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03",
+        "path": "backends/lean"
+      }
+    },
+    {
+      "name": "Mathlib selected by Aeneas",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Lean 4 and Lake v4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Mathlib v4.34.1",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

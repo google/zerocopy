@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal/v1-retrospective",
+    "aeneas/lean-backend",
+    "lake/artifact-cache",
+    "exocrate/archive"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal V1 clean-workspace/prebuilt-archive contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Aeneas revision consumed by retained Anneal V1",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    },
+    {
+      "name": "Zerocopy V1 source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Anneal integration-test worker-cache implementation before PR #3305",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d410c162d51977635ca5afac67d99a3b10327a94",
+        "path": "anneal/tests/integration.rs"
+      }
+    },
+    {
+      "name": "zerocopy Anneal V1",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/v1/"
+      }
+    }
+  ],
+  "observed_at": "2026-09-28"
+}

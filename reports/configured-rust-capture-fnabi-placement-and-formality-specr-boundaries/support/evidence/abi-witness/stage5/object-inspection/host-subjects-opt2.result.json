@@ -1,0 +1,20 @@
+{
+  "profile": "host-subjects-opt2",
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+    "--disassemble",
+    "--reloc",
+    "--syms",
+    "--section-headers",
+    "--full-contents",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/codegen/host-subjects-opt2/abi_subjects.o"
+  ],
+  "exit_code": 0,
+  "reader_sha256_before_after": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+  "object_sha256_before_after": "d32110ee7561bf797389e0d4877b2e6ea9e7f5fdfe5b99af9213a925b2f9dc80",
+  "stdout_sha256": "460b0773101cab85b3e043057fb71209a136fbaeff75dfbc16b71ee5bd2c9172",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stdout_bytes": 5622,
+  "metadata_sha256": "1c67a364585fc46ad940b9f1fa0456effcea36dafbd271c1446c1c75772ec1d1",
+  "native_execution": false
+}

@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "observed_at": "2026-09-30",
+  "question": "J009 — RLS to rust-analyzer: when sharing the compiler was not enough",
+  "sources": [
+    {
+      "role": "normative-history",
+      "name": "RFC 1317 — Rust Language Server",
+      "url": "https://rust-lang.github.io/rfcs/1317-ide.html",
+      "repository": "rust-lang/rfcs",
+      "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+      "note": "Original design goals: compiler-as-library, long-running service, database/work queue, planned lazy compilation and compiler reuse; explicitly identifies invalidation/cancellation refactoring as a hard requirement for keeping rustc alive."
+    },
+    {
+      "role": "implementation-documentation",
+      "name": "RLS architecture at archived repository tip",
+      "url": "https://github.com/rust-lang/rls/blob/04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc/architecture.md",
+      "repository": "rust-lang/rls",
+      "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+      "blob": "a7bde5799d73cbaf7319dad2773fd58a89a978a8",
+      "note": "Documents implemented save-analysis pipeline, in-process rustc invocations for dirty crates, dependency JSON cache, Cargo orchestration, VFS overlays, build squashing, and Racer coordination."
+    },
+    {
+      "role": "historical-project-account",
+      "name": "2019-11-18 IDE team meeting — Why 2 IDEs?",
+      "url": "https://blog.rust-lang.org/inside-rust/2019/12/04/ide-future/",
+      "date": "2019-12-04",
+      "note": "Contemporary Rust project account contrasts rust-analyzer's lazy performance/flexible API with RLS precision from rustc and describes save-analysis as a static compiler-derived view."
+    },
+    {
+      "role": "historical-project-account",
+      "name": "rust-analyzer first release",
+      "url": "https://rust-analyzer.github.io/blog/2020/04/20/first-release.html",
+      "date": "2020-04-20",
+      "note": "Explains persistent on-demand architecture, per-keystroke RLS whole-body rechecking, reuse of name-resolution results, 2020 rust-analyzer limitations, and cargo-check-on-save as a separate precision path."
+    },
+    {
+      "role": "normative-history",
+      "name": "RFC 2912 — Transition to rust-analyzer as official LSP",
+      "url": "https://rust-lang.github.io/rfcs/2912-rust-analyzer.html",
+      "repository": "rust-lang/rfcs",
+      "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+      "blob": "9f5986eeacafbea1ad99c6cbc4c24d2eab278c99",
+      "note": "Records the architectural trade: save-analysis precision versus on-demand latency, accepted short-term duplicate compiler logic, explicit divergence risk, library-ification goal, and the alternative of porting the approach back into rustc."
+    },
+    {
+      "role": "project-outcome",
+      "name": "RLS deprecation announcement",
+      "url": "https://blog.rust-lang.org/2022/07/01/RLS-deprecation/",
+      "date": "2022-07-01",
+      "note": "Rust Dev Tools Team states RLS architecture had limitations for low-latency, high-quality interactive responses and announces migration to rust-analyzer."
+    },
+    {
+      "role": "source-documentation",
+      "name": "Current rust-analyzer architecture",
+      "url": "https://github.com/rust-lang/rust-analyzer/blob/03fcb77246f2568adb0e9b2fa60d19c6cc1686f4/docs/book/src/contributing/architecture.md",
+      "repository": "rust-lang/rust-analyzer",
+      "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+      "note": "Current design: explicit in-memory inputs, lazy derived state, error-tolerant syntax, incremental HIR, transactional AnalysisHost plus immutable Analysis snapshots, partial operation during broken builds, separate flycheck/toolchain integration, isolated proc-macro process."
+    },
+    {
+      "role": "historical-source",
+      "name": "Early rust-analyzer architecture notes",
+      "url": "https://github.com/rust-lang/rust-analyzer/commit/5e21ae9418380b8c183c4663ca03bd63dd240aa9",
+      "repository": "rust-lang/rust-analyzer",
+      "revision": "5e21ae9418380b8c183c4663ca03bd63dd240aa9",
+      "date": "2018-01-10",
+      "note": "Shows error-tolerant parser/syntax-tree work at the start of rust-analyzer development. A later 2018 architecture update already described stateful analysis handing out immutable snapshots and on-demand query machinery."
+    },
+    {
+      "role": "anneal-authority",
+      "name": "Anneal principles and design contract",
+      "url": "https://github.com/google/zerocopy/tree/cc135f46155b72e4b51188525c2974a3b84acf92/anneal",
+      "repository": "google/zerocopy",
+      "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+      "note": "Used only to bound applicability: useful partial information must remain distinguishable from successful verification, and formal claims come from an accepted checking boundary."
+    }
+  ],
+  "limits": [
+    "No RLS, rust-analyzer, rustc, Lean, or Anneal executable was run for this report.",
+    "The report does not estimate current rust-analyzer/rustc semantic divergence frequency; historical sources establish that divergence existed and the current architecture remains a distinct analysis engine.",
+    "The 2020 library-ification vision is treated as intent, not as proof that rustc and rust-analyzer later converged to one semantic implementation.",
+    "Anneal conclusions are derived conditional analysis, not adopted design policy."
+  ]
+}

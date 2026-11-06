@@ -1,0 +1,48 @@
+{
+  "role": "Pinned source/contract inspection; no fresh formal build or theorem assumption audit",
+  "files": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/pin.rs",
+      "git_blob_sha": "58e63ff04af15b38638b9937d62fd28d6b591074",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/pin.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/future/future.rs",
+      "git_blob_sha": "fab13bb7c853586b2d0001e9fbd2e5a7d9379764",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/future/future.rs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+      "path": "library/core/src/ptr/mod.rs",
+      "git_blob_sha": "be3dc5e013b32bcffe9fd3e8d8d85382300508b8",
+      "url": "https://github.com/rust-lang/rust/blob/d8ef4f3fe7031514cbd7d056b7b058814987ecec/library/core/src/ptr/mod.rs"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/behavior-considered-undefined.md",
+      "git_blob_sha": "ff34d0af28ca3ec42f548abf6cd3bce5840a6798",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/behavior-considered-undefined.md"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/expressions/await-expr.md",
+      "git_blob_sha": "ee6d90f03145bd2cfe34fa859bc696d50eed967c",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/expressions/await-expr.md"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+      "path": "src/inline-assembly.md",
+      "git_blob_sha": "8f7e5355205fa037b08e587d4f9ee7d54f3e4890",
+      "url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md"
+    }
+  ],
+  "archive_members": []
+}

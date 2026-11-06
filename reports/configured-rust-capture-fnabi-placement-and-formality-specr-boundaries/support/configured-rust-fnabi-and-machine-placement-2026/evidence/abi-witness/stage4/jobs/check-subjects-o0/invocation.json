@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/e33_consumer_v3.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "host-subjects-opt0",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage4/runs/check-subjects-o0",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/capture-v3-host-subjects-opt0-01/reference.json"
+  ],
+  "env_exact": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "LANG": "C",
+    "LC_ALL": "C",
+    "TMPDIR": "${WORKSPACE}/work/execution/abi-witness/stage4/jobs/check-subjects-o0/tmp",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "wrapper_sha256": "3d2e0077ca64d06a85ce909e68dd7dd906f3749f2ea29a29b21e7cb471d05164",
+  "consumer_sha256": "c0c476f3fe9e1497f4484b4de4c493194cd82d2fd93f5853fbfd7241f7aeb6da",
+  "candidate_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8"
+}

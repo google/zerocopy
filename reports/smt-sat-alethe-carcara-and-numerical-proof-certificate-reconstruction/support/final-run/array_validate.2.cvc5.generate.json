@@ -1,0 +1,8 @@
+{
+  "tool": "cvc5",
+  "exit": 0,
+  "timeout": false,
+  "elapsed_ns": 13577250,
+  "stdout_bytes": 11281,
+  "stderr_bytes": 0
+}

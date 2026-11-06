@@ -1,0 +1,7 @@
+{
+  "path": "/usr/bin/clang",
+  "binary_sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2",
+  "version_file": "clang-version.txt",
+  "version": "Apple clang 21.0.0 (clang-2100.3.34.2)",
+  "selected_target": "x86_64-unknown-linux-gnu"
+}

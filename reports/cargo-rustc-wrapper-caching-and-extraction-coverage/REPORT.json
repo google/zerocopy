@@ -1,0 +1,124 @@
+{
+  "topics": [
+    "cargo/unit-graph",
+    "cargo/fingerprints",
+    "build/caching",
+    "rustc/incremental",
+    "anneal/rustc-capture"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Cargo",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "version": "1.98.0-nightly (2026-05-26)"
+      }
+    },
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    },
+    {
+      "name": "Anneal V1",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Cargo",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f3865b2a4d1acc5276f6b3c67d0e057f4dab3928"
+      }
+    },
+    {
+      "name": "Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "7d2cd0fbc092625ea371da704f15f80216d2220e"
+      }
+    },
+    {
+      "name": "sccache",
+      "identity": {
+        "repository": "mozilla/sccache",
+        "revision": "54b6f72a5d3583e8ccb8b83d44e5d41400d8039c"
+      }
+    },
+    {
+      "name": "Charon selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Anneal design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "channel": "nightly",
+        "version": "1.98.0-nightly",
+        "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "date": "2026-05-30",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8"
+      }
+    },
+    {
+      "name": "rustc-post96",
+      "identity": {
+        "channel": "nightly",
+        "version": "1.100.0-nightly",
+        "commit": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      }
+    },
+    {
+      "name": "charon",
+      "identity": {
+        "version": "0.1.210",
+        "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+        "sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

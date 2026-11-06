@@ -1,0 +1,79 @@
+{
+  "role": "source; no fresh build or proof checking",
+  "repository": "rocq-iris/iris",
+  "revision": "8e4909593a3a84f850d224a344cbd3a380672088",
+  "files": [
+    {
+      "path": "iris/program_logic/language.v",
+      "git_blob_sha": "b73c1ee70b1b57487f5a3418f87a40797395490c",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/language.v"
+    },
+    {
+      "path": "iris/program_logic/weakestpre.v",
+      "git_blob_sha": "f22217a066918cf60c2905f42c89f5d9d3f337ef",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/weakestpre.v"
+    },
+    {
+      "path": "iris/program_logic/adequacy.v",
+      "git_blob_sha": "81d48bbea9d574576d6a4905e47936b8b859bc5e",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/program_logic/adequacy.v"
+    },
+    {
+      "path": "iris/algebra/cmra.v",
+      "git_blob_sha": "b9b24670d726c082c0e4f42b59d25abac0148e39",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/cmra.v"
+    },
+    {
+      "path": "iris/algebra/updates.v",
+      "git_blob_sha": "d580d861d9de07f2d1283e45c91762268adf94dd",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/updates.v"
+    },
+    {
+      "path": "iris/algebra/auth.v",
+      "git_blob_sha": "590ea6c5486ffbd80ffbead04e8ad190677b8beb",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/auth.v"
+    },
+    {
+      "path": "iris/algebra/ofe.v",
+      "git_blob_sha": "92032a4ea4c29b23e9669eedf2297d1aee6af21d",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/algebra/ofe.v"
+    },
+    {
+      "path": "iris/bi/lib/fixpoint_banach.v",
+      "git_blob_sha": "9a3b1b6859568377974ee9e39aaa8f2fe3daffad",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/bi/lib/fixpoint_banach.v"
+    },
+    {
+      "path": "iris/base_logic/lib/proph_map.v",
+      "git_blob_sha": "60b5b3ac39749a2b007d76fd50dcf89daa59e8c2",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/base_logic/lib/proph_map.v"
+    },
+    {
+      "path": "iris/proofmode/classes.v",
+      "git_blob_sha": "c4845407c59fa582876c9968b652f4399e952009",
+      "url": "https://github.com/rocq-iris/iris/blob/8e4909593a3a84f850d224a344cbd3a380672088/iris/proofmode/classes.v"
+    }
+  ],
+  "historical_lifetime_source": {
+    "archive_url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz",
+    "archive_sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+    "members": [
+      {
+        "path": "lambda-rust-popl18/theories/lifetime/lifetime_sig.v",
+        "sha256": "2e324d03e5b173516d61d0e17361a10368d703321de559656e689de6c35ae809"
+      },
+      {
+        "path": "lambda-rust-popl18/theories/lifetime/lifetime.v",
+        "sha256": "7f814e0f4580ddd7ba164d9a54eaebba71a6d2537bf898d30fee88db71f2e0d7"
+      },
+      {
+        "path": "lambda-rust-popl18/theories/lifetime/model/borrow.v",
+        "sha256": "d4135b7c9a639900bc4961abe2ccb630eb22c0fb732000e2a3db939299779442"
+      },
+      {
+        "path": "lambda-rust-popl18/theories/lifetime/model/primitive.v",
+        "sha256": "0d3ec2d22a8b7d9ecb5e68ee937bbfa813cbc04ef3cee46952e799b0785caabe"
+      }
+    ]
+  }
+}

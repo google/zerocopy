@@ -1,0 +1,55 @@
+opam-version: "2.0"
+name: "lem"
+version: "2026-05-01"
+synopsis: "Lem is a tool for lightweight executable mathematics"
+description: """\
+Lem is a tool for lightweight executable mathematics, for writing,
+managing, and publishing large-scale portable semantic definitions,
+with export to LaTeX, executable code (currently OCaml) and
+interactive theorem provers (currently Coq, HOL4, and Isabelle/HOL).
+
+It is also intended as an intermediate language for generating
+definitions from domain-specific tools, and for porting definitions
+between interactive theorem proving systems."""
+maintainer: "Lem Devs <cl-lem-dev@lists.cam.ac.uk>"
+authors: [
+  "Dominic Mulligan"
+  "Francesco Zappa Nardelli"
+  "Gabriel Kerneis"
+  "Kathy Gray"
+  "Peter Boehm"
+  "Peter Sewell"
+  "Scott Owens"
+  "Thomas Tuerk"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Thomas Bauereiss"
+  "Stephen Kell"
+  "Thomas Williams"
+  "Lars Hupel"
+  "Basile Clement"
+]
+license: ["BSD-3-Clause" "LGPL-2.1-or-later"]
+homepage: "http://www.cl.cam.ac.uk/~pes20/lem/"
+bug-reports: "https://github.com/rems-project/lem/issues"
+depends: [
+  "ocaml" {>= "4.07.0"}
+  "ocamlfind" {build & >= "1.5.1"}
+  "ocamlbuild" {build}
+  "conf-findutils" {build}
+  "zarith" {>= "1.4"}
+  "num"
+]
+conflicts: ["ocaml-option-bytecode-only"]
+build: [make "INSTALL_DIR=%{prefix}%"]
+install: [make "INSTALL_DIR=%{prefix}%" "install"]
+remove: [make "INSTALL_DIR=%{prefix}%" "uninstall"]
+dev-repo: "git+https://github.com/rems-project/lem.git"
+url {
+  src:
+    "https://github.com/rems-project/lem/archive/refs/tags/2026-05-01.tar.gz"
+  checksum: [
+    "sha256=87782e0887613d5ec3d52831762f4537cd46f4817b03ec37e80831f52a5b7f03"
+    "sha512=5372418b2451ad44a91e8324926661b19fb402b7a33981977bc680be9d33f9c2ccaa2d2bf146c573fcfc5eb4d660cf06c6ac8278313ec52c560ee86b3fc5cfc6"
+  ]
+}

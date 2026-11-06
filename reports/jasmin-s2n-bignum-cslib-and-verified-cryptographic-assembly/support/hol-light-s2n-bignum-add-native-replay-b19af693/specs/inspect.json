@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "inspect",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa"
+  ],
+  "classification": "read-only exact assigned runtime identity query"
+}

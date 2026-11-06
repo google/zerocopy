@@ -1,0 +1,523 @@
+{
+  "topics": [
+    "verification",
+    "verification/program-logics",
+    "verification/separation-logic",
+    "verification/smt-certificates",
+    "verification/survey"
+  ],
+  "subjects": [
+    {
+      "name": "Dafny verifier and Dafny-to-Boogie translation",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb",
+        "path": "Source/DafnyCore/Verifier/BoogieGenerator.cs"
+      }
+    },
+    {
+      "name": "Boogie intermediate verification language and verifier",
+      "identity": {
+        "repository": "boogie-org/boogie",
+        "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Viper Silver error and result interface",
+      "identity": {
+        "repository": "viperproject/silver",
+        "revision": "da1c8993b66feb39976e3609e2580a4661137a0f",
+        "path": "src/main/scala/viper/silver/verifier/VerificationResult.scala"
+      }
+    },
+    {
+      "name": "Viper Silicon symbolic-execution backend",
+      "identity": {
+        "repository": "viperproject/silicon",
+        "revision": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Viper Carbon verification-condition backend",
+      "identity": {
+        "repository": "viperproject/carbon",
+        "revision": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "ViperServer verification service boundary",
+      "identity": {
+        "repository": "viperproject/viperserver",
+        "revision": "4cc5bbbe18d4a83e4b398da3904ba9696256611b",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "Dafny pinned and observed master source",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "branch": "master",
+        "revision": "5f717bf447b19d38cad1b69b1bf9a9f102feccfb"
+      }
+    },
+    {
+      "name": "Boogie pinned and observed master source",
+      "identity": {
+        "repository": "boogie-org/boogie",
+        "branch": "master",
+        "revision": "fcecf73a49d11ad3ab16729abd03169e5ecfd938"
+      }
+    },
+    {
+      "name": "Viper Silver pinned and observed master source",
+      "identity": {
+        "repository": "viperproject/silver",
+        "branch": "master",
+        "revision": "da1c8993b66feb39976e3609e2580a4661137a0f"
+      }
+    },
+    {
+      "name": "Viper Silicon pinned and observed master source",
+      "identity": {
+        "repository": "viperproject/silicon",
+        "branch": "master",
+        "revision": "6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed"
+      }
+    },
+    {
+      "name": "Viper Carbon pinned and observed master source",
+      "identity": {
+        "repository": "viperproject/carbon",
+        "branch": "master",
+        "revision": "6421cfda16d35f37cb9a7966f04fcd2d96abdda2"
+      }
+    },
+    {
+      "name": "ViperServer pinned and observed master source",
+      "identity": {
+        "repository": "viperproject/viperserver",
+        "branch": "master",
+        "revision": "4cc5bbbe18d4a83e4b398da3904ba9696256611b"
+      }
+    },
+    {
+      "name": "Formally validating a practical verification condition generator",
+      "identity": {
+        "doi": "10.1007/978-3-030-81688-9_33",
+        "publication": "CAV 2021",
+        "author-copy": "https://gauravpartha.ch/papers/boogie_certificates_cav21.pdf",
+        "pdf-pages": "23"
+      }
+    },
+    {
+      "name": "Formally validating translations into an IVL",
+      "identity": {
+        "doi": "10.1145/3656438",
+        "publication": "PACMPL 8 PLDI 2024 article 208",
+        "author-copy": "https://gauravpartha.ch/papers/front_end_translation_certificates_pldi24.pdf",
+        "pdf-pages": "25"
+      }
+    },
+    {
+      "name": "PLDI 2024 reproduction artifact record",
+      "identity": {
+        "doi": "10.5281/zenodo.10802176",
+        "url": "https://zenodo.org/records/10802176"
+      }
+    },
+    {
+      "name": "F* and Meta-F* current tactic/SMT/native-plugin architecture",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+        "version_txt": "2026.09.27"
+      }
+    },
+    {
+      "name": "Meta-F*: Proof Automation with SMT, Tactics, and Metaprograms",
+      "identity": {
+        "publication": "ESOP 2019",
+        "doi": "10.1007/978-3-030-17184-1_2",
+        "first_online": "2019-04-06"
+      }
+    },
+    {
+      "name": "Lean tactic and trust behavior selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "SMTCoq proof-witness checking",
+      "identity": {
+        "repository": "smtcoq/smtcoq",
+        "revision": "3187cf12412a244859d7396e8088e6f9de0568d1"
+      }
+    },
+    {
+      "name": "Anneal principles and design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "F* R400 pinned and current master source",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "branch": "master",
+        "revision": "78bb239b54cc113be68fb1dc0cbdfeb19378766a",
+        "version_txt": "2026.09.27"
+      }
+    },
+    {
+      "name": "F* latest tagged release",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "tag": "v2026.09.27",
+        "annotated-tag-object": "48268f3522ec8da089bbeb5f4e1674d50280a9c7",
+        "peeled-revision": "7deb38a27c86990664c6b41e4b6093597acdebd4"
+      }
+    },
+    {
+      "name": "Why3 proof-session persistence and replay",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "released": "2025-09-16",
+        "documentation": "Why3 1.8.2 manual and OCaml API"
+      }
+    },
+    {
+      "name": "Why3 proof-session evolution",
+      "identity": {
+        "project": "Why3",
+        "period": "0.70 (2011-07-06) through 1.8.2 (2025-09-16)",
+        "source": "Why3 1.8.2 CHANGES.md"
+      }
+    },
+    {
+      "name": "Preserving User Proofs Across Specification Changes",
+      "identity": {
+        "authors": "Fran\u00e7ois Bobot; Jean-Christophe Filli\u00e2tre; Claude March\u00e9; Guillaume Melquiond; Andrei Paskevich",
+        "venue": "VSTTE 2013",
+        "pages": "191-201",
+        "doi": "10.1007/978-3-642-54108-7_10",
+        "hal": "hal-00875395"
+      }
+    },
+    {
+      "name": "Flux source",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "6769bb9cbd1216380f542349494efafafd6104a3"
+      }
+    },
+    {
+      "name": "Thrust source",
+      "identity": {
+        "repository": "coord-e/thrust",
+        "revision": "187a1e975edece50b896f1ee478ab665d7a1204e"
+      }
+    },
+    {
+      "name": "RustHorn source",
+      "identity": {
+        "repository": "hopv/Rust-horn",
+        "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52"
+      }
+    },
+    {
+      "name": "Prusti source",
+      "identity": {
+        "repository": "prusti/prusti",
+        "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2"
+      }
+    },
+    {
+      "name": "Flux PLDI 2023 author paper",
+      "identity": {
+        "doi": "10.1145/3591283",
+        "sha256": "69cae6293c84a7f42e90a883d6d4645449b7216e00c80219e262609528c52b51"
+      }
+    },
+    {
+      "name": "Thrust PLDI 2025 author paper",
+      "identity": {
+        "doi": "10.1145/3729333",
+        "sha256": "adc13d87e09a61e5ef42057c61c5602a38c5befa1416f0b76ba7edc919882695"
+      }
+    },
+    {
+      "name": "RustHorn updated author full-version paper",
+      "identity": {
+        "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+        "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+      }
+    },
+    {
+      "name": "RustHorn",
+      "identity": {
+        "repository": "hopv/Rust-horn",
+        "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+        "tree": "7786562e36fb0bb1fe67be806d3205f0c825ec26"
+      }
+    },
+    {
+      "name": "Stainless",
+      "identity": {
+        "repository": "EPFL-LARA/stainless",
+        "revision": "399c34a06df8e88679f0985131e8a59a28ab9b3f",
+        "tree": "6c6531ac0842267e18c78b5004a1a827c729a207"
+      }
+    },
+    {
+      "name": "System FR paper-linked formalization",
+      "identity": {
+        "repository": "epfl-lara/SystemFR",
+        "revision": "325bd745404f5425fba3cc53d053b7f363e7076d",
+        "tree": "3bfba314ad3b27e057b45fc55b31f54393c7f959"
+      }
+    },
+    {
+      "name": "System FR current formalization",
+      "identity": {
+        "repository": "epfl-lara/SystemFR",
+        "revision": "90300f26953caaf5a703089680ad5c14aadb8ad9",
+        "tree": "ea2e592e3c45992949f7c88f74789b7b64d49d5a"
+      }
+    },
+    {
+      "name": "SAW",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b",
+        "tree": "8bafba9268567d91a635a819ea5e002bc32bf8ac"
+      }
+    },
+    {
+      "name": "System FR paper",
+      "identity": {
+        "arxiv": "1904.03482v2",
+        "sha256": "8499729820596e04495868975bf5da7aecee2e8d2c555f1eae2d8570538bf280"
+      }
+    },
+    {
+      "name": "RefinedC and Lithium",
+      "identity": {
+        "revision": "2e89846baeaa7f65cbe17e3ae7297a8ed5b4feca",
+        "url": "https://gitlab.mpi-sws.org/iris/refinedc"
+      }
+    },
+    {
+      "name": "CN",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d",
+        "tree": "ed4c238beed80859f5d02b35e2d1afbed9a0ff78"
+      }
+    },
+    {
+      "name": "Cerberus dependency named by CN",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1",
+        "tree": "49bbaa33463aec6786c31a084031e2abe521aecb"
+      }
+    },
+    {
+      "name": "RefinedC PLDI 2021 paper",
+      "identity": {
+        "artifact": "paper.pdf",
+        "url": "https://plv.mpi-sws.org/refinedc/paper.pdf",
+        "sha256": "80d43dea0e754222a6aa851c884b4d2aee59d288a0237409952e45941104c9e0"
+      }
+    },
+    {
+      "name": "CN POPL 2023 kernel and soundness",
+      "identity": {
+        "artifact": "popl23.pdf",
+        "sha256": "c8704536456f4b6bb564ecd709c2f77e90d6fd659532e68f2e083a6c9a1140c8",
+        "soundness_sha256": "feb882a6e2cbde9e6cdb120319e06527e90e9399842a01d81b5450acd64e275d"
+      }
+    },
+    {
+      "name": "Fulminate POPL 2025 paper",
+      "identity": {
+        "doi": "10.1145/3704879",
+        "sha256": "347d79ce5a1c2d4fdb12412446ff69a02bd41990e91cd1ca9e40976d746b7954"
+      }
+    },
+    {
+      "name": "Bennet observed author paper",
+      "identity": {
+        "url": "https://zain-k-aamer.com/papers/bennet.pdf",
+        "sha256": "d479fda5d808f07d6a3eb4193c0dacfe503c098dd4fedf15b7dc43f6d943a521"
+      }
+    },
+    {
+      "name": "CompCert C compiler formal endpoint",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+      }
+    },
+    {
+      "name": "VST Verifiable C",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+      }
+    },
+    {
+      "name": "Bedrock2",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+      }
+    },
+    {
+      "name": "CN current documentation source",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d"
+      }
+    },
+    {
+      "name": "FStar current migrated Pulse source",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "e2b5042ffd8272ad6287e4ad8748d8e52dadd93d"
+      }
+    },
+    {
+      "name": "Former Pulse repository migration notice",
+      "identity": {
+        "repository": "FStarLang/pulse",
+        "revision": "c35460e00483be17a38397b1594c29a9bf29df15"
+      }
+    },
+    {
+      "name": "RefinedC PLDI 2021 paper",
+      "identity": {
+        "doi": "10.1145/3453483.3454036",
+        "url": "https://plv.mpi-sws.org/refinedc/paper.pdf"
+      }
+    },
+    {
+      "name": "CN POPL 2023 paper",
+      "identity": {
+        "publication": "POPL 2023",
+        "url": "https://www.cl.cam.ac.uk/~cp526/popl23.pdf"
+      }
+    },
+    {
+      "name": "CN kernel definitions supplement",
+      "identity": {
+        "publication": "CN POPL 2023 supplementary definitions",
+        "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_defns.pdf",
+        "pages": "107"
+      }
+    },
+    {
+      "name": "CN soundness supplement",
+      "identity": {
+        "publication": "CN POPL 2023 supplementary soundness proof",
+        "url": "https://www.cs.ox.ac.uk/people/christopher.pulte/popl23_soundness.pdf",
+        "pages": "44"
+      }
+    },
+    {
+      "name": "Verified Low-Level Programming Embedded in FStar",
+      "identity": {
+        "arxiv": "1703.00053v6",
+        "doi": "10.1145/3110261",
+        "url": "https://arxiv.org/pdf/1703.00053v6"
+      }
+    },
+    {
+      "name": "A Dependently Typed Stratified Separation Logic",
+      "identity": {
+        "url": "https://fstar-lang.org/papers/pulsecore.pdf",
+        "pages": "27"
+      }
+    },
+    {
+      "name": "Steel primary author paper",
+      "identity": {
+        "url": "https://www.fstar-lang.org/papers/steel/steel.pdf"
+      }
+    },
+    {
+      "name": "MIRAI",
+      "identity": {
+        "repository": "endorlabs/MIRAI",
+        "revision": "aae0a56f91d9a0a62073bb86e7b2c9793cefc24b"
+      }
+    },
+    {
+      "name": "Infer current Pulse/Rust source",
+      "identity": {
+        "repository": "facebook/infer",
+        "revision": "5aac32c06952a2f3a6b7043e91457920f065833b"
+      }
+    },
+    {
+      "name": "Infer historical bi-abduction source",
+      "identity": {
+        "repository": "facebook/infer",
+        "revision": "99464c01da5809e7159ed1a75ef10f60d34506a4"
+      }
+    },
+    {
+      "name": "SeaHorn",
+      "identity": {
+        "repository": "seahorn/seahorn",
+        "revision": "892780176731ec8e97bbb9f6b172fcacd77a8ff4"
+      }
+    },
+    {
+      "name": "SMACK",
+      "identity": {
+        "repository": "smackers/smack",
+        "revision": "0a64471206645c250164e8df6027f5a5193e5e85"
+      }
+    },
+    {
+      "name": "Viper Silver",
+      "identity": {
+        "repository": "viperproject/silver",
+        "revision": "b4094c37a08f91ac41b3952194b73405c1221c5f"
+      }
+    },
+    {
+      "name": "SAW compositional MIR source",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "27a7ae98256544b55a7a3ce4ce620c1a7889713b"
+      }
+    },
+    {
+      "name": "Compositional Shape Analysis by means of Bi-Abduction, POPL 2009",
+      "identity": {
+        "published_version": "POPL 2009 author copy, 12 pages",
+        "sha256": "7d669d3bf3b446f88d050d8f7ca5c473ea26b0b89f106c3031b37604eca483c2",
+        "url": "https://www.cs.ox.ac.uk/people/hongseok.yang/paper/popl09.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

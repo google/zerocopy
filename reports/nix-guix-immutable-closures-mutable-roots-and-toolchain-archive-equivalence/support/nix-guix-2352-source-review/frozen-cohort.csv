@@ -1,0 +1,3 @@
+inventory_id,cohort,report_json,report_md
+R502,Nix manual 2.35.2,reports/nix-guix-functional-deployment-roots-2007-2026/REPORT.json,reports/nix-guix-functional-deployment-roots-2007-2026/REPORT.md
+R503,Nix source 9bc9ab32a57504f068847af4f8013417476cb1ec (plus Guix),reports/nix-guix-immutable-closures-mutable-roots-2004-2026/REPORT.json,reports/nix-guix-immutable-closures-mutable-roots-2004-2026/REPORT.md

@@ -1,0 +1,15 @@
+true
+true
+false
+Except.ok #[Std.Tactic.BVDecide.LRAT.Action.addEmpty 3 #[1, 2]]
+'goodAccepted' depends on axioms: [propext, Classical.choice, Quot.sound, goodAccepted._native.native_decide.ax_1_1]
+'shorterAccepted' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ shorterAccepted._native.native_decide.ax_1_1]
+'changedRejected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ changedRejected._native.native_decide.ax_1_1]
+'changedSatWitness' depends on axioms: [propext]
+'sourceUnsat' depends on axioms: [propext, Classical.choice, Quot.sound, sourceUnsat._native.native_decide.ax_1_1]

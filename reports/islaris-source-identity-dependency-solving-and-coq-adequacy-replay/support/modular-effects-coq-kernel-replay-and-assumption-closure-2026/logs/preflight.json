@@ -1,0 +1,28 @@
+{
+  "label": "preflight",
+  "argv": [
+    "docker",
+    "exec",
+    "--user",
+    "opam",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "python3",
+    "-c",
+    "import os,json,pathlib,hashlib,subprocess\nroot=pathlib.Path('/home/opam/anneal-itree')\ndef digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nx={'cwd':os.getcwd(),'uid':os.getuid(),'source':[],'objects':[],'tools':{}}\nfor p in sorted(root.rglob('*')):\n if p.is_file():\n  q=str(p.relative_to(root))\n  if p.suffix in ['.vo','.vos','.vok','.vio']:x['objects'].append(q)\n  if not any(a in q for a in ['_build/','.git/']):x['source'].append({'path':q,'bytes':p.stat().st_size,'sha256':digest(p)})\nfor a in [['coqc','--version'],['coqc','-where'],['ocamlc','-version'],['ocamlfind','query','coq-core'],['coqchk','--help']]:\n p=subprocess.run(a,stdout=subprocess.PIPE,stderr=subprocess.PIPE);x['tools'][' '.join(a)]={'exit_code':p.returncode,'stdout':p.stdout.decode(),'stderr':p.stderr.decode()}\nfor n in ['coqc','coqchk','coq_makefile','ocamlc']:\n import shutil\n p=pathlib.Path(shutil.which(n));x['tools'][n]={'path':str(p),'resolved':str(p.resolve()),'sha256':digest(p.resolve())}\nprint(json.dumps(x,indent=2))\n"
+  ],
+  "status": "finished",
+  "exit_code": 127,
+  "elapsed_seconds": 0.067,
+  "stdout_bytes": 126,
+  "stderr_bytes": 0,
+  "stdout_sha256": "23ed0b6d98c8722ade6f3fb434045045ecab509c27018a7e45e754816e9655f7",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

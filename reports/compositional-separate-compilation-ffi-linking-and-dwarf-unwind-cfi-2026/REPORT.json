@@ -1,25 +1,13 @@
 {
   "topics": [
-    "anneal",
-    "anneal/compositional-compilation",
-    "anneal/ffi-linking",
-    "anneal/unwinding",
-    "anneal/dwarf-cfi",
-    "compcert/compositional-linking",
-    "cranelift/unwinding",
-    "rust/panic-unwinding",
-    "rust/ffi",
-    "lean4",
-    "formal-verification/separate-compilation"
+    "verification",
+    "verification/compcert",
+    "verification/cakeml",
+    "verification/refinement",
+    "rust/calling-conventions",
+    "rustc/abi"
   ],
   "subjects": [
-    {
-      "name": "Anneal verification framework",
-      "identity": {
-        "repository": "joshlf/anneal",
-        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
-      }
-    },
     {
       "name": "Lean 4 theorem prover",
       "identity": {
@@ -51,17 +39,146 @@
       }
     },
     {
-      "name": "Track 8 compositional compilation, FFI linking, and DWARF/LSDA unwind CFI Lean 4 probe",
+      "name": "Rust foreign-function interface selected by Anneal",
       "identity": {
-        "path": "support/track8_compositional_and_unwind_cfi_probe.lean",
-        "sha256": "74360333b4f7e7bf0c6f17da95713ebb055471a6e5e17632806c779a62fb9633"
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+        "toolchain-context": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65 (nightly-2026-05-31)"
       }
     },
     {
-      "name": "Round 2 Track 6 two-phase Itanium ABI unwind fix and AArch64 PAC/FP/LR CFI Lean 4 probe",
+      "name": "CompCert external-call specification pattern",
       "identity": {
-        "path": "support/round2_track6_probe.lean",
-        "sha256": "d5049314b0d824b19586324884f5c1a64e3172d391d35c8a4ebfaa52b1ef8771"
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CakeML FFI/oracle specification and refinement pattern",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+        "publication": "Verified Compilation on a Verified Processor, PLDI 2019, DOI 10.1145/3314221.3314622"
+      }
+    },
+    {
+      "name": "VeriFFI current selected source",
+      "identity": {
+        "repository": "CertiRocq/VeriFFI",
+        "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b"
+      }
+    },
+    {
+      "name": "VeriFFI POPL 2025 publication interface",
+      "identity": {
+        "doi": "10.1145/3704860",
+        "publication": "POPL 2025 article 24",
+        "inspected_part": "primary publication abstract/interface description"
+      }
+    },
+    {
+      "name": "RustCompCert developing formal artifact",
+      "identity": {
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+      }
+    },
+    {
+      "name": "VST Verifiable C",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+      }
+    },
+    {
+      "name": "Trivet exact primary paper",
+      "identity": {
+        "primary_url": "https://arxiv.org/html/2609.19583v1",
+        "arxiv": "2609.19583v1",
+        "coordinates": "Definition2.1;\u00a7\u00a73.1-3.4",
+        "artifact_boundary": "Author implementation identity not acquired in bounded retrieval"
+      }
+    },
+    {
+      "name": "EquiVM exact primary paper",
+      "identity": {
+        "primary_url": "https://arxiv.org/html/2607.26306v1",
+        "arxiv": "2607.26306v1",
+        "relationship": "Paper Solminus subject distinct from current Stele source"
+      }
+    },
+    {
+      "name": "argotorg/EquiVM",
+      "identity": {
+        "repository": "argotorg/EquiVM",
+        "revision": "fc74a6466b92113a6fe16d577de0f553ee46f7cf",
+        "paths": "Stele/Refine.lean;Examples/ERC20/Correct.lean;manifest;toolchain",
+        "toolchain": "Lean4.29.0 source declaration; not executed"
+      }
+    },
+    {
+      "name": "lefterislazar/EVMLean",
+      "identity": {
+        "repository": "lefterislazar/EVMLean",
+        "revision": "fd4f5e6d6d6b4a18eb73f5a71ae2df909ac2b542",
+        "inspection": "Resolved manifest identity only; model not replayed"
+      }
+    },
+    {
+      "name": "leanprover-community/mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "8a178386ffc0f5fef0b77738bb5449d50efeea95",
+        "inspection": "Resolved manifest identity only; not replayed"
+      }
+    },
+    {
+      "name": "CertiRocq/VeriFFI",
+      "identity": {
+        "repository": "CertiRocq/VeriFFI",
+        "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b",
+        "paths": "README;FnDesc.v;verif_int63.v;_CoqProject;gitlinks"
+      }
+    },
+    {
+      "name": "CertiCoq/certicoq",
+      "identity": {
+        "repository": "CertiCoq/certicoq",
+        "revision": "f0e1554d57fa683829c253570995e71b70e0083f",
+        "inspection": "VeriFFI gitlink only; submodule source not audited"
+      }
+    },
+    {
+      "name": "CertiGraph/CertiGraph",
+      "identity": {
+        "repository": "CertiGraph/CertiGraph",
+        "revision": "a2db4cf823730a104ddbde7f170627a47fc2f1b7",
+        "inspection": "VeriFFI gitlink only; submodule source not audited"
+      }
+    },
+    {
+      "name": "VeriFFI publication interface",
+      "identity": {
+        "primary_url": "https://doi.org/10.1145/3704860",
+        "doi": "10.1145/3704860",
+        "publication": "POPL2025,article24",
+        "inspection": "Primary publication interface text; author PDF retrieval failed"
+      }
+    },
+    {
+      "name": "CakeML FFI/oracle semantics examined for opaque environmental effects",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec"
+      }
+    },
+    {
+      "name": "Verified Compilation on a Verified Processor",
+      "identity": {
+        "doi": "10.1145/3314221.3314622",
+        "publication": "PLDI 2019",
+        "year": "2019"
       }
     }
   ],

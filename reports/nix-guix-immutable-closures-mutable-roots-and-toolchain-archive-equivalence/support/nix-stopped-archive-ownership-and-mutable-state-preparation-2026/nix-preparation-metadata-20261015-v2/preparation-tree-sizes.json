@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "exec",
+    "--user=0:0",
+    "--env",
+    "PATH=/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/timeout",
+    "--signal=TERM",
+    "--kill-after=2",
+    "30",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/du",
+    "--bytes",
+    "--summarize",
+    "--",
+    "/nix/var/nix",
+    "/nix/var/log/nix",
+    "/homeless-shelter"
+  ],
+  "status": 0,
+  "seconds": 0.04090295895002782,
+  "stdout_bytes": 64,
+  "stdout_sha256": "637cada5366e2706ec4d6cfab94c1a1e2a7d092d6654c811417c5d6ea9360052"
+}

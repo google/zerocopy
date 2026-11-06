@@ -1,0 +1,646 @@
+[
+  {
+    "alias": "herd",
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/x86tso.cat",
+    "encoding": "utf-8",
+    "sha": "e684cd991e8859163efd1fac9ca3c9fd250223d1",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/x86tso.cat",
+    "display_title": "x86tso.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/x86tso.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 437,
+    "preserved_sha256": "1786534851234cb9cc8f8067e4c403afe817f6272349bff3ea9a81fdf136dd01"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/x86fences.cat",
+    "encoding": "utf-8",
+    "sha": "69fe53061e8d22db1ec80f0839d54eefa3e4cc00",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/x86fences.cat",
+    "display_title": "x86fences.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/x86fences.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 155,
+    "preserved_sha256": "70e2261d2d614c56f56b43a7fb58d8e8fcd6622d03ea1255f86495bbd0fc59b8"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/filters.cat",
+    "encoding": "utf-8",
+    "sha": "f445358af67391b96bd124f3de1e0add6af9bfb5",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/filters.cat",
+    "display_title": "filters.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/filters.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 534,
+    "preserved_sha256": "2e5a4f796531161364b1ed940ee90081e98f03d6bec1e2bfd4f7d1831ad15ad2"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/cos.cat",
+    "encoding": "utf-8",
+    "sha": "c045bb0ab3023ab0cddd5e0c21f4407b76d37659",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/cos.cat",
+    "display_title": "cos.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/cos.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 137,
+    "preserved_sha256": "0c0efa30bae59a171bc676fe8002108dee7294a17ede5d9c26ce7ae4c370fbb9"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/cos-ok-opt.cat",
+    "encoding": "utf-8",
+    "sha": "cae260c2fc041e8f2849f2fdabf7e2007933c2bf",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/cos-ok-opt.cat",
+    "display_title": "cos-ok-opt.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/cos-ok-opt.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 878,
+    "preserved_sha256": "5d63ea4237c7a905cc60e739f5011dc4c7bb2e35c5f6072393d11a25a4967982"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/cos-no-opt.cat",
+    "encoding": "utf-8",
+    "sha": "2f850150e4d8d6a2f489f9f463f59898b522b6ac",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/cos-no-opt.cat",
+    "display_title": "cos-no-opt.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/cos-no-opt.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 281,
+    "preserved_sha256": "2c3d73a446502c08788e7fecd8ccfce3af7482da0da1b542b3a4890a160840df"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/cross.cat",
+    "encoding": "utf-8",
+    "sha": "6398af93a0d104a888916a3057c81bbefa18e931",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/cross.cat",
+    "display_title": "cross.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/cross.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 754,
+    "preserved_sha256": "8b2dbe9cc3175d5bd8067ab80b4c6024949c743d16e47b13f8230c52ca06bbde"
+  },
+  {
+    "alias": "herd",
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64.cat",
+    "encoding": "utf-8",
+    "sha": "ef584f8d00cc7e67d985df151bf458130e8979ca",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64.cat",
+    "display_title": "aarch64.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 6677,
+    "preserved_sha256": "1d6bcac1194cded0f89717f3bf892c2105d8a17e7aff0304fa79ebc240b07d1d"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64hwreqs.cat",
+    "encoding": "utf-8",
+    "sha": "369bd4cc37715b97378d1cbfbfbdbec7685237ef",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64hwreqs.cat",
+    "display_title": "aarch64hwreqs.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64hwreqs.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 6569,
+    "preserved_sha256": "0d24db3b580dcaee96b025c3e9ad6b33217e4e34dd79a3765703eaaede1f1697"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64fences.cat",
+    "encoding": "utf-8",
+    "sha": "b66d436e3c130dbdf67f0a587f2569306a4d3709",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64fences.cat",
+    "display_title": "aarch64fences.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64fences.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 1969,
+    "preserved_sha256": "6929b8da3d3ec6230997a4cdb99da6f9f8f0640cd5637ccfbefd749c8f6a7219"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64util.cat",
+    "encoding": "utf-8",
+    "sha": "9ebc26173964a8be469cc4ed11de1b62ae436089",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64util.cat",
+    "display_title": "aarch64util.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64util.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 5725,
+    "preserved_sha256": "c9148abc267240a3e4866c866928c7260d9a3435ad5eb9e48d3e5a9e40af35f2"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64loc.cat",
+    "encoding": "utf-8",
+    "sha": "97f7473a287419fc76ead7967abd4df3d9d55f07",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64loc.cat",
+    "display_title": "aarch64loc.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64loc.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 901,
+    "preserved_sha256": "2583f3f79362ee94336271f0fb11ca6a262a023486bc66ed30c3d9de54c90fa5"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64deps.cat",
+    "encoding": "utf-8",
+    "sha": "24889634cf82b148ec844faea980b6f4e774c59a",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64deps.cat",
+    "display_title": "aarch64deps.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64deps.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 3655,
+    "preserved_sha256": "89595e6fbb1b875a562144a70d67b31d149c41ca9ec088f50198d4adc616a3b7"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/stdlib.cat",
+    "encoding": "utf-8",
+    "sha": "a047d354018176589637b867de46962499fa8465",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/stdlib.cat",
+    "display_title": "stdlib.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/stdlib.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 2400,
+    "preserved_sha256": "aaf710a8c80bfa9ae673ca9b8ec0a467c773705b9e5b8e6352edf90b30494755"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/enumerations.cat",
+    "encoding": "utf-8",
+    "sha": "db8d2a2def56ce2e66b2cd7cd68be21df3e457cd",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/enumerations.cat",
+    "display_title": "enumerations.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/enumerations.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 3661,
+    "preserved_sha256": "1bd204d83ce0cd1a7be1af56c0ee8eb870821455f76ef1518303033179f74af1"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64bbm.cat",
+    "encoding": "utf-8",
+    "sha": "cb86c8e6e68ac9f67166f9139676db38ed6725e0",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64bbm.cat",
+    "display_title": "aarch64bbm.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64bbm.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 3491,
+    "preserved_sha256": "f0026e08c5b3923fb7ac9d3fbbd57e06226b22381a4263d3402d02508b724915"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64memattrs.cat",
+    "encoding": "utf-8",
+    "sha": "1c689f1aaf342af5843b540d13244f6039ca697a",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64memattrs.cat",
+    "display_title": "aarch64memattrs.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64memattrs.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 3182,
+    "preserved_sha256": "72d8ce52407221d677763d64c1af5dba352340335ed9013a6c11c8c0440f385c"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/libdir/aarch64show.cat",
+    "encoding": "utf-8",
+    "sha": "3cd58d54da78a51728acf8a40acb66a228a60057",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/libdir/aarch64show.cat",
+    "display_title": "aarch64show.cat",
+    "local": "primary/herd/herdtools7/herd/libdir/aarch64show.cat",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 340,
+    "preserved_sha256": "2d2e08a27b81f7aa9df143b6ac5737816c485de7ce35e09a0be16da4f86cc857"
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "LICENSE.txt",
+    "encoding": "utf-8",
+    "sha": "83f82487c5ec63ce846231d589e76f33810ff66f",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/LICENSE.txt",
+    "display_title": "LICENSE.txt",
+    "local": "primary/herd/herdtools7/LICENSE.txt",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 22456,
+    "preserved_sha256": "5d8a5818161ab38b77226b7caa758fde63f1aaabdf87ea773e1620b62a5b9537"
+  },
+  {
+    "repo": "llvm/llvm-project",
+    "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+    "path": "llvm/docs/Atomics.rst",
+    "encoding": "utf-8",
+    "sha": "4dee3e6bd9f4fc77058e7df3a8942bc6d5f8be1f",
+    "display_url": "https://github.com/llvm/llvm-project/blob/3623fe661ae35c6c80ac221f14d85be76aa870f1/llvm/docs/Atomics.rst",
+    "display_title": "Atomics.rst",
+    "local": "primary/llvm/llvm-project/llvm/docs/Atomics.rst",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 31460,
+    "preserved_sha256": "06bfccca80ef576755d415a91b0b235e4e45324bb2a0a0ddee45566c02e9c4bd"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "README.md",
+    "encoding": "utf-8",
+    "sha": "94d72fb1279ace75ae544361a1ea09d7ad3b85a2",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/README.md",
+    "display_title": "README.md",
+    "local": "primary/weakmemory/imm/README.md",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 7319,
+    "preserved_sha256": "147410c3bc5262340913068c158bd8078d75c60b4f9e8f27f8176960763e861e"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/hardware/imm_sToARM.v",
+    "encoding": "utf-8",
+    "sha": "c98590434f3755e4882631e1bc945c88db5eeaab",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/hardware/imm_sToARM.v",
+    "display_title": "imm_sToARM.v",
+    "local": "primary/weakmemory/imm/src/hardware/imm_sToARM.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 12123,
+    "preserved_sha256": "5bcb61a9971a1bd4c9deaf2126771b1a36777049cf756b08c72355e465002fe2"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/hardware/immToTSO.v",
+    "encoding": "utf-8",
+    "sha": "5a4749ed427a95c342db50b3ca8d6e5286321bbb",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/hardware/immToTSO.v",
+    "display_title": "immToTSO.v",
+    "local": "primary/weakmemory/imm/src/hardware/immToTSO.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 32094,
+    "preserved_sha256": "8852222a9374399337a578d812a9c0ae8d326d5284361827efeb96ac23279b9c"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/hardware/Arm.v",
+    "encoding": "utf-8",
+    "sha": "70c24923525aee455ef5dc911e1530d6b82169f8",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/hardware/Arm.v",
+    "display_title": "Arm.v",
+    "local": "primary/weakmemory/imm/src/hardware/Arm.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 16340,
+    "preserved_sha256": "1aa1773f5d64f4ac19962ccfe890a58fc57dd02512fc82c4c87cffe1a8ce1c0d"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/c11/C11Toimm_s.v",
+    "encoding": "utf-8",
+    "sha": "fbf1cb8a78eaf5e1f479bc4a79475697d1fb07c3",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/c11/C11Toimm_s.v",
+    "display_title": "C11Toimm_s.v",
+    "local": "primary/weakmemory/imm/src/c11/C11Toimm_s.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 930,
+    "preserved_sha256": "25cd6f4d7b48f3497e1ce70098b7b5295cfbc08de992340ad8b6eeca294672c5"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/rc11/RC11Toimm_s.v",
+    "encoding": "utf-8",
+    "sha": "b03645127c6be926c182e5e03336c32285b45812",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/rc11/RC11Toimm_s.v",
+    "display_title": "RC11Toimm_s.v",
+    "local": "primary/weakmemory/imm/src/rc11/RC11Toimm_s.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 3821,
+    "preserved_sha256": "fc23ab02a65bebd108684ff4d8b6b1e60923aee80cfcbc9dd7746b5f5f6775a6"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/c11/C11.v",
+    "encoding": "utf-8",
+    "sha": "581f7a076009d320d4346782da67b4c680ee48d0",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/c11/C11.v",
+    "display_title": "C11.v",
+    "local": "primary/weakmemory/imm/src/c11/C11.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 1770,
+    "preserved_sha256": "cf325c010a1c9567b6f284e0dfc96edd499f93d5fcba15f848be83f6ea398850"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/rc11/RC11.v",
+    "encoding": "utf-8",
+    "sha": "caab7e2aa484a174bbf7c6bff7e084bc1ef0e910",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/rc11/RC11.v",
+    "display_title": "RC11.v",
+    "local": "primary/weakmemory/imm/src/rc11/RC11.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 1655,
+    "preserved_sha256": "9bedddd0d9da5861108d77a8a2cec19cd7cc777bf20be3102f03ea321d6de6a6"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "src/basic/Events.v",
+    "encoding": "utf-8",
+    "sha": "7e7f8dc889f829a79cc57cc068d136751bd92cf3",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/src/basic/Events.v",
+    "display_title": "Events.v",
+    "local": "primary/weakmemory/imm/src/basic/Events.v",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 21571,
+    "preserved_sha256": "5efaed5381733d835b30fbba6c77e213a2168359758aeec1022614f305f79cd2"
+  },
+  {
+    "repo": "weakmemory/imm",
+    "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0",
+    "path": "LICENSE.md",
+    "encoding": "utf-8",
+    "sha": "250b76923719d912be7eedf6d6bb110c46c41ecb",
+    "display_url": "https://github.com/weakmemory/imm/blob/4ca191b072df081dd3a6d9aa755959dc901b1bd0/LICENSE.md",
+    "display_title": "LICENSE.md",
+    "local": "primary/weakmemory/imm/LICENSE.md",
+    "preserved_git_blob_verified": true,
+    "preserved_bytes": 1110,
+    "preserved_sha256": "a887430757359b63d0fc259b277dc79fdd23c838d0ff713f8d3f5e23fb77fb09"
+  },
+  {
+    "alias": "rust-atomic",
+    "repo": "rust-lang/rust",
+    "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+    "path": "library/core/src/sync/atomic.rs",
+    "encoding": "utf-8",
+    "sha": "71502f8d918e739c558710955e3fba31db2ad29e",
+    "display_url": "https://github.com/rust-lang/rust/blob/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/sync/atomic.rs",
+    "display_title": "atomic.rs",
+    "local": "primary/rust-lang/rust/library/core/src/sync/atomic.rs.excerpts.txt",
+    "ranges": [
+      [
+        1,
+        63
+      ],
+      [
+        4300,
+        4446
+      ],
+      [
+        4483,
+        4530
+      ],
+      [
+        4568,
+        4585
+      ]
+    ],
+    "preserved_git_blob_verified": null,
+    "preserved_bytes": 16319,
+    "preserved_sha256": "cb5321dc6d3bfac79c8159cacc58956b3ed06174b99506779a19d685361f52ab"
+  },
+  {
+    "alias": "rust-asm",
+    "repo": "rust-lang/reference",
+    "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+    "path": "src/inline-assembly.md",
+    "encoding": "utf-8",
+    "sha": "8f7e5355205fa037b08e587d4f9ee7d54f3e4890",
+    "display_url": "https://github.com/rust-lang/reference/blob/2dafab96d919d6ab2884488e970bf95610ff83eb/src/inline-assembly.md",
+    "display_title": "inline-assembly.md",
+    "local": "primary/rust-lang/reference/src/inline-assembly.md.excerpts.txt",
+    "ranges": [
+      [
+        1077,
+        1105
+      ],
+      [
+        1150,
+        1151
+      ],
+      [
+        1330,
+        1345
+      ]
+    ],
+    "preserved_git_blob_verified": null,
+    "preserved_bytes": 4137,
+    "preserved_sha256": "9eb08cd33178f8c8b1b3a777432d04904900c165c05099e7b29d56af897b6885"
+  },
+  {
+    "repo": "llvm/llvm-project",
+    "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+    "path": "llvm/LICENSE.TXT",
+    "sha": "fa6ac540007032cbd0ec772a1c72e6cb5527a4fe",
+    "local": "primary/llvm/llvm-project/llvm/LICENSE.TXT",
+    "preserved_bytes": 15141,
+    "preserved_sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee",
+    "preserved_git_blob_verified": true
+  },
+  {
+    "repo": "AeneasVerif/kraken",
+    "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+    "path": "Kraken/AArch64/Semantics.lean",
+    "encoding": "utf-8",
+    "sha": "0a25b01a0778e7cf4487e10258568efd6d17055d",
+    "display_url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/Semantics.lean",
+    "display_title": "Semantics.lean",
+    "local": "primary/AeneasVerif/kraken/Kraken/AArch64/Semantics.lean",
+    "preserved_bytes": 42881,
+    "preserved_sha256": "6836d7e542cacdffb8d67070fe1d69d402503788ee6f3010c514f28bdd442be7",
+    "preserved_git_blob_verified": true
+  },
+  {
+    "repo": "AeneasVerif/kraken",
+    "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+    "path": "Kraken/AArch64/Syntax.lean",
+    "encoding": "utf-8",
+    "sha": "bcd6e017ed7e85e83087381a08e92576674105fc",
+    "display_url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/Syntax.lean",
+    "display_title": "Syntax.lean",
+    "local": "primary/AeneasVerif/kraken/Kraken/AArch64/Syntax.lean",
+    "preserved_bytes": 28892,
+    "preserved_sha256": "0ed1b015319d1c72e364a4796b4e0729656657ca2ee8b77b3b66bc59694e5b05",
+    "preserved_git_blob_verified": true
+  },
+  {
+    "repo": "AeneasVerif/kraken",
+    "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+    "path": "Kraken/AArch64/OmniSemantics.lean",
+    "encoding": "utf-8",
+    "sha": "9588f643bdef212be18b88cdb5df7c5b46e80005",
+    "display_url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/AArch64/OmniSemantics.lean",
+    "display_title": "OmniSemantics.lean",
+    "local": "primary/AeneasVerif/kraken/Kraken/AArch64/OmniSemantics.lean",
+    "preserved_bytes": 894,
+    "preserved_sha256": "bfdd4e19572558f28f08bc68ddb6715ff32634c5acc23cadb073c6250d636608",
+    "preserved_git_blob_verified": true
+  },
+  {
+    "repo": "AeneasVerif/kraken",
+    "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+    "path": "Kraken/Mem.lean",
+    "encoding": "utf-8",
+    "sha": "b2d6239e8c98ad37e5d20f4e5d18070ae57a64a1",
+    "display_url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/Kraken/Mem.lean",
+    "display_title": "Mem.lean",
+    "local": "primary/AeneasVerif/kraken/Kraken/Mem.lean",
+    "preserved_bytes": 5902,
+    "preserved_sha256": "9a6e3cc84b9c475201c91d443117a39cfdb94f56f7cf0bb3f9e10b26f3003d01",
+    "preserved_git_blob_verified": true
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/AArch64Annot.ml",
+    "encoding": "utf-8",
+    "sha": "681a3ab9899212113a18b16869241db461caf6f3",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Annot.ml",
+    "display_title": "AArch64Annot.ml",
+    "local": "primary/herd/herdtools7/herd/AArch64Annot.ml",
+    "preserved_bytes": 2327,
+    "preserved_sha256": "cc206cba0a57d808d0cf45259d8f25132bd780df7e698d687c544fe23a0f85a8",
+    "preserved_git_blob_verified": true
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/AArch64Sem.ml",
+    "encoding": "utf-8",
+    "sha": "f5d6ce1506db37df4f0344de057d0c2ee60c7bdd",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml",
+    "display_title": "AArch64Sem.ml",
+    "local": "primary/herd/herdtools7/herd/AArch64Sem.ml.excerpts.txt",
+    "ranges": [
+      [
+        1,
+        16
+      ],
+      [
+        2043,
+        2072
+      ],
+      [
+        2173,
+        2198
+      ],
+      [
+        4220,
+        4272
+      ]
+    ],
+    "preserved_bytes": 5979,
+    "preserved_sha256": "0aa5c66cc3d4aff53175ded947b98a84210d85954596bdac6a9b214edf60de5a",
+    "preserved_git_blob_verified": null
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/AArch64Arch_herd.ml",
+    "encoding": "utf-8",
+    "sha": "3a253d087c752b98d3fb6d4423c2e53291930ee9",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Arch_herd.ml",
+    "display_title": "AArch64Arch_herd.ml",
+    "local": "primary/herd/herdtools7/herd/AArch64Arch_herd.ml.excerpts.txt",
+    "ranges": [
+      [
+        1,
+        20
+      ],
+      [
+        150,
+        165
+      ]
+    ],
+    "preserved_bytes": 2045,
+    "preserved_sha256": "0856b7e511328d675b81ac6493f89cc56020275a3a12c022c2a9a8c293f37ee2",
+    "preserved_git_blob_verified": null
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/AArch64Sem.ml",
+    "encoding": "utf-8",
+    "sha": "f5d6ce1506db37df4f0344de057d0c2ee60c7bdd",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml",
+    "display_title": "AArch64Sem.ml",
+    "local": "primary/herd/herdtools7/herd/AArch64Sem.ml.atomic-excerpts.txt",
+    "ranges": [
+      [
+        2227,
+        2246
+      ],
+      [
+        2328,
+        2369
+      ],
+      [
+        2464,
+        2502
+      ],
+      [
+        5030,
+        5039
+      ]
+    ],
+    "preserved_bytes": 5581,
+    "preserved_sha256": "ad837a87445f4feebe58c0442319c85953d10baefd9511a92c6d4ec6ccb325b6",
+    "preserved_git_blob_verified": null
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "lib/AArch64Parser.mly",
+    "encoding": "utf-8",
+    "sha": "28ec5dab2ab3eb1db227b99665c1139b83bedb29",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/lib/AArch64Parser.mly",
+    "display_title": "AArch64Parser.mly",
+    "local": "primary/herd/herdtools7/lib/AArch64Parser.mly.lines450-850.txt",
+    "ranges": [
+      [
+        450,
+        850
+      ]
+    ],
+    "preserved_bytes": 11391,
+    "preserved_sha256": "bf2711fa6f4cc25f3d6ad394a9144b1b7da1c937b18b44ac25cd5817a5953ba5",
+    "preserved_git_blob_verified": null
+  },
+  {
+    "repo": "AeneasVerif/kraken",
+    "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+    "path": "LICENSE",
+    "encoding": "utf-8",
+    "sha": "378a0b82bc7124dde14dd40188f2b541a0039226",
+    "display_url": "https://github.com/AeneasVerif/kraken/blob/8af78062037bc237b341d20252aafd1797c1bcb7/LICENSE",
+    "display_title": "LICENSE",
+    "local": "primary/AeneasVerif/kraken/LICENSE",
+    "preserved_bytes": 1068,
+    "preserved_sha256": "0e3e62d7f0b2b143566acac81f7ba64e2b44e0f7f2064f5f264d3dbed533cf2f",
+    "preserved_git_blob_verified": true
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "static_evidence_check": {
+    "status": "PASS",
+    "archive_files": 409,
+    "matrix_calls": 34,
+    "compiler_invocations": 27,
+    "complete_capture_packets_checked": 25,
+    "native_inputs": 1280,
+    "meaning": "Static integrity/schema/status reconciliation; not a compiler replay or source-safety theorem."
+  },
+  "tool_files_rehashed_at_freeze": [
+    {
+      "file": "bin/rustc",
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988"
+    },
+    {
+      "file": "lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+    },
+    {
+      "file": "lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90"
+    }
+  ],
+  "observer_rehash": "656fb5eaac61cecbed4b59b90ff5842cf2594551310084d599d66c9af817f636",
+  "historical_prefix_restoration": "Exact raw accepted baseline bytes reproduced without compiler execution",
+  "privacy_scan_files_and_archive_members": 434,
+  "implementation_copies_match": true,
+  "python_source_syntax": "compiled in memory without caches",
+  "compiler_primary_source_hashes_match": true,
+  "scope": "Final static evidence reconciliation and unchanged-tool identities; no additional compiler/native experiments after the recorded 34-control matrix and 1280 native calls."
+}

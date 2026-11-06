@@ -1,0 +1,19 @@
+'BorrowPrototype.field_correspondence' does not depend on any axioms
+'BorrowPrototype.field_frame' does not depend on any axioms
+'BorrowPrototype.slice_correspondence' depends on axioms: [propext]
+'BorrowPrototype.slice_frame' depends on axioms: [propext]
+'BorrowPrototype.slice_oob' depends on axioms: [propext]
+'BorrowPrototype.wrong_authority' does not depend on any axioms
+theorem BorrowPrototype.fieldConsumerAccepted : expectedNativeSourceHash = actualNativeSourceHash ∧
+  ∀ (p : Pair) (d : Byte) (entry : Authority),
+    entry = Authority.root →
+      runField (fieldCertificate d) { pair := p, authority := entry } =
+        some { pair := capturedField p d, authority := Authority.root } :=
+⟨rfl, field_correspondence⟩
+theorem BorrowPrototype.sliceConsumerAccepted : expectedNativeSourceHash = actualNativeSourceHash ∧
+  ∀ (xs : Slice2) (index : Nat) (d : Byte) (entry : Authority),
+    entry = Authority.root →
+      transformedSlice entry xs index d = Option.map (fun ys => (ys, Authority.root)) (capturedSlice xs index d) :=
+⟨rfl, slice_correspondence⟩
+'BorrowPrototype.fieldConsumerAccepted' does not depend on any axioms
+'BorrowPrototype.sliceConsumerAccepted' depends on axioms: [propext]

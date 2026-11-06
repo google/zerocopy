@@ -1,0 +1,40 @@
+#![feature(prelude_import)]
+#![allow(dead_code)]
+extern crate std;
+#[prelude_import]
+use std::prelude::rust_2024::*;
+macro_rules! annotated {
+    ($item:ident, $contract:literal, $limit:literal) =>
+    {
+        #[doc = $contract] pub fn $item(x: u8) -> bool { x < $limit } pub
+        const ID: &str = concat!(module_path!(), "::", stringify!($item)); pub
+        const CONTRACT: &str = $contract;
+    };
+}
+mod intended {
+    #[doc = "anneal:bool-valid-v1"]
+    pub fn validate(x: u8) -> bool { x < 2 }
+    pub const ID: &str = "attachment::intended::validate";
+    pub const CONTRACT: &str = "anneal:bool-valid-v1";
+}
+// Same basename, different module/expansion and mathematical predicate.
+mod decoy {
+    #[doc = "anneal:trit-valid-v1"]
+    pub fn validate(x: u8) -> bool { x < 3 }
+    pub const ID: &str = "attachment::decoy::validate";
+    pub const CONTRACT: &str = "anneal:trit-valid-v1";
+}
+pub use intended::validate as exported_alias;
+fn main() {
+    let good = (0..=255).filter(|&x| intended::validate(x)).count();
+    let bad = (0..=255).filter(|&x| decoy::validate(x)).count();
+    let alias = (0..=255).all(|x| exported_alias(x) == intended::validate(x));
+    {
+        ::std::io::_print(format_args!("{0}|{1}|{2}|{3}\n", intended::ID,
+                intended::CONTRACT, good, alias));
+    };
+    {
+        ::std::io::_print(format_args!("{0}|{1}|{2}|{3}\n", decoy::ID,
+                decoy::CONTRACT, bad, decoy::validate(2)));
+    };
+}

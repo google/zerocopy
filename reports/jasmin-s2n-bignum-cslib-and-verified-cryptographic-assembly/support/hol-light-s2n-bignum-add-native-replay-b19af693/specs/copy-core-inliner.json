@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-sources/hol-light/hol_lib_inlined.ml",
+    "$TASK/work/execution/hol-replay/artifacts/hol_lib_inlined.ml"
+  ],
+  "classification": "read-only copy of actual generated module text for parser diagnosis and evidence"
+}

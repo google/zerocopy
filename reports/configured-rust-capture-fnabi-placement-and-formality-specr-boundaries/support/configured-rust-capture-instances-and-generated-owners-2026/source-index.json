@@ -1,0 +1,170 @@
+[
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_driver_impl/src/lib.rs",
+    "symbol": "Callbacks after_analysis and analysis gate",
+    "lines": [
+      118,
+      148
+    ],
+    "sha256": "3846a029d9484ef7d954a35766c36f257fa97e22f91ea2dfc68777fd1a53804a",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_driver_impl/src/lib.rs#L118"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_interface/src/passes.rs",
+    "symbol": "MIR borrow checking and analysis",
+    "lines": [
+      1138,
+      1197
+    ],
+    "sha256": "123bc3b578655a40e16167120387666697b0c43ba73bf6bdefa48e27077aed10",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_interface/src/passes.rs#L1138"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/ty/context.rs",
+    "symbol": "iter_local_def_id freezes after analysis",
+    "lines": [
+      1384,
+      1402
+    ],
+    "sha256": "d4b1400c87a881bfda793120a504bafef3f78a39de1f071fb47a1323701567a8",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/context.rs#L1384"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/hir/map.rs",
+    "symbol": "hir_body_owners",
+    "lines": [
+      330,
+      343
+    ],
+    "sha256": "11cfab7ab7618d6bdfc701adaece98fbc88406a855b5a63a727190c9c9caea8b",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/hir/map.rs#L330"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/ty/mod.rs",
+    "symbol": "instance_mir selects CTFE/functions/generated shims",
+    "lines": [
+      1712,
+      1747
+    ],
+    "sha256": "90cb6b463b91052c1a17bebe14e8e272760dacca12dbe08f9dd0ff8e15779a9a",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/mod.rs#L1712"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/ty/instance.rs",
+    "symbol": "Instance kind / resolution / Drop glue / MIR substitution",
+    "lines": [
+      62,
+      155
+    ],
+    "sha256": "b1aa119ff3d5b1660099ff5b7573c8f5eaa96f5bcaff86a1fc8936d129ad61cf",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/instance.rs#L62"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/mir/consts.rs",
+    "symbol": "try_eval_bits",
+    "lines": [
+      358,
+      378
+    ],
+    "sha256": "49d0c4329b1a665fe70dc1b5887fa28d8f0a884914dbf4cc440f242454814637",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/mir/consts.rs#L358"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/mir/syntax.rs",
+    "symbol": "MIR statement, operand, rvalue and terminator constructors",
+    "lines": [
+      309,
+      340
+    ],
+    "sha256": "fd0e890e947ddb8cf9bd3efb10e881e07957261f6773c2930e4ca863916a04b1",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/mir/syntax.rs#L309"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_mir_transform/src/lib.rs",
+    "symbol": "drop-lowered checked MIR and optimized_mir",
+    "lines": [
+      522,
+      545
+    ],
+    "sha256": "d663ac59a0e142bfdfaa8a3a9c58d59ed87f15ceca90253017e5f9093f50340b",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_mir_transform/src/lib.rs#L522"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_session/src/session.rs",
+    "symbol": "environment/file dependencies",
+    "lines": [
+      157,
+      161
+    ],
+    "sha256": "f1f5d8cb125e99c38bd6f9c2d4bac82df6f8982995c734cda0aaf2c25f0d20ab",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_session/src/session.rs#L157"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_driver_impl/src/lib.rs",
+    "symbol": "normal analysis before after_analysis callback",
+    "lines": [
+      321,
+      333
+    ],
+    "sha256": "3846a029d9484ef7d954a35766c36f257fa97e22f91ea2dfc68777fd1a53804a",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_driver_impl/src/lib.rs#L321"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/ty/instance.rs",
+    "symbol": "Instance::try_resolve",
+    "lines": [
+      499,
+      541
+    ],
+    "sha256": "b1aa119ff3d5b1660099ff5b7573c8f5eaa96f5bcaff86a1fc8936d129ad61cf",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/instance.rs#L499"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/ty/instance.rs",
+    "symbol": "Instance::resolve_drop_in_place",
+    "lines": [
+      720,
+      729
+    ],
+    "sha256": "b1aa119ff3d5b1660099ff5b7573c8f5eaa96f5bcaff86a1fc8936d129ad61cf",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/instance.rs#L720"
+  },
+  {
+    "repository": "rust-lang/rust",
+    "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+    "path": "compiler/rustc_middle/src/ty/instance.rs",
+    "symbol": "MIR type/argument normalization",
+    "lines": [
+      873,
+      910
+    ],
+    "sha256": "b1aa119ff3d5b1660099ff5b7573c8f5eaa96f5bcaff86a1fc8936d129ad61cf",
+    "url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/instance.rs#L873"
+  }
+]

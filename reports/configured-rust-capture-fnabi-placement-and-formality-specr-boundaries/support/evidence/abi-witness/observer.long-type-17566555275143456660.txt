@@ -1,0 +1,1 @@
+<_ as CollectAndApply<rustc_middle::ty::GenericArg<'_>, &ty::list::RawList<(), rustc_middle::ty::GenericArg<'_>>>>::Output == &ty::list::RawList<(), rustc_middle::ty::GenericArg<'_>>

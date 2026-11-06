@@ -1,0 +1,28 @@
+{
+  "label": "identity-coqcore",
+  "argv": [
+    "docker",
+    "exec",
+    "--user",
+    "opam",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "ocamlfind",
+    "query",
+    "coq-core"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.035,
+  "stdout_bytes": 35,
+  "stderr_bytes": 0,
+  "stdout_sha256": "48e5d3cc94be54bac39605f14998c3d13b774ec7347cf757217078e66be736a3",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

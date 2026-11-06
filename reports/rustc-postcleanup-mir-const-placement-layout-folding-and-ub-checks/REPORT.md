@@ -83,9 +83,9 @@ Basis: `normative`, `source`, `execution`
 This report applies to:
 
 - **`rust-lang/rust` at `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`**
-  (`rustc 1.98.0-nightly (2026-05-30)`, toolchain `nightly-2026-05-31`).
+  (`rustc 1.98.0-nightly (2026-05-30)`, toolchain `nightly`).
 - **`rust-lang/rust` at `5c543b0b8c73c7b72bc8284ced4fb22ead15734d`**
-  (`rustc 1.101.0-nightly (2026-09-29)`, toolchain `nightly-2026-09-30`), used
+  (`rustc 1.101.0-nightly (2026-09-29)`, toolchain `nightly`), used
   to bound forward-compatibility changes across MIR pass policies, `DefKind`,
   and `CastKind`.
 - **`rust-lang/reference` at `82da570bafd9efed421bdbae0f8603ede8dd308b`**
@@ -876,10 +876,10 @@ a `Runtime(PostCleanup)` MIR extractor or verification semantics:
 1. **Compile and run [`support/driver_probe.rs`](support/driver_probe.rs) against
    [`support/probe_inputs.rs`](support/probe_inputs.rs)**:
    ```bash
-   SYSROOT="$(rustc +nightly-2026-05-31 --print sysroot)"
-   rustc +nightly-2026-05-31 --edition=2024 support/driver_probe.rs \
-     -C link-args="-Wl,-rpath,$SYSROOT/lib" -o /tmp/driver_probe
-   /tmp/driver_probe support/probe_inputs.rs --crate-type=lib --edition=2024 \
+   SYSROOT="$(rustc +nightly --print sysroot)"
+   rustc +nightly --edition=2024 support/driver_probe.rs \
+     -C link-args="-Wl,-rpath,$SYSROOT/lib" -o ./driver_probe
+   ./driver_probe support/probe_inputs.rs --crate-type=lib --edition=2024 \
      --sysroot "$SYSROOT" -Z mir-opt-level=0 -Z mir-preserve-ub
    ```
    Verify that `Runtime(PostCleanup)` retains `TerminatorKind::Call` for

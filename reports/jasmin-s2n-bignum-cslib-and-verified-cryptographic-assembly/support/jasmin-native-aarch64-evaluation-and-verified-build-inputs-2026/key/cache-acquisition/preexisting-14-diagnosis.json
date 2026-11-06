@@ -1,0 +1,114 @@
+[
+  {
+    "path": "/nix/store/x8c40nfigps493a07sdr2pm5s9j1cdc0-patch-shebangs.sh",
+    "before_ca": "fixed:r:sha256:1lpy8ppkfh6vcq7i4rjypjkwxwx9lpjry111halr0sgapwqr7sb3",
+    "after_ca": "fixed:r:sha256:1lpy8ppkfh6vcq7i4rjypjkwxwx9lpjry111halr0sgapwqr7sb3",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/pag6l61paj1dc9sv15l7bm5c17xn5kyk-move-systemd-user-units.sh",
+    "before_ca": "fixed:r:sha256:1h60zk3fqdmshsafv3n7j9r2fhpql80hbbmix60f8jjj145xk6q2",
+    "after_ca": "fixed:r:sha256:1h60zk3fqdmshsafv3n7j9r2fhpql80hbbmix60f8jjj145xk6q2",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/z7k98578dfzi6l3hsvbivzm7hfqlk0zc-set-source-date-epoch-to-latest.sh",
+    "before_ca": "fixed:r:sha256:0zcs4lnzih5blggswb1gi25rwbp29575vrp2k32k5kahj6gs789v",
+    "after_ca": "fixed:r:sha256:0zcs4lnzih5blggswb1gi25rwbp29575vrp2k32k5kahj6gs789v",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/p3l1a5y7nllfyrjn2krlwgcc3z0cd3fq-make-symlinks-relative.sh",
+    "before_ca": "fixed:r:sha256:0c5hmv4y7lr9zn37j9424fwqyd7ks1lif9dsn4khw6l3wyh6b6wk",
+    "after_ca": "fixed:r:sha256:0c5hmv4y7lr9zn37j9424fwqyd7ks1lif9dsn4khw6l3wyh6b6wk",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/cickvswrvann041nqxb0rxilc46svw1n-prune-libtool-files.sh",
+    "before_ca": "fixed:r:sha256:16y8hwyxqvcjpsgjzqm5qgbzrlrh2jijpzcz01vb28z8iwzvhc6h",
+    "after_ca": "fixed:r:sha256:16y8hwyxqvcjpsgjzqm5qgbzrlrh2jijpzcz01vb28z8iwzvhc6h",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/5yzw0vhkyszf2d179m0qfkgxmp5wjjx4-move-docs.sh",
+    "before_ca": "fixed:r:sha256:0cmbvppwh1m6pzjirhhmpmgbgkaa5lmag14c241a6l7rxypwlm9c",
+    "after_ca": "fixed:r:sha256:0cmbvppwh1m6pzjirhhmpmgbgkaa5lmag14c241a6l7rxypwlm9c",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/xyff06pkhki3qy1ls77w10s0v79c9il0-reproducible-builds.sh",
+    "before_ca": "fixed:r:sha256:0h6i4agbhpziv2kx8py86r7qy8cycq8rh37c6h2fppyzsi4awfpm",
+    "after_ca": "fixed:r:sha256:0h6i4agbhpziv2kx8py86r7qy8cycq8rh37c6h2fppyzsi4awfpm",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/pilsssjjdxvdphlg2h19p0bfx5q0jzkn-strip.sh",
+    "before_ca": "fixed:r:sha256:0kiyc58wjgr6mr3jj9vjkqi6cfrdhz5yhxiqxwhn284s02niqjpy",
+    "after_ca": "fixed:r:sha256:0kiyc58wjgr6mr3jj9vjkqi6cfrdhz5yhxiqxwhn284s02niqjpy",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/cmzya9irvxzlkh7lfy6i82gbp0saxqj3-multiple-outputs.sh",
+    "before_ca": "fixed:r:sha256:05x9dvbvs9ajp1004f01ll2mnnr6bndj2sjcbx1xsy66mybps5zp",
+    "after_ca": "fixed:r:sha256:05x9dvbvs9ajp1004f01ll2mnnr6bndj2sjcbx1xsy66mybps5zp",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/0y5xmdb7qfvimjwbq7ibg1xdgkgjwqng-no-broken-symlinks.sh",
+    "before_ca": "fixed:r:sha256:04rpcr2inb9nnk98izbjaxpw1cqwvpj9zpzyb20lacnplyyv15fl",
+    "after_ca": "fixed:r:sha256:04rpcr2inb9nnk98izbjaxpw1cqwvpj9zpzyb20lacnplyyv15fl",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/cv1d7p48379km6a85h4zp6kr86brh32q-audit-tmpdir.sh",
+    "before_ca": "fixed:r:sha256:1aph5x8mv840gp2m2rysq6hcdgd49cj2n068v9gnnyqbvqy0dl8s",
+    "after_ca": "fixed:r:sha256:1aph5x8mv840gp2m2rysq6hcdgd49cj2n068v9gnnyqbvqy0dl8s",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/kd4xwxjpjxi71jkm6ka0np72if9rm3y0-move-sbin.sh",
+    "before_ca": "fixed:r:sha256:0bcb0m065sdwmhjgnrd1k81s7dcgx4ihlyxqav5b0p58xnwh653v",
+    "after_ca": "fixed:r:sha256:0bcb0m065sdwmhjgnrd1k81s7dcgx4ihlyxqav5b0p58xnwh653v",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/fyaryjvghbkpfnsyw97hb3lyb37s1pd6-move-lib64.sh",
+    "before_ca": "fixed:r:sha256:0bfqc40bvfg95j7qpv0kn5w4zqqs8k3mnz6l72jza0dn4hk12d28",
+    "after_ca": "fixed:r:sha256:0bfqc40bvfg95j7qpv0kn5w4zqqs8k3mnz6l72jza0dn4hk12d28",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  },
+  {
+    "path": "/nix/store/85clx3b0xkdf58jn161iy80y5223ilbi-compress-man-pages.sh",
+    "before_ca": "fixed:r:sha256:026w3i4nzkjvbcaq5qjy9xih514zk57kd59i69vmd72avnd6lfbf",
+    "after_ca": "fixed:r:sha256:026w3i4nzkjvbcaq5qjy9xih514zk57kd59i69vmd72avnd6lfbf",
+    "before_signatures": [],
+    "after_signatures": [],
+    "same_before_after": true
+  }
+]

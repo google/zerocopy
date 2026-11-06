@@ -1,0 +1,2 @@
+missing-proof.lean:100:7: error(lean.unknownIdentifier): Unknown identifier `consumerAccepted`
+missing-proof.lean:101:14: error(lean.unknownIdentifier): Unknown constant `consumerAccepted`

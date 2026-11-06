@@ -1,0 +1,97 @@
+(*
+ * The Armv8 Application Level Memory Model.
+ *
+ * This is a machine-readable, executable and formal artefact, which aims to be
+ * the latest stable version of the Armv8 memory model.
+ * If you have comments on the content of this file, please send an email to
+ * memory-model@arm.com
+ * For a textual version of the model, see section B2.3 of the Armv8 ARM:
+ * https://developer.arm.com/documentation/ddi0487/
+ *
+ * Authors:
+ * Jade Alglave <jade.alglave@arm.com>
+ * Nikos Nikoleris <nikos.nikoleris@arm.com>
+ * Artem Khyzha <artem.khyzha@arm.com>
+ *
+ * Copyright (C) 2016-present, Arm Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in
+ *       the documentation and/or other materials provided with the
+ *       distribution.
+ *     * Neither the name of ARM nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *)
+
+include "aarch64fences.cat"
+let Imp = NExp
+let C_TLBI = TLBI & domain(po; [dsb.full])
+let C_IC = IC & domain(po; [dsb.full])
+
+let add_pair p =
+  map (fun r -> (p | r))
+
+let rec add_both_choices (rs,wts) = match wts with
+|| {} -> rs
+|| wt ++ wts ->
+   let wt = wt ++ 0 in (* Change pair into relation *)
+   let tw = wt^-1 in (* Notice, ^-1 could operate on pairs directly *)
+   let r1 = add_pair wt rs
+   and r2 = add_pair tw rs in
+   let rs = r1|r2 in
+   add_both_choices (rs,wts)
+end
+
+(* takes a relation "unordered-pairs" of the form [X]; r; [Y]
+         where "X" and "Y" are disjoint and "r" is meant to be symmetric
+   and a relation "rel",
+   and returns a set of acyclic relations consistent with "rel" and ordering
+   the unordered pairs one way or the other.
+ *)
+let enumerate-ordered-pairs (unordered-pairs,rel) =
+    let no-choice = rel & (unordered-pairs | unordered-pairs^-1) in
+    let need-choosing = unordered-pairs \ (no-choice | no-choice^-1) in
+    add_both_choices ({no-choice},need-choosing)
+
+let TLBI-Imp_TTD_R-pairs = inv-scope &
+  ((C_TLBI * (Imp & TTD & R)) \
+   (TLBInXS * PTEXS) \
+   ((~TLBIIS) * (Imp & TTD & R)) & ext)
+
+let all-TLBI-Imp_TTD_R-enums rel =
+  enumerate-ordered-pairs (
+    TLBI-Imp_TTD_R-pairs,
+    rel
+  )
+
+let all-DC-Exp_W-enums rel =
+    enumerate-ordered-pairs (
+        scl & (DC.CVAU * (Exp & W)),
+        rel | (IW * (_\IW))
+    )
+
+let all-IC-Imp_Instr_R-enums rel =
+    enumerate-ordered-pairs (
+        scl & (C_IC * (Imp & Instr & R)),
+        rel
+    )

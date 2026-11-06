@@ -1,0 +1,228 @@
+-Q theories simuliris
+# We sometimes want to locally override notation, and there is no good way to do that with scopes.
+-arg -w -arg -notation-overridden
+# Cannot use non-canonical projections as it causes massive unification failures
+# (https://github.com/coq/coq/issues/6294).
+-arg -w -arg -redundant-canonical-projection
+# Warning seems incorrect, see https://gitlab.mpi-sws.org/iris/stdpp/-/issues/216
+-arg -w -arg -notation-incompatible-prefix
+# Needs Rocq 9.2.
+-arg "-w -notation-for-abbreviation"
+# Needs Rocq 9.2 at least for Scheme Rewrite; it is unclear whether the warning
+# is also used for other schemes.
+-arg "-w -missing-scheme"
+# The ltac_expr case of this is very annoying to deal with so we are hoping for
+# better alternatives (https://github.com/rocq-prover/rocq/issues/21896).
+-arg "-w -level-tolerance"
+
+# Overwrite some default Rocq options.
+# (Needs separate arg flags to avoid ProofGeneral bugs.)
+-arg "-set" -arg "'Default Goal Selector=!'"
+-arg "-set" -arg "'Default Proof Using=Type'"
+-arg "-set" -arg "'Suggest Proof Using'"
+
+theories/logic/satisfiable.v
+theories/simulation/language.v
+theories/simulation/fairness.v
+theories/simulation/behavior.v
+theories/simulation/simulation.v
+theories/simulation/slsls.v
+theories/simulation/closed_sim.v
+theories/simulation/fairness_adequacy.v
+theories/simulation/adequacy.v
+theories/simulation/lifting.v
+theories/simulation/gen_log_rel.v
+
+theories/playground/fixpoints.v
+theories/playground/language.v
+theories/playground/pure_threadpool_sim.v
+
+theories/simulang/base.v
+theories/simulang/locations.v
+theories/simulang/lang.v
+theories/simulang/wf.v
+theories/simulang/logical_heap.v
+theories/simulang/primitive_laws.v
+theories/simulang/notation.v
+theories/simulang/tactics.v
+theories/simulang/class_instances.v
+theories/simulang/proofmode.v
+theories/simulang/gen_val_rel.v
+theories/simulang/gen_refl.v
+theories/simulang/pure_refl.v
+theories/simulang/heapbij.v
+theories/simulang/globalbij.v
+theories/simulang/log_rel_structural.v
+theories/simulang/gen_adequacy.v
+theories/simulang/behavior.v
+theories/simulang/hoare.v
+
+theories/simulang/examples/sum.v
+
+theories/simulang/na_inv/na_locs.v
+theories/simulang/na_inv/inv.v
+theories/simulang/na_inv/refl.v
+theories/simulang/na_inv/adequacy.v
+theories/simulang/na_inv/readonly_refl.v
+theories/simulang/na_inv/examples/data_races.v
+theories/simulang/na_inv/examples/remove_alloc.v
+theories/simulang/na_inv/examples/program_transformations_in_weak_memory_models.v
+theories/simulang/na_inv/examples/derived.v
+theories/simulang/na_inv/examples/paper.v
+
+theories/simulang/simple_inv/inv.v
+theories/simulang/simple_inv/refl.v
+theories/simulang/simple_inv/adequacy.v
+theories/simulang/simple_inv/examples/heap_test.v
+theories/simulang/simple_inv/examples/reorder_malloc.v
+theories/simulang/simple_inv/examples/while.v
+theories/simulang/simple_inv/examples/derived.v
+theories/simulang/simple_inv/examples/paper.v
+
+
+
+
+theories/base_logic/gen_sim_heap.v
+theories/base_logic/gen_sim_prog.v
+theories/base_logic/gen_heap_bij.v
+
+
+
+
+
+theories/stacked_borrows/helpers.v
+theories/stacked_borrows/type.v
+theories/stacked_borrows/locations.v
+theories/stacked_borrows/lang_base.v
+theories/stacked_borrows/notation.v
+theories/stacked_borrows/expr_semantics.v
+theories/stacked_borrows/bor_semantics.v
+theories/stacked_borrows/lang.v
+theories/stacked_borrows/defs.v
+theories/stacked_borrows/steps_foreach.v
+theories/stacked_borrows/steps_list.v
+theories/stacked_borrows/steps_access.v
+theories/stacked_borrows/steps_wf.v
+theories/stacked_borrows/steps_progress.v
+theories/stacked_borrows/steps_retag.v
+theories/stacked_borrows/steps_inv.v
+
+theories/stacked_borrows/tactics.v
+theories/stacked_borrows/class_instances.v
+theories/stacked_borrows/tkmap_view.v
+theories/stacked_borrows/logical_state.v
+theories/stacked_borrows/inv_accessors.v
+theories/stacked_borrows/steps_refl.v
+theories/stacked_borrows/steps_opt.v
+theories/stacked_borrows/primitive_laws.v
+theories/stacked_borrows/proofmode.v
+
+theories/stacked_borrows/wf.v
+theories/stacked_borrows/parallel_subst.v
+theories/stacked_borrows/log_rel_structural.v
+theories/stacked_borrows/refl.v
+theories/stacked_borrows/behavior.v
+theories/stacked_borrows/adequacy.v
+
+theories/stacked_borrows/examples/lib.v
+theories/stacked_borrows/examples/pure.v
+theories/stacked_borrows/examples/opt1.v
+theories/stacked_borrows/examples/opt1_down.v
+theories/stacked_borrows/examples/opt2.v
+theories/stacked_borrows/examples/opt2_down.v
+theories/stacked_borrows/examples/opt3.v
+theories/stacked_borrows/examples/opt3_down.v
+theories/stacked_borrows/examples/coinductive.v
+
+
+
+
+## Tree Borrows
+theories/tree_borrows/locations.v
+theories/tree_borrows/lang_base.v
+theories/tree_borrows/notation.v
+theories/tree_borrows/expr_semantics.v
+
+theories/tree_borrows/tree.v
+theories/tree_borrows/tree_lemmas.v
+theories/tree_borrows/bor_semantics.v
+theories/tree_borrows/bor_lemmas.v
+theories/tree_borrows/lang.v
+
+# Actual Simuliris proof content for TB
+theories/tree_borrows/defs.v
+theories/tree_borrows/steps_foreach.v
+theories/tree_borrows/steps_preserve.v
+theories/tree_borrows/steps_wf.v
+theories/tree_borrows/steps_progress.v
+theories/tree_borrows/steps_inv.v
+
+theories/tree_borrows/tactics.v
+theories/tree_borrows/wishlist.v
+theories/tree_borrows/class_instances.v
+theories/tree_borrows/tkmap_view.v
+theories/tree_borrows/logical_state.v
+theories/tree_borrows/inv_accessors.v
+theories/tree_borrows/step_laws/steps_refl.v
+theories/tree_borrows/step_laws/steps_refl_delete.v
+theories/tree_borrows/step_laws/steps_refl_endcall.v
+theories/tree_borrows/step_laws/steps_read_write_simple.v
+theories/tree_borrows/step_laws/steps_retag.v
+theories/tree_borrows/step_laws/steps_opt.v
+theories/tree_borrows/step_laws/steps_local.v
+theories/tree_borrows/step_laws/steps_unique.v
+theories/tree_borrows/step_laws/steps_prot.v
+theories/tree_borrows/step_laws/steps_source_only.v
+theories/tree_borrows/steps_all.v
+theories/tree_borrows/primitive_laws.v
+theories/tree_borrows/proofmode.v
+theories/tree_borrows/early_proofmode.v
+theories/tree_borrows/tree_access_laws.v
+theories/tree_borrows/tag_protected_laws.v
+theories/tree_borrows/loc_controlled_laws.v
+
+theories/tree_borrows/trees_equal/trees_equal_base.v
+theories/tree_borrows/trees_equal/random_lemmas.v
+theories/tree_borrows/trees_equal/disabled_in_practice.v
+theories/tree_borrows/trees_equal/disabled_tag_rejects_read_precisely.v
+theories/tree_borrows/trees_equal/trees_equal_more_access.v
+theories/tree_borrows/trees_equal/trees_equal_preserved_by_access.v
+theories/tree_borrows/trees_equal/trees_equal_preserved_by_access_base.v
+theories/tree_borrows/trees_equal/trees_equal_dealloc.v
+theories/tree_borrows/trees_equal/trees_equal_transitivity.v
+theories/tree_borrows/trees_equal/trees_equal_create_child.v
+theories/tree_borrows/trees_equal/trees_equal_endcall_law.v
+theories/tree_borrows/trees_equal/trees_equal_initcall.v
+theories/tree_borrows/trees_equal/trees_equal_endcall_law_2.v
+theories/tree_borrows/trees_equal/trees_equal_asymmetric_prot.v
+theories/tree_borrows/trees_equal/trees_equal_source_read.v
+
+theories/tree_borrows/wf.v
+theories/tree_borrows/parallel_subst.v
+theories/tree_borrows/log_rel_structural.v
+theories/tree_borrows/refl.v
+theories/tree_borrows/behavior.v
+theories/tree_borrows/adequacy.v
+
+theories/tree_borrows/examples/protected/mutable_reorder_read_down.v
+theories/tree_borrows/examples/protected/mutable_reorder_read_up.v
+theories/tree_borrows/examples/protected/shared_reorder_read_down_escaped.v
+theories/tree_borrows/examples/protected/shared_reorder_read_up_escaped.v
+theories/tree_borrows/examples/protected/shared_insert_read.v
+theories/tree_borrows/examples/protected/shared_insert_read_coinductive.v
+theories/tree_borrows/examples/protected/mutable_reorder_write_down_activated.v
+theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated.v
+theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v
+theories/tree_borrows/examples/unprotected/mutable_delete_read.v
+theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v
+theories/tree_borrows/examples/unprotected/shared_delete_read_escaped_coinductive.v
+theories/tree_borrows/examples/lib.v
+theories/tree_borrows/examples/pure.v
+
+# Proofs directly against the operational semantics.
+# This results in a proof that reads can be reordered.
+theories/tree_borrows/read_read_reorder/low_level.v
+theories/tree_borrows/read_read_reorder/read_reorder.v
+theories/tree_borrows/read_read_reorder/equivalence_def.v
+
+

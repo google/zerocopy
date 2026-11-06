@@ -1,17 +1,10 @@
 {
   "topics": [
-    "os/extensible-kernels",
-    "os/capabilities",
-    "proof/certificates",
-    "proof/consumer-binding",
-    "verification/translation-validation",
-    "verification/trusted-computing-base",
-    "sel4",
-    "cogent",
-    "metamath-zero",
-    "anneal/execution-boundaries",
-    "lean/mechanized-models",
-    "lean/axioms"
+    "systems",
+    "systems/os-kernels",
+    "systems/ebpf-pcc",
+    "verification/refinement",
+    "lean/kernel"
   ],
   "subjects": [
     {
@@ -24,7 +17,7 @@
       }
     },
     {
-      "name": "Decompilation into Logic — Improved (Myreen, Gordon & Slind)",
+      "name": "Decompilation into Logic \u2014 Improved (Myreen, Gordon & Slind)",
       "identity": {
         "doi": "10.1109/FMCAD.2012.6462558",
         "publication": "FMCAD 2012",
@@ -77,23 +70,6 @@
       }
     },
     {
-      "name": "Anneal Trusted Verification Boundary and PassCompiler / CertChecker",
-      "identity": {
-        "repository": "AeneasVerif/anneal",
-        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
-        "rv64_compiler_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87",
-        "x86_compiler_revision": "3a89578"
-      }
-    },
-    {
-      "name": "Anneal Kernel Branch Prototype (SpecificationHolds, wp_prove_orthogonal, SpecLayout)",
-      "identity": {
-        "repository": "google/zerocopy",
-        "branch": "anneal-kernel",
-        "revision": "234131c52963cca4e2725dbfc02feb5214de81f4"
-      }
-    },
-    {
       "name": "Kraken AArch64 Consumer-Bound Certificate Checker",
       "identity": {
         "repository": "AeneasVerif/kraken",
@@ -109,18 +85,10 @@
       }
     },
     {
-      "name": "Mechanized Lean 4 Proof-Object, Cogent Linear Refinement, and Ring-0 Admission Gate Model",
+      "name": "Anneal verification framework",
       "identity": {
-        "artifact": "support/DeductiveAndRefinementCertificateKernels.lean",
-        "sha256": "ba4489aefa33160d171cd2037cef7442e5f0d0593ebcd73f0ab6badc82f4c023"
-      }
-    },
-    {
-      "name": "Empirical Ring-0 Certificate Substrate Benchmark Probe",
-      "identity": {
-        "artifact": "support/certificate_substrate_probe.py",
-        "sha256": "b972cf5d83a0716a3008655aeeb3f6f3308e3ff8ea3ebfa906062315dc7a3def",
-        "results_artifact": "support/certificate_substrate_probe_results.json"
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
       }
     }
   ],

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "cp",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5:/nix/store/hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0.lock",
+    "-"
+  ],
+  "status": 0,
+  "seconds": 0.048061582958325744,
+  "stdout_bytes": 1536,
+  "stdout_sha256": "340db0e3ad0afe685574a9ea31d4e6829b01ffd76b4f03036804fe026c69db2c"
+}

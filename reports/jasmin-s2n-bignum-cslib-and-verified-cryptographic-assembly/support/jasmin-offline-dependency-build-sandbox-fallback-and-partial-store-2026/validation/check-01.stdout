@@ -1,0 +1,14 @@
+{
+  "package_manifest": "PASS",
+  "archives": {
+    "build-receipts.tar.gz": 21,
+    "diagnosis-records.tar.gz": 6,
+    "stopped-readback-records.tar.gz": 13
+  },
+  "receipts_and_sources": "PASS",
+  "target_derivations": 18,
+  "output_paths": 19,
+  "registered": 1,
+  "absent": 18,
+  "optional_db_requery": "not requested; compact query results are preserved historical evidence"
+}

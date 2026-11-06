@@ -1,0 +1,175 @@
+{
+  "topics": [
+    "rustc/mir",
+    "rustc/mir-phases",
+    "rustc/ub-checks",
+    "anneal/mir-semantics",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.98.1 stable toolchain and rustc source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+        "version": "1.98.1"
+      }
+    },
+    {
+      "name": "Rust nightly source of the selected volatile claim",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "toolchain-date": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Cargo 1.98.1 stable component documentation",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "version": "1.98.1",
+        "documentation": "https://doc.rust-lang.org/stable/nightly-rustc/cargo/version/index.html"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "version": "1.98.0-nightly",
+        "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "commit_date": "2026-05-30",
+        "target": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "charon",
+      "identity": {
+        "version": "0.1.210",
+        "commit": "1e08453924610c19d74c245a7308f17c1008e2db",
+        "rustc_nightly": "nightly-2026-05-31",
+        "rustc_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Anneal configuration",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Rust compiler behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Rust Reference bundled by the compiler revision",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-05-31 rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly",
+        "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-09-30 rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+        "version": "1.101.0-nightly",
+        "rustc_sha256": "29f8ccc9aa7b0d8798eda854fa7f0e4ba3867c8c336b87d52dbb3b24b3f0878d"
+      }
+    },
+    {
+      "name": "rust-lang/rust (nightly-2026-03-19)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.96.0-nightly",
+        "revision": "fd0c901b00ee1e08a250039cdb90258603497e20",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "rust-lang/rust (nightly-2026-05-31)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.98.0-nightly",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.28.0-rc1)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.28.0-rc1",
+        "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.28.0)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.28.0",
+        "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.34.1)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

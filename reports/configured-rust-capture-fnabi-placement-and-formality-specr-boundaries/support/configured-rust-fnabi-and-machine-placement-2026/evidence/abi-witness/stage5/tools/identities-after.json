@@ -1,0 +1,111 @@
+{
+  "status": "PASS",
+  "tools": [
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "bytes": 18133888,
+      "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c"
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/otool",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "bytes": 72672,
+      "sha256": "8353ad3c42743a93e9ca7d0d4e9d3df22305252d169c42c543ee22eeb8c33809"
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+      "bytes": 412504,
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988"
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "bytes": 202329432,
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "bytes": 202329432,
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "bytes": 2435976,
+      "sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90"
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libserde_json-6ff72d7e4200795e.rmeta",
+      "bytes": 1733127,
+      "sha256": "945c9aec8c2371b9b03d9a3b6dd47cc32c73c76751c290598262460849e9bbfa"
+    }
+  ],
+  "resolved_reader_libraries": [
+    {
+      "dependency": "/usr/lib/libSystem.B.dylib",
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "standalone_file": false,
+      "sha256": null,
+      "scope": "OS shared-cache trust; no per-library hash/closure claim"
+    },
+    {
+      "dependency": "/usr/lib/libz.1.dylib",
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "standalone_file": false,
+      "sha256": null,
+      "scope": "OS shared-cache trust; no per-library hash/closure claim"
+    },
+    {
+      "dependency": "/usr/lib/libc++.1.dylib",
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "standalone_file": false,
+      "sha256": null,
+      "scope": "OS shared-cache trust; no per-library hash/closure claim"
+    },
+    {
+      "dependency": "/usr/lib/libc++.1.dylib",
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "standalone_file": false,
+      "sha256": null,
+      "scope": "OS shared-cache trust; no per-library hash/closure claim"
+    },
+    {
+      "dependency": "/usr/lib/libSystem.B.dylib",
+      "reader": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "standalone_file": false,
+      "sha256": null,
+      "scope": "OS shared-cache trust; no per-library hash/closure claim"
+    }
+  ],
+  "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+  "driver_dependency_scope": "Exact enclosing image hash unchanged; direct driver dependencies also OS/shared-cache trust, not complete runtime closure.",
+  "windows_target_set": "all45 hashed files unchanged",
+  "historical_manifests": [
+    {
+      "path": "prepared-manifest.json",
+      "sha256": "f43a6306944d5ee5c2e1984f1bafd20fe95706e6217e0c6c3ec1640547ca26b8",
+      "files": 12,
+      "status": "all bound bytes unchanged"
+    },
+    {
+      "path": "build-consumer-manifest.json",
+      "sha256": "43e6a3b23827048d83a54d4f23514fd772427303c200f501b0218a39b1ee415a",
+      "files": 130,
+      "status": "all bound bytes unchanged"
+    },
+    {
+      "path": "v3-capture-manifest.json",
+      "sha256": "0523539030fb2ad188c1d7e515002914df81d8b9ce9b14aae675d47cfcbefcb0",
+      "files": 115,
+      "status": "all bound bytes unchanged"
+    },
+    {
+      "path": "stage4-manifest.json",
+      "sha256": "ec647915a8430be9c262630fd88bffc6fe4ce19c8a71c86d26648f47d8e1c97d",
+      "files": 355,
+      "status": "all bound bytes unchanged"
+    }
+  ],
+  "Windows_compiler_or_observer_invocations": 0,
+  "host_compiler_invocations": 4,
+  "link_native_foreign_vector_executions": 0
+}

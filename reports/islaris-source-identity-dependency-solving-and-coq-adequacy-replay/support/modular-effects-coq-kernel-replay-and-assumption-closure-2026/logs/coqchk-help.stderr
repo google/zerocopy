@@ -1,0 +1,25 @@
+Usage: coqchk <options> modules
+
+coqchk options are:
+
+  -Q dir coqdir               map physical dir to logical coqdir
+  -R dir coqdir               synonymous for -Q
+  -coqlib dir                 set coqchk's standard library location
+  -boot                       don't initialize the library paths automatically
+
+  -admit module               load module and dependencies without checking
+  -norec module               check module but admit dependencies without checking
+
+  -debug                      enable debugging info
+  -where                      print coqchk's standard library location and exit
+  -v, --version               print coqchk version and exit
+  -o, --output-context        print the list of assumptions
+  -m, --memory                print the maximum heap size
+  -silent                     disable trace of constants being checked
+
+  -impredicative-set          set sort Set impredicative
+  -indices-matter             levels of indices (and nonuniform parameters)
+                              contribute to the level of inductives
+  -bytecode-compiler (yes|no) enable the vm_compute reduction machine (default is no)
+
+  -h, --help                  print this list of options

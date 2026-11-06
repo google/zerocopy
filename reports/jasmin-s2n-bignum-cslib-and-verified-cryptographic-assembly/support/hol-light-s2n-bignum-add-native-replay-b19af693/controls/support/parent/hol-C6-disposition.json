@@ -1,0 +1,22 @@
+{
+  "status": "PASS expected C6 original global-policy rejection; offline display-expectation defect diagnosed",
+  "checks": {
+    "native_exit2": true,
+    "stdout_receipt_exact": true,
+    "stderr_receipt_exact": true,
+    "baseline_once": true,
+    "registered_true_once": true,
+    "qualified_original_check_failure": true,
+    "no_unexpected_acceptance": true,
+    "source_registered_T": true
+  },
+  "primary_source": {
+    "revision": "b19af6934759eed622d7aca25092367f81656eee",
+    "path": "bool.ml",
+    "lines": "493-494",
+    "meaning": "override_interface maps public printer names true/false to T/F"
+  },
+  "defect": "Owned offline result observer assumed printed T. Actual original HOL printer emits true. No theorem/native/source/axiom-policy defect. No process rerun.",
+  "blast_radius": "Offline C6 observation only; process isolated, expected checker rejected, no persisted axiom state, source/tool/native/positive-file postcensus unchanged.",
+  "recovery": "Retire wrong C6 helper branch; use this primary-source+raw-stream disposition. Remaining original finite cases may proceed separately when explicitly granted."
+}

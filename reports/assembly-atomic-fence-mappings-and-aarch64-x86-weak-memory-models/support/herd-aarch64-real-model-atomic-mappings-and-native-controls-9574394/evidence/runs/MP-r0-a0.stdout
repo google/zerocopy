@@ -1,0 +1,14 @@
+Test MP-r0-a0 Allowed
+States 4
+1:X4=0; 1:X6=0;
+1:X4=0; 1:X6=1;
+1:X4=1; 1:X6=0;
+1:X4=1; 1:X6=1;
+Ok
+Witnesses
+Positive: 1 Negative: 3
+Condition exists (1:X4=1 /\ 1:X6=0)
+Observation MP-r0-a0 Sometimes 1 3
+Time MP-r0-a0 0.00
+Hash=377f27d6eeb0c849c5f68836c147e2e2
+

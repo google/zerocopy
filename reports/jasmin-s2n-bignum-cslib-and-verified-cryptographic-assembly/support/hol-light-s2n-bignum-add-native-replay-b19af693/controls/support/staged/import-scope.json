@@ -1,0 +1,237 @@
+{
+  "classification": "Source-derived prediction only; actual control producers not run",
+  "core_module": {
+    "pin": "b19af6934759eed622d7aca25092367f81656eee",
+    "sources": 47,
+    "status": "reuse existing unchanged module; no rebuild"
+  },
+  "ImporterControl": {
+    "load_entry": "x86/proofs/base.ml",
+    "additional_original_files": [
+      {
+        "path": "hol-light/Library/bdd.ml",
+        "bytes": 17771,
+        "sha256": "21130afeb344fdab0a185b4ece3e17cbf86c61ee6fe4ef86ca8ee93ea9b0d401",
+        "md5_for_upstream_ledger": "edbe46d56a474f3ddb1e1e98fd975e42"
+      },
+      {
+        "path": "hol-light/Library/bitmatch.ml",
+        "bytes": 51731,
+        "sha256": "7ffbaa2ea98f464b8cd704d8551f67920c478d2f544e048c07dc65c4e5dacc39",
+        "md5_for_upstream_ledger": "3832054e9334a4e0e54f7c907dd8b50f"
+      },
+      {
+        "path": "hol-light/Library/bitsize.ml",
+        "bytes": 7240,
+        "sha256": "6f01574b26e18a2b357416a3dffc84d3eee3e650d53fda190e8540059f460a35",
+        "md5_for_upstream_ledger": "19ac74444a7afc48843de112191d1697"
+      },
+      {
+        "path": "hol-light/Library/components.ml",
+        "bytes": 11528,
+        "sha256": "5a8ea87bad6aa22a1b921d1177caef78f0603642a1786bb7e43d878014043883",
+        "md5_for_upstream_ledger": "2816ea905cbff05185e0b237dcadf012"
+      },
+      {
+        "path": "hol-light/Library/floor.ml",
+        "bytes": 37170,
+        "sha256": "ae30e4c5a5086a19feb3da85bbcbe94957340b542c38fa0e8b91ae1ce319deb0",
+        "md5_for_upstream_ledger": "145b5a26fe6a0f9b5d7107d5d44a22d3"
+      },
+      {
+        "path": "hol-light/Library/integer.ml",
+        "bytes": 48771,
+        "sha256": "d58b730cd0deceb77ba19d452afe7b05f1c8505a1d76a4862515979587786e87",
+        "md5_for_upstream_ledger": "ced85322df0f4a156d2fc9c23ffa391f"
+      },
+      {
+        "path": "hol-light/Library/iter.ml",
+        "bytes": 6724,
+        "sha256": "fef70bb7ab3c31090dcd6581e8015613f263b4a906d3710a1600d71f4dc0ec54",
+        "md5_for_upstream_ledger": "05684e423baad84e216cb03c4a580a0f"
+      },
+      {
+        "path": "hol-light/Library/pocklington.ml",
+        "bytes": 116596,
+        "sha256": "06f8198b41cf2a5c2d21e9f7dab2ebc48a6219e56e1fd04bf72aba18f36ee983",
+        "md5_for_upstream_ledger": "bf092c431f93a5e829526d1ef9baf435"
+      },
+      {
+        "path": "hol-light/Library/prime.ml",
+        "bytes": 103203,
+        "sha256": "640f709c4b1e4292b96ba3b8b5c08a33a685f657fc9b516e183bb1287a9b4483",
+        "md5_for_upstream_ledger": "622aa374979dbe21414049a1af0f3ed3"
+      },
+      {
+        "path": "hol-light/Library/records.ml",
+        "bytes": 6345,
+        "sha256": "b59901fee08cda2d29998894524935a91a35f886cc2d3225019f36ca981c0716",
+        "md5_for_upstream_ledger": "c3874ede37021ef2555e13137478affa"
+      },
+      {
+        "path": "hol-light/Library/rstc.ml",
+        "bytes": 25431,
+        "sha256": "3bfe6fa7995a5b272f2ea00d4271674c8f04938dc12737544aa06981ca2b4748",
+        "md5_for_upstream_ledger": "622ab60c2aa0d9eb187262cb4871c0e3"
+      },
+      {
+        "path": "hol-light/Library/words.ml",
+        "bytes": 387454,
+        "sha256": "38ebbbb2b3422c6bda93ba818b44d0c4f0363cfe9b478b9e79961fa1d3b58132",
+        "md5_for_upstream_ledger": "699ca08da38271e5e8c92226f06a7e01"
+      },
+      {
+        "path": "s2n-bignum/common/actions_merger.ml",
+        "bytes": 8607,
+        "sha256": "203ac691851e64fcd09a795baf0e3265fc7f1132c4d2a4bc55b53cc2d372a9a6",
+        "md5_for_upstream_ledger": "0a804aff2935c0c70b3bc8148c623389"
+      },
+      {
+        "path": "s2n-bignum/common/aes.ml",
+        "bytes": 21668,
+        "sha256": "157fcb948e7bd2cb054d13a8cd70034b39319db94db1fbf43720c44942e59b33",
+        "md5_for_upstream_ledger": "ee5efe3c2dcf08c3d0e68e5870daf442"
+      },
+      {
+        "path": "s2n-bignum/common/alignment.ml",
+        "bytes": 7350,
+        "sha256": "551f3872a16f705bd2dbb7e193db43e2a40c7c56af2e538d00563055fc79f3bd",
+        "md5_for_upstream_ledger": "ed480ad32d150e768db9b10889932980"
+      },
+      {
+        "path": "s2n-bignum/common/bignum.ml",
+        "bytes": 44260,
+        "sha256": "d53843f128538a0324abd20f04873d835eaac513573be55f3bbb41c048903995",
+        "md5_for_upstream_ledger": "85252ca862f0afe9a0e80aad13fa6408"
+      },
+      {
+        "path": "s2n-bignum/common/code_loading.ml",
+        "bytes": 7976,
+        "sha256": "9a199b200b34627d5dbc31d4575a6e50580b61dd9f6735722e1f952c9435cf55",
+        "md5_for_upstream_ledger": "940db8a59892f761e82b42d2421da85b"
+      },
+      {
+        "path": "s2n-bignum/common/components.ml",
+        "bytes": 152681,
+        "sha256": "b0a4f788c0d251d7d2ea0ddefb95e12e707cf67e1d743606404c74fa9189d76a",
+        "md5_for_upstream_ledger": "9d71090ed14671ad101620da7e0163f6"
+      },
+      {
+        "path": "s2n-bignum/common/elf.ml",
+        "bytes": 28076,
+        "sha256": "004faa906b8b2d2f65a9d352ae88b343c2526c69993ee13d49c81ada8284ad32",
+        "md5_for_upstream_ledger": "1a0c5c7ab8f50ddb2597482398487650"
+      },
+      {
+        "path": "s2n-bignum/common/execution.ml",
+        "bytes": 13727,
+        "sha256": "0f30514aa347888b710a82db365fd695fd4121c9b1b477d190372bbb57dcf84c",
+        "md5_for_upstream_ledger": "ff788a701d99f097d253a2ac375351f6"
+      },
+      {
+        "path": "s2n-bignum/common/for_hollight.ml",
+        "bytes": 17390,
+        "sha256": "da3a4588e9f54d17f46f942f7391c07bf32c8886a81161e163c55cfd5c65bb02",
+        "md5_for_upstream_ledger": "1ce59720effabe4c61d4bdc2c1d93f91"
+      },
+      {
+        "path": "s2n-bignum/common/interval.ml",
+        "bytes": 59134,
+        "sha256": "7b3932d1241e36f7e3121fe365cb8a26afb191175e1eba14eccdc804b121056a",
+        "md5_for_upstream_ledger": "a5aa08328772e136c4769e0e41189639"
+      },
+      {
+        "path": "s2n-bignum/common/misc.ml",
+        "bytes": 91882,
+        "sha256": "a081b895dc76866a98f6f2d80d71fc02d771e85fa075d84256b2d9b5cdd34ff7",
+        "md5_for_upstream_ledger": "9850d13bcc5d3bf8cf2a773328fc4fa8"
+      },
+      {
+        "path": "s2n-bignum/common/overlap.ml",
+        "bytes": 41696,
+        "sha256": "a9fe3dd2f82ed0aec8a5536600c487bca5eaa29f074e40d85a2801c7c3db445f",
+        "md5_for_upstream_ledger": "71ec6bdab32afc20c0fb0d228ef3e6ef"
+      },
+      {
+        "path": "s2n-bignum/common/relational.ml",
+        "bytes": 160998,
+        "sha256": "91834ae036acb6a2b0cc83e4bdf33bf1d336cac271b1d886abf78af054947914",
+        "md5_for_upstream_ledger": "e2607274daf799506a168fa8adfc5a49"
+      },
+      {
+        "path": "s2n-bignum/common/relational_n.ml",
+        "bytes": 22638,
+        "sha256": "d667b4816e31873baa4e53e29996ffc9da1e6c0711f4e88b1c9b1ad14fb6bb17",
+        "md5_for_upstream_ledger": "71e31471cdc1c50b9b503de7ab3fcd52"
+      },
+      {
+        "path": "s2n-bignum/common/safety.ml",
+        "bytes": 14352,
+        "sha256": "976043e609ba9793dfd93af8b85a45ff3e6de9361f6276cbdf301a65b5463fb8",
+        "md5_for_upstream_ledger": "c39e5214a5bb89b6e3f355f8974dd589"
+      },
+      {
+        "path": "s2n-bignum/common/wordlist.ml",
+        "bytes": 28527,
+        "sha256": "2e6da5c205e9298f2c1d4d4ba20ded6c0943338c119869f6520e034899a77475",
+        "md5_for_upstream_ledger": "8054a5174d43b0ebc014af3328379a72"
+      },
+      {
+        "path": "s2n-bignum/common/words2.ml",
+        "bytes": 20871,
+        "sha256": "6d80b8cbb3aed3e6daf24b01dbffd872dd84211346c1e3ff52215e11165eeac0",
+        "md5_for_upstream_ledger": "d05428929e6db302d0ccd59ff89fbd29"
+      },
+      {
+        "path": "s2n-bignum/x86/proofs/aes.ml",
+        "bytes": 6278,
+        "sha256": "3325c28dd64ed2221d1b3bfea2c4ea2fcf775c8bf44036d5adebcae53d052315",
+        "md5_for_upstream_ledger": "bbd99a2cbc45143507de9f92ff934f40"
+      },
+      {
+        "path": "s2n-bignum/x86/proofs/base.ml",
+        "bytes": 2545,
+        "sha256": "6aec0a36255b39ac718e48393fa1b0580841d0670d5904585e41d00ed61af895",
+        "md5_for_upstream_ledger": "9a05e14c73db0bfca2a16409a7d0ae6a"
+      },
+      {
+        "path": "s2n-bignum/x86/proofs/decode.ml",
+        "bytes": 145446,
+        "sha256": "434e47f4a315ea89a18cabc6cae23a05862b6eccacf268c0bed883ab8078084a",
+        "md5_for_upstream_ledger": "b25d79c71707f84928ba1737f09c8fad"
+      },
+      {
+        "path": "s2n-bignum/x86/proofs/instruction.ml",
+        "bytes": 22779,
+        "sha256": "75b7d0126d40af8c0607dc92d74879b69f738db6d8159ccaa1c0963ad927fd18",
+        "md5_for_upstream_ledger": "b879df4c6775bd6602a368d1ff8c7cc3"
+      },
+      {
+        "path": "s2n-bignum/x86/proofs/x86.ml",
+        "bytes": 274596,
+        "sha256": "daa84c1661610a9b95af0b4ad88bf15297fffd22735fd6004c331ed353cfd005",
+        "md5_for_upstream_ledger": "395f9e798ef6de8685fa762ccf26a422"
+      }
+    ],
+    "additional_original_count": 34,
+    "owned_entry_count": 1,
+    "predicted_selected_inliner_count": 35,
+    "predicted_runtime_preimport_ledger": 81,
+    "forbidden_imports": [
+      "x86/proofs/bignum_add.ml",
+      "AnnealSelectedAudit.ml",
+      "AnnealDriver.ml"
+    ]
+  },
+  "ArithmeticObservation": {
+    "imports": "compiled core module only",
+    "owned_entry_count": 1,
+    "additional_original_files": []
+  },
+  "AxiomPolicyNegative": {
+    "imports": "compiled core module only",
+    "owned_entry_count": 1,
+    "additional_original_files": [],
+    "negative_state": "fresh isolated process; new_axiom T only"
+  }
+}

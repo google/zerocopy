@@ -1,0 +1,30 @@
+{
+  "scope": "explicit finite fixtures; no CompCert/Sail/Islaris execution or Rust alias-model proof",
+  "cases": {
+    "scalar8": {
+      "map_defined": true,
+      "vm_mapped": true,
+      "readable": true,
+      "writable": true
+    },
+    "vector32": {
+      "map_defined": true,
+      "vm_mapped": true,
+      "readable": true,
+      "writable": false
+    },
+    "crossing64_at_plus8": {
+      "map_defined": false,
+      "vm_mapped": false,
+      "readable": false,
+      "writable": false
+    },
+    "expired_logical_authority": {
+      "map_defined": true,
+      "vm_mapped": true,
+      "readable": true,
+      "writable": true,
+      "live_authority": false
+    }
+  }
+}

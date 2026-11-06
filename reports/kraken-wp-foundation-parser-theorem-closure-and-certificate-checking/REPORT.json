@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "kraken/orchestration",
+    "kraken/build-pipeline",
+    "kraken/manifests",
+    "isa/aarch64",
+    "isa/x86-64"
+  ],
+  "subjects": [
+    {
+      "name": "AeneasVerif/kraken",
+      "identity": {
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+        "repository": "AeneasVerif/kraken"
+      }
+    },
+    {
+      "name": "AeneasVerif/kraken",
+      "identity": {
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7",
+        "repository": "AeneasVerif/kraken"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "version": "v4.34.1",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Kraken requested Lean nightly",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "ca39d2bc730f0382e4897ce314b93a4f168ff15e",
+        "version": "4.36.0-nightly-2026-09-21",
+        "binary_sha256": "a4c5d3dfc1672faf014e59bd17724035259ff0d22a4ffbdf5a75e142f564817e"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

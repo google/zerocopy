@@ -1,0 +1,17 @@
+{
+  "kind": "ordinary host helper API portability failure",
+  "failed_checks": [
+    "check-02"
+  ],
+  "v1_source_sha256": "7a24622bdfc154459048dc1fe0da3e18c15dc40b4c85fbd77f4646d449c628f8",
+  "applies_to_check_sources": [
+    "check-01",
+    "check-02"
+  ],
+  "python_version": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "sqlite_version": "3.54.0",
+  "has_deserialize": false,
+  "diagnosis": "Host Python3.9.6 sqlite3 lacks deserialize. The optional path was documented as Python3.11+ but was invoked on3.9.6 without a preflight version/API gate. It stopped before SQL comparisons. This is not a Nix, store, target-code or theorem failure.",
+  "repair": "Use explicitly supplied existing extracted main DB, byte-matched to exact tar member, URI mode=ro&immutable=1 and query_only=ON; no extraction or writes. Preserve empty-WAL prerequisite.",
+  "regression": "Re-run optional queries with original exact snapshot tar and retained main DB, then packaged checks without snapshot."
+}

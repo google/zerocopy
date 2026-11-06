@@ -1,0 +1,177 @@
+{
+  "status": "PASS new census baseline with all exact original positive entries and only33 explicitly bound control additions",
+  "original_census_path": "hol-replay/logs/final-census.stdout",
+  "original_census_sha256": "c20739514e2b9087e11fb55ea551bf802d08eb87b096cddecda210c9188cce9d",
+  "baseline_path": "hol-controls/logs/native-before-census.stdout",
+  "baseline_sha256": "9dee59467e9f42eab2f7b85b17059dddf1d4329d4e7a984e29c4da5223ed32a0",
+  "original_output_files": 704,
+  "new_output_files": 737,
+  "additional_control_files": {
+    "/home/opam/anneal-cross-output/controls/COMMANDS.md": {
+      "bytes": 4317,
+      "sha256": "4a62fb3210cf8dc8a36b538b0766af1e380039630440fd52828ba52a75c89828",
+      "md5": "22696163138a0aee716e6aa4e40a395e"
+    },
+    "/home/opam/anneal-cross-output/controls/PLAN.md": {
+      "bytes": 9101,
+      "sha256": "9f0ecc416f75d2ddd40f244f00be2172fea797c1fa560c727f3027839ef38710",
+      "md5": "045f2099f1bb66d3661159bdd93d02a1"
+    },
+    "/home/opam/anneal-cross-output/controls/build-one-control.sh": {
+      "bytes": 1285,
+      "sha256": "35c633732666c053c5845af97452bb1e9f0519d40087e9cc8fcfe83b2f37d7e9",
+      "md5": "b69f1e99f59c37e96b28e93db1816060"
+    },
+    "/home/opam/anneal-cross-output/controls/check_shadow_fixture.py": {
+      "bytes": 303,
+      "sha256": "73731d2f793c22fe86d105560b3b745a6e64f16c3ddadd62be3d91f3a280cd5f",
+      "md5": "86c2fed1c06c3d732b05d9bb572fb62b"
+    },
+    "/home/opam/anneal-cross-output/controls/control-plan.json": {
+      "bytes": 6230,
+      "sha256": "41889113cf7b9093b09405e0c83f52ac098a238575ac1a0e0d224962e21edb7c",
+      "md5": "7058cd0c480a9aa77297f6ddf9e69258"
+    },
+    "/home/opam/anneal-cross-output/controls/fixtures/forbidden-checker-definition.txt": {
+      "bytes": 27,
+      "sha256": "9a68c9e384e90e924ddace9b3067229b9e49eb1817b9b0ba96abfa7b97fb5ca9",
+      "md5": "7684412928d4e07c4e699535cbf1bf33"
+    },
+    "/home/opam/anneal-cross-output/controls/import-scope.json": {
+      "bytes": 9337,
+      "sha256": "2e283aa627124ff3eba288cf668031f21b0cdcf7b4106f5655e3ec50425eb06e",
+      "md5": "2a8ff4669ce105b479fbbbe39ff9d63e"
+    },
+    "/home/opam/anneal-cross-output/controls/mutation-receipt.json": {
+      "bytes": 1560,
+      "sha256": "ce88a7bf0bb047a2133ce7bb9b723b0398235b98991b8df51d5e42aedf415584",
+      "md5": "16d48d3598931415850e7c4385d1b87d"
+    },
+    "/home/opam/anneal-cross-output/controls/objects/bad-text.o": {
+      "bytes": 1528,
+      "sha256": "c7043eb5d0c1a32eac91771a1c4b6bc8a5c8ccfa1efefe3720e4814ce59eb9c1",
+      "md5": "e221ef03ef816d9366b708ce19b14d37"
+    },
+    "/home/opam/anneal-cross-output/controls/objects/original.o": {
+      "bytes": 1528,
+      "sha256": "0f94fe2090387f5f63afc80049732384d3badbcd89aae7ffc5200e1c53ec53eb",
+      "md5": "2c00f6a037b0265e3ee26aa768c533b1"
+    },
+    "/home/opam/anneal-cross-output/controls/objects/renamed-symbol.o": {
+      "bytes": 1528,
+      "sha256": "2acb08cadb3fac8aa81a175f7011fc3416db1684f8318bedea72e91dbed708eb",
+      "md5": "0470a4290b9eccb2389985b693ee233c"
+    },
+    "/home/opam/anneal-cross-output/controls/objects/wrong-machine.o": {
+      "bytes": 1528,
+      "sha256": "4e0d08e2fb43c904d8cb90e62b8ad27ae9d395b14861c3815c1577a729ff4ddd",
+      "md5": "f55b884dcbda2122228783e7ffbb270e"
+    },
+    "/home/opam/anneal-cross-output/controls/preparation-validation.json": {
+      "bytes": 872,
+      "sha256": "ed80c5bc04a2a84382bff599707a1418aa8a37080e6a51dedd4e690885e11329",
+      "md5": "5e0993c245600583995346c875f102eb"
+    },
+    "/home/opam/anneal-cross-output/controls/prepare_log_control.py": {
+      "bytes": 1694,
+      "sha256": "b35d69e21f15466fc39cf78245c33ee0b0bcb496817475748916dbf184b745a8",
+      "md5": "db50614284d87bc3fa3e780fe515187c"
+    },
+    "/home/opam/anneal-cross-output/controls/require_symbol.py": {
+      "bytes": 903,
+      "sha256": "70e18a6fd2ac9355703b48caea0efe235b97c3d3d9193454cfd731c0720e3347",
+      "md5": "84e1856bf8794196fd0a8f989c441309"
+    },
+    "/home/opam/anneal-cross-output/controls/source/ArithmeticObservation.ml": {
+      "bytes": 971,
+      "sha256": "ad9494d90f3392f338ed25c88aeb2276332066bfb3a36e5e42b49b8d8e3627c1",
+      "md5": "83244889b4546631c31244e705416e94"
+    },
+    "/home/opam/anneal-cross-output/controls/source/AxiomPolicyNegative.ml": {
+      "bytes": 696,
+      "sha256": "7cce46cd8890e5f8a25fd532fddb65f9af01c25e4d3b187e7c11a4bceb58b7ab",
+      "md5": "2980b65d27bbdd6354b394212a2aad87"
+    },
+    "/home/opam/anneal-cross-output/controls/source/ImporterControl.ml": {
+      "bytes": 2214,
+      "sha256": "d4b1b457f5920a42a626018bc4afc120f015ca6b6bfa44b7720082231541846b",
+      "md5": "989a54989407b8e05f9f887761d20577"
+    },
+    "/home/opam/anneal-cross-output/controls/ArithmeticObservation.native": {
+      "bytes": 17698712,
+      "sha256": "fd9c669ff4d6a423dfe26aa66c0123144fa4cf04f7d42d45698fafbb124412c8",
+      "md5": "acbd7089bf5b7cd3ddc3d8ce2e17a75b"
+    },
+    "/home/opam/anneal-cross-output/controls/ArithmeticObservation_inlined.cmi": {
+      "bytes": 1686,
+      "sha256": "72307eec9fc5c0f8563dfab249dd4ea8df73fd5f88ce8c2e17bc4af4919ed4b2",
+      "md5": "9f202f7002fad03da7f5d05f88ad34ea"
+    },
+    "/home/opam/anneal-cross-output/controls/ArithmeticObservation_inlined.cmx": {
+      "bytes": 1578,
+      "sha256": "35ccc716fa0c40f5669fdf85c8dbe82a564bca4246b03feaf051b964715b9db8",
+      "md5": "5bfeabceff427e305e7b8bb74d4ec5c3"
+    },
+    "/home/opam/anneal-cross-output/controls/ArithmeticObservation_inlined.ml": {
+      "bytes": 1461,
+      "sha256": "0b3f525caf1724fef5debe7fa4c14c0f76b8244c6f2c0149ad12eda6cab73ad2",
+      "md5": "590aaf06ca0857ab6e8b4c5010ba1e67"
+    },
+    "/home/opam/anneal-cross-output/controls/ArithmeticObservation_inlined.o": {
+      "bytes": 10896,
+      "sha256": "6aad0168d5d4ad1677c3aa596b2ea0bfe84c4a636366e1e5e9a4e35c387554fc",
+      "md5": "54d16a22ffe11aa3ab0c429eab1fc687"
+    },
+    "/home/opam/anneal-cross-output/controls/AxiomPolicyNegative.native": {
+      "bytes": 17697784,
+      "sha256": "51bd51d8d0dd7920a86d34175b09aba5090407bf19bf07508d6ed5bbc92eab3a",
+      "md5": "8572e2e56be0567715f57ef7af420489"
+    },
+    "/home/opam/anneal-cross-output/controls/AxiomPolicyNegative_inlined.cmi": {
+      "bytes": 1599,
+      "sha256": "20812b7651ebeeb3272ee60fe8ba1a393153bcf618c28be8e15c8e97c6b62d08",
+      "md5": "1714fc2631ff22972f8017088d84aaaf"
+    },
+    "/home/opam/anneal-cross-output/controls/AxiomPolicyNegative_inlined.cmx": {
+      "bytes": 1510,
+      "sha256": "75dd1d516d2ff9f62978c3086b6e41ca178d75204ef9130be040f36422f87c91",
+      "md5": "7cc96bec8fec43052012b0d0556c7707"
+    },
+    "/home/opam/anneal-cross-output/controls/AxiomPolicyNegative_inlined.ml": {
+      "bytes": 1181,
+      "sha256": "32f18637a093d5df7ce3aa779532b52e89cf40faa82685a7150f37121d167ae0",
+      "md5": "7ccddb2a1d81c3ba52e2c97c0dae978c"
+    },
+    "/home/opam/anneal-cross-output/controls/AxiomPolicyNegative_inlined.o": {
+      "bytes": 7704,
+      "sha256": "58b79aed9d1eff9557d710b3e6ffe95b7bfb38157f8dacbff9f86a10ff8df0d5",
+      "md5": "847754153da79ce8dba36251392af866"
+    },
+    "/home/opam/anneal-cross-output/controls/ImporterControl.native": {
+      "bytes": 30926816,
+      "sha256": "2b6a54f7dad87de2e67fcdf47f8914d93e35477d9b188fa318d4d4ecf6047f15",
+      "md5": "0551d4b76f94c8358e63308907a5080d"
+    },
+    "/home/opam/anneal-cross-output/controls/ImporterControl_inlined.cmi": {
+      "bytes": 458626,
+      "sha256": "fb68dc00914e7f1382298bc776a8668f851d38fb623d8f61066d676a92b940c3",
+      "md5": "a62ab163651e8f546d0efd07dd901efb"
+    },
+    "/home/opam/anneal-cross-output/controls/ImporterControl_inlined.cmx": {
+      "bytes": 128856,
+      "sha256": "804bedba7b77e9f3f5f15fd2c2522497e881d711c871fac3951efaa13cf5682c",
+      "md5": "25905dbde48a50ca4031499d8f3b715a"
+    },
+    "/home/opam/anneal-cross-output/controls/ImporterControl_inlined.ml": {
+      "bytes": 2036135,
+      "sha256": "d786d4afbff324b4777af8607d9bbb5ce76c0a56ab690f9ea68ef928944b5025",
+      "md5": "eb4abfd27218355949a4f31368ef8674"
+    },
+    "/home/opam/anneal-cross-output/controls/ImporterControl_inlined.o": {
+      "bytes": 15285000,
+      "sha256": "bb75e18815292982f855eafd2d4b2c2fabb7e0f637ef4078e5e862cd58e27f87",
+      "md5": "d3df3ee1da48846f9fb52471599fe457"
+    }
+  },
+  "rule": "Independent before census must exactly equal this whole current737-file baseline; after census must equal freshbefore in full. All other inliner/core/audit/selected fields equal original positive. No ignored fields/new future output allowance."
+}

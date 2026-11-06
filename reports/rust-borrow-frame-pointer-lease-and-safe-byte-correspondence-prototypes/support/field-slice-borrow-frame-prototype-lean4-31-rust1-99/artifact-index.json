@@ -1,0 +1,100 @@
+{
+  "observed_at": "2026-10-14",
+  "artifacts": [
+    {
+      "path": "support/experiments/BorrowCertificate.lean",
+      "sha256": "9376f28eeb1ee674ec914b088031cbeb79fedd342e2005602bb7036aee127617",
+      "bytes": 4869
+    },
+    {
+      "path": "support/experiments/BorrowCertificate.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/BorrowCertificate.stdout",
+      "sha256": "5b73a1ccc2a74ff14db02e772518fb40afe3b8033235478903b112f577ebef31",
+      "bytes": 1276
+    },
+    {
+      "path": "support/experiments/BorrowModel.lean",
+      "sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3",
+      "bytes": 4422
+    },
+    {
+      "path": "support/experiments/BorrowModel.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/BorrowModel.stdout",
+      "sha256": "bc11295d4335b6f9db117bcf2eb0b9771a7a484da69b695fdad0c39e27ce1a16",
+      "bytes": 1224
+    },
+    {
+      "path": "support/experiments/BorrowWrongField.lean",
+      "sha256": "f91c79f7a3cad42d4f5f8250a6b1ee61aa072991e20b2413bf1ea7a80b6babe6",
+      "bytes": 4568
+    },
+    {
+      "path": "support/experiments/BorrowWrongField.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/BorrowWrongField.stdout",
+      "sha256": "f59226275cc492aba88c70869b9e96421b399f6c52147c7a3692033a5c812b30",
+      "bytes": 1530
+    },
+    {
+      "path": "support/experiments/borrow-certificate-results.json",
+      "sha256": "e0c5f206ccb4364b1b3ed905697d62c2621d417accb07537fb08b68244e702ac",
+      "bytes": 412
+    },
+    {
+      "path": "support/experiments/borrow_compile.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/borrow_compile.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/borrow_native.rs",
+      "sha256": "996f70f543d0bad10d09464b2f4f8df566bc556c8a8f0fdcc8c4b9f796f7797b",
+      "bytes": 1566
+    },
+    {
+      "path": "support/experiments/borrow_native.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "support/experiments/borrow_native.stdout",
+      "sha256": "18ac51a5e545a9384744033bbf4a3e9e19882291603ec0fa039c4d979a83dbfe",
+      "bytes": 74
+    },
+    {
+      "path": "support/experiments/execution-results.json",
+      "sha256": "f77fb4bcb87728fac171e70a46b0a3892267a520e92bb3c634820692bc559e0e",
+      "bytes": 3028
+    },
+    {
+      "path": "support/experiments/field-certificate.json",
+      "sha256": "40e07d489a2a69b6675564d6154ca4d0088cf1cc2e5f7bcc759713635a7afd65",
+      "bytes": 212
+    },
+    {
+      "path": "support/experiments/slice-certificate.json",
+      "sha256": "f74a5c334b1e534c83ebe132727955a1c1e7827daa3d833816b1b5317898c6a2",
+      "bytes": 267
+    },
+    {
+      "path": "support/experiments/toolchain-identities.json",
+      "sha256": "ca38be89f25f1c518df71d76a300e781cbf5fe7864df95bf5e131e462c5b24de",
+      "bytes": 687
+    }
+  ]
+}

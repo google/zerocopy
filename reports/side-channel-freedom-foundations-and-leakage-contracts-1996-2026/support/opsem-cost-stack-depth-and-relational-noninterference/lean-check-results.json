@@ -1,0 +1,948 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "observed_at": "2026-10-24",
+  "host": "x86_64-unknown-linux-gnu",
+  "command_flags": [
+    "lean",
+    "-j1",
+    "-M2048"
+  ],
+  "target_modules": [
+    "PrefixAccounting",
+    "CostStack",
+    "Observations",
+    "ObservationAdapters",
+    "OperationalObservations",
+    "OperationalAdapter",
+    "CallSecuritySpecimens",
+    "CallSecurityComposition"
+  ],
+  "topological_order": [
+    "Execution",
+    "PrefixTransfer",
+    "PrefixAccounting",
+    "CostStack",
+    "Observations",
+    "ObservationAdapters",
+    "OperationalObservations",
+    "OperationalAdapter",
+    "CallSecuritySpecimens",
+    "CallSecurityComposition"
+  ],
+  "runs": [
+    {
+      "module": "AnnealResearch.Execution",
+      "is_target_module": false,
+      "source_path": "experiments/opsem/AnnealResearch/Execution.lean",
+      "source_sha256": "cbe3713b840a8a61b617f2ababaa02e4ad97c81628db7d55fc3641611365bf3a",
+      "olean_sha256": "80245392778049029caff66583762021428113a0be089311a3843fc03f8c9125",
+      "exit_code": 0,
+      "wall_seconds": 0.6012,
+      "audit_count": 16,
+      "axiom_free_count": 8,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.Execution.invariant_noUB",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.invariant_verified",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.NoUB.after_step",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.spin_verified",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.spin_progresses_forever",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.unsupported_noUB",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.unsupported_not_verified",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.PrefixExamples.empty_demonic_verified",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.quantifier_exchange_fails",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.greatestSafety_unfold",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction",
+          "axioms": []
+        }
+      ],
+      "stdout": "'AnnealResearch.Execution.invariant_noUB' does not depend on any axioms\n'AnnealResearch.Execution.invariant_verified' does not depend on any axioms\n'AnnealResearch.Execution.NoUB.after_step' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.spin_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.spin_progresses_forever' does not depend on any axioms\n'AnnealResearch.Execution.PrefixExamples.ub_then_spin_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.ub_then_empty_unsafe' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_noUB' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.unsupported_not_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.PrefixExamples.empty_demonic_verified' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.quantifier_exchange_fails' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.greatestSafety_unfold' does not depend on any axioms\n'AnnealResearch.Execution.Prediction.omega_intersection_not_postfixed' depends on axioms: [propext]\n'AnnealResearch.Execution.Prediction.finite_approximants_do_not_establish_greatestSafety' depends on axioms: [propext]\n'AnnealResearch.Execution.ChoiceScope.order_and_information_discriminator' does not depend on any axioms\n'AnnealResearch.Execution.ChoiceScope.observing_adversary_defeats_every_prediction' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.PrefixTransfer",
+      "is_target_module": false,
+      "source_path": "experiments/opsem/AnnealResearch/PrefixTransfer.lean",
+      "source_sha256": "764328f9a7dcc13a32ab86f3bdfd3f23194ec95f5982621b21a519b643b360f9",
+      "olean_sha256": "249a7a639c035d52222613f968033383a5364db5080ae28a9df4a05b4ad23c24",
+      "exit_code": 0,
+      "wall_seconds": 0.5066,
+      "audit_count": 12,
+      "axiom_free_count": 11,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.PrefixTransfer.reachable_coverage",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.bad_prefix_coverage",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.sourceSafety_of_coverage",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.sourceSafety",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.safety_does_not_establish_progress",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.ZeroStep.zero_step_matching_does_not_transfer_termination",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.ZeroStep.source_safe",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.HiddenBad.completed_output_agreement",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.HiddenBad.hidden_bad_prefix_before_divergence",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.HiddenBad.output_agreement_does_not_transfer_safety",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.HiddenBad.omitted_bad_boundary_rejects_simulation",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixTransfer.HiddenBad.no_bad_reflecting_cover",
+          "axioms": []
+        }
+      ],
+      "stdout": "'AnnealResearch.PrefixTransfer.reachable_coverage' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.bad_prefix_coverage' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.sourceSafety_of_coverage' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.sourceSafety' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.safety_does_not_establish_progress' depends on axioms: [propext]\n'AnnealResearch.PrefixTransfer.ZeroStep.zero_step_matching_does_not_transfer_termination' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.ZeroStep.source_safe' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.completed_output_agreement' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.hidden_bad_prefix_before_divergence' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.output_agreement_does_not_transfer_safety' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.omitted_bad_boundary_rejects_simulation' does not depend on any axioms\n'AnnealResearch.PrefixTransfer.HiddenBad.no_bad_reflecting_cover' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.PrefixAccounting",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/PrefixAccounting.lean",
+      "source_sha256": "4f495dca01c7561788dcd2b741958e80e146ba0ad25ea46dddf9cf2dc5669eda",
+      "olean_sha256": "c6fda08ac40eb4e98124e8d73efe5f20914f1b82f421ddd7c8b1a06098f2753f",
+      "exit_code": 0,
+      "wall_seconds": 0.5099,
+      "audit_count": 11,
+      "axiom_free_count": 9,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.PrefixAccounting.upper_bounds",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.safety_simulation",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.source_safe",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.target_safe",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.source_cost_bound",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.loop_reachable",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.unbounded_target_cost",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.no_target_cost_bound",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.completed_output_agreement",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.infinite_admin_steps",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.PrefixAccounting.ExtraTarget.safety_and_output_do_not_bound_target",
+          "axioms": [
+            "propext"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.PrefixAccounting.upper_bounds' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.safety_simulation' depends on axioms: [propext]\n'AnnealResearch.PrefixAccounting.ExtraTarget.source_safe' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.target_safe' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.source_cost_bound' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.loop_reachable' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.unbounded_target_cost' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.no_target_cost_bound' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.completed_output_agreement' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.infinite_admin_steps' does not depend on any axioms\n'AnnealResearch.PrefixAccounting.ExtraTarget.safety_and_output_do_not_bound_target' depends on axioms: [propext]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.CostStack",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/CostStack.lean",
+      "source_sha256": "61307e94341b2db58906b915b4172bb40fc76ba3c38a098bb3ccfa874ada1977",
+      "olean_sha256": "7389013b16d1639242f79f52787fb84cf7f38c95819b825889d46b15336a8a36",
+      "exit_code": 0,
+      "wall_seconds": 1.2524,
+      "audit_count": 19,
+      "axiom_free_count": 4,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.CostStack.core_progress",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.source_prefix_bounds",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.source_noUB",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.source_completion",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.source_peak_witness",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.source_path_target",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CostStack.target_prefix_projection",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CostStack.target_exact_cost",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.target_prefix_bounds",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.target_noUB",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.arbitrary_prefix_bound_transport",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.arbitrary_bound_transport",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.target_completion",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.charged_extra_step_counterexample",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.deeper_stack_counterexample",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.BadPrefix.bad_prefix_visible_in_both",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CostStack.BadPrefix.reaches_infinite_suffix",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CostStack.BadPrefix.actual_infinite_steps",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CostStack.BadPrefix.target_infinite_segments",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.CostStack.core_progress' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.source_prefix_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.source_noUB' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.source_completion' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.source_peak_witness' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.source_path_target' does not depend on any axioms\n'AnnealResearch.CostStack.target_prefix_projection' does not depend on any axioms\n'AnnealResearch.CostStack.target_exact_cost' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.CostStack.target_prefix_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.target_noUB' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.arbitrary_prefix_bound_transport' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.CostStack.arbitrary_bound_transport' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.target_completion' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.charged_extra_step_counterexample' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.deeper_stack_counterexample' depends on axioms: [propext, Classical.choice, Quot.sound]\n'AnnealResearch.CostStack.BadPrefix.bad_prefix_visible_in_both' does not depend on any axioms\n'AnnealResearch.CostStack.BadPrefix.reaches_infinite_suffix' does not depend on any axioms\n'AnnealResearch.CostStack.BadPrefix.actual_infinite_steps' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.CostStack.BadPrefix.target_infinite_segments' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.Observations",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/Observations.lean",
+      "source_sha256": "82b65c96389e0d04f4908d47d8800ba14f14e1fba1433b497c77cbc1c33f9bf2",
+      "olean_sha256": "70c8196522a23f2ed167c9c949ce99d76f975c5afbc555430883abe41f8f8bff",
+      "exit_code": 0,
+      "wall_seconds": 0.8271,
+      "audit_count": 14,
+      "axiom_free_count": 11,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.Observations.finite_noninterference_of_trace_equivalence",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.finite_noninterference_of_bidirectional_coverage",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.prefix_closure_equivalent",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.constant_family_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.constant_family_actual_complete",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.constant_family_cost",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Observations.mutant_same_output_and_common_cost_bound",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Observations.branch_address_mutant_not_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.matching_actual_complete_run",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.addsLeak_actual_distinguishing_trace",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.forward_matching_does_not_preserve_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.trace_refinement_does_not_preserve_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.Observations.coin_law_normalized",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.Observations.same_coin_but_distinguishing_distribution",
+          "axioms": []
+        }
+      ],
+      "stdout": "'AnnealResearch.Observations.finite_noninterference_of_trace_equivalence' does not depend on any axioms\n'AnnealResearch.Observations.finite_noninterference_of_bidirectional_coverage' does not depend on any axioms\n'AnnealResearch.Observations.prefix_closure_equivalent' does not depend on any axioms\n'AnnealResearch.Observations.constant_family_noninterference' does not depend on any axioms\n'AnnealResearch.Observations.constant_family_actual_complete' does not depend on any axioms\n'AnnealResearch.Observations.constant_family_cost' depends on axioms: [propext]\n'AnnealResearch.Observations.mutant_same_output_and_common_cost_bound' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.Observations.branch_address_mutant_not_noninterference' does not depend on any axioms\n'AnnealResearch.Observations.matching_actual_complete_run' does not depend on any axioms\n'AnnealResearch.Observations.addsLeak_actual_distinguishing_trace' does not depend on any axioms\n'AnnealResearch.Observations.forward_matching_does_not_preserve_noninterference' does not depend on any axioms\n'AnnealResearch.Observations.trace_refinement_does_not_preserve_noninterference' does not depend on any axioms\n'AnnealResearch.Observations.coin_law_normalized' depends on axioms: [propext]\n'AnnealResearch.Observations.same_coin_but_distinguishing_distribution' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.ObservationAdapters",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/ObservationAdapters.lean",
+      "source_sha256": "dfe7291e870da855aafe4545554867274c0a1a61e573eca516398465051e3eff",
+      "olean_sha256": "12d9d0837ce2598289219bf1cc1099d83f047c38667827ab50f3284c666d06f6",
+      "exit_code": 0,
+      "wall_seconds": 0.5607,
+      "audit_count": 15,
+      "axiom_free_count": 6,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.ObservationAdapters.adapter_image_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.target_noninterference_of_adapter_image",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.target_noninterference_of_adapter_coverage",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expand_preserves_prefix",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expanded_cost",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expansion_adapter_public_uniform",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expanded_prefix_closed",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expanded_image_equivalent",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expanded_family_noninterference",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.complete_expanded_witness",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.between_duplicate_cost_prefix",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.expansion_is_not_literal_trace_equivalence",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.secret_adapter_actual_distinguishing_trace",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.secret_adapter_not_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.ObservationAdapters.secret_adapter_not_public_uniform",
+          "axioms": []
+        }
+      ],
+      "stdout": "'AnnealResearch.ObservationAdapters.adapter_image_noninterference' does not depend on any axioms\n'AnnealResearch.ObservationAdapters.target_noninterference_of_adapter_image' does not depend on any axioms\n'AnnealResearch.ObservationAdapters.target_noninterference_of_adapter_coverage' does not depend on any axioms\n'AnnealResearch.ObservationAdapters.expand_preserves_prefix' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.expanded_cost' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.ObservationAdapters.expansion_adapter_public_uniform' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.expanded_prefix_closed' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.expanded_image_equivalent' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.expanded_family_noninterference' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.complete_expanded_witness' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.ObservationAdapters.between_duplicate_cost_prefix' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.expansion_is_not_literal_trace_equivalence' depends on axioms: [propext]\n'AnnealResearch.ObservationAdapters.secret_adapter_actual_distinguishing_trace' does not depend on any axioms\n'AnnealResearch.ObservationAdapters.secret_adapter_not_noninterference' does not depend on any axioms\n'AnnealResearch.ObservationAdapters.secret_adapter_not_public_uniform' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.OperationalObservations",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/OperationalObservations.lean",
+      "source_sha256": "49d6187219f7717bc8d11bf80e73853b7436d1be3cdc414f549b347fa6a1537a",
+      "olean_sha256": "c26359ce7ddd4f1b91dfd7c5e0e2679256622f171b348e819d3b775120884911",
+      "exit_code": 0,
+      "wall_seconds": 0.6764,
+      "audit_count": 12,
+      "axiom_free_count": 2,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.OperationalObservations.accounting_instance",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.generic_accounting_applies",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.LoggedPath.erase",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.log_reachable",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.logged_cost",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.source_step_charge",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.target_step_charge",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.source_operational_noninterference",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.target_operational_noninterference",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.source_observed_bounds",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.target_observed_bounds",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalObservations.complete_observed_witnesses",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.OperationalObservations.accounting_instance' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalObservations.generic_accounting_applies' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.OperationalObservations.LoggedPath.erase' does not depend on any axioms\n'AnnealResearch.OperationalObservations.log_reachable' does not depend on any axioms\n'AnnealResearch.OperationalObservations.logged_cost' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalObservations.source_step_charge' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalObservations.target_step_charge' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalObservations.source_operational_noninterference' depends on axioms: [propext]\n'AnnealResearch.OperationalObservations.target_operational_noninterference' depends on axioms: [propext]\n'AnnealResearch.OperationalObservations.source_observed_bounds' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.OperationalObservations.target_observed_bounds' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]\n'AnnealResearch.OperationalObservations.complete_observed_witnesses' depends on axioms: [propext,\n Classical.choice,\n Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.OperationalAdapter",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/OperationalAdapter.lean",
+      "source_sha256": "6f78fe1e66f7ea5157398dc391e12a2a4527dff4af1004db8eb6d65bd2b2024d",
+      "olean_sha256": "3cbbd5ae4f434cd80afe902d5537522cd789488423e2b8eafd20826586365041",
+      "exit_code": 0,
+      "wall_seconds": 0.5325,
+      "audit_count": 14,
+      "axiom_free_count": 1,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.OperationalAdapter.prefix_append_left",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.expand_append",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.expand_core_emission",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.logged_trans",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.compile_logged_edge",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.compile_logged_path",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.target_log_decomposition",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.pending_cost_prefix",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.target_logged_prefix_covered",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.adapter_image_covered",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.target_prefixes_covered",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.operational_adapter_exact_image",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.source_prefix_noninterference",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.OperationalAdapter.target_prefix_noninterference_via_adapter",
+          "axioms": [
+            "propext",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.OperationalAdapter.prefix_append_left' does not depend on any axioms\n'AnnealResearch.OperationalAdapter.expand_append' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.expand_core_emission' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.logged_trans' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.compile_logged_edge' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.compile_logged_path' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.target_log_decomposition' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.pending_cost_prefix' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.target_logged_prefix_covered' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalAdapter.adapter_image_covered' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.target_prefixes_covered' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalAdapter.operational_adapter_exact_image' depends on axioms: [propext, Quot.sound]\n'AnnealResearch.OperationalAdapter.source_prefix_noninterference' depends on axioms: [propext]\n'AnnealResearch.OperationalAdapter.target_prefix_noninterference_via_adapter' depends on axioms: [propext, Quot.sound]",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.CallSecuritySpecimens",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/CallSecuritySpecimens.lean",
+      "source_sha256": "896ed03254ffa71d3bcd388033c46de541c4a09f7f91bc03fae61a98983d1701",
+      "olean_sha256": "e48212fc18973eb1c192a92c14131a4599ebf8930c0651226ddb525a731a42b6",
+      "exit_code": 0,
+      "wall_seconds": 1.0907,
+      "audit_count": 15,
+      "axiom_free_count": 10,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.step_preserves_secret_emits_one",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.reachable_shape",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.reachable_phase_bit",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.finished_no_successor",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.actual_normal_completions",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.completed_trace_iff",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.retained_complete_catalogue",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.fresh_complete_catalogue",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.completed_return_cost",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.retained_marginal_matching",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.retained_marginals_noninterference",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.retained_distinguishing_prefix",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.retained_not_noninterference",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.fresh_prefix_matching",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecuritySpecimens.fresh_all_microevent_prefixes_noninterference",
+          "axioms": []
+        }
+      ],
+      "stdout": "'AnnealResearch.CallSecuritySpecimens.step_preserves_secret_emits_one' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.reachable_shape' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.reachable_phase_bit' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.finished_no_successor' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.actual_normal_completions' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.completed_trace_iff' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.retained_complete_catalogue' depends on axioms: [propext]\n'AnnealResearch.CallSecuritySpecimens.fresh_complete_catalogue' depends on axioms: [propext]\n'AnnealResearch.CallSecuritySpecimens.completed_return_cost' depends on axioms: [propext]\n'AnnealResearch.CallSecuritySpecimens.retained_marginal_matching' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.retained_marginals_noninterference' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.retained_distinguishing_prefix' depends on axioms: [propext]\n'AnnealResearch.CallSecuritySpecimens.retained_not_noninterference' depends on axioms: [propext]\n'AnnealResearch.CallSecuritySpecimens.fresh_prefix_matching' does not depend on any axioms\n'AnnealResearch.CallSecuritySpecimens.fresh_all_microevent_prefixes_noninterference' does not depend on any axioms",
+      "stderr": ""
+    },
+    {
+      "module": "AnnealResearch.CallSecurityComposition",
+      "is_target_module": true,
+      "source_path": "experiments/opsem/AnnealResearch/CallSecurityComposition.lean",
+      "source_sha256": "9999dac26164877aa06f31d8a634ba26053ae37c32d383589609fdbc8b421fdd",
+      "olean_sha256": "d43adf48a9e4b378c58908f4a2e989573d3bbbc0a8df4a00f52e57ddc4177b20",
+      "exit_code": 0,
+      "wall_seconds": 0.8561,
+      "audit_count": 13,
+      "axiom_free_count": 5,
+      "printed_audits": [
+        {
+          "name": "AnnealResearch.CallSecurityComposition.stage_prefix_forward",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.stage_prefix_backward",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.stage_observations_iff",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.first_stage_iff",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.second_stage_iff",
+          "axioms": []
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.stage_path_operational",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.operational_cut_stage_path",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.call_cut_runs_iff",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.fresh_first_matching",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.fresh_second_matching",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.fresh_call_cut_noninterference",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.retained_boundary_mismatch",
+          "axioms": [
+            "propext"
+          ]
+        },
+        {
+          "name": "AnnealResearch.CallSecurityComposition.marginal_summary_does_not_supply_stage_contract",
+          "axioms": [
+            "propext"
+          ]
+        }
+      ],
+      "stdout": "'AnnealResearch.CallSecurityComposition.stage_prefix_forward' does not depend on any axioms\n'AnnealResearch.CallSecurityComposition.stage_prefix_backward' does not depend on any axioms\n'AnnealResearch.CallSecurityComposition.stage_observations_iff' does not depend on any axioms\n'AnnealResearch.CallSecurityComposition.first_stage_iff' does not depend on any axioms\n'AnnealResearch.CallSecurityComposition.second_stage_iff' does not depend on any axioms\n'AnnealResearch.CallSecurityComposition.stage_path_operational' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.operational_cut_stage_path' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.call_cut_runs_iff' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.fresh_first_matching' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.fresh_second_matching' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.fresh_call_cut_noninterference' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.retained_boundary_mismatch' depends on axioms: [propext]\n'AnnealResearch.CallSecurityComposition.marginal_summary_does_not_supply_stage_contract' depends on axioms: [propext]",
+      "stderr": ""
+    }
+  ],
+  "target_summary": {
+    "target_module_count": 8,
+    "total_dependency_and_target_runs": 10,
+    "target_audit_count": 113,
+    "target_axiom_free_count": 48,
+    "target_wall_seconds": 6.3058
+  }
+}

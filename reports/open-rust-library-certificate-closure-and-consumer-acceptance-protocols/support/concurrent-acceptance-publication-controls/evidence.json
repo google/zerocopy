@@ -1,0 +1,21 @@
+{
+  "observed_at": "2026-10-14",
+  "inspection": "direct selected source/theorem endpoints and retained original prototype execution; not headline-only",
+  "primary_units": [],
+  "original_owned_artifacts": [
+    {
+      "path": "support/environment.json",
+      "sha256": "b6572a46d1ce1c62c09014276224436cda363f01dbcfa01ea8da7793b98b8ec9"
+    },
+    {
+      "path": "support/protocol.py",
+      "sha256": "898ff58bf76bee1e8c1c2dea87773d89aab50d1a40fb169e96b2ade2279baa74"
+    },
+    {
+      "path": "support/results.json",
+      "sha256": "f568054740028bc2fbeabc930780f65bedd73a664e3bda0cfc6f590a5dd0b42b"
+    }
+  ],
+  "source_hash_convention": "UTF-8 normalized to one final newline; byte-exact generated artifacts use sha256",
+  "source_mirrors_in_package": false
+}

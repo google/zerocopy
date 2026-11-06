@@ -1,0 +1,271 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/translation",
+    "aeneas/borrows-regions",
+    "aeneas/raw-pointers-unsafe",
+    "verification/separation-logic",
+    "lean/tactics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.34.1 Local Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Aeneas Functional Translator and Raw-Pointer Symbolic Evaluation",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Gillian-Rust: Symbolic Execution of Unsafe Rust with Hybrid Borrow/Spatial State (Ayoun et al., PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "arxiv": "2403.15122",
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e23632e07645c1756f97ef47d3d9a8be79"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (G\u00e4her et al., PLDI 2024)",
+      "identity": {
+        "doi": "10.1145/3656423",
+        "arxiv": "2404.04029"
+      }
+    },
+    {
+      "name": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types (Sammler et al., PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454036"
+      }
+    },
+    {
+      "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (Matsushita et al., PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "zenodo": "6417462"
+      }
+    },
+    {
+      "name": "Omnisemantics: Smoother Handling of Nondeterminism (Chargu\u00e9raud et al., TOPLAS 2023)",
+      "identity": {
+        "doi": "10.1145/3579834",
+        "arxiv": "2205.02728"
+      }
+    },
+    {
+      "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq (Xia et al., POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371119"
+      }
+    },
+    {
+      "name": "Katamaran: Symbolic Execution by Shallow Monadic Evaluation (Keuchel et al., ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547628"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation (Ho & Protzenko, ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (Ho, Fromherz & Protzenko, ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680v2"
+      }
+    },
+    {
+      "name": "Verus: Verifying Rust Programs using Linear Ghost Types (Lattuada et al., OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3586037"
+      }
+    },
+    {
+      "name": "Foundational VeriFast Hinted Mirroring Exporter",
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      }
+    },
+    {
+      "name": "Charon ULLBC-to-LLBC Control-Flow Reconstruction",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "9e95cf318e3a2964fcf5e03104cde5b718f98ea5"
+      }
+    },
+    {
+      "name": "Lean 4 Std.WP Weakest Precondition Framework",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc"
+      }
+    },
+    {
+      "name": "Formal Verification of a Instruction Scheduler: Verified Translation Validation in CompCert (Tristan & Leroy, POPL 2008)",
+      "identity": {
+        "doi": "10.1145/1328438.1328444"
+      }
+    },
+    {
+      "name": "Lean4.31",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783"
+      }
+    },
+    {
+      "name": "Finite heap prototype",
+      "identity": {
+        "artifact": "Heap.lean",
+        "sha256": "3c319bbdf38f8146359e35531b3207180ebba2d0e4f01c30ec21c784a0bd3462"
+      }
+    },
+    {
+      "name": "SL/IDF semantic comparison",
+      "identity": {
+        "doi": "10.2168/LMCS-8(3:1)2012",
+        "url": "https://lmcs.episciences.org/802/pdf"
+      }
+    },
+    {
+      "name": "mit-plv/rewriter",
+      "identity": {
+        "repository": "mit-plv/rewriter",
+        "revision": "902bd7bfd807f4511fa07b0b1f07ca640f9da4a8"
+      }
+    },
+    {
+      "name": "marcusrossel/lean-egg",
+      "identity": {
+        "repository": "marcusrossel/lean-egg",
+        "revision": "2605a63b6a78407114c692f5dc626531ff62df55"
+      }
+    },
+    {
+      "name": "AeneasVerif/aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Verified rewriting engine ITP2022 publication",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2022.17",
+        "title": "Accelerating Verified-Compiler Development with a Verified Rewriting Engine"
+      }
+    },
+    {
+      "name": "Fiat-to-Facade extraction",
+      "identity": {
+        "primary_url": "https://adam.chlipala.net/papers/FiatIJCAR20/FiatIJCAR20.pdf",
+        "publication": "IJCAR2020",
+        "coordinates": "sections3-5;19-page author PDF"
+      }
+    },
+    {
+      "name": "Rupicola relational compilation",
+      "identity": {
+        "primary_url": "https://jamner.net/papers/rupicola-PLDI22.pdf",
+        "doi": "10.1145/3519939.3523706",
+        "publication": "PLDI2022",
+        "coordinates": "sections2-3;16-page author PDF"
+      }
+    },
+    {
+      "name": "Isabelle-LLVM refinement",
+      "identity": {
+        "primary_url": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol141-itp2019/LIPIcs.ITP.2019.22/LIPIcs.ITP.2019.22.pdf",
+        "doi": "10.4230/LIPIcs.ITP.2019.22",
+        "publication": "ITP2019 article22",
+        "coordinates": "sections2.1,3.2,3.5,6;19-page publisher PDF"
+      }
+    },
+    {
+      "name": "mit-plv/fiat",
+      "identity": {
+        "repository": "mit-plv/fiat",
+        "revision": "b7757d28f68c39c3c58192a27f217064b0b35e3b",
+        "path": "src/CertifiedExtraction/Core.v"
+      }
+    },
+    {
+      "name": "mit-plv/rupicola",
+      "identity": {
+        "repository": "mit-plv/rupicola",
+        "revision": "d33f7024a7a03c9e0f05f746dff8434d450a4f6e",
+        "path": "src/Rupicola/Lib/Compiler.v"
+      }
+    },
+    {
+      "name": "lammich/isabelle_llvm",
+      "identity": {
+        "repository": "lammich/isabelle_llvm",
+        "revision": "6be37a9c3cae74a1134dbef2979e312abb5f7f42",
+        "path": "README.md"
+      }
+    },
+    {
+      "name": "Resource adapter",
+      "identity": {
+        "artifact": "Adapter.lean",
+        "sha256": "6dc268556281ad13f4c17889eb2a56d8807225254f22ae9bb9182e180ea498b4"
+      }
+    },
+    {
+      "name": "HOLide",
+      "identity": {
+        "repository": "Deducteam/holide",
+        "revision": "36c373f78d66e6f8f5b2d1efe95a1a240ba8c8ad"
+      }
+    },
+    {
+      "name": "CoqInE",
+      "identity": {
+        "repository": "Deducteam/coqine",
+        "revision": "27e077ad59e23720cb6ed8bf959694d550bfac19"
+      }
+    },
+    {
+      "name": "Lean2dk",
+      "identity": {
+        "repository": "Deducteam/lean2dk",
+        "revision": "471208f18c29420e25750503648469fc95d2ac8f"
+      }
+    },
+    {
+      "name": "lf-lean selected result1",
+      "identity": {
+        "repository": "theorem-labs/lf-lean",
+        "revision": "2c0d52ee93e808c9e09fb6852b43fe080adef8bb"
+      }
+    },
+    {
+      "name": "Lean type theory to Dedukti paper",
+      "identity": {
+        "arxiv": "2609.24604v1",
+        "url": "https://arxiv.org/pdf/2609.24604v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

@@ -1,0 +1,11 @@
+--- proposed_observer.rs
++++ observer_v2.rs
+@@ -98,7 +98,7 @@
+                 if tcx.def_kind(def)!=DefKind::Fn || !es.is_empty(){return Err("only local ordinary Fn instances with no variadic extras".into());}
+                 let gs=tcx.generics_of(def);
+                 if gs.parent.is_some()||gs.parent_count!=0||gs.count()!=ts.len()||gs.own_params.iter().any(|p|!matches!(p.kind,ty::GenericParamDefKind::Type{..})){return Err("instance generic arguments not in finite type-only selector domain".into());}
+-                let args=tcx.mk_args_from_iter(ts.iter().copied().map(Into::into));
++                let args=tcx.mk_args_from_iter(ts.iter().copied().map(ty::GenericArg::from));
+                 let i=Instance::try_resolve(tcx,typing,def,args).map_err(|_|"instance resolution error")?.ok_or("unresolved instance")?;
+                 if !matches!(i.def,ty::InstanceKind::Item(d) if d.is_local()){return Err("nonlocal/virtual/shim instance outside selection".into());}
+                 let a=tcx.fn_abi_of_instance(typing.as_query_input((i,extra))).map_err(|e|format!("FnAbi query error: {e:?}"))?;

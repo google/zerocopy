@@ -1,0 +1,10 @@
+{
+  "artifact_sha256": "311e298d5303ee4a0d352b87301839a7b6f0438674d140b677fd9cba8dbce0a7",
+  "initial_matches": 0,
+  "corrected_matches": 47,
+  "raw_digest_markers": 47,
+  "exact_reverse_completion_prediction": true,
+  "producer_spec_exists": false,
+  "producer_log_exists": false,
+  "scope": "Data-only regex regression on unchanged actual copied inliner text; no source path traversal or runtime/build"
+}

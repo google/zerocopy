@@ -1,0 +1,19 @@
+[
+  {
+    "title": "Metamath Zero: From Logic, to Proof Assistant, to Verified Compilation",
+    "url": "https://digama0.github.io/mm0/thesis.pdf",
+    "observed_at": "2026-10-14",
+    "sha256": "09dda6d4b199b102f28f8139ed44a5d288476f37028bf730b16d8a7b60d7882b",
+    "bytes": 887857,
+    "selected_scope": "Sections1.2/1.6/2.2.7; cost context and actual library pointer. Mutable URL bound to retrieved PDF hash, not inferred publication/current-library version."
+  },
+  {
+    "title": "A Hybrid Approach to Semi-automated Rust Verification (Extended Version)",
+    "arxiv": "2403.15122v3",
+    "doi": "10.1145/3729289",
+    "url": "https://arxiv.org/pdf/2403.15122v3",
+    "selected_scope": "Borrow extraction rules \u00a74.4/AppendixC and explicit later/causal-loop gaps \u00a78; exact-version primary web text inspected.",
+    "previous_reference_pdf_sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094",
+    "pdf_hash_role": "Inherited reference identity; no fresh full PDF byte retrieval by this wave."
+  }
+]

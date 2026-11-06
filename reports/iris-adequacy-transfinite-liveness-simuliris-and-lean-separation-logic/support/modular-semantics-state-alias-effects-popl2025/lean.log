@@ -1,0 +1,3 @@
+'Effects.event_agreement' depends on axioms: [propext]
+'Effects.trace_agreement' depends on axioms: [propext]
+'Effects.read_effect_matters' does not depend on any axioms

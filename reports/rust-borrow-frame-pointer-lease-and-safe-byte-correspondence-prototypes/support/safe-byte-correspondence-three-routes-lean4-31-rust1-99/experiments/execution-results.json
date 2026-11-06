@@ -1,0 +1,84 @@
+{
+  "observed_at": "2026-10-14",
+  "arithmetic_routes": {
+    "instrumented": {
+      "fixture": "Arithmetic-instrumented.lean",
+      "seconds": [
+        6.369373667,
+        2.352900042,
+        2.4107928750000003
+      ],
+      "stdout_file": "Arithmetic-instrumented.stdout",
+      "stderr_file": "Arithmetic-instrumented.stderr",
+      "exit": 0,
+      "median_seconds": 2.4107928750000003,
+      "min_seconds": 2.352900042,
+      "max_seconds": 6.369373667,
+      "fixture_bytes": 10659,
+      "fixture_sha256": "e493d8cb4ab5b120205212ec9d668dd6924e4353c8e869d12d796c77babc1c14"
+    },
+    "posthoc": {
+      "fixture": "Arithmetic-posthoc.lean",
+      "seconds": [
+        0.811564958,
+        0.8093107499999999,
+        0.7752733749999994
+      ],
+      "stdout_file": "Arithmetic-posthoc.stdout",
+      "stderr_file": "Arithmetic-posthoc.stderr",
+      "exit": 0,
+      "median_seconds": 0.8093107499999999,
+      "min_seconds": 0.7752733749999994,
+      "max_seconds": 0.811564958,
+      "fixture_bytes": 4442,
+      "fixture_sha256": "5e330ad6d5b977d0faa90b0157bf9830c0393cf822107f634f879a32911af8b0"
+    },
+    "constructive": {
+      "fixture": "Arithmetic-constructive.lean",
+      "seconds": [
+        0.800247166000001,
+        0.7846736669999999,
+        0.7290665000000001
+      ],
+      "stdout_file": "Arithmetic-constructive.stdout",
+      "stderr_file": "Arithmetic-constructive.stderr",
+      "exit": 0,
+      "median_seconds": 0.7846736669999999,
+      "min_seconds": 0.7290665000000001,
+      "max_seconds": 0.800247166000001,
+      "fixture_bytes": 4433,
+      "fixture_sha256": "e11e4bf7d40f93549210a95aa717ca2265fafa1d982d9aa0ba1f5c98b2855ed6"
+    }
+  },
+  "borrow_proof": {
+    "fixture": "BorrowModel.lean",
+    "fixture_sha256": "ef9bd759fbd48e59dc05202347e67ea8a37fbf7a0b8516f5324225df9d400fe3",
+    "exit": 0,
+    "seconds": 0.7099399170000016,
+    "scope": "All logical Byte states and deltas; only represented root/split/cell authority; abstract length-two slice."
+  },
+  "borrow_native": {
+    "compile_exit": 0,
+    "compile_seconds": 0.3818219159999998,
+    "run_exit": 0,
+    "run_seconds_samples": [
+      0.05646116699999837,
+      0.00642220800000004,
+      0.00615312500000087
+    ],
+    "binary_sha256": "77b382cc707572e270cef4fe785326a7739e3dd2c3218b4cf7a7037aa7083090",
+    "source_sha256": "996f70f543d0bad10d09464b2f4f8df566bc556c8a8f0fdcc8c4b9f796f7797b",
+    "field_cases": 65536,
+    "slice_cases": 196608,
+    "delta": 3,
+    "slice_length": 2,
+    "native_indices": [
+      0,
+      1,
+      2
+    ],
+    "independent_python_fnv64": "f2ed1041187b6325",
+    "scope": "Exhaustive two-byte states at fixed delta3 and three indices; not all deltas, lengths, or out-of-bounds indices."
+  },
+  "timing_scope": "Three sequential warm/OS-uncontrolled process samples per arithmetic route, same model and imports. Includes Lean startup, elaboration, kernel checking and output. No compiler assurance, asymptotic cost, or native-versus-kernel TCB reduction inferred from timings."
+}

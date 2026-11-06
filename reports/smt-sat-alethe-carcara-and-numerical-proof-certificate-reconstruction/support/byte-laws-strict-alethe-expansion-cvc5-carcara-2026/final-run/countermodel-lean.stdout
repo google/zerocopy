@@ -1,0 +1,5 @@
+'FreshSolverWitnesses.missing_initialization_refuted' depends on axioms: [propext]
+'FreshSolverWitnesses.alias_frame_refuted' depends on axioms: [propext]
+'FreshSolverWitnesses.bool_two_refuted' depends on axioms: [propext]
+'FreshSolverWitnesses.missing_stability_refuted' depends on axioms: [propext]
+'FreshSolverWitnesses.array_index_omission_refuted' depends on axioms: [propext]

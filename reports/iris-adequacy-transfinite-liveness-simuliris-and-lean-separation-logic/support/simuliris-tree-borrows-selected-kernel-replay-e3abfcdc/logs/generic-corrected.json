@@ -1,0 +1,40 @@
+{
+  "label": "generic-corrected",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "limit=$1\nshift\nstart=$(du -sb . | cut -f1)\npeak=$start\nstop=none\nbegin=$(date +%s)\ntimeout --signal=TERM --kill-after=5 \"$limit\" \"$@\" &\npid=$!\nwhile kill -0 \"$pid\" 2>/dev/null; do\n size=$(du -sb . | cut -f1)\n if [ \"$size\" -gt \"$peak\" ]; then peak=$size; fi\n if [ \"$peak\" -gt 1076927915 ]; then\n  stop=disk-cap\n  kill -TERM \"$pid\"\n  break\n fi\n sleep 2\ndone\nwait \"$pid\"\nresult=$?\nend=$(date +%s)\nfinal=$(du -sb . | cut -f1)\nprintf 'ANNEAL_PHASE_RESULT returncode=%s stop=%s elapsed_seconds=%s start_bytes=%s peak_bytes=%s final_bytes=%s\\n' \"$result\" \"$stop\" \"$((end-begin))\" \"$start\" \"$peak\" \"$final\"\nexit \"$result\"\n",
+    "anneal-phase",
+    "297",
+    "make",
+    "-f",
+    "Makefile.rocq",
+    "-j1",
+    "-W",
+    "theories/logic/satisfiable.v",
+    "-W",
+    "theories/simulation/language.v",
+    "theories/logic/satisfiable.vo",
+    "theories/simulation/language.vo",
+    "theories/simulation/adequacy.vo"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 30.245,
+  "stdout_bytes": 588,
+  "stderr_bytes": 45,
+  "stdout_sha256": "75e3e1b0baed6ca3d3b3540a388be2c1e0ab0cf6c522e46c8cbea77955996734",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

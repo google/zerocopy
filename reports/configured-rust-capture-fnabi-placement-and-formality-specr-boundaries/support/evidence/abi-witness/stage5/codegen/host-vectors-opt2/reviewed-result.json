@@ -1,0 +1,118 @@
+{
+  "exit_code": 0,
+  "spawned": true,
+  "child_pid": 28408,
+  "seconds": 0.20296479100000003,
+  "stop_reason": null,
+  "controller_failure": null,
+  "remaining_group_after_parent_wait": [],
+  "max_observed_group_rss_bytes": 88342528,
+  "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+  "output_bytes": 8434,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8",
+  "readonly_bindings_before": [
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+      "bytes": 412504
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90",
+      "bytes": 2435976
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libserde_json-6ff72d7e4200795e.rmeta",
+      "sha256": "945c9aec8c2371b9b03d9a3b6dd47cc32c73c76751c290598262460849e9bbfa",
+      "bytes": 1733127
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+      "bytes": 18133888
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/otool",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "sha256": "8353ad3c42743a93e9ca7d0d4e9d3df22305252d169c42c543ee22eeb8c33809",
+      "bytes": 72672
+    }
+  ],
+  "readonly_bindings_after": [
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+      "bytes": 412504
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90",
+      "bytes": 2435976
+    },
+    {
+      "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/libserde_json-6ff72d7e4200795e.rmeta",
+      "sha256": "945c9aec8c2371b9b03d9a3b6dd47cc32c73c76751c290598262460849e9bbfa",
+      "bytes": 1733127
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+      "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+      "bytes": 18133888
+    },
+    {
+      "path": "/Library/Developer/CommandLineTools/usr/bin/otool",
+      "resolved_path": "/Library/Developer/CommandLineTools/usr/bin/llvm-otool",
+      "sha256": "8353ad3c42743a93e9ca7d0d4e9d3df22305252d169c42c543ee22eeb8c33809",
+      "bytes": 72672
+    }
+  ],
+  "source_sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8",
+  "plan_sha256": "b805597d4b38d3022bffbc17d4b322a241bcfb785ec9bf8ed916daebf92763dc",
+  "host_codegen_harness_sha256": "147665657c19f624190c877723c2319ba967d5b9f53d611b0590170045c47702",
+  "profile": "host-vectors-opt2",
+  "additional_stage5_bytes": 98989,
+  "expected_stderr_sha256": "078bbcb76e817bd6800545b4015f68ca5b5d6935c00f2cc9e73a4de4b6915ba8",
+  "classified_warning_scope": "Exact six compile-only experimental SIMD warnings retained (including unused simd_ffi); not FFI safety",
+  "outputs": [
+    {
+      "path": "codegen/host-vectors-opt2/abi_vectors.ll",
+      "bytes": 1527,
+      "sha256": "e303a78b6daecda1a3e843145078ea855f2eb1a5e2411d9a1295cad6f7f232c3"
+    },
+    {
+      "path": "codegen/host-vectors-opt2/abi_vectors.s",
+      "bytes": 310,
+      "sha256": "a08dea3b37d5c2efb22bdc34e65a6a708d1dcc5ca8c514e91a77e7ea0573b46f"
+    },
+    {
+      "path": "codegen/host-vectors-opt2/abi_vectors.o",
+      "bytes": 456,
+      "sha256": "7d9929992f94b4206054b3990d62a37372a0908312add05e5bbaeb731ba5f772"
+    }
+  ],
+  "gates": "PASS",
+  "fixture_link_or_execution_count": 0
+}

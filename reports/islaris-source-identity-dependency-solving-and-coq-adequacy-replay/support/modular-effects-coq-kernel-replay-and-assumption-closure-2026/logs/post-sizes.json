@@ -1,0 +1,29 @@
+{
+  "label": "post-sizes",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "find",
+    ".",
+    "-type",
+    "f",
+    "-printf",
+    "%s %p\n"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.039,
+  "stdout_bytes": 7129,
+  "stderr_bytes": 0,
+  "stdout_sha256": "aee255b721f8e41d97742d09a49162a99a207c037b38b420aac27c821a83e3f4",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

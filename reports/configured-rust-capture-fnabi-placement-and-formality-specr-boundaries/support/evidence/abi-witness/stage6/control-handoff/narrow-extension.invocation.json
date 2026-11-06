@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/e33_consumer_windows.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "windows-subjects-opt2",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/stage6/analysis/narrow-extension.json",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/mutant-narrow-extension-01"
+  ]
+}

@@ -1,0 +1,14 @@
+Test SB-STLR-LDAPR Allowed
+States 4
+0:X3=0; 1:X3=0;
+0:X3=0; 1:X3=1;
+0:X3=1; 1:X3=0;
+0:X3=1; 1:X3=1;
+Ok
+Witnesses
+Positive: 1 Negative: 3
+Condition exists (0:X3=0 /\ 1:X3=0)
+Observation SB-STLR-LDAPR Sometimes 1 3
+Time SB-STLR-LDAPR 0.00
+Hash=3309a8f816d82141953b702624547be4
+

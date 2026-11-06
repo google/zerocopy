@@ -1,0 +1,16 @@
+{
+  "id": "02-stale-opt-profile",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "selected optimization"
+  },
+  "seconds": 0.32534149999999995,
+  "fresh_observer": null,
+  "candidate_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+  "stdout_sha256": "3cc44a555de51d846dfef53afffd27892a8486da39ccfa4a829b4794558f9ef8",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

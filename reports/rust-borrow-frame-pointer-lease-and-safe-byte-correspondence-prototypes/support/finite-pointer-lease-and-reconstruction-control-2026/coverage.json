@@ -1,0 +1,103 @@
+{
+  "R096": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A registered lease adds obligations absent from geometry",
+      "F2. Splitting, projection, and consumption change authority while framing bytes",
+      "F3. Negative controls identify lifetime, alias, and alignment gates",
+      "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+      "F5. Safe native and compiler controls separate raw addresses from references",
+      "F6. The proof observation includes checker status and kernel trust"
+    ],
+    "answered_subquestions": [
+      "Actual 19-endpoint four-cell Lean construction/split/projection/cast/reconstruction case, wrong-lifetime/alias controls, weakened-gate sensitivity, safe Rust/compiler controls and pinned Ptr source trace."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Generalize and connect the finite interpretation to selected source pointer operations, including raw escapes, dynamic allocation, validity and loan return."
+    ]
+  },
+  "T076": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A registered lease adds obligations absent from geometry",
+      "F2. Splitting, projection, and consumption change authority while framing bytes",
+      "F3. Negative controls identify lifetime, alias, and alignment gates",
+      "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+      "F5. Safe native and compiler controls separate raw addresses from references"
+    ],
+    "answered_subquestions": [
+      "Concrete authority registry and scoped split/restore transitions; lifetime countercontrol; source reborrow/reference gates and native safe restoration."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Prove general loan-closing/restoration from returned children and preserve it across the chosen functionalization."
+    ]
+  },
+  "T078": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A registered lease adds obligations absent from geometry",
+      "F3. Negative controls identify lifetime, alias, and alignment gates",
+      "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+      "F5. Safe native and compiler controls separate raw addresses from references"
+    ],
+    "answered_subquestions": [
+      "Geometry counterexample; allocation death, authority, alignment, validity and initialization premises exposed rather than hidden; raw cast equality boundary."
+    ],
+    "remaining_research": [
+      "Strict/exposed provenance and full Stacked/Tree Borrows correspondence are not modeled."
+    ],
+    "future_engineering": [
+      "Bind allocation identity/alignment/validation evidence to actual source state and cover retained raw access paths."
+    ]
+  },
+  "P080": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F1. A registered lease adds obligations absent from geometry",
+      "F2. Splitting, projection, and consumption change authority while framing bytes",
+      "F3. Negative controls identify lifetime, alias, and alignment gates",
+      "F4. Actual zerocopy Ptr preserves more than numerical ranges"
+    ],
+    "answered_subquestions": [
+      "Checked finite owner/ticket and split/disjointness obligations; stale/duplicate/overlap rejection rather than numerical bounds alone."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Attach source resource transitions and prove generic transfer rules for the chosen heap interpretation."
+    ]
+  },
+  "P082": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F3. Negative controls identify lifetime, alias, and alignment gates",
+      "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+      "F5. Safe native and compiler controls separate raw addresses from references"
+    ],
+    "answered_subquestions": [
+      "Actual raw packed-field read_unaligned success versus E0793 reference-formation rejection; cast alignment gate rejects insufficient authority."
+    ],
+    "remaining_research": [],
+    "future_engineering": [
+      "Certify chosen packed projections, typed validity and primitive load contracts."
+    ]
+  },
+  "P088": {
+    "status": "bounded-scope-answered-with-constraints",
+    "sections": [
+      "F2. Splitting, projection, and consumption change authority while framing bytes",
+      "F4. Actual zerocopy Ptr preserves more than numerical ranges",
+      "F5. Safe native and compiler controls separate raw addresses from references"
+    ],
+    "answered_subquestions": [
+      "All five finite slice split positions observed; source general-DST trailing-padding overlap prevents an unconditional separation import."
+    ],
+    "remaining_research": [
+      "ZST special-address behavior and general DST metadata validity are not investigated by these controls."
+    ],
+    "future_engineering": [
+      "Implement metadata/extent and padding-aware splitting certificates for intended source cases."
+    ]
+  }
+}

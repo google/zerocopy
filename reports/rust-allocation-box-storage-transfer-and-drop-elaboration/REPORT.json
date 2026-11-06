@@ -1,0 +1,142 @@
+{
+  "topics": [
+    "rust/unsafe",
+    "rust/layout",
+    "rustc/mir",
+    "minirust/semantics",
+    "zerocopy/soundness-policy"
+  ],
+  "subjects": [
+    {
+      "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Rust Box raw-conversion APIs behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "release": "1.98.0-nightly",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Current zerocopy Box raw-conversion call sites",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Rust compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Aeneas selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "zerocopy repository",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "prior_mir_baseline_release": "1.99.0",
+        "prior_mir_baseline_commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "edition": "2024"
+      }
+    },
+    {
+      "name": "rust-reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "commit": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Owned input bundle",
+      "identity": {
+        "source_sha256": "75a13d53c6848933548808660af50b58637387840f5aeec89a380ecb184b907e"
+      }
+    },
+    {
+      "name": "Lean4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust1.99",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

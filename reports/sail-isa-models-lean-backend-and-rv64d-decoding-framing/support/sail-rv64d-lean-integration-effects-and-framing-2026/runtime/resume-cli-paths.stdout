@@ -1,0 +1,98 @@
+SELECTED_ENV
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+OPAMROOT=
+OPAMSWITCH=
+SAIL_DIR=
+SAIL_PLUGIN_DIR=
+LEAN_PATH=
+LEAN_SYSROOT=
+LAKE_HOME=
+LD_LIBRARY_PATH=
+LD_PRELOAD=
+PLUGINS
+/home/opam/anneal-sail-opam/sail414/lib/ocaml/unix.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/ocaml/bigarray.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/ocaml/str.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/ocaml/nums.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/num/nums.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/base64/rfc2045/base64_rfc2045.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/base64/base64.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/csexp/csexp.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/fs-io/fs_io.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/linenoise/linenoise.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/menhirCST/menhirCST.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/menhirLib/menhirLib.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/menhirSdk/menhirSdk.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/findlib/findlib.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/findlib/findlib_top.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/findlib/findlib_dynload.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/ocamlgraph/graph.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/ordering/ordering.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/omd/omd.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/pp/pp.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/pprint/pprint.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dyn/dyn.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/top-closure/top_closure.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/yojson/yojson.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/stdune/stdune.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dune-private-libs/dune-section/dune_section.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dune-private-libs/meta_parser/dune_meta_parser.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/zarith/zarith.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dune-site/dynlink/dune_site_dynlink_linker.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dune-site/plugins/dune_site_plugins.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dune-site/private/dune_site_private.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/dune-site/dune_site.cmxs
+/home/opam/anneal-sail-opam/sail414/lib/libsail/libsail.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_c.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_coq.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_doc.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_latex.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_lean.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_lem.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_ocaml.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_output.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_smt.cmxs
+/home/opam/anneal-sail-opam/sail414/share/libsail/plugins/sail_plugin_sv.cmxs
+EXECUTABLES
+/home/opam/anneal-sail-opam/sail414/bin/sail
+82464e1d162e7bb444738cfd5cfd28c376fe7b11cf1b18adb73717e6b6b3f0e0  /home/opam/anneal-sail-opam/sail414/bin/sail
+	linux-vdso.so.1 (0x0000ffffa73ac000)
+	libgmp.so.10 => /lib/aarch64-linux-gnu/libgmp.so.10 (0x0000ffffa5e50000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffa5da0000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffa5bf0000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffffa7370000)
+/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean
+e215cbe9eab0914b49761e9e486d388e2e701cf876d1079d1ba733c48edb2d7b  /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean
+	linux-vdso.so.1 (0x0000ffff8b25b000)
+	libInit_shared.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libInit_shared.so (0x0000ffff8b190000)
+	libleanshared_2.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libleanshared_2.so (0x0000ffff8b150000)
+	libleanshared_1.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libleanshared_1.so (0x0000ffff8b110000)
+	libleanshared.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libleanshared.so (0x0000ffff7feb0000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff7fd00000)
+	libpthread.so.0 => /lib/aarch64-linux-gnu/libpthread.so.0 (0x0000ffff7fcd0000)
+	libdl.so.2 => /lib/aarch64-linux-gnu/libdl.so.2 (0x0000ffff7fca0000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff7fbf0000)
+	librt.so.1 => /lib/aarch64-linux-gnu/librt.so.1 (0x0000ffff7fbc0000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffff8b210000)
+/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lake
+4c391bb878ede19c51e809c167d0536efff1f7f72ac41cbae441d6248d509505  /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lake
+	linux-vdso.so.1 (0x0000ffff9d2ea000)
+	libLake_shared.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libLake_shared.so (0x0000ffff9c840000)
+	libInit_shared.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libInit_shared.so (0x0000ffff9c800000)
+	libleanshared_2.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libleanshared_2.so (0x0000ffff9c7c0000)
+	libleanshared_1.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libleanshared_1.so (0x0000ffff9c780000)
+	libleanshared.so => /home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/../lib/lean/libleanshared.so (0x0000ffff91520000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff91370000)
+	libpthread.so.0 => /lib/aarch64-linux-gnu/libpthread.so.0 (0x0000ffff91340000)
+	libdl.so.2 => /lib/aarch64-linux-gnu/libdl.so.2 (0x0000ffff91310000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff91260000)
+	librt.so.1 => /lib/aarch64-linux-gnu/librt.so.1 (0x0000ffff91230000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffff9d2a0000)
+/home/opam/anneal-sail-tools/z3-4.15.3-arm64-glibc-2.34/bin/z3
+043490866e2cd14ab199dfac955932f1d5199ea1e874f549dd8d6ccde2191936  /home/opam/anneal-sail-tools/z3-4.15.3-arm64-glibc-2.34/bin/z3
+	linux-vdso.so.1 (0x0000ffffb6f29000)
+	libstdc++.so.6 => /lib/aarch64-linux-gnu/libstdc++.so.6 (0x0000ffffb6cc0000)
+	libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffb6c10000)
+	libgcc_s.so.1 => /lib/aarch64-linux-gnu/libgcc_s.so.1 (0x0000ffffb6bd0000)
+	libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb6a20000)
+	/lib/ld-linux-aarch64.so.1 (0x0000ffffb6ee0000)

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "<MAY1_TOOLCHAIN>/bin/rustc",
+    "concurrent_assembly.rs",
+    "--edition=2021",
+    "--emit=asm=concurrent_assembly.s,link=concurrent_assembly",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "panic=abort"
+  ],
+  "exit": 0,
+  "seconds": 0.7834517500596121,
+  "source_sha256": "3c142e4b3204fc4d3e849f968464a2792d84a805a88b3d44595b12a020b53249"
+}

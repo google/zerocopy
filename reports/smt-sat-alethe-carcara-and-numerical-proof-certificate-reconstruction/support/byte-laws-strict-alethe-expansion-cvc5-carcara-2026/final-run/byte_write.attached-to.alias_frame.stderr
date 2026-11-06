@@ -1,0 +1,4 @@
+error: could not match term to any of the original problem premises: (not (= changed framed))
+  [34m-->[39m in file [4m[34mbyte_write.0.translated.alethe[39m[0m
+  [1mnote:[0m checking failed on step [33ma8[39m with rule [33massume[39m
+

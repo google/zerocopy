@@ -1,0 +1,7 @@
+{
+  "file": "measured/wrong-rule.stderr",
+  "raw_sha256": "d81dcbead9743ad3a4f9d87e6a5a991acc38e73d484a7736e3cdc810fc1ca699",
+  "normalized_sha256": "5650b31afd61bcb5d60b19583488d33f37020217303fccf9822bac9dbbfd8d7f",
+  "operation": "replace exact task-local measurement output path with placeholder; diagnostics/rules/status unchanged",
+  "raw_observation_retained_in_private_scratch": true
+}

@@ -1,0 +1,6 @@
+(
+(assume a0 (! (not (= changed framed)) :named @p_1))
+(assume a1 (! (not (! (= (select (store before changed value) framed) (select before framed)) :named @p_2)) :named @p_3))
+(step t0 (cl @p_2) :rule arrays_row :premises (a0))
+(step t1 (cl) :rule resolution :premises (a1 t0))
+)

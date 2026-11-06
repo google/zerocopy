@@ -1,0 +1,32 @@
+{
+  "artifact": "A43",
+  "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+  "source_path": "THIRD_PARTY_FILES.md",
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/islaris.dev",
+    "cat-file",
+    "blob",
+    "d24252a436720a3ccdecb69c990fff58341ff97c"
+  ],
+  "status": 0,
+  "seconds": 0.07227433403022587,
+  "bytes": 6,
+  "sha256": "b07313f37d4d0b6c36ae55d01211d46275412f3419c656e22cef16216f9ed91a",
+  "git_blob": "d24252a436720a3ccdecb69c990fff58341ff97c"
+}

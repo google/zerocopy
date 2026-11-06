@@ -1,0 +1,68 @@
+warning: the feature `repr_simd` is internal to the compiler or standard library
+ --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:4:12
+  |
+4 | #![feature(repr_simd, simd_ffi)]
+  |            ^^^^^^^^^
+  |
+  = note: using it is strongly discouraged
+  = note: `#[warn(internal_features)]` on by default
+
+warning: `extern` fn uses type `V4`, which is not FFI-safe
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:11:35
+   |
+11 | pub extern "C" fn abi_c_vector(x: V4) -> V4 { x }
+   |                                   ^^ not FFI-safe
+   |
+   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct
+   = note: this struct has unspecified layout
+note: the type is defined here
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:8:1
+   |
+ 8 | pub struct V4(pub [u32; 4]);
+   | ^^^^^^^^^^^^^
+   = note: `#[warn(improper_ctypes_definitions)]` on by default
+
+warning: `extern` fn uses type `V4`, which is not FFI-safe
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:11:42
+   |
+11 | pub extern "C" fn abi_c_vector(x: V4) -> V4 { x }
+   |                                          ^^ not FFI-safe
+   |
+   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct
+   = note: this struct has unspecified layout
+note: the type is defined here
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:8:1
+   |
+ 8 | pub struct V4(pub [u32; 4]);
+   | ^^^^^^^^^^^^^
+
+warning: `extern` fn uses type `V4`, which is not FFI-safe
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:14:45
+   |
+14 | pub extern "system" fn abi_system_vector(x: V4) -> V4 { x }
+   |                                             ^^ not FFI-safe
+   |
+   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct
+   = note: this struct has unspecified layout
+note: the type is defined here
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:8:1
+   |
+ 8 | pub struct V4(pub [u32; 4]);
+   | ^^^^^^^^^^^^^
+
+warning: `extern` fn uses type `V4`, which is not FFI-safe
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:14:52
+   |
+14 | pub extern "system" fn abi_system_vector(x: V4) -> V4 { x }
+   |                                                    ^^ not FFI-safe
+   |
+   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct
+   = note: this struct has unspecified layout
+note: the type is defined here
+  --> ${WORKSPACE}/work/execution/abi-witness/vectors.rs:8:1
+   |
+ 8 | pub struct V4(pub [u32; 4]);
+   | ^^^^^^^^^^^^^
+
+warning: 5 warnings emitted
+

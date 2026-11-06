@@ -1,0 +1,253 @@
+[
+  {
+    "constant": "iris.itree.exec.handler_adequate_from_simple",
+    "artifact_path": "iris-itree/src/exec.v",
+    "definition_line": 555,
+    "all_textual_definition_matches": [
+      555
+    ],
+    "source_sha256": "94d637dd522251aab47184245420235c34aefec73d05fdc6dfb4b19bd482ee84",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.exec.sumEH_adequate",
+    "artifact_path": "iris-itree/src/exec.v",
+    "definition_line": 805,
+    "all_textual_definition_matches": [
+      805
+    ],
+    "source_sha256": "94d637dd522251aab47184245420235c34aefec73d05fdc6dfb4b19bd482ee84",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.exec.sumSEH_adequate",
+    "artifact_path": "iris-itree/src/exec.v",
+    "definition_line": 882,
+    "all_textual_definition_matches": [
+      882
+    ],
+    "source_sha256": "94d637dd522251aab47184245420235c34aefec73d05fdc6dfb4b19bd482ee84",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.exec.wpi_adequate",
+    "artifact_path": "iris-itree/src/exec.v",
+    "definition_line": 707,
+    "all_textual_definition_matches": [
+      707
+    ],
+    "source_sha256": "94d637dd522251aab47184245420235c34aefec73d05fdc6dfb4b19bd482ee84",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.exec.wpi_adequate_pure",
+    "artifact_path": "iris-itree/src/exec.v",
+    "definition_line": 727,
+    "all_textual_definition_matches": [
+      727
+    ],
+    "source_sha256": "94d637dd522251aab47184245420235c34aefec73d05fdc6dfb4b19bd482ee84",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.state.stateEH_adequate",
+    "artifact_path": "iris-itree/src/state.v",
+    "definition_line": 378,
+    "all_textual_definition_matches": [
+      378
+    ],
+    "source_sha256": "04a25d2945d16ab2937acf832801417679504fea6fc3a16cbfc7d96f63352a78",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.state.state_adequacy",
+    "artifact_path": "iris-itree/src/state.v",
+    "definition_line": 244,
+    "all_textual_definition_matches": [
+      244
+    ],
+    "source_sha256": "04a25d2945d16ab2937acf832801417679504fea6fc3a16cbfc7d96f63352a78",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heap.wpi_load",
+    "artifact_path": "iris-itree/src/heap.v",
+    "definition_line": 318,
+    "all_textual_definition_matches": [
+      318
+    ],
+    "source_sha256": "cc641d2b7f04dcb75e1b2ccff70976800213906576a418d5c9c349cf3ad3007a",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heap.wpi_store",
+    "artifact_path": "iris-itree/src/heap.v",
+    "definition_line": 356,
+    "all_textual_definition_matches": [
+      356
+    ],
+    "source_sha256": "cc641d2b7f04dcb75e1b2ccff70976800213906576a418d5c9c349cf3ad3007a",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heap.wpi_allocN",
+    "artifact_path": "iris-itree/src/heap.v",
+    "definition_line": 384,
+    "all_textual_definition_matches": [
+      384
+    ],
+    "source_sha256": "cc641d2b7f04dcb75e1b2ccff70976800213906576a418d5c9c349cf3ad3007a",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heap.heap_adequacy",
+    "artifact_path": "iris-itree/src/heap.v",
+    "definition_line": 527,
+    "all_textual_definition_matches": [
+      527,
+      537
+    ],
+    "source_sha256": "cc641d2b7f04dcb75e1b2ccff70976800213906576a418d5c9c349cf3ad3007a",
+    "note": "Second textual heap_adequacy match is inside a commented-out sketch."
+  },
+  {
+    "constant": "iris.itree.threadpool.exec.threadpoolEH_adequate",
+    "artifact_path": "iris-itree/src/threadpool/exec.v",
+    "definition_line": 85,
+    "all_textual_definition_matches": [
+      85
+    ],
+    "source_sha256": "19ea76188c45af5ec3e45d0d4da4ad9b543e5d2585e2f7bb51734d48a46422f2",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.threadpool.interleaving.threadpool_adequacy",
+    "artifact_path": "iris-itree/src/threadpool/interleaving.v",
+    "definition_line": 1556,
+    "all_textual_definition_matches": [
+      1556
+    ],
+    "source_sha256": "c422d9da320a156bf49eb63372332e1b0418a672d02e8fe2fe46e2053d6e0a04",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.examplelang.adequacy.wp_adequacy_irel",
+    "artifact_path": "iris-itree/src/examplelang/adequacy.v",
+    "definition_line": 27,
+    "all_textual_definition_matches": [
+      27
+    ],
+    "source_sha256": "5ae8879b54a15c624438651a16d7544db7835faa9f7f02bbe84560440adc50b5",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.adequacy.wp_adequacy_irel",
+    "artifact_path": "iris-itree/src/heaplang/adequacy.v",
+    "definition_line": 96,
+    "all_textual_definition_matches": [
+      96
+    ],
+    "source_sha256": "6eb769e48c7ff9bb190cca926cd8812cf4258965a638e61b4c07dbffef0eff5c",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.adequacy.wp_adequacy_eval",
+    "artifact_path": "iris-itree/src/heaplang/adequacy.v",
+    "definition_line": 124,
+    "all_textual_definition_matches": [
+      124
+    ],
+    "source_sha256": "6eb769e48c7ff9bb190cca926cd8812cf4258965a638e61b4c07dbffef0eff5c",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.adequacy.wp_partial_soundness",
+    "artifact_path": "iris-itree/src/heaplang/adequacy.v",
+    "definition_line": 147,
+    "all_textual_definition_matches": [
+      147
+    ],
+    "source_sha256": "6eb769e48c7ff9bb190cca926cd8812cf4258965a638e61b4c07dbffef0eff5c",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.adequacy.wp_total_soundness",
+    "artifact_path": "iris-itree/src/heaplang/adequacy.v",
+    "definition_line": 167,
+    "all_textual_definition_matches": [
+      167
+    ],
+    "source_sha256": "6eb769e48c7ff9bb190cca926cd8812cf4258965a638e61b4c07dbffef0eff5c",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.opsem_adequacy.execution_from_opsem_trace",
+    "artifact_path": "iris-itree/src/heaplang/opsem_adequacy.v",
+    "definition_line": 1521,
+    "all_textual_definition_matches": [
+      1521
+    ],
+    "source_sha256": "8030a91c5ba114c6c0cc04508a4d92f85b362a2d895c02f7601558ed7ba9895d",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.opsem_adequacy.partially_adequate_opsem_adequate",
+    "artifact_path": "iris-itree/src/heaplang/opsem_adequacy.v",
+    "definition_line": 1558,
+    "all_textual_definition_matches": [
+      1558
+    ],
+    "source_sha256": "8030a91c5ba114c6c0cc04508a4d92f85b362a2d895c02f7601558ed7ba9895d",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.opsem_adequacy.wp_later_opsem_adequate",
+    "artifact_path": "iris-itree/src/heaplang/opsem_adequacy.v",
+    "definition_line": 1584,
+    "all_textual_definition_matches": [
+      1584
+    ],
+    "source_sha256": "8030a91c5ba114c6c0cc04508a4d92f85b362a2d895c02f7601558ed7ba9895d",
+    "note": ""
+  },
+  {
+    "constant": "iris.itree.heaplang.opsem_adequacy.wp_total_opsem_adequate",
+    "artifact_path": "iris-itree/src/heaplang/opsem_adequacy.v",
+    "definition_line": 1594,
+    "all_textual_definition_matches": [
+      1594
+    ],
+    "source_sha256": "8030a91c5ba114c6c0cc04508a4d92f85b362a2d895c02f7601558ed7ba9895d",
+    "note": ""
+  },
+  {
+    "constant": "isla.adequacy.isla_adequacy",
+    "artifact_path": "iris-itree/islaris/adequacy.v",
+    "definition_line": 91,
+    "all_textual_definition_matches": [
+      91
+    ],
+    "source_sha256": "f9c8d70ccbc26b16fbbc2fbdbb56fc6d09c5fb4d7c7e25b186c2e6a316e1f630",
+    "note": ""
+  },
+  {
+    "constant": "isla.adequacy_itree.isla_exec_adequate",
+    "artifact_path": "iris-itree/islaris/adequacy_itree.v",
+    "definition_line": 265,
+    "all_textual_definition_matches": [
+      265
+    ],
+    "source_sha256": "c9ed0e8cbe9f02f3ee7f6c71f02c6e66f5a780d9b7eb33141f53c696c3732054",
+    "note": ""
+  },
+  {
+    "constant": "isla.adequacy_itree.isla_adequacy",
+    "artifact_path": "iris-itree/islaris/adequacy_itree.v",
+    "definition_line": 273,
+    "all_textual_definition_matches": [
+      273
+    ],
+    "source_sha256": "c9ed0e8cbe9f02f3ee7f6c71f02c6e66f5a780d9b7eb33141f53c696c3732054",
+    "note": ""
+  }
+]

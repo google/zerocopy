@@ -1,0 +1,277 @@
+
+${WORKSPACE}/work/execution/abi-witness/stage5/codegen/host-subjects-opt0/abi_subjects.o:	file format mach-o arm64
+
+Sections:
+Idx Name          Size     VMA              Type
+  0 __text        00000268 0000000000000000 TEXT
+
+SYMBOL TABLE:
+0000000000000000 l     F __TEXT,__text ltmp0
+0000000000000000 l     F __TEXT,__text __RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects
+0000000000000008 l     F __TEXT,__text __RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects
+000000000000001c g     F __TEXT,__text _abi_c_big
+0000000000000034 g     F __TEXT,__text _abi_c_fp
+0000000000000040 g     F __TEXT,__text _abi_c_hfa
+000000000000007c g     F __TEXT,__text _abi_c_narrow
+00000000000000a0 g     F __TEXT,__text _abi_c_pair
+00000000000000d4 g     F __TEXT,__text _abi_c_raw
+00000000000000d8 g     F __TEXT,__text _abi_interior
+00000000000000dc g     F __TEXT,__text _abi_rust_big
+00000000000000f4 g     F __TEXT,__text _abi_rust_narrow
+0000000000000118 g     F __TEXT,__text _abi_rust_tuple
+000000000000011c g     F __TEXT,__text _abi_shared
+0000000000000124 g     F __TEXT,__text _abi_slice
+000000000000012c g     F __TEXT,__text _abi_stack_driver
+0000000000000170 g     F __TEXT,__text _abi_system_big
+0000000000000188 g     F __TEXT,__text _abi_system_narrow
+00000000000001ac g     F __TEXT,__text _abi_system_pair
+00000000000001e0 g     F __TEXT,__text _abi_track
+0000000000000218 g     F __TEXT,__text _abi_unique
+000000000000022c g     F __TEXT,__text _abi_unit
+0000000000000230 g     F __TEXT,__text _abi_vararg_driver
+0000000000000000         *UND* _abi_opaque_twelve
+0000000000000000         *UND* _abi_opaque_vararg
+Contents of section __TEXT,__text:
+ 0000 001040b9 c0035fd6 ff4300d1 e00700f9  ..@..._..C......
+ 0010 e00740f9 ff430091 c0035fd6 e90308aa  ..@..C...._.....
+ 0020 0000c03d 2001803d 080840f9 280900f9  ...= ..=..@.(...
+ 0030 c0035fd6 00c0221e 0028611e c0035fd6  .._..."..(a..._.
+ 0040 ffc300d1 e01300bd e11700bd e21b00bd  ................
+ 0050 e31f00bd e007c03d e003803d e003c03d  .......=...=...=
+ 0060 e00b803d e02340bd e12740bd e22b40bd  ...=.#@..'@..+@.
+ 0070 e32f40bd ffc30091 c0035fd6 e80300aa  ./@......._.....
+ 0080 081d4092 e90301aa 293d4093 080109ca  ..@.....)=@.....
+ 0090 e90302aa 29014092 000109ca c0035fd6  ....).@......._.
+ 00a0 ffc300d1 e00b00f9 e10f00f9 e007c03d  ...............=
+ 00b0 e003803d e90340f9 e80b40b9 e91300f9  ...=..@...@.....
+ 00c0 e82b00b9 e01340f9 e11740f9 ffc30091  .+....@...@.....
+ 00d0 c0035fd6 c0035fd6 c0035fd6 e90308aa  .._..._..._.....
+ 00e0 0000c03d 2001803d 080840f9 280900f9  ...= ..=..@.(...
+ 00f0 c0035fd6 e80300aa 081d4092 e90301aa  .._.......@.....
+ 0100 293d4093 080109ca e90302aa 29014092  )=@.........).@.
+ 0110 000109ca c0035fd6 c0035fd6 000040f9  ......_..._...@.
+ 0120 c0035fd6 e00301aa c0035fd6 ffc300d1  .._......._.....
+ 0130 fd7b02a9 fd830091 ac0b40f9 ab0f40f9  .{........@...@.
+ 0140 aa1340f9 a81740f9 e9030091 2c0100f9  ..@...@.....,...
+ 0150 2b0500f9 2a0900f9 280d00f9 00000094  +...*...(.......
+ 0160 00040091 fd7b42a9 ffc30091 c0035fd6  .....{B......._.
+ 0170 e90308aa 0000c03d 2001803d 080840f9  .......= ..=..@.
+ 0180 280900f9 c0035fd6 e80300aa 081d4092  (....._.......@.
+ 0190 e90301aa 293d4093 080109ca e90302aa  ....)=@.........
+ 01a0 29014092 000109ca c0035fd6 ffc300d1  ).@......._.....
+ 01b0 e00b00f9 e10f00f9 e007c03d e003803d  ...........=...=
+ 01c0 e90340f9 e80b40b9 e91300f9 e82b00b9  ..@...@......+..
+ 01d0 e01340f9 e11740f9 ffc30091 c0035fd6  ..@...@......._.
+ 01e0 ff8300d1 fd7b01a9 fd430091 e00700f9  .....{...C......
+ 01f0 e00301aa 00000094 00000094 e80300aa  ................
+ 0200 e00740f9 e803082a 000008ca fd7b41a9  ..@....*.....{A.
+ 0210 ff830091 c0035fd6 080040f9 08050091  ......_...@.....
+ 0220 080000f9 000040f9 c0035fd6 c0035fd6  ......@..._..._.
+ 0230 ffc300d1 fd7b02a9 fd830091 e8030091  .....{..........
+ 0240 e90300aa 090100f9 000500fd 1f0900f9  ................
+ 0250 20008052 00000094 00040091 fd7b42a9   ..R.........{B.
+ 0260 ffc30091 c0035fd6                    ......_.
+
+Disassembly of section __TEXT,__text:
+
+0000000000000000 <ltmp0>:
+       0: b9401000     	ldr	w0, [x0, #0x10]
+       4: d65f03c0     	ret
+
+0000000000000008 <__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects>:
+       8: d10043ff     	sub	sp, sp, #0x10
+       c: f90007e0     	str	x0, [sp, #0x8]
+      10: f94007e0     	ldr	x0, [sp, #0x8]
+      14: 910043ff     	add	sp, sp, #0x10
+      18: d65f03c0     	ret
+
+000000000000001c <_abi_c_big>:
+      1c: aa0803e9     	mov	x9, x8
+      20: 3dc00000     	ldr	q0, [x0]
+      24: 3d800120     	str	q0, [x9]
+      28: f9400808     	ldr	x8, [x0, #0x10]
+      2c: f9000928     	str	x8, [x9, #0x10]
+      30: d65f03c0     	ret
+
+0000000000000034 <_abi_c_fp>:
+      34: 1e22c000     	fcvt	d0, s0
+      38: 1e612800     	fadd	d0, d0, d1
+      3c: d65f03c0     	ret
+
+0000000000000040 <_abi_c_hfa>:
+      40: d100c3ff     	sub	sp, sp, #0x30
+      44: bd0013e0     	str	s0, [sp, #0x10]
+      48: bd0017e1     	str	s1, [sp, #0x14]
+      4c: bd001be2     	str	s2, [sp, #0x18]
+      50: bd001fe3     	str	s3, [sp, #0x1c]
+      54: 3dc007e0     	ldr	q0, [sp, #0x10]
+      58: 3d8003e0     	str	q0, [sp]
+      5c: 3dc003e0     	ldr	q0, [sp]
+      60: 3d800be0     	str	q0, [sp, #0x20]
+      64: bd4023e0     	ldr	s0, [sp, #0x20]
+      68: bd4027e1     	ldr	s1, [sp, #0x24]
+      6c: bd402be2     	ldr	s2, [sp, #0x28]
+      70: bd402fe3     	ldr	s3, [sp, #0x2c]
+      74: 9100c3ff     	add	sp, sp, #0x30
+      78: d65f03c0     	ret
+
+000000000000007c <_abi_c_narrow>:
+      7c: aa0003e8     	mov	x8, x0
+      80: 92401d08     	and	x8, x8, #0xff
+      84: aa0103e9     	mov	x9, x1
+      88: 93403d29     	sxth	x9, w9
+      8c: ca090108     	eor	x8, x8, x9
+      90: aa0203e9     	mov	x9, x2
+      94: 92400129     	and	x9, x9, #0x1
+      98: ca090100     	eor	x0, x8, x9
+      9c: d65f03c0     	ret
+
+00000000000000a0 <_abi_c_pair>:
+      a0: d100c3ff     	sub	sp, sp, #0x30
+      a4: f9000be0     	str	x0, [sp, #0x10]
+      a8: f9000fe1     	str	x1, [sp, #0x18]
+      ac: 3dc007e0     	ldr	q0, [sp, #0x10]
+      b0: 3d8003e0     	str	q0, [sp]
+      b4: f94003e9     	ldr	x9, [sp]
+      b8: b9400be8     	ldr	w8, [sp, #0x8]
+      bc: f90013e9     	str	x9, [sp, #0x20]
+      c0: b9002be8     	str	w8, [sp, #0x28]
+      c4: f94013e0     	ldr	x0, [sp, #0x20]
+      c8: f94017e1     	ldr	x1, [sp, #0x28]
+      cc: 9100c3ff     	add	sp, sp, #0x30
+      d0: d65f03c0     	ret
+
+00000000000000d4 <_abi_c_raw>:
+      d4: d65f03c0     	ret
+
+00000000000000d8 <_abi_interior>:
+      d8: d65f03c0     	ret
+
+00000000000000dc <_abi_rust_big>:
+      dc: aa0803e9     	mov	x9, x8
+      e0: 3dc00000     	ldr	q0, [x0]
+      e4: 3d800120     	str	q0, [x9]
+      e8: f9400808     	ldr	x8, [x0, #0x10]
+      ec: f9000928     	str	x8, [x9, #0x10]
+      f0: d65f03c0     	ret
+
+00000000000000f4 <_abi_rust_narrow>:
+      f4: aa0003e8     	mov	x8, x0
+      f8: 92401d08     	and	x8, x8, #0xff
+      fc: aa0103e9     	mov	x9, x1
+     100: 93403d29     	sxth	x9, w9
+     104: ca090108     	eor	x8, x8, x9
+     108: aa0203e9     	mov	x9, x2
+     10c: 92400129     	and	x9, x9, #0x1
+     110: ca090100     	eor	x0, x8, x9
+     114: d65f03c0     	ret
+
+0000000000000118 <_abi_rust_tuple>:
+     118: d65f03c0     	ret
+
+000000000000011c <_abi_shared>:
+     11c: f9400000     	ldr	x0, [x0]
+     120: d65f03c0     	ret
+
+0000000000000124 <_abi_slice>:
+     124: aa0103e0     	mov	x0, x1
+     128: d65f03c0     	ret
+
+000000000000012c <_abi_stack_driver>:
+     12c: d100c3ff     	sub	sp, sp, #0x30
+     130: a9027bfd     	stp	x29, x30, [sp, #0x20]
+     134: 910083fd     	add	x29, sp, #0x20
+     138: f9400bac     	ldr	x12, [x29, #0x10]
+     13c: f9400fab     	ldr	x11, [x29, #0x18]
+     140: f94013aa     	ldr	x10, [x29, #0x20]
+     144: f94017a8     	ldr	x8, [x29, #0x28]
+     148: 910003e9     	mov	x9, sp
+     14c: f900012c     	str	x12, [x9]
+     150: f900052b     	str	x11, [x9, #0x8]
+     154: f900092a     	str	x10, [x9, #0x10]
+     158: f9000d28     	str	x8, [x9, #0x18]
+     15c: 94000000     	bl	0x15c <_abi_stack_driver+0x30>
+		000000000000015c:  ARM64_RELOC_BRANCH26	_abi_opaque_twelve
+     160: 91000400     	add	x0, x0, #0x1
+     164: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+     168: 9100c3ff     	add	sp, sp, #0x30
+     16c: d65f03c0     	ret
+
+0000000000000170 <_abi_system_big>:
+     170: aa0803e9     	mov	x9, x8
+     174: 3dc00000     	ldr	q0, [x0]
+     178: 3d800120     	str	q0, [x9]
+     17c: f9400808     	ldr	x8, [x0, #0x10]
+     180: f9000928     	str	x8, [x9, #0x10]
+     184: d65f03c0     	ret
+
+0000000000000188 <_abi_system_narrow>:
+     188: aa0003e8     	mov	x8, x0
+     18c: 92401d08     	and	x8, x8, #0xff
+     190: aa0103e9     	mov	x9, x1
+     194: 93403d29     	sxth	x9, w9
+     198: ca090108     	eor	x8, x8, x9
+     19c: aa0203e9     	mov	x9, x2
+     1a0: 92400129     	and	x9, x9, #0x1
+     1a4: ca090100     	eor	x0, x8, x9
+     1a8: d65f03c0     	ret
+
+00000000000001ac <_abi_system_pair>:
+     1ac: d100c3ff     	sub	sp, sp, #0x30
+     1b0: f9000be0     	str	x0, [sp, #0x10]
+     1b4: f9000fe1     	str	x1, [sp, #0x18]
+     1b8: 3dc007e0     	ldr	q0, [sp, #0x10]
+     1bc: 3d8003e0     	str	q0, [sp]
+     1c0: f94003e9     	ldr	x9, [sp]
+     1c4: b9400be8     	ldr	w8, [sp, #0x8]
+     1c8: f90013e9     	str	x9, [sp, #0x20]
+     1cc: b9002be8     	str	w8, [sp, #0x28]
+     1d0: f94013e0     	ldr	x0, [sp, #0x20]
+     1d4: f94017e1     	ldr	x1, [sp, #0x28]
+     1d8: 9100c3ff     	add	sp, sp, #0x30
+     1dc: d65f03c0     	ret
+
+00000000000001e0 <_abi_track>:
+     1e0: d10083ff     	sub	sp, sp, #0x20
+     1e4: a9017bfd     	stp	x29, x30, [sp, #0x10]
+     1e8: 910043fd     	add	x29, sp, #0x10
+     1ec: f90007e0     	str	x0, [sp, #0x8]
+     1f0: aa0103e0     	mov	x0, x1
+     1f4: 94000000     	bl	0x1f4 <_abi_track+0x14>
+		00000000000001f4:  ARM64_RELOC_BRANCH26	__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects
+     1f8: 94000000     	bl	0x1f8 <_abi_track+0x18>
+		00000000000001f8:  ARM64_RELOC_BRANCH26	__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects
+     1fc: aa0003e8     	mov	x8, x0
+     200: f94007e0     	ldr	x0, [sp, #0x8]
+     204: 2a0803e8     	mov	w8, w8
+     208: ca080000     	eor	x0, x0, x8
+     20c: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+     210: 910083ff     	add	sp, sp, #0x20
+     214: d65f03c0     	ret
+
+0000000000000218 <_abi_unique>:
+     218: f9400008     	ldr	x8, [x0]
+     21c: 91000508     	add	x8, x8, #0x1
+     220: f9000008     	str	x8, [x0]
+     224: f9400000     	ldr	x0, [x0]
+     228: d65f03c0     	ret
+
+000000000000022c <_abi_unit>:
+     22c: d65f03c0     	ret
+
+0000000000000230 <_abi_vararg_driver>:
+     230: d100c3ff     	sub	sp, sp, #0x30
+     234: a9027bfd     	stp	x29, x30, [sp, #0x20]
+     238: 910083fd     	add	x29, sp, #0x20
+     23c: 910003e8     	mov	x8, sp
+     240: aa0003e9     	mov	x9, x0
+     244: f9000109     	str	x9, [x8]
+     248: fd000500     	str	d0, [x8, #0x8]
+     24c: f900091f     	str	xzr, [x8, #0x10]
+     250: 52800020     	mov	w0, #0x1                ; =1
+     254: 94000000     	bl	0x254 <_abi_vararg_driver+0x24>
+		0000000000000254:  ARM64_RELOC_BRANCH26	_abi_opaque_vararg
+     258: 91000400     	add	x0, x0, #0x1
+     25c: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+     260: 9100c3ff     	add	sp, sp, #0x30
+     264: d65f03c0     	ret

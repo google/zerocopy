@@ -1,0 +1,128 @@
+[
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl/base_logic/adequacy.v",
+    "sha256": "4407c4811e8c41af8ccab379f7e48a3b8cdade6ad811fbe1c66ceb8d94a09b9b",
+    "size": 4534
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl/base_logic/base_lifting.v",
+    "sha256": "bcb0fcc3a52e37053e000f9f1b865260698a89d9af0c5fe30cbf4eaf53c6386c",
+    "size": 41812
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl/lang/lang.v",
+    "sha256": "d42161891ebf6d3f63370eeffa0e3f62809f487061c23ea94e491cff396ee3a6",
+    "size": 43835
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/smr/rcu/code.v",
+    "sha256": "fec97ccefc61434472f7a67c0f07702a16306d294ee37ec66d8928c81bbc5067",
+    "size": 4738
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/smr/rcu/base_spec.v",
+    "sha256": "82ee8b4ae62d3da3ed78664f27c39ec04246fb0c246c5dc7c207bb7f4b3f4527",
+    "size": 10822
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/smr/rcu/base_proof.v",
+    "sha256": "9eccd807e3f13055e65999092116c60f858e86d79c9da70990db8d47ce6b192c",
+    "size": 3388
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/smr/rcu/traversal_proof.v",
+    "sha256": "61b020326ecaad19db97a322a05655f52397893e3929b5465b6f9dc3fe1b64c0",
+    "size": 23294
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/smr/proof_slot_bag_onat.v",
+    "sha256": "0c3a7d9a7128279135c13ac0b81708b25298605e8eaff57909edd050b49da8cf",
+    "size": 77422
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/smr/proof_retired_list.v",
+    "sha256": "a941a9b03a379cb0f6f641bd8d51d5178eff51fc98d4fed526b48b7589c5d3f0",
+    "size": 16349
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/harris/proof_harris_rcu.v",
+    "sha256": "5b1c6f1973b6d7e22fb9f00e4965af4a8ea455f8c4764978248500d254830a0a",
+    "size": 2835
+  },
+  {
+    "artifact": "weak-smr",
+    "artifact_path": "pldi25-3-artifact/gpfsl-examples/queue/proof_ms_rcu.v",
+    "sha256": "dbb0b94cbef0e640a7d85fce9baa69e169549e2cbc64bf3e790041859250c08c",
+    "size": 213648
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/lang/adequacy.v",
+    "sha256": "ed3cfe4a7b93064c40a7821faa497f82dd0112a57179ae0c3356bceea11adaf0",
+    "size": 2886
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/hazptr/code_hazptr.v",
+    "sha256": "3d2a9b97b2579ed618008b73a6bc3dd57c563f6fc890978ba51e64ed33f686f1",
+    "size": 3029
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/hazptr/spec_hazptr.v",
+    "sha256": "a4e522d7179ecf03bd85ae3c93518f31fb7c204a34264150d425497ec3713db3",
+    "size": 10383
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/hazptr/proof_hazptr.v",
+    "sha256": "bc5672ebe444b45e56831f1615858cfcd83ef351ebd5221f6ac4f531b9f6a321",
+    "size": 89164
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/hazptr/closed_proofs.v",
+    "sha256": "34b85be07d65fd176a86623f7529eb389eed6876ad2bccd5223fb39aacb56093",
+    "size": 5192
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/hazptr/proof_harris_find.v",
+    "sha256": "316bf0f03085650fc8bad2866efb07057f05aa2eb3f68cd6e8aee9ba55c56633",
+    "size": 56267
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "proof/theories/hazptr/proof_harris_operations.v",
+    "sha256": "d0395b7f6e934ba310199374e7e63f009aaab94b6307e4602501ee6597009ced",
+    "size": 48664
+  },
+  {
+    "artifact": "hp-immut",
+    "artifact_path": "implementation/src/ds_impl/hp/list.rs",
+    "sha256": "410733a780366ce03e508842fbcd8e50771708838613f60bc7d7d0ab7b499df0",
+    "size": 20973
+  },
+  {
+    "artifact": "arc-model",
+    "artifact_path": "lambda-rust-186900b2cf948835873281646ce20c7e8f084f17-186900b2cf948835873281646ce20c7e8f084f17/theories/lang/arc.v",
+    "sha256": "b9d3b6bfd94ec58f1b09ff31c5f54362419830c3a0d2e538af055ff494457276",
+    "size": 146114
+  },
+  {
+    "artifact": "arc-model",
+    "artifact_path": "lambda-rust-186900b2cf948835873281646ce20c7e8f084f17-186900b2cf948835873281646ce20c7e8f084f17/theories/typing/lib/arc.v",
+    "sha256": "1eb1c990a9605484feb2e61d0f0aba1e49e3d179bef42e022156e45913ae39f8",
+    "size": 64973
+  }
+]

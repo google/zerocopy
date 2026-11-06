@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/behavior-codec",
+    "anneal/decidability",
+    "anneal/incompleteness",
+    "anneal/institutions",
+    "anneal/refinement",
+    "anneal/tcb-audit",
+    "anneal/universal-algebra",
+    "lean/verification"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification architecture and trust boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal TrustedBoundary.lean audit checker",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f938c18db56c49e82dde95506894a9b58b76b227"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

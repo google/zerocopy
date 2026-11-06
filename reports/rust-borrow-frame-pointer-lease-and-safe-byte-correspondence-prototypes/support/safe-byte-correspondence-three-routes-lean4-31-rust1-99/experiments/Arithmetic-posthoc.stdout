@@ -1,0 +1,7 @@
+true
+theorem consumerAccepted : Claim expectedSourceHash actualSourceHash capturedSource proposedIR :=
+⟨rfl, posthoc_sound capturedSource proposedIR acceptance⟩
+'consumerAccepted' depends on axioms: [propext]
+'ArithmeticPrototype.posthoc_sound' depends on axioms: [propext]
+'ArithmeticPrototype.construct_eval' depends on axioms: [propext]
+'ArithmeticPrototype.instrumented_sound' depends on axioms: [propext]

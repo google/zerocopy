@@ -1,0 +1,27 @@
+{
+  "pid": 4798,
+  "pgid": 4798,
+  "launch_start_unix_ns": 1792029356312642000,
+  "pid_persisted_unix_ns": 1792029356344866000,
+  "argv": [
+    "${WORKSPACE}/work/execution/abi-witness/observer-v3",
+    "${WORKSPACE}/work/execution/abi-witness/selectors-subjects.json",
+    "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-02/reference.json",
+    "--",
+    "${WORKSPACE}/work/execution/abi-witness/subjects.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "--crate-type=lib",
+    "--crate-name=abi_subjects",
+    "--target=aarch64-apple-darwin",
+    "-Copt-level=0",
+    "-Cpanic=abort",
+    "-Ctarget-cpu=apple-m1",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "--emit=metadata",
+    "--out-dir",
+    "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-02"
+  ]
+}

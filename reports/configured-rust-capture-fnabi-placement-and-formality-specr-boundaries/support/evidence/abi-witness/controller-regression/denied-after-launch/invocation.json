@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "-c",
+    "import time; time.sleep(30)"
+  ],
+  "env_exact": {},
+  "cwd": "${WORKSPACE}/work/execution/abi-witness",
+  "controller_sha256": "9aa830ca10fd4f50bd318cc338fb197881bb96dc379a36da4fd89a37e7d45594"
+}

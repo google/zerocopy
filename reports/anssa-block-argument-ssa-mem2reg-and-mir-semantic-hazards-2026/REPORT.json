@@ -1,24 +1,13 @@
 {
   "topics": [
-    "anneal/anssa",
-    "compiler/ssa",
-    "compiler/mem2reg",
-    "compiler/sroa",
-    "rust/maybe-uninit",
-    "rust/niche-encoding",
-    "rust/uninhabited-types",
-    "rust/retag",
-    "rust/zst"
+    "rustc",
+    "rustc/mir",
+    "rustc/codegen",
+    "llvm/lowering",
+    "rust/validity",
+    "verification/refinement"
   ],
   "subjects": [
-    {
-      "name": "Anneal verification framework and Trusted MIR semantics",
-      "identity": {
-        "repository": "joshlf/anneal",
-        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0",
-        "paths": "trusted/lean/Trusted/MirAst.lean, trusted/lean/Trusted/MirSemantics.lean, trusted/lean/Trusted/Memory.lean, trusted/lean/Trusted/Refinement.lean, trusted/lean/Trusted/StepResult.lean"
-      }
-    },
     {
       "name": "Rust compiler MIR transforms, ABI layout, and SSA codegen",
       "identity": {
@@ -56,12 +45,10 @@
       }
     },
     {
-      "name": "Standalone Lean 4.34.1 mechanization probe for AnSSA, checkMem2Reg, MaybeUninit freeze, and TagEncoding::Niche",
+      "name": "Anneal verification framework",
       "identity": {
-        "path": "support/track3_ssa_mem2reg_niche_probe.lean",
-        "sha256": "b412ca6b6603b08ebfb50e63aa7d184af4b3ee7b4fb0e23e1dcf3cd95e3f0565",
-        "lines": "1494",
-        "toolchain": "leanprover/lean4:v4.34.1"
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
       }
     }
   ],

@@ -1,0 +1,1 @@
+[crate test { #![feature(polonius_alpha)] fn identity<T>(x: T) -> T { return x; } fn main() -> () { let a: i32 = identity::<i32>(42_i32); println!(a); } }]

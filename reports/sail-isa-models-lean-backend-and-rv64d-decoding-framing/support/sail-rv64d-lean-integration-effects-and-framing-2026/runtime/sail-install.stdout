@@ -1,0 +1,155 @@
+
+<><> Synchronising pinned packages ><><><><><><><><><><><><><><><><><><><><><><>
+[libsail.0.20.3] fetching sources failed: missing checksum
+[sail.0.20.3] fetching sources failed: missing checksum
+[sail_c_backend.0.20.3] fetching sources failed: missing checksum
+[sail_coq_backend.0.20.3] fetching sources failed: missing checksum
+[sail_doc_backend.0.20.3] fetching sources failed: missing checksum
+[sail_latex_backend.0.20.3] fetching sources failed: missing checksum
+[sail_lean_backend.0.20.3] fetching sources failed: missing checksum
+[sail_lem_backend.0.20.3] fetching sources failed: missing checksum
+[sail_maker.0.20.3] fetching sources failed: missing checksum
+[sail_ocaml_backend.0.20.3] fetching sources failed: missing checksum
+[sail_output.0.20.3] fetching sources failed: missing checksum
+[sail_smt_backend.0.20.3] fetching sources failed: missing checksum
+[sail_sv_backend.0.20.3] fetching sources failed: missing checksum
+
+The following actions will be performed:
+  - install ocaml-options-vanilla 1
+  - install conf-findutils        1
+  - install base-unix             base
+  - install ocaml-base-compiler   4.14.4
+  - install conf-gmp              5
+  - install base-bigarray         base
+  - install conf-pkg-config       5
+  - install base-threads          base
+  - install ocaml-config          2
+  - install ocaml                 4.14.4
+  - install ocamlfind             1.9.8
+  - install ocamlbuild            0.16.1
+  - install num                   1.6
+  - install dune                  3.21.1
+  - install zarith                1.14
+  - install base-bytes            base
+  - install yojson                3.0.0
+  - install top-closure           3.21.1
+  - install pprint                20220103
+  - install pp                    2.0.0
+  - install ordering              3.21.1
+  - install ocamlgraph            2.2.0
+  - install menhirSdk             20240715
+  - install menhirLib             20240715
+  - install menhirCST             20240715
+  - install linenoise             1.5.1
+  - install fs-io                 3.21.1
+  - install csexp                 1.5.2
+  - install base64                3.5.2
+  - install lem                   2022-12-10
+  - install omd                   1.3.2
+  - install sail_maker            0.20.3*
+  - install dyn                   3.21.1
+  - install ott                   0.34
+  - install menhir                20240715
+  - install linksem               0.8
+  - install stdune                3.21.1
+  - install dune-private-libs     3.21.1
+  - install dune-site             3.21.1
+  - install libsail               0.20.3*
+  - install sail_sv_backend       0.20.3*
+  - install sail_smt_backend      0.20.3*
+  - install sail_output           0.20.3*
+  - install sail_ocaml_backend    0.20.3*
+  - install sail_lem_backend      0.20.3*
+  - install sail_lean_backend     0.20.3*
+  - install sail_latex_backend    0.20.3*
+  - install sail_doc_backend      0.20.3*
+  - install sail_coq_backend      0.20.3*
+  - install sail_c_backend        0.20.3*
+  - install sail                  0.20.3*
+===== 51 to install =====
+
+<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+-> installed base-bigarray.base
+-> installed base-threads.base
+-> installed base-unix.base
+-> retrieved conf-gmp.5  (https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4)
+-> installed conf-findutils.1
+-> retrieved base64.3.5.2  (https://github.com/mirage/ocaml-base64/releases/download/v3.5.2/base64-3.5.2.tbz)
+-> installed conf-gmp.5
+-> retrieved conf-pkg-config.5  (2 extra sources)
+-> installed conf-pkg-config.5
+-> retrieved csexp.1.5.2  (https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz)
+-> retrieved dune.3.21.1  (https://github.com/ocaml/dune/releases/download/3.21.1/dune-3.21.1.tbz)
+-> retrieved dune-private-libs.3.21.1  (https://github.com/ocaml/dune/releases/download/3.21.1/dune-3.21.1.tbz)
+-> retrieved dune-site.3.21.1  (https://github.com/ocaml/dune/releases/download/3.21.1/dune-3.21.1.tbz)
+-> retrieved dyn.3.21.1  (cached)
+-> retrieved fs-io.3.21.1  (cached)
+-> retrieved linenoise.1.5.1  (https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz)
+-> retrieved lem.2022-12-10  (https://github.com/rems-project/lem/archive/2022-12-10.tar.gz)
+-> retrieved menhirCST.20240715  (https://gitlab.inria.fr/fpottier/menhir/-/archive/20240715/archive.tar.gz)
+-> retrieved menhir.20240715  (https://gitlab.inria.fr/fpottier/menhir/-/archive/20240715/archive.tar.gz)
+-> retrieved menhirLib.20240715  (cached)
+-> retrieved menhirSdk.20240715  (cached)
+-> retrieved num.1.6  (https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz)
+-> retrieved ocaml-config.2  (2 extra sources)
+-> installed ocaml-options-vanilla.1
+-> retrieved ocaml-base-compiler.4.14.4  (https://github.com/ocaml/ocaml/releases/download/4.14.4/ocaml_4.14.4.tar.gz)
+-> retrieved ocamlbuild.0.16.1  (https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz)
+-> retrieved ocamlfind.1.9.8  (https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz)
+-> retrieved ocamlgraph.2.2.0  (https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz)
+-> retrieved linksem.0.8  (https://github.com/rems-project/linksem/archive/0.8.tar.gz)
+-> retrieved ordering.3.21.1  (cached)
+-> retrieved omd.1.3.2  (https://github.com/ocaml/opam-source-archives/raw/main/omd-1.3.2.tbz)
+-> retrieved ott.0.34  (https://github.com/ott-lang/ott/archive/0.34.tar.gz)
+-> retrieved pp.2.0.0  (https://github.com/ocaml-dune/pp/releases/download/2.0.0/pp-2.0.0.tbz)
+-> retrieved pprint.20220103  (https://github.com/fpottier/pprint/archive/20220103.tar.gz)
+-> retrieved yojson.3.0.0  (https://github.com/ocaml-community/yojson/releases/download/3.0.0/yojson-3.0.0.tbz)
+-> retrieved stdune.3.21.1  (cached)
+-> retrieved top-closure.3.21.1  (cached)
+-> retrieved zarith.1.14  (https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz)
+-> installed ocaml-base-compiler.4.14.4
+-> installed ocaml-config.2
+-> installed ocaml.4.14.4
+-> installed dune.3.21.1
+-> installed num.1.6
+-> installed base64.3.5.2
+-> installed csexp.1.5.2
+-> installed fs-io.3.21.1
+-> installed linenoise.1.5.1
+-> installed menhirCST.20240715
+-> installed menhirLib.20240715
+-> installed menhirSdk.20240715
+-> installed ocamlbuild.0.16.1
+-> installed menhir.20240715
+-> installed ocamlfind.1.9.8
+-> installed base-bytes.base
+-> installed ocamlgraph.2.2.0
+-> installed ordering.3.21.1
+-> installed omd.1.3.2
+-> installed ott.0.34
+-> installed pp.2.0.0
+-> installed pprint.20220103
+-> installed dyn.3.21.1
+-> installed top-closure.3.21.1
+-> installed yojson.3.0.0
+-> installed stdune.3.21.1
+-> installed sail_maker.0.20.3
+-> installed dune-private-libs.3.21.1
+-> installed zarith.1.14
+-> installed dune-site.3.21.1
+-> installed lem.2022-12-10
+-> installed linksem.0.8
+-> installed libsail.0.20.3
+-> installed sail.0.20.3
+-> installed sail_c_backend.0.20.3
+-> installed sail_coq_backend.0.20.3
+-> installed sail_doc_backend.0.20.3
+-> installed sail_latex_backend.0.20.3
+-> installed sail_lean_backend.0.20.3
+-> installed sail_lem_backend.0.20.3
+-> installed sail_ocaml_backend.0.20.3
+-> installed sail_output.0.20.3
+-> installed sail_smt_backend.0.20.3
+-> installed sail_sv_backend.0.20.3
+Done.
+# Run eval $(opam env) to update the current shell environment

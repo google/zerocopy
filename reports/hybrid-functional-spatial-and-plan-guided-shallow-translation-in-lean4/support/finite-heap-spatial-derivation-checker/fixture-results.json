@@ -1,0 +1,96 @@
+{
+  "lean": "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+  "results": [
+    {
+      "case": "good-update",
+      "status": "kernel-observation",
+      "expected": true,
+      "returncode": 0,
+      "elapsed_ms": 1416.045,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\ntrue\n'consumer_frame' depends on axioms: [propext, Quot.sound]\n",
+      "stderr": "",
+      "generated_sha256": "a98660c60ebdf62b3c8150da9e43b369fe9f0613e5b9070b71e4c6e5d774fe7e"
+    },
+    {
+      "case": "good-chain",
+      "status": "kernel-observation",
+      "expected": true,
+      "returncode": 0,
+      "elapsed_ms": 1403.711,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\ntrue\n'consumer_frame' depends on axioms: [propext, Quot.sound]\n",
+      "stderr": "",
+      "generated_sha256": "66ac73aafca61f4a2b35c79dd84c06128ffcf11715346e4531ea620cfda1b487"
+    },
+    {
+      "case": "overlap",
+      "status": "kernel-observation",
+      "expected": false,
+      "returncode": 0,
+      "elapsed_ms": 453.23,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\nfalse\n",
+      "stderr": "",
+      "generated_sha256": "41769ec2e781c15b683e3b4f4b389cee8d98baedbc2a0e091091bf8898ae910c"
+    },
+    {
+      "case": "damaged-frame",
+      "status": "kernel-observation",
+      "expected": false,
+      "returncode": 0,
+      "elapsed_ms": 401.825,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\nfalse\n",
+      "stderr": "",
+      "generated_sha256": "508144d8342444cf442fd8e517b40fc872d2eb7f8377e6c134657d619ffb8609"
+    },
+    {
+      "case": "wrong-old",
+      "status": "kernel-observation",
+      "expected": false,
+      "returncode": 0,
+      "elapsed_ms": 418.677,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\nfalse\n",
+      "stderr": "",
+      "generated_sha256": "9337b4003570676f2524d4bb6674614b8d9eeeb0b628ebf8bb1622a5e8cc4380"
+    },
+    {
+      "case": "missing-owned",
+      "status": "kernel-observation",
+      "expected": false,
+      "returncode": 0,
+      "elapsed_ms": 360.067,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\nfalse\n",
+      "stderr": "",
+      "generated_sha256": "1f136f24725dd6a370a7c2e4b953a6e395224e02fb1a36f465940c92a6564e4a"
+    },
+    {
+      "case": "out-of-domain",
+      "status": "loader-rejected",
+      "reason": "address outside selected domain"
+    },
+    {
+      "case": "unlinked",
+      "status": "kernel-observation",
+      "expected": false,
+      "returncode": 0,
+      "elapsed_ms": 344.407,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\nfalse\n",
+      "stderr": "",
+      "generated_sha256": "cfebbfc6acf948afaa0937867db3fc6a09b31ea20e6031ffa134de6eaa530225"
+    },
+    {
+      "case": "wrong-original",
+      "status": "kernel-observation",
+      "expected": false,
+      "returncode": 0,
+      "elapsed_ms": 413.026,
+      "stdout": "'observed' depends on axioms: [propext, Quot.sound]\nfalse\n",
+      "stderr": "",
+      "generated_sha256": "1d5a2e9ca8c564f940a2a6ba3b143e7f62cbb4afab9861cc394a9a1712f58b09"
+    },
+    {
+      "case": "unknown",
+      "status": "loader-rejected",
+      "reason": "unknown constructor/arity"
+    }
+  ],
+  "kernel_frontier": "4.31 omitted nested-parameter validation path known; controlled generated data observations only, no arbitrary-producer assurance."
+}

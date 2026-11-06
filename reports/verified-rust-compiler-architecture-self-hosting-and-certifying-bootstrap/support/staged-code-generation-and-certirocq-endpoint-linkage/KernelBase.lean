@@ -1,0 +1,2 @@
+import WasmValidator
+#check RestrictedWasm.sampleValidation

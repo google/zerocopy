@@ -1,0 +1,212 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/refinement-lattice",
+    "anneal/trust-policy",
+    "verification/cryptography",
+    "verification/refinement",
+    "verification/survey",
+    "isa/jasmin",
+    "anneal/trusted-boundary",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/verification-result",
+    "security/constant-time",
+    "security/speculative-constant-time",
+    "security/information-flow-control",
+    "cryptography/primitives",
+    "cryptography/protocol-verification",
+    "zkp/circuit-verification",
+    "zkvm/verification",
+    "wcet/resource-bounds",
+    "wcet/stack-analysis",
+    "parsers/verified-zero-copy",
+    "ffi/multi-language-semantics",
+    "hardware/cheri-capabilities",
+    "security/secret-zeroization",
+    "anneal",
+    "anneal/step-result",
+    "security/side-channels",
+    "cryptography/arithmetic",
+    "cryptography/protocols",
+    "zkp/under-constrained",
+    "zkp/zkvm",
+    "wcet/timing-anomalies",
+    "parsers/malleability",
+    "ffi/boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework (trusted boundary, attributes, and foundation lock)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "paths": "trusted/lean/Trusted.lean, trusted/lean/Trusted/Attributes.lean, trusted/lean/foundation-lock.json, trusted/audit/TrustedBoundary.lean"
+      }
+    },
+    {
+      "name": "Anneal architecture, design, and trust-model specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457",
+        "paths": "PRINCIPLES.md, docs/architecture.md, docs/design.md, docs/trust-model.md"
+      }
+    },
+    {
+      "name": "Anneal model-refinement and trust-review methodology",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b",
+        "paths": "skills/model-refinement/SKILL.md, skills/trust-review/SKILL.md, skills/robust-code/SKILL.md"
+      }
+    },
+    {
+      "name": "Jasmin compiler and constant-time / speculative constant-time checker",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "paper": "Jasmin: High-Assurance and High-Speed Cryptography (CCS 2017 / POPL 2020)",
+        "url": "https://github.com/jasmin-lang/jasmin"
+      }
+    },
+    {
+      "name": "CompCert-CT constant-time preserving C compiler",
+      "identity": {
+        "repository": "knothed/CompCert-ct",
+        "paper": "Preservation of Cryptographic Constant-Time by Compilation (CCS 2018 / POPL 2020)",
+        "url": "https://github.com/knothed/CompCert-ct"
+      }
+    },
+    {
+      "name": "FaCT constant-time domain-specific language and compiler",
+      "identity": {
+        "repository": "PLSysSec/FaCT",
+        "paper": "FaCT: A DSL for Timing-Sensitive Computation (PLDI 2019)",
+        "url": "https://github.com/PLSysSec/FaCT"
+      }
+    },
+    {
+      "name": "ct-verif product-program constant-time verifier",
+      "identity": {
+        "repository": "imdea-software/verifying-constant-time",
+        "paper": "Verifying Constant-Time Implementations (USENIX Security 2016)",
+        "url": "https://github.com/imdea-software/verifying-constant-time"
+      }
+    },
+    {
+      "name": "Binsec/Rel and Binsec/Haunted binary relational symbolic execution",
+      "identity": {
+        "repository": "binsec/Rel",
+        "paper": "Binsec/Rel: Efficient Relational Symbolic Execution for Constant-Time at Binary-Level (S&P 2020) and Haunted RelSE (CAV 2021)",
+        "url": "https://github.com/binsec/Rel"
+      }
+    },
+    {
+      "name": "Blade, Spectector, and Pitchfork speculative and LLVM constant-time analyzers",
+      "identity": {
+        "repository": "PLSysSec/haybale-pitchfork",
+        "companion_repository": "spectector/spectector",
+        "paper": "Blade (POPL 2021), Spectector (S&P 2020), Pitchfork (PLSysSec 2020)"
+      }
+    },
+    {
+      "name": "CacheAudit, Constantine, SC-Eliminator, CHL/Blazer/Themis, SecVerilog/Silver/Iodine, and Jif/FlowCaml/LIO",
+      "identity": {
+        "repository": "cacheaudit/cacheaudit",
+        "paper": "CacheAudit (TISSEC 2015), Constantine (CCS 2021), CHL (PLDI 2016), SecVerilog (ASPLOS 2015)"
+      }
+    },
+    {
+      "name": "Fiat-Crypto, HACL*, EverCrypt, Vale, and Libjade verified cryptographic primitive stacks",
+      "identity": {
+        "repository": "mit-plv/fiat-crypto",
+        "companion_repositories": "project-everest/hacl-star, formosa-crypto/libjade",
+        "paper": "Fiat-Crypto (S&P 2019), HACL* (CCS 2017), EverCrypt (S&P 2020)"
+      }
+    },
+    {
+      "name": "Cryptol, SAW, and CryptoLine algebraic and bitvector cryptographic verifiers",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "companion_repositories": "GaloisInc/cryptol, fmlab-iis/cryptoline",
+        "paper": "SAW/Cryptol (CAV 2017 / USENIX Security 2020), CryptoLine (CCS 2014 / 2019)"
+      }
+    },
+    {
+      "name": "EasyCrypt, CryptoVerif, SSProve, FCF, CertiCrypt, CryptHOL, and Owl computational protocol proof systems",
+      "identity": {
+        "repository": "easycrypt/easycrypt",
+        "companion_repositories": "SSProve/ssprove, secure-foundations/owl",
+        "paper": "EasyCrypt (CCS 2011), CryptoVerif (S&P 2006), SSProve (CSF 2021), Owl (S&P 2023)"
+      }
+    },
+    {
+      "name": "Tamarin Prover, ProVerif, DeepSec, Squirrel Prover, DY*, MLS*, Libcrux, and hax",
+      "identity": {
+        "repository": "tamarin-prover/tamarin-prover",
+        "companion_repositories": "squirrel-prover/squirrel-prover, cryspen/libcrux, hacspec/hax",
+        "paper": "Tamarin (CAV 2013), ProVerif (CSFW 2001), Squirrel (CCS 2021), DY* (EuroS&P 2021)"
+      }
+    },
+    {
+      "name": "Picus (QED^2), Ecne, Coda, Garden, LAMPE, Circomspect, ZKAP, Korrect, Horus, Cairo Lean, Leo ACL2, and RISC Zero/SP1/Jolt ZKP verifiers",
+      "identity": {
+        "repository": "Veridise/Picus",
+        "companion_repositories": "formal-land/garden, reilabs/lampe, trailofbits/circomspect, risc0/risc0, succinctlabs/sp1, a16z/jolt",
+        "paper": "Picus/QED^2 (PLDI 2023), Coda (CAV 2024), Cairo (CPP 2022), Leo ACL2 (FMCAD 2021)"
+      }
+    },
+    {
+      "name": "AbsInt aiT, StackAnalyzer, CompCertS, Stacking, CerCo, RAML, TiML, Iris/CFML Time Credits, Bound-T, OTAWA, Chronos, Heptane, SWEET, Platin, RapiTime, KoAT, Cofloco, Loopus, Gasol, and cargo-call-stack",
+      "identity": {
+        "repository": "aprove-developers/KoAT2-Releases",
+        "companion_repositories": "japaric/cargo-call-stack, t-crest/platin",
+        "paper": "CompCertS (POPL 2017), Stacking (POPL 2019), CerCo (JAR 2014), RAML (POPL 2012), TiML (OOPSLA 2017), Iris Time Credits (ICFP 2019)"
+      }
+    },
+    {
+      "name": "EverParse (3d), Vest, Narcissus, Comparse, Google zerocopy, RecordFlux, DaeDaLus, Nail, Hammer, ASN1*, Kaitai Struct, and Spicy",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "companion_repositories": "secure-foundations/vest, lthms/coq-comparse, google/zerocopy, AdaCore/RecordFlux, GaloisInc/daedalus, kaitai-io/kaitai_struct, zeek/spicy",
+        "paper": "EverParse (USENIX Security 2019), Vest (USENIX Security 2025), Narcissus (ICFP 2019), Comparse (CCS 2023)"
+      }
+    },
+    {
+      "name": "DimSum, SepCompCert, CompCertM, CompCertO, VeriFFI, RLBox, Sail-CHERI/Morello, Cerberus-CHERI/VIP-CHERI, Secret-Erasure CompCert, WYSIWYC/Zeroize-LLVM, and Rust zeroize",
+      "identity": {
+        "repository": "CTSRD-CHERI/sail-cheri-riscv",
+        "companion_repositories": "PLSysSec/rlbox_sandboxing_api, RustCrypto/utils",
+        "paper": "DimSum (POPL 2023), CompCertM (POPL 2020), CompCertO (POPL 2021), VeriFFI (PLDI 2024), RLBox (USENIX Security 2020), Cerberus-CHERI (ASPLOS 2019)"
+      }
+    },
+    {
+      "name": "Compiler-induced constant-time violations and microarchitectural side-channel escapes (LLVM/Clang, GCC, MSVC, rustc, ML-KEM/Kyber, Apple Silicon DMP, x86 DVFS)",
+      "identity": {
+        "paper": "EuroS&P 2018 (Simon, Chisnall, Anderson); CANS 2016 (Kaufmann et al.); CCS 2024 / USENIX Security 2024 (Schneider et al.; Chen et al. GoFetch)",
+        "vulnerabilities": "KyberSlash1, KyberSlash2, Hertzbleed (CVE-2022-23823, CVE-2022-24436), Augury, GoFetch, CVE-2024-58262"
+      }
+    },
+    {
+      "name": "Cryptographic multi-limb arithmetic carry-propagation bugs and symbolic protocol state-machine / side-channel gaps (OpenSSL, BoringSSL, libgcrypt, curve25519-dalek, ed25519-dalek, TLS 1.2/1.3, WPA2)",
+      "identity": {
+        "cves": "CVE-2014-3570, CVE-2015-3193, CVE-2017-7526, CVE-2017-13077 (KRACK), CVE-2020-1968 (Raccoon)",
+        "papers": "Lowe (1995) Needham-Schroeder; Bhargavan et al. (2014) 3SHAKE; Vanhoef & Piessens (CCS 2017) KRACK; Erbsen et al. (S&P 2019) Fiat-Crypto; Polyakov et al. (CAV 2018) CryptoLine"
+      }
+    },
+    {
+      "name": "Zero-knowledge proof (R1CS, Plonkish, AIR, zkVM) under-constrained, over-constrained, and Fiat-Shamir transcript vulnerabilities",
+      "identity": {
+        "papers": "Chaliasos et al. (USENIX Security 2024) SoK: What Don't We Know? Understanding Security Vulnerabilities in SNARKs; Trail of Bits (2022) Frozen Heart",
+        "systems": "Circomlib (MiMC, BabyJubJub, Edwards2Montgomery, Num2Bits/AliasCheck), Tornado Cash, Semaphore, Aztec 2.0, Polygon zkEVM, Scroll, RISC Zero, SP1"
+      }
+    },
+    {
+      "name": "Out-of-order CPU WCET timing anomalies, embedded stack-analysis gaps, and wire-format parser malleability / differential vulnerabilities",
+      "identity": {
+        "cves": "CVE-2009-2408 (X.509 null-prefix), CVE-2013-4787 / CVE-2013-8619 (Android Master Key ZIP differential), CVE-2014-7911 (Android Parcel deserialization), BIP-62 / BIP-66 (Bitcoin DER malleability)",
+        "papers": "Lundqvist & Stenstr\u00f6m (RTSS 1999) WCET timing anomalies; Koopman (2014) / Barr (2013) Toyota ETCS-i stack overflow postmortem; cargo-call-stack"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

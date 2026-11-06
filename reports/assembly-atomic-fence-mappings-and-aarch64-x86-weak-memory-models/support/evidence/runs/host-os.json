@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "sw_vers",
+    "-productVersion"
+  ],
+  "exit": 0,
+  "seconds": 0.018419999978505075,
+  "stdout_sha256": "2035e21f9b58eea2c669f2bab5c2c90d87c1cdcb4dc8ccf96d8f25e64870ce9d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

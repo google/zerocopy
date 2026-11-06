@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "lake/manifest",
+    "build/nix",
+    "lean/olean"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "version": "v4.34.1",
+        "x86_64_linux_archive_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "repository": "leanprover/lean4"
+      }
+    },
+    {
+      "name": "joshlf/anneal",
+      "identity": {
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "repository": "joshlf/anneal"
+      }
+    },
+    {
+      "name": "leanprover/reservoir",
+      "identity": {
+        "revision": "d58b4e3866c57690f7fd74099f08bd20d62de98b",
+        "repository": "leanprover/reservoir"
+      }
+    },
+    {
+      "name": "leanprover/lean-action",
+      "identity": {
+        "revision": "52bbb8dde6eb0c6c1ef3a12bccecfdeaa25eb792",
+        "repository": "leanprover/lean-action"
+      }
+    },
+    {
+      "name": "leanprover/doc-gen4",
+      "identity": {
+        "revision": "b968d9679900841dbe9b86894ae7ff8f454a2b1f",
+        "repository": "leanprover/doc-gen4"
+      }
+    },
+    {
+      "name": "leanprover/verso",
+      "identity": {
+        "revision": "a62a15bbe7719a9086442c5bbe83140f5334aa6f",
+        "repository": "leanprover/verso"
+      }
+    },
+    {
+      "name": "lenianiva/lean4-nix",
+      "identity": {
+        "revision": "2ad74592e34c2e6ff5e8bec9d8abab8f4e9c3a37",
+        "repository": "lenianiva/lean4-nix"
+      }
+    },
+    {
+      "name": "licensee/licensee",
+      "identity": {
+        "revision": "9a9c98b19d04585d9c7213ff52bd385aa182617a",
+        "repository": "licensee/licensee"
+      }
+    },
+    {
+      "name": "NethermindEth/LeanCIL",
+      "identity": {
+        "revision": "4229b5485e3773e33c2867d8aa29e3d61a6c7242",
+        "repository": "NethermindEth/LeanCIL"
+      }
+    },
+    {
+      "name": "rust-random/rand",
+      "identity": {
+        "revision": "9e7d328f60d6372ae22927f37d1a816fc980f25e",
+        "repository": "rust-random/rand"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "anneal-reference/isolation-comparison/v1",
+  "observed_at": "2026-09-30",
+  "rows": [
+    {
+      "mechanism": "RedLeaf language-based domain",
+      "memory_crash_containment": "Strong only under RedLeaf's safe-Rust domain restriction plus trusted compiler/runtime/microkernel and mediated interfaces.",
+      "authority_confinement": "Domain interface and resource model constrain component interaction; not a general OS security sandbox.",
+      "ownership_cleanup": "Explicit ownership transfer, liveness, unwinding, resource bookkeeping, and recovery machinery.",
+      "reentrancy": "Nested cross-domain calls are architected through proxies/continuations; unrestricted component reentrancy is not established.",
+      "freshness": "Not an analogue of Anneal source/model generation identity.",
+      "primary_cost": "Specialized language/runtime/interface discipline and trusted mediation."
+    },
+    {
+      "mechanism": "Rust-for-Linux safe abstraction over C",
+      "memory_crash_containment": "Prevents safe Rust callers from directly violating wrapped unsafe contracts when abstraction and unsafe implementation are sound; no C crash isolation.",
+      "authority_confinement": "API-level capability narrowing possible, but same kernel address space and C subsystem authority remain.",
+      "ownership_cleanup": "RAII plus explicit unsafe foreign ownership protocols can localize lifetime obligations.",
+      "reentrancy": "Per-abstraction property; not implied by wrapper safety.",
+      "freshness": "No cross-process/source-generation identity guarantee.",
+      "primary_cost": "Review and maintenance of wrapper soundness and explicit unsafe contracts."
+    },
+    {
+      "mechanism": "Operating-system subprocess",
+      "memory_crash_containment": "Address-space/process-lifetime boundary independent of implementation language, within OS guarantees.",
+      "authority_confinement": "Ambient by default; sandboxing requires separate policy.",
+      "ownership_cleanup": "Private memory reclaimed on exit; child processes/files/external effects require explicit management.",
+      "reentrancy": "Service/protocol-specific; one-shot subprocess can serialize by construction.",
+      "freshness": "Must be enforced separately by generation/source/environment identity and publication fencing.",
+      "primary_cost": "IPC, serialization, startup, duplicated runtime/caches, process supervision."
+    }
+  ],
+  "anneal_conditional_judgment": "Default opaque execution backends to subprocesses; use narrow checked host adapters for environment preparation/publication; share immutable artifacts; move a backend in-process only after its mutable state, FFI surface, reset, cancellation, and reentrancy contract are explicit and independently retain result-identity fencing."
+}

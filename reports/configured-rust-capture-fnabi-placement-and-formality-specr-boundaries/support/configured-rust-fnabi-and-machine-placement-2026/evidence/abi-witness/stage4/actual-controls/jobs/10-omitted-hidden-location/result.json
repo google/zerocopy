@@ -1,0 +1,29 @@
+{
+  "id": "10-omitted-hidden-location",
+  "schema_admissible": true,
+  "observer_calls": 1,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "complete observation mismatch"
+  },
+  "seconds": 0.9767454169999996,
+  "fresh_observer": {
+    "exit_code": 0,
+    "spawned": true,
+    "child_pid": 20379,
+    "seconds": 0.19291362499999998,
+    "stop_reason": null,
+    "controller_failure": null,
+    "remaining_group_after_parent_wait": [],
+    "max_observed_group_rss_bytes": 68599808,
+    "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+    "output_bytes": 168664,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "candidate_sha256": "5d0da13227d0f27a385979460922b1a333bf51840fd68dbca36524c7a8357be5",
+  "stdout_sha256": "c14b26d1656e7d53b003927a883574da74e31d2b3616503698513cb0ec554dcf",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

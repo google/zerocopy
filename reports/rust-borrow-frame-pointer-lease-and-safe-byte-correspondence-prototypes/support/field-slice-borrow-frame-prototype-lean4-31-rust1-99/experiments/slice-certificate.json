@@ -1,0 +1,1 @@
+{"source_function":"update_slice","representation":"length-two-byte-slice-v1","entry":"exclusive-root","index":"runtime-natural","instructions":["borrow-index",{"writeCell":"delta"},"restore"],"frame":"all-other-cells-unchanged","out_of_bounds":"none-and-unchanged"}

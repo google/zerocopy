@@ -1,0 +1,313 @@
+
+src/handler.v:11-24
+11   ihandle :> ∀ A,
+12       (* Event [e] *)
+13       E A
+14       (* Continuation conditions [λ a, ▷ WPi k a @ H; ∅ {{ Φ }}] *)
+15     → (A → iProp Σ)
+16       (* Conditions for spawning threads [λ a, ▷ WPi k a @ H; ⊤ {{ False }}] *)
+17     → (A → iProp Σ)
+18       (* Condition [WPi Vis e k @ H; ∅ {{ Φ }}] *)
+19     → iProp Σ;
+20     ihandler_mono : ∀ A e Φ Φ' s s',
+21         (∀ a, Φ a -∗ Φ' a) -∗
+22       □ (∀ t, s t -∗ s' t) -∗
+23       ihandle A e Φ s -∗ ihandle A e Φ' s';
+24 }.
+
+src/handler.v:39-55
+39 Program Definition sumH {Σ E1 E2} (H1 : iHandler Σ E1) (H2 : iHandler Σ E2)
+40   : iHandler Σ (E1 +' E2) :=
+41   IHandler (λ A e,
+42     match e with
+43     | inl1 e1 => H1 A e1
+44     | inr1 e2 => H2 A e2
+45     end
+46   ) _.
+47 Next Obligation.
+48   iIntros (?????? e ????) "HΦwand #Hswand HH".
+49   destruct e; by iApply (ihandler_mono with "HΦwand Hswand").
+50 Qed.
+51 Notation "H1 ⊕ H2" := (sumH H1 H2)
+52   (at level 59, right associativity) : type_scope.
+53 
+54 (** [inH H1 H2] means that, on events [E1], [H1] is equivalent to [H2]. *)
+55 Class inH {Σ E1 E2} `{f : E1 -< E2} (H1 : iHandler Σ E1) (H2 : iHandler Σ E2) :=
+
+src/exec.v:533-555
+533 Class eHandlerAdequate {Σ E GE R} (H : iHandler Σ E) (EH : eHandler E GE R)
+534   `{!invGS_gen hlc Σ} := {
+535   ehandler_inv : EH.(eh_state) → list (((itree GE R → iProp Σ) → iProp Σ)) → iProp Σ;
+536   ehandler_adequate : ∀ G A e s Ms C k,
+537       EH A e s k C →
+538       H A e (λ a, G (k a)) (λ a, |={⊤, ∅}=> G (k a)) -∗
+539       ehandler_inv s Ms -∗
+540       |={∅}=> ∃ t' s' M' Ms' Msn, ⌜C t' s'⌝ ∗ ⌜M' :: Ms' ≡ₚ Msn ++ Ms⌝ ∗
+541         ([∗ list] M∈Msn, M G) ∗ ehandler_inv s' Ms' ∗
+542         bi_close (eutt eq) (λ t', (∀ P, M' P ={∅}=∗ P t')) t';
+543   ehandler_inv_proper :: Proper (EH.(eh_state_rel) ==> (=) ==> (⊢)) ehandler_inv;
+544 }.
+545 
+546 Class seHandlerAdequate {Σ E} (H : iHandler Σ E) (EH : seHandler E) `{!invGS_gen hlc Σ} := {
+547   sehandler_inv : EH.(seh_state) → iProp Σ;
+548   sehandler_adequate : ∀ A e s C Φ1 Φ2,
+549       sehandle EH A e s C →
+550       H A e Φ1 Φ2 -∗
+551       sehandler_inv s -∗
+552       |={∅}=> ∃ a s', ⌜C a s'⌝ ∗ sehandler_inv s' ∗ Φ1 a
+553 }.
+554 
+555 Program Instance handler_adequate_from_simple {Σ GE R E}
+
+src/exec.v:707-724
+707   Theorem wpi_adequate (Φ : R → iProp Σ) (H : iHandler Σ E) (EH : eHandler E E R)
+708     (A : eHandlerAdequate H EH) t s C m :
+709     exec EH t s C →
+710     WPi t @ H; m {{Φ}} -∗
+711     A.(ehandler_inv) s [] -∗
+712     |={m, ∅}=> ∃ t' s' Ms' M', ⌜C t' s'⌝ ∗
+713          A.(ehandler_inv) s' Ms' ∗
+714          bi_close (eutt eq) (λ t', (∀ P, M' P ={∅}=∗ P t')) t' ∗
+715          WPi_tp (M'::Ms') @ H {{ v, |={∅,m}=> Φ v}}.
+716   Proof.
+717     iIntros (Hexec) "Hwpi Hinv". rewrite -wpi_clear_mask. iMod "Hwpi".
+718     iApply (wpi_adequate_ind with "[Hwpi] Hinv"); [done|done| |].
+719     - by iApply wpi_tp_intro.
+720     - by iIntros (?) "$".
+721   Qed.
+722 End wpi_adequate.
+723 
+724 Section wpi_adequate_pure.
+
+src/exec.v:830-841
+830 Program Definition sumSEH {E1 E2} (EH1 : seHandler E1) (EH2 : seHandler E2)
+831   : seHandler (E1 +' E2) :=
+832   SEHandler (EH1.(seh_state) * EH2.(seh_state))
+833     (λ A e s C,
+834     match e with
+835     | inl1 e1 => sehandle EH1 A e1 s.1 (λ a s', C a (s', s.2))
+836     | inr1 e2 => sehandle EH2 A e2 s.2 (λ a s', C a (s.1, s'))
+837     end
+838   ) _.
+839 Next Obligation.
+840   move => /= ????????? Hmono Hp. case_match; (apply: sehandler_mono; [|done]) => /= ??; apply Hmono.
+841 Qed.
+
+src/exec.v:880-894
+880   Context {Σ : gFunctors} `{!invGS_gen hlc Σ}.
+881 
+882   Global Program Instance sumSEH_adequate {E1 E2} (H1 : iHandler Σ E1) (EH1 : seHandler E1) (H2 : iHandler Σ E2) EH2
+883     (A1 : seHandlerAdequate H1 EH1) (A2 : seHandlerAdequate H2 EH2) :
+884     seHandlerAdequate (H1 ⊕ H2) (EH1 ⊕ₑₛ EH2) := {|
+885       sehandler_inv s := (A1.(sehandler_inv) s.1 ∗ A2.(sehandler_inv) s.2)%I |}.
+886   Next Obligation.
+887     iIntros (???????????????) "HH [Hs1 Hs2]". simpl in *. case_match.
+888     - iMod (A1.(sehandler_adequate) with "[$] [$]") as (??) "Hwp"; [done|].
+889       iDestruct "Hwp" as (?) "[? $]". iModIntro. iExists (_, _) => /=. by iFrame.
+890     - iMod (A2.(sehandler_adequate) with "[$] [$]") as (??) "Hwp"; [done|].
+891       iDestruct "Hwp" as (?) "[? $]". iModIntro. iExists (_, _) => /=. by iFrame.
+892   Qed.
+893 End handler_adequate.
+894 
+
+src/state.v:47-67
+47 
+48 Section stateH.
+49   Context {Σ} (S : Type) `{!stateInterp Σ S} `{!invGS_gen hlc Σ}.
+50 
+51   (** [iHandler] for [stateE]. *)
+52   Program Definition stateH : iHandler Σ (stateE S) :=
+53     IHandler (λ A e,
+54       match e with
+55       | EGetState    => λ Φ _, (∀ s, state_interp s ={∅}=∗ (state_interp s  ∗ Φ s ))
+56       | ESetState s' => λ Φ _, (∀ s, state_interp s ={∅}=∗ (state_interp s' ∗ Φ ()))
+57       end
+58     )%I _.
+59   Next Obligation.
+60     iIntros (? e ????) "HΦwand Hswand". destruct e.
+61     - iIntros "Hget" (?) "Hstate". iDestruct ("Hget" with "Hstate") as ">[$ HΦ]". by iApply "HΦwand".
+62     - iIntros "Hset" (?) "Hstate". iDestruct ("Hset" with "Hstate") as ">[$ HΦ]". by iApply "HΦwand".
+63   Qed.
+64 
+65   Global Instance stateH_Sequential :
+66     Sequential stateH.
+67   Proof.
+
+src/state.v:112-118
+112   Variant state_irelF
+113     (state_irel : S → itree (stateE S +' E) R → itree E (S * R) → Prop)
+114     : S
+115     → itree' (stateE S +' E) R
+116     → itree' E (S * R)
+117     → Prop :=
+118   (** Forwarding what doesn't affect the state. *)
+
+src/choice.v:20-32
+20 (** Event type for demonic non-determinism. *)
+21 Variant demonicE : Type → Type :=
+22   (** Choose demonic non-deterministically among the inhabitants of [A]. We
+23   require [Inhabited A] to ensure the existence of an interpretation function
+24   [demonic_ifn]. (Without this assumption, we would not be able to produce a
+25   relational interpretation of an [itree (demonicE +' E) R] if there is just
+26   one branch that does empty demonic choice. This would clearly be undesirable
+27   behavior.) *)
+28   (* TODO: We currently require [EqDecision A] for trace theory below, which in
+29   turn is needed for [heaplang/opsem_adequacy.v], but perhaps this assumption
+30   belongs elsewhere ("pay for what you use"). *)
+31   | EDemonic (A : Type) `{EqDecision A} `{Inhabited A} : demonicE A.
+32 
+
+src/choice.v:50-56
+50   Context {Σ : gFunctors}.
+51 
+52   Program Definition demonicH : iHandler Σ demonicE :=
+53     IHandler (λ A e,
+54       match e with
+55       | EDemonic A => λ Φ _, (∀ s, Φ s)
+56       end
+
+src/angelic_choice.v:20-48
+20 Variant angelicE : Type → Type :=
+21   | EAngelic (A : Type) : angelicE A.
+22 
+23 Definition angelic_choice `{angelicE -< E} (A : Type) `{EqDecision A} `{Inhabited A} : itree E A :=
+24   trigger (EAngelic A).
+25 Lemma angelic_choice_to_translate {E1 E2} (A : Type) `{EqDecision A} `{Inhabited A} (HE1 : angelicE -< E1) (HE2 : angelicE -< E2) (Hin : E1 -< E2) :
+26   TranslateReSum Hin HE1 HE2 →
+27   ITreeToTranslate (angelic_choice A) Hin (angelic_choice A).
+28 Proof.
+29   move => ?. by apply trigger_to_translate.
+30 Qed.
+31 Global Hint Resolve angelic_choice_to_translate : itree_auto.
+32 
+33 Section handler.
+34   Context {Σ : gFunctors}.
+35 
+36   Program Definition angelicH : iHandler Σ angelicE :=
+37     IHandler (λ A e,
+38       match e with
+39       | EAngelic A => λ Φ _, (∃ s, Φ s)
+40       end
+41     )%I _.
+42   Next Obligation.
+43     iIntros (? e ????) "HΦwand Hswand". destruct e. iIntros "[% HΦ]". iExists _. by iApply "HΦwand".
+44   Qed.
+45   Global Instance angelicH_Sequential :
+46     Sequential angelicH.
+47   Proof.
+48     iIntros (A e Φ s) "HH". by destruct e.
+
+src/angelic_choice.v:62-96
+62     rewrite /angelicH/=. iExists _.
+63     iEval (rewrite -wpi_update). iMod "Hfupd". rewrite wpi_clear_mask //.
+64   Qed.
+65 
+66   Lemma wpi_angelic {A} `{EqDecision A} `{Inhabited A} M a (Φ : A → iProp Σ) :
+67     Φ a -∗
+68     WPi angelic_choice A @ H; M {{ Φ }}.
+69   Proof.
+70     iIntros "Hwp". iApply wpi_angelic_vis. iApply wpi_ret. iApply "Hwp".
+71   Qed.
+72 End wp.
+73 
+74 Program Definition angelicEH : seHandler angelicE :=
+75   SEHandler unit (λ A e s, match e with | EAngelic A => λ C, ∀ x, C x tt end) _.
+76 Next Obligation. move => /= *. case_match; naive_solver. Qed.
+77 
+78 Global Program Instance angelicEH_adequate {Σ} `{!invGS_gen hlc Σ} :
+79     seHandlerAdequate angelicH angelicEH := {| sehandler_inv s := True%I |}.
+80 Next Obligation.
+81   move => ????????? HP. iIntros "Hwp _".
+82   rewrite /angelicH/=. case_match => /=. simplify_eq/=. iDestruct "Hwp" as (?) "Hwp".
+83   iModIntro. iExists _, _. iSplit; [done|]. iSplit; [done|]. iApply "Hwp".
+84 Qed.
+
+src/axioms.v:1-24
+1 From Coq.Logic Require Import ChoiceFacts EqdepFacts.
+2 From stdpp Require Import tactics.
+3 
+4 From ITree Require Export EqAxiom.
+5 
+6 Module Ax : EqdepElimination.
+7   (** Invariance by Substitution of Reflexive Equality Proofs. This is implied by
+8   XM. Also, it is equivalent to UIP. See [1].
+9   [1] https://github.com/coq/coq/wiki/The-Logic-of-Coq#what-axioms-can-be-safely-added-to-coq. *)
+10   Axiom eq_rect_eq :
+11     ∀ (U : Type) (p : U) (Q : U → Type) (x : Q p) (h : p = p),
+12       x = eq_rect p Q x p h.
+13 End Ax.
+14 
+15 Module Export UIPM := EqdepTheory Ax.
+16 
+17 Ltac simplify_K :=
+18   repeat match goal with
+19   | H : existT _ _ = existT _ _ |- _ =>
+20      apply UIPM.inj_pair2 in H
+21   end; simplify_eq.
+22 
+23 (* Functional form of the (non extensional) axiom of choice, Choice (`FunctionalChoice` of `Coq.Logic.ChoiceFacts`)*)
+24 Axiom AxChoice : ∀ A B, FunctionalChoice_on A B.
+
+src/step.v:9-16
+9 (** Step events. The main application of this event type is for doing
+10 termination insensitive reasoning in spite of our [WPi] being defined as a
+11 least fixpoint (and thus being termination sensitive "by default"). *)
+12 Variant stepE : Type → Type :=
+13   (** An event that marks that a step has been taken. This can be thought of as
+14   the semantic analogue of the logical later modality [▷ P]. *)
+15   | EStep : stepE ().
+16 
+
+src/step.v:31-35
+31 Variant later_modality : Set :=
+32   (** No modality. *)
+33   | Identity
+34   (** Later modality [▷ P]. *)
+35   | Later.
+
+src/heaplang/opsem_adequacy.v:1558-1603
+1558 Lemma partially_adequate_opsem_adequate e σ φ :
+1559   partially_adequate e σ.(heap) φ →
+1560   adequate NotStuck e σ (λ v _, φ v).
+1561 Proof.
+1562   intros Had.
+1563   apply adequate_alt.
+1564   setoid_rewrite erased_steps_nsteps.
+1565   intros t2 σ2 (n&κs&Hsteps).
+1566   split.
+1567   - intros v2 t2' Heq.
+1568     opose proof (execution_from_opsem_trace _ _ _ _ _ _ _ _ _) as (te&Heval&Hφ); eauto.
+1569     { rewrite Heq. apply tp_termination_TermRet. }
+1570     destruct Hφ as (σ'&Heutt&σ_&->).
+1571     odestruct (Had _ _ _) as (x&Heutt'&Hφ); first done.
+1572     rewrite Heutt in Heutt'. by apply eutt_inv_Ret in Heutt' as <-.
+1573   - intros e2 _ [i Hidx]%elem_of_list_lookup.
+1574     destruct (decide (not_stuck e2 σ2)) as [?| Hstuck%not_not_stuck]; [done|].
+1575     exfalso.
+1576     opose proof (execution_from_opsem_trace _ _ _ _ _ _ _ _ _) as (te&x&Heval&Heutt&σ'&Heq); eauto.
+1577     { apply tp_termination_TermUb. econstructor. by eexists. }
+1578     odestruct (Had _ _ _) as (x'&Heutt'&Hφ); first done.
+1579     rewrite Heutt in Heutt'. apply eutt_inv_Ret in Heutt' as <-.
+1580     rewrite Heq // in Hφ.
+1581 Qed.
+1582 
+1583 (* TODO: deduplicate these proofs *)
+1584 Theorem wp_later_opsem_adequate Σ `{!invGpreS Σ} `{!heaplangHGpreS Σ} e σ φ:
+1585   (∀ `{!invGS Σ} `{!heaplangHGS Σ}, ⊢ WP e @ Later; ⊤ {{ v, ⌜φ v⌝ }}) →
+1586   adequate NotStuck e σ (λ v _, φ v).
+1587 Proof.
+1588   intros Hwp.
+1589   eapply wp_partial_soundness in Hwp.
+1590   by apply partially_adequate_opsem_adequate in Hwp.
+1591 Qed.
+1592 
+1593 (* TODO: prove this via weakening *)
+1594 Theorem wp_total_opsem_adequate Σ `{!invGpreS Σ} `{!heaplangHGpreS Σ} e σ φ:
+1595   (∀ `{!invGS Σ} `{!heaplangHGS Σ}, ⊢ WP e @ Identity; ⊤ {{ v, ⌜φ v⌝ }}) →
+1596   adequate NotStuck e σ (λ v _, φ v).
+1597 Proof.
+1598   intros Hwp.
+1599   eapply wp_later_opsem_adequate; eauto.
+1600   iIntros (? ?). iDestruct Hwp as "Hwp".
+1601   by iApply wp_later_weaken.
+1602 Qed.

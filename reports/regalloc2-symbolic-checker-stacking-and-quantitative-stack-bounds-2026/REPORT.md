@@ -112,7 +112,7 @@ Synthesis of primary sources across `bytecodealliance/regalloc2` (v0.15.2),
 These findings govern:
 
 - **Anneal's MIR-to-ISA backend pipeline (`joshlf/anneal` at
-  `e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0`):** Specifically Phase 3 register
+  `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`):** Specifically Phase 3 register
   allocation (lowering unbounded virtual registers `VReg` to bounded physical
   registers `PReg` and `SpillSlot`s via `regalloc2` translation validation) and
   `Stacking` (folding address-taken MIR locals, spill slots, and ABI save areas

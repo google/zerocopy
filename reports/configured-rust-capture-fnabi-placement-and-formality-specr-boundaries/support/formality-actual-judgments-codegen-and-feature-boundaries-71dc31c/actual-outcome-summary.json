@@ -1,0 +1,166 @@
+[
+  {
+    "name": "generic_i32",
+    "exit": 0,
+    "action": "run",
+    "stdout": "parse=accepted check=accepted\ncodegen=accepted functions=3 globals=0 traits=0 vtables=0\nmachine_result=MachineStop steps=21\n",
+    "expected_status_agrees": true,
+    "generated_counts": {
+      "functions": 3,
+      "globals": 0,
+      "traits": 0,
+      "vtables": 0
+    }
+  },
+  {
+    "name": "generic_i32_bool",
+    "exit": 0,
+    "action": "run",
+    "stdout": "parse=accepted check=accepted\ncodegen=accepted functions=4 globals=0 traits=0 vtables=0\nmachine_result=MachineStop steps=36\n",
+    "expected_status_agrees": true,
+    "generated_counts": {
+      "functions": 4,
+      "globals": 0,
+      "traits": 0,
+      "vtables": 0
+    }
+  },
+  {
+    "name": "generic_wrong_result",
+    "exit": 3,
+    "action": "check",
+    "stdout": "parse=accepted check=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "generic_missing_argument",
+    "exit": 3,
+    "action": "check",
+    "stdout": "parse=accepted check=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "trusted_reachable",
+    "exit": 4,
+    "action": "codegen",
+    "stdout": "parse=accepted check=accepted\ncodegen=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "trusted_unreachable",
+    "exit": 0,
+    "action": "run",
+    "stdout": "parse=accepted check=accepted\ncodegen=accepted functions=2 globals=0 traits=0 vtables=0\nmachine_result=MachineStop steps=11\n",
+    "expected_status_agrees": true,
+    "generated_counts": {
+      "functions": 2,
+      "globals": 0,
+      "traits": 0,
+      "vtables": 0
+    }
+  },
+  {
+    "name": "uncalled_bad_owner",
+    "exit": 3,
+    "action": "check",
+    "stdout": "parse=accepted check=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "unsafe_callee",
+    "exit": 3,
+    "action": "check",
+    "stdout": "parse=accepted check=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "normalize_impl",
+    "exit": 0,
+    "action": "query",
+    "stdout": "parse=accepted check=accepted\nquery_solutions=1\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "normalize_wrong_output",
+    "exit": 5,
+    "action": "query",
+    "stdout": "parse=accepted check=accepted\nquery_solutions=0\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "normalize_assumption",
+    "exit": 0,
+    "action": "query",
+    "stdout": "parse=accepted check=accepted\nquery_solutions=1\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "normalize_assumption_wrong",
+    "exit": 5,
+    "action": "query",
+    "stdout": "parse=accepted check=accepted\nquery_solutions=0\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "feature_gate",
+    "exit": 0,
+    "action": "run",
+    "stdout": "parse=accepted check=accepted\ncodegen=accepted functions=3 globals=0 traits=0 vtables=0\nmachine_result=MachineStop steps=21\n",
+    "expected_status_agrees": true,
+    "generated_counts": {
+      "functions": 3,
+      "globals": 0,
+      "traits": 0,
+      "vtables": 0
+    }
+  },
+  {
+    "name": "unknown_feature_gate",
+    "exit": 2,
+    "action": "check",
+    "stdout": "parse=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "cfg_surface",
+    "exit": 2,
+    "action": "check",
+    "stdout": "parse=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "macro_surface",
+    "exit": 2,
+    "action": "check",
+    "stdout": "parse=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "async_surface",
+    "exit": 2,
+    "action": "check",
+    "stdout": "parse=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "closure_surface",
+    "exit": 2,
+    "action": "check",
+    "stdout": "parse=rejected\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "unsafe_trait_marked",
+    "exit": 0,
+    "action": "check",
+    "stdout": "parse=accepted check=accepted\n",
+    "expected_status_agrees": true
+  },
+  {
+    "name": "unsafe_trait_unmarked_impl",
+    "exit": 3,
+    "action": "check",
+    "stdout": "parse=accepted check=rejected\n",
+    "expected_status_agrees": true
+  }
+]

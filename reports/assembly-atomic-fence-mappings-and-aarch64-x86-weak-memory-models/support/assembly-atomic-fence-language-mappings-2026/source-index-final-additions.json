@@ -1,0 +1,46 @@
+[
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "herd/AArch64Sem.ml",
+    "encoding": "utf-8",
+    "sha": "f5d6ce1506db37df4f0344de057d0c2ee60c7bdd",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/herd/AArch64Sem.ml",
+    "display_title": "AArch64Sem.ml",
+    "local": "primary/herd/herdtools7/herd/AArch64Sem.ml.atomic-excerpts.txt",
+    "ranges": [
+      [
+        2227,
+        2246
+      ],
+      [
+        2328,
+        2369
+      ],
+      [
+        2464,
+        2502
+      ],
+      [
+        5030,
+        5039
+      ]
+    ]
+  },
+  {
+    "repo": "herd/herdtools7",
+    "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+    "path": "lib/AArch64Parser.mly",
+    "encoding": "utf-8",
+    "sha": "28ec5dab2ab3eb1db227b99665c1139b83bedb29",
+    "display_url": "https://github.com/herd/herdtools7/blob/9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34/lib/AArch64Parser.mly",
+    "display_title": "AArch64Parser.mly",
+    "local": "primary/herd/herdtools7/lib/AArch64Parser.mly.lines450-850.txt",
+    "ranges": [
+      [
+        450,
+        850
+      ]
+    ]
+  }
+]

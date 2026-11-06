@@ -1,0 +1,94 @@
+{
+  "codec_tags": {
+    "0": {
+      "body": "u64-le compressed length + zstd bytes",
+      "name": "zstd"
+    },
+    "1": {
+      "body": "u64-le compressed length + custom lgz inside zstd dictionary stream",
+      "name": "lgz"
+    },
+    "2": {
+      "body": "u64-le reconstructed as decimal text",
+      "name": "hash-plain"
+    },
+    "3": {
+      "body": "u64-le reconstructed as V2 depHash JSON",
+      "name": "hash-json"
+    },
+    "4": {
+      "body": "compact V3 depHash/output-hash structure",
+      "name": "hash-output"
+    },
+    "5": {
+      "body": "two associated indexed paths + u64-le compressed length + grouped custom lgz inside zstd dictionary stream",
+      "name": "lgz-module"
+    }
+  },
+  "comments": "special empty-path record followed by NUL-terminated comment; V3 includes base-index byte before empty path",
+  "common_header": [
+    {
+      "bytes": 4,
+      "field": "magic"
+    },
+    {
+      "bytes": 8,
+      "encoding": "little-endian u64",
+      "field": "depHash"
+    },
+    {
+      "encoding": "NUL-terminated UTF-8",
+      "field": "tracePath"
+    }
+  ],
+  "filesystem_metadata_not_encoded": [
+    "mode",
+    "uid",
+    "gid",
+    "mtime",
+    "directory entries",
+    "symlink identity",
+    "xattrs"
+  ],
+  "publication_semantics": {
+    "0.1.16": "writes final destinations while parsing; best-effort delete rollback after an error",
+    "0.1.19": "writes NamedTempFile objects first, then persists final destinations after decode; best-effort rollback of already-persisted files if final publish fails"
+  },
+  "schema": "anneal-reference/leantar-format-map/v1",
+  "security_boundaries": [
+    "paths are joined to selected base without lexical/canonical containment validation",
+    "header depHash is copied from trace and is not a digest of archive bytes",
+    "compressed payload lengths are archive-controlled u64 values converted to usize and used to resize a Vec without an archive-level cap",
+    "v0.1.16 UnexpectedEof special path attempts input deletion and does not set failure flag"
+  ],
+  "subjects": {
+    "anneal_consumer": {
+      "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+      "version": "0.1.16"
+    },
+    "lean_source_default": {
+      "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+      "version": "0.1.19"
+    }
+  },
+  "versions": {
+    "V1": {
+      "magic": "LTAR",
+      "path_index": "implicit base 0",
+      "trace_payload": "header hash reconstructed as decimal trace",
+      "trace_source": "decimal u64 text"
+    },
+    "V2": {
+      "magic": "LTR2",
+      "path_index": "implicit base 0",
+      "trace_payload": "codec-tagged",
+      "trace_source": "JSON without schemaVersion"
+    },
+    "V3": {
+      "magic": "LTR3",
+      "path_index": "u8 on ordinary file records; trace path remains base 0",
+      "trace_payload": "codec-tagged",
+      "trace_source": "JSON schemaVersion 2025-09-10"
+    }
+  }
+}

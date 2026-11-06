@@ -1,0 +1,278 @@
+{
+  "topics": [
+    "isa",
+    "isa/sail",
+    "isa/riscv64",
+    "isa/aarch64",
+    "isa/x86-64",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "rems-project/sail",
+      "identity": {
+        "repository": "rems-project/sail",
+        "commit": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+        "paths": "src/sail_lean_backend/sail_plugin_lean.ml"
+      }
+    },
+    {
+      "name": "rems-project/sail-arm",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "commit": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+        "paths": "arm-v9.4-a/Makefile, arm-v9.4-a/lean/ArmExtras.lean, arm-v9.4-a/src/termination_measures.sail, arm-v9.4-a/src/prelude.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-small-arm",
+      "identity": {
+        "repository": "rems-project/sail-small-arm",
+        "commit": "d6b7c9cf86adaa479492b3881884b190a48f385b",
+        "paths": "armV8.sail, armV8_A64_lib.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-arm",
+      "identity": {
+        "repository": "rems-project/sail-tiny-arm",
+        "commit": "98d904912620ddd74e76714b7ef8457192cb4e3a",
+        "paths": "Makefile, registers.sail, translation.sail, instrs-user.sail, instrs-sys.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-arm-lean",
+      "identity": {
+        "repository": "rems-project/sail-tiny-arm-lean",
+        "commit": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+        "baseline_commit": "e8fbacf0af7ff196cc84b95baa7c2dbb35c4dd3a",
+        "paths": "SailTinyArmUser/Defs.lean, SailTinyArmUser/Translation.lean, SailTinyArmUser/TinyArm.lean"
+      }
+    },
+    {
+      "name": "rems-project/sail-x86-from-acl2",
+      "identity": {
+        "repository": "rems-project/sail-x86-from-acl2",
+        "commit": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+        "paths": "translator/config_patterns.py, model/prelude.sail, model/registers.sail, model/linear_memory.sail, model/paging.sail, model/step.sail"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-x86",
+      "identity": {
+        "repository": "rems-project/sail-tiny-x86",
+        "commit": "229bd8448937042baa51b0a2d14bc437929b0dce",
+        "paths": "registers.sail, interface.sail, decode.sail, tiny-x86.sail"
+      }
+    },
+    {
+      "name": "CTSRD-CHERI/sail-morello",
+      "identity": {
+        "repository": "CTSRD-CHERI/sail-morello",
+        "commit": "2305f656ff84619caf50107f49dae7be52aec72b",
+        "paths": "src/v8_base.sail, src/instrs.sail, src/mem.sail"
+      }
+    },
+    {
+      "name": "CTSRD-CHERI/sail-cheri-riscv",
+      "identity": {
+        "repository": "CTSRD-CHERI/sail-cheri-riscv",
+        "commit": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b",
+        "paths": "src/cheri_prelude_128.sail, src/cheri_cap_common.sail, src/cheri_mem_metadata.sail, src/cheri_mem.sail, src/cheri_insts.sail"
+      }
+    },
+    {
+      "name": "CHERIoT-Platform/cheriot-sail",
+      "identity": {
+        "repository": "CHERIoT-Platform/cheriot-sail",
+        "commit": "518813ec3e595f79930d9129eaded2521831cbe2",
+        "paths": "src/cheri_cap_common.sail, properties/props.sail"
+      }
+    },
+    {
+      "name": "rems-project/coq-cheri-capabilities",
+      "identity": {
+        "repository": "rems-project/coq-cheri-capabilities",
+        "commit": "b39cd73409d8c2a058ba8065f81dc72d3c84fb11",
+        "paths": "theories/Common/Capabilities.v, theories/Morello/Capabilities.v, theories/Morello/Lemmas.v"
+      }
+    },
+    {
+      "name": "opencompl/sail-riscv-lean",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "commit": "51c635c460125ac87955d061fcd902ce03b8011f",
+        "paths": "lakefile.toml, LeanRV64D/RiscvExtras.lean, LeanRV64D/Defs.lean"
+      }
+    },
+    {
+      "name": "Verified-zkEVM/riscv-zkvm",
+      "identity": {
+        "repository": "Verified-zkEVM/riscv-zkvm",
+        "commit": "6810fc14d9c40373101321cefaec59df8d82e3e7",
+        "paths": "sail-import/PROVENANCE.toml, scripts/regen-model.sh, RiscvZkvm/Rv64/SailEquiv/StateRel.lean, RiscvZkvm/Rv64/SailEquiv/StepSim.lean, RiscvZkvm/Rv64/SailEquiv/StepRun.lean, scripts/AxiomSweep.lean"
+      }
+    },
+    {
+      "name": "axiom-crypto/sail-riscv-lean",
+      "identity": {
+        "repository": "axiom-crypto/sail-riscv-lean",
+        "commit": "82afed87c9d6827d3691acbe66d5395fa37dc41d",
+        "paths": "Lean_RV32D/sail-source-provenance.tsv, Lean_RV32D/LeanRV32D/RiscvExtrasExecutable.lean, Lean_RV32D/LeanRV32D/XopenvmInsts.lean, Lean_RV32D/LeanRV32D/InstsEnd.lean"
+      }
+    },
+    {
+      "name": "rems-project/sail",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+        "symbols": "Sail_plugin_lean.lean_rewrites, Sail_plugin_lean.lean_target, Pretty_print_lean.doc_def, Pretty_print_lean.doc_sail_typ, Pretty_print_lean.d_of_arg_with_typ, Deptype_targets.unfold_exists_typ, Rewrites.rewrite_var_updates, Rewrites.rewrite_if_eq, Type_check.unify"
+      }
+    },
+    {
+      "name": "rems-project/lean-sail",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/lean-sail",
+        "version": "v8",
+        "revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+        "symbols": "Sail.ArchSem.Effect, Sail.ArchSem.FreeM, Sail.ArchSem.InstructionEffect, Sail.ArchSem.PreSailM, Sail.ArchSem.PreSailME, Sail.ArchSem.Sequential.interpretEffect, Sail.ArchSem.Sequential.interpretSailEffects, Sail.ConcurrencyInterfaceV1.PreSailM, Sail.BitVec.updateSubrange', IntRange"
+      }
+    },
+    {
+      "name": "rems-project/archsem-lean",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/archsem-lean",
+        "version": "0.1.0",
+        "revision": "318583a5f2052c039c25dfd69a3beec0b0a27090",
+        "symbols": "ArchSem.NondeterministicMonad.NExcept, ArchSem.NondeterministicMonad.NEStateM, ArchSem.TerminatingModel.ComputationalTerminatingModel, ArchSem.CandidateExecutions.PreCand, ArchSem.CandidateExecutions.Cand, ArchSem.Trace.FreeM.traces, ArchSemTinyArm.Sequential.interpretEffect, ArchSemTinyArm.Promising.runEffect, ArchSemTinyArm.Promising.runNaive, ArchSemTinyArm.Promising.runPromiseFirst, ArchSemTinyArm.SequentialAxiomatic.model"
+      }
+    },
+    {
+      "name": "rems-project/archsem",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/archsem",
+        "revision": "42204d87df2e7d20e5ec23deb8ba8220e65148ab",
+        "symbols": "Interface.outcome, IMonFromSail.iMon_from_Sail, SequentialModel.sequential_model_outcome, GenPromising.Promising.Model, GenPromising.CPState.run_transition_promise_first, UMPromising.UMPromising, VMPromising.Ev.out_of_order, VMUMEquivThm.VMUM_phase1, UMRiscV.consistent_ok, OperationalX86TSO.x86_tso_modelc"
+      }
+    },
+    {
+      "name": "rems-project/sail-tiny-arm-lean",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/rems-project/sail-tiny-arm-lean",
+        "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b",
+        "symbols": "SailTinyArmUser.Functions.initialize_registers, SailTinyArmUser.Functions.decode, SailTinyArmUser.Functions.fetch_and_execute"
+      }
+    },
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "kind": "repository",
+        "url": "https://github.com/joshlf/anneal-private",
+        "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "symbols": "Trusted.Behavior, Trusted.WellFormed, Trusted.StepResult, Trusted.ReachesPrefix, Trusted.BehaviorOf, Trusted.MemState.visibleAtomicMsgs, Trusted.applyAtomicLoad, Trusted.Audit.audit, Trusted.Audit.verifyCrateAudit"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "kind": "tool",
+        "url": "https://github.com/leanprover/lean4",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Sail 0.20.3 Lean backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+        "version": "0.20.3"
+      }
+    },
+    {
+      "name": "Official Sail RISC-V model with examined integration repairs",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "7d3c9c2568b77f516783aa2ac63bd9c0e0c6df86",
+        "termination_patch_sha256": "6cf5860e7d493bc224060c4508541a81db91d6e40b5d6421ee2ced2dff126236",
+        "extern_patch_sha256": "bd7c48e9ea4f28e85f1c34cd55e80eb0c8def03ebe50876d4ac8655881f9cc82",
+        "configuration_sha256": "47ee55d4f147d79d95cbe1566982b4fe0adbb2a044adfabb102ff3f21b457c37"
+      }
+    },
+    {
+      "name": "lean-sail support library",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "01bb54c7c8a69e52ba11863c67e7c403a6cd198a"
+      }
+    },
+    {
+      "name": "Lean 4.29.0 official AArch64 Linux release",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "version": "4.29.0",
+        "platform": "aarch64-unknown-linux-gnu",
+        "executable_sha256": "e215cbe9eab0914b49761e9e486d388e2e701cf876d1079d1ba733c48edb2d7b",
+        "archive_sha256": "379047c81367a9f058a0f36b3574073b4c10f0ca126dd023e985053630f00b77"
+      }
+    },
+    {
+      "name": "Z3 4.15.3 official Linux AArch64 release",
+      "identity": {
+        "version": "4.15.3",
+        "artifact": "z3-4.15.3-arm64-glibc-2.34.zip",
+        "sha256": "78b383374905a20af7f38cb3e8e9e8e38c5cb3d23a8c2fbf8f54ff4b41a9c605",
+        "executable_sha256": "043490866e2cd14ab199dfac955932f1d5199ea1e874f549dd8d6ccde2191936"
+      }
+    },
+    {
+      "name": "Accepted actual decoder diagnostic",
+      "identity": {
+        "source_sha256": "5a71c58874e82df4788df8e1f9489567f70e38d14d8b6dde112dfd5f0ae16446",
+        "olean_sha256": "b0ace1a1595a984ae81b48d9c47b38c6769136597a529efaa8d13894375dc35e"
+      }
+    },
+    {
+      "name": "Accepted Machine decoder and composition",
+      "identity": {
+        "source_sha256": "fe89f0f6f1bf36db7877a9848e9c68d81d8ed130c354a9f6f7e2c7dee6c96965",
+        "olean_sha256": "c8401aabc472b3a5c367a32b5248f7a5310957aeec8be745002ca99f6d49bcae"
+      }
+    },
+    {
+      "name": "Sail",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418"
+      }
+    },
+    {
+      "name": "Islaris",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "CompCert 3.18",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Islaris PLDI 2022 paper",
+      "identity": {
+        "doi": "10.1145/3519939.3523434",
+        "publication": "PLDI 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

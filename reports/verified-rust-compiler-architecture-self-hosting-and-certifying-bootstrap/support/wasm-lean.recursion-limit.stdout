@@ -1,0 +1,17 @@
+'RestrictedWasm.compiler_correct' depends on axioms: [propext]
+'RestrictedWasm.body_roundtrip' depends on axioms: [propext, Quot.sound]
+'RestrictedWasm.module_roundtrip' depends on axioms: [propext, Quot.sound]
+'RestrictedWasm.accepted_bytes' depends on axioms: [propext]
+'RestrictedWasm.bound_module_correct' depends on axioms: [propext]
+'RestrictedWasm.literal_accepted' depends on axioms: [propext, Quot.sound]
+'RestrictedWasm.admit_sound' depends on axioms: [propext]
+'RestrictedWasm.changed_predicate_rejected' depends on axioms: [propext]
+'RestrictedWasm.unknown_opcode_rejected' depends on axioms: [propext]
+'RestrictedWasm.missing_end_rejected' depends on axioms: [propext]
+[0, 97, 115, 109, 1, 0, 0, 0, 1, 9, 1, 96, 4, 127, 127, 127, 127, 1, 127, 3, 2, 1, 0, 7, 12, 1, 8, 118, 97, 108, 105,
+ 100, 97, 116, 101, 0, 0, 10, 27, 1, 25, 0, 32, 0, 65, 2, 73, 32, 1, 65, 2, 73, 113, 32, 2, 65, 2, 73, 32, 3, 65, 2, 73,
+ 113, 113, 11]
+$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/staged-code-generation-and-certirocq-endpoint-linkage/WasmValidator.lean:206:50: error: maximum recursion depth has been reached
+use `set_option maxRecDepth <num>` to increase limit
+use `set_option diagnostics true` to get diagnostic information
+'RestrictedWasm.literal_bytes_bounded' depends on axioms: [propext]

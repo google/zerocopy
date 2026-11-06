@@ -1,0 +1,431 @@
+{
+  "observed_at": "2026-10-15",
+  "role": "source-only metadata; archives not acquired; no solve/build",
+  "sources": [
+    {
+      "owner": "rocq-iris",
+      "repo": "opam",
+      "sha": "3c21518b509d33676776c36e160de1d76835b801",
+      "path": "packages/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d/opam",
+      "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-lithium/coq-lithium.dev.2024-09-11.0.7945a29d/opam",
+      "retrieval": "source",
+      "reported_git_blob": "cee69110bb151599a6c40849ea8dc0b1fcde1ba0",
+      "bytes": 857,
+      "git_blob": "cee69110bb151599a6c40849ea8dc0b1fcde1ba0",
+      "sha256": "fd0388ea316ef21988347d3ea1570fcbe5fb7808c9ee798b55236d89a9a06906",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-iris",
+      "repo": "opam",
+      "sha": "3c21518b509d33676776c36e160de1d76835b801",
+      "path": "packages/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b/opam",
+      "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-iris/coq-iris.dev.2024-09-10.1.6f24ed4b/opam",
+      "retrieval": "source",
+      "reported_git_blob": "030b2c78246cf7c4f35eeb3570827b03acf1692e",
+      "bytes": 1383,
+      "git_blob": "030b2c78246cf7c4f35eeb3570827b03acf1692e",
+      "sha256": "a9b34c4cb82890f7ec40eb723f850b72bba6b8bcbc6c57fef1a8daf9b4058d15",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-iris",
+      "repo": "opam",
+      "sha": "3c21518b509d33676776c36e160de1d76835b801",
+      "path": "packages/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00/opam",
+      "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-stdpp/coq-stdpp.dev.2024-09-10.3.a1a12e00/opam",
+      "retrieval": "source",
+      "reported_git_blob": "b75c429358ea7e45b6778553a72abd6b6420f1e9",
+      "bytes": 1838,
+      "git_blob": "b75c429358ea7e45b6778553a72abd6b6420f1e9",
+      "sha256": "a970f83e80050755ca1283c4af37c84402fc4169195dc92a01f62556cf2f426a",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-iris",
+      "repo": "opam",
+      "sha": "3c21518b509d33676776c36e160de1d76835b801",
+      "path": "packages/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00/opam",
+      "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-stdpp-unstable/coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00/opam",
+      "retrieval": "source",
+      "reported_git_blob": "a4262615fad1e54df2765287ae8405a990566b17",
+      "bytes": 820,
+      "git_blob": "a4262615fad1e54df2765287ae8405a990566b17",
+      "sha256": "69bf98cf943b61729f3f75bb411916a246517b25fea30def9fc86b5c01e7e9bc",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-iris",
+      "repo": "opam",
+      "sha": "3c21518b509d33676776c36e160de1d76835b801",
+      "path": "packages/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00/opam",
+      "url": "https://github.com/rocq-iris/opam/blob/3c21518b509d33676776c36e160de1d76835b801/packages/coq-stdpp-bitvector/coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00/opam",
+      "retrieval": "source",
+      "reported_git_blob": "b2f78b5c2885c6bd12e4e92cc513fa932314487e",
+      "bytes": 952,
+      "git_blob": "b2f78b5c2885c6bd12e4e92cc513fa932314487e",
+      "sha256": "fd446f6a28adbd2bd3634d6b28778d0d58defd0e71c15bbfa224e432e4098f80",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-prover",
+      "repo": "opam",
+      "sha": "564ab90f5874c0c91cee746c4706bc2ba686a5a9",
+      "path": "released/packages/coq-bbv/coq-bbv.1.5/opam",
+      "url": "https://github.com/rocq-prover/opam/blob/564ab90f5874c0c91cee746c4706bc2ba686a5a9/released/packages/coq-bbv/coq-bbv.1.5/opam",
+      "retrieval": "source",
+      "reported_git_blob": "2629b27ebfaf9b53206b5d856fe2a8720c269f04",
+      "bytes": 975,
+      "git_blob": "2629b27ebfaf9b53206b5d856fe2a8720c269f04",
+      "sha256": "f1f29f0742aa743eafa0f3f084cb408e4b18e6535e3acb35371808145b539501",
+      "declared_checksums": [
+        "sha512=43bf2c300b5a24275fecd4888ddda0a2ef88ceb22835130bf5fe61d00ddfd7c8634b70e35a45043f69d2f3ef783ee3295e6e1cd6b8b4645ab008d6c1afa36c33"
+      ]
+    },
+    {
+      "owner": "rems-project",
+      "repo": "sail",
+      "sha": "b14f649845db850b3673696e2aa90565fa2a60ef",
+      "path": "sail.opam",
+      "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail.opam",
+      "retrieval": "source",
+      "reported_git_blob": "ff7a190ac8f8118fb07bc12210eacc8cd957bad4",
+      "bytes": 1921,
+      "git_blob": "ff7a190ac8f8118fb07bc12210eacc8cd957bad4",
+      "sha256": "e81a9948790344f69e67d5572d61c0f234c209b32f8186fde03c7a2036dff64c",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-prover",
+      "repo": "opam",
+      "sha": "564ab90f5874c0c91cee746c4706bc2ba686a5a9",
+      "path": "released/packages/coq-record-update/coq-record-update.0.3.3/opam",
+      "url": "https://github.com/rocq-prover/opam/blob/564ab90f5874c0c91cee746c4706bc2ba686a5a9/released/packages/coq-record-update/coq-record-update.0.3.3/opam",
+      "retrieval": "source",
+      "reported_git_blob": "4a1220d63bd01e6b76d6bbd6aaf53031f4740b67",
+      "bytes": 1148,
+      "git_blob": "4a1220d63bd01e6b76d6bbd6aaf53031f4740b67",
+      "sha256": "8dc6411864d9d8005b8b6eaf7f6116a1140a68ea85181f4725a6d597aeca6fa3",
+      "declared_checksums": [
+        "sha512=fb88f33ba716d068506d31047969fff40630adc7df7f21a016c8d92ff3c802007ce4efc0ae93c5456b76544040c323ae4d66755c8b425087504ddb1146a8b81a"
+      ]
+    },
+    {
+      "owner": "rems-project",
+      "repo": "isla-lang",
+      "sha": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+      "path": "isla-lang.opam",
+      "url": "https://github.com/rems-project/isla-lang/blob/bda86c9f0bd28bbaa2481f50ddc986ede342805a/isla-lang.opam",
+      "retrieval": "source",
+      "reported_git_blob": "64dda5b8d7ee494cd391efc5bc9fada1689f2ea6",
+      "bytes": 728,
+      "git_blob": "64dda5b8d7ee494cd391efc5bc9fada1689f2ea6",
+      "sha256": "c1e76dc0cb1c8193235f7a3d7c581e20aad6c5fb89df25a1ace1c2329fedbd5b",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rems-project",
+      "repo": "sail",
+      "sha": "b14f649845db850b3673696e2aa90565fa2a60ef",
+      "path": "libsail.opam",
+      "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/libsail.opam",
+      "retrieval": "source",
+      "reported_git_blob": "f0c2d441d35f3ca21ae870710392545687090e42",
+      "bytes": 1693,
+      "git_blob": "f0c2d441d35f3ca21ae870710392545687090e42",
+      "sha256": "95c154cb61c40759a4dcc54b2f1785de561fe613aa8314943c61ee7583dc4fd2",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-prover",
+      "repo": "opam",
+      "sha": "564ab90f5874c0c91cee746c4706bc2ba686a5a9",
+      "path": "released/packages/coq-bbv/coq-bbv.1.4/opam",
+      "url": "https://github.com/rocq-prover/opam/blob/564ab90f5874c0c91cee746c4706bc2ba686a5a9/released/packages/coq-bbv/coq-bbv.1.4/opam",
+      "retrieval": "source",
+      "reported_git_blob": "090d1e284bb32a290fdf71e2c9849e7f80b7b63e",
+      "bytes": 976,
+      "git_blob": "090d1e284bb32a290fdf71e2c9849e7f80b7b63e",
+      "sha256": "a3bbc252cac2aecd4bfdceda060091931dc15edeb25c37e34eb7b0d0d3d5f536",
+      "declared_checksums": [
+        "sha512=c7ee20bfaae862b8336b2281a39914819c2140d9ea1df9c6aa58696cf61d6f965bddf514e1fd6b8dbd37f3d82e8a2d5d03593b74cb61d2b2045458a0a55870ca"
+      ]
+    },
+    {
+      "owner": "rocq-iris",
+      "repo": "iris",
+      "sha": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+      "path": "coq-iris.opam",
+      "url": "https://github.com/rocq-iris/iris/blob/6f24ed4baa4d61967a95bac834eab2c66f3b76fa/coq-iris.opam",
+      "retrieval": "source",
+      "reported_git_blob": "2a6738e3e4e9f4ef2d70bce26720c47d6049c527",
+      "bytes": 1282,
+      "git_blob": "2a6738e3e4e9f4ef2d70bce26720c47d6049c527",
+      "sha256": "b52cb7e080c091a6f66422311b64c1f2a718d603abc0b5469b849747d78c5ec6",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rocq-iris",
+      "repo": "stdpp",
+      "sha": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+      "path": "coq-stdpp-bitvector.opam",
+      "url": "https://github.com/rocq-iris/stdpp/blob/a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3/coq-stdpp-bitvector.opam",
+      "retrieval": "source",
+      "reported_git_blob": "e36c977c65e643278a2211ceca3270e0b4fa9c01",
+      "bytes": 850,
+      "git_blob": "e36c977c65e643278a2211ceca3270e0b4fa9c01",
+      "sha256": "83db80a386abaeac5a2537a3b25c015b23db0ca429af1255b7061be1b8740e40",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rems-project",
+      "repo": "sail",
+      "sha": "b14f649845db850b3673696e2aa90565fa2a60ef",
+      "path": "sail_coq_backend.opam",
+      "url": "https://github.com/rems-project/sail/blob/b14f649845db850b3673696e2aa90565fa2a60ef/sail_coq_backend.opam",
+      "retrieval": "source",
+      "reported_git_blob": "8cc4a82dcab3e1f55465df185bfe10f82993a3ed",
+      "bytes": 919,
+      "git_blob": "8cc4a82dcab3e1f55465df185bfe10f82993a3ed",
+      "sha256": "3a56a7e1444dd67a517ab7d15bea76a883a0db299b61cd720119be239c10cd0b",
+      "declared_checksums": []
+    },
+    {
+      "owner": "UIC-verif-group",
+      "repo": "refinedC",
+      "sha": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+      "path": "coq-lithium.opam",
+      "url": "https://github.com/UIC-verif-group/refinedC/blob/7945a29d1647970709a9b5ad2ffc53c757e130cc/coq-lithium.opam",
+      "retrieval": "source",
+      "reported_git_blob": "b6a24fb175a0a7e8e57b4877a96fb5129dc51b2a",
+      "bytes": 752,
+      "git_blob": "b6a24fb175a0a7e8e57b4877a96fb5129dc51b2a",
+      "sha256": "6f6b2125476c9ccb3219f47cfbcb6c8d8647f58334221fa215d5dc0f0dbac3c0",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rems-project",
+      "repo": "islaris",
+      "sha": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "examples/dune",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/examples/dune",
+      "retrieval": "source",
+      "reported_git_blob": "5e5e5bb96f5c441ee07cdba5ea6447dd1a32e725",
+      "bytes": 185,
+      "git_blob": "5e5e5bb96f5c441ee07cdba5ea6447dd1a32e725",
+      "sha256": "d476f70a23be995fc4dc9a3220f0c44413d31cd13246c6ca13655a7ed3a4c465",
+      "declared_checksums": []
+    },
+    {
+      "owner": "rems-project",
+      "repo": "islaris",
+      "sha": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "sail-riscv/dune",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail-riscv/dune",
+      "retrieval": "unavailable",
+      "reported_git_blob": null
+    },
+    {
+      "owner": "rems-project",
+      "repo": "islaris",
+      "sha": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "sail-riscv/_dune",
+      "url": "https://github.com/rems-project/islaris/blob/c978e10f50db5c40f0fdf113f5f76a779782c6f9/sail-riscv/_dune",
+      "retrieval": "source",
+      "reported_git_blob": "7ef638ca1eacb46c3e6f6e2892fbb34cc11a9f40",
+      "bytes": 283,
+      "git_blob": "7ef638ca1eacb46c3e6f6e2892fbb34cc11a9f40",
+      "sha256": "3cebd57a47d6426667ba2d6c5aa681e6f7263416e2052496b41f1b53bc0f719f",
+      "declared_checksums": []
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/ocaml-variants/ocaml-variants.4.14.0+options/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/56aefa37456aa263913289a4174daca01c4b9339/packages/ocaml-variants/ocaml-variants.4.14.0+options/opam",
+      "retrieval": "source",
+      "reported_git_blob": "19cf36fc382a5c3c9fd1b70c1ab09bea919a79c1",
+      "bytes": 5020,
+      "git_blob": "19cf36fc382a5c3c9fd1b70c1ab09bea919a79c1",
+      "sha256": "817b92187a023603902535d54afc56c429e67f4e7a06543d65240799a06d6fcb",
+      "declared_checksums": [
+        "sha256=39f44260382f28d1054c5f9d8bf4753cb7ad64027da792f7938344544da155e8",
+        "sha256=79f2a1a5044a91350a0eb6ce12e261a72a2855c094c425cddf3860e58c486678",
+        "md5=3e969b841df1f51ca448e6e6295cb451"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/coq/coq.8.19.0/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/56aefa37456aa263913289a4174daca01c4b9339/packages/coq/coq.8.19.0/opam",
+      "retrieval": "source",
+      "reported_git_blob": "9e12ad86aa1318d50b81b17ef55cbd4113522040",
+      "bytes": 1611,
+      "git_blob": "9e12ad86aa1318d50b81b17ef55cbd4113522040",
+      "sha256": "7290cb19d19390a737e013d9153c2991f13c53386bc365075fa6ff4f8cf72d17",
+      "declared_checksums": [
+        "md5=64b49dbc3205477bd7517642c0b9cbb6",
+        "sha512=02fb5b4fb575af79e092492cbec6dc0d15a1d74a07f827f657a72d4e6066532630e5a6d15be4acdb73314bd40b9a321f9ea0584e0ccfe51fd3a56353bd30db9b"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "56aefa37456aa263913289a4174daca01c4b9339",
+      "path": "packages/dune/dune.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/56aefa37456aa263913289a4174daca01c4b9339/packages/dune/dune.3.9.1/opam",
+      "retrieval": "unavailable",
+      "reported_git_blob": null
+    },
+    {
+      "owner": "ocaml",
+      "repo": "dune",
+      "sha": "3276f90725e4423790a43065cc51ddbbba61eb89",
+      "path": "dune.opam",
+      "url": "https://github.com/ocaml/dune/blob/3276f90725e4423790a43065cc51ddbbba61eb89/dune.opam",
+      "retrieval": "source",
+      "reported_git_blob": "41f1722185bc3ec7422f948e31a956e7d10ba73d",
+      "bytes": 1874,
+      "git_blob": "41f1722185bc3ec7422f948e31a956e7d10ba73d",
+      "sha256": "97b69f6b7cd21bd83cf821212d1c1c36ced39467f85c35d6ee6c42337f04bed9",
+      "declared_checksums": []
+    },
+    {
+      "owner": "ocaml",
+      "repo": "dune",
+      "sha": "3276f90725e4423790a43065cc51ddbbba61eb89",
+      "path": "dune-site.opam",
+      "url": "https://github.com/ocaml/dune/blob/3276f90725e4423790a43065cc51ddbbba61eb89/dune-site.opam",
+      "retrieval": "source",
+      "reported_git_blob": "3188c8c2a0eaa65dc59bef8a48f86c9cf54d7c46",
+      "bytes": 778,
+      "git_blob": "3188c8c2a0eaa65dc59bef8a48f86c9cf54d7c46",
+      "sha256": "8ce36af551deb541bf8451afe8888a2bc5b670ffc0132767a467d3fe5feb0191",
+      "declared_checksums": []
+    },
+    {
+      "owner": "ocaml",
+      "repo": "dune",
+      "sha": "3276f90725e4423790a43065cc51ddbbba61eb89",
+      "path": "dune-private-libs.opam",
+      "url": "https://github.com/ocaml/dune/blob/3276f90725e4423790a43065cc51ddbbba61eb89/dune-private-libs.opam",
+      "retrieval": "source",
+      "reported_git_blob": "a714ed7be4f00c3b8d88a1684d3dcd13f62d7dbe",
+      "bytes": 1055,
+      "git_blob": "a714ed7be4f00c3b8d88a1684d3dcd13f62d7dbe",
+      "sha256": "23fc56f3cdb30ce129dd2517ea5ff5d05a8018f8d0e0c2238f986854a3c220dd",
+      "declared_checksums": []
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+      "path": "packages/dune/dune.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dune/dune.3.9.1/opam",
+      "retrieval": "source",
+      "reported_git_blob": "f8343afc12e86ae74056f97bedc32aaea8d57d13",
+      "bytes": 2196,
+      "git_blob": "f8343afc12e86ae74056f97bedc32aaea8d57d13",
+      "sha256": "77310c9d602eb9657ccb40ae697320354a2e0818960499361ed05977bf232c61",
+      "declared_checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+      "path": "packages/dune-private-libs/dune-private-libs.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dune-private-libs/dune-private-libs.3.9.1/opam",
+      "retrieval": "source",
+      "reported_git_blob": "8df4dde33b3cd382b715d49c0ee934862920c4cd",
+      "bytes": 1377,
+      "git_blob": "8df4dde33b3cd382b715d49c0ee934862920c4cd",
+      "sha256": "c09c5a0c5d10490effc01f0bcfca1be0ec14744ad33d4f839d9bf141056248f1",
+      "declared_checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+      "path": "packages/dune-site/dune-site.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dune-site/dune-site.3.9.1/opam",
+      "retrieval": "source",
+      "reported_git_blob": "693ad70898fdaa96b82fa10e6436d718c621ffc5",
+      "bytes": 1084,
+      "git_blob": "693ad70898fdaa96b82fa10e6436d718c621ffc5",
+      "sha256": "8aa0cbb0ac5659936b5047f415a6458b31d1f10c05cbce19711f77e7f69ef00a",
+      "declared_checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+      "path": "packages/stdune/stdune.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/stdune/stdune.3.9.1/opam",
+      "retrieval": "source",
+      "reported_git_blob": "1b01f1b9d7a75f0b6a3e481d4262b8aaeec9f49a",
+      "bytes": 1247,
+      "git_blob": "1b01f1b9d7a75f0b6a3e481d4262b8aaeec9f49a",
+      "sha256": "76922ca66fe0b1e52edc6d15725170edcdcbbda544499eab8aef1fb1af4d684f",
+      "declared_checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+      "path": "packages/dyn/dyn.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/dyn/dyn.3.9.1/opam",
+      "retrieval": "source",
+      "reported_git_blob": "96a767969c56aed042da9fb1cfd9aed45978011b",
+      "bytes": 1100,
+      "git_blob": "96a767969c56aed042da9fb1cfd9aed45978011b",
+      "sha256": "09c5c82bd59144d5319463b897c9c0e01d2e87893d4417c97ca87b317f5cb95b",
+      "declared_checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ]
+    },
+    {
+      "owner": "ocaml",
+      "repo": "opam-repository",
+      "sha": "0d269faa45d7a07cdd53bb713f56d453cf648218",
+      "path": "packages/ordering/ordering.3.9.1/opam",
+      "url": "https://github.com/ocaml/opam-repository/blob/0d269faa45d7a07cdd53bb713f56d453cf648218/packages/ordering/ordering.3.9.1/opam",
+      "retrieval": "source",
+      "reported_git_blob": "799c37131dbb205bef96469228ccc565d2c1c2fa",
+      "bytes": 1063,
+      "git_blob": "799c37131dbb205bef96469228ccc565d2c1c2fa",
+      "sha256": "5141668ab7a61e18a2fadc43edbf81299e1c6dfc00a73549356dc1af7686a1a4",
+      "declared_checksums": [
+        "sha256=f0c3ce49f36c733b8aee72611f107cf06de6bc423be7262aab1bb3f03c05a878",
+        "sha512=105ea325a3a9d0c51e64d440d7f13f2231c5d0a56ea0bc334b3a39db4644499153823456f5d7b20f8bec724b3ceaace7c1718c3b941c300135769d01bb663979"
+      ]
+    },
+    {
+      "owner": "rems-project",
+      "repo": "islaris",
+      "sha": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "path": "islaris.opam",
+      "retrieval": "source",
+      "reported_git_blob": "1d2a1f4a65ac2213e89e6be4fafdac6972693899",
+      "bytes": 1001,
+      "git_blob": "1d2a1f4a65ac2213e89e6be4fafdac6972693899",
+      "sha256": "73698a8ef01363603e56fddb112ad82d550b50f78761316a33409b9cca156cee",
+      "declared_checksums": []
+    }
+  ]
+}

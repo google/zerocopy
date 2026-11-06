@@ -1,0 +1,231 @@
+{
+  "topics": [
+    "verification",
+    "verification/smt-certificates",
+    "mathlib/bitvec",
+    "lean/kernel",
+    "lean/tactics"
+  ],
+  "subjects": [
+    {
+      "name": "cvc5 1.4.2",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+        "binary_sha256": "74a9c8ab076ed0dbced2aef27de675846e4a8937e3f3d49125721f2d91bdcf4d"
+      }
+    },
+    {
+      "name": "Carcara 1.1.0",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+        "binary_sha256": "4016f1129baf0b82b1a4ee9c64ec2f4f0376cabe75cb07674fdd452847f8963f"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+        "Init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+      }
+    },
+    {
+      "name": "Owned fixed finite byte semantics",
+      "identity": {
+        "artifact": "ByteLaws.lean",
+        "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc"
+      }
+    },
+    {
+      "name": "Owned local Alethe expansion producer",
+      "identity": {
+        "artifact": "translate.py",
+        "sha256": "34f43a206b1a3756004fbc0e37bfb3914208460eaad68333b20ff9b2be19f684"
+      }
+    },
+    {
+      "name": "SMTCoq/smtcoq",
+      "identity": {
+        "repository": "SMTCoq/smtcoq",
+        "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+      }
+    },
+    {
+      "name": "ufmg-smite/carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "cvc5/LFSC",
+      "identity": {
+        "repository": "cvc5/LFSC",
+        "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+      }
+    },
+    {
+      "name": "cvc5/cvc5",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "f0bc3373ef032a3fc5006f22778aaae7b274f429"
+      }
+    },
+    {
+      "name": "ufmg-smite/lean-smt",
+      "identity": {
+        "repository": "ufmg-smite/lean-smt",
+        "revision": "9abdd01c13dc7ac2bac4d68d17ee661c63ed0894"
+      }
+    },
+    {
+      "name": "isabelle-prover/mirror-isabelle",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+      }
+    },
+    {
+      "name": "Owned input bundle",
+      "identity": {
+        "source_sha256": "f6db0f454be824e8bd7a48a6a4434afd963d3dac9edac3ac447c4dbec77f6f09"
+      }
+    },
+    {
+      "name": "cvc5",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d",
+        "release": "1.4.2",
+        "archive_sha256": "24397f7d022e755876ca836193d4c5f9c1d4326f0f6c01f7d7fc1ddd6bc5096c"
+      }
+    },
+    {
+      "name": "Rust1.99",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "SMT-LIB ArraysEx",
+      "identity": {
+        "version": "2.7",
+        "release": "2024-07-21",
+        "definition_url": "https://smt-lib.org/theories-ArraysEx.shtml"
+      }
+    },
+    {
+      "name": "marijnheule/drat-trim",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "digama0/frat",
+      "identity": {
+        "repository": "digama0/frat",
+        "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5"
+      }
+    },
+    {
+      "name": "IsaFoL/IsaFoL",
+      "identity": {
+        "repository": "IsaFoL/IsaFoL",
+        "revision": "1475076cea603c64d3dfe70c91014a5264e0479b"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "StephanGocht/VeriPB",
+      "identity": {
+        "repository": "StephanGocht/VeriPB",
+        "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+      }
+    },
+    {
+      "name": "VeriPB current proof format overview",
+      "identity": {
+        "url": "https://veripb.org/overview.html",
+        "format": "version 3",
+        "observed": "2026-10-14"
+      }
+    },
+    {
+      "name": "leanprover-community/mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "b16cf9ed26f2e49057943824f2f74f9783b7cb40"
+      }
+    },
+    {
+      "name": "jrh13/hol-light",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+      }
+    },
+    {
+      "name": "FloVer FMCAD 2018 paper",
+      "identity": {
+        "title": "A Verified Certificate Checker for Finite-Precision Error Bounds in Coq and HOL4",
+        "venue": "FMCAD 2018",
+        "url": "https://www.cs.utexas.edu/~hunt/FMCAD/FMCAD18/papers/paper2.pdf"
+      }
+    },
+    {
+      "name": "Gappa upstream integration documentation",
+      "identity": {
+        "url": "https://gappa.gitlabpages.inria.fr/gappa/tools.html",
+        "observed": "2026-10-14"
+      }
+    },
+    {
+      "name": "Gappa Rocq library",
+      "identity": {
+        "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf",
+        "url": "https://gitlab.inria.fr/gappa/coq"
+      }
+    },
+    {
+      "name": "FloVer current upstream",
+      "identity": {
+        "revision": "2b846b7242db7435c97ba694393db47842b19860",
+        "url": "https://gitlab.mpi-sws.org/AVA/FloVer"
+      }
+    },
+    {
+      "name": "Why3 upstream",
+      "identity": {
+        "revision": "d0a8072e157935d0d80a7a2156ecf5a98a2aae3e",
+        "url": "https://gitlab.inria.fr/why3/why3"
+      }
+    },
+    {
+      "name": "Gappa1.11.0 release source",
+      "identity": {
+        "artifact": "gappalib-coq-1.11.0.tar.gz",
+        "sha512": "654d4787998ce085b8ce7e6f6c266e826e9581b34002c1c0995972a3927800e5732f8e6205ea63047aca84327413f4e2f774e2c5627fe7b98fba809250c0b857"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

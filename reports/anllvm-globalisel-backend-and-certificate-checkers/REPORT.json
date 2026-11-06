@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/anllvm",
+    "anneal/certificate-checkers",
+    "anneal/memory-model",
+    "anneal/poison-semantics",
+    "anneal/proof-scaling",
+    "anneal/rv64gc",
+    "anneal/self-hosting",
+    "anneal/translation-validation",
+    "anneal/trusted-boundary",
+    "anneal/verified-compilation",
+    "lean/verification",
+    "llvm/codegen",
+    "llvm/globalisel",
+    "llvm/machine-ssa",
+    "llvm/register-allocation",
+    "llvm/selectiondag",
+    "llvm/translation-validation",
+    "rust/mir-optimizations"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 kernel and prelude environment",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal repository principles and trusted refinement boundary",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal universal refinement kernel and trusted boundary audit",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 optimization, CodeGen, GlobalISel, SelectionDAG, and MC pass semantics",
+      "identity": {
+        "include_root": "/usr/include/llvm-21/llvm",
+        "package": "llvm-21-dev",
+        "release": "llvmorg-21.1.8",
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "Rust language reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Rust compiler Runtime(PostCleanup) MIR passes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 instruction semantics",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-02"
+}

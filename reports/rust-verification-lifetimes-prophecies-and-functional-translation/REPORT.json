@@ -1,0 +1,224 @@
+{
+  "topics": [
+    "aeneas/borrows-regions",
+    "aeneas/loops-termination",
+    "charon/llbc",
+    "verification/separation-logic",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt: semantic lifetime and ownership resources",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "PACMPL 2 (POPL), Article 66",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Prusti: Rust-type-derived permission reasoning",
+      "identity": {
+        "doi": "10.1145/3360573",
+        "publication": "PACMPL 3 (OOPSLA), Article 147",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "RustHorn: prophecy-based functionalization of mutable borrows",
+      "identity": {
+        "doi": "10.1007/978-3-030-44914-8_18",
+        "publication": "ESOP 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Aeneas: loan-based functional translation and backward functions",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "publication": "PACMPL 6 (ICFP), Article 116",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "RustHornBelt: semantic foundation for prophecy-based functional specifications",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "publication": "PLDI 2022",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "RefinedRust: lifetime logic, borrow names, and foundational refined ownership types",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "publication": "PACMPL 8 (PLDI), Article 192",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Thrust: prophecy-based refinement types for Rust",
+      "identity": {
+        "doi": "10.1145/3729333",
+        "publication": "PACMPL 9 (PLDI), Article 230",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Rust compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Aeneas release source",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Anneal configuration",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Aeneas June 3",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+      }
+    },
+    {
+      "name": "Aeneas June 1",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "f95a80abaf554d4612cb60ef9ec8e849139bec44"
+      }
+    },
+    {
+      "name": "Charon June 3",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "aeneas",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/AeneasVerif/aeneas.git",
+        "revision": "70683bd4ab876179a23e5f994d02947b3e5c4f0d",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "hax",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/cryspen/hax.git",
+        "revision": "1ec88cdb2c8e546845e64eb2cd2321b4f58069c4",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "refinedrust",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/lgaeher/refinedrust-dev.git",
+        "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "refinedc",
+      "identity": {
+        "kind": "git",
+        "url": "https://gitlab.mpi-sws.org/iris/refinedc.git",
+        "revision": "d057583986651a28047164581f05fbee3a83ed9d",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "creusot",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/creusot-rs/creusot.git",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "verus",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/verus-lang/verus.git",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "kani",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/model-checking/kani.git",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "gillian",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/GillianPlatform/Gillian.git",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "lambda-rust",
+      "identity": {
+        "kind": "git",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust.git",
+        "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+        "observed_at": "2026-10-30"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "lean",
+      "identity": {
+        "kind": "tool",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "observed_at": "2026-10-30"
+      }
+    }
+  ],
+  "observed_at": "2026-10-30"
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "case": "valid",
+    "accepted": true
+  },
+  {
+    "case": "wrong-op",
+    "accepted": false
+  },
+  {
+    "case": "wrong-literal",
+    "accepted": false
+  },
+  {
+    "case": "out-of-byte",
+    "accepted": false
+  },
+  {
+    "case": "negative-literal",
+    "accepted": false
+  },
+  {
+    "case": "missing-operand",
+    "accepted": false
+  },
+  {
+    "case": "unknown-op",
+    "accepted": false
+  },
+  {
+    "case": "wrong-subject-envelope",
+    "accepted": false
+  },
+  {
+    "case": "truncated-json",
+    "accepted": false
+  },
+  {
+    "case": "depth-limit",
+    "accepted": false
+  }
+]

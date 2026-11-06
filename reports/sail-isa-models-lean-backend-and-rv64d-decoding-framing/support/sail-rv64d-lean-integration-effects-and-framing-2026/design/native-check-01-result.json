@@ -1,0 +1,35 @@
+{
+  "status": 1,
+  "seconds": 2.338106664014049,
+  "maxrss_kib": 1571784,
+  "argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=5",
+    "120",
+    "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+    "-j1",
+    "-M4500",
+    "--tstack=400000",
+    "-R",
+    "/home/opam/anneal-sail-output/proof-development/check-01",
+    "-o",
+    "/home/opam/anneal-sail-output/proof-development/check-01/Proof.olean",
+    "/home/opam/anneal-sail-output/proof-development/check-01/Proof.lean"
+  ],
+  "lean_path": "/home/opam/anneal-sail-output/serial-build-integration/olean:/home/opam/anneal-sail-output/proof-development/check-01",
+  "files": {
+    "Proof.lean": {
+      "bytes": 3858,
+      "sha256": "366ec718a9d0d8426136580a3ca660d116f5011e2d80bbf1783f9d1380640019"
+    },
+    "stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stdout": {
+      "bytes": 7228,
+      "sha256": "a8de9799c88b13d65d20c62bc3fe04673e8a97f03c18771e9a34f272bbdccd91"
+    }
+  }
+}

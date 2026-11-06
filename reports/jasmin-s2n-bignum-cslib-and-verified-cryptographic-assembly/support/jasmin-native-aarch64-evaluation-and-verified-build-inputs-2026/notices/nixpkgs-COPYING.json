@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+    "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/cat",
+    "/nix/store/2n5kdhzzspnr063qmbylsbvjmk8n9749-source/COPYING"
+  ],
+  "status": 0,
+  "seconds": 0.3156088748946786,
+  "bytes": 1097,
+  "sha256": "c9cf0650a6820b589f96a92060e0eb937102b808f48cd5e3f35dcba449ea0a41",
+  "git_blob": "c62df0bcb2af058bea3c1c8b03e3cc7cd39e7074"
+}

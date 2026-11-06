@@ -1,0 +1,3 @@
+/Library/Developer/CommandLineTools/usr/bin/llvm-otool:
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.25.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)

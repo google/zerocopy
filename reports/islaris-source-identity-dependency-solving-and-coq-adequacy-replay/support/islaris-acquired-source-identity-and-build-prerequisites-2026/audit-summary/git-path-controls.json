@@ -1,0 +1,37 @@
+[
+  {
+    "path": ".git",
+    "included": false,
+    "expected_included": false,
+    "actual_sail_manifest_path": "/solve/opam/islaris-dry/.opam-switch/sources/sail_manifest.0.17/.git",
+    "actual_entry_type": "d"
+  },
+  {
+    "path": ".git/config",
+    "included": false,
+    "expected_included": false,
+    "actual_sail_manifest_path": "/solve/opam/islaris-dry/.opam-switch/sources/sail_manifest.0.17/.git/config",
+    "actual_entry_type": "f"
+  },
+  {
+    "path": ".github",
+    "included": true,
+    "expected_included": true,
+    "actual_sail_manifest_path": "/solve/opam/islaris-dry/.opam-switch/sources/sail_manifest.0.17/.github",
+    "actual_entry_type": "d"
+  },
+  {
+    "path": ".github/workflows",
+    "included": true,
+    "expected_included": true,
+    "actual_sail_manifest_path": "/solve/opam/islaris-dry/.opam-switch/sources/sail_manifest.0.17/.github/workflows",
+    "actual_entry_type": "d"
+  },
+  {
+    "path": ".gitignore",
+    "included": true,
+    "expected_included": true,
+    "actual_sail_manifest_path": "/solve/opam/islaris-dry/.opam-switch/sources/sail_manifest.0.17/.gitignore",
+    "actual_entry_type": "f"
+  }
+]

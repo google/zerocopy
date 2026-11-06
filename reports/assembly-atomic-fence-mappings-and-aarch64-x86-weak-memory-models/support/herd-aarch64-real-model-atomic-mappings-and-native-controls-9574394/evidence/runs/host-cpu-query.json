@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "sysctl",
+    "-n",
+    "machdep.cpu.brand_string"
+  ],
+  "exit": 0,
+  "seconds": 0.008911500102840364,
+  "stdout_sha256": "cf8be25367c4600921f057a468612c25380ea7eb82253b1dc25fb2454be26b73",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

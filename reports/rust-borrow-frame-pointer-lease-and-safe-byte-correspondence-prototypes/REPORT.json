@@ -1,0 +1,178 @@
+{
+  "topics": [
+    "rust",
+    "rust/unsafe",
+    "rust/pin-future",
+    "rust/validity",
+    "zerocopy/layout",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Rust 1.99.0 compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "artifact": "rustc executable",
+        "sha256": "dd6f58440b3418aa9157ae3f05d71eecff741ca41bc4eec120e7e8f2d933b9a0"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust nightly control compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "rustc_sha256": "eb3147b0fd9629eba4886d6c4072d0ba21ae493b43b776871c1645f0e977916e"
+      }
+    },
+    {
+      "name": "Lean 4.31 installed checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "shared_library_sha256": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989",
+        "init_olean_sha256": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 installed checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50",
+        "init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+      }
+    },
+    {
+      "name": "Owned finite pointer lease probe",
+      "identity": {
+        "file": "PointerLease.lean",
+        "sha256": "9be4abb255fea836a0a2df97c2bf7088c0b681876fb759c30fb4ab95af328e00"
+      }
+    },
+    {
+      "name": "Lean nested-inductive kernel fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808",
+        "pull_request": "14577"
+      }
+    },
+    {
+      "name": "Original complete safe API and certificate specimen",
+      "identity": {
+        "api_sha256": "416eded2d8d38c4de7212091446c16ffca3bd49f7aa266d02ec718d07c1038fa",
+        "certificate_sha256": "64d5e8b8df69fe8a6874a32d6d19e6cab6253af1c186ba5238a6e428d652f914"
+      }
+    },
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0"
+      }
+    },
+    {
+      "name": "Native Rust 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Rust core pointer, initialization and cell contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Charon value/type import",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas scalar model and symbolic conversion",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "Modular Responsiveness Verification of Rust Async Runtimes",
+      "identity": {
+        "arxiv": "2610.09198v1",
+        "submitted": "2026-10-06",
+        "sha256": "d22755eaee7f4a07725adda27711ea1e1b1f275760b9f46de060e69df2d32c30"
+      }
+    },
+    {
+      "name": "A Complete Formal Semantics for Rust Source Code",
+      "identity": {
+        "arxiv": "2610.06003v1",
+        "submitted": "2026-10-05",
+        "sha256": "1f8421bb193e351a0a10443478a2dde25c3c1b34493f7540a54a0c1977c3d16d"
+      }
+    },
+    {
+      "name": "Native async drop probe compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "host": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Rust native compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

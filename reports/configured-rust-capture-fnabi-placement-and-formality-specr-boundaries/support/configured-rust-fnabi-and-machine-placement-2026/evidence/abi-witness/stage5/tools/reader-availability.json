@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/llvm-objdump",
+    "--help"
+  ],
+  "exit_code": 0,
+  "tool_sha256_before_after": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c",
+  "stdout_sha256": "3f5d703c85c44e893d36de0d6abfac1b1116c78c49511b68a419647b1be6910f",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "relevant_help": [
+    "  --disassemble           Disassemble all executable sections found in the input files",
+    "  --reloc                 Display the relocation entries in the file",
+    "  --symbol-description    Add symbol description for disassembly. This option is for XCOFF files only",
+    "  --syms                  Display the symbol table",
+    "  --traceback-table       Decode traceback table in disassembly. Implies --disassemble. This option is for XCOFF files only"
+  ],
+  "scope": "Declared reader options and registered x86-64 target; no actual Windows COFF parsed, and LLVM source-to-binary correspondence unproved."
+}

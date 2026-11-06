@@ -1,0 +1,35 @@
+{
+  "purpose": "Public path normalization and explicit caller-selected replay tools; logical sources unchanged. Raw original support hashes retained here. Hashes in published support indexes bind published bytes.",
+  "changes": [
+    {
+      "package": "configured-capture-and-independent-obligation-completeness",
+      "path": "lean-check.initial.json",
+      "original_sha256": "7272dcef3fd6f08693365f46e90546d91e114d5705bf2fc735d8c90b2a90fa55",
+      "published_sha256": "c5e2b0f02ba87f84306e240ebc46184c8a41c1612c0f8b696f40e417389d965a"
+    },
+    {
+      "package": "configured-capture-and-independent-obligation-completeness",
+      "path": "lean.stdout",
+      "original_sha256": "a3d2d4fdbed3cdd561956b5b3b34b90717a50440ad1267cf6c92e716dd317f2b",
+      "published_sha256": "d89df6a1887b3def572a6546aaec24d3324b8d17b9db89f6fdc2e1f2affd5f06"
+    },
+    {
+      "package": "configured-capture-and-independent-obligation-completeness",
+      "path": "REPORT.md",
+      "original_sha256": "0b018991d839945d794f48120dea817aa7c5d680c1f8323b9decc94f4bf711e4",
+      "published_sha256": "43e7cc17618b883b120f640d8f4f176b1da8045d64ef5057d8d3e200266b0b6e"
+    },
+    {
+      "package": "configured-capture-and-independent-obligation-completeness",
+      "path": "lean.stdout.initial",
+      "original_sha256": "f9f4b38f19e89db8017325cb27d7746ec6908fac240301c83ac810df4412a3a8",
+      "published_sha256": "cc501787af182cf9e21e9ead56124230633b13976d03fa059f3594193df6fe52"
+    },
+    {
+      "package": "configured-capture-and-independent-obligation-completeness",
+      "path": "lean-check.json",
+      "original_sha256": "178054595d2cb4c722b73e042074396d2ad7c1d787bd0edf5f350d60591c2859",
+      "published_sha256": "227502c2b4b86657022b6f1ee74a89e2ec50edfbbbcd5baf1bde2b933e1b307e"
+    }
+  ]
+}

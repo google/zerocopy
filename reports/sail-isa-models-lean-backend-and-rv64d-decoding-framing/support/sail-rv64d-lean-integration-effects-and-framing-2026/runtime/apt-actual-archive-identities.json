@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "0af066858d96349334304f51ea631ea4c2496694952ea17f7dca1b5e8ecf6715",
+    "find",
+    "/var/cache/apt/archives",
+    "-maxdepth",
+    "1",
+    "-type",
+    "f",
+    "-name",
+    "*.deb",
+    "-exec",
+    "sha256sum",
+    "--",
+    "{}",
+    "+"
+  ],
+  "exit_code": 0
+}

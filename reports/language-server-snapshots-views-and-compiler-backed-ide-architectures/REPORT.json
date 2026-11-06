@@ -1,0 +1,415 @@
+{
+  "topics": [
+    "agents",
+    "agents/lsp-integration",
+    "build/incremental-computation",
+    "anneal/interactive-lsp",
+    "anneal/batch-live-equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Language Server architecture at archived repository head",
+      "identity": {
+        "repository": "rust-lang/rls",
+        "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+      }
+    },
+    {
+      "name": "RFC 1317 Rust Language Server accepted text",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+        "rfc": "1317"
+      }
+    },
+    {
+      "name": "RFC 2912 rust-analyzer transition accepted text",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+        "rfc": "2912"
+      }
+    },
+    {
+      "name": "rust-analyzer current architecture",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+      }
+    },
+    {
+      "name": "rustc developer guide current rust-analyzer sharing account",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "0fb89036f8e46a80ee815ed99ff7d9dae9d172ae"
+      }
+    },
+    {
+      "name": "RFC 1317: Rust Language Server",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "82d48b36568286b93fc2ce55f89594024f421a3b",
+        "path": "text/1317-ide.md"
+      }
+    },
+    {
+      "name": "RFC 2912: Transition to rust-analyzer",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "b6fffdf18f8b867648de0d95657cc13a64cae4e2",
+        "path": "text/2912-rust-analyzer.md"
+      }
+    },
+    {
+      "name": "Rust Language Server design and archived implementation",
+      "identity": {
+        "repository": "rust-lang/rls",
+        "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+        "architecture_blob": "a7bde5799d73cbaf7319dad2773fd58a89a978a8",
+        "rfc": "1317"
+      }
+    },
+    {
+      "name": "rust-analyzer adoption decision",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+        "rfc": "2912",
+        "rfc_blob": "9f5986eeacafbea1ad99c6cbc4c24d2eab278c99"
+      }
+    },
+    {
+      "name": "Current rust-analyzer architecture",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+        "architecture_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c"
+      }
+    },
+    {
+      "name": "Anneal design authority used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    },
+    {
+      "name": "clangd current implementation",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"
+      }
+    },
+    {
+      "name": "clangd current design documentation",
+      "identity": {
+        "repository": "llvm/clangd-www",
+        "revision": "ae5866d4552e30a173b8e9c3cec872a82e4c0120"
+      }
+    },
+    {
+      "name": "clangd preamble storage tradeoff",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "e9eb7f0cb815641827fa3d031c38190c10900c14",
+        "differential": "D39843"
+      }
+    },
+    {
+      "name": "clangd background indexing thread-pool design",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "6675be87477395658f6d3859b028ab8dee81ba19",
+        "differential": "D53651"
+      }
+    },
+    {
+      "name": "clangd TUScheduler cancellation policy",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a2b048bc4bdf9320249d0ff512fab6f16c2e6e47",
+        "differential": "D54746"
+      }
+    },
+    {
+      "name": "clangd update-invalidated request policy",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c627b120eb8b7add3f9cf893721335c367d9f037",
+        "differential": "D75602"
+      }
+    },
+    {
+      "name": "clangd asynchronous preamble indexing change and design discussion",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "a8ad413f0d18c07a4adaa0d547e0096874d809c5",
+        "differential": "D148088"
+      }
+    },
+    {
+      "name": "gopls current workspace, view, snapshot, and invalidation architecture",
+      "identity": {
+        "repository": "golang/tools",
+        "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+      }
+    },
+    {
+      "name": "gopls pre-scalability architecture",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.11.0",
+        "revision": "611cff71b9afeb81ae6eb16c5ce9376c051b1828"
+      }
+    },
+    {
+      "name": "gopls separate-compilation transition",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.12.0",
+        "revision": "236850463aea0b1949167349b44c37f97aefd9c5"
+      }
+    },
+    {
+      "name": "gopls zero-config workspace release",
+      "identity": {
+        "repository": "golang/tools",
+        "release": "gopls/v0.15.0",
+        "revision": "50e6ff28fb47219a23c4d0ed12da704b94087f76"
+      }
+    },
+    {
+      "name": "Multi-project gopls workspace proposal",
+      "identity": {
+        "repository": "golang/proposal",
+        "revision": "0be13090fdb0cbae0d71641bb676d924bc1c94de",
+        "path": "design/37720-gopls-workspaces.md"
+      }
+    },
+    {
+      "name": "Anneal current design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "clangd selected LLVM main source",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "branch": "main",
+        "revision": "229b9b2f4e20840a8280174fa08385fd9e36844b"
+      }
+    },
+    {
+      "name": "gopls selected tools master source",
+      "identity": {
+        "repository": "golang/tools",
+        "branch": "master",
+        "revision": "134264d72fba423ca1ad358683cd3c32699b010e"
+      }
+    },
+    {
+      "name": "rust-analyzer pinned and observed master source",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "branch": "master",
+        "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+      }
+    },
+    {
+      "name": "Haskell IDE Engine archive",
+      "identity": {
+        "repository": "haskell/haskell-ide-engine",
+        "revision": "d84b84322ccac81bf4963983d55cc4e6e98ad418"
+      }
+    },
+    {
+      "name": "ghcide archive",
+      "identity": {
+        "repository": "haskell/ghcide",
+        "revision": "3ef4ef99c4b9cde867d29180c32586947df64b9e"
+      }
+    },
+    {
+      "name": "Haskell Language Server",
+      "identity": {
+        "repository": "haskell/haskell-language-server",
+        "revision": "187fcd4a685c220caabb72999565604b3287aff2"
+      }
+    },
+    {
+      "name": "hie-bios",
+      "identity": {
+        "repository": "haskell/hie-bios",
+        "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+      }
+    },
+    {
+      "name": "Haskell Language Server pinned and observed master",
+      "identity": {
+        "repository": "haskell/haskell-language-server",
+        "branch": "master",
+        "revision": "187fcd4a685c220caabb72999565604b3287aff2"
+      }
+    },
+    {
+      "name": "hie-bios pinned and observed master",
+      "identity": {
+        "repository": "haskell/hie-bios",
+        "branch": "master",
+        "revision": "32dd07707423ffabb34e44af68fcbd027b60ded2"
+      }
+    },
+    {
+      "name": "Kotlin compiler FIR and Analysis API",
+      "identity": {
+        "repository": "JetBrains/kotlin",
+        "revision": "bce49f3701fb8dc461fb98240fdc7c3c81c592f2"
+      }
+    },
+    {
+      "name": "Swift SourceKit-LSP",
+      "identity": {
+        "repository": "swiftlang/sourcekit-lsp",
+        "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+      }
+    },
+    {
+      "name": "Swift compiler SourceKit",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "f63674ca12ca2b79b5dd87cd6b04e57ef9b0485d"
+      }
+    },
+    {
+      "name": "Anneal V2 design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Kotlin selected master source",
+      "identity": {
+        "repository": "JetBrains/kotlin",
+        "branch": "master",
+        "revision": "79b33f2836ef88425c100924bb8d29bcdf52bf48"
+      }
+    },
+    {
+      "name": "Swift SourceKit-LSP pinned and observed main",
+      "identity": {
+        "repository": "swiftlang/sourcekit-lsp",
+        "branch": "main",
+        "revision": "045c18e9e9ea35b896857b6cb982aa2373fb5816"
+      }
+    },
+    {
+      "name": "Swift compiler selected main source",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "branch": "main",
+        "revision": "0fcad6fb60755587d39a758761b219bf433cf9dc"
+      }
+    },
+    {
+      "name": "Roslyn current workspace, compilation, syntax, and remote-synchronization architecture",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b"
+      }
+    },
+    {
+      "name": "Roslyn overview as first imported into the public GitHub repository",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "4a74095f0e3598e514f3147479beee208c0ad7ed",
+        "path": "Roslyn-Overview.md"
+      }
+    },
+    {
+      "name": "Roslyn initial out-of-process workspace integration commit",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "revision": "c141605a972871644cc43f2caec597c88e9662db"
+      }
+    },
+    {
+      "name": "Eric Lippert's Roslyn red/green-tree design account",
+      "identity": {
+        "published": "2012-06-08",
+        "url": "https://ericlippert.com/2012/06/08/red-green-trees/"
+      }
+    },
+    {
+      "name": "Anneal design authority used for transfer analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "Roslyn current main source",
+      "identity": {
+        "repository": "dotnet/roslyn",
+        "branch": "main",
+        "revision": "36d26c5466e4d25940657ccb8d5b9557ccaf7be1"
+      }
+    },
+    {
+      "name": "Roslyn Workspaces.Common 5.9.0 stable package source",
+      "identity": {
+        "package": "Microsoft.CodeAnalysis.Workspaces.Common",
+        "version": "5.9.0",
+        "repository": "dotnet/roslyn",
+        "revision": "35d9211b841e7613c1d2f8f5af6d628ace696c4c"
+      }
+    },
+    {
+      "name": "TypeScript 6.0.2 compiler and language-service architecture",
+      "identity": {
+        "repository": "microsoft/TypeScript",
+        "revision": "607a22a90d1a5a1b507ce01bb8cd7ec020f954e7",
+        "version": "6.0.2"
+      }
+    },
+    {
+      "name": "TypeScript language-service design guide",
+      "identity": {
+        "repository": "microsoft/TypeScript-wiki",
+        "revision": "966988bcca7c835fd22ab066bb6a9ff4d5ba511d",
+        "path": "Using-the-Language-Service-API.md"
+      }
+    },
+    {
+      "name": "TypeScript 7.0 native transition",
+      "identity": {
+        "release": "TypeScript 7.0",
+        "date": "2026-07-08",
+        "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/"
+      }
+    },
+    {
+      "name": "TypeScript 7.0.2 mirrored release tag",
+      "identity": {
+        "repository": "microsoft/TypeScript",
+        "revision": "1e4744d68260a7cb91b62b12edc3f6a2187faaf1",
+        "tag": "v7.0.2"
+      }
+    },
+    {
+      "name": "TypeScript 7.0.2 original native source tag",
+      "identity": {
+        "repository": "microsoft/typescript-go",
+        "revision": "2bd066d87f5bafd315be9f40889d0a60b9e58e0b",
+        "tag": "typescript/v7.0.2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

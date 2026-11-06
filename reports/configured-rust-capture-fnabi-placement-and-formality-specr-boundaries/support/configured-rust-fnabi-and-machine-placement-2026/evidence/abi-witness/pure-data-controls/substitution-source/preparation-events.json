@@ -1,0 +1,11 @@
+{
+  "subject_compiler_invocations": 0,
+  "native_or_target_invocations": 0,
+  "installs_or_network": 0,
+  "observer_builds": 0,
+  "observed_preparation_reader_failure": {
+    "kind": "Python ModuleNotFoundError: tomllib",
+    "effect": "Initial source-reader aborted before reading report or manifest; no compiler or subject process started.",
+    "recovery": "Read exact uniquely matched named TOML text sections with standard regex; retained URLs and hash strings directly, no dependency install or general TOML interpretation claim."
+  }
+}

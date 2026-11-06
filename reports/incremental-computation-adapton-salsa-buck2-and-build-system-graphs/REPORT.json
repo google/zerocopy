@@ -1,0 +1,258 @@
+{
+  "topics": [
+    "build",
+    "build/incremental-computation",
+    "build/caching",
+    "rustc/incremental",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Adapton: Composable, Demand-Driven Incremental Computation",
+      "identity": {
+        "doi": "10.1145/2594291.2594324",
+        "venue": "PLDI 2014"
+      }
+    },
+    {
+      "name": "Incremental Computation with Names",
+      "identity": {
+        "doi": "10.1145/2814270.2814305",
+        "arxiv": "1503.07792v6",
+        "venue": "OOPSLA 2015"
+      }
+    },
+    {
+      "name": "Refinement Types for Precisely Named Cache Locations",
+      "identity": {
+        "arxiv": "1610.00097"
+      }
+    },
+    {
+      "name": "Fungi: Typed Incremental Computation with Names",
+      "identity": {
+        "arxiv": "1808.07826v1"
+      }
+    },
+    {
+      "name": "Anneal design contract and current Aeneas incremental-translation evidence",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Self-Adjusting Computation PhD thesis",
+      "identity": {
+        "institution": "Carnegie Mellon University",
+        "technical-report": "CMU-CS-05-129",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "Adaptive Functional Programming",
+      "identity": {
+        "doi": "10.1145/1186632.1186634",
+        "publication": "ACM Transactions on Programming Languages and Systems 28(6)",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Imperative Self-Adjusting Computation",
+      "identity": {
+        "doi": "10.1145/1328438.1328476",
+        "publication": "POPL 2008",
+        "technical-report": "University of Chicago TR-2007-18"
+      }
+    },
+    {
+      "name": "A Consistent Semantics of Self-Adjusting Computation",
+      "identity": {
+        "doi": "10.1017/S0956796813000099",
+        "publication": "Journal of Functional Programming 23(3)",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "rustc incremental-compilation design documentation",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "8ae6c255bb0675bbcb8bd0c197e8e70505bd7e85"
+      }
+    },
+    {
+      "name": "Jane Street Incremental",
+      "identity": {
+        "repository": "janestreet/incremental",
+        "revision": "98b5750ec3c006641351bfd858a89136a5dbc52c"
+      }
+    },
+    {
+      "name": "GHC recompilation checker",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "234bab081682018da7d04b22eee4b80f70381d07"
+      }
+    },
+    {
+      "name": "Salsa query framework",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "revision": "a7f8c558555f179ca02f6bdf7397d1317f91aa43"
+      }
+    },
+    {
+      "name": "Salsa selected master source",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "branch": "master",
+        "revision": "30b614d826d697c47bc0f21591fab218f2004032"
+      }
+    },
+    {
+      "name": "rustc developer guide selected main source",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "branch": "main",
+        "revision": "be8854f66df1b5450349061e45374ac072abd109"
+      }
+    },
+    {
+      "name": "Salsa GitHub release salsa-v0.28.5",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "tag": "salsa-v0.28.5",
+        "revision": "d434f8805c60ac60dce5f367ca91c5a7cd3e4c86"
+      }
+    },
+    {
+      "name": "Buck2 architecture and DICE",
+      "identity": {
+        "repository": "facebook/buck2",
+        "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0",
+        "why-doc-blob": "6799f38df279cc03f1806b1d0d447fb19570bcfa",
+        "benefits-doc-blob": "296661b09239357fa870a55192dff6c5d54c25ca",
+        "dice-index-blob": "46897b9bd66a7bd055bbad8db7f363558347d4f0",
+        "modern-dice-doc-blob": "04a9950e2b077cdfdf91ca3e6e6ede68df508580"
+      }
+    },
+    {
+      "name": "Buck1 archived implementation",
+      "identity": {
+        "repository": "facebook/buck",
+        "revision": "9c7c421e49f4d92d67321f18c6d1cd90974c77c4",
+        "readme-blob": "59e9fda6c885670ebb3e0ce1b799ea8f9e97cf9c"
+      }
+    },
+    {
+      "name": "Buck2 public launch account",
+      "identity": {
+        "publisher": "Meta Engineering",
+        "published": "2023-04-06",
+        "url": "https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/"
+      }
+    },
+    {
+      "name": "Build Systems \u00e0 la Carte",
+      "identity": {
+        "authors": "Andrey Mokhov; Neil Mitchell; Simon Peyton Jones",
+        "publication": "PACMPL 2 (ICFP), Article 79",
+        "year": "2018",
+        "doi": "10.1145/3236774"
+      }
+    },
+    {
+      "name": "Anneal design constraints",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    },
+    {
+      "name": "Buck2 original source",
+      "identity": {
+        "repository": "facebook/buck2",
+        "revision": "738e69a6c5f1efb6a015645228e7a19ee9b1d9c0"
+      }
+    },
+    {
+      "name": "Buck2 selected main source",
+      "identity": {
+        "repository": "facebook/buck2",
+        "branch": "main",
+        "revision": "b2b7ba58b5188aa35adc784d8ec6425dd93b98df"
+      }
+    },
+    {
+      "name": "Buck2 latest observed date-named tag",
+      "identity": {
+        "repository": "facebook/buck2",
+        "tag": "2026-09-15",
+        "revision": "6507dd157a6f81a810c48583edf1758dd0c337c5"
+      }
+    },
+    {
+      "name": "Build Systems \u00e0 la Carte (ICFP 2018)",
+      "identity": {
+        "doi": "10.1145/3236774",
+        "publication": "Proceedings of the ACM on Programming Languages 2, ICFP, Article 79 (2018)"
+      }
+    },
+    {
+      "name": "Build systems \u00e0 la carte: Theory and practice (JFP 2020)",
+      "identity": {
+        "doi": "10.1017/S0956796820000088",
+        "publication": "Journal of Functional Programming 30:e11 (2020)"
+      }
+    },
+    {
+      "name": "Build Systems \u00e0 la Carte executable framework and maintained paper source",
+      "identity": {
+        "repository": "snowleopard/build",
+        "revision": "43b18b9a362d7d27b64679ea4122e4b8c5dfedd9"
+      }
+    },
+    {
+      "name": "Make \u2014 a program for maintaining computer programs",
+      "identity": {
+        "doi": "10.1002/spe.4380090402",
+        "publication": "Software: Practice and Experience 9(4):255-265",
+        "year": "1979"
+      }
+    },
+    {
+      "name": "GNU Make 4.4.1 manual and release",
+      "identity": {
+        "release": "4.4.1",
+        "release-date": "2023-02-26",
+        "release-tarball-md5": "c8469a3713cbbe04d955d4ae4be23eeb"
+      }
+    },
+    {
+      "name": "Ninja build system",
+      "identity": {
+        "repository": "ninja-build/ninja",
+        "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+      }
+    },
+    {
+      "name": "Ninja pinned and observed master source",
+      "identity": {
+        "repository": "ninja-build/ninja",
+        "branch": "master",
+        "revision": "4e4df1e567eb3c1475a51af261cba2bfff60b4be"
+      }
+    },
+    {
+      "name": "Ninja latest official release v1.13.2 source",
+      "identity": {
+        "repository": "ninja-build/ninja",
+        "tag": "v1.13.2",
+        "revision": "3441b633c2fe2c494e958780ba0f4227b1327634"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

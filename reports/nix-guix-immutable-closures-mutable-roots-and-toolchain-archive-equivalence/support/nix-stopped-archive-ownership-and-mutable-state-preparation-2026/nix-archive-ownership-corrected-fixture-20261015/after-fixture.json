@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "cp",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5:/work/anneal-ownership-probe-20261015",
+    "-"
+  ],
+  "status": 0,
+  "seconds": 0.03850104101002216,
+  "stdout_sha256": "02d82c1dab21974734a544fa5f7e2601ae8e07f1f1c4dbf9aae3cb00e832c293",
+  "stdin_sha256": null
+}

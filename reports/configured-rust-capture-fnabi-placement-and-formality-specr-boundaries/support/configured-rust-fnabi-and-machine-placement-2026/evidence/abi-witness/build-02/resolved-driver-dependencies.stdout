@@ -1,0 +1,8 @@
+${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib:
+	@rpath/librustc_driver-16d1e96e5b674978.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)
+	/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)
+	/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 4201.0.0)
+	/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)
+	/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2000.67.0)
+	/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)

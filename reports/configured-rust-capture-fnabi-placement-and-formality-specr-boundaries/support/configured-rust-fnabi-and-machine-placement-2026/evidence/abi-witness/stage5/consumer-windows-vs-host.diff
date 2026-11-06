@@ -1,0 +1,60 @@
+--- e33_consumer_v3.py
++++ stage5/e33_consumer_windows.py
+@@ -1,4 +1,4 @@
+-"""Caller-fixed ABI capture consumer. Implementation only: check mode NOT RUN.
++"""Caller-fixed ABI capture consumer. Distinct Windows preparation: no Windows observation performed.
+ There is no producer-selectable reference/request/flags/tool hash argument.
+ preflight performs data/hash reads only; check would launch exactly one selected
+ reviewed observer after parent authorization, generate a fresh reference, compare
+@@ -6,9 +6,11 @@
+ """
+ from pathlib import Path
+ import argparse,json,sys
+-import e33_data_v3 as D
++import e33_data_windows as D
++ROOT=Path(__file__).resolve().parent.parent
++OWNED=ROOT/'stage5'
++sys.path.insert(0,str(ROOT))
+ import build_control_v3 as C
+-ROOT=Path(__file__).resolve().parent
+ class Operational(RuntimeError):pass
+ def file_sha(p):return C.h(Path(p))
+ def preflight(toolchain,profile):
+@@ -16,6 +18,11 @@
+  ids=D.parse(D.read(ROOT/'source-identities.json'))
+  for x in ids['readonly_tools']:
+   p=toolchain/x['toolchain_relative_path'];D.require(p.is_file() and not p.is_symlink() and p.stat().st_size==x['bytes'] and file_sha(p)==x['sha256'],'readonly tool identity')
++ target=D.parse(D.read(ROOT/request['authority']['installed_target_identities']['path']))
++ D.require(target['target']=='x86_64-pc-windows-msvc' and len(target['files'])==45,'fixed installed target identity set')
++ for x in target['files']:
++  rel=Path(x['toolchain_relative_path']);D.require(not rel.is_absolute() and '..' not in rel.parts and str(rel).startswith('lib/rustlib/x86_64-pc-windows-msvc/'),'fixed target relative path')
++  p=toolchain/rel;D.require(p.is_file() and not p.is_symlink() and p.stat().st_size==x['bytes'] and file_sha(p)==x['sha256'],'installed Windows target file identity')
+  # This compiled observer's approved LC_RPATH is relative to its own directory.
+  # Hash the actual resolved driver independently from the --sysroot selection.
+  actual=ROOT.parent/'toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib'
+@@ -25,7 +32,7 @@
+ def capture_fixed(toolchain,profile,run_path):
+  request,toolchain=preflight(toolchain,profile)
+  run_path=Path(run_path)
+- D.require(run_path.is_absolute() and run_path.parent.resolve().is_relative_to(ROOT) and not run_path.exists(),'fresh owned run directory')
++ D.require(run_path.is_absolute() and run_path.parent.resolve().is_relative_to(OWNED) and not run_path.exists(),'fresh owned run directory')
+  p=request['profile'];source=ROOT/p['source']['path'];output=run_path/'reference.json'
+  args=[str(ROOT/'observer-v3'),str(ROOT/p['selectors']['path']),str(output),'--',str(source),'--sysroot',str(toolchain),'--edition=2021','--crate-type=lib','--crate-name='+p['crate_name'],'--target='+p['target'],'-Copt-level='+str(p['optimization']),'-Cpanic=abort','-Ctarget-cpu='+p['target_cpu'],'-Zthreads=1','-Ccodegen-units=1','--emit=metadata','--out-dir',str(run_path)]
+  env={'PATH':'/usr/bin:/bin:/usr/sbin:/sbin','TMPDIR':str(run_path/'tmp'),'LC_ALL':'C','LANG':'C'}
+@@ -40,6 +47,7 @@
+  if again['effective_request_sha256']!=request['effective_request_sha256']:raise Operational('caller input changed during capture')
+  if result['controller_failure'] or result['stop_reason'] or result['exit_code']!=0:
+   raise Operational('fresh observation failed; inspect exact retained status/streams')
++ if (run_path/'stdout').stat().st_size or (run_path/'stderr').stat().st_size:raise Operational('unclassified Windows diagnostic; stop before acceptance')
+  if not output.is_file():raise Operational('observer exited without full fresh reference')
+  try:reference=D.read(output);D.validate_observation(D.parse(reference),request)
+  except D.Reject as e:raise Operational('independent observer output outside reviewed grammar; stop before acceptance') from e
+@@ -60,7 +68,7 @@
+ 
+ def main():
+  parser=argparse.ArgumentParser(description=__doc__,allow_abbrev=False)
+- parser.add_argument('mode',choices=['preflight','capture','check']);parser.add_argument('--toolchain',required=True);parser.add_argument('--profile',required=True,choices=['host-subjects-opt0','host-subjects-opt2','host-vectors-opt0','host-vectors-opt2']);parser.add_argument('--candidate');parser.add_argument('--run-dir')
++ parser.add_argument('mode',choices=['preflight','capture','check']);parser.add_argument('--toolchain',required=True);parser.add_argument('--profile',required=True,choices=['windows-subjects-opt2']);parser.add_argument('--candidate');parser.add_argument('--run-dir')
+  a=parser.parse_args()
+  try:
+   if a.mode=='preflight':

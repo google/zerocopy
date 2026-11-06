@@ -1,0 +1,20 @@
+{
+  "correlated_specification_weakening": {
+    "independent_spec_meaning_agreement": false,
+    "source_output": 1,
+    "source_satisfies_original": true,
+    "target_output": 2,
+    "target_satisfies_generated": true,
+    "target_satisfies_original": false
+  },
+  "scope": "complete truth checks on x in {0,1,2} for defined predicates",
+  "selected_property": {
+    "full_states_equal": false,
+    "source_satisfies": true,
+    "target_satisfies": true
+  },
+  "vacuous_precondition": {
+    "independent_entry_meaning_agreement": false,
+    "target_hoare_condition_holds": true
+  }
+}

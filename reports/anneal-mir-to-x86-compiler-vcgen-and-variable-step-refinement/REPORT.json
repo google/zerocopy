@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "anneal/anllvm",
+    "anneal/byte-memory",
+    "anneal/compiler-optimizations",
+    "anneal/loop-invariants",
+    "anneal/mir-semantics",
+    "anneal/provenance",
+    "anneal/refinement",
+    "anneal/rustc-capture",
+    "anneal/symbolic-execution",
+    "anneal/vcgen",
+    "anneal/verified-compilation",
+    "lean4/step-indexed-refinement",
+    "lean4/stutter-simulation",
+    "lean4/weakest-precondition",
+    "lean4/whnf-reduction",
+    "llvm/abi-lowering",
+    "llvm/niche-discriminants",
+    "rust/mir",
+    "rust/rustc-codegen-llvm",
+    "rust/rustc-codegen-ssa",
+    "rust/rustc-mir-transform",
+    "rust/validity",
+    "rustc/layout-abi",
+    "rustc/mir-pretty",
+    "rustc/monomorphization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal repository principles and trusted refinement boundary",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal universal refinement kernel and trusted boundary audit",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Bundled Anneal Rust Compiler Toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Pinned Rust Compiler Source Baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_llvm, and rustc_ty_utils)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 opt optimizer and IR headers",
+      "identity": {
+        "include_root": "/usr/include/llvm-21/llvm",
+        "package": "llvm-21-dev",
+        "release": "llvmorg-21.1.8",
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-01"
+}

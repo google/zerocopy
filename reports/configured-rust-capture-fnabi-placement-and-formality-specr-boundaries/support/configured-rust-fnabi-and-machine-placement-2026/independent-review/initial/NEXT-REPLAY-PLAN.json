@@ -1,0 +1,91 @@
+{
+  "status": "PROPOSED ONLY; awaiting parent review and launch grant",
+  "settings": "Requested gpt-6.1-sol/medium; effective settings unexposed",
+  "sequence": [
+    {
+      "name": "host-opt0",
+      "argv": [
+        "/usr/bin/python3",
+        "${WORKSPACE}/work/execution/abi-witness/e33_consumer_v3.py",
+        "check",
+        "--toolchain",
+        "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+        "--profile",
+        "host-subjects-opt0",
+        "--candidate",
+        "${WORKSPACE}/work/execution/abi-witness/capture-v3-host-subjects-opt0-01/reference.json",
+        "--run-dir",
+        "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-01"
+      ],
+      "consumer_sha256": "c0c476f3fe9e1497f4484b4de4c493194cd82d2fd93f5853fbfd7241f7aeb6da",
+      "candidate_raw_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "run_path_must_not_exist": "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-01",
+      "parent_cli_stream_prefix": "${WORKSPACE}/work/execution/review-abi-witness/host-opt0-consumer",
+      "observer_invocations": 1,
+      "compiler_codegen_or_link_invocations": 0,
+      "expected_exit": 0,
+      "expected_comparison_status": "accepted_against_fresh_pinned_compiler_observation",
+      "expected_fresh_reference_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "expected_observer_stdout_bytes": 0,
+      "expected_observer_stderr_bytes": 0
+    },
+    {
+      "name": "windows-opt2",
+      "argv": [
+        "/usr/bin/python3",
+        "${WORKSPACE}/work/execution/abi-witness/stage5/e33_consumer_windows.py",
+        "check",
+        "--toolchain",
+        "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+        "--profile",
+        "windows-subjects-opt2",
+        "--candidate",
+        "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/capture-subjects-o2-01/reference.json",
+        "--run-dir",
+        "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01"
+      ],
+      "consumer_sha256": "710ddfdac53cda6e50198cd3f3a642712676d69db7d1474d47d589bcb1cd3810",
+      "candidate_raw_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "run_path_must_not_exist": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01",
+      "parent_cli_stream_prefix": "${WORKSPACE}/work/execution/review-abi-witness/windows-opt2-consumer",
+      "observer_invocations": 1,
+      "compiler_codegen_or_link_invocations": 0,
+      "expected_exit": 0,
+      "expected_comparison_status": "accepted_against_fresh_pinned_compiler_observation",
+      "expected_fresh_reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "expected_observer_stdout_bytes": 0,
+      "expected_observer_stderr_bytes": 0
+    }
+  ],
+  "max_observer_invocations": 2,
+  "optional_mutant_invocations": 0,
+  "environment": {
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "LC_ALL": "C",
+    "LANG": "C"
+  },
+  "cwd": "${WORKSPACE}",
+  "allowed_write_roots": [
+    "${WORKSPACE}/work/execution/review-abi-witness",
+    "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-01",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01"
+  ],
+  "lifecycle": "Unmodified consumers invoke existing run_owned/ScopedMonitor, observation60s, sampledRSS1GiB, output128MiB, retained process-group termination/status records. Parent outer calls retain complete consumer stdout/stderr and return code; no long blocking wait; no automatic retry. These are sampled policies not hard isolation.",
+  "prelaunch_read_gates": [
+    "Parent has read exact argv and explicitly granted these two create-only raw-root paths beyond current reviewer scope.",
+    "Both run paths absent including casefold collisions; refuse reuse.",
+    "Rehash original observer source/binary, authorities/catalogs/prepared manifests, both consumer/data/controller helpers, fixtures/selectors, exact compiler/driver/host libraries and45Windows installed files; no public projected artifacts may substitute.",
+    "Actual observer remains in original directory with original pinned loader geometry; system/shared-cache closure remains runtime trust.",
+    "Record /usr/bin/python3 interpreter identity and runtime as trust; do not install or select a new interpreter if unavailable.",
+    "Record initial hashes/settings/commands before launch; first failed identity or unexpected binding/assertion stops both-run sequence."
+  ],
+  "postlaunch_gates": [
+    "Store exact consumer CLI status/stdout/stderr before interpreting any result.",
+    "Require consumer exit0, no unexpected CLI stderr, exact one observer invocation, observer exit0, no controller_failure/stop_reason/remaining process group, and zero observer stdout/stderr for these ordinary profiles. Host consumer itself lacks a diagnostics gate; enforce this outer gate without altering it.",
+    "Require fresh reference and comparison receipts; rehash candidate unchanged and validate bound request identity, complete-data match, expected fresh packet hash.",
+    "Preserve every initial diagnostic/output/status on failure. Stop immediately, do not repair reader/helpers, retry, recapture, change authority or silently accept a different identity.",
+    "After host success only, proceed to Windows. Unexpected Windows result stops; no optional mutant has been budgeted.",
+    "Record outcomes privately; no candidate source/helper edits, no publication/Git/network, no codegen/object-reader/native/SDK/link launches."
+  ],
+  "scope": "Two actual fresh check observations for exact existing raw candidates; source/data review already done. Each check internally captures its reference, so separate captures would be redundant. No new machine behavior is tested."
+}

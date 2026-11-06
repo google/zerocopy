@@ -1,0 +1,11 @@
+{
+  "status": "PASS_EXISTING_DIRECTORY_HEADER_FIXTURE",
+  "directory_owner_sequence": [
+    1000,
+    1001,
+    1000
+  ],
+  "children_content_modes_owners_symlink_and_hardlink_preserved": true,
+  "effects": "Only existing owned fixture directory metadata changed and restored. No Nix state/store/HOME/source preparation, native program, start, image or build.",
+  "limits": "Logical tar-visible metadata/content/topology only; inode numbers, ctime, xattrs/ACLs and Nix-state archives not established."
+}

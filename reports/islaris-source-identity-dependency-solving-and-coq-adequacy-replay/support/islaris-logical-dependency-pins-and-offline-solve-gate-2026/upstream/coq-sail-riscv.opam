@@ -1,0 +1,35 @@
+opam-version: "2.0"
+name: "coq-sail-riscv"
+version: "0.5"
+maintainer: "Sail Devs <cl-sail-dev@lists.cam.ac.uk>"
+authors: [
+  "Alasdair Armstrong"
+  "Thomas Bauereiss"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Jonathan French"
+  "Prashanth Mundkur"
+  "Robert Norton"
+  "Christopher Pulte"
+  "Peter Sewell"
+]
+homepage: "https://github.com/rems-project/sail-riscv/"
+bug-reports: "https://github.com/rems-project/sail-riscv/issues"
+license: "BSD3"
+dev-repo: "git+https://github.com/rems-project/sail-riscv.git"
+build: [
+  [make "ARCH=RV64" "riscv_coq_build"]
+  [make "ARCH=RV32" "riscv_coq_build"]
+]
+install: [make "riscv_coq_install"]
+depends: [
+  "ocaml" {>= "4.06.1"}
+  "ocamlfind"
+  "ocamlbuild"
+  "sail"
+  "coq-sail"
+  "conf-gmp"
+  "conf-zlib"
+]
+synopsis:
+  "A model of the RISC-V instruction set architecture in Coq, generated from Sail"

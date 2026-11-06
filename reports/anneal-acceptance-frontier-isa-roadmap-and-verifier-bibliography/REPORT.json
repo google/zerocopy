@@ -1,0 +1,361 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/tcb-audit",
+    "anneal/trust-policy",
+    "anneal/refinement-lattice",
+    "anneal/mir-semantics",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/x86-64",
+    "isa/sail",
+    "isa/islaris",
+    "isa/jasmin",
+    "minirust/semantics",
+    "minirust/memory",
+    "rust/inline-asm",
+    "verification/iris",
+    "verification/verus",
+    "verification/compcert",
+    "verification/smt-certificates",
+    "verification/survey",
+    "systems/sandboxing"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Anneal current redesign and historical V1 in zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8d8ed8dcc98c991d32cee3c3a84e129f29cba136"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean comparator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "Lean4Lean independent kernel",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Rust 1.99.0 compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Rust compiler inline assembly MIR lowering",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "The Rust Reference inline assembly specification",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Aeneas translation and extraction",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Charon MIR/LLBC extractor",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Charon 0.1.210 serialization baseline",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Kraken (AeneasVerif fork)",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+      }
+    },
+    {
+      "name": "Kraken (upstream)",
+      "identity": {
+        "repository": "leanprover/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "LNSym ARMv8-A formalization",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+      }
+    },
+    {
+      "name": "CSLib Bignum ARM64 formalization",
+      "identity": {
+        "repository": "cslib-community/bignum",
+        "revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum HOL Light formalization",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91"
+      }
+    },
+    {
+      "name": "Sail ISA specification language and Lean 4 backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+      }
+    },
+    {
+      "name": "lean-sail monadic runtime support library",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "1e5b216bf881ef08da160db63b44ecda430802d6"
+      }
+    },
+    {
+      "name": "ArchSem architectural concurrency framework (Lean 4)",
+      "identity": {
+        "repository": "rems-project/archsem-lean",
+        "revision": "318583a5f2052c039c25dfd69a3beec0b0a27090"
+      }
+    },
+    {
+      "name": "ArchSem architectural concurrency framework (Coq/Rocq)",
+      "identity": {
+        "repository": "rems-project/archsem",
+        "revision": "42204d87df2e7d20e5ec23deb8ba8220e65148ab"
+      }
+    },
+    {
+      "name": "sail-tiny-arm-lean",
+      "identity": {
+        "repository": "rems-project/sail-tiny-arm-lean",
+        "revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b"
+      }
+    },
+    {
+      "name": "OpenCompl riscv-lean",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "7c6b500c1744f40d928fb131125cd06edf9f4fce"
+      }
+    },
+    {
+      "name": "OpenCompl lean-mlir",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
+      }
+    },
+    {
+      "name": "BasisResearch ship-your-interpreter",
+      "identity": {
+        "repository": "BasisResearch/ship-your-interpreter",
+        "revision": "fb07094cff916318c34b07494a77642dbf8dec36"
+      }
+    },
+    {
+      "name": "Islaris (Isla + Iris machine-code verification)",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6"
+      }
+    },
+    {
+      "name": "Jasmin compiler and verification framework",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "Project Everest Vale",
+      "identity": {
+        "repository": "project-everest/vale",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "Lean-Iris separation logic",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c"
+      }
+    },
+    {
+      "name": "Rocq Iris separation logic",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Verus Rust verifier",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "VerusBelt public source",
+      "identity": {
+        "repository": "verus-lang/verus-belt",
+        "revision": "b9b14b2cb47b6a6307611578782adc3481627aac"
+      }
+    },
+    {
+      "name": "Creusot Rust verifier",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "hax Rust extraction toolchain",
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+      }
+    },
+    {
+      "name": "Carcara Alethe SMT proof checker",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "Verus expression-translation thesis source (SST2AIR-in-Lean)",
+      "identity": {
+        "repository": "SSSPigeon/SST2AIR-in-Lean",
+        "revision": "e939579e65643456084cba9ca7c1dc3c81369118"
+      }
+    },
+    {
+      "name": "Lean-Iris batteries dependency",
+      "identity": {
+        "repository": "leanprover-community/batteries",
+        "revision": "f2effa3d803fda822b1f97b806c47cf2adfbcbc2"
+      }
+    },
+    {
+      "name": "Lean-Iris quotation dependency",
+      "identity": {
+        "repository": "leanprover-community/quote4",
+        "revision": "6a489d9af5d0c47e5b259e2e8bcdfc1811b5a259"
+      }
+    },
+    {
+      "name": "Aeneas Mathlib4 dependency",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "fabf563a7c95a166b8d7b6efca11c8b4dc9d911f"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Aeneas SymCrypt draft technical report",
+      "identity": {
+        "arxiv": "2609.15648v1",
+        "pdf_sha256": "ea94d6702c2339dbb059c1c7e516e75ccd42c1d7808075024bac32e07ce79adc"
+      }
+    },
+    {
+      "name": "Verifying Verus MS thesis",
+      "identity": {
+        "author": "Shuge Rong",
+        "publication": "Carnegie Mellon University, May 2026",
+        "url": "https://www.andrew.cmu.edu/user/avigad/Students/rong_ms_thesis.pdf",
+        "pdf_sha256": "8817a62d0c13036fef9554c38ea60c5290d1eacfefcf0cc6e0e99a3f92aae5c0"
+      }
+    },
+    {
+      "name": "VerusBelt semantic foundation paper",
+      "identity": {
+        "doi": "10.1145/3808325",
+        "publication": "PACMPL 10 PLDI article 247, June 2026",
+        "url": "https://iris-project.org/pdfs/2026-pldi-verusbelt.pdf",
+        "pdf_sha256": "6ca867d564fc26bb3983a98fc03f05d72d1b880e1007b18f98ac1b60071a70e7"
+      }
+    },
+    {
+      "name": "Carcara selected rug crate",
+      "identity": {
+        "crate": "rug",
+        "version": "1.30.0",
+        "crate_sha256": "07a8857882aec59d27254b02481c709327c13de6fad1da60bfc4f9783eaaa61e",
+        "url": "https://gitlab.com/tspiteri/rug"
+      }
+    },
+    {
+      "name": "Carcara selected gmp-mpfr-sys crate",
+      "identity": {
+        "crate": "gmp-mpfr-sys",
+        "version": "1.7.1",
+        "crate_sha256": "7db155b537cb791b133341f99f68371d86ee7fa4c79aacfbc376d72d23c70531",
+        "url": "https://gitlab.com/tspiteri/gmp-mpfr-sys"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

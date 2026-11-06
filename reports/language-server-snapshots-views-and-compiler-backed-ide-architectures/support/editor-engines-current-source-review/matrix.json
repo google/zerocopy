@@ -1,0 +1,775 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "e0cfc848df5d3bac60afe93fae903ba51d3d72ac",
+  "baseline_count": 581,
+  "current_count": 599,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.md",
+      "json_sha256": "21a96ce39b4681d3e6b6e426f51bf2eacf9aa434d142b128654be618abdeb086",
+      "md_sha256": "94a758764628ac63b8da6cddb01e8b68806d0f095b734fd69929da2f87a2c342"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v69/REPORT.md",
+      "json_sha256": "f054483f37f575e10f0f5fb1127c3227225e5da9fbb9f613a19c4b5fb8080ba0",
+      "md_sha256": "e4897cbaaf4f6fb2a7c1449163b5530968daaaac3f53d20b09c42c1ecb90c6c5"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/haskell-hls-hie-bios-current-source-review/REPORT.json",
+      "report_md": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "json_sha256": "35a6762ee7dec7ccc16fd9b7dca9c01fa2047889b62dc35441d2ef497942f33f",
+      "md_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/netstack3-current-source-review/REPORT.json",
+      "report_md": "reports/netstack3-current-source-review/REPORT.md",
+      "json_sha256": "52b2e22a22dfa151525046827ee20f9ad0ce133970815c4df86e91c840c4d8d1",
+      "md_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e"
+    },
+    {
+      "report_json": "reports/ninja-current-source-review/REPORT.json",
+      "report_md": "reports/ninja-current-source-review/REPORT.md",
+      "json_sha256": "90685322eb2a019f64c23444ce92b866887e0c3421a9fe3df312e3e9b5905ceb",
+      "md_sha256": "de2a0cd8f661113207d587efae30e9bafdce58d2b9a8e89322bdae8a9264d732"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/tock-asterinas-current-source-review/REPORT.json",
+      "report_md": "reports/tock-asterinas-current-source-review/REPORT.md",
+      "json_sha256": "de4abd4dfb0e1cc7a6cc6e34e02fcfc12c8946274565fd0055e6ff0271839760",
+      "md_sha256": "7b05bdda22d860bcddd6820aad9d137d4e38808a768e8e9f8727fb6155977fd0"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "official_observation_sha256": "fa48c72f4171855c1798f2078b1305cb148cbd214407728aae8413d6d976aa1a",
+  "rows": [
+    {
+      "inventory_id": "R383",
+      "cohort": "clangd source ded546ad82656ce6605ee2f2aa60c78dec70d95f",
+      "title": "clangd authority and freshness: incomplete code, preambles, indexing, and scheduling",
+      "report_json": "reports/clangd-authority-freshness-2017-2026/REPORT.json",
+      "report_md": "reports/clangd-authority-freshness-2017-2026/REPORT.md",
+      "frozen_json_sha256": "062f988ad30645ee5360e5b13b3b07e9077f262725c26323c41bbe63b9e88762",
+      "frozen_md_sha256": "7b40734a30b69382807680f13f8d11ce0fdc0309127424946c544e23f745ff4d",
+      "frozen_subjects_exact": [
+        {
+          "name": "clangd current implementation",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ded546ad82656ce6605ee2f2aa60c78dec70d95f"
+          }
+        },
+        {
+          "name": "clangd current design documentation",
+          "identity": {
+            "repository": "llvm/clangd-www",
+            "revision": "ae5866d4552e30a173b8e9c3cec872a82e4c0120"
+          }
+        },
+        {
+          "name": "clangd preamble storage tradeoff",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "e9eb7f0cb815641827fa3d031c38190c10900c14",
+            "differential": "D39843"
+          }
+        },
+        {
+          "name": "clangd background indexing thread-pool design",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "6675be87477395658f6d3859b028ab8dee81ba19",
+            "differential": "D53651"
+          }
+        },
+        {
+          "name": "clangd TUScheduler cancellation policy",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "a2b048bc4bdf9320249d0ff512fab6f16c2e6e47",
+            "differential": "D54746"
+          }
+        },
+        {
+          "name": "clangd update-invalidated request policy",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c627b120eb8b7add3f9cf893721335c367d9f037",
+            "differential": "D75602"
+          }
+        },
+        {
+          "name": "clangd asynchronous preamble indexing change and design discussion",
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "a8ad413f0d18c07a4adaa0d547e0096874d809c5",
+            "differential": "D148088"
+          }
+        }
+      ],
+      "frozen_sidecars": [
+        {
+          "path": "reports/clangd-authority-freshness-2017-2026/evidence-map.json",
+          "sha256": "c69d17e1c05033214819e1c4a735b62f9dbbf394669ca4f97b630259ed483303"
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "clangd does not converge on one global notion of “ready.” Its mature architecture assigns different freshness and authority rules to different operations. The compile command determines which language and build model the parser is approximating; a fallback command is explicitly unreliable. A normal AST request is fenced to the document version tracked when the request was scheduled. Code completion deliberately uses a fresh parse of the current incomplete buffer with a potent",
+      "full_summary_exact": "clangd does not converge on one global notion of “ready.” Its mature architecture assigns different freshness and authority rules to different operations. The compile command determines which language and build model the parser is approximating; a fallback command is explicitly unreliable. A normal AST request is fenced to the document version tracked when the request was scheduled. Code completion deliberately uses a fresh parse of the current incomplete buffer with a potentially stale—or, in one mode, absent—preamble because latency dominates. Diagnostics are generated from Clang parsing, but the scheduler may satisfy the normal policy with either the requested snapshot or a subsequent one, while an explicit mode can require diagnostics for exactly the requested snapshot. Cross-file queries combine a dynamic index for open files with background, static, or remote indexes that trade freshness for coverage and resource use. The current source and design documents encode these differences directly.\n\nThat outcome was not accidental drift. From 2017 through 2023, clangd repeatedly made freshness, memory, CPU, and responsiveness tradeoffs explicit. Reviewers made in-memory preambles optional after observing roughly doubled memory in an early comparison. Background indexing moved to low-priority worker threads after discussion of foreground interference. Cancellation work allowed obsolete reads and intermediate diagnostic builds to disappear instead of forcing every version to complete. A later change invalidated editor-generated requests on subsequent edits to avoid building snapshots whose results had already become less useful. In 2023, maintainers accepted asynchronous preamble indexing with a documented temporary reduction in result freshness because much of the index-consuming feature set already tolerated stale information.\n\nThe defensible Anneal lesson is therefore narrower than “copy clangd.” Anneal should expose operation-specific authority rather than one global readiness bit. Completion-like suggestions, navigation, speculative indexing, cache warming, and other advisory views may use a declared older or incomplete generation when their consumers can tolerate that. Any result that authorizes generated artifacts, Charon/Aeneas translation, proof acceptance, refactoring edits, or publication should instead be tied to an exact source snapshot *and* an exact semantic model: Cargo subject/build configuration, tool revisions, generated inputs, and proof environment as applicable. A current buffer parsed under guessed configuration is fresh but not authoritative; an authoritative model paired with an old buffer is authoritative for the wrong snapshot. Freshness and model authority are independent axes.\n\nclangd also warns against equating “compiler-backed” with “the command-line build accepted this program.” It reuses Clang, but editor diagnostics can be skipped for intermediate versions, use a guessed compile command, and intentionally omit some analysis for responsiveness. clangd does not perform the build’s code-generation step. For Anneal, the batch acceptance path should remain the oracle unless and until a live path carries an explicit equivalence contract and evidence. The useful precedent is the separation of service levels, not the claim that an interactive frontend is itself an acceptance oracle.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "clangd does not converge on one global notion of “ready.” Its mature architecture assigns different freshness and authority rules to different operations. The compile command determines which language and build model the parser is approximating; a fallback command is explicitly unreliable. A normal AST request is fenced to the document version tracked when the request was scheduled. Code completion deliberately uses a fresh parse of the current incomplete buffer with a potentially stale—or, in one mode, absent—preamble because latency dominates. Diagnostics are generated from Clang parsing, but the scheduler may satisfy the normal policy with either the requested snapshot or a subsequent one, while an explicit mode can require diagnostics for exactly the requested snapshot. Cross-file queries combine a dynamic index for open files with background, static, or remote indexes that trade freshness for coverage and resource use. The current source and design documents encode these differences directly.",
+          "scope_role": "current_mapped",
+          "source_paths": [
+            "clang-tools-extra/clangd/TUScheduler.h",
+            "clang-tools-extra/clangd/ClangdServer.cpp",
+            "clang-tools-extra/clangd/GlobalCompilationDatabase.h",
+            "clang-tools-extra/clangd/index/FileIndex.cpp",
+            "clang-tools-extra/clangd/index/Background.cpp"
+          ],
+          "source_result": "mapped_blobs_unchanged_no_behavior_conclusion",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "That outcome was not accidental drift. From 2017 through 2023, clangd repeatedly made freshness, memory, CPU, and responsiveness tradeoffs explicit. Reviewers made in-memory preambles optional after observing roughly doubled memory in an early comparison. Background indexing moved to low-priority worker threads after discussion of foreground interference. Cancellation work allowed obsolete reads and intermediate diagnostic builds to disappear instead of forcing every version to complete. A later change invalidated editor-generated requests on subsequent edits to avoid building snapshots whose results had already become less useful. In 2023, maintainers accepted asynchronous preamble indexing with a documented temporary reduction in result freshness because much of the index-consuming feature set already tolerated stale information.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "The defensible Anneal lesson is therefore narrower than “copy clangd.” Anneal should expose operation-specific authority rather than one global readiness bit. Completion-like suggestions, navigation, speculative indexing, cache warming, and other advisory views may use a declared older or incomplete generation when their consumers can tolerate that. Any result that authorizes generated artifacts, Charon/Aeneas translation, proof acceptance, refactoring edits, or publication should instead be tied to an exact source snapshot *and* an exact semantic model: Cargo subject/build configuration, tool revisions, generated inputs, and proof environment as applicable. A current buffer parsed under guessed configuration is fresh but not authoritative; an authoritative model paired with an old buffer is authoritative for the wrong snapshot. Freshness and model authority are independent axes.",
+          "scope_role": "derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "clangd also warns against equating “compiler-backed” with “the command-line build accepted this program.” It reuses Clang, but editor diagnostics can be skipped for intermediate versions, use a guessed compile command, and intentionally omit some analysis for responsiveness. clangd does not perform the build’s code-generation step. For Anneal, the batch acceptance path should remain the oracle unless and until a live path carries an explicit equivalence contract and evidence. The useful precedent is the separation of service levels, not the claim that an interactive frontend is itself an acceptance oracle.",
+          "scope_role": "current_mapped_and_derived",
+          "source_paths": [
+            "clang-tools-extra/clangd/TUScheduler.h",
+            "clang-tools-extra/clangd/ClangdServer.cpp",
+            "clang-tools-extra/clangd/GlobalCompilationDatabase.h",
+            "clang-tools-extra/clangd/index/FileIndex.cpp",
+            "clang-tools-extra/clangd/index/Background.cpp"
+          ],
+          "source_result": "mapped_blobs_unchanged_no_behavior_conclusion",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "source_repository": "llvm/llvm-project",
+      "old_commit": "ded546ad82656ce6605ee2f2aa60c78dec70d95f",
+      "selected_current_commit": "229b9b2f4e20840a8280174fa08385fd9e36844b",
+      "mapped_files": [
+        {
+          "path": "clang-tools-extra/clangd/TUScheduler.h",
+          "old_blob_sha": "d0da20310a8b23df4fb4725a929c0190c0d0b069",
+          "new_blob_sha": "d0da20310a8b23df4fb4725a929c0190c0d0b069"
+        },
+        {
+          "path": "clang-tools-extra/clangd/ClangdServer.cpp",
+          "old_blob_sha": "d4d313b40d76b7d158ea200df7fdec677415d02d",
+          "new_blob_sha": "d4d313b40d76b7d158ea200df7fdec677415d02d"
+        },
+        {
+          "path": "clang-tools-extra/clangd/GlobalCompilationDatabase.h",
+          "old_blob_sha": "415c7f50f86062a3148cc05d9cb5b814ef2bfed6",
+          "new_blob_sha": "415c7f50f86062a3148cc05d9cb5b814ef2bfed6"
+        },
+        {
+          "path": "clang-tools-extra/clangd/index/FileIndex.cpp",
+          "old_blob_sha": "2e005bfe3537e60fb218f9c91871b74a4da3c820",
+          "new_blob_sha": "2e005bfe3537e60fb218f9c91871b74a4da3c820"
+        },
+        {
+          "path": "clang-tools-extra/clangd/index/Background.cpp",
+          "old_blob_sha": "17a8097394492eca78939346f17429751c6ec17d",
+          "new_blob_sha": "17a8097394492eca78939346f17429751c6ec17d"
+        }
+      ],
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R404",
+      "cohort": "gopls source 98444708d405557b5ddd6179be1a6abc14150d5f",
+      "title": "gopls snapshots, views, and why one open file can denote several builds",
+      "report_json": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.json",
+      "report_md": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.md",
+      "frozen_json_sha256": "e831990f5cca438a8bb3232489e9aca7e9b915f4546bb3572a219a8c96ce4662",
+      "frozen_md_sha256": "369178d72906f7be8808dc0b3725e832407113811c20b68aec2484f89a8f2620",
+      "frozen_subjects_exact": [
+        {
+          "name": "gopls current workspace, view, snapshot, and invalidation architecture",
+          "identity": {
+            "repository": "golang/tools",
+            "revision": "98444708d405557b5ddd6179be1a6abc14150d5f"
+          }
+        },
+        {
+          "name": "gopls pre-scalability architecture",
+          "identity": {
+            "repository": "golang/tools",
+            "release": "gopls/v0.11.0",
+            "revision": "611cff71b9afeb81ae6eb16c5ce9376c051b1828"
+          }
+        },
+        {
+          "name": "gopls separate-compilation transition",
+          "identity": {
+            "repository": "golang/tools",
+            "release": "gopls/v0.12.0",
+            "revision": "236850463aea0b1949167349b44c37f97aefd9c5"
+          }
+        },
+        {
+          "name": "gopls zero-config workspace release",
+          "identity": {
+            "repository": "golang/tools",
+            "release": "gopls/v0.15.0",
+            "revision": "50e6ff28fb47219a23c4d0ed12da704b94087f76"
+          }
+        },
+        {
+          "name": "Multi-project gopls workspace proposal",
+          "identity": {
+            "repository": "golang/proposal",
+            "revision": "0be13090fdb0cbae0d71641bb676d924bc1c94de",
+            "path": "design/37720-gopls-workspaces.md"
+          }
+        },
+        {
+          "name": "Anneal current design contract",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+            "path": "anneal/DESIGN.md"
+          }
+        },
+        {
+          "name": "Anneal reference evidence at analysis time",
+          "identity": {
+            "repository": "google/zerocopy",
+            "branch": "reference",
+            "revision": "ebfeac694e945da0b52e09c6a185d857f982f4f3"
+          }
+        }
+      ],
+      "frozen_sidecars": [
+        {
+          "path": "reports/gopls-snapshots-views-workspace-evolution-2018-2026/evidence-map.json",
+          "sha256": "ca352c6e7a858788c0e66cb9ecd2bff98c5576708e707c7953d0ac8dcab360ad"
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "gopls evolved away from treating an editor workspace folder as the unit of analysis. Its current architecture separates at least four concepts that an editor presents as one workspace: an LSP Folder carrying UI-scoped configuration, a View representing one logical Go build, a Snapshot representing one immutable-enough generation of that build's file and derived state, and shared caches that reuse computations across snapshots and even processes. An open file can participate i",
+      "full_summary_exact": "gopls evolved away from treating an editor workspace folder as the unit of analysis. Its current architecture separates at least four concepts that an editor presents as one workspace: an LSP `Folder` carrying UI-scoped configuration, a `View` representing one logical Go build, a `Snapshot` representing one immutable-enough generation of that build's file and derived state, and shared caches that reuse computations across snapshots and even processes. An open file can participate in more than one build. Changes to open files can cause gopls to create or remove Views; changes to build-defining files can reconstruct Views; ordinary source edits advance and invalidate Snapshots within every relevant View.\n\nThat split is the result of two distinct redesigns. The v0.12 scalability redesign replaced the earlier whole-program in-memory model with separate compilation, persistent per-package summaries, and pruned invalidation. That reduced the cost of keeping several build contexts live. The v0.15 zero-configuration workspace redesign then decoupled Views from LSP workspace folders and made the set of Views depend on both folders and open files. The redesign deliberately permits several Views for one folder and, conversely, several folders to resolve to one `go.work` View.\n\nThe history matters because gopls previously explored the opposite answer: force multiple projects into one synthetic super-module so that cross-project queries had one dependency universe. That model simplified global identity, but only by requiring all projects to share dependency versions. The later design accepted multiple simultaneous build contexts instead, then made ambiguity explicit in routing. Current gopls still chooses a default build for some file-oriented operations because searching every build is too expensive. That is a latency tradeoff, not evidence that a file path has one intrinsic semantic context.\n\nFor Anneal, the defensible conditional lesson is narrower than “copy gopls.” A Rust source file should not itself be the authority for a proof result when that file participates in several Cargo compilation subjects. A verification request needs an explicit analysis context: a Cargo subject plus the proof/tool environment needed to interpret it, with a snapshot or generation identity for the state against which the request ran. Shared caches may aggressively reuse subcomputations across contexts when their inputs justify reuse, but verification success should remain attributable to one coherent context. Heuristic “best context” routing may be acceptable for advisory navigation; it is not a sufficient basis for a sound success result whose meaning depends on exact subject identity.\n\nThis is derived architectural analysis, not adopted Anneal policy. Anneal's current design contract explicitly leaves the atomic verification subject and build-matrix treatment undecided.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "gopls evolved away from treating an editor workspace folder as the unit of analysis. Its current architecture separates at least four concepts that an editor presents as one workspace: an LSP `Folder` carrying UI-scoped configuration, a `View` representing one logical Go build, a `Snapshot` representing one immutable-enough generation of that build's file and derived state, and shared caches that reuse computations across snapshots and even processes. An open file can participate in more than one build. Changes to open files can cause gopls to create or remove Views; changes to build-defining files can reconstruct Views; ordinary source edits advance and invalidate Snapshots within every relevant View.",
+          "scope_role": "current_mapped",
+          "source_paths": [
+            "gopls/internal/cache/session.go",
+            "gopls/internal/cache/view.go",
+            "gopls/internal/cache/snapshot.go",
+            "gopls/internal/cache/workspace.go",
+            "gopls/doc/workspace.md",
+            "gopls/doc/design/implementation.md",
+            "gopls/doc/design/design.md"
+          ],
+          "source_result": "mapped_blobs_unchanged_no_behavior_conclusion",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "That split is the result of two distinct redesigns. The v0.12 scalability redesign replaced the earlier whole-program in-memory model with separate compilation, persistent per-package summaries, and pruned invalidation. That reduced the cost of keeping several build contexts live. The v0.15 zero-configuration workspace redesign then decoupled Views from LSP workspace folders and made the set of Views depend on both folders and open files. The redesign deliberately permits several Views for one folder and, conversely, several folders to resolve to one `go.work` View.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "The history matters because gopls previously explored the opposite answer: force multiple projects into one synthetic super-module so that cross-project queries had one dependency universe. That model simplified global identity, but only by requiring all projects to share dependency versions. The later design accepted multiple simultaneous build contexts instead, then made ambiguity explicit in routing. Current gopls still chooses a default build for some file-oriented operations because searching every build is too expensive. That is a latency tradeoff, not evidence that a file path has one intrinsic semantic context.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "For Anneal, the defensible conditional lesson is narrower than “copy gopls.” A Rust source file should not itself be the authority for a proof result when that file participates in several Cargo compilation subjects. A verification request needs an explicit analysis context: a Cargo subject plus the proof/tool environment needed to interpret it, with a snapshot or generation identity for the state against which the request ran. Shared caches may aggressively reuse subcomputations across contexts when their inputs justify reuse, but verification success should remain attributable to one coherent context. Heuristic “best context” routing may be acceptable for advisory navigation; it is not a sufficient basis for a sound success result whose meaning depends on exact subject identity.",
+          "scope_role": "derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 5,
+          "exact_excerpt": "This is derived architectural analysis, not adopted Anneal policy. Anneal's current design contract explicitly leaves the atomic verification subject and build-matrix treatment undecided.",
+          "scope_role": "derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "source_repository": "golang/tools",
+      "old_commit": "98444708d405557b5ddd6179be1a6abc14150d5f",
+      "selected_current_commit": "134264d72fba423ca1ad358683cd3c32699b010e",
+      "mapped_files": [
+        {
+          "path": "gopls/internal/cache/session.go",
+          "old_blob_sha": "476d4baaa0baa58328e0478b343ee59e308a7754",
+          "new_blob_sha": "476d4baaa0baa58328e0478b343ee59e308a7754"
+        },
+        {
+          "path": "gopls/internal/cache/view.go",
+          "old_blob_sha": "d1f264f4d23578fe735d1c95aeadfe7df0d3d433",
+          "new_blob_sha": "d1f264f4d23578fe735d1c95aeadfe7df0d3d433"
+        },
+        {
+          "path": "gopls/internal/cache/snapshot.go",
+          "old_blob_sha": "4ec7ca7d764c92d3cc2c27c42602dc959751992c",
+          "new_blob_sha": "4ec7ca7d764c92d3cc2c27c42602dc959751992c"
+        },
+        {
+          "path": "gopls/internal/cache/workspace.go",
+          "old_blob_sha": "6b2291e5bc9401f552c92eae3c8aefb213cf2c83",
+          "new_blob_sha": "6b2291e5bc9401f552c92eae3c8aefb213cf2c83"
+        },
+        {
+          "path": "gopls/doc/workspace.md",
+          "old_blob_sha": "1e19fd3657b159a7eaeabc1bf3b56c59a5e5f024",
+          "new_blob_sha": "1e19fd3657b159a7eaeabc1bf3b56c59a5e5f024"
+        },
+        {
+          "path": "gopls/doc/design/implementation.md",
+          "old_blob_sha": "887c02cd35c14edecdd1342d5664e3fb174f4bf8",
+          "new_blob_sha": "887c02cd35c14edecdd1342d5664e3fb174f4bf8"
+        },
+        {
+          "path": "gopls/doc/design/design.md",
+          "old_blob_sha": "8ef3c32023b23f72837112c479e46519d1f2d46b",
+          "new_blob_sha": "8ef3c32023b23f72837112c479e46519d1f2d46b"
+        }
+      ],
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R513",
+      "cohort": "rust-analyzer source 03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "title": "RLS to rust-analyzer: why compiler reuse was not enough",
+      "report_json": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.json",
+      "report_md": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.md",
+      "frozen_json_sha256": "241d16c6942f624a93f678fae494e990347a5fa5261db85c44d8fd3ced92c1c9",
+      "frozen_md_sha256": "c175a94489839f3e679619da20df9e8d450dae8044a244a86f514861cb41b572",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust Language Server architecture at archived repository head",
+          "identity": {
+            "repository": "rust-lang/rls",
+            "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+          }
+        },
+        {
+          "name": "RFC 1317 Rust Language Server accepted text",
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "4e4c756e6df95167dda553251cc37a75a294f002",
+            "rfc": "1317"
+          }
+        },
+        {
+          "name": "RFC 2912 rust-analyzer transition accepted text",
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+            "rfc": "2912"
+          }
+        },
+        {
+          "name": "rust-analyzer current architecture",
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          }
+        },
+        {
+          "name": "rustc developer guide current rust-analyzer sharing account",
+          "identity": {
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "0fb89036f8e46a80ee815ed99ff7d9dae9d172ae"
+          }
+        }
+      ],
+      "frozen_sidecars": [
+        {
+          "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/source-map.json",
+          "sha256": "75c19201ede53f0a7efa643ca341e4b1f8f7bcd7d65e6d699889f40f5e74082b"
+        },
+        {
+          "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/judgment-matrix.json",
+          "sha256": "981c71e53f14e1b869fef9df5c654f671b88ce53deb6f1a53cb350126a89867d"
+        },
+        {
+          "path": "reports/rls-rust-analyzer-architecture-evolution-2015-2026/timeline.json",
+          "sha256": "f8f0291665ba3cb31899873f86fe906a050d1744da0fd756fc95f55be448eda1"
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Rust's IDE history is evidence against a simple rule that the batch compiler should also be the interactive engine. The original Rust Language Server (RLS) was explicitly designed around compiler reuse. Its accepted 2015 design put rustc inside a long-running service, intended lazy and incremental compilation, and stored compiler-produced semantic facts in a project-wide database. The mature implementation still obtained high-fidelity facts from rustc, but its unit of semanti",
+      "full_summary_exact": "Rust's IDE history is evidence against a simple rule that the batch compiler should also be the interactive engine. The original Rust Language Server (RLS) was explicitly designed around compiler reuse. Its accepted 2015 design put `rustc` inside a long-running service, intended lazy and incremental compilation, and stored compiler-produced semantic facts in a project-wide database. The mature implementation still obtained high-fidelity facts from `rustc`, but its unit of semantic refresh was largely a crate compilation: dirty files caused dirty crates to be rebuilt, `rustc_save_analysis` exported a broad fact set, and the RLS replaced the affected crate's indexed analysis. It added a virtual file system, request scheduling, build squashing, Cargo orchestration, and Racer fallbacks, but those layers did not change the basic cost model.\n\nrust-analyzer succeeded by changing that cost model rather than by merely wrapping `rustc` differently. It made the long-lived analysis database the primary semantic engine, accepted explicit source/project inputs, parsed incomplete code without failing, and computed semantic facts lazily and incrementally. Its architecture deliberately separated editor-facing APIs from LSP and from filesystem/build-system ownership. That bought responsiveness and a better interface for IDE features, but initially duplicated compiler semantics and sometimes returned approximate or incomplete answers where RLS inherited `rustc` precision. RFC 2912 accepted that trade temporarily because waiting for `rustc` to be refactored into an IDE-ready engine would constrain development order and delay a working IDE.\n\nThe long-term response was not to choose permanent duplication or to force one process to do both jobs. The Rust project pursued *library-ification*: factor semantic mechanisms into reusable libraries and let rustc and rust-analyzer remain different front-ends around the parts that genuinely need different state models. At the 2026 subject revisions, rust-analyzer reuses multiple `rustc_*` crates, including the next-generation trait solver through an abstraction layer, while still retaining its own salsa-backed interner and error-tolerant, frequently changing source-to-HIR machinery. This is a concrete example of **shared acceptance semantics without identical interactive implementation**.\n\nFor Anneal, the strongest transferable judgment is conditional: an interactive proof/analysis service should be free to use a persistent, editor-oriented engine or state model when that materially improves latency and incomplete-input behavior, while authoritative verification success remains tied to an exact accepted subject and checking boundary. Share semantic libraries and representations where they are stable enough to be common; do not make process identity or one global cache the correctness argument. Any live engine that can diverge from the acceptance path needs explicit snapshot identity, cancellation/freshness rules, and differential tests. This is a derived Anneal judgment, not an adopted design decision.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "Rust's IDE history is evidence against a simple rule that the batch compiler should also be the interactive engine. The original Rust Language Server (RLS) was explicitly designed around compiler reuse. Its accepted 2015 design put `rustc` inside a long-running service, intended lazy and incremental compilation, and stored compiler-produced semantic facts in a project-wide database. The mature implementation still obtained high-fidelity facts from `rustc`, but its unit of semantic refresh was largely a crate compilation: dirty files caused dirty crates to be rebuilt, `rustc_save_analysis` exported a broad fact set, and the RLS replaced the affected crate's indexed analysis. It added a virtual file system, request scheduling, build squashing, Cargo orchestration, and Racer fallbacks, but those layers did not change the basic cost model.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "rust-analyzer succeeded by changing that cost model rather than by merely wrapping `rustc` differently. It made the long-lived analysis database the primary semantic engine, accepted explicit source/project inputs, parsed incomplete code without failing, and computed semantic facts lazily and incrementally. Its architecture deliberately separated editor-facing APIs from LSP and from filesystem/build-system ownership. That bought responsiveness and a better interface for IDE features, but initially duplicated compiler semantics and sometimes returned approximate or incomplete answers where RLS inherited `rustc` precision. RFC 2912 accepted that trade temporarily because waiting for `rustc` to be refactored into an IDE-ready engine would constrain development order and delay a working IDE.",
+          "scope_role": "current_mapped",
+          "source_paths": [
+            "docs/book/src/contributing/architecture.md"
+          ],
+          "source_result": "mapped_blobs_unchanged_no_behavior_conclusion",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "The long-term response was not to choose permanent duplication or to force one process to do both jobs. The Rust project pursued *library-ification*: factor semantic mechanisms into reusable libraries and let rustc and rust-analyzer remain different front-ends around the parts that genuinely need different state models. At the 2026 subject revisions, rust-analyzer reuses multiple `rustc_*` crates, including the next-generation trait solver through an abstraction layer, while still retaining its own salsa-backed interner and error-tolerant, frequently changing source-to-HIR machinery. This is a concrete example of **shared acceptance semantics without identical interactive implementation**.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "For Anneal, the strongest transferable judgment is conditional: an interactive proof/analysis service should be free to use a persistent, editor-oriented engine or state model when that materially improves latency and incomplete-input behavior, while authoritative verification success remains tied to an exact accepted subject and checking boundary. Share semantic libraries and representations where they are stable enough to be common; do not make process identity or one global cache the correctness argument. Any live engine that can diverge from the acceptance path needs explicit snapshot identity, cancellation/freshness rules, and differential tests. This is a derived Anneal judgment, not an adopted design decision.",
+          "scope_role": "derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "source_repository": "rust-lang/rust-analyzer",
+      "old_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "selected_current_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "mapped_files": [
+        {
+          "path": "docs/book/src/contributing/architecture.md",
+          "old_blob_sha": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+          "new_blob_sha": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c"
+        }
+      ],
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R514",
+      "cohort": "rust-analyzer source 03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "title": "RLS to rust-analyzer: why an interactive analyzer became a separate engine",
+      "report_json": "reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.json",
+      "report_md": "reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.md",
+      "frozen_json_sha256": "031a04123255570ab57f75ab6720ab6f45ad961f2f877d7106d28293d5a19037",
+      "frozen_md_sha256": "34b704140b8cda146cc211eaf6c0194c5bcfb1205388af8318a5d77530fa3190",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust Language Server (RLS) archived repository",
+          "identity": {
+            "repository": "rust-lang/rls",
+            "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc"
+          }
+        },
+        {
+          "name": "rust-analyzer current architecture",
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+          }
+        },
+        {
+          "name": "RFC 1317: Rust Language Server",
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "82d48b36568286b93fc2ce55f89594024f421a3b",
+            "path": "text/1317-ide.md"
+          }
+        },
+        {
+          "name": "RFC 2912: Transition to rust-analyzer",
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "b6fffdf18f8b867648de0d95657cc13a64cae4e2",
+            "path": "text/2912-rust-analyzer.md"
+          }
+        }
+      ],
+      "frozen_sidecars": [
+        {
+          "path": "reports/rls-rust-analyzer-architecture-transition-2015-2026/evidence-map.json",
+          "sha256": "76b322f4d12d900871d9cc7954f163d3d2abcfa2c1cb4be69e2cfe8357996e5b"
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Rust's transition from the Rust Language Server (RLS) to rust-analyzer is a useful counterexample to the rule that an IDE should simply reuse the batch compiler. RLS deliberately reused rustc and therefore inherited highly accurate compiler semantics when compilation completed. Its problem was not a lack of semantic authority. Its problem was that the unit, lifetime, and scheduling of compiler work were poorly matched to an editor: whole-crate compilation and post-compilation",
+      "full_summary_exact": "Rust's transition from the Rust Language Server (RLS) to rust-analyzer is a useful counterexample to the rule that an IDE should simply reuse the batch compiler. RLS deliberately reused `rustc` and therefore inherited highly accurate compiler semantics when compilation completed. Its problem was not a lack of semantic authority. Its problem was that the unit, lifetime, and scheduling of compiler work were poorly matched to an editor: whole-crate compilation and post-compilation analysis were too coarse for keystroke-scale latency, while incomplete programs and rapidly superseded requests are normal IDE states.\n\nrust-analyzer chose the opposite architecture. It maintains a long-lived, demand-driven semantic database; parses broken code without treating parse failure as a terminal state; invalidates narrowly; cancels stale work; and exposes immutable analysis snapshots over transactionally updated state. This made useful interactive answers possible before the full compiler could be made equally IDE-friendly. The cost was real semantic duplication. RFC 2912 explicitly accepted that rust-analyzer could lag `rustc`, return approximate answers where RLS was precise, and temporarily maintain a second implementation of parts of the Rust language.\n\nThe transition therefore supports a conditional, not categorical, judgment. A separate live engine is justified when the interactive workload requires a materially different evaluation model, and forcing the authoritative batch engine into that role would delay or degrade the product. But the separation should not be confused with semantic independence. The Rust plan was to share libraries where their contracts fit both hosts, while allowing the batch compiler and IDE to keep different storage, invalidation, lifetime, and recovery strategies. The history also shows that retrofitting those shared boundaries is expensive: a 2021 rust-analyzer parser-sharing issue reported that, after years of effort, only the lexer was shared and described substantial interface and organizational obstacles.\n\nFor Anneal, the closest reusable lesson is to separate **authority** from **responsiveness**. If live analysis must tolerate partial edits, rapidly changing inputs, cancellable work, and stale-but-useful intermediate state, a dedicated live host can be the right architecture even when batch verification remains authoritative. Shared semantic libraries, common artifact identities, and explicit conformance checks should keep the two paths aligned. The live path should not silently inherit the authority of the batch verifier merely because both speak about the same source program.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "Rust's transition from the Rust Language Server (RLS) to rust-analyzer is a useful counterexample to the rule that an IDE should simply reuse the batch compiler. RLS deliberately reused `rustc` and therefore inherited highly accurate compiler semantics when compilation completed. Its problem was not a lack of semantic authority. Its problem was that the unit, lifetime, and scheduling of compiler work were poorly matched to an editor: whole-crate compilation and post-compilation analysis were too coarse for keystroke-scale latency, while incomplete programs and rapidly superseded requests are normal IDE states.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "rust-analyzer chose the opposite architecture. It maintains a long-lived, demand-driven semantic database; parses broken code without treating parse failure as a terminal state; invalidates narrowly; cancels stale work; and exposes immutable analysis snapshots over transactionally updated state. This made useful interactive answers possible before the full compiler could be made equally IDE-friendly. The cost was real semantic duplication. RFC 2912 explicitly accepted that rust-analyzer could lag `rustc`, return approximate answers where RLS was precise, and temporarily maintain a second implementation of parts of the Rust language.",
+          "scope_role": "current_mapped",
+          "source_paths": [
+            "docs/book/src/contributing/architecture.md"
+          ],
+          "source_result": "mapped_blobs_unchanged_no_behavior_conclusion",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "The transition therefore supports a conditional, not categorical, judgment. A separate live engine is justified when the interactive workload requires a materially different evaluation model, and forcing the authoritative batch engine into that role would delay or degrade the product. But the separation should not be confused with semantic independence. The Rust plan was to share libraries where their contracts fit both hosts, while allowing the batch compiler and IDE to keep different storage, invalidation, lifetime, and recovery strategies. The history also shows that retrofitting those shared boundaries is expensive: a 2021 rust-analyzer parser-sharing issue reported that, after years of effort, only the lexer was shared and described substantial interface and organizational obstacles.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "For Anneal, the closest reusable lesson is to separate **authority** from **responsiveness**. If live analysis must tolerate partial edits, rapidly changing inputs, cancellable work, and stale-but-useful intermediate state, a dedicated live host can be the right architecture even when batch verification remains authoritative. Shared semantic libraries, common artifact identities, and explicit conformance checks should keep the two paths aligned. The live path should not silently inherit the authority of the batch verifier merely because both speak about the same source program.",
+          "scope_role": "derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "source_repository": "rust-lang/rust-analyzer",
+      "old_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "selected_current_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "mapped_files": [
+        {
+          "path": "docs/book/src/contributing/architecture.md",
+          "old_blob_sha": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+          "new_blob_sha": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c"
+        }
+      ],
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R515",
+      "cohort": "rust-analyzer source 03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "title": "From RLS to rust-analyzer: why compiler sharing was not the decisive boundary",
+      "report_json": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.json",
+      "report_md": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.md",
+      "frozen_json_sha256": "b3bbf757f53842f36e061eff0ae3cdbb4fb35e51761351028a9e1d54d02192ac",
+      "frozen_md_sha256": "00f967001d4a2b3fad3c8291d4bd274107b31dc7cbc169f734c9e3cd9d153a1a",
+      "frozen_subjects_exact": [
+        {
+          "name": "Rust Language Server design and archived implementation",
+          "identity": {
+            "repository": "rust-lang/rls",
+            "revision": "04afefab3f993d6c59ecaaf9f3fcf7a5b8f6d2bc",
+            "architecture_blob": "a7bde5799d73cbaf7319dad2773fd58a89a978a8",
+            "rfc": "1317"
+          }
+        },
+        {
+          "name": "rust-analyzer adoption decision",
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "ba27c4c027704c716fcc1f54be601939fdc29c57",
+            "rfc": "2912",
+            "rfc_blob": "9f5986eeacafbea1ad99c6cbc4c24d2eab278c99"
+          }
+        },
+        {
+          "name": "Current rust-analyzer architecture",
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+            "architecture_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c"
+          }
+        },
+        {
+          "name": "Anneal design authority used for applicability analysis",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+            "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+            "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+          }
+        }
+      ],
+      "frozen_sidecars": [
+        {
+          "path": "reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/evidence-ledger.json",
+          "sha256": "c73082686aad6408cbcdd33278387555ee70e54b8fc722944ef70a20d6ac0aa3"
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Rust's IDE history is a useful counterexample to the claim that an interactive service should use the batch compiler directly merely to maximize semantic sharing. The original Rust Language Server (RLS) was explicitly designed around rustc. Its 2015 design called the service an alternate compiler that would internally use the existing compiler, and it already understood the hard requirements: very low latency, incomplete programs, cancellation, a project-wide database, lazy c",
+      "full_summary_exact": "Rust's IDE history is a useful counterexample to the claim that an interactive service should use the batch compiler directly merely to maximize semantic sharing. The original Rust Language Server (RLS) was explicitly designed around rustc. Its 2015 design called the service an alternate compiler that would internally use the existing compiler, and it already understood the hard requirements: very low latency, incomplete programs, cancellation, a project-wide database, lazy compilation, and eventually a compiler process that could stay alive. The architecture that shipped achieved substantial sharing with rustc, but not the fine-grained invalidation model the interactive workload required. By 2019 the RLS still rebuilt dirty crates through rustc, extracted compiler facts through save-analysis, rebuilt an index, and used Racer where compilation was too slow or unsuitable for completion.\n\nrust-analyzer chose the opposite implementation order. It built an editor-oriented compiler front end around persistent, explicit inputs; error-tolerant syntax; on-demand queries; fine-grained invalidation; cancellable snapshots; and a long-lived semantic database. In 2020 the Rust project accepted that this gave a materially better interactive architecture even though it duplicated compiler logic and could return approximate or incomplete semantic answers that rustc would not. RFC 2912 therefore did **not** conclude that divergence was harmless. It accepted divergence as a cost, proposed extracting shared libraries to reduce it, and retained the distinction between editor analysis and compiler acceptance. The project deprecated RLS in 2022 after concluding that its architecture limited low-latency, high-quality interactive responses.\n\nThe central lesson for Anneal is conditional. **Share semantic definitions and trusted acceptance machinery where that sharing preserves the workload each path needs; do not require the same long-lived engine to serve both speculative interactive queries and authoritative acceptance merely because code sharing feels safer.** An interactive Anneal service may optimize for incomplete edits, low latency, cancellation, and reusable state. A publication or verification-success path must optimize for exact captured inputs, complete checking, deterministic reconstruction, and the meaning of Anneal's success promise. If both can use the same engine without weakening either contract, one engine is simpler. If not, the safer architecture is two operational paths connected by explicit identities and a conformance/acceptance boundary, not an assumption that a live result is authoritative because some implementation code is shared.\n\nThis conclusion is stronger than \"use two engines.\" The RLS history also supports the strongest competing account: RLS failed to reach its original lazy/persistent design partly because rustc of the period was not structured for it. A compiler designed from the beginning for incremental interactive use can plausibly serve both workloads. Anneal should therefore decide by observable contracts and matched experiments, not by analogy alone.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "Rust's IDE history is a useful counterexample to the claim that an interactive service should use the batch compiler directly merely to maximize semantic sharing. The original Rust Language Server (RLS) was explicitly designed around rustc. Its 2015 design called the service an alternate compiler that would internally use the existing compiler, and it already understood the hard requirements: very low latency, incomplete programs, cancellation, a project-wide database, lazy compilation, and eventually a compiler process that could stay alive. The architecture that shipped achieved substantial sharing with rustc, but not the fine-grained invalidation model the interactive workload required. By 2019 the RLS still rebuilt dirty crates through rustc, extracted compiler facts through save-analysis, rebuilt an index, and used Racer where compilation was too slow or unsuitable for completion.",
+          "scope_role": "historical",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "rust-analyzer chose the opposite implementation order. It built an editor-oriented compiler front end around persistent, explicit inputs; error-tolerant syntax; on-demand queries; fine-grained invalidation; cancellable snapshots; and a long-lived semantic database. In 2020 the Rust project accepted that this gave a materially better interactive architecture even though it duplicated compiler logic and could return approximate or incomplete semantic answers that rustc would not. RFC 2912 therefore did **not** conclude that divergence was harmless. It accepted divergence as a cost, proposed extracting shared libraries to reduce it, and retained the distinction between editor analysis and compiler acceptance. The project deprecated RLS in 2022 after concluding that its architecture limited low-latency, high-quality interactive responses.",
+          "scope_role": "current_mapped",
+          "source_paths": [
+            "docs/book/src/contributing/architecture.md"
+          ],
+          "source_result": "mapped_blobs_unchanged_no_behavior_conclusion",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "The central lesson for Anneal is conditional. **Share semantic definitions and trusted acceptance machinery where that sharing preserves the workload each path needs; do not require the same long-lived engine to serve both speculative interactive queries and authoritative acceptance merely because code sharing feels safer.** An interactive Anneal service may optimize for incomplete edits, low latency, cancellation, and reusable state. A publication or verification-success path must optimize for exact captured inputs, complete checking, deterministic reconstruction, and the meaning of Anneal's success promise. If both can use the same engine without weakening either contract, one engine is simpler. If not, the safer architecture is two operational paths connected by explicit identities and a conformance/acceptance boundary, not an assumption that a live result is authoritative because some implementation code is shared.",
+          "scope_role": "derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "This conclusion is stronger than \"use two engines.\" The RLS history also supports the strongest competing account: RLS failed to reach its original lazy/persistent design partly because rustc of the period was not structured for it. A compiler designed from the beginning for incremental interactive use can plausibly serve both workloads. Anneal should therefore decide by observable contracts and matched experiments, not by analogy alone.",
+          "scope_role": "historical_and_derived",
+          "source_paths": [],
+          "source_result": "not_a_new_current_source_claim",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "source_repository": "rust-lang/rust-analyzer",
+      "old_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "selected_current_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "mapped_files": [
+        {
+          "path": "docs/book/src/contributing/architecture.md",
+          "old_blob_sha": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+          "new_blob_sha": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c"
+        }
+      ],
+      "source_result": "claim_mapped_source_blobs_unchanged_broader_behavior_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    }
+  ],
+  "full_source_archive_sha256": null
+}

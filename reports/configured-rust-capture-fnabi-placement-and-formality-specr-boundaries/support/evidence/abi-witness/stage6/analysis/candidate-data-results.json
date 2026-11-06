@@ -1,0 +1,77 @@
+{
+  "scope": "Offline comparison to retained actual capture only, NOT fresh compiler acceptance/check. No consumer check invoked.",
+  "positive_equal": 1,
+  "mutant_rejections": [
+    {
+      "name": "stale-target",
+      "changed_path": "target_triple_debug",
+      "grammar": "reject: selected built-in target",
+      "comparison": "reject",
+      "reason": "selected built-in target"
+    },
+    {
+      "name": "stale-generic-instance",
+      "changed_path": "selected/20/selection/type_args",
+      "grammar": "reject: consumer selected root/instance/extras",
+      "comparison": "reject",
+      "reason": "consumer selected root/instance/extras"
+    },
+    {
+      "name": "hidden-result-size",
+      "changed_path": "selected/6/fn_abi/ret/mode/attrs/pointee_size_bytes",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    },
+    {
+      "name": "omit-hidden-caller",
+      "changed_path": "selected/17/fn_abi/args/1",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    },
+    {
+      "name": "omit-variadic-extra",
+      "changed_path": "selected/24/fn_abi/args/3",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    },
+    {
+      "name": "change-selected-variadic-extra",
+      "changed_path": "selected/24/selection/extra_args/1",
+      "grammar": "reject: consumer selected root/instance/extras",
+      "comparison": "reject",
+      "reason": "consumer selected root/instance/extras"
+    },
+    {
+      "name": "narrow-extension",
+      "changed_path": "selected/0/fn_abi/args/0/mode/attrs/extension",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    },
+    {
+      "name": "reference-attribute-bits",
+      "changed_path": "selected/12/fn_abi/args/0/mode/attrs/regular_bits",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    },
+    {
+      "name": "opaque-layout",
+      "changed_path": "selected/12/fn_abi/args/0/layout/full_layout_debug",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    },
+    {
+      "name": "opaque-target",
+      "changed_path": "target_spec_debug",
+      "grammar": "pass",
+      "comparison": "reject",
+      "reason": "complete observation mismatch"
+    }
+  ],
+  "process_launch_attempts": []
+}

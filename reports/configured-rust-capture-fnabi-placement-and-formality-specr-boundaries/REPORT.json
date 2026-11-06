@@ -1,0 +1,265 @@
+{
+  "topics": [
+    "rustc",
+    "rustc/driver",
+    "rustc/abi",
+    "rust/calling-conventions",
+    "minirust/semantics",
+    "anneal/rustc-capture"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "paths": "conditional-compilation;type-coercions;method-call-expr;const_eval;static-items"
+      }
+    },
+    {
+      "name": "rust-lang/rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+        "paths": "library/std/src/thread/local.rs;compiler/rustc_middle/src/ty/adjustment.rs;compiler/rustc_ast_lowering/src/expr.rs;compiler/rustc_mir_build/src/thir/cx/expr.rs;compiler/rustc_mir_build/src/builder/expr/{as_rvalue,as_place}.rs;builder/scope.rs;compiler/rustc_const_eval/src/const_eval/eval_queries.rs;interpret/{intern,validity}.rs;compiler/rustc_middle/src/mir/interpret/allocation.rs"
+      }
+    },
+    {
+      "name": "AeneasVerif/charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d",
+        "paths": "driver.rs;get_mir.rs;export.rs;charon-ml/src/OfJson.ml"
+      }
+    },
+    {
+      "name": "AeneasVerif/aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e",
+        "path": "src/llbc/LlbcOfJson.ml"
+      }
+    },
+    {
+      "name": "Original ObligationPilot.lean",
+      "identity": {
+        "artifact": "ObligationPilot.lean",
+        "sha256": "17149fd58168fce0120c9814b6aedb14b74d107ce2390627889ceb9bb140c545",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Original subject.rs",
+      "identity": {
+        "artifact": "subject.rs",
+        "sha256": "28f24a9ad2101629774e8bb53510a2467bef0fe85846e520e46e4d5fdb6c1200",
+        "assurance": "Own logical specimen; observed checking is conditional on checker soundness"
+      }
+    },
+    {
+      "name": "Lean 4.31 observation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "4.31.0",
+        "runtime_identity": "Executable, Init.olean and libleanshared.dylib hashes in lean-check.json",
+        "boundary": "Parent-reviewed missing nested-inductive validation; no exploit executed"
+      }
+    },
+    {
+      "name": "Official Lean 4.32.2 soundness-fix note",
+      "identity": {
+        "primary_url": "https://lean-lang.org/doc/reference/latest/releases/v4.32.2/",
+        "version": "4.32.2",
+        "coordinates": "Soundness bug note, issue14576 and PR14577; release2026-07-28"
+      }
+    },
+    {
+      "name": "Lean4.34 parent controls",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Rust attachment compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1d81eb4ad9cd207e3e638bd32b17ec4fce8412a6",
+        "version": "1.101.0-nightly"
+      }
+    },
+    {
+      "name": "Rust nightly compiler and source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "version": "1.97.0-nightly (2026-04-30)",
+        "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+        "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+      }
+    },
+    {
+      "name": "Owned configured capture observer",
+      "identity": {
+        "source_sha256": "59a998fb395374b810e3e0a04884e0a5c6382ea06b951fda6f8aec5cf3b87f35",
+        "binary_sha256": "656fb5eaac61cecbed4b59b90ff5842cf2594551310084d599d66c9af817f636",
+        "consumer_sha256": "0b1fc20394b64cbc84e2f4323301dad10f9334d2205952c6882dd81875b73382",
+        "schema_sha256": "6cb6da673ed91009ca3b64ee2df6628897a692dcd7ceffcc52aa09d7995bbb62"
+      }
+    },
+    {
+      "name": "Caller-selected baseline Rust subject",
+      "identity": {
+        "request_sha256": "3e7417e8628320f96a8acb71de0e8814d0f473a706afc7b5127c05e15c78d38d",
+        "source_sha256": "36ef34350f5fb2e659e72c49a3078db1f7b624999b93c83260729866c8ec36e8",
+        "raw_accepted_packet_sha256": "83482423f40d6a6130d5190ae502a4c0913fe6fadd943f0a49f8f32702d9e6bc"
+      }
+    },
+    {
+      "name": "May1 Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+      }
+    },
+    {
+      "name": "ordinary ABI fixture",
+      "identity": {
+        "artifact": "subjects.rs",
+        "sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02"
+      }
+    },
+    {
+      "name": "experimental vector fixture",
+      "identity": {
+        "artifact": "vectors.rs",
+        "sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8"
+      }
+    },
+    {
+      "name": "observer v3 source",
+      "identity": {
+        "artifact": "observer_v3.rs",
+        "sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1"
+      }
+    },
+    {
+      "name": "Apple LLVM object reader",
+      "identity": {
+        "version": "21.0.0",
+        "sha256": "83b32f39e5475ee168927eb1509c82978e08e0100ec8c6fafeca588d9960773c"
+      }
+    },
+    {
+      "name": "a-mir-formality",
+      "identity": {
+        "repository": "rust-lang/a-mir-formality",
+        "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5"
+      }
+    },
+    {
+      "name": "Executed Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "48cc71ee88cd0f11217eced958b9930970da998b",
+        "toolchain": "nightly-2026-04-01",
+        "host": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Vendored MiniRust runtime",
+      "identity": {
+        "repository": "rust-lang/a-mir-formality",
+        "revision": "71dc31c1b186df1f0a64d8464b8103195902a5a5",
+        "path": "crates/minirust-rs",
+        "target": "x86_64",
+        "library": "libspecr=0.1.40"
+      }
+    },
+    {
+      "name": "MiniRust operational specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Specr Rust transpiler and executable support",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "version": "0.1.41"
+      }
+    },
+    {
+      "name": "Rust Reference comparison",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "A Type-Checker for Specr thesis",
+      "identity": {
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/BachelorTheses/2024-Philipp-Thesis.pdf",
+        "document_date": "2025-02-08"
+      }
+    },
+    {
+      "name": "Specr Compiler project description",
+      "identity": {
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/2025-Jakub-Description.pdf",
+        "document_date": "2025-03-24",
+        "note": "ETH Zurich Institute for Programming Languages and Systems student project specification (2025-03-24)"
+      }
+    },
+    {
+      "name": "Accepted executable Rust specification goal",
+      "identity": {
+        "url": "https://goals.rust-lang.org/2026/executable-spec.html",
+        "goal_period": "2026",
+        "observed_document": "2026-10-14"
+      }
+    },
+    {
+      "name": "Anneal configuration",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Cargo source",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+      }
+    },
+    {
+      "name": "Rust compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "01b0ee707f4571e803c8b2c471d8335a448f5d60"
+      }
+    },
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

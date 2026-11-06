@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "lake/configuration",
+    "lake/readonly-dependencies",
+    "lake/locking"
+  ],
+  "subjects": [
+    {
+      "name": "Lake package/configuration ownership selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "component": "Lake"
+      }
+    },
+    {
+      "name": "Lake configuration ownership after the Lean 4.31 hoisting change",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "v4.31.0"
+      }
+    },
+    {
+      "name": "Lake compiled Lean configuration ownership at 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "component": "Lake"
+      }
+    },
+    {
+      "name": "Lean and Lake 4.30.0 final",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "d024af099ca4bf2c86f649261ebf59565dc8c622",
+        "version": "v4.30.0"
+      }
+    },
+    {
+      "name": "Anneal V1 package-config priming implementation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

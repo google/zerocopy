@@ -1,0 +1,90 @@
+{
+  "schema": "anneal-reference/j022-evidence-map/v1",
+  "observed_at": "2026-09-30",
+  "question": "J022",
+  "claims": [
+    {
+      "id": "boogie-ivl-boundary",
+      "kind": "implementation-and-author-intent",
+      "evidence": [
+        "boogie-org/boogie@fcecf73a49d11ad3ab16729abd03169e5ecfd938 README.md blob 422b2f8869a30ae6c5fd8056a159c1000f2da4ff",
+        "Barnett et al., FMCO 2005, DOI 10.1007/11804192_17"
+      ],
+      "supports": "Boogie intentionally separates source-language verifier frontends from reusable VC generation and SMT backends."
+    },
+    {
+      "id": "dafny-batch-layer",
+      "kind": "documentation-and-source",
+      "evidence": [
+        "Dafny Verification Optimization documentation observed 2026-09-30",
+        "dafny-lang/dafny@5f717bf447b19d38cad1b69b1bf9a9f102feccfb Source/DafnyCore/Verifier/BoogieGenerator.cs blob f097f9c6be4b349b913c9df6853687fb57047fdf"
+      ],
+      "supports": "Dafny has a source-facing assertion-batch unit and explicitly carries source/provenance/checksum metadata into generated Boogie."
+    },
+    {
+      "id": "backend-attempt-instability",
+      "kind": "documentation-plus-derived",
+      "evidence": [
+        "Dafny verification documentation on splitting/isolation and per-batch resource reporting",
+        "Dafny reference documentation on Boogie randomSeed meaning-preserving perturbations"
+      ],
+      "supports": "Raw solver attempts and batch structure are unsuitable as durable semantic obligation identity without a stronger explicit contract."
+    },
+    {
+      "id": "viper-multiple-backends",
+      "kind": "primary-publication-and-current-source",
+      "evidence": [
+        "Muller, Schwerhoff, Summers, VMCAI 2016, DOI 10.1007/978-3-662-49122-5_2",
+        "viperproject/silicon@6ceff8be6ba55d858b7d018fdfeb866b7e8aa0ed README.md blob d4983b9cdbd67dcc0bce44d67c3fa55bf299540d",
+        "viperproject/carbon@6421cfda16d35f37cb9a7966f04fcd2d96abdda2 README.md blob 3146d1b9a61dfa66d547c18e08cecde8a7317dee"
+      ],
+      "supports": "Silver is shared across symbolic-execution and VCG backends, so a raw VC is not Viper's universal verification-work representation."
+    },
+    {
+      "id": "viper-result-provenance",
+      "kind": "source",
+      "evidence": [
+        "viperproject/silver@da1c8993b66feb39976e3609e2580a4661137a0f src/main/scala/viper/silver/verifier/VerificationResult.scala blob 95980f6c5d21d2bf264ec388ddd6a885f5b494f0",
+        "viperproject/viperserver@4cc5bbbe18d4a83e4b398da3904ba9696256611b README.md blob a35027560fcf3580590277758797a0c41bb43d2d"
+      ],
+      "supports": "Viper's shared result/orchestration surfaces preserve source/error provenance above backend-specific proof-search state."
+    },
+    {
+      "id": "anneal-conditional-obligation-interface",
+      "kind": "derived",
+      "evidence": [
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92 anneal/PRINCIPLES.md blob d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92 anneal/DESIGN.md blob 0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+        "current reference packages anneal-3730-architecture-contracts-2026-09-29, lsp-proof-assistant-architecture-2026-09-27, anneal-interactive-pipeline-invalidation-graph-main-41f5b37"
+      ],
+      "supports": "Anneal should add semantic obligation descriptors only if it owns sub-stage obligation policy; otherwise whole-stage generation identity is simpler and sufficient."
+    }
+  ],
+  "identity_model": {
+    "semantic_obligation": "Exact verification generation plus semantic owner/kind/provenance and property meaning.",
+    "backend_attempt": "One execution strategy for a semantic obligation, including backend/tool/options/resource controls and derived payload identity.",
+    "non_identity_examples": [
+      "source span alone",
+      "generated function or theorem name alone",
+      "raw VC or SMT text alone",
+      "request or process ID alone"
+    ]
+  },
+  "alternatives": [
+    {
+      "name": "stage-only orchestration",
+      "strength": "minimal architecture and maximal backend freedom",
+      "cost": "cannot directly schedule/cache/report/cancel independent obligations"
+    },
+    {
+      "name": "raw backend obligation interface",
+      "strength": "fine-grained introspection and scheduling",
+      "cost": "couples Anneal to backend-specific encodings and unstable identities"
+    },
+    {
+      "name": "semantic obligation manifest",
+      "strength": "backend-neutral scheduling/progress/provenance with replaceable backend attempts",
+      "cost": "new schema, completeness proof, invalidation and reconciliation responsibilities"
+    }
+  ]
+}

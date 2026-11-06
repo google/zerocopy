@@ -1,0 +1,712 @@
+{
+  "pinned_rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
+  "pinned_charon_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
+  "driver_v4_source_sha256": "0159d185414df33e373d6a8982ef34cfc7af7bc019e2724856830b8c73ae93c8",
+  "place_mention_probe_sha256": "cb2ae88359d14bb1d308b341e439fccccebb8e25e5e7f6266b1ab1b083b04b10",
+  "cleanup_subject_sha256": "04b073d7d46ffd95dee0730259844032959160e8fcc8e67565df5c25704f41c5",
+  "feature_ladder_subject_sha256": "1b6e3487046694857e824559d561503c767fc3e7891520358dfd4deb17a860a3",
+  "zerocopy_layout_holdout_sha256": "07a1bd4f962e66f9e5e5ffbadd030fd1fa9dec0be481896ed2473102403826e5",
+  "loop_prefix_probe_sha256": "9c918edf4db81cc73b4bde5da65eb276dcbbe6cf03963daa2f40df042037a7b9",
+  "historical_capture_v3_ledger_sha256": "02f3edd41e3bf47ebc78b3472493438f3a19e6ff944d8831c9da983be460f3f1",
+  "runs": [
+    {
+      "run_id": "build_direct_mir_driver_v4",
+      "cmd": [
+        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust/bin/rustc",
+        "--edition=2021",
+        "-O",
+        "direct_mir_driver_v4.rs",
+        "-o",
+        "/tmp/direct_mir_driver_v4_bin"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 2241,
+      "max_rss_bytes": 557219840,
+      "outputs": [],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "place_mention_v4_default",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_place_mention_default.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_place_mention_default.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/place_mention_default.amir",
+        "place_mention_probe.rs",
+        "-o",
+        "/tmp/libpm_v4_def.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 21,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_place_mention_default.json",
+          "sha256": "21193cd5e416c8cc9105e2fed82543bbd8fd457a06a9a0b01fed583abbde55c4",
+          "size_bytes": 8587
+        },
+        {
+          "path": "artifacts/v4/bodies_place_mention_default.json",
+          "sha256": "d8a472fdc91b496d4c0bbab9c128439d11c48e70cc92e08d3e2069fb1ecce175",
+          "size_bytes": 24286
+        },
+        {
+          "path": "artifacts/v4/place_mention_default.amir",
+          "sha256": "b8ca252c24df2356eca374f992f70c6c8d86b2111e5297c2645abc8b59a2b765",
+          "size_bytes": 185
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "place_mention_v4_preserve_ub",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_place_mention_preserve_ub.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_place_mention_preserve_ub.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/place_mention_preserve_ub.amir",
+        "place_mention_probe.rs",
+        "-o",
+        "/tmp/libpm_v4_pub.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 18,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_place_mention_preserve_ub.json",
+          "sha256": "373f8d40e141e01f914a4790269b4ba047fc08dcc60480e0d3eb5d4061a2c463",
+          "size_bytes": 8585
+        },
+        {
+          "path": "artifacts/v4/bodies_place_mention_preserve_ub.json",
+          "sha256": "c226171a2798dcf822a1a79a52d2a1d18e1cc054ed9f9d4845141148e3bb0874",
+          "size_bytes": 25321
+        },
+        {
+          "path": "artifacts/v4/place_mention_preserve_ub.amir",
+          "sha256": "7e96e186ff83c62741007819c7429fd22811011a11ac0b5cf00e135c85a8376d",
+          "size_bytes": 194
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "cleanup_subject_v4_preserve_ub",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_cleanup_preserve_ub.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_cleanup_preserve_ub.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/cleanup_subject_preserve_ub.amir",
+        "cleanup_subject.rs",
+        "-o",
+        "/tmp/libcleanup_v4.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 31,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_cleanup_preserve_ub.json",
+          "sha256": "f6e2333890d5c67a1d7d361f2b3ceb0f2746735d9a506049896295d9cf51780b",
+          "size_bytes": 20033
+        },
+        {
+          "path": "artifacts/v4/bodies_cleanup_preserve_ub.json",
+          "sha256": "80deb1182cba44ec8fd7011de49c4c1d5ca49dc194c78b15f074a35408d548ff",
+          "size_bytes": 134650
+        },
+        {
+          "path": "artifacts/v4/cleanup_subject_preserve_ub.amir",
+          "sha256": "d6244df6c9e113e6e91b520d26425ce55d7d5778bca94f81debf551369eabed2",
+          "size_bytes": 1066
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "zerocopy_holdout_v4_preserve_ub",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_zerocopy_holdout.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_zerocopy_holdout.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/zerocopy_layout_holdout.amir",
+        "zerocopy_layout_holdout.rs",
+        "-o",
+        "/tmp/libzc_v4.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 37,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_zerocopy_holdout.json",
+          "sha256": "6a7e775b045cf93cf355e8b72a2ddbbcef0343bb8f0013bbe8d5f215c5e2f5d3",
+          "size_bytes": 30138
+        },
+        {
+          "path": "artifacts/v4/bodies_zerocopy_holdout.json",
+          "sha256": "3c059bf72803a9e9528c399fe234081381feb14227ddee47021b39faebd7c2a9",
+          "size_bytes": 294044
+        },
+        {
+          "path": "artifacts/v4/zerocopy_layout_holdout.amir",
+          "sha256": "c9a0965ec8ad242321716375c3d5dfe0d5a5b823acaaea1fb8886096f0916bd3",
+          "size_bytes": 2154
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "loop_prefix_probe_v4_preserve_ub",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_loop_prefix_probe_preserve_ub.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_loop_prefix_probe_preserve_ub.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/loop_prefix_probe_preserve_ub.amir",
+        "loop_prefix_probe.rs",
+        "-o",
+        "/tmp/libloop_v4_pub.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 25,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_loop_prefix_probe_preserve_ub.json",
+          "sha256": "aac371b67dc724822be6bf305dffc02fd2a58ae9936d7716f69414e86fcef974",
+          "size_bytes": 4248
+        },
+        {
+          "path": "artifacts/v4/bodies_loop_prefix_probe_preserve_ub.json",
+          "sha256": "f330b3586ddc6c71a6d26628dbf784cbdf780fdea72321fc6e1ddab426d8282d",
+          "size_bytes": 33690
+        },
+        {
+          "path": "artifacts/v4/loop_prefix_probe_preserve_ub.amir",
+          "sha256": "fd3ea80c1a3aee77ceddf873658a1b9c96ac1f3996055779075415487d96d7ba",
+          "size_bytes": 249
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "loop_prefix_probe_v4_default",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_loop_prefix_probe_default.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_loop_prefix_probe_default.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/loop_prefix_probe_default.amir",
+        "loop_prefix_probe.rs",
+        "-o",
+        "/tmp/libloop_v4_def.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 24,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_loop_prefix_probe_default.json",
+          "sha256": "7347430cb698d8d04dda9b33000fb4477d2ffc111df1d9f2390e867202cfdc5f",
+          "size_bytes": 4249
+        },
+        {
+          "path": "artifacts/v4/bodies_loop_prefix_probe_default.json",
+          "sha256": "e87dfd7b0ff5dd8d3c99700c83a92c6a89d6b985838b4140bb2863a44e01401e",
+          "size_bytes": 33242
+        },
+        {
+          "path": "artifacts/v4/loop_prefix_probe_default.amir",
+          "sha256": "8796cdc30ba89677bc0294a838f419d3675dcfdf76bbbb0da566cf771568e04c",
+          "size_bytes": 246
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_limit_32_positive",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_limit_32_positive.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/limit_32_positive.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_32_positive.rs",
+        "-o",
+        "/tmp/liblim32.rlib"
+      ],
+      "exit_code": 0,
+      "elapsed_ms": 27,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_limit_32_positive.json",
+          "sha256": "c6864006bc06dcfee0fc3d2de53a63fe75883fd03352704741d5286a73c2267b",
+          "size_bytes": 7001
+        },
+        {
+          "path": "artifacts/v4/limit_32_positive.amir",
+          "sha256": "8ad7387c1318b6e2c57df4fdc6d81808ec9eae3866740914e851666443bdb4bc",
+          "size_bytes": 714
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_limit_33_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_limit_33_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/limit_33_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_33_reject.rs",
+        "-o",
+        "/tmp/liblim33.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 27,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_limit_33_reject.json",
+          "sha256": "335125e45587739a675087720d91fbe6077c612948102a2830d87e88f60913c0",
+          "size_bytes": 7007
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_unsupported_rvalue_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-C",
+        "overflow-checks=off",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_unsupported_rvalue_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/unsupported_rvalue_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_rvalue_reject.rs",
+        "-o",
+        "/tmp/libbadrval.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 19,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_unsupported_rvalue_reject.json",
+          "sha256": "a156cafa2522070786a909be8d247c9259206dae7fd863715de5d089bdeafa66",
+          "size_bytes": 5408
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_unsupported_rvalue_cast_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-C",
+        "overflow-checks=off",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_unsupported_rvalue_cast_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/unsupported_rvalue_cast_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_rvalue_cast_reject.rs",
+        "-o",
+        "/tmp/libbadrvalcast.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 18,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_unsupported_rvalue_cast_reject.json",
+          "sha256": "bd7fa66869e74ab7b48b464e31d8c4797ee6c6589804bc97a41999e9abe91657",
+          "size_bytes": 5529
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_confusing_callee_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_confusing_callee_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/confusing_callee_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/confusing_callee_reject.rs",
+        "-o",
+        "/tmp/libconfcallee.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 24,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_confusing_callee_reject.json",
+          "sha256": "ce5f99120d3f609b5833a55dc992ebfc110735911701f0029b149488317415fa",
+          "size_bytes": 4169
+        }
+      ],
+      "stderr_head": "warning: calls to `std::mem::drop` with a reference instead of an owned value does nothing\n --> /usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/confusing_callee_reject.rs:6:5\n  |\n6 |     core::mem::drop(&g);\n  |     ^^^^^^^^^^^^^^^^--^\n  |                     |\n  |                     argument has type `&Guard<'_>`\n  |"
+    },
+    {
+      "run_id": "control_wrong_drop_u32_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_wrong_drop_u32_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/wrong_drop_u32_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/wrong_drop_u32_reject.rs",
+        "-o",
+        "/tmp/libwrongdropu32.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 22,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_wrong_drop_u32_reject.json",
+          "sha256": "a03772799d162e573da2f337ff3a3aa53513b648a2881e76a69ed7d03eff86a5",
+          "size_bytes": 3924
+        }
+      ],
+      "stderr_head": "warning: calls to `std::mem::drop` with a value that implements `Copy` does nothing\n --> /usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/wrong_drop_u32_reject.rs:3:5\n  |\n3 |     core::mem::drop(x);\n  |     ^^^^^^^^^^^^^^^^-^\n  |                     |\n  |                     argument has type `u32`\n  |"
+    },
+    {
+      "run_id": "control_unsupported_projection_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_unsupported_projection_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/unsupported_projection_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_projection_reject.rs",
+        "-o",
+        "/tmp/libbadproj.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 31,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_unsupported_projection_reject.json",
+          "sha256": "6592b88afca173516517c81363a4d079266a807002663e625d01310630ed97a8",
+          "size_bytes": 8030
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_unsupported_terminator_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_unsupported_terminator_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/unsupported_terminator_reject.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_terminator_reject.rs",
+        "-o",
+        "/tmp/libbadterm.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 19,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_unsupported_terminator_reject.json",
+          "sha256": "59e6eb5b3698e748666211c2b5a1678744319f86562e3c697aa18c2b91a3e53d",
+          "size_bytes": 5548
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_feature_ladder_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_feature_ladder_sync.json",
+        "--driver-dump-bodies",
+        "artifacts/v4/bodies_feature_ladder_sync.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/feature_ladder_sync.amir",
+        "feature_ladder_subject.rs",
+        "-o",
+        "/tmp/libladder_v4.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 29,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_feature_ladder_sync.json",
+          "sha256": "41f03582a3cecc3fa3ab039a77ee9a19f3b8d4e87dcbad2f993aa8534bdee08d",
+          "size_bytes": 24838
+        },
+        {
+          "path": "artifacts/v4/bodies_feature_ladder_sync.json",
+          "sha256": "8a6324e90dfb33e3a75b031ff8e3d1283a0b9689a8cbad1b338be805300ab71a",
+          "size_bytes": 96187
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_incomplete_stop_after_analysis_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-stop-after-analysis",
+        "--driver-out-json",
+        "artifacts/v4/out_incomplete_stop_after_analysis.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/incomplete_stop_after_analysis.amir",
+        "place_mention_probe.rs",
+        "-o",
+        "/tmp/libpm_inc.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 15,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_incomplete_stop_after_analysis.json",
+          "sha256": "ae7a41d27bbe05cce83fc02b1069d42537ea050ff9cfb5f441d00bb038e760a0",
+          "size_bytes": 8295
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_failed_output_write_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_failed_output_write_reject.json",
+        "--driver-emit-amir-v3",
+        "/nonexistent_dir_anneal_r1/place_mention_preserve_ub.amir",
+        "place_mention_probe.rs",
+        "-o",
+        "/tmp/libpm_failwrite.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 18,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_failed_output_write_reject.json",
+          "sha256": "210d64e7198f0bf450c0093f3eb3932ba0991c5b44d3dea153cfd7e6e7cdaad3",
+          "size_bytes": 8723
+        }
+      ],
+      "stderr_head": ""
+    },
+    {
+      "run_id": "control_stale_output_removed_on_reject",
+      "cmd": [
+        "/tmp/direct_mir_driver_v4_bin",
+        "--edition=2021",
+        "--crate-type=lib",
+        "-Z",
+        "mir-preserve-ub",
+        "--driver-run-mono-collector",
+        "--driver-out-json",
+        "artifacts/v4/out_stale_output_removed_on_reject.json",
+        "--driver-emit-amir-v3",
+        "artifacts/v4/stale_should_be_removed.amir",
+        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_33_reject.rs",
+        "-o",
+        "/tmp/liblim33_stale.rlib"
+      ],
+      "exit_code": 2,
+      "elapsed_ms": 26,
+      "max_rss_bytes": 557219840,
+      "outputs": [
+        {
+          "path": "artifacts/v4/out_stale_output_removed_on_reject.json",
+          "sha256": "335125e45587739a675087720d91fbe6077c612948102a2830d87e88f60913c0",
+          "size_bytes": 7007
+        }
+      ],
+      "stderr_head": ""
+    }
+  ],
+  "control_and_mutant_amir_files": [
+    {
+      "name": "control_b1_truncated.amir",
+      "sha256": "d62dcc0b79b58edb5ad9ec08a922ffed4ce2e1b7424e4e9d47d2e13f52b22ad0",
+      "size_bytes": 192
+    },
+    {
+      "name": "control_b1_trailing.amir",
+      "sha256": "314a661e49e1b4847918c7584d3139f804211bfcd4b90da7d994d5c9650074a8",
+      "size_bytes": 195
+    },
+    {
+      "name": "control_b1_unsupported_op.amir",
+      "sha256": "006f59739452e29c2748695d313d1a499bba2d2e28847cea01e59bfc7dfa8405",
+      "size_bytes": 194
+    },
+    {
+      "name": "control_b2_oob_local.amir",
+      "sha256": "f989827aeb57a6be7bc9f7aa3f6821103e966a5445df6fede5cd320efde8f64b",
+      "size_bytes": 194
+    },
+    {
+      "name": "control_b2_duplicate_sym_id.amir",
+      "sha256": "914d2156f7447541c7cd7b2d7b5e85c797247aaea40be174352d90c01c180c62",
+      "size_bytes": 194
+    },
+    {
+      "name": "control_b2_missing_required_body.amir",
+      "sha256": "89085ff7a390dbba694f1236b0d00ac584660ae470b6da084d92b9cfa4ab856f",
+      "size_bytes": 1046
+    },
+    {
+      "name": "control_b3_spoofed_header_payload.amir",
+      "sha256": "0581403cb880ed1a83595846f94d64c3dded12be3a06b4f326497b70d4a0ae72",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_true_vs_false.amir",
+      "sha256": "72440b01340a91a71c0490ed702dc238c5e1e45ffd76956685682bb89f66d832",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_scalar_const.amir",
+      "sha256": "f2339d10e3ac7df5b47a8e7d45e8d8fc185c1cedbb05e7695356b8da944cbaa1",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_call_target_or_arg.amir",
+      "sha256": "6ed180e3a9c804a76db1e4b399d5b35c3a72479cd952f77f0c7a20db369a1e9e",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_branch_or_unwind_edge.amir",
+      "sha256": "ce05f71feabf60731ed32c3bec009e666d3758a69668470df155bb115b50d17c",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_projection.amir",
+      "sha256": "947291c16ea16810af2ea1380d2bbae12edd82151c21b7805e628cc6b765219c",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_drop_order.amir",
+      "sha256": "b934b36f82bee57e62fdd6e8e62b75338f2fd5b9789353c088c88aac66286281",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_benign_nop.amir",
+      "sha256": "edcbf1c1148b61912400ee413444eea70ac227887fd9059a5da2cde7d69e3857",
+      "size_bytes": 1066
+    },
+    {
+      "name": "mutant_wrong_log_target.amir",
+      "sha256": "1e0df50c119518e50c485506be294ff7dc28031063bd0b2be631dd636d7f36a1",
+      "size_bytes": 1066
+    }
+  ]
+}

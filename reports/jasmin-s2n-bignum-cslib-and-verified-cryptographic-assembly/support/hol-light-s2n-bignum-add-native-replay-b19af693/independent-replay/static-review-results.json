@@ -1,0 +1,883 @@
+{
+  "status": "SOURCE_AND_RETAINED_EVIDENCE_PASS_WITH_PUBLIC_METADATA_CORRECTION_REQUIRED; independent native replay NOT RUN",
+  "review_phase": "preparation/source-and-evidence only",
+  "report": {
+    "bytes": 14781,
+    "sha256": "dda6249e12763e4ae2bb12eea7947c63b2a3b017b57be1f2f75d8289650b2996"
+  },
+  "package_manifest": {
+    "bytes": 185853,
+    "sha256": "542dca2e5208bb559138078cf4aeccf9157011a75d5d06a4d67e843911182917"
+  },
+  "package_files": 996,
+  "package_bytes": 65135533,
+  "original_source_manifest": {
+    "bytes": 2773753,
+    "sha256": "eed7dd6b8ce62b4d71411955bfe2627389f1d5a9d1f53378cfb6ff2a0cd6e3df"
+  },
+  "original_files_rehashed_on_host": 23177,
+  "HOL_s2n_original_files": 3778,
+  "logical_original_source_closure": 82,
+  "core": {
+    "entries": [
+      "/home/opam/anneal-cross-sources/hol-light/hol_lib.ml",
+      "/home/opam/anneal-cross-sources/hol-light/system.ml",
+      "/home/opam/anneal-cross-sources/hol-light/lib.ml",
+      "/home/opam/anneal-cross-sources/hol-light/fusion.ml",
+      "/home/opam/anneal-cross-sources/hol-light/basics.ml",
+      "/home/opam/anneal-cross-sources/hol-light/nets.ml",
+      "/home/opam/anneal-cross-sources/hol-light/printer.ml",
+      "/home/opam/anneal-cross-sources/hol-light/preterm.ml",
+      "/home/opam/anneal-cross-sources/hol-light/parser.ml",
+      "/home/opam/anneal-cross-sources/hol-light/equal.ml",
+      "/home/opam/anneal-cross-sources/hol-light/bool.ml",
+      "/home/opam/anneal-cross-sources/hol-light/drule.ml",
+      "/home/opam/anneal-cross-sources/hol-light/tactics.ml",
+      "/home/opam/anneal-cross-sources/hol-light/itab.ml",
+      "/home/opam/anneal-cross-sources/hol-light/simp.ml",
+      "/home/opam/anneal-cross-sources/hol-light/theorems.ml",
+      "/home/opam/anneal-cross-sources/hol-light/ind_defs.ml",
+      "/home/opam/anneal-cross-sources/hol-light/class.ml",
+      "/home/opam/anneal-cross-sources/hol-light/trivia.ml",
+      "/home/opam/anneal-cross-sources/hol-light/canon.ml",
+      "/home/opam/anneal-cross-sources/hol-light/meson.ml",
+      "/home/opam/anneal-cross-sources/hol-light/firstorder.ml",
+      "/home/opam/anneal-cross-sources/hol-light/metis.ml",
+      "/home/opam/anneal-cross-sources/hol-light/thecops.ml",
+      "/home/opam/anneal-cross-sources/hol-light/quot.ml",
+      "/home/opam/anneal-cross-sources/hol-light/impconv.ml",
+      "/home/opam/anneal-cross-sources/hol-light/pair.ml",
+      "/home/opam/anneal-cross-sources/hol-light/compute.ml",
+      "/home/opam/anneal-cross-sources/hol-light/nums.ml",
+      "/home/opam/anneal-cross-sources/hol-light/recursion.ml",
+      "/home/opam/anneal-cross-sources/hol-light/arith.ml",
+      "/home/opam/anneal-cross-sources/hol-light/wf.ml",
+      "/home/opam/anneal-cross-sources/hol-light/calc_num.ml",
+      "/home/opam/anneal-cross-sources/hol-light/normalizer.ml",
+      "/home/opam/anneal-cross-sources/hol-light/grobner.ml",
+      "/home/opam/anneal-cross-sources/hol-light/ind_types.ml",
+      "/home/opam/anneal-cross-sources/hol-light/lists.ml",
+      "/home/opam/anneal-cross-sources/hol-light/realax.ml",
+      "/home/opam/anneal-cross-sources/hol-light/calc_int.ml",
+      "/home/opam/anneal-cross-sources/hol-light/realarith.ml",
+      "/home/opam/anneal-cross-sources/hol-light/real.ml",
+      "/home/opam/anneal-cross-sources/hol-light/calc_rat.ml",
+      "/home/opam/anneal-cross-sources/hol-light/int.ml",
+      "/home/opam/anneal-cross-sources/hol-light/sets.ml",
+      "/home/opam/anneal-cross-sources/hol-light/iterate.ml",
+      "/home/opam/anneal-cross-sources/hol-light/cart.ml",
+      "/home/opam/anneal-cross-sources/hol-light/define.ml"
+    ],
+    "completion": [
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/system.ml",
+        "basename": "system.ml",
+        "md5": "e3c590e1e3fe1fcc198592ea2108e253"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/lib.ml",
+        "basename": "lib.ml",
+        "md5": "839e097b50b60e447c3f6168cb775ac4"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/fusion.ml",
+        "basename": "fusion.ml",
+        "md5": "69f2046e169880d1377bd12178d84a36"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/basics.ml",
+        "basename": "basics.ml",
+        "md5": "689fd884b9a792d4ce943c79165ff9f6"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/nets.ml",
+        "basename": "nets.ml",
+        "md5": "521d7dc12a18b2919ba0395b1afaa7fc"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/printer.ml",
+        "basename": "printer.ml",
+        "md5": "57c6278a980b832442c14d2f33590459"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/preterm.ml",
+        "basename": "preterm.ml",
+        "md5": "b213eba5a470a584180971fbc937cf2e"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/parser.ml",
+        "basename": "parser.ml",
+        "md5": "14c6efe0020720810874f2dec85a8217"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/equal.ml",
+        "basename": "equal.ml",
+        "md5": "50ef11439e029260a4516019bf0522ae"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/bool.ml",
+        "basename": "bool.ml",
+        "md5": "fedf8ecec80404f61bb9468219baa702"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/drule.ml",
+        "basename": "drule.ml",
+        "md5": "2f07504973ee5c822e2f79df59dc23e9"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/tactics.ml",
+        "basename": "tactics.ml",
+        "md5": "a97a1fec93cef239e5b2a4892375329b"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/itab.ml",
+        "basename": "itab.ml",
+        "md5": "fd1fb7744aa7ab0de6956f6256864849"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/simp.ml",
+        "basename": "simp.ml",
+        "md5": "94b5883d7f5e43cba449dd586e026f12"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/theorems.ml",
+        "basename": "theorems.ml",
+        "md5": "f7eb3f384ec3aec235a5da938bb6be4a"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/ind_defs.ml",
+        "basename": "ind_defs.ml",
+        "md5": "3b05fa18853c6beb1b6f98d96a21ac4c"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/class.ml",
+        "basename": "class.ml",
+        "md5": "0ac980ca36907efede4790c6eebf26d8"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/trivia.ml",
+        "basename": "trivia.ml",
+        "md5": "5a52bb7853b896162b70e8558db4d82f"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/canon.ml",
+        "basename": "canon.ml",
+        "md5": "5ad02c52395d5eb3340adb76754e3c49"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/meson.ml",
+        "basename": "meson.ml",
+        "md5": "5dd8ddf0b30d77d205c4b7aa2a9710bf"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/firstorder.ml",
+        "basename": "firstorder.ml",
+        "md5": "94986a270b2f120a7907b49c69c91b08"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/metis.ml",
+        "basename": "metis.ml",
+        "md5": "0336310659edb042d215afcdb53138e6"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/thecops.ml",
+        "basename": "thecops.ml",
+        "md5": "9f24f5f07f97438ffaee0b61d61d7fa1"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/quot.ml",
+        "basename": "quot.ml",
+        "md5": "3457649f8e0d13bd43b5c08f80e1b923"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/impconv.ml",
+        "basename": "impconv.ml",
+        "md5": "32c6a27b4acaa0fbb269670def3e2110"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/pair.ml",
+        "basename": "pair.ml",
+        "md5": "d647cc6d96003dca0895b74d68008ed1"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/compute.ml",
+        "basename": "compute.ml",
+        "md5": "c5a10cf1aaa356ecefbd6c8aeda65455"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/nums.ml",
+        "basename": "nums.ml",
+        "md5": "74061a902714e99a452a868706deb3ce"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/recursion.ml",
+        "basename": "recursion.ml",
+        "md5": "f4cd0494cebaefc30927301bf62a0e1b"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/arith.ml",
+        "basename": "arith.ml",
+        "md5": "12dce1509696b45965321790cb8d9a42"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/wf.ml",
+        "basename": "wf.ml",
+        "md5": "9fbcbdc5239e9db9d947ec74300f1895"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/calc_num.ml",
+        "basename": "calc_num.ml",
+        "md5": "80477442b7311df73b28b693167b70fd"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/normalizer.ml",
+        "basename": "normalizer.ml",
+        "md5": "2249df3c7604e22d3ddf7fc078d8dac2"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/grobner.ml",
+        "basename": "grobner.ml",
+        "md5": "799e24ba3260ae156938a8c92844fb46"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/ind_types.ml",
+        "basename": "ind_types.ml",
+        "md5": "e758866419f15e9d2d9646e9b43eb04d"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/lists.ml",
+        "basename": "lists.ml",
+        "md5": "b1c4ddc403b605948cb496c7b6f0ade9"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/realax.ml",
+        "basename": "realax.ml",
+        "md5": "10c44a7ac86e205b04ed87d5278160fd"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/calc_int.ml",
+        "basename": "calc_int.ml",
+        "md5": "5def1b2d47effcd0b9c42067837e46b0"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/realarith.ml",
+        "basename": "realarith.ml",
+        "md5": "e5e906dfb64d48f3835750fc9d127354"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/real.ml",
+        "basename": "real.ml",
+        "md5": "f053a14def65d36ebeaa8e6ed14547c7"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/calc_rat.ml",
+        "basename": "calc_rat.ml",
+        "md5": "3702ea6499c95e73cc1c7749fcad8b20"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/int.ml",
+        "basename": "int.ml",
+        "md5": "c6a7f40a944b6ac9ddb268cef2c3279a"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/sets.ml",
+        "basename": "sets.ml",
+        "md5": "2fbab5f746a9a9ac01930102918e42ba"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/iterate.ml",
+        "basename": "iterate.ml",
+        "md5": "2509aac4d54183ae36878672adba7de5"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/cart.ml",
+        "basename": "cart.ml",
+        "md5": "8546696fea155841eb23582189d69446"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/define.ml",
+        "basename": "define.ml",
+        "md5": "361e2f3cfc7ba2cf90d2ccfca4b4d083"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/hol_lib.ml",
+        "basename": "hol_lib.ml",
+        "md5": "337d1bb107755e1ca365560ed4637b1e"
+      }
+    ],
+    "identity": {
+      "bytes": 2107692,
+      "sha256": "311e298d5303ee4a0d352b87301839a7b6f0438674d140b677fd9cba8dbce0a7"
+    }
+  },
+  "selected": {
+    "entries": [
+      "/home/opam/anneal-cross-output/audit/AnnealDriver.ml",
+      "/home/opam/anneal-cross-output/audit/AnnealSelectedAudit.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/bignum_add.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/base.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/iter.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/rstc.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/bitsize.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/pocklington.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/prime.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/integer.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/words.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/bdd.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/bitmatch.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/records.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/components.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/overlap.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/for_hollight.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/words2.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/misc.ml",
+      "/home/opam/anneal-cross-sources/hol-light/Library/floor.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/actions_merger.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/components.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/alignment.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/relational.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/relational_n.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/interval.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/elf.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/safety.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/execution.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/aes.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/aes.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/instruction.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/decode.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/x86.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/code_loading.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/bignum.ml",
+      "/home/opam/anneal-cross-sources/s2n-bignum/common/wordlist.ml"
+    ],
+    "completion": [
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/iter.ml",
+        "basename": "iter.ml",
+        "md5": "05684e423baad84e216cb03c4a580a0f"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/rstc.ml",
+        "basename": "rstc.ml",
+        "md5": "622ab60c2aa0d9eb187262cb4871c0e3"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/bitsize.ml",
+        "basename": "bitsize.ml",
+        "md5": "19ac74444a7afc48843de112191d1697"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/prime.ml",
+        "basename": "prime.ml",
+        "md5": "622aa374979dbe21414049a1af0f3ed3"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/pocklington.ml",
+        "basename": "pocklington.ml",
+        "md5": "bf092c431f93a5e829526d1ef9baf435"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/integer.ml",
+        "basename": "integer.ml",
+        "md5": "ced85322df0f4a156d2fc9c23ffa391f"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/bdd.ml",
+        "basename": "bdd.ml",
+        "md5": "edbe46d56a474f3ddb1e1e98fd975e42"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/words.ml",
+        "basename": "words.ml",
+        "md5": "699ca08da38271e5e8c92226f06a7e01"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/bitmatch.ml",
+        "basename": "bitmatch.ml",
+        "md5": "3832054e9334a4e0e54f7c907dd8b50f"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/components.ml",
+        "basename": "components.ml",
+        "md5": "2816ea905cbff05185e0b237dcadf012"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/records.ml",
+        "basename": "records.ml",
+        "md5": "c3874ede37021ef2555e13137478affa"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/overlap.ml",
+        "basename": "overlap.ml",
+        "md5": "71ec6bdab32afc20c0fb0d228ef3e6ef"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/for_hollight.ml",
+        "basename": "for_hollight.ml",
+        "md5": "1ce59720effabe4c61d4bdc2c1d93f91"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/words2.ml",
+        "basename": "words2.ml",
+        "md5": "d05428929e6db302d0ccd59ff89fbd29"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/hol-light/Library/floor.ml",
+        "basename": "floor.ml",
+        "md5": "145b5a26fe6a0f9b5d7107d5d44a22d3"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/actions_merger.ml",
+        "basename": "actions_merger.ml",
+        "md5": "0a804aff2935c0c70b3bc8148c623389"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/misc.ml",
+        "basename": "misc.ml",
+        "md5": "9850d13bcc5d3bf8cf2a773328fc4fa8"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/components.ml",
+        "basename": "components.ml",
+        "md5": "9d71090ed14671ad101620da7e0163f6"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/alignment.ml",
+        "basename": "alignment.ml",
+        "md5": "ed480ad32d150e768db9b10889932980"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/relational_n.ml",
+        "basename": "relational_n.ml",
+        "md5": "71e31471cdc1c50b9b503de7ab3fcd52"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/relational.ml",
+        "basename": "relational.ml",
+        "md5": "e2607274daf799506a168fa8adfc5a49"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/interval.ml",
+        "basename": "interval.ml",
+        "md5": "a5aa08328772e136c4769e0e41189639"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/elf.ml",
+        "basename": "elf.ml",
+        "md5": "1a0c5c7ab8f50ddb2597482398487650"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/safety.ml",
+        "basename": "safety.ml",
+        "md5": "c39e5214a5bb89b6e3f355f8974dd589"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/execution.ml",
+        "basename": "execution.ml",
+        "md5": "ff788a701d99f097d253a2ac375351f6"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/aes.ml",
+        "basename": "aes.ml",
+        "md5": "ee5efe3c2dcf08c3d0e68e5870daf442"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/aes.ml",
+        "basename": "aes.ml",
+        "md5": "bbd99a2cbc45143507de9f92ff934f40"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/instruction.ml",
+        "basename": "instruction.ml",
+        "md5": "b879df4c6775bd6602a368d1ff8c7cc3"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/decode.ml",
+        "basename": "decode.ml",
+        "md5": "b25d79c71707f84928ba1737f09c8fad"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/code_loading.ml",
+        "basename": "code_loading.ml",
+        "md5": "940db8a59892f761e82b42d2421da85b"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/x86.ml",
+        "basename": "x86.ml",
+        "md5": "395f9e798ef6de8685fa762ccf26a422"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/wordlist.ml",
+        "basename": "wordlist.ml",
+        "md5": "8054a5174d43b0ebc014af3328379a72"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/common/bignum.ml",
+        "basename": "bignum.ml",
+        "md5": "85252ca862f0afe9a0e80aad13fa6408"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/base.ml",
+        "basename": "base.ml",
+        "md5": "9a05e14c73db0bfca2a16409a7d0ae6a"
+      },
+      {
+        "path": "/home/opam/anneal-cross-sources/s2n-bignum/x86/proofs/bignum_add.ml",
+        "basename": "bignum_add.ml",
+        "md5": "eff5f69941f920aed89afe5a8ece514f"
+      },
+      {
+        "path": "/home/opam/anneal-cross-output/audit/AnnealSelectedAudit.ml",
+        "basename": "AnnealSelectedAudit.ml",
+        "md5": "7449e25cabcbd2b85544208ab4d1744d"
+      },
+      {
+        "path": "/home/opam/anneal-cross-output/audit/AnnealDriver.ml",
+        "basename": "AnnealDriver.ml",
+        "md5": "61f6b7874d847ce6169b624356c444ae"
+      }
+    ],
+    "identity": {
+      "bytes": 2079196,
+      "sha256": "7063d0b883617faaaf516de6ffc0ae3608d4f2f70248247fbfa53f875604b12b"
+    }
+  },
+  "positive_receipt": {
+    "argv": [
+      "$DOCKER_BIN",
+      "exec",
+      "--workdir",
+      "/home/opam/anneal-cross-sources/s2n-bignum",
+      "--env",
+      "OPAMROOT=/home/opam/anneal-hol-opam",
+      "--env",
+      "LC_ALL=C",
+      "--env",
+      "HOLLIGHT_DIR=/home/opam/anneal-cross-sources/hol-light",
+      "--env",
+      "HOLLIGHT_LOAD_PATH=",
+      "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+      "opam",
+      "exec",
+      "--switch=hol54",
+      "--",
+      "timeout",
+      "--signal=KILL",
+      "1200",
+      "/home/opam/anneal-cross-output/selected.native"
+    ],
+    "cwd": "$TASK/work/execution/hol-replay",
+    "started_utc": "2026-10-15T01:19:30.072340+00:00",
+    "classification": "single authorized positive native OCaml proof execution after all gates passed; GNU1200s KILL; nativePID/RSS/maps unobserved; no custom lifecycle wrapper",
+    "host_pid": 26804,
+    "returncode": 0,
+    "elapsed_seconds": 68.422963958,
+    "stdout_bytes": 842395,
+    "stdout_sha256": "775c0ec380bd5098bd57c841fd8768085973c7f44fa382c3b8236e0c36a09778",
+    "stderr_bytes": 45,
+    "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+  },
+  "positive": {
+    "theorem_count": 71,
+    "some_offsets": [
+      0,
+      3,
+      6,
+      10,
+      13,
+      17,
+      20,
+      22,
+      25,
+      28,
+      31,
+      34,
+      36,
+      40,
+      44,
+      48,
+      51,
+      54,
+      56,
+      58,
+      62,
+      66,
+      70,
+      73,
+      76,
+      78,
+      83,
+      87,
+      90,
+      92,
+      93,
+      96,
+      99,
+      102,
+      104,
+      108,
+      112,
+      116,
+      119,
+      122,
+      124,
+      128,
+      132,
+      136,
+      139,
+      142,
+      144,
+      149,
+      153,
+      156,
+      158,
+      159,
+      163,
+      166,
+      168,
+      172,
+      175,
+      178,
+      180
+    ],
+    "none_offsets": [
+      1,
+      2,
+      4,
+      5,
+      7,
+      8,
+      9,
+      11,
+      12,
+      14,
+      15,
+      16,
+      18,
+      19,
+      21,
+      23,
+      24,
+      26,
+      27,
+      29,
+      30,
+      32,
+      33,
+      35,
+      37,
+      38,
+      39,
+      41,
+      42,
+      43,
+      45,
+      46,
+      47,
+      49,
+      50,
+      52,
+      53,
+      55,
+      57,
+      59,
+      60,
+      61,
+      63,
+      64,
+      65,
+      67,
+      68,
+      69,
+      71,
+      72,
+      74,
+      75,
+      77,
+      79,
+      80,
+      81,
+      82,
+      84,
+      85,
+      86,
+      88,
+      89,
+      91,
+      94,
+      95,
+      97,
+      98,
+      100,
+      101,
+      103,
+      105,
+      106,
+      107,
+      109,
+      110,
+      111,
+      113,
+      114,
+      115,
+      117,
+      118,
+      120,
+      121,
+      123,
+      125,
+      126,
+      127,
+      129,
+      130,
+      131,
+      133,
+      134,
+      135,
+      137,
+      138,
+      140,
+      141,
+      143,
+      145,
+      146,
+      147,
+      148,
+      150,
+      151,
+      152,
+      154,
+      155,
+      157,
+      160,
+      161,
+      162,
+      164,
+      165,
+      167,
+      169,
+      170,
+      171,
+      173,
+      174,
+      176,
+      177,
+      179
+    ],
+    "ledger_counts": {
+      "core_before_proof": 47,
+      "after_inner_audit": 83
+    },
+    "axioms": [
+      "|- exists f. ONE_ONE f /\\ ~ONTO f",
+      "|- forall P x. P x ==> P ((@) P)",
+      "|- forall t. (\\x. t x) = t"
+    ],
+    "markers": {
+      "ANNEAL_DECODE_ARRAY_LENGTH 181": 1,
+      "ANNEAL_CHECK_AXIOMS_PASS": 1,
+      "ANNEAL_AUDIT_INNER_FINISHED": 1,
+      "ANNEAL_CHECK_AXIOMS_OUTER_PASS": 1,
+      "ANNEAL_AUDIT_FINISHED": 1
+    },
+    "all_actual_theorem_statements_match": true
+  },
+  "elfs": [
+    {
+      "identity": {
+        "bytes": 1528,
+        "sha256": "0f94fe2090387f5f63afc80049732384d3badbcd89aae7ffc5200e1c53ec53eb"
+      },
+      "machine": 62,
+      "text_bytes": 185,
+      "text_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+      "bignum_add_symbols": [
+        {
+          "section_index": 1,
+          "offset": 0,
+          "size": 185,
+          "covers_text": true
+        }
+      ],
+      "interpreter": [],
+      "needed": []
+    },
+    {
+      "identity": {
+        "bytes": 1592,
+        "sha256": "a81541b03aa800d646b113b6da1d81363f0d8921bc74ddceae76a82a9d5d7f73"
+      },
+      "machine": 62,
+      "text_bytes": 215,
+      "text_sha256": "18fc6c30fba62f3376f71f511658d8ac79684350bfe9c397632931406557247b",
+      "bignum_add_symbols": [
+        {
+          "section_index": 1,
+          "offset": 0,
+          "size": 215,
+          "covers_text": true
+        }
+      ],
+      "interpreter": [],
+      "needed": []
+    }
+  ],
+  "native_ELF": {
+    "identity": {
+      "bytes": 30819144,
+      "sha256": "b6f89be7d7a7e5ffb572dbc30bef3fb98816c41eadbac842474e09d17f090ec8"
+    },
+    "machine": 183,
+    "text_bytes": 8004400,
+    "text_sha256": "bcf29b71e43a64b2dde09f809a054496697fdd7fa6016123eab09dfa90527910",
+    "bignum_add_symbols": [],
+    "interpreter": [
+      "/lib/ld-linux-aarch64.so.1"
+    ],
+    "needed": [
+      "libgmp.so.10",
+      "libm.so.6",
+      "libc.so.6"
+    ]
+  },
+  "retained_identity_observations": {
+    "tools": 69,
+    "compiler_library_files": 2417,
+    "generated_module_and_objects": 23,
+    "output_files": 704,
+    "all_recorded_before_after_inventories_byte_equal": true
+  },
+  "signature_generator": {
+    "returncode": 0,
+    "inputs_rehashed": 690,
+    "generated_outputs_equal_originals": 2
+  },
+  "public_projection": {
+    "relation_verified_files": 84,
+    "receipt_identity": {
+      "bytes": 26404,
+      "sha256": "14351a69f33b47aac0e08f00898e08c0f73d8b963a7ebe12328f97fce34e7a2d"
+    },
+    "remaining_private_prefixes": [
+      {
+        "path": "support/public-path-projection.json",
+        "prefix_label": "$TASK",
+        "occurrences": 1
+      },
+      {
+        "path": "support/public-path-projection.json",
+        "prefix_label": "$DOCKER_BIN",
+        "occurrences": 1
+      },
+      {
+        "path": "support/public-path-projection.json",
+        "prefix_label": "$DOCKER_SOCKET",
+        "occurrences": 1
+      }
+    ],
+    "disposition": "Parent separate public candidate correction; original frozen candidate untouched"
+  },
+  "axiom_scope": "Global policy allows only infinity/choice/eta. No per-theorem axiom dependency certificate.",
+  "launch_count_this_review": 0,
+  "runtime_queries_this_review": 0
+}

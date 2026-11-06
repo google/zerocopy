@@ -1,0 +1,147 @@
+{
+  "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+  "source_inventory_entries": 6580,
+  "source_inventory_sha256": "fe98c51b56b0ec4db9b794516b0eb2982cdc72ed56f38c683650794e19af84b6",
+  "current_source_mismatches": [],
+  "container_verification_OK_lines": 6580,
+  "selected_preserved_source": [
+    {
+      "path": "herd/libdir/aarch64.cat",
+      "sha256": "1d6bcac1194cded0f89717f3bf892c2105d8a17e7aff0304fa79ebc240b07d1d",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64bbm.cat",
+      "sha256": "f0026e08c5b3923fb7ac9d3fbbd57e06226b22381a4263d3402d02508b724915",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64deps.cat",
+      "sha256": "89595e6fbb1b875a562144a70d67b31d149c41ca9ec088f50198d4adc616a3b7",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64fences.cat",
+      "sha256": "6929b8da3d3ec6230997a4cdb99da6f9f8f0640cd5637ccfbefd749c8f6a7219",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64hwreqs.cat",
+      "sha256": "0d24db3b580dcaee96b025c3e9ad6b33217e4e34dd79a3765703eaaede1f1697",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64loc.cat",
+      "sha256": "2583f3f79362ee94336271f0fb11ca6a262a023486bc66ed30c3d9de54c90fa5",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64memattrs.cat",
+      "sha256": "72d8ce52407221d677763d64c1af5dba352340335ed9013a6c11c8c0440f385c",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64show.cat",
+      "sha256": "2d2e08a27b81f7aa9df143b6ac5737816c485de7ce35e09a0be16da4f86cc857",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/aarch64util.cat",
+      "sha256": "c9148abc267240a3e4866c866928c7260d9a3435ad5eb9e48d3e5a9e40af35f2",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/cos-no-opt.cat",
+      "sha256": "2c3d73a446502c08788e7fecd8ccfce3af7482da0da1b542b3a4890a160840df",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/cos-ok-opt.cat",
+      "sha256": "5d63ea4237c7a905cc60e739f5011dc4c7bb2e35c5f6072393d11a25a4967982",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/cos.cat",
+      "sha256": "0c0efa30bae59a171bc676fe8002108dee7294a17ede5d9c26ce7ae4c370fbb9",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/cross.cat",
+      "sha256": "8b2dbe9cc3175d5bd8067ab80b4c6024949c743d16e47b13f8230c52ca06bbde",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/enumerations.cat",
+      "sha256": "1bd204d83ce0cd1a7be1af56c0ee8eb870821455f76ef1518303033179f74af1",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/libdir/stdlib.cat",
+      "sha256": "aaf710a8c80bfa9ae673ca9b8ec0a467c773705b9e5b8e6352edf90b30494755",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/AArch64Sem.ml",
+      "sha256": "4006108c09ce94b1d9f5f7518b50461bc9b6d50675ca35705728502837d1720a",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/AArch64Annot.ml",
+      "sha256": "cc206cba0a57d808d0cf45259d8f25132bd780df7e698d687c544fe23a0f85a8",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "lib/AArch64Base.ml",
+      "sha256": "a6d4dd2124c5176bc6cf88a6dc22da6aeeeda39edd1f95c29f79aa8224124f30",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/opts.ml",
+      "sha256": "d1a8c41304cd1b6a61742bc54f8f5bb55040c2d3dca20be422ae0cb44e57cbe8",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herd/herd.ml",
+      "sha256": "5fc79937a2e339ee4cffa22d2c59e73d94543974b6871b1375d6bff4010e06c7",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "VERSION.txt",
+      "sha256": "fb6d2c3384b6f28ca0f0ce17e29ac1f7c31695bab2f2ea83d93f00f0bf0b99e8",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "LICENSE.txt",
+      "sha256": "5d8a5818161ab38b77226b7caa758fde63f1aaabdf87ea773e1620b62a5b9537",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "INSTALL.md",
+      "sha256": "127d35a0f40631189e48a6f102837478c59d789232a95be0ea02af595261d499",
+      "matches_original_inventory": true
+    },
+    {
+      "path": "herdtools7.opam",
+      "sha256": "f7ff75012fbfc81e0ffd04aa07b41eeb93e3488ced76a034dbd2cc2406bed132",
+      "matches_original_inventory": true
+    }
+  ],
+  "cat_closure": [
+    "aarch64.cat",
+    "aarch64bbm.cat",
+    "aarch64deps.cat",
+    "aarch64fences.cat",
+    "aarch64hwreqs.cat",
+    "aarch64loc.cat",
+    "aarch64memattrs.cat",
+    "aarch64show.cat",
+    "aarch64util.cat",
+    "cos-no-opt.cat",
+    "cos-ok-opt.cat",
+    "cos.cat",
+    "cross.cat",
+    "enumerations.cat",
+    "stdlib.cat"
+  ],
+  "cat_closure_scope": "aarch64.cat transitive textual includes, plus stdlib.cat and its includes; not a complete binary dependency inventory"
+}

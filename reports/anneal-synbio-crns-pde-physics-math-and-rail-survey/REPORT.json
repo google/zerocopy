@@ -1,0 +1,315 @@
+{
+  "topics": [
+    "anneal/refinement",
+    "anneal/verification-result",
+    "anneal/trust-policy",
+    "anneal/behavior-codec",
+    "synthetic-biology/cello",
+    "synthetic-biology/sbol",
+    "synthetic-biology/ibiosim",
+    "chemical-reaction-networks/dsd",
+    "chemical-reaction-networks/crnt",
+    "chemical-reaction-networks/catalyst-jl",
+    "dna-nanotechnology/tile-assembly",
+    "dna-nanotechnology/dna-origami",
+    "microfluidics/ewod",
+    "microfluidics/puddle",
+    "metabolic-modeling/flux-balance-analysis",
+    "metabolic-modeling/cobrapy",
+    "physiological-control/artificial-pancreas",
+    "hybrid-systems/flowstar",
+    "rna-folding/nupack",
+    "rna-folding/viennarna",
+    "ecological-modeling/ecopath",
+    "ecological-modeling/slim",
+    "scientific-computing/firedrake",
+    "scientific-computing/fenicsx",
+    "scientific-computing/dedalus",
+    "scientific-computing/devito",
+    "floating-point/vcfloat",
+    "automatic-differentiation/enzyme",
+    "formal-mathematics/flyspeck",
+    "formal-mathematics/leanblueprint",
+    "formal-mathematics/alphaproof",
+    "computational-topology/snappy",
+    "computational-topology/regina",
+    "combinatorial-optimization/cakelpr",
+    "combinatorial-optimization/vipr",
+    "railway-signaling/atelier-b",
+    "railway-signaling/prob",
+    "railway-signaling/prover-ilock",
+    "traffic-control/nema-ts2",
+    "traffic-control/tulip",
+    "human-computer-interaction/pvsio-web",
+    "pragmatics/webppl-rsa",
+    "multi-agent-systems/bspl",
+    "causal-inference/do-calculus",
+    "causal-inference/ananke",
+    "differential-privacy/opendp",
+    "power-systems/powermodels-jl",
+    "carbon-accounting/pact",
+    "spacecraft-autonomy/aerie",
+    "spacecraft-autonomy/plexil",
+    "spacecraft-autonomy/spice",
+    "anneal",
+    "verification/failures",
+    "chemical-reaction-networks",
+    "mathematics/formalization",
+    "numerical-analysis/pde",
+    "railway/interlocking",
+    "avionics/mode-confusion"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal trusted Lean verification root (trusted/lean/Trusted.lean, trusted/lean/Trusted/Attributes.lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal design, architecture, and trust-model specification (docs/architecture.md, docs/design.md, docs/trust-model.md)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal verification framework and robust-code specification (skills/robust-code/SKILL.md)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaborator toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Cello and Cello 2.0 genetic logic synthesis compilers",
+      "identity": {
+        "doi_v1": "10.1126/science.aac7341",
+        "doi_v2": "10.1038/s41596-021-00675-2",
+        "repository_v1": "CIDAR-LAB/cello",
+        "repository_v2": "CIDAR-LAB/Cello-v2-core"
+      }
+    },
+    {
+      "name": "Genetic Engineering of Living Cells (GEC), Eugene, and MIT Proto BioCompiler",
+      "identity": {
+        "eugene_doi": "10.1021/sb500356d",
+        "gec_doi": "10.1098/rsif.2009.0035",
+        "proto_doi": "10.1093/bioinformatics/btp467"
+      }
+    },
+    {
+      "name": "SynBioHub, SBOL3, iBioSim, and LOICA genetic design ecosystem",
+      "identity": {
+        "ibiosim_repository": "MyersResearchGroup/iBioSim",
+        "loica_repository": "RudgeLab/LOICA",
+        "sbol3_spec": "SBOL Version 3.1.0",
+        "synbiohub_repository": "SynBioHub/synbiohub"
+      }
+    },
+    {
+      "name": "Visual DSD, Peppercorn, Piperine, and CRN++ molecular compilers",
+      "identity": {
+        "crnplusplus_repository": "marko-vasic/crnPlusPlus",
+        "peppercorn_repository": "DNA-and-Natural-Algorithms-Group/peppercornenumerator",
+        "piperine_repository": "DNA-and-Natural-Algorithms-Group/piperine",
+        "visual_dsd_doi": "10.1098/rsif.2009.0062"
+      }
+    },
+    {
+      "name": "PRISM, Storm, Catalyst.jl, Feinberg CRNT Toolbox, and BioNetGen reaction analyzers",
+      "identity": {
+        "bionetgen_repository": "RuleWorld/bionetgen",
+        "catalyst_repository": "SciML/Catalyst.jl",
+        "crnt_doi": "10.1007/978-3-030-03858-8",
+        "prism_repository": "prismmodelchecker/prism",
+        "storm_repository": "stormchecker/storm"
+      }
+    },
+    {
+      "name": "Xgrow, ISU TAS, caDNAno, and DAEDALUS DNA self-assembly and origami tools",
+      "identity": {
+        "cadnano_repository": "cadnano/cadnano2.5",
+        "daedalus_doi": "10.1126/science.aaf4388",
+        "isu_tas_doi": "10.1007/978-3-642-18305-8_14",
+        "xgrow_repository": "DNA-and-Natural-Algorithms-Group/xgrow"
+      }
+    },
+    {
+      "name": "Puddle, BioCoder, MFSimStatic, BioStream/AquaCore, and OpenDrop microfluidic toolchains",
+      "identity": {
+        "aquacore_doi": "10.1145/1250662.1250696",
+        "biocoder_doi": "10.1093/bioinformatics/btp658",
+        "mfsimstatic_repository": "UCRMicrofluidics/MFSimStatic",
+        "opendrop_repository": "GaudiLabs/OpenDrop",
+        "puddle_repository": "uwmisl/puddle"
+      }
+    },
+    {
+      "name": "COBRApy, MEMOTE, CellNetAnalyzer/StrainDesign, eQuilibrator, and QSopt_ex metabolic verification suite",
+      "identity": {
+        "cobrapy_repository": "opencobra/cobrapy",
+        "equilibrator_gitlab": "elad.noor/equilibrator-api",
+        "memote_repository": "opencobra/memote",
+        "qsopt_ex_repository": "jonls/qsopt-ex",
+        "straindesign_repository": "klamt-lab/straindesign"
+      }
+    },
+    {
+      "name": "UVA/Padova T1DMS (simglucose), OpenAPS (oref0/oref1), Loop, and Flow* physiological reachability tools",
+      "identity": {
+        "flowstar_doi": "10.1007/978-3-642-39799-8_18",
+        "loop_repository": "LoopKit/Loop",
+        "oref0_repository": "openaps/oref0",
+        "simglucose_repository": "jxx123/simglucose"
+      }
+    },
+    {
+      "name": "NUPACK 4, ViennaRNA (Barriers/Treekin), LinearFold, LinearDesign, and Multistrand nucleic-acid folding compilers",
+      "identity": {
+        "lineardesign_repository": "LinearDesignSoftware/LinearDesign",
+        "linearfold_repository": "LinearFold/LinearFold",
+        "multistrand_repository": "DNA-and-Natural-Algorithms-Group/multistrand",
+        "nupack_doi": "10.1021/acssynbio.3c00125",
+        "viennarna_repository": "ViennaRNA/ViennaRNA"
+      }
+    },
+    {
+      "name": "Ecopath with Ecosim (EwE), SLiM 4, MGDrivE, and AlgebraicPetri.jl ecological and compositional Petri frameworks",
+      "identity": {
+        "algebraicpetri_repository": "AlgebraicJulia/AlgebraicPetri.jl",
+        "ewe_doi": "10.1016/S0304-3800(03)00364-3",
+        "mgdrive_repository": "MarshallLab/MGDrivE",
+        "slim_repository": "MesserLab/SLiM"
+      }
+    },
+    {
+      "name": "Firedrake, FEniCSx/DOLFINx, Dedalus, Devito, VCFloat2/VST-Float, and Enzyme scientific computing compilers",
+      "identity": {
+        "dedalus_repository": "DedalusProject/dedalus",
+        "devito_repository": "devitocodes/devito",
+        "dolfinx_repository": "FEniCS/dolfinx",
+        "enzyme_repository": "EnzymeAD/Enzyme",
+        "firedrake_repository": "firedrakeproject/firedrake",
+        "vcfloat_repository": "VeriNum/vcfloat"
+      }
+    },
+    {
+      "name": "Flyspeck, Lean Blueprint, AlphaProof/AlphaGeometry 2, SnapPy, Regina, Kenzo, and CakeLPR mathematical proof tools",
+      "identity": {
+        "alphageometry_repository": "google-deepmind/alphageometry",
+        "cakelpr_repository": "tanyongkiam/cake_lpr",
+        "flyspeck_repository": "flyspeck/flyspeck",
+        "kenzo_repository": "jromanf/kenzo",
+        "leanblueprint_repository": "PatrickMassot/leanblueprint",
+        "regina_repository": "regina-normal/regina",
+        "snappy_repository": "3-manifolds/SnapPy"
+      }
+    },
+    {
+      "name": "Atelier B, Ovado, ProB, HLL/Prover iLock, EURIS, RobustRailS, OR-Tools, VIPR, NEMA TS2, TuLiP, and SUMO logistics and control tools",
+      "identity": {
+        "ortools_repository": "google/or-tools",
+        "prob2_repository": "hhu-stups/prob2_kernel",
+        "prover_ilock_doi": "10.1007/3-540-40922-X_8",
+        "sumo_repository": "eclipse-sumo/sumo",
+        "tulip_repository": "tulip-control/tulip-control",
+        "vipr_repository": "ambros-gleixner/VIPR"
+      }
+    },
+    {
+      "name": "PVSio-web, IVY, SCR/RSML-e, WebPPL-RSA, BSPL, Ananke, causaleffect, DoWhy, Dagitty, OpenDP, and Tumult Core HCI and epistemic tools",
+      "identity": {
+        "ananke_gitlab": "causal/ananke",
+        "bspl_repository": "munindar/bspl",
+        "causaleffect_repository": "santikka/causaleffect",
+        "dowhy_repository": "py-why/dowhy",
+        "opendp_repository": "opendp/opendp",
+        "pvsioweb_repository": "pvsioweb/pvsio-web",
+        "tumult_core_pypi": "tmlt.core",
+        "webppl_repository": "probmods/webppl"
+      }
+    },
+    {
+      "name": "PowerModels.jl, MATPOWER, WBCSD PACT, EnergyTag, ASPEN, CLASP, Aerie, EUROPA, PLEXIL, and NAIF SPICE grid and deep-space tools",
+      "identity": {
+        "aerie_repository": "NASA-AMMOS/aerie",
+        "energytag_standard": "EnergyTag Granular Certificate Standard v2",
+        "europa_repository": "nasa/europa",
+        "matpower_repository": "MATPOWER/matpower",
+        "pact_spec": "WBCSD Pathfinder Framework v2.1",
+        "plexil_repository": "nasa/plexil",
+        "powermodels_repository": "lanl-ansi/PowerModels.jl"
+      }
+    },
+    {
+      "identity": {
+        "doi": "10.1126/science.aac7341",
+        "publication": "Science 352(6281):aac7341 (2016)",
+        "repository": "CIDARLAB/cello"
+      },
+      "name": "Cello 1.0 Verilog-to-DNA genetic circuit compiler and 60-circuit E. coli wet-lab benchmark (Nielsen et al. 2016)"
+    },
+    {
+      "identity": {
+        "doi_leakless": "10.1007/978-3-319-21999-8_9",
+        "doi_seesaw": "10.1126/science.1200520",
+        "doi_siphon": "10.1016/j.mbs.2006.11.007",
+        "publication": "Qian & Winfree (Science 2011); Thachuk, Winfree & Soloveichik (DNA 21, 2015); Angeli, De Leenheer & Sontag (Math. Biosci. 2007)"
+      },
+      "name": "DNA Strand-Displacement (DSD) cascades, Visual DSD pathway compilers, and stochastic Chemical Reaction Network (CRN) siphons"
+    },
+    {
+      "identity": {
+        "doi_llfba": "10.1016/j.bpj.2010.12.3707",
+        "doi_memote": "10.1038/s41587-020-0446-y",
+        "doi_mfsim": "10.1145/2743025",
+        "repository": "opencobra/memote"
+      },
+      "name": "Genome-Scale Metabolic Models (FBA / MEMOTE / QSopt_ex) and Digital Microfluidic Biochip synthesis (MFSim / EWOD)"
+    },
+    {
+      "identity": {
+        "arxiv_simpson": "math/9810059",
+        "doi_flyspeck": "10.1017/fmp.2017.1",
+        "doi_kempe": "10.2307/2369235",
+        "repository_minif2f": "openai/miniF2F",
+        "repository_putnambench": "trishullab/PutnamBench"
+      },
+      "name": "Mathematical proof certificates and autoformalization benchmarks (Kepler/Flyspeck, Kempe Four-Color erratum, Kapranov-Voevodsky/Simpson, MiniF2F, PutnamBench)"
+    },
+    {
+      "identity": {
+        "arxiv_ad_pitfalls": "2305.07542",
+        "doi_enzyme": "10.5555/3495724.3497463",
+        "repository": "EnzymeAD/Enzyme"
+      },
+      "name": "PDE numerical stencil compilers and LLVM-level Automatic Differentiation (Enzyme AD)"
+    },
+    {
+      "identity": {
+        "doi_prob_ertms": "10.1007/s10009-019-00548-6",
+        "emsd_report": "EMSD Investigation Report on Incident of the New Signalling System Testing on MTR Tsuen Wan Line on 18 March 2019 (July 2019)",
+        "lta_report": "Singapore LTA / MOT Joo Koon Collision Investigation Report (December 2017)"
+      },
+      "name": "Railway CBTC and interlocking formal verification and failure incidents (Hong Kong MTR Central 2019, Singapore MRT Joo Koon 2017, ERTMS/ETCS ProB & Atelier B)"
+    },
+    {
+      "identity": {
+        "bea_report": "BEA Official Report on the Accident on 20 January 1992 near Mont Sainte-Odile to the Airbus A320 registered F-GGED operated by Air Inter",
+        "nasa_mco_report": "Mars Climate Orbiter Mishap Investigation Board Phase I Report (10 November 1999)",
+        "nasa_spirit_report": "JPL Mars Exploration Rover Spirit Sol 18 Flash File System Anomaly Postmortem (2004)"
+      },
+      "name": "Safety-critical avionics HCI and deep-space autonomy incidents (Air Inter Flight 148, Mars Spirit Sol 18 Flash Anomaly, Mars Climate Orbiter)"
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

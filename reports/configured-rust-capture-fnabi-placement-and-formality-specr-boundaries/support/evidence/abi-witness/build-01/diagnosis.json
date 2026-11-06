@@ -1,0 +1,45 @@
+{
+  "status": "incomplete controller observation; compiler diagnostic captured",
+  "monitor_error": {
+    "type": "PermissionError",
+    "errno": 1,
+    "message": "Operation not permitted: /bin/ps",
+    "operation": [
+      "/bin/ps",
+      "-axo",
+      "pid=,ppid=,rss="
+    ],
+    "point": "After Popen but before child PID/wait status persisted",
+    "harness_sha256": "eac8ad08762e20813c93151597a50e1cafd5cfb9e1fb25c7143224d712657995"
+  },
+  "compiler_exit_code": null,
+  "compiler_PID": null,
+  "compiler_PGID": null,
+  "limitation": "Original controller exited before waiting; no exact PID/status/RSS recovery invented.",
+  "start_identity": {
+    "invocation_receipt_mtime_ns": 1792024570556964187,
+    "stdout_ctime_ns": 1792024570557060479,
+    "stderr_mtime_ns": 1792024571272540829,
+    "exact_argv_env": "invocation.json"
+  },
+  "compiler_diagnostic": "E0283/E0284: ambiguous Into::into at proposed_observer.rs101; stderr ends aborting due to2 previous errors. No compiler ICE/panic recorded.",
+  "streams": {
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "8822cb4bee5828a99822b0897a5626389c325fff1efd408c9ea261ebf7714366"
+  },
+  "long_type_artifact": {
+    "path": "observer.long-type-17566555275143456660.txt",
+    "sha256": "e268404cfbcab9416e2fec837b2df25bf1c78035edc2f3d120c3cc539c0e69ed",
+    "bytes": 183
+  },
+  "observer_binary_produced": false,
+  "completion_check": {
+    "operation": "Read-only escalated pgrep -f exact owned source-path regex",
+    "exit_code": 1,
+    "stdout": "",
+    "meaning": "No matching source-path process at lookup; not a recovered wait status or proof about unrelated processes."
+  },
+  "recovery": "Parent authorized one-line type disambiguation in distinct observer_v2.rs and controller preflight/lifecycle correction plus regression before one new build.",
+  "proposed_v2_sha256": "88c4552c3f51f66b204e0aec9d415ed9211836f8f9ed1dc5992a58b94dc716b6",
+  "original_source_unchanged_sha256": "6d203c833d496d1950b21def146d99eba0d6986649d42a32e0a4d549f1b83eba"
+}

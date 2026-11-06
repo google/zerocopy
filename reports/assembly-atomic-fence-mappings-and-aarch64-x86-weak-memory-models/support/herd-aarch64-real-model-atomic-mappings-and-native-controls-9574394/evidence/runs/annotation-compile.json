@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "<MAY1_TOOLCHAIN>/bin/rustc",
+    "annotation_controls.rs",
+    "--edition=2021",
+    "--emit=llvm-ir=annotation_controls.ll,asm=annotation_controls.s",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "debuginfo=0"
+  ],
+  "exit": 0,
+  "seconds": 0.028325416962616146,
+  "source_sha256": "db0a82cd94e2cb1725a692f4bc5cd87f42f48cc567ffbd1afb56286d9b6b3e73",
+  "policy": "Compiler-only invalid annotation controls; no binary linked or executed"
+}

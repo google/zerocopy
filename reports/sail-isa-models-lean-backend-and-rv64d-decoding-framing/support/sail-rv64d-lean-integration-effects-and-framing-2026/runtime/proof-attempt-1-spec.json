@@ -1,0 +1,18 @@
+{
+  "root": "/home/opam/anneal-sail-output/proof-attempt-1",
+  "argv": [
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=10",
+    "300",
+    "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+    "-j1",
+    "-M4500",
+    "--tstack=400000",
+    "-R",
+    "/home/opam/anneal-sail-output/proof-attempt-1",
+    "-o",
+    "/home/opam/anneal-sail-output/proof-attempt-1/Proof.olean",
+    "/home/opam/anneal-sail-output/proof-attempt-1/Proof.lean"
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-30",
+  "sources": [
+    {
+      "id": "why3-project",
+      "role": "documentation",
+      "subject": "Why3 current release identity",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2"
+      },
+      "url": "https://why3.org/",
+      "supports": [
+        "current release is 1.8.2"
+      ]
+    },
+    {
+      "id": "why3-manual-tools-1.8.2",
+      "role": "documentation",
+      "subject": "Current proof-session, obsolete/detached, replay, session and bench behavior",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "document": "The Why3 Tools"
+      },
+      "url": "https://why3.org/doc/manpages.html",
+      "supports": [
+        "session stores transformations and prover attempts",
+        "attempt records complete prover identity and resource/result information",
+        "obsolete attempts were run on earlier tasks and require replay",
+        "detached attempts have no current task but are retained and reusable",
+        "replay reruns stored attempts and compares current outcomes with stored outcomes"
+      ]
+    },
+    {
+      "id": "why3-controller-itp-1.8.2",
+      "role": "source",
+      "subject": "Current reload and old/new session merge semantics",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "api_module": "Controller_itp"
+      },
+      "url": "https://why3.org/api/Controller_itp.html",
+      "supports": [
+        "current files are reparsed on reload",
+        "theories match by exact name",
+        "goals match by exact name then shape",
+        "matched changed tasks retain attempts as obsolete",
+        "unmatched old nodes remain without current tasks",
+        "old transformations are reapplied and subgoals recursively matched",
+        "shape matching can be disabled"
+      ]
+    },
+    {
+      "id": "why3-api-index-1.8.2",
+      "role": "source",
+      "subject": "Durable session/runtime reconstruction boundary",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "api": "Session_itp/Controller_itp index"
+      },
+      "url": "https://why3.org/api/index_values.html",
+      "supports": [
+        "load_session initializes tasks to None",
+        "merge_files associates old session structure with reconstructed files",
+        "proof attempts and transformations are graftable session records",
+        "change_prover is an explicit session operation"
+      ]
+    },
+    {
+      "id": "why3-technical-1.8.2",
+      "role": "documentation",
+      "subject": "why3session.xml durable fields",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "document": "Technical Informations section 12.10"
+      },
+      "url": "https://why3.org/doc/technical.html",
+      "supports": [
+        "session XML stores prover/version/limits",
+        "goal records include name/checksum/shape",
+        "proof records include obsolete and result state",
+        "transformation records include names/arguments"
+      ]
+    },
+    {
+      "id": "why3-install-1.8.2",
+      "role": "documentation",
+      "subject": "Prover upgrade policy",
+      "identity": {
+        "project": "Why3",
+        "release": "1.8.2",
+        "document": "Compilation, Installation section 4.2.2"
+      },
+      "url": "https://why3.org/doc/install.html",
+      "supports": [
+        "old sessions retain old prover identity",
+        "keep/remove/upgrade/copy policies",
+        "new-version upgraded/copied attempts are obsolete and require replay",
+        "interactive proof scripts may be reused or duplicated"
+      ]
+    },
+    {
+      "id": "why3-changes-1.8.2-debian",
+      "role": "documentation",
+      "subject": "Historical evolution of session matching and replay",
+      "identity": {
+        "package": "why3",
+        "version": "1.8.2-3",
+        "file": "CHANGES.md"
+      },
+      "url": "https://sources.debian.org/src/why3/1.8.2-3/CHANGES.md",
+      "supports": [
+        "0.70 introduced batch session replay",
+        "0.71 introduced goal-shape pairing and prover-version obsolescence",
+        "0.72 added multiple prover versions and prover upgrade",
+        "0.73 retained backward session readability and obsolete-only replay",
+        "0.84 split shapes/checksums into a sidecar useful for tracking obsolete goals but not required for replay",
+        "1.7.0 expanded session manipulation and shape-ignore support"
+      ]
+    },
+    {
+      "id": "bobot-et-al-vstte-2013",
+      "role": "documentation",
+      "subject": "Proof-session preservation rationale and reported experience",
+      "identity": {
+        "title": "Preserving User Proofs Across Specification Changes",
+        "venue": "VSTTE 2013",
+        "doi": "10.1007/978-3-642-54108-7_10",
+        "hal": "hal-00875395"
+      },
+      "url": "https://toccata.gitlabpages.inria.fr/toccata/publications/bobot.en.html",
+      "supports": [
+        "specification/code changes invalidate related proof obligations while old proof work may remain reusable",
+        "Why3 implements session maintenance across changing verification conditions",
+        "authors report use on more than one hundred verified programs and during tool/library evolution",
+        "authors identify prover upgrades as another session-maintenance use case"
+      ]
+    }
+  ],
+  "derived_judgments": [
+    "Use stronger identity for current acceptance than for repair/salvage matching.",
+    "Heuristic old/new matching may select work to replay but must not make stale results current.",
+    "Persist reconstructible workflow and provenance rather than requiring durability of live RPC objects.",
+    "Retain unmatched expensive work as detached salvage without counting it as coverage or allowing it to block fresh work.",
+    "Treat native publication/effect reconciliation as a separate protocol from proof-session durability."
+  ]
+}

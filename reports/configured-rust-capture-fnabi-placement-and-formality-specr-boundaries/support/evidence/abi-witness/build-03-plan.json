@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+    "${WORKSPACE}/work/execution/abi-witness/observer_v3.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "-C",
+    "opt-level=0",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "rpath",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "-o",
+    "${WORKSPACE}/work/execution/abi-witness/observer-v3"
+  ],
+  "source_sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1",
+  "original_preparation_manifest_sha256": "f43a6306944d5ee5c2e1984f1bafd20fe95706e6217e0c6c3ec1640547ca26b8",
+  "historical_request_catalog_sha256": "8e466823b3aa953c68539f903497c1c33216500d9f1d39235bacda0f6020f0f8",
+  "new_profile_status": "Planned corrected observer source only; historical request/catalog not rewritten.",
+  "controller_sha256": "22714dad1a3cae8913c4cf4a334934f6a8901097e8df975f1bc23c74f8d62bed"
+}

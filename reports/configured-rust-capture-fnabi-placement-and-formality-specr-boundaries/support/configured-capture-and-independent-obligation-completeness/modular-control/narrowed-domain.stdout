@@ -1,0 +1,3 @@
+narrowed-domain.lean:3:43: error: Tactic `decide` proved that the proposition
+  pre Contract.narrowed 255
+is false

@@ -1,0 +1,1 @@
+[crate test { fn helper() -> i32 { return true; } fn main() -> () { println!(42_i32); } }]

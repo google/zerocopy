@@ -1,0 +1,6 @@
+MP-relaxed: rounds=10000 counts00_01_10_11=[4957, 0, 0, 5043]
+MP-release-acquire: rounds=10000 counts00_01_10_11=[4947, 0, 0, 5053]
+SB-relaxed: rounds=10000 counts00_01_10_11=[0, 4960, 5040, 0]
+SB-release-acquire: rounds=10000 counts00_01_10_11=[0, 5032, 4968, 0]
+SB-seqcst: rounds=10000 counts00_01_10_11=[0, 5007, 4993, 0]
+SB-fence: rounds=10000 counts00_01_10_11=[0, 4936, 5064, 0]

@@ -1,0 +1,12 @@
+{
+  "status": "STOP",
+  "max_observer_invocations": 2,
+  "separate_captures": 0,
+  "codegen_link_native_reader_invocations": 0,
+  "rows": [],
+  "amendment": "Parent granted -B immediately after /usr/bin/python3; no other argv/env/source changes",
+  "trust": "Existing consumer/compiler/observer/controller, Python runtime and OS/shared cache remain trusted; sampled operational limits are not hard isolation or peak bounds.",
+  "error_type": "RuntimeError",
+  "error": "consumer exit failure host-opt0",
+  "retry_or_repair": false
+}

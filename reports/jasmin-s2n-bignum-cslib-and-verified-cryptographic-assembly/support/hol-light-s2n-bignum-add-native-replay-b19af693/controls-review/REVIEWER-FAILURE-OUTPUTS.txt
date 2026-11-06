@@ -1,0 +1,21 @@
+First invocation (exit 1):
+  File "$TASK/work/execution/review-hol-final/review_controls.py", line 26
+    ok('argv_projection:'+k+':'+str(pairs.index((a,b))),a==b or (b.startswith('$DOCKER') and a.endswith('/docker')) or (b.startswith('$CONTROL_WORKSPACE') and a.endswith(b[len('$CONTROL_WORKSPACE'):]) and '/hol-controls' in a) or (b.startswith('$POSITIVE_PACKAGE') and a.endswith(b[len('$POSITIVE_PACKAGE'):]))
+                                                        ^
+SyntaxError: Generator expression must be parenthesized
+
+Second invocation (exit 1):
+Traceback (most recent call last):
+  File "$TASK/work/execution/review-hol-final/review_controls.py", line 26, in <module>
+    ok('argv_projection:'+k+':'+str(pairs.index((a,b))),a==b or (b.startswith('$DOCKER') and a.endswith('/docker')) or (b.startswith('$CONTROL_WORKSPACE') and a.endswith(b[len('$CONTROL_WORKSPACE'):]) and '/hol-controls' in a) or (b.startswith('$POSITIVE_PACKAGE') and a.endswith(b[len('$POSITIVE_PACKAGE'):])))
+  File "$TASK/work/execution/review-hol-final/review_controls.py", line 11, in ok
+    if not v: raise RuntimeError('unexpected invariant: '+k)
+RuntimeError: unexpected invariant: argv_projection:C8-prepare:2
+
+Third invocation (exit 1):
+Traceback (most recent call last):
+  File "$TASK/work/execution/review-hol-final/review_controls.py", line 30, in <module>
+    ok('argv_projection:'+k+':'+str(i),a==projected)
+  File "$TASK/work/execution/review-hol-final/review_controls.py", line 11, in ok
+    if not v: raise RuntimeError('unexpected invariant: '+k)
+RuntimeError: unexpected invariant: argv_projection:before:0

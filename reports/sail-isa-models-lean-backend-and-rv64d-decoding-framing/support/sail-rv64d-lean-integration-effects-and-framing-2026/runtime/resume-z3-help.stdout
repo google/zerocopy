@@ -1,0 +1,42 @@
+Z3 [version 4.15.3 - 64 bit]. (C) Copyright 2006-2016 Microsoft Corp.
+Usage: z3 [options] [-file:]file
+
+Input format:
+  -smt2       use parser for SMT 2 input format.
+  -dl         use parser for Datalog input format.
+  -dimacs     use parser for DIMACS input format.
+  -wcnf       use parser for Weighted CNF DIMACS input format.
+  -opb        use parser for PB optimization input format.
+  -lp         use parser for a modest subset of CPLEX LP input format.
+  -log        use parser for Z3 log input format.
+  -in         read formula from standard input.
+  -model      display model for satisfiable SMT.
+
+Miscellaneous:
+  -h, -?      prints this message.
+  -version    prints version number of Z3.
+  -v:level    be verbose, where <level> is the verbosity level.
+  -nw         disable warning messages.
+  -p          display Z3 global (and module) parameters.
+  -pd         display Z3 global (and module) parameter descriptions.
+  -pm:name    display Z3 module ('name') parameters.
+  -pmmd:name  display Z3 module ('name') parameters in Markdown format.
+  -pp:name    display Z3 parameter description, if 'name' is not provided, then all module names are listed.
+  -tactics[:name]  display built-in tactics or if argument is given, display detailed information on tactic.
+  -simplifiers[:name]  display built-in simplifiers or if argument is given, display detailed information on simplifier.
+  -probes     display avilable probes.
+  --          all remaining arguments are assumed to be part of the input file name. This option allows Z3 to read files with strange names such as: -foo.smt2.
+
+Resources:
+  -T:timeout  set the timeout (in seconds).
+  -t:timeout  set the soft timeout (in milli seconds). It only kills the current query.
+  -memory:Megabytes  set a limit for virtual memory consumption.
+
+Output:
+  -st         display statistics.
+
+Parameter setting:
+Global and module parameters can be set in the command line.
+  param_name=value              for setting global parameters.
+  module_name.param_name=value  for setting module parameters.
+Use 'z3 -p' for the complete list of global and module parameters.

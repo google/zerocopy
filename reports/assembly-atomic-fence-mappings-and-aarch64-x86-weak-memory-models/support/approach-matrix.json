@@ -1,0 +1,73 @@
+{
+  "schema": "anneal-reference/concurrency-memory-model-approach-matrix/v1",
+  "approaches": [
+    {
+      "name": "Rust pinned atomic semantics",
+      "role": "language-memory-model boundary",
+      "subject": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "execution_model": "C++20-derived atomic rules translated to Rust's access-based model",
+      "assurance": "defines source-level atomic/data-race obligations for this pinned toolchain",
+      "does_not_establish": [
+        "a proof method",
+        "functional correctness of concurrent abstractions",
+        "compiler or hardware lowering correctness"
+      ]
+    },
+    {
+      "name": "Relaxed Separation Logic",
+      "role": "deductive program logic",
+      "subject": "doi:10.1145/2509136.2509532",
+      "execution_model": "C11 relaxed-memory model as used by the 2013 result",
+      "assurance": "compositional resource reasoning with release/acquire ownership transfer",
+      "does_not_establish": [
+        "coverage of current Rust",
+        "coverage of later repaired/changed memory models",
+        "automatic exhaustive exploration"
+      ]
+    },
+    {
+      "name": "Strong Logic for Weak Memory",
+      "role": "memory-model-to-program-logic bridge",
+      "subject": "doi:10.4230/LIPIcs.ECOOP.2017.17",
+      "execution_model": "operational characterization of C11 RA+NA",
+      "assurance": "supports mechanized higher-order Iris reasoning for the named weak-memory fragment",
+      "does_not_establish": [
+        "coverage of all C11/C++/Rust atomics",
+        "coverage of a different weak-memory model without another soundness bridge"
+      ]
+    },
+    {
+      "name": "GenMC",
+      "role": "stateless model checking",
+      "subject": "doi:10.1007/978-3-030-81685-8_20",
+      "execution_model": "explicit selectable models including RC11, IMM, and LKMM",
+      "assurance": "systematic exploration of executions of the analyzed concurrent program under the selected model",
+      "does_not_establish": [
+        "an unbounded theorem for arbitrary inputs/programs",
+        "source-level Rust correspondence",
+        "deductive reusable abstraction proofs by itself"
+      ]
+    },
+    {
+      "name": "RustMC",
+      "role": "Rust-oriented stateless model checking via LLVM IR",
+      "subject": "doi:10.1007/978-3-032-28187-6_14",
+      "execution_model": "GenMC-based exploration after Rust-to-LLVM lowering plus Rust-specific instrumentation",
+      "assurance": "automatic concurrency-bug analysis for Rust, unsafe Rust, FFI, and atomic-operation cases described by the publication",
+      "does_not_establish": [
+        "a general proof that LLVM-level semantics equal all current Rust source semantics",
+        "unbounded functional correctness of every concurrent Rust program"
+      ]
+    }
+  ],
+  "verification_dimensions": [
+    "source access validity and aliasing",
+    "atomicity and access width",
+    "memory ordering and happens-before",
+    "race freedom",
+    "shared-state resource protocol",
+    "functional refinement or linearizability",
+    "progress/fairness/liveness",
+    "source-to-analysis-model correspondence"
+  ]
+}

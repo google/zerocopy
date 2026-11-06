@@ -28,7 +28,7 @@ This report applies to the design and verification of language-isolated operatin
 - **Execution and Verification Targets:**
   - **Rust Compiler (`rustc 1.101.0-nightly (19833af72 2026-10-20)` on `x86_64-unknown-linux-gnu`):** Used to test `Metal`'s §3.2.2, §4.1, §4.2, §4.3, and §5 behaviors against modern MIR NLL borrow checking (`--edition=2021`).
   - **Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`):** Used to mechanize all static/dynamic rules, invariants, soundness theorems, and counterexamples in [`support/MetalAndTypechainIsolation.lean`](support/MetalAndTypechainIsolation.lean) with zero `sorryAx`, zero `Classical.choice`, and zero `Lean.ofReduceBool`.
-  - **Anneal (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`):** Used to connect `Metal` §5's `AnyDepthSafe` pod layout invariants and `Typechain` §3.2's proof-witness types to Anneal's `SafeToRead`/`SafeToWrite` and lock-free verification boundaries.
+  - **Anneal (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`):** Used to connect `Metal` §5's `AnyDepthSafe` pod layout invariants and `Typechain` §3.2's proof-witness types to Anneal's `SafeToRead`/`SafeToWrite` and lock-free verification boundaries.
 
 ---
 
@@ -77,9 +77,9 @@ When `let b = e` executes `(ST2)` (Figure 7, p. 5), the new variable $x_{\text{n
    - Under `(MR3)` (`p`), every $l \in \mathsf{all}(\tau)$ was checked for $\mathsf{read}$ on $x$; if $\mathsf{write} \in \mathcal{C}(l)$, `WriteExclusive` guarantees $x$ was the unique holder of $l$ in $\mathcal{A}$, and `(MR3)` removes $\mathsf{all}(\tau)$ from $\mathcal{A}(x)$.
 Thus, across all three move rules, **zero** variables in $\mathcal{A}'$ retain any location $l \in \mathsf{all}(\tau_d)$ that still has $\mathsf{write} \in \mathcal{C}'(l)$, so binding $x_{\text{new}} \mapsto \mathsf{all}(\tau_d)$ preserves `WriteExclusive` (`stmtStep_preserves_writeExclusive` in [`support/MetalAndTypechainIsolation.lean`](support/MetalAndTypechainIsolation.lean)).
 
-#### 1.4 Operational Semantics `(M, L)` (`L1`, `L2`, `R1`, Figure 9) and Dereference Safety
+#### 1.4 Operational Semantics `(M, L)` (`Rule_L1`, `Rule_L2`, `Rule_R1`, Figure 9) and Dereference Safety
 At runtime (§3.3, p. 5), $M : x \mapsto l$ maps variables to their root locations and $L : l \mapsto v$ maps locations to values, where a borrow value is represented explicitly as $\mathsf{brw}(\ell)^\dagger$.
-- Rule `(L1)` looks up $M(x) = l$ and $L(l) = v$; Rule `(L2)` dereferences $\mathsf{brw}(l')$ by looking up $L(l')$; Rule `(R1)` updates $L' = L[l \mapsto v]$ in-place without changing $M(x)$.
+- Rule `(L1)` looks up $M(x) = l$ and $L(l) = v$; Rule `(L2)` dereferences $\mathsf{brw}(l')$ by looking up $L(l')$; Rule `(Rule_R1)` updates $L' = L[l \mapsto v]$ in-place without changing $M(x)$.
 - **Mechanized Theorem 1 (`metal_theorem1_deref_progress_and_safety`):** Whenever runtime state $(M, L)$ satisfies well-formedness (`StateWF G A C M L`) and variable $x$ holds a reference that passes `(CR1)` read capability checking (`CanCap A C .read (allLocs t_ref) x`), evaluating `*x` steps deterministically via `(L1)` and `(L2)` to an allocated value $v_{\text{target}}$ in $L$ matching the pointee type—never faulting on an unmapped or deallocated location.
 
 #### 1.5 Outliving-Borrow Function Signature Analysis (`OL`, §3.2.2 & §4.2)
@@ -186,7 +186,7 @@ In [`support/MetalAndTypechainIsolation.lean`](support/MetalAndTypechainIsolatio
      - Figure 1 (p. 3): Core syntax of `Metal` ($\ell$, $\tau@l^\dagger$, $\mathsf{brw}(\ell)^\dagger$, paths, expressions, statements).
      - §3.2 & Figures 2–8 (pp. 3–5): Static environments $\Gamma, \mathcal{A}, \mathcal{C}$, Write-Exclusivity invariant (§3.2.1, p. 3), LHS provenance typing `LT1`–`LT2` (Fig. 2), `CR1` (Fig. 4), location extractors `owned`, `mut`, `all` (Fig. 5), move rules `MR1`–`MR3` (Fig. 6), statement rules `ST1`–`ST2` (Fig. 7), and `locate` (Fig. 8).
      - §3.2.2 (p. 4) & §4.2 (pp. 5–6): Outliving-Borrow set $OL$ and region-annotated refinement.
-     - §3.3 & Figure 9 (p. 5): Operational semantics $(M, L)$ rules `L1`, `L2`, `R1` and Theorem 1 (memory safety).
+     - §3.3 & Figure 9 (p. 5): Operational semantics $(M, L)$ rules `Rule_L1`, `Rule_L2`, `Rule_R1` and Theorem 1 (memory safety).
      - §4.1 (p. 5) & §4.3 (p. 6): `Drop` LIFO destruction order counterexample and `x = &mut b` reborrow precision example.
      - §5 (p. 6): Single-threaded `&local` *Single Depth* and *Any Depth* aliasing claims.
    - Sergio Benitez, Jonathan Cogan & Alejandro Russo, *"Short Paper: Blockcheck the Typechain"*, ACM PLAS 2020, pp. 45–49, DOI `10.1145/3411506.3417600`, SHA-256 `7e76fe7b6c6f49d9b89d161de57588234ed9e351e4dea015145d70b742ffd0a0`:
@@ -210,17 +210,17 @@ To revalidate all mechanized theorems and empirical `rustc` observations in this
 
 1. **Verify the Lean 4.34.1 Mechanization and Axiom Audit:**
    ```bash
-   lean reports/metal-typechain-language-isolated-kernels-1995-2026/support/MetalAndTypechainIsolation.lean
+   lean support/MetalAndTypechainIsolation.lean
    ```
    Confirm that the command exits with code `0` and that the `#print axioms` output for all 18 theorems lists zero `sorryAx`, zero `Classical.choice`, and zero `Lean.ofReduceBool`.
 
 2. **Re-run the `rustc` Empirical Probes (Positive and Negative Diagnostics):**
    ```bash
-   rustc --edition=2021 reports/metal-typechain-language-isolated-kernels-1995-2026/support/metal_vs_rust_probes.rs -o /tmp/metal_vs_rust_probes && /tmp/metal_vs_rust_probes
-   rustc --edition=2021 --cfg 'feature="fail_drop_lifo"' reports/metal-typechain-language-isolated-kernels-1995-2026/support/metal_vs_rust_probes.rs -o /tmp/fail_drop
-   rustc --edition=2021 --cfg 'feature="fail_box_reassign"' reports/metal-typechain-language-isolated-kernels-1995-2026/support/nll_prefix_rules_probe.rs -o /tmp/fail_box
+   rustc --edition=2021 support/metal_vs_rust_probes.rs -o ./metal_vs_rust_probes && ./metal_vs_rust_probes
+   rustc --edition=2021 --cfg 'feature="fail_drop_lifo"' support/metal_vs_rust_probes.rs -o ./fail_drop
+   rustc --edition=2021 --cfg 'feature="fail_box_reassign"' support/nll_prefix_rules_probe.rs -o ./fail_box
    ```
    Confirm that:
-   - `/tmp/metal_vs_rust_probes` prints `All positive probes passed: sec4_3=(11, 22), sec4_1_no_drop=2, sec4_2=300`.
+   - `./metal_vs_rust_probes` prints `All positive probes passed: sec4_3=(11, 22), sec4_1_no_drop=2, sec4_2=300`.
    - `--cfg 'feature="fail_drop_lifo"'` fails with `error[E0597]: p2 does not live long enough` when `ParentWithDrop` implements `Drop`.
    - `--cfg 'feature="fail_box_reassign"'` fails with `error[E0506]: cannot assign to x because it is borrowed` when `x` is an owned `Box<Q>` rather than `&mut Q`.

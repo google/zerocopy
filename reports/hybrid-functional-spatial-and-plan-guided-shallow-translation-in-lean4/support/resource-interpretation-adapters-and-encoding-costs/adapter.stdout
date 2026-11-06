@@ -1,0 +1,5 @@
+'ResourceAdapter.roundtrip' depends on axioms: [propext, Quot.sound]
+'ResourceAdapter.join_transport' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ResourceAdapter.entailment_transport' depends on axioms: [propext, Quot.sound]
+'ResourceAdapter.encoded_update_transport' depends on axioms: [propext, Quot.sound]
+[true, false]

@@ -1,0 +1,285 @@
+{
+  "verdict": "PASS_HOST_FAN_IN_OF_PARTIAL_OPERATIONAL_OUTCOME",
+  "overall_exit": 1,
+  "overall_seconds": 80.13514670799486,
+  "full_gate_success": false,
+  "dry_seconds": 10.405359625001438,
+  "actual_download_seconds": 9.661343125044368,
+  "native_phase_receipts": 270,
+  "native_phase_statuses_all_zero": true,
+  "stream_digests_rehashed": 536,
+  "installed53_matches_initial_OK_actions": true,
+  "roots14_and_pins0_unchanged": true,
+  "protected_metadata_files": 19429,
+  "source_consumers_checked_twice": 21,
+  "source_file_hash_comparisons": 55642,
+  "source_entry_comparisons": 60186,
+  "provider_objects_per_pass": 4935,
+  "provider_ledger_passes": 2,
+  "provider_raw_body_restreamed_by_fan_in": false,
+  "cache_provider_passes": 4,
+  "installed_prefix_hash_count": 11962,
+  "git_bookkeeping_changes": 21,
+  "git_changes_only_FETCH_HEAD": true,
+  "download_outcome": {
+    "json_results": [],
+    "retrieval_messages": [
+      {
+        "package": "coq-iris.dev.2024-09-10.1.6f24ed4b",
+        "message": "no changes",
+        "line": "-> retrieved coq-iris.dev.2024-09-10.1.6f24ed4b  (no changes)"
+      },
+      {
+        "package": "coq-lithium.dev.2024-09-11.0.7945a29d",
+        "message": "no changes",
+        "line": "-> retrieved coq-lithium.dev.2024-09-11.0.7945a29d  (no changes)"
+      },
+      {
+        "package": "coq-sail.0.17",
+        "message": "no changes",
+        "line": "-> retrieved coq-sail.0.17  (no changes)"
+      },
+      {
+        "package": "coq-sail-riscv.0.5",
+        "message": "no changes",
+        "line": "-> retrieved coq-sail-riscv.0.5  (no changes)"
+      },
+      {
+        "package": "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+        "message": "no changes",
+        "line": "-> retrieved coq-stdpp.dev.2024-09-10.3.a1a12e00  (no changes)"
+      },
+      {
+        "package": "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+        "message": "no changes",
+        "line": "-> retrieved coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00  (no changes)"
+      },
+      {
+        "package": "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+        "message": "no changes",
+        "line": "-> retrieved coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00  (no changes)"
+      },
+      {
+        "package": "isla-lang.dev",
+        "message": "no changes",
+        "line": "-> retrieved isla-lang.dev  (no changes)"
+      },
+      {
+        "package": "islaris.dev",
+        "message": "no changes",
+        "line": "-> retrieved islaris.dev  (no changes)"
+      },
+      {
+        "package": "libsail.0.17",
+        "message": "no changes",
+        "line": "-> retrieved libsail.0.17  (no changes)"
+      },
+      {
+        "package": "sail.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail.0.17  (no changes)"
+      },
+      {
+        "package": "sail_c_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_c_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_coq_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_coq_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_doc_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_doc_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_latex_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_latex_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_lem_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_lem_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_manifest.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_manifest.0.17  (no changes)"
+      },
+      {
+        "package": "sail_ocaml_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_ocaml_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_output.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_output.0.17  (no changes)"
+      },
+      {
+        "package": "sail_smt_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_smt_backend.0.17  (no changes)"
+      },
+      {
+        "package": "sail_sv_backend.0.17",
+        "message": "no changes",
+        "line": "-> retrieved sail_sv_backend.0.17  (no changes)"
+      }
+    ],
+    "stdout_sha256": "ea8674aab488f6d609a336c24ba4a8f80c181ab3d854df30c6df3d1ac920777e",
+    "observed_retrievals": 21,
+    "scope": "Successful per-package retrieval messages, not JSON Fetch records or proof of newly transferred bytes. Final full source/commit/tree checks remain mandatory."
+  },
+  "large_payloads": [
+    {
+      "path": "133-dry-cudf.stdout",
+      "bytes": 7498481,
+      "sha256": "6596acc28911d3e82e83cbca070789cd30dd4af388218cdb04afe226e1a0f09f"
+    },
+    {
+      "path": "141-download-cudf.stdout",
+      "bytes": 7498481,
+      "sha256": "6596acc28911d3e82e83cbca070789cd30dd4af388218cdb04afe226e1a0f09f"
+    },
+    {
+      "path": "263-copy-output-dry-1.cudf.stdout",
+      "bytes": 7498481,
+      "sha256": "6596acc28911d3e82e83cbca070789cd30dd4af388218cdb04afe226e1a0f09f"
+    },
+    {
+      "path": "264-copy-output-dry.dot.stdout",
+      "bytes": 64689921,
+      "sha256": "185fff4bfac6181a330ed7621fdad36e1d0bc191daa25650153a1ff5c33ca212"
+    },
+    {
+      "path": "269-copy-output-download-1.cudf.stdout",
+      "bytes": 7498481,
+      "sha256": "6596acc28911d3e82e83cbca070789cd30dd4af388218cdb04afe226e1a0f09f"
+    },
+    {
+      "path": "270-copy-output-download.dot.stdout",
+      "bytes": 64689921,
+      "sha256": "185fff4bfac6181a330ed7621fdad36e1d0bc191daa25650153a1ff5c33ca212"
+    },
+    {
+      "path": "native-solver-output/download-1.cudf",
+      "bytes": 7498481,
+      "sha256": "6596acc28911d3e82e83cbca070789cd30dd4af388218cdb04afe226e1a0f09f"
+    },
+    {
+      "path": "native-solver-output/dry-1.cudf",
+      "bytes": 7498481,
+      "sha256": "6596acc28911d3e82e83cbca070789cd30dd4af388218cdb04afe226e1a0f09f"
+    },
+    {
+      "path": "native-solver-output/dry.dot",
+      "bytes": 64689921,
+      "sha256": "185fff4bfac6181a330ed7621fdad36e1d0bc191daa25650153a1ff5c33ca212"
+    }
+  ],
+  "runtime_observations": [
+    {
+      "path": "preflight-inspect.stdout",
+      "size_rw": 302514176,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-000.stdout",
+      "size_rw": 302514176,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-001.stdout",
+      "size_rw": 302514176,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-002.stdout",
+      "size_rw": 302514176,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-003.stdout",
+      "size_rw": 302514176,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-004.stdout",
+      "size_rw": 302514176,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-005.stdout",
+      "size_rw": 302522368,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-006.stdout",
+      "size_rw": 310022144,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-007.stdout",
+      "size_rw": 374800384,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-008.stdout",
+      "size_rw": 382300160,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-009.stdout",
+      "size_rw": 447180800,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-010.stdout",
+      "size_rw": 447180800,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-011.stdout",
+      "size_rw": 447180800,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-012.stdout",
+      "size_rw": 447180800,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-013.stdout",
+      "size_rw": 447180800,
+      "running": true,
+      "oom": false
+    },
+    {
+      "path": "monitor-014.stdout",
+      "size_rw": 447180800,
+      "running": true,
+      "oom": false
+    }
+  ],
+  "artifact_threshold": 268435456,
+  "artifact_stop_phase": "270-copy-output-download.dot",
+  "scope": "Independent host receipt/hash/formula/tree-ledger review; no new native operation or proof/build claim. Native streamed bodies are bound by preserved controller receipts and ledgers, not re-streamed by this review."
+}

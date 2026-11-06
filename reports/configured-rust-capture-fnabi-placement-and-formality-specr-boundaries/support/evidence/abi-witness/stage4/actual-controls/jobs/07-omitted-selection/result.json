@@ -1,0 +1,16 @@
+{
+  "id": "07-omitted-selection",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "complete selected request set"
+  },
+  "seconds": 0.32123829100000023,
+  "fresh_observer": null,
+  "candidate_sha256": "04bc583bf1f340f8a3d706e0d4b6faab4ff7321b4f85acfd47f1ea9b3665ab1b",
+  "stdout_sha256": "79cb7891640a032f9800312619e7131a4719d8188a4032136ac17056337078a6",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

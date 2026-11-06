@@ -1,0 +1,53 @@
+{
+  "status": "SOURCE_AND_RETAINED_EVIDENCE_PASS_WITH_PUBLIC_METADATA_CORRECTION_REQUIRED",
+  "independent_native_replay_status": "NOT RUN; parent approval pending",
+  "reviewed_report": {
+    "bytes": 14781,
+    "sha256": "dda6249e12763e4ae2bb12eea7947c63b2a3b017b57be1f2f75d8289650b2996"
+  },
+  "reviewed_manifest": {
+    "bytes": 185853,
+    "sha256": "542dca2e5208bb559138078cf4aeccf9157011a75d5d06a4d67e843911182917"
+  },
+  "file_count": 996,
+  "total_bytes_excluding_manifest": 65135533,
+  "independent_host_source_rehash_count": 23177,
+  "full_theorem_statement_count": 71,
+  "decode_slots_once": 181,
+  "runtime_ledger_counts": [
+    47,
+    83
+  ],
+  "global_axiom_policy": "Only infinity/choice/eta; individual dependency closures not computed",
+  "one_limb": "Actual original theorem specialization with full code/ABI/memory/alias/stack/frame premises; output memory sum, RAX carry",
+  "publication_blocker": {
+    "path": "support/public-path-projection.json",
+    "sha256": "14351a69f33b47aac0e08f00898e08c0f73d8b963a7ebe12328f97fce34e7a2d",
+    "fields": [
+      "$.replacements[0][0]",
+      "$.replacements[1][0]",
+      "$.replacements[2][0]"
+    ],
+    "description": "Literal private host prefixes remain in public mapping receipt; parent separate correction acknowledged"
+  },
+  "prose_qualification": "Lexical absence refers to 35 additional original proof dependencies and two owned entries, not the 47-source core which defines mk_thm/CHEAT_TAC and permitted axioms.",
+  "own_helper_stop_diagnosis": "diagnostics/origin-map-correction.json",
+  "evidence": "static-review-results.json",
+  "source_verdict": {
+    "path": "SOURCE-VERDICT.md",
+    "bytes": 8224,
+    "sha256": "56d96afe4cad5171362be085e8b954a255a29cc22b649fde9df83ee6eeb4f553"
+  },
+  "replay_plan": {
+    "path": "replay-plan.json",
+    "bytes": 6576,
+    "sha256": "57786731c4796e0e1a4d8be1bbe8cf57bcbde33e6125b5f0f98c7777c94b6fb4"
+  },
+  "broad_milestones_open": [
+    "E03",
+    "E31"
+  ],
+  "runtime_queries_this_review": 0,
+  "proof_producer_launches_this_review": 0,
+  "native_launches_this_review": 0
+}

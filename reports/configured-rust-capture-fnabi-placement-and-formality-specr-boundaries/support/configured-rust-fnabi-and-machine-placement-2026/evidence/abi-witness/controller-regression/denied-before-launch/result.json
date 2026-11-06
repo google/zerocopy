@@ -1,0 +1,18 @@
+{
+  "exit_code": null,
+  "spawned": false,
+  "child_pid": null,
+  "seconds": 0.00047883299999999795,
+  "stop_reason": null,
+  "controller_failure": {
+    "type": "PermissionError",
+    "message": "[Errno 1] simulated monitor denial before launch",
+    "traceback": "Traceback (most recent call last):\n  File \"${WORKSPACE}/work/execution/abi-witness/build_control_v2.py\", line 39, in run_owned\n    monitor.preflight()  # MUST succeed before Popen.\n  File \"${WORKSPACE}/work/execution/abi-witness/build_control_v2.py\", line 27, in preflight\n    def preflight(self):raise PermissionError(1,'simulated monitor denial before launch')\nPermissionError: [Errno 1] simulated monitor denial before launch\n"
+  },
+  "remaining_group_after_parent_wait": [],
+  "max_observed_group_rss_bytes": null,
+  "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+  "output_bytes": 365,
+  "stdout_sha256": null,
+  "stderr_sha256": null
+}

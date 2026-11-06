@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-cross-sources/s2n-bignum",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "--env",
+    "HOLLIGHT_DIR=/home/opam/anneal-cross-sources/hol-light",
+    "--env",
+    "HOLLIGHT_LOAD_PATH=",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "exec",
+    "--switch=hol54",
+    "--",
+    "timeout",
+    "--signal=KILL",
+    "1200",
+    "/home/opam/anneal-cross-output/selected.native"
+  ],
+  "classification": "PROPOSED NOT RUN: one independent original positive native OCaml proof replay under GNU timeout KILL1200 after explicit parent grant and passing fresh gates; no producer/rebuild/control"
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "-i",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "python3",
+    "-B",
+    "-"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:12:41.944117+00:00",
+  "classification": "read-only actual HOL inliner census and copied-audit identity gate",
+  "host_pid": 22663
+}

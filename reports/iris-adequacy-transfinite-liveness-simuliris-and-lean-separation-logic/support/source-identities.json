@@ -1,0 +1,55 @@
+{
+  "revision": "dde9f193fb3d504be680480b2ca21052edae49df",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "587fcff86c5ccd4a53c73fbd0e7b29ed5fbaa68f6170051b6609763443f20f6f",
+      "size": 6643
+    },
+    {
+      "path": "theories/algebra/ordinals/ord_stepindex.v",
+      "sha256": "5ec363f9e6d9d32ac9346c6eb26892471895007e58c6ebf7e573d52aa2aa4e92",
+      "size": 10770
+    },
+    {
+      "path": "theories/algebra/ordinals/set_model.v",
+      "sha256": "d045bd66b584ceb6e8be53194be741da2d0b13fc182859907e855c771ecf05a0",
+      "size": 20577
+    },
+    {
+      "path": "theories/algebra/stepindex.v",
+      "sha256": "7e1e6bd1b163e783e46b8d708a9f6d68fd409f7010c173082f22c98c6f6a0447",
+      "size": 31224
+    },
+    {
+      "path": "theories/base_logic/lib/fancy_updates.v",
+      "sha256": "4d3a23be854e1bd9c72e28c7548f8b207038d1e0c78d7ab3baa4aa8a78d63514",
+      "size": 9488
+    },
+    {
+      "path": "theories/base_logic/satisfiable.v",
+      "sha256": "7f33c3c2fc5adf00242b451b9c1d9efaaaaed2ae519b4f01392b6e4b5c717076",
+      "size": 3586
+    },
+    {
+      "path": "theories/examples/counterexamples.v",
+      "sha256": "c3723c618d91222af8881c4d4e5a3d0fced998f91aed524e0b2fdc54702914cc",
+      "size": 9664
+    },
+    {
+      "path": "theories/examples/refinements/refinement.v",
+      "sha256": "07ff41c754afce659cdc1810fcc6e9653fd1a478b0059e729eee091c9be31111",
+      "size": 39732
+    },
+    {
+      "path": "theories/examples/termination/adequacy.v",
+      "sha256": "1576fe9f3d3ddd96197a2d7e5c7281f796ff59c41b898bd963a5f410900b8c69",
+      "size": 3989
+    },
+    {
+      "path": "theories/program_logic/refinement/ref_adequacy.v",
+      "sha256": "336c91be0fa4408a30456b0c6b860b2905bd8fd2616ae6d7e68008467ba0f918",
+      "size": 16610
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+opam-version: "2.0"
+name: "linenoise"
+version: "1.5.1"
+synopsis: "Lightweight readline alternative"
+maintainer: "Simon Cruanes"
+authors: ["Edgar Aroutiounian <edgar.factorial@gmail.com>" "Simon Cruanes"]
+license: "BSD-3-clause"
+homepage: "https://github.com/ocaml-community/ocaml-linenoise"
+bug-reports: "https://github.com/ocaml-community/ocaml-linenoise/issues"
+depends: [
+  "dune" {>= "1.1"}
+  "ocaml" {>= "4.03.0"}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "build" "@install" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name] {with-test}
+  ["dune" "build" "@doc" "-p" name] {with-doc}
+]
+dev-repo: "git+https://github.com/ocaml-community/ocaml-linenoise.git"
+url {
+  src:
+    "https://github.com/ocaml-community/ocaml-linenoise/releases/download/v1.5.1/linenoise-1.5.1.tbz"
+  checksum: [
+    "sha256=eef172cb98282b7a8be182f3493f4687ed3a3f833d3c2707d07d188bf9dede37"
+    "sha512=b316b034ba712f13c8727a890c5356a52119d6f5e7040273259109bfac6813c383670295942d39441b9b9e792f3b53250400da000bbe0c6848df5643e27018ac"
+  ]
+}
+x-commit-hash: "3b9ba3376fca75f127d4e7212467fc3c2c179100"

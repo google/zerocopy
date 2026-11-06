@@ -1,0 +1,19 @@
+{
+  "label": "copy-PlannedAuditExamples.v",
+  "argv": [
+    "docker",
+    "cp",
+    "<REPLAY_SUPPORT>/PlannedAuditExamples.v",
+    "anneal-simuliris-20261014:/home/opam/anneal-simuliris-sources/simuliris/PlannedAuditExamples.v"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.043,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "allowed_exit_codes": [
+    0
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "topics": [
+    "verification",
+    "verification/refinement",
+    "rust/unsafe",
+    "anneal/trust-policy",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt unsafe-library and safe-client composition model",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "POPL 2018"
+      }
+    },
+    {
+      "name": "CompCert 3.18 whole-program semantic-preservation development",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Compositional CompCert",
+      "identity": {
+        "doi": "10.1145/2676726.2676985",
+        "publication": "POPL 2015"
+      }
+    },
+    {
+      "name": "Fully Composable and Adequate Verified Compilation with Direct Refinements between Open Modules",
+      "identity": {
+        "arxiv": "2302.12990",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "RustBelt LambdaRust popl18 source",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+        "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+      }
+    },
+    {
+      "name": "Native safe client control compiler",
+      "identity": {
+        "tool": "rustc",
+        "version": "1.99.0",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "host": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Charon generic and dispatch transformations",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas dependency/context/effect analysis",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Rust destructor requirements",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "path": "src/destructors.md"
+      }
+    },
+    {
+      "name": "Original checked generic prefix-composition specimen",
+      "identity": {
+        "artifact": "PrefixCertificate.lean",
+        "sha256": "70953b0168c85d511a8481f37576a89807a6a84a075cba5c7d1e71e0f748d03c"
+      }
+    },
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "path": "src/behavior-considered-undefined.md"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    },
+    {
+      "name": "Lean 4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "artifact": "lean executable",
+        "sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554"
+      }
+    },
+    {
+      "name": "Controlled process protocol",
+      "identity": {
+        "artifact": "protocol.py",
+        "sha256": "9acc3831cfcdc1b6b6a49410a7fc3128fb945dd8c70966b2231be46a50ceb82c"
+      }
+    },
+    {
+      "name": "Python process/filesystem runtime",
+      "identity": {
+        "version": "3.9.6",
+        "architecture": "arm64",
+        "host": "macOS-27.0.1-arm64-arm-64bit"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -23,7 +23,7 @@ To close both compiler-induced and context-switch side-channel gaps, this report
 The findings and mechanized proofs in this report apply to:
 
 1. **Consumer-Bound Native Machine-Code Certificate Checkers (`Anneal` and `Kraken`)**:
-   - `AeneasVerif/anneal` (`e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`, `rv64` backend `7677632ab267e6d7075fc9ddca7280ddf0296f87`, `x86_64` backend `3a89578`) and `AeneasVerif/kraken` (`8af78062037bc237b341d20252aafd1797c1bcb7` on `aarch64`), where an untrusted userspace toolchain emits a compiled binary image `req.candidate.bytes` together with a proof certificate checked by an in-kernel `CertChecker` prior to Ring-0 admission.
+   - `joshlf/anneal` (`c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`, `rv64` backend `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`, `x86_64` backend `3a89578`) and `AeneasVerif/kraken` (`8af78062037bc237b341d20252aafd1797c1bcb7` on `aarch64`), where an untrusted userspace toolchain emits a compiled binary image `req.candidate.bytes` together with a proof certificate checked by an in-kernel `CertChecker` prior to Ring-0 admission.
 2. **Constant-Time & Secret-Erasing Compilers (`CompCert-CT`, `Jasmin`, and Besson et al. IFP)**:
    - `CompCert-CT` (Barthe et al., POPL 2020, DOI `10.1145/3371075`), which proves constant-time preservation across 18 passes of `CompCert` (`v3.0.1`) via lockstep leakage-preserving simulation (`CTSimulates`);
    - `Jasmin` (Almeida et al., CCS 2017 DOI `10.1145/3133956.3134078`, POPL 2020 DOI `10.1145/3371076`, CCS 2023 DOI `10.1145/3576915.3623157`), which provides Coq-verified compilation of high-speed cryptography with explicit programmer-controlled register spilling and Speculative Constant-Time (`SCT`) `#msf` protection;
@@ -219,7 +219,7 @@ When an extension shares the same security domain as its caller (e.g., a tenant-
 - **Simon, Chisnall & Anderson (EuroS&P 2018)**: Laurent Simon, David Chisnall, and Ross Anderson, *What You Get is What You C: Controlling Side Effects in Mainstream C Compilers*, IEEE EuroS&P 2018, DOI `10.1109/EuroSP.2018.00029`. Demonstrates how `Clang`/`GCC` dead-store elimination and branch lowering break constant-time C code and stack scrubbing.
 - **Schneider, Lain, Ivan & Puddu (ASIA CCS 2025)**: Moritz Schneider, Daniele Lain, Luka Ivan, and Ivan Puddu, *Breaking Bad: How Compilers Break Constant-Time Implementations*, ACM ASIA CCS 2025, DOI `10.1145/3678890.3678916`. Quantifies constant-time violations across `LLVM`/`Clang`, `GCC`, and `rustc` across `x86_64`, `aarch64`, and `riscv64`.
 - **Ge, Yarom, Cock & Heiser (`seL4` `Time Protection`, EuroSys 2019)**: Qian Ge, Yuval Yarom, David Cock, and Gernot Heiser, *Time Protection: The Missing OS Abstraction*, EuroSys 2019, DOI `10.1145/3302424.3303976`. Defines OS-level `Time Protection` (`Kernel_Clone`, cache coloring, on-core `L1-D`/`L1-I`/`BPU`/`TLB` flushing, dirty-line writeback padding, and timer-tick alignment).
-- **Anneal & Kraken Repositories**: `AeneasVerif/anneal` (`e6a0b2da5ec39a4c0cfd22bf323885022837b5dc`) and `AeneasVerif/kraken` (`8af78062037bc237b341d20252aafd1797c1bcb7`).
+- **Anneal & Kraken Repositories**: `joshlf/anneal` (`c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`) and `AeneasVerif/kraken` (`8af78062037bc237b341d20252aafd1797c1bcb7`).
 
 ### 2. Preserved Support Artifacts in This Package
 
@@ -240,10 +240,10 @@ To revalidate the mechanized Lean 4 proofs and regenerate the empirical probe re
 
 ```bash
 # 1. Verify all 31 constructive theorems in Lean v4.34.1 (must exit 0 with zero axioms)
-lean reports/compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026/support/CompilerPreservationTimeProtectionAndAnnealCtGate.lean
+lean support/CompilerPreservationTimeProtectionAndAnnealCtGate.lean
 
 # 2. Regenerate the empirical compiler-leakage and Time Protection cycle-cost JSON
-python3 reports/compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026/support/ct_compiler_and_time_protection_probe.py
+python3 support/ct_compiler_and_time_protection_probe.py
 ```
 
 Expected output of step 1: `31` lines of `'CompilerPreservationTimeProtectionAndAnnealCtGate.<theorem>' does not depend on any axioms`, zero warnings, and exit status `0`.

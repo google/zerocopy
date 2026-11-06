@@ -1,0 +1,454 @@
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:5960:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6179:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6222:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6166:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6217:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6231:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6204:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:6227:0: error: incomplete set of termination hints:
+This function is mutually recursive with LeanRV64D.Functions.get_mstateen, LeanRV64D.Functions.read_mstateen0, and LeanRV64D.Functions.legalize_mstateen0, which do not have a termination hint.
+The present clause is ignored.
+/home/opam/anneal-sail-output/generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean:5946:0: error: Could not find a decreasing measure.
+The basic measures relate at each recursive call as follows:
+(<, ≤, =: relation proved, ? all proofs failed, _: no proof attempted)
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_mstateen at 5952:22-46:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_mstateen at 5952:22-46:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_sstateen at 5953:61-85:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_mstateen at 5952:22-46:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_hstateen at 5955:52-76:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_mstateen at 5952:22-46:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_hstateen at 5955:52-76:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.check_stateen_bit to LeanRV64D.Functions.get_sstateen at 5953:61-85:
+    #1 #2 #3
+idx  _  _  _
+Call from LeanRV64D.Functions.get_hstateen to LeanRV64D.Functions.is_hstateen_accessible at 6170:15-40:
+ idx
+Call from LeanRV64D.Functions.is_hstateen_accessible to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+  
+#4
+Call from LeanRV64D.Functions.is_hstateen_accessible to LeanRV64D.Functions.currentlyEnabled at 6220:46-76:
+  
+#4
+Call from LeanRV64D.Functions.is_hstateen_accessible to LeanRV64D.Functions.currentlyEnabled at 6220:86-6221:25:
+  
+#4
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6220:86-6221:25:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5986:40-73:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5986:84-5987:31:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5987:42-70:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5987:81-5988:36:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5988:47-77:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5988:87-5989:39:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5996:55-77:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6006:83-6007:28:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.is_zfinx_enabled_by_stateen at 6030:80-6031:16:
+ #4
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6039:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6048:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:82-6052:24:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6054:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6054:82-6055:19:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6057:84-6058:27:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6058:37-64:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:82-6052:24:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6060:80-6061:24:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:82-6052:24:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6063:84-6064:20:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6065:65-92:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.get_xLPE at 6068:82-6069:39:
+   #4
+#5  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6006:83-6007:28:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6006:83-6007:28:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6007:38-63:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6087:42-64:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6089:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6090:57-83:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6090:57-83:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6089:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6095:59-86:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6095:59-86:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6099:57-79:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6101:53-75:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6101:53-75:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6101:53-75:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6107:53-77:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6110:78-6111:19:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6107:53-77:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6087:42-64:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6115:57-83:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6054:82-6055:19:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6107:53-77:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6087:42-64:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6115:57-83:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6115:57-83:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6121:84-6122:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6133:81-6134:20:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6045:45-72:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6146:63-89:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6149:83-6150:25:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6090:57-83:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 5999:83-6000:23:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6027:100-6028:21:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6051:82-6052:24:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6162:47-76:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6162:86-6163:25:
+ #4
+  _
+Call from LeanRV64D.Functions.currentlyEnabled to LeanRV64D.Functions.currentlyEnabled at 6107:53-77:
+ #4
+  _
+Call from LeanRV64D.Functions.get_xLPE to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+   #5
+#4  _
+Call from LeanRV64D.Functions.is_zfinx_enabled_by_stateen to LeanRV64D.Functions.check_stateen_bit at 6230:3-61:
+  
+#1
+#2
+#3
+Call from LeanRV64D.Functions.get_sstateen to LeanRV64D.Functions.is_sstateen_accessible at 6195:21-46:
+ idx
+Call from LeanRV64D.Functions.is_sstateen_accessible to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+  
+#4
+Call from LeanRV64D.Functions.is_sstateen_accessible to LeanRV64D.Functions.currentlyEnabled at 6220:46-76:
+  
+#4
+Call from LeanRV64D.Functions.is_sstateen_accessible to LeanRV64D.Functions.currentlyEnabled at 6220:86-6221:25:
+  
+#4
+Call from LeanRV64D.Functions.get_mstateen to LeanRV64D.Functions.read_mstateen0 at 6188:14-31:
+ idx
+Call from LeanRV64D.Functions.read_mstateen0 to LeanRV64D.Functions.legalize_mstateen0 at 6257:3-65:
+  
+#6
+#7
+Call from LeanRV64D.Functions.legalize_mstateen0 to LeanRV64D.Functions.currentlyEnabled at 5982:57-79:
+   #6 #7
+#4  _  _
+Call from LeanRV64D.Functions.legalize_mstateen0 to LeanRV64D.Functions.currentlyEnabled at 6246:21-48:
+   #6 #7
+#4  _  _
+Call from LeanRV64D.Functions.legalize_mstateen0 to LeanRV64D.Functions.currentlyEnabled at 6220:13-35:
+   #6 #7
+#4  _  _
+Call from LeanRV64D.Functions.legalize_mstateen0 to LeanRV64D.Functions.currentlyEnabled at 6251:49-77:
+   #6 #7
+#4  _  _
+
+
+#1: sizeOf priv
+#2: sizeOf bit_idx
+#3: stateen_reg
+#4: sizeOf merge_var
+#5: sizeOf p
+#6: sizeOf m
+#7: sizeOf v
+
+Please use `termination_by` to specify a decreasing measure.

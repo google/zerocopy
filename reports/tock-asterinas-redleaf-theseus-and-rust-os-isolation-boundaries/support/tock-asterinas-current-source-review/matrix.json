@@ -1,0 +1,676 @@
+{
+  "schema": 1,
+  "baseline_reference_commit": "ebcdcadb63fefd1e6c0f46cb2030270ae3232837",
+  "frozen_reference_commit": "327cce209828e92daba9e2be8a3f93232e35810c",
+  "baseline_count": 581,
+  "current_count": 597,
+  "baseline_inventory_sha256": "5c2c66ee19f77be4663b7fd917b3652694097aef64df1f1f918fa515654b5c98",
+  "added_after_baseline": [
+    {
+      "report_json": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.json",
+      "report_md": "reports/aeneas-compatible-bundle-source-drift-2026-09-30/REPORT.md",
+      "json_sha256": "d94b37672092eeca7024105dd357350bf5990ac9919d4f689efce232f537e200",
+      "md_sha256": "67c71bfca2fed842011d61db265df474d11fdf93ee413b7f04079a1e593e363c"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v67/REPORT.md",
+      "json_sha256": "b973a35effbe93bea1eff2c8a9150f48f082e0fbee2ca1b94cf7906c145f2473",
+      "md_sha256": "99c62e2fa2e175c1454f4324769b35547fc83d633bff47ec1da381ef4b390b4d"
+    },
+    {
+      "report_json": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.json",
+      "report_md": "reports/anneal-3730-3731-final-coverage-audit-2026-09-30-v68/REPORT.md",
+      "json_sha256": "21a96ce39b4681d3e6b6e426f51bf2eacf9aa434d142b128654be618abdeb086",
+      "md_sha256": "94a758764628ac63b8da6cddb01e8b68806d0f095b734fd69929da2f87a2c342"
+    },
+    {
+      "report_json": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-i102-same-key-interruption-admission-refusal-2026-09-30/REPORT.md",
+      "json_sha256": "cf5984f71506d6bd1a5f7c162e41250d2b781e80701fa285eb804fc33aed49c0",
+      "md_sha256": "936d13b551d87a1b098aab6dcbd839f5e0e0f3a75010a389a0311ebcee39b520"
+    },
+    {
+      "report_json": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.json",
+      "report_md": "reports/anneal-3731-source-spec-synthesis-2026-09-30/REPORT.md",
+      "json_sha256": "55b83ec9c14304772f655f7e5f403f7df8cbe7b02fa2276b0068fa8a42b69eb6",
+      "md_sha256": "60535afddaa4e1063cdccc3feb6537dec95e18815ccc5f921ecc9731eafecb37"
+    },
+    {
+      "report_json": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.json",
+      "report_md": "reports/charon-0-1-210-to-nightly-2026-09-30-source-review/REPORT.md",
+      "json_sha256": "3591b8f1231116fbbf06c0ef2cb34b844d5c3fe0a07d5eca00016016aea02135",
+      "md_sha256": "565d4b29e08ce64a75f2b4fa28ea67524a363541f8ee3a0eafa43b341e978f0f"
+    },
+    {
+      "report_json": "reports/fstar-20260927-current-source-review/REPORT.json",
+      "report_md": "reports/fstar-20260927-current-source-review/REPORT.md",
+      "json_sha256": "a462a846213aa9d5b7da25e91c90aa335dc994b4b7af0c03995bb7a7f4a7f4d8",
+      "md_sha256": "80e3114611101e2208d28a898945b73a5920135ac1e8505cac1d4deb3aceef62"
+    },
+    {
+      "report_json": "reports/haskell-hls-hie-bios-current-source-review/REPORT.json",
+      "report_md": "reports/haskell-hls-hie-bios-current-source-review/REPORT.md",
+      "json_sha256": "35a6762ee7dec7ccc16fd9b7dca9c01fa2047889b62dc35441d2ef497942f33f",
+      "md_sha256": "96c3036954c1c8fad677c4096b1fd177496eb369d9ac83f51fc1787204d5e325"
+    },
+    {
+      "report_json": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.json",
+      "report_md": "reports/lean-429-430-comparison-to-4341-source-review/REPORT.md",
+      "json_sha256": "8f77d17c4f8e1b938e8758a748d18cb8230912eebec1fd02de5e8cbc686f7d8b",
+      "md_sha256": "c6cc6f6c9a0a8b12a1f7af43e0ed2d8d3526db83e0cc2d3ecab42e028c1d7408"
+    },
+    {
+      "report_json": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/lean-lake-430rc2-to-4341-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "5a8dd02f496c6a5b4c66d052a68001498fbf4d8ec9630488076912aec72bb17b",
+      "md_sha256": "675ae5b53405dd49b9bfbc393c94a546362f74e88b1d5a67fe19b04cd7c92188"
+    },
+    {
+      "report_json": "reports/netstack3-current-source-review/REPORT.json",
+      "report_md": "reports/netstack3-current-source-review/REPORT.md",
+      "json_sha256": "52b2e22a22dfa151525046827ee20f9ad0ce133970815c4df86e91c840c4d8d1",
+      "md_sha256": "9cc1252705b231bc31bc7437a88a7e018781581af49e5d8584eeeabbc669ee1e"
+    },
+    {
+      "report_json": "reports/ninja-current-source-review/REPORT.json",
+      "report_md": "reports/ninja-current-source-review/REPORT.md",
+      "json_sha256": "90685322eb2a019f64c23444ce92b866887e0c3421a9fe3df312e3e9b5905ceb",
+      "md_sha256": "de2a0cd8f661113207d587efae30e9bafdce58d2b9a8e89322bdae8a9264d732"
+    },
+    {
+      "report_json": "reports/nix-guix-2352-source-review/REPORT.json",
+      "report_md": "reports/nix-guix-2352-source-review/REPORT.md",
+      "json_sha256": "991f95e73e14d678c49f6f21a45856f9b6987aa47d57b983f65fafb907708e4d",
+      "md_sha256": "c7d2c7da8caafd95e5442beb1bf22774d38e0a86e2d5fde66934da519c9f5c7b"
+    },
+    {
+      "report_json": "reports/roslyn-current-source-review/REPORT.json",
+      "report_md": "reports/roslyn-current-source-review/REPORT.md",
+      "json_sha256": "fab1d4cf7cc79374da45d79ff0fe0b406fc4a60bf82ae49cf1d010a867b96f3d",
+      "md_sha256": "2dc8c283c7c1ecaf13a13c507896110c63e81dffc6a21d93bc2942a79ecd2564"
+    },
+    {
+      "report_json": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.json",
+      "report_md": "reports/rust-cargo-nightly-to-1981-source-review-2026-09-30/REPORT.md",
+      "json_sha256": "c6a9e61f3bfc60e604fcfbb2349527c84968857cb07618a322ff7a4673068115",
+      "md_sha256": "80bffbe8ccab653d52601a9cf3cf22e0619744c6f56c032a0a297c8b462b7e68"
+    },
+    {
+      "report_json": "reports/typescript-602-to-702-source-review/REPORT.json",
+      "report_md": "reports/typescript-602-to-702-source-review/REPORT.md",
+      "json_sha256": "44532136e82a83946ba595de4d30103c41bb3d1c2e532236417507a5c80143a7",
+      "md_sha256": "bbc9682606bf6a8447395cda51f8381fc32d11df3b4e5660e3f4f9f949e4d785"
+    }
+  ],
+  "official_observation_sha256": "9acfe730f09d3aacf7d62e11f8256d44f8c76bc079b82f9341a0d1c610f2a7a8",
+  "rows": [
+    {
+      "inventory_id": "R571",
+      "cohort": "Tock 78862168 + Asterinas a5238eb6",
+      "title": "Tock and Asterinas: what a safe interface can and cannot isolate",
+      "report_json": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.json",
+      "report_md": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.md",
+      "evidence_map_path": "reports/tock-asterinas-safe-interface-boundaries-2015-2026/support/evidence-map.json",
+      "frozen_json_sha256": "989acb6b562f43096dd27e6139dd504ea374c3814b8ec7871705a996a695324d",
+      "frozen_md_sha256": "9af3d5bcccf6620b7f7ce745a5f11c1a9064659a34f83a11ede961ad2b096faf",
+      "frozen_evidence_map_sha256": "568369ca80efc879e12f04f1fe01c88c32a34b4aabc4202bd9941614a53be1b6",
+      "frozen_subjects_exact": [
+        {
+          "name": "Tock current kernel and capsule boundary",
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb"
+          }
+        },
+        {
+          "name": "Tock: From Research to Securing 10 Million Computers",
+          "identity": {
+            "doi": "10.1145/3731569.3764828",
+            "publication": "SOSP 2025",
+            "year": "2025"
+          }
+        },
+        {
+          "name": "Asterinas current OSTD/framekernel boundary",
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+          }
+        },
+        {
+          "name": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB",
+          "identity": {
+            "publication": "USENIX ATC 2025",
+            "isbn": "978-1-939133-48-9",
+            "pages": "307-323",
+            "year": "2025"
+          }
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Tock and Asterinas both put a comparatively small set of privileged mechanisms behind safe Rust interfaces, but neither system treats a safe interface as a general correctness or fault-isolation boundary. Their strongest common lesson is narrower and more useful: a mechanism can safely delegate policy when it retains control of every resource whose misuse would violate the property being protected, and it validates untrusted policy outputs before acting on them.",
+      "full_summary_exact": "Tock and Asterinas both put a comparatively small set of privileged mechanisms behind safe Rust interfaces, but neither system treats a safe interface as a general correctness or fault-isolation boundary. Their strongest common lesson is narrower and more useful: **a mechanism can safely delegate policy when it retains control of every resource whose misuse would violate the property being protected, and it validates untrusted policy outputs before acting on them**.\n\nTock divides its kernel between privileged core code and Rust capsules. Capsules cannot use `unsafe`; sensitive operations require capabilities that trusted initialization code alone can mint. Grants tie capsule-owned per-process state to process lifetime. This provides low-cost, language-enforced memory-safety and authority boundaries inside one address space, but Tock's own retrospective and current design material distinguish that from hardware isolation: a capsule can still contain functional bugs, panic, or monopolize a cooperatively scheduled kernel. Tock also had to redesign its userspace buffer/callback interface when an apparently narrow API failed to encode the lifetime and aliasing conditions Rust safety required. Narrowness was not sufficient; the interface had to capture the right invariant.\n\nAsterinas makes the split more explicit. OSTD is the privileged framework that contains `unsafe`; the ordinary kernel is safe Rust. Its current soundness documentation defines the claim as absence of undefined behavior, not correct scheduling, file-system behavior, networking behavior, deadlock freedom, or availability. Asterinas goes beyond merely trusting safe policy code: for schedulers and allocators, OSTD rechecks the concrete values returned by a potentially wrong policy before those values can affect memory safety. A policy may make a bad decision, but the mechanism is intended to keep that bad decision from becoming undefined behavior. The same documentation also classifies CPU, memory, and device resources by whether misuse can break the target safety property, retaining sensitive resources inside OSTD and exposing only mediated forms of insensitive resources.\n\nFor Anneal, this supports a conditional architecture rather than a blanket analogy. Environment preparation and publication can be concentrated behind narrow checked host interfaces **if** the host actually controls the relevant authority: which source/configuration/tool identities are admitted, which artifact bytes are named, which results are current, and which canonical reference may advance. Scheduling, heuristics, proof-search strategy, and backend selection can then be treated as policy whose mistakes cause rejection, wasted work, or a wrong proposal rather than silent corruption of canonical state.\n\nThe analogy stops at execution that escapes the host's resource model. Lean, OCaml, compiler plugins, native libraries, package managers, subprocesses, filesystem state, environment variables, and network-visible dependencies are not confined by Rust's type system merely because a Rust wrapper launches them. A safe Rust API around such code does not imply crash containment, cleanup, determinism, semantic freshness, or even memory safety inside the foreign process. Anneal should therefore keep process or equivalent OS isolation for opaque execution backends unless a specific backend can satisfy stronger in-process assumptions. Source/model/environment identity fencing and publication validation remain necessary even when execution is isolated.\n\nThe resulting design rule is: **minimize and harden the mechanism that owns irreversible authority; make everything else propose values to it.** Do not infer from “safe Rust” that the proposal is semantically correct, live, fresh, or side-effect free. Recheck every property that canonical publication depends on at the authority boundary.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "Tock and Asterinas both put a comparatively small set of privileged mechanisms behind safe Rust interfaces, but neither system treats a safe interface as a general correctness or fault-isolation boundary. Their strongest common lesson is narrower and more useful: **a mechanism can safely delegate policy when it retains control of every resource whose misuse would violate the property being protected, and it validates untrusted policy outputs before acting on them**.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "Tock divides its kernel between privileged core code and Rust capsules. Capsules cannot use `unsafe`; sensitive operations require capabilities that trusted initialization code alone can mint. Grants tie capsule-owned per-process state to process lifetime. This provides low-cost, language-enforced memory-safety and authority boundaries inside one address space, but Tock's own retrospective and current design material distinguish that from hardware isolation: a capsule can still contain functional bugs, panic, or monopolize a cooperatively scheduled kernel. Tock also had to redesign its userspace buffer/callback interface when an apparently narrow API failed to encode the lifetime and aliasing conditions Rust safety required. Narrowness was not sufficient; the interface had to capture the right invariant.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "Asterinas makes the split more explicit. OSTD is the privileged framework that contains `unsafe`; the ordinary kernel is safe Rust. Its current soundness documentation defines the claim as absence of undefined behavior, not correct scheduling, file-system behavior, networking behavior, deadlock freedom, or availability. Asterinas goes beyond merely trusting safe policy code: for schedulers and allocators, OSTD rechecks the concrete values returned by a potentially wrong policy before those values can affect memory safety. A policy may make a bad decision, but the mechanism is intended to keep that bad decision from becoming undefined behavior. The same documentation also classifies CPU, memory, and device resources by whether misuse can break the target safety property, retaining sensitive resources inside OSTD and exposing only mediated forms of insensitive resources.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "For Anneal, this supports a conditional architecture rather than a blanket analogy. Environment preparation and publication can be concentrated behind narrow checked host interfaces **if** the host actually controls the relevant authority: which source/configuration/tool identities are admitted, which artifact bytes are named, which results are current, and which canonical reference may advance. Scheduling, heuristics, proof-search strategy, and backend selection can then be treated as policy whose mistakes cause rejection, wasted work, or a wrong proposal rather than silent corruption of canonical state.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 5,
+          "exact_excerpt": "The analogy stops at execution that escapes the host's resource model. Lean, OCaml, compiler plugins, native libraries, package managers, subprocesses, filesystem state, environment variables, and network-visible dependencies are not confined by Rust's type system merely because a Rust wrapper launches them. A safe Rust API around such code does not imply crash containment, cleanup, determinism, semantic freshness, or even memory safety inside the foreign process. Anneal should therefore keep process or equivalent OS isolation for opaque execution backends unless a specific backend can satisfy stronger in-process assumptions. Source/model/environment identity fencing and publication validation remain necessary even when execution is isolated.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 6,
+          "exact_excerpt": "The resulting design rule is: **minimize and harden the mechanism that owns irreversible authority; make everything else propose values to it.** Do not infer from “safe Rust” that the proposal is semantically correct, live, fresh, or side-effect free. Recheck every property that canonical publication depends on at the authority boundary.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "tock_old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+      "asterinas_old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "mapped_files": [
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "kernel/src/capabilities.rs",
+          "old_blob": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+          "new_blob": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "capsules/core/src/lib.rs",
+          "old_blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+          "new_blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "kernel/src/grant.rs",
+          "old_blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5",
+          "new_blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "kernel/src/lib.rs",
+          "old_blob": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+          "new_blob": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/README.md",
+          "old_blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+          "new_blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/what-soundness-means.md",
+          "old_blob": "3be761f6c0f341c351302948f12d98154cfa70e0",
+          "new_blob": "3be761f6c0f341c351302948f12d98154cfa70e0",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/sensitivity-classification.md",
+          "old_blob": "87319a518492d7a853c0b1ba1132a637349e869a",
+          "new_blob": "87319a518492d7a853c0b1ba1132a637349e869a",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/safe-policy-injection.md",
+          "old_blob": "1d9db11917f249374813862830882055d5aa854f",
+          "new_blob": "1d9db11917f249374813862830882055d5aa854f",
+          "source_status": "unchanged_mapped_blob"
+        }
+      ],
+      "source_result": "mapped_source_paths_unchanged_broader_claim_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R572",
+      "cohort": "Tock eaae5cbf + Asterinas a5238eb6",
+      "title": "Tock and Asterinas: where narrow safe interfaces work—and where they stop",
+      "report_json": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.json",
+      "report_md": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.md",
+      "evidence_map_path": "reports/tock-asterinas-safe-interface-boundaries-2017-2026/source-map.json",
+      "frozen_json_sha256": "555773d8260076b6f3f004f1ddfb69502db36fbb4c42604a23eae69d5cb554f0",
+      "frozen_md_sha256": "7ffc5e18b640849259d4e539844ca1e0bc265b7d0c0eb2f9b7cec880d82628b9",
+      "frozen_evidence_map_sha256": "8f884c1fc55240cfbf5641cc70e991e1b40cfda640fdda2452c4d47b6489105f",
+      "frozen_subjects_exact": [
+        {
+          "name": "Tock current kernel source",
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73"
+          }
+        },
+        {
+          "name": "Tock current architecture and threat-model documentation",
+          "identity": {
+            "repository": "tock/book",
+            "revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923"
+          }
+        },
+        {
+          "name": "Tock SOSP 2017 architecture paper",
+          "identity": {
+            "doi": "10.1145/3132747.3132786",
+            "publication": "SOSP 2017"
+          }
+        },
+        {
+          "name": "Tock SOSP 2025 retrospective",
+          "identity": {
+            "doi": "10.1145/3731569.3764828",
+            "publication": "SOSP 2025"
+          }
+        },
+        {
+          "name": "Asterinas current source and architecture documentation",
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44"
+          }
+        },
+        {
+          "name": "Asterinas USENIX ATC 2025 paper",
+          "identity": {
+            "publication": "2025 USENIX Annual Technical Conference",
+            "paper": "ASTERINAS: A Linux ABI-Compatible, Rust-Based Framekernel OS with a Small and Sound TCB"
+          }
+        }
+      ],
+      "claim_locator": {
+        "heading": "## Summary",
+        "line": 5
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Tock and Asterinas both concentrate dangerous mechanisms behind Rust interfaces, but they establish narrower guarantees than the phrase “safe interface” can suggest.",
+      "full_summary_exact": "Tock and Asterinas both concentrate dangerous mechanisms behind Rust interfaces, but they establish narrower guarantees than the phrase “safe interface” can suggest.\n\nTock combines several boundaries. Its small core kernel may use `unsafe`; ordinary capsules are safe Rust and are constrained by the types and references the core exposes; sensitive operations that are not memory-unsafe are additionally gated by explicit capabilities; and arbitrary-language processes are separated by hardware protection. The design therefore does not ask one mechanism to provide memory safety, system authority, fault isolation, and availability at once. Tock's later threat model makes the remaining distinctions explicit: a capsule can be memory-safe while still denying service, board configuration determines which authorities are handed out, and process isolation is stronger than same-address-space language isolation.\n\nAsterinas draws a sharper same-address-space line. Its OSTD framework is the privileged layer allowed to use `unsafe`; the large OS-services layer is compiled with `#![deny(unsafe_code)]`. Current Asterinas documentation defines OSTD soundness precisely: any safe client may behave arbitrarily without causing undefined behavior. It then keeps complex policies such as scheduling and allocation outside OSTD and independently validates their outputs before those outputs can violate memory-safety invariants. That is a strong example of a narrow trusted mechanism succeeding because the property is local enough to re-establish at the boundary.\n\nNeither project establishes the broader rule that logic implemented through a safe API is correct. Tock's retrospective explicitly separates type safety from logic correctness. Asterinas says a sound OS service may still crash, deadlock, starve work, corrupt filesystem state, or implement a protocol incorrectly. Both projects also retain trust or configuration outside the narrow mechanism: Tock's board setup mints and distributes capabilities and its hardware/software process boundary is a separate mechanism; Asterinas trusts its Rust toolchain, OSTD, boot/firmware, core hardware, and the correspondence between those components and the assumptions used by OSTD.\n\nThe transferable Anneal rule is therefore conditional. Concentrate preparation, publication, and other authority-changing effects behind a small checked interface **when the relevant acceptance property can be completely mediated and revalidated at that interface**. Pass explicit capabilities and identities rather than ambient authority, and make the boundary reject bad caller or backend outputs instead of assuming the caller's policy is correct. Do not infer freshness, semantic correspondence, liveness, logical correctness, or isolation of native/foreign code from that interface unless those properties are separately checked. If a plugin, subprocess, filesystem, configuration source, or native extension can mutate promise-relevant state outside the boundary, either bring that state into the checked protocol or use a stronger isolation/acceptance boundary.\n\nThis is a derived architectural judgment for Anneal, not adopted Anneal policy.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "Tock and Asterinas both concentrate dangerous mechanisms behind Rust interfaces, but they establish narrower guarantees than the phrase “safe interface” can suggest.",
+          "source_result": "mapped_tock_kernel_lib_lint_delta_no_safety_semantics",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "Tock combines several boundaries. Its small core kernel may use `unsafe`; ordinary capsules are safe Rust and are constrained by the types and references the core exposes; sensitive operations that are not memory-unsafe are additionally gated by explicit capabilities; and arbitrary-language processes are separated by hardware protection. The design therefore does not ask one mechanism to provide memory safety, system authority, fault isolation, and availability at once. Tock's later threat model makes the remaining distinctions explicit: a capsule can be memory-safe while still denying service, board configuration determines which authorities are handed out, and process isolation is stronger than same-address-space language isolation.",
+          "source_result": "mapped_tock_kernel_lib_lint_delta_no_safety_semantics",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "Asterinas draws a sharper same-address-space line. Its OSTD framework is the privileged layer allowed to use `unsafe`; the large OS-services layer is compiled with `#![deny(unsafe_code)]`. Current Asterinas documentation defines OSTD soundness precisely: any safe client may behave arbitrarily without causing undefined behavior. It then keeps complex policies such as scheduling and allocation outside OSTD and independently validates their outputs before those outputs can violate memory-safety invariants. That is a strong example of a narrow trusted mechanism succeeding because the property is local enough to re-establish at the boundary.",
+          "source_result": "mapped_tock_kernel_lib_lint_delta_no_safety_semantics",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "Neither project establishes the broader rule that logic implemented through a safe API is correct. Tock's retrospective explicitly separates type safety from logic correctness. Asterinas says a sound OS service may still crash, deadlock, starve work, corrupt filesystem state, or implement a protocol incorrectly. Both projects also retain trust or configuration outside the narrow mechanism: Tock's board setup mints and distributes capabilities and its hardware/software process boundary is a separate mechanism; Asterinas trusts its Rust toolchain, OSTD, boot/firmware, core hardware, and the correspondence between those components and the assumptions used by OSTD.",
+          "source_result": "mapped_tock_kernel_lib_lint_delta_no_safety_semantics",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 5,
+          "exact_excerpt": "The transferable Anneal rule is therefore conditional. Concentrate preparation, publication, and other authority-changing effects behind a small checked interface **when the relevant acceptance property can be completely mediated and revalidated at that interface**. Pass explicit capabilities and identities rather than ambient authority, and make the boundary reject bad caller or backend outputs instead of assuming the caller's policy is correct. Do not infer freshness, semantic correspondence, liveness, logical correctness, or isolation of native/foreign code from that interface unless those properties are separately checked. If a plugin, subprocess, filesystem, configuration source, or native extension can mutate promise-relevant state outside the boundary, either bring that state into the checked protocol or use a stronger isolation/acceptance boundary.",
+          "source_result": "mapped_tock_kernel_lib_lint_delta_no_safety_semantics",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 6,
+          "exact_excerpt": "This is a derived architectural judgment for Anneal, not adopted Anneal policy.",
+          "source_result": "mapped_tock_kernel_lib_lint_delta_no_safety_semantics",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "tock_old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+      "asterinas_old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "mapped_files": [
+        {
+          "repository": "tock/tock",
+          "old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+          "path": "kernel/src/lib.rs",
+          "old_blob": "49f9ca34fcb2683eec5765a8364ed43423f04d16",
+          "new_blob": "84a9f806ac8028253799ed85c45b65a867ee1faa",
+          "source_status": "changed_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+          "path": "kernel/src/capabilities.rs",
+          "old_blob": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+          "new_blob": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+          "path": "kernel/src/grant.rs",
+          "old_blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5",
+          "new_blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+          "path": "capsules/core/src/lib.rs",
+          "old_blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+          "new_blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "eaae5cbf62df2bc24ee809ff9d2c7ca124e42e73",
+          "path": "boards/components/README.md",
+          "old_blob": "b0436be7f565778880c0938ac22df58a2dfc085b",
+          "new_blob": "b0436be7f565778880c0938ac22df58a2dfc085b",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "kernel/src/lib.rs",
+          "old_blob": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+          "new_blob": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "ostd/src/lib.rs",
+          "old_blob": "c8c1219b61357a703c0fc3b70ba7018178aa5d09",
+          "new_blob": "c8c1219b61357a703c0fc3b70ba7018178aa5d09",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/kernel/the-framekernel-architecture.md",
+          "old_blob": "dd077b771efe76a4758b82681597305509fc24d5",
+          "new_blob": "dd077b771efe76a4758b82681597305509fc24d5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/README.md",
+          "old_blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+          "new_blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/what-soundness-means.md",
+          "old_blob": "3be761f6c0f341c351302948f12d98154cfa70e0",
+          "new_blob": "3be761f6c0f341c351302948f12d98154cfa70e0",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/safe-policy-injection.md",
+          "old_blob": "1d9db11917f249374813862830882055d5aa854f",
+          "new_blob": "1d9db11917f249374813862830882055d5aa854f",
+          "source_status": "unchanged_mapped_blob"
+        }
+      ],
+      "source_result": "tock_mapped_kernel_lib_lint_delta_no_safety_conclusion",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    },
+    {
+      "inventory_id": "R573",
+      "cohort": "Tock 78862168 + Asterinas 0.18.1 a5238eb6",
+      "title": "Summary",
+      "report_json": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.json",
+      "report_md": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.md",
+      "evidence_map_path": "reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/source-map.json",
+      "frozen_json_sha256": "09f7f8a6a3e2cbead5a61ccbab49dae860334aa878f7948c6a68d70371318451",
+      "frozen_md_sha256": "18f7fb1a7894f1f1aa5fa69cf6ea91ad4de389cea6ceb6e93e5934186ce1870e",
+      "frozen_evidence_map_sha256": "0fd7039c9e0c800bac812d7b9e904f1fff2d1d14f0659e3976a3da02dba53a02",
+      "frozen_subjects_exact": [
+        {
+          "name": "Tock trusted-core, capsule, and process boundaries",
+          "identity": {
+            "repository": "tock/tock",
+            "revision": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+            "book_repository": "tock/book",
+            "book_revision": "760025b0d8a1d5ff14d6015c1c50ac4e30490923",
+            "period": "2017-2026",
+            "sosp_2017_doi": "10.1145/3132747.3132786",
+            "sosp_2025_doi": "10.1145/3731569.3764828"
+          }
+        },
+        {
+          "name": "Asterinas 0.18.1 framekernel and OSTD boundary",
+          "identity": {
+            "repository": "asterinas/asterinas",
+            "revision": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+            "version": "0.18.1",
+            "usenix_atc_year": "2025",
+            "arxiv": "2506.03876"
+          }
+        },
+        {
+          "name": "Anneal redesign trust and abstraction constraints",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+            "principles_blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+            "design_blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+          }
+        }
+      ],
+      "claim_locator": {
+        "heading": "# Summary",
+        "line": 3
+      },
+      "inventory_claim_excerpt_exact_or_normalized": "Tock and Asterinas reach a similar architectural conclusion from different starting points: a large body of safe Rust can be treated as less trusted for memory safety only when a smaller layer owns every mechanism that can invalidate the language's assumptions and exposes interfaces that make those assumptions unavoidable. The useful pattern is not merely \"put unsafe code in one crate.\" The narrow layer must also own the authority to manipulate sensitive resources, validate v",
+      "full_summary_exact": "Tock and Asterinas reach a similar architectural conclusion from different starting points: a large body of safe Rust can be treated as less trusted for **memory safety** only when a smaller layer owns every mechanism that can invalidate the language's assumptions and exposes interfaces that make those assumptions unavoidable. The useful pattern is not merely \"put unsafe code in one crate.\" The narrow layer must also own the authority to manipulate sensitive resources, validate values returned by less-trusted policy, and keep resource lifetime and execution-environment invariants true even when clients are buggy.\n\nThe two systems also show why that pattern must be scoped to a specific promise. Tock capsules are memory- and type-isolated by Rust but can still deny service because they execute cooperatively. Asterinas states the distinction even more sharply: its OSTD framework is intended to remain free of undefined behavior even if safe-Rust OS services schedule badly, waste memory, deadlock, crash, or otherwise behave incorrectly. Neither system treats memory safety as equivalent to logical correctness, availability, or semantic isolation. Hardware/process isolation remains stronger when failure containment or untrusted native code matters.\n\nFor Anneal, the strongest transferable lesson is therefore conditional: **centralize authority and boundary validation, not all policy or all semantics**. Environment preparation and publication are good candidates for narrow checked interfaces when the interface can completely validate the invariant it claims to establish. For example, a preparer can turn immutable source/tool/config identities into a checked prepared artifact, and a publisher can accept only a validated result whose provenance, scope, and TCB identity have already been checked. Tool selection, proof strategy, scheduling, and other policy can remain outside that boundary if the checked layer treats their outputs as untrusted and revalidates everything relevant to the reported promise.\n\nThat boundary cannot make inherently distributed facts disappear. Native extensions, Lean plugins, compiler or translator behavior, external executables, mutable filesystem state, toolchain semantics, and cross-process environment effects remain trusted or require stronger isolation unless Anneal can validate their effects at the boundary. A safe Rust wrapper around such behavior does not by itself shrink the TCB. This follows both from the systems evidence and from Anneal's current design contract, which says that moving an unchecked assumption behind another helper does not reduce trust.\n\nThe resulting design heuristic is:\n\n1. Name the exact invariant the boundary protects.\n2. Put only the mechanisms needed to enforce that invariant behind the boundary.\n3. Give less-trusted code policy freedom through safe or constrained interfaces.\n4. Treat policy outputs as hostile to the invariant and validate them again before use.\n5. Keep liveness, logical correctness, semantic fidelity, and native-extension trust separate unless the boundary independently enforces those properties too.\n6. Prefer process or hardware isolation, or explicit TCB admission, for behavior that cannot be constrained and checked at a language/API boundary.\n\nThis is an architectural inference for Anneal, not adopted Anneal policy.",
+      "clauses": [
+        {
+          "number": 1,
+          "exact_excerpt": "Tock and Asterinas reach a similar architectural conclusion from different starting points: a large body of safe Rust can be treated as less trusted for **memory safety** only when a smaller layer owns every mechanism that can invalidate the language's assumptions and exposes interfaces that make those assumptions unavoidable. The useful pattern is not merely \"put unsafe code in one crate.\" The narrow layer must also own the authority to manipulate sensitive resources, validate values returned by less-trusted policy, and keep resource lifetime and execution-environment invariants true even when clients are buggy.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 2,
+          "exact_excerpt": "The two systems also show why that pattern must be scoped to a specific promise. Tock capsules are memory- and type-isolated by Rust but can still deny service because they execute cooperatively. Asterinas states the distinction even more sharply: its OSTD framework is intended to remain free of undefined behavior even if safe-Rust OS services schedule badly, waste memory, deadlock, crash, or otherwise behave incorrectly. Neither system treats memory safety as equivalent to logical correctness, availability, or semantic isolation. Hardware/process isolation remains stronger when failure containment or untrusted native code matters.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 3,
+          "exact_excerpt": "For Anneal, the strongest transferable lesson is therefore conditional: **centralize authority and boundary validation, not all policy or all semantics**. Environment preparation and publication are good candidates for narrow checked interfaces when the interface can completely validate the invariant it claims to establish. For example, a preparer can turn immutable source/tool/config identities into a checked prepared artifact, and a publisher can accept only a validated result whose provenance, scope, and TCB identity have already been checked. Tool selection, proof strategy, scheduling, and other policy can remain outside that boundary if the checked layer treats their outputs as untrusted and revalidates everything relevant to the reported promise.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 4,
+          "exact_excerpt": "That boundary cannot make inherently distributed facts disappear. Native extensions, Lean plugins, compiler or translator behavior, external executables, mutable filesystem state, toolchain semantics, and cross-process environment effects remain trusted or require stronger isolation unless Anneal can validate their effects at the boundary. A safe Rust wrapper around such behavior does not by itself shrink the TCB. This follows both from the systems evidence and from Anneal's current design contract, which says that moving an unchecked assumption behind another helper does not reduce trust.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 5,
+          "exact_excerpt": "The resulting design heuristic is:",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 6,
+          "exact_excerpt": "1. Name the exact invariant the boundary protects.\n2. Put only the mechanisms needed to enforce that invariant behind the boundary.\n3. Give less-trusted code policy freedom through safe or constrained interfaces.\n4. Treat policy outputs as hostile to the invariant and validate them again before use.\n5. Keep liveness, logical correctness, semantic fidelity, and native-extension trust separate unless the boundary independently enforces those properties too.\n6. Prefer process or hardware isolation, or explicit TCB admission, for behavior that cannot be constrained and checked at a language/API boundary.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        },
+        {
+          "number": 7,
+          "exact_excerpt": "This is an architectural inference for Anneal, not adopted Anneal policy.",
+          "source_result": "mapped_paths_unchanged_broader_claim_unresolved",
+          "runtime_result": "unexecuted_in_this_review"
+        }
+      ],
+      "tock_old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+      "asterinas_old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+      "mapped_files": [
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "capsules/core/src/lib.rs",
+          "old_blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+          "new_blob": "3528b00f039cb9f5142d2fd5d9e51a4b6bdbc4d5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "kernel/src/capabilities.rs",
+          "old_blob": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+          "new_blob": "dddcedda97d0e4010dc368182fff8d5181815eaa",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "kernel/src/grant.rs",
+          "old_blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5",
+          "new_blob": "1d5cdd9788f923e17ef668ffb79acf06725794f5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "kernel/src/platform/mpu.rs",
+          "old_blob": "47fb0e982951fefbcb177bd9d8eb9717a8945f2a",
+          "new_blob": "47fb0e982951fefbcb177bd9d8eb9717a8945f2a",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "tock/tock",
+          "old_commit": "78862168a64a4f9ce61c9c17370272770c4a7cbb",
+          "path": "CHANGELOG.md",
+          "old_blob": "7ec2bb684013ff159d075fccfb3a2fc57c6ed70a",
+          "new_blob": "7ec2bb684013ff159d075fccfb3a2fc57c6ed70a",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/kernel/the-framekernel-architecture.md",
+          "old_blob": "dd077b771efe76a4758b82681597305509fc24d5",
+          "new_blob": "dd077b771efe76a4758b82681597305509fc24d5",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/README.md",
+          "old_blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+          "new_blob": "114f4b15ef0cd77825fd607bb0d320b31bd2335e",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/what-soundness-means.md",
+          "old_blob": "3be761f6c0f341c351302948f12d98154cfa70e0",
+          "new_blob": "3be761f6c0f341c351302948f12d98154cfa70e0",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/sensitivity-classification.md",
+          "old_blob": "87319a518492d7a853c0b1ba1132a637349e869a",
+          "new_blob": "87319a518492d7a853c0b1ba1132a637349e869a",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/safe-policy-injection.md",
+          "old_blob": "1d9db11917f249374813862830882055d5aa854f",
+          "new_blob": "1d9db11917f249374813862830882055d5aa854f",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "book/src/ostd/soundness/safe-kernel-peripheral-interactions.md",
+          "old_blob": "bc196721be84eb82f5ae4cb8730959ebd47b3831",
+          "new_blob": "bc196721be84eb82f5ae4cb8730959ebd47b3831",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "kernel/src/lib.rs",
+          "old_blob": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+          "new_blob": "62268709b2bf43da148c61faf4e73e8b52605ee2",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "ostd/src/lib.rs",
+          "old_blob": "c8c1219b61357a703c0fc3b70ba7018178aa5d09",
+          "new_blob": "c8c1219b61357a703c0fc3b70ba7018178aa5d09",
+          "source_status": "unchanged_mapped_blob"
+        },
+        {
+          "repository": "asterinas/asterinas",
+          "old_commit": "a5238eb6a965a4616ce07a48f5dfbc8042c4cd44",
+          "path": "RELEASES.md",
+          "old_blob": "13fc7df5067380b8249c700e3ca5b886c8c15733",
+          "new_blob": "13fc7df5067380b8249c700e3ca5b886c8c15733",
+          "source_status": "unchanged_mapped_blob"
+        }
+      ],
+      "source_result": "mapped_source_paths_unchanged_broader_claim_unresolved",
+      "runtime_result": "unexecuted_in_this_review",
+      "anneal_product_result": "unassessed"
+    }
+  ],
+  "raw_source_snapshot_sha256": null
+}

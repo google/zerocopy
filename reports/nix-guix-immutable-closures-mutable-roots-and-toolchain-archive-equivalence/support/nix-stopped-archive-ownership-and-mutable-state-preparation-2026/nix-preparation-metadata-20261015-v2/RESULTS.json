@@ -1,0 +1,6 @@
+{
+  "status": "PASS_BOUNDED_METADATA_ACQUISITION",
+  "store_top_entries": 2339,
+  "effects": "Known idle sleep start, read-only coreutils metadata/hash commands, stop. No Nix invocation, build, ownership update, HOME removal, package install or image allocation. Reads may affect atime; lifecycle metadata changes.",
+  "scope": "Preliminary sizes/top-level census only. Full mutable-state backups, recursive affected-state inode/link/metadata checks and separate preparation grant remain required."
+}

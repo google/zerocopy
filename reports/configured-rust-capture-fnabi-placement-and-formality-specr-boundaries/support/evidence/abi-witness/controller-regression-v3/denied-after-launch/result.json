@@ -1,0 +1,18 @@
+{
+  "exit_code": -15,
+  "spawned": true,
+  "child_pid": 11223,
+  "seconds": 0.0033580840000000008,
+  "stop_reason": null,
+  "controller_failure": {
+    "type": "PermissionError",
+    "message": "[Errno 1] simulated monitor denial after PID receipt",
+    "traceback": "Traceback (most recent call last):\n  File \"${WORKSPACE}/work/execution/abi-witness/build_control_v3.py\", line 45, in run_owned\n    row=monitor.sample(p.pid);row.update(seconds=time.monotonic()-started,output_bytes=output_bytes());samples.append(row)\n  File \"${WORKSPACE}/work/execution/abi-witness/build_control_v3.py\", line 30, in sample\n    def sample(self,pid):raise PermissionError(1,'simulated monitor denial after PID receipt')\nPermissionError: [Errno 1] simulated monitor denial after PID receipt\n"
+  },
+  "remaining_group_after_parent_wait": [],
+  "max_observed_group_rss_bytes": null,
+  "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+  "output_bytes": 626,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

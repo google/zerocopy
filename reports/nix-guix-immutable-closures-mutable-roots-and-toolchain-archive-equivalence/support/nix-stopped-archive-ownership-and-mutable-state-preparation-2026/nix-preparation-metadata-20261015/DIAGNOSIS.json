@@ -1,0 +1,8 @@
+{
+  "classification": "OPERATIONAL_PERMISSION_FAILURE",
+  "cause": "UID0 with cap-drop-ALL cannot traverse the deliberately UID1000/mode0700 ownership fixture under /work. du recursively included unrelated /work; its stderr identifies exactly that directory.",
+  "effects": "Known idle sleep start, utility hash observer and du read attempts, successful exact-CID stop. No Nix/store/state/ownership/HOME mutation requested. Read atime/lifecycle metadata may change. Top-level store census did not run.",
+  "recovery": "Container stopped; preserve original raw receipts. Do not infer the combined du command established full successful sizes. A separately reviewed narrow metadata acquisition may exclude unrelated /work traversal; do not add DAC capability or weaken permission checks.",
+  "regression_basis": "Actual failed du stderr plus preceding corrected fixture owner/mode. Future acquired paths must be explicit finite trees.",
+  "controller_sha256": "b4c4923f1383adc13d23aeaadc910119ceb58628e658269a1334d64ce30558eb"
+}

@@ -1,13 +1,10 @@
 {
   "topics": [
-    "ebpf/certificates",
-    "ebpf/verifier",
-    "security/constant-time",
-    "security/spectre",
-    "security/sfi",
-    "verification/pcc",
-    "verification/hyperproperties",
-    "wasm/ct-wasm"
+    "systems",
+    "systems/ebpf-pcc",
+    "systems/sfi-lfi",
+    "verification/cryptography",
+    "systems/os-kernels"
   ],
   "subjects": [
     {
@@ -53,18 +50,18 @@
       }
     },
     {
-      "name": "Anneal",
-      "identity": {
-        "repository": "joshlf/anneal",
-        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
-      }
-    },
-    {
       "name": "Lean 4",
       "identity": {
         "repository": "leanprover/lean4",
         "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
         "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
       }
     }
   ],

@@ -1,0 +1,3 @@
+attachment::intended::validate|anneal:bool-valid-v1|2|true
+attachment::decoy::validate|anneal:trit-valid-v1|3|true
+attachment::renamed::check|anneal:bool-valid-v1|false

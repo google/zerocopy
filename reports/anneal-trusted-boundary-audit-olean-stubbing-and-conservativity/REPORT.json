@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "anneal/audit",
+    "anneal/theory-lock",
+    "anneal/trust-boundary",
+    "anneal/trusted-boundary",
+    "anneal/two-stage-audit",
+    "lean/kernel-replay",
+    "lean/module-system",
+    "lean/olean-compaction",
+    "lean/partial-recursion",
+    "lean/realize-const",
+    "lean/reducibility",
+    "lean/std-library",
+    "verification/conservative-extension",
+    "verification/multi-crate",
+    "verification/nanoda"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Boundary Auditor, Foundation Lock, and Functional Translation Library",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal Trusted Boundary and Theory Library",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel, Environment Realization, Elaborator, and Standard Library",
+      "identity": {
+        "linux_x86_64_archive_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "lean4export NDJSON Kernel Declaration Exporter",
+      "identity": {
+        "format_version": "3.1.0",
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "nanoda_lib Independent Rust Lean 4 Kernel Typechecker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "8de7e0c4ed3052745a7f8725164efd9e76d84c56",
+        "version": "v0.4.31"
+      }
+    },
+    {
+      "name": "Comparator Safe-Verify Challenge-Solution Sandbox Orchestrator",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "lean4checker Standalone Environment Replay Tool",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "Lean4Lean Pure Lean 4 Kernel Reimplementation",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

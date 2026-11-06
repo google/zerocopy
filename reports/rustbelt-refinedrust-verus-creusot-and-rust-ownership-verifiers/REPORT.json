@@ -1,0 +1,198 @@
+{
+  "topics": [
+    "verification",
+    "verification/verus",
+    "verification/iris",
+    "verification/separation-logic",
+    "rust/unsafe",
+    "verification/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt POPL 2018 unsafe-abstraction soundness model",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "Proc. ACM Program. Lang. 2, POPL, Article 66",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 accompanying artifact record",
+      "identity": {
+        "doi": "10.5281/zenodo.1115560",
+        "version": "v1",
+        "published": "2017-12-13"
+      }
+    },
+    {
+      "name": "RustBelt LambdaRust source",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RustHornBelt 2022 source artifact",
+      "identity": {
+        "zenodo": "6417462",
+        "archive": "the_artifact.tgz",
+        "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+      }
+    },
+    {
+      "name": "RustHornBelt paper",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "sha256": "3f058c16579bbff0e8f1b00e21ee964b3fa06c1d7f4351ff903047095f46ab38"
+      }
+    },
+    {
+      "name": "RustHornBelt author erratum",
+      "identity": {
+        "url": "https://people.mpi-sws.org/~dreyer/papers/rusthornbelt/errata.txt",
+        "sha256": "5112f5ce4e316b4fce265321ead594e368a232bae5b5cd1876baef655c7f65c5"
+      }
+    },
+    {
+      "name": "RustHorn updated author full-version paper",
+      "identity": {
+        "url": "https://shiatsumat.github.io/papers/esop2020-rust-horn.pdf",
+        "doi": "10.1007/978-3-030-44914-8_18",
+        "sha256": "0bcf21029350d89ec36ead06489a5eef681af5d3308c31ea90a33fff9fe32ef9"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 source artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "archive": "artifact.tar.gz",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53",
+        "url": "https://zenodo.org/records/21636474/files/artifact.tar.gz?download=1"
+      }
+    },
+    {
+      "name": "RefinedRust 2026 paper",
+      "identity": {
+        "doi": "10.1145/3839484",
+        "sha256": "c0cd3468e733fb2298d94ce4b4ec8870d24ebd775f8a4404f2968ebd2bcf57bd"
+      }
+    },
+    {
+      "name": "RefinedRust 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "sha256": "421aa4110d31261cbad1ab8b7805a4a9801f4705294411c4b0f1a6541ebc40d4"
+      }
+    },
+    {
+      "name": "Verus source",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "Verus linear-ghost core paper",
+      "identity": {
+        "arxiv": "2303.05491v2",
+        "sha256": "05aa2097cf5740f2d1119426fbc1066277a010b7e8e1239095684c7931b14849"
+      }
+    },
+    {
+      "name": "Creusot source",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "Coma ESOP 2025 author paper",
+      "identity": {
+        "url": "https://paulpatault.fr/pdfs/papers/esop2025.pdf",
+        "sha256": "a52ad7b745fb8a1d0b54bf52b54f0cfaec18e59f587eda551a54702cf61a8d8e"
+      }
+    },
+    {
+      "name": "Gillian-Rust source",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "Gillian-Rust extended PLDI 2025 paper",
+      "identity": {
+        "arxiv": "2403.15122v3",
+        "doi": "10.1145/3729289",
+        "sha256": "695533020d0ae8ea9d50ba6dc9c27316a417bc0b4163c3cc29dadfc94ea01094"
+      }
+    },
+    {
+      "name": "Gillian core locked engine",
+      "identity": {
+        "repository": "GillianPlatform/gillian",
+        "revision": "25c97535e513be63b4de3a0fc98e4ac096e75c0f",
+        "paths": "GillianCore/engine/Abstraction/Matcher.ml;Matcher.mli;Verifier.ml;PState.ml"
+      }
+    },
+    {
+      "name": "Lean4.34 adapter observation",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Foundational VeriFast: Pragmatic Certification of Verification Tool Results through Hinted Mirroring",
+      "identity": {
+        "arxiv": "2601.13727v1",
+        "publication": "2026-01-20"
+      }
+    },
+    {
+      "name": "VeriFast Rocq replay and axiomatic semantics",
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      }
+    },
+    {
+      "name": "hax implementation",
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+      }
+    },
+    {
+      "name": "Eurydice implementation",
+      "identity": {
+        "repository": "AeneasVerif/eurydice",
+        "revision": "7332393a18a20baae808d8783266acd15121ddd2"
+      }
+    },
+    {
+      "name": "Charon assigned implementation",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "RustCompCert developing formal artifact",
+      "identity": {
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
+      }
+    },
+    {
+      "name": "RustCompCert short preprint",
+      "identity": {
+        "arxiv": "2602.07455v1",
+        "url": "https://arxiv.org/html/2602.07455v1"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "aeneas/traits-closures",
+    "aeneas/external-models",
+    "aeneas/translation",
+    "aeneas/lean-backend"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas Lean external and standard-library model registry selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Aeneas-paired Charon input producer",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Aeneas current interfaces and models",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

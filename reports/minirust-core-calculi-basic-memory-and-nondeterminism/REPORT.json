@@ -1,0 +1,127 @@
+{
+  "topics": [
+    "minirust/semantics",
+    "minirust/memory",
+    "minirust/concurrency",
+    "rust/concurrency",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "MiniRust specification and minimize tooling",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 paper",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "PACMPL 2 POPL Article 66, January 2018",
+        "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf"
+      }
+    },
+    {
+      "name": "RustBelt technical appendix",
+      "identity": {
+        "version-date": "2017-11-09",
+        "sha256": "a49b24dbb220d539aa5c70c6e09ea6ed48c8adb01568857ffc456bae0f7dfc83",
+        "url": "https://plv.mpi-sws.org/rustbelt/popl18/appendix.pdf"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "arxiv": "1903.00982v4",
+        "version-date": "2021-10-19",
+        "sha256": "23ccf574c9778c533c12125b8da96a033af72da3cd6bb75483b63745846b5555",
+        "url": "https://arxiv.org/pdf/1903.00982v4"
+      }
+    },
+    {
+      "name": "Featherweight Rust author-hosted preprint",
+      "identity": {
+        "bibliographic-doi": "10.1145/3443420",
+        "inspected-footer-date": "March 2020",
+        "sha256": "4968454d56869166ca39ef8a340e0758ebe13c35cb1bc9f18d25b6ee3e67c586",
+        "url": "https://whileydave.com/publications/Pea21_TOPLAS_preprint.pdf"
+      }
+    },
+    {
+      "name": "Rust Distilled",
+      "identity": {
+        "arxiv": "1806.02693v2",
+        "version-date": "2018-08-16",
+        "sha256": "5009345fe0de38928c2a7c58970d05ab171e2768de3abafad6f8586141155bd3",
+        "url": "https://arxiv.org/pdf/1806.02693v2"
+      }
+    },
+    {
+      "name": "KRust",
+      "identity": {
+        "arxiv": "1804.10806v1",
+        "version-date": "2018-04-28",
+        "sha256": "c101740fe8f8aa85537bc282ceef950de4d60bc3215fcd543bead8ba72e9dd24",
+        "url": "https://arxiv.org/pdf/1804.10806v1"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "source_archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target_triple": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "specr",
+      "identity": {
+        "repository": "minirust/specr",
+        "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+        "version": "0.1.41",
+        "source_archive_sha256": "7e39738319f77a43fd0ce8e185888306b3a777f7b3f9d3234ec1802b9da5e220",
+        "crate_archive_sha256": "a3c0c46f39513f6c4b533ec6bea7d623f6761fd0a610b1152db7f2e4dd385a61"
+      }
+    },
+    {
+      "name": "Miri Tree Borrows",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0e1a23b0794bec7860df8c06a774f4316746795a"
+      }
+    },
+    {
+      "name": "GPFSL-derived 2024 adequacy",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "Rust atomic documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec",
+        "path": "library/core/src/sync/atomic.rs"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "publication": "PACMPL 4 POPL Article 34"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

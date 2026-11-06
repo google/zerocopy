@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/usr/bin/curl",
+    "--fail",
+    "--location",
+    "--silent",
+    "--show-error",
+    "--max-time",
+    "180",
+    "--max-filesize",
+    "134217728",
+    "https://codeload.github.com/awslabs/s2n-bignum/tar.gz/4d1356a7470663c752660a59375dc3a9ef548428",
+    "--output",
+    "work/execution/cross-foundation-runtime/acquisition/s2n-bignum.tar.gz"
+  ],
+  "exit_code": 0,
+  "seconds": 1.642371125,
+  "bytes": 10127121,
+  "sha256": "d35f93123f0841ca05dd86044ff5947d61b6baeabbfabda256673298852144ed"
+}

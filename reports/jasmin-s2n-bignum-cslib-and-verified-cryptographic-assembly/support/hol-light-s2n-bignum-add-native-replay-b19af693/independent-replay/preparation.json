@@ -1,0 +1,9 @@
+{
+  "status": "READY awaiting exclusive parent grant; zero runtime operations",
+  "frozen_file_count": 25,
+  "frozen_bytes": 278773,
+  "freeze_sha256": "d7296bb3cd418ec9bc31983f0a9807bcb2f9eb1bef0ac06ca47ef5478a2e94a8",
+  "host_cli_sha256": "70d5a06adf388bd09b652f47ddc9ca31663a3e5353d24188bdb0054b3014ab3e",
+  "phase_count": 9,
+  "census_gate": "parent/hol-independent-baseline.json overrides stale704 with exact737 before baseline"
+}

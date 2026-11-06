@@ -1,0 +1,14 @@
+{
+  "compile_exit": 0,
+  "compile_seconds": 0.077735791,
+  "run_exit": 0,
+  "inputs": 256,
+  "rows_sha256": "eed684203e99c027130be9ad44c9feb9f883c54a90dd2cca65ca671a2a32fd2e",
+  "binary_sha256": "0e6e351e4a90ab04052c0da9a385f6b946b32807e25a9fe124373097f2a4f49a",
+  "run_seconds_samples": [
+    0.04945274999999999,
+    0.002645707999999969,
+    0.002507249999999961
+  ],
+  "scope": "All u8 inputs, fixed source; native trace agrees with uninstrumented subject and mathematical byte formula. This does not prove Rust import or compiler correspondence."
+}

@@ -1,0 +1,158 @@
+@wp_adequacy_irel
+     : forall (Σ : iprop.gFunctors) (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc Σ)
+         (heaplangHGS0 : program_logic.heaplangHGS Σ) (R : Type) (t : ITreeDefinition.itree lang.heaplangE R)
+         (σ : gmap.gmap locations.loc (option definition.heap_lang.val)) (te : Execution R)
+         (Φ : R -> upred.uPred (iprop.iProp_solution.iResUR Σ)) (n : option nat) (m : step.later_modality),
+       heaplang_irel σ n t te ->
+       interface.bi_emp_valid
+         (interface.bi_wand
+            (interface.bi_impl (interface.bi_pure (m = step.Later))
+               match n with
+               | Some n0 => later_credits.lc n0
+               | None => interface.bi_pure False
+               end)
+            (interface.bi_wand (state.state_interp σ)
+               (interface.bi_wand (wpi.wpi_mask base.top t (fun v : R => Φ v))
+                  (updates.fupd base.top base.empty
+                     (interface.bi_exist
+                        (fun x : Outcome R =>
+                         interface.bi_sep
+                           (interface.bi_pure
+                              (Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |}))
+                           match x with
+                           | TermRet (σ0, TermRet (TermRet v)) =>
+                               updates.fupd base.empty base.top (interface.bi_sep (state.state_interp σ0) (Φ v))
+                           | TermRet (σ0, TermRet (inr interleaving.LastThreadKilled)) =>
+                               updates.fupd base.empty base.top (state.state_interp σ0)
+                           | TermRet (σ0, TermUb) => updates.fupd base.empty base.top (interface.bi_pure False)
+                           | inr step.StepExhausted => interface.bi_pure (option.is_Some n)
+                           end))))))
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+@wp_adequacy_eval
+     : forall (Σ : iprop.gFunctors) (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc Σ)
+         (heaplangHGS0 : program_logic.heaplangHGS Σ) (e : definition.heap_lang.expr)
+         (σ : gmap.gmap locations.loc (option definition.heap_lang.val)) (te : Execution definition.heap_lang.val)
+         (Φ : definition.heap_lang.val -> upred.uPred (iprop.iProp_solution.iResUR Σ)) (n : option nat)
+         (m : step.later_modality),
+       heaplang_eval e σ n te ->
+       interface.bi_emp_valid
+         (interface.bi_wand
+            (interface.bi_impl (interface.bi_pure (m = step.Later))
+               match n with
+               | Some n0 => later_credits.lc n0
+               | None => interface.bi_pure False
+               end)
+            (interface.bi_wand (state.state_interp σ)
+               (interface.bi_wand (weakestpre.wp m base.top e Φ)
+                  (updates.fupd base.top base.empty
+                     (interface.bi_exist
+                        (fun x : Outcome definition.heap_lang.val =>
+                         interface.bi_sep
+                           (interface.bi_pure
+                              (Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |}))
+                           match x with
+                           | TermRet (σ0, TermRet (TermRet v)) =>
+                               updates.fupd base.empty base.top (interface.bi_sep (state.state_interp σ0) (Φ v))
+                           | TermRet (σ0, TermRet (inr interleaving.LastThreadKilled)) =>
+                               updates.fupd base.empty base.top (state.state_interp σ0)
+                           | TermRet (σ0, TermUb) => updates.fupd base.empty base.top (interface.bi_pure False)
+                           | inr step.StepExhausted => interface.bi_pure (option.is_Some n)
+                           end))))))
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+@wp_partial_soundness
+     : forall Σ : iprop.gFunctors,
+       fancy_updates.invGpreS Σ ->
+       program_logic.heaplangHGpreS Σ ->
+       forall (e : definition.heap_lang.expr) (σ : gmap.gmap locations.loc (option definition.heap_lang.val))
+         (φ : definition.heap_lang.val -> Prop),
+       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc Σ) (heaplangHGS0 : program_logic.heaplangHGS Σ),
+        interface.bi_emp_valid
+          (weakestpre.wp step.Later base.top e (fun v : definition.heap_lang.val => interface.bi_pure (φ v)))) ->
+       partially_adequate e σ φ
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+@wp_total_soundness
+     : forall Σ : iprop.gFunctors,
+       fancy_updates.invGpreS Σ ->
+       program_logic.heaplangHGpreS Σ ->
+       forall (e : definition.heap_lang.expr) (σ : gmap.gmap locations.loc (option definition.heap_lang.val))
+         (φ : definition.heap_lang.val -> Prop),
+       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc Σ) (heaplangHGS0 : program_logic.heaplangHGS Σ),
+        interface.bi_emp_valid
+          (weakestpre.wp step.Identity base.top e (fun v : definition.heap_lang.val => interface.bi_pure (φ v)))) ->
+       totally_adequate e σ φ
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+execution_from_opsem_trace
+     : forall (n : nat) (e : language.expr definition.heap_lang) (σ : language.state definition.heap_lang)
+         (tp' : list (language.expr definition.heap_lang)) (σ' : language.state definition.heap_lang)
+         (κ : list (language.observation definition.heap_lang)) (tx : Terminal definition.heap_lang.val),
+       language.nsteps n ((e :: nil)%list, σ) κ (tp', σ') ->
+       tp_termination tp' σ' tx ->
+       exists (te : Execution definition.heap_lang.val) (x : Outcome definition.heap_lang.val),
+         heaplang_eval e (definition.heap_lang.heap σ) (Some n) te /\
+         Eqit.eutt eq te {| ITreeDefinition._observe := ITreeDefinition.RetF x |} /\
+         (exists σ'0 : gmap.gmap locations.loc (option definition.heap_lang.val),
+            match tx with
+            | TermRet r => x = TermRet (σ'0, TermRet (TermRet r))
+            | TermUb => x = TermRet (σ'0, TermUb)
+            end)
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+axioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B
+partially_adequate_opsem_adequate
+     : forall (e : definition.heap_lang.expr) (σ : definition.heap_lang.state) (φ : definition.heap_lang.val -> Prop),
+       partially_adequate e (definition.heap_lang.heap σ) φ ->
+       adequacy.adequate weakestpre.NotStuck e σ
+         (fun (v : language.val definition.heap_lang) (_ : language.state definition.heap_lang) => φ v)
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+axioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B
+wp_later_opsem_adequate
+     : forall Σ : iprop.gFunctors,
+       fancy_updates.invGpreS Σ ->
+       program_logic.heaplangHGpreS Σ ->
+       forall (e : language.expr definition.heap_lang) (σ : language.state definition.heap_lang)
+         (φ : language.val definition.heap_lang -> Prop),
+       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc Σ) (heaplangHGS0 : program_logic.heaplangHGS Σ),
+        interface.bi_emp_valid
+          (weakestpre.wp step.Later base.top e (fun v : language.val definition.heap_lang => interface.bi_pure (φ v)))) ->
+       adequacy.adequate weakestpre.NotStuck e σ
+         (fun (v : language.val definition.heap_lang) (_ : language.state definition.heap_lang) => φ v)
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+axioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B
+wp_total_opsem_adequate
+     : forall Σ : iprop.gFunctors,
+       fancy_updates.invGpreS Σ ->
+       program_logic.heaplangHGpreS Σ ->
+       forall (e : language.expr definition.heap_lang) (σ : language.state definition.heap_lang)
+         (φ : language.val definition.heap_lang -> Prop),
+       (forall (invGS0 : fancy_updates.invGS_gen fancy_updates.HasLc Σ) (heaplangHGS0 : program_logic.heaplangHGS Σ),
+        interface.bi_emp_valid
+          (weakestpre.wp step.Identity base.top e
+             (fun v : language.val definition.heap_lang => interface.bi_pure (φ v)))) ->
+       adequacy.adequate weakestpre.NotStuck e σ
+         (fun (v : language.val definition.heap_lang) (_ : language.state definition.heap_lang) => φ v)
+Axioms:
+axioms.Ax.eq_rect_eq : forall (U : Type) (p : U) (Q : U -> Type) (x : Q p) (h : p = p), x = eq_rect p Q x p h
+EqAxiom.bisimulation_is_eq
+  : forall (E : Type -> Type) (R : Type) (t1 t2 : ITreeDefinition.itree E R), Eqit.eq_itree eq t1 t2 -> t1 = t2
+axioms.AxChoice : forall A B : Type, ChoiceFacts.FunctionalChoice_on A B
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=8 start_bytes=14660945 peak_bytes=14661017 final_bytes=14708708

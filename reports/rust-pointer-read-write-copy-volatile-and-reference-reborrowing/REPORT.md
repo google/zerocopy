@@ -1,0 +1,152 @@
+# Rust Pointer Read, Write, Copy, Volatile Access, Reference Creation, and UnsafeCell
+
+## Summary
+
+Once a raw pointer has been constructed, Rust's memory-access and reference-formation primitives in `core::ptr` and `core::cell` impose distinct safety obligations depending on whether the operation is **typed or untyped**, **aligned or unaligned**, **ordinary or volatile**, **overlapping or non-overlapping**, and **raw-pointer-based or reference-based**:
+
+1. **Typed Pointwise Access (`read`, `read_unaligned`, `write`, `write_unaligned`):** `ptr::read` and `ptr::read_unaligned` perform a typed load of `T`, requiring `src` to be valid for reads and initialized to a valid `T` value, duplicating `T` without dropping `src`, and **not** guaranteeing preservation of padding bytes across the typed value boundary. `ptr::write` and `ptr::write_unaligned` move `src: T` into `dst` without reading or dropping `dst`'s prior contents. Crucially, aligned `ptr::read` and `ptr::write` include an explicit zero-sized exception ("`src`/`dst` must be valid for reads/writes **or `T` is a ZST**") while still requiring `align_of::<T>()` (so aligned null pointers are valid for inhabited ZSTs), whereas `read_unaligned` and `write_unaligned` relax alignment to `1` but omit the ZST exception and require `valid for reads/writes` (which in `core::ptr` excludes null even for zero-sized accesses) (`support/rust-ptr-read-write/operation-matrix.json`).
+2. **Untyped Byte-Copy Operations (`copy` and `copy_nonoverlapping`):** `ptr::copy` (`memmove`) and `ptr::copy_nonoverlapping` (`memcpy`) are **untyped byte-copy operations with typed alignment**: they copy `count * size_of::<T>()` raw bytes, preserving exact per-byte initialization state (including `Uninit` padding) and pointer provenance without requiring the bytes to form valid `T` values. Both require `src` and `dst` to be aligned to `align_of::<T>()` **even when `count == 0` or `size_of::<T>() == 0`**, while waiving read/write dereferenceability when `count * size_of::<T>() == 0`. `copy_nonoverlapping` requires disjoint byte ranges; `copy` permits overlapping ranges provided `dst` remains valid for writes while `src` is read (`support/rust-pointer-copy/copy-matrix.json`).
+3. **Volatile Memory Access (`read_volatile` and `write_volatile`):** Following the normative volatile-access specification (`rust-lang/rust@f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), volatile accesses operate under two distinct regimes: (a) **Inside a Rust allocation**, they obey ordinary `read`/`write` provenance, bounds, alignment, and non-atomic data-race rules while guaranteeing that the compiler treats the access as externally observable (no elision or reordering relative to other volatile accesses). (b) **Outside all Rust allocations** (such as memory-mapped I/O or OS page mappings), ordinary Rust allocation provenance is **not** required (addresses `0` and `usize::MAX` and `ptr::without_provenance` are allowed) provided the target hardware defines the access without trapping and hardware side effects do not mutate any Rust allocation. In both regimes, `align_of::<T>()` is required (even for ZSTs, where volatile access is a no-op), `read_volatile` must produce a valid `T` value, volatile accesses are **not atomic**, and **load/store splitting** across multiple target instructions is permitted (`support/rust-volatile-memory-access/volatile-access-matrix.json`).
+4. **Reference Creation from Raw Pointers (`&*ptr`, `&mut *ptr`, `as_ref`, `as_mut`, `as_uninit_*`):** Creating `&T` or `&mut T` from a raw pointer is an **immediate safety-critical event** even if the reference is never read or written. At the moment of reference creation, the pointer must be non-null (even for ZSTs), aligned to `align_of_val_raw(ptr)`, provenance-backed and dereferenceable over `size_of_val_raw(ptr)`, pointing to a valid initialized `T`, and compliant with Rust's reference aliasing rules over the entire caller-chosen lifetime `'a`. `ptr.as_ref()` and `ptr.as_mut()` discharge only the null check; unstable `as_uninit_ref` and `as_uninit_mut` relax only initialization by changing the referent type to `MaybeUninit<T>`; and `&raw const *ptr` / `&raw mut *ptr` must be used when reference invariants do not yet hold (`support/rust-reference-creation-from-raw-pointers/obligation-matrix.json`).
+5. **Interior Mutability via `UnsafeCell<T>`:** `core::cell::UnsafeCell<T>` (`!Freeze`, `!Sync`) is the **sole legal mechanism** in Rust for mutating memory reached through a shared reference `&T`. It exempts its covered bytes from shared-reference immutability (and permits deallocation of an allocation reached by `&T` after the reference's last read only when *every* byte of the allocation, including padding, lies inside `UnsafeCell`), but it **never weakens `&mut` uniqueness**, never permits data races, and never discharges `T` value validity. Obtaining a mutable pointer from a shared cell must go through `UnsafeCell::get(&self) -> *mut T` or `UnsafeCell::raw_get(*const UnsafeCell<T>) -> *mut T` (never a raw `*const UnsafeCell<T> as *mut T` cast), and although `UnsafeCell<T>` is `#[repr(transparent)]` over `T`, it **disables layout niches** inside outer enums (`size_of::<Option<UnsafeCell<NonNull<u8>>>>() == 16` vs. `8` on 64-bit targets) (`support/rust-unsafecell-interior-mutability/semantics-matrix.json`).
+
+---
+
+## Applicability
+
+### Multi-Version and Multi-Architecture Coverage
+
+The semantics in this report are anchored to `rust-lang/rust` commit `e75bad700fc6eb2cfe2bfec5fd6cb0fd1ab3cde5` (`nightly`, `1.98.0-nightly`) and `rust-lang/reference` commit `f100ffd2dc3fbef43fbca8facf7fb5dc9be2bc8b`, and cross-checked across `rustc` **1.89**, **1.99.1**, **nightly**, and **nightly** and target architectures **`aarch64`**, **`x86_64`**, and **`s390x`**:
+
+| Semantic Surface | `rustc 1.89` | `rustc 1.99.1` | `nightly` | `nightly` | Target Architecture Dependence (`aarch64`, `x86_64`, `s390x`) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`ptr::read`, `read_unaligned`, `write`, `write_unaligned`, `copy`, `copy_nonoverlapping` and inherent `*const T` / `*mut T` / `NonNull<T>` wrappers** | Stable and `const`-stable across all four versions. | Invariant with 1.89. | Invariant with 1.89. | Invariant with 1.89. | **Alignment and endianness dependent:** Required alignment `align_of::<T>()` depends on target ABI (e.g., `u128`/`i128` has alignment 16 on `x86_64` and `aarch64` vs. alignment 8 on `s390x`), and multi-byte loads/stores interpret byte order according to target endianness (`s390x` big-endian vs. `aarch64`/`x86_64` little-endian). |
+| **`ptr::read_volatile` and `ptr::write_volatile` normative contract (inside vs. outside Rust allocations, load/store splitting)** | Stable functions (`read_volatile` / `write_volatile` not `const`); documentation expanded in `f8a08b688cbe` / `14210df0e27c`. | Includes the clarified inside-vs-outside Rust allocation and load/store splitting documentation. | Matches 1.99.1 (`f8a08b688cbe` / `14210df0e27c`). | Matches 1.99.1. | **Target instruction-width dependent:** Volatile accesses on types wider than a target's native general-purpose register or bus width (such as `u128` or composite structs on `aarch64`, `x86_64`, or `s390x`) may be split into multiple target instructions; single-instruction MMIO guarantees require `core::arch::asm!`. |
+| **Reference creation (`&*ptr`, `&mut *ptr`, `as_ref`, `as_mut`, `as_ref_unchecked`, `as_mut_unchecked`) and unstable `as_uninit_ref` / `as_uninit_mut` (`ptr_as_uninit`)** | `&*ptr`, `as_ref`, `as_mut` stable; `as_ref_unchecked` / `as_mut_unchecked` stable in `1.95.0` (unstable on 1.89); `ptr_as_uninit` unstable. | `as_ref_unchecked` / `as_mut_unchecked` stable; `ptr_as_uninit` unstable. | `as_ref_unchecked` / `as_mut_unchecked` stable; `ptr_as_uninit` available on nightly. | Same as `nightly`. | **Architecture-invariant** at the Rust AM level (alignment threshold `align_of_val_raw(ptr)` follows target layout). |
+| **`UnsafeCell<T>` (`get`, `raw_get`, `get_mut`, `into_inner`, `!Freeze`, niche suppression)** | Stable (`raw_get` stable since 1.56.0; `from_mut` unstable under `unsafe_cell_from_mut`). | Invariant with 1.89. | Invariant with 1.89. | Invariant with 1.89. | **Architecture-invariant** (`Option<UnsafeCell<NonNull<u8>>>` is 16 bytes with alignment 8 on all three 64-bit targets `aarch64`, `x86_64`, and `s390x` because `UnsafeCell` suppresses the `NonNull` niche). |
+
+---
+
+## Findings
+
+### 1. Typed Pointwise Reads and Writes (`read`, `read_unaligned`, `write`, `write_unaligned`)
+
+The four pointwise read/write operations in `library/core/src/ptr/mod.rs` (blob `ff2c18d685b65832c296731f23f1664779b874f2`, lowering to private `intrinsics::read_via_copy` and `intrinsics::write_via_move` in `library/core/src/intrinsics/mod.rs`, blob `78d7314c58110b49839894a0f69377f4ee0d1204`) enforce the following exact contracts (`support/rust-ptr-read-write/operation-matrix.json`):
+
+| Operation | Alignment Requirement | ZST / Null-Pointer Contract | Pointee Initialization & Validity | Ownership, Drop & Padding Semantics |
+| :--- | :--- | :--- | :--- | :--- |
+| **`ptr::read(src)`** (`*const T::read`, `NonNull::read`) | `src` **must** be aligned to `align_of::<T>()` (even if `size_of::<T>() == 0`). | Documented as: "`src` must be valid for reads **or `T` is a ZST**." Thus an **aligned null pointer** is permitted when `T` is an inhabited ZST (e.g., `ptr::read::<()>(ptr::null())`), whereas for `size_of::<T>() > 0` `src` must be non-null and dereferenceable. | `src` must point to a **properly initialized, valid value of type `T`** (even for uninhabited ZSTs like `!`, which are always UB to read). | Bitwise-copies `T` out of `src` without moving or dropping `*src`. If `T: !Copy`, both `*src` and the returned `T` now claim ownership of the same resource (double-drop hazard unless one is forgotten/overwritten). Because `read` returns a typed `T` by value, **padding bytes inside `T` are not guaranteed to be preserved**! |
+| **`ptr::read_unaligned(src)`** (`*const T::read_unaligned`, `NonNull::read_unaligned`) | **None (`align == 1`).** Safe on unaligned addresses (e.g., fields of `#[repr(packed)]` structs). | Documented as: "`src` must be **valid for reads**" (omits the "or `T` is a ZST" clause!). Under `core::ptr`'s definition of valid-for-reads, **null is never valid even when `size_of::<T>() == 0`** (`assert_unsafe_precondition!` checks `!src.is_null()`). | `src` must point to a properly initialized, valid value of type `T`. | Same ownership duplication and padding non-preservation as `ptr::read` (implemented by creating `MaybeUninit::<T>::uninit()`, calling `copy_nonoverlapping(src.cast::<u8>(), tmp.as_mut_ptr().cast::<u8>(), size_of::<T>())`, and `tmp.assume_init()`). |
+| **`ptr::write(dst, src)`** (`*mut T::write`, `NonNull::write`) | `dst` **must** be aligned to `align_of::<T>()` (even if `size_of::<T>() == 0`). | Documented as: "`dst` must be valid for writes **or `T` is a ZST**." Aligned null is permitted for ZSTs; non-ZSTs require non-null writable `dst`. | Prior contents of `*dst` **may be completely uninitialized** (`*dst` is neither read nor dropped). `src: T` is already a valid `T` value by signature. | Moves `src` into `*dst` without dropping either `src` or the old value at `*dst` (overwriting an initialized `Drop` type leaks its old resources, which is safe/non-UB). |
+| **`ptr::write_unaligned(dst, src)`** (`*mut T::write_unaligned`, `NonNull::write_unaligned`) | **None (`align == 1`).** | Documented as: "`dst` must be **valid for writes**" (omits the "or `T` is a ZST" clause; `dst` must not be null even for ZSTs). | Prior contents of `*dst` may be uninitialized (`*dst` is neither read nor dropped). | Moves `src` into `*dst` via bytewise `copy_nonoverlapping` (`*const src as *const u8` to `dst as *mut u8`, then `mem::forget(src)`). |
+
+All four operations are **non-atomic**: concurrent unsynchronized accesses to the same non-ZST bytes when at least one is a write cause an immediate data race (UB).
+
+---
+
+### 2. Untyped Byte-Copy Operations (`copy` and `copy_nonoverlapping`)
+
+Unlike `ptr::read` and `ptr::write`, `ptr::copy` and `ptr::copy_nonoverlapping` (`library/core/src/ptr/mod.rs` lines 491–649; inherent wrappers `copy_to`, `copy_to_nonoverlapping`, `copy_from`, `copy_from_nonoverlapping` on `*const T`, `*mut T`, and `NonNull<T>`, where for `copy_from*` the receiver `self` is the **destination** `dst` and the argument `src` is the source) are **untyped byte transfers** (`support/rust-pointer-copy/copy-matrix.json`):
+
+1. **Untyped Byte Semantics (`Init(b)` and Provenance Preservation):**
+   - `copy` and `copy_nonoverlapping` copy `N = count * size_of::<T>()` abstract bytes from `src` to `dst`.
+   - The source bytes are **not** required to be initialized or to form valid values of type `T`: uninitialized bytes (`Uninit`) and padding bytes are copied as `Uninit` without UB, and initialized bytes carrying pointer provenance preserve their exact provenance at `dst` (matching `MaybeUninit::copy_from_slice`).
+2. **Mandatory Typed Alignment Even for Zero Bytes (`N == 0`):**
+   - Both `src` and `dst` **must be aligned to `align_of::<T>()` even when `count == 0` or `size_of::<T>() == 0`** (`assert_unsafe_precondition!` checks `is_aligned_and_not_null` on both pointers regardless of `count`).
+   - If a byte copy must operate on potentially unaligned pointers of type `*const T` / `*mut T`, callers **must cast both pointers to `*const u8` and `*mut u8`** and multiply `count` by `size_of::<T>()` before calling `copy` or `copy_nonoverlapping`.
+   - When `N = count * size_of::<T>() == 0` and both `src` and `dst` are non-null and aligned for `T`, neither pointer needs to point to a live allocation (`NonNull::<T>::dangling().as_ptr()` is valid for 0-byte copies).
+3. **Overlap Contract (`copy_nonoverlapping` vs. `copy`):**
+   - `ptr::copy_nonoverlapping(src, dst, count)` requires the two byte ranges `[src, src + N)` and `[dst, dst + N)` to be **completely disjoint** (when $N > 0$).
+   - `ptr::copy(src, dst, count)` permits arbitrary overlap between `[src, src + N)` and `[dst, dst + N)`, behaving as if the $N$ bytes were first read from `src` into a temporary buffer and then written to `dst`. However, the standard library explicitly stipulates that **`dst` must remain valid for writes even while `src` is read** (i.e., the read of `src` must not dynamically invalidate `dst`'s write provenance under the aliasing model).
+4. **Ownership and Drop Discipline:**
+   - Neither `copy` nor `copy_nonoverlapping` drops overwritten destination elements or deactivates source elements. When moving `!Copy` elements between buffers (as in `Vec::append`), callers must logically deactivate or adjust the source container's length (`src_vec.set_len(0)`) so that panic unwinding or subsequent drops cannot double-drop the copied elements (`support/rust-pointer-copy/source-map.json`).
+
+---
+
+### 3. Volatile Memory Access (`read_volatile` and `write_volatile`)
+
+`ptr::read_volatile` and `ptr::write_volatile` (`library/core/src/ptr/mod.rs` lines 1900–2095, stabilized specification commits `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1` and `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`, lowering to `intrinsics::volatile_load` and `intrinsics::volatile_store`) distinguish between two memory domains (`support/rust-volatile-memory-access/volatile-access-matrix.json`):
+
+1. **Regime A — Accesses Inside a Rust Allocation:**
+   - If the target byte range `[ptr, ptr + size_of::<T>())` overlaps any live Rust allocation (stack, heap, or static), **all ordinary `ptr::read` / `ptr::write` validity rules apply**: `ptr` must carry valid provenance for that allocation, lie completely within its bounds, be properly aligned to `align_of::<T>()`, and not participate in a concurrent data race.
+   - In addition, the compiler treats the volatile read or write as an **externally observable side effect**: it will not elide the access, merge repeated volatile accesses, or reorder two volatile accesses relative to each other within the same thread.
+2. **Regime B — Accesses Outside All Rust Allocations (MMIO / External Mappings):**
+   - If the target byte range is completely disjoint from all Rust allocations (e.g., hardware MMIO registers or OS-mapped pages created outside Rust's allocator), **Rust allocation provenance is not required**: `ptr` may be constructed via `ptr::without_provenance_mut(addr)` or `with_exposed_provenance_mut(addr)`, and may even have address `0` or `usize::MAX` (`support/rust-volatile-memory-access/source-map.json`)!
+   - Instead, safety requires that:
+     1. `ptr` is aligned to `align_of::<T>()`.
+     2. The target execution environment (hardware + OS page tables) defines the access at `[ptr, ptr + size_of::<T>())` without trapping or faulting.
+     3. Any hardware side effects triggered by the access **do not corrupt or mutate any Rust-managed allocation or thread state**.
+3. **Shared Volatile Constraints Across Both Regimes:**
+   - **Alignment and ZST No-Op:** `ptr` must always be aligned to `align_of::<T>()` even when `size_of::<T>() == 0`. When `size_of::<T>() == 0`, `read_volatile` and `write_volatile` are **no-ops** and emit no machine load/store instruction.
+   - **Typed Value Validity on `read_volatile`:** `read_volatile::<T>(src)` returns `T` by value and therefore **must read a bit pattern that is a valid initialized `T`**. Reading a hardware status register that can contain arbitrary bit patterns directly via `read_volatile::<bool>` or `read_volatile::<MyEnum>` is **immediate UB** if an invalid bit pattern is observed; always read raw integer types (`u8`, `u16`, `u32`, `u64`) or `MaybeUninit<T>` and validate before converting!
+   - **Non-Atomicity and Load/Store Splitting:** Volatile accesses provide **zero inter-thread synchronization** (they do not establish happens-before edges in the C++20/Rust memory model) and are **explicitly allowed to split loads or stores** into multiple smaller machine instructions (for instance, splitting a `u64` on 32-bit targets, a `u128` on 64-bit targets, or a struct load/store). When hardware MMIO requires a single specific machine instruction of exact width, `core::arch::asm!` or target-supported atomic intrinsics must be used instead.
+
+---
+
+### 4. Reference Creation from Raw Pointers (`&*ptr`, `&mut *ptr`, `as_ref`, `as_mut`, `as_uninit_*`)
+
+Converting a raw pointer into a safe reference `&'a T` or `&'a mut T` crosses the boundary from deferred pointer validity to **immediate reference validity** (`support/rust-reference-creation-from-raw-pointers/obligation-matrix.json`):
+
+1. **Immediate Obligations at Reference Creation (`ReferenceReadyShared<'a, T>(ptr)` and `ReferenceReadyMut<'a, T>(ptr)`):**
+   Whether formed via `&*ptr` / `&mut *ptr`, `ptr.as_ref()` / `ptr.as_mut()`, `ptr.as_ref_unchecked()` / `ptr.as_mut_unchecked()`, or `NonNull::as_ref` / `NonNull::as_mut`, all five obligations below must hold **at the moment the reference expression is evaluated**, even if the resulting reference is immediately dropped without ever being read or written (`library/core/src/ptr/docs/as_ref.md`, blob `2c7d6e149b76a5ec0f58677eaa51925d57aac041`):
+   - **Non-Null:** `!ptr.is_null()` (required **even when `size_of_val_raw(ptr) == 0`**). `ptr.as_ref()` and `ptr.as_mut()` check `if self.is_null() { None } else { unsafe { Some(self.as_ref_unchecked()) } }`, discharging **only** the null check while leaving all other obligations to the caller.
+   - **Aligned:** `ptr` must be aligned to `align_of_val_raw(ptr)` (including dynamic vtable alignment when `T` is a `dyn Trait` DST).
+   - **Dereferenceable / Live Allocation:** If `size_of_val_raw(ptr) > 0`, the entire byte range `[ptr, ptr + size_of_val_raw(ptr))` must lie within a **single live allocated object** that `ptr`'s provenance is authorized to read (for `&T`) or read and write (for `&mut T`), and that allocation must remain live for the entire lifetime `'a`.
+   - **Initialized and Valid `T` Pointee:** The bytes at `*ptr` must form a valid, initialized value of type `T`. (While the Rust Reference notes in `behavior-considered-undefined.md` that whether merely creating an unused reference to uninitialized or invalid data is immediate UB is an area of active discussion, `core::ptr`'s safety contracts for `as_ref` / `as_mut` and `rustc`'s emitted `dereferenceable` / `noundef` attributes require a valid initialized `T` unless wrapped in `MaybeUninit<T>`.)
+   - **Aliasing Compliance Over Lifetime `'a`:**
+     - For `&'a T`: throughout `'a` (or until the last use of `&'a T` and any reference/pointer derived from it), no byte of `*ptr` outside an `UnsafeCell` may be mutated, and no active `&mut` reference may alias those non-`UnsafeCell` bytes.
+     - For `&'a mut T`: throughout `'a`, `*ptr` must not be accessed (read or written) through any pointer or reference not derived from this `&'a mut T`.
+2. **Relaxing Pointee Initialization via `as_uninit_ref` / `as_uninit_mut` (`ptr_as_uninit`) and `as_uninit_slice`:**
+   - Unstable `ptr.as_uninit_ref()` -> `Option<&'a MaybeUninit<T>>` and `ptr.as_uninit_mut()` -> `Option<&'a mut MaybeUninit<T>>` (`library/core/src/ptr/docs/as_uninit_ref.md`, blob `5b9a1ecb85b91e3d8668352a1169983d36574d80`) relax **only** the requirement that the pointee bytes form a valid initialized `T`, because `MaybeUninit<T>` accepts arbitrary `Init`/`Uninit` bytes. Non-nullness, alignment for `T`, live allocation bounds, and reference aliasing over `'a` are still strictly required!
+3. **Avoiding Premature Reference Creation via `&raw const` / `&raw mut`:**
+   - Whenever a pointer is unaligned, potentially uninitialized, or currently aliased in a way that would violate `&T` / `&mut T` uniqueness, callers must use raw borrow operators (`&raw const (*ptr).field` or `ptr.wrapping_byte_add(offset)`) rather than `&(*ptr).field` (`support/rust-reference-creation-from-raw-pointers/source-map.json`).
+
+---
+
+### 5. Interior Mutability via `core::cell::UnsafeCell<T>`
+
+`core::cell::UnsafeCell<T>` (`library/core/src/cell.rs`, blob `1c79cf6bfcb36c2a814155bce8f8ea32afb2c191`, marked `#[lang = "unsafe_cell"]` and `#[repr(transparent)]`) is the compiler-recognized opt-out from shared-reference immutability (`support/rust-unsafecell-interior-mutability/semantics-matrix.json`):
+
+1. **The `Freeze` Marker Trait and Shared-Reference Mutation:**
+   - Every type `T` that contains no `UnsafeCell` (outside behind raw pointers or references) implements the internal auto trait `Freeze` (`library/core/src/marker.rs`, blob `53141aabacc453e3781bbe9593618e26c06ca732`).
+   - For any `T: Freeze`, the compiler emits LLVM `readonly` / `noalias` metadata on `&T` parameters and assumes the referent bytes of `&T` cannot change while `&T` is live. Mutating bytes reached through `&T` without passing through `UnsafeCell` is **unconditional UB** (moreover, `rustc`'s `invalid_reference_casting` lint in `compiler/rustc_lint/src/reference_casting.rs`, blob `6052a16a7f117a302f6f76143b1d6020f406d2f6`, statically rejects `&(expr) as *const T as *mut T`).
+2. **Valid Paths to a Writable Pointer (`get` and `raw_get`):**
+   - Given `cell_ref: &UnsafeCell<T>`, calling `cell_ref.get() -> *mut T` produces a raw mutable pointer with interior-mutable provenance authorized to mutate the `T` inside the cell.
+   - Given `cell_ptr: *const UnsafeCell<T>`, calling `UnsafeCell::raw_get(cell_ptr) -> *mut T` (`cell_ptr as *mut T`) produces the inner `*mut T` **without creating an intermediate `&UnsafeCell<T>` reference** (essential when the `UnsafeCell<T>`'s storage is uninitialized or currently being mutated).
+   - **Critical Provenance Distinction:** Casting `&UnsafeCell<T> as *const UnsafeCell<T> as *mut T` directly in user code is **not** equivalent to calling `UnsafeCell::get` or `UnsafeCell::raw_get`; sound code must always use `get` or `raw_get` so the compiler and Miri (`src/tools/miri/tests/pass/both_borrows/interior_mutability.rs`, blob `b7dbd3ff172938860782bcf804031d66d42dafc2`) record the interior-mutable projection properly.
+3. **What `UnsafeCell<T>` Does NOT Allow:**
+   - **Does NOT weaken `&mut` uniqueness:** An active `&mut UnsafeCell<T>` or `&mut T` (obtained via `get_mut(&mut self)` or `&mut *cell.get()`) demands **exclusive** access; any concurrent read or write through another pointer during that `&mut`'s lifetime is UB.
+   - **Does NOT re-exempt inner references:** Once you dereference `*cell.get()` to form `&inner` or `&mut inner` (or call `as_ref_unchecked` / `as_mut_unchecked`), that newly created `&T` or `&mut T` obeys **ordinary reference aliasing rules** for its lifetime (for `T: Freeze`, `&*cell.get()` forbids mutation while that `&T` is live).
+   - **Does NOT allow data races:** Concurrent unsynchronized non-atomic writes (or read + write) to an `UnsafeCell<T>` across threads remain UB (`UnsafeCell<T>: !Sync`; concurrent mutation requires atomic operations on the `*mut T` or external synchronization).
+   - **Partial-`UnsafeCell` Deallocation Rule:** In the Rust Reference (`behavior-considered-undefined.md`), an allocation reached by `&T` may be deallocated after the last read through `&T` **only if every byte of the pointed-to type `T` (including any struct padding!) is enclosed within an `UnsafeCell`**. If a struct `struct HalfCell { a: u32, b: UnsafeCell<u32> }` has non-`UnsafeCell` bytes or outer padding outside `UnsafeCell`, deallocating `HalfCell` while a `&HalfCell` reference's lifetime is still active is UB even if `a` is never read again.
+4. **Representation Transparency vs. Niche Suppression:**
+   - Because `UnsafeCell<T>` is `#[repr(transparent)]`, `size_of::<UnsafeCell<T>>() == size_of::<T>()` and `align_of::<UnsafeCell<T>>() == align_of::<T>()`, and converting `&mut T` to `&mut UnsafeCell<T>` (or `&UnsafeCell<T>`, as in unstable `UnsafeCell::from_mut`) is sound because the source `&mut T` already possesses exclusive mutable provenance. (By contrast, transmuting `&T` to `&UnsafeCell<T>` and mutating through it is **UB** because the original `&T` was created with read-only `Freeze` provenance!)
+   - However, `UnsafeCell<T>` **suppresses layout niches** on `T` (`rustc` cannot read a niche discriminant out of bytes that another shared alias might concurrently mutate). Consequently, `size_of::<Option<NonNull<u8>>>() == 8` whereas `size_of::<Option<UnsafeCell<NonNull<u8>>>>() == 16` on `aarch64`, `x86_64`, and `s390x`, so wrapping `T` in `UnsafeCell<T>` inside a composite enum or wrapper type `Outer<T>` is **not** layout-preserving (`support/rust-unsafecell-interior-mutability/source-map.json`).
+
+---
+
+## Boundaries
+
+1. **Raw Pointer Provenance, Arithmetic, `NonNull<T>`, and Wide Metadata:** The rules for constructing raw pointers, Strict vs. Exposed Provenance, `offset`/`add` vs. `wrapping_add`, `NonNull<T>`, and `Pointee::Metadata` are covered in `rust-raw-pointer-validity-provenance-and-wide-metadata`.
+2. **Type-Level Value Validity, `MaybeUninit<T>`, Padding, and `mem::transmute`:** Which bit patterns constitute a valid `T` and how padding is initialized or cleared during typed moves and transmutes are covered in `rust-validity-initialization-padding-and-transmute-semantics`.
+3. **Atomic Memory Ordering (`core::sync::atomic`):** Atomic loads, stores, RMW operations, and happens-before synchronization across threads are outside the non-atomic `ptr::read`/`write`/`copy`/`volatile` primitives documented here.
+
+---
+
+## Evidence
+
+| Package Namespace | Preserved Support Artifacts | Key Upstream Commits & Files |
+| :--- | :--- | :--- |
+| `rust-ptr-read-write` | `support/rust-ptr-read-write/operation-matrix.json`, `support/rust-ptr-read-write/source-map.json` | `rust-lang/rust@e75bad700fc6eb2cfe2bfec5fd6cb0fd1ab3cde5`: `library/core/src/ptr/mod.rs` (blob `ff2c18d685b65832c296731f23f1664779b874f2`), `const_ptr.rs` (blob `5cbbebf9f478819ee80e0c6486d622ae9ffdac00`), `mut_ptr.rs` (blob `53ef7f754d201a1dc08aa50a320266a8ab55245f`), `non_null.rs` (blob `86e9d01381a5198a4694137fafa75beb6a4f9f06`), `intrinsics/mod.rs` (blob `78d7314c58110b49839894a0f69377f4ee0d1204`). |
+| `rust-pointer-copy` | `support/rust-pointer-copy/copy-matrix.json`, `support/rust-pointer-copy/source-map.json` | `library/core/src/ptr/mod.rs` (lines 491–649), `const_ptr.rs`, `mut_ptr.rs`, `non_null.rs`; `library/alloc/src/vec/mod.rs` (blob `c8ecbf32227b6a154d96fb5b3859d821c074a5de`). |
+| `rust-volatile-memory-access` | `support/rust-volatile-memory-access/volatile-access-matrix.json`, `support/rust-volatile-memory-access/source-map.json` | `rust-lang/rust@f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1` and `14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`; `library/core/src/ptr/mod.rs` (lines 1900–2095), `non_null.rs` (blob `b9b42c1efe05a97354be95140923c1b517de84ee`). |
+| `rust-reference-creation-from-raw-pointers` | `support/rust-reference-creation-from-raw-pointers/obligation-matrix.json`, `support/rust-reference-creation-from-raw-pointers/source-map.json` | `rust-lang/reference@f100ffd2dc3fbef43fbca8facf7fb5dc9be2bc8b` (`src/behavior-considered-undefined.md`, `src/expressions/operator-expr.md`); `library/core/src/ptr/docs/as_ref.md` (blob `2c7d6e149b76a5ec0f58677eaa51925d57aac041`), `library/core/src/ptr/docs/as_uninit_ref.md` (blob `5b9a1ecb85b91e3d8668352a1169983d36574d80`). |
+| `rust-unsafecell-interior-mutability` | `support/rust-unsafecell-interior-mutability/semantics-matrix.json`, `support/rust-unsafecell-interior-mutability/source-map.json` | `library/core/src/cell.rs` (blob `1c79cf6bfcb36c2a814155bce8f8ea32afb2c191`); `library/core/src/marker.rs` (blob `53141aabacc453e3781bbe9593618e26c06ca732`); `compiler/rustc_lint/src/reference_casting.rs` (blob `6052a16a7f117a302f6f76143b1d6020f406d2f6`); `src/tools/miri/tests/pass/both_borrows/interior_mutability.rs` (blob `b7dbd3ff172938860782bcf804031d66d42dafc2`). |
+
+---
+
+## Revalidation
+
+Revalidate this package whenever:
+1. `rust-lang/rust` modifies the safety contracts or implementations of `read`, `read_unaligned`, `write`, `write_unaligned`, `copy`, `copy_nonoverlapping`, `read_volatile`, `write_volatile`, `as_ref*`, `as_mut*`, or `as_uninit_*` in `library/core/src/ptr/`.
+2. `rust-lang/rust` or `rust-lang/reference` updates the rules for reference creation validity, `UnsafeCell<T>` interior mutability, `Freeze`, or partial-`UnsafeCell` deallocation in `library/core/src/cell.rs` or `src/behavior-considered-undefined.md`.

@@ -1,0 +1,46 @@
+opam-version: "2.0"
+name: "bisect_ppx"
+version: "2.8.3"
+synopsis: "Code coverage for OCaml"
+description: """\
+Bisect_ppx helps you test thoroughly. It is a small preprocessor
+that inserts instrumentation at places in your code, such as if-then-else and
+match expressions. After you run tests, Bisect_ppx gives a nice HTML report
+showing which places were visited and which were missed.
+
+Usage is simple - add package bisect_ppx when building tests, run your tests,
+then run the Bisect_ppx report tool on the generated visitation files."""
+maintainer: [
+  "Anton Bachin <antonbachin@yahoo.com>"
+  "Leonid Rozenberg <leonidr@gmail.com>"
+]
+authors: [
+  "Xavier Clerc <bisect@x9c.fr>"
+  "Leonid Rozenberg <leonidr@gmail.com>"
+  "Anton Bachin <antonbachin@yahoo.com>"
+]
+license: "MIT"
+homepage: "https://github.com/aantron/bisect_ppx"
+doc: "https://github.com/aantron/bisect_ppx"
+bug-reports: "https://github.com/aantron/bisect_ppx/issues"
+depends: [
+  "base-unix"
+  "cmdliner" {>= "1.0.0" & < "2.0.0"}
+  "dune" {>= "2.7.0"}
+  "ocaml" {>= "4.03.0"}
+  "ppxlib" {>= "0.28.0" & < "0.36.0"}
+  "dune" {with-test & >= "3.0.0"}
+  "ocamlformat" {with-test & = "0.16.0"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "build" "-p" name "-j" jobs "@compatible"] {with-test}
+]
+dev-repo: "git+https://github.com/aantron/bisect_ppx.git"
+url {
+  src: "https://github.com/aantron/bisect_ppx/archive/2.8.3.tar.gz"
+  checksum: [
+    "sha256=27ddeb2f60fbae50dc504e63e63cd5f012689084a76d5fdd4d1371d5341ff8db"
+    "md5=8c755c13e8d90f665986d842a41669f5"
+  ]
+}

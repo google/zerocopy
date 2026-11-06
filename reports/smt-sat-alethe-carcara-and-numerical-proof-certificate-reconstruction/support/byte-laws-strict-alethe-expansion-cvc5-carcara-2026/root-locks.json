@@ -1,0 +1,142 @@
+{
+  "origin_predicate_map_sha256": "8f39c31fd5756cc96fc9c10c15bb491d42529f79fa2e9d4d42d6171f2dc6a33b",
+  "cases": {
+    "into_bytes": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)"
+      ],
+      "required_goal": "(and (select source_init 0) (select source_read 0) (select source_init 1) (select source_read 1))",
+      "smt_file": "roots/into_bytes.smt2",
+      "smt_sha256": "3f775009794160d1c56006f39c8cf8fd687cd438723e799204b1a37922c784e9"
+    },
+    "byte_write": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select write_authority changed)",
+        "(not (= changed framed))"
+      ],
+      "required_goal": "(and (= (select (store source changed replacement) changed) replacement) (select (store source_init changed true) changed) (= (select (store source changed replacement) framed) (select source framed)) (= (select (store source_init changed true) framed) (select source_init framed)))",
+      "smt_file": "roots/byte_write.smt2",
+      "smt_sha256": "6046a6c9cd3101bd01b1ca67afa39ec57d5daaaaaa2c9f2aa826298827258e70"
+    },
+    "bool_validate": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(not (>= (select source 0) 2))"
+      ],
+      "required_goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "smt_file": "roots/bool_validate.smt2",
+      "smt_sha256": "e85da6710cea19f811a8e431b34bec7b1125f445d8ba5e26667f5b92b56292d2"
+    },
+    "array_validate": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(select current_init 1)",
+        "(select current_read 1)",
+        "(= (select source 0) (select current 0))",
+        "(= (select source 1) (select current 1))",
+        "(not (>= (select source 0) 2))",
+        "(not (>= (select source 1) 2))"
+      ],
+      "required_goal": "(and (select current_init 0) (select current_read 0) (select current_init 1) (select current_read 1) (not (>= (select current 0) 2)) (not (>= (select current 1) 2)))",
+      "smt_file": "roots/array_validate.smt2",
+      "smt_sha256": "746f9d38906c183189a7195f1248f3f97a387dc001cfc6edd207f9058766cdb2"
+    },
+    "missing_initialization": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)"
+      ],
+      "required_goal": "(and (select source_init 0) (select source_read 0) (select source_init 1) (select source_read 1))",
+      "smt_file": "roots/missing_initialization.smt2",
+      "smt_sha256": "6fd216dcd217722c2fd5b7a191fb8d0139114227e8887ff92f00757d1fca18c8"
+    },
+    "alias_frame": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select write_authority changed)"
+      ],
+      "required_goal": "(and (= (select (store source changed replacement) changed) replacement) (select (store source_init changed true) changed) (= (select (store source changed replacement) framed) (select source framed)) (= (select (store source_init changed true) framed) (select source_init framed)))",
+      "smt_file": "roots/alias_frame.smt2",
+      "smt_sha256": "de47aa8d515a23d1a555208e0ef963d241f605bd50531e0c0ce32d736bc0a35f"
+    },
+    "bool_two": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 3)"
+      ],
+      "required_goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "smt_file": "roots/bool_two.smt2",
+      "smt_sha256": "87ed230c9eb2701eaf19e301614618bff5173ff8c666e7be2d60f918c6803e3e"
+    },
+    "missing_stability": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(not (>= (select source 0) 2))"
+      ],
+      "required_goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "smt_file": "roots/missing_stability.smt2",
+      "smt_sha256": "2d7356eb98dd1ca4e15264f068bf1987a511764f5033556271f375acab65afda"
+    },
+    "array_index_omission": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select source_init 1)",
+        "(select source_read 1)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(select current_init 1)",
+        "(select current_read 1)",
+        "(= (select source 0) (select current 0))",
+        "(= (select source 1) (select current 1))",
+        "(not (>= (select source 0) 2))"
+      ],
+      "required_goal": "(and (select current_init 0) (select current_read 0) (select current_init 1) (select current_read 1) (not (>= (select current 0) 2)) (not (>= (select current 1) 2)))",
+      "smt_file": "roots/array_index_omission.smt2",
+      "smt_sha256": "e98781d7cf386c9d17c8ae99b6776178eebddbd3409c0a0cd715a3203417105a"
+    },
+    "wrong_narrow_domain": {
+      "byte_and_address_domains": "0\u2264each of source[0/1],current[0/1],replacement<256; changed/framed\u2208{0,1}",
+      "premises": [
+        "(select source_init 0)",
+        "(select source_read 0)",
+        "(select current_init 0)",
+        "(select current_read 0)",
+        "(= (select source 0) (select current 0))",
+        "(< (select source 0) 2)",
+        "(< (select source 0) 3)"
+      ],
+      "required_goal": "(and (select current_init 0) (select current_read 0) (not (>= (select current 0) 2)))",
+      "smt_file": "roots/wrong_narrow_domain.smt2",
+      "smt_sha256": "74a5e6a88e67170e89afb4d9be9eb4c5821250b6294791dc5c7e461eb338a3fc"
+    }
+  }
+}

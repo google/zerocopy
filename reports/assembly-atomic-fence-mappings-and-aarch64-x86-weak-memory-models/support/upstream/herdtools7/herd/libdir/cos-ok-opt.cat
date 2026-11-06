@@ -1,0 +1,44 @@
+"Generate co's"
+
+(* generates possible co's, optimized version *)
+
+(* co observations in test *)
+
+let invrf = rf^-1
+
+(* Relation pco is computed by herd7 code
+
+let obsco =
+  let po-loc = [Exp];po-loc;[Exp] in
+  let ww = po-loc & (W * W)
+  and rw = rf ; (po-loc & (R * W))
+  and wr = ((po-loc & (W * R)) ; invrf) \ id
+  and rr = (rf ; (po-loc & (R * R)) ; invrf) \ id in
+  (ww|rw|wr|rr)
+
+let pco = obsco|co0
+*)
+
+(* The following applies to C only, where RMW is both R and W *)
+let rmwco =
+  let _RMW = R & W in
+  rf & (W * _RMW) (* co observation by atomicity *)
+
+let cobase = rmwco|pco
+
+(* Catch uniproc violations early *)
+acyclic cobase as ConsCo
+
+include "cross.cat"
+
+with co from generate_cos(cobase)
+(* From now, co is a coherence order *)
+let coi = co & int
+let coe = co \ coi
+
+(* Compute fr *)
+let fr = (invrf ; co) \ id
+let fri = fr & int
+let fre = fr \ fri
+
+show co,fr

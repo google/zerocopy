@@ -1,0 +1,718 @@
+{
+  "observed_at": "2026-09-30",
+  "official_compare_metadata_note": "GitHub compare API was read before contents API rate limiting; LLVM returns the 300-file cap, so no complete changed-path claim is made. Mapped blobs are independently derived from official commit-pinned raw source bytes.",
+  "repositories": [
+    {
+      "repository": "llvm/llvm-project",
+      "old_commit": "ded546ad82656ce6605ee2f2aa60c78dec70d95f",
+      "selected_current_commit": "229b9b2f4e20840a8280174fa08385fd9e36844b",
+      "branch": "main",
+      "raw_ls_remote": "642daaf27dd0cda7127d35bad1a3fe705a267918\tHEAD\n642daaf27dd0cda7127d35bad1a3fe705a267918\trefs/heads/main\n41d4aa7de68ed551010f27ff04ffc54e7616292a\trefs/remotes/gonzalo/HEAD\n",
+      "refs": {
+        "HEAD": "642daaf27dd0cda7127d35bad1a3fe705a267918",
+        "refs/heads/main": "642daaf27dd0cda7127d35bad1a3fe705a267918",
+        "refs/remotes/gonzalo/HEAD": "41d4aa7de68ed551010f27ff04ffc54e7616292a"
+      },
+      "compare_observation": {
+        "status": "ahead",
+        "ahead_by": 181,
+        "behind_by": 0,
+        "total_commits": 181,
+        "returned_changed_file_count": 300,
+        "changed_file_list_complete": false
+      },
+      "mapped_files": [
+        {
+          "path": "clang-tools-extra/clangd/TUScheduler.h",
+          "old": {
+            "sha1_git_blob": "d0da20310a8b23df4fb4725a929c0190c0d0b069",
+            "sha256_content": "d2fcb88bae8b6cfc7c70332c47ea8112994fc84513708765e307919fd38b9ff9",
+            "size": 16097,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/ded546ad82656ce6605ee2f2aa60c78dec70d95f/clang-tools-extra/clangd/TUScheduler.h"
+          },
+          "new": {
+            "sha1_git_blob": "d0da20310a8b23df4fb4725a929c0190c0d0b069",
+            "sha256_content": "d2fcb88bae8b6cfc7c70332c47ea8112994fc84513708765e307919fd38b9ff9",
+            "size": 16097,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/229b9b2f4e20840a8280174fa08385fd9e36844b/clang-tools-extra/clangd/TUScheduler.h"
+          }
+        },
+        {
+          "path": "clang-tools-extra/clangd/ClangdServer.cpp",
+          "old": {
+            "sha1_git_blob": "d4d313b40d76b7d158ea200df7fdec677415d02d",
+            "sha256_content": "0cd13c89b40f436a101d582e1f02fc2ac00885180e88a35f2f82711e7b7cd2bc",
+            "size": 48339,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/ded546ad82656ce6605ee2f2aa60c78dec70d95f/clang-tools-extra/clangd/ClangdServer.cpp"
+          },
+          "new": {
+            "sha1_git_blob": "d4d313b40d76b7d158ea200df7fdec677415d02d",
+            "sha256_content": "0cd13c89b40f436a101d582e1f02fc2ac00885180e88a35f2f82711e7b7cd2bc",
+            "size": 48339,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/229b9b2f4e20840a8280174fa08385fd9e36844b/clang-tools-extra/clangd/ClangdServer.cpp"
+          }
+        },
+        {
+          "path": "clang-tools-extra/clangd/GlobalCompilationDatabase.h",
+          "old": {
+            "sha1_git_blob": "415c7f50f86062a3148cc05d9cb5b814ef2bfed6",
+            "sha256_content": "a13ff2abd1c29f8fb85157cbc12fc188c8f8e419c8770ede24eeb674f5412af3",
+            "size": 9017,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/ded546ad82656ce6605ee2f2aa60c78dec70d95f/clang-tools-extra/clangd/GlobalCompilationDatabase.h"
+          },
+          "new": {
+            "sha1_git_blob": "415c7f50f86062a3148cc05d9cb5b814ef2bfed6",
+            "sha256_content": "a13ff2abd1c29f8fb85157cbc12fc188c8f8e419c8770ede24eeb674f5412af3",
+            "size": 9017,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/229b9b2f4e20840a8280174fa08385fd9e36844b/clang-tools-extra/clangd/GlobalCompilationDatabase.h"
+          }
+        },
+        {
+          "path": "clang-tools-extra/clangd/index/FileIndex.cpp",
+          "old": {
+            "sha1_git_blob": "2e005bfe3537e60fb218f9c91871b74a4da3c820",
+            "sha256_content": "794619418b46f7846ed843d78796e37f5b48c6b54995917368dc261287935a46",
+            "size": 18750,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/ded546ad82656ce6605ee2f2aa60c78dec70d95f/clang-tools-extra/clangd/index/FileIndex.cpp"
+          },
+          "new": {
+            "sha1_git_blob": "2e005bfe3537e60fb218f9c91871b74a4da3c820",
+            "sha256_content": "794619418b46f7846ed843d78796e37f5b48c6b54995917368dc261287935a46",
+            "size": 18750,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/229b9b2f4e20840a8280174fa08385fd9e36844b/clang-tools-extra/clangd/index/FileIndex.cpp"
+          }
+        },
+        {
+          "path": "clang-tools-extra/clangd/index/Background.cpp",
+          "old": {
+            "sha1_git_blob": "17a8097394492eca78939346f17429751c6ec17d",
+            "sha256_content": "d0efcdbec926beb3d585137a3a153d93c7b6870f1000f5ccf56837c8c069e31f",
+            "size": 15931,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/ded546ad82656ce6605ee2f2aa60c78dec70d95f/clang-tools-extra/clangd/index/Background.cpp"
+          },
+          "new": {
+            "sha1_git_blob": "17a8097394492eca78939346f17429751c6ec17d",
+            "sha256_content": "d0efcdbec926beb3d585137a3a153d93c7b6870f1000f5ccf56837c8c069e31f",
+            "size": 15931,
+            "url": "https://raw.githubusercontent.com/llvm/llvm-project/229b9b2f4e20840a8280174fa08385fd9e36844b/clang-tools-extra/clangd/index/Background.cpp"
+          }
+        }
+      ],
+      "official_gitiles_range": {
+        "count": 181,
+        "first_commit": "229b9b2f4e20840a8280174fa08385fd9e36844b",
+        "last_commit": "65e323a85f0d2e63a5f6c97e8ce2bd8e989aacf4",
+        "last_parent": "ded546ad82656ce6605ee2f2aa60c78dec70d95f",
+        "next": null,
+        "commits": [
+          "229b9b2f4e20840a8280174fa08385fd9e36844b",
+          "cf46406f7ebc929d422a549e739c34904f47232a",
+          "82e4c9e0ac744a2c732ee8861b7162e04be75f6d",
+          "4f2ac3dfb8c0ffe105849361ac4592c5325c5737",
+          "f01fdbb2991a10ec7f02fecb3d30fcf4fc639db8",
+          "dd741af4ab7808634e071a8be78909ca22d40861",
+          "e1bcf98233962c26e3a82ae326fb2f8922e0635a",
+          "7fcd9732be7d03f2ae338a73953b3423afefc57c",
+          "a0868d59ea99e56ddc60288878b63068af650ab1",
+          "539b68e1888bba1db4545310b7b7286050c955b4",
+          "d4ab2ae81d5dd369d554873189e92b95de53ffef",
+          "1074dbabfe77d3a4422436afba8ed6fceaa8a4f4",
+          "5f1a54781d8f984b5434060e9cd02775b0ec241a",
+          "cd4a743905b27afafc26915091b29137e9d0c385",
+          "b60c46d11bd399f3bc9d4f1215ecc18ddae06484",
+          "8673c6f2cda8ddb4363e58af8d773977454d51d8",
+          "adbd59f4af87cccaa8a4f83c35d3ceb605c3e17c",
+          "c8570422cabf2d34529c58350b13a6c6f1bbe76a",
+          "6302d8af34718726be567369c2ac76616ceb5e9f",
+          "4a7bd81a77fe1d55299f688fdf09399ad31bee3c",
+          "087e566be567c44a7e6ef68b3c986bd1f7b0b27f",
+          "98507d56103ae4062c9b9406f8001a6d476dadfb",
+          "5e85e1345fb7f64ae2ce85d5cd2c670e99e6f6cc",
+          "6a0713e9129efe7e8b355e157a9a12aa8ac606b0",
+          "3c7e3271a31891418af22f4dbddbb6949b1f8ec4",
+          "a9a9c8a8b85c0de6161b35cc3bf165458160b6c4",
+          "f2333935b119f4b6d05e09b93f15fc07c601a842",
+          "c822c7678cc5d317813ab851d71d687f041b1b57",
+          "d815ce2a54bf99adecdf5b1c2fca58057599bd35",
+          "27d52f9b7efbc36e0ccd5a5fab955962e8a24e5d",
+          "1641cf35d5c2df2f2ca39b710ff4ced4f011d98f",
+          "a146f7b20f870c3241e92da680ae2af81863a9cc",
+          "9ef03f1c32b41b7bcdfd02ea97559a6fadeb440b",
+          "7d812d2b8aad397ed65a664ca2304500ba311b3f",
+          "ce33479e64404b06eb2f34d83bbd58e4301c1908",
+          "bc5b9040d28773b03d4d9ec3ca50271bdf776d77",
+          "7ae4aabf6d49ac1a3a5a9a6d7bc0e8778d66ee43",
+          "adc6bbf0f3e433e4f5681180fb9aa79724eae6af",
+          "a135d2f1a576f2fbf55e1b40796dbd8c652e52a2",
+          "ec86f8228e33176474d8f167037a0a028f137eb2",
+          "268e5ba1d99152e5f00e1d8432969a6ba11245fd",
+          "ebfc0d74c387a924e0f87e80e71468bbb2d506f3",
+          "bc7009760b8c4f6e4f603542cb5c24be46e87a81",
+          "cb23668ed2c1a876db0eb0284b7aa15e0b1258d4",
+          "6bd33ddfc3cc0cb2278b7f30d349b38475a3e607",
+          "8be6a5f1a1881a3e75800a6648f728a33594bfb8",
+          "521f9e58a7e2389ccbf7893627857fe19da43c8a",
+          "91d88a48f449d54b5004c83399dc2281cb549734",
+          "ea8ba8302eea264706354d92e7c9027ceae4f0b4",
+          "ffb3120b0aae71d16c275bfb4a56b8633897fdae",
+          "b8afba677502d531efd5c6096e23b46ef488da96",
+          "db409ffcf81de44fb2b3644b2fe28eebf4b69df0",
+          "6b9d37acbd572a8a07bf51c3784ddfd4ead2944c",
+          "65051a3c32709971db58e2388f1eaae1edeb146a",
+          "85a5d0a53df92dc384058e8738777f81a78a0f69",
+          "7e89fb5d646ef2d4b18520a8300818b5b94ef587",
+          "0a5b663d6474a958ef953cd6615de550957b8525",
+          "24df73cb7311d9a66d132c7fcd20feac2fbae36d",
+          "552ea17e0a93262e78813994c0abc6cea23bfb55",
+          "ef4a19d2cd7ae5d5e42003c6bc239af912eed611",
+          "c7eee36cb7fcf433cf7ccb0c9355bbfdeee2256f",
+          "16a1f7e557e52fbf75b007fe7ed90158b8171961",
+          "6ba7cc00c940912ee6f8663a9e3026994920d478",
+          "a6ac6a01991550af4792402e6f0afb7ffee37508",
+          "80e8c0a59189bc4c4954b6ebe2d08ee8f4b8c904",
+          "3ad8fe1622045a8e48dad395115088f021a962e1",
+          "9488c46651de0fbec038e6b8578c1e651d89e576",
+          "adea68fd6515e904a82ad96b77aa51c352c5aae7",
+          "e87dfe22fb87066df78dfa13f5e2ed80122b4869",
+          "c90c5946e7d3943e8e4d426f0a321f7560255c16",
+          "0206846e12b5d9126758112aa9e410fe0c69c6b6",
+          "72f86196835d8603f71b826ff98bd5d3e9ea4f1e",
+          "0c34c62d2b70b4814aeae57de50879d7253e93f4",
+          "724cf76230e2b9de78b022cf556e694fc2ff8e64",
+          "fdcce89c57fc7dbc6624a800f4e1c8a10674109d",
+          "fa7903e9e206004a9613662eca539d3342807231",
+          "66768776d38088cc1d7871fb45ce2ca7494399ee",
+          "622b141186fd215904f2ac86fe9821ac87e40508",
+          "9060d938ad7bd10111d9a84c3bf8ea7955b2904e",
+          "995b10a038ee4ae3451fb50c3514763dfa09f6ac",
+          "233a25d068a9323211dd1f32c7a83e72751826ef",
+          "088f62a2d1c0cd124326d358a66421d837d728e0",
+          "4b91c605bfe5872e7175b887c043549e34d2901d",
+          "362a60ebc50e399983914a51b939dfbe11df15de",
+          "4103c42711877449d20e10766b1976f753a719d7",
+          "7ad649c95921a4ea1a4cf4d960fa946632b43a57",
+          "6bb86c2af2bad73178451aa3c8cb68eb4b837f96",
+          "bbf884bc157a588b8d1f7115c1f3cb8a954aa796",
+          "6cb8584a22334623c901e9bb9b2b80f750bd47e5",
+          "76fed34ef56db87dfcc9cea82ad57f4a51d8718f",
+          "169c6b25035659b7551a57165b662db19db7a9d0",
+          "1f07fbff46ebf1e8871a30bf4bd6fc8fdcf0d4af",
+          "bc5a643607599ba5dcf3cab3316cb762b33928ed",
+          "a822257b516c0171efc283c6be5e2fdc3728b5a3",
+          "49063b8d952d3876eabe9bf6b372cb9d95446b13",
+          "4f9feb85267c08ec29ea8bb2f80a3d0cd7ab925f",
+          "24fc2824a239219f89e6c18739f856d4509a3a4e",
+          "f2b09c5382e5a34818c337a70498e85bc35b03e9",
+          "b9c40729b28600a01a5503a4a73acfae55540cf2",
+          "a4aea75c443158c949637bda27d22669879e0e54",
+          "2aa480bae38ad5f2c305d28dd5a2d515a8fca254",
+          "9fb78fc2451015af1df8c0efa8ca5ac6a987e2b3",
+          "d9db16754e4aae37319c94422d6f6c1bbcade08d",
+          "b96b66160ace30c2b5eef1f4afdb14c95ecc26cd",
+          "b0e35e5f4132e4c70517ced0ae13e762cd2ab05c",
+          "e011bda76aab5f9d59c3e74397416b2aec745c46",
+          "850b1f7288316cf9092ae7e57fb13f6b47815050",
+          "e83d464473fa4fa2856cfaa4d434afb78e043db6",
+          "6b26457a0ef2994de54606eb5c356cb897cadda2",
+          "d1e09e13067747ed3bfe3b2690715c606f619cb6",
+          "bdf5228e7a3daf2211400087212702259d8ef8b4",
+          "739a4306427e1be1cd02058ecb108ce1b2dc2916",
+          "a651871a3f3f8aef58ae03d2fa81dcc1481b633c",
+          "5023684dff225519cbb714370a94a675487d5a28",
+          "3541139d540e09b7c3af734b14543238b0ffaad9",
+          "309d1d7efc0e6edd858aeeebda24f479de6c7ae4",
+          "07130d0c375045e5bb369bb4d174d489c8103363",
+          "2a6247359ee523096aaf28297bd2ac09c721ce66",
+          "06a09420732f5b4aecbedbee97c5d14888cf3bf0",
+          "5f7f8aec603b0f1144052c179352d3379fc8e424",
+          "e1ffb858458c6280e51ab9370fa7ccc5c49c0764",
+          "574328ff02b42034e7ba05b69b100e5f852644b6",
+          "e1205b15d31b0d62c343bd29cdf70c1e0f954ca2",
+          "9e47955ee962499879f570800a97bb58629be5f9",
+          "f34ff31c6521b4fa62a24122743d1e76a6756087",
+          "2032d7a2f64eb37a24a997605f60713e2815cc7d",
+          "92074f0af6c34bedaf661c46c4663979f83557bb",
+          "df361f8543d1a2fad3f52532ccc6197fc12e3155",
+          "957dc609b1e033f2febfa96795309a3517691988",
+          "fa189b0b2a0324a56e41fb8908cfee1211fa4244",
+          "0f972d1311b25ce948aa373b4bd3946d8cd6fdab",
+          "d4a422c6d70883ad1a29596b61a1141844402c07",
+          "09a15dd428e2efee99b46f5fd36d351a2609b0f7",
+          "b63ea1c16751bf205d43ecb4f9a2c010c0a4daa6",
+          "43bd07b665ec5496750fe12011af5f9d317b22ab",
+          "5b11db216d0484ab02d367604937f002cfb4f33a",
+          "d9b12f5c63ff211229a1809a6878c32fc166c14a",
+          "5f376e4dc0504c30aeccc5997f72455bc620b0de",
+          "0dba1ee8ed09517eb397bdd48dd28e253b3cc117",
+          "e9ec9b53a070aa0548ffe98e3f7142a929ca134c",
+          "67f26e15725a56f302737c576e3f6f52a97cc4ac",
+          "d6fc9961eb4e33e46ac4ab17b7bb1f87eacd96c4",
+          "2820795b027eb68e3c3a0f1ad1ddd36aaeb8730a",
+          "4dd9d22d4f0c8da881557d5bd95ac0ce25df79f8",
+          "457e5bad6d6b7012a123a9272c9deb83dc3d6c04",
+          "e0a2355cb95fe055372fdb59abc7257e6c0bb969",
+          "0f5654d7c77bbfb809af1b6dcb0f328374f3f83a",
+          "082fe79e68b81352290afcd8661874bed7e61074",
+          "4a66966a8a523eccf7b1a3552b0f2a20124abc76",
+          "5b56cd69ef57d97f16d2bab7c0a1406debe05ec8",
+          "4c4b4b93c9ac359acc3782a92fc7efe204f218c5",
+          "b1e1a2be9e26f6e7343708ae8be22bd54807c040",
+          "3390613ccf0fbbb40026dcbabb36fce444f79480",
+          "2c298348bfe15a69788e83ea64831873dcfd3c58",
+          "52b80c07ed558a459e7b230b7f6cd213dcd11760",
+          "cd94d181b2e39bfb0720fd383f17a2f0eefed3d0",
+          "420f6d1b1f277b8861ef7454164b5a940d1bcf24",
+          "a187057dfe16b215dc44c4be7937ceccebe9882a",
+          "d6048f5ff3bdd934508a585a92ba010834981b7c",
+          "4039ff22ef1894220e6f3f04100c695e0b9d9a1e",
+          "b5d50687b1f2991200b9985a78e5841717f8f108",
+          "36e9bff64557a2f4b4bf537c8327fec2a1d5b0cf",
+          "4da9e8181bade846548967361835e55503383d15",
+          "e0e92856cddf40e96b609ae3c086a095fb2a67ba",
+          "d49626c811c304c047e028a80cedc0d377f49dfb",
+          "c9df11991d971c1bf16e58fd4b5350c0865ba616",
+          "6a7ac2035ab788519b8cc9880972d6fa789d018f",
+          "0170d3c340a2e69c8a000f32f9f8c368e6ba13b0",
+          "87e5a59ebde0a2517cbf8f816582779be6194fe1",
+          "73a0b12b8ee34b9d2858cf6ca60a6154145a52ca",
+          "d80ae72a1cb9858eed5b01cd12d7707a2e2b6670",
+          "ed327377a67f812a13ca783ffab67efff11a80fb",
+          "4076fac4836f46de9a9a0caff669ec20c698d150",
+          "8a4f05540f342752d937813ed16220bb74af66b4",
+          "a5a1b5834ad33167aa119091a96931d526c9c962",
+          "7c9ae52cfdce9b7fc6f06b1a5f3a54f9a2f2d0ec",
+          "7778bb2082b8e64528b691f1b7a7016e8bd64860",
+          "cf28b9f7fa4c4dec8f209b7059586df6234c7a25",
+          "e3bae380eb23076b081ad7db1e8f6a36c5261eb3",
+          "18ef19fb83d9d3fa369481bb0537be4fdf5552fb",
+          "65e323a85f0d2e63a5f6c97e8ce2bd8e989aacf4"
+        ]
+      },
+      "official_gitiles_clangd_subtree": {
+        "visited_trees": [
+          {
+            "path": "clang-tools-extra/clangd",
+            "old_tree": "7b40890eacaf83cca74bdd999ae62f078b45404b",
+            "new_tree": "28604a45ae98da5e43eef3016bab852a443ca259"
+          },
+          {
+            "path": "clang-tools-extra/clangd/refactor",
+            "old_tree": "819bfedc7d7dd0a315db256c4be8cd7dcf0c4e70",
+            "new_tree": "77162fa20173ac8fc4826b828ffd262855f731dc"
+          },
+          {
+            "path": "clang-tools-extra/clangd/refactor/tweaks",
+            "old_tree": "30a1f5d07c2085d62f4735ac36ddf7c89d784cf5",
+            "new_tree": "a94a365af2c3f58ce35ae34b43aaeb29023eeb1a"
+          },
+          {
+            "path": "clang-tools-extra/clangd/unittests",
+            "old_tree": "36a5389c99ed55decacbc5b152395ed57cf6deb6",
+            "new_tree": "fc1edd8419258ad7a6297f4d5ac5bb2e42fbb95d"
+          },
+          {
+            "path": "clang-tools-extra/clangd/unittests/tweaks",
+            "old_tree": "631b8fd8d75c12176a82c48463de1894ab0876ed",
+            "new_tree": "eb7e63810b770f2a2bd1f4a7234d5fc353a31685"
+          }
+        ],
+        "changed_leaves": [
+          {
+            "path": "clang-tools-extra/clangd/refactor/tweaks/ExtractFunction.cpp",
+            "old_id": "eb7a9faa65a81fd98c8cb38f55f7d27c922c12ea",
+            "new_id": "171f64737c5dce28a9e33fff9224552aa6daf674",
+            "old_type": "blob",
+            "new_type": "blob"
+          },
+          {
+            "path": "clang-tools-extra/clangd/unittests/FindTargetTests.cpp",
+            "old_id": "87febfef753a1b39e14a69fb26c4cd62047ec590",
+            "new_id": "0c0ef1262141fbe65ecc2c8f1d52029250715de2",
+            "old_type": "blob",
+            "new_type": "blob"
+          },
+          {
+            "path": "clang-tools-extra/clangd/unittests/tweaks/ExtractFunctionTests.cpp",
+            "old_id": "c55fc17ae83e9a6d3d08376753f9de37b850a3fa",
+            "new_id": "b43f239b70ffe9efbd9059f380ed2c376c5becbd",
+            "old_type": "blob",
+            "new_type": "blob"
+          }
+        ]
+      },
+      "selected_main_ref_observation": "229b9b2f4e20840a8280174fa08385fd9e36844b",
+      "ref_advanced_during_collection": true,
+      "later_ref_commit_observation": {
+        "commit": "642daaf27dd0cda7127d35bad1a3fe705a267918",
+        "parent": "229b9b2f4e20840a8280174fa08385fd9e36844b",
+        "changed_path_count": 96,
+        "clangd_changed_paths": []
+      }
+    },
+    {
+      "repository": "golang/tools",
+      "old_commit": "98444708d405557b5ddd6179be1a6abc14150d5f",
+      "selected_current_commit": "134264d72fba423ca1ad358683cd3c32699b010e",
+      "branch": "master",
+      "raw_ls_remote": "134264d72fba423ca1ad358683cd3c32699b010e\tHEAD\n134264d72fba423ca1ad358683cd3c32699b010e\trefs/heads/master\n",
+      "refs": {
+        "HEAD": "134264d72fba423ca1ad358683cd3c32699b010e",
+        "refs/heads/master": "134264d72fba423ca1ad358683cd3c32699b010e"
+      },
+      "compare_observation": {
+        "status": "ahead",
+        "ahead_by": 5,
+        "behind_by": 0,
+        "total_commits": 5,
+        "returned_changed_file_count": 17,
+        "changed_file_list_complete": true
+      },
+      "mapped_files": [
+        {
+          "path": "gopls/internal/cache/session.go",
+          "old": {
+            "sha1_git_blob": "476d4baaa0baa58328e0478b343ee59e308a7754",
+            "sha256_content": "e867075d14e7a9b8062f5719e38f889e0d5364a484166f0f12127935b7e73fba",
+            "size": 42354,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/internal/cache/session.go"
+          },
+          "new": {
+            "sha1_git_blob": "476d4baaa0baa58328e0478b343ee59e308a7754",
+            "sha256_content": "e867075d14e7a9b8062f5719e38f889e0d5364a484166f0f12127935b7e73fba",
+            "size": 42354,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/internal/cache/session.go"
+          }
+        },
+        {
+          "path": "gopls/internal/cache/view.go",
+          "old": {
+            "sha1_git_blob": "d1f264f4d23578fe735d1c95aeadfe7df0d3d433",
+            "sha256_content": "a82d5170ad22bcd021cbecc032d94919ecd41956e0aea64db0800be182ed7de9",
+            "size": 41009,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/internal/cache/view.go"
+          },
+          "new": {
+            "sha1_git_blob": "d1f264f4d23578fe735d1c95aeadfe7df0d3d433",
+            "sha256_content": "a82d5170ad22bcd021cbecc032d94919ecd41956e0aea64db0800be182ed7de9",
+            "size": 41009,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/internal/cache/view.go"
+          }
+        },
+        {
+          "path": "gopls/internal/cache/snapshot.go",
+          "old": {
+            "sha1_git_blob": "4ec7ca7d764c92d3cc2c27c42602dc959751992c",
+            "sha256_content": "3ffc24017364fc905925330b3b64efd8e8dba24ce374df1a3f41543f8d8ad10d",
+            "size": 77072,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/internal/cache/snapshot.go"
+          },
+          "new": {
+            "sha1_git_blob": "4ec7ca7d764c92d3cc2c27c42602dc959751992c",
+            "sha256_content": "3ffc24017364fc905925330b3b64efd8e8dba24ce374df1a3f41543f8d8ad10d",
+            "size": 77072,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/internal/cache/snapshot.go"
+          }
+        },
+        {
+          "path": "gopls/internal/cache/workspace.go",
+          "old": {
+            "sha1_git_blob": "6b2291e5bc9401f552c92eae3c8aefb213cf2c83",
+            "sha256_content": "ce0cc80f4f04077f5ca02a89b6808a96b00156d8e4d05900a09b03846f5b147c",
+            "size": 3952,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/internal/cache/workspace.go"
+          },
+          "new": {
+            "sha1_git_blob": "6b2291e5bc9401f552c92eae3c8aefb213cf2c83",
+            "sha256_content": "ce0cc80f4f04077f5ca02a89b6808a96b00156d8e4d05900a09b03846f5b147c",
+            "size": 3952,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/internal/cache/workspace.go"
+          }
+        },
+        {
+          "path": "gopls/doc/workspace.md",
+          "old": {
+            "sha1_git_blob": "1e19fd3657b159a7eaeabc1bf3b56c59a5e5f024",
+            "sha256_content": "3e1590ce8067e7dbe4c8ab76cd3e9f78ea6c5d323889fe2c8a56b4ed6f7d7876",
+            "size": 7042,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/doc/workspace.md"
+          },
+          "new": {
+            "sha1_git_blob": "1e19fd3657b159a7eaeabc1bf3b56c59a5e5f024",
+            "sha256_content": "3e1590ce8067e7dbe4c8ab76cd3e9f78ea6c5d323889fe2c8a56b4ed6f7d7876",
+            "size": 7042,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/doc/workspace.md"
+          }
+        },
+        {
+          "path": "gopls/doc/design/implementation.md",
+          "old": {
+            "sha1_git_blob": "887c02cd35c14edecdd1342d5664e3fb174f4bf8",
+            "sha256_content": "b58d2dc2522d1e117e205d099d77927c83de404b1379a14e63fe10169722dcb2",
+            "size": 8743,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/doc/design/implementation.md"
+          },
+          "new": {
+            "sha1_git_blob": "887c02cd35c14edecdd1342d5664e3fb174f4bf8",
+            "sha256_content": "b58d2dc2522d1e117e205d099d77927c83de404b1379a14e63fe10169722dcb2",
+            "size": 8743,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/doc/design/implementation.md"
+          }
+        },
+        {
+          "path": "gopls/doc/design/design.md",
+          "old": {
+            "sha1_git_blob": "8ef3c32023b23f72837112c479e46519d1f2d46b",
+            "sha256_content": "30b11749cdcb77e1042d43b83d46258f9cb5f1cc04cfad44d82f76c69100352e",
+            "size": 33514,
+            "url": "https://raw.githubusercontent.com/golang/tools/98444708d405557b5ddd6179be1a6abc14150d5f/gopls/doc/design/design.md"
+          },
+          "new": {
+            "sha1_git_blob": "8ef3c32023b23f72837112c479e46519d1f2d46b",
+            "sha256_content": "30b11749cdcb77e1042d43b83d46258f9cb5f1cc04cfad44d82f76c69100352e",
+            "size": 33514,
+            "url": "https://raw.githubusercontent.com/golang/tools/134264d72fba423ca1ad358683cd3c32699b010e/gopls/doc/design/design.md"
+          }
+        }
+      ],
+      "official_gitiles_range": {
+        "count": 5,
+        "first_commit": "134264d72fba423ca1ad358683cd3c32699b010e",
+        "last_commit": "c62818be57ab9d3b0a1655681496d3c88907b689",
+        "last_parent": "98444708d405557b5ddd6179be1a6abc14150d5f",
+        "next": null,
+        "commits": [
+          "134264d72fba423ca1ad358683cd3c32699b010e",
+          "01d93d7fa1ae1cd76076088e56c42f7b4734e7b0",
+          "405de3911f7d546b09f02249f64c59b5fa3b5d53",
+          "231a7fadf2aa68064ab7a5b5b01363fc3f25e127",
+          "c62818be57ab9d3b0a1655681496d3c88907b689"
+        ]
+      },
+      "official_gitiles_commit_diffs": [
+        {
+          "commit": "134264d72fba423ca1ad358683cd3c32699b010e",
+          "tree_diff": [
+            {
+              "type": "modify",
+              "old_id": "305660f0243b28f748fcdc939a75edc33e53ebb6",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/golang/stubmethods/stubmethods.go",
+              "new_id": "ebff082dc5f6f45a0f7b0ab8ec7101ee8ea0072e",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/golang/stubmethods/stubmethods.go"
+            },
+            {
+              "type": "add",
+              "old_id": "0000000000000000000000000000000000000000",
+              "old_mode": 0,
+              "old_path": "/dev/null",
+              "new_id": "ccaf37ed7c9a561556143d73adda98f52e4e80d7",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/test/marker/testdata/quickfix/stubmethods/issue81814.txt"
+            }
+          ]
+        },
+        {
+          "commit": "01d93d7fa1ae1cd76076088e56c42f7b4734e7b0",
+          "tree_diff": [
+            {
+              "type": "modify",
+              "old_id": "d1805179fb05962d94cbe41408b4acfb1abf0777",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/golang/dragon_slayer.go",
+              "new_id": "b3e414e6df0ddfd837404d58a55bf617ce0e7009",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/golang/dragon_slayer.go"
+            }
+          ]
+        },
+        {
+          "commit": "405de3911f7d546b09f02249f64c59b5fa3b5d53",
+          "tree_diff": [
+            {
+              "type": "modify",
+              "old_id": "10ca01f89d0a16580b15e3bb6523f5a5a24b6a57",
+              "old_mode": 33188,
+              "old_path": "go/callgraph/callgraph_test.go",
+              "new_id": "2a6c4cfc2abd84aaf582b0f5b0d2f6a33215fc9f",
+              "new_mode": 33188,
+              "new_path": "go/callgraph/callgraph_test.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "8a96b99d27b82517e654e8dccd19732b669df418",
+              "old_mode": 33188,
+              "old_path": "go/callgraph/rta/rta_test.go",
+              "new_id": "447df2effe4d6929fc27642012d8ea3d7589eeb4",
+              "new_mode": 33188,
+              "new_path": "go/callgraph/rta/rta_test.go"
+            }
+          ]
+        },
+        {
+          "commit": "231a7fadf2aa68064ab7a5b5b01363fc3f25e127",
+          "tree_diff": [
+            {
+              "type": "modify",
+              "old_id": "b9a248f5fa0239bee2ddae257ba1824fbafdb7d2",
+              "old_mode": 33188,
+              "old_path": "cmd/deadcode/deadcode.go",
+              "new_id": "780bbb368a32b3d4bc902021bfe5b157b99e9661",
+              "new_mode": 33188,
+              "new_path": "cmd/deadcode/deadcode.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "fcf2c35f5e2c4c343b1aaf3ce2ce182ea8e033fe",
+              "old_mode": 33188,
+              "old_path": "go/ssa/builder.go",
+              "new_id": "f204cc700c71224af86d586a7276d1da1554a3a4",
+              "new_mode": 33188,
+              "new_path": "go/ssa/builder.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "33a12444d50c9b0b73ee6e12e55cb959b495cc30",
+              "old_mode": 33188,
+              "old_path": "go/ssa/func.go",
+              "new_id": "553363a46944cd5db7895e627b43779b22d2a07d",
+              "new_mode": 33188,
+              "new_path": "go/ssa/func.go"
+            }
+          ]
+        },
+        {
+          "commit": "c62818be57ab9d3b0a1655681496d3c88907b689",
+          "tree_diff": [
+            {
+              "type": "modify",
+              "old_id": "bd375b11b7811fe0af9d47ab30c5bce71b39ca28",
+              "old_mode": 33188,
+              "old_path": "gopls/doc/release/v0.24.0.md",
+              "new_id": "0d08b0df76c87fc7084342979d0e23334e8a43e2",
+              "new_mode": 33188,
+              "new_path": "gopls/doc/release/v0.24.0.md"
+            },
+            {
+              "type": "modify",
+              "old_id": "7d278571648bd8e123b1f40edd4fc030cb555405",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/golang/codeaction.go",
+              "new_id": "1b49d0cbe57c85edb44270f1dbbc7826957b134f",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/golang/codeaction.go"
+            },
+            {
+              "type": "add",
+              "old_id": "0000000000000000000000000000000000000000",
+              "old_mode": 0,
+              "old_path": "/dev/null",
+              "new_id": "d1805179fb05962d94cbe41408b4acfb1abf0777",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/golang/dragon_slayer.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "37fdeca19c5eec8560765f6a396cfe325f33a1ee",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/protocol/command/command_gen.go",
+              "new_id": "7205d21f8f0b36813eb6a451da43b46c9a9d0dc8",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/protocol/command/command_gen.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "92a66a6c1fc624851fe5ed2faf11733dc8b48b31",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/protocol/command/interface.go",
+              "new_id": "93ab08e2cfbfea985e9cfa94b7be818d96d86588",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/protocol/command/interface.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "da87d98409c9c57a264ba93ef6bbe29b313fcd60",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/server/command.go",
+              "new_id": "d122fd69f5447332bd996f3c2cd431e8f0f01bf8",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/server/command.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "ba622111107854c0af75ba79845f079bab9e21ab",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/settings/codeactionkind.go",
+              "new_id": "1dd755ae3f49118894296e0690c7ec2aa311ef59",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/settings/codeactionkind.go"
+            },
+            {
+              "type": "modify",
+              "old_id": "bb5cdf3405ff2e2978c1a98fe0072164d38e8798",
+              "old_mode": 33188,
+              "old_path": "gopls/internal/settings/default.go",
+              "new_id": "efe0583addbf0e9c1f3382694d7d4dd22936dbc5",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/settings/default.go"
+            },
+            {
+              "type": "add",
+              "old_id": "0000000000000000000000000000000000000000",
+              "old_mode": 0,
+              "old_path": "/dev/null",
+              "new_id": "bd5a2d33de0196f3a81fcd81ee3ceb75535be628",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/test/integration/misc/dragon_slayer_test.go"
+            },
+            {
+              "type": "add",
+              "old_id": "0000000000000000000000000000000000000000",
+              "old_mode": 0,
+              "old_path": "/dev/null",
+              "new_id": "0121f2b1962271983bf7c66a7dbc318397decf4b",
+              "new_mode": 33188,
+              "new_path": "gopls/internal/test/marker/testdata/codeaction/dialog_dragon_slayer.txt"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust-analyzer",
+      "old_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "selected_current_commit": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+      "branch": "master",
+      "raw_ls_remote": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4\tHEAD\n03fcb77246f2568adb0e9b2fa60d19c6cc1686f4\trefs/heads/master\n",
+      "refs": {
+        "HEAD": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4",
+        "refs/heads/master": "03fcb77246f2568adb0e9b2fa60d19c6cc1686f4"
+      },
+      "compare_observation": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_changed_file_count": 0,
+        "changed_file_list_complete": true
+      },
+      "mapped_files": [
+        {
+          "path": "docs/book/src/contributing/architecture.md",
+          "old": {
+            "sha1_git_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+            "sha256_content": "c75df88c432dd70eefac08c12d753520d778a0a7d16e322d09175eeedc53e143",
+            "size": 28013,
+            "url": "https://raw.githubusercontent.com/rust-lang/rust-analyzer/03fcb77246f2568adb0e9b2fa60d19c6cc1686f4/docs/book/src/contributing/architecture.md"
+          },
+          "new": {
+            "sha1_git_blob": "8b6ea56c851650cac23c27cc1ffb0a7f1b2a854c",
+            "sha256_content": "c75df88c432dd70eefac08c12d753520d778a0a7d16e322d09175eeedc53e143",
+            "size": 28013,
+            "url": "https://raw.githubusercontent.com/rust-lang/rust-analyzer/03fcb77246f2568adb0e9b2fa60d19c6cc1686f4/docs/book/src/contributing/architecture.md"
+          }
+        }
+      ]
+    }
+  ]
+}

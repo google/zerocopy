@@ -1,0 +1,60 @@
+{
+  "observed_at": "2026-09-30",
+  "j_ids": ["J018"],
+  "sources": [
+    {
+      "id": "wenzel-2012-jedit",
+      "identity": "arXiv:1207.3441v1",
+      "url": "https://arxiv.org/html/1207.3441v1",
+      "role": "first-party documentation",
+      "claims": ["continuous checking", "semantic markup", "first stable Isabelle/jEdit release", "Proof General contrast"]
+    },
+    {
+      "id": "wenzel-2010-async",
+      "identity": "doi:10.1016/j.entcs.2012.06.009",
+      "role": "first-party documentation",
+      "claims": ["persistent document entity", "fresh version identifiers", "coexisting versions", "results associated with commands and versions"]
+    },
+    {
+      "id": "wenzel-2013-repl",
+      "identity": "arXiv:1307.1944v1",
+      "url": "https://arxiv.org/abs/1307.1944",
+      "role": "first-party documentation",
+      "claims": ["explicit reform of sequential synchronous REPL into parallel asynchronous processing"]
+    },
+    {
+      "id": "wenzel-2013-coq",
+      "identity": "arXiv:1304.6626v1",
+      "url": "https://arxiv.org/abs/1304.6626",
+      "role": "first-party documentation / negative control",
+      "claims": ["protocol connectivity with lexical payload", "full proof processing requires prover-side reform"]
+    },
+    {
+      "id": "wenzel-2019-pide",
+      "identity": "arXiv:1905.01735v1",
+      "url": "https://arxiv.org/html/1905.01735v1",
+      "role": "first-party retrospective",
+      "claims": ["document edit/version model", "perspective", "cancellation", "snapshots", "Naproche integration", "protocol evolution", "Coq/PIDE outcome", "parallelism costs"]
+    },
+    {
+      "id": "paulson-nipkow-wenzel-2019",
+      "identity": "doi:10.1007/s00165-019-00492-1",
+      "url": "https://doi.org/10.1007/s00165-019-00492-1",
+      "role": "first-party retrospective",
+      "claims": ["parallel ML transition", "REPL conflict", "2014 discontinuation of REPL/Proof General"]
+    },
+    {
+      "id": "anneal-design",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": ["anneal/PRINCIPLES.md", "anneal/DESIGN.md"],
+      "role": "current Anneal design authority",
+      "claims": ["precise success identity/scope", "partial information distinct from success", "Rust-oriented ordinary interface", "minimally sufficient mechanisms"]
+    }
+  ],
+  "evidence_limits": [
+    "The Isabelle/PIDE history is primarily first-party and does not independently establish causation or optimality.",
+    "No fresh Isabelle execution or performance measurement was performed.",
+    "No complete source-history reconstruction across every Isabelle release was performed.",
+    "Cross-project Anneal conclusions are derived judgments, not adopted design policy."
+  ]
+}

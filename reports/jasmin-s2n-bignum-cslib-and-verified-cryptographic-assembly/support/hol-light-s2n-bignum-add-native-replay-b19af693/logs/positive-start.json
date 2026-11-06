@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-cross-sources/s2n-bignum",
+    "--env",
+    "OPAMROOT=/home/opam/anneal-hol-opam",
+    "--env",
+    "LC_ALL=C",
+    "--env",
+    "HOLLIGHT_DIR=/home/opam/anneal-cross-sources/hol-light",
+    "--env",
+    "HOLLIGHT_LOAD_PATH=",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa",
+    "opam",
+    "exec",
+    "--switch=hol54",
+    "--",
+    "timeout",
+    "--signal=KILL",
+    "1200",
+    "/home/opam/anneal-cross-output/selected.native"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:19:30.072340+00:00",
+  "classification": "single authorized positive native OCaml proof execution after all gates passed; GNU1200s KILL; nativePID/RSS/maps unobserved; no custom lifecycle wrapper",
+  "host_pid": 26804
+}

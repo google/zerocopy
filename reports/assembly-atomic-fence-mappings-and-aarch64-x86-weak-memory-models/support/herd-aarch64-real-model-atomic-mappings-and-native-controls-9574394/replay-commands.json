@@ -1,0 +1,387 @@
+{
+  "execution_policy": "Description only, not executed by this reporting task. Use fresh scratch; do not overwrite preserved evidence. Tool/root placeholders require exact reviewed subjects.",
+  "commands": [
+    {
+      "capture": "evidence/runs/MP-r0-a0.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/MP-r0-a0.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/MP-r0-a1.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/MP-r0-a1.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/MP-r0-p1.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/MP-r0-p1.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/MP-r1-a0.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/MP-r1-a0.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/MP-r1-a1.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/MP-r1-a1.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/MP-r1-p1.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/MP-r1-p1.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/SB.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/SB.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/SB-STLR-LDAPR.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/SB-STLR-LDAPR.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/SB-STLR-LDAR.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/SB-STLR-LDAR.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/SB-dmb.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-I",
+        "herd/libdir",
+        "-model",
+        "herd/libdir/aarch64.cat",
+        "<HERD_INPUTS>/SB-dmb.litmus"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/final-rustc-atomic-asm.json",
+      "argv": [
+        "<MAY1_TOOLCHAIN>/bin/rustc",
+        "atomic_wrappers.rs",
+        "--edition=2021",
+        "--emit=asm",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "debuginfo=0",
+        "-o",
+        "atomic_wrappers.s"
+      ],
+      "cwd": "<FRESH_OWNED_COPY_OF_evidence>",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/annotation-compile.json",
+      "argv": [
+        "<MAY1_TOOLCHAIN>/bin/rustc",
+        "annotation_controls.rs",
+        "--edition=2021",
+        "--emit=llvm-ir=annotation_controls.ll,asm=annotation_controls.s",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "debuginfo=0"
+      ],
+      "cwd": "<FRESH_OWNED_COPY_OF_evidence>",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels; COMPILATION ONLY, never link/call wrong annotation controls"
+    },
+    {
+      "capture": "evidence/runs/concurrent-build.json",
+      "argv": [
+        "<MAY1_TOOLCHAIN>/bin/rustc",
+        "concurrent_assembly.rs",
+        "--edition=2021",
+        "--emit=asm=concurrent_assembly.s,link=concurrent_assembly",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "debuginfo=0",
+        "-C",
+        "panic=abort"
+      ],
+      "cwd": "<FRESH_OWNED_COPY_OF_evidence>",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/concurrent-native.json",
+      "argv": [
+        "./concurrent_assembly"
+      ],
+      "cwd": "<FRESH_OWNED_COPY_OF_evidence>",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels; selected valid-address native experiment, separate authorization/platform required for replay"
+    },
+    {
+      "capture": "evidence/runs/rustc-version.json",
+      "argv": [
+        "<MAY1_TOOLCHAIN>/bin/rustc",
+        "-Vv"
+      ],
+      "cwd": "<FRESH_OWNED_COPY_OF_evidence>",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/rustc-cfg.json",
+      "argv": [
+        "<MAY1_TOOLCHAIN>/bin/rustc",
+        "--print",
+        "cfg"
+      ],
+      "cwd": "<FRESH_OWNED_COPY_OF_evidence>",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/herd-version.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "opam",
+        "exec",
+        "--",
+        "./_build_verified/default/herd/herd.exe",
+        "-version"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/herd-binary-hash.json",
+      "argv": [
+        "docker",
+        "exec",
+        "<OWNED_CONTAINER>",
+        "sha256sum",
+        "<HERD_SOURCE>/_build_verified/default/herd/herd.exe"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/source-verify.json",
+      "argv": [
+        "docker",
+        "exec",
+        "--workdir",
+        "<HERD_SOURCE>",
+        "<OWNED_CONTAINER>",
+        "sha256sum",
+        "-c",
+        "<HERD_SOURCE_INVENTORY>"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/host-os.json",
+      "argv": [
+        "sw_vers",
+        "-productVersion"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/host-process-arch.json",
+      "argv": [
+        "arch"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    },
+    {
+      "capture": "evidence/runs/host-cpu-query.json",
+      "argv": [
+        "sysctl",
+        "-n",
+        "machdep.cpu.brand_string"
+      ],
+      "cwd": "container --workdir or host command as recorded",
+      "exit": 0,
+      "role": "actual preserved invocation, portable display labels"
+    }
+  ],
+  "herd_alternative": "Given exact built HERD7, use package upstream/herdtools7/herd/libdir as -I and its aarch64.cat as -model, with each evidence/inputs/*.litmus. Compare state sets, not timing/hash fields alone.",
+  "rustc_alternative": "Use exact May1 RUSTC in a fresh copy of evidence. The source filenames and option sequence are exactly the captured argv following the compiler path.",
+  "no_claim": "Commands describe the preserved runs; no report-side subject replay has been performed."
+}

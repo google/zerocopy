@@ -1,23 +1,14 @@
 {
   "topics": [
-    "os/extensible-kernels",
-    "os/time-protection",
-    "security/constant-time",
-    "security/side-channels",
-    "security/secret-erasure",
-    "compilers/constant-time-preservation",
-    "proof/certificates",
-    "proof/consumer-binding",
-    "compcert-ct",
-    "jasmin",
-    "sel4",
-    "anneal/execution-boundaries",
-    "lean/mechanized-models",
-    "lean/axioms"
+    "verification",
+    "verification/cryptography",
+    "verification/compcert",
+    "isa/jasmin",
+    "systems/os-kernels"
   ],
   "subjects": [
     {
-      "name": "Formal Verification of a Constant-Time Preserving C Compiler (Barthe, Blazy, Grégoire, Hutin, Laporte, Pichardie & Trieu / CompCert-CT)",
+      "name": "Formal Verification of a Constant-Time Preserving C Compiler (Barthe, Blazy, Gr\u00e9goire, Hutin, Laporte, Pichardie & Trieu / CompCert-CT)",
       "identity": {
         "doi": "10.1145/3371075",
         "publication": "POPL 2020",
@@ -26,7 +17,7 @@
       }
     },
     {
-      "name": "Jasmin: High-Assurance and High-Speed Cryptography (Almeida, Barbosa, Barthe, Blot, Grégoire, Laporte, Oliveira, Pacheco, Schmidt & Strub)",
+      "name": "Jasmin: High-Assurance and High-Speed Cryptography (Almeida, Barbosa, Barthe, Blot, Gr\u00e9goire, Laporte, Oliveira, Pacheco, Schmidt & Strub)",
       "identity": {
         "doi": "10.1145/3133956.3134078",
         "publication": "CCS 2017",
@@ -86,15 +77,6 @@
       }
     },
     {
-      "name": "Anneal Trusted Verification Boundary and PassCompiler / CertChecker",
-      "identity": {
-        "repository": "AeneasVerif/anneal",
-        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc",
-        "rv64_compiler_revision": "7677632ab267e6d7075fc9ddca7280ddf0296f87",
-        "x86_compiler_revision": "3a89578"
-      }
-    },
-    {
       "name": "Kraken AArch64 Consumer-Bound Certificate Checker",
       "identity": {
         "repository": "AeneasVerif/kraken",
@@ -110,19 +92,10 @@
       }
     },
     {
-      "name": "Mechanized Lean 4 Model of Compiler Constant-Time Preservation, seL4 Time Protection, and the 7-Obligation Ring-0 Admission Gate",
+      "name": "Anneal verification framework",
       "identity": {
-        "artifact": "support/CompilerPreservationTimeProtectionAndAnnealCtGate.lean",
-        "sha256": "0c938c519b35f40c85a09cee169aa3c607804c17003044cd12e104aab1e6ea0e"
-      }
-    },
-    {
-      "name": "Empirical Compiler Leakage and seL4 Time Protection Cycle-Cost Probe",
-      "identity": {
-        "artifact": "support/ct_compiler_and_time_protection_probe.py",
-        "sha256": "81e2f91f6e28522d6267a88ac21f0fca72504fd028b62669bb8bbeb0fc8e36a7",
-        "results_artifact": "support/ct_compiler_and_time_protection_probe_results.json",
-        "results_sha256": "e766a131fdc4868601f4b9af24b0233d8ac7edec059811ec5ca716ce7dc79c86"
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
       }
     }
   ],

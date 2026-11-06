@@ -977,9 +977,9 @@ Reference revision without repeating the full source crawl:
 
 1. **Rerun the host layout and `-Z randomize-layout` probes**:
    ```console
-   rustc support/layout_probes.rs -o /tmp/layout_probes && /tmp/layout_probes
-   rustc -Z randomize-layout -Z layout-seed=42 support/layout_probes.rs -o /tmp/layout_probes_s42 && /tmp/layout_probes_s42
-   rustc -Z randomize-layout -Z layout-seed=7 support/layout_probes.rs -o /tmp/layout_probes_s7 && /tmp/layout_probes_s7
+   rustc support/layout_probes.rs -o ./layout_probes && ./layout_probes
+   rustc -Z randomize-layout -Z layout-seed=42 support/layout_probes.rs -o ./layout_probes_s42 && ./layout_probes_s42
+   rustc -Z randomize-layout -Z layout-seed=7 support/layout_probes.rs -o ./layout_probes_s7 && ./layout_probes_s7
    ```
    Compare the emitted JSON against `support/layout_probes_output.json`. Check
    whether `SingleU64`, `TupleHet`, or `RustUnion` begin randomizing under

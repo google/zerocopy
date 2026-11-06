@@ -1,0 +1,1985 @@
+{
+  "compiler": "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/bin/lean",
+  "compiler_sha256": "e215cbe9eab0914b49761e9e486d388e2e701cf876d1079d1ba733c48edb2d7b",
+  "targets": [
+    "LeanRV64D",
+    "Sail.ArchSemSequential"
+  ],
+  "order": [
+    "Sail.BitVec",
+    "Sail.IntRange",
+    "Sail.Attr",
+    "Sail.Common",
+    "Sail.ArchSem",
+    "Sail.ConcurrencyInterfaceV1",
+    "Sail.ArchSemSequential",
+    "Sail.Sail",
+    "Sail",
+    "LeanRV64D.Defs",
+    "LeanRV64D.SpecializationArchSem",
+    "LeanRV64D.FakeReal",
+    "LeanRV64D.RiscvExtras",
+    "LeanRV64D.Flow",
+    "LeanRV64D.LeanRV64D",
+    "LeanRV64D.Xlen",
+    "LeanRV64D.Errors",
+    "LeanRV64D.Mapping",
+    "LeanRV64D.HexBits",
+    "LeanRV64D.HexBitsSigned",
+    "LeanRV64D.DecBits",
+    "LeanRV64D.AextTypes",
+    "LeanRV64D.PmTypes",
+    "LeanRV64D.Flen",
+    "LeanRV64D.Vlen",
+    "LeanRV64D.MemAddrtype",
+    "LeanRV64D.TypesExt",
+    "LeanRV64D.InterruptInterface",
+    "LeanRV64D.Arith",
+    "LeanRV64D.ExtRegs",
+    "LeanRV64D.Option",
+    "LeanRV64D.Common0",
+    "LeanRV64D.InstsBegin",
+    "LeanRV64D.Callbacks0",
+    "LeanRV64D.CfiTypes",
+    "LeanRV64D.VextTypes",
+    "LeanRV64D.ZihintntlTypes",
+    "LeanRV64D.MemMetadata",
+    "LeanRV64D.ZicbopInsts",
+    "LeanRV64D.ZaamoInsts",
+    "LeanRV64D.MextInsts",
+    "LeanRV64D.VextArithInsts",
+    "LeanRV64D.VextFpInsts",
+    "LeanRV64D.VextMemInsts",
+    "LeanRV64D.VextMaskInsts",
+    "LeanRV64D.VextVmInsts",
+    "LeanRV64D.VextFpVmInsts",
+    "LeanRV64D.VextRedInsts",
+    "LeanRV64D.VextFpRedInsts",
+    "LeanRV64D.ZvknedInsts",
+    "LeanRV64D.ZvknhabInsts",
+    "LeanRV64D.ZvabdInsts",
+    "LeanRV64D.ZawrsInsts",
+    "LeanRV64D.ZicondInsts",
+    "LeanRV64D.ZibiInsts",
+    "LeanRV64D.ZilxInsts",
+    "LeanRV64D.StepCommon",
+    "LeanRV64D.StepExt",
+    "LeanRV64D.IsaVersion",
+    "LeanRV64D.Vector",
+    "LeanRV64D.VmemTypes",
+    "LeanRV64D.Common",
+    "LeanRV64D.Prelude",
+    "LeanRV64D.Nan",
+    "LeanRV64D.Inf",
+    "LeanRV64D.Sign",
+    "LeanRV64D.Zero",
+    "LeanRV64D.Normal",
+    "LeanRV64D.RvfiDii",
+    "LeanRV64D.PlatformConfig",
+    "LeanRV64D.Types",
+    "LeanRV64D.RegType",
+    "LeanRV64D.FregType",
+    "LeanRV64D.ZkrControl",
+    "LeanRV64D.Arithmetic",
+    "LeanRV64D.TypesKext",
+    "LeanRV64D.MemUtils",
+    "LeanRV64D.PhysMemInterface",
+    "LeanRV64D.RangeUtil",
+    "LeanRV64D.Classify",
+    "LeanRV64D.FloatClassify",
+    "LeanRV64D.Callbacks",
+    "LeanRV64D.Events",
+    "LeanRV64D.SdtrigTypes",
+    "LeanRV64D.MemTypeUtils",
+    "LeanRV64D.StateenAccessChecks",
+    "LeanRV64D.SyncException",
+    "LeanRV64D.SysRegs",
+    "LeanRV64D.SdtrigTypeUtils",
+    "LeanRV64D.ZvkUtils",
+    "LeanRV64D.SplitAccessUtils",
+    "LeanRV64D.Regs",
+    "LeanRV64D.PcAccess",
+    "LeanRV64D.SdtrigRegs",
+    "LeanRV64D.ZicfilpInsts",
+    "LeanRV64D.ZicfissInsts",
+    "LeanRV64D.InterruptRegs",
+    "LeanRV64D.PmpRegs",
+    "LeanRV64D.VextRegs",
+    "LeanRV64D.SysExceptions",
+    "LeanRV64D.StateenRegs",
+    "LeanRV64D.ZicfilpRegs",
+    "LeanRV64D.PmUtils",
+    "LeanRV64D.VmemPtw",
+    "LeanRV64D.TransformedInst",
+    "LeanRV64D.Pma",
+    "LeanRV64D.FdextRegs",
+    "LeanRV64D.AddrChecks",
+    "LeanRV64D.Counters",
+    "LeanRV64D.SdtrigControl",
+    "LeanRV64D.SimpleInterruptGenerator",
+    "LeanRV64D.PmpControl",
+    "LeanRV64D.VextControl",
+    "LeanRV64D.VmemPte",
+    "LeanRV64D.ValidateConfig",
+    "LeanRV64D.FextInsts",
+    "LeanRV64D.BaseInsts",
+    "LeanRV64D.Smcntrpmf",
+    "LeanRV64D.SysControl",
+    "LeanRV64D.VextUtilsInsts",
+    "LeanRV64D.VmemTlb",
+    "LeanRV64D.DextInsts",
+    "LeanRV64D.ZfhInsts",
+    "LeanRV64D.ZfbfminUtils",
+    "LeanRV64D.Platform",
+    "LeanRV64D.ZicsrInsts",
+    "LeanRV64D.VextVsetInsts",
+    "LeanRV64D.ZfaInsts",
+    "LeanRV64D.VextFpUtilsInsts",
+    "LeanRV64D.InterruptImplementation",
+    "LeanRV64D.Mem",
+    "LeanRV64D.Ssqosid",
+    "LeanRV64D.Vmem",
+    "LeanRV64D.VmemUtils",
+    "LeanRV64D.FetchRvfi",
+    "LeanRV64D.Model",
+    "LeanRV64D.ZicbomInsts",
+    "LeanRV64D.Fetch",
+    "LeanRV64D.InstsEnd",
+    "LeanRV64D.DecodeExt",
+    "LeanRV64D.Step",
+    "LeanRV64D.Main",
+    "LeanRV64D"
+  ],
+  "modules": {
+    "LeanRV64D": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "5379c3d073b33876d3ff757900f72c6ba0eedf9ac89f2bd86cde2d72a50d67ae",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Common",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.RvfiDii",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.InterruptInterface",
+        "LeanRV64D.InterruptRegs",
+        "LeanRV64D.PmpRegs",
+        "LeanRV64D.FdextRegs",
+        "LeanRV64D.VextRegs",
+        "LeanRV64D.Smcntrpmf",
+        "LeanRV64D.SdtrigTypes",
+        "LeanRV64D.Ssqosid",
+        "LeanRV64D.Main"
+      ]
+    },
+    "LeanRV64D.Flow": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Flow.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "1fbc9b3e3b0318750e7338df8c2185aaf59d7a8771b2b20efabc58c93499dfea",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "Sail": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "24b92934ac9f5508446f2f5ce415b8f90522c3057d24f9063f93a0e46c69f973",
+      "imports": [
+        "Sail.BitVec",
+        "Sail.IntRange",
+        "Sail.Sail"
+      ]
+    },
+    "Sail.BitVec": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/BitVec.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "34c6424c6aa606206deaefa27867358a9df749fe3f53fe8b6f50cac64c601ed4",
+      "imports": [
+        "Lean.Elab.Term",
+        "Lean.Meta.Reduce",
+        "Std.Tactic.BVDecide"
+      ]
+    },
+    "Sail.IntRange": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/IntRange.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "405efd008ef4811b8dc664ccb982d5d2838a53423875f131450aad139846e4a9",
+      "imports": []
+    },
+    "Sail.Sail": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/Sail.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "c820e15bb12c887616fb92cb352a2beba32032027a8349575067bd31f0489aa4",
+      "imports": [
+        "Sail.Attr",
+        "Sail.ArchSem",
+        "Sail.ArchSemSequential",
+        "Sail.ConcurrencyInterfaceV1"
+      ]
+    },
+    "Sail.Attr": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/Attr.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "890c8435c6a7e13f07f20b746c88639baf075c6b21808d921f3bec4fda76211e",
+      "imports": [
+        "Lean"
+      ]
+    },
+    "Sail.ArchSem": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/ArchSem.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "70ff8f29b800fd33aa26b3d2ccd22a2f6456b95cf6b96c44b96090c03e24c447",
+      "imports": [
+        "Sail.Common"
+      ]
+    },
+    "Sail.Common": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/Common.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "5269603c159519b598edf26b39cc8ff5b0d54a79846b2b652f303950719d8452",
+      "imports": [
+        "Sail.Attr"
+      ]
+    },
+    "Sail.ArchSemSequential": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/ArchSemSequential.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "8c7b8955a69444032283046a3431147c7ffc998df7807b6c640781973b29bace",
+      "imports": [
+        "Sail.ArchSem",
+        "Std.Data.ExtHashMap"
+      ]
+    },
+    "Sail.ConcurrencyInterfaceV1": {
+      "source": "/home/opam/anneal-sail-sources/lean-sail/Sail/ConcurrencyInterfaceV1.lean",
+      "root": "/home/opam/anneal-sail-sources/lean-sail",
+      "sha256": "8d3b8eb4131186e26e20e9e756ba8e71b47a2a6ec018e37f0f029baab9014df0",
+      "imports": [
+        "Sail.Attr",
+        "Sail.Common",
+        "Std.Data.ExtDHashMap",
+        "Std.Data.ExtHashMap"
+      ]
+    },
+    "LeanRV64D.Defs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Defs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a321e51ce1c87ae0ad16fb603f0cc72817b544d28f6df76f8acee2a7258c6f62",
+      "imports": [
+        "Sail"
+      ]
+    },
+    "LeanRV64D.SpecializationArchSem": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SpecializationArchSem.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "93852cd6cabfa25fc6641ad14a4fe2c66a67b3d447cce7c5c68379c377a9416d",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs"
+      ]
+    },
+    "LeanRV64D.FakeReal": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/FakeReal.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a142fdf76faeb3c3550c695eb35c974a8b9dd43d4b9a223f1419229569a2104e",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs"
+      ]
+    },
+    "LeanRV64D.RiscvExtras": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/RiscvExtras.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "be235eef54451d8ee7d638f4c1affa688a47f9418ed4638f27b315144c85cc76",
+      "imports": [
+        "Sail.Sail",
+        "LeanRV64D.Defs"
+      ]
+    },
+    "LeanRV64D.Common": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Common.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "48553b9b3a781576d56e7b31a5fc5f1c764d29c32348cc86c34262c9937c3aca",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Vector"
+      ]
+    },
+    "LeanRV64D.LeanRV64D": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/LeanRV64D.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "dd67df93f4873c73b821f5941290ce5ad42d8dff4e0a9883436aab53f8a6c8df",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.Vector": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Vector.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f5c5c6a3837b07bdc600fd63625c5a155dfb1b9dd5d25756176f77865083cbdd",
+      "imports": [
+        "LeanRV64D.LeanRV64D"
+      ]
+    },
+    "LeanRV64D.Prelude": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Prelude.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "ca699e27a3640107848fba6fa72feb2b40a6edd8a548f2aa4d22fbaa0f262d48",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Vector"
+      ]
+    },
+    "LeanRV64D.Xlen": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Xlen.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "60725d54cc139594714a5b13a6f34f12574f58ddb70f97734a126d5592a4693b",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.RvfiDii": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/RvfiDii.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "63ca65f55ac12a387ba4d1d2e25f7ba2a90d6786d2813b33125c2f386f682dca",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors"
+      ]
+    },
+    "LeanRV64D.Errors": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Errors.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "1b4f561b86d0902da36bdda74735d7af5f65298fc5f90da94a7385c178b73cf5",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.PlatformConfig": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PlatformConfig.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "54771816d74225fc2d377f98d2c375c5b0737ce1e367d8d993231a1b5a47b8e9",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Mapping",
+        "LeanRV64D.Vector",
+        "LeanRV64D.HexBits",
+        "LeanRV64D.HexBitsSigned",
+        "LeanRV64D.DecBits",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.AextTypes",
+        "LeanRV64D.PmTypes",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Flen",
+        "LeanRV64D.Vlen"
+      ]
+    },
+    "LeanRV64D.Mapping": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Mapping.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d8d2749fc68a8ab1febcbea98d6b0f17483d59eebe0f5de77df7c65383f949ae",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.HexBits": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/HexBits.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f425c6af6b551b0d4962d83630d2353635ea0cdde1821ec7ade5dfacf90b04dc",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.HexBitsSigned": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/HexBitsSigned.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "dea210601d6d028470628a11054472d42dbcfd52eef07c7266728c1455c1d211",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.DecBits": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/DecBits.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a5d00869f27637d551e49c41c3e132fae507cb19af7a71e81eef551090620e4e",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.AextTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/AextTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "51c194f0ac1f1b303628f2c7f76f7a1a2a18867b1b3c72811ea5dc8f5671b5ef",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.PmTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PmTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "4e327b4bd48bfe9f4c3777a8f4035cf9c48d8e1801e2d285bae6c73b9630bc2c",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.IsaVersion": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/IsaVersion.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "1884cd9ddac020844ca723c8c28bad30951ffad58a8a6cd882ea273dc47976fa",
+      "imports": [
+        "LeanRV64D.Flow"
+      ]
+    },
+    "LeanRV64D.Flen": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Flen.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "1fb386f6630cfdb932d4cc41e093cf83e9a07a897640abc69e7100c3e9f4f3a7",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.Vlen": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Vlen.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "290131a564de3b8ccc4b595b4c37561cbfeea20c2a9d47981df195e502f54dd4",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.SysRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SysRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d8c2d9dc15e8f79ddb26ff8ae1aec13b46b00abc58e5ba443e1ffbf5363b4b7d",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.PmTypes",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types"
+      ]
+    },
+    "LeanRV64D.MemAddrtype": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/MemAddrtype.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "57f94dddd86604055f66c590949d04a83b336d000ec6c81b914e8c8d6c38d008",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.Types": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Types.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "b506e481240f5c7451b65f9ccd74a32a0fbf91d031fc7fc98afa0460a45997f6",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.TypesExt"
+      ]
+    },
+    "LeanRV64D.TypesExt": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/TypesExt.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "5f10f2d75648950f8ec532a7b46c1852a67209be23e3f5cb51012f071f2404cb",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.InterruptInterface": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/InterruptInterface.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "702c075d602a81d8b9aba4b77fb204004ca7fc950a92442c9464a9fc91db8c10",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.InterruptRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/InterruptRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "ec52f2de6d46a84dd1e3199e985417989ddc7325d2aeb445616ac9d667f31491",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.InterruptInterface"
+      ]
+    },
+    "LeanRV64D.Callbacks": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Callbacks.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "41c2552629372b1938a594657f3f207595d7e9645a0876c13cd2e1313cb021cd",
+      "imports": [
+        "LeanRV64D.HexBits",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig"
+      ]
+    },
+    "LeanRV64D.PmpRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PmpRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "1e592c742963eeb5bb4d14084e15aa04025c311d6c44e3b1d12a5d8c4b090264",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.FdextRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/FdextRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "cf8446d4eb1cdaf4d1f7967e7bfb9a78903b5aa270200369926c9316f2571bf4",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Flen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.Regs",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.FregType"
+      ]
+    },
+    "LeanRV64D.Regs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Regs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f685022fccd7019415016d4e8e6efbcdfc898e8d6fb4ebc752e50c5a3d0e3d54",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Arith",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.RegType"
+      ]
+    },
+    "LeanRV64D.Arith": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Arith.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "6b9fa8e80654934c5e5565ecbd6b6a776b8659cc402ad8d352f61f7d36df30db",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.RegType": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/RegType.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "33e6eec0e417ca19e521923d4ee3c34a38fcc9114b93d802cc6bf0f7522cd9e1",
+      "imports": [
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.FregType": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/FregType.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "49e0e5eb22e38264e994152d09b94d4acef9b8a0c6be7096f7f73a5060f44a5e",
+      "imports": [
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.VextRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "3d5315f17d516d9545eee84649427fe7d935a37c1aec78a8ee0cbfec007d67c5",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.Smcntrpmf": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Smcntrpmf.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a48550a68ac5a4899e7880fa0871c51515294cccb0519b5d26357e2729f6452e",
+      "imports": [
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Counters"
+      ]
+    },
+    "LeanRV64D.Counters": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Counters.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "8fa6f1c15c4486c3b9229625e91a919f39bd5c4f7d12e24ea5d70755d27dfe34",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.Events",
+        "LeanRV64D.InterruptInterface",
+        "LeanRV64D.InterruptRegs"
+      ]
+    },
+    "LeanRV64D.Events": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Events.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "fd780e57b4004d8c7eb3382a1569e523ff7d3e2adc3617dabad8a52b09bdeaf9",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.PlatformConfig"
+      ]
+    },
+    "LeanRV64D.SdtrigTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SdtrigTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "4cc94a787b6017607daa9e19968d1ce198cff200f2a1cabd7dc74206808e752f",
+      "imports": [
+        "LeanRV64D.Vector",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.PlatformConfig"
+      ]
+    },
+    "LeanRV64D.Ssqosid": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Ssqosid.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "9ae1df36212ee0a128f0b09fc9022c00072a22c68092b564eff23e71f50836ba",
+      "imports": [
+        "LeanRV64D.ZicsrInsts"
+      ]
+    },
+    "LeanRV64D.ZicsrInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicsrInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "9e2428d0780bafb9788ad5c11b8b70bfc3ffbbd73ed6480716b12a0d956067fc",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.Regs",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.ExtRegs",
+        "LeanRV64D.InterruptInterface",
+        "LeanRV64D.InterruptRegs",
+        "LeanRV64D.Counters",
+        "LeanRV64D.SysExceptions",
+        "LeanRV64D.PmpRegs",
+        "LeanRV64D.StateenRegs",
+        "LeanRV64D.FdextRegs",
+        "LeanRV64D.VextRegs",
+        "LeanRV64D.Smcntrpmf",
+        "LeanRV64D.SdtrigTypes",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.InstsBegin",
+        "LeanRV64D.ZkrControl"
+      ]
+    },
+    "LeanRV64D.ExtRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ExtRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "64ec3082f524fb8496252c61029dd491c77fd64c2e1c5b6b286d1d80f07ddb5b",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.SysExceptions": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SysExceptions.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "8255b972d6e3de48dfdb93a2e02a945068c365cc76a6e96cbeb25a050b2f3999",
+      "imports": [
+        "LeanRV64D.Errors",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.StateenRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/StateenRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "5bbec87928d683d86bf387346e3a51d31e197f0ba1e16fc1823b69abe2af5929",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.SysControl": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SysControl.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d24a29330c6e97077710f0dff725f7c2fa851d7bfe0e57db27dfc201e5463680",
+      "imports": [
+        "LeanRV64D.Option",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.PcAccess",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.Events",
+        "LeanRV64D.InterruptInterface",
+        "LeanRV64D.InterruptRegs",
+        "LeanRV64D.SysExceptions",
+        "LeanRV64D.PmpRegs",
+        "LeanRV64D.PmpControl",
+        "LeanRV64D.StateenRegs",
+        "LeanRV64D.SdtrigRegs",
+        "LeanRV64D.SdtrigControl",
+        "LeanRV64D.ZicfilpRegs",
+        "LeanRV64D.StateenAccessChecks"
+      ]
+    },
+    "LeanRV64D.Option": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Option.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a6d7487dffff136c803564888e8777300c83b8ec4d80c74f20401a8e5e2ccc86",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VmemTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VmemTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c43972a54f7d5680265a84c0ecaeee7492281bf8f05519c1968ac35fe75b06cf",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Errors"
+      ]
+    },
+    "LeanRV64D.PcAccess": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PcAccess.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "32609143cadcf44cdaca96da1db14e09746b502c8b86338841e9b846437227d8",
+      "imports": [
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Common0",
+        "LeanRV64D.Callbacks"
+      ]
+    },
+    "LeanRV64D.Common0": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Common0.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d9675bd0823bb11186cc24c32bfbf3035e71b81333999beeb78ae5e36c23282d",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.PmpControl": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PmpControl.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d9e75283905eef168f64a6488ceb92a7f5b8f58c3c613b6f87c6ab472a015618",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.MemTypeUtils",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.PmpRegs"
+      ]
+    },
+    "LeanRV64D.MemTypeUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/MemTypeUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "b4cd38669521d118f89a674e56746cc118d274e91ea9a860ca8ab8b2bfc5f2e9",
+      "imports": [
+        "LeanRV64D.Errors",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.VmemTypes"
+      ]
+    },
+    "LeanRV64D.SdtrigRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SdtrigRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "2c99f6be9598e3dab805be255bd758d965048e3017053550a01893ef65b9eacd",
+      "imports": [
+        "LeanRV64D.SdtrigTypes"
+      ]
+    },
+    "LeanRV64D.SdtrigControl": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SdtrigControl.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "525e6d46033e2d8337d2d444f151285173cd7d435f0485d02de94dcaab55c993",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.InterruptRegs",
+        "LeanRV64D.SdtrigTypeUtils",
+        "LeanRV64D.SdtrigTypes"
+      ]
+    },
+    "LeanRV64D.SdtrigTypeUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SdtrigTypeUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "9c837a94a10de160d1829bacdea52d2268dc8822097960ce74be2efdad2a6474",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Types"
+      ]
+    },
+    "LeanRV64D.ZicfilpRegs": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicfilpRegs.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "501cec60e279954c5e70a7d91cd9c52a2b0f19d24638da40cbb0fd3f17321f6e",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.StateenAccessChecks": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/StateenAccessChecks.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d26ef039f88245ca1953f065284ddb843a991666dbb72c85f39192ff2651bfaf",
+      "imports": [
+        "LeanRV64D.PlatformConfig"
+      ]
+    },
+    "LeanRV64D.InstsBegin": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/InstsBegin.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c0f97d6dbac644f58ebff110bf5b34800268f8a12cdb7ec2473a6e93e09e4a3b",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZkrControl": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZkrControl.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "6212bdbbfe85feba28d03928bcc39951d16bfed82c62e0e6c59ceed8402d5fb9",
+      "imports": [
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.Main": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Main.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "378a59704940f167cdaabf7abd6ffde2538c4c6906c834b53ef891941b7dfeb0",
+      "imports": [
+        "LeanRV64D.Step",
+        "LeanRV64D.Model"
+      ]
+    },
+    "LeanRV64D.Step": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Step.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a582a92629904e8a58791e41156e4c97bdadda009be1167de370142afd24f318",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.Common0",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.PcAccess",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.Events",
+        "LeanRV64D.ExtRegs",
+        "LeanRV64D.InterruptRegs",
+        "LeanRV64D.Counters",
+        "LeanRV64D.AddrChecks",
+        "LeanRV64D.SysExceptions",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.SdtrigTypes",
+        "LeanRV64D.SdtrigControl",
+        "LeanRV64D.ZicfilpRegs",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.Platform",
+        "LeanRV64D.InterruptImplementation",
+        "LeanRV64D.Callbacks0",
+        "LeanRV64D.InstsBegin",
+        "LeanRV64D.ZicfilpInsts",
+        "LeanRV64D.InstsEnd",
+        "LeanRV64D.StepCommon",
+        "LeanRV64D.StepExt",
+        "LeanRV64D.DecodeExt",
+        "LeanRV64D.Fetch",
+        "LeanRV64D.TransformedInst"
+      ]
+    },
+    "LeanRV64D.AddrChecks": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/AddrChecks.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "1da701d931e3106039e8314fc5f679950e89abdf5bdf519feb73995a29d46bc3",
+      "imports": [
+        "LeanRV64D.Regs"
+      ]
+    },
+    "LeanRV64D.SyncException": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SyncException.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "ba17b84ce726552d6280f2f9b7ac88af3c4f876116015dd77b87b07e2c0a4e55",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.PlatformConfig"
+      ]
+    },
+    "LeanRV64D.Platform": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Platform.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "15339fecb413641655aa20be7588e5e2e3b903828aebfa3f03b8fb6d2c548cf0",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.MemTypeUtils",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.Smcntrpmf",
+        "LeanRV64D.SimpleInterruptGenerator"
+      ]
+    },
+    "LeanRV64D.SimpleInterruptGenerator": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SimpleInterruptGenerator.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "935127563caefb07a1504968b02e236d880903e3a6480c35c4a55b18a6fe7a8f",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.MemTypeUtils",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.InterruptInterface",
+        "LeanRV64D.InterruptRegs"
+      ]
+    },
+    "LeanRV64D.InterruptImplementation": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/InterruptImplementation.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "442cd16ea2f08f17416ba71e876261b1d190031844c612d442a9469c1547ec6d",
+      "imports": [
+        "LeanRV64D.Platform"
+      ]
+    },
+    "LeanRV64D.Callbacks0": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Callbacks0.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c0debde75d401cf5748ad9ce9733cd1dbae90fc1d513f0cf54634d5ab9a630b6",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZicfilpInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicfilpInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "417c2ed125c470ea78daa59db5dad20967f37bcd634c27acbad15ce31f87fc3e",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.CfiTypes"
+      ]
+    },
+    "LeanRV64D.CfiTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/CfiTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f3185b8265ef8c90be7bcdcc85c7911cb91f41f968f51ac445e95bf1bc0141c3",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.InstsEnd": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/InstsEnd.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a287813afb526ee63a03aba1c9fd1aed9bc6c149e66a127a3980ef1d9a6e8a1a",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Arith",
+        "LeanRV64D.Classify",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Flen",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.Arithmetic",
+        "LeanRV64D.FloatClassify",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.Regs",
+        "LeanRV64D.PcAccess",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.Events",
+        "LeanRV64D.SysExceptions",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.FdextRegs",
+        "LeanRV64D.VextTypes",
+        "LeanRV64D.VextRegs",
+        "LeanRV64D.VextControl",
+        "LeanRV64D.TypesKext",
+        "LeanRV64D.ZvkUtils",
+        "LeanRV64D.SdtrigRegs",
+        "LeanRV64D.ZihintntlTypes",
+        "LeanRV64D.ZicfilpRegs",
+        "LeanRV64D.PmUtils",
+        "LeanRV64D.SplitAccessUtils",
+        "LeanRV64D.Mem",
+        "LeanRV64D.VmemTlb",
+        "LeanRV64D.Vmem",
+        "LeanRV64D.InstsBegin",
+        "LeanRV64D.VmemUtils",
+        "LeanRV64D.ZicbopInsts",
+        "LeanRV64D.ZicfilpInsts",
+        "LeanRV64D.BaseInsts",
+        "LeanRV64D.ZaamoInsts",
+        "LeanRV64D.MextInsts",
+        "LeanRV64D.FextInsts",
+        "LeanRV64D.DextInsts",
+        "LeanRV64D.ZfhInsts",
+        "LeanRV64D.ZfaInsts",
+        "LeanRV64D.VextUtilsInsts",
+        "LeanRV64D.VextFpUtilsInsts",
+        "LeanRV64D.VextVsetInsts",
+        "LeanRV64D.VextArithInsts",
+        "LeanRV64D.VextFpInsts",
+        "LeanRV64D.VextMemInsts",
+        "LeanRV64D.VextMaskInsts",
+        "LeanRV64D.VextVmInsts",
+        "LeanRV64D.VextFpVmInsts",
+        "LeanRV64D.VextRedInsts",
+        "LeanRV64D.VextFpRedInsts",
+        "LeanRV64D.ZvknedInsts",
+        "LeanRV64D.ZvknhabInsts",
+        "LeanRV64D.ZvabdInsts",
+        "LeanRV64D.ZicsrInsts",
+        "LeanRV64D.ZawrsInsts",
+        "LeanRV64D.ZicfissInsts",
+        "LeanRV64D.ZicondInsts",
+        "LeanRV64D.ZicbomInsts",
+        "LeanRV64D.ZibiInsts",
+        "LeanRV64D.ZilxInsts",
+        "LeanRV64D.ZfbfminUtils"
+      ]
+    },
+    "LeanRV64D.Classify": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Classify.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "308b730acbef7720e3636d63359e62169c8df174b97a6969046aaa43d461cfc2",
+      "imports": [
+        "LeanRV64D.Nan",
+        "LeanRV64D.Inf",
+        "LeanRV64D.Sign",
+        "LeanRV64D.Zero",
+        "LeanRV64D.Normal"
+      ]
+    },
+    "LeanRV64D.Nan": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Nan.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "3e86b2a681ea42fca360d82ca9ace0c4824628a52306e483ca79ea77b0eda523",
+      "imports": [
+        "LeanRV64D.Common"
+      ]
+    },
+    "LeanRV64D.Inf": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Inf.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "7216429b84334f0ab262cff02aae0e27c41a7bab12f5d57af0b28379949aa212",
+      "imports": [
+        "LeanRV64D.Common"
+      ]
+    },
+    "LeanRV64D.Sign": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Sign.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "62a1b17de4902b349e35986d3f709a87c01d085a90ab19ab59598708744405ef",
+      "imports": [
+        "LeanRV64D.Common"
+      ]
+    },
+    "LeanRV64D.Zero": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Zero.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a4e474802d2685198b2ede2481ab44e842a0e986f870dc9a2da2981a2e256b28",
+      "imports": [
+        "LeanRV64D.Common"
+      ]
+    },
+    "LeanRV64D.Normal": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Normal.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "d1eff30ce3d09f00e8c50366fcfcb8d3c412ca32680d98ac56df996b9d95f53e",
+      "imports": [
+        "LeanRV64D.Common"
+      ]
+    },
+    "LeanRV64D.Arithmetic": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Arithmetic.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "11e9bea0a1fcbe1c3c763fc61596d051592e309982ef8cda71d656c7e985c7f3",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.FloatClassify": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/FloatClassify.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "fc5c64ec7a9609f8ad4972c1f72ad54b293ee9647c654f5bcf2c7613d079f476",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Nan",
+        "LeanRV64D.Inf",
+        "LeanRV64D.Sign",
+        "LeanRV64D.Zero",
+        "LeanRV64D.Normal",
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.VextTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "4223c03007133b962e73c3bfa373c062cd3dca81e3ed9924039dd631f94b25a9",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextControl": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextControl.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "cd5ddbd6d8b84249ac6c5c8ced483c92a9b13b5890aced8d2a2f27daa5bc9c59",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Arith",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.VextRegs"
+      ]
+    },
+    "LeanRV64D.TypesKext": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/TypesKext.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f94d4686cee34e7e0e04a75a2f9de5324539fa28b762364ce9e418f7bc1b7a65",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors"
+      ]
+    },
+    "LeanRV64D.ZvkUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZvkUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "60c0469a1c8b11af85defcbba364b9b5d3714e69389af5ab359c8a7f8977ded6",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.TypesKext"
+      ]
+    },
+    "LeanRV64D.ZihintntlTypes": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZihintntlTypes.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "e02608a9d925dbf510ab1a30bbf239fb63742b3795a67dd53536807ea16c3ecd",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.PmUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PmUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "7b34cd12ab79477e2346d119f932aff691a4c43673776b57e1265b966bc68da6",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.PmTypes",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.SplitAccessUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/SplitAccessUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "87948c9eef0901fea478afa42da44591032ca4365dbcbd71e3db20e83834385d",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Types",
+        "LeanRV64D.MemUtils"
+      ]
+    },
+    "LeanRV64D.MemUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/MemUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "323bbebf3f4c37ca7eefb28c1617c369a31c3e8bf23d100d0198d7798d8d7c32",
+      "imports": [
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.Mem": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Mem.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "ab486be69aa0bc259fef62b5e559ce4a39fd941b894ef2263d55a6d891ec983f",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.AextTypes",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.MemMetadata",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.PhysMemInterface",
+        "LeanRV64D.MemTypeUtils",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.PmpControl",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.Platform",
+        "LeanRV64D.SplitAccessUtils",
+        "LeanRV64D.Pma"
+      ]
+    },
+    "LeanRV64D.MemMetadata": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/MemMetadata.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c42f5b1865f13fcb3f14ed2e47fc9fb19860ce4a7a05745fa2835a2dccdf2fd3",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.PhysMemInterface": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/PhysMemInterface.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "420dc36e7674a76ccfd70160d444065935b1cf2359424f24988bbf1dc01bbba0",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Vector",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.MemMetadata",
+        "LeanRV64D.VmemTypes"
+      ]
+    },
+    "LeanRV64D.Pma": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Pma.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c6bd0f0446cf174c5c19385c27134f7eae2c24cfb6696ff8ed341493419a9350",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.RangeUtil",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.MemUtils",
+        "LeanRV64D.SplitAccessUtils"
+      ]
+    },
+    "LeanRV64D.RangeUtil": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/RangeUtil.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "96aef1d3bfcfad895b992d74a9353e48604acb062369bf9c78445e6c7705e889",
+      "imports": [
+        "LeanRV64D.Prelude"
+      ]
+    },
+    "LeanRV64D.VmemTlb": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VmemTlb.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "43afa29b7f93a57e745be77ab5017e3fc7ea48aeefbf286bb6da74c71c28da4b",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.VmemPte"
+      ]
+    },
+    "LeanRV64D.VmemPte": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VmemPte.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "841ae5b14a5303adf5b0152638028bcd3856bfb01a6c6d845792d7b3206a94ea",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.VextRegs"
+      ]
+    },
+    "LeanRV64D.Vmem": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Vmem.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "33a39eb08f2f3dc590fd98e0c1b0aa6ee06ebffcea3e86cb88a7866cd209b2e7",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.TypesExt",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.Events",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.Mem",
+        "LeanRV64D.VmemPte",
+        "LeanRV64D.VmemPtw",
+        "LeanRV64D.Callbacks0",
+        "LeanRV64D.VmemTlb"
+      ]
+    },
+    "LeanRV64D.VmemPtw": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VmemPtw.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f75a14fe905f94e7884d50c30f233565166c31f56fc083448d59aad4ccd2a638",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.TypesExt",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.VmemUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VmemUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "aa4e2b7def7566bce0a01b358499e1fa3e96ffa5339e9c71fac1d2a1bdf54960",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.VmemTypes",
+        "LeanRV64D.AddrChecks",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.PmUtils",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.SplitAccessUtils",
+        "LeanRV64D.Mem",
+        "LeanRV64D.Vmem",
+        "LeanRV64D.InstsBegin"
+      ]
+    },
+    "LeanRV64D.ZicbopInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicbopInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "6b577fa3b7c1cf7931763b7efb91bc0dda5ab69a3ada7b9de6b5eb510cad99d5",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.BaseInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/BaseInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "815a31411bc7dcfca57b33cc6c5127ab75bbee0af6a793151fbc51d235d10c5c",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.PcAccess",
+        "LeanRV64D.AddrChecks",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.InstsBegin"
+      ]
+    },
+    "LeanRV64D.ZaamoInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZaamoInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "11a513e001c93274b28a81c2d9d39a9b71b62412961ba26ce135de17e50a1c9e",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.MextInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/MextInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "e71240fcbd1517c8fb7d1f04445802c08abf7b72b97175ec91336d80b44a1a21",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.FextInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/FextInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "cfe133e5a3fd6d71e002de8252fd4db0aa727e9b7171e85809ee9ae38b80b522",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.FdextRegs"
+      ]
+    },
+    "LeanRV64D.DextInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/DextInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "676fd24b4e711410976d864d8e829b024c08c657da548912558695ca07408eb1",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.FextInsts"
+      ]
+    },
+    "LeanRV64D.ZfhInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZfhInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "382e0d88c4d142f7e857677e6bfd2d625bd9843b4a56e7798b233ccfbb881d21",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.FextInsts"
+      ]
+    },
+    "LeanRV64D.ZfaInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZfaInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c32b3524486252ed90a23be7480aba483f282ebd3e22234461c8a0ef079e491a",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.FextInsts",
+        "LeanRV64D.DextInsts"
+      ]
+    },
+    "LeanRV64D.VextUtilsInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextUtilsInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "a7ad2e942aa2a636143f4abbac6104f103329ca7855bebd5d350f10b781f8a7a",
+      "imports": [
+        "LeanRV64D.LeanRV64D",
+        "LeanRV64D.Flow",
+        "LeanRV64D.Arith",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.Arithmetic",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Regs",
+        "LeanRV64D.VextRegs",
+        "LeanRV64D.VextControl"
+      ]
+    },
+    "LeanRV64D.VextFpUtilsInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextFpUtilsInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "764da90f2e9ece9d199a178448ba488eb656e3438b2f9e8e82de8fb29fae45a5",
+      "imports": [
+        "LeanRV64D.Classify",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Flen",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.FdextRegs",
+        "LeanRV64D.VextRegs",
+        "LeanRV64D.FextInsts",
+        "LeanRV64D.DextInsts",
+        "LeanRV64D.ZfhInsts",
+        "LeanRV64D.VextUtilsInsts"
+      ]
+    },
+    "LeanRV64D.VextVsetInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextVsetInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "25c8adbd506fbe7463de5e6ca15c058c79c8dfca7eb79042a5010007f9709a7f",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Callbacks",
+        "LeanRV64D.Regs",
+        "LeanRV64D.VextRegs",
+        "LeanRV64D.InstsBegin",
+        "LeanRV64D.VextUtilsInsts"
+      ]
+    },
+    "LeanRV64D.VextArithInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextArithInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "5e68ac75d702481eaff43f0d0c87dc2d3a859b545f70cd4ecdd1a773acc60c4c",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextFpInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextFpInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "b460e8aed3277c3caae40d51b2a328011d625cb099a719a049e937dd7312b37c",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextMemInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextMemInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "6bbe741580b25795515ba9f218e63e3ce7e369559125d09200dcabc504c8865f",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextMaskInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextMaskInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "e09a9d4a2381d2b8a90a7b8b36da45584d78764a78dc42a8f8e574fa707f7a0c",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextVmInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextVmInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "78a71c5562a429906447a25511a55c26834b90b8fc088bfc83f422dc798a9877",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextFpVmInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextFpVmInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "746717504cb22ec74af7fc3b0d91fcafb0dc37fb0efb2e373f5424f678c1ad26",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextRedInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextRedInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "b720f90293e0c2aed0e508c759aed74c3652ad8ae09e890b49f12f9e6d23e234",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.VextFpRedInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/VextFpRedInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "63028ec8cf6d30a1125f0100fe6ebbfb544bfe3fadddcd82ff941ce2296e0e6a",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZvknedInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZvknedInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "de3871ec34922028cf57e258025904b8741452ae7bdaa790e76f561ace61275d",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZvknhabInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZvknhabInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "28947bd6c42002dfee60179c23456a96aed79748c0c579b0949ffe18118cca6e",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZvabdInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZvabdInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "2a16f536a807c78a1e3c30fe61a2d07c12b345ad5ca668a31dca53772761c137",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZawrsInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZawrsInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "0984510442bacaa88af48f285d42bbc4f160898773a46af2a06c579bd5cfabe0",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZicfissInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicfissInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "7b4ec00e1d598c4b4deb72b4560015341aa8c1bb25b9d56733726af32a701c26",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.CfiTypes"
+      ]
+    },
+    "LeanRV64D.ZicondInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicondInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "e021625dafad89ae9286939202a8f06299828de55e411b4c002d0ae12d73ef50",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZicbomInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZicbomInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "aacb172031328ab7b3ef987800b6977c49fe55594c97968f4ac5dc827608ccc7",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Arith",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Errors",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Regs",
+        "LeanRV64D.Mem",
+        "LeanRV64D.Vmem",
+        "LeanRV64D.InstsBegin",
+        "LeanRV64D.VmemUtils"
+      ]
+    },
+    "LeanRV64D.ZibiInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZibiInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "835830166d9ce8e8faac5cf9388c4adbf66063bd83b71fc12fadd567f61855e2",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZilxInsts": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZilxInsts.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "888a232cbea88069e625c6e40f7bb2b58ba82a533f4ceba2dae6982118e46533",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.ZfbfminUtils": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ZfbfminUtils.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "4e09169ecfa493699a9995811c29475ad870c7f8a1d97969aed48282fb191c63",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.FdextRegs",
+        "LeanRV64D.FextInsts"
+      ]
+    },
+    "LeanRV64D.StepCommon": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/StepCommon.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "4609a1f5d1393ae6ab761604597f5552073bace73bd98a0c2a3c04f910978c2e",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.StepExt": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/StepExt.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "8d411b0fd37ef1d98b82a3d9e9133bc192a2150a70792de38426ae3d0a8859b8",
+      "imports": [
+        "Sail",
+        "LeanRV64D.Defs",
+        "LeanRV64D.SpecializationArchSem",
+        "LeanRV64D.FakeReal",
+        "LeanRV64D.RiscvExtras"
+      ]
+    },
+    "LeanRV64D.DecodeExt": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/DecodeExt.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "0a58d94f0c0dd56ebc16c5b04b83e0e4ef17e7616e67e16dd8ba3927b159129b",
+      "imports": [
+        "LeanRV64D.InstsEnd"
+      ]
+    },
+    "LeanRV64D.Fetch": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Fetch.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "102eb2b43acfebe0c90a76abec996372510279c6c386b026a5f5f60ed5cee65d",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.AddrChecks",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.SplitAccessUtils",
+        "LeanRV64D.Mem",
+        "LeanRV64D.Vmem",
+        "LeanRV64D.FetchRvfi"
+      ]
+    },
+    "LeanRV64D.FetchRvfi": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/FetchRvfi.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f3f8db233a1e77359e9afbe749b55eb701ac0e2d5a4afb694294bcd4f4122b49",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.RvfiDii",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.PcAccess",
+        "LeanRV64D.AddrChecks",
+        "LeanRV64D.SyncException",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.Vmem"
+      ]
+    },
+    "LeanRV64D.TransformedInst": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/TransformedInst.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "f0608c84278caa2cdaa20aac2642ef16722d842f4167dbabc8f4499d61e57425",
+      "imports": [
+        "LeanRV64D.Option",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.SysRegs"
+      ]
+    },
+    "LeanRV64D.Model": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/Model.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "18d2823863e1ea7256db4f9d43f6e454787222ccd5e237c3a89c3288b179e90a",
+      "imports": [
+        "LeanRV64D.Prelude",
+        "LeanRV64D.Regs",
+        "LeanRV64D.ZicfilpRegs",
+        "LeanRV64D.SysControl",
+        "LeanRV64D.Vmem",
+        "LeanRV64D.StepExt",
+        "LeanRV64D.ValidateConfig"
+      ]
+    },
+    "LeanRV64D.ValidateConfig": {
+      "source": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D/LeanRV64D/ValidateConfig.lean",
+      "root": "/home/opam/anneal-sail-output/integration-generated/Lean_RV64D",
+      "sha256": "c617c675e397570522286ca948e892c85e24b3c2575f62d6a1360ced7c3ac5ae",
+      "imports": [
+        "LeanRV64D.Flow",
+        "LeanRV64D.Vector",
+        "LeanRV64D.Prelude",
+        "LeanRV64D.IsaVersion",
+        "LeanRV64D.Xlen",
+        "LeanRV64D.Vlen",
+        "LeanRV64D.MemAddrtype",
+        "LeanRV64D.PlatformConfig",
+        "LeanRV64D.Types",
+        "LeanRV64D.SysRegs",
+        "LeanRV64D.InterruptInterface",
+        "LeanRV64D.InterruptRegs",
+        "LeanRV64D.PmpRegs",
+        "LeanRV64D.SdtrigTypes",
+        "LeanRV64D.Pma"
+      ]
+    }
+  },
+  "implicit_core": "official Lean installation",
+  "adapter_scope": "dependency ordering only; actual Lean checks every import and definition"
+}

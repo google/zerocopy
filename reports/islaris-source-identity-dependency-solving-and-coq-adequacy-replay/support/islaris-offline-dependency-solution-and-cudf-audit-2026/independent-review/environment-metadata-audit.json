@@ -1,0 +1,11 @@
+{
+  "all_74_native_metadata_slices_exact": true,
+  "inspect_image": "sha256:fc198c017f2474a20afe68636b3b790f7247c7593c7d252bb161673b11e5b9a2",
+  "network_mode": "none",
+  "memory": 1073741824,
+  "nano_cpus": 1000000000,
+  "pids_limit": 128,
+  "mount_count": 0,
+  "sensitive_environment_variable_names": [],
+  "privacy_note": "Raw receipts retain generic codex host paths and container identities as historical command evidence. No private projection map or credential-bearing environment found. build_path_prefix_map archive hits are public package metadata, not a private map."
+}

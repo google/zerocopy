@@ -1,0 +1,431 @@
+{
+  "crate_name": "abi_vectors",
+  "effective_cfg": [
+    "(\"debug_assertions\", None)",
+    "(\"emscripten_wasm_eh\", None)",
+    "(\"fmt_debug\", Some(\"full\"))",
+    "(\"overflow_checks\", None)",
+    "(\"panic\", Some(\"abort\"))",
+    "(\"relocation_model\", Some(\"pic\"))",
+    "(\"target_abi\", Some(\"\"))",
+    "(\"target_arch\", Some(\"aarch64\"))",
+    "(\"target_endian\", Some(\"little\"))",
+    "(\"target_env\", Some(\"\"))",
+    "(\"target_family\", Some(\"unix\"))",
+    "(\"target_feature\", Some(\"aes\"))",
+    "(\"target_feature\", Some(\"crc\"))",
+    "(\"target_feature\", Some(\"dit\"))",
+    "(\"target_feature\", Some(\"dotprod\"))",
+    "(\"target_feature\", Some(\"dpb\"))",
+    "(\"target_feature\", Some(\"dpb2\"))",
+    "(\"target_feature\", Some(\"fcma\"))",
+    "(\"target_feature\", Some(\"fhm\"))",
+    "(\"target_feature\", Some(\"flagm\"))",
+    "(\"target_feature\", Some(\"flagm2\"))",
+    "(\"target_feature\", Some(\"fp16\"))",
+    "(\"target_feature\", Some(\"frintts\"))",
+    "(\"target_feature\", Some(\"jsconv\"))",
+    "(\"target_feature\", Some(\"lor\"))",
+    "(\"target_feature\", Some(\"lse\"))",
+    "(\"target_feature\", Some(\"lse2\"))",
+    "(\"target_feature\", Some(\"neon\"))",
+    "(\"target_feature\", Some(\"paca\"))",
+    "(\"target_feature\", Some(\"pacg\"))",
+    "(\"target_feature\", Some(\"pan\"))",
+    "(\"target_feature\", Some(\"pmuv3\"))",
+    "(\"target_feature\", Some(\"ras\"))",
+    "(\"target_feature\", Some(\"rcpc\"))",
+    "(\"target_feature\", Some(\"rcpc2\"))",
+    "(\"target_feature\", Some(\"rdm\"))",
+    "(\"target_feature\", Some(\"sb\"))",
+    "(\"target_feature\", Some(\"sha2\"))",
+    "(\"target_feature\", Some(\"sha3\"))",
+    "(\"target_feature\", Some(\"ssbs\"))",
+    "(\"target_feature\", Some(\"v8.1a\"))",
+    "(\"target_feature\", Some(\"v8.2a\"))",
+    "(\"target_feature\", Some(\"v8.3a\"))",
+    "(\"target_feature\", Some(\"v8.4a\"))",
+    "(\"target_feature\", Some(\"vh\"))",
+    "(\"target_has_atomic\", None)",
+    "(\"target_has_atomic\", Some(\"128\"))",
+    "(\"target_has_atomic\", Some(\"16\"))",
+    "(\"target_has_atomic\", Some(\"32\"))",
+    "(\"target_has_atomic\", Some(\"64\"))",
+    "(\"target_has_atomic\", Some(\"8\"))",
+    "(\"target_has_atomic\", Some(\"ptr\"))",
+    "(\"target_has_atomic_equal_alignment\", Some(\"128\"))",
+    "(\"target_has_atomic_equal_alignment\", Some(\"16\"))",
+    "(\"target_has_atomic_equal_alignment\", Some(\"32\"))",
+    "(\"target_has_atomic_equal_alignment\", Some(\"64\"))",
+    "(\"target_has_atomic_equal_alignment\", Some(\"8\"))",
+    "(\"target_has_atomic_equal_alignment\", Some(\"ptr\"))",
+    "(\"target_has_atomic_load_store\", None)",
+    "(\"target_has_atomic_load_store\", Some(\"128\"))",
+    "(\"target_has_atomic_load_store\", Some(\"16\"))",
+    "(\"target_has_atomic_load_store\", Some(\"32\"))",
+    "(\"target_has_atomic_load_store\", Some(\"64\"))",
+    "(\"target_has_atomic_load_store\", Some(\"8\"))",
+    "(\"target_has_atomic_load_store\", Some(\"ptr\"))",
+    "(\"target_has_reliable_f128\", None)",
+    "(\"target_has_reliable_f16\", None)",
+    "(\"target_has_reliable_f16_math\", None)",
+    "(\"target_object_format\", Some(\"mach-o\"))",
+    "(\"target_os\", Some(\"macos\"))",
+    "(\"target_pointer_width\", Some(\"64\"))",
+    "(\"target_thread_local\", None)",
+    "(\"target_vendor\", Some(\"apple\"))",
+    "(\"ub_checks\", None)",
+    "(\"unix\", None)"
+  ],
+  "external_crates": [
+    {
+      "crate": "core",
+      "crate_hash": "Svh { hash: Fingerprint(14070939730066683188, 12181745681475035602) }"
+    },
+    {
+      "crate": "compiler_builtins",
+      "crate_hash": "Svh { hash: Fingerprint(9988166840991882847, 2976996925323005558) }"
+    }
+  ],
+  "incremental_enabled": false,
+  "opt_level": "No",
+  "schema": "e33-proposed-observation-v1",
+  "selected": [
+    {
+      "definition_kind": "Fn",
+      "fn_abi": {
+        "args": [
+          {
+            "layout": {
+              "abi_align_bytes": 16,
+              "backend_repr": {
+                "count": 4,
+                "element": {
+                  "kind": "initialized",
+                  "primitive": {
+                    "integer": "I32",
+                    "kind": "integer",
+                    "signed": false
+                  },
+                  "valid_range_end": "4294967295",
+                  "valid_range_start": "0"
+                },
+                "kind": "simd_vector"
+              },
+              "field_offsets_bytes": [
+                0
+              ],
+              "fields_debug": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+              "full_layout_debug": "Layout { size: Size(16 bytes), align: AbiAlign { abi: Align(16 bytes) }, backend_repr: SimdVector { element: Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }, count: 4 }, fields: Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }, largest_niche: None, uninhabited: false, variants: Single { index: 0 }, max_repr_align: None, unadjusted_abi_align: Align(4 bytes), randomization_seed: 18446462607322841095 }",
+              "largest_niche_debug": "None",
+              "max_repr_align_bytes": null,
+              "size_bytes": 16,
+              "unadjusted_abi_align_bytes": 4,
+              "uninhabited": false,
+              "variants_debug": "Single { index: 0 }"
+            },
+            "mode": {
+              "attrs": {
+                "extension": "None",
+                "pointee_align_bytes": null,
+                "pointee_size_bytes": 0,
+                "regular_bits": 0,
+                "regular_debug": ""
+              },
+              "kind": "direct"
+            },
+            "type": "V4",
+            "type_debug": "V4"
+          }
+        ],
+        "c_variadic": false,
+        "can_unwind": false,
+        "canonical_convention": "C",
+        "fixed_count": 1,
+        "ret": {
+          "layout": {
+            "abi_align_bytes": 16,
+            "backend_repr": {
+              "count": 4,
+              "element": {
+                "kind": "initialized",
+                "primitive": {
+                  "integer": "I32",
+                  "kind": "integer",
+                  "signed": false
+                },
+                "valid_range_end": "4294967295",
+                "valid_range_start": "0"
+              },
+              "kind": "simd_vector"
+            },
+            "field_offsets_bytes": [
+              0
+            ],
+            "fields_debug": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "full_layout_debug": "Layout { size: Size(16 bytes), align: AbiAlign { abi: Align(16 bytes) }, backend_repr: SimdVector { element: Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }, count: 4 }, fields: Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }, largest_niche: None, uninhabited: false, variants: Single { index: 0 }, max_repr_align: None, unadjusted_abi_align: Align(4 bytes), randomization_seed: 18446462607322841095 }",
+            "largest_niche_debug": "None",
+            "max_repr_align_bytes": null,
+            "size_bytes": 16,
+            "unadjusted_abi_align_bytes": 4,
+            "uninhabited": false,
+            "variants_debug": "Single { index: 0 }"
+          },
+          "mode": {
+            "attrs": {
+              "extension": "None",
+              "pointee_align_bytes": null,
+              "pointee_size_bytes": 0,
+              "regular_bits": 0,
+              "regular_debug": ""
+            },
+            "kind": "direct"
+          },
+          "type": "V4",
+          "type_debug": "V4"
+        }
+      },
+      "identity": {
+        "arguments_debug": "[]",
+        "declared_signature_debug": "Unnormalized { value: Binder { value: extern \"C { unwind: false }\" fn(V4) -> V4, bound_vars: [] }, .. }",
+        "instance_kind": "Item(DefId(0:3 ~ abi_vectors[bc15]::abi_c_vector))"
+      },
+      "resolved_definition": "abi_vectors::abi_c_vector",
+      "selection": {
+        "extra_args": [],
+        "path": "abi_vectors::abi_c_vector",
+        "query": "instance",
+        "type_args": []
+      }
+    },
+    {
+      "definition_kind": "Fn",
+      "fn_abi": {
+        "args": [
+          {
+            "layout": {
+              "abi_align_bytes": 16,
+              "backend_repr": {
+                "count": 4,
+                "element": {
+                  "kind": "initialized",
+                  "primitive": {
+                    "integer": "I32",
+                    "kind": "integer",
+                    "signed": false
+                  },
+                  "valid_range_end": "4294967295",
+                  "valid_range_start": "0"
+                },
+                "kind": "simd_vector"
+              },
+              "field_offsets_bytes": [
+                0
+              ],
+              "fields_debug": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+              "full_layout_debug": "Layout { size: Size(16 bytes), align: AbiAlign { abi: Align(16 bytes) }, backend_repr: SimdVector { element: Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }, count: 4 }, fields: Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }, largest_niche: None, uninhabited: false, variants: Single { index: 0 }, max_repr_align: None, unadjusted_abi_align: Align(4 bytes), randomization_seed: 18446462607322841095 }",
+              "largest_niche_debug": "None",
+              "max_repr_align_bytes": null,
+              "size_bytes": 16,
+              "unadjusted_abi_align_bytes": 4,
+              "uninhabited": false,
+              "variants_debug": "Single { index: 0 }"
+            },
+            "mode": {
+              "attrs": {
+                "extension": "None",
+                "pointee_align_bytes": null,
+                "pointee_size_bytes": 0,
+                "regular_bits": 0,
+                "regular_debug": ""
+              },
+              "kind": "direct"
+            },
+            "type": "V4",
+            "type_debug": "V4"
+          }
+        ],
+        "c_variadic": false,
+        "can_unwind": false,
+        "canonical_convention": "C",
+        "fixed_count": 1,
+        "ret": {
+          "layout": {
+            "abi_align_bytes": 16,
+            "backend_repr": {
+              "count": 4,
+              "element": {
+                "kind": "initialized",
+                "primitive": {
+                  "integer": "I32",
+                  "kind": "integer",
+                  "signed": false
+                },
+                "valid_range_end": "4294967295",
+                "valid_range_start": "0"
+              },
+              "kind": "simd_vector"
+            },
+            "field_offsets_bytes": [
+              0
+            ],
+            "fields_debug": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "full_layout_debug": "Layout { size: Size(16 bytes), align: AbiAlign { abi: Align(16 bytes) }, backend_repr: SimdVector { element: Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }, count: 4 }, fields: Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }, largest_niche: None, uninhabited: false, variants: Single { index: 0 }, max_repr_align: None, unadjusted_abi_align: Align(4 bytes), randomization_seed: 18446462607322841095 }",
+            "largest_niche_debug": "None",
+            "max_repr_align_bytes": null,
+            "size_bytes": 16,
+            "unadjusted_abi_align_bytes": 4,
+            "uninhabited": false,
+            "variants_debug": "Single { index: 0 }"
+          },
+          "mode": {
+            "attrs": {
+              "extension": "None",
+              "pointee_align_bytes": null,
+              "pointee_size_bytes": 0,
+              "regular_bits": 0,
+              "regular_debug": ""
+            },
+            "kind": "direct"
+          },
+          "type": "V4",
+          "type_debug": "V4"
+        }
+      },
+      "identity": {
+        "arguments_debug": "[]",
+        "declared_signature_debug": "Unnormalized { value: Binder { value: extern \"System { unwind: false }\" fn(V4) -> V4, bound_vars: [] }, .. }",
+        "instance_kind": "Item(DefId(0:4 ~ abi_vectors[bc15]::abi_system_vector))"
+      },
+      "resolved_definition": "abi_vectors::abi_system_vector",
+      "selection": {
+        "extra_args": [],
+        "path": "abi_vectors::abi_system_vector",
+        "query": "instance",
+        "type_args": []
+      }
+    },
+    {
+      "definition_kind": "Fn",
+      "fn_abi": {
+        "args": [
+          {
+            "layout": {
+              "abi_align_bytes": 16,
+              "backend_repr": {
+                "count": 4,
+                "element": {
+                  "kind": "initialized",
+                  "primitive": {
+                    "integer": "I32",
+                    "kind": "integer",
+                    "signed": false
+                  },
+                  "valid_range_end": "4294967295",
+                  "valid_range_start": "0"
+                },
+                "kind": "simd_vector"
+              },
+              "field_offsets_bytes": [
+                0
+              ],
+              "fields_debug": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+              "full_layout_debug": "Layout { size: Size(16 bytes), align: AbiAlign { abi: Align(16 bytes) }, backend_repr: SimdVector { element: Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }, count: 4 }, fields: Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }, largest_niche: None, uninhabited: false, variants: Single { index: 0 }, max_repr_align: None, unadjusted_abi_align: Align(4 bytes), randomization_seed: 18446462607322841095 }",
+              "largest_niche_debug": "None",
+              "max_repr_align_bytes": null,
+              "size_bytes": 16,
+              "unadjusted_abi_align_bytes": 4,
+              "uninhabited": false,
+              "variants_debug": "Single { index: 0 }"
+            },
+            "mode": {
+              "attrs": {
+                "extension": "None",
+                "pointee_align_bytes": 16,
+                "pointee_size_bytes": 16,
+                "regular_bits": 158,
+                "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+              },
+              "kind": "indirect",
+              "meta_attrs": null,
+              "on_stack": false
+            },
+            "type": "V4",
+            "type_debug": "V4"
+          }
+        ],
+        "c_variadic": false,
+        "can_unwind": false,
+        "canonical_convention": "Rust",
+        "fixed_count": 1,
+        "ret": {
+          "layout": {
+            "abi_align_bytes": 16,
+            "backend_repr": {
+              "count": 4,
+              "element": {
+                "kind": "initialized",
+                "primitive": {
+                  "integer": "I32",
+                  "kind": "integer",
+                  "signed": false
+                },
+                "valid_range_end": "4294967295",
+                "valid_range_start": "0"
+              },
+              "kind": "simd_vector"
+            },
+            "field_offsets_bytes": [
+              0
+            ],
+            "fields_debug": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "full_layout_debug": "Layout { size: Size(16 bytes), align: AbiAlign { abi: Align(16 bytes) }, backend_repr: SimdVector { element: Initialized { value: Int(I32, false), valid_range: 0..=4294967295 }, count: 4 }, fields: Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }, largest_niche: None, uninhabited: false, variants: Single { index: 0 }, max_repr_align: None, unadjusted_abi_align: Align(4 bytes), randomization_seed: 18446462607322841095 }",
+            "largest_niche_debug": "None",
+            "max_repr_align_bytes": null,
+            "size_bytes": 16,
+            "unadjusted_abi_align_bytes": 4,
+            "uninhabited": false,
+            "variants_debug": "Single { index: 0 }"
+          },
+          "mode": {
+            "attrs": {
+              "extension": "None",
+              "pointee_align_bytes": 16,
+              "pointee_size_bytes": 16,
+              "regular_bits": 158,
+              "regular_debug": "CapturesAddress | NoAlias | NonNull | NoUndef"
+            },
+            "kind": "indirect",
+            "meta_attrs": null,
+            "on_stack": false
+          },
+          "type": "V4",
+          "type_debug": "V4"
+        }
+      },
+      "identity": {
+        "arguments_debug": "[]",
+        "declared_signature_debug": "Unnormalized { value: Binder { value: fn(V4) -> V4, bound_vars: [] }, .. }",
+        "instance_kind": "Item(DefId(0:5 ~ abi_vectors[bc15]::abi_rust_vector))"
+      },
+      "resolved_definition": "abi_vectors::abi_rust_vector",
+      "selection": {
+        "extra_args": [],
+        "path": "abi_vectors::abi_rust_vector",
+        "query": "instance",
+        "type_args": []
+      }
+    }
+  ],
+  "source_files": [
+    {
+      "compiler_source": "// PROPOSED E33 fixed-width vector fixture. Compile-only, not executed.\n// Feature acceptance and ABI shape have NOT been tested during preparation.\n#![no_std]\n#![feature(repr_simd, simd_ffi)]\n#![allow(dead_code)]\n#[repr(simd)]\n#[derive(Clone, Copy)]\npub struct V4(pub [u32; 4]);\n#[no_mangle]\n#[inline(never)]\npub extern \"C\" fn abi_c_vector(x: V4) -> V4 { x }\n#[no_mangle]\n#[inline(never)]\npub extern \"system\" fn abi_system_vector(x: V4) -> V4 { x }\n#[no_mangle]\n#[inline(never)]\npub fn abi_rust_vector(x: V4) -> V4 { x }\n",
+      "name": "${WORKSPACE}/work/execution/abi-witness/vectors.rs"
+    }
+  ],
+  "target_cpu": "Some(\"apple-m1\")",
+  "target_features": "",
+  "target_spec_debug": "Target {\n    llvm_target: \"arm64-apple-macosx\",\n    metadata: TargetMetadata {\n        description: Some(\n            \"ARM64 Apple macOS (11.0+, Big Sur+)\",\n        ),\n        tier: Some(\n            1,\n        ),\n        host_tools: Some(\n            true,\n        ),\n        std: Some(\n            true,\n        ),\n    },\n    pointer_width: 64,\n    arch: AArch64,\n    data_layout: \"e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32\",\n    options: TargetOptions {\n        endian: little,\n        c_int_width: 32,\n        os: MacOs,\n        env: Unspecified,\n        cfg_abi: Unspecified,\n        vendor: \"apple\",\n        linker: None,\n        linker_flavor: Darwin(\n            Yes,\n            No,\n        ),\n        linker_flavor_json: Gcc,\n        lld_flavor_json: Ld,\n        linker_is_gnu_json: true,\n        pre_link_objects: {},\n        post_link_objects: {},\n        pre_link_objects_self_contained: {},\n        post_link_objects_self_contained: {},\n        link_self_contained: False,\n        pre_link_args: {},\n        pre_link_args_json: {},\n        late_link_args: {},\n        late_link_args_json: {},\n        late_link_args_dynamic: {},\n        late_link_args_dynamic_json: {},\n        late_link_args_static: {},\n        late_link_args_static_json: {},\n        post_link_args: {},\n        post_link_args_json: {},\n        link_script: None,\n        link_env: [\n            (\n                \"ZERO_AR_DATE\",\n                \"1\",\n            ),\n        ],\n        link_env_remove: [\n            \"IPHONEOS_DEPLOYMENT_TARGET\",\n            \"TVOS_DEPLOYMENT_TARGET\",\n            \"XROS_DEPLOYMENT_TARGET\",\n        ],\n        asm_args: [],\n        cpu: \"apple-m1\",\n        need_explicit_cpu: false,\n        unsupported_cpus: [],\n        features: \"\",\n        direct_access_external_data: None,\n        dynamic_linking: true,\n        dll_tls_export: true,\n        only_cdylib: false,\n        executables: true,\n        relocation_model: Pic,\n        code_model: None,\n        tls_model: GeneralDynamic,\n        disable_redzone: false,\n        frame_pointer: NonLeaf,\n        function_sections: false,\n        dll_prefix: \"lib\",\n        dll_suffix: \".dylib\",\n        exe_suffix: \"\",\n        staticlib_prefix: \"lib\",\n        staticlib_suffix: \".a\",\n        families: [\n            \"unix\",\n        ],\n        abi_return_struct_as_int: true,\n        is_like_aix: false,\n        is_like_darwin: true,\n        is_like_gpu: false,\n        is_like_solaris: false,\n        is_like_windows: false,\n        is_like_msvc: false,\n        is_like_wasm: false,\n        is_like_android: false,\n        is_like_vexos: false,\n        binary_format: MachO,\n        default_dwarf_version: 4,\n        allows_weak_linkage: true,\n        has_rpath: true,\n        no_default_libraries: true,\n        position_independent_executables: false,\n        static_position_independent_executables: false,\n        plt_by_default: true,\n        relro_level: None,\n        archive_format: \"darwin\",\n        allow_asm: true,\n        static_initializer_must_be_acyclic: false,\n        main_needs_argc_argv: true,\n        has_thread_local: true,\n        obj_is_bitcode: false,\n        min_atomic_width: None,\n        max_atomic_width: Some(\n            128,\n        ),\n        atomic_cas: true,\n        panic_strategy: Unwind,\n        crt_static_allows_dylibs: false,\n        crt_static_default: false,\n        crt_static_respected: false,\n        stack_probes: Inline,\n        min_global_align: None,\n        default_codegen_units: None,\n        default_codegen_backend: None,\n        trap_unreachable: true,\n        requires_lto: false,\n        singlethread: false,\n        no_builtins: false,\n        default_visibility: None,\n        emit_debug_gdb_scripts: false,\n        requires_uwtable: false,\n        default_uwtable: false,\n        simd_types_indirect: true,\n        limit_rdylib_exports: true,\n        override_export_symbols: None,\n        merge_functions: Aliases,\n        mcount: \"\\u{1}mcount\",\n        llvm_mcount_intrinsic: None,\n        llvm_abiname: Unspecified,\n        llvm_floatabi: None,\n        rustc_abi: None,\n        relax_elf_relocations: false,\n        llvm_args: [],\n        use_ctors_section: false,\n        eh_frame_header: false,\n        has_thumb_interworking: false,\n        debuginfo_kind: DwarfDsym,\n        split_debuginfo: Packed,\n        supported_split_debuginfo: [\n            Packed,\n            Unpacked,\n            Off,\n        ],\n        supported_sanitizers: ADDRESS | THREAD | CFI | REALTIME,\n        default_sanitizers: ,\n        c_enum_min_bits: None,\n        generate_arange_section: true,\n        supports_stack_protector: true,\n        entry_name: \"main\",\n        entry_abi: C,\n        supports_xray: true,\n        default_address_space: AddressSpace(\n            0,\n        ),\n        small_data_threshold_support: DefaultForArch,\n    },\n}",
+  "target_triple_debug": "TargetTuple(\"aarch64-apple-darwin\")",
+  "trust_frontier": "Pinned rustc analysis/layout/FnAbi, this unvalidated observer and future caller-bound comparison; no source safety or physical placement theorem"
+}

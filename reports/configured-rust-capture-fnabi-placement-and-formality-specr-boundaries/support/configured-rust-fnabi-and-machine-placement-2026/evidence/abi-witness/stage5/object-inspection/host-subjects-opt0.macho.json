@@ -1,0 +1,271 @@
+{
+  "sha256": "7a3bde908a9db19a1d2c16c526efc34b282d0db5e088cc47a167ef31c0b4ca81",
+  "bytes": 1872,
+  "header": {
+    "magic": "0xfeedfacf",
+    "cpu": 16777228,
+    "cpu_subtype": 0,
+    "filetype": 1,
+    "commands": 4,
+    "command_bytes": 280,
+    "flags": 8192
+  },
+  "sections": [
+    {
+      "name": "__text",
+      "segment": "__TEXT",
+      "address": 0,
+      "bytes": 616,
+      "file_offset": 312,
+      "alignment_log2": 2,
+      "flags": 2147484672,
+      "data_hex": "001040b9c0035fd6ff4300d1e00700f9e00740f9ff430091c0035fd6e90308aa0000c03d2001803d080840f9280900f9c0035fd600c0221e0028611ec0035fd6ffc300d1e01300bde11700bde21b00bde31f00bde007c03de003803de003c03de00b803de02340bde12740bde22b40bde32f40bdffc30091c0035fd6e80300aa081d4092e90301aa293d4093080109cae90302aa29014092000109cac0035fd6ffc300d1e00b00f9e10f00f9e007c03de003803de90340f9e80b40b9e91300f9e82b00b9e01340f9e11740f9ffc30091c0035fd6c0035fd6c0035fd6e90308aa0000c03d2001803d080840f9280900f9c0035fd6e80300aa081d4092e90301aa293d4093080109cae90302aa29014092000109cac0035fd6c0035fd6000040f9c0035fd6e00301aac0035fd6ffc300d1fd7b02a9fd830091ac0b40f9ab0f40f9aa1340f9a81740f9e90300912c0100f92b0500f92a0900f9280d00f90000009400040091fd7b42a9ffc30091c0035fd6e90308aa0000c03d2001803d080840f9280900f9c0035fd6e80300aa081d4092e90301aa293d4093080109cae90302aa29014092000109cac0035fd6ffc300d1e00b00f9e10f00f9e007c03de003803de90340f9e80b40b9e91300f9e82b00b9e01340f9e11740f9ffc30091c0035fd6ff8300d1fd7b01a9fd430091e00700f9e00301aa0000009400000094e80300aae00740f9e803082a000008cafd7b41a9ff830091c0035fd6080040f908050091080000f9000040f9c0035fd6c0035fd6ffc300d1fd7b02a9fd830091e8030091e90300aa090100f9000500fd1f0900f9200080520000009400040091fd7b42a9ffc30091c0035fd6",
+      "sha256": "88096c0200ba917921704a3d45d1dd6718192e5f9d3654d2bab2d54b58315759",
+      "relocations": [
+        {
+          "address": 596,
+          "symbol_index": 24,
+          "pcrel": 1,
+          "length_log2": 2,
+          "external": 1,
+          "type": 2,
+          "raw_hex": "540200001800002d",
+          "symbol": "_abi_opaque_vararg"
+        },
+        {
+          "address": 504,
+          "symbol_index": 1,
+          "pcrel": 1,
+          "length_log2": 2,
+          "external": 1,
+          "type": 2,
+          "raw_hex": "f80100000100002d",
+          "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects"
+        },
+        {
+          "address": 500,
+          "symbol_index": 2,
+          "pcrel": 1,
+          "length_log2": 2,
+          "external": 1,
+          "type": 2,
+          "raw_hex": "f40100000200002d",
+          "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects"
+        },
+        {
+          "address": 348,
+          "symbol_index": 23,
+          "pcrel": 1,
+          "length_log2": 2,
+          "external": 1,
+          "type": 2,
+          "raw_hex": "5c0100001700002d",
+          "symbol": "_abi_opaque_twelve"
+        }
+      ]
+    }
+  ],
+  "symbols": [
+    {
+      "index": 0,
+      "name": "ltmp0",
+      "n_type": 14,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 0
+    },
+    {
+      "index": 1,
+      "name": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects",
+      "n_type": 14,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 0
+    },
+    {
+      "index": 2,
+      "name": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects",
+      "n_type": 14,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 8
+    },
+    {
+      "index": 3,
+      "name": "_abi_c_big",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 28
+    },
+    {
+      "index": 4,
+      "name": "_abi_c_fp",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 52
+    },
+    {
+      "index": 5,
+      "name": "_abi_c_hfa",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 64
+    },
+    {
+      "index": 6,
+      "name": "_abi_c_narrow",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 124
+    },
+    {
+      "index": 7,
+      "name": "_abi_c_pair",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 160
+    },
+    {
+      "index": 8,
+      "name": "_abi_c_raw",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 212
+    },
+    {
+      "index": 9,
+      "name": "_abi_interior",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 216
+    },
+    {
+      "index": 10,
+      "name": "_abi_rust_big",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 220
+    },
+    {
+      "index": 11,
+      "name": "_abi_rust_narrow",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 244
+    },
+    {
+      "index": 12,
+      "name": "_abi_rust_tuple",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 280
+    },
+    {
+      "index": 13,
+      "name": "_abi_shared",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 284
+    },
+    {
+      "index": 14,
+      "name": "_abi_slice",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 292
+    },
+    {
+      "index": 15,
+      "name": "_abi_stack_driver",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 300
+    },
+    {
+      "index": 16,
+      "name": "_abi_system_big",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 368
+    },
+    {
+      "index": 17,
+      "name": "_abi_system_narrow",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 392
+    },
+    {
+      "index": 18,
+      "name": "_abi_system_pair",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 428
+    },
+    {
+      "index": 19,
+      "name": "_abi_track",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 480
+    },
+    {
+      "index": 20,
+      "name": "_abi_unique",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 536
+    },
+    {
+      "index": 21,
+      "name": "_abi_unit",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 556
+    },
+    {
+      "index": 22,
+      "name": "_abi_vararg_driver",
+      "n_type": 15,
+      "section_index": 1,
+      "n_desc": 0,
+      "value": 560
+    },
+    {
+      "index": 23,
+      "name": "_abi_opaque_twelve",
+      "n_type": 1,
+      "section_index": 0,
+      "n_desc": 0,
+      "value": 0
+    },
+    {
+      "index": 24,
+      "name": "_abi_opaque_vararg",
+      "n_type": 1,
+      "section_index": 0,
+      "n_desc": 0,
+      "value": 0
+    }
+  ],
+  "scope": "Untrusted bounded MachO metadata reader; exact raw bytes retained. No machine operational semantics or compiler correctness theorem."
+}

@@ -1,0 +1,1 @@
+[crate test { unsafe trait Marker {} impl Marker for i32 {} }]

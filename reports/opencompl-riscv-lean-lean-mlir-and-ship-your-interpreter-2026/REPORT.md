@@ -2,7 +2,7 @@
 
 ## Summary
 
-This report analyzes three interdependent Lean 4 repositories that connect authoritative Sail-generated RISC-V 64-bit (`RV64D`) machine semantics to pure bitvector compiler dialects and end-to-end verified ELF binaries, and synthesizes their architecture with Anneal's (`joshlf/anneal-private@42f4571d761b46c7142815f38b69c3781b3555e3`) Layer 1A / Layer 1B refinement algebra and `TrustedBoundary.lean` audit rules:
+This report analyzes three interdependent Lean 4 repositories that connect authoritative Sail-generated RISC-V 64-bit (`RV64D`) machine semantics to pure bitvector compiler dialects and end-to-end verified ELF binaries, and synthesizes their architecture with Anneal's (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`) Layer 1A / Layer 1B refinement algebra and `TrustedBoundary.lean` audit rules:
 
 1. **`opencompl/riscv-lean` (`7c6b500c1744f40d928fb131125cd06edf9f4fce`):** Implements a **two-stage, three-tier ISA purification pipeline** (2,768 lines across 8 Lean files) that bridges `opencompl/sail-riscv-lean`'s monadic `LeanRV64D.Functions.execute_<OP> : ... → SailM ExecutionResult` to a pure, bit-blastable `BitVec 64` instruction dialect (`RV64` in `RISCV/Instructions.lean`, 87 operations across `RV64I`, `M`, `Zba`, `Zbb`, `Zbs`, `Zbkb`, `Zicond`, and 11 pseudo-instructions):
    - **Stage 1 (`RISCV/Skeleton.lean`, `RISCV/SailPure.lean`, `RISCV/SailToRV64.lean`, 61 theorems):** Factors monadic register reads/writes (`rX_bits`, `wX_bits`, `get_arch_pc`) into uniform monadic wrappers (`skeleton_unary`, `skeleton_binary`, `skeleton_utype`, `skeleton_utype_lui`, `skeleton_utype_auipc`) around monad-free `SailRV64.<op>` functions that still retain Sail's unbounded `Int` arithmetic (`Int.tdiv`/`Int.tmod`), slice operations (`Sail.get_slice_int`), and `Id.run` loops.
@@ -17,7 +17,7 @@ This report analyzes three interdependent Lean 4 repositories that connect autho
 
 ## Applicability
 
-This report applies directly to Anneal's (`joshlf/anneal-private@42f4571d761b46c7142815f38b69c3781b3555e3`) machine-code and ISA verification roadmap across `trusted/lean/Trusted/` and `theory/Anneal/`:
+This report applies directly to Anneal's (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`) machine-code and ISA verification roadmap across `trusted/lean/Trusted/` and `theory/Anneal/`:
 
 1. **Adopting the Two-Tier ISA Purification Split (`SailM` $\to$ `SailPure` $\to$ `BitVec` Dialect):**
    When extending Anneal below Rust MIR (`Trusted/MirSemantics.lean`) to RISC-V 64-bit or AArch64 machine code, Anneal should adopt `opencompl/riscv-lean`'s separation between:
@@ -134,7 +134,7 @@ At commit `b8c4a771319a044854a4bbb49b8821381ef86ff8` (tree `0430455881cf5c717c38
    ```
    Because `axiom refinement_correctness {p : Prop} : p` is declared at module scope in `PeepholeRefine.lean` (imported by `InstructionLowering.lean`, `SelectionDAG.lean`, `MIRCombines.lean`, and `Combiners.lean`), importing `PeepholeRefine.lean` makes the Lean environment logically inconsistent (`refinement_correctness (p := False)` proves `False`) and taints every pass bundled through `toPeepholeUNSOUND`.
 4. **Incompatibility of `bv_decide` with Anneal's `TrustedBoundary.lean`:**
-   Even for individual `LLVMPeepholeRewriteRefine` lemmas that do not use `toPeepholeUNSOUND`, `by simp_lowering <;> bv_decide` emits a proof term that depends on `Lean.ofReduceBool` (the native-evaluation trust axiom used to run the compiled LRAT checker). In `joshlf/anneal-private@42f4571d761b46c7142815f38b69c3781b3555e3`, `trusted/audit/TrustedBoundary.lean` enforces two independent checks:
+   Even for individual `LLVMPeepholeRewriteRefine` lemmas that do not use `toPeepholeUNSOUND`, `by simp_lowering <;> bv_decide` emits a proof term that depends on `Lean.ofReduceBool` (the native-evaluation trust axiom used to run the compiled LRAT checker). In `joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`, `trusted/audit/TrustedBoundary.lean` enforces two independent checks:
    - **Surface AST check (`lines 154, 165-167`):** `forbiddenSyntaxKinds` rejects `Lean.Parser.Tactic.nativeDecide` (`native_decide`).
    - **Environment closure & kernel replay check (`lines 621, 665, 748`):** `auditClosure` walks every constant in the transitive closure of `VerificationResult` (`collectClosure`) and rejects any `.axiomInfo` not in `foundationLock.allowedAxioms` (`{"propext", "Quot.sound", "Classical.choice"}` in `trusted/lean/foundation-lock.json:3-7`), then replays all non-foundation constants through `base.toKernelEnv.replay`. Any theorem proved via `bv_decide` brings `Lean.ofReduceBool` into `collectClosure`, causing `TrustedBoundary.lean` to fail with `unauthorized axiom 'Lean.ofReduceBool'`.
 
@@ -207,7 +207,7 @@ All primary-source commits, tree hashes, and file blob hashes are recorded in [`
 | `opencompl/riscv-lean` | `7c6b500c1744f40d928fb131125cd06edf9f4fce` | `c98b4248872a5b15c680515cd7135b3444479ed3` | `RISCV/Skeleton.lean` (58 lines), `RISCV/SailPure.lean` (315 lines), `RISCV/SailToRV64.lean` (493 lines), `RISCV/Instructions.lean` (742 lines), `RISCV/SailPureToInstructions.lean` (949 lines), `RISCV/ForLean.lean` (141 lines) |
 | `opencompl/lean-mlir` | `b8c4a771319a044854a4bbb49b8821381ef86ff8` | `0430455881cf5c717c38cb2250ebe7566b785196` | `SSA/Projects/RISCV64/Base.lean` (639 lines), `SSA/Projects/RISCV64/PseudoOpSemantics.lean` (63 lines), `SSA/Projects/RISCV64/Tactic/SimpRiscV.lean` (107 lines), `SSA/Projects/LLVMRiscV/LLVMAndRiscv.lean` (327 lines), `SSA/Projects/LLVMRiscV/PeepholeRefine.lean` (60 lines), `SSA/Projects/LLVMRiscV/Pipeline/InstructionLowering.lean` (283 lines), `SelectionDAG.lean` (940 lines), `MIRCombines.lean` (528 lines), `Combiners.lean` (1,877 lines) |
 | `BasisResearch/ship-your-interpreter` | `fb07094cff916318c34b07494a7d739f1e53989b` | `b27318f677aacd3acc9ffa75907b591ed3e90d07` | `Vsa/Elf.lean` (38 lines), `Vsa/Machine.lean` (122 lines), `Vsa/Refinement.lean` (27 lines), `Vsa/Lang/Basic.lean` (159 lines), `Vsa/Meta/SimpNF.lean` (84 lines), `Vsa/Sim/DecodeNF.lean` (45 lines), `Vsa/Sim/TextImage.lean` (182 lines), `Vsa/Sim/Retire.lean` (208 lines), `Vsa/Sim/StepObs.lean` (96 lines), `Vsa/Sim/RegAccess.lean` (177 lines), `Vsa/Sim/BlockMem.lean` (894 lines), `Vsa/Sim/Boot/Audit.lean` (175 lines), `Vsa/Compiler/Correct.lean` (130 lines), `Vsa/Compiler/Checked.lean` (81 lines), `VsaIris/Adequacy.lean` (230 lines), `VsaIris/Lang/Route.lean` (60 lines), `VsaIris/Interp/EndToEnd.lean` (165 lines), `EndToEndTrichotomy.lean` (103 lines), `EndToEndChecked.lean` (20 lines), `VsaIris/Vsa/StepRules.lean` (367 lines), `StepGen.lean` (1,128 lines), `SymExec.lean` (2,633 lines), `abstractions/ROUND-5-isa.md` (692 lines) |
-| `joshlf/anneal-private` | `42f4571d761b46c7142815f38b69c3781b3555e3` | `219dfb9655e7b1a2754d35590cdbbec224ac790a0` | `trusted/lean/Trusted/Refinement.lean` (438 lines), `trusted/lean/Trusted/StepResult.lean` (175 lines), `trusted/lean/Trusted/MirSemantics.lean` (806 lines), `trusted/audit/TrustedBoundary.lean` (534 lines), `trusted/lean/foundation-lock.json` (1,333 lines) |
+| `joshlf/anneal` | `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b` | `219dfb9655e7b1a2754d35590cdbbec224ac790a0` | `trusted/lean/Trusted/Refinement.lean` (438 lines), `trusted/lean/Trusted/StepResult.lean` (175 lines), `trusted/lean/Trusted/MirSemantics.lean` (806 lines), `trusted/audit/TrustedBoundary.lean` (534 lines), `trusted/lean/foundation-lock.json` (1,333 lines) |
 
 ### 2. Standalone Lean 4.34.1 Mechanization (`support/two_tier_isa_dialect_and_elf_refinement_probe.lean`)
 
@@ -226,7 +226,7 @@ The accompanying 1,343-line Lean 4.34.1 file [`support/two_tier_isa_dialect_and_
 
 1. **Re-verify the standalone Lean 4.34.1 probe (`support/two_tier_isa_dialect_and_elf_refinement_probe.lean`):**
    ```bash
-   /usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean \
+   lean \
      -j1 -M768 \
      support/two_tier_isa_dialect_and_elf_refinement_probe.lean
    ```

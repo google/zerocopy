@@ -1,0 +1,15 @@
+--- a/handwritten_support/RiscvExtras.lean
++++ b/handwritten_support/RiscvExtras.lean
+@@ -20,6 +20,12 @@
+ def putchar {T} (_: T ) : Unit := ()
+ def string_of_int (z : Int) := s!"{z}"
+ 
++-- Abstract model-specific hooks; preserve the Sail pure/impure contracts.
++axiom event_callback : THE_MODULE_NAME.Event → THE_MODULE_NAME.Privilege → THE_MODULE_NAME.SailM Unit
++axiom event_csr_write_callback : THE_MODULE_NAME.hpmidx → BitVec 64 → BitVec 64 → Unit
++axiom validate_event_selectors : Unit → Bool
++
++
+ section defs
+ 
+ variable [Arch]

@@ -1,0 +1,125 @@
+{
+  "status": "NONEXECUTED plan only",
+  "host_commands": [
+    {
+      "profile": "host-subjects-opt0",
+      "status": "NOT EXECUTED / further grant required",
+      "source_sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02",
+      "query_packet_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "argv": [
+        "${PINNED_MAY1_TOOLCHAIN}/bin/rustc",
+        "${E33_ROOT}/subjects.rs",
+        "--sysroot",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--crate-name=abi_subjects",
+        "--target=aarch64-apple-darwin",
+        "-Copt-level=0",
+        "-Cpanic=abort",
+        "-Ctarget-cpu=apple-m1",
+        "-Zthreads=1",
+        "-Ccodegen-units=1",
+        "--emit=llvm-ir,asm,obj",
+        "--out-dir",
+        "${FRESH_CODEGEN_ROOT}/host-subjects-opt0"
+      ],
+      "scope": "Compile-only matching IR/assembly/object. Never link/run fixture or foreign callee.",
+      "warning_policy": "Vectors retain exact classified5 warnings; any additional diagnostic stops."
+    },
+    {
+      "profile": "host-subjects-opt2",
+      "status": "NOT EXECUTED / further grant required",
+      "source_sha256": "aed38d71c0fcd664388c8711135f975e9980ded8d50ed7b9af837da423631e02",
+      "query_packet_sha256": "befdf851863832f050eb65f4b86552372ad2606d2ed9482a23bf530be096a1d9",
+      "argv": [
+        "${PINNED_MAY1_TOOLCHAIN}/bin/rustc",
+        "${E33_ROOT}/subjects.rs",
+        "--sysroot",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--crate-name=abi_subjects",
+        "--target=aarch64-apple-darwin",
+        "-Copt-level=2",
+        "-Cpanic=abort",
+        "-Ctarget-cpu=apple-m1",
+        "-Zthreads=1",
+        "-Ccodegen-units=1",
+        "--emit=llvm-ir,asm,obj",
+        "--out-dir",
+        "${FRESH_CODEGEN_ROOT}/host-subjects-opt2"
+      ],
+      "scope": "Compile-only matching IR/assembly/object. Never link/run fixture or foreign callee.",
+      "warning_policy": "Vectors retain exact classified5 warnings; any additional diagnostic stops."
+    },
+    {
+      "profile": "host-vectors-opt0",
+      "status": "NOT EXECUTED / further grant required",
+      "source_sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8",
+      "query_packet_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+      "argv": [
+        "${PINNED_MAY1_TOOLCHAIN}/bin/rustc",
+        "${E33_ROOT}/vectors.rs",
+        "--sysroot",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--crate-name=abi_vectors",
+        "--target=aarch64-apple-darwin",
+        "-Copt-level=0",
+        "-Cpanic=abort",
+        "-Ctarget-cpu=apple-m1",
+        "-Zthreads=1",
+        "-Ccodegen-units=1",
+        "--emit=llvm-ir,asm,obj",
+        "--out-dir",
+        "${FRESH_CODEGEN_ROOT}/host-vectors-opt0"
+      ],
+      "scope": "Compile-only matching IR/assembly/object. Never link/run fixture or foreign callee.",
+      "warning_policy": "Vectors retain exact classified5 warnings; any additional diagnostic stops."
+    },
+    {
+      "profile": "host-vectors-opt2",
+      "status": "NOT EXECUTED / further grant required",
+      "source_sha256": "0d12cc6a373d3d72dde1dcc52e0f01c0ff72ea65078a4bfb81e14bb5d99e45a8",
+      "query_packet_sha256": "0f6013e6b62a40075faad25f949e842137af5f187d974bf4387064f1b21ee675",
+      "argv": [
+        "${PINNED_MAY1_TOOLCHAIN}/bin/rustc",
+        "${E33_ROOT}/vectors.rs",
+        "--sysroot",
+        "${PINNED_MAY1_TOOLCHAIN}",
+        "--edition=2021",
+        "--crate-type=lib",
+        "--crate-name=abi_vectors",
+        "--target=aarch64-apple-darwin",
+        "-Copt-level=2",
+        "-Cpanic=abort",
+        "-Ctarget-cpu=apple-m1",
+        "-Zthreads=1",
+        "-Ccodegen-units=1",
+        "--emit=llvm-ir,asm,obj",
+        "--out-dir",
+        "${FRESH_CODEGEN_ROOT}/host-vectors-opt2"
+      ],
+      "scope": "Compile-only matching IR/assembly/object. Never link/run fixture or foreign callee.",
+      "warning_policy": "Vectors retain exact classified5 warnings; any additional diagnostic stops."
+    }
+  ],
+  "limits_proposed_for_review": "One compiler serial;600s each; sampled1GiB stop/128MiB outputs with explicit measurement caveat; parent to approve.",
+  "windows": {
+    "status": "NOT INSTALLED/QUERIED/COMPILED",
+    "target": "x86_64-pc-windows-msvc",
+    "CPU": "x86-64",
+    "matching_std_xz_sha256": "0e217c42f8f89e98b255461f96d75b6aef812a9d192d9eb1826a4ff336e050e2",
+    "source": "exact original subjects.rs and26selectors",
+    "needs": [
+      "Parent-authorized exact May1 target std/core acquisition and artifact identities",
+      "Check existing backend/COFF-reader availability without inferring absence from no query",
+      "Distinct reviewed consumer authority/profile; current consumer deliberately rejects this target",
+      "One new actual FnAbi capture/fresh check then IR/asm/object under explicit grant"
+    ],
+    "no_link_or_execution": true
+  },
+  "critical_boundary": "FnAbi objects do not enumerate physical stack/register/shadow-space allocation. Experimental repr_simd FFI data is not established safe/portable C correspondence."
+}

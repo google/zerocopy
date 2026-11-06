@@ -1,0 +1,257 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/refinement-lattice",
+    "isa/binary-lifting",
+    "isa/elf-relocations",
+    "systems/sfi-lfi",
+    "systems/ebpf-pcc",
+    "systems/sandboxing",
+    "verification/compcert",
+    "verification/survey",
+    "anneal",
+    "anneal/backend-codegen",
+    "anneal/behavior-codec",
+    "anneal/binary-lifting",
+    "anneal/decompilation",
+    "anneal/ebpf",
+    "anneal/inline-asm",
+    "anneal/instruction-scheduling",
+    "anneal/instruction-selection",
+    "anneal/linking",
+    "anneal/register-allocation",
+    "anneal/sandboxing",
+    "anneal/superoptimization",
+    "anneal/translation-validation",
+    "anneal/trusted-computing-base",
+    "compcert",
+    "cranelift/isle",
+    "gpu/verification",
+    "wasm/sfi",
+    "anneal/backend",
+    "anneal/codegen",
+    "anneal/abi",
+    "compcert/unverified-boundaries",
+    "cranelift/cves",
+    "ebpf/jit-verification",
+    "verification/failures"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework (trusted boundary, attributes, and foundation lock)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f",
+        "paths": "trusted/lean/Trusted.lean, trusted/lean/Trusted/Attributes.lean, trusted/lean/foundation-lock.json, trusted/audit/TrustedBoundary.lean"
+      }
+    },
+    {
+      "name": "Anneal architecture, design, and trust-model specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457",
+        "paths": "PRINCIPLES.md, docs/architecture.md, docs/design.md, docs/trust-model.md"
+      }
+    },
+    {
+      "name": "Anneal model-refinement and trust-review methodology",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b",
+        "paths": "skills/model-refinement/SKILL.md, skills/trust-review/SKILL.md, skills/robust-code/SKILL.md"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (Selection, RTLgen, Allocation/IRC, Stacking, Mach, Asm, Conventions1)",
+      "identity": {
+        "doi": "10.1145/1538788.1538814",
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CakeML verified compiler backend (wordLang, stackLang, labLang, reg_alloc, lab_to_target)",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "repository": "CakeML/cakeml",
+        "venue": "JFP 2019 / ICFP 2017"
+      }
+    },
+    {
+      "name": "Cranelift ISLE, VeriISLE, and Crocus instruction-selection verification framework",
+      "identity": {
+        "doi": "10.1145/3620665.3640367",
+        "repository": "bytecodealliance/wasmtime",
+        "subpath": "cranelift/isle/veri",
+        "venue": "ASPLOS 2024 / CMU-CS-23-126"
+      }
+    },
+    {
+      "name": "regalloc2 SSA register allocator and symbolic dataflow equivalence checker",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "subpath": "src/checker.rs"
+      }
+    },
+    {
+      "name": "Chamois-CompCert (BTL superblock symbolic simulation scheduler, postpass bundle packer, peephole)",
+      "identity": {
+        "doi": "10.1145/3428208",
+        "repository": "certicompil/Chamois-CompCert",
+        "venue": "OOPSLA 2020 / CPP 2022",
+        "url": "https://gricad-gitlab.univ-grenoble-alpes.fr/certicompil/Chamois-CompCert"
+      }
+    },
+    {
+      "name": "Superoptimizers and peephole synthesizers (Souper, Minotaur, STOKE, Slothy, Hydra, Peek)",
+      "identity": {
+        "doi": "10.1109/CGO57630.2024.10444836",
+        "hydra_venue": "OOPSLA 2024",
+        "repository": "minotaur-toolkit/minotaur",
+        "slothy_repository": "slothy-optimizer/slothy",
+        "souper_repository": "google/souper",
+        "stoke_doi": "10.1145/2451116.2451150"
+      }
+    },
+    {
+      "name": "Verified linkers and compositional open-module semantics (CompCertELF, linksem, CompCertO, DimSum, SepCompCert, CompCertM)",
+      "identity": {
+        "compcert_elf_doi": "10.1145/3385412.3385989",
+        "compcert_o_doi": "10.1145/3453483.3454097",
+        "dimsum_doi": "10.1145/3571219",
+        "linksem_doi": "10.1145/2983990.2983996"
+      }
+    },
+    {
+      "name": "Post-link profile-guided binary optimizers and binary recompilers (LLVM BOLT, Google Propeller, Egalito, BinRec)",
+      "identity": {
+        "binrec_doi": "10.1145/3342195.3387550",
+        "bolt_doi": "10.1109/CGO.2019.8661201",
+        "egalito_doi": "10.1145/3373376.3378522",
+        "propeller_doi": "10.1145/3575693.3575727"
+      }
+    },
+    {
+      "name": "Translation validators for unverified industrial compilers (seL4 GraphRefine, Alive2, Tristan-Govereau-Morrisett, Necula TV, LNSym)",
+      "identity": {
+        "alive2_repository": "AliveToolkit/alive2",
+        "alive2_revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+        "graph_refine_repository": "seL4/graph-refine",
+        "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5",
+        "lnsym_repository": "leanprover/LNSym",
+        "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+      }
+    },
+    {
+      "name": "Binary lifters, decompilers, and inline-assembly bridges (TInA/RUSTInA, Islaris, Vale, Jasmin, HolBA, Myreen Decompilation into Logic, FoxDec, Remill/McSema)",
+      "identity": {
+        "foxdec_repository": "ssrg-vt/FoxDec",
+        "islaris_repository": "rems-project/islaris",
+        "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "jasmin_repository": "jasmin-lang/jasmin",
+        "jasmin_revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "tina_doi": "10.1145/3293883.3295709",
+        "vale_repository": "project-everest/vale",
+        "vale_revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "Sandboxing compilers, bytecode verifiers, and GPU/JIT verifiers (VeriWasm, vWasm, RockSalt, ARMor, WasmCert/veRA, PREVAIL, Jitterbug, CertrBPF, Agni, GPUVerify, Faial, Naga/Tint)",
+      "identity": {
+        "agni_doi": "10.1145/3591280",
+        "certrbpf_repository": "future-proof-iot/CertFC",
+        "certrbpf_revision": "75690097c946c555cc4ce1e69d13ef86dc738180",
+        "faial_doi": "10.1007/978-3-030-81685-8_11",
+        "gpuverify_doi": "10.1145/2384616.2384625",
+        "jitterbug_repository": "uw-unsat/jitterbug",
+        "jitterbug_revision": "78d1e75ad506498b585fbac66985ff9d9d05952d",
+        "prevail_repository": "vbpf/prevail",
+        "prevail_revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7",
+        "rocksalt_doi": "10.1145/2254064.2254111",
+        "veriwasm_doi": "10.14722/ndss.2021.24296",
+        "vwasm_venue": "USENIX Security 2022"
+      }
+    },
+    {
+      "name": "Yang et al., Finding and Understanding Bugs in C Compilers (Csmith evaluation of CompCert 1.6-1.8)",
+      "identity": {
+        "doi": "10.1145/1993498.1993532",
+        "venue": "PLDI 2011"
+      }
+    },
+    {
+      "name": "Wang, Wilke, and Shao, An Abstract Stack Based Approach to Verified Compositional Compilation to Machine Code (Stack-Aware CompCert)",
+      "identity": {
+        "doi": "10.1145/3290380",
+        "venue": "POPL 2019"
+      }
+    },
+    {
+      "name": "Sewell, Myreen, and Klein, Translation Validation for a Verified OS Kernel (seL4 binary translation validation)",
+      "identity": {
+        "doi": "10.1145/2491956.2462183",
+        "venue": "PLDI 2013"
+      }
+    },
+    {
+      "name": "Wasmtime and Cranelift security advisories and instruction-selection/register-allocation postmortems",
+      "identity": {
+        "cves": "CVE-2021-32629, CVE-2022-31104, CVE-2022-39392, CVE-2023-26489, CVE-2023-30624",
+        "ghsas": "GHSA-hpqh-2wqx-7qp5, GHSA-jqwc-c49r-4w2x, GHSA-44mr-8vmm-wjhg, GHSA-ff4p-7xrq-q5r8, GHSA-c87w-297f-6568",
+        "repository": "bytecodealliance/wasmtime"
+      }
+    },
+    {
+      "name": "VeriISLE and Crocus verification of Cranelift ISLE instruction-lowering rules",
+      "identity": {
+        "doi_crocus": "10.1145/3620665.3640369",
+        "doi_veriisle": "10.1145/3656427",
+        "venues": "ASPLOS 2024, PLDI 2024"
+      }
+    },
+    {
+      "name": "Rust and LLVM ABI marshaling (i128/repr(C)) and StackColoring (StorageLive/StorageDead) defect records",
+      "identity": {
+        "issues": "rust-lang/rust#54341, rust-lang/rust#46606, rust-lang/rust#91899",
+        "repository": "rust-lang/rust",
+        "tool_repository": "Gankra/abi-cafe"
+      }
+    },
+    {
+      "name": "Recoules et al., TInA and RUSTInA inline assembly lifting and interface compliance",
+      "identity": {
+        "doi_ase2019": "10.1109/ASE.2019.00069",
+        "doi_icse2021": "10.1109/ICSE43902.2021.00069",
+        "venues": "ASE 2019, ICSE 2021"
+      }
+    },
+    {
+      "name": "Binary lifter and SFI verifier postmortems (McSema/Remill SIV, VeriWasm, FoxDec)",
+      "identity": {
+        "doi_foxdec": "10.1145/3563322",
+        "doi_lifters": "10.1145/3385412.3385964",
+        "doi_veriwasm": "10.14722/ndss.2021.24295",
+        "venues": "PLDI 2020, NDSS 2021, OOPSLA 2022"
+      }
+    },
+    {
+      "name": "Linux kernel eBPF JIT (CVE-2021-29154, Jitterbug) and GPU shader compiler (GraphicsFuzz) miscompilations",
+      "identity": {
+        "cve": "CVE-2021-29154",
+        "doi_graphicsfuzz": "10.1145/3133917",
+        "isbn_jitterbug": "978-1-939133-19-9",
+        "venues": "OSDI 2020 (Jitterbug), OOPSLA 2017 (GraphicsFuzz)"
+      }
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

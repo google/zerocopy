@@ -1,0 +1,28 @@
+{
+  "label": "loaded-object-hashes-during-check",
+  "argv": [
+    "docker",
+    "exec",
+    "-i",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "xargs",
+    "-0",
+    "sha256sum"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.21,
+  "stdout_bytes": 71395,
+  "stderr_bytes": 45,
+  "stdout_sha256": "f625d0c4c3b0e5551d0477eb235367c5a32123fdb93e59e0646565d5c89c2ae4",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

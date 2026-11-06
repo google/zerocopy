@@ -1,0 +1,47 @@
+{
+  "inputs": [
+    {
+      "name": "jasmin-home.tar",
+      "bytes": 6656,
+      "sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856"
+    },
+    {
+      "name": "jasmin-store-db.tar",
+      "bytes": 10462208,
+      "sha256": "7e3667920dc4efa75bc012a4aa0884da85bb927465e10ef2880a2e0360555034"
+    }
+  ],
+  "target_derivations": 18,
+  "named_output_paths": 19,
+  "registered_output_count": 1,
+  "absent_output_count": 18,
+  "validpath_count": 2335,
+  "integrity_check": "ok",
+  "wal_bytes": 0,
+  "read_mode": "mode=ro&immutable=1; PRAGMA query_only=ON",
+  "schema": [
+    {
+      "name": "DerivationOutputs",
+      "sql": "CREATE TABLE DerivationOutputs (\n    drv  integer not null,\n    id   text not null, -- symbolic output id, usually \"out\"\n    path text not null,\n    primary key (drv, id),\n    foreign key (drv) references ValidPaths(id) on delete cascade\n)"
+    },
+    {
+      "name": "Refs",
+      "sql": "CREATE TABLE Refs (\n    referrer  integer not null,\n    reference integer not null,\n    primary key (referrer, reference),\n    foreign key (referrer) references ValidPaths(id) on delete cascade,\n    foreign key (reference) references ValidPaths(id) on delete restrict\n)"
+    },
+    {
+      "name": "SchemaMigrations",
+      "sql": "CREATE TABLE SchemaMigrations (migration text primary key not null)"
+    },
+    {
+      "name": "ValidPaths",
+      "sql": "CREATE TABLE ValidPaths (\n    id               integer primary key autoincrement not null,\n    path             text unique not null,\n    hash             text not null, -- base16 representation\n    registrationTime integer not null,\n    deriver          text,\n    narSize          integer,\n    ultimate         integer, -- null implies \"false\"\n    sigs             text, -- space-separated\n    ca               text -- if not null, an assertion that the path is content-addressed; see ValidPathInfo\n)"
+    },
+    {
+      "name": "sqlite_sequence",
+      "sql": "CREATE TABLE sqlite_sequence(name,seq)"
+    }
+  ],
+  "home_directory_count": 11,
+  "home_regular_file_count": 0,
+  "limits": "Database metadata only; no independent NAR-content verification, package execution, or theorem replay."
+}

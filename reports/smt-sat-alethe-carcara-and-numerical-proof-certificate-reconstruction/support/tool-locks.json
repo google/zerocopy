@@ -1,0 +1,30 @@
+{
+  "cvc5": {
+    "binary_sha256": "74a9c8ab076ed0dbced2aef27de675846e4a8937e3f3d49125721f2d91bdcf4d",
+    "version_stdout": "cvc5 1.4.2 [git 282d5e0 on branch HEAD]\ncompiled as a unrestricted build with GCC version Apple LLVM 17.0.0 (clang-1700.0.13.5) on Oct  8 2026 01:56:09\n\nCopyright (c) 2009-2026 by the authors and their institutional\naffiliations listed at https://cvc5.github.io/people.html\n\ncvc5 is open-source and is covered by the BSD license (modified).\n\nTHIS SOFTWARE IS PROVIDED AS-IS, WITHOUT ANY WARRANTIES.\nUSE AT YOUR OWN RISK.\n\nThis version of cvc5 is linked against the following non-(L)GPL'ed\nthird party libraries.\n\n  CaDiCaL - Simplified Satisfiability Solver\n  See https://github.com/arminbiere/cadical for copyright information.\n\n  Editline Library\n  See https://thrysoee.dk/editline\n  for copyright information.\n\n  SymFPU - The Symbolic Floating Point Unit\n  See https://github.com/martin-cs/symfpu/tree/main for copyright information.\n\nThis version of cvc5 is linked against the following third party\nlibraries covered by the LGPLv3 license.\nSee licenses/lgpl-3.0.txt for more information.\n\n  GMP - Gnu Multi Precision Arithmetic Library\n  See http://gmplib.org for copyright information.\n\n  LibPoly polynomial library\n  See https://github.com/SRI-CSL/libpoly for copyright and\n  licensing information.\n\ncvc5 is statically linked against these libraries. To recompile\nthis version of cvc5 with different versions of these libraries\nfollow the instructions on https://github.com/cvc5/cvc5/blob/main/INSTALL.md\n\nSee the file COPYING (distributed with the source code, and with\nall binaries) for the full cvc5 copyright, licensing, and (lack of)\nwarranty information.\n\n",
+    "version_stderr": "",
+    "source_revision": "282d5e0c84baf49c780704c532f87ba66d8b513d"
+  },
+  "carcara": {
+    "binary_sha256": "4016f1129baf0b82b1a4ee9c64ec2f4f0376cabe75cb07674fdd452847f8963f",
+    "version_stdout": "carcara 1.1.0\n",
+    "version_stderr": "",
+    "source_revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+  },
+  "lean": {
+    "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+    "version_stdout": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)\n",
+    "version_stderr": "",
+    "source_revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+  },
+  "lean_shared": {
+    "sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50"
+  },
+  "lean_Init": {
+    "sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22"
+  },
+  "ByteLaws": {
+    "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc",
+    "origin": "unchanged earlier matched-byte-law finite model"
+  }
+}

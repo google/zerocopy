@@ -1,0 +1,34 @@
+{
+  "no_remaining_owned_build_processes": true,
+  "executables": [
+    {
+      "name": "projection",
+      "path": "<TASK_ROOT>/target/debug/deps/projection-fbbc2323050374e9",
+      "sha256": "e2838c5007c11f92e3a99a9c74cd9799b1a9092d0e21cd9cdf942d51bfde2cb8",
+      "bytes": 87449496,
+      "mode": "0o100755",
+      "file": "<TASK_ROOT>/target/debug/deps/projection-fbbc2323050374e9: Mach-O 64-bit executable arm64\n",
+      "complete_macho_bounds": true,
+      "dep_info_sha256": "5d65dacff46a69ca98be68256ec255241f4b619f4e886c09e7e734e8cf5f208d",
+      "source_git_blob": "fdc22a19cf89e05338878c26b6ecd33a513c30c7",
+      "source_matches_pin": true
+    },
+    {
+      "name": "associated_type_normalization",
+      "path": "<TASK_ROOT>/target/debug/deps/associated_type_normalization-c263550180614f99",
+      "sha256": "dfe999cbd6aa6d171f7fdf0c028b8d75fdb53337e56dcea37441dfda04bc5bbc",
+      "bytes": 86945072,
+      "mode": "0o100755",
+      "file": "<TASK_ROOT>/target/debug/deps/associated_type_normalization-c263550180614f99: Mach-O 64-bit executable arm64\n",
+      "complete_macho_bounds": true,
+      "dep_info_sha256": "9128ba1d134cdbfed6a5b4370107ee5eece05fca4b859d7544bd230b6baf5ca8",
+      "source_git_blob": "d518e9a20186b54ee4990d804c936630a8b41c17",
+      "source_matches_pin": true
+    }
+  ],
+  "association": "Fresh private Cargo target; selected command/pinned tools and exact dep-info resolve relative to recorded source working directory. Operational build association, not compiler/decoder theorem.",
+  "diagnostics": [
+    "Initial sandbox ps denied; authorized process inventory succeeded.",
+    "Initial dep-info check assumed absolute source paths; observed exact relative tests/*.rs entries. Corrected check requires all3 exact dep-info lines and resolves against recorded Cargo cwd. No executable ran before identity checks passed."
+  ]
+}

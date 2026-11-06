@@ -1,0 +1,30 @@
+{
+  "command_prefix": [
+    "rocq",
+    "compile",
+    "-q",
+    "-w",
+    "-notation-overridden",
+    "-w",
+    "-redundant-canonical-projection",
+    "-w",
+    "-notation-incompatible-prefix",
+    "-w",
+    "-notation-for-abbreviation",
+    "-w",
+    "-missing-scheme",
+    "-w",
+    "-level-tolerance",
+    "-set",
+    "Default Goal Selector=!",
+    "-set",
+    "Default Proof Using=Type",
+    "-set",
+    "Suggest Proof Using",
+    "-Q",
+    "theories",
+    "simuliris"
+  ],
+  "basis": "Exact generated original-project COQMF_OTHERFLAGS and COQMF_COQLIBS; -q is default COQFLAGS of generated Makefile line267",
+  "no_proof_changes": true
+}

@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "<DOCKER_CLI>",
+    "cp",
+    "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5:/nix/store/1a78yd2f7ljqnqs35kw6d8a5pwp2d4ph-setupHook.sh.lock",
+    "-"
+  ],
+  "status": 0,
+  "seconds": 0.039673457969911397,
+  "stdout_bytes": 1536,
+  "stdout_sha256": "0c7e72896062b5b240e01b82e55937fcf8efd8c102055104774f9e339ada7239"
+}

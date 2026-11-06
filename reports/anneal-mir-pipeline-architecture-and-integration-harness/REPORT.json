@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/architecture",
+    "anneal/boundary-audit",
+    "anneal/dual-profile-mir",
+    "anneal/integration-tests",
+    "anneal/mir-semantics",
+    "anneal/refinement",
+    "anneal/rustc-capture",
+    "anneal/trusted-boundary",
+    "anneal/trusted-computing-base",
+    "lean/mechanized-models",
+    "lean/olean-audit",
+    "rust/mir/assert-terminator",
+    "rust/mir/partial-moves",
+    "rust/mir/place-mention",
+    "rust/mir/post-monomorphization-errors",
+    "rustc/mir-capture"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal architecture documentation and repository baseline",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254"
+      }
+    },
+    {
+      "name": "Anneal design and trust boundary specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Zerocopy Anneal V1 and V2 integration test frameworks",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6",
+        "paths": "anneal/v1, tools/cargo-anneal"
+      }
+    },
+    {
+      "name": "Rust compiler (nightly-2026-03-19)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "fd0c901b00ee1e08a250039cdb90258603497e20",
+        "version": "1.96.0-nightly"
+      }
+    },
+    {
+      "name": "Rust compiler (nightly-2026-05-30)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.28.0)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b",
+        "version": "v4.28.0"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

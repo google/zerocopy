@@ -1,0 +1,102 @@
+[
+  {
+    "name": "libpython3.11-minimal",
+    "version": "3.11.2-6+deb12u9",
+    "architecture": "arm64"
+  },
+  {
+    "name": "python3.11-minimal",
+    "version": "3.11.2-6+deb12u9",
+    "architecture": "arm64"
+  },
+  {
+    "name": "python3-minimal",
+    "version": "3.11.2-1+b1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "media-types",
+    "version": "10.0.0",
+    "architecture": "all"
+  },
+  {
+    "name": "libpython3.11-stdlib",
+    "version": "3.11.2-6+deb12u9",
+    "architecture": "arm64"
+  },
+  {
+    "name": "python3.11",
+    "version": "3.11.2-6+deb12u9",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libpython3-stdlib",
+    "version": "3.11.2-1+b1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "python3",
+    "version": "3.11.2-1+b1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libgmpxx4ldbl",
+    "version": "2:6.2.1+dfsg1-1.1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libgmp-dev",
+    "version": "2:6.2.1+dfsg1-1.1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libpcre2-16-0",
+    "version": "10.42-1+deb12u2",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libpcre2-32-0",
+    "version": "10.42-1+deb12u2",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libpcre2-posix3",
+    "version": "10.42-1+deb12u2",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libpcre2-dev",
+    "version": "10.42-1+deb12u2",
+    "architecture": "arm64"
+  },
+  {
+    "name": "libpkgconf3",
+    "version": "1.8.1-1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "m4",
+    "version": "1.4.19-3",
+    "architecture": "arm64"
+  },
+  {
+    "name": "pkgconf-bin",
+    "version": "1.8.1-1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "pkgconf",
+    "version": "1.8.1-1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "pkg-config",
+    "version": "1.8.1-1",
+    "architecture": "arm64"
+  },
+  {
+    "name": "binutils-x86-64-linux-gnu",
+    "version": "2.40-2",
+    "architecture": "arm64"
+  }
+]

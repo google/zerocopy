@@ -1,0 +1,22 @@
+{
+  "assignment": "E38 static publication report and evidence review",
+  "subject_reexecution_by_report_author": false,
+  "performed": [
+    "Read preserved Rust sources, compiler assembly/IR, literal litmus cases, CAT/instruction source, run receipts and all native histograms",
+    "Read/hash all6580 inventory-bound upstream regular source files and selected original native executable",
+    "Project exact private tool/container prefixes, preserve raw/current hashes and counts; extract original native leaf text",
+    "Execute owned static validator and report structural/link audit only"
+  ],
+  "not_performed": [
+    "herd replay",
+    "rustc/compiler replay",
+    "native execution",
+    "Docker exec",
+    "network or installation",
+    "Git/issue/canonical/external mutations",
+    "cleanup or nested agents"
+  ],
+  "projection_driver_scratch_sha256": "1ae2fceab46dbdd050184480bdba6b0b8e43b4561f27c008952748afd752055e",
+  "projection_driver_publication_status": "Scratch acquisition helper omitted from publication; preserved evidence, method, raw/current hashes and portable revalidation commands included",
+  "warnings": "Bad annotation controls compiled-only in original experiment. Public concurrent assembly differs in two .asciz display strings; actual native binary excluded."
+}

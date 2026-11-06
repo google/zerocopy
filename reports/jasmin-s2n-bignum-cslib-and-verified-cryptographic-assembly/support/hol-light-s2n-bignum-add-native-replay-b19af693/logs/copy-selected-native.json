@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "$DOCKER_BIN",
+    "cp",
+    "94afa6889b4a4af6f3dce4eb3e81bb6c698522130a9be617166e1a92a32535aa:/home/opam/anneal-cross-output/selected.native",
+    "$TASK/work/execution/hol-replay/artifacts/selected.native"
+  ],
+  "cwd": "$TASK/work/execution/hol-replay",
+  "started_utc": "2026-10-15T01:18:55.027962+00:00",
+  "classification": "read-only exact produced artifact copy into assigned host scratch; no executable run",
+  "host_pid": 26070,
+  "returncode": 0,
+  "elapsed_seconds": 0.13122750000000002,
+  "stdout_bytes": 0,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

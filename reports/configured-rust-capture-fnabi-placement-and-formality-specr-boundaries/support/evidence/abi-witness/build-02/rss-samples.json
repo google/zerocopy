@@ -1,0 +1,42 @@
+[
+  {
+    "pids": [
+      8513
+    ],
+    "rss_tree_bytes": 57376768,
+    "seconds": 0.05971204199999999,
+    "output_bytes": 2175
+  },
+  {
+    "pids": [
+      8513
+    ],
+    "rss_tree_bytes": 186630144,
+    "seconds": 0.19239716699999998,
+    "output_bytes": 2175
+  },
+  {
+    "pids": [
+      8513
+    ],
+    "rss_tree_bytes": 239616000,
+    "seconds": 0.332936875,
+    "output_bytes": 2175
+  },
+  {
+    "pids": [
+      8513
+    ],
+    "rss_tree_bytes": 172490752,
+    "seconds": 0.47117408400000005,
+    "output_bytes": 2175
+  },
+  {
+    "pids": [
+      8513
+    ],
+    "rss_tree_bytes": 189300736,
+    "seconds": 0.610411417,
+    "output_bytes": 2175
+  }
+]

@@ -1,0 +1,6 @@
+inventory_id,cohort,report_json,report_md
+R383,clangd source ded546ad82656ce6605ee2f2aa60c78dec70d95f,reports/clangd-authority-freshness-2017-2026/REPORT.json,reports/clangd-authority-freshness-2017-2026/REPORT.md
+R404,gopls source 98444708d405557b5ddd6179be1a6abc14150d5f,reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.json,reports/gopls-snapshots-views-workspace-evolution-2018-2026/REPORT.md
+R513,rust-analyzer source 03fcb77246f2568adb0e9b2fa60d19c6cc1686f4,reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.json,reports/rls-rust-analyzer-architecture-evolution-2015-2026/REPORT.md
+R514,rust-analyzer source 03fcb77246f2568adb0e9b2fa60d19c6cc1686f4,reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.json,reports/rls-rust-analyzer-architecture-transition-2015-2026/REPORT.md
+R515,rust-analyzer source 03fcb77246f2568adb0e9b2fa60d19c6cc1686f4,reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.json,reports/rls-to-rust-analyzer-editor-engine-history-2015-2026/REPORT.md

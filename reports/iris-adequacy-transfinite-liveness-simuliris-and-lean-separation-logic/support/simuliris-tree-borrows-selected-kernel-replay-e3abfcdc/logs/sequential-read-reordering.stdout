@@ -1,0 +1,4 @@
+ROCQ compile theories/tree_borrows/read_read_reorder/low_level.v
+ROCQ compile theories/tree_borrows/read_read_reorder/equivalence_def.v
+ROCQ compile theories/tree_borrows/read_read_reorder/read_reorder.v
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=4 start_bytes=31312537 peak_bytes=31794709 final_bytes=32100806

@@ -1,0 +1,14 @@
+Test SB Allowed
+States 4
+0:X3=0; 1:X3=0;
+0:X3=0; 1:X3=1;
+0:X3=1; 1:X3=0;
+0:X3=1; 1:X3=1;
+Ok
+Witnesses
+Positive: 1 Negative: 3
+Condition exists (0:X3=0 /\ 1:X3=0)
+Observation SB Sometimes 1 3
+Time SB 0.00
+Hash=4ec819ae9abf80bea8fd07e3293c03a5
+

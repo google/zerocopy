@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "task_id": "H11",
+  "section": "#64 \u00a76.1 Independent Holdout Authoring & Bug-Localization",
+  "toolchain": {
+    "bundle_id": "4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61",
+    "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+    "charon_version": "0.1.210",
+    "lean_version": "4.34.1"
+  },
+  "artifacts": {
+    "independent_slice_holdout_rs": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/independent_slice_holdout.rs",
+      "bytes": 1924,
+      "sha256": "f2314a666ee951b4704a6a2c88c9412e410046f51ca1be6c4ff2cb17546686aa"
+    },
+    "independent_slice_holdout_buggy_rs": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/independent_slice_holdout_buggy.rs",
+      "bytes": 1884,
+      "sha256": "ad16552c7a0473de838aaf02ab45f8597352e2353afb0daf428d256adb227236"
+    },
+    "independent_slice_holdout_amir": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/independent_slice_holdout.amir",
+      "bytes": 936,
+      "sha256": "e12e395747c1770be1f72d15773edb528fb3659e59609e6bf1a2a0f584738370"
+    },
+    "independent_slice_holdout_buggy_amir": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/independent_slice_holdout_buggy.amir",
+      "bytes": 936,
+      "sha256": "fa3220482623f471ad20c5ace230b61ff991775bf50a9775c21003cce074cbb8"
+    },
+    "out_independent_slice_holdout_json": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/out_independent_slice_holdout.json",
+      "bytes": 15589,
+      "sha256": "0a560ccfc18ea0c3295fd2da68144a588942df135c60d06ce040e92653a9c485"
+    },
+    "out_independent_slice_holdout_buggy_json": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/out_independent_slice_holdout_buggy.json",
+      "bytes": 15612,
+      "sha256": "6c74cc5cb3ea754f35f54730769a05f161dadeb9a6e33da82958bd56788e238d"
+    },
+    "bodies_independent_slice_holdout_json": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/bodies_independent_slice_holdout.json",
+      "bytes": 120401,
+      "sha256": "1681e25cd4e9f0db5aaffa4f0c7abe10bc0ebce14f514ea56ca82f700fee333f"
+    },
+    "bodies_independent_slice_holdout_buggy_json": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/bodies_independent_slice_holdout_buggy.json",
+      "bytes": 120767,
+      "sha256": "60366673ca874d27a99513e31d48f6f9ba54855e6354713ef01921826bc4071a"
+    },
+    "independent_slice_holdout_ullbc": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/independent_slice_holdout.ullbc",
+      "bytes": 202970,
+      "sha256": "fb2c351d74abbddcec7ee678141275c24f20edf3bca592a107b31c8b5d455299"
+    },
+    "independent_slice_holdout_llbc": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/independent_slice_holdout.llbc",
+      "bytes": 199712,
+      "sha256": "6f3108af98176c3bb2d3439c937e5a94820720b0fb9ce2ccb076494711ac41aa"
+    },
+    "independent_slice_holdout_buggy_ullbc": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/independent_slice_holdout_buggy.ullbc",
+      "bytes": 203019,
+      "sha256": "3b8d2185a4e8d57899aeb5782b8931c9f3427f80ab9aaf50147eb38483d8622f"
+    },
+    "independent_slice_holdout_buggy_llbc": {
+      "path": "experiments/opsem/real-mir-ullbc-capture/artifacts/v4/independent_slice_holdout_buggy.llbc",
+      "bytes": 199761,
+      "sha256": "d4100b2b30a8bb1c6fc50fb6bf3ef36591aa016bb1f2886091b74eff5a9663a8"
+    },
+    "lean_proof_module": {
+      "path": "experiments/opsem/AnnealResearch/IndependentSliceHoldoutH11.lean",
+      "bytes": 33983,
+      "sha256": "18c8c9d7a17786de0004935f0b0973e851f758bfdbaabd8987192c29f6075455"
+    }
+  },
+  "amir_v3_package_admission": {
+    "holdout": {
+      "status": "accepted_complete",
+      "bytes": 936,
+      "fnv1a64_hi32_lo32": null,
+      "fp16_mod_251_253": [
+        105,
+        210
+      ],
+      "isAdmittedPackageBytes": true
+    },
+    "buggy": {
+      "status": "accepted_complete",
+      "bytes": 936,
+      "fnv1a64_hi32_lo32": null,
+      "fp16_mod_251_253": [
+        121,
+        240
+      ],
+      "isAdmittedPackageBytes": true
+    },
+    "amir_v3_byte_diff": [
+      {
+        "offset": 7,
+        "holdout_byte": 105,
+        "buggy_byte": 121
+      },
+      {
+        "offset": 8,
+        "holdout_byte": 210,
+        "buggy_byte": 240
+      },
+      {
+        "offset": 403,
+        "holdout_byte": 4,
+        "buggy_byte": 3
+      }
+    ]
+  },
+  "frozen_test_vectors": [
+    {
+      "name": "elem_size_zero",
+      "inputs": {
+        "base_offset": 16,
+        "elem_count": 4,
+        "elem_size": 0,
+        "cap": 48
+      },
+      "expected_spec": null,
+      "holdout_result": null,
+      "buggy_result": null,
+      "diverges": false
+    },
+    {
+      "name": "exact_cap_boundary",
+      "inputs": {
+        "base_offset": 16,
+        "elem_count": 4,
+        "elem_size": 8,
+        "cap": 48
+      },
+      "expected_spec": 48,
+      "holdout_result": 48,
+      "buggy_result": null,
+      "diverges": true
+    },
+    {
+      "name": "exceeds_cap_boundary",
+      "inputs": {
+        "base_offset": 16,
+        "elem_count": 4,
+        "elem_size": 8,
+        "cap": 47
+      },
+      "expected_spec": null,
+      "holdout_result": null,
+      "buggy_result": null,
+      "diverges": false
+    },
+    {
+      "name": "checked_add_overflow",
+      "inputs": {
+        "base_offset": "usize::MAX - 8",
+        "elem_count": 4,
+        "elem_size": 4,
+        "cap": "usize::MAX"
+      },
+      "expected_spec": null,
+      "holdout_result": null,
+      "buggy_result": null,
+      "diverges": false
+    },
+    {
+      "name": "guarded_window_commit_abort_early_true",
+      "inputs": {
+        "abort_early": true
+      },
+      "expected_spec": {
+        "return": 0,
+        "log1": [
+          2,
+          145
+        ],
+        "log2": [
+          1,
+          2
+        ],
+        "obs_events": [
+          9,
+          1,
+          2
+        ]
+      },
+      "holdout_result": {
+        "return": 0,
+        "log1": [
+          2,
+          145
+        ],
+        "log2": [
+          1,
+          2
+        ],
+        "obs_events": [
+          9,
+          1,
+          2
+        ]
+      },
+      "diverges": false
+    },
+    {
+      "name": "guarded_window_commit_abort_early_false",
+      "inputs": {
+        "abort_early": false
+      },
+      "expected_spec": {
+        "return": 50,
+        "log1": [
+          2,
+          81
+        ],
+        "log2": [
+          1,
+          2
+        ],
+        "obs_events": [
+          5,
+          2,
+          1
+        ]
+      },
+      "holdout_result": {
+        "return": 50,
+        "log1": [
+          2,
+          81
+        ],
+        "log2": [
+          1,
+          2
+        ],
+        "obs_events": [
+          5,
+          2,
+          1
+        ]
+      },
+      "diverges": false
+    }
+  ],
+  "diagnostic_localization": {
+    "function_symbol": "independent_slice_holdout::validate_slice_window",
+    "sym_id": 68,
+    "rust_source_diff": {
+      "holdout_file": "independent_slice_holdout.rs",
+      "holdout_line": 22,
+      "holdout_code": "if end <= cap {",
+      "buggy_file": "independent_slice_holdout_buggy.rs",
+      "buggy_line": 21,
+      "buggy_code": "if end < cap {"
+    },
+    "mir_stage": "after_analysis_elaborated (Runtime(PostCleanup))",
+    "mir_basic_block": "bb7",
+    "mir_statement_index": 10,
+    "mir_var_debug_join": {
+      "_12": "end (user_name='end', scope=2, ambiguity='UniqueUserVar')",
+      "_4": "cap (user_name='cap', scope=0, ambiguity='UniqueUserVar')"
+    },
+    "mir_holdout_bb7_statements_6_to_11": [
+      {
+        "kind": "StorageLive",
+        "repr": "StorageLive(_23)"
+      },
+      {
+        "kind": "Assign(Use,WithRetag::Yes)",
+        "repr": "_23 = copy _12"
+      },
+      {
+        "kind": "StorageLive",
+        "repr": "StorageLive(_24)"
+      },
+      {
+        "kind": "Assign(Use,WithRetag::Yes)",
+        "repr": "_24 = copy _4"
+      },
+      {
+        "kind": "Assign(Other)",
+        "repr": "_22 = Le(move _23, move _24)"
+      }
+    ],
+    "mir_buggy_bb7_statements_6_to_11": [
+      {
+        "kind": "StorageLive",
+        "repr": "StorageLive(_23)"
+      },
+      {
+        "kind": "Assign(Use,WithRetag::Yes)",
+        "repr": "_23 = copy _12"
+      },
+      {
+        "kind": "StorageLive",
+        "repr": "StorageLive(_24)"
+      },
+      {
+        "kind": "Assign(Use,WithRetag::Yes)",
+        "repr": "_24 = copy _4"
+      },
+      {
+        "kind": "Assign(Other)",
+        "repr": "_22 = Lt(move _23, move _24)"
+      }
+    ],
+    "mir_bb7_terminator": {
+      "kind": "SwitchInt",
+      "repr": "switchInt(move _22) -> [0: bb11, otherwise: bb10]",
+      "successors": [
+        "bb11",
+        "bb10"
+      ]
+    },
+    "amir_v3_binary_diff": {
+      "byte_offset": 403,
+      "holdout_stmt_bytes": [
+        21,
+        22,
+        0,
+        4,
+        87,
+        0,
+        88,
+        0
+      ],
+      "buggy_stmt_bytes": [
+        21,
+        22,
+        0,
+        3,
+        87,
+        0,
+        88,
+        0
+      ],
+      "holdout_decoded_stmt": "assignBinOp (dst := reg 22) (op := BinOpTag.le = 0x04) (lhs := move reg 23) (rhs := move reg 24)",
+      "buggy_decoded_stmt": "assignBinOp (dst := reg 22) (op := BinOpTag.lt = 0x03) (lhs := move reg 23) (rhs := move reg 24)"
+    },
+    "charon_ullbc_localization": {
+      "ullbc_file": "independent_slice_holdout_buggy.ullbc",
+      "block_id": 9,
+      "statement_index": 10,
+      "local_mappings": {
+        "Local(10)": "end",
+        "Local(4)": "cap",
+        "Local(20)": "copy Local(10) (end)",
+        "Local(21)": "copy Local(4) (cap)",
+        "Local(19)": "BinaryOp(Lt, Move(Local(20)), Move(Local(21)))"
+      },
+      "holdout_op": "Le",
+      "buggy_op": "Lt",
+      "terminator": "Switch(Move(Local(19)), If(bb12, bb13))",
+      "span": "independent_slice_holdout_buggy.rs:21:8-21:18"
+    },
+    "counterexample_trace_summary": {
+      "vector": {
+        "base_offset": 16,
+        "elem_count": 4,
+        "elem_size": 8,
+        "cap": 48
+      },
+      "path": [
+        "bb0",
+        "bb2",
+        "bb4",
+        "bb5",
+        "bb7",
+        "bb11",
+        "bb12"
+      ],
+      "bb7_state": {
+        "_12_end": 48,
+        "_4_cap": 48,
+        "_23_lhs": 48,
+        "_24_rhs": 48,
+        "holdout_reg22_Le": 1,
+        "buggy_reg22_Lt": 0
+      },
+      "holdout_branch": "bb10 -> bb12 (returns Option::Some(48), discriminant=1, payload=48)",
+      "buggy_branch": "bb11 -> bb12 (returns Option::None, discriminant=0)"
+    }
+  },
+  "n4_outcome_status_separation": {
+    "issue_reference": "joshlf/anneal#68 (\u00a74.6 & \u00a76 N4)",
+    "explicit_outcome_type": "SliceWindowExecOutcome (.normalSome endOff | .normalNone | .ubFault | .unwound | .terminatedAbort reason | .missingBody symId | .malformedOrStuck st | .fuelExhausted)",
+    "normalNone_iff_theorem": "AnnealResearch.IndependentSliceHoldoutH11.classifySliceWindowStatus_normalNone_iff",
+    "status_coercion_negative_control": "AnnealResearch.IndependentSliceHoldoutH11.control_n4_status_erasing_projection_accepts_faulting_and_nonterminating_none_mutants_while_explicit_outcome_rejects",
+    "mutants_tested": [
+      {
+        "mutant": "mutantValidateSliceWindowElemZeroInfiniteLoopBytes",
+        "behavior": "replaces elem_size == 0 Option::None return in bb2 of validate_slice_window (symId = 80, 936 B) with self-loop goto bb2 -> .fuelExhausted",
+        "status_erasing_legacy_projection": "some none (legacyStatusErasingSuiteCheck = true, false positive!)",
+        "explicit_SliceWindowExecOutcome": "some .fuelExhausted (evalValidateSliceWindowSuiteOnBytes = false, rejected != .normalNone)"
+      },
+      {
+        "mutant": "mutantValidateSliceWindowElemZeroStuckReturnBytes",
+        "behavior": "replaces elem_size == 0 Option::None return in bb2 of validate_slice_window (symId = 80, 936 B) with malformed aggregate tag .agg0 1 -> .malformedOrStuck (.returned (.agg0 1))",
+        "status_erasing_legacy_projection": "some none (legacyStatusErasingSuiteCheck = true, false positive!)",
+        "explicit_SliceWindowExecOutcome": "some (.malformedOrStuck (.returned (.agg0 1))) (evalValidateSliceWindowSuiteOnBytes = false, rejected != .normalNone)"
+      }
+    ]
+  },
+  "lean_verification": {
+    "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 AnnealResearch/IndependentSliceHoldoutH11.lean",
+    "exit_code": 0,
+    "elapsed_ms": 6210.0,
+    "max_rss_kb": 664028,
+    "stdout": "'AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_packages_admitted_and_bound' depends on axioms: [propext]\n'AnnealResearch.IndependentSliceHoldoutH11.classifySliceWindowStatus_normalNone_iff' depends on axioms: [propext]\n'AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_validate_slice_window_satisfies_spec' depends on axioms: [propext]\n'AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_buggy_falsifies_exact_cap_boundary' depends on axioms: [propext]\n'AnnealResearch.IndependentSliceHoldoutH11.control_n4_status_erasing_projection_accepts_faulting_and_nonterminating_none_mutants_while_explicit_outcome_rejects' depends on axioms: [propext]\n'AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_buggy_bb7_localized_lt_vs_le' depends on axioms: [propext]\n'AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_guarded_window_commit_satisfies_spec' depends on axioms: [propext]",
+    "stderr": "",
+    "theorems_verified": [
+      "AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_packages_admitted_and_bound",
+      "AnnealResearch.IndependentSliceHoldoutH11.classifySliceWindowStatus_normalNone_iff",
+      "AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_validate_slice_window_satisfies_spec",
+      "AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_buggy_falsifies_exact_cap_boundary",
+      "AnnealResearch.IndependentSliceHoldoutH11.control_n4_status_erasing_projection_accepts_faulting_and_nonterminating_none_mutants_while_explicit_outcome_rejects",
+      "AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_buggy_bb7_localized_lt_vs_le",
+      "AnnealResearch.IndependentSliceHoldoutH11.independent_holdout_guarded_window_commit_satisfies_spec"
+    ],
+    "axioms_used": [
+      "propext"
+    ],
+    "uses_sorryAx": false
+  }
+}

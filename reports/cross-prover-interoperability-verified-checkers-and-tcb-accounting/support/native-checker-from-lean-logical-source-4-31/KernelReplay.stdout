@@ -1,0 +1,5 @@
+'ArithmeticPrototype.posthoc_sound' depends on axioms: [propext]
+'NativeChecker.validate_sound' depends on axioms: [propext]
+'NativeChecker.selected_accepted' depends on axioms: [propext]
+'NativeChecker.wrong_op_rejected' depends on axioms: [propext]
+'NativeChecker.wrong_literal_rejected' depends on axioms: [propext]

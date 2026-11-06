@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "aeneas/loops-termination",
+    "aeneas/translation",
+    "aeneas/lean-backend"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas nightly-2026.06.03 loop translation",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Aeneas symbolic interpreter",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Lean 4 used by the selected Aeneas backend",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Aeneas infinite and diverging execution",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "version": "nightly-2026.06.03"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

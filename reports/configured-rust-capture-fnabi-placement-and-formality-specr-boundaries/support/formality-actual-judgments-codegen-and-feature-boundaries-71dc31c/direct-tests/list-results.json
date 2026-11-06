@@ -1,0 +1,32 @@
+[
+  {
+    "name": "projection",
+    "phase": "list",
+    "argv": [
+      "<TASK_ROOT>/target/debug/deps/projection-fbbc2323050374e9",
+      "--list",
+      "--format",
+      "terse"
+    ],
+    "exit": 0,
+    "elapsed_ns": 547524458,
+    "binary_sha256": "e2838c5007c11f92e3a99a9c74cd9799b1a9092d0e21cd9cdf942d51bfde2cb8",
+    "stdout": "normalize_basic: test\nnormalize_into_iterator: test\nprojection_equality: test\n",
+    "stderr": ""
+  },
+  {
+    "name": "associated_type_normalization",
+    "phase": "list",
+    "argv": [
+      "<TASK_ROOT>/target/debug/deps/associated_type_normalization-c263550180614f99",
+      "--list",
+      "--format",
+      "terse"
+    ],
+    "exit": 0,
+    "elapsed_ns": 505882333,
+    "binary_sha256": "dfe999cbd6aa6d171f7fdf0c028b8d75fdb53337e56dcea37441dfda04bc5bbc",
+    "stdout": "test_mirror_normalizes_u32_to_u32: test\n",
+    "stderr": ""
+  }
+]

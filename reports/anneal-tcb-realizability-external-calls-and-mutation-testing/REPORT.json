@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "anneal/audit",
+    "anneal/boundary-canary-suite",
+    "anneal/external-calls",
+    "anneal/mir-semantics",
+    "anneal/mutation-testing",
+    "anneal/open-world-callbacks",
+    "anneal/proof-gated-compilation",
+    "anneal/reentrancy-safety",
+    "anneal/scoped-verification",
+    "anneal/step-result",
+    "anneal/tcb-realizability",
+    "anneal/trust-policy",
+    "anneal/trusted-boundary",
+    "anneal/x86-semantics",
+    "lean/elaboration-probes",
+    "lean/kernel-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Trusted Kernel, Refinement Framework, StepResult, MirSemantics, and Initial Two-Phase Boundary Auditor",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal Single-Import Two-Stage TrustedBoundary Auditor",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Anneal Trusted Boundary and Theory Library",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel, Environment Realization, and Command Parser",
+      "identity": {
+        "linux_x86_64_archive_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-04-12"
+}

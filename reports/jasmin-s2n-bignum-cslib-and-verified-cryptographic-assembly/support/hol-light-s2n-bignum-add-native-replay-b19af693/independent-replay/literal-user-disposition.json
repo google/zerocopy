@@ -1,0 +1,6 @@
+{
+  "initial_gate": "incorrect literal Config.User == 0 assertion failed; no further runtime operation",
+  "diagnosis": "original and controls and fresh inspections all literal root",
+  "parent_disposition": "bounded recovery authorized; require root exact for this replay; no normalization, override or repeated inspect",
+  "validation": "PASS all original resource and identity gates"
+}

@@ -1,0 +1,226 @@
+{
+  "topics": [
+    "isa",
+    "isa/jasmin",
+    "isa/simd-crypto",
+    "isa/aarch64",
+    "isa/x86-64",
+    "verification/cryptography",
+    "build/nix"
+  ],
+  "subjects": [
+    {
+      "name": "cslib-community/bignum Lean 4 port of s2n-bignum",
+      "identity": {
+        "repository": "cslib-community/bignum",
+        "revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+        "url": "https://github.com/cslib-community/bignum",
+        "toolchain": "leanprover/lean4:v4.36.0-rc1"
+      }
+    },
+    {
+      "name": "awslabs/s2n-bignum HOL Light formalization (upstream HEAD)",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+        "url": "https://github.com/awslabs/s2n-bignum"
+      }
+    },
+    {
+      "name": "awslabs/s2n-bignum HOL Light formalization (prior corpus baseline)",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+        "url": "https://github.com/awslabs/s2n-bignum"
+      }
+    },
+    {
+      "name": "AeneasVerif/kraken AArch64 and X64 Lean 4 verification framework",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+        "url": "https://github.com/AeneasVerif/kraken"
+      }
+    },
+    {
+      "name": "HOL Light",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "b19af6934759eed622d7aca25092367f81656eee"
+      }
+    },
+    {
+      "name": "s2n-bignum complete x86 bignum_add proof",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+        "path": "x86/proofs/bignum_add.ml"
+      }
+    },
+    {
+      "name": "Immutable opam metadata",
+      "identity": {
+        "repository": "ocaml/opam-repository",
+        "revision": "56aefa37456aa263913289a4174daca01c4b9339"
+      }
+    },
+    {
+      "name": "Jasmin fresh source and Nix environment",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "source_manifest_sha256": "64acc476a06c1150553f2a126f9952086eb2dd03d25bc7fc0c472dce4de7796b"
+      }
+    },
+    {
+      "name": "Pinned nixpkgs evaluated source",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "652efddd59a21783edff64959252ec1cfce09041",
+        "fetchTarball_sha256": "11vxn2zqblkxfl6m20x4qd4b90sn7wmnmngi4c6mydhdr2kbhvj2"
+      }
+    },
+    {
+      "name": "Nix 2.34.8 native AArch64 runtime",
+      "identity": {
+        "image": "nixos/nix",
+        "platform_manifest_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "config_sha256": "42e5940896b215eb0fb4a0ec3705e7e09b195428636af98294d1b50120d46a87",
+        "executable_sha256": "20d14cac461d9a879b9058ed1e5b5ce8112afb05dcee8f33ece9181f7e265842",
+        "version": "2.34.8",
+        "platform": "aarch64-linux"
+      }
+    },
+    {
+      "name": "EasyCrypt selected release source and native derivation",
+      "identity": {
+        "repository": "easycrypt/easycrypt",
+        "release": "r2026.09",
+        "normalized_source_sha256": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+        "derivation": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv"
+      }
+    },
+    {
+      "name": "Coqword source data",
+      "identity": {
+        "repository": "jasmin-lang/coqword",
+        "revision": "86ed49aeca65a8d32e81bb386778f49b45ee505b",
+        "normalized_source_sha256": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+        "store_path": "/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source"
+      }
+    },
+    {
+      "name": "Exact cache acquisition roots",
+      "identity": {
+        "artifact": "cache-fetch-191.json",
+        "sha256": "94f52a3b0ad9038c84cac5397d2f1b6455c9234cd88098e9cf7943f76dbe2dff"
+      }
+    },
+    {
+      "name": "Nix release license source, not established binary-build provenance",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+        "version": "2.34.8",
+        "COPYING_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+      }
+    },
+    {
+      "name": "Parent-owned offline Bash-printf environment probe",
+      "identity": {
+        "source_sha256": "1e72ecac59cd12866728b52d57e06073a767daca87d8a541ba160d9370dd8f4a",
+        "derivation": "/nix/store/z5pir11sfylhnw6gfqdb3dkh3cl63zv5-anneal-owned-offline-sandbox-probe.drv",
+        "output_sha256": "ec2420b37aa9a5c9f66acba9f5488c9c403a96962e9a2736017a1c6599fc7b6a"
+      }
+    },
+    {
+      "name": "Jasmin pinned dependency environment",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9",
+        "nixpkgs_revision": "652efddd59a21783edff64959252ec1cfce09041"
+      }
+    },
+    {
+      "name": "Nix native AArch64 runtime used for failed dependency build",
+      "identity": {
+        "version": "2.34.8",
+        "platform": "aarch64-linux",
+        "platform_manifest_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "config_sha256": "42e5940896b215eb0fb4a0ec3705e7e09b195428636af98294d1b50120d46a87",
+        "executable_sha256": "20d14cac461d9a879b9058ed1e5b5ce8112afb05dcee8f33ece9181f7e265842"
+      }
+    },
+    {
+      "name": "Nix release implementation inspected for diagnosis",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+        "source_manifest_sha256": "4da635ccb9c56cce98617d2949f2d537314a76da7d84e467ba5508ddb8d12a7e"
+      }
+    },
+    {
+      "name": "Failed offline dependency invocation",
+      "identity": {
+        "artifact": "build-phase.json",
+        "sha256": "7beab87dc465f049bfc2960ff6496279314992a106b4c344f279abdea41b69ef",
+        "stderr_sha256": "7b4d0775bfc9da53493d933581b3fe2c8c315bf59fb9aaecc2e6e8d00ba25d10"
+      }
+    },
+    {
+      "name": "Stopped HOME snapshot",
+      "identity": {
+        "artifact": "jasmin-home.tar",
+        "sha256": "831ca5a8c240ae07c85147e43377c0789b673a09f1d73bf44640577c72f54856"
+      }
+    },
+    {
+      "name": "Stopped Nix store database snapshot, payload omitted",
+      "identity": {
+        "artifact": "jasmin-store-db.tar",
+        "sha256": "7e3667920dc4efa75bc012a4aa0884da85bb927465e10ef2880a2e0360555034"
+      }
+    },
+    {
+      "name": "Registered EasyCrypt output",
+      "identity": {
+        "repository": "easycrypt/easycrypt",
+        "release": "r2026.09",
+        "normalized_source_sha256": "sha256-7ZnGZOZyV5znDGzg0c3XSsliQyOFOwJp2iyAzJtDNwk=",
+        "derivation": "/nix/store/bgcg6yj56vad1qvz7z8xwpvff7s0668z-easycrypt-2026.09.drv",
+        "recorded_output_nar_hash": "sha256:5da60afaf1c45459837decd6ce3675be732c45f2d750013a144e0ffac5f50f57"
+      }
+    },
+    {
+      "name": "Jasmin",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "Vale",
+      "identity": {
+        "repository": "project-everest/vale",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "s2n-bignum",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+      }
+    },
+    {
+      "name": "Apple clang 21.0.0",
+      "identity": {
+        "version": "clang-2100.3.34.2",
+        "artifact": "/usr/bin/clang",
+        "target": "x86_64-unknown-linux-gnu",
+        "sha256": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

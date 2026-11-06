@@ -1,0 +1,8 @@
+{
+  "exit_code": 70,
+  "seconds": 1.210452334,
+  "waited_and_reaped": true,
+  "stdout_sha256": "a2ac77e717a490c9c2549d08619db48652fdf2299c2149240d6c4d09e491175b",
+  "stderr_sha256": "2a13af67601624cb4924e88c89583b6d14c362a01c585716097d241c0a47bd61",
+  "stderr_bytes": 110
+}

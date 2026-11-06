@@ -1,0 +1,291 @@
+[
+  {
+    "artifact": "A17",
+    "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+    "path": "INSTALL.md",
+    "retained": "inspected-source/A17/INSTALL.md",
+    "lines": [
+      21,
+      27,
+      40,
+      46
+    ],
+    "git_blob": "1d887630fab484f103493c214d27a5338afdcbfa",
+    "sha256": "18ed301b5c73273528acc7f8d9af0041afe03f05d1fb83e244ca00e16e3111d4",
+    "bytes": 4704,
+    "package_path": "support/source/old-sail/INSTALL.md"
+  },
+  {
+    "artifact": "A17",
+    "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+    "path": "src/lib/constraint.ml",
+    "retained": "inspected-source/A17/src/lib/constraint.ml",
+    "lines": [
+      95,
+      105,
+      128,
+      131
+    ],
+    "git_blob": "fe3586f895dda7d964be584909c7fc57906e5894",
+    "sha256": "22e813188301d00d674ebc0b0559224fb1dad27882dde21972adad715fd715cb",
+    "bytes": 25431,
+    "package_path": "support/source/old-sail/src/lib/constraint.ml"
+  },
+  {
+    "artifact": "A42",
+    "commit": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+    "path": "Makefile",
+    "retained": "inspected-source/A42/Makefile",
+    "lines": [
+      383,
+      388,
+      405,
+      413
+    ],
+    "git_blob": "923c6a3d0976ab2739a090b4ca37f48c20e9b3e4",
+    "sha256": "99419dddd22f8ec19fcabc26fe2c29adc514d99840ff5214ba29a83916ca3bcd",
+    "bytes": 23277,
+    "package_path": "support/source/old-riscv/Makefile"
+  },
+  {
+    "artifact": "A17",
+    "commit": "b14f649845db850b3673696e2aa90565fa2a60ef",
+    "path": "LICENSE",
+    "package_path": "support/source/old-sail/LICENSE",
+    "git_blob": "efe3a9149f0187c2658d8295c38c5e5f52002663",
+    "sha256": "b281dbc23f84614cb02950a26ab6b7f803cb4bb615b3af84fde4d5cfec5d6d90",
+    "bytes": 2594,
+    "role": "exact upstream license; parent read-only cat-file receipt retained"
+  },
+  {
+    "artifact": "A42",
+    "commit": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+    "path": "LICENCE",
+    "package_path": "support/source/old-riscv/LICENCE",
+    "git_blob": "ac2cff583cdf06b07064a025aaed60c6ced162d0",
+    "sha256": "4ffaae6c03465cbd74741057379d88c38377137a25663fac045bf6e37299475b",
+    "bytes": 2720,
+    "role": "exact upstream license; parent read-only cat-file receipt retained"
+  },
+  {
+    "artifact": "A42",
+    "commit": "837ede9b39fae2aa97849da89c4b3b5a93344890",
+    "path": "README.md",
+    "package_path": "support/source/old-riscv/README.md",
+    "git_blob": "f19cf4cd11f26867b2aafad3f5d4b6ace06bb955",
+    "sha256": "191880d103609b4330fc59aea5f475afd360ecd8b0905fe06879fab63986ff3b",
+    "bytes": 16036,
+    "role": "upstream documentation and attribution"
+  },
+  {
+    "artifact": "A35",
+    "commit": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+    "path": "LICENSE",
+    "package_path": "support/attribution-evidence/A35-LICENSE",
+    "git_blob": "a28772fd85460499bda74882611dd437195c9141",
+    "bytes": 2263,
+    "sha256": "0faa544bb919253727d14e4048da0426f66c1db522726c9de28523050b789953",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A35",
+    "commit": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+    "path": "Makefile",
+    "git_blob": "c5d08b9f42618cb5ffcc593cc793b381088fd633",
+    "sha256": "050cbabbd62e6fbb8eda43e7d7f7864c98434b7969c24d80eead37f9159afb5c",
+    "bytes": 717,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A35/Makefile",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A35",
+    "commit": "bda86c9f0bd28bbaa2481f50ddc986ede342805a",
+    "path": "README.md",
+    "git_blob": "8d5e382980b4f9407ba40aa4803fa508ec8be62d",
+    "sha256": "b6105ea2f65becf86c9e747e4e70fc3b5ad3346cc01ba53afca68f3b071bea3c",
+    "bytes": 2578,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A35/README.md",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A36",
+    "commit": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+    "path": "LICENSE",
+    "package_path": "support/attribution-evidence/A36-LICENSE",
+    "git_blob": "8a915c847215cebc6a19c0b7484792b83fa7172f",
+    "bytes": 1745,
+    "sha256": "bc4fe79f9b7f78bc6e4e61e1f7c430b1e413b82de4aacb9355ade5e43bad2a69",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A36",
+    "commit": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+    "path": "Makefile",
+    "git_blob": "c837f883f58cacd6ee79b86a3a1170702571d75f",
+    "sha256": "73ead158f2c49b265a716eb903970875a615b2963eabe79571a727afae653e29",
+    "bytes": 2084,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A36/Makefile",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A36",
+    "commit": "a1a12e00fba07f2e41ccd74a8b593b88e48fc2c3",
+    "path": "README.md",
+    "git_blob": "2ab63a632048f303bbecdcfec746fd31d84e790f",
+    "sha256": "ac4107463bbbd17c8dd24dcfd7ad08f00fb0ed166a404097d430f73cd96bf822",
+    "bytes": 4603,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A36/README.md",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A39",
+    "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+    "path": "LICENSE",
+    "package_path": "support/attribution-evidence/A39-LICENSE",
+    "git_blob": "a7ec31fbcafdbb0fd841469be363560f1574d565",
+    "bytes": 352,
+    "sha256": "b8db39b9a49ba7a283437f8b63d35903ad7169f824af10763e9b4cb6ddf70486",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A39",
+    "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+    "path": "LICENSE-CODE",
+    "package_path": "support/attribution-evidence/A39-LICENSE-CODE",
+    "git_blob": "78e892037cc357cada2ec42cd3cd80ba074c763c",
+    "bytes": 1780,
+    "sha256": "33a506f1d35644a275cd3e04045d67e87087ae700a6ccd9e7d468f9525a38f71",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A39",
+    "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+    "path": "LICENSE-DOCS",
+    "package_path": "support/attribution-evidence/A39-LICENSE-DOCS",
+    "git_blob": "4c892ca811debe00c1e3844a3574ea67e560f1a6",
+    "bytes": 18975,
+    "sha256": "68391acad70d88fe498384dd67da5b07ad151ae45b496031daef5fcd9f3ed3bb",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A39",
+    "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+    "path": "Makefile",
+    "git_blob": "c837f883f58cacd6ee79b86a3a1170702571d75f",
+    "sha256": "73ead158f2c49b265a716eb903970875a615b2963eabe79571a727afae653e29",
+    "bytes": 2084,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A39/Makefile",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A39",
+    "commit": "6f24ed4baa4d61967a95bac834eab2c66f3b76fa",
+    "path": "README.md",
+    "git_blob": "c246c328fc62570bc911fed1044fafc1f40a410b",
+    "sha256": "e1db216a76c5dc0a0ec86460a7e991f1e987fccb161c82cd5b30cb606756c0aa",
+    "bytes": 9586,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A39/README.md",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A40",
+    "commit": "169934e27ceafe393ed4d365985f7b12d974d56e",
+    "path": "LICENSE",
+    "package_path": "support/attribution-evidence/A40-LICENSE",
+    "git_blob": "34195c4eb80b2d4eac75766f39325c2255b6ce4b",
+    "bytes": 2355,
+    "sha256": "570a94176eed2a93ebc3bb31edd23754d77924afe9c05fb8c8d8a159cd3fe22a",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A40",
+    "commit": "169934e27ceafe393ed4d365985f7b12d974d56e",
+    "path": "README.md",
+    "git_blob": "27628388edef7e6066b413561eeeadc1139ab2d1",
+    "sha256": "9df5fb85489fa19a10125cb505874f381433fd30b00c5f46c39a3783bf275b10",
+    "bytes": 3158,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A40/README.md",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A41",
+    "commit": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+    "path": "LICENSE",
+    "package_path": "support/attribution-evidence/A41-LICENSE",
+    "git_blob": "596b0dfc5d8a8f4f1cd546e519182edb1d4acbc9",
+    "bytes": 1718,
+    "sha256": "9f12b4d76683118c79a24bd853b5477eed4a1aa1c20d884e07474900331ece74",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A41",
+    "commit": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+    "path": "Makefile",
+    "git_blob": "a95e0b50dd6966fcf4f0bc7fbb527508b6cc403d",
+    "sha256": "ba3631ecb2b44d9b91c0fd23bac105408983f328ad672905719cec2a5fd494b7",
+    "bytes": 3998,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A41/Makefile",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A41",
+    "commit": "7945a29d1647970709a9b5ad2ffc53c757e130cc",
+    "path": "README.md",
+    "git_blob": "c446f1744012484e5d4263ccf6ad4400f3742055",
+    "sha256": "1837accb8d9595c88f08fdc574bea3cc4867fa891b3298ab8bd53f6bfe1b4d12",
+    "bytes": 15967,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A41/README.md",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A43",
+    "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "LICENSE",
+    "package_path": "support/attribution-evidence/A43-LICENSE",
+    "git_blob": "091d8448b0afa65f11271fc9cbe26f6f1a4d8909",
+    "bytes": 2265,
+    "sha256": "d43eeae8b2e1639534f8d095d3b3231f1fc193cfc172b98069adf41bf9684fb9",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A43",
+    "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "THIRD_PARTY_FILES.md",
+    "package_path": "support/attribution-evidence/A43-THIRD_PARTY_FILES.md",
+    "git_blob": "d24252a436720a3ccdecb69c990fff58341ff97c",
+    "bytes": 6,
+    "sha256": "b07313f37d4d0b6c36ae55d01211d46275412f3419c656e22cef16216f9ed91a",
+    "role": "exact root license/notice from fixed source revision"
+  },
+  {
+    "artifact": "A43",
+    "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "Makefile",
+    "git_blob": "1ea030d46be29960f94d5ac774f1ec00ee616d84",
+    "sha256": "f03c0f1deb78b66fba510c0254f315d5f74ce3aa7f534c98a23f18d8fb9b71d8",
+    "bytes": 5597,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A43/Makefile",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  },
+  {
+    "artifact": "A43",
+    "commit": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "path": "README.md",
+    "git_blob": "1750da7e6e65c568f75aa4512a9376b0b4142fe9",
+    "sha256": "a105c4453b80b3e7decc391c110b5494e40fa8444c8bd85ecf2ed091971570d8",
+    "bytes": 6364,
+    "archive_path": "support/public-projection-source-audit.tar.gz",
+    "archive_member": "audit/inspected-source/A43/README.md",
+    "role": "unchanged upstream source/documentation retained inside public projection"
+  }
+]

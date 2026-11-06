@@ -1,0 +1,96 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "kind": "publication",
+      "title": "Iris from the Ground Up: A Modular Foundation for Higher-Order Concurrent Separation Logic",
+      "authors": [
+        "Ralf Jung",
+        "Robbert Krebbers",
+        "Jacques-Henri Jourdan",
+        "Aleš Bizjak",
+        "Lars Birkedal",
+        "Derek Dreyer"
+      ],
+      "doi": "10.1017/S0956796818000151",
+      "version": "Iris 3.1",
+      "role": "published semantics",
+      "focus": [
+        "resource ownership",
+        "cameras",
+        "frame-preserving updates",
+        "update modalities",
+        "invariants",
+        "fancy updates",
+        "later",
+        "weakest preconditions",
+        "adequacy"
+      ]
+    },
+    {
+      "kind": "publication",
+      "title": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "authors": [
+        "Ralf Jung",
+        "Jacques-Henri Jourdan",
+        "Robbert Krebbers",
+        "Derek Dreyer"
+      ],
+      "doi": "10.1145/3158154",
+      "venue": "POPL 2018",
+      "role": "published Rust semantic model",
+      "focus": [
+        "semantic type soundness",
+        "ownership/sharing predicates",
+        "guarded recursion",
+        "lifetime tokens",
+        "borrow propositions",
+        "persistent borrows"
+      ]
+    },
+    {
+      "kind": "repository",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "75fb1479040d32d43d31b74510167ee3b873d28a",
+      "pull_request": "1352",
+      "role": "exact source",
+      "files": [
+        {
+          "path": "backends/lean/Aeneas/SepLogic/Basic.lean",
+          "blob": "5b50eb4a1532251386955d754bb5d711600d384b"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/Heap.lean",
+          "blob": "d635192c03e4b49ab57f6581e4f93a2a17ed265c"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/WP.lean",
+          "blob": "134d8b9f7dfb24e8afdefd730cae547ba540d2ce"
+        },
+        {
+          "path": "backends/lean/Aeneas/Std/RawPtr.lean",
+          "blob": "33e3dc4b7c06c9b7c46703ec19199d991d023ed1"
+        }
+      ]
+    },
+    {
+      "kind": "repository",
+      "repository": "leanprover-community/iris-lean",
+      "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47",
+      "role": "exact project status",
+      "files": [
+        {
+          "path": "readme.md",
+          "blob": "79dc0231e655921cfeed3d7156299226c6bed54b"
+        }
+      ]
+    },
+    {
+      "kind": "anneal-reference",
+      "path": "reports/aeneas-separation-logic-status-2026-09-26/REPORT.md",
+      "blob": "f085a0657973482693efa5d1e661881525c9911d",
+      "role": "current corpus integration boundary"
+    }
+  ],
+  "execution_evidence": "none; this report is published-semantics plus exact-source synthesis"
+}

@@ -1,0 +1,26 @@
+{
+  "allocation_seconds": 1200,
+  "elapsed_seconds": 64.953,
+  "outcomes": [
+    {
+      "label": "audit-PlannedAuditFramework",
+      "controller_exit": 0,
+      "remaining_seconds_at_start": 1197
+    },
+    {
+      "label": "audit-PlannedAuditResources",
+      "controller_exit": 0,
+      "remaining_seconds_at_start": 1187
+    },
+    {
+      "label": "audit-PlannedAuditExamples",
+      "controller_exit": 0,
+      "remaining_seconds_at_start": 1181
+    },
+    {
+      "label": "recursive-native-checker",
+      "controller_exit": 0,
+      "remaining_seconds_at_start": 1171
+    }
+  ]
+}

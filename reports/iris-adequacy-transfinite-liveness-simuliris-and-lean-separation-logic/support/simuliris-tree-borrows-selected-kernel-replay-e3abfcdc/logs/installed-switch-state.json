@@ -1,0 +1,26 @@
+{
+  "label": "installed-switch-state",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "cat",
+    "/home/opam/.opam/4.14/.opam-switch/switch-state"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.082,
+  "stdout_bytes": 2245,
+  "stderr_bytes": 45,
+  "stdout_sha256": "f31ab4625a5111da0eadc8a8f31a659ac10e8e086964d589aa04d39175abdc7e",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

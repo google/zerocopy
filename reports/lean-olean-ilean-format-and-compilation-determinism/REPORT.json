@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "lean/olean",
+    "lean/kernel",
+    "build/hermeticity"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 `.olean` format and identity selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "version": "v4.29.0"
+      }
+    },
+    {
+      "name": "Lean/Lake two-module batch fixture at 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4.30.0-rc2 linux_aarch64 archive",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.30.0-rc2",
+        "asset": "lean-4.30.0-rc2-linux_aarch64.tar.zst",
+        "sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f"
+      }
+    },
+    {
+      "name": "leantar v0.1.16 native AArch64 archive",
+      "identity": {
+        "repository": "digama0/leangz",
+        "version": "v0.1.16",
+        "asset": "leantar-v0.1.16-aarch64-unknown-linux-musl.tar.gz",
+        "sha256": "26eb775436883e3d5cdad27af35b9c37212c73106316863ea1fc5f8ec2cc9de4"
+      }
+    },
+    {
+      "name": "Lean v4.30.0-rc2 Linux AArch64 archive",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.30.0-rc2",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "asset": "lean-4.30.0-rc2-linux_aarch64.tar.zst",
+        "sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Lean v4.34.1 Linux AArch64 archive",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "tag": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "asset": "lean-4.34.1-linux_aarch64.tar.zst",
+        "sha256": "fdb974c2cdb4627e090d5d4007b913e09d13c4868720fb5594e22808b3de9e37",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "id": "rustbelt-popl2018",
+      "role": "publication",
+      "identity": {
+        "doi": "10.1145/3158154"
+      },
+      "locator": "https://plv.mpi-sws.org/rustbelt/popl18/",
+      "supports": [
+        "unsafe-library semantic verification condition",
+        "safe-client composition through semantic typing",
+        "adequacy boundary"
+      ]
+    },
+    {
+      "id": "compcert-3.18-source",
+      "role": "source",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version_blob": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+        "compiler_blob": "60fc74fec1411216425004f6d63567354e146e9c"
+      },
+      "paths": [
+        "VERSION",
+        "driver/Compiler.v"
+      ],
+      "supports": [
+        "version identity",
+        "whole-compiler/whole-program translation and proof framing"
+      ]
+    },
+    {
+      "id": "compcert-3.18-doc",
+      "role": "documentation",
+      "identity": {
+        "version": "3.18",
+        "released": "2026-08-31"
+      },
+      "locator": "https://compcert.org/compcert-C.html",
+      "supports": [
+        "semantic-preservation theorem statement",
+        "formal-guarantee boundary for whole programs compiled as a whole"
+      ]
+    },
+    {
+      "id": "compositional-compcert",
+      "role": "publication",
+      "identity": {
+        "doi": "10.1145/2676726.2676985",
+        "year": "2015"
+      },
+      "locator": "https://collaborate.princeton.edu/en/publications/compositional-compcert/",
+      "supports": [
+        "whole-program-vs-separate-compilation contrast",
+        "linking semantics",
+        "structured simulations and module-local invariants"
+      ]
+    },
+    {
+      "id": "open-module-direct-refinements",
+      "role": "publication",
+      "identity": {
+        "arxiv": "2302.12990",
+        "year": "2023"
+      },
+      "locator": "https://arxiv.org/abs/2302.12990",
+      "supports": [
+        "open-module compiler correctness",
+        "direct refinements",
+        "horizontal and vertical composition motivation"
+      ]
+    },
+    {
+      "id": "vst",
+      "role": "background",
+      "identity": {
+        "doi": "10.1007/978-3-642-28891-3_2",
+        "year": "2012"
+      },
+      "locator": "https://vst.cs.princeton.edu/",
+      "supports": [
+        "modular proof layers inside an end-to-end verified toolchain"
+      ]
+    }
+  ],
+  "observation_date": "2026-09-27",
+  "execution_evidence": false
+}

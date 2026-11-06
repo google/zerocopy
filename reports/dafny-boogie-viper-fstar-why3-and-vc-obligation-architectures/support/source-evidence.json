@@ -1,0 +1,155 @@
+{
+  "role": "source and upstream documentation; no execution",
+  "repositories": [
+    {
+      "repository": "flux-rs/flux",
+      "revision": "6769bb9cbd1216380f542349494efafafd6104a3",
+      "tree": "13cbf265c50c832e7ce0045f9747af11c3cd3cbf",
+      "date": "2026-10-14T01:57:30Z",
+      "files": [
+        {
+          "path": "README.md",
+          "git_blob_sha": "a3fd0fc0066a10d048945ff94973d8c5ef0af80c",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/README.md",
+          "lines": 30
+        },
+        {
+          "path": "rust-toolchain.toml",
+          "git_blob_sha": "cf88a513ee7c2baa5b64f068dc31d4d3e36dcf77",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/rust-toolchain.toml",
+          "lines": 4
+        },
+        {
+          "path": "crates/flux-refineck/src/lib.rs",
+          "git_blob_sha": "1a9e09696a42cd04826eb42533ab57b9ed5f4f00",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-refineck/src/lib.rs",
+          "lines": 519
+        },
+        {
+          "path": "crates/flux-refineck/src/checker.rs",
+          "git_blob_sha": "bdc181e361becee7a0a8e28a56f33b60510d2ad3",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-refineck/src/checker.rs",
+          "lines": 2520
+        },
+        {
+          "path": "crates/flux-infer/src/infer.rs",
+          "git_blob_sha": "214116e6a9228b338f3abde483f5c86f7b2d3901",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-infer/src/infer.rs",
+          "lines": 1366
+        },
+        {
+          "path": "crates/flux-infer/src/fixpoint_encoding.rs",
+          "git_blob_sha": "5b9d1b30d5c52c1b1c703a3bbc109f3632ef232a",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-infer/src/fixpoint_encoding.rs",
+          "lines": 2750
+        },
+        {
+          "path": "crates/flux-infer/src/lean_encoding.rs",
+          "git_blob_sha": "dd848f3c239a49618602eb27bd71cc03ac0bea3d",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-infer/src/lean_encoding.rs",
+          "lines": 1226
+        },
+        {
+          "path": "crates/flux-infer/src/lean_format.rs",
+          "git_blob_sha": "ad3856092c7cc9deecaa57dc4847a658f27e3603",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-infer/src/lean_format.rs",
+          "lines": 918
+        },
+        {
+          "path": "lib/liquid-fixpoint/src/lib.rs",
+          "git_blob_sha": "62f0a84b9b0d72e637929b3e6acd73944cc22a85",
+          "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/lib/liquid-fixpoint/src/lib.rs",
+          "lines": 710
+        }
+      ]
+    },
+    {
+      "repository": "coord-e/thrust",
+      "revision": "187a1e975edece50b896f1ee478ab665d7a1204e",
+      "tree": "9edb158a943b78997d6ee92dba6cebf4e2da957b",
+      "date": "2026-10-13T06:57:57Z",
+      "files": [
+        {
+          "path": "README.md",
+          "git_blob_sha": "378440b12ea2b846197ec5135d5143d1f7bb1c3d",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/README.md",
+          "lines": 226
+        },
+        {
+          "path": "rust-toolchain.toml",
+          "git_blob_sha": "56e7f16aeb79e480c4797246f3db2ef301750263",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/rust-toolchain.toml",
+          "lines": 4
+        },
+        {
+          "path": "src/chc/solver.rs",
+          "git_blob_sha": "88dc3a0829a07d568ded4bee316ae6b6e374a23e",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/src/chc/solver.rs",
+          "lines": 193
+        },
+        {
+          "path": "src/chc/clause_builder.rs",
+          "git_blob_sha": "59e5e62d0194b6a1772133970e907315a4f4b7e8",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/src/chc/clause_builder.rs",
+          "lines": 192
+        },
+        {
+          "path": "src/analyze/local_def.rs",
+          "git_blob_sha": "6a9cdf1b572c014d2629561407463754f483c915",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/src/analyze/local_def.rs",
+          "lines": 1169
+        },
+        {
+          "path": "src/analyze/basic_block/visitor/reborrow.rs",
+          "git_blob_sha": "ee8dcd5e42ddb935589176eb173c7f51204a1303",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/src/analyze/basic_block/visitor/reborrow.rs",
+          "lines": 148
+        },
+        {
+          "path": "src/refine/template.rs",
+          "git_blob_sha": "f0d85fc5c51313f36676e41a16215318e4bfe3d0",
+          "url": "https://github.com/coord-e/thrust/blob/187a1e975edece50b896f1ee478ab665d7a1204e/src/refine/template.rs",
+          "lines": 706
+        }
+      ]
+    },
+    {
+      "repository": "hopv/Rust-horn",
+      "revision": "4823f8f9c8e9e1deca71fdffe3c38061ae519c52",
+      "tree": "7786562e36fb0bb1fe67be806d3205f0c825ec26",
+      "date": "2024-08-27T05:18:22Z",
+      "files": [
+        {
+          "path": "rust-horn/README.md",
+          "git_blob_sha": "3c9a92f48a59af9c5cf8c58190011be3b67d5e06",
+          "url": "https://github.com/hopv/Rust-horn/blob/4823f8f9c8e9e1deca71fdffe3c38061ae519c52/rust-horn/README.md",
+          "lines": 22
+        },
+        {
+          "path": "rust-horn/rust-toolchain.toml",
+          "git_blob_sha": "67a045f04ee13802710f7e30377eecba0ca052b7",
+          "url": "https://github.com/hopv/Rust-horn/blob/4823f8f9c8e9e1deca71fdffe3c38061ae519c52/rust-horn/rust-toolchain.toml",
+          "lines": 4
+        },
+        {
+          "path": "rust-horn/src/main.rs",
+          "git_blob_sha": "b996b46d4ab30419a1890b16544bf6db6bd01519",
+          "url": "https://github.com/hopv/Rust-horn/blob/4823f8f9c8e9e1deca71fdffe3c38061ae519c52/rust-horn/src/main.rs",
+          "lines": 125
+        },
+        {
+          "path": "rust-horn/src/analyze.rs",
+          "git_blob_sha": "60abe78912e15687097fe34f70236fc47addcd5a",
+          "url": "https://github.com/hopv/Rust-horn/blob/4823f8f9c8e9e1deca71fdffe3c38061ae519c52/rust-horn/src/analyze.rs",
+          "lines": 542
+        },
+        {
+          "path": "rust-horn/src/types.rs",
+          "git_blob_sha": "1be040b2f167bf6a4b9ca02380c50032770007bb",
+          "url": "https://github.com/hopv/Rust-horn/blob/4823f8f9c8e9e1deca71fdffe3c38061ae519c52/rust-horn/src/types.rs",
+          "lines": 187
+        }
+      ]
+    }
+  ]
+}

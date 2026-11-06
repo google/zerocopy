@@ -1,0 +1,270 @@
+{
+  "agenda": "../anneal-research-agenda-2026-10-14/research-questions.json",
+  "observed_at": "2026-10-14",
+  "scope": "bounded primary-source gap wave; status is research scope, not future implementation completion",
+  "entries": [
+    {
+      "id": "R008",
+      "question": "Determine what evidence supports a safe abstraction used by any permitted client, including generic and separately compiled clients.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Semantic entry/client typing and actual universal/layout premises; distinct native correspondence and separate-client certificate obligations."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove configured native entry coverage and source safety reflection; no present arbitrary-client result is asserted."
+      ]
+    },
+    {
+      "id": "R065",
+      "question": "Examine constructors, mutation, public fields, modules, callbacks, destructors, and unannotated code.",
+      "status": "partial",
+      "findings_sections": [
+        "F2. Bounded pointer access-path inventory",
+        "F3. Unsafe trait laws and callback restoration",
+        "F5. Safe native controls and cleanup domain"
+      ],
+      "answered_subquestions": [
+        "Bounded Ptr/PtrInner constructors, mutation/observations, reexports, callback/error and unsafe-law paths; native safe-field/callback/drop/forget controls."
+      ],
+      "remaining_research": [
+        "Complete expanded cfg-specific crate/downstream/unannotated access-path census is not examined."
+      ],
+      "future_engineering": [
+        "Establish all preservation lemmas for the chosen exported module domain."
+      ]
+    },
+    {
+      "id": "R066",
+      "question": "Cover dictionaries, associated items, blanket implementations, coinduction, specialization, and downstream implementations.",
+      "status": "partial",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Exact local/native dictionary applications and implementation laws; selected unsafe associated projection interfaces; abstract versus concrete call obligations."
+      ],
+      "remaining_research": [
+        "GAT/associated-item completeness, blanket/coinductive selection, specialization and downstream implementation closure remain incomplete research."
+      ],
+      "future_engineering": [
+        "Extend binding certificates only with actual compiler selections and justified law proofs."
+      ]
+    },
+    {
+      "id": "R074",
+      "question": "Cover lifetimes, GATs, const generics, trait objects, associated types, and universal versus monomorphized evidence.",
+      "status": "partial",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F5. Safe native controls and cleanup domain"
+      ],
+      "answered_subquestions": [
+        "Universal lifetimes/semantic types constrained by layout; retained array usize const application; trait-object dispatch and native zero/three-length controls."
+      ],
+      "remaining_research": [
+        "GAT and exhaustive associated-type/const-expression/polymorphic dispatch correspondence are not examined."
+      ],
+      "future_engineering": [
+        "Either prove the retained universal domain or explicitly enumerate valid monomorphic instances/targets."
+      ]
+    },
+    {
+      "id": "T079",
+      "question": "Check exact dictionaries, implementations, recursive relationships, and the laws generic proofs consume.",
+      "status": "partial",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Concrete selected-law/dictionary premises and tested owner/const identities; unsafe restoration law and derived recursive component boundary."
+      ],
+      "remaining_research": [
+        "Full recursive invariant/law dependency calculus and special trait-resolution cases are not investigated."
+      ],
+      "future_engineering": [
+        "Produce checked SCC/dependency records, avoiding circular assumptions."
+      ]
+    },
+    {
+      "id": "T080",
+      "question": "Establish coverage of permitted instantiations, dispatch choices, clients, and invariant-preserving module operations.",
+      "status": "partial",
+      "findings_sections": [
+        "F2. Bounded pointer access-path inventory",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Permitted entry/dispatch/module coverage obligation and bounded inventory/control mechanisms."
+      ],
+      "remaining_research": [
+        "Whole configured library/client/vtable closure remains unexamined beyond the selected interfaces."
+      ],
+      "future_engineering": [
+        "Implement source-bound certificate coverage for the declared domain."
+      ]
+    },
+    {
+      "id": "P103",
+      "question": "Define interfaces supporting separate checking and reuse; whole-program certificates may be unnecessarily expensive and difficult to maintain.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Proposed separate source/type/dictionary/function/indirect/recursive/link records, with reuse premises."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Implement records and compositional checker; no whole future Anneal prototype exists."
+      ]
+    },
+    {
+      "id": "P104",
+      "question": "Prove that contracts cover every permitted safe caller; narrowing model domains must not introduce hidden caller obligations.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F2. Bounded pointer access-path inventory",
+        "F5. Safe native controls and cleanup domain"
+      ],
+      "answered_subquestions": [
+        "Exact hidden-domain risk and necessary semantic entry/preservation evidence; ordinary safe countercontrols show why extra predicates need enforcement."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove every permitted native entry establishes the chosen model; current source checks alone do not establish this."
+      ]
+    },
+    {
+      "id": "P105",
+      "question": "Separate legitimate unsafe requirements from assumptions that conceal implementation defects; certificates must show where each requirement is established.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F3. Unsafe trait laws and callback restoration"
+      ],
+      "answered_subquestions": [
+        "Legitimate unsafe implementer/callback/range/provenance obligations are stated at concrete source sites; these cannot be replaced by assumed function safety."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Discharge each guard and law at the actual native call/implementation."
+      ]
+    },
+    {
+      "id": "P106",
+      "question": "Compare parametric proofs with per-instantiation certification; representation and arithmetic obligations may depend on types, constants, and targets.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F1. Native entry domain and semantic abstraction",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Parametric versus finite-instance certificate distinction; layout, const and target premises retained; concrete const control evidence."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove target-specific representation/arithmetic or bind finite certified instances."
+      ]
+    },
+    {
+      "id": "P107",
+      "question": "Connect abstract method specifications to actual implementations; a trait-level theorem is insufficient without justified implementation correspondence.",
+      "status": "answered-with-known-constraints",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls"
+      ],
+      "answered_subquestions": [
+        "Actual source owner/body/dictionary and semantic law must accompany method specifications; selected TryWithError native bodies and function-table semantic interface inspected."
+      ],
+      "remaining_research": [],
+      "future_engineering": [
+        "Prove each imported body satisfies its contract under the declared correspondence premises."
+      ]
+    },
+    {
+      "id": "P108",
+      "question": "Study certificates for vtables, function pointers, closures, and quantified callback contracts; modularity must account for the actual callable environment.",
+      "status": "partial",
+      "findings_sections": [
+        "F3. Unsafe trait laws and callback restoration",
+        "F4. Exact dictionaries, const generics and indirect calls",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Concrete function-table/layout/precondition rule and quantified callback/environment certificate shape; native dynamic-call control."
+      ],
+      "remaining_research": [
+        "Complete Rust vtable/closure capture/source-to-model bridge is not examined."
+      ],
+      "future_engineering": [
+        "Bind actual callable targets or prove every permitted target satisfies the required resource/effect relation."
+      ]
+    },
+    {
+      "id": "P109",
+      "question": "Relate calling conventions, memory representations, and foreign contracts; cross-language composition needs semantic bridges at each boundary.",
+      "status": "partial",
+      "findings_sections": [
+        "F5. Safe native controls and cleanup domain",
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Current foreign ABI exclusion and precise need for separate ABI/representation/resource/native implementation bridges."
+      ],
+      "remaining_research": [
+        "Concrete cross-language ABI certificate/language semantics comparison remains unexamined."
+      ],
+      "future_engineering": [
+        "Build and check a bridge for a selected actual foreign boundary before admitting it."
+      ]
+    },
+    {
+      "id": "P110",
+      "question": "Preserve certificates as modules are linked or specialized; locally correct artifacts must remain correct in the assembled program.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Hash identity versus semantic preservation distinction and exact import/target/dictionary/layout obligations for reuse."
+      ],
+      "remaining_research": [
+        "Actual link/specialization transformation preservation theorems and object-binding implementations remain unexamined."
+      ],
+      "future_engineering": [
+        "Revalidate assembled artifacts and prove relevant preservation premises."
+      ]
+    },
+    {
+      "id": "P111",
+      "question": "Establish sound simultaneous reasoning and invariant dependencies; certificates must not justify each other through circular assumptions.",
+      "status": "partial",
+      "findings_sections": [
+        "F6. Feasible certificate shapes and reuse conditions"
+      ],
+      "answered_subquestions": [
+        "Recursive SCC/guarded or inductive simultaneous reasoning requirement; mutually assumed safety is insufficient."
+      ],
+      "remaining_research": [
+        "Full recursive unsafe invariant dependency calculus remains unexamined."
+      ],
+      "future_engineering": [
+        "Check one sound simultaneous component rule and all resource/invariant obligations."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "artifact": "A40",
+  "revision": "169934e27ceafe393ed4d365985f7b12d974d56e",
+  "source_path": "LICENSE",
+  "argv": [
+    "/Users/codex/.orbstack/bin/docker",
+    "exec",
+    "--user=1000:1000",
+    "--env",
+    "GIT_OPTIONAL_LOCKS=0",
+    "--env",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "--env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "942f3767a54df1f9f327fd17706f007e09c73e4088b8c272063cc20863c0b2a8",
+    "git",
+    "-c",
+    "core.hooksPath=/dev/null",
+    "-c",
+    "core.fsmonitor=false",
+    "-C",
+    "/solve/opam/islaris-dry/.opam-switch/sources/coq-sail.0.17",
+    "cat-file",
+    "blob",
+    "34195c4eb80b2d4eac75766f39325c2255b6ce4b"
+  ],
+  "status": 0,
+  "seconds": 0.07450491702184081,
+  "bytes": 2355,
+  "sha256": "570a94176eed2a93ebc3bb31edd23754d77924afe9c05fb8c8d8a159cd3fe22a",
+  "git_blob": "34195c4eb80b2d4eac75766f39325c2255b6ce4b"
+}

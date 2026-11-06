@@ -1,0 +1,43 @@
+{
+  "package_files": 105,
+  "package_bytes": 17115638,
+  "archives": [
+    {
+      "archive": "main-metadata.tar.gz",
+      "members": 19399,
+      "bytes": 26887130
+    },
+    {
+      "archive": "overlay-and-primary-inputs.tar.gz",
+      "members": 94,
+      "bytes": 6085678
+    },
+    {
+      "archive": "native-evidence.tar.gz",
+      "members": 200,
+      "bytes": 85786707
+    },
+    {
+      "archive": "earlier-operational-evidence.tar.gz",
+      "members": 84,
+      "bytes": 9682124
+    },
+    {
+      "archive": "prior-source-report.tar.gz",
+      "members": 16,
+      "bytes": 125097
+    }
+  ],
+  "selected": 74,
+  "roots": 35,
+  "overlay_selected": 29,
+  "main_selected": 45,
+  "source_sections": 65,
+  "no_source_sections": 9,
+  "sensitive_member_names": [
+    "main/packages/build_path_prefix_map/build_path_prefix_map.0.2/opam",
+    "main/packages/build_path_prefix_map/build_path_prefix_map.0.3/opam"
+  ],
+  "manifest_sha256": "d1195a8b8a5b3c9e1b0cd6e6f8e7aebeee8b10ad1e3545b8c5c7d78ed7a4a765",
+  "report_sha256": "ba211f555bb49d29b0bfa9caf9a59eeedfb98fcf8c75c448dbb49514edc69aa1"
+}

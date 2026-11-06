@@ -1,0 +1,7 @@
+AxiomAuditProbe.lean:5:4: error(lean.dependsOnNoncomputable): `AnnealAuditProbe.opaqueHook` not supported by code generator; consider marking definition as `noncomputable`
+theorem AnnealAuditProbe.selected_branch : ∀ (n : Nat), dispatch false n = n + 1 :=
+fun n => Eq.refl (dispatch false n)
+'AnnealAuditProbe.selected_branch' depends on axioms: [opaqueHook]
+theorem AnnealAuditProbe.parametric_branch : ∀ (hook : Nat → Nat) (n : Nat), parametricDispatch hook false n = n + 1 :=
+fun hook n => Eq.refl (parametricDispatch hook false n)
+'AnnealAuditProbe.parametric_branch' does not depend on any axioms

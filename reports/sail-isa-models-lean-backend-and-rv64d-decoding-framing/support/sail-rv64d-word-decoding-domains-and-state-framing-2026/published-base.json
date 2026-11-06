@@ -1,0 +1,43 @@
+{
+  "repository": "google/zerocopy",
+  "revision": "f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb",
+  "package": "reports/sail-rv64d-lean-integration-effects-and-framing-2026",
+  "files": [
+    {
+      "path": "REPORT.json",
+      "bytes": 1958,
+      "sha256": "1b8b139f91141d2fce98c3a23f184667a29de0fb4ae48f8bc57cdb16c3e3022d",
+      "url": "https://github.com/google/zerocopy/blob/f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb/reports/sail-rv64d-lean-integration-effects-and-framing-2026/REPORT.json"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 20913,
+      "sha256": "073fefe917df1cb87aef3b6e60ab22f6870bc91271aa1674337865ed7edaf25c",
+      "url": "https://github.com/google/zerocopy/blob/f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb/reports/sail-rv64d-lean-integration-effects-and-framing-2026/REPORT.md"
+    },
+    {
+      "path": "package-manifest.json",
+      "bytes": 167101,
+      "sha256": "4d3a785c446f4e4211c75668c2955851840125e7bf3282a102e6a7e96e755f96",
+      "url": "https://github.com/google/zerocopy/blob/f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb/reports/sail-rv64d-lean-integration-effects-and-framing-2026/package-manifest.json"
+    },
+    {
+      "path": "support/model/integration-generated-project.tar.gz",
+      "bytes": 800349,
+      "sha256": "e156312da6b53d3dada43bf82f1e2c1c904134e5f21f52ff2f2756e1e786562c",
+      "url": "https://github.com/google/zerocopy/blob/f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb/reports/sail-rv64d-lean-integration-effects-and-framing-2026/support/model/integration-generated-project.tar.gz"
+    },
+    {
+      "path": "support/model/compiled-imports.tar.gz",
+      "bytes": 30203450,
+      "sha256": "81456a7e971d3ea840ac1f1bce094142cf5aab6bd2c7755f3303781e68245ee0",
+      "url": "https://github.com/google/zerocopy/blob/f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb/reports/sail-rv64d-lean-integration-effects-and-framing-2026/support/model/compiled-imports.tar.gz"
+    },
+    {
+      "path": "support/runtime/integration-source-manifest.json",
+      "bytes": 189579,
+      "sha256": "4b8457a03fa1520f96f6e5467b69991c323190339fd7cfb8fc2878ab04bf2dae",
+      "url": "https://github.com/google/zerocopy/blob/f0d53bae94412c92b1bbd5aac8c11ba3695eb3eb/reports/sail-rv64d-lean-integration-effects-and-framing-2026/support/runtime/integration-source-manifest.json"
+    }
+  ]
+}

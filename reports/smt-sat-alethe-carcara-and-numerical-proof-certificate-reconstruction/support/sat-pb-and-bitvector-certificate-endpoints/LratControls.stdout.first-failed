@@ -1,0 +1,54 @@
+LratControls.lean:11:73: error: Tactic `decide` failed for proposition
+  LRAT.check goodCertificate sourceCnf = true
+because its `Decidable` instance
+  instDecidableEqBool (LRAT.check goodCertificate sourceCnf) true
+did not reduce to `isTrue` or `isFalse`.
+
+After unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance
+  match LRAT.check goodCertificate sourceCnf, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+LratControls.lean:12:73: error: Tactic `decide` failed for proposition
+  LRAT.check missingHint sourceCnf = false
+because its `Decidable` instance
+  instDecidableEqBool (LRAT.check missingHint sourceCnf) false
+did not reduce to `isTrue` or `isFalse`.
+
+After unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance
+  match LRAT.check missingHint sourceCnf, false with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+LratControls.lean:13:78: error: Tactic `decide` failed for proposition
+  LRAT.check goodCertificate changedCnf = false
+because its `Decidable` instance
+  instDecidableEqBool (LRAT.check goodCertificate changedCnf) false
+did not reduce to `isTrue` or `isFalse`.
+
+After unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance
+  match LRAT.check goodCertificate changedCnf, false with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+LratControls.lean:14:88: error: Tactic `decide` failed for proposition
+  LRAT.check goodCertificate sourceCnf = true
+because its `Decidable` instance
+  instDecidableEqBool (LRAT.check goodCertificate sourceCnf) true
+did not reduce to `isTrue` or `isFalse`.
+
+After unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance
+  match LRAT.check goodCertificate sourceCnf, true with
+  | false, false => isTrue ⋯
+  | false, true => isFalse ⋯
+  | true, false => isFalse ⋯
+  | true, true => isTrue ⋯
+true
+true
+false
+Except.ok #[Std.Tactic.BVDecide.LRAT.Action.addEmpty 3 #[1, 2]]
+'goodAccepted' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'sourceUnsat' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

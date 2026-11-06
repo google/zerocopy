@@ -1,0 +1,26 @@
+{
+  "purpose": "Display-path privacy projection; historical source/tool/status hashes remain producer observations. Current package manifests bind public bytes.",
+  "replacements": [
+    {
+      "meaning": "task workspace prefix",
+      "public": "<task-workspace>"
+    },
+    {
+      "meaning": "rust toolchain home prefix",
+      "public": "<rust-toolchains>"
+    },
+    {
+      "meaning": "Lean toolchain home prefix",
+      "public": "<lean-toolchains>"
+    }
+  ],
+  "files": [
+    {
+      "path": "support/assembly-log.json",
+      "raw_sha256": "6e9d2fb58cb2dcccef9b9dde582cc17f4ba0f7c48f92ae413e3a7e2533020ac2",
+      "public_sha256": "452211c2e01ae3ceffaff2bafe51e4e6c7314467b2eb197e82f6ec36a84ada41",
+      "raw_bytes": 821,
+      "public_bytes": 632
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "topics": [
+    "aeneas/borrows-regions",
+    "aeneas/translation",
+    "verification/separation-logic",
+    "charon/llbc"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas symbolic interpreter",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "Aeneas functional resource semantics selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Aeneas assigned implementation",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a663690816d3f3e"
+      }
+    },
+    {
+      "name": "Charon assigned implementation",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas spatial PR1352 draft head",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "92552f503cd19ca023ae9897cf521db49ee8d887"
+      }
+    },
+    {
+      "name": "Aeneas 2022 paper",
+      "identity": {
+        "arxiv": "2206.07185v2",
+        "doi": "10.1145/3547647",
+        "url": "https://arxiv.org/pdf/2206.07185v2"
+      }
+    },
+    {
+      "name": "Aeneas 2024 LLBC/PL long paper",
+      "identity": {
+        "arxiv": "2404.02680v2",
+        "url": "https://arxiv.org/pdf/2404.02680v2"
+      }
+    },
+    {
+      "name": "Current Aeneas main separation-logic prerequisites",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "b86120db3183b0107eb5f2637b11c424cd06ef1c"
+      }
+    },
+    {
+      "name": "Draft first-order sequential separation logic",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2",
+        "venue": "ICFP 2022"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680",
+        "venue": "ICFP 2024"
+      }
+    },
+    {
+      "name": "Mechanized LLBC development",
+      "identity": {
+        "repository": "AeneasVerif/mechanized-llbc",
+        "revision": "1268d802a59ddb0672528f24d873ed4b3b28ca0c"
+      }
+    },
+    {
+      "name": "Mechanized LLBC",
+      "identity": {
+        "repository": "AeneasVerif/mechanized-llbc",
+        "revision": "2762a26a3c0792017fa7a731aab1683d9a4cf23a"
+      }
+    },
+    {
+      "name": "Aeneas functional translation paper",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2",
+        "pdf_sha256": "5a75ed1543f5db5a47b7506753898443bc7b88ecb7a2f76325e80ed5494664bc"
+      }
+    },
+    {
+      "name": "Symbolic borrow-checking paper",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680v2",
+        "pdf_sha256": "ff1f01d5bcd98c6387b24dcc06ce76e5f15d6c1234d199c0b1311ce7645bebda"
+      }
+    },
+    {
+      "name": "Charon tool paper",
+      "identity": {
+        "arxiv": "2410.18042v2"
+      }
+    },
+    {
+      "name": "Aeneas SymCrypt report",
+      "identity": {
+        "arxiv": "2609.15648v1"
+      }
+    },
+    {
+      "name": "Rust-to-Lean experience report",
+      "identity": {
+        "arxiv": "2605.30106v1"
+      }
+    },
+    {
+      "name": "Formal Verification of Rust Programs by Functional Translation",
+      "identity": {
+        "author": "Son Ho",
+        "year": "2024",
+        "url": "https://www.sonho.fr/papers/thesis-manuscript.pdf",
+        "sha256": "0c1b720ff28c004211f47aa288efe3f22a471531f28e427a576b7926264bce07"
+      }
+    },
+    {
+      "name": "Cited downstream pipeline proof source",
+      "identity": {
+        "repository": "runtimeverification/p3-hax-lean-fri-pipeline",
+        "revision": "4fab6ff08a8e515321675ca121f9ad36c38268ab"
+      }
+    },
+    {
+      "name": "Aeneas from legacy Anneal alpha24 macOS aarch64",
+      "identity": {
+        "artifact": "alpha24 aeneas/bin/aeneas",
+        "version_observation": "aeneas unknown",
+        "sha256": "244397c4178329f2b8ab48240cd19dafd6511efb6c4e78be6345011ca8786f8e"
+      }
+    },
+    {
+      "name": "Charon 0.1.210 from legacy Anneal alpha24 macOS aarch64",
+      "identity": {
+        "artifact": "alpha24 aeneas/bin/charon",
+        "version": "0.1.210",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Bundled Rust 1.98.0-nightly",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "artifact": "alpha24 rust/bin/rustc",
+        "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Lean 4.30.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "artifact": "alpha24 lean executable",
+        "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Lean nested-inductive validation fix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "a39eab69e1eee9ad38f4efe507907b1026a77808"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

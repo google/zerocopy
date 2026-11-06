@@ -1,0 +1,52 @@
+[
+  {
+    "path": "Inline.lean",
+    "raw_sha256": "fcd32005109d87f4b00f7748101c85a976f72d855de2f80d0f631043d31ff94a",
+    "published_sha256": "fcd32005109d87f4b00f7748101c85a976f72d855de2f80d0f631043d31ff94a"
+  },
+  {
+    "path": "emission-results.json",
+    "raw_sha256": "532a951739acde4d1459815864599f782dbdfe3d29928002444ae7f541cf770c",
+    "published_sha256": "532a951739acde4d1459815864599f782dbdfe3d29928002444ae7f541cf770c"
+  },
+  {
+    "path": "inline.rs",
+    "raw_sha256": "32dac0641d916b878338fd0c7c2743e6e7135440dc305169c44a658760acfc15",
+    "published_sha256": "32dac0641d916b878338fd0c7c2743e6e7135440dc305169c44a658760acfc15"
+  },
+  {
+    "path": "inline0.ll",
+    "raw_sha256": "930bb0bae0bedcdf621e7ab11873dd9a6636734af263520def60b7d479fb7884",
+    "published_sha256": "930bb0bae0bedcdf621e7ab11873dd9a6636734af263520def60b7d479fb7884"
+  },
+  {
+    "path": "inline3.ll",
+    "raw_sha256": "32a1527052bfe182a0cefdf32d6e4a766f4a633b1584841a6f3eb7ee173bd79e",
+    "published_sha256": "32a1527052bfe182a0cefdf32d6e4a766f4a633b1584841a6f3eb7ee173bd79e"
+  },
+  {
+    "path": "lean.stderr",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "published_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "lean.stdout",
+    "raw_sha256": "de9e0af341201429ad8d66a3853466f583e6e5cbef28adff895cfac496628887",
+    "published_sha256": "de9e0af341201429ad8d66a3853466f583e6e5cbef28adff895cfac496628887"
+  },
+  {
+    "path": "native0.stdout",
+    "raw_sha256": "a43863ac40cc3ef688450c311fa22887a42e42fbfeeb3e88c93d8e6de5e0a985",
+    "published_sha256": "a43863ac40cc3ef688450c311fa22887a42e42fbfeeb3e88c93d8e6de5e0a985"
+  },
+  {
+    "path": "native3.stdout",
+    "raw_sha256": "a43863ac40cc3ef688450c311fa22887a42e42fbfeeb3e88c93d8e6de5e0a985",
+    "published_sha256": "a43863ac40cc3ef688450c311fa22887a42e42fbfeeb3e88c93d8e6de5e0a985"
+  },
+  {
+    "path": "results.json",
+    "raw_sha256": "3d6769ae9ca12373a433b72bd9fdb107671f0c1e5d9b6f1e6e5244ff8d019a4a",
+    "published_sha256": "3d6769ae9ca12373a433b72bd9fdb107671f0c1e5d9b6f1e6e5244ff8d019a4a"
+  }
+]

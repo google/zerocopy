@@ -1,0 +1,26 @@
+{
+  "object": "bignum_add.o",
+  "object_sha256": "777578078e4239a142d2576fdb8ffb1dbe988d03711305092822e1d7cadf0797",
+  "object_size": 1312,
+  "symbol": "bignum_add",
+  "symbol_size": 185,
+  "symbol_file_offset": 64,
+  "symbol_sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+  "symbol_hex": "f30f1efa4d31d24839d7480f42d74c39c74c0f42c74c39c272474829d74c29c248ffc24d85c074254a8b04d14b1304d14a8904d649ffc249ffc875eceb0f4a8b04d14883d0004a8904d649ffc248ffca75ecb8000000004883d0004885ff7543c34c29c74929d04885d274144a8b04d14b1304d14a8904d649ffc248ffca75ec4b8b04d14883d0004a8904d649ffc249ffc875ecb8000000004883d0004885ff7501c34a8904d64831c0eb044a8904d649ffc248ffcf75f4c3",
+  "matches_pinned_proof_literal": true,
+  "negative_controls": {
+    "one_byte_patch": {
+      "rejected": true,
+      "reason": "symbol bytes differ from proof literal"
+    },
+    "wrong_target": {
+      "rejected": true,
+      "reason": "requires relocatable x86_64 ELF64LE"
+    },
+    "wrong_symbol": {
+      "rejected": true,
+      "reason": "expected exactly one named function"
+    }
+  },
+  "scope": "byte equality only; no HOL Light replay, instruction semantic proof, final linking, or native execution"
+}

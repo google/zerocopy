@@ -1,0 +1,1 @@
+fn main(){let mut memory=[0u8;256];memory[255]=254;let before=memory[255];memory[255]=255;let after=memory[255];assert_eq!((before,after),(254,255));println!("changed=255 framed=255 old=254 new=255 frame_claim_false=true");}

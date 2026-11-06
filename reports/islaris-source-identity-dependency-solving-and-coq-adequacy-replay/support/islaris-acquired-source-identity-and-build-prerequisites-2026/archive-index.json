@@ -1,0 +1,26 @@
+[
+  {
+    "path": "public-projection-source-audit.tar.gz",
+    "bytes": 27282388,
+    "sha256": "3702aed69e674052806148cdbbd7fcb076e162b3ead94def1af6238032a9e792",
+    "file_count": 232
+  },
+  {
+    "path": "frozen-independent-review.tar.gz",
+    "bytes": 12888,
+    "sha256": "1b3ebc243b219a16028db0e80f1ca52c8a85ec1d0c3171f81613579ed6ba17ef",
+    "file_count": 23
+  },
+  {
+    "path": "source-acquisition-evidence.tar.gz",
+    "bytes": 1947774,
+    "sha256": "d909122f639deb32ba2b9c57c26302be7424a0a7aba35fc38b83e6bb53eb418e",
+    "file_count": 123
+  },
+  {
+    "path": "source-realization-plan.tar.gz",
+    "bytes": 27150,
+    "sha256": "b8125e3b295249f3d86718775ff75f7a6032b092bceea52caf22a106f0cffb79",
+    "file_count": 7
+  }
+]

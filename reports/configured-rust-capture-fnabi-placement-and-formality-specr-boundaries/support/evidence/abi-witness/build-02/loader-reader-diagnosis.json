@@ -1,0 +1,10 @@
+{
+  "failure": "Reader expected standard otool dependency list but read complete load-command output.",
+  "root_cause": "Capture filenames differed only by capital L/l on case-insensitive filesystem; second read-only command overwrote first stream capture.",
+  "samefile": true,
+  "inode_L": 19867097,
+  "inode_l": 19867097,
+  "retained_load_command_sha256": "47d40e11617fa0ec13840a630df1315799f8f9f169fe06ba669186c16dd50439",
+  "effect": "No observer invocation or binary mutation; first dependency-list output not retained. No dependency resolution verdict was issued.",
+  "recovery": "Keep retained raw load-command capture, rerun only read-only otool using distinct dependencies/loadcommands capture names. Compiler build not repeated."
+}

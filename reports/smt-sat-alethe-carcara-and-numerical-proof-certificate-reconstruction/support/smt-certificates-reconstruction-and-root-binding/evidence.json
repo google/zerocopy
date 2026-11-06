@@ -1,0 +1,86 @@
+{
+  "observed_at": "2026-10-14",
+  "source_units": [
+    {
+      "repository": "SMTCoq/smtcoq",
+      "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3",
+      "path": "theories/checker/MainChecker.v",
+      "url": "https://raw.githubusercontent.com/SMTCoq/smtcoq/7b870140f2ff7e4547a7db614a305d8b2945afa3/theories/checker/MainChecker.v",
+      "retrieved_utf8_sha256": "6da281a03bf583f5cd90af6bf8f0cd0e1aae48e35b5b25b9cf923aa7c91ea2bd",
+      "bytes": 55059,
+      "role": "source"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "src/checker/mod.rs",
+      "url": "https://raw.githubusercontent.com/ufmg-smite/carcara/20bf49c5ce31089ac83118574c888669355aaae1/src/checker/mod.rs",
+      "retrieved_utf8_sha256": "70850cfe452d021da24fe226aae5f6e6432b65284803cf541dd8293aba6b4014",
+      "bytes": 16261,
+      "role": "source"
+    },
+    {
+      "repository": "ufmg-smite/carcara",
+      "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+      "path": "src/elaborator/mod.rs",
+      "url": "https://raw.githubusercontent.com/ufmg-smite/carcara/20bf49c5ce31089ac83118574c888669355aaae1/src/elaborator/mod.rs",
+      "retrieved_utf8_sha256": "0f80d5b50fc050915edfe733b86caf2eba5a3203a1393daa90af1892ab84b3fe",
+      "bytes": 19243,
+      "role": "source"
+    },
+    {
+      "repository": "ufmg-smite/lean-smt",
+      "revision": "9abdd01c13dc7ac2bac4d68d17ee661c63ed0894",
+      "path": "Smt/Reconstruct.lean",
+      "url": "https://raw.githubusercontent.com/ufmg-smite/lean-smt/9abdd01c13dc7ac2bac4d68d17ee661c63ed0894/Smt/Reconstruct.lean",
+      "retrieved_utf8_sha256": "b5a295d6efb392cbdf4196bb93c28ce0c3de4f61cb1cdb5c15c78b3a001493c6",
+      "bytes": 20713,
+      "role": "source"
+    },
+    {
+      "repository": "ufmg-smite/lean-smt",
+      "revision": "9abdd01c13dc7ac2bac4d68d17ee661c63ed0894",
+      "path": "Smt/Tactic/Smt.lean",
+      "url": "https://raw.githubusercontent.com/ufmg-smite/lean-smt/9abdd01c13dc7ac2bac4d68d17ee661c63ed0894/Smt/Tactic/Smt.lean",
+      "retrieved_utf8_sha256": "1429efd221f5641bbd1f473781f5b56d0e835f3ad2b0b6f4fb70f048f9a2f792",
+      "bytes": 14416,
+      "role": "source"
+    },
+    {
+      "repository": "cvc5/LFSC",
+      "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5",
+      "path": "src/check.cpp",
+      "url": "https://raw.githubusercontent.com/cvc5/LFSC/5a127dbbcf9a0f822768e783dbf892ee90c435d5/src/check.cpp",
+      "retrieved_utf8_sha256": "b954e560c1e6ed5783775b31afbb9f8cf735748f8216c80665d2a22b1d0b21c2",
+      "bytes": 53599,
+      "role": "source"
+    },
+    {
+      "repository": "cvc5/LFSC",
+      "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5",
+      "path": "tests/tests/sugar_provided.plf",
+      "url": "https://raw.githubusercontent.com/cvc5/LFSC/5a127dbbcf9a0f822768e783dbf892ee90c435d5/tests/tests/sugar_provided.plf",
+      "retrieved_utf8_sha256": "be8a9543eba8e5ab7d73539b411f135b7ea45b5e5cedcee2fb0d8f4e22361dbe",
+      "bytes": 318,
+      "role": "source"
+    },
+    {
+      "repository": "isabelle-prover/mirror-isabelle",
+      "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8",
+      "path": "src/HOL/Tools/SMT/smt_solver.ML",
+      "url": "https://raw.githubusercontent.com/isabelle-prover/mirror-isabelle/39c77411f67871f5a8f06140c588e196a9aa9ca8/src/HOL/Tools/SMT/smt_solver.ML",
+      "retrieved_utf8_sha256": "efc2a063e66bddba5729afecf53e096c19d19ef6473b5463b54603de4099f9cf",
+      "bytes": 14195,
+      "role": "source"
+    },
+    {
+      "repository": "cvc5/cvc5",
+      "revision": "f0bc3373ef032a3fc5006f22778aaae7b274f429",
+      "path": "src/proof/alethe/alethe_printer.cpp",
+      "url": "https://raw.githubusercontent.com/cvc5/cvc5/f0bc3373ef032a3fc5006f22778aaae7b274f429/src/proof/alethe/alethe_printer.cpp",
+      "retrieved_utf8_sha256": "52e6686fb1b5d06abbcddaf2169af85aaff686d015e2d1c86c11c7ef45a1ccf4",
+      "bytes": 12511,
+      "role": "source"
+    }
+  ]
+}

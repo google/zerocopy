@@ -1,0 +1,32 @@
+{
+  "observed_at": "2026-10-14",
+  "specr": {
+    "revision": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+    "entries": 77,
+    "truncated": false,
+    "formal_file_suffixes": [
+      ".v",
+      ".lean",
+      ".agda"
+    ],
+    "matches": [],
+    "scope": "complete pinned repository tree; no claim about external artifacts"
+  },
+  "minirust": {
+    "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+    "entries": 401,
+    "truncated": false,
+    "matches": []
+  },
+  "specr2": {
+    "thesis_revision": "49808b490b2ebd4e93be7322760077d949765527",
+    "status": "inaccessible",
+    "github_api_status": 404,
+    "exact_commit_page_status": 404
+  },
+  "formal_backend": {
+    "status": "not established",
+    "proposal": "2025-Jakub-Description.pdf, 2025-03-24",
+    "completed_report_link_observed": false
+  }
+}

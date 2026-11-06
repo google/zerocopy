@@ -1,0 +1,91 @@
+(*
+ * The Armv8 Application Level Memory Model.
+ *
+ * This is a machine-readable, executable and formal artefact, which aims to be
+ * the latest stable version of the Armv8 memory model.
+ * If you have comments on the content of this file, please send an email to
+ * jade.alglave@arm.com
+ * For a textual version of the model, see section B2.3 of the Armv8 ARM:
+ * https://developer.arm.com/documentation/ddi0487/
+ *
+ * Authors:
+ * Nikos Nikoleris <nikos.nikoleris@arm.com>
+ *
+ * Copyright (C) 2016-present, Arm Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in
+ *       the documentation and/or other materials provided with the
+ *       distribution.
+ *     * Neither the name of ARM nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *)
+
+(*
+ * Include aarch64memattrs.cat to define relations on Memory Attributes.
+ *)
+include "aarch64memattrs.cat"
+
+let TTD-MT-update =
+  [Normal]; ca; [Device]
+  | [Device]; ca; [Normal]
+
+let TTD-SH-update =
+  [NSH]; ca; [ISH | OSH]
+  | [ISH]; ca; [OSH | NSH]
+  | [OSH]; ca; [NSH | ISH]
+
+let TTD-ICH-update =
+  [iNC]; ca; [iWT | iWB]
+  | [iWT]; ca; [iWB | iNC]
+  | [iWB]; ca; [iNC | iWT]
+
+let TTD-OCH-update =
+  [oNC]; ca; [oWT | oWB]
+  | [oWT]; ca; [oWB | oNC]
+  | [oWB]; ca; [oNC | oWT]
+
+let TTD-DT-update =
+  [Device-GRE]; ca; [Device-nGRE | Device-nGnRE | Device-nGnRnE]
+  | [Device-nGRE]; ca; [Device-GRE | Device-nGnRE | Device-nGnRnE]
+  | [Device-nGnRE]; ca; [Device-GRE | Device-nGRE | Device-nGnRnE]
+  | [Device-nGnRnE]; ca; [Device-GRE | Device-nGRE | Device-nGnRE]
+
+let TTD-OA-update = [TTD & M]; ca \ same-oa((TTD & M) * (TTD & M)); [TTD & W]
+let TTD-at-least-one-writable = at-least-one-writable((TTD & M) * (TTD & M))
+let TTD-memory-contents-mismatch = 
+  ([TTD & M]; PTEtoPA; different-values(W * W); PTEtoPA^-1; [TTD & M]) & loc
+
+let TLBUncacheableTTD = TTDINV | TTDAF0
+let TLBCacheableTTD = TTD & M \ TLBUncacheableTTD
+
+let TTD-update-BBM-cand =
+  TTD-MT-update
+  | TTD-SH-update
+  | TTD-ICH-update
+  | TTD-OCH-update
+  | TTD-DT-update
+  | TTD-OA-update & (TTD-at-least-one-writable | TTD-memory-contents-mismatch)
+
+let TTD-update-needsBBM =
+  [TLBCacheableTTD]; TTD-update-BBM-cand; [TLBCacheableTTD]

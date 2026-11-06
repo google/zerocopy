@@ -82,7 +82,7 @@ These findings apply to the combination and interaction of the examined
 subjects:
 
 - **Anneal Trusted MIR Semantics and Refinement Algebra (`joshlf/anneal` at
-  `e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0`):**
+  `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`):**
   Applies to `trusted/lean/Trusted/MirAst.lean`, `MirSemantics.lean`,
   `Memory.lean`, `Refinement.lean`, and `StepResult.lean`. Specifically, it
   governs updating `Trusted/MirAst.lean` from pre-`#154341`
@@ -112,18 +112,18 @@ subjects:
 - **Companion Reference Reports in This Corpus:**
   The three cross-track follow-up seams identified during this investigation are
   resolved and mechanized in companion reports:
-  - [`reports/rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/`](../rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/REPORT.md)
+  - `reports/rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/`
     resolves `BackendRepr::ScalarPair` byte-offset field projection
     (`extractScalarPairByOffset`), sub-word niche extraction in two-register
     pairs (`scalarPair_decode_encode_niche_tagged`), and `PassMode::Cast`
     byte-masked register packing (`MaskedWord` + `freezeMaskedWord`).
-  - [`reports/verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026/`](../verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026/REPORT.md)
+  - `reports/verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026/`
     resolves the operational lowering of post-`#154341`
     `Rvalue.use op withRetag`
     to `AnSSAStmt.retag` vs. `AnSSAStmt.letCopy` (`retag_lowering_compiles`,
     `retag_copy_prop_compiles`, `duplicate_retag_refutes_compiles`, and
     `erase_withRetag_refutes_compiles`).
-  - [`reports/anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026/`](../anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026/REPORT.md)
+  - `reports/anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026/`
     resolves the relational simulation from Tree Borrows (`ReservedFrz`,
     `Active`, `Frozen`, `Disabled` + function-entry protectors) to LLVM
     `noalias`, `readonly`, and `writable` attributes
@@ -349,7 +349,7 @@ which `rustc` flattens an aggregate local into per-field MIR locals:
    promoted SSA local across `StorageDead`.
 4. **`BackendRepr::ScalarPair` Byte-Offset Dispatch:**
    As resolved and mechanized in the companion report
-   [`reports/rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/`](../rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/REPORT.md)
+   `reports/rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/`
    ,
    when `AnSSA` represents two-scalar aggregates (`(A, B)`, `&[T]`,
    `Option<(u64, NonZeroU64)>`) natively as `ScalarPairVal { fst, snd }`, field
@@ -446,9 +446,9 @@ registers containing uninitialized padding bytes, `AnSSA` tracks
 per-bit/per-byte
 initialization masks (`MaskedWord := { bits : BitVec 64, initMask : BitVec 64 }`
 in
-[`reports/rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/`](../rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/REPORT.md)
+`reports/rustc-codegen-anneal-monomorphization-abi-and-intrinsics-2026/`
 and `AnByteWord := Fin 8 → PoisonOr (BitVec 8)` in
-[`reports/anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026/`](../anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026/REPORT.md)
+`reports/anllvm-verified-llvm-lowering-tree-borrows-noalias-and-binary-tv-2026/`
 ),
 applying per-byte `freeze` so that uninitialized padding lanes never taint
 adjacent initialized field bytes.
@@ -518,7 +518,7 @@ predicate (`uniqueMutRef ↦ true`, `pinnedMutRef ↦ false`,
 `sharedRefFreeze ↦ true`, `sharedRefUnsafeCell ↦ false`, `rawScalar ↦ false`).
 
 Furthermore, as mechanized in
-[`reports/verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026/`](../verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026/REPORT.md)
+`reports/verified-rust-compiler-self-hosting-and-certifying-bootstrap-2026/`
 ,
 `AnSSA` **cannot** treat `Rvalue::Use(op, WithRetag::Yes)` as a pure SSA
 expression:
@@ -751,7 +751,7 @@ zero `Lean.ofReduceBool`:
   - Sub-word niche extraction in `BackendRepr::ScalarPair`, operational borrow
     tracking for `AnSSAStmt.retag`, and Tree Borrows `noalias`/`readonly`/
     `writable` relational simulation are mechanized in the three companion
-    Round 2 reports cited under **Applicability**.
+    companion compiler-verification reports cited under **Applicability**.
 
 ## Evidence
 
@@ -765,7 +765,7 @@ zero `Lean.ofReduceBool`:
      (exit code `0`, zero warnings, 22 `#guard_msgs in #print axioms` checks
      confirming zero `sorryAx` and zero `Lean.ofReduceBool`).
 2. **Anneal Repository Sources (`joshlf/anneal` at
-   `e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0`):**
+   `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`):**
    - `trusted/lean/Trusted/MirAst.lean:1-355` (`Place`, `PlaceElem`, `Operand`,
      `Rvalue`, `StatementKind`, `TerminatorKind`, `BasicBlockData`, `Body`).
    - `trusted/lean/Trusted/MirSemantics.lean:1-125` (`State`, `initMir`,

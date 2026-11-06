@@ -1,0 +1,21 @@
+{
+  "version": "Lean (version 4.31.0, arm64-apple-darwin24.6.0, commit 68218e876d2a38b1985b8590fff244a83c321783, Release)\n",
+  "identities": {
+    "work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+    "work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/Init.olean": "9e6e77b58b46742b93b7de481229698d853595479a6e154e9c6fcfdf63b485c8",
+    "work/toolchains/lean431/lean-4.31.0-darwin_aarch64/lib/lean/libleanshared.dylib": "a695a9aa68481c42b99619e0103537e6b433c6fa7021927b184e19a686d03989"
+  },
+  "results": [
+    {
+      "file": "SecurityWitness.lean",
+      "command": [
+        "$TASK_ROOT/work/toolchains/lean431/lean-4.31.0-darwin_aarch64/bin/lean",
+        "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/security-observations-and-relational-compiler-preservation/SecurityWitness.lean"
+      ],
+      "exit": 1,
+      "stdout": "$TASK_ROOT/work/research/compiler-frontier-and-security-gaps/security-observations-and-relational-compiler-preservation/SecurityWitness.lean:13:67: error: Tactic `rfl` failed: Expected the goal to be a binary relation\n\nHint: Reflexivity tactics can only be used on goals of the form `x ~ x` or `R x x`\n\n\u22a2 ConstantTime safeModel\n'SecurityWitness.values_agree' does not depend on any axioms\n'SecurityWitness.source_not_constant_time' depends on axioms: [propext]\n'SecurityWitness.value_equality_does_not_reflect_security' depends on axioms: [propext, sorryAx]\n'SecurityWitness.trace_equality_reflects_security' does not depend on any axioms\n'SecurityWitness.trace_equality_preserves_security' does not depend on any axioms\n",
+      "stderr": ""
+    }
+  ],
+  "initial_source": "Reconstructed exactly from preserved authored tactic edits; *.initial.lean is a rejected source, not accepted proof evidence"
+}

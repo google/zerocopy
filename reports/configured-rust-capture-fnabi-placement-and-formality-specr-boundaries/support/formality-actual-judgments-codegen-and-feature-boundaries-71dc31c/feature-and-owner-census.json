@@ -1,0 +1,57 @@
+{
+  "grammar_subject": "rust-lang/a-mir-formality@71dc31c1b186df1f0a64d8464b8103195902a5a5",
+  "input_owner_kinds": [
+    "FeatureGate",
+    "AdtItem(Struct|Enum)",
+    "Trait",
+    "TraitImpl",
+    "NegTraitImpl",
+    "Fn",
+    "Test"
+  ],
+  "fn_body_kinds": [
+    "NoFnBody",
+    "TrustedFnBody",
+    "Expr(Block)"
+  ],
+  "feature_gate_names": [
+    "polonius_unlocked",
+    "polonius_alpha",
+    "non_lifetime_binders",
+    "negative_impls"
+  ],
+  "observed_feature_gate": "polonius_alpha: parser/check/codegen/21stepMachineStop; no claim that this loan-free example distinguishes borrow algorithms",
+  "actual_generated_owner_counts": {
+    "generic_i32": {
+      "functions": 3,
+      "meaning": "main,identity<i32>,synthetic_start"
+    },
+    "generic_i32_bool": {
+      "functions": 4,
+      "meaning": "main,identity<i32>,identity<bool>,synthetic_start"
+    },
+    "trusted_unreachable": {
+      "functions": 2,
+      "meaning": "main,synthetic_start; uncalledtrustedhelper absent"
+    },
+    "feature_gate": {
+      "functions": 3,
+      "meaning": "samei32call under declaredfeature"
+    }
+  },
+  "observed_zero_maps": [
+    "globals",
+    "traits",
+    "vtables"
+  ],
+  "actual_parser_rejections": [
+    "owned_unknown_feature",
+    "cfgattribute",
+    "macro_rules",
+    "asyncfn",
+    "closureexpression"
+  ],
+  "generated_rust_owners": "No rustc source frontend or macro/closure/async/drop-shim importer is exercised. Formality manually parsed DSL inputs and its own synthetic start/monomorphic queue are the observed subjects.",
+  "upstream_codegen_test_exclusions": "Six source tests explicitly ignored for AliasTy/Derefable codegen, source-only census; the codegen cargo test target did not execute after budget stop.",
+  "coverage_limit": "No full rustc configured-owner census, generated async/drop semantics, complete desugaring or source-safety theorem."
+}

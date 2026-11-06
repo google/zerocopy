@@ -791,12 +791,12 @@ anneal-lean-run --mode file --concurrency 2 -- \
 To re-run the `-Z randomize-layout` empirical probe on `rustc 1.98.0-nightly (f8a08b688 2026-05-30)`:
 
 ```bash
-rustc +nightly-2026-05-30 -O \
+rustc +nightly -O \
   reports/anneal-forward-compatible-mir-semantics-and-reference-admissible-refinement/support/randomize_layout_probe.rs \
-  -o /tmp/probe_default && /tmp/probe_default default
+  -o ./probe_default && ./probe_default default
 for seed in $(seq 0 15); do
-  rustc +nightly-2026-05-30 -O -Z randomize-layout -Z layout-seed=$seed \
+  rustc +nightly -O -Z randomize-layout -Z layout-seed=$seed \
     reports/anneal-forward-compatible-mir-semantics-and-reference-admissible-refinement/support/randomize_layout_probe.rs \
-    -o /tmp/probe_$seed && /tmp/probe_$seed $seed
+    -o ./probe_$seed && ./probe_$seed $seed
 done
 ```

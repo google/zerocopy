@@ -1,0 +1,46 @@
+{
+  "disk": [
+    {
+      "path": "/home/opam/anneal-sail-opam",
+      "returncode": 0,
+      "stdout": "3511832\t/home/opam/anneal-sail-opam\n",
+      "stderr": ""
+    },
+    {
+      "path": "/home/opam/anneal-sail-opam/sail414/.opam-switch/sources",
+      "returncode": 0,
+      "stdout": "1319740\t/home/opam/anneal-sail-opam/sail414/.opam-switch/sources\n",
+      "stderr": ""
+    },
+    {
+      "path": "/home/opam/anneal-sail-opam/sail414/.opam-switch/build",
+      "returncode": 0,
+      "stdout": "1191508\t/home/opam/anneal-sail-opam/sail414/.opam-switch/build\n",
+      "stderr": ""
+    },
+    {
+      "path": "/home/opam/anneal-sail-opam/sail414/.opam-switch/packages",
+      "returncode": 0,
+      "stdout": "260\t/home/opam/anneal-sail-opam/sail414/.opam-switch/packages\n",
+      "stderr": ""
+    },
+    {
+      "path": "/home/opam/anneal-sail-opam/download-cache",
+      "returncode": 0,
+      "stdout": "53144\t/home/opam/anneal-sail-opam/download-cache\n",
+      "stderr": ""
+    },
+    {
+      "path": "/home/opam/anneal-sail-opam/repo",
+      "returncode": 0,
+      "stdout": "25220\t/home/opam/anneal-sail-opam/repo\n",
+      "stderr": ""
+    }
+  ],
+  "selected_env": {
+    "OPAMKEEPBUILDDIR": null,
+    "OPAMREUSEBUILDDIR": null,
+    "OPAMKEEPLOGS": null
+  },
+  "image_opamrc": "wrap-build-commands: []\nwrap-install-commands: []\nwrap-remove-commands: []\nrequired-tools: []\n"
+}

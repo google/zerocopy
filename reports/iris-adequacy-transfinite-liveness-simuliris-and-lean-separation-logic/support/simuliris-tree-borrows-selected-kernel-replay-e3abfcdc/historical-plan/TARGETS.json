@@ -1,0 +1,197 @@
+{
+  "status": "planned only",
+  "constants": [
+    {
+      "constant": "simuliris.simulation.adequacy.slsls_adequacy",
+      "source": "theories/simulation/adequacy.v",
+      "line": 310,
+      "source_sha256": "11041805a4bbf2fadab7cc5c773dd999abb22febc7a8f3904f300ce3ec890ff5",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.simulation.fairness_adequacy.sim_pool_preserves_fair_termination",
+      "source": "theories/simulation/fairness_adequacy.v",
+      "line": 678,
+      "source_sha256": "291759957d01b6f9fe214c9afc83c447a96530fa5dc98897c76c8ca021a3074a",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.adequacy.prog_rel_adequacy",
+      "source": "theories/tree_borrows/adequacy.v",
+      "line": 30,
+      "source_sha256": "66655cea3943f18fa3ab5f8d02f6d096a4568b521a4db0b4eff1296249cf7f11",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.adequacy.log_rel_adequacy",
+      "source": "theories/tree_borrows/adequacy.v",
+      "line": 50,
+      "source_sha256": "66655cea3943f18fa3ab5f8d02f6d096a4568b521a4db0b4eff1296249cf7f11",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.sb_log_rel_structural",
+      "source": "theories/tree_borrows/refl.v",
+      "line": 471,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.log_rel_refl",
+      "source": "theories/tree_borrows/refl.v",
+      "line": 517,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.log_rel_ctx",
+      "source": "theories/tree_borrows/refl.v",
+      "line": 524,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "annotation": "PlannedAuditFramework.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.simulation.language.safe_reach",
+      "source": "theories/simulation/language.v",
+      "line": 1056,
+      "source_sha256": "f6db07e6cf6f4266a6869008912f742ec3fb76a12d0b98355ccd8fdc508b4f3e",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.write_entire_range",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "line": 22,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.sim_new_place_local",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "line": 35,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.new_place_safe_reach",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "line": 67,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_local.sim_alloc_local",
+      "source": "theories/tree_borrows/step_laws/steps_local.v",
+      "line": 322,
+      "source_sha256": "b4d192b6cef1480fa39c8048fe761938ab9e61605d8a0ba72f93d230551be8bd",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_retag.sim_retag_default",
+      "source": "theories/tree_borrows/step_laws/steps_retag.v",
+      "line": 67,
+      "source_sha256": "51976c67c24f7d326f549e76da05b06fe121ead49e95b681c315686e7d756977",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_retag.sim_retag_fnentry",
+      "source": "theories/tree_borrows/step_laws/steps_retag.v",
+      "line": 304,
+      "source_sha256": "51976c67c24f7d326f549e76da05b06fe121ead49e95b681c315686e7d756977",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_opt.sim_protected_unprotect",
+      "source": "theories/tree_borrows/step_laws/steps_opt.v",
+      "line": 310,
+      "source_sha256": "dc26fca5c03e01e84a33984b45776280f235305cd2d908330c4a5f2c1b99845e",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.loc_controlled_read_after_reborrow_creates",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "line": 380,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.logical_state.array_tag",
+      "source": "theories/tree_borrows/logical_state.v",
+      "line": 856,
+      "source_sha256": "e9442959032f040c9c7a3e44e699791113973811d4491ac15087af6facb30b23",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.pointer_kind_to_tag_unprotected",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "line": 356,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.pointer_kind_to_tag_protected",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "line": 360,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "annotation": "PlannedAuditResources.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped",
+      "source": "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v",
+      "line": 44,
+      "source_sha256": "98d8261461e943848de6039847eb345511efa415d9ff87fe2c7e2a7e35d8588b",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped_ctx",
+      "source": "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v",
+      "line": 132,
+      "source_sha256": "98d8261461e943848de6039847eb345511efa415d9ff87fe2c7e2a7e35d8588b",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper",
+      "source": "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v",
+      "line": 50,
+      "source_sha256": "f2287e8a8d89883b5e625bd7dd33d0826c6cf486a4dd166a4a2f098b5062e7f5",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper_ctx",
+      "source": "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v",
+      "line": 140,
+      "source_sha256": "f2287e8a8d89883b5e625bd7dd33d0826c6cf486a4dd166a4a2f098b5062e7f5",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    },
+    {
+      "constant": "simuliris.tree_borrows.read_read_reorder.read_reorder.read_reorder",
+      "source": "theories/tree_borrows/read_read_reorder/read_reorder.v",
+      "line": 218,
+      "source_sha256": "e9e8e666a9a00a89e10d03832a0a270f3f1ee22d4b4b575f4abefac8e8dfb8b0",
+      "annotation": "PlannedAuditExamples.v",
+      "status": "source-selected, not yet Check/PrintAssumptions/kernel observed"
+    }
+  ]
+}

@@ -1,0 +1,458 @@
+/home/opam/anneal-sail-output/proof-development/check-05/Proof.lean:45:4: warning: This simp argument is unused:
+  EStateM.set
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.s̵e̵t̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵modifyGet, EStateM.map, EStateM.seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/proof-development/check-05/Proof.lean:45:36: warning: This simp argument is unused:
+  EStateM.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.m̵a̵p̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵seqRight,
+  ̵  ̵ ̵ ̵Bind.bind,
+  ̲  ̲ ̲ ̲Pure.pure, Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet,
+  ̲  ̲ ̲ ̲modify, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/proof-development/check-05/Proof.lean:45:49: warning: This simp argument is unused:
+  EStateM.seqRight
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵EStateM.set, EStateM.modifyGet, EStateM.map, E̵S̵t̵a̵t̵e̵M̵.̵s̵e̵q̵R̵i̵g̵h̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵Bind.bind, Pure.pure,
+  ̲  ̲ ̲ ̲Functor.map, get, getThe, modifyGet,
+  ̵  ̵ ̵ ̵MonadStateOf.get, MonadStateOf.modifyGet, modify, h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/proof-development/check-05/Proof.lean:46:26: warning: This simp argument is unused:
+  Functor.map
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect, EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get, EStateM.set, EStateM.modifyGet, EStateM.map, EStateM.seqRight,
+      Bind.bind, Pure.pure, F̵u̵n̵c̵t̵o̵r̵.̵m̵a̵p̵,̵ ̵get, getThe, modifyGet, MonadStateOf.get, MonadStateOf.modifyGet, modify,
+  ̲  ̲ ̲ ̲h1, h2]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/proof-development/check-05/Proof.lean:64:37: warning: This simp argument is unused:
+  hr
+
+Hint: Omit it from the simp argument list.
+  simp [Std.ExtDHashMap.get?_insert, h̵r̵,̵ ̵Ne.symm hr]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+theorem AnnealSail.execute_add_effects : Functions.execute
+    (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD)) =
+  FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x1 none))) fun a =>
+    FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+      FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a + b)))) fun x =>
+        FreeM.pure (ExecutionResult.Retire_Success ()) :=
+Eq.refl (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD)))
+'AnnealSail.execute_add_effects' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.execute_add_full_state : ∀ (a b : BitVec 64) (s : SequentialState RegisterType),
+  s.regs.get? Register.x1 = some a →
+    s.regs.get? Register.x2 = some b →
+      EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+          s =
+        EStateM.Result.ok (ExecutionResult.Retire_Success ())
+          { regs := s.regs.insert Register.x3 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+            sailOutput := s.sailOutput } :=
+fun a b s h1 h2 =>
+  Eq.mpr
+    (id
+      (congrArg
+        (fun _a =>
+          EStateM.run (interpretSailEffects _a) s =
+            EStateM.Result.ok (ExecutionResult.Retire_Success ())
+              { regs := s.regs.insert Register.x3 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+                sailOutput := s.sailOutput })
+        execute_add_effects))
+    (of_eq_true
+      (Eq.trans
+        (congrFun'
+          (congrArg Eq
+            (Eq.trans
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun a =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+                                FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a + b))))
+                                  fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h1)
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a_1 s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun b =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a + b))))
+                                fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a_1 s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h2)))
+          (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+            { regs := s.regs.insert Register.x3 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+              sailOutput := s.sailOutput }))
+        (eq_self
+          (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+            { regs := s.regs.insert Register.x3 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+              sailOutput := s.sailOutput }))))
+'AnnealSail.execute_add_full_state' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.execute_add_register_frame' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+'AnnealSail.execute_add_pc_frame' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]

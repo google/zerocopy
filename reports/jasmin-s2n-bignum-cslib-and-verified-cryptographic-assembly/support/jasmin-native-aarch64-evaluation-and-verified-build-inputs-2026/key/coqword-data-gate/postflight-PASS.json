@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "store_before": 2331,
+  "store_after": 2332,
+  "only_added_path": "/nix/store/bvl5ajwrawal0hq40hdh2q3vwvbi0lpq-source",
+  "coqword_local_metadata": {
+    "ca": "fixed:r:sha256:01mzrly3bk3drbhnjfyhdka9gxybj9rmg8a5f62dp8q4zskwrn2d",
+    "deriver": null,
+    "narHash": "sha256-TdjMp/4Eo9uEcUWhV3OSy/eX1GzQO2nhym3MNTzNvwY=",
+    "narSize": 85112,
+    "references": [],
+    "registrationTime": 1792076924,
+    "signatures": [],
+    "storeDir": "/nix/store",
+    "ultimate": false,
+    "version": 1
+  },
+  "source_files": 14,
+  "source_file_bytes": 81808,
+  "jasmin_files_unchanged": 1689,
+  "policy_and_isolation_unchanged": true,
+  "resources": {
+    "timestamp": 1792076964.3544698,
+    "size_rw": 3705384960,
+    "host_free": 42556002304,
+    "oom_killed": false
+  }
+}

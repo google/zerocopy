@@ -1,0 +1,59 @@
+"""Independent offline evidence audit; never executes subject or author helpers."""
+import pathlib,json,hashlib,re,collections
+W=pathlib.Path(__file__).resolve().parents[3]
+B=W/'work/execution/hol-controls'; P=B/'reports/hol-controls-supplement';S=P/'support'
+D=pathlib.Path(__file__).resolve().parent
+h=lambda b:hashlib.sha256(b).hexdigest()
+load=lambda p:json.loads(p.read_text())
+checks={}
+def ok(k,v):
+ checks[k]=bool(v)
+ if not v: raise RuntimeError('unexpected invariant: '+k)
+m=load(P/'package-manifest.json');ok('manifest_identity',h((P/'package-manifest.json').read_bytes())=='eef85c3283bdedb5cbfc7cc8fbdfc0404e5853fa901efb61f2339c183afb9621')
+ok('inventory_exact',set(e['path'] for e in m['files'])==set(str(p.relative_to(P)) for p in P.rglob('*') if p.is_file() and p.name!='package-manifest.json'))
+for e in m['files']:
+ b=(P/e['path']).read_bytes();ok('inventory:'+e['path'],len(b)==e['bytes'] and h(b)==e['sha256'])
+ok('inventory_totals',len(m['files'])==147 and sum(e['bytes'] for e in m['files'])==21833890)
+r=load(S/'status-receipts.json')
+for k,v in r.items():
+ raw=(B/'logs'/(k+'.json')).read_bytes();o=json.loads(raw)
+ ok('private_receipt_hash:'+k,h(raw)==v['raw_private_receipt_sha256'])
+ for key in o:
+  if key not in ('cwd','argv'):ok('projection:'+k+':'+key,o[key]==v[key])
+ # Compare argv after replacing only known host prefixes represented in published placeholders.
+ pairs=list(zip(o['argv'],v['argv']));ok('argv_arity:'+k,len(o['argv'])==len(v['argv']))
+ for a,b in pairs:
+  ok('argv_projection:'+k+':'+str(pairs.index((a,b))),a==b or (b.startswith('$DOCKER') and a.endswith('/docker')) or (b.startswith('$CONTROL_WORKSPACE') and a.endswith(b[len('$CONTROL_WORKSPACE'):]) and '/hol-controls' in a) or (b.startswith('$POSITIVE_PACKAGE') and a.endswith(b[len('$POSITIVE_PACKAGE'):]))
+ for stream in ('stdout','stderr'):
+  p=S/'logs'/(k+'.'+stream)
+  if p.exists():ok('stream:'+k+':'+stream,h(p.read_bytes())==v[stream+'_sha256'] and p.stat().st_size==v[stream+'_bytes'])
+source=load(S/'parent/hol-control-source-census.stdout');core=load(S/'logs/native-before-census.stdout')['hol_core']
+up=W/'work/execution/parent/reports/hol-light-s2n-bignum-add-native-replay-b19af693/support/sources'
+for name,c in source.items():
+ for e in c['inputs']:
+  p=e['path']
+  local=S/'staged/source'/pathlib.Path(p).name if '/controls/source/' in p else up/p.split('/anneal-cross-sources/')[1]
+  b=local.read_bytes();ok('source:'+name+':'+p,len(b)==e['bytes'] and h(b)==e['sha256'] and hashlib.md5(b).hexdigest()==e['md5'])
+ ok('source_digest_multiset:'+name,collections.Counter((pathlib.Path(e['path']).name,e['md5']) for e in c['inputs'])==collections.Counter((e['basename'],e['md5']) for e in c['digest_completion_order']))
+ artifact=(S/'artifacts'/(name+'_inlined.ml')).read_bytes();ok('generated:'+name,h(artifact)==c['artifact']['sha256'])
+expect=collections.Counter((e['basename'],e['md5']) for e in core['digest_completion_order'])
+expect.update((e['basename'],e['md5']) for e in source['ImporterControl']['digest_completion_order'] if e['basename']!='ImporterControl.ml')
+for case in ['C0','C1','C2','C3','C4','C9']:
+ out=(S/'logs'/('case-'+case+'.stdout')).read_text();actual=collections.Counter(re.findall(r'^ANNEAL_CONTROL_LOADED "([^"]+)" ([0-9a-f]{32})$',out,re.M));ok('ledger:'+case,actual==expect and sum(actual.values())==81)
+for case in ['C0','C1','C2','C3','C4','C5','C6','C9']:
+ ok('census:'+case,(S/'logs'/('case-'+case+'-after-census.stdout')).read_bytes()==(S/'logs/native-before-census.stdout').read_bytes())
+orig=(S/'staged/objects/original.o').read_bytes()
+for name,offsets in [('bad-text.o',[64]),('wrong-machine.o',[18]),('renamed-symbol.o',[780,781])]:
+ b=(S/'staged/objects'/name).read_bytes();ok('mutant:'+name,len(b)==len(orig) and [i for i,(x,y) in enumerate(zip(orig,b)) if x!=y]==offsets)
+positive=W/'work/execution/hol-replay/reports/hol-light-s2n-bignum-add-native-replay-b19af693'
+ok('original_positive_manifest',h((positive/'package-manifest.json').read_bytes())=='542dca2e5208bb559138078cf4aeccf9157011a75d5d06a4d67e843911182917')
+ok('C8_exact_truncation',(positive/'support/logs/positive.stdout').read_bytes()==(S/'C8-truncated-log/logs/positive.stdout').read_bytes()+b'ANNEAL_AUDIT_FINISHED\n')
+ok('C8_same_verifier',(positive/'support/observer/verify_positive.py').read_bytes()==(S/'C8-truncated-log/verify_positive.py').read_bytes())
+x=load(S/'C8-truncated-log/positive-verification.json');print('C8 keys',x.keys())
+results=load(P/'RESULTS.json');ok('native_sum',abs(sum(r['case-'+c]['elapsed_seconds'] for c in ['C0','C1','C2','C3','C4','C5','C6','C9'])-results['native_elapsed_seconds'])<1e-7)
+for e in results['cases']:
+ key='case-'+e['case'] if e['case'] in ['C0','C1','C2','C3','C4','C5','C6','C9'] else e['case']
+ for f in ['returncode','elapsed_seconds','stdout_sha256','stderr_sha256']:ok('results:'+key+':'+f,e[f]==r[key][f])
+ok('privacy_scan',not any(b'/Users/' in p.read_bytes() or b'/private/' in p.read_bytes() for p in P.rglob('*') if p.is_file()))
+(D/'controls-checks.json').write_text(json.dumps({'status':'PASS','checks':checks,'count':len(checks),'manifest':h((P/'package-manifest.json').read_bytes())},indent=2)+'\n')
+print('PASS',len(checks),'independent offline invariants')

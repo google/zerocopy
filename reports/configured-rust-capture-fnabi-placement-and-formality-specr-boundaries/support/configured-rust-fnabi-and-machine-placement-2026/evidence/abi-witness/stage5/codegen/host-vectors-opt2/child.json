@@ -1,0 +1,24 @@
+{
+  "pid": 28408,
+  "pgid": 28408,
+  "launch_start_unix_ns": 1792027316471049000,
+  "pid_persisted_unix_ns": 1792027316502645000,
+  "argv": [
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+    "${WORKSPACE}/work/execution/abi-witness/vectors.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "--crate-type=lib",
+    "--crate-name=abi_vectors",
+    "--target=aarch64-apple-darwin",
+    "-Copt-level=2",
+    "-Cpanic=abort",
+    "-Ctarget-cpu=apple-m1",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "--emit=llvm-ir,asm,obj",
+    "--out-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/codegen/host-vectors-opt2"
+  ]
+}

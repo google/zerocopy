@@ -1,0 +1,18 @@
+{
+  "sail": {
+    "files": 3529,
+    "bytes": 54718482
+  },
+  "sail-riscv": {
+    "files": 893,
+    "bytes": 5298397
+  },
+  "lean-sail": {
+    "files": 15,
+    "bytes": 56067
+  },
+  "opam-metadata": {
+    "files": 19399,
+    "bytes": 26887130
+  }
+}

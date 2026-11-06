@@ -1,0 +1,31 @@
+{
+  "label": "post-hashes",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "find",
+    ".",
+    "-type",
+    "f",
+    "-exec",
+    "sha256sum",
+    "{}",
+    "+"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.125,
+  "stdout_bytes": 23341,
+  "stderr_bytes": 0,
+  "stdout_sha256": "ae3dc9f44ae20c26c119a19d22e13797946c606050442a78027f8af951ee4213",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "CMakeLists.txt",
+    "source": "/home/opam/anneal-sail-output/configure/CMakeLists.txt",
+    "bytes": 503,
+    "sha256": "bcac32ef4f799651bb838aab03a9d405185c658bee1b47e20502fcefbacf7fa5"
+  },
+  {
+    "name": "rv64d_v256_e64.json",
+    "source": "/home/opam/anneal-sail-output/model-config/config/rv64d_v256_e64.json",
+    "bytes": 42392,
+    "sha256": "47ee55d4f147d79d95cbe1566982b4fe0adbb2a044adfabb102ff3f21b457c37"
+  },
+  {
+    "name": "CollectAxioms.lean",
+    "source": "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/src/lean/Lean/Util/CollectAxioms.lean",
+    "bytes": 1729,
+    "sha256": "fe0ba1a33981c94719c9bd203227d1f300da8b2a70e2a2c67255071a0b60218b"
+  },
+  {
+    "name": "Lean-LICENSE",
+    "source": "/home/opam/anneal-sail-tools/lean-4.29.0-linux_aarch64/LICENSE",
+    "bytes": 9160,
+    "sha256": "8b28515ffffc5c0fe2807d8ae3735b00b324d9b7ce807dd63ff6ac8922fbce7e"
+  }
+]

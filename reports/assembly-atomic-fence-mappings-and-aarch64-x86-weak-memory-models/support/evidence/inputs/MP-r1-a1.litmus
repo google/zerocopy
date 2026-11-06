@@ -1,0 +1,13 @@
+AArch64 MP-r1-a1
+{
+ x=0; y=0;
+ 0:X1=x; 0:X3=y;
+ 1:X1=x; 1:X3=y;
+}
+ P0           | P1           ;
+ MOV W0,#1    | LDAR W4,[X3] ;
+ STR W0,[X1]  | LDR W6,[X1]  ;
+ MOV W2,#1    |              ;
+ STLR W2,[X3] |              ;
+
+exists (1:X4=1 /\ 1:X6=0)

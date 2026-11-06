@@ -1,0 +1,2 @@
+[WARNING] Running as root is not recommended
+Fatal error: exception Failure("assert_word_list")

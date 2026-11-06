@@ -1,0 +1,5 @@
+ROCQ DEP VFILES
+ROCQ compile theories/logic/satisfiable.v
+ROCQ compile theories/simulation/language.v
+ROCQ compile theories/simulation/fairness.v
+ANNEAL_PHASE_RESULT returncode=2 stop=none elapsed_seconds=2 start_bytes=3234169 peak_bytes=3234169 final_bytes=4033540

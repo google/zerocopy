@@ -1,0 +1,60 @@
+--- a/model/extensions/Stateen/stateen_regs.sail
++++ b/model/extensions/Stateen/stateen_regs.sail
+@@ -66,9 +66,13 @@
+   ];
+ }
+ 
++termination_measure legalize_mstateen0(_, _) = 5 // > currentlyEnabled(Ext_H), rank 4
++
+ // misa can change after the last write, so mstateen0 can be stale.
+ // Any read of mstateen0 must go through this function.
+ function read_mstateen0() -> Mstateen0 = legalize_mstateen0(mstateen0, mstateen0.bits)
++
++termination_measure read_mstateen0() = 6 // > legalize_mstateen0
+ 
+ private function get_mstateen(idx : range(0, 3)) -> bits(64) = {
+   if not(is_mstateen_accessible()) then ones()
+@@ -79,6 +83,8 @@
+     3 => mstateen3.bits,
+   }
+ }
++
++termination_measure get_mstateen(_) = 7 // > read_mstateen0
+ 
+ function legalize_mstateen1(m : Mstateen1, v : bits(64)) -> Mstateen1 = [m with SE1 = legalize_csr_bit(mstateen1_se1, true, Mk_Mstateen1(v)[SE1])]
+ function legalize_mstateen2(m : Mstateen2, v : bits(64)) -> Mstateen2 = [m with SE2 = legalize_csr_bit(mstateen2_se2, true, Mk_Mstateen2(v)[SE2])]
+@@ -198,11 +204,11 @@
+   mask[stateen_bit_index(bit_idx)] == bitone
+ }
+ 
+-termination_measure check_stateen_bit(_, _, _) = 7 // > get_hstateen
++termination_measure check_stateen_bit(_, _, _) = 8 // > get_mstateen and get_hstateen
+ 
+ function is_zfinx_enabled_by_stateen() -> bool = check_stateen_bit(cur_privilege, STATEEN_FCSR, 0)
+ 
+-termination_measure is_zfinx_enabled_by_stateen() = 8 // > check_stateen_bit
++termination_measure is_zfinx_enabled_by_stateen() = 9 // > check_stateen_bit
+ 
+ function reset_stateen() -> unit = {
+   mstateen0 = legalize_mstateen0(Mk_Mstateen0(zeros()), zeros());
+--- a/model/core/extensions.sail
++++ b/model/core/extensions.sail
+@@ -755,12 +755,12 @@
+ 
+     Ext_Sha => 6, // > its dependencies
+ 
+-    Ext_Zfinx => 9, // > is_zfinx_enabled_by_stateen
+-
+-    Ext_Zdinx => 10, // > Zdinx
+-    Ext_Zhinx => 10, // > Zfinx
+-
+-    Ext_Zhinxmin => 11, // > Zhinx
++    Ext_Zfinx => 10, // > is_zfinx_enabled_by_stateen
++
++    Ext_Zdinx => 11, // > Zfinx
++    Ext_Zhinx => 11, // > Zfinx
++
++    Ext_Zhinxmin => 12, // > Zhinx
+ 
+     _ => 2
+   }

@@ -1,0 +1,380 @@
+/home/opam/anneal-sail-output/byte-diagnostic-proof/ByteDiagnostic5.lean:88:31: warning: This simp argument is unused:
+  EStateM.pure
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲ E̵S̵t̵a̵t̵e̵M̵.̵p̵u̵r̵e̵,̵  ̲ ̲EStateM.get,
+  ̵  ̵ ̵ ̵Bind.bind, Pure.pure, get, getThe, MonadStateOf.get,
+  ̵  ̵ ̵ ̵throw, throwThe,
+  ̲  ̲ ̲ ̲MonadExceptOf.throw, EStateM.throw, hp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/byte-diagnostic-proof/ByteDiagnostic5.lean:89:15: warning: This simp argument is unused:
+  Pure.pure
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run, EStateM.bind,
+  ̲  ̲ ̲ ̲EStateM.pure, EStateM.get,
+  ̵  ̵ ̵ ̵Bind.bind, P̵u̵r̵e̵.̵p̵u̵r̵e̵,̵ ̵get, getThe, MonadStateOf.get,
+  ̵  ̵ ̵ ̵throw, throwThe,
+  ̲  ̲ ̲ ̲MonadExceptOf.throw, EStateM.throw, hp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/opam/anneal-sail-output/byte-diagnostic-proof/ByteDiagnostic5.lean:104:31: warning: This simp argument is unused:
+  EStateM.pure
+
+Hint: Omit it from the simp argument list.
+  simp [interpretSailEffects, FreeM.liftM, FreeM.bind, interpretInstructionEffect,
+  ̵  ̵ ̵ ̵EStateM.run,
+  ̲  ̲ ̲ ̲EStateM.bind, EStateM.p̵u̵r̵e̵,̵ ̵E̵S̵t̵a̵t̵e̵M̵.̵get,
+  ̵  ̵ ̵ ̵Bind.bind, Pure.pure, get, getThe, MonadStateOf.get,
+  ̵  ̵ ̵ ̵throw, throwThe,
+  ̲  ̲ ̲ ̲MonadExceptOf.throw, EStateM.throw, hp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+AnnealSail.ByteDiagnostic.supports_zicsr : Functions.hartSupports extension.Ext_Zicsr = true
+'AnnealSail.ByteDiagnostic.supports_zicsr' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.supports_pause : Functions.hartSupports extension.Ext_Zihintpause = true
+'AnnealSail.ByteDiagnostic.supports_pause' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.supports_cfilp : Functions.hartSupports extension.Ext_Zicfilp = true
+'AnnealSail.ByteDiagnostic.supports_cfilp' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.enabled_zicsr : Functions.currentlyEnabled extension.Ext_Zicsr = FreeM.pure true
+'AnnealSail.ByteDiagnostic.enabled_zicsr' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.enabled_pause : Functions.currentlyEnabled extension.Ext_Zihintpause = FreeM.pure true
+'AnnealSail.ByteDiagnostic.enabled_pause' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.enabled_cfilp :
+  Functions.currentlyEnabled extension.Ext_Zicfilp =
+    have this := do
+      let priv ← readReg Register.cur_privilege
+      let lpe ← Functions.get_xLPE priv
+      pure (true && (true && lpe));
+    this
+'AnnealSail.ByteDiagnostic.enabled_cfilp' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.x1x2_only_composition_success_is_false :
+  ¬∀ (a b : BitVec 64) (s : SequentialState RegisterType),
+      s.regs.get? Register.x1 = some a →
+        s.regs.get? Register.x2 = some b →
+          EStateM.run
+              (interpretSailEffects
+                (have this := do
+                  let inst ← Functions.ext_decode 2130355
+                  Functions.execute inst;
+                this))
+              s =
+            EStateM.Result.ok (ExecutionResult.Retire_Success ())
+              { regs := s.regs.insert Register.x3 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+                sailOutput := s.sailOutput }
+'AnnealSail.ByteDiagnostic.x1x2_only_composition_success_is_false' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.selected_little_endian_word : ((BitVec.append 0 32).append 129).append 179 = 2130355
+'AnnealSail.ByteDiagnostic.selected_little_endian_word' depends on axioms: [propext, Quot.sound]
+AnnealSail.ByteDiagnostic.encode_add :
+  Functions.encdec_forwards (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD)) =
+    FreeM.pure 2130355
+'AnnealSail.ByteDiagnostic.encode_add' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.decoder_starts_with_privilege_read :
+  ∃ k,
+    Functions.ext_decode 2130355 =
+      FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.cur_privilege none))) k
+'AnnealSail.ByteDiagnostic.decoder_starts_with_privilege_read' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.decoder_missing_privilege (s : SequentialState RegisterType)
+  (hp : s.regs.get? Register.cur_privilege = none) :
+  EStateM.run (interpretSailEffects (Functions.ext_decode 2130355)) s = EStateM.Result.error Sail.Error.Unreachable s
+'AnnealSail.ByteDiagnostic.decoder_missing_privilege' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.decoder_then_execute_missing_privilege (s : SequentialState RegisterType)
+  (hp : s.regs.get? Register.cur_privilege = none) :
+  EStateM.run
+      (interpretSailEffects
+        (have this := do
+          let inst ← Functions.ext_decode 2130355
+          Functions.execute inst;
+        this))
+      s =
+    EStateM.Result.error Sail.Error.Unreachable s
+'AnnealSail.ByteDiagnostic.decoder_then_execute_missing_privilege' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.fixture_has_sources :
+  Controls.fixture12.regs.get? Register.x1 = some 1 ∧ Controls.fixture12.regs.get? Register.x2 = some 2
+'AnnealSail.ByteDiagnostic.fixture_has_sources' depends on axioms: [propext, Classical.choice, Quot.sound]
+AnnealSail.ByteDiagnostic.fixture_decoder_errors :
+  EStateM.run (interpretSailEffects (Functions.ext_decode 2130355)) Controls.fixture12 =
+    EStateM.Result.error Sail.Error.Unreachable Controls.fixture12
+'AnnealSail.ByteDiagnostic.fixture_decoder_errors' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.fixture_decode_execute_errors :
+  EStateM.run
+      (interpretSailEffects
+        (have this := do
+          let inst ← Functions.ext_decode 2130355
+          Functions.execute inst;
+        this))
+      Controls.fixture12 =
+    EStateM.Result.error Sail.Error.Unreachable Controls.fixture12
+'AnnealSail.ByteDiagnostic.fixture_decode_execute_errors' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+AnnealSail.ByteDiagnostic.decoder_is_not_pure_selected_add :
+  Functions.ext_decode 2130355 ≠
+    FreeM.pure (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))
+'AnnealSail.ByteDiagnostic.decoder_is_not_pure_selected_add' depends on axioms: [propext,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]

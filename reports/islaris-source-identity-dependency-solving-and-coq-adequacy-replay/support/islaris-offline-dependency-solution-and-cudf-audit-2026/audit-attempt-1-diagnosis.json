@@ -1,0 +1,15 @@
+{
+  "status": "REJECTED_BEFORE_SATISFACTION_AUDIT",
+  "original_check": "reject every installed/keep record in exported CUDF",
+  "reason": "nonempty initial state/keep constraint",
+  "observed_exact_record": {
+    "package": "%3dopam-invariant",
+    "version": "1",
+    "installed": "true",
+    "was-installed": "true",
+    "keep": "version",
+    "opam-name": "SWITCH_INVARIANT",
+    "opam-version": "NULL"
+  },
+  "diagnosis": "The actual package list is empty, but opam exports exactly one synthetic switch invariant. Narrow revised audit explicitly includes that exact record and rejects any other installed/keep record. No CUDF, selected set or opam metadata was changed."
+}

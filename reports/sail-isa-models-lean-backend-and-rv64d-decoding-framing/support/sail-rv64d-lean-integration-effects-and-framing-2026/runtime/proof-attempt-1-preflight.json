@@ -1,0 +1,23 @@
+{
+  "complete": {
+    "status": 0,
+    "modules": 143,
+    "seconds": 328.40535146801267,
+    "child_maxrss_kib": 3348632,
+    "child_user_seconds": 311.414724,
+    "child_system_seconds": 17.552945
+  },
+  "imports_verified": 143,
+  "proof_sources": [
+    {
+      "path": "Proof.lean",
+      "bytes": 3538,
+      "sha256": "f4b04b9b84a71cdd36d8f8074443a80e82c8cd54ffa1a6e232f9227ad00f79d6"
+    },
+    {
+      "path": "Controls.lean",
+      "bytes": 9080,
+      "sha256": "c892a393e74c318a7be56760c520f0da34e576c92cec766c548f73c266d63ad6"
+    }
+  ]
+}

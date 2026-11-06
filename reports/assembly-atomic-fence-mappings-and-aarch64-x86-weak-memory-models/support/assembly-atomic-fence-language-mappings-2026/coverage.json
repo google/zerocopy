@@ -1,0 +1,45 @@
+{
+  "agenda_ids": [
+    "AS25"
+  ],
+  "status": "completed focused investigation; AS25 partially discharged",
+  "coverage": [
+    {
+      "id": "AS25",
+      "sections": [
+        "Findings: Language access rules survive identical machine instructions",
+        "Findings: What the named hardware models actually constrain",
+        "Findings: Published proof scopes are narrower than compiler correctness",
+        "Findings: Performed compiler observations",
+        "Findings: Compiler-facing assembly effects are another contract"
+      ],
+      "answered_scope": "Pinned named hardware-model rules/event annotations, published proof domains, selected actual theorem premises, Rust byte-range/data-race/effect rules, and performed three-configuration compiler IR/assembly mappings. Missing-fence relation projections calculated explicitly.",
+      "stronger_unestablished_claims": [
+        "Rust-to-current-Arm/x86 model compiler refinement",
+        "Concurrent inline-asm wrapper theorem with false-effect and missing-fence rejection",
+        "Current CAT versus historic theorem equivalence",
+        "Complete ISA-to-events binding and all model configurations",
+        "Mixed-width Rust access-to-hardware simulation"
+      ],
+      "actual_unexamined_gaps": [
+        "No herd/rmem execution",
+        "No Coq dependency rebuild or axioms audit",
+        "No rustc atomic codegen experiment",
+        "No actual Rust synchronization wrapper semantic checker",
+        "No executed hardware litmus",
+        "Other widths, RCpc, device/non-temporal/system memory and fairness not investigated"
+      ]
+    }
+  ],
+  "performed": [
+    "12 compile-only Clang assembly/IR commands plus two compiler version invocations",
+    "Three targets/configurations;17 functions each;51 pairs and167 computed predicates",
+    "10 fixed-candidate relation projections;4 cyclic6 noncyclic",
+    "43 primary source entries;37 full Git blobs and6 excerpts"
+  ],
+  "primary_exclusions": [
+    "Owned SB projection does not interpret CAT or validate complete named model",
+    "C11 and Promising proof statements do not automatically establish Rust C++20-derived access model",
+    "No native compiled or concurrent target execution; no install; no canonical writes"
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "topics": [
+    "lean",
+    "lean/lsp",
+    "agents/mcp",
+    "agents/lsp-integration",
+    "anneal/interactive-lsp"
+  ],
+  "subjects": [
+    {
+      "name": "Isabelle/jEdit \u2014 a Prover IDE within the PIDE framework",
+      "identity": {
+        "artifact": "arXiv:1207.3441v1",
+        "doi": "10.1007/978-3-642-31374-5_38"
+      }
+    },
+    {
+      "name": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking",
+      "identity": {
+        "artifact": "arXiv:1307.1944v1",
+        "doi": "10.4204/EPTCS.118.4"
+      }
+    },
+    {
+      "name": "PIDE as front-end technology for Coq",
+      "identity": {
+        "artifact": "arXiv:1304.6626v1"
+      }
+    },
+    {
+      "name": "Interaction with Formal Mathematical Documents in Isabelle/PIDE",
+      "identity": {
+        "artifact": "arXiv:1905.01735v1"
+      }
+    },
+    {
+      "name": "From LCF to Isabelle/HOL",
+      "identity": {
+        "doi": "10.1007/s00165-019-00492-1"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md; anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "Isabelle/PIDE retrospective document model",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "Interaction with Formal Mathematical Documents in Isabelle/PIDE",
+        "arxiv": "1905.01735v1",
+        "doi": "10.48550/arXiv.1905.01735"
+      }
+    },
+    {
+      "name": "Isabelle/jEdit PIDE architecture",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "Isabelle/jEdit --- a Prover IDE within the PIDE framework",
+        "arxiv": "1207.3441v1",
+        "doi": "10.48550/arXiv.1207.3441"
+      }
+    },
+    {
+      "name": "Asynchronous Isabelle document-processing architecture",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "Asynchronous Proof Processing with Isabelle/Scala and Isabelle/jEdit",
+        "doi": "10.1016/j.entcs.2012.06.009",
+        "published": "2012"
+      }
+    },
+    {
+      "name": "Reformed asynchronous READ-EVAL-PRINT architecture",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "READ-EVAL-PRINT in Parallel and Asynchronous Proof-checking",
+        "arxiv": "1307.1944v1",
+        "doi": "10.4204/EPTCS.118.4"
+      }
+    },
+    {
+      "name": "PIDE-to-Coq portability experiment",
+      "identity": {
+        "author": "Makarius Wenzel",
+        "publication": "PIDE as front-end technology for Coq",
+        "arxiv": "1304.6626v1",
+        "doi": "10.48550/arXiv.1304.6626"
+      }
+    },
+    {
+      "name": "Anneal design authority used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Coq State Transaction Machine and asynchronous document processing",
+      "identity": {
+        "publication": "Barras, Tankink, Tassi, Asynchronous Processing of Coq Documents: From the Kernel up to the User Interface",
+        "arxiv": "1506.05605",
+        "doi": "10.1007/978-3-319-22102-1_4",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "SerAPI document-control and serialization interface",
+      "identity": {
+        "repository": "rocq-archive/coq-serapi",
+        "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+      }
+    },
+    {
+      "name": "Rocq LSP and Fl\u00e8che document engine",
+      "identity": {
+        "repository": "rocq-community/rocq-lsp",
+        "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+      }
+    },
+    {
+      "name": "Anneal design contract used for applicability analysis",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "paths": "anneal/PRINCIPLES.md;anneal/DESIGN.md"
+      }
+    },
+    {
+      "name": "SerAPI pinned and observed main source",
+      "identity": {
+        "repository": "rocq-archive/coq-serapi",
+        "branch": "main",
+        "revision": "6196f9f572ef9dd3749b885cabce7a57406cedb9"
+      }
+    },
+    {
+      "name": "Rocq LSP and Fl\u00e8che pinned and observed main source",
+      "identity": {
+        "repository": "rocq-community/rocq-lsp",
+        "branch": "main",
+        "revision": "2e0c43c34af6d6cad272ca2b8c4a417fe780bfbe"
+      }
+    },
+    {
+      "name": "Language Server Protocol 3.18 specification source",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+        "specification": "3.18"
+      }
+    },
+    {
+      "name": "Lean 4 language server selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Model Context Protocol core specification",
+      "identity": {
+        "repository": "modelcontextprotocol/modelcontextprotocol",
+        "revision": "5f5440bb26a62e2cf3440b92da5a667efa03b267",
+        "version": "2026-07-28"
+      }
+    },
+    {
+      "name": "Optimistic concurrency control",
+      "identity": {
+        "publication": "Kung and Robinson, On Optimistic Methods for Concurrency Control, ACM TODS 6(2), 1981",
+        "doi": "10.1145/319566.319567"
+      }
+    },
+    {
+      "name": "Linearizability",
+      "identity": {
+        "publication": "Herlihy and Wing, Linearizability: A Correctness Condition for Concurrent Objects, ACM TOPLAS 12(3), 1990",
+        "doi": "10.1145/78969.78972"
+      }
+    },
+    {
+      "name": "Snapshot isolation taxonomy",
+      "identity": {
+        "publication": "Berenson et al., A Critique of ANSI SQL Isolation Levels, SIGMOD 1995",
+        "doi": "10.1145/223784.223785",
+        "report": "Microsoft Research MSR-TR-95-51"
+      }
+    },
+    {
+      "name": "PostgreSQL Serializable Snapshot Isolation",
+      "identity": {
+        "publication": "Ports and Grittner, Serializable Snapshot Isolation in PostgreSQL, PVLDB 5(12), 2012"
+      }
+    },
+    {
+      "name": "Kung-Robinson optimistic concurrency control",
+      "identity": {
+        "doi": "10.1145/319566.319567",
+        "publication": "ACM TODS 6(2), 1981"
+      }
+    },
+    {
+      "name": "Horwitz-Prins-Reps semantics-based program integration",
+      "identity": {
+        "doi": "10.1145/65979.65980",
+        "publication": "ACM TOPLAS 11(3), 1989"
+      }
+    },
+    {
+      "name": "HTTP conditional request semantics",
+      "identity": {
+        "rfc": "9110",
+        "published": "2022-06"
+      }
+    },
+    {
+      "name": "Git update-ref expected-old-value protocol",
+      "identity": {
+        "repository": "git/git",
+        "revision": "a018953688f1b10bddf91bff8747068f5f4746a4",
+        "path": "Documentation/git-update-ref.adoc"
+      }
+    },
+    {
+      "name": "Language Server Protocol 3.18 versioned text edits",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "9a247101dc088557ae56adef8fecbdc86c9a93ca",
+        "specification": "3.18"
+      }
+    },
+    {
+      "name": "Making Data Structures Persistent",
+      "identity": {
+        "doi": "10.1016/0022-0000(89)90034-2",
+        "publication": "Journal of Computer and System Sciences 38(1)",
+        "year": "1989"
+      }
+    },
+    {
+      "name": "OpenZFS copy-on-write snapshots",
+      "identity": {
+        "project": "OpenZFS",
+        "documentation": "Copy-on-Write; Snapshots, Clones and Bookmarks",
+        "observed": "2026-09-30"
+      }
+    },
+    {
+      "name": "typed_arena arena lifetime semantics",
+      "identity": {
+        "crate": "typed-arena",
+        "version": "2.0.2"
+      }
+    },
+    {
+      "name": "fix weak hash-consing implementation",
+      "identity": {
+        "package": "fix",
+        "release": "20250919"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

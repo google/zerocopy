@@ -1,0 +1,62 @@
+{
+  "schema": "anneal-reference/netstack3-architecture-timeline/v1",
+  "question_coverage": [
+    "J001",
+    "J002",
+    "J003",
+    "J004"
+  ],
+  "events": [
+    {
+      "period": "early design",
+      "evidence": "CORE_BINDINGS.md / CONTROL_FLOW.md / IMPROVEMENTS.md",
+      "mechanism": "platform-independent core + Fuchsia bindings; single-state, single-thread-oriented direct call chains",
+      "interpretation": "semantic/environment boundary predates later crate and concurrency changes"
+    },
+    {
+      "date": "2023-05-31",
+      "revision": "495c194f4a8aabce4b04c7565a7a9d06a8a5462c",
+      "mechanism": "temporary ICMP bindings removal during socket-ID overhaul",
+      "interpretation": "project accepted bounded surface regression to simplify the identity redesign"
+    },
+    {
+      "date": "2023-06-01",
+      "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3",
+      "mechanism": "one opaque UDP socket ID replaces state-specific IDs; runtime invalid-operation errors added",
+      "interpretation": "explicit limit of typestate when stable identity across transitions mattered"
+    },
+    {
+      "date": "2023-07-08",
+      "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d",
+      "mechanism": "TCP handshake status moves from bindings to core",
+      "interpretation": "boundary moved to the layer that owned semantic truth, enabling identity simplification"
+    },
+    {
+      "period": "2024-05",
+      "revisions": [
+        "afe2e7ac4506c2f272c1b4a940cd2206b5756c19",
+        "a06fa769e2417889de925accc793d4e527280bc1"
+      ],
+      "mechanism": "IP and device functionality extracted into separate core crates",
+      "interpretation": "core/bindings semantics survived internal crate decomposition"
+    },
+    {
+      "date": "2024-07-23",
+      "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d",
+      "mechanism": "multicast forwarding uses runtime enabled/disabled enum containing all forwarding state",
+      "interpretation": "strong invariant through a dynamic state machine rather than propagated typestate"
+    },
+    {
+      "date": "2026-06-23",
+      "revision": "09c560576ca357ffc0853c6251048af2a61b1543",
+      "mechanism": "socket destruction notifications added across reference-backed socket lifecycle",
+      "interpretation": "deferred teardown and separation of identity/liveness remain production concerns"
+    },
+    {
+      "date": "2026-09-30",
+      "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68",
+      "mechanism": "current documented design uses context traits, shared-state-compatible APIs, state-delta events, and lock ordering",
+      "interpretation": "concurrency evolved without making every core boundary asynchronous"
+    }
+  ]
+}

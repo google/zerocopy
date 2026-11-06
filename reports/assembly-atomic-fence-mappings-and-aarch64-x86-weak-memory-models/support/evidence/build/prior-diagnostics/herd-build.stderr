@@ -1,0 +1,16 @@
+[WARNING] Running as root is not recommended
+Warning: Unable to read directory
+<MOUNTED_HERD_SOURCE>. Will
+not look for root in parent directories.
+Reason: <MOUNTED_HERD_SOURCE>:
+Operation not permitted
+To remove this warning, set your root explicitly using --root.
+Error: I cannot find the root of the current workspace/project.
+If you would like to create a new dune project, you can type:
+
+    dune init project NAME
+
+Otherwise, please make sure to run dune inside an existing project or
+workspace. For more information about how dune identifies the root of the
+current workspace/project, please refer to
+https://dune.readthedocs.io/en/stable/usage.html#finding-the-root

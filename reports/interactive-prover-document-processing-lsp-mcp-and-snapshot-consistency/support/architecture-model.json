@@ -1,0 +1,47 @@
+{
+  "protocol": "LSP 3.18",
+  "identities": [
+    {
+      "name": "request_id",
+      "scope": "one JSON-RPC request/response correlation",
+      "not_sufficient_for": ["document generation", "workspace identity", "proof session", "semantic snapshot"]
+    },
+    {
+      "name": "document_uri",
+      "scope": "document identity within protocol operations",
+      "not_sufficient_for": ["document generation", "prepared dependency environment"]
+    },
+    {
+      "name": "document_version",
+      "scope": "client-managed post-change text generation",
+      "not_sufficient_for": ["semantic processing completion", "dependency generation", "server process identity"]
+    },
+    {
+      "name": "workspace_coordinates",
+      "scope": "initialization/workspace roots when client and server support them",
+      "not_sufficient_for": ["portable proof-session identity", "server-specific project setup"]
+    }
+  ],
+  "document_transitions": [
+    {"from": "closed", "message": "textDocument/didOpen", "to": "open/client-managed"},
+    {"from": "open/client-managed@vN", "message": "textDocument/didChange", "to": "open/client-managed@vN+"},
+    {"from": "open/client-managed", "message": "textDocument/didClose", "to": "closed/URI-master"}
+  ],
+  "lean_v4_30_0_rc2": {
+    "topology": "one watchdog process with one worker process per open file",
+    "watchdog_recovery_state": ["document URI", "current document version", "current document text"],
+    "worker_initialization": ["initialize", "single full textDocument/didOpen", "subsequent textDocument/didChange notifications"],
+    "incremental_state": "parser/elaborator snapshot tree reused across document edits when source comparisons permit",
+    "request_invalidation": ["explicit $/cancelRequest", "edit-driven cancellation of pending requests"],
+    "dependency_boundary": "open-file edits are incremental in-memory state; imported-module changes move through compiled artifacts and worker refresh/restart rather than implicit propagation of unsaved dependency text"
+  },
+  "derived_agent_service_requirements": [
+    "carry prepared project identity explicitly",
+    "track URI plus client document generation",
+    "synchronize exact text before semantic query",
+    "use implementation-specific semantic readiness/barrier when correctness requires it",
+    "invalidate results on document or dependency generation change",
+    "treat cancellation as best effort rather than rollback",
+    "make restart reconstruction possible from project and document inputs"
+  ]
+}

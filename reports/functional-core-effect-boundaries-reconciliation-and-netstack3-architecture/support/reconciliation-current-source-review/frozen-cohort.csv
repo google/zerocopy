@@ -1,0 +1,2 @@
+inventory_id,cohort,report_json,report_md
+R510,Kubernetes controller-runtime 8564dc35 + client-go 6d1d0250,reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.json,reports/reconciliation-event-hints-repair-loops-2005-2026/REPORT.md

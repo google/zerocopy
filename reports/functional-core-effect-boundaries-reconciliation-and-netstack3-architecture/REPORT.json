@@ -1,0 +1,271 @@
+{
+  "topics": [
+    "systems",
+    "systems/networking-storage",
+    "systems/process-control",
+    "build/hermeticity",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Gary Bernhardt, Boundaries and Functional Core, Imperative Shell",
+      "identity": {
+        "event": "SCNA 2012",
+        "functional-core-published": "2012-07-12",
+        "url": "https://www.destroyallsoftware.com/talks/boundaries"
+      }
+    },
+    {
+      "name": "Alistair Cockburn, Hexagonal Architecture",
+      "identity": {
+        "date": "2005-09-04",
+        "report": "HaT Technical Report 2005.02",
+        "url": "https://alistair.cockburn.us/hexagonal-architecture"
+      }
+    },
+    {
+      "name": "Lucassen and Gifford, Polymorphic effect systems",
+      "identity": {
+        "doi": "10.1145/73560.73564",
+        "publication": "POPL 1988"
+      }
+    },
+    {
+      "name": "Plotkin and Pretnar, Handlers of Algebraic Effects",
+      "identity": {
+        "doi": "10.1007/978-3-642-00590-9_7",
+        "publication": "ESOP 2009"
+      }
+    },
+    {
+      "name": "python-hyper h11",
+      "identity": {
+        "repository": "python-hyper/h11",
+        "revision": "62c5068c971579d61fa1b55373390e12f25fd856"
+      }
+    },
+    {
+      "name": "Anneal design contract",
+      "identity": {
+        "path": "anneal/DESIGN.md",
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Hexagonal Architecture / Ports and Adapters original article",
+      "identity": {
+        "author": "Alistair Cockburn",
+        "date": "2005-09-04",
+        "report": "HaT Technical Report 2005.02",
+        "version": "0.9",
+        "url": "https://alistair.cockburn.us/hexagonal-architecture/"
+      }
+    },
+    {
+      "name": "Boundaries",
+      "identity": {
+        "author": "Gary Bernhardt",
+        "event": "SCNA 2012",
+        "url": "https://www.destroyallsoftware.com/talks/boundaries",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Network Protocols, sans I/O",
+      "identity": {
+        "repository": "brettcannon/sans-io",
+        "revision": "b4679927d555cb27d9960ae203c0ecd0d8209771"
+      }
+    },
+    {
+      "name": "Handlers of Algebraic Effects",
+      "identity": {
+        "doi": "10.1007/978-3-642-00590-9_7",
+        "publication": "ESOP 2009",
+        "year": "2009"
+      }
+    },
+    {
+      "name": "Koka: Programming with Row Polymorphic Effect Types",
+      "identity": {
+        "doi": "10.4204/EPTCS.153.8",
+        "publication": "EPTCS 153",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Remote Execution API",
+      "identity": {
+        "repository": "bazelbuild/remote-apis",
+        "revision": "adbf4a27c86fbea4a37637a6cbcacef372406fe7"
+      }
+    },
+    {
+      "name": "Anneal principles and design contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Parnas information-hiding modularity",
+      "identity": {
+        "publication": "Communications of the ACM 15(12):1053-1058",
+        "doi": "10.1145/361598.361623",
+        "year": "1972"
+      }
+    },
+    {
+      "name": "Parnas extension and contraction design",
+      "identity": {
+        "publication": "IEEE Transactions on Software Engineering SE-5(2):128-138",
+        "doi": "10.1109/TSE.1979.234169",
+        "year": "1979"
+      }
+    },
+    {
+      "name": "Parnas-Clements-Weiss module guides",
+      "identity": {
+        "publication": "IEEE Transactions on Software Engineering SE-11(3):259-266",
+        "doi": "10.1109/TSE.1985.232209",
+        "year": "1985"
+      }
+    },
+    {
+      "name": "Garlan-Shaw software architecture styles",
+      "identity": {
+        "report": "CMU/SEI-94-TR-021",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Anneal current design and V2 source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "path": "anneal"
+      }
+    },
+    {
+      "name": "Kubernetes controller-runtime",
+      "identity": {
+        "repository": "kubernetes-sigs/controller-runtime",
+        "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+      }
+    },
+    {
+      "name": "Kubernetes client-go Reflector",
+      "identity": {
+        "repository": "kubernetes/kubernetes",
+        "revision": "6d1d025050cb63ae5b8e53037aced205e6a28410"
+      }
+    },
+    {
+      "name": "Kubernetes WatchList KEP 3157",
+      "identity": {
+        "repository": "kubernetes/enhancements",
+        "revision": "914ed6950576832c8579899f092909d27623492e"
+      }
+    },
+    {
+      "name": "Kubernetes controller and API documentation",
+      "identity": {
+        "repository": "kubernetes/website",
+        "revision": "367a7a21bbef6b2d3c57d5fe113bee9bdb658889"
+      }
+    },
+    {
+      "name": "Linux inotify manual",
+      "identity": {
+        "project": "Linux man-pages",
+        "release": "6.19",
+        "release_date": "2026-02-14",
+        "page": "inotify(7)"
+      }
+    },
+    {
+      "name": "controller-runtime pinned and observed main source",
+      "identity": {
+        "repository": "kubernetes-sigs/controller-runtime",
+        "branch": "main",
+        "revision": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+      }
+    },
+    {
+      "name": "client-go Reflector selected Kubernetes master source",
+      "identity": {
+        "repository": "kubernetes/kubernetes",
+        "branch": "master",
+        "revision": "08147af84478f859c2e2234d71ceace8bdb412c7"
+      }
+    },
+    {
+      "name": "controller-runtime v0.25.1 release source",
+      "identity": {
+        "repository": "kubernetes-sigs/controller-runtime",
+        "tag": "v0.25.1",
+        "revision": "67b72c2517be1d2b0dec612477eb20c3c959a8aa"
+      }
+    },
+    {
+      "name": "Kubernetes v1.37.1 release source",
+      "identity": {
+        "repository": "kubernetes/kubernetes",
+        "tag": "v1.37.1",
+        "revision": "f78e722310e50bcaca9276be22276d9e91d91308"
+      }
+    },
+    {
+      "name": "Current Fuchsia Netstack3 architecture and design documentation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "c480400b0e6cb9a9b36384935639fb3e6566bd68"
+      }
+    },
+    {
+      "name": "Netstack3 UDP socket identity consolidation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "4ccfe9e3c10662b8dea3ccbf020553ebfa179ff3"
+      }
+    },
+    {
+      "name": "Netstack3 TCP handshake-status ownership migration",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "40ce8a08f2ffa1e9babc8e5b6aaa14cf486c0c6d"
+      }
+    },
+    {
+      "name": "Netstack3 multicast-forwarding state design",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "1e9fb101ed58968f5b4cf0b67a439f8cb0479b9d"
+      }
+    },
+    {
+      "name": "Netstack3 2026 resource-reference and socket-destruction implementation",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "09c560576ca357ffc0853c6251048af2a61b1543"
+      }
+    },
+    {
+      "name": "Selected observed Fuchsia main source snapshot",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "branch": "main",
+        "revision": "955de750a2aae45faa99e02e29715b794dd3b544"
+      }
+    },
+    {
+      "name": "Netstack3 metadata-splitting source change",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "76ab45a89c9f0ccc6e0bef3867a9ffcc775f8e10"
+      }
+    }
+  ],
+  "observed_at": "2026-09-30"
+}

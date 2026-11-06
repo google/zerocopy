@@ -1,0 +1,42 @@
+[
+  {
+    "repository": "docker/cli",
+    "revision": "9d7ad9ff180b43ae5577d048a7bac1159ce7bacf",
+    "path": "cli/command/container/cp.go",
+    "region": "copyFromContainer stdout branch; copyToContainer CopyUIDGID (line 462)",
+    "saved_body_sha256": "538ef4d861908bf079031a763aacca0d44ad0253c44143374a1fd3806468aedf",
+    "saved_bytes": 15597,
+    "url": "https://github.com/docker/cli/blob/9d7ad9ff180b43ae5577d048a7bac1159ce7bacf/cli/command/container/cp.go",
+    "qualification": "Saved retrieved body; original retrieval transport may add final newline. Source is not executable attestation."
+  },
+  {
+    "repository": "moby/moby",
+    "revision": "daa0cb7f23594cdbcce5002e370027d3fd36ffd7",
+    "path": "daemon/archive_unix.go",
+    "region": "lines 134-140",
+    "saved_body_sha256": "351e6b177601b2406394fe5df3ea74e37172323ab584457e8409a574eca979cd",
+    "saved_bytes": 5213,
+    "url": "https://github.com/moby/moby/blob/daa0cb7f23594cdbcce5002e370027d3fd36ffd7/daemon/archive_unix.go",
+    "qualification": "Saved retrieved body; original retrieval transport may add final newline. Source is not executable attestation."
+  },
+  {
+    "repository": "moby/moby",
+    "revision": "daa0cb7f23594cdbcce5002e370027d3fd36ffd7",
+    "path": "daemon/archive_tarcopyoptions.go",
+    "region": "defaultTarCopyOptions",
+    "saved_body_sha256": "ea15823322a187483080295f9ac6ecf5f283f54cedcb1d70805ed17285ed47d3",
+    "saved_bytes": 389,
+    "url": "https://github.com/moby/moby/blob/daa0cb7f23594cdbcce5002e370027d3fd36ffd7/daemon/archive_tarcopyoptions.go",
+    "qualification": "Saved retrieved body; original retrieval transport may add final newline. Source is not executable attestation."
+  },
+  {
+    "repository": "moby/moby",
+    "revision": "daa0cb7f23594cdbcce5002e370027d3fd36ffd7",
+    "path": "daemon/archive_tarcopyoptions_unix.go",
+    "region": "tarCopyOptions, lines 17-30",
+    "saved_body_sha256": "81c34419de2e5c532440200f855ca6c5b6391e8443304b24df0a1c9bf3438956",
+    "saved_bytes": 4128,
+    "url": "https://github.com/moby/moby/blob/daa0cb7f23594cdbcce5002e370027d3fd36ffd7/daemon/archive_tarcopyoptions_unix.go",
+    "qualification": "Saved retrieved body; original retrieval transport may add final newline. Source is not executable attestation."
+  }
+]

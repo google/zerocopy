@@ -1,0 +1,24 @@
+{
+  "pid": 59820,
+  "pgid": 59820,
+  "launch_start_unix_ns": 1792028148413276000,
+  "pid_persisted_unix_ns": 1792028148445842000,
+  "argv": [
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+    "${WORKSPACE}/work/execution/abi-witness/subjects.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "--crate-type=lib",
+    "--crate-name=abi_subjects",
+    "--target=x86_64-pc-windows-msvc",
+    "-Copt-level=2",
+    "-Cpanic=abort",
+    "-Ctarget-cpu=x86-64",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "--emit=llvm-ir,asm,obj",
+    "--out-dir",
+    "${WORKSPACE}/work/execution/abi-witness/stage5/windows-codegen/subjects-opt2-01"
+  ]
+}

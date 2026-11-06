@@ -1,0 +1,12 @@
+opam-version: "2.0"
+name: "base-bytes"
+version: "base"
+synopsis: "Bytes library distributed with the OCaml compiler"
+maintainer: " "
+authors: " "
+homepage: " "
+depends: [
+  "ocaml" {>= "4.02.0"}
+  "ocamlfind" {>= "1.5.3"}
+]
+x-maintained: true

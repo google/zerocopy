@@ -1,0 +1,46 @@
+opam-version: "2.0"
+name: "sail_c_backend"
+version: "0.17"
+synopsis: "Sail to C translation"
+maintainer: "Sail Devs <cl-sail-dev@lists.cam.ac.uk>"
+authors: [
+  "Alasdair Armstrong"
+  "Thomas Bauereiss"
+  "Brian Campbell"
+  "Shaked Flur"
+  "Jonathan French"
+  "Kathy Gray"
+  "Robert Norton"
+  "Christopher Pulte"
+  "Peter Sewell"
+  "Mark Wassell"
+]
+license: "BSD-2-Clause"
+homepage: "https://github.com/rems-project/sail"
+bug-reports: "https://github.com/rems-project/sail/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "libsail" {= version}
+  "odoc" {with-doc}
+]
+build: [
+  ["dune" "subst"] {dev}
+  [
+    "dune"
+    "build"
+    "-p"
+    name
+    "-j"
+    jobs
+    "--promote-install-files=false"
+    "@install"
+    "@runtest" {with-test}
+    "@doc" {with-doc}
+  ]
+  ["dune" "install" "-p" name "--create-install-files" name]
+]
+dev-repo: "git+https://github.com/rems-project/sail.git"
+url {
+  src:
+    "git+https://github.com/rems-project/sail.git#b14f649845db850b3673696e2aa90565fa2a60ef"
+}

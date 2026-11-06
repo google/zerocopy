@@ -1,0 +1,27 @@
+{
+  "label": "final-tool-and-process-state",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "uname -sm; for n in rocq rocqchk ocamlc dune; do p=$(command -v \"$n\") || exit 2; sha256sum \"$p\"; done; ps -eo pid,ppid,etime,args; du -sb ."
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.24,
+  "stdout_bytes": 736,
+  "stderr_bytes": 45,
+  "stdout_sha256": "6057fe71021715e7b7f28a84a44ce2cec31ad879fcc0509a20a5e758a0635177",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

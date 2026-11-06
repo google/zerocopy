@@ -1,0 +1,4 @@
+inventory_id,cohort,report_json,report_md
+R571,Tock 78862168 + Asterinas a5238eb6,reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.json,reports/tock-asterinas-safe-interface-boundaries-2015-2026/REPORT.md
+R572,Tock eaae5cbf + Asterinas a5238eb6,reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.json,reports/tock-asterinas-safe-interface-boundaries-2017-2026/REPORT.md
+R573,Tock 78862168 + Asterinas 0.18.1 a5238eb6,reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.json,reports/tock-asterinas-trusted-mechanism-boundaries-2017-2026/REPORT.md

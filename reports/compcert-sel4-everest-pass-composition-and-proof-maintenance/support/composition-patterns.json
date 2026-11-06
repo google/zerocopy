@@ -1,0 +1,63 @@
+{
+  "schema": "anneal-reference/composition-patterns/v1",
+  "subject": "verified compiler-pass composition techniques",
+  "patterns": [
+    {
+      "pattern": "directly verified pass",
+      "producer": "pass correctness theorem",
+      "accepted_interface": "semantic simulation/refinement from input language to output language",
+      "failure_semantics": "successful transformed output must satisfy theorem premises; compiler may return Error",
+      "composition_requirement": "relation and side conditions must match a generic composition theorem"
+    },
+    {
+      "pattern": "disabled optional pass",
+      "producer": "identity relation",
+      "accepted_interface": "forward simulation of semantics with itself",
+      "failure_semantics": "not applicable",
+      "composition_requirement": "identity must inhabit the same simulation interface as enabled-pass correctness"
+    },
+    {
+      "pattern": "verified validator around unverified pass",
+      "producer": "proved validator plus fail-closed wrapper",
+      "accepted_interface": "validator acceptance implies required source/target semantic relation",
+      "failure_semantics": "transformer error or validator rejection becomes Error",
+      "composition_requirement": "accepted relation must be the relation expected by adjacent verified stages"
+    },
+    {
+      "pattern": "forward-simulation vertical composition",
+      "producer": "CompCert compose_forward_simulations",
+      "accepted_interface": "L1→L2 forward simulation and L2→L3 forward simulation",
+      "failure_semantics": "not a compiler operation; proof composition only",
+      "composition_requirement": "intermediate semantics shared; stuttering measures combined by a well-founded lexicographic order"
+    },
+    {
+      "pattern": "forward-to-backward conversion",
+      "producer": "CompCert forward_to_backward_simulation",
+      "accepted_interface": "forward simulation",
+      "failure_semantics": "not a compiler operation; proof conversion only",
+      "composition_requirement": "source receptive and target determinate"
+    },
+    {
+      "pattern": "backward-simulation vertical composition",
+      "producer": "CompCert compose_backward_simulation",
+      "accepted_interface": "L1→L2 and L2→L3 backward simulations",
+      "failure_semantics": "not a compiler operation; proof composition only",
+      "composition_requirement": "target L3 has single-event steps under CompCert's theorem"
+    },
+    {
+      "pattern": "separate compilation plus linking",
+      "producer": "CompCert separate_transf_c_program_correct",
+      "accepted_interface": "per-unit successful compilation plus source linking",
+      "failure_semantics": "the theorem applies only under successful per-unit compilation and linking premises",
+      "composition_requirement": "linking must preserve the program relation in addition to per-pass compiler correctness"
+    }
+  ],
+  "anneal_review_questions": [
+    "What semantic relation does each translation boundary establish?",
+    "Does the next boundary consume that exact relation or require a justified bridge?",
+    "Which observations—UB, effects, divergence, panic, provenance, source correspondence—are represented by the relation?",
+    "What side conditions are required to compose or change proof direction?",
+    "Does inability to establish a relation prevent ordinary success or become an explicit trusted assumption?",
+    "Are horizontal abstraction/linking obligations being confused with vertical translation-pass obligations?"
+  ]
+}

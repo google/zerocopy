@@ -1,0 +1,50 @@
+{
+  "repository": "prusti/prusti",
+  "revision": "0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2",
+  "tree": "8dcaba5db84055ce2a838b15a75e4e2fea318559",
+  "date": "2024-03-26T13:08:03Z",
+  "files": [
+    {
+      "path": "README.md",
+      "git_blob_sha": "4c4e79a097b4bd39350c75f90265d28e36b3e96c",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/README.md",
+      "lines": 84
+    },
+    {
+      "path": "rust-toolchain",
+      "git_blob_sha": "4439ba166b46030ac3a6dc5b66a0ef16836e8d6b",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/rust-toolchain",
+      "lines": 5
+    },
+    {
+      "path": "docs/user-guide/src/verify/trusted.md",
+      "git_blob_sha": "4de08b1b7b80c5c3f3dd82a0b9a8c18976bf96cd",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/docs/user-guide/src/verify/trusted.md",
+      "lines": 39
+    },
+    {
+      "path": "docs/user-guide/src/verify/pledge.md",
+      "git_blob_sha": "2cd52a9bfbf981482548b53f12011740ad5fbb6f",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/docs/user-guide/src/verify/pledge.md",
+      "lines": 62
+    },
+    {
+      "path": "prusti-viper/src/encoder/foldunfold/process_expire_borrows.rs",
+      "git_blob_sha": "dd8d2d44fc2e8ce2de8cb13da0524f2d8cca1745",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/foldunfold/process_expire_borrows.rs",
+      "lines": 599
+    },
+    {
+      "path": "prusti-viper/src/encoder/mir/contracts/contracts.rs",
+      "git_blob_sha": "58992cefe9bb0a28493b4230aef48dafbb1ffe98",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/mir/contracts/contracts.rs",
+      "lines": 246
+    },
+    {
+      "path": "prusti-viper/src/encoder/high/procedures/inference/permission.rs",
+      "git_blob_sha": "31c88f8379f244e3d091661fe00b5785e5a18663",
+      "url": "https://github.com/prusti/prusti/blob/0d4a8d497ac1e540d48ef50a031d53b4e3ae36e2/prusti-viper/src/encoder/high/procedures/inference/permission.rs",
+      "lines": 47
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "lean/tactics",
+    "lean/mechanization",
+    "verification/survey"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "leanprover/cslib",
+      "identity": {
+        "repository": "leanprover/cslib",
+        "revision": "82db31eec215b6843be6df283304cc02e736ddef"
+      }
+    },
+    {
+      "name": "stagiralabs/VerifiedAgora",
+      "identity": {
+        "repository": "stagiralabs/VerifiedAgora",
+        "revision": "9703b9597dd37d6ec4845fc5d0480132e3db8054"
+      }
+    },
+    {
+      "name": "leanprover-community/aesop",
+      "identity": {
+        "repository": "leanprover-community/aesop",
+        "version": "v4.30.0-rc2",
+        "revision": "f6fb2a3bfdc8fa0dbdbeb9fb8cdbfeb3dbbbba85",
+        "v4_34_1_port_sha256": "bf9724fd2657c9c264011ffdd060f47b27fcdf08c55c064011c52a16758c9b8f"
+      }
+    },
+    {
+      "name": "leanprover-community/duper",
+      "identity": {
+        "repository": "leanprover-community/duper",
+        "version": "v0.0.29",
+        "revision": "ac313ef93ba04d987e4bc6debcab7e7ccdbef54c",
+        "v4_34_1_port_sha256": "be82522d9f864af48b2d56e9898791867dbda169d0db45c7d09bd1de7e7463bd"
+      }
+    },
+    {
+      "name": "leanprover-community/lean-auto",
+      "identity": {
+        "repository": "leanprover-community/lean-auto",
+        "version": "v0.0.30",
+        "revision": "9f6326fc6238a85287ab4f57ffbb6a8acfc8bd3b"
+      }
+    },
+    {
+      "name": "leanprover-community/batteries",
+      "identity": {
+        "repository": "leanprover-community/batteries",
+        "version": "v4.30.0-rc2",
+        "revision": "9eed7ac0ab0dcbb4d3ecbc0edbf32f6eb4c1cc34"
+      }
+    },
+    {
+      "name": "leanprover-community/mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "version": "v4.30.0-rc2",
+        "revision": "c2a9b1b9d72b11e6fb80c8cb6c218d0d60dd94b0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

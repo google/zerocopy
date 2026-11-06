@@ -1,0 +1,68 @@
+{
+  "observer_sha256_before_after": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+  "observer_bytes": 1106664,
+  "mode_octal": "0o755",
+  "symlink": false,
+  "actual_RPATHs": [
+    "@loader_path/../toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib"
+  ],
+  "dependencies": [
+    {
+      "dependency": "@rpath/librustc_driver-16d1e96e5b674978.dylib",
+      "resolved": {
+        "path": "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+        "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+        "bytes": 202329432,
+        "symlink": false
+      }
+    },
+    {
+      "dependency": "/usr/lib/libSystem.B.dylib",
+      "scope": "OS/shared-cache runtime trust; not a standalone hash or dependency-closure theorem."
+    },
+    {
+      "dependency": "/usr/lib/libobjc.A.dylib",
+      "scope": "OS/shared-cache runtime trust; not a standalone hash or dependency-closure theorem."
+    },
+    {
+      "dependency": "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "scope": "OS/shared-cache runtime trust; not a standalone hash or dependency-closure theorem."
+    },
+    {
+      "dependency": "/usr/lib/libz.1.dylib",
+      "scope": "OS/shared-cache runtime trust; not a standalone hash or dependency-closure theorem."
+    },
+    {
+      "dependency": "/usr/lib/libc++.1.dylib",
+      "scope": "OS/shared-cache runtime trust; not a standalone hash or dependency-closure theorem."
+    },
+    {
+      "dependency": "/usr/lib/libiconv.2.dylib",
+      "scope": "OS/shared-cache runtime trust; not a standalone hash or dependency-closure theorem."
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/otool",
+        "-L",
+        "${WORKSPACE}/work/execution/abi-witness/observer-v3"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "375f8f97625c3104555c6a78e778ace6aff2c1128b6ba1ac8a727f9436264af8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/usr/bin/otool",
+        "-l",
+        "${WORKSPACE}/work/execution/abi-witness/observer-v3"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "8a608b9f1ed65a8491daa71e0d773fa94df0acf1e1dd60a7782ca660fbe9d511",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "observer_invocations": 0,
+  "meaning": "Read-only actual new Mach-O binding and driver file identity; OS runtime trust remains."
+}

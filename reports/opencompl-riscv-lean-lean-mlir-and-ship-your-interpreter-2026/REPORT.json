@@ -1,15 +1,11 @@
 {
   "topics": [
-    "riscv64",
-    "isa-semantics",
-    "sail",
-    "lean4",
-    "mlir",
-    "bitvec",
-    "elf-verification",
-    "compiler-verification",
-    "refinement",
-    "trusted-computing-base"
+    "isa",
+    "isa/riscv64",
+    "isa/sail",
+    "isa/elf-relocations",
+    "lean/mechanization",
+    "verification/refinement"
   ],
   "subjects": [
     {
@@ -82,14 +78,6 @@
         "url": "https://github.com/joshlf/anneal-private",
         "role": "comparison",
         "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json)."
-      }
-    },
-    {
-      "name": "lean",
-      "identity": {
-        "kind": "tool",
-        "version": "4.34.1",
-        "summary": "Lean 4 theorem prover (commit 5045d0056413266e57c625dcd7c365b10e377c52, x86_64-unknown-linux-gnu) used to verify support/two_tier_isa_dialect_and_elf_refinement_probe.lean under -j1 -M768."
       }
     }
   ],

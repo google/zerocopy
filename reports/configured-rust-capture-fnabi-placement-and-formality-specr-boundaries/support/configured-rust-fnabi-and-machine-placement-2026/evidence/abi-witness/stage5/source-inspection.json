@@ -1,0 +1,102 @@
+{
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "scope": "Read-only actual installed compiler source inspection; no Windows query/compiler launch",
+  "items": [
+    {
+      "path": "compiler/rustc_codegen_llvm/src/abi.rs",
+      "sha256": "24181cc0088b2e4b64e7887b9a9ad29f413712993a8028faa9818098edd2c0f7",
+      "line_ranges": [
+        [
+          38,
+          107
+        ],
+        [
+          350,
+          429
+        ]
+      ],
+      "finding": "ABI-affecting extension/alignment/InReg vs opt-only attributes; Indirect return adds LLVM pointer; Pair splits; variadic function type includes only fixed_count."
+    },
+    {
+      "path": "compiler/rustc_target/src/callconv/aarch64.rs",
+      "sha256": "8270daa7cf61bb13e20143167506bb13c9c928e417fe03915266a8f20f2ae658",
+      "line_ranges": [
+        [
+          1,
+          44
+        ],
+        [
+          83,
+          185
+        ]
+      ],
+      "finding": "DarwinPCS classification extends narrow integers, casts <=128-bit aggregate/HFA/consecutive units or makes indirect; not a physical-register allocator."
+    },
+    {
+      "path": "compiler/rustc_target/src/callconv/x86_win64.rs",
+      "sha256": "04a4ec39681264eac8315054f420a724be377965cd24dfa2e23e1754f110bfba",
+      "line_ranges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "finding": "Windows ABI classification of aggregate sizes8/16/32/64bits versus indirect; scalar integer extension; no direct proof of stack/register/shadow-space placement."
+    },
+    {
+      "path": "compiler/rustc_target/src/spec/targets/x86_64_pc_windows_msvc.rs",
+      "sha256": "5c0d4b8ea129afb1b40f28a0d01acdfab0470ab08a2ec1c603fb5add73fc6584",
+      "line_ranges": [
+        [
+          1,
+          25
+        ]
+      ],
+      "finding": "Built-in targetCPUx86-64, basefeatures+cmpxchg16b,+sse3,+lahfsahf and little-endian64bit datalayout. Empty command feature override does not mean no baselinefeatures."
+    },
+    {
+      "path": "compiler/rustc_target/src/spec/base/windows_msvc.rs",
+      "sha256": "8a7b0ed7b6962fc8c34915105af706c26a87ab6a57838742d846592fad11e125",
+      "line_ranges": [
+        [
+          1,
+          38
+        ]
+      ],
+      "finding": "Windows/MSVC target family and requires_uwtable; compile-only observation will not establish unwinding interoperability."
+    },
+    {
+      "path": "compiler/rustc_driver_impl/src/lib.rs",
+      "sha256": "3846a029d9484ef7d954a35766c36f257fa97e22f91ea2dfc68777fd1a53804a",
+      "line_ranges": [
+        [
+          326,
+          343
+        ]
+      ],
+      "finding": "after_analysis Stop skips codegen and report_unused_features."
+    },
+    {
+      "path": "compiler/rustc_middle/src/ty/context.rs",
+      "sha256": "d4b1400c87a881bfda793120a504bafef3f78a39de1f071fb47a1323701567a8",
+      "line_ranges": [
+        [
+          1649,
+          1684
+        ]
+      ],
+      "finding": "Unused enabled-feature diagnostic after codegen."
+    },
+    {
+      "path": "compiler/rustc_interface/src/util.rs",
+      "sha256": "d1884a515aead465a9391dea65ef555b09faa432ca6d79e661766ae46f8dca3d",
+      "line_ranges": [
+        [
+          329,
+          361
+        ]
+      ],
+      "finding": "Default source dispatch to compiled LLVM constructor with no reviewed backend override; source-to-driver correspondence remains trusted."
+    }
+  ]
+}

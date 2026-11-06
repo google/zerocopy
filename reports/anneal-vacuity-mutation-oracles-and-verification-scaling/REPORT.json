@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/autoformalization",
+    "anneal/canary-theorems",
+    "anneal/integration-tests",
+    "anneal/mutation-testing",
+    "anneal/negative-attribution",
+    "anneal/refinement",
+    "anneal/vacuity",
+    "lean/kernel-scaling",
+    "lean/step-result",
+    "lean/verification"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification architecture and repository baseline",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Anneal design and trust boundary specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

@@ -1,0 +1,434 @@
+{
+  "status": "PASS",
+  "case_count": 54,
+  "outcomes": {
+    "pass": 9,
+    "reject": 43,
+    "CLI-reject": 2
+  },
+  "observer_or_compiler_invocations": 0,
+  "meaning": "Synthetic schema/comparison and immutable preflight controls only. No invented ABI data was claimed as actual captured or accepted compiler evidence. Fresh-capture consumer mode remains unexecuted.",
+  "sources_sha256": {
+    "e33_data_v3.py": "b9246631d37955add31da62f891eb9d0e0ec201a8a532ca3ccf385f8bced6018",
+    "e33_consumer_v3.py": "c0c476f3fe9e1497f4484b4de4c493194cd82d2fd93f5853fbfd7241f7aeb6da",
+    "test_pure_data_v3.py": "017721dc7d879c1ff67868dece1538dfc9f614f0e91535fa70c94566ab82e246"
+  },
+  "results": [
+    {
+      "id": "synthetic-equality-host-subjects-opt0",
+      "kind": "synthetic grammar/equality only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-equality-host-subjects-opt2",
+      "kind": "synthetic grammar/equality only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-equality-host-vectors-opt0",
+      "kind": "synthetic grammar/equality only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-equality-host-vectors-opt2",
+      "kind": "synthetic grammar/equality only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "producer-request-substitution",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "object closed keys: ['schema', 'crate_name', 'target_spec_debug', 'target_triple_debug', 'target_cpu', 'target_features', 'opt_level', 'incremental_enabled', 'effective_cfg', 'source_files', 'external_crates', 'selected', 'trust_frontier']",
+      "candidate_sha256": "18e574a89342f93632290aec838ebaad47e0348924bcd91c1f52bbb391a1ab9f"
+    },
+    {
+      "id": "wrong-target",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "selected built-in target",
+      "candidate_sha256": "be660dbdbec27104290ca6760ed6e742c3ca2119cedcb8d6e00ca792a9111c8e"
+    },
+    {
+      "id": "wrong-CPU",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "selected CPU",
+      "candidate_sha256": "bc24a8b1a20c0f7e6bb931378c9f856280a7e3abcd002731856dbb4e9b0402d6"
+    },
+    {
+      "id": "wrong-options",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "selected optimization",
+      "candidate_sha256": "2606c100529c3d14257e1fe69e2266cba87ecce3717af7fea7535da43aca00d1"
+    },
+    {
+      "id": "source-byte-substitution",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "compiler source content binding",
+      "candidate_sha256": "914c9fc4297a012e3cb3c70048614cb174a0f3fd002e03700e42b3980487339c"
+    },
+    {
+      "id": "source-path-substitution",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "compiler source path binding",
+      "candidate_sha256": "c222ef7fb947f67b9f3fc6391ea5125ba6e069413e67d610d44c1429dedba319"
+    },
+    {
+      "id": "omitted-selection",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete selected request set",
+      "candidate_sha256": "abfcd88de0890b4044b43c11e56aacee91ce8c38745bd36120b36c5477728526"
+    },
+    {
+      "id": "reordered-root",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "consumer selected root/instance/extras",
+      "candidate_sha256": "99cfa818976c4377e197b2758fa7f93ef77f41742e9a5289d3e1e2a5e789dd02"
+    },
+    {
+      "id": "wrong-instance",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "consumer selected root/instance/extras",
+      "candidate_sha256": "6a95e870195785b1f5ee7c85d02a6c4af035ac84663a5f1001f2ba19e61b4190"
+    },
+    {
+      "id": "wrong-resolved-root",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "resolved definition binding",
+      "candidate_sha256": "b490151653d90fadf04d6a7619d1271b039650ff13d4ba2c57a3dd1ef1e9b6d2"
+    },
+    {
+      "id": "wrong-attribute-bits",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "ea1a2c2e21ce499a046de246f79f59f05980b874247abcd682c17c5061d8e42c"
+    },
+    {
+      "id": "wrong-pointee-size",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "eec5735651081557c0d6d5efde700cf0a7b7b7b6772f7c9206ffa97e1adfa403"
+    },
+    {
+      "id": "wrong-extension",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "468e7c03b57ca47bef76c4b9cb5fc45e9399041cbf9dcf8eea03ef824384ba00"
+    },
+    {
+      "id": "wrong-return-mode",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "e5d2f2aee21d7a6a80f5657513711f91f736cf87e9e7c3920bafbc49f4260eed"
+    },
+    {
+      "id": "omitted-argument",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "fixed count cannot exceed emitted ABI arguments",
+      "candidate_sha256": "bb2ec4d8ce201d7e9cc01456327e23ed37d0449a3505178296a0032b98abe933"
+    },
+    {
+      "id": "wrong-fixed-count",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "3d0fe8a163951e9b697c18695c2cd753ac6c981c839073cea99bc739a8b2fb6b"
+    },
+    {
+      "id": "wrong-unwind",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "31c67f13a332ed3000b293bb1dd4664ea38888add968878ab9f338e2dc33a2a3"
+    },
+    {
+      "id": "opaque-layout-difference",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "complete observation mismatch",
+      "candidate_sha256": "898dbde2b875c47d28275689911b39edb633724f4c40d5e7e5718f9313fccda5"
+    },
+    {
+      "id": "unknown-nested-key",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "object closed keys: ['size_bytes', 'abi_align_bytes', 'unadjusted_abi_align_bytes', 'max_repr_align_bytes', 'uninhabited', 'backend_repr', 'field_offsets_bytes', 'fields_debug', 'variants_debug', 'largest_niche_debug', 'full_layout_debug']",
+      "candidate_sha256": "b199147245ec6f9926d64ceac994bf208e805c0dde458292d30d18cff7c92339"
+    },
+    {
+      "id": "unknown-mode",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "passing mode outside grammar",
+      "candidate_sha256": "1b09be08fbc81ee4e238727662404a7306555fa88dbb465a37c5db5990708738"
+    },
+    {
+      "id": "bool-as-integer",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "bounded unsigned integer",
+      "candidate_sha256": "a2d6b82dfe714c35c0dc32984bd3c3c9523a1b48f4246f2782069d61abdff9d3"
+    },
+    {
+      "id": "wrong-alignment-grammar",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "power-of-two alignment",
+      "candidate_sha256": "9cc4f713d8c7a132e119a03a1fcf61f390b9ab4dcc9fc8961612f25be5f293eb"
+    },
+    {
+      "id": "u128-range-overflow",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "u128 bound",
+      "candidate_sha256": "a8b2a1c8c833544ee4e6d870f663e5a0221e13282a6bccf2d7887985bbac2d9d"
+    },
+    {
+      "id": "non-ASCII-range",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "canonical unsigned decimal",
+      "candidate_sha256": "03f48bebea5fce88cd65f3c51f016ef550515d0a3deb12ee1d32ed751e652f58"
+    },
+    {
+      "id": "leading-zero-range",
+      "kind": "synthetic candidate mutation",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "canonical unsigned decimal",
+      "candidate_sha256": "341f20e4ee743c599f84f286d41dd5c7c62550b9b0ab50bbf223268dbebbb121"
+    },
+    {
+      "id": "duplicate-key",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "duplicate key",
+      "input_sha256": "272cd2c973af66eec32f5b6f1b8e1f5fc204f4862b990de97302596561678b63"
+    },
+    {
+      "id": "nested-duplicate",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "duplicate key",
+      "input_sha256": "06d55db68c2ab40693c6dbd8e3d358b352a269731d9ead4defe3e067a6eb6af7"
+    },
+    {
+      "id": "invalid-UTF8",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "invalid UTF8",
+      "input_sha256": "a8100ae6aa1940d0b663bb31cd466142ebbdbd5187131b92d93818987832eb89"
+    },
+    {
+      "id": "depth-limit",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "nesting limit",
+      "input_sha256": "2574b71c86249bc36bf15157b4883f41da049924b6ddd4477f68af56d73d76b2"
+    },
+    {
+      "id": "byte-limit",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "input byte limit/type",
+      "input_sha256": "2650f5452459081abf6602c1620ef8c809a8a1887a2f4692369575bd10ea2b85"
+    },
+    {
+      "id": "integer-token-limit",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "integer token limit",
+      "input_sha256": "7f67ec6536b731190cfff2023600868a2f53bde43af1ce061e5a703c24f6227f"
+    },
+    {
+      "id": "float-token",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "floating/NaN/infinite JSON tokens outside grammar",
+      "input_sha256": "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7"
+    },
+    {
+      "id": "NaN-token",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "floating/NaN/infinite JSON tokens outside grammar",
+      "input_sha256": "d5b592c05dc25b5032553f1b27f4139be95e881f73db33b02b05ab20c3f9981e"
+    },
+    {
+      "id": "infinity-token",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "floating/NaN/infinite JSON tokens outside grammar",
+      "input_sha256": "d0067cad9a63e0813759a2bb841051ca73570c0da2e08e840a8eb45db6a7a010"
+    },
+    {
+      "id": "truncated",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "malformed JSON",
+      "input_sha256": "aced72cfd547c2dd97712b69b63ce653b7f867ca39c8f5d41723047bebb6a901"
+    },
+    {
+      "id": "suffix",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "malformed JSON",
+      "input_sha256": "7eb696333c2056fc29f5ea0fc0bf61f752b9ff448a3ede876068fc543e7914c4"
+    },
+    {
+      "id": "empty",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "malformed JSON",
+      "input_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "UTF8-BOM",
+      "kind": "strict parser",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "malformed JSON",
+      "input_sha256": "aa25e978046d680ef8740d837e6de5bc1e2a2dc6089dbda1012544b538d53f65"
+    },
+    {
+      "id": "unknown-consumer-profile",
+      "kind": "fixed caller preflight",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "unknown consumer request"
+    },
+    {
+      "id": "modified-authority-preflight",
+      "kind": "fixed caller preflight",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "consumer authority digest"
+    },
+    {
+      "id": "modified-catalog-preflight",
+      "kind": "fixed caller preflight",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "historical input changed"
+    },
+    {
+      "id": "modified-source-preflight",
+      "kind": "fixed caller preflight",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "historical input changed"
+    },
+    {
+      "id": "modified-selectors-preflight",
+      "kind": "fixed caller preflight",
+      "expected": "reject",
+      "observed": "reject",
+      "reason": "historical input changed"
+    },
+    {
+      "id": "synthetic-mode-grammar-0",
+      "kind": "synthetic grammar branch only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-mode-grammar-1",
+      "kind": "synthetic grammar branch only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-mode-grammar-2",
+      "kind": "synthetic grammar branch only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-mode-grammar-3",
+      "kind": "synthetic grammar branch only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "synthetic-nonvariadic-extra-hidden-shape",
+      "kind": "synthetic grammar branch only",
+      "expected": "pass",
+      "observed": "pass",
+      "reason": null
+    },
+    {
+      "id": "unknown-CLI-flag",
+      "kind": "CLI grammar; no observer call",
+      "expected": "CLI-reject",
+      "observed": "CLI-reject",
+      "reason": "2"
+    },
+    {
+      "id": "abbreviated-CLI-flag",
+      "kind": "CLI grammar; no observer call",
+      "expected": "CLI-reject",
+      "observed": "CLI-reject",
+      "reason": "2"
+    }
+  ]
+}

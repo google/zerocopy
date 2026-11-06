@@ -1,0 +1,198 @@
+[
+    {
+        "Id": "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+        "Created": "2026-10-15T14:45:05.936785671Z",
+        "Path": "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sleep",
+        "Args": [
+            "infinity"
+        ],
+        "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-10-15T14:45:06.07488244Z",
+            "FinishedAt": "2026-10-15T15:39:13.627977017Z"
+        },
+        "Image": "sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "ResolvConfPath": "/var/lib/docker/containers/5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5/hostname",
+        "HostsPath": "/var/lib/docker/containers/5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5/hosts",
+        "LogPath": "/var/lib/docker/containers/5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5/5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5-json.log",
+        "Name": "/anneal-jasmin-eval-20261015",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {
+                    "max-file": "5",
+                    "max-size": "20m"
+                }
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": [
+                "no-new-privileges"
+            ],
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 8409579520,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 12884901888,
+            "NanoCpus": 2000000000,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 12884901888,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": 512,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/acpi",
+                "/proc/asound",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/sys/devices/virtual/powercap",
+                "/sys/firmware"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "Storage": {
+            "RootFS": {
+                "Snapshot": {
+                    "Name": "overlayfs"
+                }
+            }
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "5444ba00b867",
+            "Domainname": "",
+            "User": "0:0",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "NIX_CONF_DIR=/work/config",
+                "NIX_USER_CONF_FILES=/dev/null",
+                "NIX_CONFIG=experimental-features = nix-command\nallow-import-from-derivation = false\nallow-unsafe-native-code-during-evaluation = false\naccept-flake-config = false\nmax-jobs = 0\ncores = 1\nbuilders =\nsandbox = true\nsubstituters = https://cache.nixos.org https://jasmin.cachix.org\ntrusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= jasmin.cachix.org-1:aA5r1ovq4HYKUa+8QHVvIP7K6Fi9L75b0SaN/sooWSY=\n",
+                "NIX_PATH=",
+                "NIX_REMOTE=local",
+                "USER=root",
+                "PATH=/root/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin",
+                "MANPATH=/root/.nix-profile/share/man:/nix/var/nix/profiles/default/share/man",
+                "SSL_CERT_FILE=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt",
+                "GIT_SSL_CAINFO=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt",
+                "NIX_SSL_CERT_FILE=/nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt"
+            ],
+            "Cmd": [
+                "/nix/store/j6xmasfc9kn1f8yhiy9mj46s9c3szzi8-coreutils-full-9.8/bin/sleep",
+                "infinity"
+            ],
+            "Image": "sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "Labels": {
+                "org.opencontainers.image.description": "Nix container image",
+                "org.opencontainers.image.source": "https://github.com/NixOS/nix",
+                "org.opencontainers.image.title": "Nix",
+                "org.opencontainers.image.vendor": "Nix project",
+                "org.opencontainers.image.version": "2.34.8"
+            }
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {}
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "digest": "sha256:71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+            "size": 14828,
+            "platform": {
+                "architecture": "arm64",
+                "os": "linux"
+            }
+        }
+    }
+]

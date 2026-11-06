@@ -1,0 +1,58 @@
+{
+  "schema": "anneal-reference/evidence-map/v1",
+  "question": "google/zerocopy#3732 J024",
+  "claims": [
+    {
+      "claim": "LCF concentrates theorem-construction authority in an abstract theorem type and trusted inference constructors; tactics and validations search and reconstruct without unrestricted theorem construction.",
+      "evidence": [
+        {
+          "role": "primary",
+          "source": "Gordon et al., POPL 1978",
+          "doi": "10.1145/512760.512773"
+        },
+        {
+          "role": "primary",
+          "source": "Edinburgh LCF, 1979",
+          "doi": "10.1007/3-540-09724-4"
+        },
+        {
+          "role": "primary",
+          "source": "Paulson, Logic and Computation, 1987",
+          "doi": "10.1017/CBO9780511526602.008"
+        }
+      ]
+    },
+    {
+      "claim": "An in-process theorem-construction invariant does not by itself establish durable artifact identity, freshness, or source/model correspondence.",
+      "evidence": [
+        {
+          "role": "reference",
+          "package": "lean-olean-format-identity-v4-30-0-rc2"
+        },
+        {
+          "role": "reference",
+          "package": "lean-module-import-semantics-v4-30-0-rc2"
+        },
+        {
+          "role": "reference",
+          "package": "tcb-accounting-patterns-verification-systems-2026-09-27"
+        }
+      ]
+    },
+    {
+      "claim": "Anneal can separate proposal/search authority, logical checking, correspondence/currentness, and publication authority.",
+      "evidence": [
+        {
+          "role": "derived",
+          "basis": "LCF authority structure + current Anneal principles/design + pinned reference artifact evidence"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "No executable reproduction was performed for LCF/HOL/Lean/Anneal.",
+    "Historical sources establish the LCF mechanism; modern-system transfer is derived analysis.",
+    "Existing reference packages are used only within their stated subjects.",
+    "No latency/storage benchmark chooses among recheck, trusted compiled artifacts, or recomputation."
+  ]
+}

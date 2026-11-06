@@ -1,0 +1,25 @@
+{
+  "label": "installed-switch-state",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-itree/iris-itree",
+    "--env",
+    "PATH=/home/opam/.opam/4.14/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "--env",
+    "OPAMROOT=/home/opam/.opam",
+    "--env",
+    "OPAM_SWITCH_PREFIX=/home/opam/.opam/4.14",
+    "anneal-formal-experiments-20261014",
+    "cat",
+    "/home/opam/.opam/4.14/.opam-switch/switch-state"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.082,
+  "stdout_bytes": 1855,
+  "stderr_bytes": 0,
+  "stdout_sha256": "80940b569072ba0b5b0556b7d68f1ee5ddc6e5ed27f7eaf1a6fd50da9ccb36e1",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

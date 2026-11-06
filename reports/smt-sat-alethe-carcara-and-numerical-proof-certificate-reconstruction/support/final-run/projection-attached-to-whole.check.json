@@ -1,0 +1,8 @@
+{
+  "tool": "carcara",
+  "exit": 1,
+  "timeout": false,
+  "elapsed_ns": 5053500,
+  "stdout_bytes": 8,
+  "stderr_bytes": 302
+}

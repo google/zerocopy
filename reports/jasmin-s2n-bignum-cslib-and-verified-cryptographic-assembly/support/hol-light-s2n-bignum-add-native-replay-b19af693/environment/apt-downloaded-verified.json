@@ -1,0 +1,182 @@
+[
+  {
+    "path": "/var/cache/apt/archives/libpython3.11-minimal_3.11.2-6+deb12u9_arm64.deb",
+    "sha256": "dd9847d2f77c5a924b1d3dd953b81f161db9374c94d03b9216191925350928c3",
+    "fields": {
+      "Package": "libpython3.11-minimal",
+      "Version": "3.11.2-6+deb12u9",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/python3.11-minimal_3.11.2-6+deb12u9_arm64.deb",
+    "sha256": "617855dbf3299e03873926c75d61feaf3d36924586aecc1951a0b965a95bc694",
+    "fields": {
+      "Package": "python3.11-minimal",
+      "Version": "3.11.2-6+deb12u9",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/python3-minimal_3.11.2-1+b1_arm64.deb",
+    "sha256": "f01c94963ace8a6fec59300427c95fc4ac204d752567dd2e4b36ee930755110f",
+    "fields": {
+      "Package": "python3-minimal",
+      "Version": "3.11.2-1+b1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/media-types_10.0.0_all.deb",
+    "sha256": "aaa46dcb3b39948ae2e0fdb72cfcb2f48c0b59f19785a3da8045c05eb19955dd",
+    "fields": {
+      "Package": "media-types",
+      "Version": "10.0.0",
+      "Architecture": "all"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpython3.11-stdlib_3.11.2-6+deb12u9_arm64.deb",
+    "sha256": "9937cbe3f647aa89a590fec647438ce02098c113d1c6f70e4cb1230c368d42a4",
+    "fields": {
+      "Package": "libpython3.11-stdlib",
+      "Version": "3.11.2-6+deb12u9",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/python3.11_3.11.2-6+deb12u9_arm64.deb",
+    "sha256": "f8d1726c2f5c61b42dbf7652cd9c01da23e55029e3c384a9f1802334fd964091",
+    "fields": {
+      "Package": "python3.11",
+      "Version": "3.11.2-6+deb12u9",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpython3-stdlib_3.11.2-1+b1_arm64.deb",
+    "sha256": "3ceea13a9d2eff6e850d47b4f03ebd0162acb2aa5646a84ccbe77783be104302",
+    "fields": {
+      "Package": "libpython3-stdlib",
+      "Version": "3.11.2-1+b1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/python3_3.11.2-1+b1_arm64.deb",
+    "sha256": "d31a6f8bdea49711f221baee0e27197c314d0cbe748c020262d32650aca5f017",
+    "fields": {
+      "Package": "python3",
+      "Version": "3.11.2-1+b1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libgmpxx4ldbl_2%3a6.2.1+dfsg1-1.1_arm64.deb",
+    "sha256": "0fba438311ded8f8b0f2c713f9156e9742b3e04a666a928fa3043a9d099e9839",
+    "fields": {
+      "Package": "libgmpxx4ldbl",
+      "Version": "2:6.2.1+dfsg1-1.1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libgmp-dev_2%3a6.2.1+dfsg1-1.1_arm64.deb",
+    "sha256": "dc63dc94971ab55e43988ded69c74f7de265b36f91ed9346c2560fbe12c2246f",
+    "fields": {
+      "Package": "libgmp-dev",
+      "Version": "2:6.2.1+dfsg1-1.1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpcre2-16-0_10.42-1+deb12u2_arm64.deb",
+    "sha256": "062da740176de14b90a18c6c4cc31d7684884518565065db2ba2398a49e57b65",
+    "fields": {
+      "Package": "libpcre2-16-0",
+      "Version": "10.42-1+deb12u2",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpcre2-32-0_10.42-1+deb12u2_arm64.deb",
+    "sha256": "72e282e8deeb54041d38966972a356c6a52d6aeccb10e8e49b658b9c0af06227",
+    "fields": {
+      "Package": "libpcre2-32-0",
+      "Version": "10.42-1+deb12u2",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpcre2-posix3_10.42-1+deb12u2_arm64.deb",
+    "sha256": "a0412dc30be0c2d866d3c9a0d4e5bdc7de6219ae2fdc6cd5e9bd594d9421f33b",
+    "fields": {
+      "Package": "libpcre2-posix3",
+      "Version": "10.42-1+deb12u2",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpcre2-dev_10.42-1+deb12u2_arm64.deb",
+    "sha256": "d7087f8bf0e833f99285567eaabb596cf49a355516026500580bf5a2e7353285",
+    "fields": {
+      "Package": "libpcre2-dev",
+      "Version": "10.42-1+deb12u2",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/libpkgconf3_1.8.1-1_arm64.deb",
+    "sha256": "8638db13be90ebceb2f3feb23780564f279b4e8b14b8b3000ad02c8ff27b1f02",
+    "fields": {
+      "Package": "libpkgconf3",
+      "Version": "1.8.1-1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/m4_1.4.19-3_arm64.deb",
+    "sha256": "54238d48d2b7b90c9146d156cfa0d80254c4892730c5b57fce8dee0747127228",
+    "fields": {
+      "Package": "m4",
+      "Version": "1.4.19-3",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/pkgconf-bin_1.8.1-1_arm64.deb",
+    "sha256": "6cd07c60b8d60978fa7e43d3b9d1d35e57c5750ea61d67fca451e145aaab8d1b",
+    "fields": {
+      "Package": "pkgconf-bin",
+      "Version": "1.8.1-1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/pkgconf_1.8.1-1_arm64.deb",
+    "sha256": "e51f35ecd6a544e072c758f060c7724344b513869b6514d1a493fa14429777b0",
+    "fields": {
+      "Package": "pkgconf",
+      "Version": "1.8.1-1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/pkg-config_1.8.1-1_arm64.deb",
+    "sha256": "9fa52c7b352fec0bfdb4cfb17f64bb17939207e04c88022635f43a8c9ad2fc11",
+    "fields": {
+      "Package": "pkg-config",
+      "Version": "1.8.1-1",
+      "Architecture": "arm64"
+    }
+  },
+  {
+    "path": "/var/cache/apt/archives/binutils-x86-64-linux-gnu_2.40-2_arm64.deb",
+    "sha256": "01db01c3506e3d135c1ee3156e8ec6717a31f1986b8187fdae0b3533243e0e25",
+    "fields": {
+      "Package": "binutils-x86-64-linux-gnu",
+      "Version": "2.40-2",
+      "Architecture": "arm64"
+    }
+  }
+]

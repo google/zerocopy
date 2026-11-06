@@ -1,0 +1,186 @@
+{
+  "topics": [
+    "anneal/mir-semantics",
+    "anneal/refinement-lattice",
+    "verification/separation-logic",
+    "verification/survey",
+    "rustc/mir"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy repository",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+      }
+    },
+    {
+      "name": "SMTCoq",
+      "identity": {
+        "repository": "smtcoq/smtcoq",
+        "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+      }
+    },
+    {
+      "name": "Carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "LFSC checker",
+      "identity": {
+        "repository": "cvc5/LFSC",
+        "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+      }
+    },
+    {
+      "name": "VeriFast source",
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      }
+    },
+    {
+      "name": "Verus source",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "Creusot source",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "VeriFast foundational preprint v1",
+      "identity": {
+        "arxiv": "2601.13727v1",
+        "sha256": "db6fafe5642384c302868138529796c28a4a90eb6c944ecead089a6b85060fc6",
+        "url": "https://arxiv.org/pdf/2601.13727v1"
+      }
+    },
+    {
+      "name": "Corten versioned paper",
+      "identity": {
+        "arxiv": "2609.04372v1"
+      }
+    },
+    {
+      "name": "Rust core API contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Kani source",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "9461e07af7ec929f050aa4192f29363c9be07779"
+      }
+    },
+    {
+      "name": "Crux-MIR and Crucible source",
+      "identity": {
+        "repository": "GaloisInc/crucible",
+        "revision": "7f49dac06c656f7b92c8b6cc054f47c63b60abe4"
+      }
+    },
+    {
+      "name": "Soteria PLDI 2026 source artifact",
+      "identity": {
+        "zenodo": "19080425",
+        "archive": "soteria-pldi26-artifact.zip",
+        "sha256": "dc956d43369582e4a7dcecd25b2086a5c426686380965e02fcbd77920ae7c2b2"
+      }
+    },
+    {
+      "name": "Soteria extended paper",
+      "identity": {
+        "arxiv": "2511.08729v6",
+        "doi": "10.1145/3808306",
+        "sha256": "aaa53c109e55944981b147ae63209ce6a85c38b94e5800b967fa01b8f0e57a54"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Anneal verification framework (main / three-stage architecture docs)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "d79b0c070cf4115b523fe6ee62c1e72504de2254"
+      }
+    },
+    {
+      "name": "Charon MIR/ULLBC/LLBC extractor",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "version": "0.1.210",
+        "revision": "1e08453924610c19d74c245a7308f17c1008e2db"
+      }
+    },
+    {
+      "name": "Aeneas symbolic interpreter and Lean 4 translation backend",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "21345f80fa212c596f6437378d7d57984fa2ea77"
+      }
+    },
+    {
+      "name": "RefinedRust / Radium / Caesium / Lithium verification artifact",
+      "identity": {
+        "zenodo": "21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_middle, rustc_mir_transform, rustc_codegen_ssa)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.99.1",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.28.0 baseline)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.28.0",
+        "revision": "7e01a1bf5c70fc6167d49c345d3bf80596e9a79b"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.34.1 target)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

@@ -1,0 +1,139 @@
+{
+  "status": "Finite controls observed as planned; C6 observer display assumption manually disposed by parent; ready for independent review",
+  "authorship": "Authored by an AI agent acting on joshlf behalf",
+  "positive_package_manifest_sha256": "542dca2e5208bb559138078cf4aeccf9157011a75d5d06a4d67e843911182917",
+  "plan_manifest_sha256": "95c6e2c2f62e2033100d4635bec09072e50429103e8e4e0c579a7e6285370d01",
+  "native_elapsed_seconds": 371.181275377,
+  "producer_elapsed_including_failed_attempt": 49.934246168,
+  "cases": [
+    {
+      "case": "C0",
+      "returncode": 0,
+      "elapsed_seconds": 60.519692291999995,
+      "classification": "coherent ELF/literal importer baseline accepted; closed definition printed",
+      "stdout_sha256": "e964638b3cb34b45b38a8f3c1fd633003e67495bff581e0ea0be74646d3148c3",
+      "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "ledger_entries": 81
+    },
+    {
+      "case": "C1",
+      "returncode": 2,
+      "elapsed_seconds": 58.206830959,
+      "classification": "literal length/content mismatch rejected by assert_word_list",
+      "stdout_sha256": "a27c8e03cf70a514b2804d3bc8991b27dd64ebaa780c960cbbc938aa5fa35b45",
+      "stderr_sha256": "e6346393e6f81e5ddd104c6968bd8c9406aabcbf5d13c487fa7f160912e3218c",
+      "ledger_entries": 81
+    },
+    {
+      "case": "C2",
+      "returncode": 2,
+      "elapsed_seconds": 58.263408500000004,
+      "classification": "single text-byte mutation rejected by assert_word_list",
+      "stdout_sha256": "4836b70eed474dd97c7c9992b6b3648c8f4d58ccf5c85505b0abcd001ab1ca2f",
+      "stderr_sha256": "e6346393e6f81e5ddd104c6968bd8c9406aabcbf5d13c487fa7f160912e3218c",
+      "ledger_entries": 81
+    },
+    {
+      "case": "C3",
+      "returncode": 2,
+      "elapsed_seconds": 58.853260625000004,
+      "classification": "wrong ELF machine rejected with architecture b7",
+      "stdout_sha256": "87579168f45cde98db8b4b54b914c8bf26225b5c66ddbd44c0f42a375991c846",
+      "stderr_sha256": "d35c7d83d5f78bb473ff9cbf926cf37b3fdbb10f5e334caef967bc8b0c929e88",
+      "ledger_entries": 81
+    },
+    {
+      "case": "C4",
+      "returncode": 0,
+      "elapsed_seconds": 58.821580417,
+      "classification": "renamed symbol accepted by importer; independent symbol guard rejected it",
+      "stdout_sha256": "70013fc45b4dd9f92c2cbeef9af927657b6468a89b60c7628e2b9084cfca7262",
+      "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "ledger_entries": 81
+    },
+    {
+      "case": "C5",
+      "returncode": 0,
+      "elapsed_seconds": 6.584726417000001,
+      "classification": "core numeral conversions produce sum0,carry1,false equality",
+      "stdout_sha256": "22884eb063cb78777d47d62fa2762eb3c09fcf2be1876a751fe0df3d7ff39067",
+      "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+      "ledger_entries": null
+    },
+    {
+      "case": "C6",
+      "returncode": 2,
+      "elapsed_seconds": 6.57091575,
+      "classification": "isolated non-basic axiom registration rejected by original global policy; parent raw-stream disposition",
+      "stdout_sha256": "cf95c8eb39c2f3289dd1b203273fc51f7eed4a54cf89cf7197dfacad34ab0453",
+      "stderr_sha256": "89f31bcd1ddf5a1899d19d318f5619f0c62f4fd81bbb1cf888871b8b10fd8643",
+      "ledger_entries": null
+    },
+    {
+      "case": "C9",
+      "returncode": 2,
+      "elapsed_seconds": 63.360860417000005,
+      "classification": "missing file raises Sys_error; operational I/O control",
+      "stdout_sha256": "d3f05fdb3882f67088fcfcac811055ce4e5f94dcceea7d05748135c257256698",
+      "stderr_sha256": "ca4822fc45b15250d36d5c9b2757623b0c22165b7951d4ecb8bca31fb7ce8ffb",
+      "ledger_entries": 81
+    },
+    {
+      "case": "symbol-original",
+      "returncode": 0,
+      "elapsed_seconds": 0.07648533299999999,
+      "stdout_sha256": "9af162ba5b698fac1048cf75297018027d82d0b9035df140a3e22ffd67c056ba",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "symbol-renamed",
+      "returncode": 1,
+      "elapsed_seconds": 0.08457754199999999,
+      "stdout_sha256": "c99b4a0a835c9d1b3f6e6fc3fc98a6fa8e7269c24ebe252f09e4b92bb1db4a1f",
+      "stderr_sha256": "b81568ff4694c8b0fb4745122e8e652f654d2daea041d6bc9bc5bac1ba24e8a2"
+    },
+    {
+      "case": "shadow-C7",
+      "returncode": 1,
+      "elapsed_seconds": 0.071223458,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "0481ebaeef207b7b43bad728b18905368f8433e4b660929ce8365fae645d3595"
+    },
+    {
+      "case": "C8-prepare",
+      "returncode": 0,
+      "elapsed_seconds": 0.029147957999999995,
+      "stdout_sha256": "fb6ea89817619d003b0278ecb488e2d5376f0b7aa6e8e6cce412d9b07e236ae4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "case": "C8-verify",
+      "returncode": 1,
+      "elapsed_seconds": 0.035055417000000005,
+      "stdout_sha256": "4e86fdd0024cb65ba5573a1be66f50a8d17fe744fe9a2ad47ec8537144b366ed",
+      "stderr_sha256": "13bbf41d1cfbdfcb628c201b8156a8021d4299cea00a7cbf8958526a31333b5d"
+    }
+  ],
+  "controls_output_bytes": 84305166,
+  "overall_runtime_output_bytes_at_wave_end": 148582219,
+  "final_complete_census_sha256": "9dee59467e9f42eab2f7b85b17059dddf1d4329d4e7a984e29c4da5223ed32a0",
+  "final_preflight_sha256": "6dd62489054fe98b6e8a598f9498435a66436eb87da89170e8958243c85dac27",
+  "identity_result": "Original23177 sources,69 tools,2417 compiler libraries,module,original objects,positive outputs,18stagedfiles,and3controlnatives unchanged; complete runtime census byte-exact before/after every native case",
+  "C8_checks": {
+    "exit0": true,
+    "no_incomplete_theorem": true,
+    "exact_fixed12_plus_actual_decode_names": true,
+    "all_statements_have_closed_sequent_print": true,
+    "one_decode_length181": true,
+    "every_decode_offset_exactly_once": true,
+    "core47_runtime_ledger_exact": true,
+    "after_inner83_runtime_ledger_exact": true,
+    "three_global_axiom_headers": true,
+    "inner_check_marker_once": true,
+    "outer_check_marker_once": true,
+    "inner_end_once": true,
+    "outer_end_once": false
+  },
+  "C6_disposition_sha256": "dbe45449f4b5ae33cba4d8b3875435e3453d1a77e3557b382d371af74964b68f",
+  "scope": "Six fresh importer processes plus separate arithmetic and axiom-negative processes. No x86 CPU execution or positive replay in this wave."
+}

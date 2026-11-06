@@ -1,0 +1,7 @@
+{
+  "status": "diagnosed and corrected in metadata extraction only",
+  "failure": "ValueError for threadpool_adequacy: extractor recognized Theorem/Lemma/Instance but omitted Corollary",
+  "source_basis": "src/threadpool/interleaving.v:1556 declares Corollary threadpool_adequacy",
+  "change": "Added Corollary to annotation source-coordinate extraction regex. No Coq source/proof/object changed; no Coq replay repeated.",
+  "additional_pre_freeze_correction": "Word boundary also matched primed wpi_store' at line332; negative identifier/apostrophe continuation now selects exact wpi_store at356. Source/proof/object bytes unchanged."
+}

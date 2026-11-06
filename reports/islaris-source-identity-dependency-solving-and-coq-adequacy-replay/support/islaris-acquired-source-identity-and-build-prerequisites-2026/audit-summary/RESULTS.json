@@ -1,0 +1,62 @@
+{
+  "status": "PASS_CONTENT_IDENTITY_AUDIT",
+  "scope": "offline downloaded-source/cache identity and pristine-source correspondence, not build/proof success",
+  "selected_packages": 74,
+  "exact_roots": 35,
+  "deduplicated_artifacts": 43,
+  "http_objects": 35,
+  "all_declared_http_checksum_comparisons": 63,
+  "fixed_git_commits": 8,
+  "git_objects_verified": 4998,
+  "git_source_consumers": 21,
+  "archive_source_consumers": 41,
+  "extra_source_files": 6,
+  "extra_only_packages": 3,
+  "packages_without_source_sections": 9,
+  "source_directories": 62,
+  "shallow_repositories": 0,
+  "gitlinks": 0,
+  "source_inputs_unchanged": true,
+  "initial_native_missing_python": 127,
+  "host_audit_errors": [
+    ".git-prefix predicate incorrectly excluded .github; corrected with explicit path controls",
+    "config bytes were in raw stdout rather than tar members; corrected receipt lookup verified against native hashes"
+  ],
+  "old_z3_exact_version": "unresolved; not selected or executed",
+  "riscv_generation_flag": "-dcoq_undef_axioms",
+  "riscv_build_and_install_architectures": [
+    "RV64",
+    "RV32"
+  ],
+  "native_phase_seconds": 50.225973251,
+  "git_object_stream_seconds": 1.2727601250000002,
+  "http_stream_seconds": 3.0435019989999996,
+  "native_process_active": false,
+  "native_limits": {
+    "cpu": 1,
+    "memory_bytes": 1073741824,
+    "pids": 128,
+    "network": "none",
+    "peak_memory": "not measured"
+  },
+  "observed_apparent_bytes": {
+    "opam_root": 1524081218,
+    "download_cache": 212005364,
+    "source_directories": 1286338476
+  },
+  "observed_allocated_bytes": {
+    "opam_root": 1816207360,
+    "download_cache": 212185088,
+    "source_directories": 1578213376
+  },
+  "http_transport_bytes": 62541749,
+  "z3_executable_observed": false,
+  "z3_installed_dpkg_record": false,
+  "likely_missing_system_packages": [
+    "pkg-config",
+    "libgmp-dev",
+    "zlib1g-dev"
+  ],
+  "globally_unique_git_object_ids": 4935,
+  "git_objects_verified_note": "4998 per-repository distinct comparisons; object IDs may recur across repositories"
+}

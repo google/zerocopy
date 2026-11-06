@@ -1,0 +1,265 @@
+{
+  "source_url": "https://api.github.com/repos/dotnet/roslyn/compare/7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b...36d26c5466e4d25940657ccb8d5b9557ccaf7be1?per_page=100",
+  "base_commit": "7ec1fa8b6d8a43c88bca0dbb376090d219ebc43b",
+  "head_commit": "36d26c5466e4d25940657ccb8d5b9557ccaf7be1",
+  "status": "ahead",
+  "ahead_by": 7,
+  "behind_by": 0,
+  "total_commits": 7,
+  "commit_ids": [
+    "fa846b791ae1ffdad6f08ff21c89d05d24ec540e",
+    "80933e69f6e0df1dfdbb5a735bd7005608eaa7b4",
+    "d5fcb688a19ed0d3b958ff8db5bc173de5e7a746",
+    "01e66a92784ac21c96f48c62f92eba5b3c23e0a7",
+    "8bd473fe7df62aaf8117a37a162c1fb4ee398ba5",
+    "c5c4918ef047be5476d4d54d521b3bb4cf626f91",
+    "36d26c5466e4d25940657ccb8d5b9557ccaf7be1"
+  ],
+  "changed_files": [
+    {
+      "path": ".github/instructions/IDE.instructions.md",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": ".github/skills/snap/SKILL.md",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/EditorFeatures/Core/ExternalAccess/VSTypeScript/VSTypeScriptInProcLanguageClientCapabilitiesProvider.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/EditorFeatures/Core/ExternalAccess/VSTypeScript/VSTypeScriptPullDiagnosticHandlerProvider.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/EditorFeatures/Core/LanguageServer/AlwaysActivateInProcCapabilitiesProvider.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/EditorFeatures/Core/Shared/Utilities/ThreadingContext.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/EditorFeatures/Test/LanguageServer/VSTypeScriptHandlerTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/EditorFeatures/Test/Utilities/ThreadingContextTests.cs",
+      "status": "added",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/DefaultCapabilitiesProvider.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Extensions/ProtocolConversions.Diagnostics.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/AbstractDocumentPullDiagnosticHandler.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/AbstractPullDiagnosticHandler.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/DiagnosticSourceProviders/WorkspaceDiagnosticSourceHelpers.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/DocumentPullDiagnosticHandler.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/DocumentPullDiagnosticHandlerFactory.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/DocumentPullDiagnosticsHandler.cs",
+      "status": "renamed",
+      "previous_filename": "src/LanguageServer/Protocol/Handler/Diagnostics/Public/PublicDocumentPullDiagnosticsHandler.cs"
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/DocumentPullDiagnosticsHandler_IOnInitialized.cs",
+      "status": "renamed",
+      "previous_filename": "src/LanguageServer/Protocol/Handler/Diagnostics/Public/PublicDocumentPullDiagnosticsHandler_IOnInitialized.cs"
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/Public/PublicDocumentPullDiagnosticHandlerFactory.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/Public/PublicWorkspacePullDiagnosticHandlerFactory.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/PublicDocumentNonLocalDiagnosticSourceProvider.cs",
+      "status": "renamed",
+      "previous_filename": "src/LanguageServer/Protocol/Handler/Diagnostics/Public/PublicDocumentNonLocalDiagnosticSourceProvider.cs"
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/WorkspacePullDiagnosticHandler.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/WorkspacePullDiagnosticHandlerFactory.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Handler/Diagnostics/WorkspacePullDiagnosticsHandler.cs",
+      "status": "renamed",
+      "previous_filename": "src/LanguageServer/Protocol/Handler/Diagnostics/Public/PublicWorkspacePullDiagnosticsHandler.cs"
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Extensions/VSDiagnosticTags.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalDiagnosticOptions.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalDiagnosticParams.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalDiagnosticRegistrationOptions.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalDiagnosticReport.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalDocumentDiagnosticsParams.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalWorkspaceDiagnosticReport.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/Diagnostics/VSInternalWorkspaceDiagnosticsParams.cs",
+      "status": "removed",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/VSInternalClientCapabilities.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/VSInternalMethods.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/VSInternalServerCapabilities.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/Internal/VSInternalStreamingParams.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/PreviousResultId.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/WorkspaceFullDocumentDiagnosticReport.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/Protocol/Protocol/WorkspaceUnchangedDocumentDiagnosticReport.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/AbstractPullDiagnosticTestsBase.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/AdditionalFileDiagnosticsTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/DiagnosticRegistrationTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/DiagnosticsPullCacheTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/NonLocalDiagnosticTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/PullDiagnosticTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/LanguageServer/ProtocolUnitTests/Diagnostics/WorkspaceProjectDiagnosticsTests.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/Razor/src/Razor/src/Microsoft.CodeAnalysis.Razor.CohostingShared/Diagnostics/CohostDocumentPullDiagnosticsHelpers.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/Razor/src/Razor/src/Microsoft.VisualStudio.LanguageServices.Razor/LanguageClient/Cohost/HtmlRequestInvoker.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/Razor/src/Razor/test/Microsoft.VisualStudio.LanguageServices.Razor.UnitTests/Cohost/HtmlRequestInvokerTest.cs",
+      "status": "modified",
+      "previous_filename": null
+    },
+    {
+      "path": "src/Razor/src/Razor/test/Microsoft.VisualStudioCode.RazorExtension.UnitTests/Endpoints/CohostDocumentPullDiagnosticsTest.cs",
+      "status": "modified",
+      "previous_filename": null
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "label": "tool-identities",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "/bin/sh",
+    "-c",
+    "for n in rocq rocqchk rocqtop rocqc rocqmakefile rocqdep coqc coqchk ocamlc dune; do p=$(command -v \"$n\") || continue; printf \"%s %s\\n\" \"$n\" \"$p\"; sha256sum \"$p\"; done"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.256,
+  "stdout_bytes": 819,
+  "stderr_bytes": 45,
+  "stdout_sha256": "4872bc910e2ef49176e999b2e6c73c65ad28cb7146140f785548f65118b5ad79",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

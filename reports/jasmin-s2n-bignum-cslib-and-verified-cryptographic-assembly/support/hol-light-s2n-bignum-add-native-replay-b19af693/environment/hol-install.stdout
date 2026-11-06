@@ -1,0 +1,142 @@
+The following actions will be performed:
+  - install ocaml-options-vanilla 1
+  - install conf-bash             1
+  - install conf-m4               1
+  - install base-unix             base
+  - install ocaml-compiler        5.4.0
+  - install conf-perl             2
+  - install conf-gmp              5
+  - install base-bigarray         base
+  - install conf-pkg-config       5
+  - install base-threads          base
+  - install conf-which            1
+  - install ocaml-base-compiler   5.4.0
+  - install conf-libpcre2-8       2
+  - install ocaml-config          3
+  - install ocaml                 5.4.0
+  - install ocamlfind             1.9.8
+  - install ocamlbuild            0.16.1
+  - install num                   1.6
+  - install dune                  3.24.2
+  - install base-effects          base
+  - install base-domains          base
+  - install zarith                1.14
+  - install topkg                 1.1.1
+  - install sexplib0              v0.17.0
+  - install re                    1.14.0
+  - install ocamlgraph            2.2.0
+  - install csexp                 1.5.2
+  - install camlp-streams         5.0.1
+  - install base-nnp              base
+  - install uutf                  1.0.4
+  - install rresult               0.7.0
+  - install fmt                   0.11.0
+  - install astring               0.8.5
+  - install parsexp               v0.17.0
+  - install dune-configurator     3.24.2
+  - install jsonm                 1.0.2
+  - install not-ocamlfind         0.15
+  - install logs                  0.10.0
+  - install cstruct               6.3.0
+  - install fpath                 0.7.3
+  - install sexplib               v0.17.0
+  - install hex                   1.5.0
+  - install bos                   0.3.0
+  - install ezjsonm               1.3.0
+  - install camlp5-buildscripts   0.07
+  - install dune-compiledb        0.6.0
+  - install pcre2                 8.0.4
+  - install camlp5                8.04.00
+  - install ledit                 2.07
+===== 49 to install =====
+
+The following system packages will first need to be installed:
+    xdot
+
+<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+-> installed base-bigarray.base
+-> installed base-threads.base
+-> installed base-unix.base
+-> retrieved camlp-streams.5.0.1  (https://github.com/ocaml/camlp-streams/archive/v5.0.1.tar.gz)
+-> retrieved astring.0.8.5  (https://erratique.ch/software/astring/releases/astring-0.8.5.tbz)
+-> retrieved bos.0.3.0  (https://erratique.ch/software/bos/releases/bos-0.3.0.tbz)
+-> installed conf-bash.1
+-> retrieved conf-gmp.5  (https://raw.githubusercontent.com/ocaml/opam-source-archives/main/patches/conf-gmp/test.c.4)
+-> installed conf-gmp.5
+-> installed conf-m4.1
+-> installed conf-perl.2
+-> retrieved camlp5.8.04.00  (https://github.com/camlp5/camlp5/archive/refs/tags/8.04.00.tar.gz)
+-> installed conf-which.1
+-> retrieved camlp5-buildscripts.0.07  (https://github.com/camlp5/camlp5-buildscripts/archive/refs/tags/0.07.tar.gz)
+-> retrieved conf-pkg-config.5  (2 extra sources)
+-> installed conf-pkg-config.5
+-> installed conf-libpcre2-8.2
+-> retrieved csexp.1.5.2  (https://github.com/ocaml-dune/csexp/releases/download/1.5.2/csexp-1.5.2.tbz)
+-> retrieved cstruct.6.3.0  (https://github.com/mirage/ocaml-cstruct/releases/download/v6.3.0/cstruct-6.3.0.tbz)
+-> retrieved dune-compiledb.0.6.0  (https://github.com/edwintorok/dune-compiledb/releases/download/0.6.0/dune-compiledb-0.6.0.tbz)
+-> retrieved ezjsonm.1.3.0  (https://github.com/mirage/ezjsonm/releases/download/v1.3.0/ezjsonm-1.3.0.tbz)
+-> retrieved dune-configurator.3.24.2  (https://github.com/ocaml/dune/releases/download/3.24.2/dune-3.24.2.tbz)
+-> retrieved dune.3.24.2  (https://github.com/ocaml/dune/releases/download/3.24.2/dune-3.24.2.tbz)
+-> retrieved fmt.0.11.0  (https://erratique.ch/software/fmt/releases/fmt-0.11.0.tbz)
+-> retrieved fpath.0.7.3  (https://erratique.ch/software/fpath/releases/fpath-0.7.3.tbz)
+-> retrieved hex.1.5.0  (https://github.com/mirage/ocaml-hex/releases/download/v1.5.0/hex-1.5.0.tbz)
+-> retrieved ledit.2.07  (https://github.com/chetmurthy/ledit/archive/refs/tags/2.07.tar.gz)
+-> retrieved jsonm.1.0.2  (https://erratique.ch/software/jsonm/releases/jsonm-1.0.2.tbz)
+-> retrieved not-ocamlfind.0.15  (https://github.com/chetmurthy/not-ocamlfind/archive/refs/tags/0.15.tar.gz)
+-> retrieved logs.0.10.0  (https://erratique.ch/software/logs/releases/logs-0.10.0.tbz)
+-> retrieved num.1.6  (https://github.com/ocaml/num/archive/refs/tags/v1.6.tar.gz)
+-> installed ocaml-options-vanilla.1
+-> retrieved ocaml-config.3  (2 extra sources)
+-> retrieved ocamlbuild.0.16.1  (https://github.com/ocaml/ocamlbuild/archive/refs/tags/0.16.1.tar.gz)
+-> retrieved ocamlfind.1.9.8  (https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz)
+-> retrieved ocamlgraph.2.2.0  (https://github.com/backtracking/ocamlgraph/releases/download/2.2.0/ocamlgraph-2.2.0.tbz)
+-> retrieved ocaml-compiler.5.4.0  (https://github.com/ocaml/ocaml/releases/download/5.4.0/ocaml-5.4.0.tar.gz)
+-> retrieved parsexp.v0.17.0  (https://github.com/janestreet/parsexp/archive/refs/tags/v0.17.0.tar.gz)
+-> retrieved re.1.14.0  (https://github.com/ocaml/ocaml-re/archive/refs/tags/1.14.0.tar.gz)
+-> retrieved pcre2.8.0.4  (https://github.com/camlp5/pcre2-ocaml/archive/refs/tags/8.0.4.tar.gz)
+-> retrieved sexplib.v0.17.0  (https://github.com/janestreet/sexplib/archive/refs/tags/v0.17.0.tar.gz)
+-> retrieved sexplib0.v0.17.0  (https://github.com/janestreet/sexplib0/archive/refs/tags/v0.17.0.tar.gz)
+-> retrieved rresult.0.7.0  (https://erratique.ch/software/rresult/releases/rresult-0.7.0.tbz)
+-> retrieved zarith.1.14  (https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz)
+-> retrieved uutf.1.0.4  (https://erratique.ch/software/uutf/releases/uutf-1.0.4.tbz)
+-> retrieved topkg.1.1.1  (https://erratique.ch/software/topkg/releases/topkg-1.1.1.tbz)
+-> installed ocaml-compiler.5.4.0
+-> installed ocaml-base-compiler.5.4.0
+-> installed ocaml-config.3
+-> installed ocaml.5.4.0
+-> installed base-domains.base
+-> installed base-effects.base
+-> installed base-nnp.base
+-> installed dune.3.24.2
+-> installed num.1.6
+-> installed camlp-streams.5.0.1
+-> installed csexp.1.5.2
+-> installed ocamlbuild.0.16.1
+-> installed dune-configurator.3.24.2
+-> installed ocamlfind.1.9.8
+-> installed ocamlgraph.2.2.0
+-> installed re.1.14.0
+-> installed sexplib0.v0.17.0
+-> installed topkg.1.1.1
+-> installed parsexp.v0.17.0
+-> installed astring.0.8.5
+-> installed fmt.0.11.0
+-> installed fpath.0.7.3
+-> installed cstruct.6.3.0
+-> installed logs.0.10.0
+-> installed hex.1.5.0
+-> installed rresult.0.7.0
+-> installed sexplib.v0.17.0
+-> installed bos.0.3.0
+-> installed not-ocamlfind.0.15
+-> installed uutf.1.0.4
+-> installed camlp5-buildscripts.0.07
+-> installed jsonm.1.0.2
+-> installed zarith.1.14
+-> installed ezjsonm.1.3.0
+-> installed dune-compiledb.0.6.0
+-> installed pcre2.8.0.4
+-> installed camlp5.8.04.00
+-> installed ledit.2.07
+Done.
+# Run eval $(opam env) to update the current shell environment

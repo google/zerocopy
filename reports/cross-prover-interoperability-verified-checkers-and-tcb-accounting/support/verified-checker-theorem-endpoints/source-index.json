@@ -1,0 +1,216 @@
+{
+  "observed_at": "2026-10-14",
+  "files": [
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/Verify/Axioms.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/Verify/Axioms.lean",
+      "characters": 20196,
+      "retrieved_content_sha256": "52fe205cd54e3b38b53862694e4d673b406eb89c99710248cc17f87ef226b43c",
+      "local_snapshot_sha256": "3ad305f492b90fa51f5249dfea7a33cd1326800da77af02776aeb54c5b0eb78b",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/Verify/Environment/Checker.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/Verify/Environment/Checker.lean",
+      "characters": 12879,
+      "retrieved_content_sha256": "172c5e063bdf5ac406e1398a134704bad36aabf63d6238d2dd90062f66455a1e",
+      "local_snapshot_sha256": "52a192c48d49946b3f2c8bb6b2dd75117b839bba7011da0199478848b2a7ae69",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/Environment/Basic.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/Environment/Basic.lean",
+      "characters": 5457,
+      "retrieved_content_sha256": "549c16d924d7840858935da71e60169ea3990cf484187e11a2382c39d89e7620",
+      "local_snapshot_sha256": "13e1cc7d29099a89bc145c5d8d8d9f774eca13364f68472461e125670942f903",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/TypeChecker.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/TypeChecker.lean",
+      "characters": 41287,
+      "retrieved_content_sha256": "32a426fb2cd092d2cc973866ac91adb44b3b91c463891b78c21d95c864fbf808",
+      "local_snapshot_sha256": "bc0680dadcbb395c34b1ecf852fe15f9d4326f30c5cef9c3dd441bddc1c80f87",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Main.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Main.lean",
+      "characters": 6249,
+      "retrieved_content_sha256": "3816b2088b5dfe3e036097e52015d7bf703b7c9671e171baadcd46583551c14d",
+      "local_snapshot_sha256": "15c5c0af91e5194c6edc59773ef128b8e5184103195423ed8398eefe8b21a80e",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "lean-toolchain",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/lean-toolchain",
+      "characters": 29,
+      "retrieved_content_sha256": "0d3c76ccd8772d8bcbe207241421a760312b71a6aa82f84194391fdf5cb026d6",
+      "local_snapshot_sha256": "bf158e8185b31121f46b103a097147e21b43a700fa329a5b4b4d80cdacfe025f",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "safechecker/theories/PCUICSafeChecker.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/safechecker/theories/PCUICSafeChecker.v",
+      "characters": 115108,
+      "retrieved_content_sha256": "45585561c27ba074fe049f9eee1faa863ed0a891500aec87dcf573fc2ce8b981",
+      "local_snapshot_sha256": "52f45ac8420585d1564c6dd125be4e63b4a270f8f73441a057c5d0255ad5c3cd",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "erasure/theories/ErasureCorrectness.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/erasure/theories/ErasureCorrectness.v",
+      "characters": 64425,
+      "retrieved_content_sha256": "99c5aedbfb2ad719a9f8add2759ac7d64bffe4d04e662dc922635c379c9ab4ec",
+      "local_snapshot_sha256": "3d7d5e1db3ba3b56157edae8976cfcea07c54611adecfb885c344305f98cb442",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "safechecker-plugin/theories/Extraction.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/safechecker-plugin/theories/Extraction.v",
+      "characters": 2586,
+      "retrieved_content_sha256": "5a7cee9e9588d7aadaa1092f673292615e3eb64fd41f1d08908588e1c6454a90",
+      "local_snapshot_sha256": "54abdc87d86c5fbfbd4558b5aeb5051cab9417356ae862638bdecbfab691e53d",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "template-pcuic/theories/TemplateToPCUICCorrectness.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/template-pcuic/theories/TemplateToPCUICCorrectness.v",
+      "characters": 132959,
+      "retrieved_content_sha256": "67c26af68c6f8a9f7ac3888dc8c96698d13ea766a7331413236c586e4508cb5f",
+      "local_snapshot_sha256": "172243b075a4a32debefdebe0f7be25c6f45f006b10c214a80ad1438375b0907",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+      "path": "candle/prover/candle_prover_semanticsScript.sml",
+      "url": "https://raw.githubusercontent.com/CakeML/cakeml/f73189499bb295f0859dec7ee38c169c48da682c/candle/prover/candle_prover_semanticsScript.sml",
+      "characters": 20117,
+      "retrieved_content_sha256": "6329993c2db2333f29327497329cad0e7d707010403ec2fda044b4d84a013cb5",
+      "local_snapshot_sha256": "79f753d49537723c2155e9c9df51e3b73102bc371e1b06fe1713650ad9b96d02",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+      "path": "candle/standard/semantics/holSoundnessScript.sml",
+      "url": "https://raw.githubusercontent.com/CakeML/cakeml/f73189499bb295f0859dec7ee38c169c48da682c/candle/standard/semantics/holSoundnessScript.sml",
+      "characters": 11655,
+      "retrieved_content_sha256": "b4fc64da5429d9e016b797d76b155774a56e2c12c1db97c747e7313f50a29677",
+      "local_snapshot_sha256": "bd8898d88d393b77a7edae3845d2283d6e08102be50021fa0df80135c0b3e324",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+      "path": "candle/standard/ml_kernel/print_thmScript.sml",
+      "url": "https://raw.githubusercontent.com/CakeML/cakeml/f73189499bb295f0859dec7ee38c169c48da682c/candle/standard/ml_kernel/print_thmScript.sml",
+      "characters": 6390,
+      "retrieved_content_sha256": "e852084151c809d7cbd08feb2bb0c051b862079aa0118fb08390fdaa1ae55fc0",
+      "local_snapshot_sha256": "c4e26686faaea63c82d5586dc8d5bf1273acc64472a7a97f191cfab72365fabc",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/Verify/TypeChecker.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/Verify/TypeChecker.lean",
+      "characters": 11793,
+      "retrieved_content_sha256": "4a1db7775a3eb4db016e8759ce5120ab9ef52c4a88924879125f88e5f1673780",
+      "local_snapshot_sha256": "03c5aba98fd7d13ee1068e31ac6f2bd1aa5ebd086803cf0652acdf037bcd8da9",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/Replay.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/Replay.lean",
+      "characters": 13397,
+      "retrieved_content_sha256": "245b79946d527869fae09953a1c60d19cc40022b00cb54a5f491bb4ac9fa2b77",
+      "local_snapshot_sha256": "fcaa3a4931049905b68af37556120952c83d374f28c29e57cc5cc46375ec2f6a",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "erasure-plugin/theories/ErasureCorrectness.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/erasure-plugin/theories/ErasureCorrectness.v",
+      "characters": 127982,
+      "retrieved_content_sha256": "efa972ba59cd52b0cea4f265518878ce1ff2ef7011037edcf15ac7068c8f9b66",
+      "local_snapshot_sha256": "f70b39c0005b82fca8fb75fd7d79758058f91157e4d3e8fe11f5aa92cda4d298",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "erasure-plugin/theories/Extraction.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/erasure-plugin/theories/Extraction.v",
+      "characters": 1991,
+      "retrieved_content_sha256": "b501b905b6ad7f3ed524d6ba8559d4f38d846f1a3abf015031ebd20ec1eaa67c",
+      "local_snapshot_sha256": "fbcb38118e16e46d7ac8e896f03e77c46e333006072f4f4faee3fe792a37c5c7",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "safechecker-plugin/theories/SafeTemplateChecker.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/safechecker-plugin/theories/SafeTemplateChecker.v",
+      "characters": 5105,
+      "retrieved_content_sha256": "e5266578fed2a0ea9c44c025351b4a09e2e2d4fd5b235ebf6e10b09ee8d8091e",
+      "local_snapshot_sha256": "660dfdbe804cc49586298308fc6977c48e0e05f68de892a413ac3a9ed6a3104e",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "path": "Lean4Lean/Verify/Environment.lean",
+      "url": "https://raw.githubusercontent.com/digama0/lean4lean/67f63b0c818920dfaed2ad07ccff187a6a8fe1e3/Lean4Lean/Verify/Environment.lean",
+      "characters": 13450,
+      "retrieved_content_sha256": "76c367aff44eeb994a43a37f8541ea20a7d53deda79f1e47637542e4dac91bd2",
+      "local_snapshot_sha256": "99df8d9656bba1054167450abaa56ba00cdc9bf0e8f7ee82689280945b44e629",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "safechecker/theories/PCUICWfEnvImpl.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/safechecker/theories/PCUICWfEnvImpl.v",
+      "characters": 17125,
+      "retrieved_content_sha256": "7fd9ca87653b179f5616ba80871c079003a86d962b064c80eadf016aace5adb9",
+      "local_snapshot_sha256": "5392f5adabe418da8985b677ba3ee57db49e9bc9005d979a9f246eb5474325e9",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    },
+    {
+      "repository": "MetaRocq/metarocq",
+      "revision": "c8cd46054518193103c3bb33aa6e15c7f489e72c",
+      "path": "pcuic/theories/PCUICSN.v",
+      "url": "https://raw.githubusercontent.com/MetaRocq/metarocq/c8cd46054518193103c3bb33aa6e15c7f489e72c/pcuic/theories/PCUICSN.v",
+      "characters": 5751,
+      "retrieved_content_sha256": "4d301c4c7283e31a754591dbe91f87c19fce8556beec800eaf26f39398314026",
+      "local_snapshot_sha256": "3bdbc9c8cdf22e2d07b8336831362871eb0aa0a316e9aee539b92f302b4abf91",
+      "capture_qualification": "Raw connector text reconstructed using its UTF-16 code-unit length; patch writer suffix is excluded from retrieved-content hash."
+    }
+  ],
+  "qualification": "These identify directly inspected primary-source files. Full source snapshots are research intermediates; published findings rely on immutable upstream paths and symbols, not a local mirror."
+}

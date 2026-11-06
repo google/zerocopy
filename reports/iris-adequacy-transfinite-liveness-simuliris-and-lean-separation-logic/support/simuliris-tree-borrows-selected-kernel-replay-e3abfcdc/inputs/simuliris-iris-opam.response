@@ -1,0 +1,41 @@
+opam-version: "2.0"
+maintainer: "Ralf Jung <jung@mpi-sws.org>"
+authors: "The Iris Team"
+license: "BSD-3-Clause"
+homepage: "https://iris-project.org/"
+bug-reports: "https://gitlab.mpi-sws.org/iris/iris/issues"
+dev-repo: "git+https://gitlab.mpi-sws.org/iris/iris.git"
+version: "dev"
+
+synopsis: "A Higher-Order Concurrent Separation Logic Framework with support for interactive proofs"
+description: """
+Iris is a framework for reasoning about the safety of concurrent programs using
+concurrent separation logic. It can be used to develop a program logic, for
+defining logical relations, and for reasoning about type systems, among other
+applications. This package includes the base logic, Iris Proof Mode (IPM) /
+MoSeL, and a general language-independent program logic; see rocq-iris-heap-lang
+for an instantiation of the program logic to a particular programming language.
+"""
+tags: [
+  "logpath:iris.prelude"
+  "logpath:iris.algebra"
+  "logpath:iris.si_logic"
+  "logpath:iris.bi"
+  "logpath:iris.proofmode"
+  "logpath:iris.base_logic"
+  "logpath:iris.program_logic"
+]
+
+depends: [
+  "rocq-core" { (>= "9.0" & < "9.4~") | (= "dev") }
+  "rocq-stdlib" { (>= "9.0") | (= "dev") }
+  "rocq-stdpp" { (= "dev.2026-09-09.1.c3186aad") | (= "dev") }
+  "rocq-elpi" { (>= "3") }
+]
+conflicts: [
+  "coq-iris"
+]
+
+build: ["./make-package" "iris" "-j%{jobs}%"]
+install: ["./make-package" "iris" "install"]
+url { src: "git+https://github.com/rocq-iris/iris.git#b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b" }

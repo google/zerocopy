@@ -1,0 +1,241 @@
+{
+  "topics": [
+    "build",
+    "build/nix",
+    "build/guix",
+    "build/hermeticity",
+    "build/caching",
+    "lake/artifact-cache"
+  ],
+  "subjects": [
+    {
+      "name": "Nix functional deployment architecture and current store/profile semantics",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "9bc9ab32a57504f068847af4f8013417476cb1ec"
+      }
+    },
+    {
+      "name": "NixOS system switching and activation semantics",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "6cb205c37b7c0c39b643163d1b7721b5f9bc0913"
+      }
+    },
+    {
+      "name": "GNU Guix functional package management and current operational model",
+      "identity": {
+        "paper": "Functional Package Management with Guix",
+        "arxiv": "1305.4584",
+        "manual": "GNU Guix Reference Manual devel, observed 2026-09-30"
+      }
+    },
+    {
+      "name": "Anneal current design authority",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92"
+      }
+    },
+    {
+      "name": "Nix 2.35.2 deployment and store model",
+      "identity": {
+        "manual-version": "2.35.2",
+        "profiles": "https://nix.dev/manual/nix/2.35/command-ref/files/profiles.html",
+        "garbage-collection": "https://nix.dev/manual/nix/2.35/command-ref/nix-store/gc.html",
+        "derivation-outputs": "https://nix.dev/manual/nix/2.35/store/derivation/outputs/index.html"
+      }
+    },
+    {
+      "name": "NixOS functional system configuration",
+      "identity": {
+        "authors": "Eelco Dolstra; Armijn Hemel",
+        "paper": "Purely Functional System Configuration Management",
+        "venue": "HotOS XI",
+        "year": "2007",
+        "url": "https://www.usenix.org/legacy/event/hotos07/tech/full_papers/dolstra/dolstra_html/"
+      }
+    },
+    {
+      "name": "GNU Guix functional package management",
+      "identity": {
+        "author": "Ludovic Court\u00e8s",
+        "paper": "Functional Package Management with Guix",
+        "arxiv": "1305.4584v1",
+        "venue": "European Lisp Symposium 2013",
+        "submitted": "2013-05-20"
+      }
+    },
+    {
+      "name": "GNU Guix stable release",
+      "identity": {
+        "release": "1.5.0",
+        "released": "2026-01-23",
+        "announcement": "https://lists.gnu.org/archive/html/info-gnu/2026-01/msg00004.html"
+      }
+    },
+    {
+      "name": "Anneal design constraints",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "cc135f46155b72e4b51188525c2974a3b84acf92",
+        "principles-blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "design-blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8"
+      }
+    },
+    {
+      "name": "Nix 2.35.2 stable release source",
+      "identity": {
+        "repository": "NixOS/nix",
+        "tag": "2.35.2",
+        "annotated-tag-object": "a400e1f45939a4e0521f66e76470eea9e8ea666b",
+        "peeled-revision": "2c73b59da29606068c0c98db015dd3a66955525d"
+      }
+    },
+    {
+      "name": "GNU Guix 1.5.0 stable release source",
+      "identity": {
+        "repository": "guix/guix",
+        "tag": "v1.5.0",
+        "annotated-tag-object": "749a73cacad30fd9e149d9086c7e4e4a0b86834b",
+        "peeled-revision": "230aa373f315f247852ee07dff34146e9b480aec"
+      }
+    },
+    {
+      "name": "Stopped Nix preparation subject",
+      "identity": {
+        "container_id": "5444ba00b8675ccd8ad2d5a55c01b6b88785e06642e6e0e5ac7f459e31a46fd5",
+        "image_sha256": "71f0139a696ef851a52bebc0b8facfd20e728e0b92f7b0251480979614e24558",
+        "nix_version": "2.34.8"
+      }
+    },
+    {
+      "name": "Docker CLI implementation inspected",
+      "identity": {
+        "repository": "docker/cli",
+        "revision": "9d7ad9ff180b43ae5577d048a7bac1159ce7bacf"
+      }
+    },
+    {
+      "name": "Docker Engine implementation inspected",
+      "identity": {
+        "repository": "moby/moby",
+        "revision": "daa0cb7f23594cdbcce5002e370027d3fd36ffd7"
+      }
+    },
+    {
+      "name": "Nix implementation used for preparation proposal",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024"
+      }
+    },
+    {
+      "name": "leantar used directly by current Anneal Mathlib-cache unpacking",
+      "identity": {
+        "repository": "digama0/leangz",
+        "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+        "version": "v0.1.16",
+        "component": "leantar"
+      }
+    },
+    {
+      "name": "leantar selected by Lean v4.30.0-rc2 source and Mathlib sysroot lookup",
+      "identity": {
+        "repository": "digama0/leangz",
+        "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+        "version": "v0.1.19",
+        "component": "leantar"
+      }
+    },
+    {
+      "name": "Lean toolchain source selected by Aeneas",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Mathlib cache consumer selected by Aeneas",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "version": "v4.30.0-rc2",
+        "component": "Cache"
+      }
+    },
+    {
+      "name": "Current Anneal packaging and Mathlib-cache extraction",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/flake.nix"
+      }
+    },
+    {
+      "name": "Anneal direct leantar helper",
+      "identity": {
+        "repository": "digama0/leangz",
+        "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+        "version": "v0.1.16",
+        "component": "leantar",
+        "binary_sha256": "74b681d647b5f288b7e3ba89b562808de656abcde72771e97170bc377137e20a"
+      }
+    },
+    {
+      "name": "Lean 4.30.0-rc2 bundled leantar",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "component": "leantar 0.1.19",
+        "binary_sha256": "9bddd23bcddf44b27cf3a79e38dde45c53278721980695abdc76587fc3c89d41"
+      }
+    },
+    {
+      "name": "Lean 4.34.1 bundled leantar",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "component": "leantar 0.1.20",
+        "binary_sha256": "97ddd119805f7d020bb823f818140b078eb37057b1b53174899c0d9aff0ea6c7"
+      }
+    },
+    {
+      "name": "Anneal omnibus toolchain archive comparison procedure",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Lake configuration ownership across Lean v4.30.0-rc2 and v4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "older-revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "older-release": "v4.30.0-rc2",
+        "newer-revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "newer-release": "v4.31.0"
+      }
+    },
+    {
+      "name": "Charon same-version revisions selected by Aeneas and Anneal",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "aeneas-pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "anneal-tag-resolution": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "package-version": "0.1.210"
+      }
+    },
+    {
+      "name": "Zerocopy V1 generated-project probe",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+      }
+    }
+  ],
+  "observed_at": "2026-10-15"
+}

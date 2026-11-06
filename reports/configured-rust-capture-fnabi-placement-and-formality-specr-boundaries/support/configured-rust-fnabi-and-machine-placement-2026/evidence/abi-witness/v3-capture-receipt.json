@@ -1,0 +1,37 @@
+{
+  "status": "ONE actual fixed v3 capture PASS; no candidate accepted",
+  "reference": {
+    "path": "capture-v3-host-subjects-opt0-01/reference.json",
+    "bytes": 165403,
+    "sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8"
+  },
+  "effective_request_sha256": "a8745b7dcb76c63a5d969241fa800dfb02442e1b2f70f9021d4af7a7c8df031c",
+  "observer_source_sha256": "e6c50e7c4ce7bc9ff5eb5515cc4f5973fd2fc182d53bce38dbfeb09afc398ba1",
+  "observer_binary_sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+  "consumer_sha256": "c0c476f3fe9e1497f4484b4de4c493194cd82d2fd93f5853fbfd7241f7aeb6da",
+  "data_grammar_sha256": "b9246631d37955add31da62f891eb9d0e0ec201a8a532ca3ccf385f8bced6018",
+  "authority_sha256": "d9b0b86788625c0d9f23c4662a39708c587fa6a34ea21e8790e5f26532700078",
+  "controller_sha256": "22714dad1a3cae8913c4cf4a334934f6a8901097e8df975f1bc23c74f8d62bed",
+  "prior_gate_and_stopped_capture": "Every previously bound byte unchanged",
+  "readonly_tools_before_after": "All5 retained tool sizes/hashes unchanged",
+  "pure_data_controls": "All54 cases/results exactly equal historical matrix;9/43/2; capture trapped",
+  "lifecycle_regression": "same harmless-child monitor-denial controls PASS",
+  "capture_PID_PGID": 11369,
+  "observer_wait_status": 0,
+  "consumer_capture_exit": 0,
+  "stdout_stderr": "empty",
+  "remaining_group": [],
+  "resource_measurement_limitation": "Only startup32,768B and empty-group samples; in-analysis peak unobserved, no hardAS/isolation proof.",
+  "requested_entries_returned": 26,
+  "unique_owner_resolution": "Derived from actual completion of reviewed exactly-one-hit guard for every original qualified selector, retaining arguments/extras.",
+  "accepted_candidates": 0,
+  "fixture_codegen_native_foreign_target_operations": 0,
+  "publication_status": "Internal raw capture and owned tool evidence; no canonical/public mutation or public path projection.",
+  "next_grant_needed": [
+    "fresh actual same-profile check",
+    "actual semantic data mutants",
+    "other fixed profiles",
+    "fixture IR/assembly/object output",
+    "cross-target setup or physical placement claims"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "summary": {
+    "ImporterControl": {
+      "input_count": 35,
+      "raw_markers": 35,
+      "inlined_sha256": "d786d4afbff324b4777af8607d9bbb5ce76c0a56ab690f9ea68ef928944b5025",
+      "exact_original_and_owned_source_set": true,
+      "all_completion_MD5s_match_SHA_bound_inputs": true
+    },
+    "ArithmeticObservation": {
+      "input_count": 1,
+      "raw_markers": 1,
+      "inlined_sha256": "0b3f525caf1724fef5debe7fa4c14c0f76b8244c6f2c0149ad12eda6cab73ad2",
+      "exact_original_and_owned_source_set": true,
+      "all_completion_MD5s_match_SHA_bound_inputs": true
+    },
+    "AxiomPolicyNegative": {
+      "input_count": 1,
+      "raw_markers": 1,
+      "inlined_sha256": "32f18637a093d5df7ce3aa779532b52e89cf40faa82685a7150f37121d167ae0",
+      "exact_original_and_owned_source_set": true,
+      "all_completion_MD5s_match_SHA_bound_inputs": true
+    }
+  }
+}

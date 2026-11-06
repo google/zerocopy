@@ -1,0 +1,16 @@
+(* Show dependencies *)
+show data,addr
+let ctrlisb = try ctrl;[ISB];po with 0
+show ctrlisb
+show isb \ ctrlisb as isb
+show ctrl \ ctrlisb as ctrl
+
+(* Show same-tag-loc without id edges *)
+show same-tag-loc\id as same-tag-loc
+
+(* Communication relations *)
+let rf-mem = rf \ rf-reg
+show rf-reg
+show rf-mem as rf
+unshow fr,co
+show co|fr as ca

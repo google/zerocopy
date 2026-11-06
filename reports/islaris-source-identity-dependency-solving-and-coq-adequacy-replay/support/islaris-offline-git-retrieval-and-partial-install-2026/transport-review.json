@@ -1,0 +1,83 @@
+{
+  "verdict": "PASS_BOUNDED_ARTIFACT_REVIEW",
+  "parent_exit_status": 0,
+  "parent_invocation_seconds": 48.98743354191538,
+  "controller_seconds": 48.86096166702919,
+  "native_run_files": 751,
+  "native_phase_receipts": 239,
+  "inspection_receipts": 11,
+  "streams_rehashed": 460,
+  "closure_ledgers": 9,
+  "provider_objects": 4935,
+  "probe_object_comparisons": 4998,
+  "source_consumers_rechecked_twice": 21,
+  "protected_metadata_files": 19429,
+  "cache_files": 41,
+  "cache_entries": 52,
+  "switch_state_sha256": "7a913510f25cf78d5f773b4726e51fbb8d4e277f854a258608fe45adebb37a9f",
+  "final_runtime": {
+    "file": "final-inspect.stdout",
+    "size_rw": 302514176,
+    "running": true
+  },
+  "maximum_recorded_size_rw": 302514176,
+  "all_inspections": [
+    {
+      "file": "final-inspect.stdout",
+      "size_rw": 302514176,
+      "running": true
+    },
+    {
+      "file": "monitor-000.stdout",
+      "size_rw": 430080,
+      "running": true
+    },
+    {
+      "file": "monitor-001.stdout",
+      "size_rw": 1708032,
+      "running": true
+    },
+    {
+      "file": "monitor-002.stdout",
+      "size_rw": 2662400,
+      "running": true
+    },
+    {
+      "file": "monitor-003.stdout",
+      "size_rw": 152449024,
+      "running": true
+    },
+    {
+      "file": "monitor-004.stdout",
+      "size_rw": 203059200,
+      "running": true
+    },
+    {
+      "file": "monitor-005.stdout",
+      "size_rw": 217169920,
+      "running": true
+    },
+    {
+      "file": "monitor-006.stdout",
+      "size_rw": 300638208,
+      "running": true
+    },
+    {
+      "file": "monitor-007.stdout",
+      "size_rw": 302514176,
+      "running": true
+    },
+    {
+      "file": "monitor-008.stdout",
+      "size_rw": 302514176,
+      "running": true
+    },
+    {
+      "file": "preflight-inspect.stdout",
+      "size_rw": 4096,
+      "running": true
+    }
+  ],
+  "scope": "Independent host-only replay of preserved correspondence/ledger/receipt checks, not a second native object-byte replay or opam/build/proof result",
+  "limits": "Native object raw body streams were hashed and discarded by original controller; this review independently matches complete ledgers to original expected bodies but cannot re-stream them. Host free-space numbers and peak memory are not retained per-sample measurements; watchdog success only records that its predicates did not fire."
+}

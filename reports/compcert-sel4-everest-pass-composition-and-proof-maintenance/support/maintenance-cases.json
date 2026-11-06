@@ -1,0 +1,134 @@
+{
+  "schema": "anneal-reference/support/maintenance-cases/v1",
+  "observed_at": "2026-09-30",
+  "cases": [
+    {
+      "system": "seL4/l4v",
+      "revision": "bce918b83bd9deaf91c3b9e7c3678929c4ad5799",
+      "change": "allow numDomains=256",
+      "mechanism": "existing proof obligations already implied the corrected bound",
+      "reported_effect": "maintainer states no proofs broke",
+      "patch": {
+        "files": 1,
+        "additions": 2,
+        "deletions": 1
+      },
+      "interpretation_limit": "patch size and commit message do not measure engineer time"
+    },
+    {
+      "system": "seL4/l4v",
+      "revision": "589b63f232d3c042cc7fc41f5fd304f2e7114e7a",
+      "change": "reserve AArch64 VMID 0",
+      "mechanism": "new invariant that next VMID is never reserved plus allocator sanity lemma",
+      "reported_effect": "proof update across invariant/refinement/C-refinement/infoflow files",
+      "patch": {
+        "files": 9,
+        "additions": 171,
+        "deletions": 93
+      },
+      "interpretation_limit": "line counts are not proof difficulty"
+    },
+    {
+      "system": "seL4/l4v",
+      "revision": "411e76099fff81c09cd4eb6619cef13d8d9bb6cf",
+      "change": "reserve ARM/ARM_HYP hardware ASID 0",
+      "mechanism": "new invariant and reused AArch64 proof setup",
+      "reported_effect": "broad repair across proof layers and architectures",
+      "patch": {
+        "files": 36,
+        "additions": 891,
+        "deletions": 589
+      },
+      "interpretation_limit": "cleanup is mixed with semantic repair"
+    },
+    {
+      "system": "seL4/l4v",
+      "revision": "9ae6b8106f5ef4dd14cb0e9543d9fe14101bbc4f",
+      "change": "make Haskell init equivalent to Isabelle butlast",
+      "mechanism": "prove equivalence but retain original formulation because simp behavior differs",
+      "reported_effect": "maintainer expects direct replacement to break proofs",
+      "patch": {
+        "files": 1,
+        "additions": 11,
+        "deletions": 1
+      },
+      "interpretation_limit": "expected breakage was not executed in this report"
+    },
+    {
+      "system": "AbsInt/CompCert",
+      "revision": "2f5e3204c48510f94c91699c64dee8bd18cd2b75",
+      "change": "strengthen memory injections for hidden negative-offset metadata",
+      "mechanism": "shared semantic relation gains a condition needed for free/malloc metadata correctness",
+      "reported_effect": "common memory model plus several proof clients changed",
+      "patch": {
+        "files": 6,
+        "additions": 218,
+        "deletions": 156
+      },
+      "interpretation_limit": "one change in a larger memory-model evolution"
+    },
+    {
+      "system": "AbsInt/CompCert",
+      "revision": "59b473374b23660f587230969b48ff407241dc19",
+      "change": "introduce Senv.inject, Genv.inject, Val.inject_ptr_flat",
+      "mechanism": "factor and replace shared injection/global-preservation proof interfaces",
+      "reported_effect": "many pass proofs and semantic libraries changed",
+      "patch": {
+        "files": 16,
+        "additions": 250,
+        "deletions": 375
+      },
+      "interpretation_limit": "refactoring and semantic-interface cleanup are mixed"
+    },
+    {
+      "system": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "change": "restore Events.meminj_preserve_globals",
+      "mechanism": "compatibility theorem for VST and other downstream users",
+      "reported_effect": "migration window without reverting new internal organization",
+      "patch": {
+        "files": 1,
+        "additions": 18,
+        "deletions": 0
+      },
+      "interpretation_limit": "does not show how many downstream proofs used the shim"
+    },
+    {
+      "system": "hacl-star/hacl-star",
+      "revision": "bfb6db8ecc67f36754d257500c2a0f1e2f6be609",
+      "change": "stabilize Vale proof",
+      "mechanism": "proof passed locally but failed in Everest/check-world; proof term adjusted",
+      "reported_effect": "15-line proof stabilization",
+      "patch": {
+        "files": 1,
+        "additions": 12,
+        "deletions": 3
+      },
+      "interpretation_limit": "cause of environment-dependent behavior not isolated here"
+    },
+    {
+      "system": "hacl-star/hacl-star",
+      "revision": "ecbf1aaa83016c0b3e67c49c0f962afcdd3986fa",
+      "change": "merge proof stabilization, pin F*/KaRaMeL, regenerate hints",
+      "mechanism": "freeze known tool versions and update recorded proof automation artifacts",
+      "reported_effect": "large generated hint churn plus small source/config changes",
+      "patch": {
+        "total_changes": 64560
+      },
+      "interpretation_limit": "generated hint diff size is not hand-written proof effort"
+    },
+    {
+      "system": "hacl-star/hacl-star",
+      "revision": "ee6ac4d2b58fb3da421086e778132800fb3f0e37",
+      "change": "fix generated and source file both",
+      "mechanism": "synchronize source-side and dist/generated-side build metadata",
+      "reported_effect": "same logical fix applied across both durable representations",
+      "patch": {
+        "files": 2,
+        "additions": 2,
+        "deletions": 2
+      },
+      "interpretation_limit": "small build-file example, not verification correspondence proof"
+    }
+  ]
+}

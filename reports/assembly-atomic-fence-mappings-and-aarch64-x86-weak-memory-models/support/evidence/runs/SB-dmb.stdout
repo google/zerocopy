@@ -1,0 +1,14 @@
+Test SB-dmb Allowed
+States 3
+0:X3=0; 1:X3=1;
+0:X3=1; 1:X3=0;
+0:X3=1; 1:X3=1;
+No
+Witnesses
+Positive: 0 Negative: 3
+Flag Shareability-argument-for-DMB-is-deprecated
+Condition exists (0:X3=0 /\ 1:X3=0)
+Observation SB-dmb Never 0 3
+Time SB-dmb 0.00
+Hash=f022918748f9b85afcade5eaf32a1a8a
+

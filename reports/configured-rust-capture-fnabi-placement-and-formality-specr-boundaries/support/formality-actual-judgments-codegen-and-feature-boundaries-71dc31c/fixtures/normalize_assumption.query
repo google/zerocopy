@@ -1,0 +1,1 @@
+forall<T> { Iterator(T), <T as Iterator>::Item = u32 } => { <T as Iterator>::Item = u32 }

@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "build/nix",
+    "build/hermeticity",
+    "exocrate/packaging",
+    "exocrate/archive",
+    "isa/elf-relocations",
+    "isa/x86-64",
+    "isa/aarch64"
+  ],
+  "subjects": [
+    {
+      "name": "Zerocopy Anneal Nix toolchain packaging and relocation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Aeneas release packaging selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Charon portable packaging selected by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Lean 4 selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "PatchELF selected by Anneal's locked nixpkgs",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+        "version": "patchelf-0.15.2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

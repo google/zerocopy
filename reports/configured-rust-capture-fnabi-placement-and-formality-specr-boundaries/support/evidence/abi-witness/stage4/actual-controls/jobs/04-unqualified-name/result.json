@@ -1,0 +1,16 @@
+{
+  "id": "04-unqualified-name",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "consumer selected root/instance/extras"
+  },
+  "seconds": 0.32560083399999995,
+  "fresh_observer": null,
+  "candidate_sha256": "5a9b95b23e7c07b8cd12fa3e64d4c8c5cf332344f097c10f8e0d948d630381c2",
+  "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

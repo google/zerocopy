@@ -1,0 +1,150 @@
+{
+  "metadata_and_section_contract": "PASS",
+  "links": [
+    {
+      "target": "../jasmin-native-aarch64-evaluation-and-verified-build-inputs-2026/REPORT.md",
+      "role": "published sibling checked in canonical materialization",
+      "bytes": 16314,
+      "sha256": "7bdd5edee0c512100ac0f7a42023be9de36c58eddf3958866c5d8c3e9282856e"
+    },
+    {
+      "target": "REPORT.json",
+      "role": "package",
+      "bytes": 2461,
+      "sha256": "a4ae3d4de13e69150619cf4af719869e601f97934d2163f2442f437f88945ef5"
+    },
+    {
+      "target": "support/build-receipts.tar.gz",
+      "role": "package",
+      "bytes": 28549,
+      "sha256": "81547412bc4e5f666cad575cc14c7dc4b3829bd566d5dd49ee7d5aee191ef8e6"
+    },
+    {
+      "target": "support/nix-source/src/libstore/unix/build/derivation-builder.cc",
+      "role": "package",
+      "bytes": 77045,
+      "sha256": "20e6b09df2b4f0b31b7bd4dd4a0f8041d955a7c66ef1852476bf82503cbcb25b"
+    },
+    {
+      "target": "support/nix-source/src/libutil/linux/linux-namespaces.cc",
+      "role": "package",
+      "bytes": 4260,
+      "sha256": "f21dc2ee6f4313a9661d478aec7d301aa12711d7f98aa0bea123af19da4134ea"
+    },
+    {
+      "target": "support/nix-source/src/libstore/unix/build/chroot-derivation-builder.cc",
+      "role": "package",
+      "bytes": 7803,
+      "sha256": "449de15272e6a12c13fbcd2076454e6902af0ab4cd736c83c494a36b0c915441"
+    },
+    {
+      "target": "support/target-18-attrs.json",
+      "role": "package",
+      "bytes": 14117,
+      "sha256": "989c4945af020fc2e43247c1827bec463a63ae8eb3a74d74e994abb66b209e0a"
+    },
+    {
+      "target": "support/target-output-census.json",
+      "role": "package",
+      "bytes": 20006,
+      "sha256": "aed60421a1ff97d5577891bea658210da684a50124e892ef63f1baa768097823"
+    },
+    {
+      "target": "support/archive-censuses.json",
+      "role": "package",
+      "bytes": 6070,
+      "sha256": "cda2a5b2b0c69bea6010eb130e77fa1b20921029eab662202f7fd19f61dfb52e"
+    },
+    {
+      "target": "support/archive-members.json",
+      "role": "package",
+      "bytes": 6308,
+      "sha256": "6195780e90cf2fd4ab244dbc208ebee13c69a449676e75f65b78b14713490925"
+    },
+    {
+      "target": "support/build-receipts.tar.gz",
+      "role": "package",
+      "bytes": 28549,
+      "sha256": "81547412bc4e5f666cad575cc14c7dc4b3829bd566d5dd49ee7d5aee191ef8e6"
+    },
+    {
+      "target": "support/diagnosis-records.tar.gz",
+      "role": "package",
+      "bytes": 9483,
+      "sha256": "6df4744bac62945ecd79a91b3cdca74349f4a684a8b9dfc1eb14e174ccf5ef4c"
+    },
+    {
+      "target": "support/stopped-readback-records.tar.gz",
+      "role": "package",
+      "bytes": 12975,
+      "sha256": "48f9945fc47f5e93db5e78405f4cda73f55d9c81493b5c7c36901b994c9ab2dc"
+    },
+    {
+      "target": "support/input-bindings.json",
+      "role": "package",
+      "bytes": 935,
+      "sha256": "34e41ee906bfa6943bb33c6a8842dc40d88146d3164b901f8da8e14bc005668a"
+    },
+    {
+      "target": "support/frozen-inputs.json",
+      "role": "package",
+      "bytes": 386,
+      "sha256": "daa249177676eb3d5e24108c5f6166a0de5cecf23c36aef8bfdf701799ade3e1"
+    },
+    {
+      "target": "support/omissions.json",
+      "role": "package",
+      "bytes": 861,
+      "sha256": "3561f5b23241f69f04bc88d584630aa5b3a7cd1eb36fbf9ca5d1920e4793f5c5"
+    },
+    {
+      "target": "support/nix-source-manifest.json",
+      "role": "package",
+      "bytes": 1584,
+      "sha256": "4da635ccb9c56cce98617d2949f2d537314a76da7d84e467ba5508ddb8d12a7e"
+    },
+    {
+      "target": "support/nix-source/COPYING",
+      "role": "package",
+      "bytes": 26419,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+    },
+    {
+      "target": "support/NOTICES.md",
+      "role": "package",
+      "bytes": 1649,
+      "sha256": "4d77689fca237f28b3aac268cb0b9218b5752947750820a1fe93a19a70fe3472"
+    },
+    {
+      "target": "support/validation/CHECKER-DIAGNOSIS.json",
+      "role": "package",
+      "bytes": 1021,
+      "sha256": "7e1661a347951e7b11c258622dd71dc1f44ee90804f3243b9a088e76ba5215a6"
+    }
+  ],
+  "deterministic_archives": [
+    {
+      "archive": "diagnosis-records.tar.gz",
+      "members": 6,
+      "gzip_mtime": 0,
+      "tar_uid_gid_mtime": 0
+    },
+    {
+      "archive": "stopped-readback-records.tar.gz",
+      "members": 13,
+      "gzip_mtime": 0,
+      "tar_uid_gid_mtime": 0
+    },
+    {
+      "archive": "build-receipts.tar.gz",
+      "members": 21,
+      "gzip_mtime": 0,
+      "tar_uid_gid_mtime": 0
+    }
+  ],
+  "archive_members_total": 40,
+  "privacy_review": "Raw argv/env inspected; generic tool paths/public cache trust keys retained. No credential/prefix-map/database payload included. Prose contains no private host path.",
+  "attribution": "Seven unchanged source files with Git blobs, original content, exact Nix COPYING and NOTICES retained. No additional upstream implementations copied.",
+  "omissions": "Full DB/SQLite/WAL/SHM payloads, OCI/NAR/package binaries/fullsource trees excluded; historical hashes and query results retained.",
+  "scope": "Host-only report assembly/checks. No native execution or publication."
+}

@@ -1,0 +1,201 @@
+{
+  "classification": "PREPARATION; read-only source/hash analysis, not source-script or proof execution",
+  "authorship": "Authored by an AI agent acting on joshlf's behalf.",
+  "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "original_staged_files_checked": 23177,
+  "original_staged_bytes_checked": 165226581,
+  "original_staged_mismatches": [],
+  "frozen_old_plan_files_checked": 137,
+  "frozen_old_plan_mismatches": [],
+  "old_plan_manifest_sha256": "43d95becb71201bca542d009e711f930be7c232bef6207e78f88f4bb46c548bc",
+  "parent_source_manifest_sha256": "eed7dd6b8ce62b4d71411955bfe2627389f1d5a9d1f53378cfb6ff2a0cd6e3df",
+  "key_source_identities": [
+    {
+      "path": "hol-light/Makefile",
+      "bytes": 15194,
+      "sha256": "eacd5fd94c546e6ff7e1f1eae1e29f98bba26d18956ac28aa6d7deb19fd9434d",
+      "git_blob_sha1": "2ae14410866d770ddffe4c638d9d5fac8b98f103"
+    },
+    {
+      "path": "hol-light/inline_load.ml",
+      "bytes": 4633,
+      "sha256": "89b74c81adb6f1d75a51d565f4a3703525c5635f8bebbc3f17da0a79bb44132d",
+      "git_blob_sha1": "88626d293662bc926f40ee80be81465ac0528c07"
+    },
+    {
+      "path": "hol-light/hol_loader.ml",
+      "bytes": 4943,
+      "sha256": "01d0f6b5a8ba557b58a352a464c25a408b80585a778d7cc61b11ea688290db29",
+      "git_blob_sha1": "e44f16dff1ca0efe07c9403091d57385bdb52fd1"
+    },
+    {
+      "path": "hol-light/hol_lib.ml",
+      "bytes": 7204,
+      "sha256": "0251a16ec5dc611d0910d298b13b8d8664ec2dd7566d8ca6e9a39b46784ff155",
+      "git_blob_sha1": "35aa3aeb8f5c9d372e9e9a896ee2917d5c38796d"
+    },
+    {
+      "path": "hol-light/hol_4.14.sh",
+      "bytes": 1733,
+      "sha256": "e0d5a5204f1a85c5b96f528ebccf3d556297f8a7a66c4a63e8294ae8efaf0049",
+      "git_blob_sha1": "3523d3210248d3f4ebb4f0fe43b889e3d4a87e2d"
+    },
+    {
+      "path": "hol-light/fusion.ml",
+      "bytes": 28539,
+      "sha256": "29544be92d9cc1e6b3b59ba5b210604b9a748366a68b3bcdc2619717d68fd98a",
+      "git_blob_sha1": "93a0d51bde08baeef83fc246c073f744d1bcb8df"
+    },
+    {
+      "path": "hol-light/drule.ml",
+      "bytes": 24270,
+      "sha256": "f09b27989bfb3413984208c2d1517ebb5ebc6d12dc73245dc8716b5df31400bc",
+      "git_blob_sha1": "5531b578993566ca608bbb8b71d984a48031a558"
+    },
+    {
+      "path": "hol-light/pa_j/chooser.sh",
+      "bytes": 2669,
+      "sha256": "4ffa17847b6f35a067c357350c685c4fec7f0cdc9072d65a663ecbfefcb3a6e6",
+      "git_blob_sha1": "de5c8c8ed8d0803d96d4cf997c1de0fa617c24c9"
+    },
+    {
+      "path": "hol-light/update_database/chooser.sh",
+      "bytes": 365,
+      "sha256": "0302e608e6fecbb5ad5bee1c66ed18be0b89fe4d096c0e1f6ba5adbcfa1574e1",
+      "git_blob_sha1": "8d9baff32569bf8c01595a938a585bdff011f0bb"
+    },
+    {
+      "path": "hol-light/pa_j/pa_j_5.4_8.04.00.ml",
+      "bytes": 150132,
+      "sha256": "f8374d74edc1123f3881ed073ad7ae16e0252c52d4ed1cfa8263425ff85af8ba",
+      "git_blob_sha1": "887f7271ed062ba959c8dea365e4da4a72c7f295"
+    },
+    {
+      "path": "hol-light/update_database/update_database_5.4.ml",
+      "bytes": 5991,
+      "sha256": "c35ccfbaaf8d9c8e5fef4170604cbfe01d7e0304eb57295fe05c5d4c25240502",
+      "git_blob_sha1": "b6b28b2aa72ac0bfcb0e18b7d3886f4db1c517f2"
+    },
+    {
+      "path": "hol-light/bignum_zarith.ml",
+      "bytes": 3854,
+      "sha256": "7677274488fc43d0ac9bcf4a51d1bf8825e4eb24aa1609592512bcb304ad2fd5",
+      "git_blob_sha1": "a1c9384b5b5feedca99f0cb77c7e23437351d94c"
+    },
+    {
+      "path": "hol-light/.gitignore",
+      "bytes": 461,
+      "sha256": "ebf3eb1a67ec52d4007baeab2930ded54c5f41854d2790288df1c136ccba672f",
+      "git_blob_sha1": "f69e301eef573f2d5ab4e5eba333639228f9031f"
+    },
+    {
+      "path": "s2n-bignum/x86/Makefile",
+      "bytes": 25573,
+      "sha256": "93f4778c7aec49ae72824d74ce77a2086a5022cdf508312cd179c3032c11aec4",
+      "git_blob_sha1": "c35a6a2a5d4431f02ade423eb87d5fa359ffe4da"
+    },
+    {
+      "path": "s2n-bignum/tools/build-proof.sh",
+      "bytes": 2276,
+      "sha256": "c3b340c3d577331613df636f5880e6eb250abb48783a37d3ea36b7142c00af64",
+      "git_blob_sha1": "39d7243340e2a6580a9d584a895a9396d6f2131f"
+    },
+    {
+      "path": "s2n-bignum/tools/collect-specs.sh",
+      "bytes": 618,
+      "sha256": "5f14ce831741438587297fcac8cae1661439c10d54646f71f1975830d6a9bcb5",
+      "git_blob_sha1": "48d2486c3d3f5be6a368b52e2d365fae0c08779a"
+    },
+    {
+      "path": "s2n-bignum/tools/run-proof.sh",
+      "bytes": 740,
+      "sha256": "b62b01592220366e9460a29168b9b900be5c9e69867bf5664c8e150ade9d0bfe",
+      "git_blob_sha1": "784a32989a3465eacddf6b93a5e702f1882b0e40"
+    },
+    {
+      "path": "s2n-bignum/tools/collect-signatures.py",
+      "bytes": 16283,
+      "sha256": "628faf39123c192d03dfdb461620630345b09d9a71d915136f3c07bd7c2f2d21",
+      "git_blob_sha1": "42742609b271d199e6bad60fd22e3832e3be7140"
+    },
+    {
+      "path": "s2n-bignum/common/execution.ml",
+      "bytes": 13727,
+      "sha256": "0f30514aa347888b710a82db365fd695fd4121c9b1b477d190372bbb57dcf84c",
+      "git_blob_sha1": "ac9eb56e874a2858bb0330fd1b268733ecd4b60d"
+    },
+    {
+      "path": "s2n-bignum/common/elf.ml",
+      "bytes": 28076,
+      "sha256": "004faa906b8b2d2f65a9d352ae88b343c2526c69993ee13d49c81ada8284ad32",
+      "git_blob_sha1": "0ff9b6aea58c73cdeabe9f8061933003fd2ca005"
+    },
+    {
+      "path": "s2n-bignum/x86/proofs/base.ml",
+      "bytes": 2545,
+      "sha256": "6aec0a36255b39ac718e48393fa1b0580841d0670d5904585e41d00ed61af895",
+      "git_blob_sha1": "0e76b399cfda26a9537663d79b8b6db9f0f25b57"
+    },
+    {
+      "path": "s2n-bignum/x86/proofs/decode.ml",
+      "bytes": 145446,
+      "sha256": "434e47f4a315ea89a18cabc6cae23a05862b6eccacf268c0bed883ab8078084a",
+      "git_blob_sha1": "effe73dff9cd58d7bd71837e2e78f5a1e2654f6f"
+    },
+    {
+      "path": "s2n-bignum/x86/proofs/bignum_add.ml",
+      "bytes": 41180,
+      "sha256": "36de53a4434ed824b8626a1005559d029381e5db5939491e416b5c991dba7e7b",
+      "git_blob_sha1": "180570d3b223d58a2212c5d84ed068856281ce57"
+    },
+    {
+      "path": "s2n-bignum/x86/generic/bignum_add.S",
+      "bytes": 4067,
+      "sha256": "e8b7d95ad2039a69bd26563b02ed7d5c931795a0c3fcaafc2f9e8a0369cfaa0c",
+      "git_blob_sha1": "23a977de3150ea04422af4ef03498d6ff79b529a"
+    },
+    {
+      "path": "s2n-bignum/include/_internal_s2n_bignum_x86.h",
+      "bytes": 2702,
+      "sha256": "32e93f25e504f9aef6d16250e4eaf0e6214ca00c6312d44d909d6be13a0c249d",
+      "git_blob_sha1": "d613dc6ce24537c2cc010ee98fa89c9690fb54c5"
+    },
+    {
+      "path": "s2n-bignum/include/s2n-bignum.h",
+      "bytes": 80873,
+      "sha256": "94cd42586fdb718de4b3b1dfb5429358f57e0c68ad8d833b86e233da406056a8",
+      "git_blob_sha1": "f26d3eb3c1bd0fc1df6ddab042a98e8a752482ae"
+    },
+    {
+      "path": "s2n-bignum/arm/proofs/subroutine_signatures.ml",
+      "bytes": 149393,
+      "sha256": "cbae5684deb4758a7d391e1a4e4d61ed9e33fedffdb2c0a6de80693116a852d0",
+      "git_blob_sha1": "db3f1548112ff4aa862e4ca284f1e3d8507803d3"
+    },
+    {
+      "path": "s2n-bignum/x86/proofs/subroutine_signatures.ml",
+      "bytes": 153958,
+      "sha256": "f9268864aace2c66063541bd12eef06313d4634bc977cd09b6600a3b824910e6",
+      "git_blob_sha1": "79fcc58da909e058ab1d1e21f93a546318151d6f"
+    }
+  ],
+  "generated_HOL_roots_absent": {
+    "pa_j.ml": true,
+    "update_database.ml": true,
+    "hol.sh": true,
+    "hol_lib_inlined.ml": true,
+    "hol_lib.cmxa": true
+  },
+  "checked_in_signatures_present": {
+    "arm": true,
+    "x86": true
+  },
+  "source_literal": {
+    "bytes": 185,
+    "sha256": "2ec605ad88338f62739324fed88147729e3a723be4197eb5480d07eee6153216",
+    "first4_hex": "f30f1efa",
+    "source": "s2n-bignum/x86/proofs/bignum_add.ml:15"
+  },
+  "elapsed_seconds": 1.896571708
+}

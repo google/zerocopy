@@ -1,0 +1,346 @@
+{
+  "topics": [
+    "isa",
+    "isa/aarch64",
+    "isa/x86-64",
+    "isa/riscv64",
+    "isa/binary-lifting",
+    "lean/mechanization",
+    "verification/survey"
+  ],
+  "subjects": [
+    {
+      "name": "anneal",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/joshlf/anneal-private",
+        "revision": "42f4571d761b46c7142815f38b69c3781b3555e3"
+      }
+    },
+    {
+      "name": "asl-interpreter",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/asl-interpreter",
+        "revision": "8cfc0b27002d282da55568e3462868e9dfd8c3bd"
+      }
+    },
+    {
+      "name": "mra_tools",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/mra_tools",
+        "revision": "941317606f36580f668498889abc6301ed8222d8"
+      }
+    },
+    {
+      "name": "asl_to_sail",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/asl_to_sail",
+        "revision": "78242b8d60a507fab18d9b4f225bfc7bd33e62b3"
+      }
+    },
+    {
+      "name": "herdtools7",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/herd/herdtools7",
+        "revision": "6bea2e8131feaeb497a7bf86d52d94cdd8721a6c"
+      }
+    },
+    {
+      "name": "L3",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/coruus/L3",
+        "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+      }
+    },
+    {
+      "name": "sail",
+      "identity": {
+        "kind": "git-repo",
+        "locator": "https://github.com/rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "kind": "package",
+        "locator": "leanprover/lean4",
+        "revision": "v4.34.1"
+      }
+    },
+    {
+      "name": "leanprover/LNSym",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "commit": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+        "tree": "1f2abe7b0830756e9b33e9bb5e722fc5bd681c13"
+      }
+    },
+    {
+      "name": "isla",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/rems-project/isla.git",
+        "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3",
+        "observed_at": "2026-10-29",
+        "notes": "Isla symbolic execution engine for Sail JIB IR (isla-sail/jib_ir.ml, src/footprint.rs)."
+      }
+    },
+    {
+      "name": "islaris",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/rems-project/islaris.git",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "observed_at": "2026-10-29",
+        "notes": "Islaris Iris/Rocq machine-code verification framework over Isla traces, including sail-riscv refinement (sail-riscv/sail_opsem.v) and branches sail-riscv-update (16fa62eb13253f16b0bd82e17d1a5f7da88181ec) and CN2Islaris (8d8ffb97cd0c77e21eebf35fa8dc2c3a98e827ed)."
+      }
+    },
+    {
+      "name": "isla-lang",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/rems-project/isla-lang.git",
+        "revision": "db2ba552ba4b26fabbff27d5ad806d38ecce9bd6",
+        "observed_at": "2026-10-29",
+        "notes": "Ott/Rocq AST definition of Isla symbolic traces (coq/isla_lang.v)."
+      }
+    },
+    {
+      "name": "CN2Islaris",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/rems-project/CN2Islaris.git",
+        "revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466",
+        "observed_at": "2026-10-29",
+        "notes": "Automated translation of CN separation-logic C specifications into Islaris AArch64 binary correctness proofs across -O0, -O1, and -O2."
+      }
+    },
+    {
+      "name": "cerberus",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/rems-project/cerberus.git",
+        "revision": "3bdd8cb8e2805d46c22725d7651a2ed90b012837",
+        "observed_at": "2026-10-29",
+        "notes": "Cerberus CN2Islaris branch implementing backend/cn/binaryVerification.ml and backend/cn/dwarfData.ml."
+      }
+    },
+    {
+      "name": "riscv-coq",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/mit-plv/riscv-coq.git",
+        "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae",
+        "observed_at": "2026-10-29",
+        "notes": "MIT PLV typeclass-parameterized RISC-V specification in Rocq (RiscvProgram, RiscvMachine, Primitives, MinimalMMIO, LeakageOfInstr)."
+      }
+    },
+    {
+      "name": "bedrock2",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/mit-plv/bedrock2.git",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13",
+        "observed_at": "2026-10-29",
+        "notes": "MIT PLV C-like systems compiler targeting riscv-coq via FlatToRiscvCommon.v and Pipeline.v."
+      }
+    },
+    {
+      "name": "CompCert",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/AbsInt/CompCert.git",
+        "revision": "e26caf9fa6cd91665c9e8ee2b5194f413c796821",
+        "observed_at": "2026-10-29",
+        "notes": "CompCert verified C compiler value/memory model (common/Values.v, common/Memory.v) and target assembly semantics (x86/Asm.v, aarch64/Asm.v, riscV/Asm.v)."
+      }
+    },
+    {
+      "name": "jasmin",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/jasmin-lang/jasmin.git",
+        "revision": "6c4994d56a9a030201e62275a7d343b101bd0a23",
+        "observed_at": "2026-10-29",
+        "notes": "Jasmin cryptographic assembly compiler and Rocq architecture parameterization (proofs/arch/arch_decl.v, arch_sem.v, x86_instr_decl.v, memory_model.v)."
+      }
+    },
+    {
+      "name": "vale",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/project-everest/vale.git",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288",
+        "observed_at": "2026-10-29",
+        "notes": "Project Everest Verified Assembly Language for Everest x64 semantics in F* (fstar/specs/hardware/X64.Machine_s.fst, X64.Semantics_s.fst)."
+      }
+    },
+    {
+      "name": "acl2",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/acl2/acl2.git",
+        "revision": "9df88e946034e24212f3aedd8b71b02e4224783e",
+        "observed_at": "2026-10-29",
+        "notes": "ACL2 x86isa formalization (books/projects/x86isa/machine/: state.lisp, register-readers-and-writers.lisp, other-non-det.lisp, top-level-memory.lisp, paging.lisp)."
+      }
+    },
+    {
+      "name": "HOL",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/HOL-Theorem-Prover/HOL.git",
+        "revision": "d73e603616d80726506326d83af8f0e74559623c",
+        "observed_at": "2026-10-29",
+        "notes": "HOL4 theorem prover including Fox's L3 machine-code Hoare triple infrastructure (examples/l3-machine-code/common/stateScript.sml)."
+      }
+    },
+    {
+      "name": "cakeml",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/CakeML/cakeml.git",
+        "revision": "665f9b21712ad093e10a404ccc2f78e64a34aeef",
+        "observed_at": "2026-10-29",
+        "notes": "CakeML verified compiler target-agnostic assembly interface (compiler/encoders/asm/asmScript.sml, asmSemScript.sml)."
+      }
+    },
+    {
+      "name": "HolBA",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/kth-step/HolBA.git",
+        "revision": "ef22c1fd8da612c57f2e7f273cb14594a7e529d3",
+        "observed_at": "2026-10-29",
+        "notes": "KTH STEP HOL4 Binary Analysis platform and BIR intermediate representation (src/theory/bir/bir_programScript.sml, bir_exp_memScript.sml)."
+      }
+    },
+    {
+      "name": "l4v",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/seL4/l4v.git",
+        "revision": "7b8c09901f25bd3ba5d05046bba14e226bd659d1",
+        "observed_at": "2026-10-29",
+        "notes": "seL4 Isabelle/HOL AArch64 machine interface and virtual address space specification (spec/machine/AARCH64/MachineOps.thy, spec/abstract/AARCH64/ArchVSpace_A.thy)."
+      }
+    },
+    {
+      "name": "zerocopy",
+      "identity": {
+        "kind": "git",
+        "url": "https://github.com/google/zerocopy.git",
+        "revision": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "observed_at": "2026-10-29",
+        "notes": "Anneal trusted Lean 4 verification kernel (trusted/lean/Trusted/Refinement.lean, StepResult.lean, Memory.lean, MirSemantics.lean)."
+      }
+    },
+    {
+      "name": "acl2/acl2",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "2df7fd8b81f0f36964114b09007c17dc7f8d2d28"
+      }
+    },
+    {
+      "name": "kframework/X86-64-semantics",
+      "identity": {
+        "repository": "kframework/X86-64-semantics",
+        "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+      }
+    },
+    {
+      "name": "mit-plv/bedrock2",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+      }
+    },
+    {
+      "name": "mit-plv/riscv-coq",
+      "identity": {
+        "repository": "mit-plv/riscv-coq",
+        "revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae"
+      }
+    },
+    {
+      "name": "CompCert 3.18 compilation boundary",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Translation Validation for a Verified OS Kernel",
+      "identity": {
+        "publication": "PLDI 2013",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Verified Compilation on a Verified Processor",
+      "identity": {
+        "doi": "10.1145/3314221.3314622",
+        "publication": "PLDI 2019"
+      }
+    },
+    {
+      "name": "Kraken",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Rust compiler and library 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "s2n-bignum soundness analysis",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+      }
+    },
+    {
+      "name": "Intel DOIT guidance",
+      "identity": {
+        "url": "https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/best-practices/data-operand-independent-timing-isa-guidance.html",
+        "observed-date": "2026-10-14",
+        "updated-date": "2025-09-10"
+      }
+    }
+  ],
+  "observed_at": "2026-10-29"
+}

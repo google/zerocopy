@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/jasmin-execution-plan/dependency-attempt-report-candidate/reports/jasmin-offline-dependency-build-sandbox-fallback-and-partial-store-2026/support/check.py", line 77, in <module>
+    if __name__=='__main__':main()
+  File "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/jasmin-execution-plan/dependency-attempt-report-candidate/reports/jasmin-offline-dependency-build-sandbox-fallback-and-partial-store-2026/support/check.py", line 66, in main
+    conn=sqlite3.connect(':memory:');conn.deserialize(data['db/db.sqlite']);conn.row_factory=sqlite3.Row;conn.execute('PRAGMA query_only=ON')
+AttributeError: 'sqlite3.Connection' object has no attribute 'deserialize'

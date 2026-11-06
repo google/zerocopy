@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "rust/validity",
+    "rust/layout",
+    "rust/transmute",
+    "rust/niche-optimization",
+    "rust/reference-guarantees"
+  ],
+  "subjects": [
+    {
+      "name": "rust",
+      "identity": {
+        "release": "1.99.1",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "rust-reference",
+      "identity": {
+        "submodule_commit": "82da570bafd9efed421bdbae0f8603ede8dd308b",
+        "parent_rust_release": "1.99.1"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "archive_sha256": "0b808e620296bde607ed6cf74642f39a023c2dbf9fe842d458fdfb69392913c0"
+      }
+    },
+    {
+      "name": "Rust compiler and core library selected by Anneal",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Rust Reference bundled by the selected compiler revision",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-10-24"
+}

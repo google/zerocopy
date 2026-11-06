@@ -1,0 +1,342 @@
+{
+  "status": "source-read-only preparation",
+  "compiler_commit": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "compiler_version_identity": "Rust1.97.0-nightly, May1 distribution; not freshly executed in this preparation",
+  "installed_sources_authority": "Retained pinned rustc-dev/src distribution; per-file hashes below. URLs are primary source locators and were not fetched.",
+  "channel_manifest_sha256": "97de9ff11f25dbd069fc89325ade28706db462383af67551b722a91533f1540a",
+  "sources": [
+    {
+      "path": "compiler/rustc_target/src/callconv/mod.rs",
+      "sha256": "f65e47d57905d866f5ad97932f06125ab5008ef736fc12dad1e9fa3b04048052",
+      "inspected_line_ranges": [
+        [
+          38,
+          201
+        ],
+        [
+          240,
+          417
+        ],
+        [
+          545,
+          611
+        ],
+        [
+          629,
+          775
+        ]
+      ],
+      "role": "Full passing modes, attributes, cast components, equality limits and target adjustment dispatch.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_target/src/callconv/mod.rs"
+    },
+    {
+      "path": "compiler/rustc_target/src/callconv/aarch64.rs",
+      "sha256": "8270daa7cf61bb13e20143167506bb13c9c928e417fe03915266a8f20f2ae658",
+      "inspected_line_ranges": [
+        [
+          8,
+          44
+        ],
+        [
+          77,
+          182
+        ]
+      ],
+      "role": "Darwin narrow extension, HFA and aggregate classification.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_target/src/callconv/aarch64.rs"
+    },
+    {
+      "path": "compiler/rustc_target/src/callconv/x86_win64.rs",
+      "sha256": "04a4ec39681264eac8315054f420a724be377965cd24dfa2e23e1754f110bfba",
+      "inspected_line_ranges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "role": "Windows aggregate/integer/vector adjustment; scalable-vector panic excluded.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_target/src/callconv/x86_win64.rs"
+    },
+    {
+      "path": "compiler/rustc_ty_utils/src/abi.rs",
+      "sha256": "36fff701cec7499b58b838373701b6ab020727552caf68ec5ed3197aa28ae885",
+      "inspected_line_ranges": [
+        [
+          30,
+          73
+        ],
+        [
+          229,
+          438
+        ],
+        [
+          440,
+          737
+        ]
+      ],
+      "role": "Instance versus pointer construction; hidden caller location; scalar attributes; query premises and deduction.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_ty_utils/src/abi.rs"
+    },
+    {
+      "path": "compiler/rustc_middle/src/ty/mod.rs",
+      "sha256": "90cb6b463b91052c1a17bebe14e8e272760dacca12dbe08f9dd0ff8e15779a9a",
+      "inspected_line_ranges": [
+        [
+          2185,
+          2210
+        ]
+      ],
+      "role": "Optimization and incremental-sensitive public query dispatch.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/mod.rs"
+    },
+    {
+      "path": "compiler/rustc_middle/src/queries.rs",
+      "sha256": "613da347172143ddbfc5cc5c1904fbe28f4a94476f91ddf1fa114b04589e357b",
+      "inspected_line_ranges": [
+        [
+          1770,
+          1810
+        ]
+      ],
+      "role": "Actual query signatures and direct/virtual versus indirect distinction.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/queries.rs"
+    },
+    {
+      "path": "compiler/rustc_middle/src/ty/instance.rs",
+      "sha256": "b1aa119ff3d5b1660099ff5b7573c8f5eaa96f5bcaff86a1fc8936d129ad61cf",
+      "inspected_line_ranges": [
+        [
+          492,
+          516
+        ]
+      ],
+      "role": "Instance::try_resolve premises and error/unknown distinction.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/instance.rs"
+    },
+    {
+      "path": "compiler/rustc_middle/src/ty/generics.rs",
+      "sha256": "5a8dfe1ca92feb97c0682e1fe7fd6180f18af40965927baf65f5d4a6b03239b0",
+      "inspected_line_ranges": [
+        [
+          12,
+          63
+        ],
+        [
+          118,
+          158
+        ]
+      ],
+      "role": "Finite type-only generic selector checks.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/generics.rs"
+    },
+    {
+      "path": "compiler/rustc_middle/src/ty/sty.rs",
+      "sha256": "5fd96b77f73dd54d1814deb4b6f751c5fe48068ac94beeb57dac727841250d94",
+      "inspected_line_ranges": [
+        [
+          620,
+          632
+        ]
+      ],
+      "role": "Raw pointer type constructor selected by bounded extra-argument table.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/sty.rs"
+    },
+    {
+      "path": "compiler/rustc_middle/src/ty/context.rs",
+      "sha256": "d4b1400c87a881bfda793120a504bafef3f78a39de1f071fb47a1323701567a8",
+      "inspected_line_ranges": [
+        [
+          2445,
+          2466
+        ]
+      ],
+      "role": "Interned argument/type-list APIs.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_middle/src/ty/context.rs"
+    },
+    {
+      "path": "compiler/rustc_abi/src/lib.rs",
+      "sha256": "3657ef582f2d622edeb3b7cb61252f6b9a513189246490d8d982cdb6fddd093f",
+      "inspected_line_ranges": [
+        [
+          1381,
+          1455
+        ],
+        [
+          1538,
+          1599
+        ],
+        [
+          1645,
+          1720
+        ],
+        [
+          1788,
+          1809
+        ],
+        [
+          2101,
+          2143
+        ]
+      ],
+      "role": "Primitive/scalar ranges, bounded layout fields and backend representations.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_abi/src/lib.rs"
+    },
+    {
+      "path": "compiler/rustc_abi/src/layout/ty.rs",
+      "sha256": "fb480d7ba1a6b49f40f3e2a57cfcc554938f467fc94b50463ceeb425454a65d4",
+      "inspected_line_ranges": [
+        [
+          70,
+          100
+        ]
+      ],
+      "role": "TyAndLayout has synthetic layouts and dereferences LayoutData.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_abi/src/layout/ty.rs"
+    },
+    {
+      "path": "compiler/rustc_codegen_llvm/src/abi.rs",
+      "sha256": "24181cc0088b2e4b64e7887b9a9ad29f413712993a8028faa9818098edd2c0f7",
+      "inspected_line_ranges": [
+        [
+          38,
+          107
+        ],
+        [
+          350,
+          429
+        ]
+      ],
+      "role": "Emission of optimization attributes and lowering hidden result/pair/variadic interface.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_codegen_llvm/src/abi.rs"
+    },
+    {
+      "path": "compiler/rustc_passes/src/abi_test.rs",
+      "sha256": "d139e09316511fcad5304051dd8b441b20ff86bf85acda0422aebd1b53bae544",
+      "inspected_line_ranges": [
+        [
+          52,
+          107
+        ],
+        [
+          109,
+          141
+        ]
+      ],
+      "role": "In-tree ABI query examples; built-in eq check is not full semantic-attribute equivalence.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_passes/src/abi_test.rs"
+    },
+    {
+      "path": "compiler/rustc_target/src/spec/targets/aarch64_apple_darwin.rs",
+      "sha256": "27f17dbc2f78802e22f4df550de2536ccf8bcfd148bac39f93fe4b04a8ecd5c2",
+      "inspected_line_ranges": [
+        [
+          1,
+          31
+        ]
+      ],
+      "role": "Built-in host target layout and CPU source.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_target/src/spec/targets/aarch64_apple_darwin.rs"
+    },
+    {
+      "path": "compiler/rustc_target/src/spec/targets/x86_64_pc_windows_msvc.rs",
+      "sha256": "5c0d4b8ea129afb1b40f28a0d01acdfab0470ab08a2ec1c603fb5add73fc6584",
+      "inspected_line_ranges": [
+        [
+          1,
+          25
+        ]
+      ],
+      "role": "Optional Windows target specification source.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_target/src/spec/targets/x86_64_pc_windows_msvc.rs"
+    },
+    {
+      "path": "compiler/rustc_feature/src/unstable.rs",
+      "sha256": "12d1bbd54d1da67659e6dbf1f197fcaee6b228412e02cb2516d02f3b1d9563b5",
+      "inspected_line_ranges": [
+        [
+          330,
+          337
+        ],
+        [
+          700,
+          709
+        ]
+      ],
+      "role": "repr_simd internal and simd_ffi unstable feature definitions.",
+      "primary_url": "https://github.com/rust-lang/rust/blob/f53b654a8882fd5fc036c4ca7a4ff41ce32497a6/compiler/rustc_feature/src/unstable.rs"
+    }
+  ],
+  "readonly_tools": [
+    {
+      "toolchain_relative_path": "bin/rustc",
+      "sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988",
+      "bytes": 412504,
+      "role": "Compiler executable, not rustup launcher."
+    },
+    {
+      "toolchain_relative_path": "lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432,
+      "role": "Selected driver artifact."
+    },
+    {
+      "toolchain_relative_path": "lib/rustlib/aarch64-apple-darwin/lib/librustc_driver-16d1e96e5b674978.dylib",
+      "sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d",
+      "bytes": 202329432,
+      "role": "Actual retained observer-resolved matching driver location."
+    },
+    {
+      "toolchain_relative_path": "lib/rustlib/aarch64-apple-darwin/lib/libcore-ef8881612b09eb71.rlib",
+      "sha256": "2fcf9f5223d149c3f65af094a1d99f1aba28621d926c992dfdac87606674cf90",
+      "bytes": 2435976,
+      "role": "Installed host target core."
+    },
+    {
+      "toolchain_relative_path": "lib/rustlib/aarch64-apple-darwin/lib/libserde_json-6ff72d7e4200795e.rmeta",
+      "sha256": "945c9aec8c2371b9b03d9a3b6dd47cc32c73c76751c290598262460849e9bbfa",
+      "bytes": 1733127,
+      "role": "Compiler-distributed serde_json metadata; proposed driver dependency, not separately installed."
+    }
+  ],
+  "installed_target_library_directories": [
+    "aarch64-apple-darwin"
+  ],
+  "optional_target_libraries": [
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "installed": false,
+      "advertised_available": true,
+      "xz_url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-x86_64-pc-windows-msvc.tar.xz",
+      "xz_sha256": "0e217c42f8f89e98b255461f96d75b6aef812a9d192d9eb1826a4ff336e050e2",
+      "gz_url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-x86_64-pc-windows-msvc.tar.gz",
+      "gz_sha256": "4e23dc1e794c336265ca72bf995bd0be7e2f583fe431a552933cedab9d3d3b50",
+      "observed": "Manifest text only; no download or compiler target query."
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "installed": false,
+      "advertised_available": true,
+      "xz_url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-aarch64-unknown-linux-gnu.tar.xz",
+      "xz_sha256": "a5355d953645a0ed5b1192c404ecc5ca3e7c5adcf1153132d5e9dfd9550a4e43",
+      "gz_url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-aarch64-unknown-linux-gnu.tar.gz",
+      "gz_sha256": "f8dd58cd8a6b44716432521cc8a259245887c776e14aeafd005ccead61293580",
+      "observed": "Manifest text only; no download or compiler target query."
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "installed": false,
+      "advertised_available": true,
+      "xz_url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-x86_64-unknown-linux-gnu.tar.xz",
+      "xz_sha256": "991864e6b26bd5877695b25bd9fdfef55af007b3606509cee90e0e6f7d51837e",
+      "gz_url": "https://static.rust-lang.org/dist/2026-05-01/rust-std-nightly-x86_64-unknown-linux-gnu.tar.gz",
+      "gz_sha256": "380fcec5bc02e4572e94f9c448db568c450f4b79d7976c3bb914f9fd41c1540c",
+      "observed": "Manifest text only; no download or compiler target query."
+    }
+  ],
+  "codegen_backend_directory_observation": "No standalone backend files listed at host codegen-backends path; this does not establish absent integrated LLVM support.",
+  "prior_report": {
+    "package": "rust-function-abi-witnesses-b940084",
+    "REPORT_sha256": "f5a6f99e86c8205abd9d4eaf57ce104e7a7553256e0ad9d21a048c44a2840f3f",
+    "meaning": "Read literature/earlier evidence only; different Rust pin and C cross-target observations cannot substitute for planned May1 Rust results."
+  }
+}

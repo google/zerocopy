@@ -1,0 +1,102 @@
+{
+  "status": "PLANNED data-only controls; none executed",
+  "fixed_claim": "Same independently selected request/source/toolchain/target/profile/instance; no weakened property accepted.",
+  "controls": [
+    {
+      "id": "exact",
+      "mutation_or_case": "Unmodified whole observation under selected fixed request",
+      "expected": "accept",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-target",
+      "mutation_or_case": "Reuse same candidate against a different consumer-selected target, or mutate claimed triple/spec",
+      "expected": "reject before acceptance",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-instance",
+      "mutation_or_case": "Reuse generic_id::<u8> observation for generic_id::<u64> (and reverse)",
+      "expected": "reject complete instance/argument identity",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "same-layout-wrong-root",
+      "mutation_or_case": "Relabel C/system or same-shaped functions without the selected definition identity",
+      "expected": "reject even if modes coincide",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-result-mode",
+      "mutation_or_case": "Change aggregate return indirect mode to direct, leaving source/request fixed",
+      "expected": "reject whole witness mismatch",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "omitted-hidden-location",
+      "mutation_or_case": "Delete track_caller instance final argument",
+      "expected": "reject whole witness mismatch",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-extension",
+      "mutation_or_case": "Change narrow argument sign/zero extension",
+      "expected": "reject whole witness mismatch",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-attributes",
+      "mutation_or_case": "Toggle NoAlias/NoUndef or alter pointee size/alignment without changing passing bits",
+      "expected": "reject full attributes; eq_abi insufficient",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-variadic",
+      "mutation_or_case": "Omit c_variadic/fixed_count/selected promoted extra argument (one control each)",
+      "expected": "reject shape or mismatch",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "wrong-cast",
+      "mutation_or_case": "Change HFA/cast unit, prefix, total or consecutive property",
+      "expected": "reject mismatch",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "stale-options",
+      "mutation_or_case": "Reuse opt0 candidate under opt2 fixed profile or wrong CPU/features",
+      "expected": "reject request/profile binding even if a queried field coincides",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "source-substitution",
+      "mutation_or_case": "Present changed source hash/bytes under same label without changing consumer request",
+      "expected": "reject preflight; no arbitrary source compilation",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "omitted-selection",
+      "mutation_or_case": "Delete one requested selected function/alias",
+      "expected": "reject complete selected set",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "malformed",
+      "mutation_or_case": "Duplicate key, unknown field, oversized/deep input, truncated/empty packet (separate controls)",
+      "expected": "reject strict parser/bounds",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "nonvariadic-extras",
+      "mutation_or_case": "Attempt extra arguments on fixed signature",
+      "expected": "reject selector before invoking query assertion",
+      "observed": "UNPERFORMED"
+    },
+    {
+      "id": "operational",
+      "mutation_or_case": "Compiler/runtime failure, missing callback, missing/malformed observation or unknown status",
+      "expected": "stop and diagnose; never accepted/reclassified as expected semantic rejection",
+      "observed": "UNPERFORMED"
+    }
+  ]
+}

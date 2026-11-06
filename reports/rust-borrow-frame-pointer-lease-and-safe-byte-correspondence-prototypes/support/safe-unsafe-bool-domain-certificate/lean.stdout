@@ -1,0 +1,6 @@
+'UnsafeApiCertificate.all_inputs' depends on axioms: [propext, Quot.sound]
+'UnsafeApiCertificate.no_bad' depends on axioms: [propext, Quot.sound]
+'UnsafeApiCertificate.entry_covers_all' does not depend on any axioms
+'UnsafeApiCertificate.step_preserves' depends on axioms: [propext, Quot.sound]
+'UnsafeApiCertificate.wider_guard_bad' does not depend on any axioms
+'UnsafeApiCertificate.narrowed_model_hides' depends on axioms: [propext, Quot.sound]

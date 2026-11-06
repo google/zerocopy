@@ -1,0 +1,1354 @@
+{
+  "status": "PASS",
+  "helper_sha256": "8fdc72dbdb85e3a6345a49cb0ac993fbfac1a18474a73ca5ef05377c3a5188e4",
+  "scope": "All bytes of the four __text sections are compared to object-reader raw words; every emitted assembly instruction compared to reader mnemonic modulo whitespace/immediate numeral spelling and symbol-bound unresolved BL relocations. Aliases checked by nlist values. IR headers preserved for manual FnAbi/IR/placement inspection. Not a verified parser/disassembler/assembler or compiler/ISA theorem.",
+  "rows": [
+    {
+      "profile": "host-subjects-opt0",
+      "ir_sha256": "ec851701c0d63bfed54d94e6bffab7a40a37d86106e3bb2ffa55f746a50363d7",
+      "assembly_sha256": "b908f1c9f4e29f76e912d2520249b3f9f4d41a873f49aad0f3824b6307a27709",
+      "object_sha256": "7a3bde908a9db19a1d2c16c526efc34b282d0db5e088cc47a167ef31c0b4ca81",
+      "instruction_count": 154,
+      "text_bytes": 616,
+      "matched_all_instruction_text_and_raw_words": true,
+      "alias_equalities": {},
+      "functions": [
+        {
+          "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects",
+          "start": 0,
+          "end_exclusive": 8,
+          "instruction_count": 2,
+          "raw_hex": "001040b9c0035fd6",
+          "raw_sha256": "6f1929ee2376e6ada94db6d2aafe012dfc8382613e73b99aea0c7dea270fac13",
+          "assembly": [
+            "ldr\tw0, [x0, #16]",
+            "ret"
+          ],
+          "object_words": [
+            "0xb9401000",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects",
+          "start": 8,
+          "end_exclusive": 28,
+          "instruction_count": 5,
+          "raw_hex": "ff4300d1e00700f9e00740f9ff430091c0035fd6",
+          "raw_sha256": "d4a9901c0c32b5d8f72fa768ce8b083996b8e4ad7e80b62a5dcbd5294aeb081d",
+          "assembly": [
+            "sub\tsp, sp, #16",
+            "str\tx0, [sp, #8]",
+            "ldr\tx0, [sp, #8]",
+            "add\tsp, sp, #16",
+            "ret"
+          ],
+          "object_words": [
+            "0xd10043ff",
+            "0xf90007e0",
+            "0xf94007e0",
+            "0x910043ff",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_big",
+          "start": 28,
+          "end_exclusive": 52,
+          "instruction_count": 6,
+          "raw_hex": "e90308aa0000c03d2001803d080840f9280900f9c0035fd6",
+          "raw_sha256": "036d12780d7a5d73d711e0b242cb54bb9498a75bc7ec82df8c4c329c0a0a8029",
+          "assembly": [
+            "mov\tx9, x8",
+            "ldr\tq0, [x0]",
+            "str\tq0, [x9]",
+            "ldr\tx8, [x0, #16]",
+            "str\tx8, [x9, #16]",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0803e9",
+            "0x3dc00000",
+            "0x3d800120",
+            "0xf9400808",
+            "0xf9000928",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_fp",
+          "start": 52,
+          "end_exclusive": 64,
+          "instruction_count": 3,
+          "raw_hex": "00c0221e0028611ec0035fd6",
+          "raw_sha256": "d10b9c80070a7bba05133f20fa616c3182350bea77c7d93454d190030e040c3b",
+          "assembly": [
+            "fcvt\td0, s0",
+            "fadd\td0, d0, d1",
+            "ret"
+          ],
+          "object_words": [
+            "0x1e22c000",
+            "0x1e612800",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_hfa",
+          "start": 64,
+          "end_exclusive": 124,
+          "instruction_count": 15,
+          "raw_hex": "ffc300d1e01300bde11700bde21b00bde31f00bde007c03de003803de003c03de00b803de02340bde12740bde22b40bde32f40bdffc30091c0035fd6",
+          "raw_sha256": "f4426935d81d118166acaf3d7df264127b7ef09b8114eaa2dcbde4df6be5df27",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "str\ts0, [sp, #16]",
+            "str\ts1, [sp, #20]",
+            "str\ts2, [sp, #24]",
+            "str\ts3, [sp, #28]",
+            "ldr\tq0, [sp, #16]",
+            "str\tq0, [sp]",
+            "ldr\tq0, [sp]",
+            "str\tq0, [sp, #32]",
+            "ldr\ts0, [sp, #32]",
+            "ldr\ts1, [sp, #36]",
+            "ldr\ts2, [sp, #40]",
+            "ldr\ts3, [sp, #44]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xbd0013e0",
+            "0xbd0017e1",
+            "0xbd001be2",
+            "0xbd001fe3",
+            "0x3dc007e0",
+            "0x3d8003e0",
+            "0x3dc003e0",
+            "0x3d800be0",
+            "0xbd4023e0",
+            "0xbd4027e1",
+            "0xbd402be2",
+            "0xbd402fe3",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_narrow",
+          "start": 124,
+          "end_exclusive": 160,
+          "instruction_count": 9,
+          "raw_hex": "e80300aa081d4092e90301aa293d4093080109cae90302aa29014092000109cac0035fd6",
+          "raw_sha256": "87b63754be6d5dad52c8cf31b3a603df9c40bdc6a6ef0b0b601caad0402769d0",
+          "assembly": [
+            "mov\tx8, x0",
+            "and\tx8, x8, #0xff",
+            "mov\tx9, x1",
+            "sxth\tx9, w9",
+            "eor\tx8, x8, x9",
+            "mov\tx9, x2",
+            "and\tx9, x9, #0x1",
+            "eor\tx0, x8, x9",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0003e8",
+            "0x92401d08",
+            "0xaa0103e9",
+            "0x93403d29",
+            "0xca090108",
+            "0xaa0203e9",
+            "0x92400129",
+            "0xca090100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_pair",
+          "start": 160,
+          "end_exclusive": 212,
+          "instruction_count": 13,
+          "raw_hex": "ffc300d1e00b00f9e10f00f9e007c03de003803de90340f9e80b40b9e91300f9e82b00b9e01340f9e11740f9ffc30091c0035fd6",
+          "raw_sha256": "041c57d9571a2f8f29580dffcc8fe7bed44a83db4af141ebe72c955b85f214a6",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "str\tx0, [sp, #16]",
+            "str\tx1, [sp, #24]",
+            "ldr\tq0, [sp, #16]",
+            "str\tq0, [sp]",
+            "ldr\tx9, [sp]",
+            "ldr\tw8, [sp, #8]",
+            "str\tx9, [sp, #32]",
+            "str\tw8, [sp, #40]",
+            "ldr\tx0, [sp, #32]",
+            "ldr\tx1, [sp, #40]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xf9000be0",
+            "0xf9000fe1",
+            "0x3dc007e0",
+            "0x3d8003e0",
+            "0xf94003e9",
+            "0xb9400be8",
+            "0xf90013e9",
+            "0xb9002be8",
+            "0xf94013e0",
+            "0xf94017e1",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_raw",
+          "start": 212,
+          "end_exclusive": 216,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_interior",
+          "start": 216,
+          "end_exclusive": 220,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_big",
+          "start": 220,
+          "end_exclusive": 244,
+          "instruction_count": 6,
+          "raw_hex": "e90308aa0000c03d2001803d080840f9280900f9c0035fd6",
+          "raw_sha256": "036d12780d7a5d73d711e0b242cb54bb9498a75bc7ec82df8c4c329c0a0a8029",
+          "assembly": [
+            "mov\tx9, x8",
+            "ldr\tq0, [x0]",
+            "str\tq0, [x9]",
+            "ldr\tx8, [x0, #16]",
+            "str\tx8, [x9, #16]",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0803e9",
+            "0x3dc00000",
+            "0x3d800120",
+            "0xf9400808",
+            "0xf9000928",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_narrow",
+          "start": 244,
+          "end_exclusive": 280,
+          "instruction_count": 9,
+          "raw_hex": "e80300aa081d4092e90301aa293d4093080109cae90302aa29014092000109cac0035fd6",
+          "raw_sha256": "87b63754be6d5dad52c8cf31b3a603df9c40bdc6a6ef0b0b601caad0402769d0",
+          "assembly": [
+            "mov\tx8, x0",
+            "and\tx8, x8, #0xff",
+            "mov\tx9, x1",
+            "sxth\tx9, w9",
+            "eor\tx8, x8, x9",
+            "mov\tx9, x2",
+            "and\tx9, x9, #0x1",
+            "eor\tx0, x8, x9",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0003e8",
+            "0x92401d08",
+            "0xaa0103e9",
+            "0x93403d29",
+            "0xca090108",
+            "0xaa0203e9",
+            "0x92400129",
+            "0xca090100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_tuple",
+          "start": 280,
+          "end_exclusive": 284,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_shared",
+          "start": 284,
+          "end_exclusive": 292,
+          "instruction_count": 2,
+          "raw_hex": "000040f9c0035fd6",
+          "raw_sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369",
+          "assembly": [
+            "ldr\tx0, [x0]",
+            "ret"
+          ],
+          "object_words": [
+            "0xf9400000",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_slice",
+          "start": 292,
+          "end_exclusive": 300,
+          "instruction_count": 2,
+          "raw_hex": "e00301aac0035fd6",
+          "raw_sha256": "50ddf39453988ba55a1b7d9bbba7f1ae7c5c5c3f7414c859acf17118fa4886b8",
+          "assembly": [
+            "mov\tx0, x1",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0103e0",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_stack_driver",
+          "start": 300,
+          "end_exclusive": 368,
+          "instruction_count": 17,
+          "raw_hex": "ffc300d1fd7b02a9fd830091ac0b40f9ab0f40f9aa1340f9a81740f9e90300912c0100f92b0500f92a0900f9280d00f90000009400040091fd7b42a9ffc30091c0035fd6",
+          "raw_sha256": "4651c24b49daf35d05e54f67d0b3681f714b1105c2120fedf25050ede29ab20a",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "stp\tx29, x30, [sp, #32]",
+            "add\tx29, sp, #32",
+            "ldr\tx12, [x29, #16]",
+            "ldr\tx11, [x29, #24]",
+            "ldr\tx10, [x29, #32]",
+            "ldr\tx8, [x29, #40]",
+            "mov\tx9, sp",
+            "str\tx12, [x9]",
+            "str\tx11, [x9, #8]",
+            "str\tx10, [x9, #16]",
+            "str\tx8, [x9, #24]",
+            "bl\t_abi_opaque_twelve",
+            "add\tx0, x0, #1",
+            "ldp\tx29, x30, [sp, #32]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xa9027bfd",
+            "0x910083fd",
+            "0xf9400bac",
+            "0xf9400fab",
+            "0xf94013aa",
+            "0xf94017a8",
+            "0x910003e9",
+            "0xf900012c",
+            "0xf900052b",
+            "0xf900092a",
+            "0xf9000d28",
+            "0x94000000",
+            "0x91000400",
+            "0xa9427bfd",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": [
+            {
+              "address": 348,
+              "symbol_index": 23,
+              "pcrel": 1,
+              "length_log2": 2,
+              "external": 1,
+              "type": 2,
+              "raw_hex": "5c0100001700002d",
+              "symbol": "_abi_opaque_twelve"
+            }
+          ]
+        },
+        {
+          "symbol": "_abi_system_big",
+          "start": 368,
+          "end_exclusive": 392,
+          "instruction_count": 6,
+          "raw_hex": "e90308aa0000c03d2001803d080840f9280900f9c0035fd6",
+          "raw_sha256": "036d12780d7a5d73d711e0b242cb54bb9498a75bc7ec82df8c4c329c0a0a8029",
+          "assembly": [
+            "mov\tx9, x8",
+            "ldr\tq0, [x0]",
+            "str\tq0, [x9]",
+            "ldr\tx8, [x0, #16]",
+            "str\tx8, [x9, #16]",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0803e9",
+            "0x3dc00000",
+            "0x3d800120",
+            "0xf9400808",
+            "0xf9000928",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_system_narrow",
+          "start": 392,
+          "end_exclusive": 428,
+          "instruction_count": 9,
+          "raw_hex": "e80300aa081d4092e90301aa293d4093080109cae90302aa29014092000109cac0035fd6",
+          "raw_sha256": "87b63754be6d5dad52c8cf31b3a603df9c40bdc6a6ef0b0b601caad0402769d0",
+          "assembly": [
+            "mov\tx8, x0",
+            "and\tx8, x8, #0xff",
+            "mov\tx9, x1",
+            "sxth\tx9, w9",
+            "eor\tx8, x8, x9",
+            "mov\tx9, x2",
+            "and\tx9, x9, #0x1",
+            "eor\tx0, x8, x9",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0003e8",
+            "0x92401d08",
+            "0xaa0103e9",
+            "0x93403d29",
+            "0xca090108",
+            "0xaa0203e9",
+            "0x92400129",
+            "0xca090100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_system_pair",
+          "start": 428,
+          "end_exclusive": 480,
+          "instruction_count": 13,
+          "raw_hex": "ffc300d1e00b00f9e10f00f9e007c03de003803de90340f9e80b40b9e91300f9e82b00b9e01340f9e11740f9ffc30091c0035fd6",
+          "raw_sha256": "041c57d9571a2f8f29580dffcc8fe7bed44a83db4af141ebe72c955b85f214a6",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "str\tx0, [sp, #16]",
+            "str\tx1, [sp, #24]",
+            "ldr\tq0, [sp, #16]",
+            "str\tq0, [sp]",
+            "ldr\tx9, [sp]",
+            "ldr\tw8, [sp, #8]",
+            "str\tx9, [sp, #32]",
+            "str\tw8, [sp, #40]",
+            "ldr\tx0, [sp, #32]",
+            "ldr\tx1, [sp, #40]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xf9000be0",
+            "0xf9000fe1",
+            "0x3dc007e0",
+            "0x3d8003e0",
+            "0xf94003e9",
+            "0xb9400be8",
+            "0xf90013e9",
+            "0xb9002be8",
+            "0xf94013e0",
+            "0xf94017e1",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_track",
+          "start": 480,
+          "end_exclusive": 536,
+          "instruction_count": 14,
+          "raw_hex": "ff8300d1fd7b01a9fd430091e00700f9e00301aa0000009400000094e80300aae00740f9e803082a000008cafd7b41a9ff830091c0035fd6",
+          "raw_sha256": "f2a26c627b13a16444939cc3fc8817b679f8a09faa1b0e7d8f5ebeda5bbf6cc4",
+          "assembly": [
+            "sub\tsp, sp, #32",
+            "stp\tx29, x30, [sp, #16]",
+            "add\tx29, sp, #16",
+            "str\tx0, [sp, #8]",
+            "mov\tx0, x1",
+            "bl\t__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects",
+            "bl\t__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects",
+            "mov\tx8, x0",
+            "ldr\tx0, [sp, #8]",
+            "mov\tw8, w8",
+            "eor\tx0, x0, x8",
+            "ldp\tx29, x30, [sp, #16]",
+            "add\tsp, sp, #32",
+            "ret"
+          ],
+          "object_words": [
+            "0xd10083ff",
+            "0xa9017bfd",
+            "0x910043fd",
+            "0xf90007e0",
+            "0xaa0103e0",
+            "0x94000000",
+            "0x94000000",
+            "0xaa0003e8",
+            "0xf94007e0",
+            "0x2a0803e8",
+            "0xca080000",
+            "0xa9417bfd",
+            "0x910083ff",
+            "0xd65f03c0"
+          ],
+          "relocations": [
+            {
+              "address": 504,
+              "symbol_index": 1,
+              "pcrel": 1,
+              "length_log2": 2,
+              "external": 1,
+              "type": 2,
+              "raw_hex": "f80100000100002d",
+              "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects"
+            },
+            {
+              "address": 500,
+              "symbol_index": 2,
+              "pcrel": 1,
+              "length_log2": 2,
+              "external": 1,
+              "type": 2,
+              "raw_hex": "f40100000200002d",
+              "symbol": "__RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects"
+            }
+          ]
+        },
+        {
+          "symbol": "_abi_unique",
+          "start": 536,
+          "end_exclusive": 556,
+          "instruction_count": 5,
+          "raw_hex": "080040f908050091080000f9000040f9c0035fd6",
+          "raw_sha256": "a7ec968c652edcaabcc18822ab07d7325114b7f1cf17414661cf35c4f443dfb8",
+          "assembly": [
+            "ldr\tx8, [x0]",
+            "add\tx8, x8, #1",
+            "str\tx8, [x0]",
+            "ldr\tx0, [x0]",
+            "ret"
+          ],
+          "object_words": [
+            "0xf9400008",
+            "0x91000508",
+            "0xf9000008",
+            "0xf9400000",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_unit",
+          "start": 556,
+          "end_exclusive": 560,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_vararg_driver",
+          "start": 560,
+          "end_exclusive": 616,
+          "instruction_count": 14,
+          "raw_hex": "ffc300d1fd7b02a9fd830091e8030091e90300aa090100f9000500fd1f0900f9200080520000009400040091fd7b42a9ffc30091c0035fd6",
+          "raw_sha256": "50fca3a1b23eb16f32d3a29070eb7254f8b1c12464ef062a897d5477ba3b5cf2",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "stp\tx29, x30, [sp, #32]",
+            "add\tx29, sp, #32",
+            "mov\tx8, sp",
+            "mov\tx9, x0",
+            "str\tx9, [x8]",
+            "str\td0, [x8, #8]",
+            "str\txzr, [x8, #16]",
+            "mov\tw0, #1",
+            "bl\t_abi_opaque_vararg",
+            "add\tx0, x0, #1",
+            "ldp\tx29, x30, [sp, #32]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xa9027bfd",
+            "0x910083fd",
+            "0x910003e8",
+            "0xaa0003e9",
+            "0xf9000109",
+            "0xfd000500",
+            "0xf900091f",
+            "0x52800020",
+            "0x94000000",
+            "0x91000400",
+            "0xa9427bfd",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": [
+            {
+              "address": 596,
+              "symbol_index": 24,
+              "pcrel": 1,
+              "length_log2": 2,
+              "external": 1,
+              "type": 2,
+              "raw_hex": "540200001800002d",
+              "symbol": "_abi_opaque_vararg"
+            }
+          ]
+        }
+      ],
+      "ir_headers": [
+        {
+          "line": 8,
+          "text": "define internal i32 @_RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location4lineCsjplKSa1E9lu_12abi_subjects(ptr align 8 %self) unnamed_addr #0 {"
+        },
+        {
+          "line": 17,
+          "text": "define internal align 8 ptr @_RNvMs4_NtNtCsi86csyF5gCW_4core5panic8locationNtB5_8Location6callerCsjplKSa1E9lu_12abi_subjects(ptr align 8 %0) unnamed_addr #0 {"
+        },
+        {
+          "line": 26,
+          "text": "define void @abi_c_big(ptr sret([24 x i8]) align 8 %_0, ptr align 8 %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 33,
+          "text": "define double @abi_c_fp(float %x, double %y) unnamed_addr #1 {"
+        },
+        {
+          "line": 41,
+          "text": "define [4 x float] @abi_c_hfa([4 x float] %0) unnamed_addr #1 {"
+        },
+        {
+          "line": 54,
+          "text": "define i64 @abi_c_narrow(i8 zeroext %x, i16 signext %y, i1 zeroext %flag) unnamed_addr #1 {"
+        },
+        {
+          "line": 65,
+          "text": "define [2 x i64] @abi_c_pair([2 x i64] %0) unnamed_addr #1 {"
+        },
+        {
+          "line": 83,
+          "text": "define ptr @abi_c_raw(ptr %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 89,
+          "text": "define ptr @abi_interior(ptr align 8 %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 95,
+          "text": "define void @abi_rust_big(ptr sret([24 x i8]) align 8 %_0, ptr align 8 %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 102,
+          "text": "define i64 @abi_rust_narrow(i8 %x, i16 %y, i1 zeroext %flag) unnamed_addr #1 {"
+        },
+        {
+          "line": 113,
+          "text": "define { i64, i32 } @abi_rust_tuple(i64 %x.0, i32 %x.1) unnamed_addr #1 {"
+        },
+        {
+          "line": 121,
+          "text": "define i64 @abi_shared(ptr align 8 %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 128,
+          "text": "define i64 @abi_slice(ptr %x.0, i64 %x.1) unnamed_addr #1 {"
+        },
+        {
+          "line": 134,
+          "text": "define i64 @abi_stack_driver(i64 %a, i64 %b, i64 %c, i64 %d, i64 %e, i64 %f, i64 %g, i64 %h, i64 %i, i64 %j, i64 %k, i64 %l) unnamed_addr #1 {"
+        },
+        {
+          "line": 142,
+          "text": "define void @abi_system_big(ptr sret([24 x i8]) align 8 %_0, ptr align 8 %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 149,
+          "text": "define i64 @abi_system_narrow(i8 zeroext %x, i16 signext %y, i1 zeroext %flag) unnamed_addr #1 {"
+        },
+        {
+          "line": 160,
+          "text": "define [2 x i64] @abi_system_pair([2 x i64] %0) unnamed_addr #1 {"
+        },
+        {
+          "line": 178,
+          "text": "define i64 @abi_track(i64 %x, ptr align 8 %0) unnamed_addr #1 {"
+        },
+        {
+          "line": 190,
+          "text": "define i64 @abi_unique(ptr align 8 %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 200,
+          "text": "define void @abi_unit() unnamed_addr #1 {"
+        },
+        {
+          "line": 206,
+          "text": "define i64 @abi_vararg_driver(i32 %x, double %y) unnamed_addr #1 {"
+        },
+        {
+          "line": 217,
+          "text": "declare i64 @abi_opaque_twelve(i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64, i64) unnamed_addr #3"
+        },
+        {
+          "line": 220,
+          "text": "declare i64 @abi_opaque_vararg(i32, ...) unnamed_addr #3"
+        }
+      ]
+    },
+    {
+      "profile": "host-subjects-opt2",
+      "ir_sha256": "ddcc9da50a6deda7b505863e115d8dc8b890a6779ac55315f595b68009a671c3",
+      "assembly_sha256": "25b0736b8ecaae4eb07d7a28a6404c88754b287560a7d86169f2b911ba217ef2",
+      "object_sha256": "d32110ee7561bf797389e0d4877b2e6ea9e7f5fdfe5b99af9213a925b2f9dc80",
+      "instruction_count": 63,
+      "text_bytes": 252,
+      "matched_all_instruction_text_and_raw_words": true,
+      "alias_equalities": {
+        "_abi_system_pair": "_abi_c_pair",
+        "_abi_rust_big": "_abi_c_big",
+        "_abi_system_big": "_abi_c_big",
+        "_abi_system_narrow": "_abi_c_narrow"
+      },
+      "functions": [
+        {
+          "symbol": "_abi_c_big",
+          "start": 0,
+          "end_exclusive": 20,
+          "instruction_count": 5,
+          "raw_hex": "0000c03d0001803d090840f9090900f9c0035fd6",
+          "raw_sha256": "44271727fb68723fb9cf54d9ca79bc1b2913c16eb0decb7d0e26efdd9ae35dec",
+          "assembly": [
+            "ldr\tq0, [x0]",
+            "str\tq0, [x8]",
+            "ldr\tx9, [x0, #16]",
+            "str\tx9, [x8, #16]",
+            "ret"
+          ],
+          "object_words": [
+            "0x3dc00000",
+            "0x3d800100",
+            "0xf9400809",
+            "0xf9000909",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_fp",
+          "start": 20,
+          "end_exclusive": 32,
+          "instruction_count": 3,
+          "raw_hex": "00c0221e2028601ec0035fd6",
+          "raw_sha256": "6eb5bcabff2e695c1fa1764b2ba818d50b7302b32b679f7f18c7aaa2e63d0937",
+          "assembly": [
+            "fcvt\td0, s0",
+            "fadd\td0, d1, d0",
+            "ret"
+          ],
+          "object_words": [
+            "0x1e22c000",
+            "0x1e602820",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_hfa",
+          "start": 32,
+          "end_exclusive": 36,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_narrow",
+          "start": 36,
+          "end_exclusive": 60,
+          "instruction_count": 6,
+          "raw_hex": "e803002a297c4093280108cae903022a000109cac0035fd6",
+          "raw_sha256": "c8299b64f7924394e32e30cb0e5c8e39897d07ae4e8300627621e833b229c762",
+          "assembly": [
+            "mov\tw8, w0",
+            "sxtw\tx9, w1",
+            "eor\tx8, x9, x8",
+            "mov\tw9, w2",
+            "eor\tx0, x8, x9",
+            "ret"
+          ],
+          "object_words": [
+            "0x2a0003e8",
+            "0x93407c29",
+            "0xca080128",
+            "0x2a0203e9",
+            "0xca090100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_pair",
+          "start": 60,
+          "end_exclusive": 68,
+          "instruction_count": 2,
+          "raw_hex": "e103012ac0035fd6",
+          "raw_sha256": "df11b25247c24975540e172974dee4b84c5006ab785298b085d6ba8dc874639c",
+          "assembly": [
+            "mov\tw1, w1",
+            "ret"
+          ],
+          "object_words": [
+            "0x2a0103e1",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_c_raw",
+          "start": 68,
+          "end_exclusive": 72,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_interior",
+          "start": 72,
+          "end_exclusive": 76,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_narrow",
+          "start": 76,
+          "end_exclusive": 100,
+          "instruction_count": 6,
+          "raw_hex": "081c4092293c4093280108cae903022a000109cac0035fd6",
+          "raw_sha256": "d9b32cd899b600105ae763b27b773f6de5c1badce3c1818f70bc21c008f2dab6",
+          "assembly": [
+            "and\tx8, x0, #0xff",
+            "sxth\tx9, w1",
+            "eor\tx8, x9, x8",
+            "mov\tw9, w2",
+            "eor\tx0, x8, x9",
+            "ret"
+          ],
+          "object_words": [
+            "0x92401c08",
+            "0x93403c29",
+            "0xca080128",
+            "0x2a0203e9",
+            "0xca090100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_tuple",
+          "start": 100,
+          "end_exclusive": 104,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_shared",
+          "start": 104,
+          "end_exclusive": 112,
+          "instruction_count": 2,
+          "raw_hex": "000040f9c0035fd6",
+          "raw_sha256": "4197ad96213c98161e13fbfd6185a724b5570ba296d316558cbd5cc5c1842369",
+          "assembly": [
+            "ldr\tx0, [x0]",
+            "ret"
+          ],
+          "object_words": [
+            "0xf9400000",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_slice",
+          "start": 112,
+          "end_exclusive": 120,
+          "instruction_count": 2,
+          "raw_hex": "e00301aac0035fd6",
+          "raw_sha256": "50ddf39453988ba55a1b7d9bbba7f1ae7c5c5c3f7414c859acf17118fa4886b8",
+          "assembly": [
+            "mov\tx0, x1",
+            "ret"
+          ],
+          "object_words": [
+            "0xaa0103e0",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_stack_driver",
+          "start": 120,
+          "end_exclusive": 168,
+          "instruction_count": 12,
+          "raw_hex": "ffc300d1fd7b02a9fd830091a007c03da82742a9e82701a9e003803d0000009400040091fd7b42a9ffc30091c0035fd6",
+          "raw_sha256": "ffdbcbcd500d4349231351f675aacacc95d08b22ead555893851dc6cc4f33b2e",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "stp\tx29, x30, [sp, #32]",
+            "add\tx29, sp, #32",
+            "ldr\tq0, [x29, #16]",
+            "ldp\tx8, x9, [x29, #32]",
+            "stp\tx8, x9, [sp, #16]",
+            "str\tq0, [sp]",
+            "bl\t_abi_opaque_twelve",
+            "add\tx0, x0, #1",
+            "ldp\tx29, x30, [sp, #32]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xa9027bfd",
+            "0x910083fd",
+            "0x3dc007a0",
+            "0xa94227a8",
+            "0xa90127e8",
+            "0x3d8003e0",
+            "0x94000000",
+            "0x91000400",
+            "0xa9427bfd",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": [
+            {
+              "address": 148,
+              "symbol_index": 21,
+              "pcrel": 1,
+              "length_log2": 2,
+              "external": 1,
+              "type": 2,
+              "raw_hex": "940000001500002d",
+              "symbol": "_abi_opaque_twelve"
+            }
+          ]
+        },
+        {
+          "symbol": "_abi_track",
+          "start": 168,
+          "end_exclusive": 180,
+          "instruction_count": 3,
+          "raw_hex": "281040b9000008cac0035fd6",
+          "raw_sha256": "b627fc1524cf6823821e717dd53a4410b2871fcfc4ebb9cf94f432e2d1e0dfe3",
+          "assembly": [
+            "ldr\tw8, [x1, #16]",
+            "eor\tx0, x0, x8",
+            "ret"
+          ],
+          "object_words": [
+            "0xb9401028",
+            "0xca080000",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_unique",
+          "start": 180,
+          "end_exclusive": 200,
+          "instruction_count": 5,
+          "raw_hex": "080040f908050091080000f9e00308aac0035fd6",
+          "raw_sha256": "f612d617ed8911bbee5dc05324ff162b6468c0fe6f2ffeb5b0a4ee87e2990a54",
+          "assembly": [
+            "ldr\tx8, [x0]",
+            "add\tx8, x8, #1",
+            "str\tx8, [x0]",
+            "mov\tx0, x8",
+            "ret"
+          ],
+          "object_words": [
+            "0xf9400008",
+            "0x91000508",
+            "0xf9000008",
+            "0xaa0803e0",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_unit",
+          "start": 200,
+          "end_exclusive": 204,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_vararg_driver",
+          "start": 204,
+          "end_exclusive": 252,
+          "instruction_count": 12,
+          "raw_hex": "ffc300d1fd7b02a9fd830091ff0b00f9e00700fde00300f9200080520000009400040091fd7b42a9ffc30091c0035fd6",
+          "raw_sha256": "96d9ea293119714c9121ddd39dbc35c326a455910f58dded1ce844ca0ceaa2dc",
+          "assembly": [
+            "sub\tsp, sp, #48",
+            "stp\tx29, x30, [sp, #32]",
+            "add\tx29, sp, #32",
+            "str\txzr, [sp, #16]",
+            "str\td0, [sp, #8]",
+            "str\tx0, [sp]",
+            "mov\tw0, #1",
+            "bl\t_abi_opaque_vararg",
+            "add\tx0, x0, #1",
+            "ldp\tx29, x30, [sp, #32]",
+            "add\tsp, sp, #48",
+            "ret"
+          ],
+          "object_words": [
+            "0xd100c3ff",
+            "0xa9027bfd",
+            "0x910083fd",
+            "0xf9000bff",
+            "0xfd0007e0",
+            "0xf90003e0",
+            "0x52800020",
+            "0x94000000",
+            "0x91000400",
+            "0xa9427bfd",
+            "0x9100c3ff",
+            "0xd65f03c0"
+          ],
+          "relocations": [
+            {
+              "address": 232,
+              "symbol_index": 22,
+              "pcrel": 1,
+              "length_log2": 2,
+              "external": 1,
+              "type": 2,
+              "raw_hex": "e80000001600002d",
+              "symbol": "_abi_opaque_vararg"
+            }
+          ]
+        }
+      ],
+      "ir_headers": [
+        {
+          "line": 6,
+          "text": "@abi_system_pair = unnamed_addr alias [2 x i64] ([2 x i64]), ptr @abi_c_pair"
+        },
+        {
+          "line": 7,
+          "text": "@abi_rust_big = unnamed_addr alias void (ptr, ptr), ptr @abi_c_big"
+        },
+        {
+          "line": 8,
+          "text": "@abi_system_big = unnamed_addr alias void (ptr, ptr), ptr @abi_c_big"
+        },
+        {
+          "line": 9,
+          "text": "@abi_system_narrow = unnamed_addr alias i64 (i8, i16, i1), ptr @abi_c_narrow"
+        },
+        {
+          "line": 12,
+          "text": "define void @abi_c_big(ptr dead_on_unwind noalias noundef writable writeonly sret([24 x i8]) align 8 captures(none) dereferenceable(24) initializes((0, 24)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(24) %x) unnamed_addr #0 {"
+        },
+        {
+          "line": 19,
+          "text": "define noundef double @abi_c_fp(float noundef %x, double noundef %y) unnamed_addr #1 {"
+        },
+        {
+          "line": 27,
+          "text": "define [4 x float] @abi_c_hfa([4 x float] returned %0) unnamed_addr #1 {"
+        },
+        {
+          "line": 33,
+          "text": "define noundef i64 @abi_c_narrow(i8 noundef zeroext %x, i16 noundef signext %y, i1 noundef zeroext %flag) unnamed_addr #1 {"
+        },
+        {
+          "line": 44,
+          "text": "define [2 x i64] @abi_c_pair([2 x i64] %0) unnamed_addr #1 {"
+        },
+        {
+          "line": 53,
+          "text": "define noundef ptr @abi_c_raw(ptr noundef readnone returned captures(ret: address, provenance) %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 59,
+          "text": "define noundef nonnull ptr @abi_interior(ptr noundef nonnull readnone returned align 8 captures(ret: address, provenance) %x) unnamed_addr #1 {"
+        },
+        {
+          "line": 65,
+          "text": "define noundef i64 @abi_rust_narrow(i8 noundef %x, i16 noundef %y, i1 noundef zeroext %flag) unnamed_addr #1 {"
+        },
+        {
+          "line": 76,
+          "text": "define { i64, i32 } @abi_rust_tuple(i64 noundef %x.0, i32 noundef %x.1) unnamed_addr #1 {"
+        },
+        {
+          "line": 84,
+          "text": "define noundef i64 @abi_shared(ptr noalias noundef readonly align 8 captures(none) dereferenceable(8) %x) unnamed_addr #2 {"
+        },
+        {
+          "line": 91,
+          "text": "define noundef range(i64 0, -9223372036854775808) i64 @abi_slice(ptr noalias noundef nonnull readonly captures(none) %x.0, i64 noundef returned range(i64 0, -9223372036854775808) %x.1) unnamed_addr #1 {"
+        },
+        {
+          "line": 97,
+          "text": "define noundef i64 @abi_stack_driver(i64 noundef %a, i64 noundef %b, i64 noundef %c, i64 noundef %d, i64 noundef %e, i64 noundef %f, i64 noundef %g, i64 noundef %h, i64 noundef %i, i64 noundef %j, i64 noundef %k, i64 noundef %l) unnamed_addr #3 {"
+        },
+        {
+          "line": 105,
+          "text": "define noundef i64 @abi_track(i64 noundef %x, ptr noalias noundef readonly align 8 captures(none) dereferenceable(24) %0) unnamed_addr #2 {"
+        },
+        {
+          "line": 115,
+          "text": "define noundef i64 @abi_unique(ptr noalias noundef align 8 captures(none) dereferenceable(8) %x) unnamed_addr #0 {"
+        },
+        {
+          "line": 124,
+          "text": "define void @abi_unit() unnamed_addr #1 {"
+        },
+        {
+          "line": 130,
+          "text": "define noundef i64 @abi_vararg_driver(i32 noundef %x, double noundef %y) unnamed_addr #3 {"
+        },
+        {
+          "line": 141,
+          "text": "declare noundef i64 @abi_opaque_twelve(i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef, i64 noundef) unnamed_addr #5"
+        },
+        {
+          "line": 144,
+          "text": "declare noundef i64 @abi_opaque_vararg(i32 noundef, ...) unnamed_addr #5"
+        }
+      ]
+    },
+    {
+      "profile": "host-vectors-opt0",
+      "ir_sha256": "36dad0cc3d18a1bd6673b7eb41ad89bb8b413364092e88a2f8d3228692e9ff3e",
+      "assembly_sha256": "940ca32ff82e7f60bd142d2130ebc1736bed1b6f29f3cee0b9ddb18d6ba6f845",
+      "object_sha256": "cf2450a3d2c3722d484fc99bdbbf4b93e455b328e6c47828961e790b3ed637aa",
+      "instruction_count": 5,
+      "text_bytes": 20,
+      "matched_all_instruction_text_and_raw_words": true,
+      "alias_equalities": {},
+      "functions": [
+        {
+          "symbol": "_abi_c_vector",
+          "start": 0,
+          "end_exclusive": 4,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_vector",
+          "start": 4,
+          "end_exclusive": 16,
+          "instruction_count": 3,
+          "raw_hex": "0000c03d0001803dc0035fd6",
+          "raw_sha256": "e08e9b4eb9fa72a75bb302ff880cf84f4c48fdc811003faa95fb1ea51d5a7634",
+          "assembly": [
+            "ldr\tq0, [x0]",
+            "str\tq0, [x8]",
+            "ret"
+          ],
+          "object_words": [
+            "0x3dc00000",
+            "0x3d800100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_system_vector",
+          "start": 16,
+          "end_exclusive": 20,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        }
+      ],
+      "ir_headers": [
+        {
+          "line": 7,
+          "text": "define <4 x i32> @abi_c_vector(<4 x i32> %x) unnamed_addr #0 {"
+        },
+        {
+          "line": 13,
+          "text": "define void @abi_rust_vector(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %x) unnamed_addr #0 {"
+        },
+        {
+          "line": 21,
+          "text": "define <4 x i32> @abi_system_vector(<4 x i32> %x) unnamed_addr #0 {"
+        }
+      ]
+    },
+    {
+      "profile": "host-vectors-opt2",
+      "ir_sha256": "e303a78b6daecda1a3e843145078ea855f2eb1a5e2411d9a1295cad6f7f232c3",
+      "assembly_sha256": "a08dea3b37d5c2efb22bdc34e65a6a708d1dcc5ca8c514e91a77e7ea0573b46f",
+      "object_sha256": "7d9929992f94b4206054b3990d62a37372a0908312add05e5bbaeb731ba5f772",
+      "instruction_count": 4,
+      "text_bytes": 16,
+      "matched_all_instruction_text_and_raw_words": true,
+      "alias_equalities": {
+        "_abi_system_vector": "_abi_c_vector"
+      },
+      "functions": [
+        {
+          "symbol": "_abi_c_vector",
+          "start": 0,
+          "end_exclusive": 4,
+          "instruction_count": 1,
+          "raw_hex": "c0035fd6",
+          "raw_sha256": "110f46b5b35c069160560c6ad6786f647dd44e8760a52a46fc22dbbcd7630b91",
+          "assembly": [
+            "ret"
+          ],
+          "object_words": [
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        },
+        {
+          "symbol": "_abi_rust_vector",
+          "start": 4,
+          "end_exclusive": 16,
+          "instruction_count": 3,
+          "raw_hex": "0000c03d0001803dc0035fd6",
+          "raw_sha256": "e08e9b4eb9fa72a75bb302ff880cf84f4c48fdc811003faa95fb1ea51d5a7634",
+          "assembly": [
+            "ldr\tq0, [x0]",
+            "str\tq0, [x8]",
+            "ret"
+          ],
+          "object_words": [
+            "0x3dc00000",
+            "0x3d800100",
+            "0xd65f03c0"
+          ],
+          "relocations": []
+        }
+      ],
+      "ir_headers": [
+        {
+          "line": 6,
+          "text": "@abi_system_vector = unnamed_addr alias <4 x i32> (<4 x i32>), ptr @abi_c_vector"
+        },
+        {
+          "line": 9,
+          "text": "define <4 x i32> @abi_c_vector(<4 x i32> returned %x) unnamed_addr #0 {"
+        },
+        {
+          "line": 15,
+          "text": "define void @abi_rust_vector(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %x) unnamed_addr #1 {"
+        }
+      ]
+    }
+  ]
+}

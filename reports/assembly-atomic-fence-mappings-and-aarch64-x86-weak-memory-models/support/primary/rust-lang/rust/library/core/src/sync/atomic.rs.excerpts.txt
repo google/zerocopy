@@ -1,0 +1,284 @@
+### https://github.com/rust-lang/rust/blob/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/sync/atomic.rs#L1-L63
+1: //! Atomic types
+2: //!
+3: //! Atomic types provide primitive shared-memory communication between
+4: //! threads, and are the building blocks of other concurrent
+5: //! types.
+6: //!
+7: //! This module defines atomic versions of a select number of primitive
+8: //! types, including [`AtomicBool`], [`AtomicIsize`], [`AtomicUsize`],
+9: //! [`AtomicI8`], [`AtomicU16`], etc.
+10: //! Atomic types present operations that, when used correctly, synchronize
+11: //! updates between threads.
+12: //!
+13: //! Atomic variables are safe to share between threads (they implement [`Sync`])
+14: //! but they do not themselves provide the mechanism for sharing and follow the
+15: //! [threading model](../../../std/thread/index.html#the-threading-model) of Rust.
+16: //! The most common way to share an atomic variable is to put it into an [`Arc`][arc] (an
+17: //! atomically-reference-counted shared pointer).
+18: //!
+19: //! [arc]: ../../../std/sync/struct.Arc.html
+20: //!
+21: //! Atomic types may be stored in static variables, initialized using
+22: //! the constant initializers like [`AtomicBool::new`]. Atomic statics
+23: //! are often used for lazy global initialization.
+24: //!
+25: //! ## Memory model for atomic accesses
+26: //!
+27: //! Rust atomics currently follow the same rules as [C++20 atomics][cpp], specifically the rules
+28: //! from the [`intro.races`][cpp-intro.races] section, without the "consume" memory ordering. Since
+29: //! C++ uses an object-based memory model whereas Rust is access-based, a bit of translation work
+30: //! has to be done to apply the C++ rules to Rust: whenever C++ talks about "the value of an
+31: //! object", we understand that to mean the resulting bytes obtained when doing a read. When the C++
+32: //! standard talks about "the value of an atomic object", this refers to the result of doing an
+33: //! atomic load (via the operations provided in this module). A "modification of an atomic object"
+34: //! refers to an atomic store.
+35: //!
+36: //! The end result is *almost* equivalent to saying that creating a *shared reference* to one of the
+37: //! Rust atomic types corresponds to creating an `atomic_ref` in C++, with the `atomic_ref` being
+38: //! destroyed when the lifetime of the shared reference ends. The main difference is that Rust
+39: //! permits concurrent atomic and non-atomic reads to the same memory as those cause no issue in the
+40: //! C++ memory model, they are just forbidden in C++ because memory is partitioned into "atomic
+41: //! objects" and "non-atomic objects" (with `atomic_ref` temporarily converting a non-atomic object
+42: //! into an atomic object).
+43: //!
+44: //! The most important aspect of this model is that *data races* are undefined behavior. A data race
+45: //! is defined as conflicting non-synchronized accesses where at least one of the accesses is
+46: //! non-atomic. Here, accesses are *conflicting* if they affect overlapping regions of memory and at
+47: //! least one of them is a write. (A `compare_exchange` or `compare_exchange_weak` that does not
+48: //! succeed is not considered a write.) They are *non-synchronized* if neither of them
+49: //! *happens-before* the other, according to the happens-before order of the memory model.
+50: //!
+51: //! The other possible cause of undefined behavior in the memory model are mixed-size accesses: Rust
+52: //! inherits the C++ limitation that non-synchronized conflicting atomic accesses may not partially
+53: //! overlap. In other words, every pair of non-synchronized atomic accesses must be either disjoint,
+54: //! access the exact same memory (including using the same access size), or both be reads.
+55: //!
+56: //! Each atomic access takes an [`Ordering`] which defines how the operation interacts with the
+57: //! happens-before order. These orderings behave the same as the corresponding [C++20 atomic
+58: //! orderings][cpp_memory_order]. For more information, see the [nomicon].
+59: //!
+60: //! [cpp]: https://en.cppreference.com/w/cpp/atomic
+61: //! [cpp-intro.races]: https://timsong-cpp.github.io/cppwp/n4868/intro.multithread#intro.races
+62: //! [cpp_memory_order]: https://en.cppreference.com/w/cpp/atomic/memory_order
+63: //! [nomicon]: ../../../nomicon/atomics.html
+
+### https://github.com/rust-lang/rust/blob/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/sync/atomic.rs#L4300-L4446
+4300: const unsafe fn atomic_umax<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+4301:     // SAFETY: the caller must uphold the safety contract for `atomic_umax`
+4302:     unsafe {
+4303:         match order {
+4304:             Relaxed => intrinsics::atomic_umax::<T, { AO::Relaxed }>(dst, val),
+4305:             Acquire => intrinsics::atomic_umax::<T, { AO::Acquire }>(dst, val),
+4306:             Release => intrinsics::atomic_umax::<T, { AO::Release }>(dst, val),
+4307:             AcqRel => intrinsics::atomic_umax::<T, { AO::AcqRel }>(dst, val),
+4308:             SeqCst => intrinsics::atomic_umax::<T, { AO::SeqCst }>(dst, val),
+4309:         }
+4310:     }
+4311: }
+4312: 
+4313: /// Updates `*dst` to the min value of `val` and the old value (unsigned comparison)
+4314: #[inline]
+4315: #[cfg(target_has_atomic)]
+4316: #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+4317: #[rustc_const_unstable(feature = "const_atomic", issue = "160078")]
+4318: const unsafe fn atomic_umin<T: Copy>(dst: *mut T, val: T, order: Ordering) -> T {
+4319:     // SAFETY: the caller must uphold the safety contract for `atomic_umin`
+4320:     unsafe {
+4321:         match order {
+4322:             Relaxed => intrinsics::atomic_umin::<T, { AO::Relaxed }>(dst, val),
+4323:             Acquire => intrinsics::atomic_umin::<T, { AO::Acquire }>(dst, val),
+4324:             Release => intrinsics::atomic_umin::<T, { AO::Release }>(dst, val),
+4325:             AcqRel => intrinsics::atomic_umin::<T, { AO::AcqRel }>(dst, val),
+4326:             SeqCst => intrinsics::atomic_umin::<T, { AO::SeqCst }>(dst, val),
+4327:         }
+4328:     }
+4329: }
+4330: 
+4331: /// An atomic fence.
+4332: ///
+4333: /// Fences create synchronization between themselves and atomic operations or fences in other
+4334: /// threads. It can be helpful to think of a fence as preventing the compiler and CPU from
+4335: /// reordering certain types of memory operations around it, but that is a simplified model which
+4336: /// fails to capture some of the nuances.
+4337: ///
+4338: /// There are 3 different ways to use an atomic fence:
+4339: ///
+4340: /// - atomic - fence synchronization: an atomic operation with (at least) [`Release`] ordering
+4341: ///   semantics synchronizes with a fence with (at least) [`Acquire`] ordering semantics.
+4342: /// - fence - atomic synchronization: a fence with (at least) [`Release`] ordering semantics
+4343: ///   synchronizes with an atomic operation with (at least) [`Acquire`] ordering semantics.
+4344: /// - fence - fence synchronization: a fence with (at least) [`Release`] ordering semantics
+4345: ///   synchronizes with a fence with (at least) [`Acquire`] ordering semantics.
+4346: ///
+4347: /// These 3 ways complement the regular, fence-less, atomic - atomic synchronization.
+4348: ///
+4349: /// ## Atomic - Fence
+4350: ///
+4351: /// An atomic operation on one thread will synchronize with a fence on another thread when:
+4352: ///
+4353: /// -   on thread 1:
+4354: ///     -   an atomic operation 'X' with (at least) [`Release`] ordering semantics on some atomic
+4355: ///         object 'm',
+4356: ///
+4357: /// -   is paired on thread 2 with:
+4358: ///     -   an atomic read 'Y' with any order on 'm',
+4359: ///     -   followed by a fence 'B' with (at least) [`Acquire`] ordering semantics.
+4360: ///
+4361: /// This provides a happens-before dependence between X and B.
+4362: ///
+4363: /// ```text
+4364: ///     Thread 1                                          Thread 2
+4365: ///
+4366: /// m.store(3, Release); X ---------
+4367: ///                                |
+4368: ///                                |
+4369: ///                                -------------> Y  if m.load(Relaxed) == 3 {
+4370: ///                                               B      fence(Acquire);
+4371: ///                                                      ...
+4372: ///                                                  }
+4373: /// ```
+4374: ///
+4375: /// ## Fence - Atomic
+4376: ///
+4377: /// A fence on one thread will synchronize with an atomic operation on another thread when:
+4378: ///
+4379: /// -   on thread:
+4380: ///     -   a fence 'A' with (at least) [`Release`] ordering semantics,
+4381: ///     -   followed by an atomic write 'X' with any ordering on some atomic object 'm',
+4382: ///
+4383: /// -   is paired on thread 2 with:
+4384: ///     -   an atomic operation 'Y' with (at least) [`Acquire`] ordering semantics.
+4385: ///
+4386: /// This provides a happens-before dependence between A and Y.
+4387: ///
+4388: /// ```text
+4389: ///     Thread 1                                          Thread 2
+4390: ///
+4391: /// fence(Release);      A
+4392: /// m.store(3, Relaxed); X ---------
+4393: ///                                |
+4394: ///                                |
+4395: ///                                -------------> Y  if m.load(Acquire) == 3 {
+4396: ///                                                      ...
+4397: ///                                                  }
+4398: /// ```
+4399: ///
+4400: /// ## Fence - Fence
+4401: ///
+4402: /// A fence on one thread will synchronize with a fence on another thread when:
+4403: ///
+4404: /// -   on thread 1:
+4405: ///     -   a fence 'A' which has (at least) [`Release`] ordering semantics,
+4406: ///     -   followed by an atomic write 'X' with any ordering on some atomic object 'm',
+4407: ///
+4408: /// -   is paired on thread 2 with:
+4409: ///     -   an atomic read 'Y' with any ordering on 'm',
+4410: ///     -   followed by a fence 'B' with (at least) [`Acquire`] ordering semantics.
+4411: ///
+4412: /// This provides a happens-before dependence between A and B.
+4413: ///
+4414: /// ```text
+4415: ///     Thread 1                                          Thread 2
+4416: ///
+4417: /// fence(Release);      A --------------
+4418: /// m.store(3, Relaxed); X ---------    |
+4419: ///                                |    |
+4420: ///                                |    |
+4421: ///                                -------------> Y  if m.load(Relaxed) == 3 {
+4422: ///                                     |-------> B      fence(Acquire);
+4423: ///                                                      ...
+4424: ///                                                  }
+4425: /// ```
+4426: ///
+4427: /// ## Mandatory Atomic
+4428: ///
+4429: /// Note that in the examples above, it is crucial that the access to `m` are atomic. Fences cannot
+4430: /// be used to establish synchronization between non-atomic accesses in different threads. However,
+4431: /// thanks to the happens-before relationship, any non-atomic access that happen-before the atomic
+4432: /// operation or fence with (at least) [`Release`] ordering semantics are now also properly
+4433: /// synchronized with any non-atomic accesses that happen-after the atomic operation or fence with
+4434: /// (at least) [`Acquire`] ordering semantics.
+4435: ///
+4436: /// ## Memory Ordering
+4437: ///
+4438: /// A fence which has [`SeqCst`] ordering, in addition to having both [`Acquire`] and [`Release`]
+4439: /// semantics, participates in the global program order of the other [`SeqCst`] operations and/or
+4440: /// fences.
+4441: ///
+4442: /// Accepts [`Acquire`], [`Release`], [`AcqRel`] and [`SeqCst`] orderings.
+4443: ///
+4444: /// # Panics
+4445: ///
+4446: /// Panics if `order` is [`Relaxed`].
+
+### https://github.com/rust-lang/rust/blob/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/sync/atomic.rs#L4483-L4530
+4483: #[inline]
+4484: #[stable(feature = "rust1", since = "1.0.0")]
+4485: #[rustc_const_unstable(feature = "const_atomic", issue = "160078")]
+4486: #[rustc_diagnostic_item = "fence"]
+4487: #[doc(alias = "atomic_thread_fence")]
+4488: #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+4489: pub const fn fence(order: Ordering) {
+4490:     // SAFETY: using an atomic fence is safe.
+4491:     unsafe {
+4492:         match order {
+4493:             Acquire => intrinsics::atomic_fence::<{ AO::Acquire }>(),
+4494:             Release => intrinsics::atomic_fence::<{ AO::Release }>(),
+4495:             AcqRel => intrinsics::atomic_fence::<{ AO::AcqRel }>(),
+4496:             SeqCst => intrinsics::atomic_fence::<{ AO::SeqCst }>(),
+4497:             Relaxed => panic!("there is no such thing as a relaxed fence"),
+4498:         }
+4499:     }
+4500: }
+4501: 
+4502: /// An atomic fence for synchronization within a single thread.
+4503: ///
+4504: /// Like [`fence`], this function establishes synchronization with other atomic operations and
+4505: /// fences. However, unlike [`fence`], `compiler_fence` only establishes synchronization with
+4506: /// operations *in the same thread*. This may at first sound rather useless, since code within a
+4507: /// thread is typically already totally ordered and does not need any further synchronization.
+4508: /// However, there are cases where code can run on the same thread without being synchronized:
+4509: /// - The most common case is that of a *signal handler*: a signal handler runs in the same thread
+4510: ///   as the code it interrupted, but it is not synchronized with that code. `compiler_fence`
+4511: ///   can be used to establish synchronization between a thread and its signal handler, the same way
+4512: ///   that `fence` can be used to establish synchronization across threads.
+4513: /// - Similar situations can arise in embedded programming with interrupt handlers, or in custom
+4514: ///   implementations of preemptive green threads. In general, `compiler_fence` can establish
+4515: ///   synchronization with code that is guaranteed to run on the same hardware CPU.
+4516: ///
+4517: /// See [`fence`] for how a fence can be used to achieve synchronization. Note that just like
+4518: /// [`fence`], synchronization still requires atomic operations to be used in both threads -- it is
+4519: /// not possible to perform synchronization entirely with fences and non-atomic operations.
+4520: ///
+4521: /// `compiler_fence` does not emit any machine code. However, note that `compiler_fence` is also
+4522: /// *not* a "compiler barrier". It can be helpful to think of a `compiler_fence` as preventing the
+4523: /// compiler from reordering certain types of memory operations around it, but that is a simplified
+4524: /// model which fails to capture some of the nuances. The only actual guarantee made by
+4525: /// `compiler_fence` is establishing synchronization with signal handlers and similar kinds of code,
+4526: /// under the rules described in the [`fence`] documentation.
+4527: ///
+4528: /// `compiler_fence` corresponds to [`atomic_signal_fence`] in C and C++.
+4529: ///
+4530: /// [`atomic_signal_fence`]: https://en.cppreference.com/w/cpp/atomic/atomic_signal_fence
+
+### https://github.com/rust-lang/rust/blob/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library/core/src/sync/atomic.rs#L4568-L4585
+4568: #[inline]
+4569: #[stable(feature = "compiler_fences", since = "1.21.0")]
+4570: #[rustc_const_unstable(feature = "const_atomic", issue = "160078")]
+4571: #[rustc_diagnostic_item = "compiler_fence"]
+4572: #[doc(alias = "atomic_signal_fence")]
+4573: #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+4574: pub const fn compiler_fence(order: Ordering) {
+4575:     // SAFETY: using an atomic fence is safe.
+4576:     unsafe {
+4577:         match order {
+4578:             Acquire => intrinsics::atomic_singlethreadfence::<{ AO::Acquire }>(),
+4579:             Release => intrinsics::atomic_singlethreadfence::<{ AO::Release }>(),
+4580:             AcqRel => intrinsics::atomic_singlethreadfence::<{ AO::AcqRel }>(),
+4581:             SeqCst => intrinsics::atomic_singlethreadfence::<{ AO::SeqCst }>(),
+4582:             Relaxed => panic!("there is no such thing as a relaxed fence"),
+4583:         }
+4584:     }
+4585: }
+

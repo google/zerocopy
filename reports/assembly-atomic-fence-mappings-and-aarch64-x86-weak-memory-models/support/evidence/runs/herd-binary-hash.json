@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "<OWNED_CONTAINER>",
+    "sha256sum",
+    "<HERD_SOURCE>/_build_verified/default/herd/herd.exe"
+  ],
+  "exit": 0,
+  "seconds": 0.12454512505792081,
+  "stdout_sha256": "b7576518410d7fb0970dbbfd914f8b56496f76243b277252fcb0f61c4ebf0381",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

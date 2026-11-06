@@ -1,0 +1,48 @@
+{
+  "schema": "anneal-reference/diagnostic-path-policy-matrix/v1",
+  "subjects": [
+    {
+      "layer": "rustc JSON",
+      "path_source": "FileName.display(DIAGNOSTICS)",
+      "relocation_policy": "controlled by rustc remap prefix/scope",
+      "stable_identity": false
+    },
+    {
+      "layer": "Charon local/current source",
+      "path_source": "rustc RealFileName.local_path(), then Charon normalization",
+      "relocation_policy": "sysroot/Cargo prefixes normalized; arbitrary workspace root retained",
+      "stable_identity": false
+    },
+    {
+      "layer": "Charon imported source without local path",
+      "path_source": "rustc path(MACRO), then virtual normalization",
+      "relocation_policy": "depends on macro-scope remap; /rustc/<40hex> prefix hash stripped",
+      "stable_identity": false
+    },
+    {
+      "layer": "Aeneas source diagnostic",
+      "path_source": "Charon stored filename",
+      "relocation_policy": "inherits Charon",
+      "stable_identity": false
+    },
+    {
+      "layer": "Lean direct batch JSON",
+      "path_source": "frontend input filename / CLI filename",
+      "relocation_policy": "caller spelling/root retained",
+      "stable_identity": false
+    },
+    {
+      "layer": "Lake-mediated Lean build log",
+      "path_source": "Lake rewrites parsed SerialMessage.fileName to relative Lean path",
+      "relocation_policy": "relative to Lake package/build view",
+      "stable_identity": false
+    },
+    {
+      "layer": "Lean LSP",
+      "path_source": "document URI",
+      "relocation_policy": "client/server URI; server module URI creation resolves symlinks",
+      "stable_identity": false
+    }
+  ],
+  "consumer_rule": "Preserve raw producer path/URI and bind it to a separately defined source identity; never use raw cross-tool path equality as source identity."
+}

@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "./concurrent_assembly"
+  ],
+  "exit": 0,
+  "seconds": 0.5749104999704286,
+  "source_sha256": "3c142e4b3204fc4d3e849f968464a2792d84a805a88b3d44595b12a020b53249",
+  "binary_sha256": "0e0192997852c3a7816ac52bc4ac9b3e61e5fdbf2887ab9ece4a950396c2ac83",
+  "assembly_sha256": "46d487ff17c820dcee97ec431e733be06718b8260f3666027dc078f488531a6e"
+}

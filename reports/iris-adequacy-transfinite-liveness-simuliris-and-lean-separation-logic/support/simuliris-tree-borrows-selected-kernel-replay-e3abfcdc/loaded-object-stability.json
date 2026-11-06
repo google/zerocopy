@@ -1,0 +1,8 @@
+{
+  "objects": 517,
+  "exact_path_set_unchanged": true,
+  "sha256_listing_identical": true,
+  "sha256_listing_sha256": "f625d0c4c3b0e5551d0477eb235367c5a32123fdb93e59e0646565d5c89c2ae4",
+  "capture_order": "during recursive checking then after successful checker completion",
+  "no_second_proof_process": true
+}

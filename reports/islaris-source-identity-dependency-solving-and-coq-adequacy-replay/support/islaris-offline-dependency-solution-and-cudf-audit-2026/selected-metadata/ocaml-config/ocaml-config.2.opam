@@ -1,0 +1,36 @@
+opam-version: "2.0"
+name: "ocaml-config"
+version: "2"
+synopsis: "OCaml Switch Configuration"
+description:
+  "This package is used by the OCaml package to set-up its variables."
+maintainer: "David Allsopp <david@tarides.com>"
+authors: [
+  "Louis Gesbert <louis.gesbert@ocamlpro.com>"
+  "David Allsopp <david.allsopp@metastack.com>"
+]
+license: "ISC"
+homepage: "https://opam.ocaml.org/"
+bug-reports: "https://github.com/ocaml/opam/issues"
+depends: [
+  "ocaml-base-compiler" {>= "4.12.0~"} | "ocaml-variants" {>= "4.12.0~"} |
+  "ocaml-system" {>= "4.12.0~"}
+]
+available: os != "win32"
+substs: "gen_ocaml_config.ml"
+extra-source "gen_ocaml_config.ml.in" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/749a918bb85033b0a6370b85a7c6a4be33620c58/tools/opam/gen_ocaml_config.ml.in"
+  checksum: [
+    "sha256=22eb7c0211fc426028e444b272b97eac1e8287a49a512aebaa33c608652cfd29"
+    "md5=a4b41e3236593d8271295b84b0969172"
+  ]
+}
+extra-source "ocaml-config.install" {
+  src:
+    "https://raw.githubusercontent.com/ocaml/ocaml/363fb9f5a2fb87dbd5f8cc579af87dd04e14343b/tools/opam/ocaml-config.install"
+  checksum: [
+    "sha256=6e4fd93f4cce6bad0ed3c08afd0248dbe7d7817109281de6294e5b5ef5597051"
+    "md5=8e50c5e2517d3463b3aad649748cafd7"
+  ]
+}

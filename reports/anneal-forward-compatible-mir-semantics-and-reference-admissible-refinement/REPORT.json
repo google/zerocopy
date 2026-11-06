@@ -7,7 +7,7 @@
     "anneal/trust-policy",
     "rust/layout",
     "rust/transmute",
-    "lean4/mechanization",
+    "lean/mechanization",
     "zerocopy/soundness-policy"
   ],
   "subjects": [

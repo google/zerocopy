@@ -1,0 +1,21 @@
+{
+  "label": "exact-source-check",
+  "argv": [
+    "docker",
+    "exec",
+    "-i",
+    "--user",
+    "opam",
+    "anneal-formal-experiments-20261014",
+    "sha256sum",
+    "--check",
+    "--strict"
+  ],
+  "status": "finished",
+  "exit_code": 0,
+  "elapsed_seconds": 0.059,
+  "stdout_bytes": 26520,
+  "stderr_bytes": 0,
+  "stdout_sha256": "aef6a3c68034df28f9570071ea4e123350108066df25504abd7c77839c97a8f8",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

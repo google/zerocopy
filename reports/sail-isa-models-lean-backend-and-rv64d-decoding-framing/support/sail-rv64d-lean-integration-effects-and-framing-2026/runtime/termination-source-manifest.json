@@ -1,0 +1,5368 @@
+{
+  "upstream_revision": "7d3c9c2568b77f516783aa2ac63bd9c0e0c6df86",
+  "patch_sha256": "6cf5860e7d493bc224060c4508541a81db91d6e40b5d6421ee2ced2dff126236",
+  "changed": [
+    "model/core/extensions.sail",
+    "model/extensions/Stateen/stateen_regs.sail"
+  ],
+  "files": [
+    {
+      "path": ".clang-format",
+      "bytes": 1157,
+      "sha256": "eecb68b10e29ff04afc1542856dcad73a413cae4c20c701388e5e686b7b06f06",
+      "mode": "0o664"
+    },
+    {
+      "path": ".clang-tidy",
+      "bytes": 936,
+      "sha256": "a16f0c075e24a0a516cf35158d354fb0f49f5b32cba24ac934b89da8324fa5f1",
+      "mode": "0o664"
+    },
+    {
+      "path": ".codespellrc",
+      "bytes": 126,
+      "sha256": "d87c48b7b265c7d4194ed328a73ba8834906421e3b3b57265a7c557ed1283cfc",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/actions/sail-setup/action.yml",
+      "bytes": 9125,
+      "sha256": "51629524fe7142c24a7686f21204584c61cba7c3787ff48f7db3921b2fc3b4dc",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "bytes": 174,
+      "sha256": "c66f17d90ba8cfd584d6ea2826816ae099528c3c95ceaa98aaad0fc314dd6726",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/scripts/ci-matrix.py",
+      "bytes": 4048,
+      "sha256": "24deac6d76e0b40ebdc15a0f9e2dfbd035dc8a161b162db39ccc4e70b7d20127",
+      "mode": "0o775"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 12814,
+      "sha256": "3916128b0be235ac8fd4175d193b53caf97779446315b4b0ec427376d717df77",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/workflows/compile-lean.yml",
+      "bytes": 2718,
+      "sha256": "8140c0e7d99b94278e7942e9dbdc8a0b7efdb4f8db59579cb7d788e0ba310550",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "bytes": 5806,
+      "sha256": "7a78058904c39f41258ed9e1c4f52ea38fbeb451c028fd9e1401a4d700a0db86",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/workflows/rocq.yml",
+      "bytes": 3932,
+      "sha256": "845af14bc45e358d844448ec56806389e683149b45c94104721f2c2f58ebd6d0",
+      "mode": "0o664"
+    },
+    {
+      "path": ".github/workflows/run-full-tests.yml",
+      "bytes": 1612,
+      "sha256": "a910db360a2c2a2b7b647765615ed8e72c9636461cebd981454e202f7c6097cd",
+      "mode": "0o664"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 245,
+      "sha256": "3467c0cd1a171400e9816c0c1613f971c26001536eda5b0690f768b89967f0c1",
+      "mode": "0o664"
+    },
+    {
+      "path": ".markdown-link-check.config",
+      "bytes": 904,
+      "sha256": "f85df48acc8672af5d13bb0982accef76e558b484c51ac7bcefae22d064f4a67",
+      "mode": "0o664"
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "bytes": 1856,
+      "sha256": "3946bee2254406706cbd06afdaf4d003dd72b24a49e346e5ca991ad6fd88a528",
+      "mode": "0o664"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 8692,
+      "sha256": "ede0317024e4a8b333b4ee95cb9732ed439b9bda74322707962037f71f8c4132",
+      "mode": "0o664"
+    },
+    {
+      "path": "CODE_STYLE.md",
+      "bytes": 4957,
+      "sha256": "84166c15055347a3c43aa032e2e7adbbb05bff3e3086c10e7904fc4e6e30de4f",
+      "mode": "0o664"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 2832,
+      "sha256": "60ef3e3e9191cac547e9d3962b116067f9a7b72fb24c51d04dad2ec9ea024b20",
+      "mode": "0o664"
+    },
+    {
+      "path": "LICENCE",
+      "bytes": 3363,
+      "sha256": "14cfdf5bfb57ba19f57f31c4a79b3712ede0fda06b1674cb40dec393f8694185",
+      "mode": "0o664"
+    },
+    {
+      "path": "README.md",
+      "bytes": 20654,
+      "sha256": "9e8bc401795ce5ed34cde83b4d40d27d2aa1cd2993df6706902ecf6810f082c9",
+      "mode": "0o664"
+    },
+    {
+      "path": "build_simulator.sh",
+      "bytes": 298,
+      "sha256": "7d6e3bd554d92c9b4ab9c8bce9ba6c91f8aafaca6451f32324e06b311c8b3b4f",
+      "mode": "0o775"
+    },
+    {
+      "path": "c_emulator/CMakeLists.txt",
+      "bytes": 4823,
+      "sha256": "fa1fcdceae5fb49eb3f38eb16471565c9f9d22c95e431e3ed07a6c406d95e348",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/cli_options.cpp",
+      "bytes": 8225,
+      "sha256": "3ef39e30153a67e5c4afe8e863820b590d0a8128ee2a3206eedcfaeb72345168",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/cli_options.h",
+      "bytes": 1929,
+      "sha256": "d56751040a18d0f34ebe14ed1e9b21ee8042ef08f159590c132c8fc23b46a798",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/config_schema.h.in",
+      "bytes": 78,
+      "sha256": "a716b82138d3485a8155e864c6ab90ab3636e90c9f91ef5034d3257c0523a306",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/config_utils.cpp",
+      "bytes": 4129,
+      "sha256": "5e05d219b50d4ae9a1b525b00e4abd4ddfe042ed2591e901106226d56d71c6dc",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/config_utils.h",
+      "bytes": 771,
+      "sha256": "f62efff350b57506e2f616cc69f82723cb10fb38c078147dee2326a6a83d62bf",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/elf_loader.cpp",
+      "bytes": 2862,
+      "sha256": "fa755d23e6fa48f0b32a3cce4eb3f185916fc0719213dc6e0a4bbe2edac2bd86",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/elf_loader.h",
+      "bytes": 1394,
+      "sha256": "18a46b56fadc4594d3e1d99909e8de9e8e1b8d1201a6d821a0b3fa6ab3eb1b7f",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/file_utils.cpp",
+      "bytes": 714,
+      "sha256": "b7fab4b938c73bae37863fafb3ed8c46596733aaa821d1c2bc5ab02e51325af6",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/file_utils.h",
+      "bytes": 181,
+      "sha256": "ad22bfbeb791d3883688f93950a0da7a480870434b9e0165b79cfe302c5f89e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/README.md",
+      "bytes": 1717,
+      "sha256": "22654bd3b5a98e6585549dbb6376ba1148c82cc68665e7150e833d684d2f98c7",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/connection.cpp",
+      "bytes": 2654,
+      "sha256": "6e614fdfb2d16513224bf28487f9824c81731caf655637f3d8a1a350d545dd88",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/connection.h",
+      "bytes": 624,
+      "sha256": "facff461085090bf0d598caf463e2d8f7303a0af54c9ab1cf37eff19c053e4aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/gdb_run_info.h",
+      "bytes": 117,
+      "sha256": "4e42000d9d30ccc38a85e65b4dff34d88ba283c9460e24f4355297367397dab9",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/gdbserver.cpp",
+      "bytes": 924,
+      "sha256": "054bd9e689c020a5c0aaf6d1b99215b2ecbf56a0ff968304dfd22a108de81cd5",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/gdbserver.h",
+      "bytes": 183,
+      "sha256": "a1d965eb7ec3c5ae62cc3b16cc9c83f5170b20f323317ce372513e7ea25d2c06",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/notes.md",
+      "bytes": 4029,
+      "sha256": "7c73d58b81958b765c5efcd96feb2571f7a668d7ad9d81beeb4d6304b4407d87",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/parse_utils.cpp",
+      "bytes": 363,
+      "sha256": "9c850197e2ca2fc053fe0e63cf3d01eafee61ef7791bd3cd50d6efb731f4f436",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/parse_utils.h",
+      "bytes": 144,
+      "sha256": "e754a28b6b8068ec8023c23593af97c22e5b9f23286b2cf3d3dbf92c9474aad2",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/protocol_handler.cpp",
+      "bytes": 9324,
+      "sha256": "c0a1ff54243727ad62253db2dc6b352b4afce8139b96f3fdd004a2c306f0b5d2",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/protocol_handler.h",
+      "bytes": 3547,
+      "sha256": "cead57eeec577efe199873df53816cc5574fada69fab12770efbfbdd07e3d99f",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/requests.cpp",
+      "bytes": 18529,
+      "sha256": "dbeb0f3547fe7d80c80e1da8bd3c5599437d65a12688c1b83ef46374d9c80df1",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/requests.h",
+      "bytes": 813,
+      "sha256": "918cbaecab6e9eea52243e4ba8a788c87acf6e64c6ece196244c5b3b0a116262",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/responses.cpp",
+      "bytes": 8934,
+      "sha256": "c5ca8ad89530d2e22abb0558d04990ffa638dc0822c064bb77e52d3f1c9d0413",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/responses.h",
+      "bytes": 5360,
+      "sha256": "2ae291c3499b7c718b5a456a6069e632e6b6abab914fa51f4417b69296a074a9",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/target_regs.cpp",
+      "bytes": 6407,
+      "sha256": "1e5d3cebcf665a6eb923789e3f2fa512db2500a726de441a994a1afdabab7a3f",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/target_regs.h",
+      "bytes": 1099,
+      "sha256": "0a7311a06182ae0ec92e7c65fd0a8fb59958c57e16ea5ae21175334c8fb6782d",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/triggers.cpp",
+      "bytes": 4845,
+      "sha256": "72889ab21893c0e9b99ef06e6663e924a8151bab881fb2b64dd1cb6934a813d7",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/gdb/triggers.h",
+      "bytes": 934,
+      "sha256": "f8631ccea6c5ed40833af79fd606eaaa97dc669cf48160d5a26dfdfbbd9a3dde",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/generate_schema_include.cmake",
+      "bytes": 166,
+      "sha256": "472de56ff7daf239fa74aae110ad5dc9870e7d1e5e67dfe65a61453e0b2eee7f",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_if.cpp",
+      "bytes": 4266,
+      "sha256": "ffc535b59862933efc019b752e4f87113ae0950ec1c648217a2fab89d2897fbe",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_if.h",
+      "bytes": 2756,
+      "sha256": "98c7ec6c68f50c8654bf08ebd0cc67cd95ed23738c62ad13b838c296061dd1d6",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_log.cpp",
+      "bytes": 12590,
+      "sha256": "5ad51872be334f8a68667a718661ac2b2a0537b7d9dd354b1423496272e22944",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_log.h",
+      "bytes": 2526,
+      "sha256": "5dcd68063597a5f21d9e3863ca2a4adb672e27b628a9d61db5f09d82a24c3ddb",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_rvfi.cpp",
+      "bytes": 1115,
+      "sha256": "3f5d84252dab6b2572b06e9d80ffca3b2095b16478f7cd3300453145662a33d0",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_rvfi.h",
+      "bytes": 655,
+      "sha256": "ee4dd1131d32cd675ab9507b43817b7defd01314433f919a5cd3c253555fc86a",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_callbacks_stop_at_pc.h",
+      "bytes": 475,
+      "sha256": "9b28947a5bb1f0b1fd21dca0dc65add923a1e478b1f21189faa092b8c94c64a2",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_model_impl.cpp",
+      "bytes": 21586,
+      "sha256": "5bf561765512596035ff70eabe1615b96ce1fc91e9d8b35a16049b9c1b3e6092",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_model_impl.h",
+      "bytes": 9472,
+      "sha256": "eacd76ce2b303fcab2b6b13232f2e475fd194e8056cbd8127f87a681a3d08d08",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_platform_if.cpp",
+      "bytes": 5971,
+      "sha256": "54e09562ebf6088fad306d627e3ed03dd08e1a1b5bb5cd4bfef3f508ccca8fb3",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_platform_if.h",
+      "bytes": 4181,
+      "sha256": "3d1d4feaf30a05840be5e834c94fb1ea3c49ba562a7a1db5543f9f005bd4d4ba",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_sim.cpp",
+      "bytes": 29844,
+      "sha256": "b4c849a1ff1b7e982fa6c6c2da8008801ca3d1424ac2746a02de4d9c4ff8f7e0",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_sim.h",
+      "bytes": 2738,
+      "sha256": "75255b2657c98e418ef95d7f7bcb43f235a5dd6bcbedee22cdea00c21709085f",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_softfloat.cpp",
+      "bytes": 14357,
+      "sha256": "252b67040af68e198bb8d9c517a8903d3563e8bef8580b29bbc818e986a72a30",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/riscv_softfloat.h",
+      "bytes": 4362,
+      "sha256": "c61941896b92181eddeb702fde12e6a003713fef44198e44cdb6f7a3b40e2702",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/rvfi_dii.cpp",
+      "bytes": 7299,
+      "sha256": "774140c7d0c8e4a32830f76180862332fd1c546e90195983c1c3a676cc1503fa",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/rvfi_dii.h",
+      "bytes": 767,
+      "sha256": "de68aaa20471d30f14bb9a669f86b6f3f90aeea3615e731d650720ec8817d89c",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/sail_riscv_sim.cpp",
+      "bytes": 2931,
+      "sha256": "f4c2b888002065e33ea2d8a49cce6b59369f37771de9a9f3e2bfb40f52f3b136",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/sail_riscv_version.cpp.in",
+      "bytes": 389,
+      "sha256": "7fbba5741f142f4b5581437535bb22f6981e5e74268769d4de857750e24143d0",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/sail_riscv_version.h",
+      "bytes": 236,
+      "sha256": "ccbf635ac8c5bc8f6fa7c09b6fba0151be5a04fc0113326159710c2b3b2c44c0",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/symbol_table.cpp",
+      "bytes": 858,
+      "sha256": "ba1c36927a8208db76fbe8da6cdae92b88daa77bff473ac965cce49e4eedffa4",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/symbol_table.h",
+      "bytes": 572,
+      "sha256": "59e3e547f38eaf8fb4d6498769ffe6098f4e84b15f6e667b431c04e495661a45",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/traploop_detector.cpp",
+      "bytes": 1057,
+      "sha256": "38d515ba100b0d14a1e213ed91a9fb0e0f2ba7e41a4d99345b6e2f956ec3e91a",
+      "mode": "0o664"
+    },
+    {
+      "path": "c_emulator/traploop_detector.h",
+      "bytes": 933,
+      "sha256": "8942b29b3800042bbeef52f41630c5832b42d938a7193a22169606c2145e77b2",
+      "mode": "0o664"
+    },
+    {
+      "path": "cmake/modules/FindGMP.cmake",
+      "bytes": 1346,
+      "sha256": "73b9bcee81c49647b2ad11335243279c476225043c36969b4188f4ab2c86d304",
+      "mode": "0o664"
+    },
+    {
+      "path": "cmake/packaging.cmake",
+      "bytes": 3691,
+      "sha256": "17bd7e050d95e9f97b860e7824d9ae77aaec79ec0aa821453d2053efa2a1b155",
+      "mode": "0o664"
+    },
+    {
+      "path": "cmake/project_version.cmake",
+      "bytes": 1010,
+      "sha256": "b8d69aad8c5b1bbf9d2744b2dd2e80f81a82b461e868101697ac8a43b335a0af",
+      "mode": "0o664"
+    },
+    {
+      "path": "cmake/sail_required_version.cmake",
+      "bytes": 138,
+      "sha256": "80d044b8fb1fc49849085e2081cf33c700f16950bf4e589f785ad51307e89433",
+      "mode": "0o664"
+    },
+    {
+      "path": "cmake/sail_required_version.txt",
+      "bytes": 7,
+      "sha256": "3a131783edf467e34fbafa084c794fe4c946f085ee3f8ee7399ce1ef16ae8f26",
+      "mode": "0o664"
+    },
+    {
+      "path": "config/CMakeLists.txt",
+      "bytes": 3571,
+      "sha256": "02415f954dd301833f9b9ab61c4bec72a22ae85e44efb3f129b79f772a8c2ab3",
+      "mode": "0o664"
+    },
+    {
+      "path": "config/config.json.in",
+      "bytes": 43013,
+      "sha256": "a7bb8799f83e6cd1926cfb03f9ff5f99da3ff41af74d90400ae78596e9df071b",
+      "mode": "0o664"
+    },
+    {
+      "path": "config/default_config.h.in",
+      "bytes": 148,
+      "sha256": "2ce1742cb558e4f98cac27cf4b7ddc137461690e501697acf0f2b21d7ab48435",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/.clang-format",
+      "bytes": 97,
+      "sha256": "d4584fefe49c4dec5cc4b8a5ab0764ae823cdf8080e6a6eaa8e3b7d00be5d319",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/CLI11/CMakeLists.txt",
+      "bytes": 556,
+      "sha256": "27054ce8342fc9aa96bdc5c6881d178f8d0816575f30c594e0b95dc88aa9b174",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/CLI11/LICENSE",
+      "bytes": 1586,
+      "sha256": "39f8fc9272559f4d63c02f5a06fd1bd8f7502cf1312bd2b380508e4d64338c6a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/CMakeLists.txt",
+      "bytes": 136,
+      "sha256": "5ff440112b97a5dd68b9a8d1e96ab0dbc5c971759d66ad51904065c19d16c8bc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/asio/CMakeLists.txt",
+      "bytes": 855,
+      "sha256": "0671e413ca27b2bce48bf24b41d6a1985a1082d36208fdd6d445b57665b7deea",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/asio/COPYING",
+      "bytes": 224,
+      "sha256": "062cc14c4448f675ab92e647fef5435197b6419ed89f8002adb33c18d35c5219",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/asio/LICENSE_1_0.txt",
+      "bytes": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/CMakeLists.txt",
+      "bytes": 5214,
+      "sha256": "9ab1522b51390c72bd882aeb74ca32d01d2139f8d5261fda209b1947958c153f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/LICENSE.txt",
+      "bytes": 1089,
+      "sha256": "54e2f5ccbae52ada660f9a38658cac957506b3fb94871fc0f056e9916c34aa2f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/README.md",
+      "bytes": 877,
+      "sha256": "b999ca2a91debd5404673319331c0c1bf08fdc8eb95710a799238912e49cbc58",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/cmake/elfioConfig.cmake.in",
+      "bytes": 158,
+      "sha256": "2fdf38b53fe7086cd2848b88761e84034568222c78d20d0f986babf4dfca058f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elf_types.hpp",
+      "bytes": 68607,
+      "sha256": "81178d8795d92029962afe79c411396280106d51d90c8ad6eb0e441f920ec7df",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio.hpp",
+      "bytes": 41906,
+      "sha256": "5e3d8979a7dde8cf6b7aede0785f4cbe682c85694c9559f070e6c7109bdbeb57",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_array.hpp",
+      "bytes": 3243,
+      "sha256": "bda93ae6386380044e751bdeefff312cadc671f332b3eef797171e485cd130e3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_dump.hpp",
+      "bytes": 55578,
+      "sha256": "777227b730cdc261b4ff7b4fbe8714156c77724fc2553461d3f851bb34cac525",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_dynamic.hpp",
+      "bytes": 8951,
+      "sha256": "fa796e56e9db3bb8f4d87a1b3361bde51545fca7f34fab8f2d4e87efef94da19",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_header.hpp",
+      "bytes": 6569,
+      "sha256": "5e7d4b7e55717f7a3565a8e5bbb38a361d8e33edfd4a4af670a931099c7b1d1e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_modinfo.hpp",
+      "bytes": 4366,
+      "sha256": "c55f963da082cefa91f24fe9027da0b7997320d85b146d781d58ebd3a28e246e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_note.hpp",
+      "bytes": 7307,
+      "sha256": "8359f991cb023ebc8a1aa624811298143b716d19dd5c0a75839332cd435c686d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_relocation.hpp",
+      "bytes": 17251,
+      "sha256": "dbf8afe548044f27b2ba85b5e1955288d8844e889542c037a83f3ef705b750aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_section.hpp",
+      "bytes": 14536,
+      "sha256": "243fea7d0f7b830745622ecdb7e458aed101584e1052dbb3e3506fc810e2cc32",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_segment.hpp",
+      "bytes": 9297,
+      "sha256": "e441d0e2302f1f8e2a9c2b5157406654439ea66c750de5ff3ae6c77b2eb46b32",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_strings.hpp",
+      "bytes": 3435,
+      "sha256": "d0f814f0d138aed62ba7c862d147401969a5541b094d26e5617ee35295068375",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_symbols.hpp",
+      "bytes": 21297,
+      "sha256": "17f8ee0bca0f2ada86e493c9f64a92ad6389b557cdfc1822c62a608a3a960248",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_utils.hpp",
+      "bytes": 10586,
+      "sha256": "36fe805274ff80d8c3443881a82dfc473453f5bacc5bcaa52e96353055005396",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_version.hpp",
+      "bytes": 29,
+      "sha256": "5f8591967b5d57b282970384146a9f6de716ad1b14ea247db3efe02f768ecc99",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/elfio/elfio/elfio_versym.hpp",
+      "bytes": 6419,
+      "sha256": "37a04dd363f36ce2708b825592b2d5095a9afc69109f7ebb9e3411550b92c828",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/jsoncons/CMakeLists.txt",
+      "bytes": 597,
+      "sha256": "dca2b8a27dc294814d3a86977871d6aadb752ca209949109db0c2af76ddff246",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/jsoncons/LICENSE",
+      "bytes": 1548,
+      "sha256": "97550c71a0bdfc20bf85c6c5167d7b7785f9bd3448baee048fbedf742ed52270",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/CMakeLists.txt",
+      "bytes": 2040,
+      "sha256": "cda37db7e0bed71a9a9c2329560b7df7ff023773ba2df2144a841d3f7755eca9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/.gitignore",
+      "bytes": 24,
+      "sha256": "9821cb5362330113f1336e821af269dcc06931a79a34f0f76ee6dc7a1deb3d1c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/COPYING.txt",
+      "bytes": 1738,
+      "sha256": "145ea96b4a4a04a1a7738d2a2bf9e830f861971e69606187b018d9e8fc0b95c7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/README.html",
+      "bytes": 1292,
+      "sha256": "f9243f5464e77aef2450e5e845162ea043bb406175574ba4cdd45d7c841f51b4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/README.md",
+      "bytes": 1052,
+      "sha256": "52c1646a4124364b6f984ad520a6512f2259e0f53fe4d2f8bcd9ddcd996334b3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/README.txt",
+      "bytes": 797,
+      "sha256": "68b271d04b28526d1afbf5391f221755164ae9a91cbc1ae1228bbbee138e1476",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-386-GCC/Makefile",
+      "bytes": 9023,
+      "sha256": "42d4f20ae54aff3cab66d054bc7d3c009bd300313341672376526fb8f0d37c2f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-386-GCC/platform.h",
+      "bytes": 2478,
+      "sha256": "bd8cf6a22a44e8c176348fe98a00a15ae4d1434fe7b3602ab663c969cfc7ac9b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-386-SSE2-GCC/Makefile",
+      "bytes": 9027,
+      "sha256": "7938acdd103734ed8af0d7b2289c0f75b004b2c4425d3f5ac1ab0592d35013d3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-386-SSE2-GCC/platform.h",
+      "bytes": 2478,
+      "sha256": "bd8cf6a22a44e8c176348fe98a00a15ae4d1434fe7b3602ab663c969cfc7ac9b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-ARM-VFPv2-GCC/Makefile",
+      "bytes": 8966,
+      "sha256": "40975e3a55f3aa57aa0c015c4f4cdb0784fccbe599ec516eed1fcb1b02ae86ad",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-ARM-VFPv2-GCC/platform.h",
+      "bytes": 2478,
+      "sha256": "bd8cf6a22a44e8c176348fe98a00a15ae4d1434fe7b3602ab663c969cfc7ac9b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-RISCV64-GCC/Makefile",
+      "bytes": 10980,
+      "sha256": "ab47449bf7560518d0ea75adcd6dda152604088c269f610dd803033d7360564f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-RISCV64-GCC/platform.h",
+      "bytes": 2515,
+      "sha256": "2ae1992fc5f0d35e65ee3fd5ca2a4471385b78b0317403f66b304cb799a777d1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-x86_64-GCC/Makefile",
+      "bytes": 10873,
+      "sha256": "156c6a52b10a00f2914eb7d9505cf87cfbf7d63a93c9ea9c1300fbaeab147b4a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Linux-x86_64-GCC/platform.h",
+      "bytes": 2521,
+      "sha256": "92081a7ff2af6409fb8dbd456a0e6ab844fcd31696175fdc194fdb4a6896fa20",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Win32-MinGW/Makefile",
+      "bytes": 9023,
+      "sha256": "42d4f20ae54aff3cab66d054bc7d3c009bd300313341672376526fb8f0d37c2f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Win32-MinGW/platform.h",
+      "bytes": 2478,
+      "sha256": "bd8cf6a22a44e8c176348fe98a00a15ae4d1434fe7b3602ab663c969cfc7ac9b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Win32-SSE2-MinGW/Makefile",
+      "bytes": 9027,
+      "sha256": "7938acdd103734ed8af0d7b2289c0f75b004b2c4425d3f5ac1ab0592d35013d3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Win32-SSE2-MinGW/platform.h",
+      "bytes": 2478,
+      "sha256": "bd8cf6a22a44e8c176348fe98a00a15ae4d1434fe7b3602ab663c969cfc7ac9b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Win64-MinGW-w64/Makefile",
+      "bytes": 10716,
+      "sha256": "495ee75cabb2d1062f86c1dff7ab049c2f6c7cfec36ac67487df927ee824b642",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/Win64-MinGW-w64/platform.h",
+      "bytes": 2515,
+      "sha256": "2ae1992fc5f0d35e65ee3fd5ca2a4471385b78b0317403f66b304cb799a777d1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/template-FAST_INT64/Makefile",
+      "bytes": 10855,
+      "sha256": "aea29092ed0df0d49c44dd02796f5c7cca8510100aa0fecb17b5bd22165e4cdb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/template-FAST_INT64/platform.h",
+      "bytes": 2463,
+      "sha256": "da566ff126d726570fe07ec18a3299334b98bedd577ae8f39d5bed95be8da57b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/template-not-FAST_INT64/Makefile",
+      "bytes": 9094,
+      "sha256": "9c183dab2bdbe3e984f80d126045d20e55e6c448fe3ea6362546082c1f370574",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/build/template-not-FAST_INT64/platform.h",
+      "bytes": 2463,
+      "sha256": "da566ff126d726570fe07ec18a3299334b98bedd577ae8f39d5bed95be8da57b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/doc/SoftFloat-history.html",
+      "bytes": 6069,
+      "sha256": "82ec003b01b356c7bda9fbaee113a36c5f041b081acbd69bf52ec7df8a672b30",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/doc/SoftFloat-source.html",
+      "bytes": 25129,
+      "sha256": "a847eaa12dbddceb191860ccfa27fd892ac3c501da22cfd85f807590134e6058",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/doc/SoftFloat.html",
+      "bytes": 53471,
+      "sha256": "f6cf43ee66a9f25a84eee4b0aaf9dff498ee2ba44754258ed30c75c66ece4b2c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/extF80M_isSignalingNaN.c",
+      "bytes": 2425,
+      "sha256": "eba402ccb5c8ab03ee8d9e7a65824871998d794bc53889522e0cf26baa602093",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/f128M_isSignalingNaN.c",
+      "bytes": 2512,
+      "sha256": "2d7390f84483ac8b62ed1f83ceca15c1dd05d9cf4fd4e7dc743a66c4b259625a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_bf16UIToCommonNaN.c",
+      "bytes": 2578,
+      "sha256": "803dffbc4bfb9521fa89614642293ae092d04dfc5e7d05ac73c422d779e9d928",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToBF16UI.c",
+      "bytes": 2318,
+      "sha256": "2b50eb8efaad31d62982bc176b9559b25f7614e5cfc05ecc2786f09c7c658ccb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToExtF80M.c",
+      "bytes": 2447,
+      "sha256": "05abd31fe1c69ca3161c47a82ad02ba93157d1bbf5cc55c719e5074b02c08025",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToExtF80UI.c",
+      "bytes": 2460,
+      "sha256": "053e0c702824c3a64c16a73e4fffdf712b91da1e01f0ff5f13bf95653d145311",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToF128M.c",
+      "bytes": 2601,
+      "sha256": "3f89e639747ce3a990aa595cc807d0edee455d57e91d257ef77236ea6fd198ed",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToF128UI.c",
+      "bytes": 2479,
+      "sha256": "fb74700343c4fadcd841cfa45317cc3b671a7817b8083120e95f870e90481fcc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToF16UI.c",
+      "bytes": 2340,
+      "sha256": "7e25730d684ec0a3945c7950f8ba4208ae7a08cb0fe3ab60e66d9744654f6e07",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToF32UI.c",
+      "bytes": 2337,
+      "sha256": "190c04615aec8b828bfa1c46e8ebc31cc669a4e6f41ae273d09f16708cafbfe6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_commonNaNToF64UI.c",
+      "bytes": 2377,
+      "sha256": "c9abe3713181963175bf95324103a9a7fa022488eba9264b1b97ef7cd9adae1a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_extF80MToCommonNaN.c",
+      "bytes": 2693,
+      "sha256": "c3a44fc3416fbadc69328bfa6be8af0cc6be1522faaf62b005073b54d9ce61f5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_extF80UIToCommonNaN.c",
+      "bytes": 2693,
+      "sha256": "2aa14116babe991c3f8c97c838a1241ed1e5c470ab78d969307fdf045618ecfc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_f128MToCommonNaN.c",
+      "bytes": 2838,
+      "sha256": "7db713e5991c74fa6b8e72d81216c278323961073e6b9f4a696b16261a6d9ec7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_f128UIToCommonNaN.c",
+      "bytes": 2803,
+      "sha256": "632a9e3de01b70bf111b8e86b97e7c87aa8007921063d1e4655d6f172f0d252a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_f16UIToCommonNaN.c",
+      "bytes": 2600,
+      "sha256": "506e7c6e841fdf332ba5283f512634bf559e93c3fd1d58ccf7e61202b47c6d6d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_f32UIToCommonNaN.c",
+      "bytes": 2593,
+      "sha256": "a2a2aa1f4198c1c522ccba123388912dbb37699bd504bbf61014b43834a88a8c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_f64UIToCommonNaN.c",
+      "bytes": 2577,
+      "sha256": "0af1257c9928b3c5692ca53975b7d9fb9af389a08e2d264469db328a894c949c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNExtF80M.c",
+      "bytes": 4053,
+      "sha256": "45a952fd80a0a2944e142c1641f40cadbfdd0f734d56526c778d189758f450cb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNExtF80UI.c",
+      "bytes": 4439,
+      "sha256": "fe5d31108a679d8503d3466c2e8070998680cfea0ed4c31cb46b87187581fd6c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNF128M.c",
+      "bytes": 3308,
+      "sha256": "893e51205c2f42b087caa72c89c0c0aa163dedf0467a4d79738f37934b907fd2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNF128UI.c",
+      "bytes": 3243,
+      "sha256": "ed22142527bc26303c787a0da115c91dfb42623933deeb05d1be7e3e31a65a7e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNF16UI.c",
+      "bytes": 2760,
+      "sha256": "148d2674facd9d2a69e26714f814a6886e1be41e1dae319d31352f8ca5416904",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNF32UI.c",
+      "bytes": 2761,
+      "sha256": "83215e4528ffaee4e5bf4975e42acc65eb349dbdf33a408857c707790ed356e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/s_propagateNaNF64UI.c",
+      "bytes": 2801,
+      "sha256": "e3584b53c927e73a18457654125a558c58501ad7cc1de9bd3c6db75e06c190aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/softfloat_raiseFlags.c",
+      "bytes": 2390,
+      "sha256": "fe7a5684bc9f72a52e603dbfa0ad23897eb2983df1cb3ea440023308ca14d8bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086-SSE/specialize.h",
+      "bytes": 21178,
+      "sha256": "8447d57528b20f8b5d61c49ad6d4b4e4fdfdbdc3cf2c2328ffd423c022832105",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/extF80M_isSignalingNaN.c",
+      "bytes": 2425,
+      "sha256": "eba402ccb5c8ab03ee8d9e7a65824871998d794bc53889522e0cf26baa602093",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/f128M_isSignalingNaN.c",
+      "bytes": 2512,
+      "sha256": "2d7390f84483ac8b62ed1f83ceca15c1dd05d9cf4fd4e7dc743a66c4b259625a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToExtF80M.c",
+      "bytes": 2447,
+      "sha256": "05abd31fe1c69ca3161c47a82ad02ba93157d1bbf5cc55c719e5074b02c08025",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToExtF80UI.c",
+      "bytes": 2460,
+      "sha256": "053e0c702824c3a64c16a73e4fffdf712b91da1e01f0ff5f13bf95653d145311",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToF128M.c",
+      "bytes": 2601,
+      "sha256": "3f89e639747ce3a990aa595cc807d0edee455d57e91d257ef77236ea6fd198ed",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToF128UI.c",
+      "bytes": 2479,
+      "sha256": "fb74700343c4fadcd841cfa45317cc3b671a7817b8083120e95f870e90481fcc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToF16UI.c",
+      "bytes": 2340,
+      "sha256": "7e25730d684ec0a3945c7950f8ba4208ae7a08cb0fe3ab60e66d9744654f6e07",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToF32UI.c",
+      "bytes": 2337,
+      "sha256": "190c04615aec8b828bfa1c46e8ebc31cc669a4e6f41ae273d09f16708cafbfe6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_commonNaNToF64UI.c",
+      "bytes": 2377,
+      "sha256": "c9abe3713181963175bf95324103a9a7fa022488eba9264b1b97ef7cd9adae1a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_extF80MToCommonNaN.c",
+      "bytes": 2693,
+      "sha256": "c3a44fc3416fbadc69328bfa6be8af0cc6be1522faaf62b005073b54d9ce61f5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_extF80UIToCommonNaN.c",
+      "bytes": 2693,
+      "sha256": "2aa14116babe991c3f8c97c838a1241ed1e5c470ab78d969307fdf045618ecfc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_f128MToCommonNaN.c",
+      "bytes": 2838,
+      "sha256": "7db713e5991c74fa6b8e72d81216c278323961073e6b9f4a696b16261a6d9ec7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_f128UIToCommonNaN.c",
+      "bytes": 2803,
+      "sha256": "632a9e3de01b70bf111b8e86b97e7c87aa8007921063d1e4655d6f172f0d252a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_f16UIToCommonNaN.c",
+      "bytes": 2600,
+      "sha256": "506e7c6e841fdf332ba5283f512634bf559e93c3fd1d58ccf7e61202b47c6d6d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_f32UIToCommonNaN.c",
+      "bytes": 2593,
+      "sha256": "a2a2aa1f4198c1c522ccba123388912dbb37699bd504bbf61014b43834a88a8c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_f64UIToCommonNaN.c",
+      "bytes": 2577,
+      "sha256": "0af1257c9928b3c5692ca53975b7d9fb9af389a08e2d264469db328a894c949c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNExtF80M.c",
+      "bytes": 4053,
+      "sha256": "45a952fd80a0a2944e142c1641f40cadbfdd0f734d56526c778d189758f450cb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNExtF80UI.c",
+      "bytes": 4439,
+      "sha256": "fe5d31108a679d8503d3466c2e8070998680cfea0ed4c31cb46b87187581fd6c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNF128M.c",
+      "bytes": 4479,
+      "sha256": "57a1b9f7e2b491d992cd0756e904e88e378bdcd4858c7277650e8937711a2336",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNF128UI.c",
+      "bytes": 4460,
+      "sha256": "a674fa2a154452c4f7c0b9dc24d29b5ac865da2120193342b8b93883ed93f636",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNF16UI.c",
+      "bytes": 3785,
+      "sha256": "56a6d24eaf038d6e596a143202f1c8120937b48e10f8b051912e87f19fb89ff6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNF32UI.c",
+      "bytes": 3789,
+      "sha256": "99ebd2c2d93ea3535a02cf35573da65262cee4b7d78948399ef70f235e4106e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/s_propagateNaNF64UI.c",
+      "bytes": 3869,
+      "sha256": "41b9a0151830d32d1b0797dda475cff471784514c61f2086762d35a27758161c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/softfloat_raiseFlags.c",
+      "bytes": 2390,
+      "sha256": "fe7a5684bc9f72a52e603dbfa0ad23897eb2983df1cb3ea440023308ca14d8bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/8086/specialize.h",
+      "bytes": 19857,
+      "sha256": "71e8c372dba0a49270a6fd5d3a0b7adfb222b0b7c20c93db063b573854995297",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/extF80M_isSignalingNaN.c",
+      "bytes": 2425,
+      "sha256": "eba402ccb5c8ab03ee8d9e7a65824871998d794bc53889522e0cf26baa602093",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/f128M_isSignalingNaN.c",
+      "bytes": 2512,
+      "sha256": "2d7390f84483ac8b62ed1f83ceca15c1dd05d9cf4fd4e7dc743a66c4b259625a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToExtF80M.c",
+      "bytes": 2470,
+      "sha256": "092284367326332e6418d1c7ac27676d7c5915473ae2a7a8455be6af8cad068e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToExtF80UI.c",
+      "bytes": 2482,
+      "sha256": "c615eca767ac687bd2985dac65d0a8d70f3f4a5ff82eb53ca5e2b508f2019ea8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToF128M.c",
+      "bytes": 2735,
+      "sha256": "e958ad8b3a1779df7f8a944f6f25e28b8dd662ae194a9563c2071fd01758b345",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToF128UI.c",
+      "bytes": 2461,
+      "sha256": "ce0e19e035b9fb981d55c0768ec6b0d36ebf48d3f708b93cca80e6f37d6189f2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToF16UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToF32UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_commonNaNToF64UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_extF80MToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_extF80UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_f128MToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_f128UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_f16UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_f32UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_f64UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNExtF80M.c",
+      "bytes": 3034,
+      "sha256": "2c7fe7cb1e8aefd14354119f8fb61f8969770d58ebfc61857cddd22b2123c11b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNExtF80UI.c",
+      "bytes": 3045,
+      "sha256": "f21c7623a7a6880ebd61fd8c5e2de7701df73ff63e2153bf6e20769115bbf59f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNF128M.c",
+      "bytes": 3089,
+      "sha256": "f2fb15b9621a9db1d1c016ddcbbacfab6c6b96b6382142822ba525835c5c9ff9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNF128UI.c",
+      "bytes": 3018,
+      "sha256": "a7cb97ef82507801461a795ea12e4fe727c3af1513e7961ae50b4e3c2839c0fa",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNF16UI.c",
+      "bytes": 2610,
+      "sha256": "143434aac669f729df5397dec4ef4865c204b96cb08fb9552b87f02b1ff2c6ba",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNF32UI.c",
+      "bytes": 2604,
+      "sha256": "ad61b7f40632dfd83044cb193448091fb47112dac54f76d9270b1d3d42ec82a0",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/s_propagateNaNF64UI.c",
+      "bytes": 2604,
+      "sha256": "2e271b0ffa75bc4d51ff68b7c2b49761159483e30c7f84091daaca1a38a9b75c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/softfloat_raiseFlags.c",
+      "bytes": 2397,
+      "sha256": "e86d758fbec4783e2adeaacb1f36e46874d4a5f9f5010a86085ebdadae1b6414",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2-defaultNaN/specialize.h",
+      "bytes": 21228,
+      "sha256": "be4671014005e3a4303dfba516c1aea776d506daa961cdecab47e96e87d477bc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/extF80M_isSignalingNaN.c",
+      "bytes": 2425,
+      "sha256": "eba402ccb5c8ab03ee8d9e7a65824871998d794bc53889522e0cf26baa602093",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/f128M_isSignalingNaN.c",
+      "bytes": 2512,
+      "sha256": "2d7390f84483ac8b62ed1f83ceca15c1dd05d9cf4fd4e7dc743a66c4b259625a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToExtF80M.c",
+      "bytes": 2454,
+      "sha256": "8fbd8ee6386aabca5f37200004bb9816e65e66838381ebdf6d936a3ce387cd20",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToExtF80UI.c",
+      "bytes": 2467,
+      "sha256": "4f330ab617f82a9ce2ae50ab6030b969d9ff4425b56abc1240e5e4e3a0ee567b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToF128M.c",
+      "bytes": 2608,
+      "sha256": "20fd89e57f904f3e4e1eed672b7265ff311b26dee2e20903309c08f39af401de",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToF128UI.c",
+      "bytes": 2486,
+      "sha256": "66f5c78467f27e28d2d0a784f3fcf60cde60194cea651415a93b156923d2c654",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToF16UI.c",
+      "bytes": 2346,
+      "sha256": "e36f1ed403fb523ccd289b9d1fa28f65a7682de15c76d58ec32f9d0ff49dcd66",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToF32UI.c",
+      "bytes": 2344,
+      "sha256": "5ddd4dc187c248d784f33c44d74c163b62d4a70b3dc045c77b0bc8d529d08f35",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_commonNaNToF64UI.c",
+      "bytes": 2384,
+      "sha256": "bd051cbb20610f93fd89a9b1d5adafe3a6f8d0b548c3b8f70675699ff3f90c3c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_extF80MToCommonNaN.c",
+      "bytes": 2700,
+      "sha256": "d36801734291188c8ae52b98075af7c0bcc6a5784ffa542d3d38c7695986d106",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_extF80UIToCommonNaN.c",
+      "bytes": 2700,
+      "sha256": "3d6123111aa6b4dacb2a436c4de4f71121a39ffeb7e399e7a50794313b7c8fc6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_f128MToCommonNaN.c",
+      "bytes": 2845,
+      "sha256": "cf687c82c14ed5c9d56f403a1c58b95a832f43b4370f727626097d8913e34a77",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_f128UIToCommonNaN.c",
+      "bytes": 2810,
+      "sha256": "0134f505ca14001d9912707d5111eacafd6f5f79e6e78c4574e42e33917a8e9f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_f16UIToCommonNaN.c",
+      "bytes": 2606,
+      "sha256": "88da3df2a4efa07323256cadbf07015ee728ad0b344af16154d02a0336b6d889",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_f32UIToCommonNaN.c",
+      "bytes": 2600,
+      "sha256": "285a9a3c1857430c6f66b05fe27c670279b4e781251590db386a16e53ee40573",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_f64UIToCommonNaN.c",
+      "bytes": 2584,
+      "sha256": "89de9b24c439fbff3bf3b52c4e5694eaa0316afc0f0f174c734ef8a60b656990",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNExtF80M.c",
+      "bytes": 3324,
+      "sha256": "3ea213340aa7c422ffc2e893f808022996819004a7107563e92584855e75ef57",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNExtF80UI.c",
+      "bytes": 3317,
+      "sha256": "f382ba6ff52a223a1ba483211ad1671da7f0acf89d969f3c34402afb9ed67c06",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNF128M.c",
+      "bytes": 3350,
+      "sha256": "92771b6d44ad67379c38bcf9e4d66ab73757f34648144dc3f369bf9da2765652",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNF128UI.c",
+      "bytes": 3294,
+      "sha256": "746a59d23c9d4c1cdd43d2b6842879e6753d1cd0dae368c1e2a9fb4edcb49f8d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNF16UI.c",
+      "bytes": 2758,
+      "sha256": "f1ff172432dcc9ffd1d3b71c2a7d3e90e911c7c5e1c817aa932a75040f297a9a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNF32UI.c",
+      "bytes": 2756,
+      "sha256": "a9320057099e38a5ec3a095e7be0b7c184b6e92f5b58a74b54ac5691ce5a9579",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/s_propagateNaNF64UI.c",
+      "bytes": 2776,
+      "sha256": "59fe38b094a0437ffa737cab694713ebd6a6793b7f74f1981f0f0c9e7d913c37",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/softfloat_raiseFlags.c",
+      "bytes": 2397,
+      "sha256": "e86d758fbec4783e2adeaacb1f36e46874d4a5f9f5010a86085ebdadae1b6414",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ARM-VFPv2/specialize.h",
+      "bytes": 19723,
+      "sha256": "46bba2a89848656c6a213ed341a6849eb0753c3d2648858eab246b97e41a268d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/extF80M_isSignalingNaN.c",
+      "bytes": 2425,
+      "sha256": "eba402ccb5c8ab03ee8d9e7a65824871998d794bc53889522e0cf26baa602093",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/f128M_isSignalingNaN.c",
+      "bytes": 2512,
+      "sha256": "2d7390f84483ac8b62ed1f83ceca15c1dd05d9cf4fd4e7dc743a66c4b259625a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_bf16UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToBF16UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToExtF80M.c",
+      "bytes": 2464,
+      "sha256": "c6ece8bc1f37deadee1bc4e05f2ea4be8f2963587b2207e6a068f027656503ea",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToExtF80UI.c",
+      "bytes": 2476,
+      "sha256": "7a3d34d1ecb45cbbf36eca6c70bb093e99e765a706d22ec454714ae22e99295a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToF128M.c",
+      "bytes": 2729,
+      "sha256": "d26df209077582e3a58bb9a0dc0529bd9792ac8927bc130a5dcf26ac5259b392",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToF128UI.c",
+      "bytes": 2455,
+      "sha256": "7c597e024a4c5af88524dd3816127409e476838d4428582df4b1c83642296253",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToF16UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToF32UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_commonNaNToF64UI.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_extF80MToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_extF80UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_f128MToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_f128UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_f16UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_f32UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_f64UIToCommonNaN.c",
+      "bytes": 205,
+      "sha256": "686149b1313688d9e38acfa30385d809cc949315ed17719ea4e31b9bc60b1f96",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNExtF80M.c",
+      "bytes": 3028,
+      "sha256": "e2e0f6b14d3ec0534172f6af165c14bb7364d3445cdacf843bf6f9e98e1595c1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNExtF80UI.c",
+      "bytes": 3039,
+      "sha256": "59de85a286b0bbc26be5ba4730c610f9f12072302081a5fc9be027f717a12af2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNF128M.c",
+      "bytes": 3089,
+      "sha256": "1ba0a34f00752a3f83cdb1d9bc9ffb494e6ea942cb55562673ee708305bc1e61",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNF128UI.c",
+      "bytes": 3012,
+      "sha256": "becbbde6991a2d466d41f965f485ca3c63d6e851dd7545da79cfd259cb8675f5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNF16UI.c",
+      "bytes": 2604,
+      "sha256": "7fef6764f4365d2e9d3bbf808332bfc1d6b700ed36e434bc1ed8ec8836970178",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNF32UI.c",
+      "bytes": 2598,
+      "sha256": "eabc7dd160b5575c9fa98e747a7cda2c13603eac41c6ba9d3944819ce1297d94",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/s_propagateNaNF64UI.c",
+      "bytes": 2598,
+      "sha256": "11ad7ba827ef5d70f7bea2df5990e3bc8e217680fd85baaec07ce31e696e8ab3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/softfloat_raiseFlags.c",
+      "bytes": 2390,
+      "sha256": "fe7a5684bc9f72a52e603dbfa0ad23897eb2983df1cb3ea440023308ca14d8bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/RISCV/specialize.h",
+      "bytes": 22930,
+      "sha256": "bff6904c12c4dc5fa4636df284ffdd84cb1261716136cca567158ff764e594e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/bf16_isSignalingNaN.c",
+      "bytes": 2063,
+      "sha256": "8119bf9f6e6e1adebcd7ddcb23da5e77911793e9100ffe1effa1f7a0219d6685",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/bf16_to_f32.c",
+      "bytes": 3516,
+      "sha256": "f21fb3ad7860e4cfe3e7b8e72f4da3713fa9b157fa043589697d4d5eb6b909e8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_add.c",
+      "bytes": 3371,
+      "sha256": "497328d41c70648a5394dd3ff423ffeb6172ac891234158620e66ef1f49ecea9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_div.c",
+      "bytes": 7121,
+      "sha256": "a7e2de45fb77c2685409f95d518958c6e06706a4e6185871e57aba0692a43c45",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_eq.c",
+      "bytes": 3722,
+      "sha256": "c9a1c8f8845d0168d144e02d1d8d52136f4c317bf532edbb0cb9ff4101699f3c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_eq_signaling.c",
+      "bytes": 3575,
+      "sha256": "8f1b790e5aa34e58061c0faa74c986f68df8a153e57e0e88a1056b4b760ea103",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_le.c",
+      "bytes": 4187,
+      "sha256": "b8061c0b2a479262955ecb5bb96f8a2f1f9e22c47d437cbb9713b35dfcd11f8b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_le_quiet.c",
+      "bytes": 4382,
+      "sha256": "f094b1b82eee6a341b573398ed551e6682976beef118b591286e98ff65677872",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_lt.c",
+      "bytes": 4192,
+      "sha256": "db9bb3623dcbb2f25c8e88acf39e0c2a8d74c036748f412eaf4d058b0b5e0470",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_lt_quiet.c",
+      "bytes": 4387,
+      "sha256": "86eba79d40a7f7538c86005df8710a0b30f194fd58e8a9a3c3d1a22f66aa5a82",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_mul.c",
+      "bytes": 5251,
+      "sha256": "74e20ec3cc2dd1c14591aad00100474a2c909d6bc59528342a918e488660a69b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_rem.c",
+      "bytes": 7768,
+      "sha256": "936b95bb634e9ff790ae982143f6b9360b271f138564c85360bf7e8aeb22aee6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_roundToInt.c",
+      "bytes": 6072,
+      "sha256": "e3bc4379bdee204e7b15fe3b1e660562459faec00f0e5a24283cf5a972dc25df",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_sqrt.c",
+      "bytes": 7332,
+      "sha256": "cfbedcb9c061edbeafb41871f20d0f617f7893b1826c4aedcae2db5c82520574",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_sub.c",
+      "bytes": 3370,
+      "sha256": "df7b7ad92d6fb43aa9092cfa258d18f9a47dfeebb7bae1a737e956895da4620c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_f128M.c",
+      "bytes": 4685,
+      "sha256": "925e5be8d74cc1b6ad95f22b56432c8313139b1ccac8adafbb9f76b2eba36ced",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_f16.c",
+      "bytes": 4250,
+      "sha256": "4f9039dce1b8c0172c8c01815e8c72c455bcb0e25351e111d24fa6d3935ef4e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_f32.c",
+      "bytes": 4254,
+      "sha256": "411f8c80ec10b30a750967c2d834d21180dfa79e9c3209b89f8ee461192934f4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_f64.c",
+      "bytes": 4243,
+      "sha256": "7f35af51c48c2bb23a0a8a561fae93a093dce54565b543d5bc5f6c49c61d09bc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_i32.c",
+      "bytes": 3659,
+      "sha256": "fb29f0f2941043a21c59377b5820a39d88ce713be4b18b575d26f99cfaaa13d1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_i32_r_minMag.c",
+      "bytes": 4397,
+      "sha256": "14c216d043cda7670bc84c7fc84bcc386cb9a56bc92706df3c98340bd2b305a4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_i64.c",
+      "bytes": 3650,
+      "sha256": "ec03e2f245c3e8462918d57fc15ca5a210ccfd14790dadfa3792c42796acb681",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_i64_r_minMag.c",
+      "bytes": 4249,
+      "sha256": "99fc4e9d3d439569febfc9c352b811883cb68707608ad61f2c0920831f02c406",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_ui32.c",
+      "bytes": 3680,
+      "sha256": "94b4689443f5199973c0e0bb9928df348ff98c734ef3aaba76289e1f2a8b7fcf",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_ui32_r_minMag.c",
+      "bytes": 4226,
+      "sha256": "15ce6899e7f3fa8593a897d3396dc3f0ee45ba08f45026344193a7bf091138eb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_ui64.c",
+      "bytes": 3659,
+      "sha256": "f52b07f52ea1a1da61dbcb939a909627274a66bb4ed46e9aa5728ca71b5fa85a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80M_to_ui64_r_minMag.c",
+      "bytes": 4074,
+      "sha256": "7c2c4dd8e46c8ecc622f091b37706c67dd36133077af4a42a5b61776011874d6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_add.c",
+      "bytes": 3024,
+      "sha256": "f6f69375ecb60bb663dab51eed86c0ad63d27cecab43a39790de85b3005ddd14",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_div.c",
+      "bytes": 7929,
+      "sha256": "6640daf96033c19e09948b5866821efbc7903b1240723d59ea547525434697c4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_eq.c",
+      "bytes": 2763,
+      "sha256": "c8df6fe1d59b35699fa9b495d66e9f7ba2dc9986a782558fde9eeefc04674237",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_eq_signaling.c",
+      "bytes": 2596,
+      "sha256": "ba37a267b22c4fb5a90e0ca9777920bc5dfbd9f919449e76edfbeeac5aaca61e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_isSignalingNaN.c",
+      "bytes": 2114,
+      "sha256": "51389dbebcb864a72ace09b83b0f1fda3c427fa4883d55676814daa521d3dca9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_le.c",
+      "bytes": 2826,
+      "sha256": "dcde34eba62f2d046547694b323386c9129b711644e6cb09d8c51d74a39318ee",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_le_quiet.c",
+      "bytes": 2985,
+      "sha256": "98ac7e434c0031a1a47296b6fb3782c72a8608b494eead1185970403143aa569",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_lt.c",
+      "bytes": 2824,
+      "sha256": "467d99c7cbdc5eed04f7f0311fe2bafb19c5734ae316d31de8261460ac294a23",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_lt_quiet.c",
+      "bytes": 2983,
+      "sha256": "1bcc82aaddaea47cd6150c304bd4b5473a4dce874575f5f9a227c72db99475cf",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_mul.c",
+      "bytes": 5952,
+      "sha256": "fe0f15435ad51a83846bff53cafafc2bd4b795516d820f0f24a17cb081df972b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_rem.c",
+      "bytes": 8769,
+      "sha256": "cdd9031694c41761da889a3b01fa38b50edaa7c97d2d68a5ec58848695a603c1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_roundToInt.c",
+      "bytes": 5682,
+      "sha256": "85bedee0d5222e29b20cf71d6b11943b51270338edb305aff0ed3ff0add2f5b8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_sqrt.c",
+      "bytes": 7326,
+      "sha256": "16b3db93642ee2e15b7e99ce97fbbc7ea5b40f5b7fcd8f04ae6040a375b1de57",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_sub.c",
+      "bytes": 3024,
+      "sha256": "9b85d0f6ac0438d09961adc4b9368bbed1a3f45d7d63fe4ed58d841a8330dc31",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_f128.c",
+      "bytes": 2825,
+      "sha256": "589c80db7d4444668bee6c2b5f4fcd009c1a5dfc5e59ea98f674a5f6d07946b1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_f16.c",
+      "bytes": 3878,
+      "sha256": "02c6607830c2d80299f718130a6e65cea75534195c520fd1858d9894f233a89f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_f32.c",
+      "bytes": 3882,
+      "sha256": "c33a8c132fab1b5c1c2acf279ffec9720f16840261ecee0705bfd7fddf579a74",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_f64.c",
+      "bytes": 3869,
+      "sha256": "b6bc6b386af03030e47638410741701bb3cb0a3c2e12a6b4f8a5b547fe535f7f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_i32.c",
+      "bytes": 3410,
+      "sha256": "189410bc03410ab8b0bae4f281a4425102d7f9f031923445d149bb3c6c660b38",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_i32_r_minMag.c",
+      "bytes": 3996,
+      "sha256": "530fa8ce80efc26a99cf17b2f4731b0eb3882aa68863531b7ec01b4c04530604",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_i64.c",
+      "bytes": 3828,
+      "sha256": "af6cea4fb86253e38941a8c29a892505fdd733ac3a0157c3f56ce4a9846a0603",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_i64_r_minMag.c",
+      "bytes": 3844,
+      "sha256": "6f47646b42d41ccd57eda5f981909bdd1a6c42316778f4f0f6e3b3108c15a40f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_ui32.c",
+      "bytes": 3422,
+      "sha256": "70e850c9a7a4ecd4ed70b5b136823a68b3c26674cc8e912cb6700857094f2d04",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_ui32_r_minMag.c",
+      "bytes": 3636,
+      "sha256": "b2a4366bd8c64f07ce91d1b9e314df1117019cd2e904fe9328cbc87efc3a02e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_ui64.c",
+      "bytes": 3470,
+      "sha256": "b21000148faead50f5fdf45143f65e985b2517ba6da1147c15d613182a498d67",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/extF80_to_ui64_r_minMag.c",
+      "bytes": 3619,
+      "sha256": "02d0a67c7cadf9b1071e7ea181fc174e7ec2ffce24464d4d403bb6cf963f790b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_add.c",
+      "bytes": 3295,
+      "sha256": "e2e090d1dadb4232175ad33c6bb4aac0fc0908aba79db6544d7068f5fe8b2576",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_div.c",
+      "bytes": 6782,
+      "sha256": "a26cc7d0ee806b52ef9ca235c7683428257caa7c6a4494ab54702de325639b4a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_eq.c",
+      "bytes": 3551,
+      "sha256": "3eed74bbe1551230a2acf17312b1d616f08fc479c2080fba2f9e36b2dc2f2b62",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_eq_signaling.c",
+      "bytes": 3312,
+      "sha256": "ed42f2bd9b3fdf5aabb13dab7d710ee5def4ab6f2063d479d2ab2af85dc86aaf",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_le.c",
+      "bytes": 3299,
+      "sha256": "afb375508e35c7d7e2e84d6c2da1e82801fb47543c1f3e3fb440e569507ef1dc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_le_quiet.c",
+      "bytes": 3433,
+      "sha256": "6094b33407c27616b24efff5184f9234dee58e49ef1ae1ae158ac08d1328d88f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_lt.c",
+      "bytes": 3296,
+      "sha256": "c8f9ee0cae4fd5c65ba4ea46362512d13acc6ef826dbc611ae897c903adb773b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_lt_quiet.c",
+      "bytes": 3430,
+      "sha256": "ff38169dd6f51c41e69c57b1826d9612007b98571f79496bd25da51136b27f2b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_mul.c",
+      "bytes": 5987,
+      "sha256": "a2f9dc80df552df77a554e10b87570eaed7bda7c4ed8f88b4b1bb8456ac61bf0",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_mulAdd.c",
+      "bytes": 2944,
+      "sha256": "bc3d0cc0255f75a7c370a36fb748908fd73e5279786caa7c25826803e6f790c9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_rem.c",
+      "bytes": 7286,
+      "sha256": "1eb6bb174b2bb683ec95b2c41ddba6edb4be3050ec45c51338fca9c179e02291",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_roundToInt.c",
+      "bytes": 7505,
+      "sha256": "e240bbd26a509e1038eac1433e6ee67cf27e43bef6b5744de319208b37824ee9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_sqrt.c",
+      "bytes": 8999,
+      "sha256": "ef8f7e0e0df9675f89412c0816ab2506587442f9bccbdf89fa8d60a1131a8263",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_sub.c",
+      "bytes": 3294,
+      "sha256": "2c46594c55ebf0f422bcf454bdc102c07246fe524c305c722a73c510070f23e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_extF80M.c",
+      "bytes": 3868,
+      "sha256": "590b2e361c3a66c09dded71cd716602e317fea188dbe4505a5e288822f0123a6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_f16.c",
+      "bytes": 4232,
+      "sha256": "e6c02dcb976ed6048d75479afcd8fa68c228144b22398186089af2beeff81c8e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_f32.c",
+      "bytes": 4077,
+      "sha256": "9799cd423f2d8937e5997cad4e40c03f5dd17678ebd3a0ada2b9d336130ab862",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_f64.c",
+      "bytes": 4195,
+      "sha256": "3b0356908f1da00b2770e074afd79db1f0e9fc56c63f4046df33ebff69ba6de9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_i32.c",
+      "bytes": 3735,
+      "sha256": "2b739ca4cccf1a7975ec321f9719fc7339adc202c5cb1f26d4cb4b918924fbcd",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_i32_r_minMag.c",
+      "bytes": 4050,
+      "sha256": "bc5e1be1f3ba988125d67d98f3b3355edabd370990261ce87eeff85720f47c5d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_i64.c",
+      "bytes": 3893,
+      "sha256": "c1310d775baa61504833a69fc45855646dfd1e034eb38a2f14915814a62bd187",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_i64_r_minMag.c",
+      "bytes": 4630,
+      "sha256": "8e574c0b35cfbcb39d3480bb02e3ed37c8d9cd85d37dde9abb64127d5bd19ac6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_ui32.c",
+      "bytes": 3750,
+      "sha256": "c20b95ccc2f6102e3928d10af0d4256caf142ce764bb2ac1b1997cc1bc2f8aec",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_ui32_r_minMag.c",
+      "bytes": 3923,
+      "sha256": "51b1c8f5f61c97bc12f3c2033ce0d5756f97cf4a17d485fca560dd47f3706572",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_ui64.c",
+      "bytes": 3902,
+      "sha256": "6a81f9ea7ea84888b05b1f46332bdf9084994e76efeec9c25932d8a46edfed71",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128M_to_ui64_r_minMag.c",
+      "bytes": 4323,
+      "sha256": "16acc711ea0f8435c27331ea551dab374389d27823cc06dbc52a800792255c55",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_add.c",
+      "bytes": 2892,
+      "sha256": "75eb0a81afe2cd7b95036bef7fd922c3f2b136b8876a3c88592966032e0d2158",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_div.c",
+      "bytes": 7769,
+      "sha256": "ad6580bd4efdcd64589fb707b52fb3984c83191ae2e66dc2ee4cfa6ea57d704c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_eq.c",
+      "bytes": 2690,
+      "sha256": "4b734e914812c77fb5251ef8168a91ecd0b3bfae74e76590ea7ec8ef0a8b1cf5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_eq_signaling.c",
+      "bytes": 2527,
+      "sha256": "d5bad5e0d33bfb9f8a1c65bbc5a5c33f02146ab38a16af343f4052f4ecfadbec",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_isSignalingNaN.c",
+      "bytes": 2071,
+      "sha256": "0e051ca709b3db344bcf7fa51f62e99e458f3320bf126fc29647d64b32530b1b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_le.c",
+      "bytes": 2748,
+      "sha256": "43aef58e5eb2307e38c3239ec3c024b13dbfde810b7d14fca7b1003656e333ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_le_quiet.c",
+      "bytes": 2927,
+      "sha256": "4e03de9c89cfd00c11c0617ac60139dc8c7486c283eefffb3a8b934dd832d47f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_lt.c",
+      "bytes": 2744,
+      "sha256": "6a3b47d24b84053f8b7188565419e40e38d7afff21860a6fe93f1f8f99d33914",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_lt_quiet.c",
+      "bytes": 2923,
+      "sha256": "3cce646abf1561598f7b24b5851f52b34501750cd6497b9636c2170b03655bc6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_mul.c",
+      "bytes": 6117,
+      "sha256": "2d8b4d319fa70ca05feff3218fc1d60ac71cfd91a76b05eb057c4fbe01a6b55e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_mulAdd.c",
+      "bytes": 2395,
+      "sha256": "7f678cade44756c0d7533ed82653ae5027011a436df091c64538f593001c4ad6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_rem.c",
+      "bytes": 7468,
+      "sha256": "2b1222312cf2f9b8bb84eaee9cd2e30a24736e407dfb27659f72f304f3eb8565",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_roundToInt.c",
+      "bytes": 7005,
+      "sha256": "d3718776bba5b4b4af8790f217816d2b271e2247d0cd4db1ec555e70cb4dcccf",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_sqrt.c",
+      "bytes": 8649,
+      "sha256": "61769141d5a849d967703480b7b90cd96a72715413eaf2b76d813c54ca76578f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_sub.c",
+      "bytes": 2892,
+      "sha256": "4decb9fb96fe4c952d5a17ed4de60a2980b660bf9557ec8f98ef889c14f27fd1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_extF80.c",
+      "bytes": 4346,
+      "sha256": "e7fc441863f2a6f019d067f8c7cf50d6c256ca28f5c61c4bd670dc3ee0f20825",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_f16.c",
+      "bytes": 3837,
+      "sha256": "9460ab80e8d7e13833a37be68ee819e918159bf0c1efadab5d44f369e275d526",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_f32.c",
+      "bytes": 3845,
+      "sha256": "391b4d498234fb89ed91ba39e4255bd4af365b85edf84247575a3acef0ad04f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_f64.c",
+      "bytes": 3977,
+      "sha256": "ed88bf4d0592b9acba03cf8a736797f6f0630523682a3050f8b02ea2043e5132",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_i32.c",
+      "bytes": 3479,
+      "sha256": "aebbdc19c6f36012ea48c9b20b9c2821507eab7a4ae2286dca422c870bc76f75",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_i32_r_minMag.c",
+      "bytes": 3980,
+      "sha256": "e89f68590ffae849a59140ea9c9e55845f13cafefd2131e242a5c5dc13ccd378",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_i64.c",
+      "bytes": 4072,
+      "sha256": "b27e06d0718a9c7cc2b8cef00d1fd9e599464ee1048c245fe70fe09f5c28ae3e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_i64_r_minMag.c",
+      "bytes": 4781,
+      "sha256": "5f07d626e65bb09821d889d43f67722c639706f54b1fb584c099b48d181be336",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_ui32.c",
+      "bytes": 3463,
+      "sha256": "3885bb6787653b4af2f699948223a05b1a2f4bae7e88d366e39731e65769b9f2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_ui32_r_minMag.c",
+      "bytes": 3654,
+      "sha256": "938e0edff8f279d8295133438f27aa51f344d15d81a6fd10a91c341d78891057",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_ui64.c",
+      "bytes": 4079,
+      "sha256": "4711870d70c48a02eb74b21d26615a7b6a4fb5e2b5ea294afd779523a177fa89",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f128_to_ui64_r_minMag.c",
+      "bytes": 4426,
+      "sha256": "9869d6e39f83bbdc26fd211d014c9ae9b75df332a73fdd690bec15f6d740290d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_add.c",
+      "bytes": 2607,
+      "sha256": "8443223ecb2466bd66f1d1e43237beefbd9185a30584619e4cae00562e9560cd",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_div.c",
+      "bytes": 6492,
+      "sha256": "bdfcc68493a1d2455a1d907795a448f72b7fd3092a74fb09a96fb82e9fc033e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_eq.c",
+      "bytes": 2462,
+      "sha256": "470b134d0069d50a41e994bad187a27360de65f8331af0586180e1e5f5ddcc9a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_eq_signaling.c",
+      "bytes": 2332,
+      "sha256": "1a93ecbe007bc898ff1d471a890fca51ffa044ed417129297e2ec5064742babc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_isSignalingNaN.c",
+      "bytes": 2059,
+      "sha256": "a680628b550dc1b9008da71d40fe5fd54d5ca896430dbfc980442325fd0b5ae2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_le.c",
+      "bytes": 2477,
+      "sha256": "62609c8d99e46ad88a9eb7c543ddb27f3f474664414458102f12d32694a9afcf",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_le_quiet.c",
+      "bytes": 2623,
+      "sha256": "18b2a51a7b75f7d2161409bff7a8cbe456fdd6428a7d8381b75591168c8fc1f7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_lt.c",
+      "bytes": 2482,
+      "sha256": "9e174e088edbafc697a9acdaee3a6ded0452463d4f60311f4ea95ea924b77caa",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_lt_quiet.c",
+      "bytes": 2628,
+      "sha256": "6af1d9ea7a5a245e9f822f68472d463d41de728775be18fd29e06f7ef954de66",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_mul.c",
+      "bytes": 5097,
+      "sha256": "4dadd0fbd17bc6d56e8f47aaffa508f7b30f0862823d805d8f51615e2d8c53fb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_mulAdd.c",
+      "bytes": 2258,
+      "sha256": "5e90a96a0dd58dc7d27f82ab7876888b90a113bdae4695995b6f57b471b8409d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_rem.c",
+      "bytes": 6376,
+      "sha256": "afa9e8244d14024608ae2cc28cfd7b3034c965eef81e6763d4728d625c068723",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_roundToInt.c",
+      "bytes": 4661,
+      "sha256": "c326c16b2961ba5cc679a64282a1ea6e67c12a34573b1323421872d2b382fcb3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_sqrt.c",
+      "bytes": 5216,
+      "sha256": "afaef7b511fbf04142cc783cb4c2d29e46b672d35dee315b15394e36453eacf2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_sub.c",
+      "bytes": 2607,
+      "sha256": "3ed7662ec166f1a3e75fccfbf23562e10530d6ab0b8d2ab2b9f7e8cdb31ebcf5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_extF80.c",
+      "bytes": 3886,
+      "sha256": "9aae60c09f2ff22e57f4012e39ebc07c51a19d3adf89ab76c77f5012027d12b5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_extF80M.c",
+      "bytes": 3932,
+      "sha256": "ac8e5c12fbc20d98e17503a5da50cd5282d93398424a0155db0421c0a81828a9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_f128.c",
+      "bytes": 3688,
+      "sha256": "3831974e7dfa4fa19da899771779bfd3154379de3f416420d1c5b8921eee8986",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_f128M.c",
+      "bytes": 4037,
+      "sha256": "cf065d784740d7499b3cd019614865350a8ecd6cfb15a2bac09264d9cb87070a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_f32.c",
+      "bytes": 3590,
+      "sha256": "49121b429cb3e2d2da4cf7c32b3e48c8f2de14c7a1d1bee964202e5f338bc217",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_f64.c",
+      "bytes": 3592,
+      "sha256": "201c85e7d864a620f054146705a3d15403dd8a172b175b58ba5db4cc2eaa0a63",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_i32.c",
+      "bytes": 3402,
+      "sha256": "1aa73c14cb2b6b453c2db9106d5d64e81f178e82b1d992b3e182ac44b97175f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_i32_r_minMag.c",
+      "bytes": 3585,
+      "sha256": "49214a32cf15a896d6e1018c69b90bddb646a3431ea945801d2904bd84058a33",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_i64.c",
+      "bytes": 3402,
+      "sha256": "31f7c831348f269ff546c6d5d867e94d2edf19905614712c2402ea7d5ae642e2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_i64_r_minMag.c",
+      "bytes": 3585,
+      "sha256": "e75ec95c58402ef80246cb8b3175b58a12beb5a39c114ce231f85edc3f5cfbb2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_ui32.c",
+      "bytes": 3347,
+      "sha256": "9deb5b5a6df2015ade2fc135713f4a13eb47c5216f14312d071094d0d22c96ba",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_ui32_r_minMag.c",
+      "bytes": 3562,
+      "sha256": "bb5c9bbd589816cda8738293ea175ef7a6b4c333c91b9ad87c71cfbe86c54fe8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_ui64.c",
+      "bytes": 3698,
+      "sha256": "449d8e7a43b745b0a26df926f36a79eacfa736c2546d32051af3b75437aaffbe",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f16_to_ui64_r_minMag.c",
+      "bytes": 3562,
+      "sha256": "143a1250ebc1e4231e163f345154453ecce46e13ca6eceba8a42459e324ce17c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_add.c",
+      "bytes": 2607,
+      "sha256": "540c8f2d95b30bc846fe5b747aa6aae1bb70c687b9429278678bb0a000f65dcc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_div.c",
+      "bytes": 6323,
+      "sha256": "ec341d5028f63f19230729ed8d8aca424b08f221adfdce4ebce3caa6d54ba0d8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_eq.c",
+      "bytes": 2455,
+      "sha256": "2bb5a867872c4489c9d1363efeccc1d09af4f8c74914c4821b38171a3ad7acb2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_eq_signaling.c",
+      "bytes": 2325,
+      "sha256": "68ecb33672ad5d3476886c8962866fac41a69a5e5d42cd7b4e31f18888da36b5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_isSignalingNaN.c",
+      "bytes": 2052,
+      "sha256": "db08b8448054f0d3562470b454e6e505568a8c6b112b8fe884ca2041aeb75e76",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_le.c",
+      "bytes": 2470,
+      "sha256": "84d3e3211b5ad2870602fd00bbc43b14bd9caec33292b433b8537b132bce5ce9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_le_quiet.c",
+      "bytes": 2616,
+      "sha256": "514c406d9c0ed80d7a1041b0064ee0b8304a1ab3d6a2fac9ab61a30351af82e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_lt.c",
+      "bytes": 2475,
+      "sha256": "b992a2f1f5a678b12865e50f836ab499993009566d491c82ef521dedee5218ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_lt_quiet.c",
+      "bytes": 2621,
+      "sha256": "bbca34ae9346d9d612382b19b29183f7f59c6e34e204415a8bc33ce82b8959c4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_mul.c",
+      "bytes": 5063,
+      "sha256": "bca46360750b343f24aafcfa7c36f24e3fc4fb6465d0c49f60de7980a86bc37b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_mulAdd.c",
+      "bytes": 2251,
+      "sha256": "867914dd6c8dc3a03e1369b7a65fb1cf2975ef2d1a1b5bbf3eeb1b8758cb3e2b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_rem.c",
+      "bytes": 6317,
+      "sha256": "61d04b11cc6768f5ca286e6ab2b48444646401c836ccf40c75b0f0f244724911",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_roundToInt.c",
+      "bytes": 4662,
+      "sha256": "8bd60926124351237faf0a4365d9848edc8ad09371807e801c3ff4c1702c94a9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_sqrt.c",
+      "bytes": 4623,
+      "sha256": "2eb2d1a5a35d2e839aa69e18bda3868ef5f86c214df6adad3ae50cb8a6195dc8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_sub.c",
+      "bytes": 2607,
+      "sha256": "c4020ba5c2d5f10e647711bd7287c574ca498b0e469ee99f1f9c68c930d43311",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_bf16.c",
+      "bytes": 4259,
+      "sha256": "49877bc71bc66c5c9e07a427cf5dcc9f098c0dd9ad9c153df7a41d2da968b73b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_extF80.c",
+      "bytes": 3892,
+      "sha256": "394310fab551ad3d0c7e079cf8860a45d7c3c8696fe334c3d9074213aa4d7554",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_extF80M.c",
+      "bytes": 3933,
+      "sha256": "22debc6b1ad7c00dbd87db7f49c1d19227c7c91f434c78ee9e0a16d526f2f725",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_f128.c",
+      "bytes": 3690,
+      "sha256": "9da20f35a493f3cf8b18bf7d6b318ce660f3e908e8626e84689ca07cd94b5ae1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_f128M.c",
+      "bytes": 4126,
+      "sha256": "a549e714711aec5f0dacbc8cce0e32e8db7e011956069feb80b6bd0634e04666",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_f16.c",
+      "bytes": 3662,
+      "sha256": "6a413eb2ca2de4e345b7e8aaf416a2987c3ec8cb13b6135953d470df67fc4f1d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_f64.c",
+      "bytes": 3594,
+      "sha256": "d25caefe4a26b9e9e1fa1cc53c683d8a22468122b2d09c16deb0e833702ada10",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_i32.c",
+      "bytes": 3394,
+      "sha256": "f955cfbb69c337d4546c2cf5353654432fb3170cc9f4fb0f416e306fdb4ea73c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_i32_r_minMag.c",
+      "bytes": 3638,
+      "sha256": "057627295cb621abf6c747af00a05a1809dd4ae1a5b10b76404dedd4a15910b1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_i64.c",
+      "bytes": 3787,
+      "sha256": "d7a1083de841e474736b8357f2342879b23c155a1591475f95020c48228bcefc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_i64_r_minMag.c",
+      "bytes": 3780,
+      "sha256": "6f3ca589fc2e3d7afc1d5edbadc8e50de8f88ba5b1844125c764e774e19ff144",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_ui32.c",
+      "bytes": 3406,
+      "sha256": "03a452164220429d7736964380b3515709b01aa4e9aa10817a0ef17bb8ed868f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_ui32_r_minMag.c",
+      "bytes": 3538,
+      "sha256": "4a44acc5cc4525bd4c478ec06aaa7737a3fd1ba9b3076483910d945c282f4dc1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_ui64.c",
+      "bytes": 3794,
+      "sha256": "5ba4fd45bf7a7eb9f2a14d8670cacf84861be547f713f95294927f568658b88b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f32_to_ui64_r_minMag.c",
+      "bytes": 3638,
+      "sha256": "8135fd0be48888131aca84c751db96e8e0231b23648b2f770ea4dd143ec4f2da",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_add.c",
+      "bytes": 2699,
+      "sha256": "edb05c732053d1107456c95b7f9b18e58a25546925d3ffafac27b5f263db0b2e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_div.c",
+      "bytes": 6427,
+      "sha256": "c44985b8084d6407fd3cd4043dbe02c2651721ac03d1c3920798fc1b75ea2f3e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_eq.c",
+      "bytes": 2474,
+      "sha256": "70f18d1accbd596ff4be01882ec05b2006aedc96d0e5bde63f8c95851eedccd8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_eq_signaling.c",
+      "bytes": 2344,
+      "sha256": "f7984eeacd74ed6df0ca61b8f82afafc3bfe3fcf4a3b3010c9852cd8064609b9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_isSignalingNaN.c",
+      "bytes": 2052,
+      "sha256": "bd16d0dfb80583cd40be7821b4b0ff787553a30def853b6dad7464e2f55cddc7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_le.c",
+      "bytes": 2501,
+      "sha256": "a5ebbcf9314360ef9ce8e064856129d0665db2371de4069ed2d16ecc79e4042b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_le_quiet.c",
+      "bytes": 2647,
+      "sha256": "22a6809f619c770ed15130ce31eebe776a9f1f45a4cd5bdfb6e5c6de04ba657d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_lt.c",
+      "bytes": 2499,
+      "sha256": "f3bd638772b93335cb693ccaa149e482c38135634e50217fd6b1f925db20df45",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_lt_quiet.c",
+      "bytes": 2645,
+      "sha256": "a187cacea311a0b8996ed7cf4163c348a15c1b2b1642ef87e53f8655766de24d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_mul.c",
+      "bytes": 5494,
+      "sha256": "335137bca17d29eddb451f562869ca7327c5fe472f347d2e36c55e4c2219e79b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_mulAdd.c",
+      "bytes": 2251,
+      "sha256": "1d16eff3acdec91e3aee893c4f389cf23df998e2bd199344d0574c01a9b09bcc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_rem.c",
+      "bytes": 7059,
+      "sha256": "089c2701c85e6a4ee5d779de903471ff8093d2ffdad164ebf31392d97165fc81",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_roundToInt.c",
+      "bytes": 4690,
+      "sha256": "5463f765aeb7766b2a456305b723e1a205a9f9a6f85c918a466b482a89e67033",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_sqrt.c",
+      "bytes": 5184,
+      "sha256": "643a9abb4d30aff2cac9be281687055a1a677ae7555ca782fc3fb1932d000908",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_sub.c",
+      "bytes": 2699,
+      "sha256": "6b581000e70e679e057d2ce17e0839aa5a7da6982685b9718b6540069441e689",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_extF80.c",
+      "bytes": 3897,
+      "sha256": "6a5981f0d81f9f7f0ab2b41b09eb4f7d4ad06ac0425d71304d098669bd10e8de",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_extF80M.c",
+      "bytes": 3948,
+      "sha256": "9308f45c39a57b9bed891f407b825d0ce0c0b2d3cdc4c4f33160fced6031ffcd",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_f128.c",
+      "bytes": 3773,
+      "sha256": "247cc939189101ab88d9c687d81928220c9606c8ecf0d48376bf52c4f5cd74ee",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_f128M.c",
+      "bytes": 4311,
+      "sha256": "c53591ca2b0c9c29b3b90da9c319fea8924f88f108eb791590637ec1814e056f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_f16.c",
+      "bytes": 3473,
+      "sha256": "afdad89c24c6c5b31a1de01cb86d8c0db697c340d6f2783ccef875d1b290c708",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_f32.c",
+      "bytes": 3477,
+      "sha256": "48e998019d76613444c6f20e5d272464abd2657795830905dcf629bb18d90529",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_i32.c",
+      "bytes": 3348,
+      "sha256": "8cb6390959e1800514601ceab2a2010bfc6189729357d212c377208951a3b286",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_i32_r_minMag.c",
+      "bytes": 3858,
+      "sha256": "1f110a1ad42f61377c60d4813f59b80af212b0baa25678a9bc4e4999cc6672f0",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_i64.c",
+      "bytes": 3996,
+      "sha256": "1502fb0ef9d22983b8f5040284f3a69a8479326109a7b82f14c7217687b90900",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_i64_r_minMag.c",
+      "bytes": 4205,
+      "sha256": "48fba5b3a13d926edaa992ff60b0afce4e2be9571838302b5ce925d6cf830f42",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_ui32.c",
+      "bytes": 3360,
+      "sha256": "230b94a3fc3fc9dd5aeebfa8f2b6f62ab5795a03c4d899985494a8ccfc7e1846",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_ui32_r_minMag.c",
+      "bytes": 3567,
+      "sha256": "23c7edc37e1971039d0ebe6f759e3e1e5b38d4fb8122b2aa346a47b648bcbdd4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_ui64.c",
+      "bytes": 4003,
+      "sha256": "b1b9879f9bddbcf5caa79b3e3bd78f8e3a1758852dfbe1c0444e5be6ea0dcfe1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/f64_to_ui64_r_minMag.c",
+      "bytes": 3721,
+      "sha256": "dc1949fcf5dfc3039a478d46f9b0f9197bb491ee5f248aa664767c9d99a48343",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_extF80.c",
+      "bytes": 2499,
+      "sha256": "8656c1283a40efbc0f820699d00eb976749946adcb114cf40b6abb00230099cb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_extF80M.c",
+      "bytes": 2635,
+      "sha256": "95c18cac6798d2dd7d5a21f5567a805a5a169e4a8888c967ec64ec7bb218213b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_f128.c",
+      "bytes": 2437,
+      "sha256": "93de00d573022f6b29b5070fbda0536215ef65813ab4c67e426c439cc2907e52",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_f128M.c",
+      "bytes": 2743,
+      "sha256": "796879e16b84b8fbbcbd99a167d15ec1851279d9d5f0f4c0faed0620e68be167",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_f16.c",
+      "bytes": 2726,
+      "sha256": "8b7b751aa0438fd47099f60633f85d590fb058921ea2603f72ae3111982ff7c9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_f32.c",
+      "bytes": 2275,
+      "sha256": "e6ccd7ec5ca8ea2b64435e94ecb0962be000f31d36abb88e68f6e90b44c0c290",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i32_to_f64.c",
+      "bytes": 2438,
+      "sha256": "de334caa22edfcfc2a35572a2e858f0c500ad5018fc4335b46dfb003e0076183",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_extF80.c",
+      "bytes": 2480,
+      "sha256": "9895d5cf153479ee8ab2f73576d9886074e809f29a9a4f913b12fc643d1a56ab",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_extF80M.c",
+      "bytes": 2618,
+      "sha256": "c6db8e94834c8d1c5b0a93882530cae92f721f8533e24d46be83b1b49831665b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_f128.c",
+      "bytes": 2686,
+      "sha256": "0a5c6919a5037bf020b3657f04d8659f828fc0c02a4920adb2c4cccdffe0e793",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_f128M.c",
+      "bytes": 3165,
+      "sha256": "f5fbae9b2b90337f7887ad3b1f42bf8ffcca78f940d2d6bfde8c64d957230ace",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_f16.c",
+      "bytes": 2691,
+      "sha256": "5a918b230e5f54aa86a605ea7660c7faa7612ab65c8a9a2e945e7ea9c50b7253",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_f32.c",
+      "bytes": 2691,
+      "sha256": "15c028b6e784138754cd7af1e6c360416ea26d71e97f52fe2a5cb452eb6048c4",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/i64_to_f64.c",
+      "bytes": 2297,
+      "sha256": "905170a7a36d108afa5fc43596cd4a29a5a6a8f82264ad890b45feeb5bad021c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/include/internals.h",
+      "bytes": 11346,
+      "sha256": "24ba8b3497c3f3e48e01c22424c6314b53d557eb6dfbb96f02e71743ec1daf11",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/include/opts-GCC.h",
+      "bytes": 3976,
+      "sha256": "5cbb99836df55f9c654752c060548c9b27dfd5657ba05a15aecb5082808ea120",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/include/primitiveTypes.h",
+      "bytes": 3397,
+      "sha256": "6b0841b1aa4a9c3a1c0a89e868d5d69592e54360dc8e4ba947f7853243a55dcc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/include/primitives.h",
+      "bytes": 51676,
+      "sha256": "f416c1a7a3f84d863ddc089665147b3ea51c62451a49b849c5176cfce402cd1d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/include/softfloat.h",
+      "bytes": 17785,
+      "sha256": "2125ee655579f4153ae305d63e5c1b21897f6ed1f44a81a97e507bd245bcb3cc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/include/softfloat_types.h",
+      "bytes": 4089,
+      "sha256": "554233f87179dd7ef6c0d8f3b0f00d39a0cd452d8c4e22cc1b3adca2d8dc2d0a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_add128.c",
+      "bytes": 2111,
+      "sha256": "c87826a723bda5596d23e7141cd38e0cc0ab07446ee149d8981a3a5045d84b1f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_add256M.c",
+      "bytes": 2401,
+      "sha256": "1ac7c3ef0513ef7512913873574ba080a3f82c6eaf296644455bd32f495ca42c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addCarryM.c",
+      "bytes": 2514,
+      "sha256": "2105f9953e2f8387aaae7f22e06f1cabe8b8c3d1928175744bfa97425de126b0",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addComplCarryM.c",
+      "bytes": 2525,
+      "sha256": "068cf20b7d457e6d772f95c1e711c5f6e220bae2c914b300022ad5b8bbd795f8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addExtF80M.c",
+      "bytes": 7133,
+      "sha256": "d54a08540c6d4774effdf7fe7a3075bb50ba6f23f6b0b2cc6a23dc02b81d5c51",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addF128M.c",
+      "bytes": 8074,
+      "sha256": "a72b7eb5dbc87ce268f52b69f4621a637ac4f565a13bfe23277cdbb2f26561cb",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addM.c",
+      "bytes": 2492,
+      "sha256": "a4fb4c3d0de6bc52e8b4c88d9a506e6d4fe6ecc417c71475e5f437fc43f4c3a0",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addMagsExtF80.c",
+      "bytes": 5643,
+      "sha256": "a7cb8e4bed94679f2f4d1746672a7a5a65ef6b334eacfabfc6f62802b5ff1262",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addMagsF128.c",
+      "bytes": 5037,
+      "sha256": "71270b8f50bd5bf1ac929b6d7ec8440a6cac22f7b84fb57d60c97b5b4eb5272b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addMagsF16.c",
+      "bytes": 6761,
+      "sha256": "ea46945ef33aba75ce624390ff95eaa69c15ba825c45104065c7f48375313045",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addMagsF32.c",
+      "bytes": 4705,
+      "sha256": "5b2d7992841c17e42a96e5aec865b4386cdc7e9030ac6f4d25ad74e4e73fb59b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_addMagsF64.c",
+      "bytes": 4762,
+      "sha256": "2b4f69206b4e8d3fc26bc64ca147663530b68b53b0b0e7817c724e2d99376ec5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_approxRecip32_1.c",
+      "bytes": 2614,
+      "sha256": "38e984f9c6ea5843216ba73d08fafd217b285badce557bc9eb58227acc3667ea",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_approxRecipSqrt32_1.c",
+      "bytes": 2921,
+      "sha256": "dae5502facf520d0915403967e3436e1c2d2f5b848527accdb3b1d2a3654a47f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_approxRecipSqrt_1Ks.c",
+      "bytes": 2275,
+      "sha256": "d7c4b4833ce9f42e86d9933a550ad0d6e4b8bc4df4bb30518c8a747b12699bf8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_approxRecip_1Ks.c",
+      "bytes": 2267,
+      "sha256": "a073abc2d5e7a4dfd97f323027d1ef1d370225aa922ae2395398ff3c7c8e9633",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_compare128M.c",
+      "bytes": 2364,
+      "sha256": "65d5d45293774b5713b321213764321d23b1969d07165e3fdd90f48259995864",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_compare96M.c",
+      "bytes": 2362,
+      "sha256": "aa0e5af4705188afa3de9cc65c719dd322ca50caf8f437a4f27f3590cc23c924",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_compareNonnormExtF80M.c",
+      "bytes": 4341,
+      "sha256": "dfe5b2bcf492d6326958b6ddd658f82ddfd8470c579c945eea93bb7c34d66693",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_countLeadingZeros16.c",
+      "bytes": 2233,
+      "sha256": "7c2f9d6638550f9928fca7ac2969e34939208fce544458f9ce6d4c74eaa18033",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_countLeadingZeros32.c",
+      "bytes": 2310,
+      "sha256": "4cc8579412c437c011f3d9795a2bbd3d4eb06349c69ce624aa169471c643f336",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_countLeadingZeros64.c",
+      "bytes": 2650,
+      "sha256": "f8fc823d585542552de1295cc8181369799030e7c67d2fa21ae6f7be16bb6840",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_countLeadingZeros8.c",
+      "bytes": 2770,
+      "sha256": "8d0076e681bc613b607d8ff9d1b72631a3bfe66dd75ecb7f4faed5ddc3b830ca",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_eq128.c",
+      "bytes": 2037,
+      "sha256": "629f908a01204cfd004f914c9ade0587ac0d7a06e832b1491fbb4f60f1daa725",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_invalidExtF80M.c",
+      "bytes": 2083,
+      "sha256": "30b6cf160e07ff5ee15075e8a4f2da412c047d6ffd16ec5da5529bb388ec8e2e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_invalidF128M.c",
+      "bytes": 2233,
+      "sha256": "38d8de290a791888542b7fb76d90fe9cc814cfd38fcc7c7264de6f68dfcda57f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_isNaNF128M.c",
+      "bytes": 2423,
+      "sha256": "a909f65d1148c924b4f85ae9748f4bd6ad0aa111473bf036203f74e9afd579c8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_le128.c",
+      "bytes": 2054,
+      "sha256": "168cf2f803b003c9bd7050fb41ee64f41cd1e418c0cd085be8960ab0c754b9a7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_lt128.c",
+      "bytes": 2053,
+      "sha256": "92d0c8ec3bf54fdfb73723ecf50a8d6fad4dd992d147673f8d157397fceb47df",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mul128By32.c",
+      "bytes": 2298,
+      "sha256": "0fff94ae51d26870e35bb362b31437114d356f2685c83099c78fc34692eb7db3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mul128MTo256M.c",
+      "bytes": 4118,
+      "sha256": "adc5c815a6356ce28294496716cdf65b0124e4ba8886d63fcbbbd308fae17fd9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mul128To256M.c",
+      "bytes": 2692,
+      "sha256": "e4274877903c18ad7846765ed7d3ccce5a6c2244fa9249bbd9737ad691cc49a8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mul64ByShifted32To128.c",
+      "bytes": 2204,
+      "sha256": "65d456219816b7d58de815d7d5920936500e5ad51386dd6e78f54db8fb94e07a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mul64To128.c",
+      "bytes": 2416,
+      "sha256": "1cff12724898aaace69ba3d7301404ded67156ba13466aec4a25f1a3cbb9564d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mul64To128M.c",
+      "bytes": 2506,
+      "sha256": "39a34c34f78e9da233609f2aa1c012e0819b38305da68c8d90959680bd7bfa55",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mulAddF128.c",
+      "bytes": 13492,
+      "sha256": "ecea25d376399e55a5080c9f8a36eecf82af662f5e75b683f85ea46a698a0157",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mulAddF128M.c",
+      "bytes": 14944,
+      "sha256": "edc0fcb0378960d31c7e615dc48c1d9f1cc3e33df24bccfb4619d089a36fdde0",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mulAddF16.c",
+      "bytes": 8247,
+      "sha256": "94cf8ae6663e8083825d6877468ba84d44eee990863936ed0e64ae2348e76f32",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mulAddF32.c",
+      "bytes": 8272,
+      "sha256": "fdfa3a9d52c8e8406d5121ed3c11838c0f643c37dadecb408ff1842a05a7dcd1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_mulAddF64.c",
+      "bytes": 18253,
+      "sha256": "1761bdb8cc07d782f17a59ae62f931bf7a238fdabf8f3dc7190d0f40237469f7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_negXM.c",
+      "bytes": 2352,
+      "sha256": "104993368b0d0f9d3f8af43c9e629c01184f01f71e93e6d29a4e10fa5422b941",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normExtF80SigM.c",
+      "bytes": 2116,
+      "sha256": "b7d4f76c02584e64ad2d07ac2906c83d006a53ed61debb9d1a6eb86702d3deb3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackMToExtF80M.c",
+      "bytes": 2860,
+      "sha256": "f6ba8a41b372df2986c47244743efd63a3ed31c00ec5fe174196805e92584308",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackMToF128M.c",
+      "bytes": 2792,
+      "sha256": "01440d376a9510a660370620f8518f072e8faf57255002c75713393d8255ad7b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackToExtF80.c",
+      "bytes": 2581,
+      "sha256": "2d9afe904a81fba64823344c0db977f75ceaa629a421bb2babd5c3020a1f3f4b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackToF128.c",
+      "bytes": 3063,
+      "sha256": "d0c975306f770f8c8cff6206a1093f0995c8f9f0217e9c2a52086e7943fb39b1",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackToF16.c",
+      "bytes": 2382,
+      "sha256": "977c043533261df99c5b1296ebe1da2b36773cb058e804db4d63c223b56986e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackToF32.c",
+      "bytes": 2382,
+      "sha256": "2e473ba709740808cfd59931034be7c67c80c87ddb76a4765dceb23c9bb518d2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normRoundPackToF64.c",
+      "bytes": 2385,
+      "sha256": "4e65ccecf8ee96e2c5815575df3a0e4495ac82987a841868cb1d130556a3dd0a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalBF16Sig.c",
+      "bytes": 2145,
+      "sha256": "113d2910629a82bc2b9fef6b1224fbef1fdceaa9e3de45d373084daa690b172c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalExtF80Sig.c",
+      "bytes": 2142,
+      "sha256": "6f6df9f717880d43d67075e0c360dd80dc9c4d647bb0961c38b978c9f066a75a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalF128Sig.c",
+      "bytes": 2579,
+      "sha256": "c43e5dc9d813266cf907f923215c71648252975de5517d10578fbc9329bf933d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalF128SigM.c",
+      "bytes": 2415,
+      "sha256": "cfac3de2d799408bee1edf14053e6c115cf6eaeeb67ea407a958074fc0f8bf22",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalF16Sig.c",
+      "bytes": 2144,
+      "sha256": "f41c767257079404ec64f70806782c65690720a4e953e34c6c909b2bf9ead563",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalF32Sig.c",
+      "bytes": 2146,
+      "sha256": "6063e5c0ee98527c1a5d728195d11ef5ccd9077515812b0380a2f1953244c861",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_normSubnormalF64Sig.c",
+      "bytes": 2147,
+      "sha256": "be1efe0196eacce551f117e58f5d2bc053a4a2897f37fa5805b23e7d4e00de95",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_remStepMBy32.c",
+      "bytes": 3169,
+      "sha256": "2e1819d36d1ce0ad0d5d552b814ff9e4de969d61ec8e2a44aa83cbccbd85d224",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundMToI64.c",
+      "bytes": 3858,
+      "sha256": "764e71eca56671e5f6f91f86e4ef3dec9d1e9c3e55825ccce21b741db9691b6c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundMToUI64.c",
+      "bytes": 3824,
+      "sha256": "80fb54ee5976fa5144c3f684e26142674f29cb65ed83f19791dc4e2d53faa2c3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackMToExtF80M.c",
+      "bytes": 10109,
+      "sha256": "db136c39070fc793e9567503f36f4ee3b609c4e25c131a44042fef908495397a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackMToF128M.c",
+      "bytes": 7169,
+      "sha256": "49539c0e598f9791d90ae1a2ad580cde10b6b5cc7144ca9973afed6479f1922b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackToBF16.c",
+      "bytes": 4855,
+      "sha256": "c96e201836e11d7fbedbc7398f614ea87821e38a169086e671ca2293d72f222e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackToExtF80.c",
+      "bytes": 10021,
+      "sha256": "edc1f707800016baa9a2d0dc3b89c21e42e339962fe2e2e3548ef2847428612d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackToF128.c",
+      "bytes": 6709,
+      "sha256": "a00544e1a8b5282614b6a9ee92c711489bfa55824bb9509bbaa29dccebeb79e6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackToF16.c",
+      "bytes": 4763,
+      "sha256": "91f093c7d2d32f24350fcfb350c1f0a82eec6b2202c7c45ddd38f57f0b62a8f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackToF32.c",
+      "bytes": 4778,
+      "sha256": "aac61a425bed4e973c9e0e1fb254f74cb7c04602131509ed98513269da83e45a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundPackToF64.c",
+      "bytes": 4880,
+      "sha256": "e549468a71417c8fefd927d582ec8481e2d6f595c406a4db5efff9b462f8e2c8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundToI32.c",
+      "bytes": 3724,
+      "sha256": "9a64993647fe9cd9031d5a34d0caf86f48ba4b86b6c9bdecf3602d318fbc6401",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundToI64.c",
+      "bytes": 3754,
+      "sha256": "19008822ceff3ef5e46a770e5ffccb1953a8377c588001ca5da9dc82d1c44d2a",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundToUI32.c",
+      "bytes": 3632,
+      "sha256": "95b33259cffdc80a07ead51a4bf92344263f0da19880c1a663ed6a739edd4d73",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_roundToUI64.c",
+      "bytes": 3716,
+      "sha256": "616db10a9679eb984d27aaaea76e7d96c76bc0c6f2e1b894e99aa05b2fddefc6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftLeftM.c",
+      "bytes": 3133,
+      "sha256": "f5be60222b7e8ed847927209f66cde69be2b19dfbc6d325714e9f9985ab48202",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftNormSigF128M.c",
+      "bytes": 2999,
+      "sha256": "258aa2fd60428be98dc758fde112aa3125aea1ad47bc192efbf619b1b7ad4fb6",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJam128.c",
+      "bytes": 2562,
+      "sha256": "ffb26555c1aba397392ca7f3f3edd0d470203767fd819977b078a29fcc649823",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJam128Extra.c",
+      "bytes": 2758,
+      "sha256": "0411b82fc655ceace1af391e05d441a97fa06ae5f6768c49dc561ee8ad7a8373",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJam256M.c",
+      "bytes": 4022,
+      "sha256": "f4ad86f1710b094cf28a827f4262cce1cdb8a19e5fa4ecd7eb434b42efcf1f5b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJam32.c",
+      "bytes": 2076,
+      "sha256": "96dee4db4ed95ffe7bd44060f980f0a010003a11c20f5757992dcc1f447e0b62",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJam64.c",
+      "bytes": 2076,
+      "sha256": "ea54abfce241315f78b69893f6d7b20ab767e5fe8ade6b107245d8dc0745630f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJam64Extra.c",
+      "bytes": 2290,
+      "sha256": "5371094c6e887cde72b34336c0246bfac9984d567376a4e18e4b79b9ed303dff",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightJamM.c",
+      "bytes": 3491,
+      "sha256": "c7f4547f719af77cb6bfd583009abff39a7434404ab1d3a52866452a9523856d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shiftRightM.c",
+      "bytes": 3138,
+      "sha256": "caad711c675f55f6f435e46f77c848b4be822e3decac44acf8fd248e3d3ef305",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftLeft128.c",
+      "bytes": 2137,
+      "sha256": "ea7a5f701460e6385993c1caf6f4a9b9b07a193ffed028f7fa8d5b0b6f1b3582",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftLeft64To96M.c",
+      "bytes": 2183,
+      "sha256": "cad7ca6b1e171ccfc1470721005878c62bcf71c5044122888f3d41f0f5066650",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftLeftM.c",
+      "bytes": 2541,
+      "sha256": "2c80d95d3185bbc9969881d2ade18319ff722fc8917ef5faf6ef2476f048e9a7",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRight128.c",
+      "bytes": 2140,
+      "sha256": "d5822c19746d3b59129be8c7f2b975d3fe5a9154e512cec99c0bd4466709ab0b",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightExtendM.c",
+      "bytes": 2614,
+      "sha256": "22a3121f403c304ee699bb20b7dacdcdadc1c898c68a2339b1654413e953253c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightJam128.c",
+      "bytes": 2265,
+      "sha256": "3302697be75bb96f76c6a436ddc41e7d583604f63332fee40aee2d10c3298463",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightJam128Extra.c",
+      "bytes": 2295,
+      "sha256": "886a4ea6d31f7c60f90c2d8e36fb811bff8bf3f9e826371bd4018d8294129648",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightJam64.c",
+      "bytes": 2061,
+      "sha256": "0fcadc566939b0155100929995ee5234fb40cc146cf7093d6c9c15184aaca00c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightJam64Extra.c",
+      "bytes": 2171,
+      "sha256": "ba9433a7048900a8ecd7985fbd4b033d37c74d3722669a864d79bdceef9289dd",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightJamM.c",
+      "bytes": 2620,
+      "sha256": "ca19baf3a5683a5e99e2e30373b712e96612ea0e2a02c1376cef24ee31447292",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_shortShiftRightM.c",
+      "bytes": 2543,
+      "sha256": "b64532371e3adbd83688b0288fb1712cdd2a76797e2012b8b4ea2a5133050d5e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_sub128.c",
+      "bytes": 2109,
+      "sha256": "7a6eed592e83937944e8beb8944da7f2b8ee00568777191d537fe357d96cf762",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_sub1XM.c",
+      "bytes": 2293,
+      "sha256": "fb57ef7de8a11df4fd069c41695b635764f5d9ddba1e39c3d6024cccb75f5136",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_sub256M.c",
+      "bytes": 2405,
+      "sha256": "d7a7ee9eb75c2c0f20e02e63db40f1933e46df1898d1a0171f6f9127b74bceaa",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_subM.c",
+      "bytes": 2496,
+      "sha256": "3d926826b49c1c8572914d7f73b62fbd9a9067cafe13e36cb997daf4c99a910f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_subMagsExtF80.c",
+      "bytes": 5777,
+      "sha256": "5d5df4aaa4cfaa1f87d2eeeb6793ce9e85f7cca40a9266a85855c81be4992c37",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_subMagsF128.c",
+      "bytes": 4748,
+      "sha256": "973c4cc3142b732e898250614c46dcb0fbaa7fba97388c410dd9472612141595",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_subMagsF16.c",
+      "bytes": 7061,
+      "sha256": "94a1544c52c18a675a377fcde77d0e68d9e9f68b1cf4572af53afa3723076fda",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_subMagsF32.c",
+      "bytes": 5481,
+      "sha256": "53ca2e9f6f1edc7095133e7c98018d69d1e6cd0d5f5b5c0393c4e656ee9a965c",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_subMagsF64.c",
+      "bytes": 5533,
+      "sha256": "733f17b90486602ff6c67fa3d99166a841b03276c0fcc7da66751d1e8631f01f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_tryPropagateNaNExtF80M.c",
+      "bytes": 2428,
+      "sha256": "63d9d8b1dc967815207ed9325e3879e45157c89c135a0302a8a4f4b9ba1991b2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/s_tryPropagateNaNF128M.c",
+      "bytes": 2216,
+      "sha256": "903732924f9a24f5b9915a9d146ccb70bac44144e9d70e3ced80b647e0009498",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/softfloat_state.c",
+      "bytes": 2253,
+      "sha256": "5f7a70c4c5823cdde0518db77a74a6549dba62b21d910f6dadb9115b1d478301",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_extF80.c",
+      "bytes": 2306,
+      "sha256": "99b783436e7be262fae512649bb96393df582582dcf8aac38e5a456826088fb3",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_extF80M.c",
+      "bytes": 2521,
+      "sha256": "7e9ef3c5f72c6465093aa0ce770e73d2a2c79f9bc09bfdcea85effdf66433e32",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_f128.c",
+      "bytes": 2305,
+      "sha256": "8ab6d22fad3c9f0f4dfb2c52bd4698cd15b108e365926f165a60346dba7ecccf",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_f128M.c",
+      "bytes": 2604,
+      "sha256": "b11e50589f02e8935db8686f641f6dc280a2d30ef55f7ace76349d2840d17261",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_f16.c",
+      "bytes": 2547,
+      "sha256": "bc8a48c3ca7214f80dd0858cbea94f4b6427b3df26d85dd337fdc13a32660a21",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_f32.c",
+      "bytes": 2202,
+      "sha256": "c839bd6a1ab7aa173b1f03fee8f883f1e08b8c93d04aa2e9b4e16d70163a7ccc",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui32_to_f64.c",
+      "bytes": 2269,
+      "sha256": "71049d86023d9753f43218e93d7be5c281c2ea02e8162e5a524d50e4bd2ccdae",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_extF80.c",
+      "bytes": 2287,
+      "sha256": "777d1b45df3ae12bb2879018316686b4f0626811b5d18d5a2f34d4788d0b7639",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_extF80M.c",
+      "bytes": 2504,
+      "sha256": "33ff148e6ae22f0ba618c40f13d0dbff7ff9d328d79e46c9a320f522b900e090",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_f128.c",
+      "bytes": 2551,
+      "sha256": "bc2ed7beb05412210283a169e409e7cf15542b39fb6f826e905ecfaca803365d",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_f128M.c",
+      "bytes": 3003,
+      "sha256": "37c680a711a828808db98057e573008bad62bd4faf1e2f675f7daf92c680d4e2",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_f16.c",
+      "bytes": 2521,
+      "sha256": "9bb392db5f812251f2bd6db868679abf4d9975b0d567271cf1b890a7ca3f2501",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_f32.c",
+      "bytes": 2521,
+      "sha256": "7136247b87af7ee7f1d1941c705d75836b728c0b305374243a86f0ed13e7f33e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependencies/softfloat/berkeley-softfloat-3/source/ui64_to_f64.c",
+      "bytes": 2276,
+      "sha256": "034a91f9fdeb4281760c06f3f97f51decc09257eef2b0a16028f52103b6bb530",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/AddingExtensions.md",
+      "bytes": 4491,
+      "sha256": "5d4e839c606eaaf54433b4548f7ab8f69d93434577b4ca327a7bee48bf3526b2",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/ChangeLog.md",
+      "bytes": 35264,
+      "sha256": "866bfc8a150b031c2a4ec993709af1602095929d4cdc8e4ce659b9abd6cc89b1",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/README.md",
+      "bytes": 181,
+      "sha256": "0e97586b00436f14a80cb4e95de54df33f3b8ec56e9a426d3bc84fc48ac3cdc3",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/ReadingGuide.md",
+      "bytes": 18684,
+      "sha256": "30d864f051efb26fb698ffd96fab175a7676ef71a977a088fcd0086ed5658f0f",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/SimpleInterruptGenerator.md",
+      "bytes": 6719,
+      "sha256": "bd09756f31bee77d638e0737a235225126f9be825009b672ebadd349d7200385",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/VirtualMemory.md",
+      "bytes": 2335,
+      "sha256": "91683f5cf2e4f9796e44ed5407e43c84cb3bfa9846b27dc948a0ff7144c3c0e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/Makefile",
+      "bytes": 326,
+      "sha256": "5777a60e1e4d907b3133e785badee5421dc595d5ef6578f273d9c15dd50123ae",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/class_structure.svg",
+      "bytes": 123358,
+      "sha256": "481e43a312819160db3f734c6abfdaeac41865b231852cbb557fdc2e4191f4cc",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/class_structure.typ",
+      "bytes": 3167,
+      "sha256": "8234ffbba56b80177ebd3687615a16534ecd0e369da9153f315075e90eeceb8c",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/riscvcsimdeps.svg",
+      "bytes": 452125,
+      "sha256": "2071c72ffa9f44a259eb1b6c33101879d2ad9414b1dfbfc456e0cd93dbedb61d",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/riscvcsimdeps.tex",
+      "bytes": 4814,
+      "sha256": "a2ceccd964909a61217a3d31b431f9b32cd78aa42406329483970ed56ed4f6ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/workflow.svg",
+      "bytes": 92924,
+      "sha256": "ecae35f7187d339e191b42f71a290fe4cdb0d28da19968a4952272ecdd139590",
+      "mode": "0o664"
+    },
+    {
+      "path": "doc/figs/workflow.typ",
+      "bytes": 2232,
+      "sha256": "476f202ef8ec206ef895e2acc067501aa9c30c3afa5ada6bb8ca263a6aef7a0e",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/CMakeLists.txt",
+      "bytes": 500,
+      "sha256": "4df53e229fb93f703eb97cde8d5d617bd3b49437509d97a7abcf25c5d366a653",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/Holmakefile.in",
+      "bytes": 267,
+      "sha256": "600c82257e30ab8110c4d130c96bd308163e7a1baf3514bd59dac52d91f90a47",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/ROOT.in",
+      "bytes": 93,
+      "sha256": "8e7003a31d6bedd34d509fadbacd1ac7fd1b38841a93acda5b2b2eb9f55744fe",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/RiscvExtras.lean",
+      "bytes": 6712,
+      "sha256": "2699631f3382c93b2b2a26e53167f903e743eb52ca2f272c409853522b6c6a33",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/RiscvExtrasExecutable.lean",
+      "bytes": 9540,
+      "sha256": "3aee6c4ae67bcb9ddb1a9e0b2e62677b2412f4454d32fe37b845e90a683b0ad1",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/ast.hgen",
+      "bytes": 1026,
+      "sha256": "2da432552e5ffab2c510f81c5d607c584f15f279fc778dba1b4ed2f0567b64a5",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/fold.hgen",
+      "bytes": 1624,
+      "sha256": "8218d556bacf4a895a910ba44c5563fe63122bbc5060a823dc5d05548b22a43a",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/herdtools_ast_to_shallow_ast.hgen",
+      "bytes": 2997,
+      "sha256": "9575378c035459a7e98ff435534d179d0898fb9fce76356e7dd716497914cb35",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/herdtools_types_to_shallow_types.hgen",
+      "bytes": 2996,
+      "sha256": "0a249cc7ca628491a78ff456b138b029e955d0c319d99530ad8ce48fe1a9fe6d",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/lexer.hgen",
+      "bytes": 1588,
+      "sha256": "168260c83c234c471951a7d32e973901cb5cd9ec3a6fb6243bd33628ad0b238e",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/lexer_regexps.hgen",
+      "bytes": 4914,
+      "sha256": "22088c2b44b726f678efafaa9a1436a03644b06b55c918cb4caec6fe4a036020",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/map.hgen",
+      "bytes": 1694,
+      "sha256": "e4a1ce561f22cbd8d04dbefbffb0e4be5fc95b40339cf0172e3173883fb5dc5a",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/parser.hgen",
+      "bytes": 3714,
+      "sha256": "a63acb93b81b8549ce532f3c6cc7e0dc2c26093200e7115dcfa496ee92f7823e",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/pretty.hgen",
+      "bytes": 2159,
+      "sha256": "7e155916756a24a08908bf8987b15d5e68de87eb401fad370db8ad3e80275d0b",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/pretty_xml.hgen",
+      "bytes": 3867,
+      "sha256": "ca3f5331113ce2dca9280c50128f4b2a0dd9ff294ae6ab7fd7bd2f781ec30ee3",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/sail_trans_out.hgen",
+      "bytes": 3012,
+      "sha256": "deeea75f64111efd7e08c1260c9ae64d0066d9ebe8297ecbc038c218fbc75217",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/shallow_ast_to_herdtools_ast.hgen",
+      "bytes": 2829,
+      "sha256": "14d2510816ea050a391d484044e6554b679a3840744ab2cee23b783dd7493597",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/shallow_types_to_herdtools_types.hgen",
+      "bytes": 2746,
+      "sha256": "fc82c87b35480f3c1ee5094d6ed319d7ac522acdce409d6a247b9503dd2c9f8f",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/token_types.hgen",
+      "bytes": 878,
+      "sha256": "8c92b70c2e371fa739b7767e429bfd56e161537a7d3619e86fb45f4f711c3a1d",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/tokens.hgen",
+      "bytes": 894,
+      "sha256": "9a03baa729776328f4dfff4e20538f256e1b5664418b0922c4a9095398a82fd3",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/trans_sail.hgen",
+      "bytes": 3543,
+      "sha256": "2d627f6e8a727c58f1aba840e57af19216e2247438eb2826bfdf6fb413bc7dd4",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/types.hgen",
+      "bytes": 3218,
+      "sha256": "483dac91a28c272be582161dad3256bf4bd12ede21375b9f42d4863f9f7857aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/types_sail_trans_out.hgen",
+      "bytes": 2815,
+      "sha256": "c76bc5130775ea92afb541e7f9a27926ba5233bc5fd92580ac42328ab66c7b90",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/hgen/types_trans_sail.hgen",
+      "bytes": 2514,
+      "sha256": "cd315bb48aecca38426507ac8665f39aaa522e6c6701395de14c1a3f72142a6b",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/riscv_extras.lem",
+      "bytes": 3037,
+      "sha256": "dcce1ac99729c4175a78dc45c6ec2ccc893d862aa80fd02db29c0ed0f86d453e",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/riscv_extras.v",
+      "bytes": 1648,
+      "sha256": "c05aef60052ccb293161c521c66c06a48c0693eaae4fca80048206445010e957",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/riscv_extras_fdext.lem",
+      "bytes": 8619,
+      "sha256": "2e4c6c38595bbd146704e450bd8c933c471f46e4f57b43049ee1fa65d4de21ab",
+      "mode": "0o664"
+    },
+    {
+      "path": "handwritten_support/riscv_extras_sequential.lem",
+      "bytes": 6132,
+      "sha256": "25cad03190ba315b71b69372256eeb32829dd64c4fee3e90d04eec855fab6a27",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/.gitignore",
+      "bytes": 39,
+      "sha256": "a2a7dd605a2bcbe372c4e447db878d270aa816da60e833094e899559e5b54ea9",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/CMakeLists.txt",
+      "bytes": 1168,
+      "sha256": "1bad964d9a9a36f97379743f79c282b64837fb41b88eb18974a49ac02e07546d",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/LeanRiscv.lean",
+      "bytes": 14363,
+      "sha256": "2a02b132d8e2b62211ba6bf293b292e7f4e1597ccbe55574cdc505e7efd7cbd1",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/Main.lean",
+      "bytes": 489,
+      "sha256": "ed934485c34c2db037b32416d9e4d50f97d942e46fb8086d59eb32c2de433b1b",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/README.md",
+      "bytes": 1027,
+      "sha256": "ca41d504ee3037bcc622f99b8cf883516a09d954fcbbf94a6a9d7131e4a7e5c0",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/lake-manifest.json.in",
+      "bytes": 1476,
+      "sha256": "920a065fe3992f28ae3c78aee5b8f1d4877bcc4a881ac5401b9eb0dd1b7ffc85",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/lakefile.toml.in",
+      "bytes": 360,
+      "sha256": "e725313a3207e5207a41c9ff764b5c3978aaa45168ed645d9d1e70edc4362249",
+      "mode": "0o664"
+    },
+    {
+      "path": "lean_emulator/lean-toolchain",
+      "bytes": 25,
+      "sha256": "651c8accb402b0c071cd336e9d3dc0a55516b1bfb434ddc4801f14936785b1d2",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/CMakeLists.txt",
+      "bytes": 23621,
+      "sha256": "abbb565cf6ba2f54b524ba155bc4e5ca11b223c39329ef48eb98e83060a4242b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/README.md",
+      "bytes": 89,
+      "sha256": "98d0392c6d54404e59f0c63d07d7292ded67f41be39df78023e48e3a0cd026d9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/addr_checks.sail",
+      "bytes": 2019,
+      "sha256": "d6c6007073665e86daa614334a8ca3086b8eba6da39010bf6283c8124d5b4b0a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/addr_checks_common.sail",
+      "bytes": 910,
+      "sha256": "7089db8f9641d448872104951d9b6249ca4467bf5b4c280d51240b851f9685a5",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/arithmetic.sail",
+      "bytes": 2812,
+      "sha256": "e96d68eadd62816e02e5bed6ff428aa2098df37294675f066284370eb21dfcde",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/callbacks.sail",
+      "bytes": 4606,
+      "sha256": "10a0eea032b1943f48ae4101b132649bd46230e57039695b554373821c69aec7",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/counters.sail",
+      "bytes": 15247,
+      "sha256": "48b06d9e15be48dac405493961025ce95fb61a4779e6e9e704378eab2d02b4fd",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/csr_begin.sail",
+      "bytes": 1247,
+      "sha256": "84c714b5e00646ebc943a9f21e4e183b96a347eacbb678d48f245edfb2b04576",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/events.sail",
+      "bytes": 2206,
+      "sha256": "7fffef7da4518669c1485943b994545f794c269e2ecfe56acd750709f7609f71",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/ext_regs.sail",
+      "bytes": 891,
+      "sha256": "6080057a394646845feb19564e3b3db5c128c76ec082c4a3454b219cafdd0bf0",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/extensions.sail",
+      "bytes": 40403,
+      "sha256": "8eaf7b23d6e10b7318ac50c495fadea4692298245c2d0d4060171ffa4c44b1d8",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/flen.sail",
+      "bytes": 986,
+      "sha256": "a4064983a16764246f1e0296938fe1be8de4ae760c1b798b4795b5bf13a82618",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/float_classify.sail",
+      "bytes": 2184,
+      "sha256": "0331aaccb2003c810a1d2786bd00a6c6d89ca9b5a04dc6d7d0534a413d2fb3b0",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/interrupt_interface.sail",
+      "bytes": 2236,
+      "sha256": "ffbfb3e85f7b5150333ec5f7336c13791b87035d3cb0435a4af777f56e8064db",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/interrupt_regs.sail",
+      "bytes": 24568,
+      "sha256": "7e60fe5d30389b22a0a1d03d019e435a384c213f276b71d2ad6f1dc3c7916c26",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/isa_version.sail",
+      "bytes": 3713,
+      "sha256": "6499020944ce4f82ff19022a5df3bc1901910c957df53d2a63b83b2ef0436528",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/mem_addrtype.sail",
+      "bytes": 1592,
+      "sha256": "cc7a353ee4c37e6cd1258f6cabbcd1801ae75399147e39633669e00a7759d417",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/mem_metadata.sail",
+      "bytes": 750,
+      "sha256": "d56479e88150f4941af5535bcf04bafb1df21e0480f4b8a62cc652cb3d79d985",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/mem_type_utils.sail",
+      "bytes": 5502,
+      "sha256": "c4b415fe514077f9d9011eeb13bc7544719a5e791d41cea0e05388215a0081ab",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/misa_ext.sail",
+      "bytes": 437,
+      "sha256": "d77a26434e7532ae81c92961d61d81a6abe5912280e1cb0568e2a82e5d1e955c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/pc_access.sail",
+      "bytes": 1022,
+      "sha256": "355d650e0da14d8f0900d605cdf1ec6c550a907410a671b13c9a761fbb849db6",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/phys_mem_interface.sail",
+      "bytes": 8356,
+      "sha256": "e85fbfc8454f2790f32a26357f05cc439d6603c70aec8b77800d546d7463da24",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/platform_config.sail",
+      "bytes": 15192,
+      "sha256": "9759129b6135af83e71567bea6c68ad1de105eb449c74e086b718c2cb6369669",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/range_util.sail",
+      "bytes": 2366,
+      "sha256": "cc2433a7c2a05d29fe89bf64d3f9c6bdaefb2a7029334a04e87d6f496e1843f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/reg_type.sail",
+      "bytes": 714,
+      "sha256": "8115b2d4e0804323bd511cad8ee17cd6edcf647d117390ba2e123445236c2d49",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/regs.sail",
+      "bytes": 6015,
+      "sha256": "e6f0ac2cac40355285fb7c5bb942eb27bfe0a61c6642b61ae003431c66a6b463",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/rvfi_dii.sail",
+      "bytes": 11531,
+      "sha256": "d52a8d1f8c597afdad1fcfe7fd5282d30e8bcf51c9783f220701acafe3704a26",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/rvfi_dii_v1.sail",
+      "bytes": 4401,
+      "sha256": "cc2c197cac975a6f7e0d3b056607985467ba0de2b74989896a17ec6d39d5acad",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/rvfi_dii_v2.sail",
+      "bytes": 3227,
+      "sha256": "5c6bacf921756654e0b36881aaa570522e892fa00c950f763df0235688e3d34d",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/softfloat_interface.sail",
+      "bytes": 10638,
+      "sha256": "9f7c9ec1734baf3cdd0b1154642e606c555f3489d1e8a6dbe0c5378a0f9dbee3",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/sys_regs.sail",
+      "bytes": 54758,
+      "sha256": "eeba3d8aacceb56849d964ed48ca33b0dd4e72f8a6311b80dd2c6737544f807b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/types.sail",
+      "bytes": 16595,
+      "sha256": "85600edbb47420cf944f5122d34a09aa2ca758eab39b47a34868fc38d5c3254b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/types_common.sail",
+      "bytes": 759,
+      "sha256": "8aecb1cfa1646ef8babedcf1a1785475c36f16dd00637c61992538f2c5fdfeeb",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/types_ext.sail",
+      "bytes": 2842,
+      "sha256": "c23b8fdec84f5a9082944797f77c309548f2de351e58e2f2e4ac2883766fc480",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/vlen.sail",
+      "bytes": 1951,
+      "sha256": "32fc53b900207ccd7892678c7dd2731a93ecca6a43fdaf9f0276193ef94bcf88",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/vmem_types.sail",
+      "bytes": 6651,
+      "sha256": "cec18ca13ead152a8ca16bf78b6f1546cebd3b13c528d6c022ac4d582636852d",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/core/xlen.sail",
+      "bytes": 3074,
+      "sha256": "cdb0c29104dbf0899914480d3f30d126015c3eefa713a36ae2588ce9c5d3790a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/exceptions/sync_exception.sail",
+      "bytes": 2042,
+      "sha256": "02833f59d5ed8d2c50842b6a90cce54a8a3abf67c5ed4ae2a46fe9405e18296a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/exceptions/sys_exceptions.sail",
+      "bytes": 6129,
+      "sha256": "90d1eb8c52f9d8d8e4819a3504f5021139c7379776ed627cee82c4874914a3ec",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/A/aext_types.sail",
+      "bytes": 1098,
+      "sha256": "62c9782b3b6e2c3cbc389543f1c7653f45ef938b07b4402e9835dd2322370d80",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/A/zaamo_insts.sail",
+      "bytes": 7051,
+      "sha256": "a79e349c23c88f006bf9b9fa94d12f9ca8d813e763e215618b1cf9126ce47977",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/A/zalrsc_insts.sail",
+      "bytes": 3674,
+      "sha256": "dce15f78cb91b0d7ed73ad8d0b267023e5853fe16983614a6037f0e726db075f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/B/bext_types.sail",
+      "bytes": 681,
+      "sha256": "e7bcd96423cabd745d3f185d43a648aebcf49b903363c35337c18d209efa7982",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/B/zba_insts.sail",
+      "bytes": 3002,
+      "sha256": "3e00db7e450e7ab30d3b429573e77b20f4127cade244d89b9955aa88b7c26fcb",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/B/zbb_insts.sail",
+      "bytes": 12467,
+      "sha256": "f1da764702541715c7f381cae59e56ac9b0011eb0726ecf7ffe5ecbb216ebbbe",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/B/zbc_insts.sail",
+      "bytes": 2418,
+      "sha256": "f6392032c44f9ddbf5bbacadba5d98e0392345d589c3dd8b3d42a33843784fb6",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/B/zbs_insts.sail",
+      "bytes": 4185,
+      "sha256": "f50483e9792fdc8ca95f546194b993df353f53b9835447e1254ed053228479b7",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/C/zca_insts.sail",
+      "bytes": 20006,
+      "sha256": "b6dee98f5fa917dfcf37452f3f475eefd59215f949c21dda541c54f14a5de039",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/C/zcb_insts.sail",
+      "bytes": 8019,
+      "sha256": "eaf5dd5d4fdcf54b0c8fadbf05b4fb7c60cca6c036a5ff5c26b27777cb6e3069",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/dext_insts.sail",
+      "bytes": 31503,
+      "sha256": "4e8252ecb019d1af118e5d72637714b76b6f0659d96489955bf00059d4f6d104",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/fdext_control.sail",
+      "bytes": 2615,
+      "sha256": "07b30730ba2f05cdd8f638ed3e1ca0e30906cb756c27b68a27920e6a6a47da57",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/fdext_regs.sail",
+      "bytes": 12989,
+      "sha256": "944b39fbffc48fc92fa951d44170559caf80900b2aa96c680b95a72d410b179a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/fext_insts.sail",
+      "bytes": 32682,
+      "sha256": "05800b11a134971369ec4a9d06ba9b471b8a1cf46d74f0f68ad5e9a635b2c4a1",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/freg_type.sail",
+      "bytes": 2923,
+      "sha256": "27f8138a53154ade9f4ce2ea3c0cd146b5f57d1d03a72b5d61f293eccc242590",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/zcd_insts.sail",
+      "bytes": 2990,
+      "sha256": "7e8288e1521dad66bec762546f837f95da4df54d005458576fbf647710478802",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/zcf_insts.sail",
+      "bytes": 3064,
+      "sha256": "b22120128b48d229844cafc8e524f1f23575a2f4928436cdb941d2ace6cd0ced",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/zfa_insts.sail",
+      "bytes": 27378,
+      "sha256": "7759b83d7c3597949b7672a33a495a956a5ab0c80dd84d79e9187a60c5f297a9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/FD/zfh_insts.sail",
+      "bytes": 29577,
+      "sha256": "cf7b46524e20c32f206c48813fe06150fea243f45442fb158a07e1299eb25126",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/H/hext_insts.sail",
+      "bytes": 6335,
+      "sha256": "51847480aded70d74bc7ba3f63a27573e37184b6da15f301e4ff010fc22c0561",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/H/hext_types.sail",
+      "bytes": 423,
+      "sha256": "06e8ae777bb24f824ca0cc8151d78c50d737a04693e45b14d15c3bbbdac91e23",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/I/base_insts.sail",
+      "bytes": 29011,
+      "sha256": "07ce0b099023b6e9ce9aeedb0be15a800f2cec8dd7382a076853391537b5add3",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/I/base_types.sail",
+      "bytes": 912,
+      "sha256": "0446e25572148fa80fc7125985625520c9191396eeca09b065e5b66474aa2da0",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/I/jalr_rmem.sail",
+      "bytes": 818,
+      "sha256": "496c865bf5dd2896a576b75e7bf35ad0f33dc183f7d9b4d284a0e72cf7078ec9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/I/jalr_seq.sail",
+      "bytes": 1093,
+      "sha256": "5bbb143f7020c930c8ce3922df427c16aaba4317f30b2c2e02fb1244de53faec",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/K/types_kext.sail",
+      "bytes": 14792,
+      "sha256": "51281682c4f8ebf7a1077f8d0e1c833bdbdbac3a2c9933dc91eaec00c72f955c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/K/zbkb_insts.sail",
+      "bytes": 4175,
+      "sha256": "f95616ce2ea119ccc36e5d2d2051a0edd597f6d503e0b041ece2e440e5bf2e06",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/K/zbkx_insts.sail",
+      "bytes": 2162,
+      "sha256": "18c576c27692d70ee1df2cd3773dfd9f6ccc7d3d34bb0e8396785588af4a4025",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/K/zkn_insts.sail",
+      "bytes": 18541,
+      "sha256": "deaf7d582de1b58587a0bc33d98853b19becec51e10529aa7d23daf9de7678e6",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/K/zkr_control.sail",
+      "bytes": 2078,
+      "sha256": "a4661e26aaa68c6a3b89917be175abb9ef0e899c31c76214e72d60122a78c988",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/K/zks_insts.sail",
+      "bytes": 3866,
+      "sha256": "4626c1b38509cf6670a765b2554dcdbb88dcc2399bab132b6b4ef73c21306b8b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/M/mext_insts.sail",
+      "bytes": 7236,
+      "sha256": "f439cf260459ac1dd6031bf208c7444400b31bfa73dba5cec867d0edffa152f6",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/M/mext_types.sail",
+      "bytes": 501,
+      "sha256": "f85cefe5cdfd593d4479000a1c32a7345f2febd151dab57a229c6391de6636df",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Sdtrig/sdtrig_control.sail",
+      "bytes": 11386,
+      "sha256": "b92734c3592177e56d4e6f592cc050d8157adbf340e892657e6870e28d264299",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Sdtrig/sdtrig_regs.sail",
+      "bytes": 5631,
+      "sha256": "1abb0c4b4541bc3ce76455bf6855e3f0baea6c4aa5e711b6395d1b0bce596a6c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Sdtrig/sdtrig_type_utils.sail",
+      "bytes": 703,
+      "sha256": "928f397196c01860ba3be8b771b63b51acbb6fbf2082aea2d95aa833ee67bae3",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Sdtrig/sdtrig_types.sail",
+      "bytes": 24475,
+      "sha256": "14b4a54fccaf41dc621a9e4dc56ce59e43e599858defd9dc650a446cb4e5ed53",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Smcntrpmf/smcntrpmf.sail",
+      "bytes": 3074,
+      "sha256": "37cfd344220980bdbae669d6c32d59ff5cea5500874510cd9512ea07985a500e",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Sscofpmf/sscofpmf.sail",
+      "bytes": 3921,
+      "sha256": "a3d43499f31468898989016ec79ddbf4eecd8dcae33bf6a518bf2974b5f34487",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Ssqosid/ssqosid.sail",
+      "bytes": 1411,
+      "sha256": "182a5d9fcac5a8578e907cec91f59d816bd3814429af3b14146659259945d045",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Sstc/sstc.sail",
+      "bytes": 3120,
+      "sha256": "a12c13599a2f4a26ae3bce9ba238a4b909c84c4f77d57466a39e4a760f4b5205",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Stateen/stateen_access_checks.sail",
+      "bytes": 3104,
+      "sha256": "291eae56589e22667b442f61231b9249d7449e345467e43f86f2e69fdd245670",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Stateen/stateen_csrs.sail",
+      "bytes": 9085,
+      "sha256": "9aa96d016a35ceb6ea673f0c800e70b63957521eedc4beec28f749f156ce3b5a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Stateen/stateen_regs.sail",
+      "bytes": 8691,
+      "sha256": "993f58e3224f55b840506acacf37b581e00a8b49c772ccea81fac09d16acb7be",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Svinval/svinval_insts.sail",
+      "bytes": 3194,
+      "sha256": "bae55671e7a2974532599983f2079e3e583e34b0d31bd02771ff9e6afacea8e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_arith_insts.sail",
+      "bytes": 102723,
+      "sha256": "4c0255bbc2dde0da80891983fa2bf80c42b12d4a3aea9c61a72298d8a4b6620d",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_control.sail",
+      "bytes": 8328,
+      "sha256": "610dc59de8000d3e89bce648e1f685328f943071ecd5698f5e26aeafb61f4d67",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_fp_insts.sail",
+      "bytes": 59672,
+      "sha256": "feb3a2a1e162a6091d12acd264c9bc598dabede463a8d9eb30e479499a1b7d54",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_fp_red_insts.sail",
+      "bytes": 6452,
+      "sha256": "cff4a0e03b3781a5e45b04aa76c745a03f91c3cbcd54dbfaac71556c82aef5d8",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_fp_utils_insts.sail",
+      "bytes": 23789,
+      "sha256": "e0eac3157e5daaf9dd92d6b5853c3c7b4a33e0953ac076e5d9daffb1764d72c3",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_fp_vm_insts.sail",
+      "bytes": 6013,
+      "sha256": "847b48049222aa344733ad690a4059f86bc6ae2d6b973e184bb78de88e991a42",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_mask_insts.sail",
+      "bytes": 12253,
+      "sha256": "e4eea34a32fe0237c46a359bae2b6cfc571503912ef05425ef64429b6462b05a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_mem_insts.sail",
+      "bytes": 29232,
+      "sha256": "b5126ae6b0d6c5eaecf4bb2e99dffc0618ad74474f4bcf5f12a67df237a58600",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_red_insts.sail",
+      "bytes": 6515,
+      "sha256": "5a40f9d4553ebf070c8d84099dcddddab28788a1ab15ab24ba8d8be7b52d4cb6",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_regs.sail",
+      "bytes": 10338,
+      "sha256": "6cce9a19301ec10d9f9db3dd3eeca87d451a38990d4cd718b6218684d6417496",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_types.sail",
+      "bytes": 1440,
+      "sha256": "eeaab9ad850708059ac794bbb24ceba4605a153d8d70bbabead092cb879ef1e6",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_utils_insts.sail",
+      "bytes": 28874,
+      "sha256": "09d1fd1217060eabbad8d207c5ed7c318b1ee0b9bfda60e164a1b87076d994db",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_vm_insts.sail",
+      "bytes": 30609,
+      "sha256": "8179c04c91ed40e1eb10fef083110a1158cedb7ba46da06df34a9968d8476889",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vext_vset_insts.sail",
+      "bytes": 7481,
+      "sha256": "f984e6f5d9485d37adbe0cf18816baaeb450ce42399770c3b348c48738a9581f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/V/vreg_type.sail",
+      "bytes": 5787,
+      "sha256": "da5fd64798b2a5e203fc9e8159b8aaf395fad01aa49c128ae2b2a6aaf3d74e5c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zawrs/zawrs_insts.sail",
+      "bytes": 1127,
+      "sha256": "990d7ccecf1485aa92736738837053c693530c074e852b8944390fa62510fbc3",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zawrs/zawrs_types.sail",
+      "bytes": 430,
+      "sha256": "dc350866676f85edca3f680941883d0ab354462e17c82be7a765516bba3b97d7",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zibi/zibi_insts.sail",
+      "bytes": 1762,
+      "sha256": "2004b81234ef82e115a7a4fc3e5ff2249cda5b6bc72620a1aaf92ed0b86883ff",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zibi/zibi_types.sail",
+      "bytes": 423,
+      "sha256": "ad8a715ec3b974e418152a23c0b90d89ff0adf3b7790982df7eafef1ccf93241",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicbom/zicbom_insts.sail",
+      "bytes": 5846,
+      "sha256": "7677951e7f21ecd8ba6b18582a9d816c0030b5e8b2184ae2752beb2e6836dcac",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicbom/zicbom_types.sail",
+      "bytes": 451,
+      "sha256": "19957abe30dd74bc6c27ecf1464e8e5a0f38d5f5236a02edeb8dc564e7c426ef",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicbop/zicbop_insts.sail",
+      "bytes": 2732,
+      "sha256": "1f2e01678256691d1528ea397194c6b1648b04157c8ce1d39a500247b8b86e53",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicbop/zicbop_types.sail",
+      "bytes": 462,
+      "sha256": "fbbdf988ccd23b0f2aec8507862a71b0d42626ff849ee3ce7d65490b3c6a2091",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicboz/zicboz_insts.sail",
+      "bytes": 3476,
+      "sha256": "242295fcfd443768f11b32ff043fe751717ce01b7896cdf1e87fcbed5e5a1494",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicntr/zicntr_control.sail",
+      "bytes": 2095,
+      "sha256": "a3129d235a261c52203c6aa2e6a270120204bdb2ca4420a50b9c136e3530447f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicond/zicond_insts.sail",
+      "bytes": 1411,
+      "sha256": "86ea235572d08792921a264756e195c0e8d4cc728199a26476f87586297193ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicond/zicond_types.sail",
+      "bytes": 437,
+      "sha256": "55fac731ccaf118dbe48191a479ce474ede4c64ee8fa30beef0f8f5816ee79d4",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicsr/zicsr_insts.sail",
+      "bytes": 4678,
+      "sha256": "137441624950ab9b17258fae874a6484d81b39fc5e641267f5c68a325f212e6e",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zicsr/zicsr_types.sail",
+      "bytes": 433,
+      "sha256": "3408aeeb94f158564c7a070d395bcc490641ad7c76cf627f75cc9c2eacad36a9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zifencei/zifencei_insts.sail",
+      "bytes": 1753,
+      "sha256": "3c7355f5a8f30b6935bf1181955b9182a252cd9fbc9e41b2c79effcc6dc97a5e",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zihintntl/zihintntl_insts.sail",
+      "bytes": 1336,
+      "sha256": "1d39beed4f2a0f2ca2d58238b67eb9ffe18bb3660978236ec9cee2cb9f71f944",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zihintntl/zihintntl_types.sail",
+      "bytes": 728,
+      "sha256": "dc6e8245765847a6bdda4f8fdacbcea5a17a23a45071eded9ef54e160c79320f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zihintpause/zihintpause_insts.sail",
+      "bytes": 813,
+      "sha256": "efe8a44b5ab2f5572f57ba203c75e2067fadbfc5baaa2848b55b22621af17b6f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zihpm/zihpm.sail",
+      "bytes": 4603,
+      "sha256": "5f00874662dc135b0e0aaf4c1cd8eb8c86be7e356431fe9a5b218fe21eaa812c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zilx/zilx_insts.sail",
+      "bytes": 2322,
+      "sha256": "9a5c596177671badb0e624d74ea22ef171bae648ec3bcf52b5df3df049c3658e",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zilx/zilx_types.sail",
+      "bytes": 460,
+      "sha256": "8678ce9198708985f56e17f65f670e9878e1876b6a95300dbc712676a2f7ff8b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zvabd/zvabd_insts.sail",
+      "bytes": 11102,
+      "sha256": "6c6528e5fa5d20311a8d2ee010548f24fb4e59880e2019c905278e89fe9a2d1e",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/Zvabd/zvabd_types.sail",
+      "bytes": 480,
+      "sha256": "ffa330a1b861a17e2dd9daa66f921129877c1c3824d3665c816a820125a75e37",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/bfloat16/zfbfmin_insts.sail",
+      "bytes": 2163,
+      "sha256": "2cd483db1f59379ac46efd3d7a165ed3ec8e24c89f283df90acaf6834530b82b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/bfloat16/zfbfmin_utils.sail",
+      "bytes": 1198,
+      "sha256": "dfca369c084414ccf6da8b26d483befab8de70edc43205e0c47a3148d7bc1fde",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/bfloat16/zvfbfmin_insts.sail",
+      "bytes": 4152,
+      "sha256": "285ee4ad983a1176bf57aa674d65df12f64852b1b6a068e98d03832c312c6370",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/bfloat16/zvfbfwma_insts.sail",
+      "bytes": 4870,
+      "sha256": "a764d51927678985e0fb3400164631689a2dcb0fa290075d77d70d51b3390a12",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/cfi/cfi_types.sail",
+      "bytes": 705,
+      "sha256": "59319e5213a443c873e3f3d513252f3936f2319d81ab4a82dfdf3403ee85900f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/cfi/zicfilp_insts.sail",
+      "bytes": 1595,
+      "sha256": "2db86f0f40486b1d5d5bc9bd569107e7f9c2d9515b17086c5fe904cffaf0fdde",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/cfi/zicfilp_regs.sail",
+      "bytes": 3960,
+      "sha256": "3cae8ed948b10e67a6d334ca378b4bf1a3d358f065ee4b33f50205464366e7aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/cfi/zicfiss_insts.sail",
+      "bytes": 10132,
+      "sha256": "1f02229f05d2d26f40288579b0d7f48dc08a1be4e72884c51d15f095d4b8a0bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/cfi/zicfiss_regs.sail",
+      "bytes": 2755,
+      "sha256": "6baa0414b0949a963fa2d8e235ec9b4def6b300ea1ccd170493117946ee06389",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/pointer_masking/pm_types.sail",
+      "bytes": 1424,
+      "sha256": "cac1a91a038e58ff335fe0b1dbce00d92dd2218a51c7214f937731b3ce77a3c0",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/pointer_masking/pm_utils.sail",
+      "bytes": 4088,
+      "sha256": "ed91e739d73fec761c2806ac008625f5cd6ed4963331c420c88a51f2105c8984",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/rmem/insts_rmem.sail",
+      "bytes": 1269,
+      "sha256": "8ed5862eab7290632eae8e2f145a08377b747bad380eb3e9696924f6a4108adf",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvbb_insts.sail",
+      "bytes": 28170,
+      "sha256": "705d8a224c43b601bb9c44af8bc993e595d3bd2554e9f0c2ad2b0bb2d7118a9f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvbc_insts.sail",
+      "bytes": 7139,
+      "sha256": "73682fc98a7bf68f7f03d18987c21dbf3e4cdfa7a9d1044960ed5a1b25de8586",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvk_utils.sail",
+      "bytes": 6084,
+      "sha256": "5b2632d191bf669f5d31b0b195c1642fa55333298ba4afaa2d6bb84097f2a888",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvkg_insts.sail",
+      "bytes": 3555,
+      "sha256": "161765a66dd9be1647f1bb00704439b5c4a5c747f127b3bc6d1b154c928489fc",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvkned_insts.sail",
+      "bytes": 12350,
+      "sha256": "9b11567b3058c2c9e51981d000f5084723b7af05a195193d2df6c6982c558992",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvknhab_insts.sail",
+      "bytes": 5376,
+      "sha256": "af4f8c10429a62c0d9545c6e43d2b03a8a12c40b3d73637527c2498f633f64af",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvksed_insts.sail",
+      "bytes": 4645,
+      "sha256": "a6ba48d9c74383e2629726e06e4dceca48e2607b4c6b464aeade653cefade518",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/extensions/vector_crypto/zvksh_insts.sail",
+      "bytes": 3703,
+      "sha256": "909ba30422bd102e87b11860505c965f350b57ff9cb4ceff5963e2274c64a7b4",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/main/main.sail",
+      "bytes": 1669,
+      "sha256": "30527c8e554c895dcc8a21757643b00f0b37361124e99d7de2ea6a2dd8d5f6bc",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/mops/Zcmop/zcmop_insts.sail",
+      "bytes": 809,
+      "sha256": "9b21efede9d59eada700e8a758085c8f2ed25ed6f45ae1f3547b385fbf67087a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/mops/Zimop/zimop_insts.sail",
+      "bytes": 1707,
+      "sha256": "4559573d4f809c022af1702249a9ffd844e2a4063367e05afb66da9e212e9c02",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/pmp/pmp_control.sail",
+      "bytes": 7614,
+      "sha256": "f3da23cdd783ad84e7d40c82a28e61db20cbf78fcfd093e9e76d0c194ead085a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/pmp/pmp_regs.sail",
+      "bytes": 11584,
+      "sha256": "5ba0581f25b6bb92956086c17b07304f8b5361c9416d2a31afb4f315be5d25d3",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/csr_end.sail",
+      "bytes": 1430,
+      "sha256": "5c4b9b1a1a9d66b571f1d081ee0ce083270ea55936113627a2ac6e047357a98e",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/decode_ext.sail",
+      "bytes": 759,
+      "sha256": "2f37d7ff1b7584cda350e41fb58085712c8985585fd755ecd2d20b173d20949a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/device_tree.sail",
+      "bytes": 9395,
+      "sha256": "6a1bffae8f8072387543e5f2ccefad5f921aa383985b92c26b081d2b199b7bbd",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/fetch.sail",
+      "bytes": 5147,
+      "sha256": "0b340c26c8a3bfaa0eaae37656f219709b8cd88c763a90ee63de427149e1f016",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/fetch_rvfi.sail",
+      "bytes": 1722,
+      "sha256": "40b569f21963531b76895aadad57a9bfa2addb035f965d982367351a8266ee35",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/insts_end.sail",
+      "bytes": 1505,
+      "sha256": "816cd874d6f475a797f2eabd5e88d467ea22b66eb8ab44164253751d4aabf324",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/model.sail",
+      "bytes": 1497,
+      "sha256": "d4766886012ca8d29e92db6ac733e25e592b4141b30bc7f7bce87c1e3876f90d",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/step.sail",
+      "bytes": 17580,
+      "sha256": "f8d719bea01fee568c2482c348274c236fa7b0d7bdf27209eaf8c535a3e50476",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/step_common.sail",
+      "bytes": 2365,
+      "sha256": "e00af3776887ab97412cf801b1921aa3bf5283668e0efb57fc63825d18777344",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/step_ext.sail",
+      "bytes": 657,
+      "sha256": "283b6f3e21cacadef056fd5b6ae6de037374ea94f7430a7415f30261fa0a92ac",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/transformed_inst.sail",
+      "bytes": 3457,
+      "sha256": "d4a61aac3fc975ece8674eaf2fc1d714e61f72fe1f390b00930d40c62a601f82",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/postlude/validate_config.sail",
+      "bytes": 64292,
+      "sha256": "c17106b4ac6a01fd0b4ed63f5b39bd0ca547a0101f6541452680b5fcab2ef1e9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/prelude/errors.sail",
+      "bytes": 1258,
+      "sha256": "2d848d05bd6b20ccfeb054d639aef4c2e03692aa1dfb5d356544e99ecae97d3a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/prelude/prelude.sail",
+      "bytes": 11397,
+      "sha256": "852739a36c902f939bba44673a88eb6e96a284483d290fa7228244cb5cf176c9",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/riscv.sail_project",
+      "bytes": 13041,
+      "sha256": "164c61030d7e926a76c0b8b89cff64ed454b395dbdd92acf35b4649372254e76",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/callbacks.sail",
+      "bytes": 1801,
+      "sha256": "b005048f4a742be376b662fffb777660f7676a664037799eb213ad3832c72650",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/insts_begin.sail",
+      "bytes": 2938,
+      "sha256": "f27064ea3bb3cd6bfcf9cc3433d7933e8179bc91b14606619133b791f178137b",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/interrupt_implementation.sail",
+      "bytes": 1419,
+      "sha256": "b4d7b3641d7937b95e5e307f56d810381c516b78ecff7a4fc8447ea18002e414",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/mem.sail",
+      "bytes": 23021,
+      "sha256": "35ba5620cd4ab16e6eb5dbbceb5b0de700eec57e2885af12096d7b9403b89e2f",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/mem_utils.sail",
+      "bytes": 1782,
+      "sha256": "9c0ccdc07a1e5c76afd5ae982e937c283ebc808d8d639830764ccb840701925c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/platform.sail",
+      "bytes": 16643,
+      "sha256": "8bcec11147d417aab7766a1c64b11969486bb561b40611eecbafb5244e6b0856",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/pma.sail",
+      "bytes": 15059,
+      "sha256": "352f3bd9a3584998040c501fe1bfc19ba863787577ed73bf1d798b2aa53122ac",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/simple_interrupt_generator.sail",
+      "bytes": 3132,
+      "sha256": "44b5141a81c7374c1c184ced260c3f5d6667ad04e776c879cff4b6e9f180b7eb",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/simple_interrupt_generator_regs.sail",
+      "bytes": 1352,
+      "sha256": "a72bc0bb95305801b6cc3d8396038d1d61fee6aae33df4c4343a2962b096044a",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/split_access_utils.sail",
+      "bytes": 5906,
+      "sha256": "c39b5afb8e2e160507da3c22359a359b085e3fc0c980d9cbf19f8568968af208",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/sys_control.sail",
+      "bytes": 25193,
+      "sha256": "6d6089f458f01f17e8350eb25d66dc62f4a03014659041f3265237a672c62b78",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/sys_reservation.sail",
+      "bytes": 1638,
+      "sha256": "6bc97b0e9fe4d6b11308b77152188ac4f32aec16c09040f08ad21ac2cd45896c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/vmem.sail",
+      "bytes": 31460,
+      "sha256": "439c38474a876f2b06c6c668f0201f406b4717cfbb13896ab1b027b379e79d39",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/vmem_pte.sail",
+      "bytes": 17939,
+      "sha256": "e104323e1138c7e27e5fdd3a7c8cfc1c1d6458f4035a1800c6cb63891f07098d",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/vmem_ptw.sail",
+      "bytes": 7187,
+      "sha256": "6b768636055cbfdf1aad9b35d8be826e4039daa80d07272005a0a16e6028d1ea",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/vmem_tlb.sail",
+      "bytes": 9479,
+      "sha256": "a4d09af9fe4d9ec80e30e12dec2bb26f9c9652eb56120c5515042fefc7c6598c",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/sys/vmem_utils.sail",
+      "bytes": 17226,
+      "sha256": "d3dacf100358bdd229130584240008fa912bffa3384e46d9c1e6fe69baf3a3aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "model/unit_tests/test_mstatus.sail",
+      "bytes": 755,
+      "sha256": "fe275a5aa5660fffc88e395f5f8180f99a4229da8bb6f0b779ff14811bd43cbc",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/.gitignore",
+      "bytes": 18,
+      "sha256": "76613c05723239f62e42e38de30840985a66a60dcc48e04df20a75abcc0eab92",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/Makefile",
+      "bytes": 6231,
+      "sha256": "0cfa75c01228b91516440316095c1747723393edce7afa25ef8b569160f3381b",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/README.md",
+      "bytes": 3082,
+      "sha256": "3357c55bedb9b573bfc2b0a68179c6059ab58793879c1066eab513a115b5b986",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/busybox.url",
+      "bytes": 57,
+      "sha256": "5a92f64e5341f34b8050d57da3cb87f09da0dbdee19d2b5adc97bd8644c20fde",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/gcc.url",
+      "bytes": 130,
+      "sha256": "03814dc0aff2a8c419826002ba79f008fc671a47a1e5784426ff1d1f917c3f48",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/init-busybox",
+      "bytes": 104,
+      "sha256": "c6e235006701afb5c976f35107364eb90c2ebed986fe22f6c70b5e3c4adc548c",
+      "mode": "0o775"
+    },
+    {
+      "path": "os-boot/linux.url",
+      "bytes": 65,
+      "sha256": "ec8ac4fd61ffe0d3788bc3f02c7055171be6c1963353172294ada519b4b87854",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/opensbi.url",
+      "bytes": 78,
+      "sha256": "81201199cf11e4692155165d4fcd7fd9004c6d6e0e093400e92593565aa6e9a2",
+      "mode": "0o664"
+    },
+    {
+      "path": "os-boot/xvisor.url",
+      "bytes": 56,
+      "sha256": "c0867e1d6754ec4a5eadd413b2b514a0d5e94cbf763924d33ccf36a7fad2352c",
+      "mode": "0o664"
+    },
+    {
+      "path": "rocq-sail-riscv.cmake",
+      "bytes": 673,
+      "sha256": "900f967a9ed5585080fc90043f1fe525be570d81554e1308bf4e824f7fb23d37",
+      "mode": "0o664"
+    },
+    {
+      "path": "rocq-sail-riscv.opam.in",
+      "bytes": 1648,
+      "sha256": "1ddc713b7fa36258d0df39c003d87f931a26511d18aafee1a115896710301e9a",
+      "mode": "0o664"
+    },
+    {
+      "path": "sail_runtime/CMakeLists.txt",
+      "bytes": 989,
+      "sha256": "16f055b231322ea612a1e10e1950ef5d4709edc56ac6fd95ba2d13ba6d48c84a",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/.gitignore",
+      "bytes": 11,
+      "sha256": "d28836e1bcbebc37ce196a43f01a46dc6d0592ec9666b1a8a4c53d1115de7a8a",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/CMakeLists.txt",
+      "bytes": 14609,
+      "sha256": "cfb48425f679c86a563b7df189a4a8ba5e2be3a766d5eeb4cee2de08774e59dd",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/README.md",
+      "bytes": 1611,
+      "sha256": "3d6581b153afb7402e393fe7510e540721f183e6de0143def4078ab2401e3443",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/CMakeLists.txt",
+      "bytes": 9952,
+      "sha256": "14fb0baf333acc2d1322dea35705304c0be88fd7a3da0aaac31e8788ebc876c6",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/crt0.S",
+      "bytes": 4968,
+      "sha256": "f8000f62afd143bea78ce69fd4f6cc7be4885acfdff05e24c84ed48bd8feca9d",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/encoding.h",
+      "bytes": 201590,
+      "sha256": "561a6a7cf0931e3d9c7abd54ba8c7ec8a80103361a9e1000af19d2d951c1028e",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/link.ld",
+      "bytes": 1403,
+      "sha256": "850cfbe5e028e1ee21bd2cd775acfbb0256f6adbbfd35c4ddc339d7f975daa1c",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/nanoprintf.c",
+      "bytes": 58,
+      "sha256": "d1bfa46252e89570371d5ab92aee7b3677e2ed2f271574d53726d2c7bed171d2",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/nanoprintf.h",
+      "bytes": 39635,
+      "sha256": "6cfe667e045038016a071111ede7ecf04e1a41e95689721e89d2f7fb3cc42750",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/runtime.c",
+      "bytes": 218,
+      "sha256": "f846bee138a278dbf6927dc58678427e2dd1091a4c101ab82f4e14b58c28502b",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/common/runtime.h",
+      "bytes": 1088,
+      "sha256": "a85dcb00aca249746547157edaa1698ffad8075f56dbe8f2de88e6d92fb68492",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/elen_32.json",
+      "bytes": 247,
+      "sha256": "7eaccdb4aec4d459a79edc05a1c565938617daf058c0de5cf58b393d52a82ac2",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/hgatp_vmidlen.json",
+      "bytes": 39,
+      "sha256": "2bddd06317eee8eb23a12c40baa26df802ea6f4c3af4f71a33df184dcbf9c809",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/hgatp_vmidlen_partial.json",
+      "bytes": 39,
+      "sha256": "b2cb4f1cb369c5a69df2722b7224ae06615e5d9bcdf6f04bf146e8297aa621d5",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/misaligned_event.json",
+      "bytes": 151,
+      "sha256": "206f3e814a221e410ffddaedb9561ea07bb781741280f890f2c9584916ca1974",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/no_override.json",
+      "bytes": 3,
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/satp_asidlen.json",
+      "bytes": 39,
+      "sha256": "ae6951c9d41a147043f49bff39002ae8858766d4f7e8f5e618771f9c93d773cb",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/satp_asidlen_partial.json",
+      "bytes": 39,
+      "sha256": "20739dde3cc4fd05c78749cf27c4ed70bfc287845af336e160cd7c3654ba6fb8",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/satp_physaddr_bits.json",
+      "bytes": 46,
+      "sha256": "ee8030a89cba86b6514dafc26c274dd57c81162ade0c70de901d1c52dca273b4",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/software_breakpoint_xtval_zero.json",
+      "bytes": 84,
+      "sha256": "86b8c9c24eb4678b0a438e4981b7edd53f3860bb44b36611178f3dcc286cf128",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/ssdbltrp_software_breakpoint_xtval_zero.json",
+      "bytes": 155,
+      "sha256": "07e068114c10bcc153c7ff18db8a5884427d34a5b7369d5681f34292d7e768ca",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_bf16_nan_boxing.S",
+      "bytes": 751,
+      "sha256": "c75abf03930de86704b73e5e22331e394d3c17a3ef994968a9e4f9c908e8bece",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_event_counter.S",
+      "bytes": 2062,
+      "sha256": "e6c2d0e3aafe00607bc01f8a511a81e711ad90789c45c27de28a7970b6ee84fa",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_guest_external_simple_interrupt_generator.S",
+      "bytes": 3099,
+      "sha256": "ddf6be7a2ee04cfd8c520cf54c0978e9416946d50511e1adc374658e46fb7f81",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_hello_world.c",
+      "bytes": 148,
+      "sha256": "fce6fd972954c30382fae8e564cdcfcd9a0babf0a0c415d780e60bbc21a283fd",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_hgatp_vmidlen.S",
+      "bytes": 1543,
+      "sha256": "3970dfbab457508bd3437d50e33eced55a87cc4ecdb9dee1bf1ed03606fd65a8",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_hgatp_vmidlen_partial.S",
+      "bytes": 1407,
+      "sha256": "6d9c467d58399bb3aea2429cd969cadaa00c518c791e44850efccef80e9fd512",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_indexed_segment_store_eew_overlap.S",
+      "bytes": 3056,
+      "sha256": "e4da955d9a6b17f24a69bf18d01d34278d2bcac143d196caeb11dc7581609fe4",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_max_pmp.c",
+      "bytes": 1351,
+      "sha256": "fac96c47d3ac1c40f076e4b835dde858b3496480d8658e5e1987fe076a80bf2b",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_minstret.S",
+      "bytes": 2064,
+      "sha256": "e1f62dc382c1fdac3f3ea1dd13de690c8f45a6693dd3326b10aa7b3f172f591a",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_misaligned_page_straddle_hlv_hsv_g_stage.S",
+      "bytes": 4855,
+      "sha256": "28523d95b06b9434bc7021dbab6e52d5734552e1e67526414bfac734a2246190",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_misaligned_page_straddle_hlv_hsv_vs_stage.S",
+      "bytes": 4769,
+      "sha256": "6f85ec1df5cd4a4c7154495bbeb94b79c9d6b7abad9a0424acdd6f0893a254f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_misaligned_vector_register_groups.S",
+      "bytes": 1247,
+      "sha256": "f96ad487df0fd246eeb0239a2fc9c3195f34600ddaf6d2af85c68dfcd521b734",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_phys_perms_on_failing_sc.S",
+      "bytes": 3313,
+      "sha256": "626ae3493947e44ed38a7366bd9c0d7223b1c30822f876ca73073e815dbd9e75",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_pmp_access.c",
+      "bytes": 5302,
+      "sha256": "42d88ea5098579641aed13d3379962ba90a4134b618946cd32f10176378049a8",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_satp_asidlen.S",
+      "bytes": 1541,
+      "sha256": "08ff5953af7d2b8b47a121d8a50e232dbccff3ab3cbe0f64e15444dfafd0d0b0",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_satp_asidlen_partial.S",
+      "bytes": 1382,
+      "sha256": "c71b3112cf0bd322ef70ee3f9bede0193dc522e84bc0b71e6e9f6ed45a13ae7b",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_satp_physaddr_bits.S",
+      "bytes": 1221,
+      "sha256": "8fa6b794bea13148afa06bbcd38d42ef4d25e7bab42c9be7f1f542d19c5d3458",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_sew_elen_bound.S",
+      "bytes": 738,
+      "sha256": "dc21a9e3e67d86f74eda66d140b2311ad6c9dca1b57e1667a4015aaac4d57a38",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_tlb_stale_pte_access_fault.S",
+      "bytes": 1976,
+      "sha256": "61d256572db9ef2a62f8d463e887f648fd81478eaf864a96408f7c572c9d40d9",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_vrgatherei16_reg_group.S",
+      "bytes": 1110,
+      "sha256": "b28edc2a61cf9a8e37920ab8959a56f638cfe54219cb5fe41648593164ca2381",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_vs_ebreak_double_trap_xtval_zero_gva.S",
+      "bytes": 1634,
+      "sha256": "1c8912f86e1cc5f0a01c98612656d3f74d8c8a13da2bcc28cf79c3f7ecba329d",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_vs_ebreak_xtval_zero_gva.S",
+      "bytes": 1144,
+      "sha256": "4a118de8706480e28cf31d852b2708852cbbac897e669850d33d4308759eedea",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_wfi_external_simple_interrupt_generator.S",
+      "bytes": 1822,
+      "sha256": "14fc97c9b931794e4639c5ad1a9afb3e8e61278826c83e86cbd6098c21ae69ef",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_wfi_wait.S",
+      "bytes": 1928,
+      "sha256": "fb28ff1ca8f768dc29f6571d8220be5fa7df6a3f2af247147775b2790d6bae94",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/first_party/src/test_zilx.S",
+      "bytes": 2812,
+      "sha256": "f02a7d0e399ba16622799dae949aa7ad846cbf4a5e2802397653a43ab847c194",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/lean_emulator_test_files.cmake",
+      "bytes": 947,
+      "sha256": "a8c68b238e17a4492e6efd6eccb54465b37deab489dc77dd9b9c4841238ce265",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/sail_riscv_tests_version.txt",
+      "bytes": 11,
+      "sha256": "89933682514fa4bea54953e2d7b22eaeada7f101cc1ec51ad40d7dbde92fdfcd",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/unit_tests/CMakeLists.txt",
+      "bytes": 345,
+      "sha256": "4f794eaa9f7db645b2bf73349fd54598af4d96a2223c64e12e8e0058b554e26f",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/unit_tests/README.md",
+      "bytes": 140,
+      "sha256": "f10c5292b539a2a273ddb27276a97e4da76320878af8047b480f8416439c0b6a",
+      "mode": "0o664"
+    },
+    {
+      "path": "test/unit_tests/main_unit_tests.cpp",
+      "bytes": 847,
+      "sha256": "4a85677bea1c0908356069bf3b1555524c9428864e10d0858dacca1ae71eb39f",
+      "mode": "0o664"
+    }
+  ]
+}

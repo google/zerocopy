@@ -1,0 +1,33 @@
+{
+  "job": "capture-vectors-o2",
+  "mode": "capture",
+  "profile": "host-vectors-opt2",
+  "consumer_exit": 0,
+  "seconds": 0.784002167,
+  "stop": null,
+  "anticipated_internal_features_warning": true,
+  "stdout_sha256": "e59e4edec49f2db247162dc9796f4e49e3c6c83de5b769244bebf99ba3c5d0d0",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "fresh_reference_sha256": "0f6013e6b62a40075faad25f949e842137af5f187d974bf4387064f1b21ee675",
+  "fresh_observer_result": {
+    "exit_code": 0,
+    "spawned": true,
+    "child_pid": 20045,
+    "seconds": 0.19554366700000003,
+    "stop_reason": null,
+    "controller_failure": null,
+    "remaining_group_after_parent_wait": [],
+    "max_observed_group_rss_bytes": 0,
+    "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+    "output_bytes": 29308,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec"
+  },
+  "CLI_json": {
+    "status": "captured_consumer_reference",
+    "effective_request_sha256": "1a302a8d61255e7d9d0a49fb552fdf0fcc27acc6c88118d6ddeed159b3d389e6",
+    "reference_sha256": "0f6013e6b62a40075faad25f949e842137af5f187d974bf4387064f1b21ee675",
+    "accepted_candidates": 0
+  },
+  "additional_output_bytes": 627656
+}

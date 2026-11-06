@@ -10,7 +10,7 @@ post-cleanup MIR and machine assembly:
    Inside Anneal's Kernel Axiom Boundary:**
    Anneal's `trusted/audit/TrustedBoundary.lean` and
    `trusted/lean/foundation-lock.json` (`joshlf/anneal` at
-   `e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0`) permit only `[propext,
+   `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`) permit only `[propext,
    Classical.choice, Quot.sound]` and explicitly reject `Lean.ofReduceBool`
    (which rules out `bv_decide` and `native_decide`). We audit Cranelift's ISLE
    compiler (`cranelift-isle` `0.132.0`) and acyclic e-graph optimizer
@@ -89,7 +89,7 @@ These findings apply to the combination and interaction of the examined
 subjects:
 
 - **Anneal Trusted Boundary (`joshlf/anneal` at
-  `e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0`):**
+  `c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b`):**
   Governed by `trusted/audit/TrustedBoundary.lean` and
   `trusted/lean/foundation-lock.json`, which restrict the transitive axiom
   footprint of `Trusted.CrateTheorem` and `VerificationResult` to

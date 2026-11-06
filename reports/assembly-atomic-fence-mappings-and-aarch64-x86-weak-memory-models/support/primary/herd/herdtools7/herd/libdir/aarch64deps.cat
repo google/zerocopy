@@ -1,0 +1,96 @@
+(*
+ * The Armv8 Application Level Memory Model.
+ *
+ * This is a machine-readable, executable and formal artefact, which aims to be
+ * the latest stable version of the Armv8 memory model.
+ * If you have comments on the content of this file, please send an email to
+ * memory-model@arm.com
+ * For a textual version of the model, see section B2.3 of the Armv8 ARM:
+ *   https://developer.arm.com/docs/ddi0487/
+ *
+ * Authors:
+ * Jade Alglave <jade.alglave@arm.com>
+ * Artem Khyzha <artem.khyzha@arm.com>
+ *
+ * Copyright (C) 2016-present, Arm Ltd.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in
+ *       the documentation and/or other materials provided with the
+ *       distribution.
+ *     * Neither the name of ARM nor the names of its contributors may be
+ *       used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+ * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *)
+catdep (* This option tells that the cat file computes dependencies *)
+
+include "aarch64util.cat"
+
+(* Local register read successor *)
+let lrrs =
+  [Wreg]; (po & same-gpr & ~(intervening(Wreg,(po & same-gpr)))); [Rreg]
+
+(* Local memory write successor *)
+let lmws =
+ [Exp & M | Imp & Tag & R]; (po & same-loc); [Exp & W]
+ | [Imp & TTD & R]; (po & same-loc); [Exp & W | Imp & TTD & W]
+
+(* Local memory read successor *)
+let lmrs = [W]; ((po & same-loc) & ~(intervening(W,(po & same-loc)))); [R]
+
+(* Dependency through registers and memory *)
+let rec dtrm =
+  [~range(lxsx)]; lrrs
+  | lmrs
+  | iico_data
+  | dtrm; dtrm
+
+(** Data, Address and Control dependencies *)
+
+let data = [Exp & R]; dtrm & po; [Rreg]; iico_data & ii_data; [Exp & W]
+let addr = [Exp & R]; dtrm & po; [Rreg]; iico_data & ii_addr; [Exp & M | Imp & Tag & R | Imp & TTD & M | TLBI | DC.CVAU | IC.IVAU]
+let ctrl = [Exp & R]; dtrm & po; [Rreg]; iico_data; [BCC]; po
+
+(** Pick dependencies *)
+let rec pick-dtrm =
+  dtrm
+  | iico_ctrl
+  | pick-dtrm; pick-dtrm
+
+let pick-basic-dep =
+   [Exp & R]; pick-dtrm
+
+let pick-addr-dep =
+   [Exp & R]; pick-dtrm & po; [Rreg]; iico_data & ii_addr; [Exp & M | Imp & Tag & R | Imp & TTD & M | TLBI | DC.CVAU | IC.IVAU]
+let pick-data-dep =
+   [Exp & R]; pick-dtrm & po; [Rreg]; (iico_data | (iico_data; iico_ctrl)) & ii_data; [Exp & W]
+let pick-ctrl-dep =
+   [Exp & R]; pick-dtrm & po; [Rreg]; iico_data; [BCC]; po
+
+let pick-dep =
+   ( pick-basic-dep
+   | pick-addr-dep
+   | pick-data-dep
+   | pick-ctrl-dep
+   ) & ~same-instance
+
+include "aarch64show.cat"

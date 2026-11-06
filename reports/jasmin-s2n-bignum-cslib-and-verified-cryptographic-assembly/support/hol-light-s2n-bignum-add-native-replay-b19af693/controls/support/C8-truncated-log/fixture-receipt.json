@@ -1,0 +1,7 @@
+{
+  "original_sha256": "775c0ec380bd5098bd57c841fd8768085973c7f44fa382c3b8236e0c36a09778",
+  "truncated_sha256": "40ec58b906fb09f9cb2f164b82a775753f94c3633976f5a209394527ee8ca1dd",
+  "removed_tail": "ANNEAL_AUDIT_FINISHED\n",
+  "claimed_exit0": true,
+  "original_stream_not_modified": true
+}

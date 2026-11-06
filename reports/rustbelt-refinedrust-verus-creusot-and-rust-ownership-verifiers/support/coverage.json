@@ -1,0 +1,89 @@
+{
+  "coverage_kind": "bounded source and theorem investigation",
+  "topics": {
+    "R024": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Lifetime recovery is controlled by tokens, inclusion and continuations"
+      ],
+      "outstanding": [
+        "Every nested/reborrow proof, ownership recovery client cases and current dependency port."
+      ]
+    },
+    "R025": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Parametric prophecy consistency prevents arbitrary future assumptions"
+      ],
+      "outstanding": [
+        "Full ordinary/parametric comparison and proof dependency audit."
+      ]
+    },
+    "R030": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "Semantic types contain ownership and sharing obligations"
+      ],
+      "outstanding": [
+        "Full RustBelt feature/caller linking audit and correspondence to actual Rust/rustc."
+      ]
+    },
+    "R031": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "RustHornBelt adds logical values and predicate transformers to semantic typing",
+        "Parametric prophecy consistency prevents arbitrary future assumptions",
+        "CHC correspondence and tool integration have distinct boundaries"
+      ],
+      "outstanding": [
+        "Mechanized bridge to current frontend contracts and full feature coverage."
+      ]
+    },
+    "R046": {
+      "status": "partial",
+      "issue": 3865,
+      "sections": [
+        "CHC correspondence and tool integration have distinct boundaries"
+      ],
+      "outstanding": [
+        "RustHorn implementation/backend pin, execution, invariant inference and genericity limitations."
+      ]
+    },
+    "T034": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "RustHornBelt adds logical values and predicate transformers to semantic typing",
+        "CHC correspondence and tool integration have distinct boundaries"
+      ],
+      "outstanding": [
+        "Accepted client certificate connecting frontend/FOL contract to exact semantic transformer."
+      ]
+    },
+    "T040": {
+      "status": "partial",
+      "issue": 3866,
+      "sections": [
+        "Parametric prophecy consistency prevents arbitrary future assumptions"
+      ],
+      "outstanding": [
+        "Transitive assumptions and conservative-extension proof for a new prophecy/property domain."
+      ]
+    },
+    "P114": {
+      "status": "partial",
+      "issue": 3867,
+      "sections": [
+        "Semantic types contain ownership and sharing obligations",
+        "CHC correspondence and tool integration have distinct boundaries"
+      ],
+      "outstanding": [
+        "Cross-prover checking and compatible source/operational semantics with assumption accounting."
+      ]
+    }
+  }
+}

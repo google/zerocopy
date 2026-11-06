@@ -1,0 +1,279 @@
+import AnnealResearch.SpecValidation
+
+/-!
+Follow-up specification-challenge controls, counterexamples, vacuous-domain
+control, and outcome classification for R-ADEV-01 (motivating A-ADEV-03 and
+supporting A-ADEV-01/02/04), scoped under `spec-challenge-resolution-protocol.md`.
+
+To stay within the `-M768` managed-memory envelope atop the 4-module `Std`
+import chain on `x86_64-unknown-linux-gnu`, this module declares zero
+`inductive` or `structure` types and represents `ChallengeStatus` via reducible
+natural-number tags (`0..3`).
+-/
+
+namespace AnnealResearch.SpecChallengeResolution
+
+open HelperValueHeap HelperNestedMutation HelperValueControls SpecValidation
+
+/-- Vacuous contract whose entry condition is the unsatisfiable `RootImage dangling 0 value`. -/
+def VacuousDanglingContract {E A : Type} (op : CandidateOp E A) : Prop :=
+  ∀ value callback,
+    RootImage dangling 0 value →
+    ∃ actual, op dangling 0 callback = some actual ∧
+      MatchesOutput value callback actual ∧
+      OkActiveValue value callback actual ∧
+      ErrorActiveValue value callback actual ∧
+      PreservesClosedAliases dangling actual
+
+/-- Degenerate candidate operation that never produces an outcome. -/
+def alwaysNoneOp (E A : Type) : CandidateOp E A :=
+  fun _ _ _ => none
+
+/-- Four-way outcome vocabulary represented without `inductive` synthesis overhead. -/
+abbrev ChallengeStatus : Type := Nat
+
+@[reducible] def ChallengeStatus.provedForAllAdmitted : ChallengeStatus := 0
+@[reducible] def ChallengeStatus.refutedByCounterexample : ChallengeStatus := 1
+@[reducible] def ChallengeStatus.boundedPassNoCounterexampleFound : ChallengeStatus := 2
+@[reducible] def ChallengeStatus.unknownUnchecked : ChallengeStatus := 3
+
+/-- Finite-suite check that tests all four outcome expectations only on `normalCallback`. -/
+def BoundedNormalSuitePass (op : CandidateOp Nat Nat) : Prop :=
+  ∀ value,
+    ∃ actual,
+      op (fixture value) 1 normalCallback = some actual ∧
+      MatchesOutput value normalCallback actual ∧
+      OkActiveValue value normalCallback actual ∧
+      ErrorActiveValue value normalCallback actual ∧
+      PreservesClosedAliases (fixture value) actual
+
+/-- Semantic meaning attached to each `ChallengeStatus` code for `CandidateOp Nat Nat`. -/
+def StatusSemantics (status : ChallengeStatus) (op : CandidateOp Nat Nat) : Prop :=
+  if status = 0 then StrongContract op
+  else if status = 1 then ¬ StrongContract op
+  else if status = 2 then BoundedNormalSuitePass op
+  else True
+
+theorem positive_nonvacuous_witness (value : Nat) :
+    RootImage (fixture value) 1 value ∧
+    (∃ actualOk,
+      nested (fixture value) 1 normalCallback = some actualOk ∧
+      MatchesOutput value normalCallback actualOk ∧
+      OkActiveValue value normalCallback actualOk ∧
+      ErrorActiveValue value normalCallback actualOk ∧
+      PreservesClosedAliases (fixture value) actualOk) ∧
+    (∃ actualErr,
+      nested (fixture value) 1 errorCallback = some actualErr ∧
+      MatchesOutput value errorCallback actualErr ∧
+      OkActiveValue value errorCallback actualErr ∧
+      ErrorActiveValue value errorCallback actualErr ∧
+      PreservesClosedAliases (fixture value) actualErr) := by
+  refine ⟨fixture_image value,
+    nested_satisfies_strong (fixture value) 1 value normalCallback (fixture_image value),
+    nested_satisfies_strong (fixture value) 1 value errorCallback (fixture_image value)⟩
+
+theorem weak_contract_admits_all_three_candidates :
+    WeakContract (@nested (Except Nat Nat)) ∧
+    WeakContract (@commitOnlyOnOk Nat Nat) ∧
+    WeakContract (@overwriteInPlaceExcept Nat Nat) :=
+  ⟨nested_satisfies_weak, commitOnlyOnOk_satisfies_weak, overwriteInPlace_satisfies_weak⟩
+
+theorem commitOnlyOnOk_violates_errorActiveValue (value : Nat) :
+    (∃ actual,
+      commitOnlyOnOk (fixture value) 1 errorCallback = some actual ∧
+      MatchesOutput value errorCallback actual ∧
+      OkActiveValue value errorCallback actual ∧
+      PreservesClosedAliases (fixture value) actual ∧
+      ¬ ErrorActiveValue value errorCallback actual) ∧
+    ¬ ActiveStrengthenedContract (@commitOnlyOnOk Nat Nat) ∧
+    ¬ StrongContract (@commitOnlyOnOk Nat Nat) := by
+  have notErrActive :
+      ¬ ErrorActiveValue value errorCallback
+        { output := (Except.error 42 : Except Nat Nat), receiver := 1, heap := fixture value } := by
+    intro hErr
+    have hOld : readParent (fixture value) 1 = some value :=
+      root_image_read (fixture value) 1 value (fixture_image value)
+    have hNew : readParent (fixture value) 1 = some (value + 1) :=
+      (hErr 42 rfl).2
+    have hSome : some value = some (value + 1) := hOld.symm.trans hNew
+    injection hSome with hVal
+    omega
+  have notActiveContract : ¬ ActiveStrengthenedContract (@commitOnlyOnOk Nat Nat) := by
+    intro hAct
+    rcases hAct (fixture value) 1 value errorCallback (fixture_image value) with
+      ⟨actual, run, _, _, errAct⟩
+    rw [rollback_error value] at run
+    injection run with hActual
+    subst hActual
+    exact notErrActive errAct
+  refine ⟨⟨{ output := .error 42, receiver := 1, heap := fixture value },
+    rollback_error value, rfl, ?_, ?_, notErrActive⟩,
+    notActiveContract, ?_⟩
+  · intro res hok
+    cases hok
+  · constructor
+    · intro oldRoot oldValue oldImage
+      exact ⟨oldImage, root_image_read (fixture value) oldRoot oldValue oldImage⟩
+    · intro oldLeaf oldValue oldImage
+      exact ⟨oldImage, leaf_image_read (fixture value) oldLeaf oldValue oldImage⟩
+  · intro hStrong
+    exact notActiveContract (strong_implies_active_and_alias hStrong).1
+
+theorem overwriteInPlace_violates_closedAliases_on_ok_and_error (value : Nat) :
+    (∃ actualOk,
+      overwriteInPlaceExcept (fixture value) 1 normalCallback = some actualOk ∧
+      MatchesOutput value normalCallback actualOk ∧
+      OkActiveValue value normalCallback actualOk ∧
+      ErrorActiveValue value normalCallback actualOk ∧
+      readParent actualOk.heap 1 ≠ some value ∧
+      readLeaf actualOk.heap 0 ≠ some value ∧
+      ¬ PreservesClosedAliases (fixture value) actualOk) ∧
+    (∃ actualErr,
+      overwriteInPlaceExcept (fixture value) 1 errorCallback = some actualErr ∧
+      MatchesOutput value errorCallback actualErr ∧
+      OkActiveValue value errorCallback actualErr ∧
+      ErrorActiveValue value errorCallback actualErr ∧
+      readParent actualErr.heap 1 ≠ some value ∧
+      readLeaf actualErr.heap 0 ≠ some value ∧
+      ¬ PreservesClosedAliases (fixture value) actualErr) ∧
+    ¬ AliasStrengthenedContract (@overwriteInPlaceExcept Nat Nat) ∧
+    ¬ StrongContract (@overwriteInPlaceExcept Nat Nat) := by
+  have newImg : RootImage (overwrittenFixture value) 1 (value + 1) := by
+    refine ⟨0, ?_, ?_, ?_, ?_⟩
+    · change 1 < 2
+      decide
+    · change 0 < 2
+      decide
+    · simp [overwrittenFixture, fixture]
+    · simp [overwrittenFixture]
+  have newParentRead : readParent (overwrittenFixture value) 1 = some (value + 1) :=
+    root_image_read (overwrittenFixture value) 1 (value + 1) newImg
+  have newLeafImg : LeafImage (overwrittenFixture value) 0 (value + 1) := by
+    refine ⟨?_, ?_⟩
+    · change 0 < 2
+      decide
+    · simp [overwrittenFixture]
+  have newLeafRead : readLeaf (overwrittenFixture value) 0 = some (value + 1) :=
+    leaf_image_read (overwrittenFixture value) 0 (value + 1) newLeafImg
+  have parentChanged : readParent (overwrittenFixture value) 1 ≠ some value := by
+    intro hEq
+    have hSome : some (value + 1) = some value := newParentRead.symm.trans hEq
+    injection hSome with hVal
+    omega
+  have leafChanged : readLeaf (overwrittenFixture value) 0 ≠ some value := by
+    intro hEq
+    have hSome : some (value + 1) = some value := newLeafRead.symm.trans hEq
+    injection hSome with hVal
+    omega
+  have runOk :
+      overwriteInPlaceExcept (fixture value) 1 normalCallback =
+        some { output := (Except.ok 7 : Except Nat Nat), receiver := 1, heap := overwrittenFixture value } :=
+    rfl
+  have runErr :
+      overwriteInPlaceExcept (fixture value) 1 errorCallback =
+        some { output := (Except.error 42 : Except Nat Nat), receiver := 1, heap := overwrittenFixture value } :=
+    overwrite_error value
+  have notAliasesOk :
+      ¬ PreservesClosedAliases (fixture value)
+        { output := (Except.ok 7 : Except Nat Nat), receiver := 1, heap := overwrittenFixture value } := by
+    intro hAliases
+    exact parentChanged (hAliases.1 1 value (fixture_image value)).2
+  have notAliasesErr :
+      ¬ PreservesClosedAliases (fixture value)
+        { output := (Except.error 42 : Except Nat Nat), receiver := 1, heap := overwrittenFixture value } := by
+    intro hAliases
+    exact parentChanged (hAliases.1 1 value (fixture_image value)).2
+  have notAliasContract : ¬ AliasStrengthenedContract (@overwriteInPlaceExcept Nat Nat) := by
+    intro hAlias
+    rcases hAlias (fixture value) 1 value errorCallback (fixture_image value) with
+      ⟨actual, run, _, _, aliases⟩
+    rw [runErr] at run
+    injection run with hActual
+    subst hActual
+    exact notAliasesErr aliases
+  refine ⟨⟨{ output := .ok 7, receiver := 1, heap := overwrittenFixture value },
+    runOk, rfl, ?_, ?_, parentChanged, leafChanged, notAliasesOk⟩,
+    ⟨{ output := .error 42, receiver := 1, heap := overwrittenFixture value },
+    runErr, rfl, ?_, ?_, parentChanged, leafChanged, notAliasesErr⟩,
+    notAliasContract, ?_⟩
+  · intro _ _
+    exact ⟨newImg, newParentRead⟩
+  · intro _ hErr
+    cases hErr
+  · intro _ hOk
+    cases hOk
+  · intro _ _
+    exact ⟨newImg, newParentRead⟩
+  · intro hStrong
+    exact notAliasContract (strong_implies_active_and_alias hStrong).2
+
+theorem partial_strengthenings_insufficient :
+    (ActiveStrengthenedContract (@overwriteInPlaceExcept Nat Nat) ∧
+      ¬ StrongContract (@overwriteInPlaceExcept Nat Nat)) ∧
+    (AliasStrengthenedContract (@commitOnlyOnOk Nat Nat) ∧
+      ¬ StrongContract (@commitOnlyOnOk Nat Nat)) := by
+  refine ⟨⟨overwriteInPlace_satisfies_activeStrengthened,
+    (overwriteInPlace_violates_closedAliases_on_ok_and_error 0).2.2.2⟩,
+    ⟨commitOnlyOnOk_satisfies_aliasStrengthened,
+    (commitOnlyOnOk_violates_errorActiveValue 0).2.2⟩⟩
+
+theorem strong_contract_discriminates_exact_reasons :
+    StrongContract (@nested (Except Nat Nat)) ∧
+    ¬ StrongContract (@commitOnlyOnOk Nat Nat) ∧
+    ¬ StrongContract (@overwriteInPlaceExcept Nat Nat) := by
+  refine ⟨nested_satisfies_strong,
+    (commitOnlyOnOk_violates_errorActiveValue 0).2.2,
+    (overwriteInPlace_violates_closedAliases_on_ok_and_error 0).2.2.2⟩
+
+theorem vacuous_domain_control :
+    (∀ op : CandidateOp Nat Nat, VacuousDanglingContract op) ∧
+    VacuousDanglingContract (alwaysNoneOp Nat Nat) ∧
+    ¬ WeakContract (alwaysNoneOp Nat Nat) ∧
+    ¬ StrongContract (alwaysNoneOp Nat Nat) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro op value _ image
+    exact False.elim (dangling_not_image value image)
+  · intro value _ image
+    exact False.elim (dangling_not_image value image)
+  · intro hWeak
+    rcases hWeak (fixture 0) 1 0 normalCallback (fixture_image 0) with ⟨actual, run, _, _⟩
+    cases run
+  · intro hStrong
+    rcases hStrong (fixture 0) 1 0 normalCallback (fixture_image 0) with ⟨actual, run, _, _, _, _⟩
+    cases run
+
+theorem challenge_outcome_distinction :
+    ChallengeStatus.boundedPassNoCounterexampleFound ≠
+      ChallengeStatus.provedForAllAdmitted ∧
+    ChallengeStatus.refutedByCounterexample ≠
+      ChallengeStatus.provedForAllAdmitted ∧
+    ChallengeStatus.unknownUnchecked ≠
+      ChallengeStatus.provedForAllAdmitted ∧
+    StatusSemantics ChallengeStatus.provedForAllAdmitted (@nested (Except Nat Nat)) ∧
+    StatusSemantics ChallengeStatus.boundedPassNoCounterexampleFound (@commitOnlyOnOk Nat Nat) ∧
+    StatusSemantics ChallengeStatus.refutedByCounterexample (@commitOnlyOnOk Nat Nat) ∧
+    ¬ StatusSemantics ChallengeStatus.provedForAllAdmitted (@commitOnlyOnOk Nat Nat) := by
+  refine ⟨by decide, by decide, by decide,
+    nested_satisfies_strong, ?_,
+    (commitOnlyOnOk_violates_errorActiveValue 0).2.2,
+    (commitOnlyOnOk_violates_errorActiveValue 0).2.2⟩
+  intro value
+  change ∃ actual,
+    commitOnlyOnOk (fixture value) 1 normalCallback = some actual ∧
+    MatchesOutput value normalCallback actual ∧
+    OkActiveValue value normalCallback actual ∧
+    ErrorActiveValue value normalCallback actual ∧
+    PreservesClosedAliases (fixture value) actual
+  rw [(rollback_normal value).trans (actual_normal value).symm]
+  exact nested_satisfies_strong (fixture value) 1 value normalCallback (fixture_image value)
+
+#print axioms positive_nonvacuous_witness
+#print axioms weak_contract_admits_all_three_candidates
+#print axioms commitOnlyOnOk_violates_errorActiveValue
+#print axioms overwriteInPlace_violates_closedAliases_on_ok_and_error
+#print axioms partial_strengthenings_insufficient
+#print axioms strong_contract_discriminates_exact_reasons
+#print axioms vacuous_domain_control
+#print axioms challenge_outcome_distinction
+
+end AnnealResearch.SpecChallengeResolution

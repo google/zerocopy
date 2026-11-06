@@ -1,0 +1,311 @@
+{
+  "observed_at": "2026-09-30",
+  "repositories": [
+    {
+      "repository": "kubernetes-sigs/controller-runtime",
+      "old_commit": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "selected_current_commit": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+      "branch": "main",
+      "raw_ls_remote": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b\tHEAD\n8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b\trefs/heads/main\n",
+      "refs": {
+        "HEAD": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b",
+        "refs/heads/main": "8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b"
+      },
+      "compare": {
+        "status": "identical",
+        "ahead_by": 0,
+        "behind_by": 0,
+        "total_commits": 0,
+        "returned_file_count": 0,
+        "file_list_complete": true,
+        "changed_files": []
+      },
+      "latest_release": {
+        "tag": "v0.25.1",
+        "published_at": "2026-09-14T01:39:14Z",
+        "tag_ref_type": "commit",
+        "tag_ref_sha": "67b72c2517be1d2b0dec612477eb20c3c959a8aa",
+        "peeled_type": "commit",
+        "peeled_commit": "67b72c2517be1d2b0dec612477eb20c3c959a8aa",
+        "relation_to_old_pin": {
+          "status": "diverged",
+          "ahead_by": 20,
+          "behind_by": 2
+        }
+      },
+      "mapped_files": [
+        {
+          "path": "pkg/reconcile/reconcile.go",
+          "old": {
+            "git_blob_sha1": "88303ae781a1e6baf0d5ca5e935bcc4f1416aaf4",
+            "content_sha256": "53513474e78cc57961b5131d79bddef1a24f9ec243c9b155af7d6a98ec05be40",
+            "size": 7462,
+            "url": "https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b/pkg/reconcile/reconcile.go"
+          },
+          "new": {
+            "git_blob_sha1": "88303ae781a1e6baf0d5ca5e935bcc4f1416aaf4",
+            "content_sha256": "53513474e78cc57961b5131d79bddef1a24f9ec243c9b155af7d6a98ec05be40",
+            "size": 7462,
+            "url": "https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b/pkg/reconcile/reconcile.go"
+          }
+        },
+        {
+          "path": "pkg/doc.go",
+          "old": {
+            "git_blob_sha1": "64693b4829d2212fc4f0504a9f22b758ccbdd5e5",
+            "content_sha256": "60d66eab7a6086a4e1a6cd87de7747134709f74a485cea222f116cc34757a409",
+            "size": 9517,
+            "url": "https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b/pkg/doc.go"
+          },
+          "new": {
+            "git_blob_sha1": "64693b4829d2212fc4f0504a9f22b758ccbdd5e5",
+            "content_sha256": "60d66eab7a6086a4e1a6cd87de7747134709f74a485cea222f116cc34757a409",
+            "size": 9517,
+            "url": "https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/8564dc352deed83f3dfcd5c5e47d1fed6c6dd28b/pkg/doc.go"
+          }
+        }
+      ]
+    },
+    {
+      "repository": "kubernetes/kubernetes",
+      "old_commit": "6d1d025050cb63ae5b8e53037aced205e6a28410",
+      "selected_current_commit": "08147af84478f859c2e2234d71ceace8bdb412c7",
+      "branch": "master",
+      "raw_ls_remote": "08147af84478f859c2e2234d71ceace8bdb412c7\tHEAD\n08147af84478f859c2e2234d71ceace8bdb412c7\trefs/heads/master\n",
+      "refs": {
+        "HEAD": "08147af84478f859c2e2234d71ceace8bdb412c7",
+        "refs/heads/master": "08147af84478f859c2e2234d71ceace8bdb412c7"
+      },
+      "compare": {
+        "status": "ahead",
+        "ahead_by": 20,
+        "behind_by": 0,
+        "total_commits": 20,
+        "returned_file_count": 38,
+        "file_list_complete": true,
+        "changed_files": [
+          {
+            "path": "pkg/apis/networking/v1/zz_generated.validations.go",
+            "status": "modified",
+            "blob_sha": "0080faffa4f9c83c8af3caeeb7022984279490ba"
+          },
+          {
+            "path": "pkg/apis/networking/v1beta1/zz_generated.validations.go",
+            "status": "modified",
+            "blob_sha": "b8bf8fdc12e9a323a4fec490fd55751fa5932aba"
+          },
+          {
+            "path": "pkg/apis/networking/validation/validation.go",
+            "status": "modified",
+            "blob_sha": "297ac833d6eed53cfe1971b206e0920fa5b27f1d"
+          },
+          {
+            "path": "pkg/apis/resource/validation/validation_resourceslice_test.go",
+            "status": "modified",
+            "blob_sha": "d33863bb6e4ea1226c0d4dd44d7710e61e5a4e3b"
+          },
+          {
+            "path": "pkg/kubelet/cm/devicemanager/manager.go",
+            "status": "modified",
+            "blob_sha": "571ce2db5774d573bedf90b73b3d2e9d859f2cc6"
+          },
+          {
+            "path": "pkg/kubelet/cm/devicemanager/manager_test.go",
+            "status": "modified",
+            "blob_sha": "0776c5632bd42425eba706f01c15d6e6670eaefe"
+          },
+          {
+            "path": "pkg/kubelet/cm/dra/manager.go",
+            "status": "modified",
+            "blob_sha": "76f1199e87b7b9fca2fda27e68212cdef78d8dfd"
+          },
+          {
+            "path": "pkg/kubelet/cm/dra/manager_test.go",
+            "status": "modified",
+            "blob_sha": "8b88670a49ae017924d6995fd03ae5749e2237e4"
+          },
+          {
+            "path": "pkg/kubelet/kubelet_pods.go",
+            "status": "modified",
+            "blob_sha": "15837893a17e45e2bb4759309502ee52335332ea"
+          },
+          {
+            "path": "pkg/kubelet/kubelet_pods_test.go",
+            "status": "modified",
+            "blob_sha": "1f70bd3a1e9ad25302e6f3a94fe2f36b3c15b857"
+          },
+          {
+            "path": "pkg/kubelet/userns/userns_manager.go",
+            "status": "modified",
+            "blob_sha": "440210e154febabc604833516261418ccf8f60ca"
+          },
+          {
+            "path": "pkg/kubelet/userns/userns_manager_test.go",
+            "status": "modified",
+            "blob_sha": "f6a70022db393cf64c55fa2f41e09a0eb7d005b9"
+          },
+          {
+            "path": "pkg/proxy/apis/config/validation/validation.go",
+            "status": "modified",
+            "blob_sha": "e2eb96270afefe38889d5acec2531f6a305a0ba3"
+          },
+          {
+            "path": "staging/src/k8s.io/api/networking/v1/generated.proto",
+            "status": "modified",
+            "blob_sha": "a0b26f832e5063d3c22207e62dd95492d66015d8"
+          },
+          {
+            "path": "staging/src/k8s.io/api/networking/v1/types.go",
+            "status": "modified",
+            "blob_sha": "b9cb9cdc60486711014c377ab83519cdb78989b9"
+          },
+          {
+            "path": "staging/src/k8s.io/api/networking/v1beta1/generated.proto",
+            "status": "modified",
+            "blob_sha": "0362e29f8bd79363cf300c7066f3b7ba25958fbc"
+          },
+          {
+            "path": "staging/src/k8s.io/api/networking/v1beta1/types.go",
+            "status": "modified",
+            "blob_sha": "587437869bbc431ab98408f5948894dd5ef611c2"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/correctness.go",
+            "status": "modified",
+            "blob_sha": "b1e19075de11a5eeb9d720ac8e2881e807152c1f"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/model.go",
+            "status": "modified",
+            "blob_sha": "5875308d72539304cad7892046b1b173afe6489d"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/model_test.go",
+            "status": "modified",
+            "blob_sha": "62718e7f9a2a2b7ffa9e080716dc03508d8de3f3"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/replay.go",
+            "status": "modified",
+            "blob_sha": "3a23ee2f90a7e024776adfb5d5b9d32f7ab2ffed"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/types.go",
+            "status": "modified",
+            "blob_sha": "90c485887d081f284942d3da3146a02d3828790a"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/watch.go",
+            "status": "modified",
+            "blob_sha": "748aa78c8dee4b47546202b0b1fa49417777d2a7"
+          },
+          {
+            "path": "staging/src/k8s.io/apiserver/pkg/storage/testing/correctness/watch_test.go",
+            "status": "modified",
+            "blob_sha": "c62974dce5845e6e5c1ff1a4f6a54f0a236aa8b8"
+          },
+          {
+            "path": "staging/src/k8s.io/cri-client/pkg/logs/logs.go",
+            "status": "modified",
+            "blob_sha": "f701ca26fda02d9089599f3d2e9625d06cc367d2"
+          },
+          {
+            "path": "staging/src/k8s.io/cri-client/pkg/logs/logs_other.go",
+            "status": "modified",
+            "blob_sha": "ec8d7098c317729c318e091a1ed3870842641c8f"
+          },
+          {
+            "path": "staging/src/k8s.io/cri-client/pkg/logs/logs_windows.go",
+            "status": "modified",
+            "blob_sha": "e960116cef08eef475f26d987719617d8b97884e"
+          },
+          {
+            "path": "staging/src/k8s.io/cri-client/pkg/logs/logs_windows_test.go",
+            "status": "added",
+            "blob_sha": "00136d7d8482b01e6996e917656fe49687d645d9"
+          },
+          {
+            "path": "test/declarative_validation/networking/ingressclass/declarative_validation_test.go",
+            "status": "modified",
+            "blob_sha": "22ff3379f805ef2a0d87f10db6691fc79e5cbe50"
+          },
+          {
+            "path": "test/declarative_validation/networking/ingressclass/zz_generated.validations.v1_test.go",
+            "status": "modified",
+            "blob_sha": "25274b042e47cdcd36702b3d9dee76d8cbf89d20"
+          },
+          {
+            "path": "test/declarative_validation/networking/ingressclass/zz_generated.validations.v1beta1_test.go",
+            "status": "modified",
+            "blob_sha": "5f690f4956288b794f1585167e050f60f4c6151c"
+          },
+          {
+            "path": "test/e2e/dra/dra.go",
+            "status": "modified",
+            "blob_sha": "9110e2fca1e733f8a3a3f04d6ee3f2684fdcfca3"
+          },
+          {
+            "path": "test/e2e_node/remote/gce/gce_runner.go",
+            "status": "modified",
+            "blob_sha": "834adbd4c3af6497517b2b337ceddfb47ec0d4b7"
+          },
+          {
+            "path": "test/e2e_node/remote/gce/gce_runner_test.go",
+            "status": "modified",
+            "blob_sha": "8bde3457046c6d6829e480e1fff364f35bbac2e4"
+          },
+          {
+            "path": "test/e2e_node/remote/gce/gcloud.go",
+            "status": "modified",
+            "blob_sha": "646468a7f8acccacc0066d70c625de327dfe7fe6"
+          },
+          {
+            "path": "test/e2e_node/remote/ssh.go",
+            "status": "modified",
+            "blob_sha": "47b8d00e7e13da4bd5a32adb9a7d65a7b4b59c41"
+          },
+          {
+            "path": "test/e2e_node/remote/ssh_test.go",
+            "status": "added",
+            "blob_sha": "a8f6eec67647e8fb64275b8bd921cd63d6704112"
+          },
+          {
+            "path": "test/integration/apiserver/storage/traffic.go",
+            "status": "modified",
+            "blob_sha": "273e255f232e8c7c32693ff8a5efaf556156bf02"
+          }
+        ]
+      },
+      "latest_release": {
+        "tag": "v1.37.1",
+        "published_at": "2026-09-23T19:13:17Z",
+        "tag_ref_type": "tag",
+        "tag_ref_sha": "d2b770f4c94636a992534a8d3156b6b2d8e82ac3",
+        "peeled_type": "commit",
+        "peeled_commit": "f78e722310e50bcaca9276be22276d9e91d91308",
+        "relation_to_old_pin": {
+          "status": "diverged",
+          "ahead_by": 1255,
+          "behind_by": 40
+        }
+      },
+      "mapped_files": [
+        {
+          "path": "staging/src/k8s.io/client-go/tools/cache/reflector.go",
+          "old": {
+            "git_blob_sha1": "82de01f9ae5f73ca1cd58491156afd7fd9ccb457",
+            "content_sha256": "2e5ae22e9a248545040fbceab3da7ecc8ca7faa92928ff3509cdcef3ca07c348",
+            "size": 54985,
+            "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/6d1d025050cb63ae5b8e53037aced205e6a28410/staging/src/k8s.io/client-go/tools/cache/reflector.go"
+          },
+          "new": {
+            "git_blob_sha1": "82de01f9ae5f73ca1cd58491156afd7fd9ccb457",
+            "content_sha256": "2e5ae22e9a248545040fbceab3da7ecc8ca7faa92928ff3509cdcef3ca07c348",
+            "size": 54985,
+            "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/08147af84478f859c2e2234d71ceace8bdb412c7/staging/src/k8s.io/client-go/tools/cache/reflector.go"
+          }
+        }
+      ]
+    }
+  ]
+}

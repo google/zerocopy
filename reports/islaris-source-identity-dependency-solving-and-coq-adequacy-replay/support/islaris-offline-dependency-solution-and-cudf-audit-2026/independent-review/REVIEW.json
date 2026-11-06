@@ -1,0 +1,12 @@
+{
+  "verdict": "PASS",
+  "blocking_findings": [],
+  "recommendations": [],
+  "subject_report_sha256": "e58970551b4a426fd15e2ee7923a9a5fa825997d345903c2e3cdd68e38c6a144",
+  "subject_manifest_sha256": "7d9a132195e3e75007401b61baec75c14e3ba954fa9a476180c0daacf4f16003",
+  "host_audit": "PASS exact structured output match",
+  "negative_control": "EXPECTED_REJECTION missing Iris",
+  "native_execution_performed": false,
+  "candidate_modified": false,
+  "terminology_recommendation": "Applied; final two sentences reviewed and PASS reaffirmed."
+}

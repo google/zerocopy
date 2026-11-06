@@ -1,0 +1,74 @@
+[
+  {
+    "name": "projection",
+    "test": "normalize_basic",
+    "argv": [
+      "<TASK_ROOT>/target/debug/deps/projection-fbbc2323050374e9",
+      "normalize_basic",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "elapsed_ns": 1497176625,
+    "binary_sha256": "e2838c5007c11f92e3a99a9c74cd9799b1a9092d0e21cd9cdf942d51bfde2cb8",
+    "stdout_sha256": "392d20e89acd2fd778b6ace0dde61179f944208c43521fc7f8401266f0f7e0bf",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "\nrunning 1 test\ntest normalize_basic ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 1.49s\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "projection",
+    "test": "normalize_into_iterator",
+    "argv": [
+      "<TASK_ROOT>/target/debug/deps/projection-fbbc2323050374e9",
+      "normalize_into_iterator",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "elapsed_ns": 277556417,
+    "binary_sha256": "e2838c5007c11f92e3a99a9c74cd9799b1a9092d0e21cd9cdf942d51bfde2cb8",
+    "stdout_sha256": "422fffd53a41aebb9bfec20eaa7255671fb33c2d55c2faff73f2b22505da908b",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "\nrunning 1 test\ntest normalize_into_iterator ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.27s\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "projection",
+    "test": "projection_equality",
+    "argv": [
+      "<TASK_ROOT>/target/debug/deps/projection-fbbc2323050374e9",
+      "projection_equality",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "elapsed_ns": 524979250,
+    "binary_sha256": "e2838c5007c11f92e3a99a9c74cd9799b1a9092d0e21cd9cdf942d51bfde2cb8",
+    "stdout_sha256": "a76549b02e7d1f99a2351b1872d8a701b3b9ea6c5e37d05867dcb0b370b45e54",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "\nrunning 1 test\ntest projection_equality ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.52s\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "associated_type_normalization",
+    "test": "test_mirror_normalizes_u32_to_u32",
+    "argv": [
+      "<TASK_ROOT>/target/debug/deps/associated_type_normalization-c263550180614f99",
+      "test_mirror_normalizes_u32_to_u32",
+      "--exact",
+      "--nocapture",
+      "--test-threads=1"
+    ],
+    "exit": 0,
+    "elapsed_ns": 23014500,
+    "binary_sha256": "dfe999cbd6aa6d171f7fdf0c028b8d75fdb53337e56dcea37441dfda04bc5bbc",
+    "stdout_sha256": "51e217dba19494e20e2400c941b81a5dea31dda99430fceca1313b0d8135cd0f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "\nrunning 1 test\ntest test_mirror_normalizes_u32_to_u32 ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s\n\n",
+    "stderr": ""
+  }
+]

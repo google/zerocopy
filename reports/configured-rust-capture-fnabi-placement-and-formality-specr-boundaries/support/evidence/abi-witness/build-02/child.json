@@ -1,0 +1,23 @@
+{
+  "pid": 8513,
+  "pgid": 8513,
+  "launch_start_unix_ns": 1792024777118487000,
+  "pid_persisted_unix_ns": 1792024777147614000,
+  "argv": [
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin/bin/rustc",
+    "${WORKSPACE}/work/execution/abi-witness/observer_v2.rs",
+    "--sysroot",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--edition=2021",
+    "-C",
+    "opt-level=0",
+    "-C",
+    "debuginfo=0",
+    "-C",
+    "rpath",
+    "-Zthreads=1",
+    "-Ccodegen-units=1",
+    "-o",
+    "${WORKSPACE}/work/execution/abi-witness/observer-v2"
+  ]
+}

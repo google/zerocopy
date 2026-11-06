@@ -1,0 +1,78 @@
+{
+  "matrix_calls": 34,
+  "expected_verdicts": {
+    "captured": 5,
+    "accepted": 6,
+    "rejected": 23
+  },
+  "all_expected_statuses_match": true,
+  "compiler_invocations_in_matrix": 27,
+  "compiler_exits": {
+    "0": 22,
+    "65": 5
+  },
+  "controller_seconds_sum": 8.116719958,
+  "compiler_seconds_sum": 1.421191335,
+  "compiler_seconds_median": 0.046795333,
+  "timing_scope": "one serial warm-host sample including process startup; wrapper includes hashes/source copying; no general scaling/benchmark claim",
+  "baseline_census": {
+    "sources": 1,
+    "local_definitions": 24,
+    "local_body_templates": 10,
+    "instances": 10,
+    "edges": 10
+  },
+  "baseline_packet_sha256": "83482423f40d6a6130d5190ae502a4c0913fe6fadd943f0a49f8f32702d9e6bc",
+  "native_cases": 5,
+  "native_inputs": 1280,
+  "native_commands": 15,
+  "native_outputs": {
+    "baseline": {
+      "inputs": 256,
+      "constant": 4,
+      "all_expected_match": true,
+      "binary_sha256": "c1df6fad86289fae29b5abe093f671ae4d210ed79f4e443cad0220916e9df62f"
+    },
+    "flip": {
+      "inputs": 256,
+      "constant": 7,
+      "all_expected_match": true,
+      "binary_sha256": "9f2b0b1e6e7f5d624dd539ca171e09c9b6b69bb25fe8999fc4d5052def8c7378"
+    },
+    "changed-body": {
+      "inputs": 256,
+      "constant": 1,
+      "all_expected_match": true,
+      "binary_sha256": "c8856c69eb2f3ed9f811e09c715e64fca34c20c1cdda7c3fac22edd93ae50314"
+    },
+    "changed-instance": {
+      "inputs": 256,
+      "constant": 3,
+      "all_expected_match": true,
+      "binary_sha256": "cfb8ad10091418f90181e1179463f498f40c829efbdc827975321cb562944740"
+    },
+    "decoy": {
+      "inputs": 256,
+      "constant": null,
+      "all_expected_match": true,
+      "binary_sha256": "5c0dcbf562b87ded1b482f223f246e102224882e77e412855475ab62ee58defd"
+    }
+  },
+  "host": {
+    "system": "Darwin",
+    "kernel_release": "27.0.0",
+    "process_arch": "arm64"
+  },
+  "observer_binary_sha256": "656fb5eaac61cecbed4b59b90ff5842cf2594551310084d599d66c9af817f636",
+  "observer_binary_bytes": 3376792,
+  "observer_source_sha256": "59a998fb395374b810e3e0a04884e0a5c6382ea06b951fda6f8aec5cf3b87f35",
+  "consumer_source_sha256": "0b1fc20394b64cbc84e2f4323301dad10f9334d2205952c6882dd81875b73382",
+  "schema_source_sha256": "6cb6da673ed91009ca3b64ee2df6628897a692dcd7ceffcc52aa09d7995bbb62",
+  "archive_regular_files": 409,
+  "archive_sha256": "cdc469adfcbc809df3b7ce761cfd48227c318dee655bdfc651a13b782acb5fcf",
+  "archive_bytes": 851867,
+  "proof_claim": false,
+  "E10": "open",
+  "baseline_public_display_sha256": "6e4f164071da6e5c1019256fab8d17fa682e1e63408370387337a3495f0740f1",
+  "baseline_projection_field_count": 8
+}

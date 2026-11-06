@@ -1,0 +1,130 @@
+[
+  {
+    "path": "LeanRV64D/BaseInsts.lean",
+    "diff_lines": 29
+  },
+  {
+    "path": "LeanRV64D/Callbacks.lean",
+    "diff_lines": 16
+  },
+  {
+    "path": "LeanRV64D/Classify.lean",
+    "diff_lines": 13
+  },
+  {
+    "path": "LeanRV64D/DextInsts.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/FextInsts.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/Flow.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/Inf.lean",
+    "diff_lines": 13
+  },
+  {
+    "path": "LeanRV64D/InstsEnd.lean",
+    "diff_lines": 101
+  },
+  {
+    "path": "LeanRV64D/Mem.lean",
+    "diff_lines": 118
+  },
+  {
+    "path": "LeanRV64D/Nan.lean",
+    "diff_lines": 27
+  },
+  {
+    "path": "LeanRV64D/Normal.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/PhysMemInterface.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/PlatformConfig.lean",
+    "diff_lines": 89
+  },
+  {
+    "path": "LeanRV64D/Pma.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/PmpRegs.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/Prelude.lean",
+    "diff_lines": 56
+  },
+  {
+    "path": "LeanRV64D/SdtrigControl.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/Sign.lean",
+    "diff_lines": 18
+  },
+  {
+    "path": "LeanRV64D/Step.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/SyncException.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/SysControl.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/SysRegs.lean",
+    "diff_lines": 47
+  },
+  {
+    "path": "LeanRV64D/ValidateConfig.lean",
+    "diff_lines": 56
+  },
+  {
+    "path": "LeanRV64D/VextFpUtilsInsts.lean",
+    "diff_lines": 20
+  },
+  {
+    "path": "LeanRV64D/VextVsetInsts.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/Vmem.lean",
+    "diff_lines": 83
+  },
+  {
+    "path": "LeanRV64D/VmemPte.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/VmemTlb.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/VmemUtils.lean",
+    "diff_lines": 80
+  },
+  {
+    "path": "LeanRV64D/Zero.lean",
+    "diff_lines": 13
+  },
+  {
+    "path": "LeanRV64D/ZfhInsts.lean",
+    "diff_lines": 11
+  },
+  {
+    "path": "LeanRV64D/ZicsrInsts.lean",
+    "diff_lines": 11
+  }
+]

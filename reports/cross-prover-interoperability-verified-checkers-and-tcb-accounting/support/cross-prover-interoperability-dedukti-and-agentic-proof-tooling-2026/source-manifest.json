@@ -1,0 +1,618 @@
+{
+  "report_slug": "cross-prover-interoperability-dedukti-and-agentic-proof-tooling-2026",
+  "observed_at": "2026-10-30",
+  "toolchain": {
+    "lean_version": "4.34.1",
+    "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "lean_binary": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/anneal_harness.lean"
+  },
+  "local_artifacts": [
+    {
+      "path": "support/anneal_harness.lean",
+      "lines": 893,
+      "sha256": "9f9c51efc7ef322f7c7b991dbb3b261d3893f244b6f2f9c5d5cb29ae9fecb25a",
+      "sorry_count": 0,
+      "custom_axioms": [],
+      "declarations": [
+        "AnnealHarness.posToLineCol",
+        "AnnealHarness.syntaxSpanJson",
+        "AnnealHarness.constantKind",
+        "AnnealHarness.getDeclModuleName",
+        "AnnealHarness.isInternalOrBlacklisted",
+        "AnnealHarness.canMatchHead",
+        "AnnealHarness.matchHyps",
+        "AnnealHarness.matchUpToHyps",
+        "AnnealHarness.hasAllConsts",
+        "AnnealHarness.mkConclusionMatcher",
+        "AnnealHarness.mkSubtermMatcher",
+        "AnnealHarness.elabPatternString",
+        "AnnealHarness.ppConstantType",
+        "AnnealHarness.exprSize",
+        "AnnealHarness.SearchConfig",
+        "AnnealHarness.serializeGoal",
+        "AnnealHarness.ExtractedStep",
+        "AnnealHarness.collectInfoTreeSteps",
+        "AnnealHarness.elaborateSource",
+        "AnnealHarness.runCandidateTactic",
+        "AnnealHarness.runSearch",
+        "AnnealHarness.GoalsConfig",
+        "AnnealHarness.runGoals",
+        "AnnealHarness.usage",
+        "AnnealHarness.parseSearchArgs",
+        "AnnealHarness.parseGoalsArgs",
+        "AnnealHarness.setupSearchPath",
+        "AnnealHarness.canMatchHead_mvar_left",
+        "AnnealHarness.canMatchHead_mvar_right",
+        "AnnealHarness.canMatchHead_structural",
+        "AnnealHarness.exprSize_pos",
+        "AnnealHarness.exprSize_app",
+        "AnnealHarness.exprSize_forallE",
+        "AnnealHarness.isInternalOrBlacklisted_recOn",
+        "AnnealHarness.isInternalOrBlacklisted_brecOn",
+        "AnnealHarness.isInternalOrBlacklisted_anonymous",
+        "main"
+      ]
+    }
+  ],
+  "inspected_repositories": [
+    {
+      "repository": "leanprover/lean4export",
+      "commit": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+      "files": [
+        {
+          "path": "Export.lean",
+          "sha256": "6e9f24262253678960b05b8392a1774a3cbf36b21ed2fc1b834906659b8ca95a",
+          "bytes": 16016,
+          "lines": 438
+        },
+        {
+          "path": "Main.lean",
+          "sha256": "bd8e350903f1382b25fe767f9086dd9882000f01085f7046ea06545e7848842a",
+          "bytes": 751,
+          "lines": 18
+        },
+        {
+          "path": "format_ndjson.md",
+          "sha256": "f82a21e17e4258a1043895d0653ea4333bef8cb07aad2e3d6c1fc4be52b138e3",
+          "bytes": 6098,
+          "lines": 352
+        }
+      ]
+    },
+    {
+      "repository": "rish987/lean4less",
+      "commit": "5b66bbc4af5c2c11313fcfb5098630dadaf19281",
+      "files": [
+        {
+          "path": "Lean4Less/TypeChecker.lean",
+          "sha256": "0305c7a0be43c2ddf96138d4568d991300a480075ca27934a55bb4b0da888f56",
+          "bytes": 111539,
+          "lines": 2493
+        },
+        {
+          "path": "Lean4Less/EExpr.lean",
+          "sha256": "d52e3ae4429e0d22142aacbb9c5fb5be5125c339d878a49060e7da489bda3fcb",
+          "bytes": 52143,
+          "lines": 1283
+        },
+        {
+          "path": "Lean4Less/Ext.lean",
+          "sha256": "3be9000e76dbe76a9230ae51bd1d34b854c6f3d190a20cd97ab18fc7acdea2b0",
+          "bytes": 7850,
+          "lines": 193
+        },
+        {
+          "path": "Lean4Less/Quot.lean",
+          "sha256": "47ae281c96ac0d7fe43dbdf37c22d03d4b24c92baade2544c717140d80dc2bdf",
+          "bytes": 2387,
+          "lines": 66
+        },
+        {
+          "path": "Lean4Less/Inductive/Reduce.lean",
+          "sha256": "fdf286743e988cea2563feb4f7a4951b74297e02e143ce7370649656a0b1b806",
+          "bytes": 11050,
+          "lines": 242
+        },
+        {
+          "path": "patch/PatchTheorems.lean",
+          "sha256": "9096936ab8ea0f8f89f1070d7c300e58c3c5a54bf0d8b227f7463cca102cc942",
+          "bytes": 9650,
+          "lines": 324
+        },
+        {
+          "path": "README.md",
+          "sha256": "457d4af80f151de37ef1c73280b1e1d89ac56f1e9a0a1d68b68510b5024fe758",
+          "bytes": 10584,
+          "lines": 154
+        }
+      ]
+    },
+    {
+      "repository": "rish987/lean2dk",
+      "commit": "471208f18c29420e25750503648469fc95d2ac8f",
+      "files": [
+        {
+          "path": "Main.lean",
+          "sha256": "65a8ee536d6a4c0b398dde6a26ca78423ee77ec933bd1376723944ac8f707b96",
+          "bytes": 11655,
+          "lines": 255
+        },
+        {
+          "path": "Dedukti/Trans.lean",
+          "sha256": "2b9737063206b9ce6d78e420c39df03dd2502916916e9eddbd9350915d9fb700",
+          "bytes": 23225,
+          "lines": 451
+        },
+        {
+          "path": "Dedukti/Encoding.lean",
+          "sha256": "8ce547dec318d9d2591993ecee01745e228b4e3007a4aaa3240fa253f952e9db",
+          "bytes": 1527,
+          "lines": 42
+        },
+        {
+          "path": "dk/enc/enc.dk",
+          "sha256": "5d670a30223082d9a7e4249ba4635aca6cde30f1378bed43d1f74f940f4b4161",
+          "bytes": 421,
+          "lines": 13
+        }
+      ]
+    },
+    {
+      "repository": "rish987/lean2dk (claude-stable)",
+      "commit": "29f985670008c29e852d61c562b8c10c84f7c5fb",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "aa851e0c7f14e1704eb93a366e2dca67b1e4e9cedf9bf7f042171d8b1cbbc7ad",
+          "bytes": 9127,
+          "lines": 159
+        },
+        {
+          "path": "Main.lean",
+          "sha256": "802df6b3b3b56904e48fa11c189d73c49124a56344b929ea8e583ac3c57c000d",
+          "bytes": 23537,
+          "lines": 442
+        },
+        {
+          "path": "Dedukti/Trans.lean",
+          "sha256": "0d33e2ff6971c91b6012d3694fd4ecca135a519b97980fe0343df9fa89810a05",
+          "bytes": 27471,
+          "lines": 522
+        },
+        {
+          "path": "dk/force_stub.txt",
+          "sha256": "ba5f4aaec087487d2292c5c6ccb7d6f0a103f4ec02af48eb6bfd46120d4c09e7",
+          "bytes": 1082,
+          "lines": 23
+        }
+      ]
+    },
+    {
+      "repository": "rocq-community/rocq-lean-import",
+      "commit": "2d28bbe80e7361bf3ac54f5ef099207fc61ce837",
+      "files": [
+        {
+          "path": "src/Lean.v",
+          "sha256": "b754d725ae8551f5e7cadc59f6b592df704710479b1a77f5363af2bdfa932819",
+          "bytes": 14111,
+          "lines": 399
+        },
+        {
+          "path": "src/lean.ml",
+          "sha256": "54a0fb88726d3105579a785a0f7c3d01ac1679db7e1337e6b170e1f6f29d5e84",
+          "bytes": 73174,
+          "lines": 2126
+        },
+        {
+          "path": "src/leanParseNdjson.ml",
+          "sha256": "90f2e6cd9e839d080cbf85aa574f55078ee235ede06defac14c05d27dd45ad8d",
+          "bytes": 12468,
+          "lines": 349
+        },
+        {
+          "path": "README.md",
+          "sha256": "62540eccc271114bdc1493ce66764e50e58d8162923eaba3ebb8e3215d55315f",
+          "bytes": 17969,
+          "lines": 457
+        }
+      ]
+    },
+    {
+      "repository": "LLM4Rocq/babel-formal",
+      "commit": "71c2aa9bc78e6d41c5421f8ae8e9f551c12f570b",
+      "files": [
+        {
+          "path": "readme.md",
+          "sha256": "1c0295a3b755bbbecc88d8079edc687490c013a1e3e1e3ebf3f7d6dc45978521",
+          "bytes": 4143,
+          "lines": 59
+        },
+        {
+          "path": "doc/details.md",
+          "sha256": "86a7bf831d2992315045877252f67df77ff8259e624fd64cf18a9bf7f4827f6b",
+          "bytes": 6005,
+          "lines": 77
+        },
+        {
+          "path": "dataset/Tools/Inspect.lean",
+          "sha256": "2c9ac1d7f70bc894642c77abc16794b8cdc948f6c0015bc96e3f43fca43cd00c",
+          "bytes": 2183,
+          "lines": 61
+        }
+      ]
+    },
+    {
+      "repository": "minirust/specr",
+      "commit": "15200eb5e676e2ee91f43bd79e674f8fc32e5348",
+      "files": [
+        {
+          "path": "specr-transpile/README.md",
+          "sha256": "08b6c422556b472e22a15148265dcb3b3ce23bf7afee121618e97a7a7619d89e",
+          "bytes": 3281,
+          "lines": 114
+        },
+        {
+          "path": "specr-transpile/src/main.rs",
+          "sha256": "492afc939259468d4a296ea89a20743f3c5c78ef9d300877844e2764e490cc09",
+          "bytes": 4053,
+          "lines": 133
+        },
+        {
+          "path": "specr-transpile/src/argmatch.rs",
+          "sha256": "b97ad39de3f6c17b6e03377db8085a0fce6f7be80b8bb18c356da42ba7f38b3d",
+          "bytes": 8122,
+          "lines": 264
+        },
+        {
+          "path": "specr-transpile/src/typerec/mod.rs",
+          "sha256": "163fee1332e0372e08b60fa5d7b5f83b30032d4bc5d1e548f54e13d7af7f2a5f",
+          "bytes": 1010,
+          "lines": 42
+        }
+      ]
+    },
+    {
+      "repository": "lenianiva/Pantograph",
+      "commit": "0789692d65e365c027d171074bf747f1d40328d0",
+      "files": [
+        {
+          "path": "Main.lean",
+          "sha256": "a189fe07b34f4a9c7fca2bba0aea36813e0bf7b9d26588d8ff17d8aa343cc57d",
+          "bytes": 2652,
+          "lines": 80
+        },
+        {
+          "path": "Repl.lean",
+          "sha256": "750a31e1140254992caa0ab15f0cacd160ad2c0de288beea4d884e4753218bc0",
+          "bytes": 26034,
+          "lines": 632
+        },
+        {
+          "path": "Pantograph/Goal.lean",
+          "sha256": "7c83fefb7af6fb4ab33cec7444b77d7a117117a891c6559c5b39bdae5d9ab8c8",
+          "bytes": 32548,
+          "lines": 819
+        },
+        {
+          "path": "Pantograph/Delab.lean",
+          "sha256": "c3f1f0242af936276f325be621195b8b0b888e80f3ae68c1229aaa4378ef0801",
+          "bytes": 26268,
+          "lines": 634
+        },
+        {
+          "path": "Pantograph/Protocol.lean",
+          "sha256": "79cd315eaf7705b0ed4b3a83d3500282396ae06169cc2840ba99f5025c77bfc5",
+          "bytes": 13943,
+          "lines": 477
+        },
+        {
+          "path": "Pantograph/Tactic/Assign.lean",
+          "sha256": "52a8984e296eaabd173f897f0073d8de4845a5fadeb3fd1092c1be19ba2a2227",
+          "bytes": 2754,
+          "lines": 70
+        },
+        {
+          "path": "Pantograph/Tactic/Prograde.lean",
+          "sha256": "f302a5caa4a90327dbee7d51c92189d60602475a7d5a29ddbb859e73f2f86522",
+          "bytes": 3421,
+          "lines": 87
+        },
+        {
+          "path": "Pantograph/Frontend/Basic.lean",
+          "sha256": "72731bde6db79df80e492559fcd95d112f55d4c1e1263749c0d3d02337de9885",
+          "bytes": 7201,
+          "lines": 198
+        },
+        {
+          "path": "Pantograph/Frontend/Distil.lean",
+          "sha256": "9208ab131f9108ca14631d21c8832ca8477fd247fc00cae94b5b0ec9d1b930dc",
+          "bytes": 12447,
+          "lines": 287
+        },
+        {
+          "path": "Pantograph/Frontend/MetaTranslate.lean",
+          "sha256": "f7f686d7d74cc555d384fc21860073753419a4d6050ed7d4a3bea893b3b945e9",
+          "bytes": 6966,
+          "lines": 172
+        }
+      ]
+    },
+    {
+      "repository": "stanford-centaur/PyPantograph",
+      "commit": "a098035e29f7910a627b8440145b51246ec38484",
+      "files": [
+        {
+          "path": "pantograph/server.py",
+          "sha256": "fdca94c6ab7c72cfa83aeb4c1328f3e324b1b1167b18b0352004124f433bcb07",
+          "bytes": 23770,
+          "lines": 705
+        },
+        {
+          "path": "pantograph/expr.py",
+          "sha256": "42661940bdc81a48533cfff18bcccfdfc42cb427ae45627023abf6bb8c653ccc",
+          "bytes": 5397,
+          "lines": 202
+        },
+        {
+          "path": "pantograph/search.py",
+          "sha256": "b19cc4d769c22218abe4891120a8cc237677811eaf0e2f871847bdb32e3f40fe",
+          "bytes": 14999,
+          "lines": 449
+        }
+      ]
+    },
+    {
+      "repository": "nomeata/loogle",
+      "commit": "9f11169aaebf1ed1e7dcc4077f2aafe0fcf66fd0",
+      "files": [
+        {
+          "path": "Loogle.lean",
+          "sha256": "22f24ad2810228ef328170f4d14eb86a3a579dfff9af4907c39c8e861b34cc5e",
+          "bytes": 11418,
+          "lines": 277
+        },
+        {
+          "path": "LoogleMain.lean",
+          "sha256": "3b1844795563f228a49bc2266d5fdbf5c4bab4b789fd03017906b2911a684f34",
+          "bytes": 5085,
+          "lines": 130
+        },
+        {
+          "path": "Loogle/Find.lean",
+          "sha256": "bb71f53352c4282690a0091d135dacdf777d6e3a0cbe0533e9e1a26193588ade",
+          "bytes": 22907,
+          "lines": 547
+        },
+        {
+          "path": "Loogle/Trie.lean",
+          "sha256": "ac2deb3ea0c2fbd4fb96189341d7af4560bef65e0bfa4422b46eb1adc3afaaf6",
+          "bytes": 6286,
+          "lines": 210
+        },
+        {
+          "path": "Loogle/Parsers.lean",
+          "sha256": "597355e44c864843d1d5dfac3870faafca748d92348ad44ff7f431860740dd27",
+          "bytes": 2696,
+          "lines": 78
+        }
+      ]
+    },
+    {
+      "repository": "oOo0oOo/lean-lsp-mcp",
+      "commit": "bd95db58fe684ec0c3f5f875c81bac949abc8929",
+      "files": [
+        {
+          "path": "src/lean_lsp_mcp/server.py",
+          "sha256": "579566beb7b9098f182b360a930883a097e855fcad0c332baf13578b92b58989",
+          "bytes": 17634,
+          "lines": 463
+        },
+        {
+          "path": "src/lean_lsp_mcp/client_utils.py",
+          "sha256": "864179e08d798544325245dae4161fc30cd38cc7f85610d891bb780fe36fc29a",
+          "bytes": 18529,
+          "lines": 543
+        },
+        {
+          "path": "src/lean_lsp_mcp/attempt_utils.py",
+          "sha256": "28aadd61ca8b1a553bd37dcb9311ef0ac764c93e3500f0551a910cee37cb64ec",
+          "bytes": 10976,
+          "lines": 319
+        },
+        {
+          "path": "src/lean_lsp_mcp/repl.py",
+          "sha256": "f669462a2a6ce609e4673214dce16971e8c2a13e38ba29d7867d27f6aa229633",
+          "bytes": 16504,
+          "lines": 441
+        },
+        {
+          "path": "src/lean_lsp_mcp/verify.py",
+          "sha256": "73a580d98bb202121fca6021fcc611fd6d98d610c49a872924e5389eacf2be40",
+          "bytes": 4068,
+          "lines": 118
+        },
+        {
+          "path": "src/lean_lsp_mcp/minimal_hypotheses.py",
+          "sha256": "b198f97a66acc6115b27245e82dc20c79a12ddb6df343a6ba083c090181e1989",
+          "bytes": 3596,
+          "lines": 104
+        },
+        {
+          "path": "src/lean_lsp_mcp/tools/analysis.py",
+          "sha256": "0f977469512006ee5d9f42d3dc6c8d275a26267c19913fc566dc4d61ef2f7f31",
+          "bytes": 13192,
+          "lines": 395
+        }
+      ]
+    },
+    {
+      "repository": "lean-dojo/LeanDojo-v2",
+      "commit": "baed5eae6e87a65a446d9f54af07aab2154e7599",
+      "files": [
+        {
+          "path": "lean_dojo_v2/lean_dojo/data_extraction/ExtractData.lean",
+          "sha256": "b50bebdef8adde06d1f6948edc0ac52f67dd8b40045df72290a1f225049ffc50",
+          "bytes": 17205,
+          "lines": 515
+        },
+        {
+          "path": "lean_dojo_v2/lean_dojo/data_extraction/trace.py",
+          "sha256": "3688617b282205e0a4520b44c9a3b5a9e4906c0d5119521f1aac2d9a56f948c2",
+          "bytes": 9062,
+          "lines": 248
+        },
+        {
+          "path": "lean_dojo_v2/prover/base_prover.py",
+          "sha256": "70a2ec70e37587b5aa6e9ec4e1d3fb53cdb47f9553ae30a67d87f6722d54736a",
+          "bytes": 9518,
+          "lines": 276
+        },
+        {
+          "path": "lean_dojo_v2/external_api/ExternalAPI.lean",
+          "sha256": "0b0feec058723b570f31ebf10bb19517e9fb11f6d2279bb1c6773230b7f51a73",
+          "bytes": 266,
+          "lines": 10
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/repl",
+      "commit": "6a2be396449a5213a36748ca7682d16d54a1ca4a",
+      "files": [
+        {
+          "path": "REPL/Main.lean",
+          "sha256": "76bb41cfe02340968d85575741ebfc487f77baa5064ad71d5540325552068c8f",
+          "bytes": 17066,
+          "lines": 443
+        },
+        {
+          "path": "REPL/Snapshots.lean",
+          "sha256": "fbfdb8d7cb6cc6f7569368aaa7a6deb26e52cad786a304f2a34e20c0b28eab40",
+          "bytes": 12351,
+          "lines": 316
+        },
+        {
+          "path": "REPL/Frontend.lean",
+          "sha256": "042fe4709f4ba3bdd2a6b218ab66cbb23ec6e456cd05621979cea18c2012050d",
+          "bytes": 2360,
+          "lines": 57
+        },
+        {
+          "path": "REPL/JSON.lean",
+          "sha256": "f4f37d31381cff6ac626c414187f610fee59a50e8a4f778f167e3c9cf432d6d6",
+          "bytes": 5089,
+          "lines": 192
+        }
+      ]
+    },
+    {
+      "repository": "augustepoiroux/LeanInteract",
+      "commit": "768e18ebcb5c7ec34d308768a785389eeac37798",
+      "files": [
+        {
+          "path": "src/lean_interact/server.py",
+          "sha256": "e632edc0029429adaf4aa9d9503fb20639b649b643d11b72f3abf41b51eb22b2",
+          "bytes": 28572,
+          "lines": 673
+        },
+        {
+          "path": "src/lean_interact/sessioncache.py",
+          "sha256": "18fb0d5caa0039adc8a6d39aec63e55b4aeca0a994d04da0f93494a272cc91f4",
+          "bytes": 17209,
+          "lines": 447
+        },
+        {
+          "path": "src/lean_interact/interface.py",
+          "sha256": "5fc5817487b1c170a2eb9dd39c337567151ef47cc0cc4dc9f91749a4dca88dcb",
+          "bytes": 20366,
+          "lines": 640
+        },
+        {
+          "path": "src/lean_interact/pool.py",
+          "sha256": "89a5c03eb1573f2cd9d53588721e3db50a54565f54d4360f6b498573e424c401",
+          "bytes": 11214,
+          "lines": 314
+        }
+      ]
+    },
+    {
+      "repository": "Project-Numina/kimina-lean-server",
+      "commit": "fb2393de3461db35eda4c714e3fd21187e92ec90",
+      "files": [
+        {
+          "path": "server/manager.py",
+          "sha256": "98bafac8de4f7e27d0b953f2c6479dc2812e50a4cc2c31bec32815e9b1d68aaf",
+          "bytes": 8298,
+          "lines": 227
+        },
+        {
+          "path": "server/repl.py",
+          "sha256": "318f57992f3fcb00d98ca87b02728d32cddac14202fabc03637a92f41f11fd21",
+          "bytes": 12120,
+          "lines": 367
+        },
+        {
+          "path": "server/split.py",
+          "sha256": "308245c10ac24ca707828a4f21f39d9a1a94148fadfac9d24bb086cee3980f20",
+          "bytes": 1595,
+          "lines": 51
+        },
+        {
+          "path": "server/routers/check.py",
+          "sha256": "7ce7745b439c2f672bbd90d555905cd25d770dd3451fa871bf8c9945bf375dc2",
+          "bytes": 8084,
+          "lines": 234
+        }
+      ]
+    },
+    {
+      "repository": "justincasher/lean-explore",
+      "commit": "17b9d6c87a2bf0dc4ea27de05da8a1c9965391b7",
+      "files": [
+        {
+          "path": "src/lean_explore/search/engine.py",
+          "sha256": "01b34bee33a9f9a1c4aab45166f8ba85e71f93a6c1e000f814c42de61a8cb6fe",
+          "bytes": 10729,
+          "lines": 274
+        },
+        {
+          "path": "src/lean_explore/search/indexes.py",
+          "sha256": "daefc2a0d80d8c584e8f0493b3c6b39f66a1768687450bdec8251d7a648879c9",
+          "bytes": 6654,
+          "lines": 179
+        },
+        {
+          "path": "src/lean_explore/search/ranking.py",
+          "sha256": "0ba616422d583bec594e94a168a9fc1031a2f7882737c24cb4367292f386f387",
+          "bytes": 8218,
+          "lines": 237
+        }
+      ]
+    },
+    {
+      "repository": "leanprover-community/LeanSearchClient",
+      "commit": "c61286b7b63cbfd563b28e11e81d0a18233a044a",
+      "files": [
+        {
+          "path": "LeanSearchClient/Syntax.lean",
+          "sha256": "46f538b08d849f772f160369b803c85fbb81671867f211b1df4682a81dbc0ef3",
+          "bytes": 17597,
+          "lines": 452
+        },
+        {
+          "path": "LeanSearchClient/LoogleSyntax.lean",
+          "sha256": "2478d3a3b16ae49bc7aa0d5ba1fb1f0cf20af63c27dd09c3ea354f003e98d656",
+          "bytes": 13008,
+          "lines": 333
+        },
+        {
+          "path": "LeanSearchClient/Basic.lean",
+          "sha256": "e642f11fa930e53d902d4b349719ecaa65b82664dd018ca91df9b91c4361d941",
+          "bytes": 907,
+          "lines": 29
+        }
+      ]
+    }
+  ]
+}

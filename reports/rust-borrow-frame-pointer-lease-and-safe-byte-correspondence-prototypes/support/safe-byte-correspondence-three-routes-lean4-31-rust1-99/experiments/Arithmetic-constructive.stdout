@@ -1,0 +1,8 @@
+theorem consumerAccepted : Claim expectedSourceHash actualSourceHash capturedSource proposedIR :=
+⟨Eq.refl expectedSourceHash, fun x =>
+  Eq.mpr (id (congrArg (fun _a => evalIR _a x = evalSource capturedSource x) translationWitness))
+    (construct_eval capturedSource x)⟩
+'consumerAccepted' depends on axioms: [propext]
+'ArithmeticPrototype.posthoc_sound' depends on axioms: [propext]
+'ArithmeticPrototype.construct_eval' depends on axioms: [propext]
+'ArithmeticPrototype.instrumented_sound' depends on axioms: [propext]

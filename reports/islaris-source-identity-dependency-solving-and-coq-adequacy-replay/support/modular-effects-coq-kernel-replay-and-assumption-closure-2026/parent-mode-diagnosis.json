@@ -1,0 +1,19 @@
+{
+  "failure": "opam build coq-stdpp.dev permission denied before proof execution",
+  "cause": "Earlier source materialization preserved bytes but not executable mode on make-package; Docker copy reproduced that mode",
+  "archive": "work/research/phase2-minirust-foundations/modular-runtime/the_artifact.zip",
+  "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378",
+  "authoritative_entries": [
+    {
+      "path": "the_artifact/iris/make-package",
+      "archive_mode_octal": "0o100775",
+      "sha256": "26abd5dd339059833fabc1fe82fb8c7ac854fbd3a5990a83151511cd70fd4ceb"
+    },
+    {
+      "path": "the_artifact/stdpp/make-package",
+      "archive_mode_octal": "0o100775",
+      "sha256": "26eb1188004090bc34aa0b381a3d34bb33172efaf7a4d0050d485832010ce674"
+    }
+  ],
+  "recovery": "Restore only these two reviewed executable modes in the isolated container copy from original archive; no source-byte changes. Verify pinned builds use corrected source modes before one fresh build."
+}

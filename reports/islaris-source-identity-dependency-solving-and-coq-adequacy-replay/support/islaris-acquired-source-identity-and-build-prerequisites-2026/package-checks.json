@@ -1,0 +1,231 @@
+{
+  "scope": "host-only v2 public-projection assembly checks; not native replay or canonical validation",
+  "archives": [
+    {
+      "path": "public-projection-source-audit.tar.gz",
+      "members": 232,
+      "sha256": "3702aed69e674052806148cdbbd7fcb076e162b3ead94def1af6238032a9e792"
+    },
+    {
+      "path": "frozen-independent-review.tar.gz",
+      "members": 23,
+      "sha256": "1b3ebc243b219a16028db0e80f1ca52c8a85ec1d0c3171f81613579ed6ba17ef"
+    },
+    {
+      "path": "source-acquisition-evidence.tar.gz",
+      "members": 123,
+      "sha256": "d909122f639deb32ba2b9c57c26302be7424a0a7aba35fc38b83e6bb53eb418e"
+    },
+    {
+      "path": "source-realization-plan.tar.gz",
+      "members": 7,
+      "sha256": "b8125e3b295249f3d86718775ff75f7a6032b092bceea52caf22a106f0cffb79"
+    }
+  ],
+  "core_archived_members": 385,
+  "public_audit_members": 232,
+  "omitted_external_bodies": 6,
+  "projection_remaining_members_byte_identical": true,
+  "other_three_archives_unchanged": true,
+  "all_omitted_body_duplicate_scan_hits": [],
+  "scan_scope": "complete body as contiguous bytes across all decompressed core archive members, nested gzip payloads, outer files and outer gzip payloads",
+  "source_and_notice_pointer_identities": "pass",
+  "original_candidate_and_blocked_review_unchanged": true,
+  "report_authored_local_links": [
+    {
+      "document": "REPORT.md",
+      "target": "../islaris-offline-dependency-solution-and-cudf-audit-2026/REPORT.md"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/plan/ARTIFACTS.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/download-phase.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/download.stdout"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/download.stderr"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/native-acquire-result.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/source-selection-gate.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/post-installed.stdout"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/acquisition/post-pins.stdout"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/audit-summary/consumer-coverage.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/audit-summary/http-object-map.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/audit-summary/unchanged-state.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/independent/REVIEW.md"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/source/old-sail/INSTALL.md"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/source/old-sail/src/lib/constraint.ml"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/source/old-riscv/Makefile"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/audit-summary/system-package-observations.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/raw-audit-results.md"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/archive-index.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/archive-members.json.gz"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/public-projection-source-audit.tar.gz"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/public-projection.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/frozen-independent-review.tar.gz"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/source-acquisition-evidence.tar.gz"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/source-realization-plan.tar.gz"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/source-pointers.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "ATTRIBUTION.md"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/attribution-inventory.json"
+    },
+    {
+      "document": "REPORT.md",
+      "target": "support/notice-pointers.json"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/source-pointers.json"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/notice-pointers.json"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-inventory.json"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/source/old-sail/LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/source/old-riscv/LICENCE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A35-LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A36-LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A39-LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A39-LICENSE-CODE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A39-LICENSE-DOCS"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A40-LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A41-LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A43-LICENSE"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/attribution-evidence/A43-THIRD_PARTY_FILES.md"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/license-provenance/sail-LICENSE.json"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/license-provenance/riscv-LICENCE.json"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/notices/opam-repository/README.md"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/notices/opam-repository/COPYING"
+    },
+    {
+      "document": "ATTRIBUTION.md",
+      "target": "support/public-projection.json"
+    }
+  ],
+  "metadata_shape": "pass",
+  "section_order": "pass",
+  "authorship_footer_count": 1
+}

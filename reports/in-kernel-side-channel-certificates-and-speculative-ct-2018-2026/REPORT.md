@@ -30,7 +30,7 @@ The findings, primary-source analyses, and Lean 4 mechanizations in this report 
   - `Pitchfork` (Sunjay Cauligi et al., *"Constant-Time Foundations for the New Spectre Era"*, ACM PLDI 2020, DOI `10.1145/3385412.3385970`).
   - `Blade` (Marco Vassena et al., *"Automatically Eliminating Speculative Leaks from Cryptographic Code with Blade"*, PACMPL Vol. 5, Issue POPL, Article 49, Jan 2021, DOI `10.1145/3434330`).
   - `Jasmin SCT` (Gilles Barthe et al., *"High-Assurance Cryptography in the Spectre Era"*, IEEE S&P 2021, DOI `10.1109/SP40001.2021.00046`; Bharath Anand Shivakumar et al., *"Typing High-Speed Cryptography against Spectre v1"*, IEEE S&P 2023, DOI `10.1109/SP46215.2023.10179418`; Santiago Arranz Olmos et al., *"Preservation of Speculative Constant-Time by Compilation"*, PACMPL Vol. 9, Issue POPL, Jan 2025, DOI `10.1145/3704885`).
-- **Target Verification Architecture (`joshlf/anneal@e6a0b2da5ec39a4c0cfd22bf323885022837b5dc` and `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`)**:
+- **Target Verification Architecture (`joshlf/anneal@c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b` and `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`)**:
   All 29 theorems in `support/InKernelSideChannelAndSpeculativeCertificates.lean` (`4,144` lines) are machine-checked in Lean `v4.34.1` with zero `sorryAx`, zero `Classical.choice`, and zero `Lean.ofReduceBool`.
 
 ---
@@ -84,7 +84,7 @@ We proved:
 - **Soundness (`kernel_rel_ct_cert_soundness`, `lines 1255-1291`)**: `checkKernelRelCtCertIndexed prog cert = true` guarantees 2-safety observational noninterference (`obsTrace prog fuel bid s₁ = obsTrace prog fuel bid s₂`) in $O(|I| + |E|)$ single-pass time.
 - **Strict Expressiveness Separation (`relational_kernel_cert_strictly_extends_ct_cert`, `lines 1344-1370`)**:
   1. **Conservative Extension**: Every certificate `cert` accepted by `checkKernelCtCertIndexed` is automatically accepted by `checkKernelRelCtCertIndexed` via `liftCtCertToRel cert` (`checkCtCert_imp_checkRelCtCert`, `lines 1297-1341`).
-  2. **Strict Separation Witness**: The constant-time keyed packet tag scrubber `relScrubbingCryptoProg` (`lines 1310-1321`, which reads a secret key into `R3`, copies `R2 := R3`, performs branchless `cmovConst R2 R3 R2 R3`, scrubs `R2 := R2 ^ R2`, and emits `R2` via `helperEmitPublicMetric`) is **accepted** by `checkKernelRelCtCertIndexed` (`rfl`), executes with identical observation traces, and is **rejected (`= false`)** by `checkKernelCtCertIndexed` for **every** possible non-relational certificate `ctCert`!
+  2. **Strict Separation Witness**: The constant-time keyed packet tag scrubber `relScrubbingCryptoProg` (`lines 1310-1321`, which reads a secret key into `r3`, copies `r2 := r3`, performs branchless `cmovConst r2 r3 r2 r3`, scrubs `r2 := r2 ^ r2`, and emits `r2` via `helperEmitPublicMetric`) is **accepted** by `checkKernelRelCtCertIndexed` (`rfl`), executes with identical observation traces, and is **rejected (`= false`)** by `checkKernelCtCertIndexed` for **every** possible non-relational certificate `ctCert`!
 
 ---
 
@@ -164,13 +164,13 @@ In Section 6 of `support/InKernelSideChannelAndSpeculativeCertificates.lean` (`l
 
 - **`spectre_v4_stl_bypass_leaks_overwritten_secret_slot` (`lines 3194-3252`)**:
   The extension `spectreV4OverwriteGadget` (`lines 3145-3165`):
-  1. Reads a secret key into `R3` (`helperReadSecretKey .R3`) and spills it to stack slot `.S0` (`spillStack .S0 .R3`);
-  2. Overwrites stack slot `.S0` with public constant `0` (`movImm .R2 0; spillStack .S0 .R2`);
-  3. Reloads `R1` from `.S0` (`fillStack .R1 .S0`), masks `R1 & 7`, and loads `R0 := *(pub_base + (R1 & 7))` (`ldMasked .R0 .R1 7`).
+  1. Reads a secret key into `r3` (`helperReadSecretKey .r3`) and spills it to stack slot `.S0` (`spillStack .S0 .r3`);
+  2. Overwrites stack slot `.S0` with public constant `0` (`movImm .r2 0; spillStack .S0 .r2`);
+  3. Reloads `r1` from `.S0` (`fillStack .r1 .S0`), masks `r1 & 7`, and loads `r0 := *(pub_base + (r1 & 7))` (`ldMasked .r0 .r1 7`).
   We prove that:
-  - `spectreV4OverwriteGadget` **passes** the Spectre-v1-only certificate checker (`checkKernelSctV1OnlyOverwriteCertIndexed spectreV4OverwriteGadget spectreV4OverwriteV1Cert = true`), because `spillStack .S0 .R2` overwrites `.S0`'s label to `pubSafe`;
-  - Under architectural execution (`stlBypass = false`), `fillStack .R1 .S0` reads `0` and produces identical traces `[.loadAddr 0, .exitCode 0]`;
-  - Under a Spectre v4 `STL` store-bypass oracle (`stlBypass = true` on `fillStack`), `fillStack .R1 .S0` transiently reads the overwritten secret `s.secretMem 0` from `s0Stale` and leaks it into the speculative load address trace (`specV4ObsTrace ... = [.loadAddr 3]` vs. `[.loadAddr 5]`)!
+  - `spectreV4OverwriteGadget` **passes** the Spectre-v1-only certificate checker (`checkKernelSctV1OnlyOverwriteCertIndexed spectreV4OverwriteGadget spectreV4OverwriteV1Cert = true`), because `spillStack .S0 .r2` overwrites `.S0`'s label to `pubSafe`;
+  - Under architectural execution (`stlBypass = false`), `fillStack .r1 .S0` reads `0` and produces identical traces `[.loadAddr 0, .exitCode 0]`;
+  - Under a Spectre v4 `STL` store-bypass oracle (`stlBypass = true` on `fillStack`), `fillStack .r1 .S0` transiently reads the overwritten secret `s.secretMem 0` from `s0Stale` and leaks it into the speculative load address trace (`specV4ObsTrace ... = [.loadAddr 3]` vs. `[.loadAddr 5]`)!
 
 #### 3.2 Sticky Stack-Slot Secret Typing (`checkKernelSctV1V4CertIndexed`) & Combined Spectre v1 + v4 Soundness
 To defeat Spectre v4 (`STL`) without inserting an `lfence` (`BPF_ST_NOSPEC`) at every stack store (as Linux's `verifier.c:18551-18564` does via `insn_aux->nospec`), `transferSctV1V4Instr` (`lines 3013-3063`) enforces **Sticky Stack-Slot Secret Typing**:
@@ -293,12 +293,12 @@ To revalidate the machine-checked proofs and empirical probe results in this pac
 
 1. **Verify all 29 Lean 4 theorems and their zero-axiom footprint**:
    ```bash
-   lean reports/in-kernel-side-channel-certificates-and-speculative-ct-2018-2026/support/InKernelSideChannelAndSpeculativeCertificates.lean
+   lean support/InKernelSideChannelAndSpeculativeCertificates.lean
    ```
    Confirm that `lean` (`v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`) exits with code `0` and that all 29 `#print axioms` outputs depend only on `[propext, Quot.sound]` or `[propext]` (zero `sorryAx`, zero `Classical.choice`, zero `Lean.ofReduceBool`).
 
 2. **Re-run the empirical `SCT` certificate, `Blade` min-cut `SLH`, SFI masking, and Spectre v4 stack-spill probe**:
    ```bash
-   python3 reports/in-kernel-side-channel-certificates-and-speculative-ct-2018-2026/support/sct_certificate_vs_fence_probe.py
+   python3 support/sct_certificate_vs_fence_probe.py
    ```
    Confirm that `support/sct_certificate_vs_fence_probe_results.json` is regenerated identically (`13` `Blade` `slhProtect` instructions and `13` SFI `ldMasked` instructions across `58` public loads, `0` `lfence` barriers, and `100%` single-pass certificate verification).

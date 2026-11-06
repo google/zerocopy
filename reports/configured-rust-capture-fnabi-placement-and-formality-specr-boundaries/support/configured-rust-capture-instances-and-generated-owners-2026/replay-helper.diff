@@ -1,0 +1,28 @@
+--- support/run_controls.py (preserved historical helper)
++++ support/run_controls_explicit_observer.py (proposed explicit-observer helper)
+@@ -4,8 +4,9 @@
+ from packet_schema import load,semantic
+ 
+ ROOT=Path(__file__).resolve().parent
+-ARGUMENTS=argparse.ArgumentParser();ARGUMENTS.add_argument('--toolchain',type=Path,required=True);ARGUMENTS.add_argument('--matrix',default='final-matrix');ARGS=ARGUMENTS.parse_args()
++ARGUMENTS=argparse.ArgumentParser();ARGUMENTS.add_argument('--toolchain',type=Path,required=True);ARGUMENTS.add_argument('--observer',type=Path,required=True);ARGUMENTS.add_argument('--matrix',default='final-matrix');ARGS=ARGUMENTS.parse_args()
+ TOOL=ARGS.toolchain.resolve(strict=True)
++OBSERVER=ARGS.observer.absolute()
+ CASE_ROOT=ROOT/ARGS.matrix
+ BASE=load(ROOT/'requests/base/request.json')
+ SOURCE=(ROOT/'requests/base/probe.rs').read_text()
+@@ -19,12 +20,12 @@
+     dump(directory/'request.json',request);return directory/'request.json'
+ def invoke(label,action,request,candidate=None,expected=0):
+     out=CASE_ROOT/'controls'/label;out.parent.mkdir(exist_ok=True)
+-    argv=[sys.executable,'-B',str(ROOT/'capture.py'),action,'--request',str(request),'--toolchain',str(TOOL),'--observer',str(ROOT/'observer'),'--output',str(out)]
++    argv=[sys.executable,'-B',str(ROOT/'capture.py'),action,'--request',str(request),'--toolchain',str(TOOL),'--observer',str(OBSERVER),'--output',str(out)]
+     if candidate is not None:argv.extend(['--candidate',str(candidate)])
+     before=time.monotonic_ns();p=subprocess.run(argv,cwd=ROOT,capture_output=True,timeout=70)
+     (CASE_ROOT/'controls'/(label+'.stdout')).write_bytes(p.stdout);(CASE_ROOT/'controls'/(label+'.stderr')).write_bytes(p.stderr)
+     verdict=load(out/'verdict.json') if (out/'verdict.json').exists() else None
+-    row={'label':label,'argv':argv,'exit':p.returncode,'expected_exit':expected,'elapsed_ns':time.monotonic_ns()-before,'verdict':verdict,'compiler_ran':(out/'compiler-status.json').exists(),'implementation_sha256':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in ['capture.py','packet_schema.py','capture_observer.rs','run_controls.py']}}
++    row={'label':label,'argv':argv,'exit':p.returncode,'expected_exit':expected,'elapsed_ns':time.monotonic_ns()-before,'verdict':verdict,'compiler_ran':(out/'compiler-status.json').exists(),'implementation_sha256':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in ['capture.py','packet_schema.py','capture_observer.rs','run_controls_explicit_observer.py']}}
+     RESULTS.append(row);dump(CASE_ROOT/'controls'/(label+'.json'),row)
+     if p.returncode!=expected:raise RuntimeError('unexpected control result '+label+': '+p.stdout.decode()+p.stderr.decode())
+     if any(s in p.stdout+p.stderr for s in [b'panicked at',b'Assertion failed',b'assertion failed',b'internal compiler error']):raise RuntimeError('panic/assertion stop '+label)

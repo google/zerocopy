@@ -1,0 +1,30 @@
+{
+  "label": "final-file-sizes",
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "/home/opam/anneal-simuliris-sources/simuliris",
+    "anneal-simuliris-20261014",
+    "opam",
+    "exec",
+    "--switch=4.14",
+    "--",
+    "find",
+    ".",
+    "-type",
+    "f",
+    "-printf",
+    "%s %p\n"
+  ],
+  "exit_code": 0,
+  "status": "finished",
+  "elapsed_seconds": 0.084,
+  "stdout_bytes": 29832,
+  "stderr_bytes": 45,
+  "stdout_sha256": "696be05b5c13e17b246d648d15c5c4ef9b82a58cf5316d5a9172685dac37332b",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a",
+  "allowed_exit_codes": [
+    0
+  ]
+}

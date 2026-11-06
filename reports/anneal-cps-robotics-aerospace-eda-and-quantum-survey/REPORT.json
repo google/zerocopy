@@ -1,0 +1,187 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "anneal/behavior-codec",
+    "anneal/trust-policy",
+    "cyber-physical-systems/reachability-and-cbfs",
+    "robotics/kinematics-and-optimal-control",
+    "aerospace/synchronous-dataflow-and-runtime-assurance",
+    "industrial-control/plc-and-railway-interlocking",
+    "eda/rtl-synthesis-and-formal-verification",
+    "vlsi/physical-design-drc-lvs",
+    "quantum-computing/zx-calculus-and-qec",
+    "analog-mixed-signal/real-number-modeling-and-neuromorphic",
+    "silicon-photonics/s-matrix-and-mzi-meshes",
+    "metamaterials/acoustic-em-and-origami-mechanics",
+    "anneal/architecture",
+    "anneal/cps-verification",
+    "anneal/eda-hardware-verification",
+    "anneal/external-call",
+    "anneal/failure-postmortems",
+    "anneal/quantum-verification",
+    "verification/hybrid-systems",
+    "verification/soundness-failures"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal trusted Lean verification root (trusted/lean/Trusted.lean, trusted/lean/Trusted/Attributes.lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal design, architecture, and trust-model specification (docs/architecture.md, docs/design.md, docs/trust-model.md)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal verification framework and robust-code specification (skills/robust-code/SKILL.md)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaborator toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "KeYmaera X differential dynamic logic theorem prover",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-release",
+        "version": "5.1.1"
+      }
+    },
+    {
+      "name": "Flow*, CORA, JuliaReach, SpaceEx, HyPro, C2E2, DryVR, dReal4, FPTaylor, Daisy, OSQP, CVXGEN, and SumOfSquares.jl hybrid control and reachability ecosystem",
+      "identity": {
+        "repositories": "chenxin415/flowstar, TUMcps/CORA, JuliaReach/ReachabilityAnalysis.jl, dreal/dreal4, soarlab/FPTaylor, malyzajko/daisy, osqp/osqp, jump-dev/SumOfSquares.jl, hypro/hypro",
+        "benchmark_suite": "ARCH-COMP 2024-2026 Continuous and Hybrid Systems"
+      }
+    },
+    {
+      "name": "Drake, Pinocchio, Crocoddyl, cuRobo, Coal (HPP-FCL), OMPL, MoveIt 2, RVO2/ORCA, IKFast, OCS2, and TOWR robotics kinematics and planning ecosystem",
+      "identity": {
+        "repositories": "RobotLocomotion/drake, stack-of-tasks/pinocchio, loco-3d/crocoddyl, NVlabs/curobo, coal-library/coal, ompl/ompl, moveit/moveit2, snape/RVO2, rdiankov/openrave, leggedrobotics/ocs2, ethz-adrl/towr"
+      }
+    },
+    {
+      "name": "Ansys SCADE Suite, V\u00e9lus, Heptagon, Copilot, FRET, Ogma, Marabou (Reluplex/ACAS X), CoCoSim, Kind 2, F Prime, cFS, Polyspace, Astr\u00e9e, GMAT, and Orekit aerospace verification and flight-software ecosystem",
+      "identity": {
+        "repositories": "INRIA/velus, PARKAS/heptagon, Copilot-Language/copilot, NASA-SW-VnV/fret, nasa/ogma, NeuralNetworkVerification/Marabou, NASA-SW-VnV/CoCoSim, kind2-mc/kind2, nasa/fprime, nasa/cFS, CS-SI/Orekit",
+        "standard": "RTCA DO-178C / DO-333 / NASA NPR 7150.2D"
+      }
+    },
+    {
+      "name": "PLCverif, RuSt (plc-lang/rusty), MATIEC, OpenPLC, Prover iLock/Certifier, Atelier B/ClearSy, Arcade.PLC, aiT WCET, and IEC 61850 industrial safety ecosystem",
+      "identity": {
+        "repositories": "plcverif-oss/cern.plcverif, plc-lang/rusty, nucleron/matiec, thiagoralves/OpenPLC_v3",
+        "standards": "IEC 61131-3, CENELEC EN 50128 SIL 4, IEC 61850"
+      }
+    },
+    {
+      "name": "Yosys, SymbiYosys, ABC, K\u00f4ika, Kami, VeriCert, Bambu, LegUp, Vitis HLS, Calyx, CIRCT, JasperGold/VC Formal/Conformal, SpyGlass CDC/UPF, OpenSTA, and ACT/Balsa/Teak digital VLSI and hardware verification ecosystem",
+      "identity": {
+        "repositories": "YosysHQ/yosys, YosysHQ/sby, berkeley-abc/abc, mit-plv/koika, mit-plv/kami, ymherklotz/vericert, ferrandi/PandA-bambu, cucapra/calyx, llvm/circt, parallaxsw/OpenSTA, asyncvlsi/act"
+      }
+    },
+    {
+      "name": "OpenROAD, Magic VLSI, Netgen, KLayout, Calibre/Pegasus/IC Validator, DREAMPlace, and CuGR physical VLSI design and verification ecosystem",
+      "identity": {
+        "repositories": "The-OpenROAD-Project/OpenROAD, RTimothyEdwards/magic, RTimothyEdwards/netgen, KLayout/klayout, limbo018/DREAMPlace, cuhk-eda/CuGR"
+      }
+    },
+    {
+      "name": "SQIR, VOQC, PyZX, QuiZX, Stim, PyMatching, Fusion Blossom, Qiskit SABRE, TKET, Enfield/OLSQ2, lsqecc, MQT-QCEC, Quipper, QWIRE, and CertiQ quantum compilation and error-correction ecosystem",
+      "identity": {
+        "repositories": "inQWIRE/SQIR, zxcalc/pyzx, zxcalc/quizx, quantumlib/Stim, oscarhiggott/PyMatching, wuyue16pku/fusion-blossom, Qiskit/qiskit, CQCL/tket, UCLA-VAST/OLSQ2, latticesurgery-com/lattice-surgery-compiler, cda-tum/mqt-qcec, inQWIRE/QWIRE"
+      }
+    },
+    {
+      "name": "SpaceEx-AMS/CORA-AMS/Ariadne, Xyce/Ngspice, SVReal/msdsl/Dragonfly, BAG2/ALIGN/MAGICAL, DELSIG, and Lava/Brian2/Nengo analog, mixed-signal, and neuromorphic ecosystem",
+      "identity": {
+        "repositories": "ariadne-cps/ariadne, Xyce/Xyce, sgherbst/msdsl, sgherbst/svreal, ucb-art/BAG_framework, ALIGN-analoglayout/ALIGN-public, magical-eda/MAGICAL, lava-nc/lava, brian-team/brian2, nengo/nengo"
+      }
+    },
+    {
+      "name": "SAX, Simphony, Neuroptica, TorchONN, Lightridge, GDSFactory, Nazca, Meep, Tidy3D, Strawberry Fields, and Perceval silicon-photonics and optical computing ecosystem",
+      "identity": {
+        "repositories": "flaport/sax, BYUCamachoLab/simphony, fancompute/neuroptica, GuGroup/TorchONN, lightelligence/lightridge, gdsfactory/gdsfactory, NanoComp/meep, flexcompute/tidy3d, XanaduAI/strawberryfields, Quandela/Perceval"
+      }
+    },
+    {
+      "name": "k-Wave, Bempp-cl, MPB, MERLIN2, Origami Simulator, Crane, SOFA, DiffTaichi, TopOpt, and Sugar metamaterial, phased-array, origami, and soft-robotics ecosystem",
+      "identity": {
+        "repositories": "ucl-bug/k-wave, bempp/bempp-cl, NanoComp/mpb, paulino-group/MERLIN2, amandaghassaei/OrigamiSimulator, sofa-framework/sofa, taichi-dev/difftaichi, topopt/TopOpt_in_PETSc"
+      }
+    },
+    {
+      "identity": {
+        "cade2015_doi": "10.1007/978-3-319-21401-6_36",
+        "cpp2017_doi": "10.1145/3018610.3018616",
+        "pldi2018_doi": "10.1145/3192366.3192406",
+        "repository": "LS-Lab/KeYmaeraX-release"
+      },
+      "name": "KeYmaera 3 and KeYmaera X differential dynamic logic provers and VeriPhy pipeline"
+    },
+    {
+      "identity": {
+        "arch_comp_nl_doi": "10.29007/5791",
+        "dreal_cade2013_doi": "10.1007/978-3-642-38574-2_14",
+        "flowstar_cav2013_doi": "10.1007/978-3-642-39799-8_18",
+        "spaceex_cav2011_doi": "10.1007/978-3-642-22110-1_30"
+      },
+      "name": "Continuous and hybrid reachability solvers (Flow*, SpaceEx, CORA, dReal)"
+    },
+    {
+      "identity": {
+        "ariane501_report": "ESA/CNES Inquiry Board Report (Lions et al., 1996-07-19)",
+        "b737max_report": "NTSB ASR-19-01 (2019-09-19) / KNKT.18.10.35.04 (2019-10-25)",
+        "mco_report": "NASA MCO Mishap Investigation Board Phase I Report (1999-11-10)",
+        "mpl_report": "JPL Special Review Board Report JPL D-18709 (2000-03-28)",
+        "patriot_report": "GAO/IMTEC-92-26 (1992-02-04)",
+        "therac25_doi": "10.1109/MC.1993.274940"
+      },
+      "name": "Aerospace, defense, medical, and industrial PLC safety postmortems"
+    },
+    {
+      "identity": {
+        "fdiv_doi": "10.1109/12.368006",
+        "fdiv_harrison_doi": "10.1023/A:1008712907154",
+        "transfuzz_usenix2024": "USENIX Security 2024 (Solt & Razavi, ISBN 978-1-939133-44-1)",
+        "vericert_oopsla2021_doi": "10.1145/3485509",
+        "verismith_fpga2020_doi": "10.1145/3373087.3375310"
+      },
+      "name": "Digital VLSI, RTL/gate equivalence, CDC, and HLS synthesis tool failures"
+    },
+    {
+      "identity": {
+        "cosmic_ray_nature2021_doi": "10.1038/s41586-021-03557-5",
+        "cosmic_ray_natphys2022_doi": "10.1038/s41567-021-01432-8",
+        "morphq_icse2022_doi": "10.1145/3510003.3510221",
+        "qdiff_ase2021_doi": "10.1109/ASE51524.2021.9678792",
+        "terhal_rmp2015_doi": "10.1103/RevModPhys.87.307"
+      },
+      "name": "Quantum circuit compilers (Qiskit, TKET, PyZX) and fault-tolerant surface-code decoders"
+    },
+    {
+      "identity": {
+        "clements_optica2016_doi": "10.1364/OPTICA.3.001460",
+        "mems_pullin_doi": "10.1109/T-ED.1967.15912",
+        "mzi_imperfect_optica2021_doi": "10.1364/OPTICA.424052",
+        "origami_science2014_doi": "10.1126/science.1252876",
+        "spice2_memo": "UCB/ERL M520 (Nagel, 1975-05-01)"
+      },
+      "name": "Analog SPICE simulators, silicon photonic MZI meshes, and programmable metamaterials"
+    }
+  ],
+  "observed_at": "2026-10-31"
+}

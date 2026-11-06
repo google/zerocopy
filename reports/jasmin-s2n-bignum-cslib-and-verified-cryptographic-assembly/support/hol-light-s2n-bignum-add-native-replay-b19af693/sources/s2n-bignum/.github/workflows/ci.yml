@@ -1,0 +1,409 @@
+name: CI
+
+on:
+  pull_request:
+
+env:
+  HOLLIGHT_COMMIT: "b19af6934759eed622d7aca25092367f81656eee"
+
+jobs:
+  s2n-bignum-tests:
+    strategy:
+      matrix:
+        arch: [arm, x86]
+
+    runs-on: ${{ matrix.arch == 'arm' && 'ubuntu-24.04-arm' || matrix.arch == 'x86' && 'ubuntu-24.04' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt update
+        sudo apt install valgrind
+
+    - name: Run tests
+      run: |
+        cd ${{ matrix.arch }}
+        make
+        ${{ matrix.arch == 'x86' && 'cd ../x86_att && make clobber && make && git diff --exit-code .' || true}}
+        echo "Make test"
+        cd ../tests
+        CC=gcc make complete
+        make ctCheck
+        echo "Make test with valgrind"
+        make clean
+        CC=gcc VALGRIND="valgrind --" make complete || echo "(incomplete test, but proceeding)"
+        echo "Make test (clang, build only)"
+        make clean
+        CC=clang make
+        echo "Make benchmark (build only, for both of those)"
+        cd ../benchmarks
+        CC=gcc make
+        make clean
+        CC=clang make
+
+  s2n-bignum-aws-lc-integration:
+    strategy:
+      matrix:
+        arch: [arm, x86]
+
+    runs-on: ${{ matrix.arch == 'arm' && 'ubuntu-24.04-arm' || matrix.arch == 'x86' && 'ubuntu-24.04' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt update
+        sudo apt install valgrind cmake golang ninja-build
+        which ninja
+        sudo ln -s /usr/bin/ninja /usr/bin/ninja-build
+        which cmake
+        ln -s /usr/local/bin/cmake /usr/local/bin/cmake3
+
+    - name: Run tests
+      env:
+        PR_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+      run: |
+        echo "Run AWS-LC integration test (GITHUB_REPOSITORY: $PR_REPO_FULL_NAME, GITHUB_TARGET: $GITHUB_HEAD_REF)"
+        git clone https://github.com/aws/aws-lc.git --depth=1
+        cd aws-lc/third_party/s2n-bignum
+        rm -rf ./s2n-bignum-imported
+        GITHUB_REPOSITORY="${PR_REPO_FULL_NAME}.git" GITHUB_TARGET="$GITHUB_HEAD_REF" ./import.sh
+        cd ../../../
+        mkdir aws-lc-build && cd aws-lc-build
+        cmake3 -GNinja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DFIPS=On ../aws-lc
+        ninja-build run_tests
+        cmake3 -GNinja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DFIPS=Off -DBUILD_SHARED_LIBS=1 ../aws-lc
+        ninja-build run_tests
+        cmake3 -GNinja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DFIPS=Off ../aws-lc
+        ninja-build run_tests
+
+  s2n-bignum-sematest:
+    strategy:
+      matrix:
+        arch: [arm, x86]
+
+    runs-on: ${{ matrix.arch == 'arm' && 'ubuntu-24.04-arm' || matrix.arch == 'x86' && 'ubuntu-24.04' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt update
+        sudo apt install libpcre2-dev ocaml libstring-shellquote-perl libgmp-dev xdot
+        wget https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
+        chmod +x install.sh
+        echo "/usr/local/bin" | sh ./install.sh --version 2.5.2
+        opam init --disable-sandboxing
+
+    - name: Install HOL Light
+      run: |
+        git clone https://github.com/jrh13/hol-light.git
+        cd hol-light
+        git checkout ${{ env.HOLLIGHT_COMMIT }}
+        make switch-5
+        eval $(opam env)
+        echo $(ocamlc -version)
+        echo $(camlp5 -v)
+        HOLLIGHT_USE_MODULE=1 make
+        cd ..
+
+    - name: Run tests
+      run: |
+        export HOLDIR=`pwd`/hol-light
+        cd ${{ matrix.arch }}
+        make sematest
+
+  s2n-bignum-cross-sematest:
+    strategy:
+      matrix:
+        include:
+        - arch: arm
+          runner: ubuntu-24.04
+          packages: gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu qemu-user
+          compiler: aarch64-linux-gnu-gcc
+          assembler: aarch64-linux-gnu-as
+          disassembler: aarch64-linux-gnu-objdump
+          executor_env: S2N_BIGNUM_AARCH64_EXECUTOR
+          executor: tools/simulate-persistent arm
+          run: qemu-aarch64
+        - arch: x86
+          runner: ubuntu-24.04-arm
+          packages: gcc-x86-64-linux-gnu binutils-x86-64-linux-gnu qemu-user
+          compiler: x86_64-linux-gnu-gcc
+          assembler: x86_64-linux-gnu-as
+          disassembler: x86_64-linux-gnu-objdump
+          executor_env: S2N_BIGNUM_X86_64_EXECUTOR
+          executor: tools/simulate-persistent x86
+          run: qemu-x86_64
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt update
+        sudo apt install libpcre2-dev ocaml libstring-shellquote-perl \
+          libgmp-dev xdot ${{ matrix.packages }}
+        wget https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
+        chmod +x install.sh
+        echo "/usr/local/bin" | sh ./install.sh --version 2.5.2
+        opam init --disable-sandboxing
+
+    - name: Install HOL Light
+      run: |
+        git clone https://github.com/jrh13/hol-light.git
+        cd hol-light
+        git checkout ${{ env.HOLLIGHT_COMMIT }}
+        make switch-5
+        eval $(opam env)
+        echo $(ocamlc -version)
+        echo $(camlp5 -v)
+        HOLLIGHT_USE_MODULE=1 make
+        cd ..
+
+    - name: Run cross-cosimulation tests
+      env:
+        TARGET: ${{ matrix.arch }}
+        COSIM_CC: ${{ matrix.compiler }}
+        COSIM_AS: ${{ matrix.assembler }}
+        COSIM_OBJDUMP: ${{ matrix.disassembler }}
+        COSIM_LDFLAGS: -static
+        COSIM_RUN: ${{ matrix.run }}
+        COSIM_RUN_ARGS: -cpu max
+        EXECUTOR_ENV: ${{ matrix.executor_env }}
+        EXECUTOR_COMMAND: ${{ matrix.executor }}
+      run: |
+        export HOLDIR=`pwd`/hol-light
+        make -C "$TARGET" \
+          HOLDIR="$HOLDIR" \
+          proofs/simulator.native
+        env "$EXECUTOR_ENV=$EXECUTOR_COMMAND" \
+          S2N_BIGNUM_SEMATEST_CASES=100 \
+          S2N_BIGNUM_SEMATEST_SEED=1 \
+          "./$TARGET/proofs/simulator.native"
+
+  s2n-bignum-sematest-riscv:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt update
+        sudo apt install libpcre2-dev ocaml libstring-shellquote-perl \
+          libgmp-dev xdot qemu-system-misc \
+          gcc-riscv64-unknown-elf binutils-riscv64-unknown-elf
+        wget https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
+        chmod +x install.sh
+        echo "/usr/local/bin" | sh ./install.sh --version 2.5.2
+        opam init --disable-sandboxing
+
+    - name: Install HOL Light
+      run: |
+        git clone https://github.com/jrh13/hol-light.git
+        cd hol-light
+        git checkout ${{ env.HOLLIGHT_COMMIT }}
+        make switch-5
+        eval $(opam env)
+        echo $(ocamlc -version)
+        echo $(camlp5 -v)
+        HOLLIGHT_USE_MODULE=1 make
+        cd ..
+
+    - name: Run RV32IM cosimulation tests
+      run: |
+        export HOLDIR=`pwd`/hol-light
+        make -C riscv \
+          HOLDIR="$HOLDIR" \
+          proofs/simulator.native
+        env S2N_BIGNUM_RV32IM_EXECUTOR=./riscv/proofs/cosim-runner \
+          S2N_BIGNUM_SEMATEST_SECONDS=2400 \
+          S2N_BIGNUM_SEMATEST_SEED=1 \
+          ./riscv/proofs/simulator.native
+
+  s2n-bignum-tutorial:
+    strategy:
+      matrix:
+        arch: [arm, x86, riscv]
+
+    runs-on: ${{ matrix.arch == 'arm' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt update
+        sudo apt install libpcre2-dev ocaml libstring-shellquote-perl libgmp-dev xdot
+        wget https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
+        chmod +x install.sh
+        echo "/usr/local/bin" | sh ./install.sh --version 2.5.2
+        opam init --disable-sandboxing
+
+    - name: Install HOL Light
+      run: |
+        git clone https://github.com/jrh13/hol-light.git
+        cd hol-light
+        git checkout ${{ env.HOLLIGHT_COMMIT }}
+        make switch-5
+        eval $(opam env)
+        echo $(ocamlc -version)
+        echo $(camlp5 -v)
+        HOLLIGHT_USE_MODULE=1 make
+        cd ..
+
+    - name: Run tutorial
+      run: |
+        export HOLDIR=`pwd`/hol-light
+        cd ${{ matrix.arch }}
+        make tutorial -j2
+
+  # The Linux jobs above build ELF only, where S2N_BN_SYMBOL(x) and a bare x
+  # both spell the same symbol. On Mach-O they do not: S2N_BN_SYMBOL(x) is _x,
+  # so a symbol defined through the macro but referenced bare is undefined at
+  # link time on Darwin only. That is invisible to every ELF job, so check it
+  # here for both architectures.
+  s2n-bignum-macho:
+    strategy:
+      matrix:
+        arch: [arm, x86]
+
+    # macos-latest is arm64: arm assembles natively and x86 cross-assembles.
+    # Neither needs to execute, so no Intel runner or Rosetta is required.
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Check S2N_BN_SYMBOL definition/reference consistency
+      run: |
+        python3 tools/check-symbol-refs.py \
+          ${{ matrix.arch == 'x86' && 'x86 x86_att' || 'arm' }}
+
+    - name: Assemble as Mach-O and check for undefined symbols
+      env:
+        SRCDIR: ${{ matrix.arch }}
+        MACHO_ARCH: ${{ matrix.arch == 'x86' && 'x86_64' || 'arm64' }}
+      run: |
+        # Only the Intel dialect is assembled for arch=x86: the x86_att sources
+        # are already proven object-identical to it by the s2n-bignum-tests job,
+        # and they use GNU as macro semantics that clang's integrated assembler
+        # rejects. The tutorial and proofs trees are excluded as HOL Light
+        # scaffolding rather than library code: tutorial has unguarded ELF
+        # .type/.section directives, and proofs/template.S carries a deliberate
+        # ICODE placeholder.
+        set -e
+        status=0
+        checked=0
+        for src in $(find "$SRCDIR" -name '*.S' \
+                       -not -path "$SRCDIR/tutorial/*" \
+                       -not -path "$SRCDIR/proofs/*" | sort); do
+          checked=$((checked + 1))
+          obj=$(mktemp -t machocheck).o
+          if ! clang -arch "$MACHO_ARCH" -c -I include -o "$obj" "$src" 2>/tmp/asm.err; then
+            echo "ASSEMBLE FAILED: $src"
+            cat /tmp/asm.err
+            status=1
+            rm -f "$obj"
+            continue
+          fi
+          undef=$(nm -u "$obj")
+          if [ -n "$undef" ]; then
+            echo "UNDEFINED SYMBOL(S) in $src:"
+            echo "$undef" | sed 's/^/    /'
+            status=1
+          fi
+          rm -f "$obj"
+        done
+        echo "Checked $checked Mach-O ($MACHO_ARCH) object(s) from $SRCDIR."
+        if [ $status -ne 0 ]; then
+          echo "Mach-O check failed."
+          exit 1
+        fi
+        echo "Mach-O check passed: no undefined symbols."
+
+  s2n-bignum-tutorial-macos-arm:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        brew install opam
+        opam init -a
+
+    - name: Install HOL Light
+      run: |
+        git clone https://github.com/jrh13/hol-light.git
+        cd hol-light
+        git checkout ${{ env.HOLLIGHT_COMMIT }}
+        make switch-5
+        eval $(opam env)
+        echo $(ocamlc -version)
+        echo $(camlp5 -v)
+        HOLLIGHT_USE_MODULE=1 make
+        cd ..
+
+    - name: Run tutorial
+      run: |
+        export HOLDIR=`pwd`/hol-light
+        cd arm
+        make tutorial -j2
+
+  s2n-bignum-proofs:
+    strategy:
+        matrix:
+          arch: [arm, x86]
+    runs-on:
+      - codebuild-s2n-bignum-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependent packages
+      run: |
+        sudo apt --allow-insecure-repositories update
+        sudo apt -y install libpcre2-dev ocaml binutils-aarch64-linux-gnu binutils-aarch64-linux-gnu binutils-x86-64-linux-gnu libstring-shellquote-perl libgmp-dev xdot
+        wget https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
+        chmod +x install.sh
+        echo "/usr/local/bin" | sh ./install.sh --version 2.5.2
+        opam init --disable-sandboxing
+
+    - name: Install HOL Light
+      run: |
+        git clone https://github.com/jrh13/hol-light.git
+        cd hol-light
+        git checkout ${{ env.HOLLIGHT_COMMIT }}
+        make switch-5
+        eval $(opam env)
+        echo $(ocamlc -version)
+        echo $(camlp5 -v)
+        HOLLIGHT_USE_MODULE=1 make
+        cd ..
+
+    - name: Run proofs and tutorial
+      run: |
+        export HOLDIR=`pwd`/hol-light
+        export BUILD_CORE_COUNT=15
+        export CORE_COUNT=64
+        cd ${{ matrix.arch }}
+        make -j ${BUILD_CORE_COUNT} build_proofs build_tutorial
+        make -j ${CORE_COUNT} proofs tutorial
+        ../tools/collect-times.sh ${{ matrix.arch }}

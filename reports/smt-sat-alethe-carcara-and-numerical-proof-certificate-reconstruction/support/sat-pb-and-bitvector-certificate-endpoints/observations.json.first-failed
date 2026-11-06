@@ -1,0 +1,17 @@
+{
+  "version": "Lean (version 4.34.1, arm64-apple-darwin24.6.0, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "binary_sha256": "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
+  "host": {
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64"
+  },
+  "args": [
+    "LratControls.lean"
+  ],
+  "exit": 1,
+  "seconds": 6.1387,
+  "stdout": "LratControls.lean:11:73: error: Tactic `decide` failed for proposition\n  LRAT.check goodCertificate sourceCnf = true\nbecause its `Decidable` instance\n  instDecidableEqBool (LRAT.check goodCertificate sourceCnf) true\ndid not reduce to `isTrue` or `isFalse`.\n\nAfter unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance\n  match LRAT.check goodCertificate sourceCnf, true with\n  | false, false => isTrue \u22ef\n  | false, true => isFalse \u22ef\n  | true, false => isFalse \u22ef\n  | true, true => isTrue \u22ef\nLratControls.lean:12:73: error: Tactic `decide` failed for proposition\n  LRAT.check missingHint sourceCnf = false\nbecause its `Decidable` instance\n  instDecidableEqBool (LRAT.check missingHint sourceCnf) false\ndid not reduce to `isTrue` or `isFalse`.\n\nAfter unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance\n  match LRAT.check missingHint sourceCnf, false with\n  | false, false => isTrue \u22ef\n  | false, true => isFalse \u22ef\n  | true, false => isFalse \u22ef\n  | true, true => isTrue \u22ef\nLratControls.lean:13:78: error: Tactic `decide` failed for proposition\n  LRAT.check goodCertificate changedCnf = false\nbecause its `Decidable` instance\n  instDecidableEqBool (LRAT.check goodCertificate changedCnf) false\ndid not reduce to `isTrue` or `isFalse`.\n\nAfter unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance\n  match LRAT.check goodCertificate changedCnf, false with\n  | false, false => isTrue \u22ef\n  | false, true => isFalse \u22ef\n  | true, false => isFalse \u22ef\n  | true, true => isTrue \u22ef\nLratControls.lean:14:88: error: Tactic `decide` failed for proposition\n  LRAT.check goodCertificate sourceCnf = true\nbecause its `Decidable` instance\n  instDecidableEqBool (LRAT.check goodCertificate sourceCnf) true\ndid not reduce to `isTrue` or `isFalse`.\n\nAfter unfolding the instances `instDecidableEqBool`, `instDecidableEqNat`, `Bool.decEq`, `Nat.decEq`, and `LRAT.Internal.instDecidableEqResult`, reduction got stuck at the `Decidable` instance\n  match LRAT.check goodCertificate sourceCnf, true with\n  | false, false => isTrue \u22ef\n  | false, true => isFalse \u22ef\n  | true, false => isFalse \u22ef\n  | true, true => isTrue \u22ef\ntrue\ntrue\nfalse\nExcept.ok #[Std.Tactic.BVDecide.LRAT.Action.addEmpty 3 #[1, 2]]\n'goodAccepted' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n'sourceUnsat' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n",
+  "stderr": "",
+  "input_sha256": "f7eed8a8109a3ee57e70301b58954b8b7833df8328cb9229f2233913354ee65f"
+}

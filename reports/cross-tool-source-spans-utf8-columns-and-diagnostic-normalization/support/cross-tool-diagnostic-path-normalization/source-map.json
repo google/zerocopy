@@ -1,0 +1,110 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_span/src/lib.rs",
+      "blob": "2371bf15756dac74f5488d5d0b069ed6673014a5",
+      "role": "source",
+      "focus": "RealFileName and remap scopes"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_span/src/source_map.rs",
+      "blob": "47c933e245d4942a81f48dc8bcd6b15ba9c39ea7",
+      "role": "source",
+      "focus": "diagnostic path display, local/remapped path construction"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_session/src/config.rs",
+      "blob": "e82f67eac5e9f7d0b089727e6317d77242ba3b1c",
+      "role": "source",
+      "focus": "remap scope CLI parsing/default"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_errors/src/json.rs",
+      "blob": "04ac140f332618d6fa81254e9a16bc27c729eef5",
+      "role": "source",
+      "focus": "JSON diagnostic filename"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "role": "source",
+      "focus": "rust nightly selection"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/translate/translate_meta.rs",
+      "blob": "187a703dff83687f369f1903c6646aabdff259d3",
+      "role": "source",
+      "focus": "translate_filename normalization"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/ast/meta.rs",
+      "blob": "7a80a92ea1b3f3eaff1758554001e32019473237",
+      "role": "source",
+      "focus": "serialized file/span model"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Errors.ml",
+      "blob": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "role": "source",
+      "focus": "Aeneas span rendering"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Message.lean",
+      "blob": "a7f76198c582d1d2032bb24d13ad4cb7a272fa57",
+      "role": "source",
+      "focus": "batch message filename"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Shell.lean",
+      "blob": "2ff5c4b0c82f876ddd4384c9c20dcaefb1b90e",
+      "role": "source",
+      "focus": "direct CLI filename propagation"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Build/Actions.lean",
+      "blob": "5b3ab3cc3e9f45b8c695e31680342acc795004c7",
+      "role": "source",
+      "focus": "Lake relative-path rewrite"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/Utils.lean",
+      "blob": "46a0826d3941b9f749ee4770273eac97d0501103",
+      "role": "source",
+      "focus": "LSP URI/path construction and publication"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Data/Lsp/Diagnostics.lean",
+      "blob": "d15c1ce80d3699be7a5d92ebf6cea6725c3a4b34",
+      "role": "source",
+      "focus": "PublishDiagnostics document URI schema"
+    }
+  ],
+  "execution_evidence": "none"
+}

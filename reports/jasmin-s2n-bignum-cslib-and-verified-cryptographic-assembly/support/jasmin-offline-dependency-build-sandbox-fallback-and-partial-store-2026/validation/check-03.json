@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "python3",
+    "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/jasmin-execution-plan/dependency-attempt-report-candidate/reports/jasmin-offline-dependency-build-sandbox-fallback-and-partial-store-2026/support/check.py",
+    "--store-db-tar",
+    "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/parent/jasmin-stopped-readback-20261015/jasmin-store-db.tar",
+    "--sqlite-main",
+    "/Users/codex/Documents/Codex/2026-10-14/in-the-google-zerocopy-repo-familiarize/work/execution/jasmin-execution-plan/stopped-home-store-analysis/snapshot-db/db.sqlite"
+  ],
+  "source_sha256": "94ef02871d0269a885d33d9f509e600cd898d3f4e78973624a814c34f1983359",
+  "status": 0,
+  "seconds": 0.060257292,
+  "stdout_sha256": "706ce9ed5828c501ff878de70052bb1c218c27398702e3972562a6540da5a40a",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

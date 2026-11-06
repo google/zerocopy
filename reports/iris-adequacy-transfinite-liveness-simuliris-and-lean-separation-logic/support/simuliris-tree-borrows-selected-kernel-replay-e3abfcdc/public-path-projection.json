@@ -1,0 +1,104 @@
+{
+  "policy": "Preserve raw private originals in execution scratch; explicit public projection changes JSON display/invocation paths only. All execution stdout/stderr, program, source, proof, archive bytes are unmodified. Hashes below identify both representations. Container paths retain exact object-binding coordinates.",
+  "records": [
+    {
+      "path": "logs/copy-PlannedAuditExamples.v.json",
+      "original_sha256": "6654c81ea2d20fdfeec5dbe7887f0c10daeaf8ac6f90c9f1540f865c24bf7e72",
+      "public_sha256": "435a998eed70ed937b421f74bea3f608b9e117af79b357ac009181d0e4307d51",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/copy-PlannedAuditExamples.v.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/copy-PlannedAuditFramework.v.json",
+      "original_sha256": "d3c9b21b5e7fff1bbdf0d2a4da191a851003558981ba5bfa58fb9aa12a177949",
+      "public_sha256": "197a0c1e30ae25cbe2967d5613c4c49402dbe445b37894881ffbd9f97265492f",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/copy-PlannedAuditFramework.v.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/copy-PlannedAuditResources.v.json",
+      "original_sha256": "d90cef19c24fd9272006e7bb1533401f3b657a78f42c663921430d7c6f0f807b",
+      "public_sha256": "f49abedcf9222fdd93c84de641a873a682815f648c99c41782ca0d2c4fdc62be",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/copy-PlannedAuditResources.v.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/copy-checked-project.json",
+      "original_sha256": "5959557af4c73c7158bb89f6bd811f2501f9e6788e20e4bbd600a6a2eab607eb",
+      "public_sha256": "95f5838f2832b23dd9c7648d5c2fcb735da8832056830f7f9cf959e95ae88369",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/copy-checked-project.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/preserve-failure-Makefile.rocq.conf.json",
+      "original_sha256": "e0edadb281e396894f64b71bca66ef06fc696931af2b651017f9bf45ee75ae2b",
+      "public_sha256": "5a037bc784074fdfea2d0eaacf0e41e932e3f50923627cd5e5b510778c5f40d9",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/preserve-failure-Makefile.rocq.conf.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/preserve-failure-Makefile.rocq.json",
+      "original_sha256": "b2916d2f6154ca5ddf4152d8808ec1347d91ae4394ff4229721ade608eb50055",
+      "public_sha256": "e3d40fc1b5e0f319be9546fcc55762a2e9ffce3831026859452ca2d534970f73",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/preserve-failure-Makefile.rocq.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/preserve-failure-theories_logic_satisfiable.vo.json",
+      "original_sha256": "774dd193e0c52610dc21680b46df59c47f9b477625fa59fe3d5f1a9153971da9",
+      "public_sha256": "7bb1674ead6b862dde50c67b1a24ca4f72236e90eafa46bbfcd521c049dbeb1f",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/preserve-failure-theories_logic_satisfiable.vo.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "logs/preserve-failure-theories_simulation_language.vo.json",
+      "original_sha256": "7b0c9efd0d6db6685741338db744c6d021007cfc39527c49c06b3c63c75dcd21",
+      "public_sha256": "bb60fe31a838502cc91595e35e47144a13c23023a4334f774cd371ce42a1f805",
+      "replacement": {
+        "from": "assigned host scratch absolute prefix",
+        "to": "<REPLAY_SUPPORT>"
+      },
+      "original_private_record": "logs/preserve-failure-theories_simulation_language.vo.json",
+      "scope": "JSON invocation/display metadata only; stdout/stderr and source/proof bytes unchanged"
+    },
+    {
+      "path": "historical-plan/archive-inventory.json",
+      "original_sha256": "1c69d48800d47343876a793197d4694ff2ad85d8a17fca369f29351f2634d182",
+      "public_sha256": "0796e0ed62294a987391a8f199f238d20538b5145f5169265976a3267948f9d9",
+      "replacement": {
+        "field": "archive",
+        "to": "support/inputs/simuliris.tar.gz"
+      },
+      "original_private_record": "author frozen package/support/historical-plan/archive-inventory.json",
+      "scope": "Single archive-location metadata field only; archive identity, entries, source/proof/program/stream bytes unchanged"
+    }
+  ]
+}

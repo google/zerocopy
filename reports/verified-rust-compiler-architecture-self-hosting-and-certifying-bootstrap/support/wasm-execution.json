@@ -1,0 +1,137 @@
+{
+  "status": "pass",
+  "node": "v24.21.0",
+  "versions": {
+    "node": "24.21.0",
+    "acorn": "8.18.0",
+    "ada": "4.0.0",
+    "amaro": "1.1.11",
+    "ares": "1.34.8",
+    "brotli": "1.2.0",
+    "cldr": "48.0",
+    "icu": "78.3",
+    "llhttp": "9.4.3",
+    "merve": "1.2.2",
+    "modules": "137",
+    "napi": "10",
+    "nbytes": "0.1.4",
+    "ncrypto": "0.0.1",
+    "nghttp2": "1.70.0",
+    "nghttp3": "",
+    "ngtcp2": "",
+    "openssl": "4.0.3",
+    "simdjson": "5.0.2",
+    "simdutf": "6.4.0",
+    "sqlite": "3.53.4",
+    "tz": "2026a",
+    "undici": "7.29.1",
+    "unicode": "17.0",
+    "uv": "1.53.0",
+    "uvwasi": "0.0.23",
+    "v8": "13.6.233.17-node.53",
+    "zlib": "1.2.12",
+    "zstd": "1.5.7"
+  },
+  "nodeExecutable": "/opt/homebrew/Cellar/node@24/24.21.0_2/bin/node",
+  "nodeSha256": "04c217abd4908a35a63cb3d329246323e4268e7e33bb9856d2667fb909b7b96e",
+  "moduleSha256": "fd0023c344d5d55bb4c7c8f4920764bf5c198777c3411bffea0d99b550cfe158",
+  "moduleBytes": 66,
+  "imports": [],
+  "exports": [
+    {
+      "name": "validate",
+      "kind": "function"
+    }
+  ],
+  "compileMs": 0.7200829999999883,
+  "instantiateMs": 0.039249999999995566,
+  "domain": {
+    "tuples": 256,
+    "each_coordinate": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "predicate": "each unsigned 32-bit parameter < 2"
+  },
+  "mismatch": 0,
+  "accepted": 16,
+  "byteCoordinateChecks": 1024,
+  "outsideDomain": {
+    "input": [
+      4294967296,
+      0,
+      0,
+      0
+    ],
+    "nodeResult": 1,
+    "unboundedNatPredicate": 0,
+    "meaning": "Host i32 argument wrapping; intentionally outside Fin(2^32) theorem domain"
+  },
+  "controls": {
+    "changed_constant": {
+      "native_module_valid": true,
+      "sample_mismatches": 16,
+      "value_at_2_0_0_0": 1
+    },
+    "changed_predicate": {
+      "native_module_valid": true,
+      "sample_mismatches": 8,
+      "value_at_2_0_0_0": 1
+    },
+    "changed_opcode": {
+      "native_module_valid": true,
+      "sample_mismatches": 0,
+      "value_at_2_0_0_0": 0
+    },
+    "unknown_opcode": {
+      "native_module_valid": false
+    },
+    "wrong_section_length": {
+      "native_module_valid": false
+    },
+    "missing_end": {
+      "native_module_valid": false
+    },
+    "trailing_custom": {
+      "native_module_valid": true,
+      "sample_mismatches": 0,
+      "value_at_2_0_0_0": 0
+    }
+  },
+  "batches": [
+    {
+      "tuples": 256,
+      "repetitions": 1000,
+      "ms": 8.126874999999998,
+      "ms_per_256": 0.008126874999999999
+    },
+    {
+      "tuples": 256,
+      "repetitions": 1000,
+      "ms": 6.723375000000004,
+      "ms_per_256": 0.0067233750000000045
+    },
+    {
+      "tuples": 256,
+      "repetitions": 1000,
+      "ms": 6.990333000000007,
+      "ms_per_256": 0.0069903330000000066
+    },
+    {
+      "tuples": 256,
+      "repetitions": 1000,
+      "ms": 7.926415999999989,
+      "ms_per_256": 0.007926415999999988
+    },
+    {
+      "tuples": 256,
+      "repetitions": 1000,
+      "ms": 5.721958000000001,
+      "ms_per_256": 0.005721958000000001
+    }
+  ],
+  "checksum": 80000,
+  "boundary": "Observed Node/V8 execution and unverified host harness; complete artifact has independent Lean literal/parser proof. No native machine-code or engine verification."
+}

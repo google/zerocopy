@@ -1,0 +1,447 @@
+{
+  "probe": "ebpf_cert_complexity_probe",
+  "constants": {
+    "BPF_COMPLEXITY_LIMIT_INSNS": 1000000,
+    "LINUX_BPF_REG_STATE_BYTES": 120,
+    "COMPACT_INTERVAL_REG_BYTES": 16
+  },
+  "diamond_chain_experiments": [
+    {
+      "k_diamonds": 4,
+      "static_blocks": 14,
+      "static_edges": 17,
+      "static_insns": 21,
+      "linux_bpf_check": {
+        "distinct_paths": 16,
+        "insns_evaluated_unbounded": 110,
+        "insns_evaluated_capped": 110,
+        "backtrack_precision_steps": 64,
+        "checkpoint_states_saved": 30,
+        "peak_checkpoint_memory_bytes": 7200,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 21,
+        "final_acc_interval": [
+          4,
+          8
+        ],
+        "map_size": 24
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 21,
+        "edge_subsumption_checks": 17,
+        "full_bb_cert_entries": 14,
+        "cutpoint_only_cert_entries": 4,
+        "cutpoint_cert_bytes_compact": 128,
+        "speedup_vs_linux_unbounded": 5.24
+      }
+    },
+    {
+      "k_diamonds": 8,
+      "static_blocks": 26,
+      "static_edges": 33,
+      "static_insns": 37,
+      "linux_bpf_check": {
+        "distinct_paths": 256,
+        "insns_evaluated_unbounded": 1790,
+        "insns_evaluated_capped": 1790,
+        "backtrack_precision_steps": 2048,
+        "checkpoint_states_saved": 510,
+        "peak_checkpoint_memory_bytes": 122400,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 37,
+        "final_acc_interval": [
+          8,
+          16
+        ],
+        "map_size": 40
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 37,
+        "edge_subsumption_checks": 33,
+        "full_bb_cert_entries": 26,
+        "cutpoint_only_cert_entries": 8,
+        "cutpoint_cert_bytes_compact": 256,
+        "speedup_vs_linux_unbounded": 48.38
+      }
+    },
+    {
+      "k_diamonds": 12,
+      "static_blocks": 38,
+      "static_edges": 49,
+      "static_insns": 53,
+      "linux_bpf_check": {
+        "distinct_paths": 4096,
+        "insns_evaluated_unbounded": 28670,
+        "insns_evaluated_capped": 28670,
+        "backtrack_precision_steps": 49152,
+        "checkpoint_states_saved": 8190,
+        "peak_checkpoint_memory_bytes": 1965600,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 53,
+        "final_acc_interval": [
+          12,
+          24
+        ],
+        "map_size": 56
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 53,
+        "edge_subsumption_checks": 49,
+        "full_bb_cert_entries": 38,
+        "cutpoint_only_cert_entries": 12,
+        "cutpoint_cert_bytes_compact": 384,
+        "speedup_vs_linux_unbounded": 540.94
+      }
+    },
+    {
+      "k_diamonds": 16,
+      "static_blocks": 50,
+      "static_edges": 65,
+      "static_insns": 69,
+      "linux_bpf_check": {
+        "distinct_paths": 65536,
+        "insns_evaluated_unbounded": 458750,
+        "insns_evaluated_capped": 458750,
+        "backtrack_precision_steps": 1048576,
+        "checkpoint_states_saved": 131070,
+        "peak_checkpoint_memory_bytes": 31456800,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 69,
+        "final_acc_interval": [
+          16,
+          32
+        ],
+        "map_size": 72
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 69,
+        "edge_subsumption_checks": 65,
+        "full_bb_cert_entries": 50,
+        "cutpoint_only_cert_entries": 16,
+        "cutpoint_cert_bytes_compact": 512,
+        "speedup_vs_linux_unbounded": 6648.55
+      }
+    },
+    {
+      "k_diamonds": 18,
+      "static_blocks": 56,
+      "static_edges": 73,
+      "static_insns": 77,
+      "linux_bpf_check": {
+        "distinct_paths": 262144,
+        "insns_evaluated_unbounded": 1835006,
+        "insns_evaluated_capped": 1000000,
+        "backtrack_precision_steps": 4718592,
+        "checkpoint_states_saved": 524286,
+        "peak_checkpoint_memory_bytes": 125828640,
+        "admitted_under_1M_limit": false
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 77,
+        "final_acc_interval": [
+          18,
+          36
+        ],
+        "map_size": 80
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 77,
+        "edge_subsumption_checks": 73,
+        "full_bb_cert_entries": 56,
+        "cutpoint_only_cert_entries": 18,
+        "cutpoint_cert_bytes_compact": 576,
+        "speedup_vs_linux_unbounded": 23831.25
+      }
+    },
+    {
+      "k_diamonds": 20,
+      "static_blocks": 62,
+      "static_edges": 81,
+      "static_insns": 85,
+      "linux_bpf_check": {
+        "distinct_paths": 1048576,
+        "insns_evaluated_unbounded": 7340030,
+        "insns_evaluated_capped": 1000000,
+        "backtrack_precision_steps": 20971520,
+        "checkpoint_states_saved": 2097150,
+        "peak_checkpoint_memory_bytes": 503316000,
+        "admitted_under_1M_limit": false
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 85,
+        "final_acc_interval": [
+          20,
+          40
+        ],
+        "map_size": 88
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 85,
+        "edge_subsumption_checks": 81,
+        "full_bb_cert_entries": 62,
+        "cutpoint_only_cert_entries": 20,
+        "cutpoint_cert_bytes_compact": 640,
+        "speedup_vs_linux_unbounded": 86353.29
+      }
+    },
+    {
+      "k_diamonds": 24,
+      "static_blocks": 74,
+      "static_edges": 97,
+      "static_insns": 101,
+      "linux_bpf_check": {
+        "distinct_paths": 16777216,
+        "insns_evaluated_unbounded": 117440510,
+        "insns_evaluated_capped": 1000000,
+        "backtrack_precision_steps": 402653184,
+        "checkpoint_states_saved": 33554430,
+        "peak_checkpoint_memory_bytes": 8053063200,
+        "admitted_under_1M_limit": false
+      },
+      "userspace_wto_producer": {
+        "instr_evaluations": 101,
+        "final_acc_interval": [
+          24,
+          48
+        ],
+        "map_size": 104
+      },
+      "inkernel_single_pass_checker": {
+        "instr_evaluations": 101,
+        "edge_subsumption_checks": 97,
+        "full_bb_cert_entries": 74,
+        "cutpoint_only_cert_entries": 24,
+        "cutpoint_cert_bytes_compact": 768,
+        "speedup_vs_linux_unbounded": 1162777.33
+      }
+    }
+  ],
+  "nested_loop_experiments": [
+    {
+      "loop_depth": 1,
+      "loop_bound_N": 100,
+      "static_blocks": 5,
+      "static_insns": 10,
+      "linux_bpf_check": {
+        "unrolled_iterations": 100,
+        "insns_evaluated_unbounded": 604,
+        "insns_evaluated_capped": 604,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "wto_insns_evaluated": 22,
+        "verified_header_invariants": [
+          [
+            0,
+            100
+          ]
+        ]
+      },
+      "inkernel_single_pass_checker": {
+        "insns_evaluated": 10,
+        "edge_subsumption_checks": 5,
+        "cutpoint_loop_headers": 1,
+        "cutpoint_cert_bytes_compact": 32,
+        "speedup_vs_linux_unbounded": 60.4,
+        "speedup_vs_wto_producer": 2.2
+      }
+    },
+    {
+      "loop_depth": 2,
+      "loop_bound_N": 100,
+      "static_blocks": 8,
+      "static_insns": 16,
+      "linux_bpf_check": {
+        "unrolled_iterations": 10000,
+        "insns_evaluated_unbounded": 60004,
+        "insns_evaluated_capped": 60004,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "wto_insns_evaluated": 76,
+        "verified_header_invariants": [
+          [
+            0,
+            100
+          ],
+          [
+            0,
+            100
+          ]
+        ]
+      },
+      "inkernel_single_pass_checker": {
+        "insns_evaluated": 16,
+        "edge_subsumption_checks": 9,
+        "cutpoint_loop_headers": 2,
+        "cutpoint_cert_bytes_compact": 96,
+        "speedup_vs_linux_unbounded": 3750.25,
+        "speedup_vs_wto_producer": 4.75
+      }
+    },
+    {
+      "loop_depth": 3,
+      "loop_bound_N": 50,
+      "static_blocks": 11,
+      "static_insns": 22,
+      "linux_bpf_check": {
+        "unrolled_iterations": 125000,
+        "insns_evaluated_unbounded": 750004,
+        "insns_evaluated_capped": 750004,
+        "admitted_under_1M_limit": true
+      },
+      "userspace_wto_producer": {
+        "wto_insns_evaluated": 238,
+        "verified_header_invariants": [
+          [
+            0,
+            50
+          ],
+          [
+            0,
+            50
+          ],
+          [
+            0,
+            50
+          ]
+        ]
+      },
+      "inkernel_single_pass_checker": {
+        "insns_evaluated": 22,
+        "edge_subsumption_checks": 13,
+        "cutpoint_loop_headers": 3,
+        "cutpoint_cert_bytes_compact": 192,
+        "speedup_vs_linux_unbounded": 34091.09,
+        "speedup_vs_wto_producer": 10.82
+      }
+    },
+    {
+      "loop_depth": 3,
+      "loop_bound_N": 100,
+      "static_blocks": 11,
+      "static_insns": 22,
+      "linux_bpf_check": {
+        "unrolled_iterations": 1000000,
+        "insns_evaluated_unbounded": 6000004,
+        "insns_evaluated_capped": 1000000,
+        "admitted_under_1M_limit": false
+      },
+      "userspace_wto_producer": {
+        "wto_insns_evaluated": 238,
+        "verified_header_invariants": [
+          [
+            0,
+            100
+          ],
+          [
+            0,
+            100
+          ],
+          [
+            0,
+            100
+          ]
+        ]
+      },
+      "inkernel_single_pass_checker": {
+        "insns_evaluated": 22,
+        "edge_subsumption_checks": 13,
+        "cutpoint_loop_headers": 3,
+        "cutpoint_cert_bytes_compact": 192,
+        "speedup_vs_linux_unbounded": 272727.45,
+        "speedup_vs_wto_producer": 10.82
+      }
+    },
+    {
+      "loop_depth": 4,
+      "loop_bound_N": 30,
+      "static_blocks": 14,
+      "static_insns": 28,
+      "linux_bpf_check": {
+        "unrolled_iterations": 810000,
+        "insns_evaluated_unbounded": 4860004,
+        "insns_evaluated_capped": 1000000,
+        "admitted_under_1M_limit": false
+      },
+      "userspace_wto_producer": {
+        "wto_insns_evaluated": 724,
+        "verified_header_invariants": [
+          [
+            0,
+            30
+          ],
+          [
+            0,
+            30
+          ],
+          [
+            0,
+            30
+          ],
+          [
+            0,
+            30
+          ]
+        ]
+      },
+      "inkernel_single_pass_checker": {
+        "insns_evaluated": 28,
+        "edge_subsumption_checks": 17,
+        "cutpoint_loop_headers": 4,
+        "cutpoint_cert_bytes_compact": 320,
+        "speedup_vs_linux_unbounded": 173571.57,
+        "speedup_vs_wto_producer": 25.86
+      }
+    },
+    {
+      "loop_depth": 4,
+      "loop_bound_N": 50,
+      "static_blocks": 14,
+      "static_insns": 28,
+      "linux_bpf_check": {
+        "unrolled_iterations": 6250000,
+        "insns_evaluated_unbounded": 37500004,
+        "insns_evaluated_capped": 1000000,
+        "admitted_under_1M_limit": false
+      },
+      "userspace_wto_producer": {
+        "wto_insns_evaluated": 724,
+        "verified_header_invariants": [
+          [
+            0,
+            50
+          ],
+          [
+            0,
+            50
+          ],
+          [
+            0,
+            50
+          ],
+          [
+            0,
+            50
+          ]
+        ]
+      },
+      "inkernel_single_pass_checker": {
+        "insns_evaluated": 28,
+        "edge_subsumption_checks": 17,
+        "cutpoint_loop_headers": 4,
+        "cutpoint_cert_bytes_compact": 320,
+        "speedup_vs_linux_unbounded": 1339285.86,
+        "speedup_vs_wto_producer": 25.86
+      }
+    }
+  ]
+}

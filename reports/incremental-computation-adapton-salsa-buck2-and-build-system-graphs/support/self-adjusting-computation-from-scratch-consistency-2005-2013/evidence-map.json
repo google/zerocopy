@@ -1,0 +1,62 @@
+{
+  "scope": "J035 from-scratch consistency and self-adjusting computation",
+  "sources": [
+    {
+      "subject": "Self-Adjusting Computation PhD thesis",
+      "identity": "CMU-CS-05-129, May 2005",
+      "url": "https://www.cs.cmu.edu/~rwh/students/acar.pdf",
+      "locators": [
+        "Chapter 1, pp. 3-4: correctness described as semantic equivalence of change propagation and from-scratch execution",
+        "Chapter 4, pp. 35-36: dynamic dependence graph and change propagation",
+        "Chapter 5, pp. 37-39: memoized DDGs, side effects, shallow identity, and reuse adjusted by change propagation",
+        "Chapter 11, discussion around the factorial example: obsolete reads must be deleted because re-evaluation can diverge or raise exceptions despite being absent from a fresh run"
+      ],
+      "role": "original mechanism, correctness criterion, performance separation, and a concrete semantic failure caused by stale trace execution"
+    },
+    {
+      "subject": "Adaptive Functional Programming",
+      "identity": "DOI 10.1145/1186632.1186634, TOPLAS 28(6), 2006",
+      "url": "https://www.cs.cmu.edu/~rwh/papers/afp/toplas06.pdf",
+      "locators": [
+        "Abstract: DDG-based adaptation and formal AFL correctness",
+        "Section 4.5: change propagation re-executes affected reads in execution order",
+        "discussion around Fig. 7: contained obsolete reads are deleted because retaining them can change results, diverge, or raise exceptions"
+      ],
+      "role": "typed functional formulation and precise change-propagation correctness discipline"
+    },
+    {
+      "subject": "Imperative Self-Adjusting Computation",
+      "identity": "DOI 10.1145/1328438.1328476, POPL 2008; University of Chicago TR-2007-18, 2007-11-09",
+      "url": "https://newtraell.cs.uchicago.edu/research/publications/techreports/TR-2007-18",
+      "role": "extension from write-once/pure modifiables to multiple writes and cyclic stores; proves observational equivalence of change propagation and from-scratch execution inside SAIL"
+    },
+    {
+      "subject": "A Consistent Semantics of Self-Adjusting Computation",
+      "identity": "DOI 10.1017/S0956796813000099, JFP 23(3), 2013",
+      "url": "https://doi.org/10.1017/S0956796813000099",
+      "proof_url": "https://www.cs.cmu.edu/~jdonham/aml-proof/",
+      "role": "memoizing change-propagation semantics; consistency for nondeterministic reuse choices and correctness compatibility with purely functional programming, with a machine-checked Twelf proof"
+    },
+    {
+      "subject": "Efficient Parallel Self-Adjusting Computation",
+      "identity": "DOI 10.1145/3409964.3461799, SPAA 2021",
+      "url": "https://www.cs.cmu.edu/~blelloch/papers/3409964.3461799.pdf",
+      "role": "later evidence that correctness machinery and update-efficiency analysis remain separate: not every algorithm/update has low change-propagation cost"
+    },
+    {
+      "subject": "Anneal current design authority",
+      "identity": "google/zerocopy@cc135f46155b72e4b51188525c2974a3b84acf92",
+      "paths": [
+        "anneal/PRINCIPLES.md",
+        "anneal/DESIGN.md",
+        "anneal/README.md"
+      ],
+      "blobs": {
+        "anneal/PRINCIPLES.md": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+        "anneal/DESIGN.md": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+        "anneal/README.md": "bf22d554437659f38d8918c1e7c3480f4f62b126"
+      },
+      "role": "authoritative success semantics, explicit trust, source/model justification, and deliberate non-decisions against which the literature is applied"
+    }
+  ]
+}

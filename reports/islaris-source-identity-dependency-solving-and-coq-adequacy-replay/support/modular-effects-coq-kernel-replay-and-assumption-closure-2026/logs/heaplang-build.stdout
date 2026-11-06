@@ -1,0 +1,7 @@
+COQC src/heaplang/definition.v
+COQC src/heaplang/lang.v
+COQC src/heaplang/program_logic.v
+COQC src/heaplang/adequacy.v
+COQC src/heaplang/decide.v
+COQC src/heaplang/opsem_adequacy.v
+ANNEAL_PHASE_RESULT returncode=0 stop=none elapsed_seconds=44 start_bytes=7045297 peak_bytes=13691135 final_bytes=14660945

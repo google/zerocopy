@@ -1,0 +1,35 @@
+{
+  "job": "check-vectors-o0",
+  "mode": "check",
+  "profile": "host-vectors-opt0",
+  "consumer_exit": 0,
+  "seconds": 1.083466875,
+  "stop": null,
+  "anticipated_internal_features_warning": true,
+  "stdout_sha256": "e4cc61b26fa56bf9616e3d157abae7bd903635e5c7b7d3efb717f3e678c3068e",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "fresh_reference_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+  "fresh_observer_result": {
+    "exit_code": 0,
+    "spawned": true,
+    "child_pid": 13368,
+    "seconds": 0.19924020799999997,
+    "stop_reason": null,
+    "controller_failure": null,
+    "remaining_group_after_parent_wait": [],
+    "max_observed_group_rss_bytes": 42991616,
+    "rss_scope": "Periodic scoped ps KiB converted to bytes; not hardAS/isolation or unsampled peak proof.",
+    "output_bytes": 29397,
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr_sha256": "79b0bff29ae803e776d901c83d6f577c970498f5566aab0445bec062e126c3ec"
+  },
+  "CLI_json": {
+    "status": "accepted_against_fresh_pinned_compiler_observation",
+    "effective_request_sha256": "934224e67af8d87234287449f18c0891af924f525feaaa8f0b456a2d6e6ef788",
+    "candidate_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+    "reference_sha256": "514edb727f5d65d76b7eae40d137fe6e6efb7d04a82fe8c8dcec93b861ca7166",
+    "meaning": "Complete parsed data equality under a consumer-fixed request. Actual fresh reference provenance is a separate mandatory consumer premise; synthetic calls prove no FnAbi semantics.",
+    "scope": "Trusted compiler/observer ABI witness equality for this selected source/target/profile/instance. No verified classification, full dependency closure, source safety, IR/machine placement or correspondence theorem."
+  },
+  "additional_output_bytes": 593338
+}

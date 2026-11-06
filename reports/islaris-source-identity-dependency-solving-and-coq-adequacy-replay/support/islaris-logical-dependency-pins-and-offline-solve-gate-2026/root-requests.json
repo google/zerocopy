@@ -1,0 +1,50 @@
+{
+  "role": "proposed exact requests, not a solved lock",
+  "requests": [
+    "ocaml-variants.4.14.0+options",
+    "ocaml-option-flambda",
+    "coq.8.19.0",
+    "coq-core.8.19.0",
+    "coq-stdlib.8.19.0",
+    "coqide-server.8.19.0",
+    "dune.3.9.1",
+    "dune-site.3.9.1",
+    "dune-private-libs.3.9.1",
+    "dyn.3.9.1",
+    "stdune.3.9.1",
+    "ordering.3.9.1",
+    "coq-lithium.dev.2024-09-11.0.7945a29d",
+    "coq-iris.dev.2024-09-10.1.6f24ed4b",
+    "coq-stdpp.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-bitvector.dev.2024-09-10.3.a1a12e00",
+    "coq-stdpp-unstable.dev.2024-09-10.3.a1a12e00",
+    "coq-record-update.0.3.3",
+    "coq-bbv.1.5",
+    "isla-lang.dev",
+    "islaris.dev",
+    "coq-sail.0.17",
+    "coq-sail-riscv.0.5",
+    "sail.0.17",
+    "libsail.0.17",
+    "sail_manifest.0.17",
+    "sail_ocaml_backend.0.17",
+    "sail_c_backend.0.17",
+    "sail_smt_backend.0.17",
+    "sail_sv_backend.0.17",
+    "sail_lem_backend.0.17",
+    "sail_coq_backend.0.17",
+    "sail_latex_backend.0.17",
+    "sail_doc_backend.0.17",
+    "sail_output.0.17"
+  ],
+  "flambda_option_note": "exact ocaml-option-flambda package version still must be frozen from metadata/solution; request itself enables the documented option",
+  "local_source_versions": {
+    "islaris.dev": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+    "isla-lang.dev": "bda86c9f0bd28bbaa2481f50ddc986ede342805a"
+  },
+  "unresolved_inputs": [
+    "all remaining transitive packages and system depexts",
+    "exact Z3 for old Sail",
+    "dev/pinned/with-test/with-doc filters and repository priority; must be explicit before solving"
+  ]
+}

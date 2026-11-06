@@ -1,0 +1,15 @@
+{
+  "role": "source and upstream documentation; no execution",
+  "repository": "flux-rs/flux",
+  "revision": "6769bb9cbd1216380f542349494efafafd6104a3",
+  "tree": "13cbf265c50c832e7ce0045f9747af11c3cd3cbf",
+  "date": "2026-10-14T01:57:30Z",
+  "files": [
+    {
+      "path": "crates/flux-driver/src/callbacks.rs",
+      "git_blob_sha": "b29e8a911d2802762a57f54991a44dbdb841c81c",
+      "url": "https://github.com/flux-rs/flux/blob/6769bb9cbd1216380f542349494efafafd6104a3/crates/flux-driver/src/callbacks.rs",
+      "lines": 406
+    }
+  ]
+}

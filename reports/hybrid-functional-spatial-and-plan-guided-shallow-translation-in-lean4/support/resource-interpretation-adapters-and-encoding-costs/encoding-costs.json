@@ -1,0 +1,29 @@
+{
+  "schema": "Option Nat per cell versus total Nat values plus Bool ownership per cell; canonical compact JSON; no arbitrary proposition/proof translation measured",
+  "rows": [
+    {
+      "addresses": 3,
+      "owned_cells": 2,
+      "option_vector_json_bytes": 10,
+      "mask_values_json_bytes": 43
+    },
+    {
+      "addresses": 16,
+      "owned_cells": 10,
+      "option_vector_json_bytes": 55,
+      "mask_values_json_bytes": 143
+    },
+    {
+      "addresses": 64,
+      "owned_cells": 42,
+      "option_vector_json_bytes": 231,
+      "mask_values_json_bytes": 527
+    },
+    {
+      "addresses": 256,
+      "owned_cells": 170,
+      "option_vector_json_bytes": 1039,
+      "mask_values_json_bytes": 2167
+    }
+  ]
+}

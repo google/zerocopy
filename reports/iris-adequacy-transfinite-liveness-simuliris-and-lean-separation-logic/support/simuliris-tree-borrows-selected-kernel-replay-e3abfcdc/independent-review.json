@@ -1,0 +1,479 @@
+{
+  "schema": "bounded-independent-simuliris-review-v1",
+  "verdict": "APPROVE_CORRECTED_PUBLIC_PROJECTION_FOR_SELECTED_REPLAY",
+  "observed_at": "2026-10-14",
+  "reviewer_role": "Independent delegated AI reviewer; not replay author",
+  "reviewed_author": {
+    "report_sha256": "a274d214cdaaed6b76f85cba1bfb9105ae68848ea1500721b2d6697a132ec671",
+    "manifest_sha256": "7c5dc606d388712e79a3e1f47bd7c28294378c488470d9ffc0ff8f5637f10327"
+  },
+  "reviewed_public_before_review_amendment": {
+    "report_sha256": "8256d5c507753059199d394121cf558fb2ec2bacb6f310e1b3512045c5392a9f",
+    "manifest_sha256": "1843a455248a9a6be8465eb336b8828ece3b182492526af8a1b842d3401ab403"
+  },
+  "final_metadata_delta_requires_separate_review": true,
+  "primary_subjects": {
+    "simuliris_revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
+    "simuliris_archive_sha256": "06dbeeb1ddda80ffe93b26fd20d8597f9c9a63767ae2a7e74e4dae696952fb9b",
+    "rocq_version": "9.2",
+    "ocaml_version": "4.14.4",
+    "native_checker_sha256": "d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9",
+    "container_id": "d46d5503dc34302f8be823d721b398aec61ac6028f154f8ce7654a995aa7786d",
+    "container_memory_bytes": 3221225472
+  },
+  "package_checks": {
+    "manifested_files": 770,
+    "manifested_bytes_author": 39179297,
+    "original_source_files_exact": 185,
+    "original_objects": 78,
+    "audit_objects": 3,
+    "failed_namespace_objects_distinct_and_force_rebuild_evidenced": 2
+  },
+  "fresh_audits": [
+    {
+      "annotation": "PlannedAuditFramework.v",
+      "source_sha256": "e3612a601d0b9230b164cff9091fc74ff4af12a6a94599080bc2c8c65b239d7f",
+      "mode": "rocq top -q with original flags, -batch -load-vernac-source",
+      "exit": 0,
+      "elapsed_seconds": 9.716912375,
+      "stdout": {
+        "bytes": 5761,
+        "sha256": "006315f63b2744307dcf9f28884aea799125334a555c9bab223a267ae6d45f03"
+      },
+      "stderr": {
+        "bytes": 45,
+        "sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+      }
+    },
+    {
+      "annotation": "PlannedAuditResources.v",
+      "source_sha256": "2ccbb0fa485e2c27052c6943da4cd186c79d1a13d25c73196522b457a0bfc6a1",
+      "mode": "rocq top -q with original flags, -batch -load-vernac-source",
+      "exit": 0,
+      "elapsed_seconds": 4.740469458,
+      "stdout": {
+        "bytes": 6920,
+        "sha256": "871e6db697fbb953c99f2e086ceeb72520f3e12bd4e404e86cb876e014fc28f5"
+      },
+      "stderr": {
+        "bytes": 45,
+        "sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+      }
+    },
+    {
+      "annotation": "PlannedAuditExamples.v",
+      "source_sha256": "62a23c89f8f493b8bff13a01a8bff42e56490cbb031a7c95c8084d320b4d6a66",
+      "mode": "rocq top -q with original flags, -batch -load-vernac-source",
+      "exit": 0,
+      "elapsed_seconds": 9.11076175,
+      "stdout": {
+        "bytes": 1872,
+        "sha256": "565d0c21e9d83eebb20c17b5b4cdb213296cf0ad5db7696c41b623a2084134e3"
+      },
+      "stderr": {
+        "bytes": 45,
+        "sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+      }
+    }
+  ],
+  "selected_observations": [
+    {
+      "constant": "simuliris.simulation.adequacy.slsls_adequacy",
+      "source": "theories/simulation/adequacy.v",
+      "source_line": 310,
+      "source_sha256": "11041805a4bbf2fadab7cc5c773dd999abb22febc7a8f3904f300ce3ec890ff5",
+      "exact_printed_type_utf8_sha256": "241ef68d6725dbe791d2b01964b930b033630a731e96fbd9b2fe419c7afb6cdc",
+      "exact_assumption_block_utf8_sha256": "0a73d10ab33b465d74a7088014a22364cc8ef336cc3e68e349f911fe84d975b4",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.simulation.fairness_adequacy.sim_pool_preserves_fair_termination",
+      "source": "theories/simulation/fairness_adequacy.v",
+      "source_line": 678,
+      "source_sha256": "291759957d01b6f9fe214c9afc83c447a96530fa5dc98897c76c8ca021a3074a",
+      "exact_printed_type_utf8_sha256": "2b71b7a38d0f6617fe632f3b3b27a149100efc4694c0e97ef0594bebad014252",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.adequacy.prog_rel_adequacy",
+      "source": "theories/tree_borrows/adequacy.v",
+      "source_line": 30,
+      "source_sha256": "66655cea3943f18fa3ab5f8d02f6d096a4568b521a4db0b4eff1296249cf7f11",
+      "exact_printed_type_utf8_sha256": "ecb74f830308bfa3be9f01a8e2b7083c6029a92516627c6d78aff119402794f0",
+      "exact_assumption_block_utf8_sha256": "0a73d10ab33b465d74a7088014a22364cc8ef336cc3e68e349f911fe84d975b4",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.adequacy.log_rel_adequacy",
+      "source": "theories/tree_borrows/adequacy.v",
+      "source_line": 50,
+      "source_sha256": "66655cea3943f18fa3ab5f8d02f6d096a4568b521a4db0b4eff1296249cf7f11",
+      "exact_printed_type_utf8_sha256": "f32891c1a82bca92cec52e3a2abd871d8fc64c336d69b49c4391d8e9f0b4b269",
+      "exact_assumption_block_utf8_sha256": "0a73d10ab33b465d74a7088014a22364cc8ef336cc3e68e349f911fe84d975b4",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.sb_log_rel_structural",
+      "source": "theories/tree_borrows/refl.v",
+      "source_line": 471,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "exact_printed_type_utf8_sha256": "60f7b41e383b6f38966d003684b50ebf04d4c37f12dc5877c59a30c4023e66be",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.log_rel_refl",
+      "source": "theories/tree_borrows/refl.v",
+      "source_line": 517,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "exact_printed_type_utf8_sha256": "e27c4f7de579f66558c43496d1d8f832e625932c3fd6392c5b314ae40bd296c9",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.refl.log_rel_ctx",
+      "source": "theories/tree_borrows/refl.v",
+      "source_line": 524,
+      "source_sha256": "f119018a24ecb320f54752cd9a18fb35ba9eb4d50bf020b104521995f33b3311",
+      "exact_printed_type_utf8_sha256": "f7adaadadfa0455f6ba45e00f3c12348b3b74d34b3d7a032a8d70a97b58f4971",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.simulation.language.safe_reach",
+      "source": "theories/simulation/language.v",
+      "source_line": 1056,
+      "source_sha256": "f6db07e6cf6f4266a6869008912f742ec3fb76a12d0b98355ccd8fdc508b4f3e",
+      "exact_printed_type_utf8_sha256": "c19082e24dc2f758b9b0f3bc0014daf1cbe793cd7564ff148c4e67fd34ca7f4b",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.write_entire_range",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "source_line": 22,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "exact_printed_type_utf8_sha256": "b3073e06ad81cc8e82397720701a81428fb84813378b9f817ad7b7ea0a2fd38f",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.sim_new_place_local",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "source_line": 35,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "exact_printed_type_utf8_sha256": "cd34a6f6798ec9a72eadc53f855046478b74bdd35c69e123e5f74786423e9e0c",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.lib.new_place_safe_reach",
+      "source": "theories/tree_borrows/examples/lib.v",
+      "source_line": 67,
+      "source_sha256": "84a46dd5f169c27cd3cb6464b273f6ddf0cc7c818592f7348b2bb61eef8dafb1",
+      "exact_printed_type_utf8_sha256": "1542a127ccb31b392eb687a407fc26f9a1fe9a78d1943ce5aadbff8df003a18f",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_local.sim_alloc_local",
+      "source": "theories/tree_borrows/step_laws/steps_local.v",
+      "source_line": 322,
+      "source_sha256": "b4d192b6cef1480fa39c8048fe761938ab9e61605d8a0ba72f93d230551be8bd",
+      "exact_printed_type_utf8_sha256": "2d9977ffbcc30e55b27fbcbbf6abc9e9382ecf625448779e2e3ebb90d8ca859c",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_retag.sim_retag_default",
+      "source": "theories/tree_borrows/step_laws/steps_retag.v",
+      "source_line": 67,
+      "source_sha256": "51976c67c24f7d326f549e76da05b06fe121ead49e95b681c315686e7d756977",
+      "exact_printed_type_utf8_sha256": "c07760cd09f83ada08eabdf04ff8ad326e3bd4fa55880a6d17e2fdc422bed0bf",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_retag.sim_retag_fnentry",
+      "source": "theories/tree_borrows/step_laws/steps_retag.v",
+      "source_line": 304,
+      "source_sha256": "51976c67c24f7d326f549e76da05b06fe121ead49e95b681c315686e7d756977",
+      "exact_printed_type_utf8_sha256": "94cb5ae9c150414c2ff6492b1295db142cc0e840c9b68ca66338b3332bc77388",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.step_laws.steps_opt.sim_protected_unprotect",
+      "source": "theories/tree_borrows/step_laws/steps_opt.v",
+      "source_line": 310,
+      "source_sha256": "dc26fca5c03e01e84a33984b45776280f235305cd2d908330c4a5f2c1b99845e",
+      "exact_printed_type_utf8_sha256": "ce7220ff636ee78cf8e7abcfd96378e0baacbb5b82bceb53f85e98613a7b7d59",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.loc_controlled_read_after_reborrow_creates",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "source_line": 380,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "exact_printed_type_utf8_sha256": "0c301d0cfd83ca2ddf1e46c5eb41e4b9639ff2ceee67cebba5817e8d37fca80d",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.logical_state.array_tag",
+      "source": "theories/tree_borrows/logical_state.v",
+      "source_line": 856,
+      "source_sha256": "e9442959032f040c9c7a3e44e699791113973811d4491ac15087af6facb30b23",
+      "exact_printed_type_utf8_sha256": "5d8a7fec763d46e596a3f1afa09fb7de2f0f06527d1a68924715694121b68158",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.pointer_kind_to_tag_unprotected",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "source_line": 356,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "exact_printed_type_utf8_sha256": "d900b3e0f08fc9e51d7de294c697baf35a6104b2614cde158dd7c0a933e3d14c",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.loc_controlled_laws.pointer_kind_to_tag_protected",
+      "source": "theories/tree_borrows/loc_controlled_laws.v",
+      "source_line": 360,
+      "source_sha256": "d0e0f8203b4b800648a20ac786819ea8a8a1e3149bd7f0bb102ca00cd927337f",
+      "exact_printed_type_utf8_sha256": "def1ec29564770aeaf358e23f66a903a0b4eead816f9c1f78f3f48cf44b5c29a",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped",
+      "source": "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v",
+      "source_line": 44,
+      "source_sha256": "98d8261461e943848de6039847eb345511efa415d9ff87fe2c7e2a7e35d8588b",
+      "exact_printed_type_utf8_sha256": "628354ef679c224a64d188a704c104893f77861ef3e5c442c986850d0d57994b",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped.unprot_shared_delete_read_escaped_ctx",
+      "source": "theories/tree_borrows/examples/unprotected/shared_delete_read_escaped.v",
+      "source_line": 132,
+      "source_sha256": "98d8261461e943848de6039847eb345511efa415d9ff87fe2c7e2a7e35d8588b",
+      "exact_printed_type_utf8_sha256": "b7a4639f69d1bc3ebb88b7b6a9eab8717cb92e9e4d4f8ff52853152daaac3408",
+      "exact_assumption_block_utf8_sha256": "0a73d10ab33b465d74a7088014a22364cc8ef336cc3e68e349f911fe84d975b4",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper",
+      "source": "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v",
+      "source_line": 50,
+      "source_sha256": "f2287e8a8d89883b5e625bd7dd33d0826c6cf486a4dd166a4a2f098b5062e7f5",
+      "exact_printed_type_utf8_sha256": "38ed892151d43b0b3d672665b54ef80eb22b2fea1295c5ddadcf1449617797c1",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper.prot_mutable_reorder_write_up_activated_paper_ctx",
+      "source": "theories/tree_borrows/examples/protected/mutable_reorder_write_up_activated_paper.v",
+      "source_line": 140,
+      "source_sha256": "f2287e8a8d89883b5e625bd7dd33d0826c6cf486a4dd166a4a2f098b5062e7f5",
+      "exact_printed_type_utf8_sha256": "361e7d229ec101237b891db8180a095b9c6352e4e5e2ccdd23944a52a5b91a11",
+      "exact_assumption_block_utf8_sha256": "0a73d10ab33b465d74a7088014a22364cc8ef336cc3e68e349f911fe84d975b4",
+      "axioms": [
+        "IndefiniteDescription.constructive_indefinite_description",
+        "Classical_Prop.classic"
+      ],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    },
+    {
+      "constant": "simuliris.tree_borrows.read_read_reorder.read_reorder.read_reorder",
+      "source": "theories/tree_borrows/read_read_reorder/read_reorder.v",
+      "source_line": 218,
+      "source_sha256": "e9e8e666a9a00a89e10d03832a0a270f3f1ee22d4b4b575f4abefac8e8dfb8b0",
+      "exact_printed_type_utf8_sha256": "f97a4a35ab48d83cd529303926e13582ad6f9a56f7b5d25d36018cdbba29f680",
+      "exact_assumption_block_utf8_sha256": "f468e824263aaedb17f6de56c1ed01f1a0c516ee7f025d58f963f26d6ffbc699",
+      "axioms": [],
+      "matches_retained_actual_results_exactly": true,
+      "fresh_recursive_checker_seen": true
+    }
+  ],
+  "assumption_groups": {
+    "closed_constants": 19,
+    "classic_and_indefinite_description": 5
+  },
+  "checker_global_axioms": [
+    "Stdlib.Logic.IndefiniteDescription.constructive_indefinite_description",
+    "Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep",
+    "Stdlib.Logic.Classical_Prop.classic"
+  ],
+  "global_context_not_per_constant_dependencies": true,
+  "fresh_kernel_check": {
+    "argv_after_opam_exec": [
+      "rocq",
+      "check",
+      "-Q",
+      "theories",
+      "simuliris",
+      "-o",
+      "-m",
+      "simuliris.simulation.adequacy",
+      "simuliris.tree_borrows.adequacy",
+      "simuliris.tree_borrows.examples.lib",
+      "simuliris.tree_borrows.examples.protected.mutable_reorder_write_up_activated_paper",
+      "simuliris.tree_borrows.examples.unprotected.shared_delete_read_escaped",
+      "simuliris.tree_borrows.read_read_reorder.read_reorder",
+      "PlannedAuditFramework",
+      "PlannedAuditResources",
+      "PlannedAuditExamples"
+    ],
+    "exit": 0,
+    "success_marker": "Modules were successfully checked",
+    "wall_seconds": 42.338730542,
+    "loaded_checked_libraries": 517,
+    "original_libraries": 78,
+    "audit_libraries": 3,
+    "dependency_libraries": 436,
+    "all_selected_constants_seen": true,
+    "no_admit_or_norec": true,
+    "stderr_bytes": 3908248,
+    "stderr_sha256": "6630c6d588453955b05bb4c43a2d2f9da819099523bd2382896bd725c678a47c",
+    "stderr_byte_identical_to_retained_trace": true,
+    "retained_trace": "support/logs/recursive-native-checker.stderr",
+    "stdout_sha256": "39ee347cb007af01ad8f49afa10734badaaf741a672c57f40939d3b8d0d04c2e"
+  },
+  "stability": {
+    "sources_and_loaded_objects": 706,
+    "source_components": {
+      "original": 185,
+      "audit": 3,
+      "makefile_configuration": 1
+    },
+    "loaded_objects": 517,
+    "before_after_identical": true,
+    "sorted_hash_listing_sha256_before_and_after": "2ad0cf1c4e855d775d8333207fc5e6fa66e434038e975e1b1fb28d4fdaf98733",
+    "tools": [
+      {
+        "tool": "rocq",
+        "sha256_before_and_after": "4e6d8ff576dc552db019358196ffecf16a0fc3104735c9a354da33392fd2db1f"
+      },
+      {
+        "tool": "rocqchk",
+        "sha256_before_and_after": "d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9"
+      },
+      {
+        "tool": "coqc",
+        "sha256_before_and_after": "69df03a15c9f11333a503cd151c194cb9f6cbf02339df66b0b840f2101aff16a"
+      },
+      {
+        "tool": "coqchk",
+        "sha256_before_and_after": "c95f432606a955a8300a25d16ea6c16bc2d5645256c9402c045e0a007dc0b262"
+      },
+      {
+        "tool": "ocamlc",
+        "sha256_before_and_after": "6eed5b35e376e7b4254f445ffd73348b12e0b1e11922ccc9a2d2516b7880642b"
+      },
+      {
+        "tool": "dune",
+        "sha256_before_and_after": "819d50d3e3578ec35dca3404018f2b8fa1f584d33d267a9943e3446b9102f330"
+      }
+    ],
+    "source_or_object_recompilation": false,
+    "batch_top_object_writes": false,
+    "audit_check_hash_wall_seconds": 66.46287225
+  },
+  "privacy_correction": {
+    "finding_path": "support/historical-plan/archive-inventory.json",
+    "field": "$.archive",
+    "original_inventory_sha256": "1c69d48800d47343876a793197d4694ff2ad85d8a17fca369f29351f2634d182",
+    "public_inventory_sha256": "0796e0ed62294a987391a8f199f238d20538b5145f5169265976a3267948f9d9",
+    "replacement": "support/inputs/simuliris.tar.gz",
+    "disposition": "CORRECTED_AND_INDEPENDENTLY_VERIFIED",
+    "changed_files": [
+      "package-manifest.json",
+      "REPORT.md",
+      "support/public-path-projection.json",
+      "support/historical-plan/archive-inventory.json"
+    ],
+    "all_other_files_unchanged": 767,
+    "source_proof_program_stream_archive_bytes_unchanged": true,
+    "remaining_private_host_prefix_matches": 0,
+    "original_author_snapshot_publishable_unchanged": false
+  },
+  "open_milestones": {
+    "E03": "Broader collection of logic/modular-effects/ISA artifacts not completed by this selection",
+    "E18": "MiniRust/Miri/calculus transition, retag, range and protector correspondence unconstructed",
+    "E20": "Byte-sensitive MiniRust lifetime/UnsafeCell logic and adequacy unconstructed",
+    "E23": "Concrete allocation/split/recombine/recursive-reborrow/Cell/callback/returned-reference ports unconstructed",
+    "E24": "Transport/soundness for every permitted safe Rust client/lifetime/implementation/trait instance unconstructed"
+  },
+  "not_executed": [
+    "optional na_inv examples",
+    "MiniRust",
+    "minimize",
+    "Miri",
+    "original/audit recompilation in this independent review"
+  ],
+  "proof_frontier": "Rocq checker implementation, imported axioms and explicit theorem/model/context/source-safety/resource premises remain; no axiom-consistency or Rust frontend theorem inferred",
+  "parent_effect_authority_retained": true,
+  "review_markdown_sha256": "c677bcdcb5420ecd0be815610ad0e12dc78d701054d19ebc623904f91f60e645"
+}

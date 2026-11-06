@@ -1,0 +1,9 @@
+{
+  "core47_paths_and_order": true,
+  "core47_digest_records": true,
+  "core_completion_md5_order": true,
+  "core_sha256_inputs_match": true,
+  "three_audits_match_reviewed": true,
+  "chooser_copies_match_expected": true,
+  "within_output_budget": true
+}

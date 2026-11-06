@@ -1,0 +1,29 @@
+{
+  "schema": "anneal-reference/netstack3-j001-j004-judgment/v1",
+  "coverage": {
+    "J001": {
+      "question": "Which boundaries survived growth?",
+      "judgment": "Preserve semantic ownership and source-of-truth boundaries; do not freeze them to one crate, trait hierarchy, or process.",
+      "counterweight": "Public module/crate churn has costs, and in-process traits can themselves become accidental coupling.",
+      "anneal_applicability": "Strong for verification meaning, artifact identity, and publication authority; weak for copying Netstack3's exact module topology."
+    },
+    "J002": {
+      "question": "Identity, liveness, and operational state",
+      "judgment": "Separate naming, retention, permission for new operations, and final reclamation.",
+      "counterweight": "Netstack3's refcounted teardown complexity is driven by networking races and is not itself an Anneal prescription.",
+      "anneal_applicability": "Strong conceptual analogy to generation IDs, worker/environment handles, retirement, and garbage collection."
+    },
+    "J003": {
+      "question": "Limits of static protocol modeling",
+      "judgment": "Use types for durable local invariants; prefer explicit runtime lifecycle state when one identity must survive frequent transitions.",
+      "counterweight": "Runtime state errors give up compile-time exclusion and require centralized transition checking.",
+      "anneal_applicability": "Avoid a combinatorial typestate product for pending/prepared/current/stale/failed/retired unless the transition graph is small and ownership naturally moves."
+    },
+    "J004": {
+      "question": "Concurrency without actor-everywhere architecture",
+      "judgment": "Linearize authority-changing state transitions locally while allowing concurrent computation against stable snapshots.",
+      "counterweight": "Locks require ordering/contension discipline; actors may still be warranted for fault isolation, backpressure, or independent lifetime.",
+      "anneal_applicability": "Strong for publication/generation authority; insufficient evidence to mandate either one global lock or actors between all tool stages."
+    }
+  }
+}

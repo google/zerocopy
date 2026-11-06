@@ -1,0 +1,64 @@
+{
+  "reference_revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+  "minirust_revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+  "kind": "unexecuted source/normative comparison",
+  "cases": [
+    {
+      "id": "raw-place",
+      "reference": [
+        "expr.borrow.raw.invalid-ref",
+        "undefined.pointer-access",
+        "undefined.place-projection"
+      ],
+      "minirust": [
+        "README.md relation-to-reference",
+        "representation.md check_ptr"
+      ],
+      "classification": "historical README discrepancy not established for current Reference; no load/projection inference"
+    },
+    {
+      "id": "invalid-referent",
+      "reference": [
+        "undefined.validity.reference-box"
+      ],
+      "minirust": [
+        "representation.md Machine::check_ptr"
+      ],
+      "classification": "documented policy difference: pointee validity remains debated in Reference; core explicitly does not inspect data"
+    },
+    {
+      "id": "zero-size",
+      "reference": [
+        "undefined.dangling.def",
+        "undefined.validity.reference-box"
+      ],
+      "minirust": [
+        "basic.md check_ptr/load/store",
+        "representation.md check_ptr"
+      ],
+      "classification": "size zero removes provenance/range check in basic helper; alignment and safe-pointer nonnull requirements remain"
+    },
+    {
+      "id": "metadata",
+      "reference": [
+        "undefined.validity.wide"
+      ],
+      "minirust": [
+        "representation.md check_ptr_metadata/check_ptr"
+      ],
+      "classification": "explicit core rules; raw-vtable policy unresolved, full equivalence not established"
+    },
+    {
+      "id": "union-bool-field",
+      "reference": [
+        "undefined.validity.union",
+        "items.union.fields.validity"
+      ],
+      "minirust": [
+        "representation.md union decode/encode",
+        "representation.md bool decode"
+      ],
+      "classification": "union storage can preserve uninit/provenance; typed bool field interpretation still rejects invalid bytes; overall union validity unresolved"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "repository": "awslabs/s2n-bignum",
+  "revision": "4d1356a7470663c752660a59375dc3a9ef548428",
+  "path": "x86/proofs/bignum_add.ml",
+  "git_blob": "180570d3b223d58a2212c5d84ed068856281ce57",
+  "symbol": "bignum_add_mc",
+  "bytes_hex": "f30f1efa4d31d24839d7480f42d74c39c74c0f42c74c39c272474829d74c29c248ffc24d85c074254a8b04d14b1304d14a8904d649ffc249ffc875eceb0f4a8b04d14883d0004a8904d649ffc248ffca75ecb8000000004883d0004885ff7543c34c29c74929d04885d274144a8b04d14b1304d14a8904d649ffc248ffca75ec4b8b04d14883d0004a8904d649ffc249ffc875ecb8000000004883d0004885ff7501c34a8904d64831c0eb044a8904d649ffc248ffcf75f4c3",
+  "extraction": "hex byte tokens in define_assert_from_elf list after stripping OCaml comments; independently inspect this list before treating extraction as trusted"
+}

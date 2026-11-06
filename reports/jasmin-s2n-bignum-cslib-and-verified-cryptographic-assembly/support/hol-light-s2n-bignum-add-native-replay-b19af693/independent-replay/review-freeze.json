@@ -1,0 +1,133 @@
+{
+  "format": "Preparation/source-evidence review and proposed replay inputs; excludes itself; not a runtime grant",
+  "files": [
+    {
+      "path": "REPLAY-PLAN.md",
+      "bytes": 8258,
+      "sha256": "0499a86a518d296e556aff381d8b6a8607390c24640ca0d35c99f6bd62107990"
+    },
+    {
+      "path": "SOURCE-VERDICT.json",
+      "bytes": 2097,
+      "sha256": "28d92e3985dcd11bfce4e99dcde94b09ab638a01f88c4daba0220e9db6f52f8a"
+    },
+    {
+      "path": "SOURCE-VERDICT.md",
+      "bytes": 8224,
+      "sha256": "56d96afe4cad5171362be085e8b954a255a29cc22b649fde9df83ee6eeb4f553"
+    },
+    {
+      "path": "diagnostics/first-stop.stderr",
+      "bytes": 722,
+      "sha256": "a8190fe9406377bf85ebee3308a3b4d110ab1264366f91b793ed8989d1a7438a"
+    },
+    {
+      "path": "diagnostics/first-stop.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "diagnostics/origin-map-correction.diff",
+      "bytes": 1038,
+      "sha256": "90b4c8fdb006afd5260adedc0d3d1c4ac3b2668cf3890e3bc75d68cd9e6b1c0e"
+    },
+    {
+      "path": "diagnostics/origin-map-correction.json",
+      "bytes": 1394,
+      "sha256": "c34518a248695aa088821761f00f02bf6fa52db16bce1cef128378ad376050b2"
+    },
+    {
+      "path": "diagnostics/static-review-before-origin-map.py",
+      "bytes": 17139,
+      "sha256": "2993b5311bb68dd23f729714684ffd4df22225ccf484d58c20e10e70eda0dabc"
+    },
+    {
+      "path": "host_run.py",
+      "bytes": 1587,
+      "sha256": "d81a4e48cbc64b6964f054e341b4317fcd323fee60bc92fb82b879e404e29fe5"
+    },
+    {
+      "path": "inline_census_reader.py",
+      "bytes": 1547,
+      "sha256": "329858f20a3e2e4813685a034d5c691e3d0a94375dd4fa2d129e805c202900b1"
+    },
+    {
+      "path": "preflight_reader.py",
+      "bytes": 176636,
+      "sha256": "8db441e4f7c6e7f52f7778d9e34b28fc936aeddfcd21b4e0de0aae661e14c544"
+    },
+    {
+      "path": "prepared-helper-identities.json",
+      "bytes": 1306,
+      "sha256": "4aa22eff5c73ac3973c2ddbce247b4ada033ab3f9c2329bc6b82a1ab2425cd5f"
+    },
+    {
+      "path": "replay-plan.json",
+      "bytes": 6576,
+      "sha256": "57786731c4796e0e1a4d8be1bbe8cf57bcbde33e6125b5f0f98c7777c94b6fb4"
+    },
+    {
+      "path": "specs/independent-after-census.json",
+      "bytes": 415,
+      "sha256": "4e89068040a765d0c6aa81a162d6687765ca8dfe1defe7536c12e3bab921f4be"
+    },
+    {
+      "path": "specs/independent-after-identities.json",
+      "bytes": 415,
+      "sha256": "2e5802ba2ff4811a6175f72d581fdfb0de356219eb599c9bc58b6ec3f8cce5d5"
+    },
+    {
+      "path": "specs/independent-after-inspect.json",
+      "bytes": 250,
+      "sha256": "add4f4715aad0f07853e90dc1565b545d0c630ba62928bea8048a196172dc556"
+    },
+    {
+      "path": "specs/independent-after-supplemental.json",
+      "bytes": 730,
+      "sha256": "37b4955795bfa2e2ee59e90623e29bf81da82eb855b375d79a7f86ecd48b1b8a"
+    },
+    {
+      "path": "specs/independent-before-census.json",
+      "bytes": 416,
+      "sha256": "3512b9ad4f174b83656c1b235d0e9699f5621bed2f2e63509cec365894432c78"
+    },
+    {
+      "path": "specs/independent-before-identities.json",
+      "bytes": 416,
+      "sha256": "1b49c58b67e462ba49b2772199d12e27608b72ae8b0e9a9d3fe1b46166f40268"
+    },
+    {
+      "path": "specs/independent-before-inspect.json",
+      "bytes": 251,
+      "sha256": "b9a21e064d00315a9436fbfdc091578f3f29fe97b4b9bcb19fe67d521aae60dd"
+    },
+    {
+      "path": "specs/independent-before-supplemental.json",
+      "bytes": 731,
+      "sha256": "d8d399ee4eed09189b8f714eaa6664704096576a3a61a36c49cda6b5dc4d01a9"
+    },
+    {
+      "path": "specs/independent-positive.json",
+      "bytes": 778,
+      "sha256": "88b4279cebae2502d00536058c733a6d0edc97726acf9499ee3c70c0cb3e3bd8"
+    },
+    {
+      "path": "static-review-results.json",
+      "bytes": 27939,
+      "sha256": "249836f7a83a9579033d7eb8f01af75d1989cf9186ff0be37ec8cd5c5f982695"
+    },
+    {
+      "path": "static_review.py",
+      "bytes": 17709,
+      "sha256": "8e571372c87cbd74a16f37737e609c41afc5393cb5010b2884693b8e1ed778aa"
+    },
+    {
+      "path": "supplemental_identity_reader.py",
+      "bytes": 2199,
+      "sha256": "c4a99cf5ed1a8d199d5a374dc306f68a74952876850c6699ec269396a57327cf"
+    }
+  ],
+  "file_count": 25,
+  "total_bytes": 278773,
+  "no_runtime_calls_or_native_launches": true
+}

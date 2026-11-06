@@ -1,0 +1,7 @@
+[WARNING] Running as root is not recommended
+File "/home/opam/anneal-cross-sources/hol-light/hol_loader.ml", line 30, characters 41-65:
+30 | let file_loader = ref (fun (s:string) -> failwith "uninitialized"; false);;
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+Warning 21 [nonreturning-statement]: this statement never returns (or has an unsound type.)
+    * HOL-Light syntax in effect *
+

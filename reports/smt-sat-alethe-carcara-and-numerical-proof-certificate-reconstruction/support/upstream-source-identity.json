@@ -1,0 +1,81 @@
+[
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/arrays.rs",
+    "symbols": [
+      "idx",
+      "row"
+    ],
+    "sha256": "48e768c811af65927dd2ae5a9b3ddcf8bbfc7b92490f5f658297df4759ab6c46"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/simplification.rs",
+    "symbols": [
+      "generic_simplify_rule",
+      "eq_simplify",
+      "not_simplify",
+      "comp_simplify"
+    ],
+    "sha256": "d66f4167381e0e32908e512b5ed120b98dfa34fe73e5648fbc43fc208b476c61"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/extras.rs",
+    "symbols": [
+      "symm",
+      "eq_symmetric",
+      "eq_mp",
+      "and_intro"
+    ],
+    "sha256": "60b986a23f9025aa7b30bc6c33d88b2b48597da357493fd6ab868ac886737cb9"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/congruence.rs",
+    "symbols": [
+      "cong"
+    ],
+    "sha256": "27556360f3ed1078b41e9e099edcb8b636efa357fd11288fc67f58c597b0698f"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/transitivity.rs",
+    "symbols": [
+      "trans"
+    ],
+    "sha256": "b529caf243f580f910220d7395639cc01b4ce5b610d9ef4db377351dbf9e13ca"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/resolution.rs",
+    "symbols": [
+      "resolution"
+    ],
+    "sha256": "efb46f74b88f75952d896b2e3c12c951b082c8c722cd1c2bdbefde6047468255"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/mod.rs",
+    "symbols": [
+      "check_assume"
+    ],
+    "sha256": "70850cfe452d021da24fe226aae5f6e6432b65284803cf541dd8293aba6b4014"
+  },
+  {
+    "repository": "ufmg-smite/carcara",
+    "revision": "20bf49c5ce31089ac83118574c888669355aaae1",
+    "path": "src/checker/rules/mod.rs",
+    "symbols": [
+      "get_rule"
+    ],
+    "sha256": "8dbb27ea44d70d74b4dd872f427fc66cd892b4a5c5e105bf15a500d4568d4340"
+  }
+]

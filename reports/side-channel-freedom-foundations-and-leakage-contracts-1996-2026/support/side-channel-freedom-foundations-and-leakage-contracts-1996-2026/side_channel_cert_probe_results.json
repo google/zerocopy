@@ -1,0 +1,294 @@
+{
+  "total_workloads": 7,
+  "safe_ct_workloads": 5,
+  "unsafe_negative_controls": 2,
+  "syntactic_taint_false_positives": 2,
+  "relational_cert_false_positives": 0,
+  "relational_cert_false_negatives": 0,
+  "total_steps_self_composition_4k": 2256576,
+  "total_steps_lockstep_product_2k": 5768,
+  "total_steps_syntactic_taint_1pass": 55,
+  "total_steps_relational_cert_1pass": 65,
+  "workloads": [
+    {
+      "name": "montgomery_ladder_step",
+      "description": "Curve25519 Montgomery ladder step with 8 unrolled public loop-counter branches",
+      "expected_ct_level4": true,
+      "num_instructions": 16,
+      "num_public_branches": 8,
+      "unaligned_self_composition_4k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 65536,
+        "verification_steps": 2097152
+      },
+      "lockstep_product_2k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 256,
+        "verification_steps": 4096
+      },
+      "syntactic_taint_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 16,
+        "certificate_bytes": 15
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 16,
+        "algebraic_witness_count": 0,
+        "certificate_bytes": 40
+      },
+      "step_speedup_cert_vs_self_comp": 131072.0,
+      "step_speedup_cert_vs_lockstep": 256.0
+    },
+    {
+      "name": "chacha20_quarter_round",
+      "description": "ChaCha20 ARX quarter-round with 4 public round-boundary checks",
+      "expected_ct_level4": true,
+      "num_instructions": 16,
+      "num_public_branches": 4,
+      "unaligned_self_composition_4k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 256,
+        "verification_steps": 8192
+      },
+      "lockstep_product_2k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 16,
+        "verification_steps": 256
+      },
+      "syntactic_taint_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 16,
+        "certificate_bytes": 13
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 16,
+        "algebraic_witness_count": 0,
+        "certificate_bytes": 24
+      },
+      "step_speedup_cert_vs_self_comp": 512.0,
+      "step_speedup_cert_vs_lockstep": 16.0
+    },
+    {
+      "name": "mlkem_barrett_reduce",
+      "description": "ML-KEM constant-time Barrett reduction (q=3329) replacing variable-time div",
+      "expected_ct_level4": true,
+      "num_instructions": 16,
+      "num_public_branches": 6,
+      "unaligned_self_composition_4k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 4096,
+        "verification_steps": 131072
+      },
+      "lockstep_product_2k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 64,
+        "verification_steps": 1024
+      },
+      "syntactic_taint_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 16,
+        "certificate_bytes": 13
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 16,
+        "algebraic_witness_count": 0,
+        "certificate_bytes": 32
+      },
+      "step_speedup_cert_vs_self_comp": 8192.0,
+      "step_speedup_cert_vs_lockstep": 64.0
+    },
+    {
+      "name": "masked_table_select",
+      "description": "Branchless masked address/value selection `(pub & mask) | (pub & ~mask)`",
+      "expected_ct_level4": true,
+      "num_instructions": 8,
+      "num_public_branches": 5,
+      "unaligned_self_composition_4k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 1024,
+        "verification_steps": 16384
+      },
+      "lockstep_product_2k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 32,
+        "verification_steps": 256
+      },
+      "syntactic_taint_1pass": {
+        "accepted": false,
+        "rejection_reason": "tainted_load_address:eff_addr",
+        "false_positive_rejection": true,
+        "false_negative_acceptance": false,
+        "verification_steps": 2,
+        "certificate_bytes": 9
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 8,
+        "algebraic_witness_count": 1,
+        "certificate_bytes": 24
+      },
+      "step_speedup_cert_vs_self_comp": 2048.0,
+      "step_speedup_cert_vs_lockstep": 32.0
+    },
+    {
+      "name": "xor_scratchpad_zeroize",
+      "description": "Scratchpad register zeroization via `sec ^ sec` followed by sentinel load",
+      "expected_ct_level4": true,
+      "num_instructions": 7,
+      "num_public_branches": 4,
+      "unaligned_self_composition_4k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 256,
+        "verification_steps": 3584
+      },
+      "lockstep_product_2k": {
+        "accepted": true,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 16,
+        "verification_steps": 112
+      },
+      "syntactic_taint_1pass": {
+        "accepted": false,
+        "rejection_reason": "tainted_load_address:clean_addr",
+        "false_positive_rejection": true,
+        "false_negative_acceptance": false,
+        "verification_steps": 3,
+        "certificate_bytes": 6
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": true,
+        "rejection_reason": null,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 7,
+        "algebraic_witness_count": 1,
+        "certificate_bytes": 16
+      },
+      "step_speedup_cert_vs_self_comp": 512.0,
+      "step_speedup_cert_vs_lockstep": 16.0
+    },
+    {
+      "name": "kyberslash_leaky_div",
+      "description": "NEGATIVE CONTROL: ML-KEM secret-dividend UDIV (`KyberSlash`, violates Level2_VarTimeCT)",
+      "expected_ct_level4": false,
+      "num_instructions": 3,
+      "num_public_branches": 2,
+      "unaligned_self_composition_4k": {
+        "accepted": false,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 16,
+        "verification_steps": 96
+      },
+      "lockstep_product_2k": {
+        "accepted": false,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 4,
+        "verification_steps": 12
+      },
+      "syntactic_taint_1pass": {
+        "accepted": false,
+        "rejection_reason": "tainted_vartime_div:sec_coeff",
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 1,
+        "certificate_bytes": 5
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": false,
+        "rejection_reason": "relational_varying_exempt_udiv:sec_coeff",
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 1,
+        "algebraic_witness_count": 0,
+        "certificate_bytes": 7
+      },
+      "step_speedup_cert_vs_self_comp": 96.0,
+      "step_speedup_cert_vs_lockstep": 12.0
+    },
+    {
+      "name": "spectre_v1_leaky_load",
+      "description": "NEGATIVE CONTROL: Unfenced PHT bounds check transiently indexing cache by secret (`Spectre v1`)",
+      "expected_ct_level4": false,
+      "num_instructions": 3,
+      "num_public_branches": 2,
+      "unaligned_self_composition_4k": {
+        "accepted": false,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_path_pairs": 16,
+        "verification_steps": 96
+      },
+      "lockstep_product_2k": {
+        "accepted": false,
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "explored_paths": 4,
+        "verification_steps": 12
+      },
+      "syntactic_taint_1pass": {
+        "accepted": false,
+        "rejection_reason": "unfenced_speculative_secret_load",
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 1,
+        "certificate_bytes": 4
+      },
+      "relational_cert_checker_1pass": {
+        "accepted": false,
+        "rejection_reason": "unfenced_speculative_secret_load",
+        "false_positive_rejection": false,
+        "false_negative_acceptance": false,
+        "verification_steps": 1,
+        "algebraic_witness_count": 0,
+        "certificate_bytes": 7
+      },
+      "step_speedup_cert_vs_self_comp": 96.0,
+      "step_speedup_cert_vs_lockstep": 12.0
+    }
+  ]
+}

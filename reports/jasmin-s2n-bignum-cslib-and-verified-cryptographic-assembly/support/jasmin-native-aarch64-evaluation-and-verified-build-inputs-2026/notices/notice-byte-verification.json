@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "nix_source_commit": "f3f1c3c5b8ad91850e0f7c590cf177f7ab022024",
+  "nix_license_git_blob": "f6683e74e0f0130f246dbf7054f4cacc88ca84b0",
+  "nix_license_bytes": 26419,
+  "nix_license_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+  "nixpkgs_api_native_bytes_equal": true,
+  "binary_source_build_provenance": "not established by license/tag observation"
+}

@@ -1,0 +1,5 @@
+The source code (i.e., everything except for files in the docs/ and tex/
+folders) in this development is licensed under the terms of the BSD license,
+while the documentation (i.e., everything inside the docs/ and tex/ folders) is
+licensed under the terms of the CC-BY 4.0 license.  Fur further details, see
+LICENSE-CODE and LICENSE-DOCS, respectively.

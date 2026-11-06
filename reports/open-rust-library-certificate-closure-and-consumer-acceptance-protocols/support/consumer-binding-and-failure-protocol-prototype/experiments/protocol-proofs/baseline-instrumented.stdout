@@ -1,0 +1,3 @@
+theorem consumerAccepted : Claim expectedSourceHash actualSourceHash capturedSource proposedIR :=
+⟨rfl, instrumented_sound capturedSource proposedIR rows acceptance⟩
+'consumerAccepted' depends on axioms: [propext]

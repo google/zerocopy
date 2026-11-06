@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "max_observer_invocations": 2,
+  "separate_captures": 0,
+  "codegen_link_native_reader_invocations": 0,
+  "rows": [
+    {
+      "name": "host-opt0",
+      "status": "PASS",
+      "observer_invocations": 1,
+      "consumer": {
+        "exit_code": 0,
+        "seconds": 1.493712416,
+        "waited_and_reaped": true,
+        "stdout_sha256": "72494325d11ca606b93ef2a8b844d234cb30914ec8fc749deebb2f12fcd2fa1e",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_bytes": 0
+      },
+      "observer_pid": 4798,
+      "observer_exit": 0,
+      "observer_waited_in_controller_finally": true,
+      "remaining_group_after_parent_wait": [],
+      "reference_sha256": "b1a174967a6ec532e6911eaaeff4db89e4181c858bdf7cc903ccd3147056e0e8",
+      "comparison_sha256": "72494325d11ca606b93ef2a8b844d234cb30914ec8fc749deebb2f12fcd2fa1e",
+      "effective_request_sha256": "a8745b7dcb76c63a5d969241fa800dfb02442e1b2f70f9021d4af7a7c8df031c",
+      "observer_seconds": 0.19842729199999998,
+      "rss_samples": 1,
+      "max_observed_group_rss_bytes": 37535744,
+      "bindings_unchanged": {
+        "original_public_manifest_sha256": "49219fcca8820d9d5f864d569e3b52c5156fb53110d05f8232b590e5f4fec5ea",
+        "raw_projected_file_bindings": 901,
+        "public_file_bindings": 925,
+        "windows_target_files": 45,
+        "observer_sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+        "actual_driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+      },
+      "run_dir": "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-02"
+    },
+    {
+      "name": "windows-opt2",
+      "status": "PASS",
+      "observer_invocations": 1,
+      "consumer": {
+        "exit_code": 0,
+        "seconds": 1.6263365000000003,
+        "waited_and_reaped": true,
+        "stdout_sha256": "2e509c3514a52fe7b8d5e0046710a5f7a5bf37848d8068de616b971e67bbd350",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_bytes": 0
+      },
+      "observer_pid": 4807,
+      "observer_exit": 0,
+      "observer_waited_in_controller_finally": true,
+      "remaining_group_after_parent_wait": [],
+      "reference_sha256": "7d99dd6f1f72ca735b69e05f3fb257bc44326980b09edb4ddc38976eeea4e354",
+      "comparison_sha256": "2e509c3514a52fe7b8d5e0046710a5f7a5bf37848d8068de616b971e67bbd350",
+      "effective_request_sha256": "70261ec10722d9627e265adebdcf1279c75102a767be99c6c299729192db2afc",
+      "observer_seconds": 0.194780917,
+      "rss_samples": 1,
+      "max_observed_group_rss_bytes": 73318400,
+      "bindings_unchanged": {
+        "original_public_manifest_sha256": "49219fcca8820d9d5f864d569e3b52c5156fb53110d05f8232b590e5f4fec5ea",
+        "raw_projected_file_bindings": 901,
+        "public_file_bindings": 925,
+        "windows_target_files": 45,
+        "observer_sha256": "f1d0404e6c9cfca353376653c1ea9464c328d358851447e12af65953d368172b",
+        "actual_driver_sha256": "dcaea7cc1884046940eb55fcb783e6a86272cf4743600925431022332fa9d69d"
+      },
+      "run_dir": "${WORKSPACE}/work/execution/abi-witness/stage5/windows-runs/independent-review-windows-opt2-01"
+    }
+  ],
+  "amendment": "Parent granted -B immediately after /usr/bin/python3; no other argv/env/source changes",
+  "trust": "Existing consumer/compiler/observer/controller, Python runtime and OS/shared cache remain trusted; sampled operational limits are not hard isolation or peak bounds.",
+  "actual_observer_invocations": 2
+}

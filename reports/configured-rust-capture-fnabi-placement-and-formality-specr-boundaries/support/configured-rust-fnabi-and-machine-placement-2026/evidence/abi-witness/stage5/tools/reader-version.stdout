@@ -1,0 +1,18 @@
+Apple LLVM version 21.0.0
+  Optimized build.
+
+
+  Registered Targets:
+    aarch64    - AArch64 (little endian)
+    aarch64_32 - AArch64 (little endian ILP32)
+    aarch64_be - AArch64 (big endian)
+    arm        - ARM
+    arm64      - ARM64 (little endian)
+    arm64_32   - ARM64 (little endian ILP32)
+    armeb      - ARM (big endian)
+    thumb      - Thumb
+    thumbeb    - Thumb (big endian)
+    wasm32     - WebAssembly 32-bit
+    wasm64     - WebAssembly 64-bit
+    x86        - 32-bit X86: Pentium-Pro and above
+    x86-64     - 64-bit X86: EM64T and AMD64

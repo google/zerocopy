@@ -1,27 +1,13 @@
 {
   "topics": [
-    "abi/callee-saved-registers",
-    "abi/red-zone",
-    "anneal/a-beh-07",
-    "anneal/backend",
-    "bedrock2/regalloc",
-    "cakeml/word-alloc",
-    "compiler/register-allocation",
-    "compcert/stacking",
-    "memory/pnvi-ae-udi",
-    "regalloc2/checker",
-    "rust/stack-probes",
-    "verification/quantitative-stack-bounds",
-    "verification/translation-validation"
+    "rustc",
+    "rustc/codegen",
+    "rustc/abi",
+    "verification/compcert",
+    "verification/cakeml",
+    "llvm/translation-validation"
   ],
   "subjects": [
-    {
-      "name": "Anneal verification framework and behavioral assumptions (A-BEH-07)",
-      "identity": {
-        "repository": "joshlf/anneal",
-        "revision": "e75556f57d76d09fd5fc84fc4bfca6a89c3b85e0"
-      }
-    },
     {
       "name": "regalloc2 Ion register allocator, parallel-move resolver, and symbolic dataflow checker",
       "identity": {
@@ -90,19 +76,10 @@
       }
     },
     {
-      "name": "Round 1 Track 4 Lean 4.34.1 mechanization of repaired regalloc2 symbolic checker, Stacking pass, red-zone safety, and quantitative stack bounds",
+      "name": "Anneal verification framework",
       "identity": {
-        "lines": "1-2476",
-        "path": "support/track4_regalloc2_stacking_probe.lean",
-        "sha256": "89b955c52defcb9e47403dddf9846976d5d6ba1418675c0b4e43f0421df19b37"
-      }
-    },
-    {
-      "name": "Round 2 Track 3 Lean 4.34.1 mechanization of public/private stack-frame partitioning, PNVI-ae-udi guard bytes, sub-register family aliasing, callee-saved tokens, and indirect-call stack contracts",
-      "identity": {
-        "lines": "1-1549",
-        "path": "support/round2_track3_probe.lean",
-        "sha256": "7f3aaf1f1e8dd2917c1ac460bb614c8b77082a3bf786de25bba51d8effd830c0"
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
       }
     }
   ],

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "selected": 74,
+  "roots": 35,
+  "duplicate_keys": [
+    {
+      "key": "command-line",
+      "identical": true
+    }
+  ],
+  "raw_sha256": "78e333362276408578c7b9d34bfaafce004bc2aa78e19b2f05c250fb260a8263"
+}

@@ -1,0 +1,18 @@
+{
+  "original_sha256": "340db0e3ad0afe685574a9ea31d4e6829b01ffd76b4f03036804fe026c69db2c",
+  "original_bytes": 1536,
+  "members": [
+    {
+      "name": "hmzlzxrvvy4dl2i9pj8gh4cbhn0frpy9-rocq-core9.0-stdlib-9.0.0.lock",
+      "type": "0",
+      "uid": 0,
+      "gid": 0,
+      "mode": "0o600",
+      "size": 0,
+      "mtime": 1792078723,
+      "linkname": "",
+      "pax_headers": {}
+    }
+  ],
+  "payloads": "omitted; private archive retained separately"
+}

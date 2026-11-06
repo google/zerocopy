@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "native_positive_launches": 1,
+  "other_native_launches": 0,
+  "runtime_queries": 8,
+  "positive": {
+    "returncode": 0,
+    "elapsed_seconds": 67.472878583,
+    "stdout_bytes": 842340,
+    "stdout_sha256": "44abcf46cde0bfe67bedd47a77d32f8e325fea4cc26c66a53fc9fe0c4dfb6281",
+    "stderr_bytes": 45,
+    "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+  },
+  "checks": {
+    "full_theorems": 71,
+    "decode_slots": 181,
+    "ordered_ledgers": [
+      47,
+      83
+    ],
+    "complete_global_axioms": 3,
+    "both_policy_markers_once": true,
+    "both_completion_markers_once": true,
+    "original_files": 23177,
+    "tools": 69,
+    "compiler_libraries": 2417,
+    "generated_modules_objects": 23,
+    "whole_output_census_files": 737,
+    "original_output_files_preserved": 704,
+    "approved_control_additions": 33,
+    "complete_before_after_identities_equal": true,
+    "complete_before_after_supplemental_equal": true,
+    "complete_before_after_inspect_equal": true,
+    "prepared_freeze_and_host_CLI_unchanged": true,
+    "all_nine_full_stream_receipts_verified": true,
+    "diagnostic_lines_equal_original": true,
+    "host_log_bytes": 3173712
+  },
+  "qualification": "Same selected theorem slice under the same trusted implementation and runtime; fresh direct loader/DSO identities do not establish actual mapping or full OS closure; no per-theorem axiom dependency claim or E03/E31 completion.",
+  "historical_inputs": "SOURCE-VERDICT, static-review-results and REPLAY-PLAN remain historical preparation; stale704 census rule superseded by parent approved exact737 baseline.",
+  "recovery": "One host gate incorrectly required literal Config.User 0; parent verified original/control/fresh all literal root and authorized bounded continuation; no repeated phase or user override."
+}

@@ -1,0 +1,30 @@
+opam-version: "2.0"
+name: "pprint"
+version: "20230830"
+synopsis: "A pretty-printing combinator library and rendering engine"
+description: """\
+This library offers a set of combinators for building so-called documents as
+well as an efficient engine for converting documents to a textual, fixed-width
+format. The engine takes care of indentation and line breaks, while respecting
+the constraints imposed by the structure of the document and by the text width."""
+maintainer: "francois.pottier@inria.fr"
+authors: [
+  "François Pottier <francois.pottier@inria.fr>"
+  "Nicolas Pouillard <np@nicolaspouillard.fr>"
+]
+license: "LGPL-2.0-only WITH OCaml-LGPL-linking-exception"
+homepage: "https://github.com/fpottier/pprint"
+bug-reports: "francois.pottier@inria.fr"
+depends: [
+  "ocaml" {>= "4.03"}
+  "dune" {>= "1.3"}
+]
+build: ["dune" "build" "-p" name "-j" jobs]
+dev-repo: "git+ssh://git@github.com/fpottier/pprint.git"
+url {
+  src: "https://github.com/fpottier/pprint/archive/20230830.tar.gz"
+  checksum: [
+    "md5=449216484e93e5691c76f14c87c5a711"
+    "sha512=7c58275cf9951283cf5051c2cf4c98084e8d562a8172a6379d9831a8fc95c9a19fc06710350217da2ea90fd2b17994142b10d1a9f8dab17b2bbf3e47e76c9f5f"
+  ]
+}

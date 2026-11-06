@@ -1,0 +1,18 @@
+{
+  "pid": 4795,
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "${WORKSPACE}/work/execution/abi-witness/e33_consumer_v3.py",
+    "check",
+    "--toolchain",
+    "${WORKSPACE}/work/execution/toolchains/rustup/toolchains/nightly-2026-05-01-aarch64-apple-darwin",
+    "--profile",
+    "host-subjects-opt0",
+    "--candidate",
+    "${WORKSPACE}/work/execution/abi-witness/capture-v3-host-subjects-opt0-01/reference.json",
+    "--run-dir",
+    "${WORKSPACE}/work/execution/abi-witness/independent-review-host-opt0-02"
+  ],
+  "started_unix_ns": 1792029355731951000
+}

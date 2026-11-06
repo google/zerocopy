@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "exocrate/packaging",
+    "exocrate/vendoring",
+    "exocrate/workspaces",
+    "exocrate/archive",
+    "build/hermeticity"
+  ],
+  "subjects": [
+    {
+      "name": "Exocrate installer selected by current Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src"
+      }
+    },
+    {
+      "name": "Anneal v2 setup path",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/src/main.rs"
+      }
+    },
+    {
+      "name": "tar crate resolved by Anneal",
+      "identity": {
+        "repository": "composefs/tar-rs",
+        "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+        "version": "0.4.46"
+      }
+    },
+    {
+      "name": "Exocrate installer used by current Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate"
+      }
+    },
+    {
+      "name": "dirs cache-directory dependency resolved by Anneal",
+      "identity": {
+        "crate": "dirs",
+        "version": "6.0.0",
+        "crates.io-sha256": "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e"
+      }
+    },
+    {
+      "name": "Exocrate in zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "exocrate/",
+        "crate_version": "0.1.0"
+      }
+    },
+    {
+      "name": "Exocrate local-archive installation path selected by Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src/lib.rs"
+      }
+    },
+    {
+      "name": "Anneal v2 remote archive metadata and setup wiring",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

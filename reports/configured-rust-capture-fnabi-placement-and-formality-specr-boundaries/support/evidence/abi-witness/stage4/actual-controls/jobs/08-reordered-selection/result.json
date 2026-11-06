@@ -1,0 +1,16 @@
+{
+  "id": "08-reordered-selection",
+  "schema_admissible": false,
+  "observer_calls": 0,
+  "consumer_exit": 64,
+  "CLI_json": {
+    "status": "rejected_data",
+    "reason": "consumer selected root/instance/extras"
+  },
+  "seconds": 0.32116762499999973,
+  "fresh_observer": null,
+  "candidate_sha256": "9424b883fd1a13f156422125751917ec88dbbbd5a7dcd8d2e109a3fd0be97bfc",
+  "stdout_sha256": "c3d616fccd9594fad82303b4e933b87b131536cb4e3e06a5ceb3e5bbf4fc919d",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stop": null
+}

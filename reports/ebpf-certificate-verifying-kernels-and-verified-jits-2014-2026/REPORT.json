@@ -1,13 +1,10 @@
 {
   "topics": [
-    "ebpf/verifier",
-    "ebpf/certificates",
-    "ebpf/jit",
-    "verification/pcc",
-    "verification/abstract-interpretation",
-    "verification/refinement-types",
-    "security/sfi",
-    "rust/kernel-extensions"
+    "systems",
+    "systems/ebpf-pcc",
+    "systems/os-kernels",
+    "verification/refinement",
+    "verification/smt-certificates"
   ],
   "subjects": [
     {
@@ -81,18 +78,39 @@
       }
     },
     {
-      "name": "Anneal",
-      "identity": {
-        "repository": "joshlf/anneal",
-        "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
-      }
-    },
-    {
       "name": "Lean 4",
       "identity": {
         "repository": "leanprover/lean4",
         "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
         "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "JVMS Java SE25",
+      "identity": {
+        "version": "Java SE25",
+        "url": "https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.10"
+      }
+    },
+    {
+      "name": "Jinja",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "352a4e06c2e2c1dc358200e2a87bd930e458ca90"
+      }
+    },
+    {
+      "name": "PREVAIL",
+      "identity": {
+        "repository": "vbpf/prevail",
+        "revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7"
+      }
+    },
+    {
+      "name": "eBPF flow-sensitive refinement types",
+      "identity": {
+        "doi": "10.1145/3763799",
+        "publication": "PACMPL9 OOPSLA2 Article410 2025"
       }
     }
   ],

@@ -1,0 +1,257 @@
+{
+  "topics": [
+    "systems",
+    "systems/concurrency-weak-memory",
+    "isa/aarch64",
+    "isa/x86-64",
+    "rust/concurrency",
+    "rust/inline-asm",
+    "verification/iris"
+  ],
+  "subjects": [
+    {
+      "name": "herdtools7 named x86-TSO and Arm models",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34"
+      }
+    },
+    {
+      "name": "Rust atomic access and fence API",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "Rust inline assembly contract",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "IMM selected model and compilation theorem source",
+      "identity": {
+        "repository": "weakmemory/imm",
+        "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+      }
+    },
+    {
+      "name": "LLVM atomic concurrency guide",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "version": "llvmorg-21.1.0"
+      }
+    },
+    {
+      "name": "Kraken sequential memory/effect semantics",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Apple Clang compiler binary",
+      "identity": {
+        "version": "21.0.0 (clang-2100.3.34.2)",
+        "artifact": "CommandLineTools/usr/bin/clang",
+        "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9"
+      }
+    },
+    {
+      "name": "C++ working draft",
+      "identity": {
+        "document": "WG21 N4868",
+        "date": "2020-10-18",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4868.pdf"
+      }
+    },
+    {
+      "name": "x86-TSO programmer model paper",
+      "identity": {
+        "publication": "CACM 53(7), July2010",
+        "url": "https://www.cl.cam.ac.uk/~pes20/weakmemory/cacm.pdf"
+      }
+    },
+    {
+      "name": "Mathematizing C++ Concurrency",
+      "identity": {
+        "doi": "10.1145/1926385.1926394",
+        "publication": "POPL2011"
+      }
+    },
+    {
+      "name": "Simplifying ARM Concurrency",
+      "identity": {
+        "doi": "10.1145/3158107",
+        "publication": "POPL2018"
+      }
+    },
+    {
+      "name": "Bridging the Gap between Programming Languages and Hardware Weak Memory Models",
+      "identity": {
+        "doi": "10.1145/3290382",
+        "publication": "POPL2019"
+      }
+    },
+    {
+      "name": "herdtools7 executable and selected AArch64 model",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+        "version": "7.58+1, Rev: exported",
+        "executable_sha256": "b50b95ab172b076b01d44b49e35cc86566ee6332550edce282a896db55e5095e"
+      }
+    },
+    {
+      "name": "Rust May 1 nightly atomic code generation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+        "toolchain": "nightly-2026-05-01-aarch64-apple-darwin",
+        "rustc_sha256": "c456b0855e2d148f5d517952f2cb684bf0379d125d2c89b5ca16d46e56c80988"
+      }
+    },
+    {
+      "name": "Rust inline assembly effect contract",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb",
+        "path": "src/inline-assembly.md"
+      }
+    },
+    {
+      "name": "Concurrent assembly specimen",
+      "identity": {
+        "artifact": "concurrent_assembly.rs",
+        "sha256": "3c142e4b3204fc4d3e849f968464a2792d84a805a88b3d44595b12a020b53249",
+        "original_native_binary_sha256": "0e0192997852c3a7816ac52bc4ac9b3e61e5fdbf2887ab9ece4a950396c2ac83"
+      }
+    },
+    {
+      "name": "Rust atomics memory model selected by the Anneal-era toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "path": "library/core/src/sync/atomic.rs",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Relaxed Separation Logic",
+      "identity": {
+        "doi": "10.1145/2509136.2509532",
+        "publication": "OOPSLA 2013",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Strong Logic for Weak Memory",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2017.17",
+        "publication": "ECOOP 2017",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "GenMC: A Model Checker for Weak Memory Models",
+      "identity": {
+        "doi": "10.1007/978-3-030-81685-8_20",
+        "publication": "CAV 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "RustMC: Automated Verification of Real-World Concurrent Rust",
+      "identity": {
+        "doi": "10.1007/978-3-032-28187-6_14",
+        "publication": "FORTE 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Rust current Arc and atomics source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f6c1107f8be13e48465e12c0fd26e6a39fe18e4f"
+      }
+    },
+    {
+      "name": "RustBelt relaxed-memory Arc model",
+      "identity": {
+        "revision": "186900b2cf948835873281646ce20c7e8f084f17",
+        "archive_sha256": "679846f8108325af762fbb86dd090514465e7e99059a4322e4e69565087d7ba0",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory paper",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "pdf_sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+      }
+    },
+    {
+      "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic artifact",
+      "identity": {
+        "zenodo": "15167032",
+        "archive": "pldi25-3-artifact.zip",
+        "sha256": "e3c6379299ab1227479ed789822c450044ff15ac59b69b83761a680376297f08"
+      }
+    },
+    {
+      "name": "Verifying General-Purpose RCU for Reclamation in Relaxed Memory Separation Logic paper",
+      "identity": {
+        "doi": "10.1145/3729246",
+        "pdf_sha256": "8d93b9c8f475ce0ae033480ce2699f286632ce544c9995ac0047df2ba47906ab"
+      }
+    },
+    {
+      "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals artifact",
+      "identity": {
+        "zenodo": "15183251",
+        "archive": "immut-artifact.zip",
+        "sha256": "485a24c8a9ab826729006861df2bb04405d61e1d27bd8da4de4316ec75eca7c4"
+      }
+    },
+    {
+      "name": "Leveraging Immutability to Validate Hazard Pointers for Optimistic Traversals paper",
+      "identity": {
+        "doi": "10.1145/3729247",
+        "pdf_sha256": "3765c92355575e61755b21f70bb42e7363102d0c6ee6f8d7606938fc57f316ad"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "iRC11/ORC11 formalization",
+      "identity": {
+        "revision": "48b7183f1b91f7cc53cfdab16e21387e9bfe9c14",
+        "url": "https://gitlab.mpi-sws.org/iris/gpfsl"
+      }
+    },
+    {
+      "name": "Author-associated relaxed-memory artifact",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory POPL 2020 paper",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "sha256": "462155546e6f213ec01fac35b5162088e44cb39b1039497b76a7a4ca2480770d"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

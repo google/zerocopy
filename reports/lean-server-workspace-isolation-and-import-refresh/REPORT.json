@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "lean/lsp",
+    "lean/concurrency",
+    "lake/server-launch"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 language-server workspace/project isolation selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "zerocopy Anneal current source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/src"
+      }
+    },
+    {
+      "name": "Aeneas Lean library revision selected by the generated workspace",
+      "identity": {
+        "repository": "google/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    },
+    {
+      "name": "Aeneas Lean generator selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Language Server Protocol 3.18 specification",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+        "version": "v4.29.0",
+        "executable_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37"
+      }
+    },
+    {
+      "name": "Lean 4 and Lake v4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-05"
+}

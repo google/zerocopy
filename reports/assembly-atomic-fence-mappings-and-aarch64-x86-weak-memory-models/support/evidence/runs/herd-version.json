@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "--workdir",
+    "<HERD_SOURCE>",
+    "<OWNED_CONTAINER>",
+    "opam",
+    "exec",
+    "--",
+    "./_build_verified/default/herd/herd.exe",
+    "-version"
+  ],
+  "exit": 0,
+  "seconds": 0.13450741698034108,
+  "stdout_sha256": "664406a7a93b81b1524934be54deacfd105b3485cd846ed2f88406fdab36fd82",
+  "stderr_sha256": "73f7d708ddfeaa846af9ef6a9759e091a31ec9c2d32a6cf62dfb0f5bf1bf1d3a"
+}

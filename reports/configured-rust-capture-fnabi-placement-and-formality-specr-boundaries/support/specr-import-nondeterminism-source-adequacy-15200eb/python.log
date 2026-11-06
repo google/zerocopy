@@ -1,0 +1,16 @@
+{
+  "checks": {
+    "empty_demonic_no_behavior": true,
+    "empty_angelic_no_witness": true,
+    "one_run_does_not_prove_all": true,
+    "incomplete_demonic_certificate_rejected": true,
+    "invalid_angelic_witness_rejected": true,
+    "normal_fence_routes_agree": true,
+    "fence_boundary_mutants_discriminate": true,
+    "rare_valid_choice_sampler_miss": true,
+    "quantifier_order_differs": true,
+    "bad_execution_erasure_detected": true
+  },
+  "rare_failure_probability": 0.9878657000386669,
+  "status": "pass"
+}

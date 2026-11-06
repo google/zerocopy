@@ -1,0 +1,218 @@
+{
+  "files": [
+    {
+      "path": "Controls-docker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Controls-native.json",
+      "bytes": 43727,
+      "sha256": "8cd88a0c7f51120e9e8917eb25df18b92bc849834c417a231758183fcd76c488"
+    },
+    {
+      "path": "Controls.lean",
+      "bytes": 9930,
+      "sha256": "7c9301d8c6080cd8cd1cf1a4ae356532b92de8378e416fd7ed48f35945d5635b"
+    },
+    {
+      "path": "Controls.olean",
+      "bytes": 254400,
+      "sha256": "b2fbb76b44f7eb0ad57ca724d959a62dc0ddd7594df0db0a4b26b129fe9aa0b7"
+    },
+    {
+      "path": "Controls.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "Controls.stdout",
+      "bytes": 35704,
+      "sha256": "55c9d0c35728687fa73398188fd7561e5410075cfa9ac6cf94bf5bcf1096466c"
+    },
+    {
+      "path": "FalseCombined.lean",
+      "bytes": 1235,
+      "sha256": "30cdc1d922f6d10679171fb506aaf3de53765a34ad49a4712f922521b6a5ee13"
+    },
+    {
+      "path": "FalseMissing.lean",
+      "bytes": 879,
+      "sha256": "64e921663fd9cdb852aa87a224d61789d85e85d14c01a6500add74f75188bf6d"
+    },
+    {
+      "path": "FalseOverflow.lean",
+      "bytes": 845,
+      "sha256": "4b14c2c2f6cd19bda6ca4203a0e6e18aa626e64e53d6fb6cd72ce16846066b56"
+    },
+    {
+      "path": "FalsePair1-docker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "FalsePair1-native.json",
+      "bytes": 1455,
+      "sha256": "80b4a79c646c5524175311a03be8a81aeab17294b515dc8c5347753019aaab19"
+    },
+    {
+      "path": "FalsePair1.lean",
+      "bytes": 1111,
+      "sha256": "1eff7bb8c3cff267706e6df38cdd771e0be4f849e7d59f3667320d18511a1e1b"
+    },
+    {
+      "path": "FalsePair1.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "FalsePair1.stdout",
+      "bytes": 327,
+      "sha256": "8981e92f7256944f4b9b893468b20f6797f6dbabfba100373221c58898b3086a"
+    },
+    {
+      "path": "FalsePair2-docker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "FalsePair2-native.json",
+      "bytes": 2142,
+      "sha256": "ace15cebbcba5e10f188449ef9b0ca7c12f83402c9c2499d12bcada120bcf4ba"
+    },
+    {
+      "path": "FalsePair2.lean",
+      "bytes": 1249,
+      "sha256": "bcff78e956d0ba7a4b0320662431dfcccd86c789fd570298aa97103a05e737f9"
+    },
+    {
+      "path": "FalsePair2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "FalsePair2.stdout",
+      "bytes": 1000,
+      "sha256": "f48728afa25bec476c2095816a70636db6628adcf6690995a1e8153035d45e4f"
+    },
+    {
+      "path": "FalseRD.lean",
+      "bytes": 735,
+      "sha256": "ccc41f293ccc802932dc726d8b0831ead573983ff9a8cc161721ee0bc535d6bd"
+    },
+    {
+      "path": "FalseRD2.lean",
+      "bytes": 803,
+      "sha256": "c0aa27adc135e5cedaec7b8e0aa2ffb119ed83387a2c284d98aec2d16d5a6e12"
+    },
+    {
+      "path": "FalseSUB.lean",
+      "bytes": 783,
+      "sha256": "ad04a8a4b95d61275e36c298dca3a4a32674159b27d79015f3dce8b4a97448f0"
+    },
+    {
+      "path": "SemanticAudit-docker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SemanticAudit-native.json",
+      "bytes": 59210,
+      "sha256": "52a7a0d984aad27c7a9e46786011b5cd0955ea5dc7ba588358ce7877c18f2444"
+    },
+    {
+      "path": "SemanticAudit.lean",
+      "bytes": 3265,
+      "sha256": "a5d1e29b94171ef207ae82cf4853d1639a3ecec35171a15fa1a6deafc3bb8d46"
+    },
+    {
+      "path": "SemanticAudit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SemanticAudit.stdout",
+      "bytes": 55926,
+      "sha256": "421cc4c4c26c30cde77c3ac5ff10760d945ca1b3e27cbc8df4d8368c6a11a338"
+    },
+    {
+      "path": "SemanticAudit2-docker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SemanticAudit2-native.json",
+      "bytes": 59529,
+      "sha256": "f5cd46684c3f66bbfec177fc4eead1148f95f9567ad8ee716333fd286c0af297"
+    },
+    {
+      "path": "SemanticAudit2.lean",
+      "bytes": 3320,
+      "sha256": "733b5487e4e3266cf1a35a16b4ca828e81af1234607196ec5f942cdf2a5119cc"
+    },
+    {
+      "path": "SemanticAudit2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SemanticAudit2.stdout",
+      "bytes": 56231,
+      "sha256": "4a89c765ee75670433450832a5ae81ac215361c0e729a49882f7bde3fd58936e"
+    },
+    {
+      "path": "SemanticAudit3-docker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SemanticAudit3-native.json",
+      "bytes": 59418,
+      "sha256": "743fc5fd4f6dff19d90c5e2f19bdfe9a7e7b61b4dfcec736368b504d5c49ff29"
+    },
+    {
+      "path": "SemanticAudit3.lean",
+      "bytes": 3334,
+      "sha256": "7c646b5e5a9cee3e4e501e5d2e0fb6bb203c5d80675423133f8b260f1299826c"
+    },
+    {
+      "path": "SemanticAudit3.olean",
+      "bytes": 52304,
+      "sha256": "ea702e19e7212551f47def3a1dc4cdd769603b74bac7fe706550a5e74814c97a"
+    },
+    {
+      "path": "SemanticAudit3.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "SemanticAudit3.stdout",
+      "bytes": 55979,
+      "sha256": "143312f257babb1be65a61fd117788ebaed5b97e3cff7320a320e4049c5c41bd"
+    },
+    {
+      "path": "all-theorem-axioms.json",
+      "bytes": 32323,
+      "sha256": "7851624cf2bb19f7fc544d5352f79e3790fa51d6565749ba26978a5ff63fa4b8"
+    },
+    {
+      "path": "check-summary.json",
+      "bytes": 8309,
+      "sha256": "c437e99ec4320c6a76035cc10a39d7277376280673b70adf0cdb26fc3b4de4da"
+    },
+    {
+      "path": "identity.json",
+      "bytes": 316,
+      "sha256": "ba053d72fa6288c2416a5dce4ebccd96fa97bc8e4ee4a95c35047bac510f2383"
+    },
+    {
+      "path": "run-check.py",
+      "bytes": 4336,
+      "sha256": "81db4c2932194d067cd1e289d7fc403be747b5eba0a19ff1b338c1a1ce2abe70"
+    }
+  ],
+  "excluded": [
+    "evidence-manifest.json"
+  ],
+  "native_checks": 6
+}

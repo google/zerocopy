@@ -1,0 +1,134 @@
+{
+  "topics": [
+    "kraken/orchestration",
+    "isa/aarch64",
+    "isa/x86-64",
+    "rust/inline-asm",
+    "isa/binary-lifting"
+  ],
+  "subjects": [
+    {
+      "name": "Kraken AArch64 model",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Lean used to execute selected model",
+      "identity": {
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "target": "arm64-apple-darwin24.6.0"
+      }
+    },
+    {
+      "name": "Rust compiler used for native register probes",
+      "identity": {
+        "version": "1.99.0",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "host": "aarch64-apple-darwin",
+        "llvm": "23.1.1"
+      }
+    },
+    {
+      "name": "Arm A64 instruction descriptions, selected ADDS/ADCS entries",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/68da52dfbd7cab51328c0622",
+        "revision": "2025-09_rel",
+        "build_timestamp": "2025-09-23 11:45:10"
+      }
+    },
+    {
+      "name": "Arm A64 instruction descriptions, selected LSLV/REV entries",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+        "revision": "aarchmrs v2025-03_rel, pseudocode v2025-03_rel",
+        "build_timestamp": "2025-03-21T17:41"
+      }
+    },
+    {
+      "name": "Armv8-A Instruction Set Architecture guide",
+      "identity": {
+        "url": "https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Learn%20the%20Architecture/Armv8-A%20Instruction%20Set%20Architecture.pdf?revision=af73a2a4-620d-4f86-86b0-2987dc04e154",
+        "document": "ARM062-948681440-3280",
+        "date": "2020-07-03"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "Arm A64 reference",
+      "identity": {
+        "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+        "version": "aarchmrs/pseudocode v2025-03_rel",
+        "build": "2025-03-21T17:41"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "2dafab96d919d6ab2884488e970bf95610ff83eb"
+      }
+    },
+    {
+      "name": "Rust compiler and library 1.99.0",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "LLVM ThinLTO documentation",
+      "identity": {
+        "url": "https://clang.llvm.org/docs/ThinLTO.html",
+        "observed-date": "2026-10-14"
+      }
+    },
+    {
+      "name": "LLD linking concepts",
+      "identity": {
+        "url": "https://lld.llvm.org/NewLLD.html",
+        "observed-date": "2026-10-14"
+      }
+    },
+    {
+      "name": "RISC-V ELF linker relaxation",
+      "identity": {
+        "url": "https://docs.riscv.org/reference/abi/riscv-elf-linker-relaxation.html",
+        "observed-date": "2026-10-14"
+      }
+    },
+    {
+      "name": "s2n-bignum",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+      }
+    }
+  ],
+  "observed_at": "2026-10-14"
+}

@@ -1,0 +1,48 @@
+{
+  "examples": [
+    {
+      "name": "Lake compiled-configuration ownership",
+      "older": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "release": "v4.30.0-rc2",
+        "behavior": "compiled Lean package configuration is stored under the package/dependency .lake/config tree"
+      },
+      "newer": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "release": "v4.31.0",
+        "behavior": "compiled configuration is stored under the workspace .lake/config/<package-index> tree"
+      },
+      "change": {
+        "commit": "41ecccec6d1244c5f89be2fc76638f22ba37cbc6",
+        "title": "feat: lake: hoist compiled configurations (#13683)",
+        "consequence": "cross-workspace compiled-configuration ownership/contention changes; broader package-local mutation does not disappear"
+      },
+      "lesson": "A nearby release can change the exact persistence and concurrency boundary that a verification/build-system claim depends on."
+    },
+    {
+      "name": "Charon same-version revisions with different Rust pins",
+      "older": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "package_version": "0.1.210",
+        "rust_toolchain": "nightly-2026-05-31",
+        "selection": "Aeneas nightly-2026.06.03 pin"
+      },
+      "newer": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "package_version": "0.1.210",
+        "rust_toolchain": "nightly-2026-06-01",
+        "selection": "Charon repository-local nightly-2026.06.03 tag resolved by Anneal Cargo.lock"
+      },
+      "ancestry": {
+        "newer_ahead_by_commits": 15,
+        "direction": "0c91ca1a is ahead of a535e914"
+      },
+      "lesson": "Matching semantic versions and matching date-like release labels do not establish identical source or transitive toolchain requirements."
+    }
+  ],
+  "reuse_rule": "Use adjacency to choose a comparison, not to substitute old evidence for the new exact identity. Revalidate the proposition's supporting decision points and use a differential execution probe when immutable evidence cannot settle behavior."
+}

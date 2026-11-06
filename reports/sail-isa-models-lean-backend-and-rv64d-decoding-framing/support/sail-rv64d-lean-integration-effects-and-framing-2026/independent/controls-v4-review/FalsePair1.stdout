@@ -1,0 +1,6 @@
+/home/opam/anneal-sail-output/independent-controls-v4/FalsePair1.lean:20:2: error: Tactic `decide` proved that the proposition
+  some 18446744073709551615 = some 3
+is false
+/home/opam/anneal-sail-output/independent-controls-v4/FalsePair1.lean:29:2: error: Tactic `decide` proved that the proposition
+  some 0 = some 3
+is false

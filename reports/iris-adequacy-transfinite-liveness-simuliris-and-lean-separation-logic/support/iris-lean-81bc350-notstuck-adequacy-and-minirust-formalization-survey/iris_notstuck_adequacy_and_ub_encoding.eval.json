@@ -1,0 +1,17 @@
+{
+  "file": "iris_notstuck_adequacy_and_ub_encoding.lean",
+  "sha256": "d14b7aa201d34d0fe73cdb88a305c4f1b4bc30dc0039fdc81fc82e17fbe12806",
+  "command": [
+    "lean",
+    "-j1",
+    "-M768",
+    "iris_notstuck_adequacy_and_ub_encoding.lean"
+  ],
+  "lean_version": "4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52)",
+  "returncode": 0,
+  "wall_seconds": 0.89,
+  "max_rss_kb": 521632,
+  "max_rss_bytes": 534151168,
+  "stdout": "",
+  "stderr": ""
+}

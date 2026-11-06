@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "docker",
+    "cp",
+    "anneal-formal-experiments-20261014:/home/opam/anneal-itree/iris-itree",
+    "work/execution/modular-logic/container-results"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.107735334
+}

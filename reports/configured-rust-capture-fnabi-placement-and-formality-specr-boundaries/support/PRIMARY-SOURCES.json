@@ -1,0 +1,302 @@
+{
+  "repository": "rust-lang/rust",
+  "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+  "files": [
+    {
+      "path": "primary-source/compiler/rustc_abi/src/layout/ty.rs",
+      "upstream_path": "compiler/rustc_abi/src/layout/ty.rs",
+      "sha256": "fb480d7ba1a6b49f40f3e2a57cfcc554938f467fc94b50463ceeb425454a65d4",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          70,
+          100
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_abi/src/lib.rs",
+      "upstream_path": "compiler/rustc_abi/src/lib.rs",
+      "sha256": "3657ef582f2d622edeb3b7cb61252f6b9a513189246490d8d982cdb6fddd093f",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          1381,
+          1455
+        ],
+        [
+          1538,
+          1599
+        ],
+        [
+          1645,
+          1720
+        ],
+        [
+          1788,
+          1809
+        ],
+        [
+          2101,
+          2143
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_codegen_llvm/src/abi.rs",
+      "upstream_path": "compiler/rustc_codegen_llvm/src/abi.rs",
+      "sha256": "24181cc0088b2e4b64e7887b9a9ad29f413712993a8028faa9818098edd2c0f7",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          38,
+          107
+        ],
+        [
+          350,
+          429
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_driver_impl/src/lib.rs",
+      "upstream_path": "compiler/rustc_driver_impl/src/lib.rs",
+      "sha256": "3846a029d9484ef7d954a35766c36f257fa97e22f91ea2dfc68777fd1a53804a",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          326,
+          343
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_feature/src/unstable.rs",
+      "upstream_path": "compiler/rustc_feature/src/unstable.rs",
+      "sha256": "12d1bbd54d1da67659e6dbf1f197fcaee6b228412e02cb2516d02f3b1d9563b5",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          330,
+          337
+        ],
+        [
+          700,
+          709
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_interface/src/util.rs",
+      "upstream_path": "compiler/rustc_interface/src/util.rs",
+      "sha256": "d1884a515aead465a9391dea65ef555b09faa432ca6d79e661766ae46f8dca3d",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          329,
+          361
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_middle/src/queries.rs",
+      "upstream_path": "compiler/rustc_middle/src/queries.rs",
+      "sha256": "613da347172143ddbfc5cc5c1904fbe28f4a94476f91ddf1fa114b04589e357b",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          1770,
+          1810
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_middle/src/ty/context.rs",
+      "upstream_path": "compiler/rustc_middle/src/ty/context.rs",
+      "sha256": "d4b1400c87a881bfda793120a504bafef3f78a39de1f071fb47a1323701567a8",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          2445,
+          2466
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_middle/src/ty/generics.rs",
+      "upstream_path": "compiler/rustc_middle/src/ty/generics.rs",
+      "sha256": "5a8dfe1ca92feb97c0682e1fe7fd6180f18af40965927baf65f5d4a6b03239b0",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          12,
+          63
+        ],
+        [
+          118,
+          158
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_middle/src/ty/instance.rs",
+      "upstream_path": "compiler/rustc_middle/src/ty/instance.rs",
+      "sha256": "b1aa119ff3d5b1660099ff5b7573c8f5eaa96f5bcaff86a1fc8936d129ad61cf",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          492,
+          516
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_middle/src/ty/mod.rs",
+      "upstream_path": "compiler/rustc_middle/src/ty/mod.rs",
+      "sha256": "90cb6b463b91052c1a17bebe14e8e272760dacca12dbe08f9dd0ff8e15779a9a",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          2185,
+          2210
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_middle/src/ty/sty.rs",
+      "upstream_path": "compiler/rustc_middle/src/ty/sty.rs",
+      "sha256": "5fd96b77f73dd54d1814deb4b6f751c5fe48068ac94beeb57dac727841250d94",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          620,
+          632
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_passes/src/abi_test.rs",
+      "upstream_path": "compiler/rustc_passes/src/abi_test.rs",
+      "sha256": "d139e09316511fcad5304051dd8b441b20ff86bf85acda0422aebd1b53bae544",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          52,
+          107
+        ],
+        [
+          109,
+          141
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_target/src/callconv/aarch64.rs",
+      "upstream_path": "compiler/rustc_target/src/callconv/aarch64.rs",
+      "sha256": "8270daa7cf61bb13e20143167506bb13c9c928e417fe03915266a8f20f2ae658",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          8,
+          44
+        ],
+        [
+          77,
+          182
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_target/src/callconv/mod.rs",
+      "upstream_path": "compiler/rustc_target/src/callconv/mod.rs",
+      "sha256": "f65e47d57905d866f5ad97932f06125ab5008ef736fc12dad1e9fa3b04048052",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          38,
+          201
+        ],
+        [
+          240,
+          417
+        ],
+        [
+          545,
+          611
+        ],
+        [
+          629,
+          775
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_target/src/callconv/x86_win64.rs",
+      "upstream_path": "compiler/rustc_target/src/callconv/x86_win64.rs",
+      "sha256": "04a4ec39681264eac8315054f420a724be377965cd24dfa2e23e1754f110bfba",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          1,
+          74
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_target/src/spec/base/windows_msvc.rs",
+      "upstream_path": "compiler/rustc_target/src/spec/base/windows_msvc.rs",
+      "sha256": "8a7b0ed7b6962fc8c34915105af706c26a87ab6a57838742d846592fad11e125",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          1,
+          38
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_target/src/spec/targets/aarch64_apple_darwin.rs",
+      "upstream_path": "compiler/rustc_target/src/spec/targets/aarch64_apple_darwin.rs",
+      "sha256": "27f17dbc2f78802e22f4df550de2536ccf8bcfd148bac39f93fe4b04a8ecd5c2",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          1,
+          31
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_target/src/spec/targets/x86_64_pc_windows_msvc.rs",
+      "upstream_path": "compiler/rustc_target/src/spec/targets/x86_64_pc_windows_msvc.rs",
+      "sha256": "5c0d4b8ea129afb1b40f28a0d01acdfab0470ab08a2ec1c603fb5add73fc6584",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          1,
+          25
+        ]
+      ]
+    },
+    {
+      "path": "primary-source/compiler/rustc_ty_utils/src/abi.rs",
+      "upstream_path": "compiler/rustc_ty_utils/src/abi.rs",
+      "sha256": "36fff701cec7499b58b838373701b6ab020727552caf68ec5ed3197aa28ae885",
+      "revision": "f53b654a8882fd5fc036c4ca7a4ff41ce32497a6",
+      "inspected_ranges": [
+        [
+          30,
+          73
+        ],
+        [
+          229,
+          438
+        ],
+        [
+          440,
+          737
+        ]
+      ]
+    }
+  ]
+}

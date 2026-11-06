@@ -1,0 +1,12 @@
+{
+  "pid": 11223,
+  "pgid": 11223,
+  "launch_start_unix_ns": 1792025655228761000,
+  "pid_persisted_unix_ns": 1792025655230167000,
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "-c",
+    "import time; time.sleep(30)"
+  ]
+}

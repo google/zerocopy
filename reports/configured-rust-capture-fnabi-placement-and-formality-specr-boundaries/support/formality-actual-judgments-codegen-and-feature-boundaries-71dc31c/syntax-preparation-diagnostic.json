@@ -1,0 +1,12 @@
+{
+  "status": "syntax checked in memory",
+  "scripts": [
+    "run_cases.py",
+    "run_phase.py"
+  ],
+  "prior_attempt": "python3 -B -m py_compile run_cases.py run_phase.py",
+  "prior_result": "PermissionError: explicit py_compile output followed system Python sys.pycache_prefix outside task scratch despite -B; OS denied. No build/native execution ran. No external cleanup attempted.",
+  "resolution": "Use built-in compile(text, name, exec) with no pyc output; all later owned Python calls use -B. This is preparation failure, not a source/formality result.",
+  "python_sys_pycache_prefix": "<USER_HOME>/Library/Caches/com.apple.python",
+  "python_env_pycacheprefix": null
+}

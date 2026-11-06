@@ -1,12 +1,10 @@
 {
   "topics": [
-    "riscv64",
-    "elf64",
-    "assembly/relocations",
-    "abi/lp64d",
-    "compiler/branch-relaxation",
-    "verification/lean4",
-    "linux/syscall-abi"
+    "isa",
+    "isa/riscv64",
+    "isa/elf-relocations",
+    "rustc/abi",
+    "lean/mechanization"
   ],
   "subjects": [
     {
@@ -57,23 +55,6 @@
         "version": "11.1.0",
         "package": "1:11.1.0+ds-2",
         "executable_sha256": "328369968794f853dde737be961b290fe74cb21ff4f23de65ed52a281d360d40"
-      }
-    },
-    {
-      "name": "RV64GC encoding, immediate compensation, branch relaxation, and ELF64 ABI proofs and probes",
-      "identity": {
-        "lean_proof_probe": "support/rv64_encoding_and_imm_proofs.lean",
-        "lean_proof_probe_sha256": "5e6951772faf79c18c384d261550e8945226bcf7b094b4ee8ac775ae7bb37442",
-        "elf_generator_probe": "support/gen_and_verify_rv64_elf.py",
-        "elf_generator_probe_sha256": "a238f78d9bc0995fdeb2ff0024eab6794cb6f0f56ccdea00cf7b72c8b329fb92",
-        "relocatable_object": "support/probe_rv64gc.o",
-        "relocatable_object_sha256": "c45f22f0de47bd13157603e4f0f72f06a727de7e229ae977875b56dfc692e119",
-        "linked_executable": "support/probe_rv64gc.elf",
-        "linked_executable_sha256": "5f588cb59db32198aafca550df6290a861238011ddce44a6df85de8dbec47377",
-        "probe_ledger": "support/probe_ledger.json",
-        "probe_ledger_sha256": "f5c09092ca69508507abfa4c63b43f1c6701533964f588ed9d387a04aae3e600",
-        "verification_output": "support/verification_output.txt",
-        "verification_output_sha256": "6a7b0fc894105c3cc8b1a31e5d5be0da314587aa8ca50a4444f3007834affb66"
       }
     }
   ],

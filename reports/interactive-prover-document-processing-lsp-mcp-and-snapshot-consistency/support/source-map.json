@@ -1,0 +1,88 @@
+{
+  "sources": [
+    {
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "path": "_specifications/lsp/3.18/specification.md",
+      "blob": "2c33357fc28b47a7090655cc93b227968c459b4a",
+      "ranges": ["45-55 transport framing", "162-176 request identity", "327-338 notification identity", "342-360 cancellation"]
+    },
+    {
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "path": "_specifications/lsp/3.18/general/initialize.md",
+      "blob": "177eb366b7e7769527007cbd652b6372a03aa789",
+      "ranges": ["23-29 processId", "54-87 rootUri/workspaceFolders/client capabilities"]
+    },
+    {
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "path": "_specifications/lsp/3.18/textDocument/didOpen.md",
+      "blob": "f2bc2141ca7b4efdc1521493470cc631cf083d99",
+      "ranges": ["1-29 open-document ownership and parameters"]
+    },
+    {
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "path": "_specifications/lsp/3.18/textDocument/didChange.md",
+      "blob": "81e7475181818d44229c10dbcc25de7f3de83c69",
+      "ranges": ["1-15 open-before-change and synchronization-before-query", "48-70 post-change version and ordered content changes"]
+    },
+    {
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "path": "_specifications/lsp/3.18/textDocument/didClose.md",
+      "blob": "e8c956a6402a8a7ff031839fa58fba5d39c11f6d",
+      "ranges": ["1-27 close and URI-master semantics"]
+    },
+    {
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "path": "_specifications/lsp/3.18/workspace/workspaceFolders.md",
+      "blob": "005d024417ed5bed246f9ee4a0fe5fdf67f7d414",
+      "ranges": ["1-20 multi-root workspace coordinates and capability boundary"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/Watchdog.lean",
+      "blob": "68ed22f9178c9ae917c595c364d23df902d9478f",
+      "ranges": ["40-64 watchdog-worker protocol model", "866-883 worker initialize/didOpen replay", "922-936 crashed-worker restart gate", "1245-1261 retained document state and didChange forwarding", "1308-1317 cancellation forwarding"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/FileWorker.lean",
+      "blob": "c803034ed8810f13a5ef38a603a21e610efca2bc",
+      "ranges": ["34-49 edit/request invalidation model", "595-631 didChange and cancellation", "695-706 notification dispatch", "1055-1075 worker initialization"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/ProtocolOverview.lean",
+      "blob": "4f493fc900319113e00a0a9c0f5eac4c3e5bb8e5",
+      "ranges": ["56-70 open-document requirement and closed-file behavior", "112-135 didOpen protocol entry"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/RequestCancellation.lean",
+      "blob": "7d310d0cd941641334a799828d4746c08e6a89d1",
+      "ranges": ["15-58 explicit-request versus edit cancellation tokens"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Language/Lean.lean",
+      "blob": "124d4739bc910eb30ec35844348c785bf9f6c70a",
+      "ranges": ["21-80 incremental parsing boundary", "83-215 incremental command elaboration and snapshot reuse/cancellation"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/README.md",
+      "blob": "4bac3026e17b604888324821f5725e0338f802e3",
+      "ranges": ["29-64 watchdog/worker isolation, dependency refresh, snapshot architecture"]
+    }
+  ]
+}

@@ -1,0 +1,2069 @@
+theorem AnnealSail.Controls.execute_sub_effects : Functions.execute
+    (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.SUB)) =
+  FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x1 none))) fun a =>
+    FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+      FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a - b)))) fun x =>
+        FreeM.pure (ExecutionResult.Retire_Success ()) :=
+Eq.refl (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.SUB)))
+'AnnealSail.Controls.execute_sub_effects' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.execute_sub_full_state : ∀ (a b : BitVec 64) (s : SequentialState RegisterType),
+  s.regs.get? Register.x1 = some a →
+    s.regs.get? Register.x2 = some b →
+      EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.SUB))))
+          s =
+        EStateM.Result.ok (ExecutionResult.Retire_Success ())
+          { regs := s.regs.insert Register.x3 (a - b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+            sailOutput := s.sailOutput } :=
+fun a b s h1 h2 =>
+  Eq.mpr
+    (id
+      (congrArg
+        (fun _a =>
+          EStateM.run (interpretSailEffects _a) s =
+            EStateM.Result.ok (ExecutionResult.Retire_Success ())
+              { regs := s.regs.insert Register.x3 (a - b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+                sailOutput := s.sailOutput })
+        execute_sub_effects))
+    (of_eq_true
+      (Eq.trans
+        (congrFun'
+          (congrArg Eq
+            (Eq.trans
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun a =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+                                FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a - b))))
+                                  fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h1)
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a_1 s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun b =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a - b))))
+                                fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a_1 s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h2)))
+          (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+            { regs := s.regs.insert Register.x3 (a - b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+              sailOutput := s.sailOutput }))
+        (eq_self
+          (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+            { regs := s.regs.insert Register.x3 (a - b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+              sailOutput := s.sailOutput }))))
+'AnnealSail.Controls.execute_sub_full_state' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.execute_rd4_effects : Functions.execute
+    (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 4, rop.ADD)) =
+  FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x1 none))) fun a =>
+    FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+      FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x4 none (a + b)))) fun x =>
+        FreeM.pure (ExecutionResult.Retire_Success ()) :=
+Eq.refl (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 4, rop.ADD)))
+'AnnealSail.Controls.execute_rd4_effects' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.execute_rd4_full_state : ∀ (a b : BitVec 64) (s : SequentialState RegisterType),
+  s.regs.get? Register.x1 = some a →
+    s.regs.get? Register.x2 = some b →
+      EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 4, rop.ADD))))
+          s =
+        EStateM.Result.ok (ExecutionResult.Retire_Success ())
+          { regs := s.regs.insert Register.x4 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+            sailOutput := s.sailOutput } :=
+fun a b s h1 h2 =>
+  Eq.mpr
+    (id
+      (congrArg
+        (fun _a =>
+          EStateM.run (interpretSailEffects _a) s =
+            EStateM.Result.ok (ExecutionResult.Retire_Success ())
+              { regs := s.regs.insert Register.x4 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+                sailOutput := s.sailOutput })
+        execute_rd4_effects))
+    (of_eq_true
+      (Eq.trans
+        (congrFun'
+          (congrArg Eq
+            (Eq.trans
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun a =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+                                FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x4 none (a + b))))
+                                  fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h1)
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a_1 s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun b =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x4 none (a + b))))
+                                fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a_1 s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h2)))
+          (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+            { regs := s.regs.insert Register.x4 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+              sailOutput := s.sailOutput }))
+        (eq_self
+          (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+            { regs := s.regs.insert Register.x4 (a + b), mem := s.mem, tags := s.tags, cycleCount := s.cycleCount,
+              sailOutput := s.sailOutput }))))
+'AnnealSail.Controls.execute_rd4_full_state' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.add_missing_x1 : ∀ (s : SequentialState RegisterType),
+  s.regs.get? Register.x1 = none →
+    EStateM.run
+        (interpretSailEffects
+          (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+        s =
+      EStateM.Result.error Sail.Error.Unreachable s :=
+fun s h1 =>
+  Eq.mpr
+    (id
+      (congrArg (fun _a => EStateM.run (interpretSailEffects _a) s = EStateM.Result.error Sail.Error.Unreachable s)
+        execute_add_effects))
+    (of_eq_true
+      (Eq.trans
+        (congrFun'
+          (congrArg Eq
+            (congrArg
+              (fun x =>
+                match
+                  (match x with
+                    | some s => pure s
+                    | x => throw Sail.Error.Unreachable)
+                    s with
+                | EStateM.Result.ok a s =>
+                  (fun res =>
+                      FreeM.liftM
+                        (fun x =>
+                          match x with
+                          | Sum.inl (Except.error err) => throw err
+                          | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                          | Sum.inr choice =>
+                            let c := choice;
+                            if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                        ((fun a =>
+                            FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a + b))))
+                                fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                          res))
+                    a s
+                | EStateM.Result.error e s => EStateM.Result.error e s)
+              h1))
+          (EStateM.Result.error Sail.Error.Unreachable s))
+        (eq_self (EStateM.Result.error Sail.Error.Unreachable s))))
+'AnnealSail.Controls.add_missing_x1' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.add_missing_x2 : ∀ (a : BitVec 64) (s : SequentialState RegisterType),
+  s.regs.get? Register.x1 = some a →
+    s.regs.get? Register.x2 = none →
+      EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+          s =
+        EStateM.Result.error Sail.Error.Unreachable s :=
+fun a s h1 h2 =>
+  Eq.mpr
+    (id
+      (congrArg (fun _a => EStateM.run (interpretSailEffects _a) s = EStateM.Result.error Sail.Error.Unreachable s)
+        execute_add_effects))
+    (of_eq_true
+      (Eq.trans
+        (congrFun'
+          (congrArg Eq
+            (Eq.trans
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun a =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regRead Register.x2 none))) fun b =>
+                                FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a + b))))
+                                  fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h1)
+              (congrArg
+                (fun x =>
+                  match
+                    (match x with
+                      | some s => pure s
+                      | x => throw Sail.Error.Unreachable)
+                      s with
+                  | EStateM.Result.ok a_1 s =>
+                    (fun res =>
+                        FreeM.liftM
+                          (fun x =>
+                            match x with
+                            | Sum.inl (Except.error err) => throw err
+                            | Sum.inl (Except.ok eff) => interpretInstructionEffect eff
+                            | Sum.inr choice =>
+                              let c := choice;
+                              if h : 0 < c then pure ⟨0, h⟩ else throw Sail.Error.Unreachable)
+                          ((fun b =>
+                              FreeM.impure (Sum.inl (Except.ok (InstructionEffect.regWrite Register.x3 none (a + b))))
+                                fun x => FreeM.pure (ExecutionResult.Retire_Success ()))
+                            res))
+                      a_1 s
+                  | EStateM.Result.error e s => EStateM.Result.error e s)
+                h2)))
+          (EStateM.Result.error Sail.Error.Unreachable s))
+        (eq_self (EStateM.Result.error Sail.Error.Unreachable s))))
+'AnnealSail.Controls.add_missing_x2' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.add_wraps : EStateM.run
+    (interpretSailEffects
+      (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+    fixtureWrap =
+  EStateM.Result.ok (ExecutionResult.Retire_Success ())
+    (have __src := fixtureWrap;
+    { regs := fixtureWrap.regs.insert Register.x3 0, mem := __src.mem, tags := __src.tags,
+      cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }) :=
+have h1 :=
+  of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              Std.ExtDHashMap.get?_insert_self)))
+        (some 18446744073709551615#64))
+      (eq_self (some 18446744073709551615#64)));
+have h2 :=
+  of_eq_true (Eq.trans (congrFun' (congrArg Eq Std.ExtDHashMap.get?_insert_self) (some 1#64)) (eq_self (some 1#64)));
+have hw := of_decide_eq_true (id (Eq.refl true));
+id
+  (Eq.mp
+    (congrArg
+      (Eq
+        (EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+          fixtureWrap))
+      (congrArg (EStateM.Result.ok (ExecutionResult.Retire_Success ()))
+        (congrFun'
+          (congrFun'
+            (congrFun'
+              (congrFun'
+                (congrArg SequentialState.mk
+                  (Std.ExtDHashMap.insert.congr_simp fixtureWrap.regs fixtureWrap.regs (Eq.refl fixtureWrap.regs)
+                    Register.x3 (18446744073709551615 + 1) 0 hw))
+                fixtureWrap.mem)
+              fixtureWrap.tags)
+            fixtureWrap.cycleCount)
+          fixtureWrap.sailOutput)))
+    (execute_add_full_state 18446744073709551615 1 fixtureWrap h1 h2))
+'AnnealSail.Controls.add_wraps' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.sub_fixture : EStateM.run
+    (interpretSailEffects
+      (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.SUB))))
+    fixture12 =
+  EStateM.Result.ok (ExecutionResult.Retire_Success ())
+    (have __src := fixture12;
+    { regs := fixture12.regs.insert Register.x3 18446744073709551615, mem := __src.mem, tags := __src.tags,
+      cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }) :=
+have h1 :=
+  of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              (Eq.trans Std.ExtDHashMap.get?_insert
+                (Eq.trans
+                  (dite_cond_eq_false
+                    (Eq.trans beq_iff_eq._simp_1
+                      (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                  (Eq.trans Std.ExtDHashMap.get?_insert
+                    (Eq.trans
+                      (dite_cond_eq_false
+                        (Eq.trans beq_iff_eq._simp_1
+                          (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                      Std.ExtDHashMap.get?_insert_self)))))))
+        (some 1#64))
+      (eq_self (some 1#64)));
+have h2 :=
+  of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              (Eq.trans Std.ExtDHashMap.get?_insert
+                (Eq.trans
+                  (dite_cond_eq_false
+                    (Eq.trans beq_iff_eq._simp_1
+                      (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                  Std.ExtDHashMap.get?_insert_self)))))
+        (some 2#64))
+      (eq_self (some 2#64)));
+have hw := of_decide_eq_true (id (Eq.refl true));
+id
+  (Eq.mp
+    (congrArg
+      (Eq
+        (EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.SUB))))
+          fixture12))
+      (congrArg (EStateM.Result.ok (ExecutionResult.Retire_Success ()))
+        (congrFun'
+          (congrFun'
+            (congrFun'
+              (congrFun'
+                (congrArg SequentialState.mk
+                  (Std.ExtDHashMap.insert.congr_simp fixture12.regs fixture12.regs (Eq.refl fixture12.regs) Register.x3
+                    (1 - 2) 18446744073709551615 hw))
+                fixture12.mem)
+              fixture12.tags)
+            fixture12.cycleCount)
+          fixture12.sailOutput)))
+    (execute_sub_full_state 1 2 fixture12 h1 h2))
+'AnnealSail.Controls.sub_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.sub_differs_from_add : (match
+    EStateM.run
+      (interpretSailEffects
+        (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.SUB))))
+      fixture12 with
+  | EStateM.Result.ok a s' => s'.regs.get? Register.x3
+  | EStateM.Result.error a a_1 => none) ≠
+  some 3 :=
+Eq.mpr
+  (id
+    (congrArg
+      (fun _a =>
+        (match _a with
+          | EStateM.Result.ok a s' => s'.regs.get? Register.x3
+          | EStateM.Result.error a a_1 => none) ≠
+          some 3)
+      sub_fixture))
+  (Eq.mpr (id (congrFun' (congrArg Ne Std.ExtDHashMap.get?_insert_self) (some 3)))
+    (id (of_decide_eq_true (id (Eq.refl true)))))
+'AnnealSail.Controls.sub_differs_from_add' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.rd4_fixture : EStateM.run
+    (interpretSailEffects
+      (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 4, rop.ADD))))
+    fixture12 =
+  EStateM.Result.ok (ExecutionResult.Retire_Success ())
+    (have __src := fixture12;
+    { regs := fixture12.regs.insert Register.x4 3, mem := __src.mem, tags := __src.tags, cycleCount := __src.cycleCount,
+      sailOutput := __src.sailOutput }) :=
+have h1 :=
+  of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              (Eq.trans Std.ExtDHashMap.get?_insert
+                (Eq.trans
+                  (dite_cond_eq_false
+                    (Eq.trans beq_iff_eq._simp_1
+                      (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                  (Eq.trans Std.ExtDHashMap.get?_insert
+                    (Eq.trans
+                      (dite_cond_eq_false
+                        (Eq.trans beq_iff_eq._simp_1
+                          (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                      Std.ExtDHashMap.get?_insert_self)))))))
+        (some 1#64))
+      (eq_self (some 1#64)));
+have h2 :=
+  of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              (Eq.trans Std.ExtDHashMap.get?_insert
+                (Eq.trans
+                  (dite_cond_eq_false
+                    (Eq.trans beq_iff_eq._simp_1
+                      (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                  Std.ExtDHashMap.get?_insert_self)))))
+        (some 2#64))
+      (eq_self (some 2#64)));
+have hw := of_decide_eq_true (id (Eq.refl true));
+id
+  (Eq.mp
+    (congrArg
+      (Eq
+        (EStateM.run
+          (interpretSailEffects
+            (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 4, rop.ADD))))
+          fixture12))
+      (congrArg (EStateM.Result.ok (ExecutionResult.Retire_Success ()))
+        (congrFun'
+          (congrFun'
+            (congrFun'
+              (congrFun'
+                (congrArg SequentialState.mk
+                  (Std.ExtDHashMap.insert.congr_simp fixture12.regs fixture12.regs (Eq.refl fixture12.regs) Register.x4
+                    (1 + 2) 3 hw))
+                fixture12.mem)
+              fixture12.tags)
+            fixture12.cycleCount)
+          fixture12.sailOutput)))
+    (execute_rd4_full_state 1 2 fixture12 h1 h2))
+'AnnealSail.Controls.rd4_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.rd4_observation : (match
+    EStateM.run
+      (interpretSailEffects
+        (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 4, rop.ADD))))
+      fixture12 with
+  | EStateM.Result.ok a s' => (s'.regs.get? Register.x3, s'.regs.get? Register.x4)
+  | EStateM.Result.error a a_1 => (none, none)) =
+  (some 0, some 3) :=
+Eq.mpr
+  (id
+    (congrArg
+      (fun _a =>
+        (match _a with
+          | EStateM.Result.ok a s' => (s'.regs.get? Register.x3, s'.regs.get? Register.x4)
+          | EStateM.Result.error a a_1 => (none, none)) =
+          (some 0, some 3))
+      rd4_fixture))
+  (of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (congr
+            (congrArg Prod.mk
+              (Eq.trans Std.ExtDHashMap.get?_insert
+                (Eq.trans
+                  (dite_cond_eq_false
+                    (Eq.trans beq_iff_eq._simp_1
+                      (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                  (Eq.trans Std.ExtDHashMap.get?_insert
+                    (Eq.trans
+                      (dite_cond_eq_false
+                        (Eq.trans beq_iff_eq._simp_1
+                          (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                      Std.ExtDHashMap.get?_insert_self)))))
+            Std.ExtDHashMap.get?_insert_self))
+        (some 0#64, some 3#64))
+      (eq_self (some 0#64, some 3#64))))
+'AnnealSail.Controls.rd4_observation' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.missing1_fixture : EStateM.run
+    (interpretSailEffects
+      (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+    fixtureMissing1 =
+  EStateM.Result.error Sail.Error.Unreachable fixtureMissing1 :=
+add_missing_x1 fixtureMissing1
+  (of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              Std.ExtDHashMap.get?_empty)))
+        none)
+      (eq_self none)))
+'AnnealSail.Controls.missing1_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem AnnealSail.Controls.missing2_fixture : EStateM.run
+    (interpretSailEffects
+      (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+    fixtureMissing2 =
+  EStateM.Result.error Sail.Error.Unreachable fixtureMissing2 :=
+add_missing_x2 1 fixtureMissing2
+  (of_eq_true (Eq.trans (congrFun' (congrArg Eq Std.ExtDHashMap.get?_insert_self) (some 1#64)) (eq_self (some 1#64))))
+  (of_eq_true
+    (Eq.trans
+      (congrFun'
+        (congrArg Eq
+          (Eq.trans Std.ExtDHashMap.get?_insert
+            (Eq.trans
+              (dite_cond_eq_false
+                (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+              Std.ExtDHashMap.get?_empty)))
+        none)
+      (eq_self none)))
+'AnnealSail.Controls.missing2_fixture' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem IndependentControls.rejects_sub_as_add : actualX3 rop.SUB (regidx.Regidx 3) fixture12 ≠ some 3 :=
+sub_differs_from_add
+'IndependentControls.rejects_sub_as_add' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem IndependentControls.rd4_leaves_x3_zero : actualX3 rop.ADD (regidx.Regidx 4) fixture12 = some 0 :=
+id
+  (Eq.mpr
+    (id
+      (congrArg
+        (fun _a =>
+          (match _a with
+            | EStateM.Result.ok a s' => s'.regs.get? Register.x3
+            | EStateM.Result.error a a_1 => none) =
+            some 0)
+        rd4_fixture))
+    (of_eq_true
+      (Eq.trans
+        (congrFun'
+          (congrArg Eq
+            (Eq.trans Std.ExtDHashMap.get?_insert
+              (Eq.trans
+                (dite_cond_eq_false
+                  (Eq.trans beq_iff_eq._simp_1 (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                (Eq.trans Std.ExtDHashMap.get?_insert
+                  (Eq.trans
+                    (dite_cond_eq_false
+                      (Eq.trans beq_iff_eq._simp_1
+                        (eq_false' fun h => False.elim (noConfusion_of_Nat Register.ctorIdx h))))
+                    Std.ExtDHashMap.get?_insert_self)))))
+          (some 0#64))
+        (eq_self (some 0#64)))))
+'IndependentControls.rd4_leaves_x3_zero' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem IndependentControls.rejects_rd4_as_rd3 : actualX3 rop.ADD (regidx.Regidx 4) fixture12 ≠ some 3 :=
+Eq.mpr (id (congrArg (fun _a => _a ≠ some 3) rd4_leaves_x3_zero)) (of_decide_eq_true (id (Eq.refl true)))
+'IndependentControls.rejects_rd4_as_rd3' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem IndependentControls.rejects_missing_input_success : EStateM.run
+    (interpretSailEffects
+      (Functions.execute (instruction.RTYPE (regidx.Regidx 2, regidx.Regidx 1, regidx.Regidx 3, rop.ADD))))
+    fixtureMissing1 ≠
+  EStateM.Result.ok (ExecutionResult.Retire_Success ())
+    (have __src := fixtureMissing1;
+    { regs := fixtureMissing1.regs.insert Register.x3 2, mem := __src.mem, tags := __src.tags,
+      cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }) :=
+fun h =>
+  Eq.casesOn (motive := fun a t =>
+    EStateM.Result.ok (ExecutionResult.Retire_Success ())
+          (let __src := fixtureMissing1;
+          { regs := fixtureMissing1.regs.insert Register.x3 2, mem := __src.mem, tags := __src.tags,
+            cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }) =
+        a →
+      Eq.mp
+            (congrArg
+              (fun _a =>
+                _a =
+                  EStateM.Result.ok (ExecutionResult.Retire_Success ())
+                    (let __src := fixtureMissing1;
+                    { regs := fixtureMissing1.regs.insert Register.x3 2, mem := __src.mem, tags := __src.tags,
+                      cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }))
+              missing1_fixture)
+            h ≍
+          t →
+        False)
+    (Eq.mp
+      (congrArg
+        (fun _a =>
+          _a =
+            EStateM.Result.ok (ExecutionResult.Retire_Success ())
+              (let __src := fixtureMissing1;
+              { regs := fixtureMissing1.regs.insert Register.x3 2, mem := __src.mem, tags := __src.tags,
+                cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }))
+        missing1_fixture)
+      h)
+    (fun h_1 => False.elim (noConfusion_of_Nat EStateM.Result.ctorIdx h_1))
+    (Eq.refl
+      (EStateM.Result.ok (ExecutionResult.Retire_Success ())
+        (let __src := fixtureMissing1;
+        { regs := fixtureMissing1.regs.insert Register.x3 2, mem := __src.mem, tags := __src.tags,
+          cycleCount := __src.cycleCount, sailOutput := __src.sailOutput })))
+    (HEq.refl
+      (Eq.mp
+        (congrArg
+          (fun _a =>
+            _a =
+              EStateM.Result.ok (ExecutionResult.Retire_Success ())
+                (let __src := fixtureMissing1;
+                { regs := fixtureMissing1.regs.insert Register.x3 2, mem := __src.mem, tags := __src.tags,
+                  cycleCount := __src.cycleCount, sailOutput := __src.sailOutput }))
+          missing1_fixture)
+        h))
+'IndependentControls.rejects_missing_input_success' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]
+theorem IndependentControls.rejects_unbounded_nat_sum : Option.map (fun x => x.toNat)
+    (actualX3 rop.ADD (regidx.Regidx 3) fixtureWrap) ≠
+  some 18446744073709551616 :=
+id
+  (Eq.mpr
+    (id
+      (congrArg
+        (fun _a =>
+          Option.map (fun x => x.toNat)
+              (match _a with
+              | EStateM.Result.ok a s' => s'.regs.get? Register.x3
+              | EStateM.Result.error a a_1 => none) ≠
+            some 18446744073709551616)
+        add_wraps))
+    (Eq.mpr
+      (id
+        (congrFun' (congrArg Ne (congrArg (Option.map fun x => x.toNat) Std.ExtDHashMap.get?_insert_self))
+          (some 18446744073709551616)))
+      (id (of_decide_eq_true (id (Eq.refl true))))))
+'IndependentControls.rejects_unbounded_nat_sum' depends on axioms: [cancel_reservation,
+ event_callback,
+ event_csr_write_callback,
+ get_16_random_bits,
+ load_reservation,
+ match_reservation,
+ plat_term_write,
+ propext,
+ riscv_f16Add,
+ riscv_f16Div,
+ riscv_f16Eq,
+ riscv_f16Le,
+ riscv_f16Le_quiet,
+ riscv_f16Lt,
+ riscv_f16Lt_quiet,
+ riscv_f16Mul,
+ riscv_f16MulAdd,
+ riscv_f16Sqrt,
+ riscv_f16Sub,
+ riscv_f16ToF32,
+ riscv_f16ToF64,
+ riscv_f16ToI32,
+ riscv_f16ToI64,
+ riscv_f16ToUi32,
+ riscv_f16ToUi64,
+ riscv_f16roundToInt,
+ riscv_f32Add,
+ riscv_f32Div,
+ riscv_f32Eq,
+ riscv_f32Le,
+ riscv_f32Le_quiet,
+ riscv_f32Lt,
+ riscv_f32Lt_quiet,
+ riscv_f32Mul,
+ riscv_f32MulAdd,
+ riscv_f32Sqrt,
+ riscv_f32Sub,
+ riscv_f32ToBF16,
+ riscv_f32ToF16,
+ riscv_f32ToF64,
+ riscv_f32ToI32,
+ riscv_f32ToI64,
+ riscv_f32ToUi32,
+ riscv_f32ToUi64,
+ riscv_f32roundToInt,
+ riscv_f64Add,
+ riscv_f64Div,
+ riscv_f64Eq,
+ riscv_f64Le,
+ riscv_f64Le_quiet,
+ riscv_f64Lt,
+ riscv_f64Lt_quiet,
+ riscv_f64Mul,
+ riscv_f64MulAdd,
+ riscv_f64Sqrt,
+ riscv_f64Sub,
+ riscv_f64ToF16,
+ riscv_f64ToF32,
+ riscv_f64ToI32,
+ riscv_f64ToI64,
+ riscv_f64ToUi32,
+ riscv_f64ToUi64,
+ riscv_f64roundToInt,
+ riscv_i32ToF16,
+ riscv_i32ToF32,
+ riscv_i32ToF64,
+ riscv_i64ToF16,
+ riscv_i64ToF32,
+ riscv_i64ToF64,
+ riscv_ui32ToF16,
+ riscv_ui32ToF32,
+ riscv_ui32ToF64,
+ riscv_ui64ToF16,
+ riscv_ui64ToF32,
+ riscv_ui64ToF64,
+ sys_enable_experimental_extensions,
+ Classical.choice,
+ Quot.sound]

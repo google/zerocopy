@@ -1,0 +1,18 @@
+{
+  "classification": "Owned observation-regex defect; no upstream theorem/build rejection",
+  "initial_reader_sha256": "f7d1aca4d5cc3e0ae1d09fe3ad52a1c37966a48588406c09fe24b95ae4eb51cf",
+  "corrected_reader_sha256": "329858f20a3e2e4813685a034d5c691e3d0a94375dd4fa2d129e805c202900b1",
+  "cause": "Extra escaped closing parenthesis after digest_bytes.(i) in own regex",
+  "actual_core_boundaries": 47,
+  "actual_core_digest_markers": 47,
+  "initial_regex_matches": 0,
+  "no_producer_launched": true,
+  "host_dependent_call": "host_run.py producer attempted to read absent specs/producer.json and raised FileNotFoundError before Popen/Docker; no container effect",
+  "preserved": [
+    "diagnostics/inline_census_reader-initial.py",
+    "diagnostics/core-census-gate-initial.json",
+    "logs/core-census.stdout",
+    "artifacts/hol_lib_inlined.ml"
+  ],
+  "correction": "Delete one regex parenthesis only; keep exact original artifact/source/observed ML files unchanged"
+}

@@ -1,0 +1,76 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "key": "pnueli-siegel-singerman-1998",
+      "title": "Translation Validation",
+      "doi": "10.1007/BFb0054170",
+      "primary_url": "https://link.springer.com/content/pdf/10.1007/BFb0054170.pdf",
+      "used_for": [
+        "per-run definition",
+        "common semantic framework",
+        "refinement relation",
+        "simulation/refinement mapping",
+        "automated proof method"
+      ]
+    },
+    {
+      "key": "necula-2000",
+      "title": "Translation Validation for an Optimizing Compiler",
+      "doi": "10.1145/349299.349314",
+      "bibliography_url": "https://dblp.org/rec/conf/pldi/Necula00.html",
+      "used_for": [
+        "pass-local validation",
+        "symbolic execution",
+        "heuristic recovery of transformations",
+        "realistic optimizing compiler"
+      ],
+      "doi_url": "https://doi.org/10.1145/349299.349314"
+    },
+    {
+      "key": "tristan-leroy-2008",
+      "title": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+      "doi": "10.1145/1328438.1328444",
+      "author_preprint_url": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+      "used_for": [
+        "verified-validator theorem",
+        "soundness versus completeness",
+        "symbolic execution",
+        "definedness constraints",
+        "Coq mechanization"
+      ]
+    },
+    {
+      "key": "alive2-2021",
+      "title": "Alive2: Bounded Translation Validation for LLVM",
+      "doi": "10.1145/3453483.3454030",
+      "author_preprint_url": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+      "used_for": [
+        "LLVM refinement",
+        "UB and nondeterminism",
+        "SMT validation",
+        "bounded loop/resource search",
+        "practical deployment"
+      ]
+    },
+    {
+      "key": "lee-kim-hur-lopes-2021",
+      "title": "An SMT Encoding of LLVM's Memory Model for Bounded Translation Validation",
+      "doi": "10.1007/978-3-030-81688-9_35",
+      "bibliography_url": "https://doi.org/10.1007/978-3-030-81688-9_35",
+      "used_for": [
+        "memory-model obligations in bounded LLVM translation validation"
+      ]
+    },
+    {
+      "key": "stepp-tate-lerner-2011-context",
+      "title": "Equality-Based Translation Validator for LLVM",
+      "doi": "10.1007/978-3-642-22110-1_59",
+      "bibliography_url": "https://dblp.org/rec/conf/cav/SteppTL11.html",
+      "used_for": [
+        "contextual evidence that equality-based/equality-saturation correspondence is another translation-validation technique"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,311 @@
+{
+  "anneal_skeleton": {
+    "repo": "https://github.com/joshlf/anneal-private",
+    "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+    "tree": "219dfb9655e7b1a2754d3590cdbbec224ac790a0",
+    "files": [
+      {
+        "path": "trusted/lean/Trusted/Refinement.lean",
+        "git_blob_sha1": "23b043e73a60f0d1dfc1bdbeafbdb99e20e59db4",
+        "sha256": "73204193f01d85ffc5b5858d535f4538a4f5ef54658fc0c6203b3087caff2154",
+        "bytes": 27964,
+        "lines": 572
+      },
+      {
+        "path": "trusted/lean/Trusted/StepResult.lean",
+        "git_blob_sha1": "9825e59b0de79d41329e9401ae4b5562707e4609",
+        "sha256": "c9b9201a3cbaa406c797881e108b60b920dc33a4dce08c4cc389512394160837",
+        "bytes": 8009,
+        "lines": 187
+      },
+      {
+        "path": "theory/Anneal/StepResult.lean",
+        "git_blob_sha1": "e36b28a1560a03c5fd4146bca807f56465fc8102",
+        "sha256": "c607bf7b1108cdf26a03587805ab6e72708c855642e30ccdae04de2f6ba7dfbe",
+        "bytes": 7234,
+        "lines": 171
+      },
+      {
+        "path": "theory/Anneal/FunctionalTranslation.lean",
+        "git_blob_sha1": "f1c396f0d45e05bb2aed341d339efe6e298831cf",
+        "sha256": "852a2e9452a803c79982e71284cf9e04a491aea2770e91844eba5c064440baa6",
+        "bytes": 366923,
+        "lines": 8173
+      }
+    ]
+  },
+  "asl_interpreter": {
+    "repo": "https://github.com/rems-project/asl-interpreter",
+    "commit": "8cfc0b27002d282da55568e3462868e9dfd8c3bd",
+    "tree": "f2324bfbff6f660dffce481b230419c56a9ba22d",
+    "files": [
+      {
+        "path": "libASL/asl.ott",
+        "git_blob_sha1": "844b6b210d97c3fae8bd8478d7778a8fdf6f5c61",
+        "sha256": "ca45244208e114502acaef365dde5b2376e20623ac76af8d1d67913c07ddc50f",
+        "bytes": 46447,
+        "lines": 1017
+      },
+      {
+        "path": "libASL/tcheck.ml",
+        "git_blob_sha1": "fab728a7e8a1ceeb17a4a73a5b2648367a4d10bb",
+        "sha256": "db929a8389d140eb57e8ee7697049114defa87003748141937fa95d65f09b5b2",
+        "bytes": 116361,
+        "lines": 2552
+      },
+      {
+        "path": "libASL/eval.ml",
+        "git_blob_sha1": "7995d8fb07d115aacc87b6e1c77f645ae4500fb3",
+        "sha256": "9050b8677032717d9e5d1b155b8fb78d00ed05c3cfcc967ea72f9f526fc9708a",
+        "bytes": 42831,
+        "lines": 1035
+      },
+      {
+        "path": "libASL/value.ml",
+        "git_blob_sha1": "6e3f70f759c71bfaba85359c09012fb576d9f1f7",
+        "sha256": "eecf5ee38752f10aaa47854a162b6c76c2d196334af6e6de138bbe825b5edce2",
+        "bytes": 22101,
+        "lines": 433
+      },
+      {
+        "path": "prelude.asl",
+        "git_blob_sha1": "ebbd34d6d31c715d47905aa6fb6c9b0255993a27",
+        "sha256": "27c90bd35439ae5afa7c99001bf9354a92fc654aa42b665a8ba943dd52a20414",
+        "bytes": 11165,
+        "lines": 360
+      }
+    ]
+  },
+  "mra_tools": {
+    "repo": "https://github.com/rems-project/mra_tools",
+    "commit": "941317606f36580f668498889abc6301ed8222d8",
+    "tree": "cbdffcb5376e0c2c9f6fa0bb95fdad79339109d7",
+    "files": [
+      {
+        "path": "bin/instrs2asl.py",
+        "git_blob_sha1": "e89baa62a8356d3ac8bbc604c43d8a2e873bcb5e",
+        "sha256": "787ec048b5c34f52ecaabe9758024be5d57a5d3fe005b74e08b2c57ab6c0f7cb",
+        "bytes": 36678,
+        "lines": 953
+      },
+      {
+        "path": "bin/reg2asl.py",
+        "git_blob_sha1": "238501b36cd1bebb0e4bd462fc25d3eb20dea0d3",
+        "sha256": "dd797f9be5e6d77af2901e3b5652a608c44b8e8cb3a5478f60c098c52070d0ae",
+        "bytes": 10498,
+        "lines": 337
+      },
+      {
+        "path": "bin/asl_utils.py",
+        "git_blob_sha1": "e74cbd975aecae0662b433ffa42f5d0bd7500f78",
+        "sha256": "8b8220495c1ce13d8f1527b9d25230d8084bc43a413da057c546f2edc05a02f0",
+        "bytes": 2543,
+        "lines": 73
+      },
+      {
+        "path": "support/fetchdecode.asl",
+        "git_blob_sha1": "394ccbb0ad9810e7b7729c0ff650ef95305f4af2",
+        "sha256": "9d494f4688508bb21b8063f6a9e74f274857376fbc19e7c06cdc4a4fc94fa133",
+        "bytes": 7843,
+        "lines": 254
+      },
+      {
+        "path": "support/memory.asl",
+        "git_blob_sha1": "648fa9bde3237510614ddc2bac3d0873f71bf32c",
+        "sha256": "e68d4ac50124ceabe0a9a149d976d0cc452e81a058c1584ce08d6e0539d01f61",
+        "bytes": 3203,
+        "lines": 109
+      },
+      {
+        "path": "prelude.asl",
+        "git_blob_sha1": "3f494c47435703a0ec539bb12ee534a5e15199c2",
+        "sha256": "c0951f48593649045a8eeb2cc657dc36cb87dab57c4e2c38526bbbee16cc1563",
+        "bytes": 202,
+        "lines": 8
+      }
+    ]
+  },
+  "asl_to_sail": {
+    "repo": "https://github.com/rems-project/asl_to_sail",
+    "commit": "78242b8d60a507fab18d9b4f225bfc7bd33e62b3",
+    "tree": "61d7bcc4c75f5da6b031b964b41c104652997dd7",
+    "files": [
+      {
+        "path": "lib/translate_asl.ml",
+        "git_blob_sha1": "aa7638f2406d164308d283b92a41a6bb33215af0",
+        "sha256": "b5432984c5a390634834d36443c36cbe86d6dd72a9f83098d11c6c38dd64d98b",
+        "bytes": 140876,
+        "lines": 3347
+      },
+      {
+        "path": "lib/sail_to_sail.ml",
+        "git_blob_sha1": "f19ffcf5745ad3514634d1abcbf51cf8a608864b",
+        "sha256": "752100b06168099a5db8bb454b0766bf484fd78bee85815a0cc2f5b3b05ba7bd",
+        "bytes": 41063,
+        "lines": 1009
+      },
+      {
+        "path": "bin/main.ml",
+        "git_blob_sha1": "df6b64a5229c38779f47206dbb141a2568c6e824",
+        "sha256": "5afecc2244e42c1fe447fa8193fd7e06ac1197e03986dcb8f38cb820a128f788",
+        "bytes": 45356,
+        "lines": 1124
+      },
+      {
+        "path": "prelude.sail",
+        "git_blob_sha1": "9c4a61ffbc8e576a09749916a6ba533d38c941e1",
+        "sha256": "3c0d6897d6b2127defefaf7e923549f45ab21faced2847171763809c35968422",
+        "bytes": 11190,
+        "lines": 344
+      }
+    ]
+  },
+  "herdtools7": {
+    "repo": "https://github.com/herd/herdtools7",
+    "commit": "6bea2e8131feaeb497a7bf86d52d94cdd8721a6c",
+    "tree": "8f63475252d3c49d08a2ab07fbca6f9186d8b88c",
+    "files": [
+      {
+        "path": "asllib/AST.mli",
+        "git_blob_sha1": "3056e85602506bb546f32103d94d8959fd8832ec",
+        "sha256": "3ad437452a77059a483ec92775b62783ae4998cbefd530f4947209772dff7d07",
+        "bytes": 16873,
+        "lines": 461
+      },
+      {
+        "path": "asllib/desugar.ml",
+        "git_blob_sha1": "4516f9c55d4ef7823b380d6634b03d7275d92510",
+        "sha256": "69f0a6c619de8fba753ac90254ab92f314293615508afbee9c56020b0bec6430",
+        "bytes": 8868,
+        "lines": 248
+      },
+      {
+        "path": "asllib/Typing.ml",
+        "git_blob_sha1": "482dbe3e3f5e5249bd4530c55b5af206de661b6e",
+        "sha256": "7bd21e046b5621e2200f4f159fced6703ff31f7d851d946bcc3f2deb212f6a39",
+        "bytes": 177474,
+        "lines": 4419
+      },
+      {
+        "path": "asllib/Interpreter.ml",
+        "git_blob_sha1": "2c51eeb8a9fc158e6fffc066f113067697840bc9",
+        "sha256": "f5e71db87ac2799c52d57d8f47d6c829045507e0d59e81d78c5ef12306f83990",
+        "bytes": 61711,
+        "lines": 1607
+      }
+    ]
+  },
+  "l3": {
+    "repo": "https://github.com/coruus/L3",
+    "commit": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c",
+    "tree": "537e00c5d951c7f147c47365689d1392c93eba6f",
+    "files": [
+      {
+        "path": "L3/Base.sml",
+        "git_blob_sha1": "908963866de7a3a2b44dce28a4d36df6209ceba0",
+        "sha256": "663b5c5cb99c074ff624e42f9319fd697d386849b9413fb701167b5b0b07d454",
+        "bytes": 143583,
+        "lines": 4105
+      },
+      {
+        "path": "L3/Matches.sml",
+        "git_blob_sha1": "c8fbf5e55e5e79b1a85195c655479606c397b529",
+        "sha256": "2440d5c2476c691f30e3dcff53f98677bdb45b0019335d84fce35abb33dbdec7",
+        "bytes": 17791,
+        "lines": 521
+      },
+      {
+        "path": "L3/Eval.sml",
+        "git_blob_sha1": "dd28a11471877323e46d8d3c69b69b1f7fa4360a",
+        "sha256": "b0877a5d24766580fbbaf7ed84a06077f64e611dcda82e47ad457ffcc95b1c99",
+        "bytes": 52798,
+        "lines": 1224
+      },
+      {
+        "path": "L3/Export.sml",
+        "git_blob_sha1": "bd762d5a0f3aa98eb8f85dfef592af7629953f35",
+        "sha256": "5ebc0a329c9d410d3d03c8b45b4d61a5a708cfa593740846793a30446a1f3edc",
+        "bytes": 60977,
+        "lines": 1695
+      },
+      {
+        "path": "L3/HolExport.sml",
+        "git_blob_sha1": "3ffcae2d32c7152d242a73fe46af4e5a46fb7878",
+        "sha256": "06b9e65b24ecc5bd7ff81ddef2244e4e19d07a87e0fa96b24d26ff56489b7bfc",
+        "bytes": 29920,
+        "lines": 769
+      },
+      {
+        "path": "L3/SMLExport.sml",
+        "git_blob_sha1": "8055ae7b83ad30a9941e28b03dd958cf08f41b5e",
+        "sha256": "fc110e9dfffa1ba94fe8dcf6003f84f50e4a054d20a8fb61a3b73d12e88f9376",
+        "bytes": 55459,
+        "lines": 1426
+      },
+      {
+        "path": "L3/lib/L3.sig",
+        "git_blob_sha1": "33f7970621302fe0ca0b0eff031643da2edaa6e5",
+        "sha256": "9a09b66644ec5ca4841ce9699f9b2d3a8f80914ccfc06014b96c39215c4c956a",
+        "bytes": 1990,
+        "lines": 47
+      },
+      {
+        "path": "L3/lib/BitsN.sig",
+        "git_blob_sha1": "171eae6df670135eb7b0075b48fbe8df9319ed75",
+        "sha256": "acec7a6a827236ef969e757bf3ea10c5d3effed6640095e811d1368d44295d29",
+        "bytes": 3108,
+        "lines": 94
+      },
+      {
+        "path": "L3/examples/tiny.spec",
+        "git_blob_sha1": "f4cb956ea7b4e58d757c1a89591f42d517c0b735",
+        "sha256": "77f516e229a2c69d0e1366f1e462cfe5bb8bba1f1b736c36ea8daf5c44ab1854",
+        "bytes": 6957,
+        "lines": 256
+      },
+      {
+        "path": "isa-models/arm-v8/v8-base.spec",
+        "git_blob_sha1": "20792f4c9eb0cef43523e1acbaf17242342860ab",
+        "sha256": "4d30c78a9feb9604f57249554d6245dc3d2b68028b1cd1139aeb83b4efd15240",
+        "bytes": 11947,
+        "lines": 453
+      },
+      {
+        "path": "isa-models/arm-v8/v8-iset.spec",
+        "git_blob_sha1": "f78dba88b162dd6360fc46935d193885f133f9a4",
+        "sha256": "72ea451df4db827a48e6b988ae149b349fbb9476066c9ae6a92c69c41456775a",
+        "bytes": 62596,
+        "lines": 1981
+      }
+    ]
+  },
+  "sail": {
+    "repo": "https://github.com/rems-project/sail",
+    "commit": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+    "tree": "7d85a599692b9d1826ea881a040e4e1cccd50bc9",
+    "files": [
+      {
+        "path": "src/sail_lean_backend/pretty_print_lean.ml",
+        "git_blob_sha1": "bc7365ffc91326194389b731bc6104ac67982d66",
+        "sha256": "6f32ce51ee411a3223c482e750d53cfa667cb474be87f4a43e6b3b194d0d8647",
+        "bytes": 85831,
+        "lines": 1844
+      },
+      {
+        "path": "src/sail_lean_backend/sail_plugin_lean.ml",
+        "git_blob_sha1": "36ed6137d8476cd4c91f3b8ab3b6ede628b6e8d6",
+        "sha256": "ac04d79d8321e5bfcbd87782396ab8f9c30e0b10f8a8981fa174b874424db473",
+        "bytes": 22266,
+        "lines": 460
+      }
+    ]
+  },
+  "support_artifacts": [
+    {
+      "path": "support/asl_l3_to_lean_bridge_probe.lean",
+      "sha256": "a09e8257b28bb006c1f198d46e91860a2e127d009e64a7d57010cd79edce106e",
+      "bytes": 47818,
+      "lines": 1161
+    }
+  ]
+}
