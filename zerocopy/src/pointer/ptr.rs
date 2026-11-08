@@ -891,10 +891,10 @@ mod _casts {
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
             C: Cast<T, U>,
         {
-            // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
-            // of the following holds:
-            // - `T: Read<I::Aliasing>` and `U: Read<I::Aliasing>`, in which
-            //   case one of the following holds:
+            // SAFETY: Because `T: MutationCompatible<U, I::Aliasing,
+            // I::Validity, I::Validity, R>`, one of the following holds:
+            // - `T: Read<I::Aliasing, _>` and `U: Read<I::Aliasing, _>`, in
+            //   which case one of the following holds:
             //   - `I::Aliasing` is `Exclusive`
             //   - `T` and `U` are both `Immutable`
             // - It is sound for safe code to operate on `&T` and `&U` with the
