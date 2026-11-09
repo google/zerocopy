@@ -273,7 +273,7 @@ jobs:
         run: sudo softwareupdate --install-rosetta --agree-to-license
 
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
+        uses: DeterminateSystems/determinate-nix-action@16f94ba7aae399b9f9077c254b6719ec6de7e3e3 # v3.24.2
 
       # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
       # The Nix build sandbox uses `bubblewrap` for Linux FHS execution, which requires creating a user namespace.
@@ -398,7 +398,7 @@ jobs:
       - name: Submit PR
         id: submit-pr-upstream
         if: github.repository == 'google/zerocopy'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8  # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
@@ -416,7 +416,7 @@ jobs:
       - name: Submit PR (fork test)
         id: submit-pr-fork
         if: github.repository != 'google/zerocopy'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8  # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: "Release Anneal ${{ github.event.inputs.version }}"
           author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
