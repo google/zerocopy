@@ -422,7 +422,7 @@
       "bytes": 46704,
       "sha256": "eb2d97ad1c000b90e9425902047bd2c41b2810cccd3ae3b14fe46c33fad3b90c",
       "lines": 1133,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768",
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768",
       "axioms": [
         "propext",
         "Quot.sound"

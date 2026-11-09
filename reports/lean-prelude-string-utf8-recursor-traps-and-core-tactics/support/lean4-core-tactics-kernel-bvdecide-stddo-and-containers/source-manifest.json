@@ -283,7 +283,7 @@
       "bytes": 33811,
       "sha256": "3d2465d2cf40724556c1f14bc7f9a3375d277148d8de3f23822930341053a6f8",
       "lines": 1006,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
       "axioms": [
         "propext",
         "Classical.choice",
@@ -296,7 +296,7 @@
       "bytes": 2486,
       "sha256": "abeb3548f70a9d683b791638c6b084c050e9e780ae99d4fcacf8ec0e72c4d114",
       "lines": 69,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
       "axioms": [
         "propext",
         "Classical.choice",
@@ -309,7 +309,7 @@
       "bytes": 6530,
       "sha256": "1cdc3c347bde6d4f2a091b7ed374085e60b4788324998cf33cc60782ffd5bf5d",
       "lines": 184,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
       "axioms": [
         "propext",
         "Classical.choice",
@@ -322,7 +322,7 @@
       "bytes": 6160,
       "sha256": "ab8544539c4a5ed319edfbed888262376cbcb6445f01d8a1f2b9b54ae2f46c42",
       "lines": 178,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024",
       "axioms": [
         "propext",
         "Classical.choice",

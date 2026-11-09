@@ -13,7 +13,7 @@ from pathlib import Path
 import subprocess
 import time
 
-LEAN_ROOT = "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1"
+LEAN_ROOT = "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1"
 LEAN_BIN = f"{LEAN_ROOT}/bin/lean"
 WORKDIR = str(Path(__file__).resolve().parent)
 LEAN_ENV = {

@@ -430,7 +430,7 @@
       "sha256": "2681ed3737cb56f0abd52be990fca62a43188d3ca5b178f32b9ad0683560cbff",
       "lines": 1147,
       "toolchain": "leanprover/lean4:v4.34.1",
-      "check_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/kraken_wp_and_bridge_probe.lean"
+      "check_command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/kraken_wp_and_bridge_probe.lean"
     }
   ]
 }

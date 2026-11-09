@@ -1,6 +1,6 @@
 {
   "wire_format": "AMIR_v3",
-  "portable_driver_source": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/compiler-upgrade-trial/direct_mir_driver_portable.rs",
+  "portable_driver_source": "/home/user/workspace/anneal/experiments/opsem/compiler-upgrade-trial/direct_mir_driver_portable.rs",
   "portable_driver_sha256": "aec4749f1adaf228cf85cfe90cae90d3cd2a3f02f8eef25da668684c48d89fda",
   "portable_driver_adaptation_cost": {
     "conditional_cfg_blocks": 5,
@@ -16,18 +16,18 @@
       {
         "version": "0.1.174",
         "pinned_toolchain": "nightly_1_95_2026_02_06 (efc9e1b50 2026-02-06)",
-        "charon_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon",
+        "charon_bin": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon",
         "charon_sha256": "bcdc1ef536f863f21367973bd639e5557d36872cd9135d4b13ff84c2bc6df836",
-        "charon_driver_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver",
+        "charon_driver_bin": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver",
         "charon_driver_sha256": "20379b2051dd51dbea8d720e4041d55afe9241b95ab911e3b06492110450ecd0",
         "upstream_commit": "5096e36339dc62d885fb3b7bf6e1bd98000514e0"
       },
       {
         "version": "0.1.210",
         "pinned_toolchain": "nightly_1_98_2026_05_30 (f8a08b688 2026-05-30)",
-        "charon_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "charon_bin": "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
         "charon_sha256": "88542ca0b2bf52429fd5b9f2bf29f0f1183ba2279854567ab13d82bc789a8d47",
-        "charon_driver_bin": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver",
+        "charon_driver_bin": "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver",
         "charon_driver_sha256": "8831ba28df3e3ef594c80adc90fcd9bb5993e23107e739145383159356722363",
         "upstream_commit": "1e08453924610c19d74c245a7308f17c1008e2db"
       }
@@ -665,7 +665,7 @@
       "prebuilt_charon_0_1_210_probe": {
         "exit_code": 127,
         "compatible_without_rebuild": false,
-        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
+        "stderr_summary": "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
       },
       "subject_runs": [
         {
@@ -1050,12 +1050,12 @@
       "prebuilt_charon_0_1_174_probe": {
         "exit_code": 127,
         "compatible_without_rebuild": false,
-        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
+        "stderr_summary": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
       },
       "prebuilt_charon_0_1_210_probe": {
         "exit_code": 127,
         "compatible_without_rebuild": false,
-        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
+        "stderr_summary": "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
       },
       "subject_runs": [
         {
@@ -1440,12 +1440,12 @@
       "prebuilt_charon_0_1_174_probe": {
         "exit_code": 127,
         "compatible_without_rebuild": false,
-        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
+        "stderr_summary": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
       },
       "prebuilt_charon_0_1_210_probe": {
         "exit_code": 127,
         "compatible_without_rebuild": false,
-        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
+        "stderr_summary": "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver: error while loading shared libraries: librustc_driver-5d5a3c5207375ffc.so: cannot open shared object file: No such file or directory"
       },
       "subject_runs": [
         {
@@ -1830,7 +1830,7 @@
       "prebuilt_charon_0_1_174_probe": {
         "exit_code": 127,
         "compatible_without_rebuild": false,
-        "stderr_summary": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
+        "stderr_summary": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver: error while loading shared libraries: librustc_driver-de8b7b4b99aebe9e.so: cannot open shared object file: No such file or directory"
       },
       "prebuilt_charon_0_1_210_probe": {
         "exit_code": 0,

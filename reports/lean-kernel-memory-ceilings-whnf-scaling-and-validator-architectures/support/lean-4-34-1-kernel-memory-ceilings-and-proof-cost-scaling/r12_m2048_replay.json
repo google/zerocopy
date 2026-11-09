@@ -606,7 +606,7 @@
       "wall_seconds": 11.585,
       "max_rss_kb": 2099692,
       "max_rss_bytes": 2150084608,
-      "diagnostic": "/usr/local/google/home/joshlf/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/CargoLeanCostCold2Monolithic.lean:16:8: error: (kernel) excessive memory consumption detected"
+      "diagnostic": "/home/user/workspace/anneal/.agent-worktrees/research-f7604a10e/experiments/opsem/AnnealResearch/CargoLeanCostCold2Monolithic.lean:16:8: error: (kernel) excessive memory consumption detected"
     }
   ]
 }

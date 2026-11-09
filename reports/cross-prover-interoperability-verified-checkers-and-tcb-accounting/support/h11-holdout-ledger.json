@@ -406,7 +406,7 @@
     ]
   },
   "lean_verification": {
-    "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 AnnealResearch/IndependentSliceHoldoutH11.lean",
+    "command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 AnnealResearch/IndependentSliceHoldoutH11.lean",
     "exit_code": 0,
     "elapsed_ms": 6210.0,
     "max_rss_kb": 664028,

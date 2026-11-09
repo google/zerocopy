@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Milestone R5 (#62): Live Bounded Agent Task Execution & Four-Toolchain Upgrade Capture
-Workspace: /usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/
+Workspace: /tmp/agent-scratch/scratch/workers/r5_live_tasks/
 
 Performs and records all 4 bounded tasks across Direct MIR (`.amir` v3 + `VarDebugInfo` sidecar)
 and Charon `0.1.210` (`--ullbc --mir elaborated` and `--mir elaborated`):
@@ -37,15 +37,15 @@ import shutil
 import subprocess
 import time
 
-OUT_DIR = "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks"
+OUT_DIR = "/tmp/agent-scratch/scratch/workers/r5_live_tasks"
 ART_DIR = os.path.join(OUT_DIR, "artifacts")
 TMP_BUILD = "/tmp/r5_live_build"
-CAP_DIR = "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture"
+CAP_DIR = "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture"
 V4_ART_DIR = os.path.join(CAP_DIR, "artifacts/v4")
-CARGO_WS_DIR = "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace"
+CARGO_WS_DIR = "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace"
 DRIVER_V4_BIN = "/tmp/direct_mir_driver_v4_bin"
 
-TC_198_ROOT = "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61"
+TC_198_ROOT = "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61"
 RUSTC_198 = os.path.join(TC_198_ROOT, "rust/bin/rustc")
 CHARON_198 = os.path.join(TC_198_ROOT, "aeneas/bin/charon")
 
@@ -53,19 +53,19 @@ TOOLCHAINS = [
     {
         "id": "nightly_1_95_2026_02_06",
         "version_label": "1.95.0-nightly (efc9e1b50 2026-02-06)",
-        "root": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/rust",
+        "root": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/rust",
         "is_1_98": False,
     },
     {
         "id": "nightly_1_96_2026_04_10",
         "version_label": "1.96.0-nightly (02c7f9bec 2026-04-10)",
-        "root": "/usr/local/google/home/joshlf/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu",
+        "root": "/home/user/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu",
         "is_1_98": False,
     },
     {
         "id": "nightly_1_97_2026_04_11",
         "version_label": "1.97.0-nightly (bf4fbfb7a 2026-04-11)",
-        "root": "/usr/local/google/home/joshlf/.rustup/toolchains/nightly-2026-04-12-x86_64-unknown-linux-gnu",
+        "root": "/home/user/.rustup/toolchains/nightly-2026-04-12-x86_64-unknown-linux-gnu",
         "is_1_98": False,
     },
     {

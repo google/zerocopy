@@ -187,7 +187,7 @@ theorem test_eval : evalVal 60 (mkDeepVal 50) = 57 := rfl
 unsafe def runAllProbes : CommandElabM Unit := do
   let baseEnv ← getEnv
   liftM (m := IO) do
-    let sysroot := System.FilePath.mk "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1"
+    let sysroot := System.FilePath.mk "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1"
     initSearchPath sysroot [System.FilePath.mk "."]
     inspectPreludeRecProbeOlean
 

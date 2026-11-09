@@ -7,7 +7,7 @@
     "lines": 1250,
     "toolchain": "leanprover/lean4:v4.34.1",
     "toolchain_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
-    "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/lean_wasm_and_ebpf_bridge_probe.lean",
+    "command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/lean_wasm_and_ebpf_bridge_probe.lean",
     "exit_code": 0,
     "active_sorry_count": 0,
     "custom_axiom_count": 0,

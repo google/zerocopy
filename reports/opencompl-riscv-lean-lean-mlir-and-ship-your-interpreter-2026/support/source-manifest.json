@@ -1,7 +1,7 @@
 {
   "observed_at": "2026-10-29",
   "lean_toolchain": {
-    "binary": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "binary": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
     "version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
   },
   "support_artifacts": {

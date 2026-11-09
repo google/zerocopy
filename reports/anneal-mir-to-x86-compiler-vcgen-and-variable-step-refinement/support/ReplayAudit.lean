@@ -15,9 +15,9 @@ def allowedAxioms : List Name :=
 
 def main : IO UInt32 := do
   let sysroot : System.FilePath :=
-    "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1"
+    "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1"
   initSearchPath sysroot
-    ["/usr/local/google/home/joshlf/.gemini/jetski/brain/4b1fe580-2cc4-422a-bacb-323a44926709/scratch/r2_loops_and_join_vcgen/build"]
+    ["/tmp/agent-scratch/scratch/r2_loops_and_join_vcgen/build"]
   let t0 ← IO.monoMsNow
   let env ← importModules #[{ module := `LoopAndJoinVCGenProbe }] {} (trustLevel := 0)
   let t1 ← IO.monoMsNow

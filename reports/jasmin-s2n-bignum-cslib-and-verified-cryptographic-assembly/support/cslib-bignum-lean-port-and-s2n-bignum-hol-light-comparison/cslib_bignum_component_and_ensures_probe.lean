@@ -3,7 +3,7 @@
   `cslib-bignum-lean-port-and-s2n-bignum-hol-light-comparison`
 
   Verify with:
-    /usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 \
+    /home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 \
       reports/cslib-bignum-lean-port-and-s2n-bignum-hol-light-comparison/support/cslib_bignum_component_and_ensures_probe.lean
 
   Contents:

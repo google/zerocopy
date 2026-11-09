@@ -589,7 +589,7 @@
     "path": "support/islaris_trace_and_riscv_typeclass_lean_probe.lean",
     "lean_version": "4.34.1",
     "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
-    "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/islaris_trace_and_riscv_typeclass_lean_probe.lean",
+    "verification_command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768 support/islaris_trace_and_riscv_typeclass_lean_probe.lean",
     "sha256": "b1dc5ad4e99921e1913146a7c71d731a7a3dbac8269ae7c12720c8fc7df06acd",
     "git_blob_sha1": "6effa8f6f691015f3c27f833213fdbbe337d012a",
     "lines": 936

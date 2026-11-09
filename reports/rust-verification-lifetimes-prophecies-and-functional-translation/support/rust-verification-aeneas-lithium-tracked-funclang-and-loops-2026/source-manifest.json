@@ -310,7 +310,7 @@
       "lines": 784,
       "lean_version": "4.34.1",
       "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
-      "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/ProbeGeneralSpecAndLithium.lean",
+      "verification_command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/ProbeGeneralSpecAndLithium.lean",
       "sorry_count": 0,
       "theorems": [
         "Anneal.Probe.Theory.evalSymWith_sound",
@@ -328,7 +328,7 @@
       "lines": 2199,
       "lean_version": "4.34.1",
       "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
-      "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/ProbeTrackedFuncLangAndLoops.lean",
+      "verification_command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/ProbeTrackedFuncLangAndLoops.lean",
       "sorry_count": 0,
       "theorems": [
         "Anneal.R2Probe.Theory.monotone_\u03c0_tracked",

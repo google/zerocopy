@@ -1,7 +1,7 @@
 {
   "wire_format": "AMIR_v3",
   "driver_binary": "/tmp/direct_mir_driver_v4_bin",
-  "driver_source": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs",
+  "driver_source": "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs",
   "driver_source_sha256": "0159d185414df33e373d6a8982ef34cfc7af7bc019e2724856830b8c73ae93c8",
   "pinned_rustc_sha256": "c0575015cb2b0648bff9042dc2e68f139fb0b16c981cdca96efba2e91ac409d8",
   "pinned_cargo_sha256": "dda7234360b7f578ca8b0ddcb80145646fa61a67c1720a5abc7051b35c9fcb71",
@@ -88,7 +88,7 @@
     {
       "run_id": "cargo_workspace_default_mir_encoding",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "build",
         "--target-dir",
         "/tmp/anneal_ws_target_default_v3"
@@ -263,14 +263,14 @@
           ],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_default.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_default.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_default.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_default.amir",
             "--driver-run-mono-collector"
           ],
           "out_json": "out_dep_layout_core_default.json",
@@ -302,14 +302,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_default.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_default.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_default.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_default.amir",
             "--driver-run-mono-collector"
           ],
           "out_json": "out_app_verifier_subject_default.json",
@@ -320,7 +320,7 @@
     {
       "run_id": "cargo_workspace_warm_noop_rebuild",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "build",
         "--target-dir",
         "/tmp/anneal_ws_target_default_v3"
@@ -385,7 +385,7 @@
     {
       "run_id": "cargo_workspace_always_encode_mir",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "build",
         "--target-dir",
         "/tmp/anneal_ws_target_always_encode_v3"
@@ -560,14 +560,14 @@
           ],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_always_encode.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_always_encode.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_always_encode.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_always_encode.amir",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -601,14 +601,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_always_encode.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_always_encode.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_always_encode.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_always_encode.amir",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -621,7 +621,7 @@
     {
       "run_id": "cargo_workspace_strict_align_feature",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "build",
         "--features",
         "strict_align",
@@ -800,14 +800,14 @@
           ],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_strict_align.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_strict_align.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_strict_align.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_strict_align.amir",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -842,14 +842,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_strict_align.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_app_verifier_subject_strict_align.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_strict_align.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject_strict_align.amir",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -862,7 +862,7 @@
     {
       "run_id": "cargo_workspace_check_fast_mode",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "check",
         "--target-dir",
         "/tmp/anneal_ws_target_check_v3"
@@ -990,14 +990,14 @@
           ],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_check_fast.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_dep_layout_core_check_fast.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_check_fast.amir"
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/dep_layout_core_check_fast.amir"
           ],
           "out_json": "out_dep_layout_core_check_fast.json",
           "out_amir": "dep_layout_core_check_fast.amir"
@@ -1020,13 +1020,13 @@
         "--out-dir",
         "/tmp/anneal_ws_post_mono_probes",
         "--sysroot",
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
         "-Z",
         "mir-preserve-ub",
         "--driver-out-json",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_reachable_provisional.json",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_reachable_provisional.json",
         "--driver-emit-amir-v3",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_reachable_provisional.amir",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_reachable_provisional.amir",
         "/tmp/anneal_ws_post_mono_probes/post_mono_reachable_fail.rs"
       ],
       "exit_code": 2,
@@ -1059,14 +1059,14 @@
         "--out-dir",
         "/tmp/anneal_ws_post_mono_probes",
         "--sysroot",
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
         "-Z",
         "mir-preserve-ub",
         "--driver-run-mono-collector",
         "--driver-out-json",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_reachable_full.json",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_reachable_full.json",
         "--driver-emit-amir-v3",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_reachable_full.amir",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_reachable_full.amir",
         "/tmp/anneal_ws_post_mono_probes/post_mono_reachable_fail.rs"
       ],
       "exit_code": 1,
@@ -1090,14 +1090,14 @@
         "--out-dir",
         "/tmp/anneal_ws_post_mono_probes",
         "--sysroot",
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
         "-Z",
         "mir-preserve-ub",
         "--driver-run-mono-collector",
         "--driver-out-json",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_unused_accepted.json",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_post_mono_unused_accepted.json",
         "--driver-emit-amir-v3",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_unused_accepted.amir",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/post_mono_unused_accepted.amir",
         "/tmp/anneal_ws_post_mono_probes/post_mono_unreachable_unused.rs"
       ],
       "exit_code": 0,
@@ -1150,13 +1150,13 @@
     {
       "run_id": "charon_cargo_app_verifier_subject",
       "cmd": [
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
         "cargo",
         "--ullbc",
         "--mir",
         "elaborated",
         "--dest-file",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject.ullbc",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/app_verifier_subject.ullbc",
         "--",
         "--package",
         "app_verifier_subject",
@@ -1180,7 +1180,7 @@
     {
       "run_id": "cargo_workspace_stateful_lib_always_encode",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "build",
         "-p",
         "stateful_generic_lib",
@@ -1311,16 +1311,16 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_stateful_generic_lib_always_encode.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_stateful_generic_lib_always_encode.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib_always_encode.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib_always_encode.amir",
             "--driver-dump-bodies",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_stateful_generic_lib_always_encode.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_stateful_generic_lib_always_encode.json",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -1352,14 +1352,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_direct_mir_inspector_always_encode.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_direct_mir_inspector_always_encode.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector_always_encode.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector_always_encode.amir",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -1391,14 +1391,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_contract_user_always_encode.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_contract_user_always_encode.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_contract_user_always_encode.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_contract_user_always_encode.amir",
             "-Z",
             "always-encode-mir=yes",
             "--driver-run-mono-collector"
@@ -1411,7 +1411,7 @@
     {
       "run_id": "cargo_workspace_stateful_lib_default_encoding",
       "cmd": [
-        "/usr/local/google/home/joshlf/.cargo/bin/cargo",
+        "/home/user/.cargo/bin/cargo",
         "build",
         "-p",
         "stateful_generic_lib",
@@ -1589,16 +1589,16 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_stateful_generic_lib_stateful_default.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_stateful_generic_lib_stateful_default.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib_stateful_default.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib_stateful_default.amir",
             "--driver-dump-bodies",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_stateful_generic_lib_stateful_default.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/bodies_stateful_generic_lib_stateful_default.json",
             "--driver-run-mono-collector"
           ],
           "out_json": "out_stateful_generic_lib_stateful_default.json",
@@ -1628,14 +1628,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_direct_mir_inspector_stateful_default.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_direct_mir_inspector_stateful_default.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector_stateful_default.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector_stateful_default.amir",
             "--driver-run-mono-collector"
           ],
           "out_json": "out_client_direct_mir_inspector_stateful_default.json",
@@ -1665,14 +1665,14 @@
           "generated_out_dir_files": [],
           "driver_flags_injected": [
             "--sysroot",
-            "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+            "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
             "-Z",
             "mir-preserve-ub",
             "--driver-include-const-owners",
             "--driver-out-json",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_contract_user_stateful_default.json",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/out_client_contract_user_stateful_default.json",
             "--driver-emit-amir-v3",
-            "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_contract_user_stateful_default.amir",
+            "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_contract_user_stateful_default.amir",
             "--driver-run-mono-collector"
           ],
           "out_json": "out_client_contract_user_stateful_default.json",
@@ -1683,14 +1683,14 @@
     {
       "run_id": "charon_cargo_stateful_generic_lib_ullbc",
       "cmd": [
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
         "cargo",
         "--ullbc",
         "--mir",
         "elaborated",
         "--rustc-arg=-Zmir-preserve-ub",
         "--dest-file",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib.ullbc",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/stateful_generic_lib.ullbc",
         "--",
         "--package",
         "stateful_generic_lib",
@@ -1714,14 +1714,14 @@
     {
       "run_id": "charon_cargo_client_direct_mir_inspector_ullbc",
       "cmd": [
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon",
         "cargo",
         "--ullbc",
         "--mir",
         "elaborated",
         "--rustc-arg=-Zmir-preserve-ub",
         "--dest-file",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector.ullbc",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/artifacts/client_direct_mir_inspector.ullbc",
         "--",
         "--package",
         "client_direct_mir_inspector",

@@ -12,7 +12,7 @@
     {
       "run_id": "build_direct_mir_driver_v4",
       "cmd": [
-        "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust/bin/rustc",
+        "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust/bin/rustc",
         "--edition=2021",
         "-O",
         "direct_mir_driver_v4.rs",
@@ -280,7 +280,7 @@
         "artifacts/v4/out_limit_32_positive.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/limit_32_positive.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_32_positive.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_32_positive.rs",
         "-o",
         "/tmp/liblim32.rlib"
       ],
@@ -314,7 +314,7 @@
         "artifacts/v4/out_limit_33_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/limit_33_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_33_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_33_reject.rs",
         "-o",
         "/tmp/liblim33.rlib"
       ],
@@ -345,7 +345,7 @@
         "artifacts/v4/out_unsupported_rvalue_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/unsupported_rvalue_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_rvalue_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_rvalue_reject.rs",
         "-o",
         "/tmp/libbadrval.rlib"
       ],
@@ -376,7 +376,7 @@
         "artifacts/v4/out_unsupported_rvalue_cast_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/unsupported_rvalue_cast_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_rvalue_cast_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_rvalue_cast_reject.rs",
         "-o",
         "/tmp/libbadrvalcast.rlib"
       ],
@@ -405,7 +405,7 @@
         "artifacts/v4/out_confusing_callee_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/confusing_callee_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/confusing_callee_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/confusing_callee_reject.rs",
         "-o",
         "/tmp/libconfcallee.rlib"
       ],
@@ -419,7 +419,7 @@
           "size_bytes": 4169
         }
       ],
-      "stderr_head": "warning: calls to `std::mem::drop` with a reference instead of an owned value does nothing\n --> /usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/confusing_callee_reject.rs:6:5\n  |\n6 |     core::mem::drop(&g);\n  |     ^^^^^^^^^^^^^^^^--^\n  |                     |\n  |                     argument has type `&Guard<'_>`\n  |"
+      "stderr_head": "warning: calls to `std::mem::drop` with a reference instead of an owned value does nothing\n --> /home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/confusing_callee_reject.rs:6:5\n  |\n6 |     core::mem::drop(&g);\n  |     ^^^^^^^^^^^^^^^^--^\n  |                     |\n  |                     argument has type `&Guard<'_>`\n  |"
     },
     {
       "run_id": "control_wrong_drop_u32_reject",
@@ -434,7 +434,7 @@
         "artifacts/v4/out_wrong_drop_u32_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/wrong_drop_u32_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/wrong_drop_u32_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/wrong_drop_u32_reject.rs",
         "-o",
         "/tmp/libwrongdropu32.rlib"
       ],
@@ -448,7 +448,7 @@
           "size_bytes": 3924
         }
       ],
-      "stderr_head": "warning: calls to `std::mem::drop` with a value that implements `Copy` does nothing\n --> /usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/wrong_drop_u32_reject.rs:3:5\n  |\n3 |     core::mem::drop(x);\n  |     ^^^^^^^^^^^^^^^^-^\n  |                     |\n  |                     argument has type `u32`\n  |"
+      "stderr_head": "warning: calls to `std::mem::drop` with a value that implements `Copy` does nothing\n --> /home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/wrong_drop_u32_reject.rs:3:5\n  |\n3 |     core::mem::drop(x);\n  |     ^^^^^^^^^^^^^^^^-^\n  |                     |\n  |                     argument has type `u32`\n  |"
     },
     {
       "run_id": "control_unsupported_projection_reject",
@@ -463,7 +463,7 @@
         "artifacts/v4/out_unsupported_projection_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/unsupported_projection_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_projection_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_projection_reject.rs",
         "-o",
         "/tmp/libbadproj.rlib"
       ],
@@ -492,7 +492,7 @@
         "artifacts/v4/out_unsupported_terminator_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/unsupported_terminator_reject.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_terminator_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/unsupported_terminator_reject.rs",
         "-o",
         "/tmp/libbadterm.rlib"
       ],
@@ -615,7 +615,7 @@
         "artifacts/v4/out_stale_output_removed_on_reject.json",
         "--driver-emit-amir-v3",
         "artifacts/v4/stale_should_be_removed.amir",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_33_reject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/artifacts/v4/controls_src/limit_33_reject.rs",
         "-o",
         "/tmp/liblim33_stale.rlib"
       ],

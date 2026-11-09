@@ -29,7 +29,7 @@ import subprocess
 from pathlib import Path
 
 SCRATCH_DIR = Path(__file__).resolve().parent
-RUSTC = "/usr/local/google/home/joshlf/.cargo/bin/rustc"
+RUSTC = "/home/user/.cargo/bin/rustc"
 OPT = "/usr/bin/opt"
 SRC = SCRATCH_DIR / "bench_patterns.rs"
 

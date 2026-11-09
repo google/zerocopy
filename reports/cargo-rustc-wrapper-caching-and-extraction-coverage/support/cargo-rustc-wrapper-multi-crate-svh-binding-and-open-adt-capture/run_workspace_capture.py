@@ -13,13 +13,13 @@ import time
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WS_DIR = os.path.join(BASE_DIR, "workspace")
 ART_DIR = os.path.join(BASE_DIR, "artifacts")
-TC_DIR = "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61"
+TC_DIR = "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61"
 RUSTC = os.path.join(TC_DIR, "rust/bin/rustc")
-CARGO = "/usr/local/google/home/joshlf/.cargo/bin/cargo"
+CARGO = "/home/user/.cargo/bin/cargo"
 CHARON = os.path.join(TC_DIR, "aeneas/bin/charon")
 LIB_DIR = os.path.join(TC_DIR, "rust/lib")
 HOST_LIB_DIR = os.path.join(TC_DIR, "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib")
-DRIVER_SRC = "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs"
+DRIVER_SRC = "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs"
 DRIVER_BIN = "/tmp/direct_mir_driver_v4_bin"
 
 

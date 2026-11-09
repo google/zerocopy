@@ -11,11 +11,11 @@ import resource
 import subprocess
 import time
 
-BASE_DIR = "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture"
+BASE_DIR = "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture"
 ART_DIR = os.path.join(BASE_DIR, "artifacts")
 N5_SRC_DIR = os.path.join(BASE_DIR, "n5_probes_src")
 DRIVER_BIN = "/tmp/direct_mir_driver_v4_bin"
-TC_DIR = "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61"
+TC_DIR = "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61"
 RUSTC = os.path.join(TC_DIR, "rust/bin/rustc")
 CHARON = os.path.join(TC_DIR, "aeneas/bin/charon")
 LIB_DIR = os.path.join(TC_DIR, "rust/lib")
@@ -1265,7 +1265,7 @@ pub fn use_unsupported_drop_pair(x: usize) -> usize {
     ))
 
     # Verify zero hardcoded specimen-name strings exist in direct_mir_driver_v4.rs
-    with open("/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs") as f:
+    with open("/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs") as f:
         driver_src = f.read()
     unseen_identifiers = [
         "ring_window_probe",
@@ -1306,7 +1306,7 @@ pub fn use_unsupported_drop_pair(x: usize) -> usize {
     ledger = {
         "experiment": "experiments/opsem/cargo-workspace-capture/n5-open-hash-and-rlib-phase",
         "issue_reference": "joshlf/anneal#68 (§4.6 & §6 N5), joshlf/anneal#89 (R5, R6, R7, R9, R10), and joshlf/anneal#93 (Q3, Q4)",
-        "driver_sha256": sha256_file("/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs"),
+        "driver_sha256": sha256_file("/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/direct_mir_driver_v4.rs"),
         "unseen_identifiers_absent_from_driver_source": absent_in_driver,
         "runs": runs,
     }

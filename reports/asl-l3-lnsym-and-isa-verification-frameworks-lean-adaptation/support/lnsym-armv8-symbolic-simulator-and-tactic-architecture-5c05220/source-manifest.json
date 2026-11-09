@@ -1384,7 +1384,7 @@
       "sha256": "75a3236e94f24593dd5f5f41800e8c8fba2048874c3ad4b0c8ab32dff136477a",
       "bytes": 56629,
       "lines": 1390,
-      "verified_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768",
+      "verified_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M768",
       "sorry_count": 0,
       "custom_axiom_count": 0
     }

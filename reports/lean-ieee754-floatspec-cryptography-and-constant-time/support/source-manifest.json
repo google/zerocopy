@@ -4,7 +4,7 @@
   "toolchain": {
     "id": "leanprover/lean4:v4.34.1",
     "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
-    "binary": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "binary": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
     "flags": ["-j1", "-M1024"]
   },
   "support_probes": [
@@ -13,7 +13,7 @@
       "sha256": "02fa416ddd585e8e992dd01d9e4515b7d9795c4d55e27c52365010c939d9e840",
       "bytes": 30390,
       "lines": 811,
-      "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/FloatProbe.lean",
+      "command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/FloatProbe.lean",
       "sorrys": 0,
       "custom_axioms": [],
       "principal_theorems": [
@@ -36,7 +36,7 @@
       "sha256": "1be6c444642f30b2d0f048874a42c785e7f9399be0c4605bcb62cf930d9bf917",
       "bytes": 46730,
       "lines": 1210,
-      "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/FloatSpecRFC3514Bridge.lean",
+      "command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/FloatSpecRFC3514Bridge.lean",
       "sorrys": 0,
       "custom_axioms": [],
       "principal_theorems": [
@@ -131,7 +131,7 @@
       "sha256": "aa97fcdeefe2a555293c8ad1b5d240f2f50a5f7643bf830365a6b6581dbd1e64",
       "bytes": 31537,
       "lines": 827,
-      "command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/CostCtProbe.lean",
+      "command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/CostCtProbe.lean",
       "sorrys": 0,
       "custom_axioms": [],
       "principal_theorems": [

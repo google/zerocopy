@@ -4,8 +4,8 @@
   "toolchain": {
     "lean_version": "4.34.1",
     "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
-    "lean_binary": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
-    "verification_command": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/anneal_harness.lean"
+    "lean_binary": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+    "verification_command": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean -j1 -M1024 support/anneal_harness.lean"
   },
   "local_artifacts": [
     {

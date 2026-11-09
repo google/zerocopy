@@ -275,21 +275,21 @@
       "bytes": 10154,
       "sha256": "01b13a9843828c664fe79ad44052fa280bbc554fe06a9d6dd25ba4dda4ce930b",
       "lines": 225,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
     },
     {
       "package_path": "support/ProbePartialVsTotal.lean",
       "bytes": 5120,
       "sha256": "ac32784cb3edb4e26d4a933d62f778976901367f599e33728a8866735359a8a6",
       "lines": 134,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
     },
     {
       "package_path": "support/PatchedTrustedBoundaryPrototype.lean",
       "bytes": 64985,
       "sha256": "ca20c8df946a628abef8ebcb43b89a87a6a31cbf9ebfb89d63ae06e9a2a1607e",
       "lines": 1214,
-      "checked_with": "/usr/local/google/home/joshlf/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
+      "checked_with": "/home/user/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean"
     }
   ]
 }

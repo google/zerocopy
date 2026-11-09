@@ -286,7 +286,7 @@
           "ty": "usize",
           "built_local_info": "User",
           "post_cleanup_local_info": "Cleared",
-          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:22:28: 22:31"
+          "source_span": "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:22:28: 22:31"
         },
         "_2": {
           "source_name": "a",
@@ -294,7 +294,7 @@
           "ty": "usize",
           "built_local_info": "User",
           "post_cleanup_local_info": "Cleared",
-          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:23:9: 23:10"
+          "source_span": "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:23:9: 23:10"
         }
       },
       "dep_non_inline_check::{closure#0}": {
@@ -304,7 +304,7 @@
           "ty": "Closure(DefId(0:8 ~ dep_layout_core[c342]::dep_non_inline_check::{closure#0}), [i32, Binder { value: extern \"RustCall\" fn((usize,)) -> usize, bound_vars: [] }, (&'{erased} usize,)])",
           "built_local_info": "Boring",
           "post_cleanup_local_info": "Cleared",
-          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:28:42: 28:47"
+          "source_span": "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:28:42: 28:47"
         },
         "_2": {
           "source_name": "v",
@@ -312,7 +312,7 @@
           "ty": "usize",
           "built_local_info": "User",
           "post_cleanup_local_info": "Cleared",
-          "source_span": "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:32:38: 32:39"
+          "source_span": "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-integration/workspace/dep_layout_core/src/lib.rs:32:38: 32:39"
         },
         "_8": {
           "source_name": "_pass_temp_8",
@@ -418,7 +418,7 @@
             "ty": "usize",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:14:17: 14:21"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:14:17: 14:21"
           },
           "_2": {
             "source_name": "align",
@@ -426,7 +426,7 @@
             "ty": "usize",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:14:30: 14:35"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:14:30: 14:35"
           },
           "_8": {
             "source_name": "aligned_rem",
@@ -434,7 +434,7 @@
             "ty": "usize",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:18:9: 18:20"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:18:9: 18:20"
           },
           "_12": {
             "source_name": "rem",
@@ -442,7 +442,7 @@
             "ty": "usize",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:19:9: 19:12"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:19:9: 19:12"
           },
           "_16": {
             "source_name": "pad",
@@ -450,7 +450,7 @@
             "ty": "usize",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:23:13: 23:16"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_align_to_refactored.rs:23:13: 23:16"
           }
         }
       },
@@ -464,7 +464,7 @@
             "ty": "bool",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:42:5: 42:21"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:42:5: 42:21"
           },
           "_2": {
             "source_name": "trigger_panic",
@@ -472,7 +472,7 @@
             "ty": "bool",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:43:5: 43:18"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:43:5: 43:18"
           },
           "_3": {
             "source_name": "log1",
@@ -480,7 +480,7 @@
             "ty": "&'{erased} mut EffectLog",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:44:5: 44:9"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:44:5: 44:9"
           },
           "_4": {
             "source_name": "log2",
@@ -488,7 +488,7 @@
             "ty": "&'{erased} mut EffectLog",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:45:5: 45:9"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:45:5: 45:9"
           },
           "_5": {
             "source_name": "pair",
@@ -496,7 +496,7 @@
             "ty": "PairGuards<'{erased}>",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:47:9: 47:13"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:47:9: 47:13"
           },
           "_10": {
             "source_name": "early_flag",
@@ -504,7 +504,7 @@
             "ty": "bool",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:51:9: 51:19"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:51:9: 51:19"
           },
           "_13": {
             "source_name": "moved_first",
@@ -512,7 +512,7 @@
             "ty": "Guard<'{erased}>",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:53:13: 53:24"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:53:13: 53:24"
           },
           "_18": {
             "source_name": "out",
@@ -520,7 +520,7 @@
             "ty": "u32",
             "built_local_info": "User",
             "post_cleanup_local_info": "Cleared",
-            "source_span": "/usr/local/google/home/joshlf/.gemini/jetski/brain/07db2a18-1303-4996-b1bb-b386433e2c0f/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:57:9: 57:12"
+            "source_span": "/tmp/agent-scratch/scratch/workers/r5_live_tasks/artifacts/task3_cleanup_refactored.rs:57:9: 57:12"
           },
           "_20": {
             "source_name": "_pass_temp_20",

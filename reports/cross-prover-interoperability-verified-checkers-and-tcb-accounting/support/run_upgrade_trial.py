@@ -10,30 +10,30 @@ import resource
 import subprocess
 import time
 
-BASE_DIR = "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/compiler-upgrade-trial"
+BASE_DIR = "/home/user/workspace/anneal/experiments/opsem/compiler-upgrade-trial"
 ART_DIR = os.path.join(BASE_DIR, "artifacts")
 PORTABLE_DRIVER_SRC = os.path.join(BASE_DIR, "direct_mir_driver_portable.rs")
 
 SUBJECTS = [
     (
         "cleanup_subject",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/cleanup_subject.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/cleanup_subject.rs",
     ),
     (
         "place_mention_probe",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/place_mention_probe.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/place_mention_probe.rs",
     ),
     (
         "zerocopy_layout_holdout",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/zerocopy_layout_holdout.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/zerocopy_layout_holdout.rs",
     ),
     (
         "loop_prefix_probe",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/loop_prefix_probe.rs",
+        "/home/user/workspace/anneal/experiments/opsem/real-mir-ullbc-capture/loop_prefix_probe.rs",
     ),
     (
         "dep_layout_core",
-        "/usr/local/google/home/joshlf/workspace/anneal/experiments/opsem/cargo-workspace-capture/workspace/dep_layout_core/src/lib.rs",
+        "/home/user/workspace/anneal/experiments/opsem/cargo-workspace-capture/workspace/dep_layout_core/src/lib.rs",
     ),
 ]
 
@@ -41,7 +41,7 @@ TOOLCHAINS = [
     {
         "id": "nightly_1_95_2026_02_06",
         "version": "1.95.0-nightly (efc9e1b50 2026-02-06)",
-        "root": "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/rust",
+        "root": "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/rust",
         "cfg_flags": [],
         "mir_use_arity": 1,
         "has_retag_stmt": True,
@@ -51,7 +51,7 @@ TOOLCHAINS = [
     {
         "id": "nightly_1_96_2026_04_10",
         "version": "1.96.0-nightly (02c7f9bec 2026-04-10)",
-        "root": "/usr/local/google/home/joshlf/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu",
+        "root": "/home/user/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu",
         "cfg_flags": [],
         "mir_use_arity": 1,
         "has_retag_stmt": True,
@@ -61,7 +61,7 @@ TOOLCHAINS = [
     {
         "id": "nightly_1_97_2026_04_11",
         "version": "1.97.0-nightly (bf4fbfb7a 2026-04-11)",
-        "root": "/usr/local/google/home/joshlf/.rustup/toolchains/nightly-2026-04-12-x86_64-unknown-linux-gnu",
+        "root": "/home/user/.rustup/toolchains/nightly-2026-04-12-x86_64-unknown-linux-gnu",
         "cfg_flags": [],
         "mir_use_arity": 1,
         "has_retag_stmt": True,
@@ -71,7 +71,7 @@ TOOLCHAINS = [
     {
         "id": "nightly_1_98_2026_05_30",
         "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
-        "root": "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
+        "root": "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/rust",
         "cfg_flags": ["--cfg", "rustc_1_98"],
         "mir_use_arity": 2,
         "has_retag_stmt": False,
@@ -80,11 +80,11 @@ TOOLCHAINS = [
     },
 ]
 
-CHARON_195_BIN = "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon"
-CHARON_195_DRIVER_BIN = "/usr/local/google/home/joshlf/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver"
-CHARON_198_BIN = "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon"
-CHARON_198_DRIVER_BIN = "/usr/local/google/home/joshlf/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver"
-CHARON_GIT_DB = "/usr/local/google/home/joshlf/.cargo/git/db/charon-e8f73e8d381056c2"
+CHARON_195_BIN = "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon"
+CHARON_195_DRIVER_BIN = "/home/user/.anneal/toolchain/x86_64-unknown-linux-gnu-0191de6c9fa5/charon-driver"
+CHARON_198_BIN = "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon"
+CHARON_198_DRIVER_BIN = "/home/user/.anneal/toolchain/4791adccd9a0d457c1700a5eeec084d335a94a8ba17341cec727d22f6cc27f61/aeneas/bin/charon-driver"
+CHARON_GIT_DB = "/home/user/.cargo/git/db/charon-e8f73e8d381056c2"
 
 U32_MOD = 1 << 32
 USIZE_MOD = 1 << 64
@@ -1227,7 +1227,7 @@ def run_charon_comparative_study() -> dict:
         check=True,
     )
     tc98_root = TOOLCHAINS[3]["root"]
-    cargo_bin = "/usr/local/google/home/joshlf/.cargo/bin/cargo"
+    cargo_bin = "/home/user/.cargo/bin/cargo"
     probe_env = os.environ.copy()
     probe_env["PATH"] = f"{tc98_root}/bin:" + probe_env.get("PATH", "")
     probe_env["LD_LIBRARY_PATH"] = (
