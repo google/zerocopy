@@ -568,12 +568,14 @@ impl<T: ?Sized + KnownLayout> MaybeUninit<T> {
     #[cfg(feature = "alloc")]
     #[inline]
     pub fn new_boxed_uninit(meta: T::PointerMetadata) -> Result<Box<Self>, AllocError> {
-        // SAFETY: `alloc::alloc::alloc_zeroed` is a valid argument of
-        // `new_box`. The referent of the pointer returned by `alloc` (and,
-        // consequently, the `Box` derived from it) is a valid instance of
-        // `Self`, because `Self` is `MaybeUninit` and thus admits arbitrary
-        // (un)initialized bytes.
-        unsafe { crate::util::new_box(meta, alloc::alloc::alloc) }
+        // SAFETY: `GlobalAlloc::allocate` is a valid argument of `new_box`. The
+        // referent of the pointer returned by `allocate` (and, consequently,
+        // the `Box` derived from it) is a valid instance of `Self`, because
+        // `Self` is `MaybeUninit` and thus admits arbitrary (un)initialized
+        // bytes.
+        unsafe {
+            crate::util::new_box(meta, crate::util::GlobalAlloc, crate::util::GlobalAlloc::allocate)
+        }
     }
 
     /// Extracts the value from the `MaybeUninit<T>` container.
