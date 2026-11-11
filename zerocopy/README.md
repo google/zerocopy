@@ -94,6 +94,11 @@ for network parsing.
   the `alloc` crate is added as a dependency, and some allocation-related
   functionality is added.
 
+- **`alloc-nightly`**
+  Enables the `alloc` feature and adds support for allocation functionality
+  which is only available on nightly. Since this functionality is unstable,
+  it may be modified or removed at any point in the future.
+
 - **`std`**
   By default, `zerocopy` is `no_std`. When the `std` feature is enabled, the
   `std` crate is added as a dependency (ie, `no_std` is disabled), and
