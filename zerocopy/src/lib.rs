@@ -96,6 +96,11 @@
 //!   the `alloc` crate is added as a dependency, and some allocation-related
 //!   functionality is added.
 //!
+//! - **`alloc-nightly`**
+//!   Enables the `alloc` feature and adds support for allocation functionality
+//!   which is only available on nightly. Since this functionality is unstable,
+//!   it may be modified or removed at any point in the future.
+//!
 //! - **`std`**
 //!   By default, `zerocopy` is `no_std`. When the `std` feature is enabled, the
 //!   `std` crate is added as a dependency (ie, `no_std` is disabled), and
@@ -315,6 +320,7 @@
     clippy::indexing_slicing,
 ))]
 #![cfg_attr(not(any(test, kani, feature = "std")), no_std)]
+#![cfg_attr(feature = "alloc-nightly", allow(stable_features), feature(allocator_api))]
 #![cfg_attr(
     all(feature = "simd-nightly", any(target_arch = "powerpc", target_arch = "powerpc64")),
     feature(stdarch_powerpc)
@@ -397,6 +403,8 @@ pub use crate::{
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
+#[cfg(feature = "alloc-nightly")]
+use core::alloc::Allocator;
 #[cfg(any(feature = "alloc", test))]
 use core::alloc::Layout;
 
@@ -3886,6 +3894,160 @@ pub unsafe trait FromZeros: TryFromBytes {
         // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         Ok(unsafe { Box::from_raw(ptr) })
+    }
+
+    /// Creates a `Box<Self, A>` in `alloc` from zeroed bytes.
+    ///
+    /// This function is useful for allocating large values on the heap using a
+    /// custom allocator and zero-initializing them, without ever creating a
+    /// temporary instance of `Self` on the stack. For example,
+    /// `<[u8; 1048576]>::new_box_zeroed_in(alloc)` will allocate
+    /// `[u8; 1048576]` directly in `alloc`; it does not require storing
+    /// `[u8; 1048576]` in a temporary variable on the stack.
+    ///
+    /// On systems that use a heap implementation that supports allocating from
+    /// pre-zeroed memory, using `new_box_zeroed_in` (or related functions) may
+    /// have performance benefits.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error on allocation failure.
+    #[must_use = "has no side effects (other than allocation)"]
+    #[cfg(feature = "alloc-nightly")]
+    #[cfg_attr(doc_cfg, doc(cfg(feature = "alloc-nightly")))]
+    #[inline]
+    fn new_box_zeroed_in<A: Allocator>(alloc: A) -> Result<Box<Self, A>, AllocError>
+    where
+        Self: Sized,
+    {
+        let layout = Layout::new::<Self>();
+        let ptr = if layout.size() == 0 {
+            // Construct the `Box` from a dangling pointer to avoid calling
+            // `Self::new_zeroed`. This ensures that stack space is never
+            // allocated for `Self` even on lower opt-levels where this branch
+            // might not get optimized out.
+            NonNull::<Self>::dangling()
+        } else {
+            alloc.allocate_zeroed(layout).map_err(|_| AllocError)?.cast::<Self>()
+        };
+
+        // SAFETY:
+        // - Per [1], `Box::from_raw_in(ptr.as_ptr(), alloc)` requires that
+        //   `ptr` satisfies `Box`'s memory layout [2] and uniqueness rules [3]
+        //   for `alloc`:
+        //   - If `layout.size() == 0`, `Self` is zero-sized (`layout ==
+        //     Layout::new::<Self>()` [4]). Per [2], a `Box` to a zero-sized
+        //     value requires no allocation from `alloc`, and its layout
+        //     requirements are that the pointer is non-null and aligned for
+        //     `Self`, which `NonNull::<Self>::dangling()` guarantees [5]. Per
+        //     [6], every non-null, sufficiently aligned pointer is valid for
+        //     reads and writes of zero bytes. Because `layout.size() == 0`, the
+        //     referent occupies zero bytes of memory, so `Box` asserts
+        //     uniqueness over zero bytes (no memory accesses through the `Box`
+        //     can alias any byte of memory), and [2] explicitly permits using
+        //     `NonNull::dangling()` to construct a `Box` to a ZST [3].
+        //   - Otherwise (`layout.size() != 0`), per [7], [8], and [9],
+        //     `alloc.allocate_zeroed(layout)` returns a `NonNull<[u8]>`
+        //     denoting a fresh, wholly disjoint block of memory currently
+        //     allocated by `alloc`, meeting the size and alignment of `layout`
+        //     (which equals `Layout::for_value` for any `Self` since
+        //     `Self: Sized` [10]), with all bytes initialized to zero. Per
+        //     [11], moving `alloc` into `Box::from_raw_in` preserves allocator
+        //     equivalence, so `layout` fits [12] the block owned by `Box`'s
+        //     allocator. Because the block is freshly allocated and disjoint
+        //     from all other allocations [9], and `ptr` is not used again after
+        //     being passed to `Box::from_raw_in`, the `Box` has unique access
+        //     to its allocated bytes [3].
+        // - In either case, all `size_of::<Self>()` bytes at `ptr` are
+        //   initialized to zero. By the safety invariant of `Self: FromZeros`,
+        //   a sequence of zero bytes is a valid instance of `Self`, so `ptr`
+        //   points to a valid value of `Self` [2].
+        //
+        // [1] Per https://doc.rust-lang.org/nightly/std/boxed/struct.Box.html#method.from_raw_in:
+        //
+        //   The raw pointer must point to a block of memory allocated by
+        //   `alloc`.
+        //
+        //   The safety conditions are described in the memory layout section.
+        //   Note that the considerations for unsafe code apply to all
+        //   `Box<T, A>` values.
+        //
+        // [2] Per https://doc.rust-lang.org/nightly/std/boxed/index.html#memory-layout:
+        //
+        //   For zero-sized values, the `Box` pointer has to be non-null and
+        //   sufficiently aligned. The recommended way to build a Box to a
+        //   ZST if `Box::new` cannot be used is to use
+        //   `ptr::NonNull::dangling`.
+        //
+        //   More precisely, a `value: *mut T` that has been allocated with the
+        //   `Global` allocator with `Layout::for_value(&*value)` may be
+        //   converted into a box using `Box::<T>::from_raw(value)`.
+        //
+        //   On top of these basic layout requirements, a `Box<T>` must point to
+        //   a valid value of `T`.
+        //
+        // [3] Per https://doc.rust-lang.org/nightly/std/boxed/index.html#considerations-for-unsafe-code:
+        //
+        //   The aliasing rules for `Box<T>` are the same as for `&mut T`.
+        //   `Box<T>` asserts uniqueness over its content.
+        //
+        // [4] Per https://doc.rust-lang.org/nightly/core/alloc/struct.Layout.html#method.new:
+        //
+        //   Constructs a `Layout` suitable for holding a value of type `T`.
+        //
+        // [5] Per https://doc.rust-lang.org/nightly/core/ptr/struct.NonNull.html#method.dangling:
+        //
+        //   Creates a new `NonNull` that is dangling, but well-aligned.
+        //
+        // [6] Per https://doc.rust-lang.org/nightly/core/ptr/index.html#safety:
+        //
+        //   For zero-sized types, every non-null, sufficiently aligned
+        //   pointer is valid for reads and writes of zero bytes.
+        //
+        // [7] Per https://doc.rust-lang.org/nightly/core/alloc/trait.Allocator.html#tymethod.allocate:
+        //
+        //   On success, returns a `NonNull<[u8]>` meeting the size and
+        //   alignment guarantees of `layout`.
+        //
+        //   Note that the returned block of memory is considered currently
+        //   allocated with this allocator (and equivalent allocators).
+        //
+        // [8] Per https://doc.rust-lang.org/nightly/core/alloc/trait.Allocator.html#method.allocate_zeroed:
+        //
+        //   Behaves like `allocate`, but also ensures that the returned memory
+        //   is zero-initialized.
+        //
+        // [9] Per https://doc.rust-lang.org/nightly/core/alloc/trait.Allocator.html#safety:
+        //
+        //   Additionally, any memory block returned by the allocator must
+        //   satisfy the allocation invariants described in `core::ptr`. In
+        //   particular, if a block has base address `p` and size `n`, then
+        //   `p as usize + n <= usize::MAX` must hold. These blocks must also
+        //   be wholly disjoint.
+        //
+        // [10] Per https://doc.rust-lang.org/nightly/core/alloc/struct.Layout.html#method.for_value:
+        //
+        //   Produces layout describing a record that could be used to allocate
+        //   backing structure for `T` (which could be a trait or other unsized
+        //   type like a slice).
+        //
+        // [11] Per https://doc.rust-lang.org/nightly/core/alloc/trait.Allocator.html#equivalent-allocators:
+        //
+        //   Moving, subtyping, unsize-coercing, or trait-upcasting an allocator
+        //   does not change what the allocator is equivalent to.
+        //
+        // [12] Per https://doc.rust-lang.org/nightly/core/alloc/trait.Allocator.html#memory-fitting:
+        //
+        //   Some of the methods require that a `layout` fits a memory block or
+        //   vice versa. This means that the following conditions must hold:
+        //   * the memory block must be currently allocated by the allocator,
+        //   * `layout.align()` must be the same as the alignment of the layout
+        //     used to allocate the block, and
+        //   * `layout.size()` must fall in the range `min ..= max`, where:
+        //     - `min` is the size of the layout used to allocate the block, and
+        //     - `max` is the actual size returned from `allocate`,
+        //       `allocate_zeroed`, `grow`, `grow_zeroed`, or `shrink`.
+        Ok(unsafe { Box::from_raw_in(ptr.as_ptr(), alloc) })
     }
 
     /// Creates a `Box<Self>` from zeroed bytes with `count` trailing elements.
@@ -8047,6 +8209,110 @@ mod tests {
             {
                 assert_eq!(<()>::new_box_zeroed(), Ok(Box::new(())));
             }
+        }
+
+        #[cfg(feature = "alloc-nightly")]
+        #[test]
+        fn test_new_box_zeroed_in() {
+            assert_eq!(
+                u64::new_box_zeroed_in(::alloc::alloc::Global),
+                Ok(Box::new_in(0, ::alloc::alloc::Global)),
+            );
+        }
+
+        #[cfg(feature = "alloc-nightly")]
+        #[test]
+        fn test_new_box_zeroed_in_array() {
+            drop(<[u32; 0x1000]>::new_box_zeroed_in(::alloc::alloc::Global));
+        }
+
+        #[cfg(feature = "alloc-nightly")]
+        #[test]
+        fn test_new_box_zeroed_in_zst() {
+            #[derive(FromZeros, PartialEq, Debug)]
+            #[repr(C, align(64))]
+            struct AlignedZst;
+
+            // This test exists in order to exercise unsafe code, especially
+            // when running under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(
+                    <()>::new_box_zeroed_in(::alloc::alloc::Global),
+                    Ok(Box::new_in((), ::alloc::alloc::Global)),
+                );
+            }
+            let b = AlignedZst::new_box_zeroed_in(::alloc::alloc::Global).unwrap();
+            assert_eq!(*b, AlignedZst);
+            assert_eq!(Box::as_ptr(&b).addr() % 64, 0);
+        }
+
+        #[cfg(feature = "alloc-nightly")]
+        #[test]
+        fn test_new_box_zeroed_in_custom_allocator() {
+            #[derive(Default, Debug)]
+            struct TrackingAllocator {
+                allocated: Cell<usize>,
+                deallocated: Cell<usize>,
+                fail: Cell<bool>,
+            }
+
+            // SAFETY: `TrackingAllocator` delegates all allocation and
+            // deallocation directly to `::alloc::alloc::Global`, which
+            // satisfies the `Allocator` safety contract.
+            unsafe impl Allocator for TrackingAllocator {
+                fn allocate(
+                    &self,
+                    layout: Layout,
+                ) -> Result<NonNull<[u8]>, core::alloc::AllocError> {
+                    if self.fail.get() {
+                        return Err(core::alloc::AllocError);
+                    }
+                    let ptr = ::alloc::alloc::Global.allocate(layout)?;
+                    // Dirty the allocation so we verify `new_box_zeroed_in`
+                    // calls `allocate_zeroed` (which zeroes the bytes).
+                    // SAFETY: `ptr` is a newly allocated, valid `[u8]` block of
+                    // length `ptr.len()`.
+                    unsafe {
+                        ptr.cast::<u8>().as_ptr().write_bytes(0xFF, layout.size());
+                    }
+                    self.allocated.set(self.allocated.get() + 1);
+                    Ok(ptr)
+                }
+
+                unsafe fn deallocate(&self, ptr: NonNull<u8>, layout: Layout) {
+                    self.deallocated.set(self.deallocated.get() + 1);
+                    // SAFETY: The caller upholds the `deallocate` preconditions
+                    // for blocks allocated via `::alloc::alloc::Global`.
+                    unsafe { ::alloc::alloc::Global.deallocate(ptr, layout) };
+                }
+            }
+
+            let alloc = TrackingAllocator::default();
+            let b = <[u64; 4]>::new_box_zeroed_in(&alloc).unwrap();
+            assert_eq!(*b, [0, 0, 0, 0]);
+            assert_eq!(alloc.allocated.get(), 1);
+            assert_eq!(alloc.deallocated.get(), 0);
+            drop(b);
+            assert_eq!(alloc.deallocated.get(), 1);
+
+            // ZST should not call `allocate` or `deallocate`.
+            alloc.fail.set(true);
+            let b = <()>::new_box_zeroed_in(&alloc).unwrap();
+            assert_eq!(alloc.allocated.get(), 1);
+            drop(b);
+            assert_eq!(alloc.deallocated.get(), 1);
+
+            // Allocation failure should return `Err(AllocError)` without
+            // panicking or leaking.
+            let res = u64::new_box_zeroed_in(&alloc);
+            assert_eq!(res.unwrap_err(), AllocError);
+            assert_eq!(alloc.allocated.get(), 1);
+            assert_eq!(alloc.deallocated.get(), 1);
+
+            // Also exercise passing an owned allocator by value.
+            let b = u64::new_box_zeroed_in(TrackingAllocator::default()).unwrap();
+            assert_eq!(*b, 0);
         }
 
         #[test]
