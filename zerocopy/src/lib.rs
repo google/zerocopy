@@ -1510,12 +1510,12 @@ where
 /// Neither this derive, nor the [safety conditions] of `FromZeros`, requires
 /// that structs are marked with `#[repr(C)]`.
 ///
-/// Per the [Rust reference](reference),
+/// Per the [Rust reference][the Rust reference],
 ///
 /// > The representation of a type can change the padding between fields, but
 /// > does not change the layout of the fields themselves.
 ///
-/// [reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
+/// [the Rust reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
 ///
 /// Since the layout of structs only consists of padding bytes and field bytes,
 /// a struct is soundly `FromZeros` if:
@@ -4149,12 +4149,12 @@ pub unsafe trait FromZeros: TryFromBytes {
 /// Neither this derive, nor the [safety conditions] of `FromBytes`, requires
 /// that structs are marked with `#[repr(C)]`.
 ///
-/// Per the [Rust reference](reference),
+/// Per the [Rust reference][the Rust reference],
 ///
 /// > The representation of a type can change the padding between fields, but
 /// > does not change the layout of the fields themselves.
 ///
-/// [reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
+/// [the Rust reference]: https://doc.rust-lang.org/reference/type-layout.html#representations
 ///
 /// Since the layout of structs only consists of padding bytes and field bytes,
 /// a struct is soundly `FromBytes` if:
