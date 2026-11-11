@@ -107,6 +107,7 @@ features = ["__internal_use_only_features_that_work_on_stable"]
 
 [features]
 alloc = []
+alloc-nightly = ["alloc"]
 derive = ["zerocopy-derive"]
 simd = []
 simd-nightly = ["simd"]
