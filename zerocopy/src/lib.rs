@@ -3898,8 +3898,7 @@ pub unsafe trait FromZeros: TryFromBytes {
     ///
     /// # Errors
     ///
-    /// Returns an error if `alloc` reports an allocation failure. This is
-    /// guaranteed never to cause a panic or an abort.
+    /// Returns an error if `alloc` reports an allocation failure.
     ///
     /// [`new_box_zeroed`]: FromZeros::new_box_zeroed
     #[must_use = "has no side effects (other than allocation)"]
@@ -3913,10 +3912,20 @@ pub unsafe trait FromZeros: TryFromBytes {
     {
         let layout = Layout::new::<Self>();
         if layout.size() == 0 {
-            // SAFETY: As in `new_box_zeroed`, when `Self` is a ZST, the
-            // pointer only has to be non-null and sufficiently aligned, which
-            // `NonNull::dangling` guarantees. Using it avoids calling
-            // `Self::new_zeroed`, and thus allocating stack space for `Self`.
+            // SAFETY: Per [1], when `Self` is a ZST, the pointer does not have
+            // to come from `alloc`; it only has to be non-null and
+            // sufficiently aligned. As in `new_box_zeroed`,
+            // `NonNull::dangling` produces such a pointer. The box holds a
+            // valid `Self`: a ZST has no bytes, so its bytes are vacuously all
+            // zero, which is valid because `Self: FromZeros`. Using a dangling
+            // pointer avoids calling `Self::new_zeroed`, and thus allocating
+            // stack space for `Self`.
+            //
+            // [1] Per https://doc.rust-lang.org/1.100.0/std/boxed/struct.Box.html#method.from_raw_in:
+            //
+            //   If the size of the pointee is zero, then the raw pointer can
+            //   be any sufficiently aligned non-null pointer, e.g.
+            //   `ptr::dangling`.
             return Ok(unsafe { Box::from_raw_in(NonNull::dangling().as_ptr(), alloc) });
         }
 
