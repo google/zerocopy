@@ -397,6 +397,8 @@ pub use crate::{
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
+#[cfg(all(not(no_zerocopy_allocator_api_1_100_0), feature = "alloc"))]
+use core::alloc::Allocator;
 #[cfg(any(feature = "alloc", test))]
 use core::alloc::Layout;
 
@@ -3852,40 +3854,56 @@ pub unsafe trait FromZeros: TryFromBytes {
     where
         Self: Sized,
     {
-        // If `T` is a ZST, then return a proper boxed instance of it. There is
-        // no allocation, but `Box` does require a correct dangling pointer.
-        let layout = Layout::new::<Self>();
-        if layout.size() == 0 {
-            // Construct the `Box` from a dangling pointer to avoid calling
-            // `Self::new_zeroed`. This ensures that stack space is never
-            // allocated for `Self` even on lower opt-levels where this branch
-            // might not get optimized out.
-
-            // SAFETY: Per [1], when `T` is a ZST, `Box<T>`'s only validity
-            // requirements are that the pointer is non-null and sufficiently
-            // aligned. Per [2], `NonNull::dangling` produces a pointer which
-            // is sufficiently aligned. Since the produced pointer is a
-            // `NonNull`, it is non-null.
-            //
-            // [1] Per https://doc.rust-lang.org/1.81.0/std/boxed/index.html#memory-layout:
-            //
-            //   For zero-sized values, the `Box` pointer has to be non-null and sufficiently aligned.
-            //
-            // [2] Per https://doc.rust-lang.org/std/ptr/struct.NonNull.html#method.dangling:
-            //
-            //   Creates a new `NonNull` that is dangling, but well-aligned.
-            return Ok(unsafe { Box::from_raw(NonNull::dangling().as_ptr()) });
+        // SAFETY: `BoxAllocator::allocate_zeroed` is a valid argument of
+        // `new_box`. The referent of the pointer returned by `allocate_zeroed`
+        // (and, consequently, the `Box` derived from it) is a valid instance of
+        // `Wrapping<Self>`, because `Self` (and thus `Wrapping<Self>`) is
+        // `FromZeros`.
+        unsafe {
+            crate::util::new_box::<Wrapping<Self>, _>(
+                (),
+                crate::util::UnwrapWrapping(crate::util::GlobalAlloc),
+                crate::util::BoxAllocator::<Wrapping<Self>>::allocate_zeroed,
+            )
         }
+    }
 
-        // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        let ptr = unsafe { alloc::alloc::alloc_zeroed(layout).cast::<Self>() };
-        if ptr.is_null() {
-            return Err(AllocError);
+    /// Creates a `Box<Self, A>` in `alloc` from zeroed bytes.
+    ///
+    /// This function is useful for allocating large values on the heap using a
+    /// custom allocator and zero-initializing them, without ever creating a
+    /// temporary instance of `Self` on the stack. For example,
+    /// `<[u8; 1048576]>::new_box_zeroed_in(alloc)` will allocate
+    /// `[u8; 1048576]` directly in `alloc`; it does not require storing
+    /// `[u8; 1048576]` in a temporary variable on the stack.
+    ///
+    /// On systems that use a heap implementation that supports allocating from
+    /// pre-zeroed memory, using `new_box_zeroed_in` (or related functions) may
+    /// have performance benefits.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error on allocation failure.
+    #[must_use = "has no side effects (other than allocation)"]
+    #[cfg(all(not(no_zerocopy_allocator_api_1_100_0), feature = "alloc"))]
+    #[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.100.0", feature = "alloc"))))]
+    #[inline]
+    fn new_box_zeroed_in<A: Allocator>(alloc: A) -> Result<Box<Self, A>, AllocError>
+    where
+        Self: Sized,
+    {
+        // SAFETY: `BoxAllocator::allocate_zeroed` is a valid argument of
+        // `new_box`. The referent of the pointer returned by `allocate_zeroed`
+        // (and, consequently, the `Box` derived from it) is a valid instance of
+        // `Wrapping<Self>`, because `Self` (and thus `Wrapping<Self>`) is
+        // `FromZeros`.
+        unsafe {
+            crate::util::new_box::<Wrapping<Self>, _>(
+                (),
+                crate::util::UnwrapWrapping(alloc),
+                crate::util::BoxAllocator::<Wrapping<Self>>::allocate_zeroed,
+            )
         }
-        // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
-        #[allow(clippy::undocumented_unsafe_blocks)]
-        Ok(unsafe { Box::from_raw(ptr) })
     }
 
     /// Creates a `Box<Self>` from zeroed bytes with `count` trailing elements.
@@ -3939,11 +3957,17 @@ pub unsafe trait FromZeros: TryFromBytes {
     where
         Self: KnownLayout<PointerMetadata = usize>,
     {
-        // SAFETY: `alloc::alloc::alloc_zeroed` is a valid argument of
-        // `new_box`. The referent of the pointer returned by `alloc_zeroed`
+        // SAFETY: `BoxAllocator::allocate_zeroed` is a valid argument of
+        // `new_box`. The referent of the pointer returned by `allocate_zeroed`
         // (and, consequently, the `Box` derived from it) is a valid instance of
         // `Self`, because `Self` is `FromZeros`.
-        unsafe { crate::util::new_box(count, alloc::alloc::alloc_zeroed) }
+        unsafe {
+            crate::util::new_box(
+                count,
+                crate::util::GlobalAlloc,
+                crate::util::BoxAllocator::<Self>::allocate_zeroed,
+            )
+        }
     }
 
     #[deprecated(since = "0.8.0", note = "renamed to `FromZeros::new_box_zeroed_with_elems`")]
@@ -8032,6 +8056,7 @@ mod tests {
         #[test]
         fn test_new_box_zeroed() {
             assert_eq!(u64::new_box_zeroed(), Ok(Box::new(0)));
+            assert_eq!(Wrapping::<u64>::new_box_zeroed(), Ok(Box::new(Wrapping(0))));
         }
 
         #[test]
@@ -8047,6 +8072,114 @@ mod tests {
             {
                 assert_eq!(<()>::new_box_zeroed(), Ok(Box::new(())));
             }
+        }
+
+        #[cfg(not(no_zerocopy_allocator_api_1_100_0))]
+        #[test]
+        fn test_new_box_zeroed_in() {
+            assert_eq!(
+                u64::new_box_zeroed_in(::alloc::alloc::Global),
+                Ok(Box::new_in(0, ::alloc::alloc::Global)),
+            );
+            assert_eq!(
+                Wrapping::<u64>::new_box_zeroed_in(::alloc::alloc::Global),
+                Ok(Box::new_in(Wrapping(0), ::alloc::alloc::Global)),
+            );
+        }
+
+        #[cfg(not(no_zerocopy_allocator_api_1_100_0))]
+        #[test]
+        fn test_new_box_zeroed_in_array() {
+            drop(<[u32; 0x1000]>::new_box_zeroed_in(::alloc::alloc::Global));
+        }
+
+        #[cfg(not(no_zerocopy_allocator_api_1_100_0))]
+        #[test]
+        fn test_new_box_zeroed_in_zst() {
+            #[derive(FromZeros, PartialEq, Debug)]
+            #[repr(C, align(64))]
+            struct AlignedZst;
+
+            // This test exists in order to exercise unsafe code, especially
+            // when running under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(
+                    <()>::new_box_zeroed_in(::alloc::alloc::Global),
+                    Ok(Box::new_in((), ::alloc::alloc::Global)),
+                );
+            }
+            let b = AlignedZst::new_box_zeroed_in(::alloc::alloc::Global).unwrap();
+            assert_eq!(*b, AlignedZst);
+            assert_eq!(Box::as_ptr(&b).addr() % 64, 0);
+        }
+
+        #[cfg(not(no_zerocopy_allocator_api_1_100_0))]
+        #[test]
+        fn test_new_box_zeroed_in_custom_allocator() {
+            #[derive(Default, Debug)]
+            struct TrackingAllocator {
+                allocated: Cell<usize>,
+                deallocated: Cell<usize>,
+                fail: Cell<bool>,
+            }
+
+            // SAFETY: `TrackingAllocator` delegates all allocation and
+            // deallocation directly to `::alloc::alloc::Global`, which
+            // satisfies the `Allocator` safety contract.
+            unsafe impl Allocator for TrackingAllocator {
+                fn allocate(
+                    &self,
+                    layout: Layout,
+                ) -> Result<NonNull<[u8]>, core::alloc::AllocError> {
+                    if self.fail.get() {
+                        return Err(core::alloc::AllocError);
+                    }
+                    let ptr = ::alloc::alloc::Global.allocate(layout)?;
+                    // Dirty the allocation so we verify `new_box_zeroed_in`
+                    // calls `allocate_zeroed` (which zeroes the bytes).
+                    // SAFETY: `ptr` is a newly allocated, valid `[u8]` block of
+                    // length `ptr.len()`.
+                    unsafe {
+                        ptr.cast::<u8>().as_ptr().write_bytes(0xFF, layout.size());
+                    }
+                    self.allocated.set(self.allocated.get() + 1);
+                    Ok(ptr)
+                }
+
+                unsafe fn deallocate(&self, ptr: NonNull<u8>, layout: Layout) {
+                    self.deallocated.set(self.deallocated.get() + 1);
+                    // SAFETY: The caller upholds the `deallocate` preconditions
+                    // for blocks allocated via `::alloc::alloc::Global`.
+                    unsafe { ::alloc::alloc::Global.deallocate(ptr, layout) };
+                }
+            }
+
+            let alloc = TrackingAllocator::default();
+            let b = <[u64; 4]>::new_box_zeroed_in(&alloc).unwrap();
+            assert_eq!(*b, [0, 0, 0, 0]);
+            assert_eq!(alloc.allocated.get(), 1);
+            assert_eq!(alloc.deallocated.get(), 0);
+            drop(b);
+            assert_eq!(alloc.deallocated.get(), 1);
+
+            // ZST should not call `allocate` or `deallocate`.
+            alloc.fail.set(true);
+            let b = <()>::new_box_zeroed_in(&alloc).unwrap();
+            assert_eq!(alloc.allocated.get(), 1);
+            drop(b);
+            assert_eq!(alloc.deallocated.get(), 1);
+
+            // Allocation failure should return `Err(AllocError)` without
+            // panicking or leaking.
+            let res = u64::new_box_zeroed_in(&alloc);
+            assert_eq!(res.unwrap_err(), AllocError);
+            assert_eq!(alloc.allocated.get(), 1);
+            assert_eq!(alloc.deallocated.get(), 1);
+
+            // Also exercise passing an owned allocator by value.
+            let b = u64::new_box_zeroed_in(TrackingAllocator::default()).unwrap();
+            assert_eq!(*b, 0);
         }
 
         #[test]

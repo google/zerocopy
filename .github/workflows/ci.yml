@@ -84,6 +84,7 @@ jobs:
           # These are the names of specific Rust versions detected in
           # `build.rs`. Each of these represents the minimum Rust version for
           # which a particular feature is supported.
+          "no-zerocopy-allocator-api-1-100-0",
           "no-zerocopy-simd-x86-avx12-1-89-0",
           "no-zerocopy-core-error-1-81-0",
           "no-zerocopy-slice-ptr-len-1-79-0",
@@ -117,6 +118,8 @@ jobs:
             feature_profile: "all"
           - toolchain: "stable"
             feature_profile: "all"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            feature_profile: "all"
           - toolchain: "no-zerocopy-simd-x86-avx12-1-89-0"
             feature_profile: "all"
           - toolchain: "no-zerocopy-core-error-1-81-0"
@@ -145,6 +148,8 @@ jobs:
           # other than "msrv", "stable", and "nightly". These other versions
           # exist to exercise zerocopy behavior which differs by toolchain;
           # zerocopy-derive doesn't behave differently on these toolchains.
+          - crate: "zerocopy-derive"
+            toolchain: "no-zerocopy-allocator-api-1-100-0"
           - crate: "zerocopy-derive"
             toolchain: "no-zerocopy-simd-x86-avx12-1-89-0"
           - crate: "zerocopy-derive"
@@ -210,6 +215,27 @@ jobs:
           - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
             target: "thumbv6m-none-eabi"
           - toolchain: "no-zerocopy-aarch64-simd-be-1-87-0"
+            target: "wasm32-unknown-unknown"
+          # Exclude most targets from the `no-zerocopy-allocator-api-1-100-0`
+          # toolchain since the `no-zerocopy-allocator-api-1-100-0` feature is unrelated to
+          # compilation target. This only leaves i686 and x86_64 targets.
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "arm-unknown-linux-gnueabi"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "aarch64-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "powerpc-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "powerpc64-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "riscv64gc-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "s390x-unknown-linux-gnu"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "x86_64-pc-windows-msvc"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
+            target: "thumbv6m-none-eabi"
+          - toolchain: "no-zerocopy-allocator-api-1-100-0"
             target: "wasm32-unknown-unknown"
           # Exclude most targets from the `no-zerocopy-core-error-1-81-0`
           # toolchain since the `no-zerocopy-core-error-1-81-0` feature is unrelated to
