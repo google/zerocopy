@@ -1,0 +1,2970 @@
+{
+  "endianness_variants": {
+    "v4.29.0": {
+      "EndiannessBaseline": {
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 2.81,
+        "constants": [
+          {
+            "depth": 8,
+            "name": "Endianness.CheckRange.eq_1",
+            "type_dag": 20,
+            "val_dag": 18,
+            "val_tree": 21
+          },
+          {
+            "depth": 406,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 18446,
+            "val_tree": 49559103
+          },
+          {
+            "depth": 13,
+            "name": "_private.EndiannessBaseline.0.Endianness.CheckRange.match_1.eq_1",
+            "type_dag": 44,
+            "val_dag": 42,
+            "val_tree": 79
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap64.eq_1",
+            "type_dag": 142,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 12,
+            "name": "_private.EndiannessBaseline.0.Endianness.CheckRange.match_1.eq_2",
+            "type_dag": 48,
+            "val_dag": 45,
+            "val_tree": 69
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap16_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.CheckRange.match_1",
+            "type_dag": 35,
+            "val_dag": 44,
+            "val_tree": 69
+          },
+          {
+            "depth": 6,
+            "name": "Endianness.reverseByteIndex.eq_1",
+            "type_dag": 82,
+            "val_dag": 11,
+            "val_tree": 13
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 423,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 22098,
+            "val_tree": 64658257
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 177,
+            "val_tree": 695
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 406,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 17432,
+            "val_tree": 49185423
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.CheckRange._unsafe_rec",
+            "type_dag": 5,
+            "val_dag": 50,
+            "val_tree": 79
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 373,
+            "val_tree": 3635
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 31,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 335,
+            "val_tree": 2701
+          },
+          {
+            "depth": 403,
+            "name": "Endianness.swap32_exact",
+            "type_dag": 22,
+            "val_dag": 37599,
+            "val_tree": 9394139
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 72,
+            "val_tree": 158
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap16.eq_1",
+            "type_dag": 82,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 406,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 20270,
+            "val_tree": 51678207
+          },
+          {
+            "depth": 7,
+            "name": "Endianness.CheckRange.eq_2",
+            "type_dag": 47,
+            "val_dag": 15,
+            "val_tree": 17
+          },
+          {
+            "depth": 40,
+            "name": "Endianness.CheckRange.eq_def",
+            "type_dag": 55,
+            "val_dag": 334,
+            "val_tree": 4433
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.CheckRange._sunfold",
+            "type_dag": 5,
+            "val_dag": 53,
+            "val_tree": 82
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap32.eq_1",
+            "type_dag": 104,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 403,
+            "name": "Endianness.swap16_exact",
+            "type_dag": 22,
+            "val_dag": 24620,
+            "val_tree": 6827147
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap8_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap64_bits",
+            "type_dag": 46,
+            "val_dag": 173,
+            "val_tree": 842
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 1,
+            "name": "_private.EndiannessBaseline.0.Endianness.CheckRange.match_1.splitter",
+            "type_dag": 35,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 403,
+            "name": "Endianness.swap8_exact",
+            "type_dag": 22,
+            "val_dag": 13232,
+            "val_tree": 5716609
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap32_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap8.eq_1",
+            "type_dag": 37,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 411,
+            "name": "Endianness.swap64_exact",
+            "type_dag": 18,
+            "val_dag": 55660,
+            "val_tree": 16141197
+          }
+        ],
+        "max_depth": 423,
+        "max_rss_kb": 455340,
+        "module": "EndiannessBaseline",
+        "num_constants": 36,
+        "num_extra_consts": 20,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 564.390583,
+        "replay_min_ms": 556.495147,
+        "total_dag": 213490,
+        "total_tree": 253184426
+      },
+      "EndiannessBvDecide": {
+        "axioms": [
+          "Classical.choice",
+          "Endianness.swap16_involutive._native.bv_decide.ax_1_5",
+          "Endianness.swap32_involutive._native.bv_decide.ax_1_5",
+          "Endianness.swap64_involutive._native.bv_decide.ax_1_5",
+          "Endianness.swap8_involutive._native.bv_decide.ax_1_5",
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 0.7,
+        "constants": [
+          {
+            "depth": 71,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 1099,
+            "val_tree": 177959
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap32_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap64_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.swap16_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 126,
+            "val_tree": 1227
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.CheckRange.match_1",
+            "type_dag": 35,
+            "val_dag": 44,
+            "val_tree": 69
+          },
+          {
+            "depth": 6,
+            "name": "Endianness.reverseByteIndex.eq_1",
+            "type_dag": 82,
+            "val_dag": 11,
+            "val_tree": 13
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 147,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 4542,
+            "val_tree": 3784659
+          },
+          {
+            "depth": 41,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 293,
+            "val_tree": 10579
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 177,
+            "val_tree": 695
+          },
+          {
+            "depth": 45,
+            "name": "Endianness.swap32_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 229,
+            "val_tree": 4091
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.CheckRange._unsafe_rec",
+            "type_dag": 5,
+            "val_dag": 50,
+            "val_tree": 79
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 373,
+            "val_tree": 3635
+          },
+          {
+            "depth": 31,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 335,
+            "val_tree": 2701
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 61,
+            "name": "Endianness.swap64_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 371,
+            "val_tree": 11187
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap16_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap8_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 72,
+            "val_tree": 158
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap32_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 99,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 2088,
+            "val_tree": 881087
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap64_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.swap8_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 47,
+            "val_tree": 161
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap8_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.CheckRange._sunfold",
+            "type_dag": 5,
+            "val_dag": 53,
+            "val_tree": 82
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap16_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          }
+        ],
+        "max_depth": 147,
+        "max_rss_kb": 721336,
+        "module": "EndiannessBvDecide",
+        "num_constants": 30,
+        "num_extra_consts": 16,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 71.30511,
+        "replay_min_ms": 70.928287,
+        "total_dag": 10857,
+        "total_tree": 4882816
+      },
+      "EndiannessCheckRangeOpt": {
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 1.21,
+        "constants": [
+          {
+            "depth": 39,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 484,
+            "val_tree": 8334
+          },
+          {
+            "depth": 85,
+            "name": "Endianness.reverseByteIndex_involutive._proof_1_1",
+            "type_dag": 113,
+            "val_dag": 3423,
+            "val_tree": 2022805
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap64.eq_1",
+            "type_dag": 142,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap16_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 20,
+            "name": "Endianness.swap32_involutive.match_1_1",
+            "type_dag": 66,
+            "val_dag": 82,
+            "val_tree": 465
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.CheckRange.match_1",
+            "type_dag": 35,
+            "val_dag": 44,
+            "val_tree": 69
+          },
+          {
+            "depth": 6,
+            "name": "Endianness.reverseByteIndex.eq_1",
+            "type_dag": 82,
+            "val_dag": 11,
+            "val_tree": 13
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 266,
+            "val_tree": 3324
+          },
+          {
+            "depth": 24,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 134,
+            "val_tree": 5613
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 20,
+            "name": "Endianness.swap16_involutive.match_1_1",
+            "type_dag": 66,
+            "val_dag": 82,
+            "val_tree": 465
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 173,
+            "val_tree": 509
+          },
+          {
+            "depth": 11,
+            "name": "Endianness.CheckRange._unsafe_rec",
+            "type_dag": 5,
+            "val_dag": 26,
+            "val_tree": 43
+          },
+          {
+            "depth": 86,
+            "name": "Endianness.mask16_bits",
+            "type_dag": 48,
+            "val_dag": 698,
+            "val_tree": 14457
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 373,
+            "val_tree": 3635
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 31,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 335,
+            "val_tree": 2701
+          },
+          {
+            "depth": 36,
+            "name": "Endianness.getLsbD_or_laneR",
+            "type_dag": 74,
+            "val_dag": 441,
+            "val_tree": 4563
+          },
+          {
+            "depth": 118,
+            "name": "Endianness.swap32_exact",
+            "type_dag": 22,
+            "val_dag": 5451,
+            "val_tree": 888417
+          },
+          {
+            "depth": 44,
+            "name": "Endianness.getLsbD_or_laneL",
+            "type_dag": 97,
+            "val_dag": 794,
+            "val_tree": 9547
+          },
+          {
+            "depth": 22,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 55,
+            "val_tree": 122
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.reverseByteIndex_involutive",
+            "type_dag": 51,
+            "val_dag": 148,
+            "val_tree": 2607
+          },
+          {
+            "depth": 20,
+            "name": "Endianness.swap64_involutive.match_1_1",
+            "type_dag": 66,
+            "val_dag": 82,
+            "val_tree": 465
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap16.eq_1",
+            "type_dag": 82,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 39,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 484,
+            "val_tree": 8334
+          },
+          {
+            "depth": 29,
+            "name": "Endianness.getLsbD_and_mask",
+            "type_dag": 47,
+            "val_dag": 200,
+            "val_tree": 1433
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.CheckRange._sunfold",
+            "type_dag": 5,
+            "val_dag": 29,
+            "val_tree": 46
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap32.eq_1",
+            "type_dag": 104,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 104,
+            "name": "Endianness.swap16_exact",
+            "type_dag": 22,
+            "val_dag": 3622,
+            "val_tree": 188977
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap8_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap64_bits",
+            "type_dag": 46,
+            "val_dag": 173,
+            "val_tree": 842
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 92,
+            "name": "Endianness.swap8_exact",
+            "type_dag": 22,
+            "val_dag": 1903,
+            "val_tree": 33241
+          },
+          {
+            "depth": 40,
+            "name": "Endianness.getLsbD_laneL_first",
+            "type_dag": 92,
+            "val_dag": 493,
+            "val_tree": 7649
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap32_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap8.eq_1",
+            "type_dag": 37,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 135,
+            "name": "Endianness.swap64_exact",
+            "type_dag": 18,
+            "val_dag": 8782,
+            "val_tree": 9504075
+          },
+          {
+            "depth": 86,
+            "name": "Endianness.mask32_bits",
+            "type_dag": 48,
+            "val_dag": 698,
+            "val_tree": 14457
+          }
+        ],
+        "max_depth": 135,
+        "max_rss_kb": 381480,
+        "module": "EndiannessCheckRangeOpt",
+        "num_constants": 41,
+        "num_extra_consts": 16,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 253.683752,
+        "replay_min_ms": 248.638066,
+        "total_dag": 32395,
+        "total_tree": 12741005
+      },
+      "EndiannessDropIn": {
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 0.45,
+        "constants": [
+          {
+            "depth": 36,
+            "name": "Endianness.decide_lt_eq_ble",
+            "type_dag": 27,
+            "val_dag": 214,
+            "val_tree": 707
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 87,
+            "val_tree": 243
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap64.eq_1",
+            "type_dag": 142,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap16_bits",
+            "type_dag": 50,
+            "val_dag": 40,
+            "val_tree": 64
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.evalLanes_snoc_laneL",
+            "type_dag": 71,
+            "val_dag": 416,
+            "val_tree": 12041
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.laneMask",
+            "type_dag": 16,
+            "val_dag": 26,
+            "val_tree": 39
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 25,
+            "name": "Endianness.if_lt_eq_ble_and",
+            "type_dag": 36,
+            "val_dag": 189,
+            "val_tree": 830
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 151,
+            "val_tree": 1074
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 87,
+            "val_tree": 243
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.bits_of_exact",
+            "type_dag": 66,
+            "val_dag": 234,
+            "val_tree": 1533
+          },
+          {
+            "depth": 44,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 195,
+            "val_tree": 839
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 125,
+            "val_tree": 3082
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 36,
+            "name": "Endianness.involutive_step",
+            "type_dag": 121,
+            "val_dag": 372,
+            "val_tree": 4825
+          },
+          {
+            "depth": 24,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 109,
+            "val_tree": 1954
+          },
+          {
+            "depth": 10,
+            "name": "Endianness.checkNatPred",
+            "type_dag": 5,
+            "val_dag": 21,
+            "val_tree": 27
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.checkLanes",
+            "type_dag": 9,
+            "val_dag": 51,
+            "val_tree": 107
+          },
+          {
+            "depth": 55,
+            "name": "Endianness.checkLanes_sound",
+            "type_dag": 41,
+            "val_dag": 785,
+            "val_tree": 4259
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.testBitFast",
+            "type_dag": 4,
+            "val_dag": 28,
+            "val_tree": 37
+          },
+          {
+            "depth": 41,
+            "name": "Endianness.evalLanes_of_allInactive",
+            "type_dag": 27,
+            "val_dag": 249,
+            "val_tree": 865
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.checkNatPred_sound",
+            "type_dag": 28,
+            "val_dag": 287,
+            "val_tree": 888
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.laneL",
+            "type_dag": 17,
+            "val_dag": 48,
+            "val_tree": 80
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.laneR",
+            "type_dag": 17,
+            "val_dag": 31,
+            "val_tree": 49
+          },
+          {
+            "depth": 25,
+            "name": "Endianness.getLsbD_laneMask_singleton",
+            "type_dag": 53,
+            "val_dag": 177,
+            "val_tree": 2185
+          },
+          {
+            "depth": 43,
+            "name": "Endianness.swap32_exact",
+            "type_dag": 22,
+            "val_dag": 627,
+            "val_tree": 74773
+          },
+          {
+            "depth": 19,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 49,
+            "val_tree": 83
+          },
+          {
+            "depth": 22,
+            "name": "Endianness.checkByteReversal_sound",
+            "type_dag": 80,
+            "val_dag": 140,
+            "val_tree": 391
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap16.eq_1",
+            "type_dag": 82,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 87,
+            "val_tree": 243
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.decide_eq_eq_beq",
+            "type_dag": 22,
+            "val_dag": 103,
+            "val_tree": 301
+          },
+          {
+            "depth": 31,
+            "name": "Endianness.getLsbD_laneL_singleton",
+            "type_dag": 65,
+            "val_dag": 384,
+            "val_tree": 10293
+          },
+          {
+            "depth": 24,
+            "name": "Endianness.nested_if_lt_eq_evalLanes",
+            "type_dag": 70,
+            "val_dag": 189,
+            "val_tree": 2275
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.getLsbD_eq_testBitFast",
+            "type_dag": 29,
+            "val_dag": 83,
+            "val_tree": 205
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap32.eq_1",
+            "type_dag": 104,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 35,
+            "name": "Endianness.swap16_exact",
+            "type_dag": 22,
+            "val_dag": 377,
+            "val_tree": 19723
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8_bits",
+            "type_dag": 50,
+            "val_dag": 40,
+            "val_tree": 64
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap64_bits",
+            "type_dag": 46,
+            "val_dag": 36,
+            "val_tree": 64
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.allInactive",
+            "type_dag": 8,
+            "val_dag": 30,
+            "val_tree": 59
+          },
+          {
+            "depth": 25,
+            "name": "Endianness.swap8_exact",
+            "type_dag": 22,
+            "val_dag": 185,
+            "val_tree": 1913
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.evalLanes_snoc_laneR",
+            "type_dag": 71,
+            "val_dag": 240,
+            "val_tree": 6251
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.evalLanes",
+            "type_dag": 10,
+            "val_dag": 39,
+            "val_tree": 73
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap32_bits",
+            "type_dag": 50,
+            "val_dag": 40,
+            "val_tree": 64
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap8.eq_1",
+            "type_dag": 37,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 48,
+            "name": "Endianness.swap64_exact",
+            "type_dag": 18,
+            "val_dag": 845,
+            "val_tree": 115869
+          }
+        ],
+        "max_depth": 55,
+        "max_rss_kb": 304312,
+        "module": "EndiannessDropIn",
+        "num_constants": 49,
+        "num_extra_consts": 16,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 70.124025,
+        "replay_min_ms": 69.72844,
+        "total_dag": 9786,
+        "total_tree": 278779
+      }
+    },
+    "v4.34.1": {
+      "EndiannessBaseline": {
+        "axioms": [
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 2.1,
+        "constants": [
+          {
+            "depth": 8,
+            "name": "Endianness.CheckRange.eq_1",
+            "type_dag": 20,
+            "val_dag": 18,
+            "val_tree": 21
+          },
+          {
+            "depth": 406,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 18948,
+            "val_tree": 49670631
+          },
+          {
+            "depth": 13,
+            "name": "_private.EndiannessBaseline.0.Endianness.CheckRange.match_1.eq_1",
+            "type_dag": 44,
+            "val_dag": 42,
+            "val_tree": 79
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap64.eq_1",
+            "type_dag": 142,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 12,
+            "name": "_private.EndiannessBaseline.0.Endianness.CheckRange.match_1.eq_2",
+            "type_dag": 48,
+            "val_dag": 45,
+            "val_tree": 69
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap16_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.CheckRange.match_1",
+            "type_dag": 35,
+            "val_dag": 44,
+            "val_tree": 69
+          },
+          {
+            "depth": 6,
+            "name": "Endianness.reverseByteIndex.eq_1",
+            "type_dag": 82,
+            "val_dag": 11,
+            "val_tree": 13
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 425,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 22865,
+            "val_tree": 64813809
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 177,
+            "val_tree": 695
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 406,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 17878,
+            "val_tree": 49289863
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.CheckRange._unsafe_rec",
+            "type_dag": 5,
+            "val_dag": 50,
+            "val_tree": 79
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 390,
+            "val_tree": 4451
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 355,
+            "val_tree": 3475
+          },
+          {
+            "depth": 404,
+            "name": "Endianness.swap32_exact",
+            "type_dag": 22,
+            "val_dag": 38983,
+            "val_tree": 9855231
+          },
+          {
+            "depth": 10,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 15,
+            "val_tree": 21
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap16.eq_1",
+            "type_dag": 82,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 406,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 20884,
+            "val_tree": 51808519
+          },
+          {
+            "depth": 7,
+            "name": "Endianness.CheckRange.eq_2",
+            "type_dag": 47,
+            "val_dag": 15,
+            "val_tree": 17
+          },
+          {
+            "depth": 40,
+            "name": "Endianness.CheckRange.eq_def",
+            "type_dag": 55,
+            "val_dag": 323,
+            "val_tree": 2533
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.CheckRange._sunfold",
+            "type_dag": 5,
+            "val_dag": 53,
+            "val_tree": 82
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap32.eq_1",
+            "type_dag": 104,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 404,
+            "name": "Endianness.swap16_exact",
+            "type_dag": 22,
+            "val_dag": 25571,
+            "val_tree": 7091223
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap8_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap64_bits",
+            "type_dag": 46,
+            "val_dag": 173,
+            "val_tree": 842
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 1,
+            "name": "_private.EndiannessBaseline.0.Endianness.CheckRange.match_1.splitter",
+            "type_dag": 35,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 404,
+            "name": "Endianness.swap8_exact",
+            "type_dag": 22,
+            "val_dag": 13678,
+            "val_tree": 5819923
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap32_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 19,
+            "name": "Endianness.CheckRange._f",
+            "type_dag": 11,
+            "val_dag": 65,
+            "val_tree": 138
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap8.eq_1",
+            "type_dag": 37,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 413,
+            "name": "Endianness.swap64_exact",
+            "type_dag": 18,
+            "val_dag": 57526,
+            "val_tree": 16767233
+          }
+        ],
+        "max_depth": 425,
+        "max_rss_kb": 442024,
+        "module": "EndiannessBaseline",
+        "num_constants": 37,
+        "num_extra_consts": 20,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 494.948277,
+        "replay_min_ms": 489.131159,
+        "total_dag": 220511,
+        "total_tree": 255140486
+      },
+      "EndiannessBvDecide": {
+        "axioms": [
+          "Classical.choice",
+          "Endianness.swap16_involutive._native.bv_decide.ax_1_5",
+          "Endianness.swap32_involutive._native.bv_decide.ax_1_5",
+          "Endianness.swap64_involutive._native.bv_decide.ax_1_5",
+          "Endianness.swap8_involutive._native.bv_decide.ax_1_5",
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 0.6,
+        "constants": [
+          {
+            "depth": 71,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 792,
+            "val_tree": 138977
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap32_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap64_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.swap16_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 118,
+            "val_tree": 1307
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.CheckRange.match_1",
+            "type_dag": 35,
+            "val_dag": 44,
+            "val_tree": 69
+          },
+          {
+            "depth": 6,
+            "name": "Endianness.reverseByteIndex.eq_1",
+            "type_dag": 82,
+            "val_dag": 11,
+            "val_tree": 13
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 144,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 2162,
+            "val_tree": 3523017
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 259,
+            "val_tree": 8461
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 177,
+            "val_tree": 695
+          },
+          {
+            "depth": 45,
+            "name": "Endianness.swap32_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 185,
+            "val_tree": 4203
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.CheckRange._unsafe_rec",
+            "type_dag": 5,
+            "val_dag": 50,
+            "val_tree": 79
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 390,
+            "val_tree": 4451
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 355,
+            "val_tree": 3475
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 68,
+            "name": "Endianness.swap64_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 277,
+            "val_tree": 14123
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap16_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap8_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 10,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 15,
+            "val_tree": 21
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap32_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 99,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 1400,
+            "val_tree": 748143
+          },
+          {
+            "depth": 0,
+            "name": "Endianness.swap64_involutive._native.bv_decide.ax_1_5",
+            "type_dag": 11,
+            "val_dag": 0,
+            "val_tree": 0
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.swap8_involutive._expr_def_1_1",
+            "type_dag": 1,
+            "val_dag": 47,
+            "val_tree": 161
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap8_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.CheckRange._sunfold",
+            "type_dag": 5,
+            "val_dag": 53,
+            "val_tree": 82
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 1,
+            "name": "Endianness.swap16_involutive._cert_def_1_1",
+            "type_dag": 1,
+            "val_dag": 1,
+            "val_tree": 1
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 19,
+            "name": "Endianness.CheckRange._f",
+            "type_dag": 11,
+            "val_dag": 65,
+            "val_tree": 138
+          }
+        ],
+        "max_depth": 144,
+        "max_rss_kb": 714944,
+        "module": "EndiannessBvDecide",
+        "num_constants": 31,
+        "num_extra_consts": 16,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 42.494066,
+        "replay_min_ms": 42.451455,
+        "total_dag": 7358,
+        "total_tree": 4451868
+      },
+      "EndiannessCheckRangeOpt": {
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 1.11,
+        "constants": [
+          {
+            "depth": 39,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 484,
+            "val_tree": 8334
+          },
+          {
+            "depth": 85,
+            "name": "Endianness.reverseByteIndex_involutive._proof_1_1",
+            "type_dag": 113,
+            "val_dag": 3423,
+            "val_tree": 2022805
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap64.eq_1",
+            "type_dag": 142,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap16_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 20,
+            "name": "Endianness.swap32_involutive.match_1_1",
+            "type_dag": 66,
+            "val_dag": 82,
+            "val_tree": 465
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.CheckRange.match_1",
+            "type_dag": 35,
+            "val_dag": 44,
+            "val_tree": 69
+          },
+          {
+            "depth": 6,
+            "name": "Endianness.reverseByteIndex.eq_1",
+            "type_dag": 82,
+            "val_dag": 11,
+            "val_tree": 13
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 277,
+            "val_tree": 3504
+          },
+          {
+            "depth": 24,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 134,
+            "val_tree": 5613
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 20,
+            "name": "Endianness.swap16_involutive.match_1_1",
+            "type_dag": 66,
+            "val_dag": 82,
+            "val_tree": 465
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 173,
+            "val_tree": 509
+          },
+          {
+            "depth": 11,
+            "name": "Endianness.CheckRange._unsafe_rec",
+            "type_dag": 5,
+            "val_dag": 26,
+            "val_tree": 43
+          },
+          {
+            "depth": 86,
+            "name": "Endianness.mask16_bits",
+            "type_dag": 48,
+            "val_dag": 698,
+            "val_tree": 14457
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 390,
+            "val_tree": 4451
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 355,
+            "val_tree": 3475
+          },
+          {
+            "depth": 36,
+            "name": "Endianness.getLsbD_or_laneR",
+            "type_dag": 74,
+            "val_dag": 441,
+            "val_tree": 4563
+          },
+          {
+            "depth": 118,
+            "name": "Endianness.swap32_exact",
+            "type_dag": 22,
+            "val_dag": 5451,
+            "val_tree": 888417
+          },
+          {
+            "depth": 44,
+            "name": "Endianness.getLsbD_or_laneL",
+            "type_dag": 97,
+            "val_dag": 794,
+            "val_tree": 9547
+          },
+          {
+            "depth": 10,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 15,
+            "val_tree": 21
+          },
+          {
+            "depth": 33,
+            "name": "Endianness.reverseByteIndex_involutive",
+            "type_dag": 51,
+            "val_dag": 148,
+            "val_tree": 2607
+          },
+          {
+            "depth": 20,
+            "name": "Endianness.swap64_involutive.match_1_1",
+            "type_dag": 66,
+            "val_dag": 82,
+            "val_tree": 465
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap16.eq_1",
+            "type_dag": 82,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 39,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 484,
+            "val_tree": 8334
+          },
+          {
+            "depth": 30,
+            "name": "Endianness.getLsbD_and_mask",
+            "type_dag": 47,
+            "val_dag": 263,
+            "val_tree": 1815
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.CheckRange._sunfold",
+            "type_dag": 5,
+            "val_dag": 29,
+            "val_tree": 46
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap32.eq_1",
+            "type_dag": 104,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 104,
+            "name": "Endianness.swap16_exact",
+            "type_dag": 22,
+            "val_dag": 3622,
+            "val_tree": 188977
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap8_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap64_bits",
+            "type_dag": 46,
+            "val_dag": 173,
+            "val_tree": 842
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 92,
+            "name": "Endianness.swap8_exact",
+            "type_dag": 22,
+            "val_dag": 1903,
+            "val_tree": 33241
+          },
+          {
+            "depth": 40,
+            "name": "Endianness.getLsbD_laneL_first",
+            "type_dag": 92,
+            "val_dag": 493,
+            "val_tree": 7649
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap32_bits",
+            "type_dag": 50,
+            "val_dag": 179,
+            "val_tree": 842
+          },
+          {
+            "depth": 135,
+            "name": "Endianness.swap64_exact",
+            "type_dag": 18,
+            "val_dag": 8782,
+            "val_tree": 9504075
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap8.eq_1",
+            "type_dag": 37,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 86,
+            "name": "Endianness.mask32_bits",
+            "type_dag": 48,
+            "val_dag": 698,
+            "val_tree": 14457
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.CheckRange._f",
+            "type_dag": 11,
+            "val_dag": 48,
+            "val_tree": 102
+          }
+        ],
+        "max_depth": 135,
+        "max_rss_kb": 395088,
+        "module": "EndiannessCheckRangeOpt",
+        "num_constants": 42,
+        "num_extra_consts": 16,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 224.351656,
+        "replay_min_ms": 221.160116,
+        "total_dag": 32525,
+        "total_tree": 12743177
+      },
+      "EndiannessDropIn": {
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ],
+        "compile_sec": 0.46,
+        "constants": [
+          {
+            "depth": 36,
+            "name": "Endianness.decide_lt_eq_ble",
+            "type_dag": 27,
+            "val_dag": 214,
+            "val_tree": 707
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap16_involutive",
+            "type_dag": 38,
+            "val_dag": 87,
+            "val_tree": 243
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap64.eq_1",
+            "type_dag": 142,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap16_bits",
+            "type_dag": 50,
+            "val_dag": 40,
+            "val_tree": 64
+          },
+          {
+            "depth": 34,
+            "name": "Endianness.evalLanes_snoc_laneL",
+            "type_dag": 71,
+            "val_dag": 416,
+            "val_tree": 12041
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.laneMask",
+            "type_dag": 16,
+            "val_dag": 26,
+            "val_tree": 39
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.ByteReversal",
+            "type_dag": 14,
+            "val_dag": 52,
+            "val_tree": 107
+          },
+          {
+            "depth": 25,
+            "name": "Endianness.if_lt_eq_ble_and",
+            "type_dag": 36,
+            "val_dag": 189,
+            "val_tree": 830
+          },
+          {
+            "depth": 23,
+            "name": "Endianness.swap64_involutive",
+            "type_dag": 19,
+            "val_dag": 151,
+            "val_tree": 1074
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap8_involutive",
+            "type_dag": 38,
+            "val_dag": 87,
+            "val_tree": 243
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32",
+            "type_dag": 11,
+            "val_dag": 98,
+            "val_tree": 894
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.bits_of_exact",
+            "type_dag": 66,
+            "val_dag": 234,
+            "val_tree": 1533
+          },
+          {
+            "depth": 44,
+            "name": "Endianness.checkRange_sound",
+            "type_dag": 21,
+            "val_dag": 195,
+            "val_tree": 839
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.maskedIdentity16_rejected",
+            "type_dag": 46,
+            "val_dag": 125,
+            "val_tree": 3082
+          },
+          {
+            "depth": 28,
+            "name": "Endianness.swap64",
+            "type_dag": 11,
+            "val_dag": 136,
+            "val_tree": 1627
+          },
+          {
+            "depth": 36,
+            "name": "Endianness.involutive_step",
+            "type_dag": 121,
+            "val_dag": 372,
+            "val_tree": 4825
+          },
+          {
+            "depth": 24,
+            "name": "Endianness.constantZero16_rejected",
+            "type_dag": 30,
+            "val_dag": 109,
+            "val_tree": 1954
+          },
+          {
+            "depth": 10,
+            "name": "Endianness.checkNatPred",
+            "type_dag": 5,
+            "val_dag": 21,
+            "val_tree": 27
+          },
+          {
+            "depth": 18,
+            "name": "Endianness.checkLanes",
+            "type_dag": 9,
+            "val_dag": 51,
+            "val_tree": 107
+          },
+          {
+            "depth": 55,
+            "name": "Endianness.checkLanes_sound",
+            "type_dag": 41,
+            "val_dag": 785,
+            "val_tree": 4259
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.testBitFast",
+            "type_dag": 4,
+            "val_dag": 28,
+            "val_tree": 37
+          },
+          {
+            "depth": 41,
+            "name": "Endianness.evalLanes_of_allInactive",
+            "type_dag": 27,
+            "val_dag": 249,
+            "val_tree": 865
+          },
+          {
+            "depth": 37,
+            "name": "Endianness.checkNatPred_sound",
+            "type_dag": 28,
+            "val_dag": 287,
+            "val_tree": 888
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.laneL",
+            "type_dag": 17,
+            "val_dag": 48,
+            "val_tree": 80
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.laneR",
+            "type_dag": 17,
+            "val_dag": 31,
+            "val_tree": 49
+          },
+          {
+            "depth": 25,
+            "name": "Endianness.getLsbD_laneMask_singleton",
+            "type_dag": 53,
+            "val_dag": 177,
+            "val_tree": 2185
+          },
+          {
+            "depth": 43,
+            "name": "Endianness.swap32_exact",
+            "type_dag": 22,
+            "val_dag": 627,
+            "val_tree": 74773
+          },
+          {
+            "depth": 19,
+            "name": "Endianness.CheckRange",
+            "type_dag": 5,
+            "val_dag": 49,
+            "val_tree": 83
+          },
+          {
+            "depth": 22,
+            "name": "Endianness.checkByteReversal_sound",
+            "type_dag": 80,
+            "val_dag": 140,
+            "val_tree": 391
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8",
+            "type_dag": 11,
+            "val_dag": 31,
+            "val_tree": 107
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap16.eq_1",
+            "type_dag": 82,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.swap32_involutive",
+            "type_dag": 38,
+            "val_dag": 87,
+            "val_tree": 243
+          },
+          {
+            "depth": 21,
+            "name": "Endianness.decide_eq_eq_beq",
+            "type_dag": 22,
+            "val_dag": 103,
+            "val_tree": 301
+          },
+          {
+            "depth": 31,
+            "name": "Endianness.getLsbD_laneL_singleton",
+            "type_dag": 65,
+            "val_dag": 384,
+            "val_tree": 10293
+          },
+          {
+            "depth": 24,
+            "name": "Endianness.nested_if_lt_eq_evalLanes",
+            "type_dag": 70,
+            "val_dag": 189,
+            "val_tree": 2275
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.getLsbD_eq_testBitFast",
+            "type_dag": 29,
+            "val_dag": 83,
+            "val_tree": 205
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap32.eq_1",
+            "type_dag": 104,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 35,
+            "name": "Endianness.swap16_exact",
+            "type_dag": 22,
+            "val_dag": 377,
+            "val_tree": 19723
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap8_bits",
+            "type_dag": 50,
+            "val_dag": 40,
+            "val_tree": 64
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap64_bits",
+            "type_dag": 46,
+            "val_dag": 36,
+            "val_tree": 64
+          },
+          {
+            "depth": 16,
+            "name": "Endianness.reverseByteIndex",
+            "type_dag": 3,
+            "val_dag": 75,
+            "val_tree": 157
+          },
+          {
+            "depth": 17,
+            "name": "Endianness.swap16",
+            "type_dag": 11,
+            "val_dag": 76,
+            "val_tree": 474
+          },
+          {
+            "depth": 13,
+            "name": "Endianness.allInactive",
+            "type_dag": 8,
+            "val_dag": 30,
+            "val_tree": 59
+          },
+          {
+            "depth": 25,
+            "name": "Endianness.swap8_exact",
+            "type_dag": 22,
+            "val_dag": 185,
+            "val_tree": 1913
+          },
+          {
+            "depth": 32,
+            "name": "Endianness.evalLanes_snoc_laneR",
+            "type_dag": 71,
+            "val_dag": 240,
+            "val_tree": 6251
+          },
+          {
+            "depth": 15,
+            "name": "Endianness.evalLanes",
+            "type_dag": 10,
+            "val_dag": 39,
+            "val_tree": 73
+          },
+          {
+            "depth": 12,
+            "name": "Endianness.swap32_bits",
+            "type_dag": 50,
+            "val_dag": 40,
+            "val_tree": 64
+          },
+          {
+            "depth": 8,
+            "name": "Endianness.swap8.eq_1",
+            "type_dag": 37,
+            "val_dag": 17,
+            "val_tree": 29
+          },
+          {
+            "depth": 48,
+            "name": "Endianness.swap64_exact",
+            "type_dag": 18,
+            "val_dag": 845,
+            "val_tree": 115869
+          }
+        ],
+        "max_depth": 55,
+        "max_rss_kb": 340292,
+        "module": "EndiannessDropIn",
+        "num_constants": 49,
+        "num_extra_consts": 16,
+        "per_const_replay_ms": {},
+        "replay_med_ms": 54.437856,
+        "replay_min_ms": 54.011332,
+        "total_dag": 9786,
+        "total_tree": 278779
+      }
+    }
+  },
+  "meta_hasfvar_caching_probe": {
+    "v4.29.0": {
+      "depths": [
+        {
+          "depth": 10,
+          "dsimp_fvar_coupled_ms": 1.072328,
+          "speedup_decoupled": 52.607878,
+          "speedup_dsimp": 11.291437,
+          "whnf_closed_ms": 0.529096,
+          "whnf_fvar_coupled_ms": 12.108124,
+          "whnf_fvar_decoupled_ms": 0.230158
+        },
+        {
+          "depth": 12,
+          "dsimp_fvar_coupled_ms": 1.059599,
+          "speedup_decoupled": 223.69764,
+          "speedup_dsimp": 45.440473,
+          "whnf_closed_ms": 0.231172,
+          "whnf_fvar_coupled_ms": 48.14868,
+          "whnf_fvar_decoupled_ms": 0.21524
+        },
+        {
+          "depth": 14,
+          "dsimp_fvar_coupled_ms": 1.194348,
+          "speedup_decoupled": 781.350539,
+          "speedup_dsimp": 160.418695,
+          "whnf_closed_ms": 0.249273,
+          "whnf_fvar_coupled_ms": 191.595747,
+          "whnf_fvar_decoupled_ms": 0.245211
+        },
+        {
+          "depth": 16,
+          "dsimp_fvar_coupled_ms": 1.404936,
+          "speedup_decoupled": 2543.339419,
+          "speedup_dsimp": 549.621677,
+          "whnf_closed_ms": 0.295422,
+          "whnf_fvar_coupled_ms": 772.183281,
+          "whnf_fvar_decoupled_ms": 0.30361
+        },
+        {
+          "depth": 18,
+          "dsimp_fvar_coupled_ms": 1.581035,
+          "speedup_decoupled": 9275.089012,
+          "speedup_dsimp": 1965.33084,
+          "whnf_closed_ms": 0.321832,
+          "whnf_fvar_coupled_ms": 3107.256845,
+          "whnf_fvar_decoupled_ms": 0.335011
+        },
+        {
+          "depth": 20,
+          "dsimp_fvar_coupled_ms": 3.030249,
+          "speedup_decoupled": 30947.599839,
+          "speedup_dsimp": 4109.575037,
+          "whnf_closed_ms": 0.364917,
+          "whnf_fvar_coupled_ms": 12453.035647,
+          "whnf_fvar_decoupled_ms": 0.402391
+        }
+      ],
+      "lean_version": "4.29.0",
+      "simproc_line": "SIMPROC concrete_reduced=true symbolic_reduced=true concrete_out=Bool.true symbolic_out=GetElem.getElem.{0, 0, 0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) Nat Bool (fun (x._@.Init.Data.BitVec.Basic.2925037203._hygCtx._hyg.16 : BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (i : Nat) => LT.lt.{0} Nat instLTNat i (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (BitVec.instGetElemNatBoolLt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) _uniq.2795942 (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (of_eq_true (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (eq_true_of_decide (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Nat.decLt (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Eq.refl.{1} Bool Bool.true)))"
+    },
+    "v4.34.1": {
+      "depths": [
+        {
+          "depth": 10,
+          "dsimp_fvar_coupled_ms": 0.884878,
+          "speedup_decoupled": 52.243125,
+          "speedup_dsimp": 5.118289,
+          "whnf_closed_ms": 0.276223,
+          "whnf_fvar_coupled_ms": 4.529061,
+          "whnf_fvar_decoupled_ms": 0.086692
+        },
+        {
+          "depth": 12,
+          "dsimp_fvar_coupled_ms": 0.773767,
+          "speedup_decoupled": 233.950266,
+          "speedup_dsimp": 22.931309,
+          "whnf_closed_ms": 0.090389,
+          "whnf_fvar_coupled_ms": 17.74349,
+          "whnf_fvar_decoupled_ms": 0.075843
+        },
+        {
+          "depth": 14,
+          "dsimp_fvar_coupled_ms": 0.942631,
+          "speedup_decoupled": 762.464412,
+          "speedup_dsimp": 74.982099,
+          "whnf_closed_ms": 0.097352,
+          "whnf_fvar_coupled_ms": 70.680451,
+          "whnf_fvar_decoupled_ms": 0.0927
+        },
+        {
+          "depth": 16,
+          "dsimp_fvar_coupled_ms": 1.081105,
+          "speedup_decoupled": 2486.735537,
+          "speedup_dsimp": 260.631037,
+          "whnf_closed_ms": 0.119902,
+          "whnf_fvar_coupled_ms": 281.769517,
+          "whnf_fvar_decoupled_ms": 0.113309
+        },
+        {
+          "depth": 18,
+          "dsimp_fvar_coupled_ms": 1.220963,
+          "speedup_decoupled": 9173.292491,
+          "speedup_dsimp": 927.807856,
+          "whnf_closed_ms": 0.129524,
+          "whnf_fvar_coupled_ms": 1132.819063,
+          "whnf_fvar_decoupled_ms": 0.123491
+        },
+        {
+          "depth": 20,
+          "dsimp_fvar_coupled_ms": 1.423565,
+          "speedup_decoupled": 25439.8289,
+          "speedup_dsimp": 3184.935444,
+          "whnf_closed_ms": 0.145127,
+          "whnf_fvar_coupled_ms": 4533.962626,
+          "whnf_fvar_decoupled_ms": 0.178223
+        }
+      ],
+      "lean_version": "4.34.1",
+      "simproc_line": "SIMPROC concrete_reduced=true symbolic_reduced=true concrete_out=Bool.true symbolic_out=GetElem.getElem.{0, 0, 0} (BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) Nat Bool (fun (x._@.Init.Data.BitVec.Basic.2925037203._hygCtx._hyg.16 : BitVec (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (i : Nat) => LT.lt.{0} Nat instLTNat i (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (BitVec.instGetElemNatBoolLt (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) _uniq.2 (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (of_eq_true (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (eq_true_of_decide (LT.lt.{0} Nat instLTNat (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Nat.decLt (OfNat.ofNat.{0} Nat 3 (instOfNatNat 3)) (OfNat.ofNat.{0} Nat 64 (instOfNatNat 64))) (Eq.refl.{1} Bool Bool.true)))"
+    }
+  },
+  "mixed_bitvec_arith_probe": {
+    "v4.29.0": {
+      "axioms": [
+        "Classical.choice",
+        "MixedBitVecArithProbe.bitand_wf_bv_decide._native.bv_decide.ax_1_5",
+        "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._native.bv_decide.ax_1_5",
+        "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._native.bv_decide.ax_1_5",
+        "Quot.sound",
+        "propext"
+      ],
+      "compile_sec": 0.81,
+      "constants": [
+        {
+          "depth": 83,
+          "name": "MixedBitVecArithProbe.revIdx64_omega._proof_1_1",
+          "type_dag": 106,
+          "val_dag": 3131,
+          "val_tree": 1954037
+        },
+        {
+          "depth": 1,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._cert_def_1_1",
+          "type_dag": 1,
+          "val_dag": 1,
+          "val_tree": 1
+        },
+        {
+          "depth": 1,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._cert_def_1_1",
+          "type_dag": 1,
+          "val_dag": 1,
+          "val_tree": 1
+        },
+        {
+          "depth": 10,
+          "name": "MixedBitVecArithProbe.checkNatPred",
+          "type_dag": 5,
+          "val_dag": 21,
+          "val_tree": 27
+        },
+        {
+          "depth": 28,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._expr_def_1_1",
+          "type_dag": 1,
+          "val_dag": 115,
+          "val_tree": 559
+        },
+        {
+          "depth": 56,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide",
+          "type_dag": 42,
+          "val_dag": 598,
+          "val_tree": 41185
+        },
+        {
+          "depth": 40,
+          "name": "MixedBitVecArithProbe.u64_add_range_mod_elim",
+          "type_dag": 90,
+          "val_dag": 667,
+          "val_tree": 23292
+        },
+        {
+          "depth": 39,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide",
+          "type_dag": 27,
+          "val_dag": 363,
+          "val_tree": 10208
+        },
+        {
+          "depth": 37,
+          "name": "MixedBitVecArithProbe.checkAllBool2_sound",
+          "type_dag": 21,
+          "val_dag": 272,
+          "val_tree": 1025
+        },
+        {
+          "depth": 67,
+          "name": "MixedBitVecArithProbe.bitand_wf_cases",
+          "type_dag": 84,
+          "val_dag": 1861,
+          "val_tree": 41080
+        },
+        {
+          "depth": 18,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._expr_def_1_1",
+          "type_dag": 1,
+          "val_dag": 77,
+          "val_tree": 237
+        },
+        {
+          "depth": 47,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_reflect",
+          "type_dag": 42,
+          "val_dag": 725,
+          "val_tree": 29992
+        },
+        {
+          "depth": 16,
+          "name": "MixedBitVecArithProbe.reverseByteIndex",
+          "type_dag": 3,
+          "val_dag": 75,
+          "val_tree": 157
+        },
+        {
+          "depth": 14,
+          "name": "MixedBitVecArithProbe.getDstReg",
+          "type_dag": 11,
+          "val_dag": 44,
+          "val_tree": 149
+        },
+        {
+          "depth": 0,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._native.bv_decide.ax_1_5",
+          "type_dag": 11,
+          "val_dag": 0,
+          "val_tree": 0
+        },
+        {
+          "depth": 24,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_algebraic",
+          "type_dag": 27,
+          "val_dag": 135,
+          "val_tree": 1483
+        },
+        {
+          "depth": 16,
+          "name": "MixedBitVecArithProbe.setDstReg",
+          "type_dag": 12,
+          "val_dag": 65,
+          "val_tree": 313
+        },
+        {
+          "depth": 31,
+          "name": "MixedBitVecArithProbe.revIdx64_omega",
+          "type_dag": 31,
+          "val_dag": 138,
+          "val_tree": 2761
+        },
+        {
+          "depth": 0,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._native.bv_decide.ax_1_5",
+          "type_dag": 11,
+          "val_dag": 0,
+          "val_tree": 0
+        },
+        {
+          "depth": 1,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide._cert_def_1_1",
+          "type_dag": 1,
+          "val_dag": 1,
+          "val_tree": 1
+        },
+        {
+          "depth": 10,
+          "name": "MixedBitVecArithProbe.checkAllBool2",
+          "type_dag": 4,
+          "val_dag": 20,
+          "val_tree": 35
+        },
+        {
+          "depth": 24,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide._expr_def_1_1",
+          "type_dag": 1,
+          "val_dag": 104,
+          "val_tree": 687
+        },
+        {
+          "depth": 52,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide",
+          "type_dag": 84,
+          "val_dag": 478,
+          "val_tree": 41339
+        },
+        {
+          "depth": 37,
+          "name": "MixedBitVecArithProbe.checkNatPred_sound",
+          "type_dag": 28,
+          "val_dag": 287,
+          "val_tree": 888
+        },
+        {
+          "depth": 73,
+          "name": "MixedBitVecArithProbe.u64_add_range_bv_omega._proof_1_1",
+          "type_dag": 125,
+          "val_dag": 4901,
+          "val_tree": 834219
+        },
+        {
+          "depth": 35,
+          "name": "MixedBitVecArithProbe.u64_add_range_bv_omega",
+          "type_dag": 90,
+          "val_dag": 322,
+          "val_tree": 7713
+        },
+        {
+          "depth": 0,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide._native.bv_decide.ax_1_5",
+          "type_dag": 11,
+          "val_dag": 0,
+          "val_tree": 0
+        },
+        {
+          "depth": 21,
+          "name": "MixedBitVecArithProbe.revIdx64_reflect",
+          "type_dag": 31,
+          "val_dag": 140,
+          "val_tree": 1247
+        }
+      ],
+      "max_depth": 83,
+      "max_rss_kb": 739944,
+      "module": "MixedBitVecArithProbe",
+      "num_constants": 28,
+      "num_extra_consts": 6,
+      "olean_bytes": 531800,
+      "per_const_replay_ms": {},
+      "replay_med_ms": 167.817725,
+      "replay_min_ms": 166.023405,
+      "total_dag": 15444,
+      "total_tree": 2997734
+    },
+    "v4.34.1": {
+      "axioms": [
+        "Classical.choice",
+        "MixedBitVecArithProbe.bitand_wf_bv_decide._native.bv_decide.ax_1_5",
+        "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._native.bv_decide.ax_1_5",
+        "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._native.bv_decide.ax_1_5",
+        "Quot.sound",
+        "propext"
+      ],
+      "compile_sec": 0.8,
+      "constants": [
+        {
+          "depth": 83,
+          "name": "MixedBitVecArithProbe.revIdx64_omega._proof_1_1",
+          "type_dag": 106,
+          "val_dag": 3131,
+          "val_tree": 1954037
+        },
+        {
+          "depth": 1,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._cert_def_1_1",
+          "type_dag": 1,
+          "val_dag": 1,
+          "val_tree": 1
+        },
+        {
+          "depth": 1,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._cert_def_1_1",
+          "type_dag": 1,
+          "val_dag": 1,
+          "val_tree": 1
+        },
+        {
+          "depth": 10,
+          "name": "MixedBitVecArithProbe.checkNatPred",
+          "type_dag": 5,
+          "val_dag": 21,
+          "val_tree": 27
+        },
+        {
+          "depth": 28,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._expr_def_1_1",
+          "type_dag": 1,
+          "val_dag": 115,
+          "val_tree": 559
+        },
+        {
+          "depth": 53,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide",
+          "type_dag": 42,
+          "val_dag": 517,
+          "val_tree": 31817
+        },
+        {
+          "depth": 40,
+          "name": "MixedBitVecArithProbe.u64_add_range_mod_elim",
+          "type_dag": 90,
+          "val_dag": 667,
+          "val_tree": 23292
+        },
+        {
+          "depth": 37,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide",
+          "type_dag": 27,
+          "val_dag": 333,
+          "val_tree": 8416
+        },
+        {
+          "depth": 37,
+          "name": "MixedBitVecArithProbe.checkAllBool2_sound",
+          "type_dag": 21,
+          "val_dag": 272,
+          "val_tree": 1025
+        },
+        {
+          "depth": 67,
+          "name": "MixedBitVecArithProbe.bitand_wf_cases",
+          "type_dag": 84,
+          "val_dag": 1861,
+          "val_tree": 41080
+        },
+        {
+          "depth": 18,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._expr_def_1_1",
+          "type_dag": 1,
+          "val_dag": 77,
+          "val_tree": 237
+        },
+        {
+          "depth": 47,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_reflect",
+          "type_dag": 42,
+          "val_dag": 740,
+          "val_tree": 29988
+        },
+        {
+          "depth": 16,
+          "name": "MixedBitVecArithProbe.reverseByteIndex",
+          "type_dag": 3,
+          "val_dag": 75,
+          "val_tree": 157
+        },
+        {
+          "depth": 14,
+          "name": "MixedBitVecArithProbe.getDstReg",
+          "type_dag": 11,
+          "val_dag": 44,
+          "val_tree": 149
+        },
+        {
+          "depth": 0,
+          "name": "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide._native.bv_decide.ax_1_5",
+          "type_dag": 11,
+          "val_dag": 0,
+          "val_tree": 0
+        },
+        {
+          "depth": 24,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_algebraic",
+          "type_dag": 27,
+          "val_dag": 135,
+          "val_tree": 1483
+        },
+        {
+          "depth": 16,
+          "name": "MixedBitVecArithProbe.setDstReg",
+          "type_dag": 12,
+          "val_dag": 65,
+          "val_tree": 313
+        },
+        {
+          "depth": 31,
+          "name": "MixedBitVecArithProbe.revIdx64_omega",
+          "type_dag": 31,
+          "val_dag": 138,
+          "val_tree": 2761
+        },
+        {
+          "depth": 0,
+          "name": "MixedBitVecArithProbe.dstReg_lt_16_bv_decide._native.bv_decide.ax_1_5",
+          "type_dag": 11,
+          "val_dag": 0,
+          "val_tree": 0
+        },
+        {
+          "depth": 1,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide._cert_def_1_1",
+          "type_dag": 1,
+          "val_dag": 1,
+          "val_tree": 1
+        },
+        {
+          "depth": 10,
+          "name": "MixedBitVecArithProbe.checkAllBool2",
+          "type_dag": 4,
+          "val_dag": 20,
+          "val_tree": 35
+        },
+        {
+          "depth": 24,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide._expr_def_1_1",
+          "type_dag": 1,
+          "val_dag": 104,
+          "val_tree": 687
+        },
+        {
+          "depth": 52,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide",
+          "type_dag": 84,
+          "val_dag": 475,
+          "val_tree": 40659
+        },
+        {
+          "depth": 37,
+          "name": "MixedBitVecArithProbe.checkNatPred_sound",
+          "type_dag": 28,
+          "val_dag": 287,
+          "val_tree": 888
+        },
+        {
+          "depth": 73,
+          "name": "MixedBitVecArithProbe.u64_add_range_bv_omega._proof_1_1",
+          "type_dag": 125,
+          "val_dag": 4901,
+          "val_tree": 834219
+        },
+        {
+          "depth": 35,
+          "name": "MixedBitVecArithProbe.u64_add_range_bv_omega",
+          "type_dag": 90,
+          "val_dag": 322,
+          "val_tree": 7713
+        },
+        {
+          "depth": 0,
+          "name": "MixedBitVecArithProbe.bitand_wf_bv_decide._native.bv_decide.ax_1_5",
+          "type_dag": 11,
+          "val_dag": 0,
+          "val_tree": 0
+        },
+        {
+          "depth": 21,
+          "name": "MixedBitVecArithProbe.revIdx64_reflect",
+          "type_dag": 31,
+          "val_dag": 151,
+          "val_tree": 1243
+        }
+      ],
+      "max_depth": 83,
+      "max_rss_kb": 752844,
+      "module": "MixedBitVecArithProbe",
+      "num_constants": 28,
+      "num_extra_consts": 6,
+      "olean_bytes": 530320,
+      "per_const_replay_ms": {
+        "MixedBitVecArithProbe.bitand_wf_bv_decide": 5.57558,
+        "MixedBitVecArithProbe.bitand_wf_cases": 3.11489,
+        "MixedBitVecArithProbe.checkAllBool2_sound": 0.34462,
+        "MixedBitVecArithProbe.checkNatPred_sound": 0.539429,
+        "MixedBitVecArithProbe.dstReg_lt_16_algebraic": 0.408311,
+        "MixedBitVecArithProbe.dstReg_lt_16_bv_decide": 2.255375,
+        "MixedBitVecArithProbe.getDstReg_setDstReg_bv_decide": 4.972204,
+        "MixedBitVecArithProbe.getDstReg_setDstReg_reflect": 18.070217,
+        "MixedBitVecArithProbe.revIdx64_omega": 0.377382,
+        "MixedBitVecArithProbe.revIdx64_omega._proof_1_1": 44.8537,
+        "MixedBitVecArithProbe.revIdx64_reflect": 5.284022,
+        "MixedBitVecArithProbe.u64_add_range_bv_omega": 0.63787,
+        "MixedBitVecArithProbe.u64_add_range_bv_omega._proof_1_1": 54.030703,
+        "MixedBitVecArithProbe.u64_add_range_mod_elim": 0.886267
+      },
+      "replay_med_ms": 130.621648,
+      "replay_min_ms": 129.565481,
+      "total_dag": 15356,
+      "total_tree": 2985886
+    }
+  },
+  "toolchains": {
+    "v4.29.0": {
+      "repository": "leanprover/lean4",
+      "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+      "version": "v4.29.0"
+    },
+    "v4.34.1": {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "version": "v4.34.1"
+    }
+  }
+}

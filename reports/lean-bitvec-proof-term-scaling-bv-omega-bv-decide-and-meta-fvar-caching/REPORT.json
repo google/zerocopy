@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "lean/kernel",
+    "lean/mechanization",
+    "anneal/tcb-audit",
+    "smt/bv"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 v4.29.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.29.0",
+        "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Anneal TrustedBoundary kernel environment and axiom auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "af3c1e99c0a7410aa63522fc3888d34c32c13175"
+      }
+    },
+    {
+      "name": "Anneal Starnix apply_endianness Endianness.lean proof fixture",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Fuchsia Starnix eBPF verifier (src/starnix/lib/ebpf)",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}
