@@ -16,8 +16,9 @@ help: the trait `TryFromBytes` is not implemented for `NotZerocopy`
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
    --> src/util/macro_util.rs:871:14
     |
+834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+...
 868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-    |            ----------------- required by a bound in this associated function
 ...
 871 |         Dst: TryFromBytes + IntoBytes,
     |              ^^^^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
@@ -43,8 +44,9 @@ help: the trait `IntoBytes` is not implemented for `NotZerocopy`
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
    --> src/util/macro_util.rs:871:29
     |
+834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+...
 868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-    |            ----------------- required by a bound in this associated function
 ...
 871 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
@@ -115,8 +117,9 @@ help: the trait `FromBytes` is not implemented for `SrcA`
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
    --> src/util/macro_util.rs:870:14
     |
+834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+...
 868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-    |            ----------------- required by a bound in this associated function
 869 |     where
 870 |         Src: FromBytes + IntoBytes,
     |              ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
@@ -140,8 +143,9 @@ help: the trait `IntoBytes` is not implemented for `DstA`
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
    --> src/util/macro_util.rs:871:29
     |
+834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+...
 868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-    |            ----------------- required by a bound in this associated function
 ...
 871 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
@@ -165,8 +169,9 @@ help: the trait `IntoBytes` is not implemented for `SrcB`
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
    --> src/util/macro_util.rs:870:26
     |
+834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+...
 868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-    |            ----------------- required by a bound in this associated function
 869 |     where
 870 |         Src: FromBytes + IntoBytes,
     |                          ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`
@@ -190,8 +195,9 @@ help: the trait `IntoBytes` is not implemented for `DstB`
 note: required by a bound in `zerocopy::util::macro_util::Wrap::<&'a mut Src, &'a mut Dst>::try_transmute_mut`
    --> src/util/macro_util.rs:871:29
     |
+834 | impl<'a, Src, Dst> Wrap<&'a mut Src, &'a mut Dst> {
+...
 868 |     pub fn try_transmute_mut(self) -> Result<&'a mut Dst, ValidityError<&'a mut Src, Dst>>
-    |            ----------------- required by a bound in this associated function
 ...
 871 |         Dst: TryFromBytes + IntoBytes,
     |                             ^^^^^^^^^ required by this bound in `Wrap::<&mut Src, &mut Dst>::try_transmute_mut`

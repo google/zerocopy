@@ -97,19 +97,7 @@ error[E0587]: type has conflicting packed and align representation hints
 97 | union Unaligned3 {
    | ^^^^^^^^^^^^^^^^
 
-error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type
-   --> $DIR/union.rs:130:1
-    |
-130 | union Unaligned7 {
-    | ^^^^^^^^^^^^^^^^
-    |
-note: `AU16` has a `#[repr(align)]` attribute
-   --> $DIR/../include.rs:64:5
-    |
- 64 |     pub struct AU16(pub u16);
-    |     ^^^^^^^^^^^^^^^
+error: aborting due to 12 previous errors
 
-error: aborting due to 13 previous errors
-
-Some errors have detailed explanations: E0277, E0587, E0588.
+Some errors have detailed explanations: E0277, E0587.
 For more information about an error, try `rustc --explain E0277`.
