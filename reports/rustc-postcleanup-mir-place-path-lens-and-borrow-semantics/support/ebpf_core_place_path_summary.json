@@ -1,0 +1,152 @@
+{
+  "subject": "starnix/ebpf_core (10-file crate, 1,148 MIR bodies, 879 callable functions/closures)",
+  "rustc_version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+  "mir_phase": "MirPhase::Runtime(RuntimePhase::PostCleanup)",
+  "totals": {
+    "all_bodies": 1148,
+    "callable_bodies": 879,
+    "const_bodies": 269,
+    "unsafe_callables": 0,
+    "total_basic_blocks": 9882,
+    "total_statements": 52819,
+    "total_operational_places": 46387,
+    "projected_operational_places": 7409
+  },
+  "canonical_invariants": {
+    "deref_at_zero": 5082,
+    "deref_after_zero": 0,
+    "downcast_count": 1277,
+    "downcast_not_followed_by_field": 0,
+    "deref_base_box": 0,
+    "proj_opaque_cast": 0,
+    "proj_unwrap_unsafe_binder": 0,
+    "ref_param_reseated_count": 0,
+    "ref_written_through_deref": 0
+  },
+  "deref_base_types": {
+    "shared_ref": 3537,
+    "mut_ref": 1496,
+    "raw_ptr_const_from_box": 49,
+    "raw_ptr_mut": 0,
+    "box_direct": 0
+  },
+  "projection_elements": {
+    "field_struct": 1778,
+    "field_tuple": 1324,
+    "field_enum": 1277,
+    "field_closure": 0,
+    "field_union": 0,
+    "downcast": 1277,
+    "index_fixed_array": 64,
+    "index_slice": 22,
+    "constant_index": 0,
+    "subslice": 0
+  },
+  "projection_chains": {
+    "Deref": 3303,
+    "Field": 1653,
+    "Deref->Field": 994,
+    "Deref->Downcast->Field": 695,
+    "Downcast->Field": 373,
+    "Field->Downcast->Field": 181,
+    "Field->Field": 80,
+    "Field->Index": 35,
+    "Deref->Index": 32,
+    "Deref->Field->Field": 19,
+    "Deref->Field->Downcast->Field": 17,
+    "Deref->Field->Index": 13,
+    "Deref->Index->Field": 6,
+    "Downcast->Field->Field": 3,
+    "Deref->Downcast->Field->Field": 2,
+    "Downcast->Field->Downcast->Field": 2,
+    "Deref->Downcast->Field->Downcast->Field": 1
+  },
+  "rvalue_ref_borrow_kinds": {
+    "total_rvalue_ref": 5016,
+    "shared": 3946,
+    "mut_default": 54,
+    "mut_two_phase": 1016,
+    "mut_closure_capture": 0,
+    "fake": 0,
+    "functions_with_two_phase_borrow": 335
+  },
+  "two_phase_reservation_intervals": {
+    "total_two_phase_borrows": 1016,
+    "immediate_call_zero_intervening_stmts": 72,
+    "disjoint_arg_eval_stmts": 929,
+    "overlapping_shared_read_or_borrow_of_root": 15,
+    "overlapping_mut_access_of_root": 0,
+    "overlap_instances": [
+      "program::apply_struct_access_mapping::bb24[2] (tp=_78, root=_59) -> overlap borrow at bb24[7]: _82 = &_58",
+      "verifier::terminate_context_chain::bb14[6] (tp=_43, root=_26) -> overlap read at bb14[8]: _45 = copy _35",
+      "verifier::terminate_context_chain::bb15[6] (tp=_47, root=_26) -> overlap read at bb15[8]: _48 = copy (_35.1: u64)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_add::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_add64::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_and::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_and64::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_or::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_or64::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_xor::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_xor64::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_xchg::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_xchg64::bb0[1] (tp=_7, root=_1) -> overlap borrow at bb0[4]: _9 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_cmpxchg::bb0[1] (tp=_6, root=_1) -> overlap borrow at bb0[4]: _8 = &((*_1).0: verifier::ComputationContext)",
+      "<verifier::DependencyTracker as visitor::BpfVisitor<verifier::VerificationContext>>::atomic_cmpxchg64::bb0[1] (tp=_6, root=_1) -> overlap borrow at bb0[4]: _8 = &((*_1).0: verifier::ComputationContext)"
+    ]
+  },
+  "rvalue_ref_target_shapes": {
+    "direct_local": 1029,
+    "local_field_projection": 32,
+    "direct_deref_reborrow": 2701,
+    "deref_field_sub_reborrow": 526,
+    "deref_downcast_field_sub_reborrow": 678,
+    "deref_index_sub_reborrow": 25,
+    "other_chained_reborrow": 25
+  },
+  "no_retag_reference_copies": {
+    "shared_ref_copies": 604,
+    "mut_ref_copies": 1,
+    "raw_ptr_copies": 0,
+    "functions_with_shared_no_retag_copy": 31,
+    "functions_with_mut_no_retag_copy": 1,
+    "mut_no_retag_copy_details": []
+  },
+  "reference_locals_lifecycle": {
+    "ref_params_total": 1044,
+    "ref_params_shared": 471,
+    "ref_params_mut": 573,
+    "ref_params_reseated": 0,
+    "ref_local_temporaries": 6451,
+    "ref_local_multi_assigned": 68,
+    "ref_local_no_storage_marker": 666,
+    "ref_in_aggregate_operands": 107,
+    "functions_returning_ref_in_slot_0": [
+      "api::DataWidth::str",
+      "verifier::Type::unwrap_releasable",
+      "verifier::VerifiedEbpfProgram::code",
+      "verifier::VerifiedEbpfProgram::args",
+      "verifier::VerifiedEbpfProgram::struct_access_instructions",
+      "verifier::VerifiedEbpfProgram::maps",
+      "verifier::Stack::get"
+    ]
+  },
+  "tier_distribution": {
+    "Tier 0: Pure Scalar / Fieldless Enum (0 refs, 0 projections)": 148,
+    "Tier 1: Pure Value ADTs (Struct/Tuple/Enum Projections, 0 refs)": 55,
+    "Tier 2a: Place-Path Refs (Top-Level &T/&mut T + Intra-Body &local.path + Reborrows)": 244,
+    "Tier 2b: Place-Path Refs + Two-Phase Borrows (&two_phase mut)": 220,
+    "Tier 2c: Place-Path Refs + Ref-in-Tuple / Derefer Copy / Conditional Ref": 16,
+    "Tier 2d: Place-Path Refs + Fixed-Size Array Index ([T; N])": 11,
+    "Tier 3: Slice / Str References (&[T], &str)": 8,
+    "Tier 4a: Box<T> Lowered via ElaborateBoxDerefs (Transmute + *const T)": 21,
+    "Tier 4b: Heap ADTs (Vec, HashMap, Arc, Formatter, dyn Trait)": 156
+  },
+  "admissibility_summary": {
+    "tier_0_1_2_per_body_count": 694,
+    "tier_0_1_2_per_body_pct": 78.95,
+    "tier_0_1_2_call_dag_closed_count": 582,
+    "tier_0_1_2_call_dag_closed_pct": 66.21,
+    "tier_0_1_2_3_per_body_count": 702,
+    "tier_0_1_2_3_per_body_pct": 79.86
+  }
+}

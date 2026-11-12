@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "rustc/mir",
+    "rustc/mir-phases",
+    "rust/aliasing-models",
+    "anneal/mir-semantics",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Rust nightly-2026-05-31 compiler and rustc_mir_transform source",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.98.0-nightly",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "toolchain_date": "2026-05-31",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-09-30 compiler and rustc_mir_transform source",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.101.0-nightly",
+        "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+        "toolchain_date": "2026-09-30",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Miri interpreter (Stacked Borrows and Tree Borrows)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/miri",
+        "version": "0.1.0",
+        "rustc_version": "1.101.0-nightly",
+        "revision": "19833af72f92c6731a621ca3db0455684003999e",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Starnix ebpf_core crate (src/starnix/lib/ebpf_core)",
+      "identity": {
+        "kind": "repository",
+        "repository": "fuchsia/starnix",
+        "path": "src/starnix/lib/ebpf_core",
+        "files": "10",
+        "mir_bodies": "1148",
+        "callable_bodies": "879"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "version": "4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "kind": "repository",
+        "repository": "joshlf/anneal",
+        "revision": "a3fa446c8e0f1053bd86c970709da007a5f5eddf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}
