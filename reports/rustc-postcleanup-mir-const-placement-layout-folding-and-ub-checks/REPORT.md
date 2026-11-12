@@ -750,6 +750,51 @@ unconditional abort/UB terminator causes the basic block to fail even when
 `TerminatorKind::Assert` governs only the failure branch (`cond != expected`);
 when `cond == expected`, execution always transitions to `target`.
 
+---
+
+### 5. Extraction Algorithms for Value-Producing `Const::Unevaluated`, Pre-Folded `AnonConst` Array/Repeat Lengths, `offset_of!`, and Monomorphization Reachability
+
+Basis: `source`, `execution`, `derived`
+
+Executing [`support/const_eval_and_anon_const_probe.rs`](support/const_eval_and_anon_const_probe.rs)
+against [`support/const_eval_and_anon_const_inputs.rs`](support/const_eval_and_anon_const_inputs.rs)
+across `1.98.0-nightly` ([`support/const_eval_and_anon_const_results_198.json`](support/const_eval_and_anon_const_results_198.json))
+and `1.101.0-nightly` ([`support/const_eval_and_anon_const_results_1101.json`](support/const_eval_and_anon_const_results_1101.json)),
+together with [`support/mono_const_reachability_probe.rs`](support/mono_const_reachability_probe.rs)
+([`support/mono_const_reachability_matrix.txt`](support/mono_const_reachability_matrix.txt)),
+establishes the exact extraction algorithms needed by a `Runtime(PostCleanup)` MIR
+verification frontend:
+
+1. **Value-Producing `Stmt::EvalConst` and Inline `const { ... }` `<const_ty>` Stripping**:
+   - In `Runtime(PostCleanup)`, value-producing `const { ... }` blocks (scalars `const { usize::BITS }`, booleans `const { size_of::<T>() == 8 }`, tuples/arrays/structs `const { (size_of::<T>(), align_of::<T>()) }`), generic `const { size_of::<B>() }`, and associated constants `<() as HasSize<T>>::SIZE` remain `mir::Const::Unevaluated(UnevaluatedConst { def, args, promoted: None })`.
+   - Every inline `const { ... }` block (`DefKind::InlineConst` in `1.98.0-nightly`; `DefKind::AnonConst` with `tcx.hir_node_by_def_id(local_def) == hir::Node::ConstBlock(_)` in `1.101.0-nightly`) has a `ty::Generics` table with `parent = Some(enclosing_fn_def_id)`, `parent_count = N`, and **`own_params = [GenericParamDef { name: "<const_ty>", index: N, kind: Type { synthetic: true } }]`** (`sym::const_ty_placeholder`). While the CTFE body (`tcx.mir_for_ctfe(def)`) only references parent generic indices `0 .. N - 1`, `uv.args` at the `Const::Unevaluated` call site has length `N + 1` (because its last element is the inferred return type substituting `<const_ty>`). A MIR extractor must pop that trailing `<const_ty>` argument (`args[..generics.parent_count]`) so `subst.len() == const_body.num_type_params`.
+   - When a `Const::Unevaluated` operand appears directly inside a binary operation or `SwitchInt` operand (such as `x + const { align_of::<T>() }` in `Rvalue::BinaryOp(AddWithOverflow, Copy(x), Constant(Unevaluated))`), the extractor allocates a synthetic local `_tmp: T_const`, emits `Stmt::EvalConst { dst: _tmp, const_id, subst }` immediately prior to the statement, and rewrites the operand to `Operand::Move(_tmp)`.
+   - Foreign standard-library constants without local HIR (such as `usize::BITS` and `usize::MAX`) whose type is a layout-invariant primitive (`u32`) or target-width scalar (`usize` / `isize` when not derived from a `#[repr(Rust)]` ADT layout) can be resolved via `tcx.const_eval_resolve` (or mapped to symbolic target queries for `usize::BITS` / `usize::MAX` in target-portable mode).
+
+2. **Recovering Pre-Folded `AnonConst` Array and Repeat Lengths (`[elem; size_of::<T>()]` and `[0u8; size_of::<T>()]`)**:
+   - In `Runtime(PostCleanup)` MIR, both monomorphic array types (`let buf: [u8; size_of::<Sandwich>()]`) and repeat rvalues (`[0u8; size_of::<Sandwich>()]`) have already had their length `DefKind::AnonConst` evaluated by the type checker into `ty::ConstKind::Value(ValTree::Leaf(ScalarInt))`. Moreover, `tcx.mir_built(anon_def)` and `tcx.mir_drops_elaborated_and_const_checked(anon_def)` panic (`mir_built ... is stolen`) because `mir_for_ctfe` steals the `AnonConst` MIR during typechecking!
+   - To recover symbolic `Ty::ArraySizeOf(elem_ty, target_ty)` and `Rvalue::RepeatSizeOf(op, target_ty)`:
+     1. Walk the enclosing function's HIR (`tcx.hir_body_owned_by(fn_local_def)`) to collect `hir::TyKind::Array(_elem_hir_ty, ConstArgKind::Anon(anon_const))` and `hir::ExprKind::Repeat(_elem_expr, ConstArgKind::Anon(anon_const))`, indexed by `expr.span.source_callsite()` (and `let_stmt.pat.span.source_callsite()` for explicit `let pat: [T; N]` bindings).
+     2. Classify each `anon_def_id = anon_const.def_id.to_def_id()`:
+        - First check `tcx.is_trivial_const(anon_const.def_id)` (which handles pure integer literals `[0u8; 4]` without running CTFE).
+        - Otherwise inspect **`tcx.mir_for_ctfe(anon_def_id)`** (which remains allocated and cached in the query engine):
+          - If `mir_for_ctfe` is a single `TerminatorKind::Call` in `bb0` to `core::mem::size_of::<TargetTy>()` assigning `_0` and returning in `bb1`, classify as **`PureSizeOf(TargetTy)`** and emit `Ty::ArraySizeOf(elem, TargetTy)` / `Rvalue::RepeatSizeOf(op, TargetTy)`.
+          - If `mir_for_ctfe` contains no layout-query calls (`size_of`, `align_of`, `offset_of`) and no `Const::Unevaluated` operands referencing `#[repr(Rust)]` ADTs, classify as **`LayoutIndependentLiteral(val)`** and emit concrete `Ty::Array(elem, val)` / `Rvalue::Repeat(op, val)`.
+          - Otherwise (for example, `size_of::<Sandwich>() + 1`, `size_of::<Sandwich>() * 2`, or `align_of::<Sandwich>()`), classify as **`UnsupportedLayoutDependent`** and fail closed if any `#[repr(Rust)]` ADT is referenced.
+     3. When a statement `_dst = Rvalue::RepeatSizeOf(op, TargetTy)` has an inferred array local `_dst` without an explicit HIR type annotation, propagate `Ty::ArraySizeOf(elem_ty, TargetTy)` onto `local_decls[_dst].ty` and across downstream `Rvalue::Ref`, `Operand::Copy`, and `Operand::Move` locals so `transmute_copy::<Src, [u8; size_of::<Src>()]>` sees matching symbolic sizes in all `adtPad` worlds.
+
+3. **Extracting `core::mem::offset_of!(Container, fields...)`**:
+   - `offset_of!(Container, f1.f2)` expands in the compiler builtin macro to an inline `const { builtin # offset_of(Container, f1.f2) }` expression.
+   - In `Runtime(PostCleanup)` MIR, the enclosing function contains `_dst = Const::Unevaluated(inline_const_def, args)`.
+   - Inside `tcx.mir_for_ctfe(inline_const_def)`, `rustc_mir_build::thir::cx::expr` (`expr.rs#L792-L839`) lowers `ExprKind::OffsetOf` to a chain of calls to `core::intrinsics::offset_of::<StepTy>(variant_idx_u32, field_idx_u32) -> usize` combined with `BinaryOp::AddWithOverflow` for nested fields (`offset_of!(NestedC, inner.b)` emits `offset_of::<NestedC>(0, 1) + offset_of::<ReprCPair>(0, 1)`). In parallel, `tcx.typeck(fn_local_def).offset_of_data()` maps the HIR `hir::ExprKind::OffsetOf(container_ty, fields)` `HirId` directly to `Vec<(Ty<'tcx>, VariantIdx, FieldIdx)>`.
+
+4. **The 4-Stage Pipeline Governing `required_consts`, Promoted Temps, and Monomorphization Collection**:
+   Executing [`support/mono_const_reachability_probe.rs`](support/mono_const_reachability_probe.rs) across `-Z mir-opt-level={0,1,2}` ([`support/mono_const_reachability_matrix.txt`](support/mono_const_reachability_matrix.txt)) traces how `Const::Unevaluated` operands interact with `required_consts` and monomorphization:
+   - **Stage 1 (`RequiredConstsVisitor` in `mir_const_qualif`, `lib.rs#L298`)**: Visits reachable basic blocks (`traversal::preorder(body)`) *before* `PromoteTemps` (`mir_promoted`). Every `Const::Unevaluated` in a syntax-reachable block—including `let _r = &const { () };`, `eat_unit(const { () })`, `if false { const { ... } }`, and `if b { const { ... } }`—is recorded in `body.required_consts`, whereas post-`return;` dead blocks are excluded.
+   - **Stage 2 (`PromoteTemps` in `mir_promoted`, `lib.rs#L350`)**: Extracts `let _r: &() = &const { () };` into `promoted[0]` (`Const::Unevaluated(fn_def, args, Some(promoted[0]))`), removing the unpromoted `Const::Unevaluated(..., None)` statement from `bb0` while **leaving it inside `body.required_consts`**. Consequently, any extractor check that requires every entry in `body.required_consts` to appear as a surviving `Stmt::EvalConst` in `basic_blocks` falsely rejects valid safe Rust (`let _r = &const { () };`, `eat_unit(const { () })`, and `let _t = (const { () }, 1usize);`).
+   - **Stage 3 (`KnownPanicsLint` in `run_analysis_to_runtime_passes`, `known_panics_lint.rs#L71`)**: Evaluates non-generic constants (`!c.args.has_non_region_param()`) during `mir_drops_elaborated_and_const_checked`, leaving generic constants (`const { assert!(size_of::<T>() == 4) }`) untouched.
+   - **Stage 4 (`collect_and_partition_mono_items` on `optimized_mir`, `collector.rs#L1347-L1361`)**: Monomorphization collection evaluates `optimized_mir(def_id).required_consts()` for every root and reachable `TerminatorKind::Call` callee. Because `SimplifyCfg` (`remove_dead_blocks`) runs even at `-Z mir-opt-level=0` while `InstSimplify` + `SimplifyConstCondition` prune `if false` at `-Z mir-opt-level >= 1`, emitting `Stmt.evalConst` at basic-block statements and stepping into callees via `Terminator.call1` guarantees that every `Stmt.evalConst` dynamically executed on a runtime path is evaluated by `rustc` during monomorphization collection.
+
 ## Boundaries
 
 Basis: `source`, `execution`
@@ -865,6 +910,26 @@ At `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1` (`1.98.0-nightly`) and
   `1.98.0-nightly` and `1.101.0-nightly` for raw pointer dereferences,
   `library/core` `assert_unsafe_precondition!` callers, and
   `Operand::RuntimeChecks`.
+- [`support/const_eval_and_anon_const_probe.rs`](support/const_eval_and_anon_const_probe.rs),
+  [`support/const_eval_and_anon_const_inputs.rs`](support/const_eval_and_anon_const_inputs.rs),
+  [`support/const_eval_and_anon_const_results_198.json`](support/const_eval_and_anon_const_results_198.json),
+  and
+  [`support/const_eval_and_anon_const_results_1101.json`](support/const_eval_and_anon_const_results_1101.json):
+  Working `rustc_driver` prototype extractor and JSON results across
+  `1.98.0-nightly` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`) and
+  `1.101.0-nightly` (`5c543b0b8c73c7b72bc8284ced4fb22ead15734d`) for
+  value-producing `Stmt::EvalConst` (`sym::const_ty_placeholder` stripping),
+  HIR-to-MIR span correlation and `tcx.mir_for_ctfe` classification for
+  pre-folded `AnonConst` array/repeat lengths (`[elem; size_of::<T>()]`),
+  `offset_of!`, and `Operand::RuntimeChecks(UbChecks)`.
+- [`support/mono_const_reachability_probe.rs`](support/mono_const_reachability_probe.rs),
+  [`support/mono_const_reachability_inputs.rs`](support/mono_const_reachability_inputs.rs),
+  and
+  [`support/mono_const_reachability_matrix.txt`](support/mono_const_reachability_matrix.txt):
+  `rustc_driver` inspector and 10-case comparison matrix across `mir_built`,
+  `mir_promoted`, `mir_drops_elaborated_and_const_checked`, `optimized_mir`,
+  `mentioned_items`, and `collect_and_partition_mono_items` at
+  `-Z mir-opt-level={0,1,2}`.
 
 ## Revalidation
 

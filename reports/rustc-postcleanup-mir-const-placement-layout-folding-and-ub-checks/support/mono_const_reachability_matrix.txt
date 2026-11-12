@@ -1,0 +1,319 @@
+1a_if_false_const_u64_ok                   | check_only       | exit=  0 | OK
+1a_if_false_const_u64_ok                   | codegen_mir_opt0 | exit=  0 | OK
+1a_if_false_const_u64_ok                   | codegen_opt2     | exit=  0 | OK
+1a_if_false_const_u32_err                  | check_only       | exit=  0 | OK
+1a_if_false_const_u32_err                  | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_1a_if_false_const_u32_err.rs:2:36
+      |
+    2 | ...se { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `f::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_1a_if_false_const_u32_err.rs:2:28
+      |
+    2 | ...f false { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    note: the above error was encountered while instantiating `fn f::<u32>`
+     --> support/matrix_1a_if_false_const_u32_err.rs:4:17
+      |
+    4 | pub fn root() { f::<u32>(); }
+      |                 ^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+1a_if_false_const_u32_err                  | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_1a_if_false_const_u32_err.rs:2:36
+      |
+    2 | ...se { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `f::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_1a_if_false_const_u32_err.rs:2:28
+      |
+    2 | ...f false { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+1b_if_b_const_u32_false_err                | check_only       | exit=  0 | OK
+1b_if_b_const_u32_false_err                | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_1b_if_b_const_u32_false_err.rs:2:39
+      |
+    2 | ... b { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `f::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_1b_if_b_const_u32_false_err.rs:2:31
+      |
+    2 | ... { if b { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    note: the above error was encountered while instantiating `fn f::<u32>`
+     --> support/matrix_1b_if_b_const_u32_false_err.rs:4:17
+      |
+    4 | pub fn root() { f::<u32>(false); }
+      |                 ^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+1b_if_b_const_u32_false_err                | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_1b_if_b_const_u32_false_err.rs:2:39
+      |
+    2 | ... b { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `f::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_1b_if_b_const_u32_false_err.rs:2:31
+      |
+    2 | ... { if b { const { assert!(core::mem::size_of::<T>() == 8) }; } }
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+2a_if_false_callee_pme_u32_err             | check_only       | exit=  0 | OK
+2a_if_false_callee_pme_u32_err             | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_2a_if_false_callee_pme_u32_err.rs:2:26
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `callee::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_2a_if_false_callee_pme_u32_err.rs:2:18
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    note: the above error was encountered while instantiating `fn callee::<u32>`
+     --> support/matrix_2a_if_false_callee_pme_u32_err.rs:3:28
+      |
+    3 | pub fn f<T>() { if false { callee::<T>(); } }
+      |                            ^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+2a_if_false_callee_pme_u32_err             | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_2a_if_false_callee_pme_u32_err.rs:2:26
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `callee::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_2a_if_false_callee_pme_u32_err.rs:2:18
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+2b_if_b_callee_pme_u32_false_err           | check_only       | exit=  0 | OK
+2b_if_b_callee_pme_u32_false_err           | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_2b_if_b_callee_pme_u32_false_err.rs:2:26
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `callee::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_2b_if_b_callee_pme_u32_false_err.rs:2:18
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    note: the above error was encountered while instantiating `fn callee::<u32>`
+     --> support/matrix_2b_if_b_callee_pme_u32_false_err.rs:3:31
+      |
+    3 | pub fn f<T>(b: bool) { if b { callee::<T>(); } }
+      |                               ^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+2b_if_b_callee_pme_u32_false_err           | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_2b_if_b_callee_pme_u32_false_err.rs:2:26
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `callee::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_2b_if_b_callee_pme_u32_false_err.rs:2:18
+      |
+    2 | fn callee<T>() { const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3a_dead_local_const_u32_err                | check_only       | exit=  0 | OK
+3a_dead_local_const_u32_err                | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_3a_dead_local_const_u32_err.rs:2:33
+      |
+    2 | pub fn f<T>() { let _ = const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `f::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3a_dead_local_const_u32_err.rs:2:25
+      |
+    2 | pub fn f<T>() { let _ = const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    note: the above error was encountered while instantiating `fn f::<u32>`
+     --> support/matrix_3a_dead_local_const_u32_err.rs:4:17
+      |
+    4 | pub fn root() { f::<u32>(); }
+      |                 ^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3a_dead_local_const_u32_err                | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() == 8
+     --> support/matrix_3a_dead_local_const_u32_err.rs:2:33
+      |
+    2 | pub fn f<T>() { let _ = const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `f::<u32>::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3a_dead_local_const_u32_err.rs:2:25
+      |
+    2 | pub fn f<T>() { let _ = const { assert!(core::mem::size_of::<T>() == 8) }; }
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3b_canary_concrete_mismatched_pme          | check_only       | exit=  0 | OK
+3b_canary_concrete_mismatched_pme          | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<Src>() == core::mem::size_of::<Dst>()
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<Src>() == core::mem::size_of::<Dst>()
+     --> support/matrix_3b_canary_concrete_mismatched_pme.rs:4:24
+      |
+    4 | ... = assert!(core::mem::size_of::<Src>() == core::mem::size_of::<Dst>());
+      |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `<() as SizeEq<usize, bool>>::ASSERT` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3b_canary_concrete_mismatched_pme.rs:7:14
+      |
+    7 |     let () = <() as SizeEq<Src, Dst>>::ASSERT;
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    note: the above error was encountered while instantiating `fn transmute_checked::<usize, bool>`
+      --> support/matrix_3b_canary_concrete_mismatched_pme.rs:11:33
+       |
+    11 | pub fn root(x: usize) -> bool { transmute_checked::<usize, bool>(x) }
+       |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3b_canary_concrete_mismatched_pme          | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<Src>() == core::mem::size_of::<Dst>()
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<Src>() == core::mem::size_of::<Dst>()
+     --> support/matrix_3b_canary_concrete_mismatched_pme.rs:4:24
+      |
+    4 | ... = assert!(core::mem::size_of::<Src>() == core::mem::size_of::<Dst>());
+      |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `<() as SizeEq<usize, bool>>::ASSERT` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3b_canary_concrete_mismatched_pme.rs:7:14
+      |
+    7 |     let () = <() as SizeEq<Src, Dst>>::ASSERT;
+      |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3c_direct_concrete_dead_local_const_err    | check_only       | exit=  0 | OK
+3c_direct_concrete_dead_local_const_err    | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+     --> support/matrix_3c_direct_concrete_dead_local_const_err.rs:3:21
+      |
+    3 |     let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `root::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3c_direct_concrete_dead_local_const_err.rs:3:13
+      |
+    3 |     let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3c_direct_concrete_dead_local_const_err    | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+     --> support/matrix_3c_direct_concrete_dead_local_const_err.rs:3:21
+      |
+    3 |     let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `root::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3c_direct_concrete_dead_local_const_err.rs:3:13
+      |
+    3 |     let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3e_if_false_concrete_inline_const_root     | check_only       | exit=  0 | OK
+3e_if_false_concrete_inline_const_root     | codegen_mir_opt0 | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+     --> support/matrix_3e_if_false_concrete_inline_const_root.rs:5:25
+      |
+    5 |         let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `root::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3e_if_false_concrete_inline_const_root.rs:5:17
+      |
+    5 |         let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.
+3e_if_false_concrete_inline_const_root     | codegen_opt2     | exit=  1 | error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+  STDERR:
+    error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<u64>() == 4
+     --> support/matrix_3e_if_false_concrete_inline_const_root.rs:5:25
+      |
+    5 |         let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `root::{constant#0}` failed here
+    
+    note: erroneous constant encountered
+     --> support/matrix_3e_if_false_concrete_inline_const_root.rs:5:17
+      |
+    5 |         let _ = const { assert!(core::mem::size_of::<u64>() == 4) };
+      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    
+    error: aborting due to 1 previous error
+    
+    For more information about this error, try `rustc --explain E0080`.

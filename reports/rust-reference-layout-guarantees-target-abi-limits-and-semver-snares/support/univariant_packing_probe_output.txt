@@ -1,0 +1,11 @@
+Sandwich: size=4, align=2, offsets=(2, 0, 3)
+CSandwich: size=6, align=2, offsets=(0, 2, 4)
+InevitablePad: size=8, align=4, offsets=(4, 0)
+TwoU24: size=12, align=4, offsets=(4, 7, 0)
+Mixed: size=16, align=8, offsets=(8, 0)
+OuterCWithInnerRust: size=6, align=2, offsets=(0, 2)
+MaybeUnsizedTail<u16>: size=8, align=2, offsets=(2, 0, 6)
+Tuple ([u8; 3], u16, u16): size=8, align=2, offsets=(2, 0, 6)
+NicheBiasStruct: size=8, align=4, offsets=(0, 6, 4)
+AllZstRust: size=0, align=1; AllZstAlignedRust: size=0, align=8
+TransWithZst: size=8, align=8, offsets=(8, 0, 8, 8)

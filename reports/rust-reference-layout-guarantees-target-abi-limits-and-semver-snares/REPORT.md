@@ -809,6 +809,35 @@ into three orthogonal axes:
 | **(Axis B) Target Parameters ($\tau \in \text{ValidTargetSpec}$)** | `pointer_size`, `pointer_align`, `endian`, `i16`/`i32`/`i64`/`i128`/`f32`/`f64` ABI alignments, `c_char_signed`, `c_int_width`, `short_enums`, `max_atomic_width` | Across compilation targets (`--target <triple>`) for a fixed crate graph and `#[cfg]` slice | **Dual-mode (`Target-Portable` vs. `Target-Specialized`) gated by `ValidTargetSpec(\tau)`**:<br>• *Target-portable proofs* (e.g., `zerocopy` library code) quantify $\forall \tau \in \text{ValidTargetSpec}$.<br>• *Target-specialized proofs* (e.g., 64-bit or x86_64-specific code) bind $\tau = \tau_0$.<br>In both modes, the capture tool checks `ValidTargetSpec(\tau)`: (1) `dl.aggregate_align.abi == 1`, (2) `dl.c_int_size <= dl.pointer_size`, (3) `dl.instruction_address_space == AddressSpace::ZERO` (unless Harvard code pointers are modeled), and (4) `target.max_reliable_alignment() >= max_primitive_align` (excluding unpatched `i686-pc-windows-msvc` 8-byte stack alignment). |
 | **(Axis C) Pre-MIR Crate-Graph, `#[cfg]`, and Dependency Resolution** | `#[cfg(...)]` stripping, Cargo feature unification, `build.rs` codegen, upstream SemVer-minor changes | **Before HIR/THIR/MIR construction** | **Per-Compilation Configuration Certification**: Certifies the concrete resolved crate graph and active `#[cfg]` slice (or a finite CI matrix of target/feature points). Cross-crate proof certificates must either treat foreign non-`#[repr(C)]` types as abstract/opaque layouts or cryptographically bind the certificate to the exact `StableCrateId` / SVH / `DefPathHash` fingerprints of all resolved dependencies. |
 
+#### 5.4 Multi-Field `#[repr(Rust)]` Sub-Alignment Packing, Over-Alignment Freedom, and `TransmutePayload` (`exactBits` vs. `initBytes`)
+
+When formalizing `#[repr(Rust)]` struct layouts and transmutation in a verification tool (`support/ReprRustPackingAndTransmutePayload.lean`, 30 kernel-checked Lean 4 theorems), five mathematical and semantic invariants govern field packing, alignment freedom, and byte-level initialization:
+
+1. **Why Declaration-Order `#[repr(C)]` Size Cannot Serve as a `#[repr(Rust)]` Lower Bound (`reprC_base_size_excludes_rustc_sandwich_size`)**:
+   If a semantic model computes the base size of a `#[repr(Rust)]` struct using declaration-order sequential aligned placement (`foldReprCLayout`) and adds a non-negative padding parameter `adtPad : Nat`, then for `#[repr(Rust)] struct Sandwich { a: u8, b: u16, c: u8 }`, declaration-order placement yields `foldReprCLayout [(1, 1), (2, 2), (1, 1)] 0 1 = (6, 2)` (with 1 byte of inter-field padding at offset `1` and 1 byte of trailing padding at offset `5`). Because `adtPad + 6 >= 6`, no choice of `adtPad : Nat` can equal `4`—excluding `rustc`'s actual compiled layout (`size = 4, align = 2`, offsets `b: 0, a: 2, c: 3`) from the model's state space and falsifying `const { assert!(size_of::<Sandwich>() == 4) }` at `adtPad = 0`.
+
+2. **Power-of-2 Descending-Alignment Zero-Inter-Field-Padding Theorem (`foldReprCFields_sorted_eq_alignUp_sum`)**:
+   Because every Rust type has a power-of-2 alignment $a_i = 2^{k_i} \ge 1$ (`r[layout.properties.align]`) and a size that is a multiple of its alignment $a_i \mid s_i$ (`r[layout.properties.size]`), sorting a struct's fields in non-increasing alignment order $a_1 \ge a_2 \ge \dots \ge a_n$ (`DescendingAlignedChain`) guarantees $a_{i+1} \mid a_i \mid \sum_{j \le i} s_j$ at every step (`foldReprCLayout_chain_exact_sum`). Consequently:
+   - Sequential placement in descending alignment order inserts **zero inter-field padding** (`alignUp offset a_i = offset` for every field $i$).
+   - Every non-ZST field occupies a contiguous region inside $[0, \sum_{i=1}^n s_i)$, and the only padding in the sorted layout is the trailing alignment rounding at the end of the struct:
+     $$\text{size}_{\text{sorted}} = \text{alignUp}\!\left(\sum_{i=1}^n s_i,\, \max_i a_i\right)$$
+   - When `repr.align` and `repr.pack` are absent and `-Z randomize-layout` is disabled, `rustc_abi::layout::univariant_biased` (`compiler/rustc_abi/src/layout.rs:1087–1255`) achieves this exact minimum size `alignUp (sumFieldSizes fields) (maxFieldAlign fields)` across **every** `#[repr(Rust)]` struct and tuple (`support/univariant_packing_probe.rs` and `support/univariant_packing_probe_output.txt`), including:
+     - `StructKind::AlwaysSized` with niche-Placement bias (`optimizing.sort_by_key(|&x| (!niche_at_start, cmp::Reverse(f.align.abi), f.size))`): Because every 1-byte-aligned field has $1 \mid s$, any field with a start-of-field niche (such as `(bool, u8)` in `NicheBiasStruct { a: u32, b: (bool, u8), c: u16 }`) placed after higher-aligned fields still preserves zero inter-field padding (`size = 8 = alignUp 8 4`, offsets `(0, 6, 4)`).
+     - `StructKind::MaybeUnsized` (all non-empty tuples and `T: ?Sized` tail structs, where `univariant_biased` excludes the last field $f_{n-1}$ from sorting and places it at the end): Even when placing $f_{n-1}$ last introduces inter-field padding between the sorted prefix of size $P$ and $f_{n-1}$ (for example, `([u8; 3], u16, u16)` has prefix `[u16, [u8; 3]]` of size $P = 5$, 1 byte of inter-field padding at byte `5`, and tail `u16` at bytes `6..8`), because $a_{n-1} \mid s_{n-1}$ and $a_{n-1} \mid \text{maxAlign}$, any inter-field gap before the tail trades off 1-for-1 against trailing padding (`alignUp_tail_invariance`):
+       $$\text{alignUp}(\text{alignUp}(P, a_{n-1}) + s_{n-1}, \text{maxAlign}) = \text{alignUp}(P + s_{n-1}, \text{maxAlign})$$
+
+3. **Bijection Over Reference-Admissible `#[repr(Rust)]` Layouts (`reprRustLayout_sound`, `reprRustLayout_complete`, `reprRustLayout_injective`)**:
+   Under `r[layout.properties.align]`, `r[layout.properties.size]`, `r[layout.repr.rust.alignment]`, `r[layout.repr.rust.layout.struct]`, and `r[layout.repr.rust.struct-zst]`, a pair `(sz, al)` is a Reference-admissible layout for a `#[repr(Rust)]` struct with field sum `sum`, maximum field alignment `maxFieldAlign`, and optional `#[repr(align(N))]` / `#[repr(packed(P))]` (`ReferenceAdmissibleStructLayout`) if and only if it is in the image of the two-parameter family `(pad, alignShift) : Nat × Nat` (`reprRustLayout`):
+   - For `#[repr(Rust, packed(P))]`: `al = max 1 (min maxFieldAlign P)` and `sz = if sum == 0 then 0 else alignUp sum al + pad * al`.
+   - For unpacked `#[repr(Rust)]`: `minAlign = max maxFieldAlign (reprAlign.getD 1)`, `al = minAlign * 2^alignShift`, and `sz = if sum == 0 then 0 else alignUp sum al + pad * al`.
+   Furthermore, `(0, 0)` recovers `rustc`'s default `univariant` layout (`reprRustLayout_zero_zero`), all-ZST `#[repr(Rust)]` structs (`sum = 0`, such as `struct RustZst((), ())`) have guaranteed size `0` regardless of `pad` or `alignShift` (`rust_zst_and_trans_with_zst_verified`), and `alignShift > 0` propagates into outer `#[repr(C)]` structs containing nested `#[repr(Rust)]` fields (`sandwich_and_outer_c_under_overalignment`).
+
+4. **Inevitable Padding vs. Field-Order-Invariant `TransmutePayload` (`exactBits` vs. `initBytes`)**:
+   - **Inevitable Padding (`sumFieldSizes < alignUp sumFieldSizes al`)**: Whenever `sumFieldSizes fields < structSz`—even at `(pad = 0, alignShift = 0)`, as in `InevitablePad { a: [u8; 3], b: u32 }` (`sum = 7 < 8`), `TwoU24 { a: [u8; 3], b: [u8; 3], c: u32 }` (`sum = 10 < 12`), and `Mixed { a: u8, b: u64 }` (`sum = 9 < 16`)—the struct contains `structSz - sumFieldSizes > 0` bytes of uninitialized padding under *every* field permutation and is rejected as a transmutation source to byte/integer types (`inevitable_padding_sizes_and_transmute_rejection`).
+   - **2-Constructor `TransmutePayload` (`exactBits` vs. `initBytes`)**: Modeling transmutation payloads with two constructors—`TransmutePayload.exactBits sizeBytes bits` (deterministic byte sequence) and `TransmutePayload.initBytes sizeBytes` (all `sizeBytes` bytes are initialized, but their relative order is compiler-dependent)—cleanly separates:
+     1. `#[repr(C)]`, `#[repr(C, packed)]`, `#[repr(transparent)]` (peeling arbitrary 1-ZST siblings via `findTransparentPayloadField`), primitives, arrays, and 1-non-ZST-field `#[repr(Rust)]` structs with `structSz = fieldSz` (`single_field_rust_exact_bits_when_unpadded`), which yield `.exactBits sz bits` and support value-preserving transmutation to both `[u8; sz]` and scalars/composites; and
+     2. Multi-field `#[repr(Rust)]` and `#[repr(Rust, packed)]` structs whose runtime world satisfies `sumFieldSizes = structSz` (such as `Sandwich(u8, u16, u8)` or `Pair(u32, u32)` when guarded by `const { assert!(size_of::<T>() == sumFieldSizes) }`), which yield `.initBytes sz`. `reconstructFromPayload (.initBytes sz)` succeeds when the destination is `[u8; sz]` or a nested array of `u8`/`i8` (`IntoBytes` soundness, `sandwich_transmute_to_bytes_after_size_guard`), but returns `none` when the destination is `u32`/`u64` or `#[repr(C)] struct CPair(u32, u32)` (`pair_repr_rust_transmute_discrimination` and `c_packed_exact_bits_vs_rust_packed_init_bytes`).
+
 ## Boundaries
 
 - **Known not to apply — `-Z randomize-layout` as a completeness test for
@@ -969,6 +998,24 @@ All execution probes and generated datasets are preserved in `support/`:
   Minimal reproducer triggering the `LayoutCalculator::c_enum` ICE at
   `compiler/rustc_abi/src/layout.rs:877:13` when `target-pointer-width` is `16`
   and `target-c-int-width` defaults to `32`.
+- [`support/ReprRustPackingAndTransmutePayload.lean`](support/ReprRustPackingAndTransmutePayload.lean):
+  Standalone, zero-`sorry`, zero-axiom Lean 4 mechanization (`v4.34.1`, 30
+  kernel-checked theorems) proving the Power-of-2 Descending-Alignment
+  Zero-Inter-Field-Padding Theorem (`foldReprCFields_sorted_eq_alignUp_sum`),
+  the `StructKind::MaybeUnsized` Tail-Invariance Theorem
+  (`alignUp_tail_invariance`), the `(adtPad, adtAlignShift)` soundness,
+  completeness, and bijection theorems over `ReferenceAdmissibleStructLayout`
+  (`reprRustLayout_sound`, `reprRustLayout_complete`,
+  `reprRustLayout_injective`, `reprRustLayout_zero_zero`), and the 2-constructor
+  `TransmutePayload` (`exactBits` vs. `initBytes`) holdout theorems.
+- [`support/univariant_packing_probe.rs`](support/univariant_packing_probe.rs)
+  and
+  [`support/univariant_packing_probe_output.txt`](support/univariant_packing_probe_output.txt):
+  Empirical probe verifying `size_of`, `align_of`, and `offset_of!` across
+  `Sandwich`, `CSandwich`, `OuterCWithSandwich`, `InevitablePad`, `TwoU24`,
+  `Mixed`, `NicheBiasStruct`, `TupleTailInvariance`, `Pair`, `CPair`,
+  `SingleFieldRust`, `TransWithZst`, `RustZst`, `CPackedSandwich`, and
+  `RustPackedSandwich`.
 
 ## Revalidation
 

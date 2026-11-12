@@ -124,6 +124,73 @@ Key findings:
        as safe (`≤ safeUnwindOrNormalSpec` when `cond = false`), whereas
        `(UbChecks = true, panic_nounwind_fmt ↦ StepResult.failed)` refines
        `safeUnwindOrNormalSpec` **if and only if** `cond = true`.
+4. **Multi-Field `#[repr(Rust)]` Sub-Alignment Packing, Over-Alignment Freedom, 1-ZST Transparent Peeling, and Two-Constructor `TransmutePayload` ([`support/ReprRustPackingAndTransmutePayload.lean`](support/ReprRustPackingAndTransmutePayload.lean))**:
+   - Using declaration-order C forward-offset accumulation (`foldReprCFields`) as
+     the base size of `AdtRepr.rust` (`size = adtPad id + foldReprCFields`) is
+     **unsound for multi-field `#[repr(Rust)]` structs whose fields pack into a
+     smaller aligned size under reordering**: for `struct Sandwich { a: u8, b: u16, c: u8 }`,
+     `foldReprCFields` yields `6`, making `adtPad id + 6 >= 6` disjoint from
+     `rustc`'s actual 4-byte reordered layout (`b` at `0..2`, `a` at `2..3`,
+     `c` at `3..4`).
+   - By the **Power-of-2 Descending-Alignment Zero-Inter-Field-Padding Theorem**
+     (`foldReprCFields_sorted_eq_alignUp_sum`), sorting fields by descending
+     power-of-2 alignment achieves `alignUp sum maxAlign` with zero inter-field
+     padding, so `alignUp sum al` is the tightest universal lower bound on valid
+     non-overlapping aligned layouts. Parameterizing `.rust` by `(adtPad id,
+     adtAlignShift id)` with `al = maxFieldAlign * 2^(adtAlignShift id)` and
+     `sz = if sum == 0 then 0 else alignUp (alignUp sum al + adtPad id) al`
+     bijects onto `ReferenceAdmissibleStructLayout` (`reprRustLayout_sound`,
+     `reprRustLayout_complete`, `reprRustLayout_injective`) while enforcing
+     `r[layout.repr.rust.struct-zst]` (`size == 0` when `sum == 0`) and
+     propagating `#[repr(Rust)]` alignment lower bounds into enclosing
+     `#[repr(C)]` structs (`evalTyAlign` returning `none` for `.rust`).
+   - Separating `TransmutePayload` into `.exactBits (byteLen : Nat) (val : MirVal)`
+     (padding-free layouts only) and `.initBytes (byteLen : SymNat) (opaqueVal : Option MirVal)`
+     (possibly padded layouts) soundly accepts `Pair(u32, u32) -> [u8; 8]`,
+     `Pair(u32, u32) -> CPair`, and reflexive `Mixed(u8, u64) -> Mixed(u8, u64)`
+     while rejecting `Sandwich(u8, u16, u8) -> [u8; 4]` (at `adtPad = 2`),
+     `Sandwich(u8, u16, u8) -> [u8; 6]` (at `adtPad = 0`), and
+     `Mixed(u8, u64) -> [u8; 16]` (uninitialized padding bytes).
+5. **Eliminating `RequiresConst` / `MonoAdmitted` in Favor of Interprocedural `Stmt.evalConst` + `Terminator.call1` ([`support/InterproceduralEvalConstDominance.lean`](support/InterproceduralEvalConstDominance.lean))**:
+   - Setting `MirBody.requiredConsts := []` in the extractor renders `RequiresConst`,
+     `ConstsTotal`, `MonoAdmitted`, and `MonoConstsWf` identically vacuous
+     (`legacy_requiredConsts_vacuous`), while checking `body.required_consts()`
+     against top-level `Stmt.evalConst` instructions falsely rejects promoted
+     constants (`let _r: &() = &const { () };`) because `RequiredConstsVisitor`
+     runs before `PromoteTemps`.
+   - Under `SafetyPost` (requiring pinned-world non-vacuity `s.adtPad = 0 ∧ s.tySizes = 8 → out ≠ .compileTimeError`),
+     control-flow-executed `Stmt.evalConst` + `Terminator.call1` strictly
+     dominates `rustc`'s monomorphization-time PME behavior (`evalConst_safety_implies_monoAdmitted_safety`):
+     direct, transitive, and dead-branch inline `const` panics are rejected by
+     pinned-world non-vacuity (`direct_const_panic_rejected`, `transitive_const_panic_rejected`,
+     `dead_branch_const_fail_rejected`), layout-valid guards rescue downstream
+     transmutes across all `(tySizes, adtPad)` worlds (`guarded_transmute_verified`,
+     `interprocedural_const_guard_verified`), and uncollected generic helper
+     items never rescue caller UB (`uncalled_helper_const_does_not_rescue_caller`).
+6. **Path-Indexed Borrow Projections (`fieldPath : List Nat`) and `enum` / `Option<T>` Niche Layout Guarantees ([`support/EnumNichesAndBorrowPaths.lean`](support/EnumNichesAndBorrowPaths.lean))**:
+   - Replacing `fieldDepth : Nat` (which restricts `.field k` projections to
+     `k = 0`) with `fieldPath : List Nat` in `MirVal.ref` and `.callerRef`
+     (`peelPath`, `writePath`, `resolveRefPath`, `evalRefProjPath`,
+     `mutateRefPath`) enables borrowing and mutating arbitrary multi-field
+     struct projections (`&pair.1`, `&mut (*r).1`) across all `(adtPad, adtFieldOffset)`
+     worlds without exposing in-memory byte offsets (`borrow_second_field_read_sound`,
+     `borrow_second_field_write_preserves_sibling`, `nested_deref_field_reborrow_sound`).
+   - Formalizing `optionNicheGuaranteed` ($\mathcal{N}_{\text{Option}}$ per
+     `r[layout.option-niche]`) and `EnumRepr` (`reprRustEnum`, `reprIntFieldless`,
+     `reprCEnumFieldless`, `reprCIntTagged`, `reprIntTagged`, `optionNiche`)
+     verifies `Option<NonZeroU32> <-> u32` (`option_nonZeroU32_transmute_u32_sound`),
+     `Option<&T> -> usize` (`option_ref_transmute_usize_sound`), and
+     `#[repr(u8)] FieldlessEnum -> u8` (`repr_u8_fieldless_enum_to_u8_sound`)
+     while rejecting unguarded `u8 -> FieldlessEnum` and `Option<bool> -> u8`
+     (`repr_u8_fieldless_enum_from_arbitrary_u8_rejected`,
+     `option_bool_transmute_u8_rejected`).
+7. **Fuel-Bounded Reflective Symbolic Evaluator (`symStep`, `symExecFuel`) Over Forward-Compatible `MirSemantics` ([`support/ReflectiveSymbolicMirEvaluator.lean`](support/ReflectiveSymbolicMirEvaluator.lean))**:
+   - A 9,833-line, zero-`sorryAx` fuel-bounded reflective symbolic evaluator
+     (`symStep`, `symExecFuel`) with path-condition splitting (`SymSplit`:
+     `.adtPad`, `.tySizeVal`, `.varVal`, `.boolVar`, `.ubChecks`) and kernel-checked
+     commutation theorems (`symStep_sound`, `symExecFuel_sound`) eliminates
+     hardcoded `beqMirBody` AST templates and discharges multi-world obligations
+     by reflection (`test1_id_usize_execSafePost` through `test5_interprocedural_call1_execSafePost`).
 
 ## Applicability
 
@@ -720,18 +787,221 @@ Exact `#print axioms` output from the Lean 4.34.1 kernel:
 'ForwardCompatibleMirSemantics.ub_checks_dual_soundness_trap_and_repair' does not depend on any axioms
 ```
 
+---
+
+### 7. Multi-Field `#[repr(Rust)]` Sub-Alignment Packing, Over-Alignment Freedom, 1-ZST Transparent Peeling, and Two-Constructor `TransmutePayload`
+
+Basis: normative, source, execution, derived
+
+In [`support/ReprRustPackingAndTransmutePayload.lean`](support/ReprRustPackingAndTransmutePayload.lean)
+(1,349 lines, 30 kernel-checked theorems, zero `sorryAx`), we identify and
+resolve five layout and transmutation defects that arise when extending
+demonic-world `MirSemantics` from single-field wrappers to multi-field structs:
+
+1. **Sub-Alignment Reordering vs. Declaration-Order `foldReprCFields`**:
+   Computing a `#[repr(Rust)]` struct's base size using declaration-order C
+   forward-offset accumulation (`foldReprCFields`) and adding `adtPad id >= 0`
+   assigns `#[repr(Rust)] struct Sandwich { a: u8, b: u16, c: u8 }` size
+   `adtPad id + 6 >= 6` (`broken_tyLayout_sandwich_ge_6`). However, `rustc`'s
+   `LayoutCalculator::univariant_biased` (`compiler/rustc_abi/src/layout.rs:1110-1320`)
+   sorts fields by descending effective alignment (`b: u16` at `0..2`, `a: u8`
+   at `2..3`, `c: u8` at `3..4`) and produces a 4-byte layout (`size = 4,
+   align = 2`). Because `adtPad id + 6 != 4` for all `adtPad id : Nat`, the
+   declaration-order model excludes `rustc`'s actual compiled layout from its
+   state space.
+2. **Power-of-2 Descending-Alignment Zero-Inter-Field-Padding Theorem (`foldReprCFields_sorted_eq_alignUp_sum`)**:
+   Whenever every field's size is a multiple of its alignment (`f.align ∣ f.size`)
+   and field alignments are sorted in descending divisibility order
+   (`SortedAlignChain`, which holds for all descending power-of-2 alignments),
+   the sequential C offset accumulator `cur` after placing field $k$ remains a
+   multiple of $a_{k+1}$, so `alignUp cur a_{k+1} = cur` at every step and the
+   total size equals `alignUp (sumFieldSizes fields) (maxFieldAlign fields)`
+   with **zero inter-field padding**. Furthermore, for `StructKind::MaybeUnsized`
+   (`struct WithUnsizableTail<T: ?Sized>(u8, u16, T)`), `alignUp_tail_invariance`
+   proves that keeping the final field fixed at the tail while sorting prefix
+   fields still achieves `alignUp sum maxAlign`.
+3. **Bijection Between `(adtPad, adtAlignShift)` and `ReferenceAdmissibleStructLayout`**:
+   Under `r[layout.repr.rust.alignment]` (`src/type-layout.md:426-431`), a
+   `#[repr(Rust)]` struct's alignment is only bounded below by `max_i align(f_i)`,
+   and under `r[layout.repr.rust.struct-zst]` (`src/type-layout.md:421-424`), an
+   all-ZST `#[repr(Rust)]` struct has guaranteed size `0`. Defining
+   `al = maxFieldAlign * 2^(adtAlignShift id)` and
+   `sz = if sum == 0 then 0 else alignUp (alignUp sum al + adtPad id) al`
+   establishes a constructive bijection (`reprRustLayout_sound`,
+   `reprRustLayout_complete`, `reprRustLayout_injective`) onto all
+   Reference-admissible struct layouts (`ReferenceAdmissibleStructLayout`),
+   while `evalTyAlign` returns `none` for `.rust` so an outer `#[repr(C)]`
+   struct containing a nested `#[repr(Rust)]` field cannot assume a fixed inner
+   alignment (`outer_reprC_with_inner_reprRust_align_unpinned`).
+4. **1-ZST Sibling Peeling in `#[repr(transparent)]` (`peelTransparent`, `wrapTransparent`)**:
+   Using `AdtDecl.transparentPayloadField` (which filters out fields whose
+   guaranteed size is `0` and alignment is `1`, leaving the unique payload
+   field or the first 1-ZST field when all fields are 1-ZST), `peelTransparent`
+   and `wrapTransparent` verify `#[repr(transparent)] struct TransWithZst((), u64) <-> u64`
+   (`holdout_transWithZst_transmute_u64`).
+5. **Two-Constructor `TransmutePayload` (`exactBits` vs. `initBytes`)**:
+   Replacing declaration-order bit concatenation on `AdtRepr.rust` with
+   `TransmutePayload.exactBits (byteLen : Nat) (val : MirVal)` (emitted only when
+   `hasPadding = false` and field byte order is fixed or all fields share an
+   identical homogeneous value) and `TransmutePayload.initBytes (byteLen : SymNat)
+   (opaqueVal : Option MirVal)` (emitted when padding may be present, matching
+   only `dstTy == srcTy` via `opaqueVal`) proves all six holdout discrimination
+   theorems (`holdout_sandwich_not_transmutable_to_u8x4_or_u8x6`,
+   `holdout_mixed_reflexive_and_not_u8x16`, `holdout_pair_u32_to_u8x8`,
+   `holdout_pair_u32_to_cPair`, `holdout_transWithZst_transmute_u64`, and
+   `holdout_rustZst_size_zero_and_transmute_unit`).
+
+---
+
+### 8. Eliminating `RequiresConst` / `MonoAdmitted` in Favor of Interprocedural `Stmt.evalConst` + `Terminator.call1`
+
+Basis: normative, source, execution, derived
+
+In [`support/InterproceduralEvalConstDominance.lean`](support/InterproceduralEvalConstDominance.lean)
+(1,357 lines, 8 kernel-checked theorems, zero `sorryAx`), we analyze the
+interaction between `rustc`'s monomorphization-time constant evaluation and
+control-flow-executed `Stmt.evalConst` + `Terminator.call1`:
+
+1. **Vacuity of `RequiresConst` / `MonoAdmitted` When `requiredConsts := []` (`legacy_requiredConsts_vacuous`)**:
+   When the MIR extractor emits `MirBody.requiredConsts := []` and lowers inline
+   `const { ... }` blocks exclusively as `Stmt.evalConst` instructions,
+   `RequiresConst`, `ConstsTotal`, `MonoAdmitted`, and `MonoConstsWf` reduce to
+   `True` for every state and crate (`legacy_requiredConsts_vacuous`).
+   Furthermore, checking `body.required_consts.len() == top_level_eval_consts.len()`
+   in the extractor falsely rejects promoted `const` references such as
+   `let _r: &() = &const { () };` because `RequiredConstsVisitor` runs before
+   `PromoteTemps` moves the `Const::Unevaluated` operand into a promoted body
+   `promoted[0]`.
+2. **Interprocedural `Stmt.evalConst` + `Terminator.call1` Dominance (`evalConst_safety_implies_monoAdmitted_safety`)**:
+   Under `SafetyPost`—which requires both universal runtime safety across all
+   `(tySizes, adtPad)` worlds (`out ≠ .ub`) and pinned-world non-vacuity
+   (`s.adtPad = 0 ∧ s.tySizes = 8 → out ≠ .compileTimeError`)—we prove:
+   - **`evalConst_safety_implies_monoAdmitted_safety`**: Any body verified under
+     `SafetyPost` with control-flow-executed `Stmt.evalConst` and
+     `Terminator.call1` is safe in every world admitted by `rustc`'s
+     monomorphization collector (`MonoCollectorAdmitted`).
+   - **`direct_const_panic_rejected`**, **`transitive_const_panic_rejected`**,
+     and **`dead_branch_const_fail_rejected`**: Functions containing direct,
+     callee-transitive, or dead-branch `const { assert!(false) }` panics step to
+     `.compileTimeError` in the pinned world `(tySizes = 8, adtPad = 0)` and are
+     rejected by `SafetyPost`.
+   - **`guarded_transmute_verified`** and **`interprocedural_const_guard_verified`**:
+     Direct and interprocedural `const { assert!(size_of::<Sandwich>() == 4) }`
+     guards succeed in `(tySizes = 8, adtPad = 0)` and prune `.compileTimeError`
+     in non-matching worlds (`adtPad > 0`), verifying the downstream
+     `transmute::<Sandwich, [u8; 4]>` across all worlds.
+   - **`uncalled_helper_const_does_not_rescue_caller`**: An uncalled helper
+     `fn helper<T>() { const { assert!(size_of::<T>() == 4) } }` does not
+     execute along `caller`'s control-flow path and therefore never rescues an
+     unguarded `transmute` in `caller`.
+
+---
+
+### 9. Path-Indexed Borrow Projections (`fieldPath : List Nat`) and `enum` / `Option<T>` Niche Layout Guarantees
+
+Basis: normative, source, execution, derived
+
+In [`support/EnumNichesAndBorrowPaths.lean`](support/EnumNichesAndBorrowPaths.lean)
+(1,436 lines, 16 kernel-checked theorems, zero `sorryAx`), we extend the
+forward-compatible MIR value domain and layout engine along two axes:
+
+1. **Path-Indexed Reference Projections (`fieldPath : List Nat`)**:
+   Replacing `fieldDepth : Nat` in `MirVal.ref` and `.callerRef` with
+   `fieldPath : List Nat` (`peelPath`, `writePath`, `resolveRefPath`,
+   `evalRefProjPath`, `mutateRefPath`) allows borrowing and mutating arbitrary
+   multi-field struct projections (`&pair.1`, `&mut (*r).1`, `&s.a.b`) across
+   all `(adtPad, adtFieldOffset)` worlds without exposing in-memory byte
+   offsets:
+   - **`peelPath_writePath_same`** and **`peelPath_writePath_disjoint`**:
+     Writing to `fieldPath` updates the targeted subplace and preserves all
+     disjoint sibling paths (`p₁ ≠ p₂`).
+   - **`borrow_second_field_read_sound`**,
+     **`borrow_second_field_write_preserves_sibling`**, and
+     **`nested_deref_field_reborrow_sound`**: Verify shared reads, mutable
+     writes through `&mut pair.1`, and nested reborrows `&mut (*r).1` across
+     every `(adtPad, adtFieldOffset)` realization.
+2. **Forward-Compatible `enum` and `Option<T>` Niche Layout & Transmutation**:
+   We formalize `optionNicheGuaranteed` ($\mathcal{N}_{\text{Option}}$ per
+   `r[layout.option-niche]`, `src/type-layout.md:360-398`) and `EnumRepr`
+   (`reprRustEnum`, `reprIntFieldless`, `reprCEnumFieldless`, `reprCIntTagged`,
+   `reprIntTagged`, `optionNiche`):
+   - **`option_nonZeroU32_transmute_u32_sound`** and
+     **`u32_transmute_option_nonZeroU32_sound`**: Prove bijective transmutation
+     between `Option<NonZeroU32>` and `u32` (`None <-> 0`, `Some(n) <-> n.get()`).
+   - **`option_ref_transmute_usize_sound`**: Proves `Option<&T> -> usize` is
+     sound across all target pointer widths (`None -> 0`, `Some(r) -> addr > 0`).
+   - **`repr_u8_fieldless_enum_to_u8_sound`** and
+     **`repr_u8_fieldless_enum_from_arbitrary_u8_rejected`**: Prove that
+     transmuting a `#[repr(u8)]` fieldless enum to `u8` is unconditionally
+     sound (`r[layout.repr. primitive]`), whereas transmuting an unguarded `u8`
+     into the enum is rejected (`[r-undefined.validity.enum]`).
+   - **`option_bool_transmute_u8_rejected`**: Proves that `Option<bool> -> u8`
+     is rejected because `bool` is not in $\mathcal{N}_{\text{Option}}$, even
+     though `rustc 1.98.0` happens to give `Option<bool>` size `1` with `None = 2`.
+
+---
+
+### 10. Fuel-Bounded Reflective Symbolic Evaluator (`symStep`, `symExecFuel`) Replacing Hardcoded `beqMirBody` AST Templates
+
+Basis: source, execution, derived
+
+In [`support/ReflectiveSymbolicMirEvaluator.lean`](support/ReflectiveSymbolicMirEvaluator.lean)
+(9,833 lines, zero `sorryAx`, kernel-checked under both Lean `v4.29.0-rc2` and
+Lean `v4.34.1`), we construct a general fuel-bounded reflective symbolic
+evaluator over the forward-compatible `MirSemantics` state machine:
+
+1. **Symbolic Value and Path-Condition Domain (`SymNat`, `SymBool`, `SymVal`, `PathCond`, `SymState`)**:
+   - Symbolic expressions (`SymNat`: `.const`, `.tySizes`, `.adtPad`, `.var`,
+     `.add`, `.sub`, `.mul`, `.div`, `.mod`, `.bitAnd`, `.bitOr`, `.bitXor`,
+     `.shl`, `.shr`; `SymBool`; `SymVal`: `.uninit`, `.usize`, `.bool`, `.unit`,
+     `.adt`, `.fieldCons`, `.bytes`, `.ref`, `.callerRef`) denote concrete
+     values via `SymVal.denote (s₀ : MirState)` under a path condition
+     `pc : PathCond` (`PathCond.Matches rootLC s₀ pc`).
+2. **Single-Step and Multi-Step Commutation Soundness (`symStep_sound`, `symExecFuel_sound`)**:
+   - `symStep` symbolically executes any `Stmt` (`assign`, `storageLive`,
+     `storageDead`, `writeRef`, `copyNonOverlapping`, `evalConst`) or
+     `Terminator` (`return`, `goto`, `assert`, `switchInt`, `call1`,
+     `callIntrinsic`, `unwindTerminate`, `unreachable`) and returns a
+     `SymStepOut`: `.running st'`, `.returned v`, `.unwind`,
+     `.compileTimeError`, `.split sp`, or `.failed`.
+   - When a branch condition, layout query, or transmute depends on an
+     unconstrained world parameter or symbolic input, `symStep` emits
+     `SymStepOut.split (sp : SymSplit)` (`.adtPad id k`, `.tySizeVal sz`,
+     `.varVal vid val`, `.boolVar bid`, `.ubChecks`), and `symExecFuel`
+     branches into `applySplit pc sp true` and `applySplit pc sp false`
+     (justified by exhaustive partition `applySplit_complete`).
+   - **`symStep_sound`** and **`symExecFuel_sound`** prove that if
+     `symExecFuel fuel stepFuel adts bodies body st checkRet target = true`,
+     then every concrete initial state `s₀` matching `st.pc` satisfies
+     `ExecSafePost` across all `(tySizes, adtPad, ubChecks)` worlds.
+3. **Reflective Verification Test Suite (Zero `beqMirBody` Templates)**:
+   Using `symExecFuel_sound`, five benchmark functions are verified by pure
+   definitional reflection (`decide` / `rfl` over `symExecFuel`) without any
+   function-specific AST template:
+   - `test1_id_usize_execSafePost`: polymorphic `fn id(x: usize) -> usize { x }`.
+   - `test2_guarded_transmute_execSafePost`: `const { assert!(size_of::<MyRust>() == 8) }`
+     followed by `transmute::<MyRust, u64>(x)` (splitting on `adtPad 0 == 0`).
+   - `test3_diamond_cfg_sym_verified`: multi-block `switchInt` diamond CFG.
+   - `test4_nonZero_new_execSafePost`: `NonZeroUsize::new(x)` branching on `x == 0`.
+   - `test5_interprocedural_call1_execSafePost`: interprocedural `Terminator.call1`
+     invoking a callee body and returning to the caller frame.
+
 ## Boundaries
 
-- **Scope of the Lean 4 mechanization**:
-  [`support/ForwardCompatibleMirSemantics.lean`](support/ForwardCompatibleMirSemantics.lean)
-  mechanizes a self-contained `Preorder` / `Partial` / `Behavior` / `Language` /
-  `StepResult` / `SmallStepMachine` refinement spine and a self-contained core
-  of `MirTy`, `MirVal`, `AdtDecl`, `ReprAttr`, `CompilerRealization`,
-  `ReferenceAdmissible`, `transmute_copy`, `copy_nonoverlapping`, `size_of`,
-  `usize` checked arithmetic, `RequiresConst`, `extern "C" fn` ABI
-  transmutation, and `UbChecks` + `panic_nounwind_fmt`. It does not model
-  raw-pointer provenance/aliasing graphs, multi-byte endian-split scalar
-  transmutations (`u32 <-> [u8; 4]`), or floating-point NaN payloads.
+- **Scope of the Lean 4 mechanizations**:
+  [`support/ForwardCompatibleMirSemantics.lean`](support/ForwardCompatibleMirSemantics.lean),
+  [`support/ReprRustPackingAndTransmutePayload.lean`](support/ReprRustPackingAndTransmutePayload.lean),
+  [`support/InterproceduralEvalConstDominance.lean`](support/InterproceduralEvalConstDominance.lean),
+  [`support/EnumNichesAndBorrowPaths.lean`](support/EnumNichesAndBorrowPaths.lean),
+  and [`support/ReflectiveSymbolicMirEvaluator.lean`](support/ReflectiveSymbolicMirEvaluator.lean)
+  mechanize the refinement spine, multi-field `#[repr(Rust)]` packing and
+  alignment lower bounds, 2-constructor `TransmutePayload`, interprocedural
+  `Stmt.evalConst` + `Terminator.call1` dominance, path-indexed borrow
+  projections (`fieldPath : List Nat`), `enum` / `Option<T>` niche layout
+  guarantees, and the fuel-bounded reflective symbolic evaluator (`symStep`,
+  `symExecFuel`). They do not model raw-pointer provenance/aliasing graphs,
+  multi-byte endian-split scalar transmutations (`u32 <-> [u8; 4]`), or
+  floating-point NaN payloads.
 - **Target specifications**:
   Target alignment results (`i64AlignBytes ∈ {4, 8}` and
   `aggregateAlignBytes = 1`) apply to built-in `rustc_target` specifications in
@@ -745,7 +1015,8 @@ Exact `#print axioms` output from the Lean 4.34.1 kernel:
 - **Rust Reference (`rust-lang/reference` at `82da570bafd9efed421bdbae0f8603ede8dd308b`)**:
   - `src/type-layout.md` (`r[layout.primitive.size-align]`, `r[layout.tuple.def]`,
     `r[layout.tuple.unit]`, `r[layout.option-niche]`, `r[layout.repr.rust.unspecified]`,
-    `r[layout.repr.rust.struct-zst]`, `r[layout.repr.c.struct]`,
+    `r[layout.repr.rust.struct-zst]`, `r[layout.repr.rust.alignment]`,
+    `r[layout.repr.c.struct]`, `r[layout.repr.c.enum]`, `r[layout.repr.primitive]`,
     `r[layout.repr.transparent.layout-abi]`)
   - `src/types/numeric.md` (`r[type.numeric.int.size]`, `r[type.numeric.int.size.usize]`,
     `r[type.numeric.int.two-complement]`)
@@ -753,7 +1024,7 @@ Exact `#print axioms` output from the Lean 4.34.1 kernel:
   - `src/expressions/block-expr.md` (`r[expr.block.const.evaluation]`,
     `r[expr.block.const.not-executed]`)
   - `src/behavior-considered-undefined.md` (`r[undefined.validity.scalar]`,
-    `r[undefined.pointer-access]`, `r[undefined.call-abi]`)
+    `r[undefined.validity.enum]`, `r[undefined.pointer-access]`, `r[undefined.call-abi]`)
 - **Rust compiler and standard library (`rust-lang/rust` at `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`)**:
   - `compiler/rustc_abi/src/lib.rs:98-105, 219-227`
   - `compiler/rustc_abi/src/layout.rs:1106-1140, 1254-1320`
@@ -769,6 +1040,24 @@ Exact `#print axioms` output from the Lean 4.34.1 kernel:
   - [`support/ForwardCompatibleMirSemantics.lean`](support/ForwardCompatibleMirSemantics.lean):
     Standalone Lean 4 (`v4.34.1`) mechanization (3,197 lines, 39 theorems, 19
     `#print axioms` checks, zero `sorryAx`, zero `Lean.ofReduceBool`).
+  - [`support/ReprRustPackingAndTransmutePayload.lean`](support/ReprRustPackingAndTransmutePayload.lean):
+    Standalone Lean 4 (`v4.34.1`) mechanization (1,349 lines, 30 theorems, zero
+    `sorryAx`) of multi-field `#[repr(Rust)]` packing lower bounds,
+    `(adtPad, adtAlignShift)` bijection, 1-ZST `#[repr(transparent)]` peeling,
+    and 2-constructor `TransmutePayload` (`exactBits` vs. `initBytes`).
+  - [`support/InterproceduralEvalConstDominance.lean`](support/InterproceduralEvalConstDominance.lean):
+    Standalone Lean 4 (`v4.34.1`) mechanization (1,357 lines, 8 theorems, zero
+    `sorryAx`) of `RequiresConst` / `MonoAdmitted` vacuity and interprocedural
+    `Stmt.evalConst` + `Terminator.call1` dominance.
+  - [`support/EnumNichesAndBorrowPaths.lean`](support/EnumNichesAndBorrowPaths.lean):
+    Standalone Lean 4 (`v4.34.1`) mechanization (1,436 lines, 16 theorems, zero
+    `sorryAx`) of path-indexed borrow projections (`fieldPath : List Nat`) and
+    forward-compatible `enum` / `Option<T>` niche layout guarantees.
+  - [`support/ReflectiveSymbolicMirEvaluator.lean`](support/ReflectiveSymbolicMirEvaluator.lean):
+    Standalone Lean 4 (`v4.34.1`) mechanization (9,833 lines, zero `sorryAx`) of
+    the fuel-bounded reflective symbolic evaluator (`symStep`, `symExecFuel`,
+    `symStep_sound`, `symExecFuel_sound`) and 5 reflective verification test
+    theorems.
   - [`support/randomize_layout_probe.rs`](support/randomize_layout_probe.rs) and
     [`support/randomize_layout_probe.jsonl`](support/randomize_layout_probe.jsonl):
     Empirical `-Z randomize-layout` probe source and JSONL measurements across
@@ -776,16 +1065,22 @@ Exact `#print axioms` output from the Lean 4.34.1 kernel:
 
 ## Revalidation
 
-To re-verify the standalone Lean 4 mechanization in
-[`support/ForwardCompatibleMirSemantics.lean`](support/ForwardCompatibleMirSemantics.lean)
-with full kernel typechecking enabled and confirm zero `sorryAx` and zero
+To re-verify all five standalone Lean 4 mechanizations in `support/` with full
+kernel typechecking enabled and confirm zero `sorryAx` and zero
 `Lean.ofReduceBool`:
 
 ```bash
-anneal-lean-run --mode file --concurrency 2 -- \
-  ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean \
-  -DElab.async=false -Ddebug.skipKernelTC=false \
-  reports/anneal-forward-compatible-mir-semantics-and-reference-admissible-refinement/support/ForwardCompatibleMirSemantics.lean
+for f in \
+  ForwardCompatibleMirSemantics.lean \
+  ReprRustPackingAndTransmutePayload.lean \
+  InterproceduralEvalConstDominance.lean \
+  EnumNichesAndBorrowPaths.lean \
+  ReflectiveSymbolicMirEvaluator.lean; do
+  anneal-lean-run --mode file --concurrency 2 -- \
+    ~/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean \
+    -DElab.async=false -Ddebug.skipKernelTC=false \
+    "reports/anneal-forward-compatible-mir-semantics-and-reference-admissible-refinement/support/$f"
+done
 ```
 
 To re-run the `-Z randomize-layout` empirical probe on `rustc 1.98.0-nightly (f8a08b688 2026-05-30)`:

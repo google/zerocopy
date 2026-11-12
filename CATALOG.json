@@ -3725,7 +3725,7 @@
       ]
     },
     "anneal-forward-compatible-mir-semantics-and-reference-admissible-refinement": {
-      "observed_at": "2026-11-05",
+      "observed_at": "2026-11-12",
       "subjects": [
         {
           "identity": {
@@ -17419,7 +17419,7 @@
       ]
     },
     "rust-reference-layout-guarantees-target-abi-limits-and-semver-snares": {
-      "observed_at": "2026-11-05",
+      "observed_at": "2026-11-12",
       "subjects": [
         {
           "identity": {
@@ -17459,6 +17459,14 @@
             "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
           },
           "name": "zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
         }
       ],
       "topics": [
@@ -18913,7 +18921,7 @@
       ]
     },
     "rustc-postcleanup-mir-const-placement-layout-folding-and-ub-checks": {
-      "observed_at": "2026-11-05",
+      "observed_at": "2026-11-12",
       "subjects": [
         {
           "identity": {

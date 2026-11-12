@@ -50,7 +50,15 @@
         "repository": "google/zerocopy",
         "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
       }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
     }
   ],
-  "observed_at": "2026-11-05"
+  "observed_at": "2026-11-12"
 }
