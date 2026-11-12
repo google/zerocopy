@@ -1,0 +1,16 @@
+{
+  "proofWithEvalPreflight": {
+    "error": "policy:unsupported command Lean.Parser.Command.eval in Proof",
+    "accepted": false
+  },
+  "proofPurePreflight": {
+    "commands": 1,
+    "accepted": true
+  },
+  "leanVersion": "4.34.1",
+  "passingBuildWithEvalMs": 352.64,
+  "passingBuildPureMs": 368.08,
+  "failingPureKernelRejectMs": 355.39,
+  "coldPathOutOfBandDiagnosticOutput": "fn_2|[item < 100]|x=150",
+  "coldPathOutOfBandDiagnosticMs": 318.24
+}

@@ -19,7 +19,8 @@ recursive symbolic evaluators (`Anneal.evalSymState`), the full Lean `v4.34.1`
 `Init.*` and `Std.*` libraries (`Std.Data.ExtHashMap`,
 `Init.Data.BitVec.Lemmas`, `Std.Do`, `omega`, `grind`), multi-crate
 verification DAGs, and fast two-stage pre-audited `.olean` caches establishes
-six central results across our 9 standalone Lean 4.34.1 probes in this package:
+eight central results across our standalone Lean 4.34.1 and Python probes in
+this package:
 
 1. **On-Demand `realizeConst` Theorem Subsumption Across Diamond Imports
    (`sameRealizedThmHeader`):** Across all 1,020 exported modules (`114,233`
@@ -170,6 +171,74 @@ six central results across our 9 standalone Lean 4.34.1 probes in this package:
      cutting native binary peak RSS by **`43.2%` (`656.2 MB -> 372.6 MB`)**,
      `lean --run` peak RSS by **`22.5%` (`1.31 GB -> 1.02 GB`)**, and pre-replay
      `plan + metaOverride` time by **`51.3%` (`682.1 ms -> 331.9 ms`)**.
+8. **Eliminating Four `TrustedBoundary` Audit Workarounds — Zero-Initializer
+   Override Inspection (`loadExts := false`), Universal `realizeConst` Theorem
+   Replay Without `isAllowedEqThm` Suffix Whitelists, Sysroot Tree-Digest
+   Replacement of the 5,342-Line `library-lock.json`, and Pure `Proof.lean`
+   Diagnostic Separation (`support/audit-workarounds-simplification/`):**
+   - *Zero-initializer inspection of `@[implemented_by]`, `@[extern]`, and
+     `@[csimp]` (`loadExts := false`)*: In `Lean.Environment.finalizeImport`
+     (`src/lean/Lean/Environment.lean:2376-2386`), `setImportedEntries
+     privateBase.extensions moduleData` runs **unconditionally before the
+     `if loadExts then` gate**, populating `s.importedEntries[modIdx]` for every
+     built-in `PersistentEnvExtension` (`Lean.Compiler.implementedByAttr`,
+     `Lean.externAttr`, `Lean.Compiler.CSimp.ext`) even when `loadExts := false`
+     and `enableInitializersExecution` is **never** called. Auditing target
+     overrides directly on `env ← importEnv j roots false` (`zero_init_2env`)
+     executes **zero `[init]` initializers**, cuts native binary peak RSS to
+     **`364,476 KB` (`-44.5%` vs. `baseline_4env`'s `656,192 KB`)**, reduces
+     `plan + metaOverride` latency to **`291.0 ms` (`-57.3%` vs. `682.1 ms`)**,
+     and deterministically rejects `@[implemented_by]`, `@[extern]`, and
+     `@[csimp]` overrides in target modules (`3/3` adversarial tests rejected).
+   - *Why `isAllowedEqThm` string-suffix whitelisting is both unsound and
+     incomplete, and its universal theorem-replay replacement*:
+     `isAllowedEqThm` (matching suffixes `eq_def`, `eq_unfold`, `splitter`,
+     `_sunfold`, `_cstage1`, `_cstage2`, `eq_<digits>`, `_eq_<digits>`,
+     `match_<digits>`) suffers from three structural defects: (1) **false
+     positives** — an untrusted `theory/` module can author `theorem
+     Trusted.trustedProp.eq_1 : False → False := id`, `theorem
+     Trusted.step.match_99 : True := trivial`, and `theorem
+     Trusted.step._sunfold : 2 + 2 = 4 := rfl` inside `namespace Trusted` and
+     pass `isAllowedEqThm` (`leanIsReservedName == false`); (2) **false
+     negatives and dead `"splitter"` branch** — in
+     `src/lean/Lean/Meta/Match/MatchEqs.lean:145-156, 224-244`,
+     `getEquationsForImpl` constructs `<matchDecl>.splitter` as a
+     `Declaration.defnDecl` (`.defnInfo`, not `.thmInfo`), making `"splitter"`
+     inside `isAllowedEqThm` (`unless ci matches .thmInfo _ do return false`)
+     **100% dead code**, while `fun_cases_unfolding`, `induct_unfolding`, and
+     `congr_eq_<n>` are rejected by `isEqThmSuffix`; and (3) **diamond
+     `realizeConst` crashes and proof-body divergence** — because
+     `MatchEqs.lean:151` prefixes matcher helpers with `mkPrivateName (← getEnv)
+     matchDeclName` (`_private.<RealizingMod>.0...`), sibling modules
+     `TheoryMod1` and `TheoryMod2` emit public theorems (`Trusted.recFn.eq_def`,
+     `Trusted.step.fun_cases_unfolding`, `Trusted.recFn.induct_unfolding`) with
+     syntactically distinct proof terms (`sameProofValue == false`), crashing
+     both the suffix-heuristic auditor (`15` errors) and the
+     foundation/library-only `alternateProofs` auditor (`13` errors). Replacing
+     `isAllowedEqThm` with universal `sameThmHeader` + `alternateProofs` replay
+     (`_anneal_checked_alternate`) across all module roles and
+     `hasTrustedAncestor` / `Lean.isReservedName` checks verifies all `41` local
+     constants and all `6` alternate proof bodies with zero suffix heuristics.
+   - *Replacing the 5,342-line `library-lock.json` (`165,872` bytes) with 4
+     recursive sysroot tree-digest lines (`350` bytes, `99.93%` line
+     reduction)*: `library-lock.json` hardcodes `732` SHA-256 digests (`122`
+     modules $\times$ `6` files) and `645` `ImportEdge` entries (`4,254` lines,
+     `79.6%` of the file) that are **100% identical** to the `ModuleData.imports`
+     headers already inside the sysroot `.olean` files. Replacing
+     `library-lock.json` with 4 `stage_tree_digest` lines in
+     `toolchain-lock.sha256` (`lean/lib/lean/{Init,Std}/**` and
+     `lean/src/lean/{Init,Std}/**`) shrinks lock metadata by **`99.93%` in lines
+     (`5,342 -> 4`)** and **`99.79%` in bytes (`165,872 B -> 350 B`)**, covers
+     all `7,952` files (`783.7 MB`) of `Init` and `Std`, and verifies warm
+     `(dev, ino, mode, len, mtime_ns)` fingerprints in **`86.2 ms`** (vs.
+     `133.5 ms` for hashing the 732-file subset).
+   - *Eliminating `#eval Anneal.checkCrate Mir.crate` from `Proof.lean`*:
+     Embedding `#eval` inside `Proof.lean` violates `TrustedBoundary.lean`'s
+     Phase 1 `"preflight"` command allowlist (`policy:unsupported command
+     Lean.Parser.Command.eval in Proof`). Keeping `Proof.lean` strictly pure
+     (`theorem verify_crate : Trusted.CrateTheorem Mir.crate :=
+     Anneal.proveCrate Mir.crate rfl`) passes `"preflight"` (`1` command) and
+     runs `Anneal.checkCrate` out-of-band only on the cold failure path.
 
 ---
 
@@ -700,6 +769,88 @@ In unmodified `TrustedBoundary.lean`, `targetAudit` calls `importEnv` four times
 
 ---
 
+### Finding 8: Eliminating Four `TrustedBoundary` Audit Workarounds — Zero-Initializer Override Inspection (`loadExts := false`), Universal `realizeConst` Theorem Replay Without `isAllowedEqThm` Suffix Whitelists, Sysroot Tree-Digest Replacement of the 5,342-Line `library-lock.json`, and Pure `Proof.lean` Diagnostic Separation (`support/audit-workarounds-simplification/`)
+
+Basis: `source` + `execution`
+
+#### 8.1 Zero-Initializer Inspection of `@[implemented_by]`, `@[extern]`, and `@[csimp]` (`loadExts := false` vs. `enableInitializers := true`)
+In §7.3, `single_metadata_2env` eliminated `fixedMetadata` (`4` `importEnv` calls $\to$ `2`), but still passed `extensions := true` (`unsafe enableInitializersExecution` + `loadExts := true`) when loading the target environment `targetMetadata ← importEnv j roots true`. Executing `enableInitializersExecution` and `loadExts := true` during `targetAudit` forces Lean's importer to run `finalizePersistentExtensions` across all loaded modules and permits arbitrary `[init]` initializers in imported `.olean` files to execute inside the auditor process.
+
+Inspection of `Lean.Environment.finalizeImport` (`src/lean/Lean/Environment.lean:2376-2386`) and `ParametricAttribute.getParamFromExt?` (`src/lean/Lean/Attributes.lean:306-318`) establishes that `loadExts := true` is **not** required to inspect `@[implemented_by]`, `@[extern]`, or `@[csimp]`:
+1. In `finalizeImport` (`src/lean/Lean/Environment.lean:2383`), Lean executes:
+   ```lean
+   let exts ← setImportedEntries privateBase.extensions moduleData
+   ```
+   **unconditionally before `if loadExts then`** (`line 2386`). Consequently, `s.importedEntries[modIdx]` is populated for every built-in `PersistentEnvExtension`—including `Lean.Compiler.implementedByAttr.ext`, `Lean.externAttr.ext`, and `Lean.Compiler.CSimp.ext.ext`—even when `loadExts := false` and `enableInitializersExecution` is **never** called.
+2. Moreover, `ParametricAttribute` (`registerParametricAttribute` in `src/lean/Lean/Attributes.lean:237-238`) sets `addImportedFn := fun _ => pure ([], {})` (a no-op) and implements `getParam?` (`getParamFromExt?`, lines `306-318`) by binary-searching `ext.getModuleEntries env modIdx` (`s.importedEntries[modIdx]`). Thus `Compiler.getImplementedBy? envFalse decl`, `getExternAttrData? envFalse decl`, and `Compiler.CSimp.ext.ext.getModuleEntries envFalse modIdx` (as well as raw `envFalse.header.moduleData[modIdx]!.entries` keys `` `Lean.Compiler.implementedByAttr ``, `` `Lean.externAttr ``, and `` `Lean.Compiler.CSimp.ext ``) return the exact same entries when `loadExts := false` as when `loadExts := true` ([`ProbeRawModuleDataOverrides.lean`](support/audit-workarounds-simplification/ProbeRawModuleDataOverrides.lean): `0.08 ms` via `readModuleData`, `0` initializers executed).
+
+Using [`run_zero_init_audit_bench.py`](support/audit-workarounds-simplification/run_zero_init_audit_bench.py) ([`zero_init_audit_bench.json`](support/audit-workarounds-simplification/zero_init_audit_bench.json)), we benchmarked **`zero_init_2env`** (`env ← importEnv j roots false` + `base ← importEnv j foundation false`, with **zero** `enableInitializersExecution` calls and **zero** `loadExts := true` calls) on the 17-module Starnix `apply_endianness` target and tested three adversarial target override injections:
+
+| Variant | `# Env` Loads | `loadExts := true` Calls | `enableInitializers` Calls | `lean --run` Wall (s) | `lean --run` Peak RSS (KB) | Native Binary Wall (s) | Native Binary Peak RSS (KB) | Native `plan + metaOverride` (ms) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| **`baseline_4env`** | `4` | `2` | `2` | `10.2338` | `1,311,348` | `6.0371` | `656,192` | `~682.1` |
+| **`single_metadata_2env`** (§7.3) | `2` | `1` | `1` | `9.8410` | `1,016,712` | `5.8234` | `372,564` (`-43.2%`) | `331.87` (`-51.3%`) |
+| **`zero_init_2env` (RECOMMENDED)** | **`2`** | **`0`** | **`0`** | **`9.7827`** | **`1,024,292`** | **`5.7295`** | **`364,476` (`-44.5%` / `-291.7 MB`)** | **`291.00` (`-57.3%`)** |
+
+| Adversarial Target Module Injection (`Proof.lean`) | `zero_init_2env` (`loadExts := false`) Outcome | Rejection Diagnostic | Latency (`ms`) |
+| :--- | :---: | :--- | ---: |
+| **`attack_implemented_by`** (`@[implemented_by evilImpl] def targetFn : Bool := true`) | **Rejected (`exit 1`)** | `policy:unchecked compiler override in target module Proof` | `308.69 ms` |
+| **`attack_extern`** (`@[extern "c_evil_symbol"] def externTargetFn (x : Nat) : Nat := x`) | **Rejected (`exit 1`)** | `policy:unchecked compiler override in target module Proof` | `305.51 ms` |
+| **`attack_csimp`** (`@[csimp] theorem csimp_override : @csimpA = @csimpB := rfl`) | **Rejected (`exit 1`)** | `policy:authored compiler replacement in target module Proof` | `298.61 ms` |
+
+#### 8.2 Why `isAllowedEqThm` String-Suffix Whitelisting Is Both Unsound and Incomplete Under `realizeConst`, and Its Universal Theorem-Replay Replacement
+When an untrusted `theory/` or `Proof` module unfolds or splits a `Trusted.*` definition (`simp [Trusted.step]`, `fun_cases Trusted.step x`, `fun_induction Trusted.recFn n`), `Lean.Environment.realizeConst` (`src/lean/Lean/Environment.lean:2709-2783`) generates auxiliary equational, congruence, splitter, and unfolding theorems under the `Trusted.*` namespace and serializes them into the downstream module's `ModuleData.constants` (`data.constants`). Attempting to whitelist these constants via a surface string-suffix predicate `isAllowedEqThm` (`eq_def`, `eq_unfold`, `splitter`, `_sunfold`, `_cstage1`, `_cstage2`, `eq_<digits>`, `_eq_<digits>`, `match_<digits>`) fails in three distinct ways demonstrated by [`run_eqthm_diamond_probe.py`](support/audit-workarounds-simplification/run_eqthm_diamond_probe.py) ([`eqthm_diamond_probe_results.json`](support/audit-workarounds-simplification/eqthm_diamond_probe_results.json)):
+
+1. **False-Positive Namespace Spoofing (`SpoofMod.lean`)**:
+   In `src/lean/Lean/Elab/DeclModifiers.lean:45-46`, Lean's `checkNotAlreadyDeclared` blocks user declarations of reserved names via `Lean.isReservedName` (`src/lean/Lean/ResolveName.lean:51-53`). However, `Lean.Meta.Eqns` (`src/lean/Lean/Meta/Eqns.lean:71-106`) only reserves `<base>.eq_<idx>` when `<base>` is a safe definition (`isSafeDefinition`), and neither `match_<idx>` nor `_sunfold` is a reserved name (both are generated eagerly at definition time, not via `registerReservedNamePredicate`). Because `isAllowedEqThm` checks only `(env.checked.get.find? baseName).isSome`, an untrusted `theory/` module (`SpoofMod.lean`) can author:
+   ```lean
+   namespace Trusted
+   theorem trustedProp.eq_1 : False → False := id
+   theorem step.match_99 : True := trivial
+   theorem step._sunfold : 2 + 2 = 4 := rfl
+   end Trusted
+   ```
+   All three compile cleanly (`leanIsReservedName == false`) and are **falsely accepted (`isAllowedEqThm == true`)** as `Trusted.*` constants.
+2. **False-Negative Rejection of Legitimate `realizeConst` Constants and 100% Dead `"splitter"` Branch (`TheoryMod1.lean`)**:
+   - In `src/lean/Lean/Meta/Match/MatchEqs.lean:145-156, 224-244`, `getEquationsForImpl` explicitly states:
+     ```lean
+     /- Remark: users have requested the `split` tactic to be available for writing code.
+        Thus, the `splitter` declaration must be a definition instead of a theorem. -/
+     ```
+     and constructs `<matchDecl>.splitter` (`_private.<RealizingMod>.0.Trusted.step.match_1.splitter`) as a `Declaration.defnDecl` (`.defnInfo`, **not** `.thmInfo`). Because `isAllowedEqThm` begins with `unless ci matches .thmInfo _ do return false`, the `s == "splitter"` check inside `isEqThmSuffix` is **100% dead code** that returns `false` on every `splitter` in Lean 4!
+   - Furthermore, legitimate `.thmInfo` constants realized by `simp`, `fun_cases`, and `fun_induction`—including `Trusted.step.fun_cases_unfolding`, `Trusted.recFn.induct_unfolding`, `Trusted.step.match_1.congr_eq_1`, `Trusted.step.match_1.congr_eq_2`, `Trusted.recFn.match_1.congr_eq_1`, and `Trusted.recFn.match_1.congr_eq_2`—all have suffixes rejected by `isEqThmSuffix` (`isAllowedEqThm == false`).
+3. **Diamond `realizeConst` Crashes and Cross-Module Proof-Term Divergence (`TheoryMod1.lean` + `TheoryMod2.lean`)**:
+   When sibling modules `TheoryMod1` and `TheoryMod2` both use `simp`, `fun_cases`, and `fun_induction` on `Trusted.step` and `Trusted.recFn`, `10` public realized `.thmInfo` constants appear in `data.constants` of **both** `TheoryMod1.olean` and `TheoryMod2.olean`. Worse, because `MatchEqs.lean:151` computes `let baseName := mkPrivateName (← getEnv) matchDeclName` using the realizing module's `mainModule` (`_private.TheoryMod1.0...` vs. `_private.TheoryMod2.0...`), `3` of those `10` public theorems (`Trusted.recFn.eq_def`, `Trusted.step.fun_cases_unfolding`, and `Trusted.recFn.induct_unfolding`) have **syntactically distinct proof bodies** (`sameProofValue == false`) across `TheoryMod1.olean` and `TheoryMod2.olean`!
+   - The suffix-heuristic auditor (`isAllowedEqThm`) crashes on `DiamondRoot` with **`15` policy errors** (`duplicate declaration`, `inventory origin mismatch`, and `stored declaration differs from inventory` on `Trusted.recFn.eq_def`, `Trusted.step.fun_cases_unfolding`, and `Trusted.recFn.induct_unfolding`).
+   - The foundation/library-only `alternateProofs` auditor (`TrustedBoundaryHardened.lean` §7.1, which restricts `alternateProofs` to `.foundation | .library`) crashes on `DiamondRoot` with **`13` policy errors** (`duplicate declaration`, `inventory origin mismatch`, and `stored declaration differs from inventory` because `role == .theory` is excluded from `alternateProofs`).
+4. **Clean Universal Resolution (`ProbeEqThmAndDiamondRealize.lean`)**:
+   - Replacing `isAllowedEqThm` with (a) `hasTrustedAncestor` (verifying that any constant realized under `Trusted.*` in a non-`Trusted` module is either a `.thmInfo` or a module-private `.splitter` (`isPrivateName ci.name`) whose prefix is an existing constant with `.trusted` origin, or satisfies `Lean.isReservedName`), and (b) **universal `sameThmHeader` + `alternateProofs` replay** across **all** module roles (`.foundation`, `.library`, `.trusted _`, `.theory`, and `.source _`) admits all `41` local constants and freshly kernel-checks all `6` alternate proof bodies (`_anneal_checked_alternate`) with **zero** string-suffix heuristics.
+
+#### 8.3 Replacing the 5,342-Line `library-lock.json` (`165,872` Bytes) with 4 Recursive Sysroot Tree-Digest Lines (`350` Bytes) + `.olean` Header Graph Discovery
+In [`probe_library_lock_vs_sysroot_tree.py`](support/audit-workarounds-simplification/probe_library_lock_vs_sysroot_tree.py) ([`library_lock_vs_sysroot_tree.json`](support/audit-workarounds-simplification/library_lock_vs_sysroot_tree.json)), we analyzed the 5,342-line `trusted/audit/library-lock.json` (`165,872` bytes, embedded into `cargo-anneal` via `include_str!`) against Lean `v4.34.1`'s sysroot:
+
+| Metric | Per-Module `library-lock.json` | Sysroot Tree Digest (`toolchain-lock.sha256`) + `.olean` Header Discovery | Delta / Improvement |
+| :--- | ---: | ---: | :--- |
+| **Lockfile Lines** | `5,342` lines | **`4` lines** (`lean/{lib,src}/lean/{Init,Std}/**`) | **`-99.93%` (`-5,338` lines)** |
+| **Lockfile Size (Bytes)** | `165,872` B (`162.0 KiB`) | **`350` B** | **`-99.79%` (`-165.5 KiB`)** |
+| **Modules Covered in `Init` + `Std`** | `122` modules (`732` file hashes) | **All `1,138` modules (`7,952` files, `783.7 MB`)** | **`9.3x` module coverage** (no manual lock regeneration on new imports) |
+| **Import Graph Storage (`"graph"`)** | `4,254` lines (`645` `ImportEdge` objects, `79.6%` of file) | **`0` lines** (`ModuleData.imports` read from `.olean` headers; `100%` identical) | **`-100%` redundant graph JSON** |
+| **Warm Verification Latency** | `133.46 ms` (732-file SHA-256 read) | **`86.23 ms`** (`7,952`-file `(dev, ino, mode, len, mtime_ns)` stat check) | **`1.55x` faster warm check** (`1,287.85 ms` one-time cold unpack check) |
+
+1. **100% Redundancy with Unpacked Sysroot & `.olean` Headers**: All `732` SHA-256 digests in `library-lock.json` (`122` `sourceSha256` + `610` `parts` digests across `.olean`, `.olean.server`, `.olean.private`, `.ir`, `.ir.sig`) match the unpacked Lean `v4.34.1` toolchain sysroot files bit-for-bit, and the `4,254`-line `"graph"` section (`645` `ImportEdge` entries) is **100% identical** (`graph_100pct_identical_to_olean_headers: true`) to the `ModuleData.imports` arrays already embedded inside those modules' `.olean` headers.
+2. **Why `validateGraph` Only Needs Source Module Headers**: Phase 1 (`"headers"` / `"preflight"`) parses `.lean` source headers before invoking `lean` so Phase 2 (`"audit"`) can verify that `lean` compiled the exact import DAG declared in the `.lean` sources. Pre-compiled toolchain sysroot modules (`Init.*`, `Std.*`) are never compiled during `cargo anneal`; once `setup.rs` authenticates `lean/lib/lean/{Init,Std}/**` and `lean/src/lean/{Init,Std}/**` via `stage_tree_digest` (`4` lines, `350` bytes in `toolchain-lock.sha256`), their `.olean` files and `ModuleData.imports` headers are already cryptographically pinned, allowing `trusted/audit/library-lock.json` (`5,342` lines) to be deleted entirely.
+
+#### 8.4 Eliminating `#eval Anneal.checkCrate Mir.crate` from `Proof.lean` via Failure-Only Out-of-Band Diagnostic Extraction
+In [`run_eval_diagnostic_probe.py`](support/audit-workarounds-simplification/run_eval_diagnostic_probe.py) ([`eval_diagnostic_probe_results.json`](support/audit-workarounds-simplification/eval_diagnostic_probe_results.json)), we tested the effect of embedding `#eval Anneal.checkCrate Mir.crate` inside `Proof.lean` against `TrustedBoundary.lean`'s Phase 1 `"preflight"` parser allowlist (`allowedCommandKinds`):
+1. **Phase 1 `"preflight"` Rejection**: Parsing `Proof.lean` containing `#eval Anneal.checkCrate Mir.crate` against `allowedCommandKinds` fails immediately with:
+   ```text
+   policy:unsupported command Lean.Parser.Command.eval in Proof
+   ```
+   because `Parser.Command.eval` executes arbitrary Lean VM bytecode during elaboration and can write forged lines to `stdout`.
+2. **Pure `Proof.lean` + Cold-Path Out-of-Band Diagnostic Extraction**: Keeping `Proof.lean` strictly pure (`theorem verify_crate : Trusted.CrateTheorem Mir.crate := Anneal.proveCrate Mir.crate rfl`) passes Phase 1 `"preflight"` (`accepted: true`, `1` command) with zero VM execution during passing builds, while invoking a separate ephemeral diagnostic runner (`ColdPathDiag.lean`: `def main : IO Unit := Anneal.checkCrate Mir.crate`) **only after `lean Proof.lean` returns a non-zero exit code** extracts the exact per-function obligation failure (`fn_2|[item < 100]|x=150` in `318.24 ms`) without polluting audited proof sources.
+
+---
+
 ## Boundaries
 
 1. **Built-in `leanchecker --fresh` Is Not a Substitute for `TrustedBoundary.lean`:**
@@ -711,10 +862,14 @@ In unmodified `TrustedBoundary.lean`, `targetAudit` calls `importEnv` four times
    `@[candidate <feat>]` non-contamination.
 2. **`sameRealizedThmHeader` Does Not Permit Duplicate `.defnInfo` or `.opaqueInfo` Declarations:**
    Across all 1,020 exported and 1,138 private modules of `Init` and `Std`, zero
-   `.defnInfo` duplicates occur (`108 / 108` and `119 / 119` are `.thmInfo`).
-   `sameRealizedThmHeader` restricts duplicate tolerance strictly to `.thmInfo`
-   so computational definitions in `Trusted`, `Anneal`, and `Mir` must always
-   have unique origins and bit-for-bit identical values.
+   `.defnInfo` duplicates occur (`108 / 108` and `119 / 119` are `.thmInfo`), and
+   across sibling `theory/` modules (`TheoryMod1`, `TheoryMod2`), all `10 / 10`
+   cross-module duplicate realized constants are `.thmInfo` (because
+   `MatchEqs.getEquationsForImpl` makes `.splitter` `.defnInfo` helpers
+   module-private via `_private.<RealizingMod>.0.`). `sameRealizedThmHeader`
+   restricts cross-module duplicate tolerance strictly to `.thmInfo` so
+   computational definitions in `Trusted`, `Anneal`, and `Mir` must always have
+   unique origins and bit-for-bit identical values.
 3. **Relaxing `@[implemented_by]`, `@[extern]`, or `opaque` Applies Only to Tier 2 (`Std.*`, Unlocked `Init.*`, `theory/`), Never Tier 1 (`Trusted` and `Mir`):**
    In Tier 1 (`trusted/lean/` and `Mir.lean`), an `opaque` definition in the
    theorem statement could conceal a vacuous specification (`opaque Spec : Prop :=
@@ -731,6 +886,15 @@ In unmodified `TrustedBoundary.lean`, `targetAudit` calls `importEnv` four times
    Because Lean 4 expands `notation` and macros during elaboration without
    leaving constant references in `ConstantInfo`, `targetAudit` must check
    `r.allows d` on `data.imports` in addition to `declarationEdges` (§7.2).
+6. **Zero-Initializer Override Inspection (`loadExts := false`) Must Read `importedEntries[modIdx]` or `ModuleData.entries`, Not `CSimp.ext.getState env |>.map`:**
+   Because `ScopedEnvExtension.addImportedFn` only runs when `loadExts := true`,
+   the merged active state `(Compiler.CSimp.ext.getState env).map` is empty when
+   `loadExts := false`. Auditing `@[csimp]`, `@[implemented_by]`, and `@[extern]`
+   with `loadExts := false` (`zero_init_2env`, §8.1) must therefore inspect
+   per-module `(ext.toEnvExtension.getState env).importedEntries[modIdx]` or
+   `env.header.moduleData[modIdx]!.entries`, which `setImportedEntries`
+   populates unconditionally before `if loadExts then`
+   (`src/lean/Lean/Environment.lean:2383`).
 
 ---
 
@@ -752,6 +916,7 @@ are backed by the preserved support artifacts in this package:
 | [`support/ProbeAxiomStubRuntime.lean`](support/ProbeAxiomStubRuntime.lean) | 430 | `21a5196ef1fbfd192a444a6b77e804b2e3a2bb4e81dbe99d77dbec043edda613` | Empirical benchmark and byte-level `.olean` analyzer across Configs 0, 1, 2a, 2b, 3a, 3b, 3c, and 3d on the 11 Stage-1 modules of Anneal. |
 | [`support/SingleImportTwoStageBoundary.lean`](support/SingleImportTwoStageBoundary.lean) | 1,405 | `94b02641581a2b470df710a42fcaeae90c143404ae7b42f106280f3172eae422` | Production-grade single-`importEnv` + `readModuleData` two-stage boundary auditor implementing `preaudit`, `runtime-audit`, `stub-oleans` (Config 3b), `benchmark`, and 10 automated security `self-test` cases. |
 | [`support/mvp-merkle-cache-and-import-authority/`](support/mvp-merkle-cache-and-import-authority/TrustedBoundaryHardened.lean) | — | — | [`TrustedBoundaryHardened.lean`](support/mvp-merkle-cache-and-import-authority/TrustedBoundaryHardened.lean), [`incremental_verify_prototype.py`](support/mvp-merkle-cache-and-import-authority/incremental_verify_prototype.py), [`invalidation_contract_test_results.json`](support/mvp-merkle-cache-and-import-authority/invalidation_contract_test_results.json), [`instrumented_audit_timings.json`](support/mvp-merkle-cache-and-import-authority/instrumented_audit_timings.json), [`run_instrumented_audit.py`](support/mvp-merkle-cache-and-import-authority/run_instrumented_audit.py), [`precompiled_inspector_bench.json`](support/mvp-merkle-cache-and-import-authority/precompiled_inspector_bench.json), [`run_import_authority_poc.py`](support/mvp-merkle-cache-and-import-authority/run_import_authority_poc.py), [`import_authority_poc.json`](support/mvp-merkle-cache-and-import-authority/import_authority_poc.json), [`run_env_memory_opt_bench.py`](support/mvp-merkle-cache-and-import-authority/run_env_memory_opt_bench.py), and [`env_memory_opt_bench.json`](support/mvp-merkle-cache-and-import-authority/env_memory_opt_bench.json). |
+| [`support/audit-workarounds-simplification/`](support/audit-workarounds-simplification/ProbeRawModuleDataOverrides.lean) | — | — | [`ProbeRawModuleDataOverrides.lean`](support/audit-workarounds-simplification/ProbeRawModuleDataOverrides.lean), [`run_zero_init_audit_bench.py`](support/audit-workarounds-simplification/run_zero_init_audit_bench.py), [`zero_init_audit_bench.json`](support/audit-workarounds-simplification/zero_init_audit_bench.json), [`run_eqthm_diamond_probe.py`](support/audit-workarounds-simplification/run_eqthm_diamond_probe.py), [`eqthm_diamond_probe_results.json`](support/audit-workarounds-simplification/eqthm_diamond_probe_results.json), [`probe_library_lock_vs_sysroot_tree.py`](support/audit-workarounds-simplification/probe_library_lock_vs_sysroot_tree.py), [`library_lock_vs_sysroot_tree.json`](support/audit-workarounds-simplification/library_lock_vs_sysroot_tree.json), [`run_eval_diagnostic_probe.py`](support/audit-workarounds-simplification/run_eval_diagnostic_probe.py), and [`eval_diagnostic_probe_results.json`](support/audit-workarounds-simplification/eval_diagnostic_probe_results.json). |
 
 ---
 
@@ -775,6 +940,10 @@ lean --run support/SingleImportTwoStageBoundary.lean self-test
 python3 support/mvp-merkle-cache-and-import-authority/incremental_verify_prototype.py
 python3 support/mvp-merkle-cache-and-import-authority/run_import_authority_poc.py
 python3 support/mvp-merkle-cache-and-import-authority/run_env_memory_opt_bench.py
+python3 support/audit-workarounds-simplification/run_zero_init_audit_bench.py
+python3 support/audit-workarounds-simplification/run_eqthm_diamond_probe.py
+python3 support/audit-workarounds-simplification/probe_library_lock_vs_sysroot_tree.py
+python3 support/audit-workarounds-simplification/run_eval_diagnostic_probe.py
 ```
 
 Confirm that:
@@ -791,3 +960,14 @@ Confirm that:
    11 Merkle-DAG invalidation scenarios, and `run_import_authority_poc.py`
    confirms that `TrustedBoundaryHardened.lean` rejects the `Spec -> TrojanProof`
    import violation (`exit 1`).
+4. `run_zero_init_audit_bench.py` confirms that `zero_init_2env` (`loadExts := false`,
+   `0` `enableInitializersExecution` calls) passes Starnix `apply_endianness`
+   (`1,683` replayed declarations) and rejects all 3 adversarial target override
+   injections (`attack_implemented_by`, `attack_extern`, `attack_csimp`);
+   `run_eqthm_diamond_probe.py` confirms that universal `sameThmHeader` +
+   `alternateProofs` replay verifies all `41` local constants and `6` alternate
+   proof bodies across `DiamondRoot`; `probe_library_lock_vs_sysroot_tree.py`
+   confirms `100%` equality between `library-lock.json` and the Lean `v4.34.1`
+   sysroot / `.olean` headers (`5,342` lines $\to$ `4` tree-digest lines); and
+   `run_eval_diagnostic_probe.py` confirms that `Proof.lean` without `#eval`
+   passes Phase 1 `"preflight"` (`accepted: true`).

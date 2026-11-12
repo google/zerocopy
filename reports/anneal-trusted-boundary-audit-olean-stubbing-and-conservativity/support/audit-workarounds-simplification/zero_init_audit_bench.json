@@ -1,0 +1,155 @@
+{
+  "benchmark": "Zero_Initializer_TargetAudit_vs_LoadExts_Variants",
+  "lean_version": "4.34.1",
+  "target": "Starnix apply_endianness (1,683 replayed declarations, 17 modules)",
+  "prior_variants": [
+    {
+      "variant": "baseline_4env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 10.2338,
+      "lean_run_peak_rss_kb": 1311348,
+      "lean_run_internal_stats": null,
+      "native_bin_wall_s": 6.0371,
+      "native_bin_peak_rss_kb": 656192,
+      "native_bin_internal_stats": null
+    },
+    {
+      "variant": "scoped_sequential_4env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 10.0294,
+      "lean_run_peak_rss_kb": 1340556,
+      "lean_run_internal_stats": {
+        "totalBodyMs": 6433.595237,
+        "rssAfterReplayKb": 1342116,
+        "rssAfterPlanKb": 911512,
+        "rssAfterMetaKb": 1260364,
+        "replayMs": 4957.1428,
+        "planMs": 1060.393656,
+        "metaOverrideMs": 416.058781,
+        "hwmAfterReplayKb": 1342116,
+        "hwmAfterPlanKb": 911620,
+        "hwmAfterMetaKb": 1260364
+      },
+      "native_bin_wall_s": 6.1401,
+      "native_bin_peak_rss_kb": 694412,
+      "native_bin_internal_stats": {
+        "totalBodyMs": 5675.719733,
+        "rssAfterReplayKb": 696644,
+        "rssAfterPlanKb": 254716,
+        "rssAfterMetaKb": 610696,
+        "replayMs": 4993.669276,
+        "planMs": 295.464337,
+        "metaOverrideMs": 386.58612,
+        "hwmAfterReplayKb": 696644,
+        "hwmAfterPlanKb": 254716,
+        "hwmAfterMetaKb": 610696
+      }
+    },
+    {
+      "variant": "reused_target_metadata_3env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 9.833,
+      "lean_run_peak_rss_kb": 1172700,
+      "lean_run_internal_stats": {
+        "totalBodyMs": 6284.270174,
+        "rssAfterReplayKb": 1175188,
+        "rssAfterPlanKb": 1091480,
+        "replayMs": 5011.304141,
+        "planAndMetaMs": 1272.966033,
+        "hwmAfterReplayKb": 1175188,
+        "hwmAfterPlanKb": 1091480
+      },
+      "native_bin_wall_s": 5.9411,
+      "native_bin_peak_rss_kb": 530548,
+      "native_bin_internal_stats": {
+        "totalBodyMs": 5474.247436,
+        "rssAfterReplayKb": 501016,
+        "rssAfterPlanKb": 446276,
+        "replayMs": 4938.246252,
+        "planAndMetaMs": 536.001184,
+        "hwmAfterReplayKb": 530548,
+        "hwmAfterPlanKb": 446276
+      }
+    },
+    {
+      "variant": "single_metadata_2env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 9.841,
+      "lean_run_peak_rss_kb": 1016712,
+      "lean_run_internal_stats": {
+        "totalBodyMs": 6125.42261,
+        "rssAfterReplayKb": 1019672,
+        "rssAfterPlanKb": 927784,
+        "replayMs": 5014.81242,
+        "planAndMetaMs": 1110.61019,
+        "hwmAfterReplayKb": 1019672,
+        "hwmAfterPlanKb": 927784
+      },
+      "native_bin_wall_s": 5.8234,
+      "native_bin_peak_rss_kb": 372564,
+      "native_bin_internal_stats": {
+        "totalBodyMs": 5420.304756,
+        "rssAfterReplayKb": 356204,
+        "rssAfterPlanKb": 281788,
+        "replayMs": 5088.434481,
+        "planAndMetaMs": 331.870275,
+        "hwmAfterReplayKb": 372564,
+        "hwmAfterPlanKb": 281788
+      }
+    }
+  ],
+  "zero_init_2env": {
+    "variant": "zero_init_2env",
+    "enableInitializers_calls": 0,
+    "loadExts_true_calls": 0,
+    "replayed_declarations": 1683,
+    "lean_run_wall_s": 9.7827,
+    "lean_run_peak_rss_kb": 1024292,
+    "lean_run_internal_stats": {
+      "totalBodyMs": 6251.862829,
+      "rssAfterReplayKb": 1022736,
+      "rssAfterPlanKb": 920632,
+      "replayMs": 5187.532007,
+      "planAndMetaMs": 1064.330822,
+      "hwmAfterReplayKb": 1024292,
+      "hwmAfterPlanKb": 920632
+    },
+    "native_bin_wall_s": 5.7295,
+    "native_bin_peak_rss_kb": 364476,
+    "native_bin_internal_stats": {
+      "totalBodyMs": 5321.625948,
+      "rssAfterReplayKb": 327660,
+      "rssAfterPlanKb": 257892,
+      "replayMs": 5030.627927,
+      "planAndMetaMs": 290.998021,
+      "hwmAfterReplayKb": 364476,
+      "hwmAfterPlanKb": 257892
+    }
+  },
+  "adversarial_override_tests": [
+    {
+      "attack": "attack_implemented_by",
+      "return_code": 1,
+      "rejected": true,
+      "category": "policy",
+      "message": "policy:unchecked compiler override in target module Proof",
+      "wall_ms": 410.47
+    },
+    {
+      "attack": "attack_extern",
+      "return_code": 1,
+      "rejected": true,
+      "category": "policy",
+      "message": "policy:unchecked compiler override in target module Proof",
+      "wall_ms": 414.09
+    },
+    {
+      "attack": "attack_csimp",
+      "return_code": 1,
+      "rejected": true,
+      "category": "policy",
+      "message": "policy:authored compiler replacement in target module Proof",
+      "wall_ms": 414.36
+    }
+  ]
+}

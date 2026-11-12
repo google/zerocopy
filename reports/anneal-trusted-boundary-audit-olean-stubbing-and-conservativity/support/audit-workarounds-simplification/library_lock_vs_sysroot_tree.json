@@ -1,0 +1,30 @@
+{
+  "lean_version": "4.34.1",
+  "library_lock_json": {
+    "lines": 5342,
+    "bytes": 165872,
+    "locked_modules": 122,
+    "hardcoded_sha256_digests": 732,
+    "hardcoded_import_edges": 645,
+    "all_732_hashes_match_v4_34_1_sysroot": true,
+    "graph_100pct_identical_to_olean_headers": true,
+    "per_module_732_sha256_verify_ms": 133.46
+  },
+  "sysroot_tree_digest_replacement": {
+    "toolchain_lock_lines_added": 4,
+    "toolchain_lock_bytes_added": 350,
+    "lines_reduction_pct": 99.93,
+    "bytes_reduction_pct": 99.79,
+    "tree_entries": [
+      "fa58c505c9672f9322b09ca1bc74ea42695f4371c5c92ed683fcfded5bcb5665  lean/lib/lean/Init/**",
+      "791bc76ee8032620a50c77e6fd96bd798a261ba33895951faa29303b8bfb8d1f  lean/lib/lean/Std/**",
+      "0b8b4ceda5f9503c9aeb2f84a31c1b7256571f88de890b01f80ad7502e356347  lean/src/lean/Init/**",
+      "fa337a60d8e77ea06dd92b246d64d8db84de38154e96c4f51c4fe633f986c229  lean/src/lean/Std/**"
+    ],
+    "total_files_covered": 7952,
+    "total_bytes_covered": 783703582,
+    "cold_tree_sha256_ms": 1287.85,
+    "warm_stat_fingerprint_ms": 86.23,
+    "olean_header_graph_read_122_modules_ms": 1070.52
+  }
+}
