@@ -8210,6 +8210,89 @@
         "aeneas/loops-termination"
       ]
     },
+    "compiler-concurrent-source-modification-and-hermetic-input-binding": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust compiler and standard library source tree"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "19833af7224424e8b53e288097d56b6af43d5bcf",
+            "version": "1.101.0-nightly (2026-10-20)"
+          },
+          "name": "Rust nightly toolchain (rustc and rustc_driver execution)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "3c0b534756e166d12eb9fd2e1abfe5b42ac6101e"
+          },
+          "name": "Cargo source pinned by rust-lang/rust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "3960fa69bb617e3d93c4ddc087c1b32bf12ad907",
+            "version": "1.101.0-nightly (2026-10-12)"
+          },
+          "name": "Cargo nightly toolchain"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+            "version": "llvmorg-19.1.7"
+          },
+          "name": "LLVM and Clang 19.1.7"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "version": "releases/gcc-15.2.0"
+          },
+          "name": "GCC and libcpp 15.2.0"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+            "version": "go1.27.3"
+          },
+          "name": "Go toolchain and cmd/compile"
+        },
+        {
+          "identity": {
+            "artifact": "javac",
+            "version": "27.0.1+-google-release-sts-1005653896"
+          },
+          "name": "OpenJDK javac"
+        },
+        {
+          "identity": {
+            "artifact": "make",
+            "version": "4.4.1"
+          },
+          "name": "GNU Make"
+        }
+      ],
+      "topics": [
+        "rustc/source-map",
+        "rustc/driver",
+        "compilers/source-ingestion",
+        "llvm/memory-buffer",
+        "cargo/fingerprints",
+        "build/caching",
+        "verification/trusted-computing-base",
+        "security/toctou"
+      ]
+    },
     "compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026": {
       "observed_at": "2026-11-02",
       "subjects": [

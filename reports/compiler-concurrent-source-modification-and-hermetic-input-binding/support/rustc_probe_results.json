@@ -1,0 +1,226 @@
+{
+  "rustc_version": "rustc 1.101.0-nightly (19833af72 2026-10-20)\nbinary: rustc\ncommit-hash: 19833af7224424e8b53e288097d56b6af43d5bcf\ncommit-date: 2026-10-20\nhost: x86_64-unknown-linux-gnu\nrelease: 1.101.0-nightly\nLLVM version: 23.1.4\n",
+  "experiment_1_intra_crate_temporal_skew": {
+    "compile": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "main.rs",
+        "-o",
+        "/tmp/rustc_source_probes_work/exp1_temporal_skew/exp1_bin"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "run": {
+      "cmd": [
+        "/tmp/rustc_source_probes_work/exp1_temporal_skew/exp1_bin"
+      ],
+      "returncode": 0,
+      "stdout": "first=10, second=20, gate=0\n",
+      "stderr": ""
+    },
+    "final_first_rs": "pub const V: u32 = 20;\n",
+    "final_second_rs": "pub const V: u32 = 20;\n"
+  },
+  "experiment_2_non_canonical_path_aliasing": {
+    "compile": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "-Z",
+        "checksum-hash-algorithm=sha256",
+        "--emit=link,dep-info",
+        "main.rs"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "warning: constant `G` is never used\n --> gate.rs:1:11\n  |\n1 | pub const G: u32 = 0;\n  |           ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "run": {
+      "cmd": [
+        "/tmp/rustc_source_probes_work/exp2_path_aliasing/main"
+      ],
+      "returncode": 0,
+      "stdout": "a=1, b=2, c=2, a_file=./shared.rs, b_file=./sub/../shared.rs, c_file=./sym_shared.rs\n",
+      "stderr": ""
+    },
+    "same_inode": true,
+    "inode": 172256168,
+    "dep_info": "main.d: main.rs ./shared.rs gate.rs ./sub/../shared.rs ./sym_shared.rs\n\nmain: main.rs ./shared.rs gate.rs ./sub/../shared.rs ./sym_shared.rs\n\nmain.rs:\n./shared.rs:\ngate.rs:\n./sub/../shared.rs:\n./sym_shared.rs:\n# checksum:sha256=956689c7856931d9701a9fb61115adf244d9195c89a87a2ac178ee05245b80bb file_len:248 main.rs\n# checksum:sha256=9607f94484b90275a2e447f1213b659e8db8cc9e2639aaf7750151f4a5d9200f file_len:54 ./shared.rs\n# checksum:sha256=793ebaa40384851bd18c7ad954d9cdb87cac97caf0000b48d091ba6e75196035 file_len:22 gate.rs\n# checksum:sha256=36b0284d374fafe49a3f0f9556f425c788c4b741a02440302470a1921c6f7612 file_len:54 ./sub/../shared.rs\n# checksum:sha256=36b0284d374fafe49a3f0f9556f425c788c4b741a02440302470a1921c6f7612 file_len:54 ./sym_shared.rs\n"
+  },
+  "experiment_3_same_path_reuse_and_depinfo": {
+    "sub_3a_same_path_include_vs_str_vs_bytes": {
+      "compile": {
+        "cmd": [
+          "rustc",
+          "--edition=2021",
+          "main.rs",
+          "-o",
+          "bin3a"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: constant `G` is never used\n --> ./gate.rs:1:11\n  |\n1 | pub const G: u32 = 0;\n  |           ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n"
+      },
+      "run": {
+        "cmd": [
+          "/tmp/rustc_source_probes_work/exp3a_include_macros/bin3a"
+        ],
+        "returncode": 0,
+        "stdout": "before_inc::V=1, after_inc::V=1, STR_BEFORE=\"pub const V: u32 = 1;\", STR_AFTER=\"pub const V: u32 = 2;\", BYTES_BEFORE=\"pub const V: u32 = 1;\", BYTES_AFTER=\"pub const V: u32 = 2;\"\n",
+        "stderr": ""
+      }
+    },
+    "sub_3b_include_bytes_populates_sourcemap_for_later_mod": {
+      "compile": {
+        "cmd": [
+          "rustc",
+          "--edition=2021",
+          "main.rs",
+          "-o",
+          "bin3b"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: constant `G` is never used\n --> ./gate.rs:1:11\n  |\n1 | pub const G: u32 = 0;\n  |           ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n"
+      },
+      "run": {
+        "cmd": [
+          "/tmp/rustc_source_probes_work/exp3b_binary_poisons_include/bin3b"
+        ],
+        "returncode": 0,
+        "stdout": "BYTES_EARLY=\"pub const V: u32 = 1;\", shared_same_path::V=1 (cached by early include_bytes!), shared::V=2 ('shared.rs' != './shared.rs'), BYTES_LATE=\"pub const V: u32 = 2;\"\n",
+        "stderr": ""
+      }
+    },
+    "sub_3c_deleted_cached_file_still_calls_read_file": {
+      "compile": {
+        "cmd": [
+          "rustc",
+          "--edition=2021",
+          "main.rs",
+          "-o",
+          "bin3c"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error: couldn't find file `./shared.rs`\n --> main.rs:3:18\n  |\n3 | mod second_inc { include!(\"./shared.rs\"); }\n  |                  ^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n"
+      }
+    },
+    "sub_3d_depinfo_rehashes_file_depinfo_at_t_end": {
+      "compile": {
+        "cmd": [
+          "rustc",
+          "--edition=2021",
+          "-Z",
+          "checksum-hash-algorithm=sha256",
+          "--emit=link,dep-info",
+          "main.rs"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: constant `G` is never used\n --> ./gate.rs:1:11\n  |\n1 | pub const G: u32 = 0;\n  |           ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n"
+      },
+      "run": {
+        "cmd": [
+          "/tmp/rustc_source_probes_work/exp3d_depinfo_checksum_mismatch/main"
+        ],
+        "returncode": 0,
+        "stdout": "first::V=10, PAYLOAD=\"OLD_PAYLOAD_T0\"\n",
+        "stderr": ""
+      },
+      "expected_hashes": {
+        "first_rs_t0_sha256": "5e336be6663164a4438cb34d91d74f57bf48670490ed36bbc6d31e441030c446",
+        "first_rs_t1_sha256": "33e504936ddf271fb0e82faeb5beb92d911ad8cebbc959facd502a1d84cc7cd0",
+        "data_txt_t0_sha256": "04113c1dc5b0384b7286293437b074172bb359c179be5fab005fa4ccde69ba00",
+        "data_txt_t1_sha256": "457613af79bac702cbafd91c8e35692beca8c91edb7acab5aa710de9ab2e09a3"
+      },
+      "dep_info": "main.d: main.rs first.rs ./data.txt ./gate.rs\n\nmain: main.rs first.rs ./data.txt ./gate.rs\n\nmain.rs:\nfirst.rs:\n./data.txt:\n./gate.rs:\n# checksum:sha256=f3540b752ca27c4dc7c856ced4af986b834479fb0d7a9e6ccd979048d5f29c42 file_len:184 main.rs\n# checksum:sha256=5e336be6663164a4438cb34d91d74f57bf48670490ed36bbc6d31e441030c446 file_len:23 first.rs\n# checksum:sha256=457613af79bac702cbafd91c8e35692beca8c91edb7acab5aa710de9ab2e09a3 file_len:15 ./data.txt\n# checksum:sha256=793ebaa40384851bd18c7ad954d9cdb87cac97caf0000b48d091ba6e75196035 file_len:22 ./gate.rs\n"
+    },
+    "sub_3e_out_of_line_mod_loaded_before_lexically_earlier_macro": {
+      "compile": {
+        "cmd": [
+          "rustc",
+          "--edition=2021",
+          "main.rs",
+          "-o",
+          "bin3e"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "run": {
+        "cmd": [
+          "/tmp/rustc_source_probes_work/exp3e_mod_before_macro_ordering/bin3e"
+        ],
+        "returncode": 0,
+        "stdout": "PAYLOAD=\"T1_DURING_MOD_GATE\", gate=1\n",
+        "stderr": ""
+      }
+    }
+  },
+  "experiment_4_cross_crate_external_src_validation": {
+    "compile_dep": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "--crate-type=rlib",
+        "dep.rs",
+        "-o",
+        "libdep.rlib"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "case_4a_unmodified_dep": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "user.rs",
+        "--extern",
+        "dep=libdep.rlib"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "error[E0308]: mismatched types\n --> user.rs:3:21\n  |\n3 |     dep::expect_u32(\"not_a_u32\");\n  |     --------------- ^^^^^^^^^^^ expected `u32`, found `&str`\n  |     |\n  |     arguments to this function are incorrect\n  |\nnote: function defined here\n --> dep.rs:1:8\n  |\n1 | pub fn expect_u32(_x: u32) {}\n  |        ^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    },
+    "case_4b_same_len_modified_dep": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "user.rs",
+        "--extern",
+        "dep=libdep.rlib"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "error[E0308]: mismatched types\n --> user.rs:3:21\n  |\n3 |     dep::expect_u32(\"not_a_u32\");\n  |     --------------- ^^^^^^^^^^^ expected `u32`, found `&str`\n  |     |\n  |     arguments to this function are incorrect\n  |\nnote: function defined here\n --> dep.rs:1:7\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    },
+    "case_4c_diff_len_modified_dep": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "user.rs",
+        "--extern",
+        "dep=libdep.rlib"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "error[E0308]: mismatched types\n --> user.rs:3:21\n  |\n3 |     dep::expect_u32(\"not_a_u32\");\n  |     --------------- ^^^^^^^^^^^ expected `u32`, found `&str`\n  |     |\n  |     arguments to this function are incorrect\n  |\nnote: function defined here\n --> dep.rs:1:7\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    },
+    "case_4d_local_crate_modified_before_typeck_diag": {
+      "cmd": [
+        "rustc",
+        "--edition=2021",
+        "main.rs"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "error[E0308]: mismatched types\n --> first.rs:2:5\n  |\n1 | pub fn bad() -> u32 {\n  |                 --- expected `u32` because of return type\n2 |     \"ORIGINAL_IN_MEMORY_TEXT\"\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^ expected `u32`, found `&str`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    }
+  }
+}

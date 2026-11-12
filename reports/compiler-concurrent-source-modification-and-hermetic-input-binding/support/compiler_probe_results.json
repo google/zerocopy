@@ -1,0 +1,324 @@
+{
+  "experiment_1_strace_matrix": [
+    {
+      "compiler": "clang-19",
+      "file_size": 1000,
+      "exit_code": 0,
+      "mechanism": "pread64 (heap)",
+      "uses_mmap": false,
+      "uses_pread64": true,
+      "uses_read": false,
+      "read_calls": 0,
+      "trace_excerpt": [
+        "2713817 newfstatat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_1000.c\", {st_mode=S_IFREG|0644, st_size=1000, ...}, 0) = 0",
+        "2713817 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_1000.c\", O_RDONLY|O_CLOEXEC) = 3",
+        "2713817 fstat(3, {st_mode=S_IFREG|0644, st_size=1000, ...}) = 0",
+        "2713817 pread64(3, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 1000, 0) = 1000",
+        "2713817 close(3)                        = 0"
+      ]
+    },
+    {
+      "compiler": "gcc-15",
+      "file_size": 1000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 1,
+      "trace_excerpt": [
+        "2713827 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_1000.c\", O_RDONLY|O_NOCTTY) = 3",
+        "2713827 fstat(3, {st_mode=S_IFREG|0644, st_size=1000, ...}) = 0",
+        "2713827 read(3, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 1000) = 1000",
+        "2713827 close(3)                        = 0"
+      ]
+    },
+    {
+      "compiler": "rustc",
+      "file_size": 1000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2713841 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_1000.rs\", O_RDONLY|O_CLOEXEC) = 5",
+        "2713841 read(5, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 1000) = 1000",
+        "2713841 read(5, \"\", 32)                 = 0",
+        "2713841 close(5)                        = 0"
+      ]
+    },
+    {
+      "compiler": "go-compile",
+      "file_size": 1000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2713852 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_1000.go\", O_RDONLY|O_CLOEXEC) = 6",
+        "2713852 read(6, \"package main\\n// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4095) = 1000",
+        "2713852 read(6, \"\", 4094)               = 0",
+        "2713852 close(6)                        = 0"
+      ]
+    },
+    {
+      "compiler": "javac",
+      "file_size": 1000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2713914 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_1000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=1000, ...}) = 0",
+        "2713914 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_1000.java\", O_RDONLY) = 4",
+        "2713914 fstat(4, {st_mode=S_IFREG|0644, st_size=1000, ...}) = 0",
+        "2713914 read(4, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 1000) = 1000",
+        "2713914 read(4, \"\", 1)                  = 0",
+        "2713914 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_1000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=1000, ...}) = 0",
+        "2713914 close(4)                        = 0",
+        "2713914 statx(AT_FDCWD, \"./Test_1000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=1000, ...}) = 0",
+        "2713914 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_1000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=1000, ...}) = 0"
+      ]
+    },
+    {
+      "compiler": "clang-19",
+      "file_size": 16384,
+      "exit_code": 0,
+      "mechanism": "pread64 (heap)",
+      "uses_mmap": false,
+      "uses_pread64": true,
+      "uses_read": false,
+      "read_calls": 0,
+      "trace_excerpt": [
+        "2713963 newfstatat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_16384.c\", {st_mode=S_IFREG|0644, st_size=16384, ...}, 0) = 0",
+        "2713963 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_16384.c\", O_RDONLY|O_CLOEXEC) = 3",
+        "2713963 fstat(3, {st_mode=S_IFREG|0644, st_size=16384, ...}) = 0",
+        "2713963 pread64(3, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 16384, 0) = 16384",
+        "2713963 close(3)                        = 0"
+      ]
+    },
+    {
+      "compiler": "gcc-15",
+      "file_size": 16384,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 1,
+      "trace_excerpt": [
+        "2713968 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_16384.c\", O_RDONLY|O_NOCTTY) = 3",
+        "2713968 fstat(3, {st_mode=S_IFREG|0644, st_size=16384, ...}) = 0",
+        "2713968 read(3, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 16384) = 16384",
+        "2713968 close(3)                        = 0"
+      ]
+    },
+    {
+      "compiler": "rustc",
+      "file_size": 16384,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2713982 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_16384.rs\", O_RDONLY|O_CLOEXEC) = 5",
+        "2713982 read(5, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 16384) = 16384",
+        "2713982 read(5, \"\", 32)                 = 0",
+        "2713982 close(5)                        = 0"
+      ]
+    },
+    {
+      "compiler": "go-compile",
+      "file_size": 16384,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 6,
+      "trace_excerpt": [
+        "2713992 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_16384.go\", O_RDONLY|O_CLOEXEC) = 6",
+        "2713992 read(6, \"package main\\n// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4095) = 4095",
+        "2713992 read(6, \" xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4093) = 4093",
+        "2713992 read(6, \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4095) = 4095",
+        "2713992 read(6, \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\n// xxxxxxxxxxx\"..., 4095) = 4095",
+        "2713992 read(6, \"() {}\\n\", 4091)        = 6",
+        "2713992 read(6, \"\", 4094)               = 0",
+        "2713992 close(6)                        = 0"
+      ]
+    },
+    {
+      "compiler": "javac",
+      "file_size": 16384,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2714027 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_16384.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=16384, ...}) = 0",
+        "2714027 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_16384.java\", O_RDONLY) = 4",
+        "2714027 fstat(4, {st_mode=S_IFREG|0644, st_size=16384, ...}) = 0",
+        "2714027 read(4, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 16384) = 16384",
+        "2714027 read(4, \"\", 1)                  = 0",
+        "2714027 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_16384.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=16384, ...}) = 0",
+        "2714027 close(4)                        = 0",
+        "2714027 statx(AT_FDCWD, \"./Test_16384.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=16384, ...}) = 0",
+        "2714027 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_16384.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=16384, ...}) = 0"
+      ]
+    },
+    {
+      "compiler": "clang-19",
+      "file_size": 20000,
+      "exit_code": 0,
+      "mechanism": "mmap (MAP_PRIVATE)",
+      "uses_mmap": true,
+      "uses_pread64": false,
+      "uses_read": false,
+      "read_calls": 0,
+      "trace_excerpt": [
+        "2714066 newfstatat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_20000.c\", {st_mode=S_IFREG|0644, st_size=20000, ...}, 0) = 0",
+        "2714066 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_20000.c\", O_RDONLY|O_CLOEXEC) = 3",
+        "2714066 fstat(3, {st_mode=S_IFREG|0644, st_size=20000, ...}) = 0",
+        "2714066 mmap(NULL, 20000, PROT_READ, MAP_PRIVATE|MAP_NORESERVE, 3, 0) = 0x7f9add34c000",
+        "2714066 close(3)                        = 0"
+      ]
+    },
+    {
+      "compiler": "gcc-15",
+      "file_size": 20000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 1,
+      "trace_excerpt": [
+        "2714072 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_20000.c\", O_RDONLY|O_NOCTTY) = 3",
+        "2714072 fstat(3, {st_mode=S_IFREG|0644, st_size=20000, ...}) = 0",
+        "2714072 read(3, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 20000) = 20000",
+        "2714072 close(3)                        = 0"
+      ]
+    },
+    {
+      "compiler": "rustc",
+      "file_size": 20000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2714088 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_20000.rs\", O_RDONLY|O_CLOEXEC) = 5",
+        "2714088 read(5, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 20000) = 20000",
+        "2714088 read(5, \"\", 32)                 = 0",
+        "2714088 close(5)                        = 0"
+      ]
+    },
+    {
+      "compiler": "go-compile",
+      "file_size": 20000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 6,
+      "trace_excerpt": [
+        "2714098 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/test_20000.go\", O_RDONLY|O_CLOEXEC) = 6",
+        "2714098 read(6, \"package main\\n// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4095) = 4095",
+        "2714098 read(6, \" xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4093) = 4093",
+        "2714098 read(6, \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4095) = 4095",
+        "2714098 read(6, \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\n// xxxxxxxxxxx\"..., 4095) = 4095",
+        "2714098 read(6, \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\n// xxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 4095) = 3622",
+        "2714098 read(6, \"\", 4094)               = 0",
+        "2714098 close(6)                        = 0"
+      ]
+    },
+    {
+      "compiler": "javac",
+      "file_size": 20000,
+      "exit_code": 0,
+      "mechanism": "read (heap)",
+      "uses_mmap": false,
+      "uses_pread64": false,
+      "uses_read": true,
+      "read_calls": 2,
+      "trace_excerpt": [
+        "2714133 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_20000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=20000, ...}) = 0",
+        "2714133 openat(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_20000.java\", O_RDONLY) = 4",
+        "2714133 fstat(4, {st_mode=S_IFREG|0644, st_size=20000, ...}) = 0",
+        "2714133 read(4, \"// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"..., 20000) = 20000",
+        "2714133 read(4, \"\", 1)                  = 0",
+        "2714133 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_20000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=20000, ...}) = 0",
+        "2714133 close(4)                        = 0",
+        "2714133 statx(AT_FDCWD, \"./Test_20000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=20000, ...}) = 0",
+        "2714133 statx(AT_FDCWD, \"/tmp/track2_exp1_oj34ktui/Test_20000.java\", AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=20000, ...}) = 0"
+      ]
+    }
+  ],
+  "experiment_2a_inplace_mmap_mutation": {
+    "clang-19": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "initial_macro_val": 100,
+      "mutated_macro_val": 211,
+      "compiled_binary_exit_code": 211
+    },
+    "gcc-15": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "initial_macro_val": 100,
+      "mutated_macro_val": 211,
+      "compiled_binary_exit_code": 100
+    }
+  },
+  "experiment_2b_ftruncate_sigbus": {
+    "clang-19": {
+      "compile_returncode": 254,
+      "compile_stderr": "PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace, preprocessed source, and associated run script.\nStack dump:\n0.\tProgram arguments: /usr/lib/llvm-19/bin/clang -cc1 -triple x86_64-pc-linux-gnu -emit-obj -dumpdir /tmp/track2_exp2b_clang-19_twl954za/main.out- -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name main.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/tmp/track2_exp2b_clang-19_twl954za -fcoverage-compilation-dir=/tmp/track2_exp2b_clang-19_twl954za -resource-dir /usr/lib/llvm-19/lib/clang/19 -internal-isystem /usr/lib/llvm-19/lib/clang/19/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-linux-gnu/15/../../../../x86_64-linux-gnu/include -internal-externc-isystem /usr/include/x86_64-linux-gnu -internal-externc-isystem /include -internal-externc-isystem /usr/include -ferror-limit 19 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /tmp/main-e87a00.o -x c /tmp/track2_exp2b_clang-19_twl954za/main.c\n1.\t/tmp/track2_exp2b_clang-19_twl954za/main.c:3:25 <Spelling=clang: error: unable to execute command: Bus error (core dumped)\nclang: error: clang frontend command failed due to signal (use -v to see invocation)",
+      "compiled_binary_exit_code": null
+    },
+    "gcc-15": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "compiled_binary_exit_code": 100
+    }
+  },
+  "experiment_2c_append_past_eof_nul_sentinel": {
+    "clang-19": {
+      "compile_returncode": 254,
+      "compile_stderr": "In file included from /tmp/track2_exp2c_clang-19_7v6b79u4/main.c:1:\nIn file included from /tmp/track2_exp2c_clang-19_7v6b79u4/large_header.h:126:\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:1:28: warning: null character ignored [-Wnull-character]\n    1 | /* gate released after append */\n      |                            ^\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:1:29: warning: null character ignored [-Wnull-character]\n    1 | /* gate released after append */\n      |                             ^\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:1:30: warning: null character ignored [-Wnull-character]\n    1 | /* gate released after append */\n      |                              ^\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:1:31: warning: null character ignored [-Wnull-character]\n    1 | /* gate released after append */\n      |                               ^\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:1:32: warning: null character ignored [-Wnull-character]\n    1 | /* gate released after append */\n      |                                ^\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:1:33: warning: null character ignored [-Wnull-character]\n    1 | /* gate released after append */\n      |                                 ^\n/tmp/track2_exp2c_clang-19_7v6b79u4/gate.fifo:2:1: warning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nerror: source file is not valid UTF-8\nerror: expected identifier or '('\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nerror: source file is not valid UTF-8\nwarning: null character ignored [-Wnull-character]\nwarning: null character ignored [-Wnull-character]\nerror: source file is not valid UTF-8\nfatal error: too many errors emitted, stopping now [-ferror-limit=]\nPLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace, preprocessed source, and associated run script.\nStack dump:\n0.\tProgram arguments: /usr/lib/llvm-19/bin/clang -cc1 -triple x86_64-pc-linux-gnu -emit-obj -dumpdir /tmp/track2_exp2c_clang-19_7v6b79u4/main.out- -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name main.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/tmp/track2_exp2c_clang-19_7v6b79u4 -fcoverage-compilation-dir=/tmp/track2_exp2c_clang-19_7v6b79u4 -resource-dir /usr/lib/llvm-19/lib/clang/19 -internal-isystem /usr/lib/llvm-19/lib/clang/19/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-linux-gnu/15/../../../../x86_64-linux-gnu/include -internal-externc-isystem /usr/include/x86_64-linux-gnu -internal-externc-isystem /include -internal-externc-isystem /usr/include -Wall -ferror-limit 19 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /tmp/main-8f5c81.o -x c /tmp/track2_exp2c_clang-19_7v6b79u4/main.c\n1.\t<unknown> parser at unknown location\n #0 0x00007f8799e71dfa llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/usr/lib/x86_64-linux-gnu/libLLVM.so.19.1+0x3e71dfa)\n #1 0x00007f8799e6f9a4 llvm::sys::RunSignalHandlers() (/usr/lib/x86_64-linux-gnu/libLLVM.so.19.1+0x3e6f9a4)\n #2 0x00007f8799e724bb (/usr/lib/x86_64-linux-gnu/libLLVM.so.19.1+0x3e724bb)\n #3 0x00007f8795a49b70 (/usr/lib/x86_64-linux-gnu/libc.so.6+0x40b70)\n #4 0x00007f879f2e5b50 clang::Lexer::LexCharConstant(clang::Token&, char const*, clang::tok::TokenKind) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x16e5b50)\n #5 0x00007f879f2eab35 clang::Lexer::LexTokenInternal(clang::Token&, bool) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x16eab35)\n #6 0x00007f879f3564dd clang::Preprocessor::Lex(clang::Token&) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x17564dd)\n #7 0x00007f879f3656fd (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x17656fd)\n #8 0x00007f879f430871 clang::Parser::SkipUntil(llvm::ArrayRef<clang::tok::TokenKind>, clang::Parser::SkipUntilFlags) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x1830871)\n #9 0x00007f879f4308a6 clang::Parser::SkipUntil(llvm::ArrayRef<clang::tok::TokenKind>, clang::Parser::SkipUntilFlags) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x18308a6)\n#10 0x00007f879f43075e clang::Parser::SkipUntil(llvm::ArrayRef<clang::tok::TokenKind>, clang::Parser::SkipUntilFlags) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x183075e)\n#11 0x00007f879f43075e clang::Parser::SkipUntil(llvm::ArrayRef<clang::tok::TokenKind>, clang::Parser::SkipUntilFlags) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x183075e)\n#12 0x00007f879f3770cd clang::Parser::SkipMalformedDecl() (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x17770cd)\n#13 0x00007f879f375de6 clang::Parser::ParseDeclGroup(clang::ParsingDeclSpec&, clang::DeclaratorContext, clang::ParsedAttributes&, clang::Parser::ParsedTemplateInfo&, clang::SourceLocation*, clang::Parser::ForRangeInit*) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x1775de6)\n#14 0x00007f879f43506e clang::Parser::ParseDeclOrFunctionDefInternal(clang::ParsedAttributes&, clang::ParsedAttributes&, clang::ParsingDeclSpec&, clang::AccessSpecifier) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x183506e)\n#15 0x00007f879f434a0f clang::Parser::ParseDeclarationOrFunctionDefinition(clang::ParsedAttributes&, clang::ParsedAttributes&, clang::ParsingDeclSpec*, clang::AccessSpecifier) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x1834a0f)\n#16 0x00007f879f433bfc clang::Parser::ParseExternalDeclaration(clang::ParsedAttributes&, clang::ParsedAttributes&, clang::ParsingDeclSpec*) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x1833bfc)\n#17 0x00007f879f432087 clang::Parser::ParseTopLevelDecl(clang::OpaquePtr<clang::DeclGroupRef>&, clang::Sema::ModuleImportState&) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x1832087)\n#18 0x00007f879f35ed2e clang::ParseAST(clang::Sema&, bool, bool) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x175ed2e)\n#19 0x00007f87a1472569 clang::FrontendAction::Execute() (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x3872569)\n#20 0x00007f87a13e0e64 clang::CompilerInstance::ExecuteAction(clang::FrontendAction&) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x37e0e64)\n#21 0x00007f87a14f09ee clang::ExecuteCompilerInvocation(clang::CompilerInstance*) (/usr/lib/x86_64-linux-gnu/libclang-cpp.so.19.1+0x38f09ee)\n#22 0x000055df258829c1 cc1_main(llvm::ArrayRef<char const*>, char const*, void*) (/usr/lib/llvm-19/bin/clang+0x129c1)\n#23 0x000055df2587f895 (/usr/lib/llvm-19/bin/clang+0xf895)\n#24 0x000055df2587ea38 clang_main(int, char**, llvm::ToolContext const&) (/usr/lib/llvm-19/bin/clang+0xea38)\n#25 0x000055df2588dc1a main (/usr/lib/llvm-19/bin/clang+0x1dc1a)\n#26 0x00007f8795a32fba __libc_start_call_main ./csu/../sysdeps/nptl/libc_start_call_main.h:83:3\n#27 0x00007f8795a330d7 call_init ./csu/../csu/libc-start.c:128:20\n#28 0x00007f8795a330d7 __libc_start_main ./csu/../csu/libc-start.c:347:5\n#29 0x000055df2587d491 _start (/usr/lib/llvm-19/bin/clang+0xd491)\nclang: error: unable to execute command: Bus error (core dumped)\nclang: error: clang frontend command failed due to signal (use -v to see invocation)"
+    },
+    "gcc-15": {
+      "compile_returncode": 0,
+      "compile_stderr": ""
+    }
+  },
+  "experiment_2d_reincluded_unguarded_header": {
+    "clang-19": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "compiled_binary_exit_code": 11,
+      "first_inc_val": 1,
+      "second_inc_val": 1
+    },
+    "gcc-15": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "compiled_binary_exit_code": 12,
+      "first_inc_val": 1,
+      "second_inc_val": 2
+    }
+  }
+}
