@@ -1,0 +1,3560 @@
+================================================================================
+DEF_ID: 18 | PATH: api::apply_endianness | KIND: Fn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 13 (cleanup=0) | STMTS: 187 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Discriminant', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'Shl', 'Shr'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00000000000000ff), u64) : u64', 'Val(Scalar(0x000000000000ff00), u64) : u64', 'Val(Scalar(0x000000000000ffff), u64) : u64', 'Val(Scalar(0x0000000000ff0000), u64) : u64', 'Val(Scalar(0x00000000ff000000), u64) : u64', 'Val(Scalar(0x00000000ffffffff), u64) : u64', 'Val(Scalar(0x00000008), i32) : i32', 'Val(Scalar(0x00000018), i32) : i32', 'Val(Scalar(0x00000028), i32) : i32', 'Val(Scalar(0x00000038), i32) : i32', 'Val(Scalar(0x000000ff00000000), u64) : u64', 'Val(Scalar(0x0000ff0000000000), u64) : u64', 'Val(Scalar(0x00ff000000000000), u64) : u64', 'Val(Scalar(0xff00000000000000), u64) : u64'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=18 path=api::apply_endianness args=3 locals=65 blocks=13
+//   _0: u64 (mut=Mut)
+//   _1: bool (mut=Not)
+//   _2: api::DataWidth (mut=Not)
+//   _3: u64 (mut=Not)
+//   _4: bool (mut=Mut)
+//   _5: isize (mut=Mut)
+//   _6: u64 (mut=Not)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u64 (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Mut)
+//   _14: u64 (mut=Not)
+//   _15: u64 (mut=Mut)
+//   _16: u64 (mut=Mut)
+//   _17: u64 (mut=Mut)
+//   _18: u64 (mut=Mut)
+//   _19: u64 (mut=Mut)
+//   _20: u64 (mut=Mut)
+//   _21: u64 (mut=Mut)
+//   _22: u64 (mut=Mut)
+//   _23: u64 (mut=Mut)
+//   _24: u64 (mut=Mut)
+//   _25: u64 (mut=Mut)
+//   _26: u64 (mut=Mut)
+//   _27: u64 (mut=Mut)
+//   _28: u64 (mut=Mut)
+//   _29: u64 (mut=Mut)
+//   _30: u64 (mut=Mut)
+//   _31: u64 (mut=Mut)
+//   _32: u64 (mut=Mut)
+//   _33: u64 (mut=Mut)
+//   _34: u64 (mut=Mut)
+//   _35: u64 (mut=Mut)
+//   _36: u64 (mut=Mut)
+//   _37: u64 (mut=Mut)
+//   _38: u64 (mut=Mut)
+//   _39: u64 (mut=Mut)
+//   _40: u64 (mut=Mut)
+//   _41: u64 (mut=Mut)
+//   _42: u64 (mut=Mut)
+//   _43: u64 (mut=Mut)
+//   _44: u64 (mut=Mut)
+//   _45: u64 (mut=Mut)
+//   _46: u64 (mut=Mut)
+//   _47: u64 (mut=Mut)
+//   _48: u64 (mut=Mut)
+//   _49: u64 (mut=Mut)
+//   _50: u64 (mut=Mut)
+//   _51: u64 (mut=Mut)
+//   _52: u64 (mut=Mut)
+//   _53: u64 (mut=Mut)
+//   _54: u64 (mut=Mut)
+//   _55: u64 (mut=Mut)
+//   _56: u64 (mut=Mut)
+//   _57: u64 (mut=Mut)
+//   _58: u64 (mut=Mut)
+//   _59: u64 (mut=Mut)
+//   _60: u64 (mut=Mut)
+//   _61: isize (mut=Mut)
+//   _62: u64 (mut=Mut)
+//   _63: u64 (mut=Mut)
+//   _64: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_4)
+  [1] _4 = copy _1
+  TERM: switchInt(move _4) -> [0: bb7, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] _5 = discriminant(_2)
+  TERM: switchInt(move _5) -> [0: bb3, 1: bb6, 2: bb5, 3: bb4, otherwise: bb2]
+}
+bb2 (cleanup=false): {
+  TERM: unreachable
+}
+bb3 (cleanup=false): {
+  [0] StorageLive(_60)
+  [1] _60 = copy _3
+  [2] _0 = BitAnd(move _60, const 255_u64)
+  [3] StorageDead(_60)
+  TERM: goto -> bb12
+}
+bb4 (cleanup=false): {
+  [0] StorageLive(_30)
+  [1] StorageLive(_31)
+  [2] StorageLive(_32)
+  [3] StorageLive(_33)
+  [4] StorageLive(_34)
+  [5] StorageLive(_35)
+  [6] StorageLive(_36)
+  [7] StorageLive(_37)
+  [8] StorageLive(_38)
+  [9] _38 = copy _3
+  [10] _37 = BitAnd(move _38, const 255_u64)
+  [11] StorageDead(_38)
+  [12] _36 = Shl(move _37, const 56_i32)
+  [13] StorageDead(_37)
+  [14] StorageLive(_39)
+  [15] StorageLive(_40)
+  [16] StorageLive(_41)
+  [17] _41 = copy _3
+  [18] _40 = BitAnd(move _41, const 65280_u64)
+  [19] StorageDead(_41)
+  [20] _39 = Shl(move _40, const 40_i32)
+  [21] StorageDead(_40)
+  [22] _35 = BitOr(move _36, move _39)
+  [23] StorageDead(_39)
+  [24] StorageDead(_36)
+  [25] StorageLive(_42)
+  [26] StorageLive(_43)
+  [27] StorageLive(_44)
+  [28] _44 = copy _3
+  [29] _43 = BitAnd(move _44, const 16711680_u64)
+  [30] StorageDead(_44)
+  [31] _42 = Shl(move _43, const 24_i32)
+  [32] StorageDead(_43)
+  [33] _34 = BitOr(move _35, move _42)
+  [34] StorageDead(_42)
+  [35] StorageDead(_35)
+  [36] StorageLive(_45)
+  [37] StorageLive(_46)
+  [38] StorageLive(_47)
+  [39] _47 = copy _3
+  [40] _46 = BitAnd(move _47, const 4278190080_u64)
+  [41] StorageDead(_47)
+  [42] _45 = Shl(move _46, const 8_i32)
+  [43] StorageDead(_46)
+  [44] _33 = BitOr(move _34, move _45)
+  [45] StorageDead(_45)
+  [46] StorageDead(_34)
+  [47] StorageLive(_48)
+  [48] StorageLive(_49)
+  [49] StorageLive(_50)
+  [50] _50 = copy _3
+  [51] _49 = BitAnd(move _50, const 1095216660480_u64)
+  [52] StorageDead(_50)
+  [53] _48 = Shr(move _49, const 8_i32)
+  [54] StorageDead(_49)
+  [55] _32 = BitOr(move _33, move _48)
+  [56] StorageDead(_48)
+  [57] StorageDead(_33)
+  [58] StorageLive(_51)
+  [59] StorageLive(_52)
+  [60] StorageLive(_53)
+  [61] _53 = copy _3
+  [62] _52 = BitAnd(move _53, const 280375465082880_u64)
+  [63] StorageDead(_53)
+  [64] _51 = Shr(move _52, const 24_i32)
+  [65] StorageDead(_52)
+  [66] _31 = BitOr(move _32, move _51)
+  [67] StorageDead(_51)
+  [68] StorageDead(_32)
+  [69] StorageLive(_54)
+  [70] StorageLive(_55)
+  [71] StorageLive(_56)
+  [72] _56 = copy _3
+  [73] _55 = BitAnd(move _56, const 71776119061217280_u64)
+  [74] StorageDead(_56)
+  [75] _54 = Shr(move _55, const 40_i32)
+  [76] StorageDead(_55)
+  [77] _30 = BitOr(move _31, move _54)
+  [78] StorageDead(_54)
+  [79] StorageDead(_31)
+  [80] StorageLive(_57)
+  [81] StorageLive(_58)
+  [82] StorageLive(_59)
+  [83] _59 = copy _3
+  [84] _58 = BitAnd(move _59, const 18374686479671623680_u64)
+  [85] StorageDead(_59)
+  [86] _57 = Shr(move _58, const 56_i32)
+  [87] StorageDead(_58)
+  [88] _0 = BitOr(move _30, move _57)
+  [89] StorageDead(_57)
+  [90] StorageDead(_30)
+  TERM: goto -> bb12
+}
+bb5 (cleanup=false): {
+  [0] StorageLive(_14)
+  [1] StorageLive(_15)
+  [2] _15 = copy _3
+  [3] _14 = BitAnd(move _15, const 4294967295_u64)
+  [4] StorageDead(_15)
+  [5] StorageLive(_16)
+  [6] StorageLive(_17)
+  [7] StorageLive(_18)
+  [8] StorageLive(_19)
+  [9] StorageLive(_20)
+  [10] _20 = copy _14
+  [11] _19 = BitAnd(move _20, const 255_u64)
+  [12] StorageDead(_20)
+  [13] _18 = Shl(move _19, const 24_i32)
+  [14] StorageDead(_19)
+  [15] StorageLive(_21)
+  [16] StorageLive(_22)
+  [17] StorageLive(_23)
+  [18] _23 = copy _14
+  [19] _22 = BitAnd(move _23, const 65280_u64)
+  [20] StorageDead(_23)
+  [21] _21 = Shl(move _22, const 8_i32)
+  [22] StorageDead(_22)
+  [23] _17 = BitOr(move _18, move _21)
+  [24] StorageDead(_21)
+  [25] StorageDead(_18)
+  [26] StorageLive(_24)
+  [27] StorageLive(_25)
+  [28] StorageLive(_26)
+  [29] _26 = copy _14
+  [30] _25 = BitAnd(move _26, const 16711680_u64)
+  [31] StorageDead(_26)
+  [32] _24 = Shr(move _25, const 8_i32)
+  [33] StorageDead(_25)
+  [34] _16 = BitOr(move _17, move _24)
+  [35] StorageDead(_24)
+  [36] StorageDead(_17)
+  [37] StorageLive(_27)
+  [38] StorageLive(_28)
+  [39] StorageLive(_29)
+  [40] _29 = copy _14
+  [41] _28 = BitAnd(move _29, const 4278190080_u64)
+  [42] StorageDead(_29)
+  [43] _27 = Shr(move _28, const 24_i32)
+  [44] StorageDead(_28)
+  [45] _0 = BitOr(move _16, move _27)
+  [46] StorageDead(_27)
+  [47] StorageDead(_16)
+  [48] StorageDead(_14)
+  TERM: goto -> bb12
+}
+bb6 (cleanup=false): {
+  [0] StorageLive(_6)
+  [1] StorageLive(_7)
+  [2] _7 = copy _3
+  [3] _6 = BitAnd(move _7, const 65535_u64)
+  [4] StorageDead(_7)
+  [5] StorageLive(_8)
+  [6] StorageLive(_9)
+  [7] StorageLive(_10)
+  [8] _10 = copy _6
+  [9] _9 = BitAnd(move _10, const 255_u64)
+  [10] StorageDead(_10)
+  [11] _8 = Shl(move _9, const 8_i32)
+  [12] StorageDead(_9)
+  [13] StorageLive(_11)
+  [14] StorageLive(_12)
+  [15] StorageLive(_13)
+  [16] _13 = copy _6
+  [17] _12 = BitAnd(move _13, const 65280_u64)
+  [18] StorageDead(_13)
+  [19] _11 = Shr(move _12, const 8_i32)
+  [20] StorageDead(_12)
+  [21] _0 = BitOr(move _8, move _11)
+  [22] StorageDead(_11)
+  [23] StorageDead(_8)
+  [24] StorageDead(_6)
+  TERM: goto -> bb12
+}
+bb7 (cleanup=false): {
+  [0] _61 = discriminant(_2)
+  TERM: switchInt(move _61) -> [0: bb8, 1: bb11, 2: bb10, 3: bb9, otherwise: bb2]
+}
+bb8 (cleanup=false): {
+  [0] StorageLive(_64)
+  [1] _64 = copy _3
+  [2] _0 = BitAnd(move _64, const 255_u64)
+  [3] StorageDead(_64)
+  TERM: goto -> bb12
+}
+bb9 (cleanup=false): {
+  [0] _0 = copy _3
+  TERM: goto -> bb12
+}
+bb10 (cleanup=false): {
+  [0] StorageLive(_63)
+  [1] _63 = copy _3
+  [2] _0 = BitAnd(move _63, const 4294967295_u64)
+  [3] StorageDead(_63)
+  TERM: goto -> bb12
+}
+bb11 (cleanup=false): {
+  [0] StorageLive(_62)
+  [1] _62 = copy _3
+  [2] _0 = BitAnd(move _62, const 65535_u64)
+  [3] StorageDead(_62)
+  TERM: goto -> bb12
+}
+bb12 (cleanup=false): {
+  [0] StorageDead(_4)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 1996 | PATH: scalar_value::U64Range::mask_low_bits | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 7 (cleanup=0) | STMTS: 32 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['BitAnd', 'Eq', 'Ge', 'Shl', 'Sub'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00000000), u32) : u32', 'Val(Scalar(0x0000000000000000), u64) : u64', 'Val(Scalar(0x0000000000000001), u64) : u64', 'Val(Scalar(0x00000040), u32) : u32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=1996 path=scalar_value::U64Range::mask_low_bits args=2 locals=12 blocks=7
+//   _0: u64 (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u32 (mut=Not)
+//   _3: bool (mut=Mut)
+//   _4: u32 (mut=Mut)
+//   _5: bool (mut=Mut)
+//   _6: u32 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u64 (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u32 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] _4 = copy _2
+  [3] _3 = Eq(move _4, const 0_u32)
+  TERM: switchInt(move _3) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_4)
+  [1] _0 = const 0_u64
+  TERM: goto -> bb6
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_4)
+  [1] StorageLive(_5)
+  [2] StorageLive(_6)
+  [3] _6 = copy _2
+  [4] _5 = Ge(move _6, const 64_u32)
+  TERM: switchInt(move _5) -> [0: bb4, otherwise: bb3]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] _0 = copy _1
+  TERM: goto -> bb5
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageLive(_7)
+  [2] _7 = copy _1
+  [3] StorageLive(_8)
+  [4] StorageLive(_9)
+  [5] StorageLive(_10)
+  [6] _10 = const 1_u64
+  [7] StorageLive(_11)
+  [8] _11 = copy _2
+  [9] _9 = Shl(move _10, move _11)
+  [10] StorageDead(_11)
+  [11] StorageDead(_10)
+  [12] _8 = Sub(move _9, const 1_u64)
+  [13] StorageDead(_9)
+  [14] _0 = BitAnd(move _7, move _8)
+  [15] StorageDead(_8)
+  [16] StorageDead(_7)
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_5)
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  [0] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 1827 | PATH: scalar_value::U32Range::mask_low_bits | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 7 (cleanup=0) | STMTS: 32 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['BitAnd', 'Eq', 'Ge', 'Shl', 'Sub'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00000000), u32) : u32', 'Val(Scalar(0x00000001), u32) : u32', 'Val(Scalar(0x00000020), u32) : u32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=1827 path=scalar_value::U32Range::mask_low_bits args=2 locals=12 blocks=7
+//   _0: u32 (mut=Mut)
+//   _1: u32 (mut=Not)
+//   _2: u32 (mut=Not)
+//   _3: bool (mut=Mut)
+//   _4: u32 (mut=Mut)
+//   _5: bool (mut=Mut)
+//   _6: u32 (mut=Mut)
+//   _7: u32 (mut=Mut)
+//   _8: u32 (mut=Mut)
+//   _9: u32 (mut=Mut)
+//   _10: u32 (mut=Mut)
+//   _11: u32 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] _4 = copy _2
+  [3] _3 = Eq(move _4, const 0_u32)
+  TERM: switchInt(move _3) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_4)
+  [1] _0 = const 0_u32
+  TERM: goto -> bb6
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_4)
+  [1] StorageLive(_5)
+  [2] StorageLive(_6)
+  [3] _6 = copy _2
+  [4] _5 = Ge(move _6, const 32_u32)
+  TERM: switchInt(move _5) -> [0: bb4, otherwise: bb3]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] _0 = copy _1
+  TERM: goto -> bb5
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageLive(_7)
+  [2] _7 = copy _1
+  [3] StorageLive(_8)
+  [4] StorageLive(_9)
+  [5] StorageLive(_10)
+  [6] _10 = const 1_u32
+  [7] StorageLive(_11)
+  [8] _11 = copy _2
+  [9] _9 = Shl(move _10, move _11)
+  [10] StorageDead(_11)
+  [11] StorageDead(_10)
+  [12] _8 = Sub(move _9, const 1_u32)
+  [13] StorageDead(_9)
+  [14] _0 = BitAnd(move _7, move _8)
+  [15] StorageDead(_8)
+  [16] StorageDead(_7)
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_5)
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  [0] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 559 | PATH: verifier::popcount_u64 | KIND: Fn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 4 (cleanup=0) | STMTS: 26 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Add', 'BitAnd', 'Ne', 'Sub'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64', 'Val(Scalar(0x0000000000000000), usize) : usize', 'Val(Scalar(0x0000000000000001), u64) : u64', 'Val(Scalar(0x0000000000000001), usize) : usize', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=559 path=verifier::popcount_u64 args=1 locals=12 blocks=4
+//   _0: usize (mut=Mut)
+//   _1: u64 (mut=Mut)
+//   _2: usize (mut=Mut)
+//   _3: () (mut=Not)
+//   _4: () (mut=Mut)
+//   _5: bool (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: ! (mut=Mut)
+//   _10: () (mut=Not)
+//   _11: ! (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = const 0_usize
+  [2] StorageLive(_3)
+  TERM: goto -> bb1
+}
+bb1 (cleanup=false): {
+  [0] StorageLive(_5)
+  [1] StorageLive(_6)
+  [2] _6 = copy _1
+  [3] _5 = Ne(move _6, const 0_u64)
+  TERM: switchInt(move _5) -> [0: bb3, otherwise: bb2]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageLive(_7)
+  [2] StorageLive(_8)
+  [3] _8 = copy _1
+  [4] _7 = Sub(move _8, const 1_u64)
+  [5] StorageDead(_8)
+  [6] _1 = BitAnd(copy _1, move _7)
+  [7] StorageDead(_7)
+  [8] _2 = Add(copy _2, const 1_usize)
+  [9] _4 = const ()
+  [10] StorageDead(_5)
+  TERM: goto -> bb1
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageLive(_10)
+  [2] _3 = const ()
+  [3] StorageDead(_10)
+  [4] StorageDead(_5)
+  [5] StorageDead(_3)
+  [6] _0 = copy _2
+  [7] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 459 | PATH: scalar_value::min_u64 | KIND: Fn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 4 (cleanup=0) | STMTS: 13 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Le'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=459 path=scalar_value::min_u64 args=2 locals=6 blocks=4
+//   _0: u64 (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Not)
+//   _3: bool (mut=Mut)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] _4 = copy _1
+  [3] StorageLive(_5)
+  [4] _5 = copy _2
+  [5] _3 = Le(move _4, move _5)
+  TERM: switchInt(move _3) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] StorageDead(_4)
+  [2] _0 = copy _1
+  TERM: goto -> bb3
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] StorageDead(_4)
+  [2] _0 = copy _2
+  TERM: goto -> bb3
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 460 | PATH: scalar_value::max_u64 | KIND: Fn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 4 (cleanup=0) | STMTS: 13 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Ge'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=460 path=scalar_value::max_u64 args=2 locals=6 blocks=4
+//   _0: u64 (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Not)
+//   _3: bool (mut=Mut)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] _4 = copy _1
+  [3] StorageLive(_5)
+  [4] _5 = copy _2
+  [5] _3 = Ge(move _4, move _5)
+  TERM: switchInt(move _3) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] StorageDead(_4)
+  [2] _0 = copy _1
+  TERM: goto -> bb3
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] StorageDead(_4)
+  [2] _0 = copy _2
+  TERM: goto -> bb3
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 639 | PATH: verifier::PointerOrigin::tag | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 7 (cleanup=0) | STMTS: 5 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00), u8) : u8', 'Val(Scalar(0x01), u8) : u8', 'Val(Scalar(0x02), u8) : u8', 'Val(Scalar(0x03), u8) : u8'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=639 path=verifier::PointerOrigin::tag args=1 locals=3 blocks=7
+//   _0: u8 (mut=Mut)
+//   _1: verifier::PointerOrigin (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant(_1)
+  TERM: switchInt(move _2) -> [0: bb5, 1: bb4, 2: bb3, 3: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const 3_u8
+  TERM: goto -> bb6
+}
+bb3 (cleanup=false): {
+  [0] _0 = const 2_u8
+  TERM: goto -> bb6
+}
+bb4 (cleanup=false): {
+  [0] _0 = const 1_u8
+  TERM: goto -> bb6
+}
+bb5 (cleanup=false): {
+  [0] _0 = const 0_u8
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 640 | PATH: verifier::PointerOrigin::is_writable | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 5 (cleanup=0) | STMTS: 3 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00), bool) : bool', 'Val(Scalar(0x01), bool) : bool'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=640 path=verifier::PointerOrigin::is_writable args=1 locals=3 blocks=5
+//   _0: bool (mut=Mut)
+//   _1: verifier::PointerOrigin (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant(_1)
+  TERM: switchInt(move _2) -> [0: bb2, 1: bb3, 2: bb2, 3: bb3, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const false
+  TERM: goto -> bb4
+}
+bb3 (cleanup=false): {
+  [0] _0 = const true
+  TERM: goto -> bb4
+}
+bb4 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 641 | PATH: verifier::PointerOrigin::is_map_value | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 5 (cleanup=0) | STMTS: 3 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00), bool) : bool', 'Val(Scalar(0x01), bool) : bool'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=641 path=verifier::PointerOrigin::is_map_value args=1 locals=3 blocks=5
+//   _0: bool (mut=Mut)
+//   _1: verifier::PointerOrigin (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant(_1)
+  TERM: switchInt(move _2) -> [0: bb3, 1: bb3, 2: bb2, 3: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const false
+  TERM: goto -> bb4
+}
+bb3 (cleanup=false): {
+  [0] _0 = const true
+  TERM: goto -> bb4
+}
+bb4 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 987 | PATH: verifier::AluType::is_ptr_compatible | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): ADMITTED (0 refusals)
+COMPLETE MVP GAPS (0): []
+BLOCKS: 5 (cleanup=0) | STMTS: 3 | REQ_CONSTS: []
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00), bool) : bool', 'Val(Scalar(0x01), bool) : bool'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=987 path=verifier::AluType::is_ptr_compatible args=1 locals=3 blocks=5
+//   _0: bool (mut=Mut)
+//   _1: verifier::AluType (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant(_1)
+  TERM: switchInt(move _2) -> [0: bb2, 1: bb3, 2: bb3, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const false
+  TERM: goto -> bb4
+}
+bb3 (cleanup=false): {
+  [0] _0 = const true
+  TERM: goto -> bb4
+}
+bb4 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 558 | PATH: verifier::saturating_inc_u32 | KIND: Fn
+FIRST REFUSAL (anneal-rustc-capture): required constants are unavailable in the scalar model
+COMPLETE MVP GAPS (2): ['Const::Unevaluated(UnevaluatedConst { def: DefId(1:36906 ~ core[3475]::num::{impl#8}::MAX), args: [], promoted: None }, u32)', 'RequiredConsts(2)']
+BLOCKS: 4 (cleanup=0) | STMTS: 12 | REQ_CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:36906 ~ core[3475]::num::{impl#8}::MAX), args: [], promoted: None }, u32)', 'Unevaluated(UnevaluatedConst { def: DefId(1:36906 ~ core[3475]::num::{impl#8}::MAX), args: [], promoted: None }, u32)']
+UNSUPPORTED_TYS: []
+PROJECTIONS: []
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Add', 'Lt'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:36906 ~ core[3475]::num::{impl#8}::MAX), args: [], promoted: None }, u32) : u32', 'Val(Scalar(0x00000001), u32) : u32'] | UNSUP_CONSTS: ['non-Val const: Unevaluated(UnevaluatedConst { def: DefId(1:36906 ~ core[3475]::num::{impl#8}::MAX), args: [], promoted: None }, u32)']
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=558 path=verifier::saturating_inc_u32 args=1 locals=5 blocks=4
+//   _0: u32 (mut=Mut)
+//   _1: u32 (mut=Not)
+//   _2: bool (mut=Mut)
+//   _3: u32 (mut=Mut)
+//   _4: u32 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] StorageLive(_3)
+  [2] _3 = copy _1
+  [3] _2 = Lt(move _3, const core::num::<impl u32>::MAX)
+  TERM: switchInt(move _2) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_3)
+  [1] StorageLive(_4)
+  [2] _4 = copy _1
+  [3] _0 = Add(move _4, const 1_u32)
+  [4] StorageDead(_4)
+  TERM: goto -> bb3
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_3)
+  [1] _0 = const core::num::<impl u32>::MAX
+  TERM: goto -> bb3
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 14 | PATH: api::DataWidth::bits | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::DataWidth
+COMPLETE MVP GAPS (2): ["LocalTy(&'{erased} api::DataWidth)", 'Projection::Deref']
+BLOCKS: 7 (cleanup=0) | STMTS: 5 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::DataWidth"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::DataWidth)]"]
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000008), usize) : usize', 'Val(Scalar(0x0000000000000010), usize) : usize', 'Val(Scalar(0x0000000000000020), usize) : usize', 'Val(Scalar(0x0000000000000040), usize) : usize'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=14 path=api::DataWidth::bits args=1 locals=3 blocks=7
+//   _0: usize (mut=Mut)
+//   _1: &'{erased} api::DataWidth (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant((*_1))
+  TERM: switchInt(move _2) -> [0: bb5, 1: bb4, 2: bb3, 3: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const 64_usize
+  TERM: goto -> bb6
+}
+bb3 (cleanup=false): {
+  [0] _0 = const 32_usize
+  TERM: goto -> bb6
+}
+bb4 (cleanup=false): {
+  [0] _0 = const 16_usize
+  TERM: goto -> bb6
+}
+bb5 (cleanup=false): {
+  [0] _0 = const 8_usize
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 15 | PATH: api::DataWidth::bytes | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::DataWidth
+COMPLETE MVP GAPS (2): ["LocalTy(&'{erased} api::DataWidth)", 'Projection::Deref']
+BLOCKS: 7 (cleanup=0) | STMTS: 5 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::DataWidth"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::DataWidth)]"]
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000001), usize) : usize', 'Val(Scalar(0x0000000000000002), usize) : usize', 'Val(Scalar(0x0000000000000004), usize) : usize', 'Val(Scalar(0x0000000000000008), usize) : usize'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=15 path=api::DataWidth::bytes args=1 locals=3 blocks=7
+//   _0: usize (mut=Mut)
+//   _1: &'{erased} api::DataWidth (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant((*_1))
+  TERM: switchInt(move _2) -> [0: bb5, 1: bb4, 2: bb3, 3: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const 8_usize
+  TERM: goto -> bb6
+}
+bb3 (cleanup=false): {
+  [0] _0 = const 4_usize
+  TERM: goto -> bb6
+}
+bb4 (cleanup=false): {
+  [0] _0 = const 2_usize
+  TERM: goto -> bb6
+}
+bb5 (cleanup=false): {
+  [0] _0 = const 1_usize
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 17 | PATH: api::DataWidth::instruction_bits | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): required constants are unavailable in the scalar model
+COMPLETE MVP GAPS (7): ['Const::Unevaluated(UnevaluatedConst { def: DefId(0:60 ~ ebpf_core[3674]::api::BPF_W), args: [], promoted: None }, u8)', 'Const::Unevaluated(UnevaluatedConst { def: DefId(0:61 ~ ebpf_core[3674]::api::BPF_H), args: [], promoted: None }, u8)', 'Const::Unevaluated(UnevaluatedConst { def: DefId(0:62 ~ ebpf_core[3674]::api::BPF_B), args: [], promoted: None }, u8)', 'Const::Unevaluated(UnevaluatedConst { def: DefId(0:63 ~ ebpf_core[3674]::api::BPF_DW), args: [], promoted: None }, u8)', "LocalTy(&'{erased} api::DataWidth)", 'Projection::Deref', 'RequiredConsts(4)']
+BLOCKS: 7 (cleanup=0) | STMTS: 5 | REQ_CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(0:62 ~ ebpf_core[3674]::api::BPF_B), args: [], promoted: None }, u8)', 'Unevaluated(UnevaluatedConst { def: DefId(0:61 ~ ebpf_core[3674]::api::BPF_H), args: [], promoted: None }, u8)', 'Unevaluated(UnevaluatedConst { def: DefId(0:60 ~ ebpf_core[3674]::api::BPF_W), args: [], promoted: None }, u8)', 'Unevaluated(UnevaluatedConst { def: DefId(0:63 ~ ebpf_core[3674]::api::BPF_DW), args: [], promoted: None }, u8)']
+UNSUPPORTED_TYS: ["&'{erased} api::DataWidth"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::DataWidth)]"]
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(0:60 ~ ebpf_core[3674]::api::BPF_W), args: [], promoted: None }, u8) : u8', 'Unevaluated(UnevaluatedConst { def: DefId(0:61 ~ ebpf_core[3674]::api::BPF_H), args: [], promoted: None }, u8) : u8', 'Unevaluated(UnevaluatedConst { def: DefId(0:62 ~ ebpf_core[3674]::api::BPF_B), args: [], promoted: None }, u8) : u8', 'Unevaluated(UnevaluatedConst { def: DefId(0:63 ~ ebpf_core[3674]::api::BPF_DW), args: [], promoted: None }, u8) : u8'] | UNSUP_CONSTS: ['non-Val const: Unevaluated(UnevaluatedConst { def: DefId(0:60 ~ ebpf_core[3674]::api::BPF_W), args: [], promoted: None }, u8)', 'non-Val const: Unevaluated(UnevaluatedConst { def: DefId(0:61 ~ ebpf_core[3674]::api::BPF_H), args: [], promoted: None }, u8)', 'non-Val const: Unevaluated(UnevaluatedConst { def: DefId(0:62 ~ ebpf_core[3674]::api::BPF_B), args: [], promoted: None }, u8)', 'non-Val const: Unevaluated(UnevaluatedConst { def: DefId(0:63 ~ ebpf_core[3674]::api::BPF_DW), args: [], promoted: None }, u8)']
+TERMINATORS: ['Goto', 'Return', 'SwitchInt', 'Unreachable']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=17 path=api::DataWidth::instruction_bits args=1 locals=3 blocks=7
+//   _0: u8 (mut=Mut)
+//   _1: &'{erased} api::DataWidth (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant((*_1))
+  TERM: switchInt(move _2) -> [0: bb5, 1: bb4, 2: bb3, 3: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  TERM: unreachable
+}
+bb2 (cleanup=false): {
+  [0] _0 = const api::BPF_DW
+  TERM: goto -> bb6
+}
+bb3 (cleanup=false): {
+  [0] _0 = const api::BPF_W
+  TERM: goto -> bb6
+}
+bb4 (cleanup=false): {
+  [0] _0 = const api::BPF_H
+  TERM: goto -> bb6
+}
+bb5 (cleanup=false): {
+  [0] _0 = const api::BPF_B
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 996 | PATH: verifier::JumpType::is_strict | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} verifier::JumpType
+COMPLETE MVP GAPS (2): ["LocalTy(&'{erased} verifier::JumpType)", 'Projection::Deref']
+BLOCKS: 4 (cleanup=0) | STMTS: 3 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} verifier::JumpType"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} verifier::JumpType)]"]
+RVALUES: ['Discriminant', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00), bool) : bool', 'Val(Scalar(0x01), bool) : bool'] | UNSUP_CONSTS: []
+TERMINATORS: ['Goto', 'Return', 'SwitchInt']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=996 path=verifier::JumpType::is_strict args=1 locals=3 blocks=4
+//   _0: bool (mut=Mut)
+//   _1: &'{erased} verifier::JumpType (mut=Not)
+//   _2: isize (mut=Mut)
+bb0 (cleanup=false): {
+  [0] _2 = discriminant((*_1))
+  TERM: switchInt(move _2) -> [2: bb2, 5: bb2, 6: bb2, 7: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] _0 = const false
+  TERM: goto -> bb3
+}
+bb2 (cleanup=false): {
+  [0] _0 = const true
+  TERM: goto -> bb3
+}
+bb3 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 22 | PATH: <api::EbpfInstruction as core::convert::From<u64>>::from | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: api::EbpfInstruction
+COMPLETE MVP GAPS (2): ['LocalTy(api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))']
+BLOCKS: 1 (cleanup=0) | STMTS: 4 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['api::EbpfInstruction']
+PROJECTIONS: []
+RVALUES: ['Aggregate', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=22 path=<api::EbpfInstruction as core::convert::From<u64>>::from args=1 locals=3 blocks=1
+//   _0: api::EbpfInstruction (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy _1
+  [2] _0 = api::EbpfInstruction(move _2)
+  [3] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 24 | PATH: api::<impl core::convert::From<api::EbpfInstruction> for u64>::from | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: api::EbpfInstruction
+COMPLETE MVP GAPS (2): ['LocalTy(api::EbpfInstruction)', 'Projection::Field(on api::EbpfInstruction)']
+BLOCKS: 1 (cleanup=0) | STMTS: 1 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['api::EbpfInstruction']
+PROJECTIONS: ['_1: [Field(0, u64 on api::EbpfInstruction)]']
+RVALUES: ['Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=24 path=api::<impl core::convert::From<api::EbpfInstruction> for u64>::from args=1 locals=2 blocks=1
+//   _0: u64 (mut=Mut)
+//   _1: api::EbpfInstruction (mut=Not)
+bb0 (cleanup=false): {
+  [0] _0 = copy (_1.0: u64)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 26 | PATH: api::EbpfInstruction::new | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: api::EbpfInstruction
+COMPLETE MVP GAPS (9): ["ConstTy(&'{erased} str)", 'LocalTy(api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: i16 -> u16)', 'Rvalue::Cast(IntToInt: i32 -> u32)', 'Rvalue::Cast(IntToInt: u16 -> u64)', 'Rvalue::Cast(IntToInt: u32 -> u64)', 'Rvalue::Cast(IntToInt: u8 -> u64)', 'Terminator::Call(core::panicking::panic)']
+BLOCKS: 5 (cleanup=0) | STMTS: 83 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['api::EbpfInstruction']
+PROJECTIONS: []
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'Use']
+BINOPS: ['BitOr', 'Lt', 'Shl'] | UNOPS: [] | CASTS: ['IntToInt: i16 -> u16', 'IntToInt: i32 -> u32', 'IntToInt: u16 -> u64', 'IntToInt: u32 -> u64', 'IntToInt: u8 -> u64']
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x00000008), i32) : i32', 'Val(Scalar(0x0000000c), i32) : i32', 'Val(Scalar(0x00000010), i32) : i32', 'Val(Scalar(0x00000020), i32) : i32', 'Val(Scalar(0x10), u8) : u8', "Val(Slice { alloc_id: alloc172, meta: 26 }, &'{erased} str) : &'{erased} str", "Val(Slice { alloc_id: alloc173, meta: 26 }, &'{erased} str) : &'{erased} str", 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: ["const of unsupported ty (&'{erased} str): Val(Slice { alloc_id: alloc172, meta: 26 }, &'{erased} str) : &'{erased} str", "const of unsupported ty (&'{erased} str): Val(Slice { alloc_id: alloc173, meta: 26 }, &'{erased} str) : &'{erased} str"]
+TERMINATORS: ['Call', 'Return', 'SwitchInt']
+CALLS: ['core::panicking::panic -> dest=_9, target=None, unwind=Continue', 'core::panicking::panic -> dest=_13, target=None, unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=26 path=api::EbpfInstruction::new args=5 locals=34 blocks=5
+//   _0: api::EbpfInstruction (mut=Mut)
+//   _1: u8 (mut=Not)
+//   _2: u8 (mut=Not)
+//   _3: u8 (mut=Not)
+//   _4: i16 (mut=Not)
+//   _5: i32 (mut=Not)
+//   _6: () (mut=Not)
+//   _7: bool (mut=Mut)
+//   _8: u8 (mut=Mut)
+//   _9: ! (mut=Mut)
+//   _10: () (mut=Not)
+//   _11: bool (mut=Mut)
+//   _12: u8 (mut=Mut)
+//   _13: ! (mut=Mut)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+//   _16: u64 (mut=Mut)
+//   _17: u64 (mut=Mut)
+//   _18: u64 (mut=Mut)
+//   _19: u8 (mut=Mut)
+//   _20: u64 (mut=Mut)
+//   _21: u64 (mut=Mut)
+//   _22: u8 (mut=Mut)
+//   _23: u64 (mut=Mut)
+//   _24: u64 (mut=Mut)
+//   _25: u8 (mut=Mut)
+//   _26: u64 (mut=Mut)
+//   _27: u64 (mut=Mut)
+//   _28: u16 (mut=Mut)
+//   _29: i16 (mut=Mut)
+//   _30: u64 (mut=Mut)
+//   _31: u64 (mut=Mut)
+//   _32: u32 (mut=Mut)
+//   _33: i32 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_6)
+  [1] StorageLive(_7)
+  [2] StorageLive(_8)
+  [3] _8 = copy _2
+  [4] _7 = Lt(move _8, const 16_u8)
+  TERM: switchInt(move _7) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_8)
+  [1] _6 = const ()
+  [2] StorageDead(_7)
+  [3] StorageDead(_6)
+  [4] StorageLive(_10)
+  [5] StorageLive(_11)
+  [6] StorageLive(_12)
+  [7] _12 = copy _3
+  [8] _11 = Lt(move _12, const 16_u8)
+  TERM: switchInt(move _11) -> [0: bb4, otherwise: bb3]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_8)
+  [1] StorageLive(_9)
+  TERM: _9 = core::panicking::panic(const "assertion failed: dst < 16") -> unwind continue
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_12)
+  [1] _10 = const ()
+  [2] StorageDead(_11)
+  [3] StorageDead(_10)
+  [4] StorageLive(_14)
+  [5] StorageLive(_15)
+  [6] StorageLive(_16)
+  [7] StorageLive(_17)
+  [8] StorageLive(_18)
+  [9] StorageLive(_19)
+  [10] _19 = copy _1
+  [11] _18 = move _19 as u64 (IntToInt)
+  [12] StorageDead(_19)
+  [13] StorageLive(_20)
+  [14] StorageLive(_21)
+  [15] StorageLive(_22)
+  [16] _22 = copy _2
+  [17] _21 = move _22 as u64 (IntToInt)
+  [18] StorageDead(_22)
+  [19] _20 = Shl(move _21, const 8_i32)
+  [20] StorageDead(_21)
+  [21] _17 = BitOr(move _18, move _20)
+  [22] StorageDead(_20)
+  [23] StorageDead(_18)
+  [24] StorageLive(_23)
+  [25] StorageLive(_24)
+  [26] StorageLive(_25)
+  [27] _25 = copy _3
+  [28] _24 = move _25 as u64 (IntToInt)
+  [29] StorageDead(_25)
+  [30] _23 = Shl(move _24, const 12_i32)
+  [31] StorageDead(_24)
+  [32] _16 = BitOr(move _17, move _23)
+  [33] StorageDead(_23)
+  [34] StorageDead(_17)
+  [35] StorageLive(_26)
+  [36] StorageLive(_27)
+  [37] StorageLive(_28)
+  [38] StorageLive(_29)
+  [39] _29 = copy _4
+  [40] _28 = move _29 as u16 (IntToInt)
+  [41] StorageDead(_29)
+  [42] _27 = move _28 as u64 (IntToInt)
+  [43] StorageDead(_28)
+  [44] _26 = Shl(move _27, const 16_i32)
+  [45] StorageDead(_27)
+  [46] _15 = BitOr(move _16, move _26)
+  [47] StorageDead(_26)
+  [48] StorageDead(_16)
+  [49] StorageLive(_30)
+  [50] StorageLive(_31)
+  [51] StorageLive(_32)
+  [52] StorageLive(_33)
+  [53] _33 = copy _5
+  [54] _32 = move _33 as u32 (IntToInt)
+  [55] StorageDead(_33)
+  [56] _31 = move _32 as u64 (IntToInt)
+  [57] StorageDead(_32)
+  [58] _30 = Shl(move _31, const 32_i32)
+  [59] StorageDead(_31)
+  [60] _14 = BitOr(move _15, move _30)
+  [61] StorageDead(_30)
+  [62] StorageDead(_15)
+  [63] _0 = api::EbpfInstruction(move _14)
+  [64] StorageDead(_14)
+  TERM: return
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_12)
+  [1] StorageLive(_13)
+  TERM: _13 = core::panicking::panic(const "assertion failed: src < 16") -> unwind continue
+}
+
+================================================================================
+DEF_ID: 27 | PATH: api::EbpfInstruction::code | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::EbpfInstruction
+COMPLETE MVP GAPS (4): ["LocalTy(&'{erased} api::EbpfInstruction)", 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Cast(IntToInt: u64 -> u8)']
+BLOCKS: 1 (cleanup=0) | STMTS: 4 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::EbpfInstruction"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]"]
+RVALUES: ['Cast', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: ['IntToInt: u64 -> u8']
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=27 path=api::EbpfInstruction::code args=1 locals=3 blocks=1
+//   _0: u8 (mut=Mut)
+//   _1: &'{erased} api::EbpfInstruction (mut=Not)
+//   _2: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy ((*_1).0: u64)
+  [2] _0 = move _2 as u8 (IntToInt)
+  [3] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 28 | PATH: api::EbpfInstruction::set_code | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} mut api::EbpfInstruction
+COMPLETE MVP GAPS (7): ["LocalTy(&'{erased} mut api::EbpfInstruction)", 'LocalTy(api::EbpfInstruction)', 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: u8 -> u64)', 'Rvalue::UnaryOp(Not)']
+BLOCKS: 1 (cleanup=0) | STMTS: 23 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} mut api::EbpfInstruction", 'api::EbpfInstruction']
+PROJECTIONS: ["_1: [Deref(from &'{erased} mut api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]", "_1: [Deref(from &'{erased} mut api::EbpfInstruction)]"]
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr'] | UNOPS: ['Not'] | CASTS: ['IntToInt: u8 -> u64']
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x00000000000000ff), u64) : u64', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=28 path=api::EbpfInstruction::set_code args=2 locals=10 blocks=1
+//   _0: () (mut=Mut)
+//   _1: &'{erased} mut api::EbpfInstruction (mut=Not)
+//   _2: u8 (mut=Not)
+//   _3: api::EbpfInstruction (mut=Mut)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u8 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] StorageLive(_6)
+  [4] _6 = copy ((*_1).0: u64)
+  [5] StorageLive(_7)
+  [6] _7 = Not(const 255_u64)
+  [7] _5 = BitAnd(move _6, move _7)
+  [8] StorageDead(_7)
+  [9] StorageDead(_6)
+  [10] StorageLive(_8)
+  [11] StorageLive(_9)
+  [12] _9 = copy _2
+  [13] _8 = move _9 as u64 (IntToInt)
+  [14] StorageDead(_9)
+  [15] _4 = BitOr(move _5, move _8)
+  [16] StorageDead(_8)
+  [17] StorageDead(_5)
+  [18] _3 = api::EbpfInstruction(move _4)
+  [19] StorageDead(_4)
+  [20] (*_1) = move _3
+  [21] _0 = const ()
+  [22] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 29 | PATH: api::EbpfInstruction::dst_reg | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::EbpfInstruction
+COMPLETE MVP GAPS (4): ["LocalTy(&'{erased} api::EbpfInstruction)", 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Cast(IntToInt: u64 -> u8)']
+BLOCKS: 1 (cleanup=0) | STMTS: 10 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::EbpfInstruction"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]"]
+RVALUES: ['BinaryOp', 'Cast', 'Use']
+BINOPS: ['BitAnd', 'Shr'] | UNOPS: [] | CASTS: ['IntToInt: u64 -> u8']
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000f00), u64) : u64', 'Val(Scalar(0x00000008), i32) : i32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=29 path=api::EbpfInstruction::dst_reg args=1 locals=5 blocks=1
+//   _0: u8 (mut=Mut)
+//   _1: &'{erased} api::EbpfInstruction (mut=Not)
+//   _2: u64 (mut=Mut)
+//   _3: u64 (mut=Mut)
+//   _4: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] StorageLive(_3)
+  [2] StorageLive(_4)
+  [3] _4 = copy ((*_1).0: u64)
+  [4] _3 = BitAnd(move _4, const 3840_u64)
+  [5] StorageDead(_4)
+  [6] _2 = Shr(move _3, const 8_i32)
+  [7] StorageDead(_3)
+  [8] _0 = move _2 as u8 (IntToInt)
+  [9] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 30 | PATH: api::EbpfInstruction::set_dst_reg | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} mut api::EbpfInstruction
+COMPLETE MVP GAPS (9): ["ConstTy(&'{erased} str)", "LocalTy(&'{erased} mut api::EbpfInstruction)", 'LocalTy(api::EbpfInstruction)', 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: u8 -> u64)', 'Rvalue::UnaryOp(Not)', 'Terminator::Call(core::panicking::panic)']
+BLOCKS: 3 (cleanup=0) | STMTS: 37 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} mut api::EbpfInstruction", 'api::EbpfInstruction']
+PROJECTIONS: ["_1: [Deref(from &'{erased} mut api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]", "_1: [Deref(from &'{erased} mut api::EbpfInstruction)]"]
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'Lt', 'Shl'] | UNOPS: ['Not'] | CASTS: ['IntToInt: u8 -> u64']
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000f00), u64) : u64', 'Val(Scalar(0x00000008), i32) : i32', 'Val(Scalar(0x10), u8) : u8', "Val(Slice { alloc_id: alloc174, meta: 30 }, &'{erased} str) : &'{erased} str", 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: ["const of unsupported ty (&'{erased} str): Val(Slice { alloc_id: alloc174, meta: 30 }, &'{erased} str) : &'{erased} str"]
+TERMINATORS: ['Call', 'Return', 'SwitchInt']
+CALLS: ['core::panicking::panic -> dest=_6, target=None, unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=30 path=api::EbpfInstruction::set_dst_reg args=2 locals=15 blocks=3
+//   _0: () (mut=Mut)
+//   _1: &'{erased} mut api::EbpfInstruction (mut=Not)
+//   _2: u8 (mut=Not)
+//   _3: () (mut=Not)
+//   _4: bool (mut=Mut)
+//   _5: u8 (mut=Mut)
+//   _6: ! (mut=Mut)
+//   _7: api::EbpfInstruction (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u64 (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Mut)
+//   _14: u8 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] _5 = copy _2
+  [4] _4 = Lt(move _5, const 16_u8)
+  TERM: switchInt(move _4) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] _3 = const ()
+  [2] StorageDead(_4)
+  [3] StorageDead(_3)
+  [4] StorageLive(_7)
+  [5] StorageLive(_8)
+  [6] StorageLive(_9)
+  [7] StorageLive(_10)
+  [8] _10 = copy ((*_1).0: u64)
+  [9] StorageLive(_11)
+  [10] _11 = Not(const 3840_u64)
+  [11] _9 = BitAnd(move _10, move _11)
+  [12] StorageDead(_11)
+  [13] StorageDead(_10)
+  [14] StorageLive(_12)
+  [15] StorageLive(_13)
+  [16] StorageLive(_14)
+  [17] _14 = copy _2
+  [18] _13 = move _14 as u64 (IntToInt)
+  [19] StorageDead(_14)
+  [20] _12 = Shl(move _13, const 8_i32)
+  [21] StorageDead(_13)
+  [22] _8 = BitOr(move _9, move _12)
+  [23] StorageDead(_12)
+  [24] StorageDead(_9)
+  [25] _7 = api::EbpfInstruction(move _8)
+  [26] StorageDead(_8)
+  [27] (*_1) = move _7
+  [28] _0 = const ()
+  [29] StorageDead(_7)
+  TERM: return
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] StorageLive(_6)
+  TERM: _6 = core::panicking::panic(const "assertion failed: dst_reg < 16") -> unwind continue
+}
+
+================================================================================
+DEF_ID: 31 | PATH: api::EbpfInstruction::src_reg | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::EbpfInstruction
+COMPLETE MVP GAPS (4): ["LocalTy(&'{erased} api::EbpfInstruction)", 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Cast(IntToInt: u64 -> u8)']
+BLOCKS: 1 (cleanup=0) | STMTS: 10 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::EbpfInstruction"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]"]
+RVALUES: ['BinaryOp', 'Cast', 'Use']
+BINOPS: ['BitAnd', 'Shr'] | UNOPS: [] | CASTS: ['IntToInt: u64 -> u8']
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x000000000000f000), u64) : u64', 'Val(Scalar(0x0000000c), i32) : i32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=31 path=api::EbpfInstruction::src_reg args=1 locals=5 blocks=1
+//   _0: u8 (mut=Mut)
+//   _1: &'{erased} api::EbpfInstruction (mut=Not)
+//   _2: u64 (mut=Mut)
+//   _3: u64 (mut=Mut)
+//   _4: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] StorageLive(_3)
+  [2] StorageLive(_4)
+  [3] _4 = copy ((*_1).0: u64)
+  [4] _3 = BitAnd(move _4, const 61440_u64)
+  [5] StorageDead(_4)
+  [6] _2 = Shr(move _3, const 12_i32)
+  [7] StorageDead(_3)
+  [8] _0 = move _2 as u8 (IntToInt)
+  [9] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 32 | PATH: api::EbpfInstruction::set_src_reg | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} mut api::EbpfInstruction
+COMPLETE MVP GAPS (9): ["ConstTy(&'{erased} str)", "LocalTy(&'{erased} mut api::EbpfInstruction)", 'LocalTy(api::EbpfInstruction)', 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: u8 -> u64)', 'Rvalue::UnaryOp(Not)', 'Terminator::Call(core::panicking::panic)']
+BLOCKS: 3 (cleanup=0) | STMTS: 37 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} mut api::EbpfInstruction", 'api::EbpfInstruction']
+PROJECTIONS: ["_1: [Deref(from &'{erased} mut api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]", "_1: [Deref(from &'{erased} mut api::EbpfInstruction)]"]
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'Lt', 'Shl'] | UNOPS: ['Not'] | CASTS: ['IntToInt: u8 -> u64']
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x000000000000f000), u64) : u64', 'Val(Scalar(0x0000000c), i32) : i32', 'Val(Scalar(0x10), u8) : u8', "Val(Slice { alloc_id: alloc175, meta: 30 }, &'{erased} str) : &'{erased} str", 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: ["const of unsupported ty (&'{erased} str): Val(Slice { alloc_id: alloc175, meta: 30 }, &'{erased} str) : &'{erased} str"]
+TERMINATORS: ['Call', 'Return', 'SwitchInt']
+CALLS: ['core::panicking::panic -> dest=_6, target=None, unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=32 path=api::EbpfInstruction::set_src_reg args=2 locals=15 blocks=3
+//   _0: () (mut=Mut)
+//   _1: &'{erased} mut api::EbpfInstruction (mut=Not)
+//   _2: u8 (mut=Not)
+//   _3: () (mut=Not)
+//   _4: bool (mut=Mut)
+//   _5: u8 (mut=Mut)
+//   _6: ! (mut=Mut)
+//   _7: api::EbpfInstruction (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u64 (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Mut)
+//   _14: u8 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] _5 = copy _2
+  [4] _4 = Lt(move _5, const 16_u8)
+  TERM: switchInt(move _4) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] _3 = const ()
+  [2] StorageDead(_4)
+  [3] StorageDead(_3)
+  [4] StorageLive(_7)
+  [5] StorageLive(_8)
+  [6] StorageLive(_9)
+  [7] StorageLive(_10)
+  [8] _10 = copy ((*_1).0: u64)
+  [9] StorageLive(_11)
+  [10] _11 = Not(const 61440_u64)
+  [11] _9 = BitAnd(move _10, move _11)
+  [12] StorageDead(_11)
+  [13] StorageDead(_10)
+  [14] StorageLive(_12)
+  [15] StorageLive(_13)
+  [16] StorageLive(_14)
+  [17] _14 = copy _2
+  [18] _13 = move _14 as u64 (IntToInt)
+  [19] StorageDead(_14)
+  [20] _12 = Shl(move _13, const 12_i32)
+  [21] StorageDead(_13)
+  [22] _8 = BitOr(move _9, move _12)
+  [23] StorageDead(_12)
+  [24] StorageDead(_9)
+  [25] _7 = api::EbpfInstruction(move _8)
+  [26] StorageDead(_8)
+  [27] (*_1) = move _7
+  [28] _0 = const ()
+  [29] StorageDead(_7)
+  TERM: return
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] StorageLive(_6)
+  TERM: _6 = core::panicking::panic(const "assertion failed: src_reg < 16") -> unwind continue
+}
+
+================================================================================
+DEF_ID: 33 | PATH: api::EbpfInstruction::offset | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::EbpfInstruction
+COMPLETE MVP GAPS (5): ["LocalTy(&'{erased} api::EbpfInstruction)", 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Cast(IntToInt: u16 -> i16)', 'Rvalue::Cast(IntToInt: u64 -> u16)']
+BLOCKS: 1 (cleanup=0) | STMTS: 10 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::EbpfInstruction"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]"]
+RVALUES: ['BinaryOp', 'Cast', 'Use']
+BINOPS: ['Shr'] | UNOPS: [] | CASTS: ['IntToInt: u16 -> i16', 'IntToInt: u64 -> u16']
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00000010), i32) : i32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=33 path=api::EbpfInstruction::offset args=1 locals=5 blocks=1
+//   _0: i16 (mut=Mut)
+//   _1: &'{erased} api::EbpfInstruction (mut=Not)
+//   _2: u16 (mut=Mut)
+//   _3: u64 (mut=Mut)
+//   _4: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] StorageLive(_3)
+  [2] StorageLive(_4)
+  [3] _4 = copy ((*_1).0: u64)
+  [4] _3 = Shr(move _4, const 16_i32)
+  [5] StorageDead(_4)
+  [6] _2 = move _3 as u16 (IntToInt)
+  [7] StorageDead(_3)
+  [8] _0 = move _2 as i16 (IntToInt)
+  [9] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 34 | PATH: api::EbpfInstruction::set_offset | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} mut api::EbpfInstruction
+COMPLETE MVP GAPS (8): ["LocalTy(&'{erased} mut api::EbpfInstruction)", 'LocalTy(api::EbpfInstruction)', 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: i16 -> u16)', 'Rvalue::Cast(IntToInt: u16 -> u64)', 'Rvalue::UnaryOp(Not)']
+BLOCKS: 1 (cleanup=0) | STMTS: 29 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} mut api::EbpfInstruction", 'api::EbpfInstruction']
+PROJECTIONS: ["_1: [Deref(from &'{erased} mut api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]", "_1: [Deref(from &'{erased} mut api::EbpfInstruction)]"]
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'Shl'] | UNOPS: ['Not'] | CASTS: ['IntToInt: i16 -> u16', 'IntToInt: u16 -> u64']
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x00000000ffff0000), u64) : u64', 'Val(Scalar(0x00000010), i32) : i32', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=34 path=api::EbpfInstruction::set_offset args=2 locals=12 blocks=1
+//   _0: () (mut=Mut)
+//   _1: &'{erased} mut api::EbpfInstruction (mut=Not)
+//   _2: i16 (mut=Not)
+//   _3: api::EbpfInstruction (mut=Mut)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u64 (mut=Mut)
+//   _10: u16 (mut=Mut)
+//   _11: i16 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] StorageLive(_6)
+  [4] _6 = copy ((*_1).0: u64)
+  [5] StorageLive(_7)
+  [6] _7 = Not(const 4294901760_u64)
+  [7] _5 = BitAnd(move _6, move _7)
+  [8] StorageDead(_7)
+  [9] StorageDead(_6)
+  [10] StorageLive(_8)
+  [11] StorageLive(_9)
+  [12] StorageLive(_10)
+  [13] StorageLive(_11)
+  [14] _11 = copy _2
+  [15] _10 = move _11 as u16 (IntToInt)
+  [16] StorageDead(_11)
+  [17] _9 = move _10 as u64 (IntToInt)
+  [18] StorageDead(_10)
+  [19] _8 = Shl(move _9, const 16_i32)
+  [20] StorageDead(_9)
+  [21] _4 = BitOr(move _5, move _8)
+  [22] StorageDead(_8)
+  [23] StorageDead(_5)
+  [24] _3 = api::EbpfInstruction(move _4)
+  [25] StorageDead(_4)
+  [26] (*_1) = move _3
+  [27] _0 = const ()
+  [28] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 35 | PATH: api::EbpfInstruction::imm | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::EbpfInstruction
+COMPLETE MVP GAPS (5): ["LocalTy(&'{erased} api::EbpfInstruction)", 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Cast(IntToInt: u32 -> i32)', 'Rvalue::Cast(IntToInt: u64 -> u32)']
+BLOCKS: 1 (cleanup=0) | STMTS: 10 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::EbpfInstruction"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]"]
+RVALUES: ['BinaryOp', 'Cast', 'Use']
+BINOPS: ['Shr'] | UNOPS: [] | CASTS: ['IntToInt: u32 -> i32', 'IntToInt: u64 -> u32']
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00000020), i32) : i32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=35 path=api::EbpfInstruction::imm args=1 locals=5 blocks=1
+//   _0: i32 (mut=Mut)
+//   _1: &'{erased} api::EbpfInstruction (mut=Not)
+//   _2: u32 (mut=Mut)
+//   _3: u64 (mut=Mut)
+//   _4: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] StorageLive(_3)
+  [2] StorageLive(_4)
+  [3] _4 = copy ((*_1).0: u64)
+  [4] _3 = Shr(move _4, const 32_i32)
+  [5] StorageDead(_4)
+  [6] _2 = move _3 as u32 (IntToInt)
+  [7] StorageDead(_3)
+  [8] _0 = move _2 as i32 (IntToInt)
+  [9] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 36 | PATH: api::EbpfInstruction::set_imm | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} mut api::EbpfInstruction
+COMPLETE MVP GAPS (7): ["LocalTy(&'{erased} mut api::EbpfInstruction)", 'LocalTy(api::EbpfInstruction)', 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)', 'Rvalue::Aggregate(Adt(api::EbpfInstruction, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: i32 -> u32)', 'Rvalue::Cast(IntToInt: u32 -> u64)']
+BLOCKS: 1 (cleanup=0) | STMTS: 26 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} mut api::EbpfInstruction", 'api::EbpfInstruction']
+PROJECTIONS: ["_1: [Deref(from &'{erased} mut api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]", "_1: [Deref(from &'{erased} mut api::EbpfInstruction)]"]
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'Shl'] | UNOPS: [] | CASTS: ['IntToInt: i32 -> u32', 'IntToInt: u32 -> u64']
+AGGREGATES: ['Adt(api::EbpfInstruction, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x00000000ffffffff), u64) : u64', 'Val(Scalar(0x00000020), i32) : i32', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=36 path=api::EbpfInstruction::set_imm args=2 locals=11 blocks=1
+//   _0: () (mut=Mut)
+//   _1: &'{erased} mut api::EbpfInstruction (mut=Not)
+//   _2: i32 (mut=Not)
+//   _3: api::EbpfInstruction (mut=Mut)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u32 (mut=Mut)
+//   _10: i32 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] StorageLive(_6)
+  [4] _6 = copy ((*_1).0: u64)
+  [5] _5 = BitAnd(move _6, const 4294967295_u64)
+  [6] StorageDead(_6)
+  [7] StorageLive(_7)
+  [8] StorageLive(_8)
+  [9] StorageLive(_9)
+  [10] StorageLive(_10)
+  [11] _10 = copy _2
+  [12] _9 = move _10 as u32 (IntToInt)
+  [13] StorageDead(_10)
+  [14] _8 = move _9 as u64 (IntToInt)
+  [15] StorageDead(_9)
+  [16] _7 = Shl(move _8, const 32_i32)
+  [17] StorageDead(_8)
+  [18] _4 = BitOr(move _5, move _7)
+  [19] StorageDead(_7)
+  [20] StorageDead(_5)
+  [21] _3 = api::EbpfInstruction(move _4)
+  [22] StorageDead(_4)
+  [23] (*_1) = move _3
+  [24] _0 = const ()
+  [25] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 37 | PATH: api::EbpfInstruction::get | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} api::EbpfInstruction
+COMPLETE MVP GAPS (3): ["LocalTy(&'{erased} api::EbpfInstruction)", 'Projection::Deref', 'Projection::Field(on api::EbpfInstruction)']
+BLOCKS: 1 (cleanup=0) | STMTS: 1 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} api::EbpfInstruction"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} api::EbpfInstruction), Field(0, u64 on api::EbpfInstruction)]"]
+RVALUES: ['Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=37 path=api::EbpfInstruction::get args=1 locals=2 blocks=1
+//   _0: u64 (mut=Mut)
+//   _1: &'{erased} api::EbpfInstruction (mut=Not)
+bb0 (cleanup=false): {
+  [0] _0 = copy ((*_1).0: u64)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 1993 | PATH: scalar_value::U64Range::new | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (2): ['LocalTy(scalar_value::U64Range)', 'Rvalue::Aggregate(Adt(scalar_value::U64Range, variant=0, args=[]))']
+BLOCKS: 1 (cleanup=0) | STMTS: 7 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range']
+PROJECTIONS: []
+RVALUES: ['Aggregate', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: ['Adt(scalar_value::U64Range, variant=0, args=[])'] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=1993 path=scalar_value::U64Range::new args=2 locals=5 blocks=1
+//   _0: scalar_value::U64Range (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Not)
+//   _3: u64 (mut=Mut)
+//   _4: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] _3 = copy _1
+  [2] StorageLive(_4)
+  [3] _4 = copy _2
+  [4] _0 = scalar_value::U64Range { min: move _3, max: move _4 }
+  [5] StorageDead(_4)
+  [6] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 1994 | PATH: scalar_value::U64Range::max | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): required constants are unavailable in the scalar model
+COMPLETE MVP GAPS (4): ['Const::Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)', 'LocalTy(scalar_value::U64Range)', 'RequiredConsts(1)', 'Terminator::Call(scalar_value::U64Range::new)']
+BLOCKS: 2 (cleanup=0) | STMTS: 0 | REQ_CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)']
+UNSUPPORTED_TYS: ['scalar_value::U64Range']
+PROJECTIONS: []
+RVALUES: []
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64) : u64', 'Val(Scalar(0x0000000000000000), u64) : u64'] | UNSUP_CONSTS: ['non-Val const: Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)']
+TERMINATORS: ['Call', 'Return']
+CALLS: ['scalar_value::U64Range::new -> dest=_0, target=Some(bb1), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=1994 path=scalar_value::U64Range::max args=0 locals=1 blocks=2
+//   _0: scalar_value::U64Range (mut=Mut)
+bb0 (cleanup=false): {
+  TERM: _0 = scalar_value::U64Range::new(const 0_u64, const core::num::<impl u64>::MAX) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 1995 | PATH: scalar_value::U64Range::from_scalar | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (2): ['LocalTy(scalar_value::U64Range)', 'Terminator::Call(scalar_value::U64Range::new)']
+BLOCKS: 2 (cleanup=0) | STMTS: 6 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range']
+PROJECTIONS: []
+RVALUES: ['Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Return']
+CALLS: ['scalar_value::U64Range::new -> dest=_0, target=Some(bb1), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=1995 path=scalar_value::U64Range::from_scalar args=1 locals=4 blocks=2
+//   _0: scalar_value::U64Range (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Mut)
+//   _3: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy _1
+  [2] StorageLive(_3)
+  [3] _3 = copy _1
+  TERM: _0 = scalar_value::U64Range::new(move _2, move _3) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_3)
+  [1] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2000 | PATH: scalar_value::U64Range::add_range | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (7): ['LocalTy((u64, bool))', 'LocalTy(scalar_value::U64Range)', 'Projection::Field(on (u64, bool))', 'Projection::Field(on scalar_value::U64Range)', 'Rvalue::Aggregate(Adt(scalar_value::U64Range, variant=0, args=[]))', 'Terminator::Call(core::num::<impl u64>::overflowing_add)', 'Terminator::Call(scalar_value::U64Range::max)']
+BLOCKS: 6 (cleanup=0) | STMTS: 46 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['(u64, bool)', 'scalar_value::U64Range']
+PROJECTIONS: ['_10: [Field(0, u64 on (u64, bool))]', '_10: [Field(1, bool on (u64, bool))]', '_1: [Field(0, u64 on scalar_value::U64Range)]', '_1: [Field(1, u64 on scalar_value::U64Range)]', '_2: [Field(0, u64 on scalar_value::U64Range)]', '_2: [Field(1, u64 on scalar_value::U64Range)]', '_5: [Field(0, u64 on (u64, bool))]', '_5: [Field(1, bool on (u64, bool))]']
+RVALUES: ['Aggregate', 'BinaryOp', 'Use']
+BINOPS: ['Ne'] | UNOPS: [] | CASTS: []
+AGGREGATES: ['Adt(scalar_value::U64Range, variant=0, args=[])'] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['core::num::<impl u64>::overflowing_add -> dest=_5, target=Some(bb1), unwind=Continue', 'core::num::<impl u64>::overflowing_add -> dest=_10, target=Some(bb2), unwind=Continue', 'scalar_value::U64Range::max -> dest=_0, target=Some(bb5), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2000 path=scalar_value::U64Range::add_range args=2 locals=18 blocks=6
+//   _0: scalar_value::U64Range (mut=Mut)
+//   _1: scalar_value::U64Range (mut=Not)
+//   _2: scalar_value::U64Range (mut=Not)
+//   _3: u64 (mut=Not)
+//   _4: bool (mut=Not)
+//   _5: (u64, bool) (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Not)
+//   _9: bool (mut=Not)
+//   _10: (u64, bool) (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: bool (mut=Mut)
+//   _14: bool (mut=Mut)
+//   _15: bool (mut=Mut)
+//   _16: u64 (mut=Mut)
+//   _17: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_5)
+  [1] StorageLive(_6)
+  [2] _6 = copy (_1.0: u64)
+  [3] StorageLive(_7)
+  [4] _7 = copy (_2.0: u64)
+  TERM: _5 = core::num::<impl u64>::overflowing_add(move _6, move _7) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_7)
+  [1] StorageDead(_6)
+  [2] StorageLive(_3)
+  [3] _3 = copy (_5.0: u64)
+  [4] StorageLive(_4)
+  [5] _4 = copy (_5.1: bool)
+  [6] StorageDead(_5)
+  [7] StorageLive(_10)
+  [8] StorageLive(_11)
+  [9] _11 = copy (_1.1: u64)
+  [10] StorageLive(_12)
+  [11] _12 = copy (_2.1: u64)
+  TERM: _10 = core::num::<impl u64>::overflowing_add(move _11, move _12) -> [return: bb2, unwind continue]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_12)
+  [1] StorageDead(_11)
+  [2] StorageLive(_8)
+  [3] _8 = copy (_10.0: u64)
+  [4] StorageLive(_9)
+  [5] _9 = copy (_10.1: bool)
+  [6] StorageDead(_10)
+  [7] StorageLive(_13)
+  [8] StorageLive(_14)
+  [9] _14 = copy _4
+  [10] StorageLive(_15)
+  [11] _15 = copy _9
+  [12] _13 = Ne(move _14, move _15)
+  TERM: switchInt(move _13) -> [0: bb4, otherwise: bb3]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_15)
+  [1] StorageDead(_14)
+  TERM: _0 = scalar_value::U64Range::max() -> [return: bb5, unwind continue]
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_15)
+  [1] StorageDead(_14)
+  [2] StorageLive(_16)
+  [3] _16 = copy _3
+  [4] StorageLive(_17)
+  [5] _17 = copy _8
+  [6] _0 = scalar_value::U64Range { min: move _16, max: move _17 }
+  [7] StorageDead(_17)
+  [8] StorageDead(_16)
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_13)
+  [1] StorageDead(_9)
+  [2] StorageDead(_8)
+  [3] StorageDead(_4)
+  [4] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2001 | PATH: scalar_value::U64Range::sub_range | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (7): ['LocalTy((u64, bool))', 'LocalTy(scalar_value::U64Range)', 'Projection::Field(on (u64, bool))', 'Projection::Field(on scalar_value::U64Range)', 'Rvalue::Aggregate(Adt(scalar_value::U64Range, variant=0, args=[]))', 'Terminator::Call(core::num::<impl u64>::overflowing_sub)', 'Terminator::Call(scalar_value::U64Range::max)']
+BLOCKS: 6 (cleanup=0) | STMTS: 46 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['(u64, bool)', 'scalar_value::U64Range']
+PROJECTIONS: ['_10: [Field(0, u64 on (u64, bool))]', '_10: [Field(1, bool on (u64, bool))]', '_1: [Field(0, u64 on scalar_value::U64Range)]', '_1: [Field(1, u64 on scalar_value::U64Range)]', '_2: [Field(0, u64 on scalar_value::U64Range)]', '_2: [Field(1, u64 on scalar_value::U64Range)]', '_5: [Field(0, u64 on (u64, bool))]', '_5: [Field(1, bool on (u64, bool))]']
+RVALUES: ['Aggregate', 'BinaryOp', 'Use']
+BINOPS: ['Ne'] | UNOPS: [] | CASTS: []
+AGGREGATES: ['Adt(scalar_value::U64Range, variant=0, args=[])'] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['core::num::<impl u64>::overflowing_sub -> dest=_5, target=Some(bb1), unwind=Continue', 'core::num::<impl u64>::overflowing_sub -> dest=_10, target=Some(bb2), unwind=Continue', 'scalar_value::U64Range::max -> dest=_0, target=Some(bb5), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2001 path=scalar_value::U64Range::sub_range args=2 locals=18 blocks=6
+//   _0: scalar_value::U64Range (mut=Mut)
+//   _1: scalar_value::U64Range (mut=Not)
+//   _2: scalar_value::U64Range (mut=Not)
+//   _3: u64 (mut=Not)
+//   _4: bool (mut=Not)
+//   _5: (u64, bool) (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Not)
+//   _9: bool (mut=Not)
+//   _10: (u64, bool) (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: bool (mut=Mut)
+//   _14: bool (mut=Mut)
+//   _15: bool (mut=Mut)
+//   _16: u64 (mut=Mut)
+//   _17: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_5)
+  [1] StorageLive(_6)
+  [2] _6 = copy (_1.0: u64)
+  [3] StorageLive(_7)
+  [4] _7 = copy (_2.1: u64)
+  TERM: _5 = core::num::<impl u64>::overflowing_sub(move _6, move _7) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_7)
+  [1] StorageDead(_6)
+  [2] StorageLive(_3)
+  [3] _3 = copy (_5.0: u64)
+  [4] StorageLive(_4)
+  [5] _4 = copy (_5.1: bool)
+  [6] StorageDead(_5)
+  [7] StorageLive(_10)
+  [8] StorageLive(_11)
+  [9] _11 = copy (_1.1: u64)
+  [10] StorageLive(_12)
+  [11] _12 = copy (_2.0: u64)
+  TERM: _10 = core::num::<impl u64>::overflowing_sub(move _11, move _12) -> [return: bb2, unwind continue]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_12)
+  [1] StorageDead(_11)
+  [2] StorageLive(_8)
+  [3] _8 = copy (_10.0: u64)
+  [4] StorageLive(_9)
+  [5] _9 = copy (_10.1: bool)
+  [6] StorageDead(_10)
+  [7] StorageLive(_13)
+  [8] StorageLive(_14)
+  [9] _14 = copy _4
+  [10] StorageLive(_15)
+  [11] _15 = copy _9
+  [12] _13 = Ne(move _14, move _15)
+  TERM: switchInt(move _13) -> [0: bb4, otherwise: bb3]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_15)
+  [1] StorageDead(_14)
+  TERM: _0 = scalar_value::U64Range::max() -> [return: bb5, unwind continue]
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_15)
+  [1] StorageDead(_14)
+  [2] StorageLive(_16)
+  [3] _16 = copy _3
+  [4] StorageLive(_17)
+  [5] _17 = copy _8
+  [6] _0 = scalar_value::U64Range { min: move _16, max: move _17 }
+  [7] StorageDead(_17)
+  [8] StorageDead(_16)
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_13)
+  [1] StorageDead(_9)
+  [2] StorageDead(_8)
+  [3] StorageDead(_4)
+  [4] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2004 | PATH: scalar_value::U64Range::rem_range | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (4): ['LocalTy(scalar_value::U64Range)', 'Projection::Field(on scalar_value::U64Range)', 'Rvalue::Aggregate(Adt(scalar_value::U64Range, variant=0, args=[]))', 'Terminator::Call(scalar_value::min_u64)']
+BLOCKS: 8 (cleanup=0) | STMTS: 42 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range']
+PROJECTIONS: ['_1: [Field(1, u64 on scalar_value::U64Range)]', '_2: [Field(0, u64 on scalar_value::U64Range)]', '_2: [Field(1, u64 on scalar_value::U64Range)]']
+RVALUES: ['Aggregate', 'BinaryOp', 'Use']
+BINOPS: ['Eq', 'Sub'] | UNOPS: [] | CASTS: []
+AGGREGATES: ['Adt(scalar_value::U64Range, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64', 'Val(Scalar(0x0000000000000001), u64) : u64', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['scalar_value::min_u64 -> dest=_8, target=Some(bb5), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2004 path=scalar_value::U64Range::rem_range args=2 locals=16 blocks=8
+//   _0: scalar_value::U64Range (mut=Mut)
+//   _1: scalar_value::U64Range (mut=Not)
+//   _2: scalar_value::U64Range (mut=Not)
+//   _3: () (mut=Not)
+//   _4: bool (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: ! (mut=Mut)
+//   _7: u64 (mut=Not)
+//   _8: u64 (mut=Not)
+//   _9: bool (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Mut)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] _5 = copy (_2.1: u64)
+  [4] _4 = Eq(move _5, const 0_u64)
+  TERM: switchInt(move _4) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] _0 = copy _1
+  [2] StorageDead(_4)
+  [3] StorageDead(_3)
+  TERM: goto -> bb7
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_5)
+  [1] _3 = const ()
+  [2] StorageDead(_4)
+  [3] StorageDead(_3)
+  [4] StorageLive(_7)
+  [5] _7 = const 0_u64
+  [6] StorageLive(_8)
+  [7] StorageLive(_9)
+  [8] StorageLive(_10)
+  [9] _10 = copy (_2.0: u64)
+  [10] _9 = Eq(move _10, const 0_u64)
+  TERM: switchInt(move _9) -> [0: bb4, otherwise: bb3]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_10)
+  [1] _8 = copy (_1.1: u64)
+  TERM: goto -> bb6
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_10)
+  [1] StorageLive(_11)
+  [2] _11 = copy (_1.1: u64)
+  [3] StorageLive(_12)
+  [4] StorageLive(_13)
+  [5] _13 = copy (_2.1: u64)
+  [6] _12 = Sub(move _13, const 1_u64)
+  [7] StorageDead(_13)
+  TERM: _8 = scalar_value::min_u64(move _11, move _12) -> [return: bb5, unwind continue]
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_12)
+  [1] StorageDead(_11)
+  TERM: goto -> bb6
+}
+bb6 (cleanup=false): {
+  [0] StorageDead(_9)
+  [1] StorageLive(_14)
+  [2] _14 = copy _7
+  [3] StorageLive(_15)
+  [4] _15 = copy _8
+  [5] _0 = scalar_value::U64Range { min: move _14, max: move _15 }
+  [6] StorageDead(_15)
+  [7] StorageDead(_14)
+  [8] StorageDead(_8)
+  [9] StorageDead(_7)
+  TERM: goto -> bb7
+}
+bb7 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2007 | PATH: scalar_value::U64Range::shr_range | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (5): ['LocalTy(scalar_value::U64Range)', 'Projection::Field(on scalar_value::U64Range)', 'Rvalue::Aggregate(Adt(scalar_value::U64Range, variant=0, args=[]))', 'Rvalue::Cast(IntToInt: u64 -> u32)', 'Terminator::Call(core::num::<impl u64>::wrapping_shr)']
+BLOCKS: 6 (cleanup=0) | STMTS: 55 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range']
+PROJECTIONS: ['_1: [Field(0, u64 on scalar_value::U64Range)]', '_1: [Field(1, u64 on scalar_value::U64Range)]', '_2: [Field(0, u64 on scalar_value::U64Range)]', '_2: [Field(1, u64 on scalar_value::U64Range)]']
+RVALUES: ['Aggregate', 'BinaryOp', 'Cast', 'Use']
+BINOPS: ['Ge'] | UNOPS: [] | CASTS: ['IntToInt: u64 -> u32']
+AGGREGATES: ['Adt(scalar_value::U64Range, variant=0, args=[])'] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64', 'Val(Scalar(0x0000000000000040), u64) : u64', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['core::num::<impl u64>::wrapping_shr -> dest=_13, target=Some(bb3), unwind=Continue', 'core::num::<impl u64>::wrapping_shr -> dest=_16, target=Some(bb4), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2007 path=scalar_value::U64Range::shr_range args=2 locals=21 blocks=6
+//   _0: scalar_value::U64Range (mut=Mut)
+//   _1: scalar_value::U64Range (mut=Not)
+//   _2: scalar_value::U64Range (mut=Not)
+//   _3: () (mut=Not)
+//   _4: bool (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: ! (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: u32 (mut=Not)
+//   _10: u64 (mut=Mut)
+//   _11: u32 (mut=Not)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Not)
+//   _14: u64 (mut=Mut)
+//   _15: u32 (mut=Mut)
+//   _16: u64 (mut=Not)
+//   _17: u64 (mut=Mut)
+//   _18: u32 (mut=Mut)
+//   _19: u64 (mut=Mut)
+//   _20: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] _5 = copy (_2.1: u64)
+  [4] StorageLive(_6)
+  [5] _6 = const 64_u64
+  [6] _4 = Ge(move _5, move _6)
+  TERM: switchInt(move _4) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageDead(_5)
+  [2] StorageLive(_8)
+  [3] _8 = copy (_1.1: u64)
+  [4] _0 = scalar_value::U64Range { min: const 0_u64, max: move _8 }
+  [5] StorageDead(_8)
+  [6] StorageDead(_4)
+  [7] StorageDead(_3)
+  TERM: goto -> bb5
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageDead(_5)
+  [2] _3 = const ()
+  [3] StorageDead(_4)
+  [4] StorageDead(_3)
+  [5] StorageLive(_9)
+  [6] StorageLive(_10)
+  [7] _10 = copy (_2.1: u64)
+  [8] _9 = move _10 as u32 (IntToInt)
+  [9] StorageDead(_10)
+  [10] StorageLive(_11)
+  [11] StorageLive(_12)
+  [12] _12 = copy (_2.0: u64)
+  [13] _11 = move _12 as u32 (IntToInt)
+  [14] StorageDead(_12)
+  [15] StorageLive(_13)
+  [16] StorageLive(_14)
+  [17] _14 = copy (_1.0: u64)
+  [18] StorageLive(_15)
+  [19] _15 = copy _9
+  TERM: _13 = core::num::<impl u64>::wrapping_shr(move _14, move _15) -> [return: bb3, unwind continue]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_15)
+  [1] StorageDead(_14)
+  [2] StorageLive(_16)
+  [3] StorageLive(_17)
+  [4] _17 = copy (_1.1: u64)
+  [5] StorageLive(_18)
+  [6] _18 = copy _11
+  TERM: _16 = core::num::<impl u64>::wrapping_shr(move _17, move _18) -> [return: bb4, unwind continue]
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_18)
+  [1] StorageDead(_17)
+  [2] StorageLive(_19)
+  [3] _19 = copy _13
+  [4] StorageLive(_20)
+  [5] _20 = copy _16
+  [6] _0 = scalar_value::U64Range { min: move _19, max: move _20 }
+  [7] StorageDead(_20)
+  [8] StorageDead(_19)
+  [9] StorageDead(_16)
+  [10] StorageDead(_13)
+  [11] StorageDead(_11)
+  [12] StorageDead(_9)
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2010 | PATH: scalar_value::U64Range::contains_masked_value | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64Range
+COMPLETE MVP GAPS (5): ['LocalTy(scalar_value::U64Range)', 'Projection::Field(on scalar_value::U64Range)', 'Rvalue::UnaryOp(Not)', 'Terminator::Call(core::num::<impl u64>::leading_zeros)', 'Terminator::Call(core::num::<impl u64>::wrapping_shl)']
+BLOCKS: 25 (cleanup=0) | STMTS: 266 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range']
+PROJECTIONS: ['_1: [Field(0, u64 on scalar_value::U64Range)]', '_1: [Field(1, u64 on scalar_value::U64Range)]']
+RVALUES: ['BinaryOp', 'UnaryOp', 'Use']
+BINOPS: ['Add', 'BitAnd', 'BitOr', 'BitXor', 'Eq', 'Ge', 'Gt', 'Le', 'Ne', 'Sub'] | UNOPS: ['Not'] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x00), bool) : bool', 'Val(Scalar(0x0000000000000000), u64) : u64', 'Val(Scalar(0x0000000000000001), u64) : u64', 'Val(Scalar(0x00000001), u32) : u32', 'Val(Scalar(0x00000040), u32) : u32', 'Val(Scalar(0x01), bool) : bool', 'Val(ZeroSized, ()) : ()'] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['core::num::<impl u64>::leading_zeros -> dest=_28, target=Some(bb5), unwind=Continue', 'core::num::<impl u64>::wrapping_shl -> dest=_30, target=Some(bb8), unwind=Continue', 'core::num::<impl u64>::wrapping_shl -> dest=_61, target=Some(bb12), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2010 path=scalar_value::U64Range::contains_masked_value args=3 locals=87 blocks=25
+//   _0: bool (mut=Mut)
+//   _1: scalar_value::U64Range (mut=Not)
+//   _2: u64 (mut=Not)
+//   _3: u64 (mut=Not)
+//   _4: u64 (mut=Not)
+//   _5: u64 (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: () (mut=Not)
+//   _9: bool (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: ! (mut=Mut)
+//   _13: u64 (mut=Not)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+//   _16: () (mut=Not)
+//   _17: bool (mut=Mut)
+//   _18: u64 (mut=Mut)
+//   _19: ! (mut=Mut)
+//   _20: u64 (mut=Mut)
+//   _21: u64 (mut=Mut)
+//   _22: u64 (mut=Mut)
+//   _23: u64 (mut=Mut)
+//   _24: u64 (mut=Mut)
+//   _25: u64 (mut=Mut)
+//   _26: u32 (mut=Not)
+//   _27: u32 (mut=Mut)
+//   _28: u32 (mut=Mut)
+//   _29: u64 (mut=Mut)
+//   _30: u64 (mut=Not)
+//   _31: bool (mut=Mut)
+//   _32: u32 (mut=Mut)
+//   _33: u32 (mut=Mut)
+//   _34: u64 (mut=Mut)
+//   _35: u64 (mut=Mut)
+//   _36: u32 (mut=Mut)
+//   _37: u32 (mut=Mut)
+//   _38: () (mut=Not)
+//   _39: bool (mut=Mut)
+//   _40: u64 (mut=Mut)
+//   _41: u64 (mut=Mut)
+//   _42: u64 (mut=Mut)
+//   _43: u64 (mut=Mut)
+//   _44: u64 (mut=Mut)
+//   _45: u64 (mut=Mut)
+//   _46: u64 (mut=Mut)
+//   _47: u64 (mut=Mut)
+//   _48: ! (mut=Mut)
+//   _49: u64 (mut=Not)
+//   _50: u64 (mut=Mut)
+//   _51: u64 (mut=Mut)
+//   _52: u64 (mut=Mut)
+//   _53: u64 (mut=Mut)
+//   _54: u64 (mut=Mut)
+//   _55: u64 (mut=Mut)
+//   _56: u64 (mut=Mut)
+//   _57: u64 (mut=Not)
+//   _58: u64 (mut=Mut)
+//   _59: u64 (mut=Mut)
+//   _60: u64 (mut=Mut)
+//   _61: u64 (mut=Not)
+//   _62: u64 (mut=Mut)
+//   _63: u32 (mut=Mut)
+//   _64: bool (mut=Mut)
+//   _65: u64 (mut=Mut)
+//   _66: u64 (mut=Mut)
+//   _67: u64 (mut=Mut)
+//   _68: bool (mut=Mut)
+//   _69: u64 (mut=Mut)
+//   _70: u64 (mut=Mut)
+//   _71: u64 (mut=Mut)
+//   _72: u64 (mut=Mut)
+//   _73: u64 (mut=Mut)
+//   _74: u64 (mut=Mut)
+//   _75: u64 (mut=Mut)
+//   _76: u64 (mut=Mut)
+//   _77: u64 (mut=Mut)
+//   _78: u64 (mut=Mut)
+//   _79: u64 (mut=Mut)
+//   _80: bool (mut=Mut)
+//   _81: u64 (mut=Mut)
+//   _82: u64 (mut=Mut)
+//   _83: u64 (mut=Mut)
+//   _84: u64 (mut=Mut)
+//   _85: u64 (mut=Mut)
+//   _86: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_4)
+  [1] StorageLive(_5)
+  [2] _5 = copy _2
+  [3] StorageLive(_6)
+  [4] StorageLive(_7)
+  [5] _7 = copy _3
+  [6] _6 = Not(move _7)
+  [7] StorageDead(_7)
+  [8] _4 = BitAnd(move _5, move _6)
+  [9] StorageDead(_6)
+  [10] StorageDead(_5)
+  [11] StorageLive(_8)
+  [12] StorageLive(_9)
+  [13] StorageLive(_10)
+  [14] _10 = copy (_1.0: u64)
+  [15] StorageLive(_11)
+  [16] _11 = copy (_1.1: u64)
+  [17] _9 = Gt(move _10, move _11)
+  TERM: switchInt(move _9) -> [0: bb2, otherwise: bb1]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_11)
+  [1] StorageDead(_10)
+  [2] _0 = const false
+  [3] StorageDead(_9)
+  [4] StorageDead(_8)
+  TERM: goto -> bb23
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_11)
+  [1] StorageDead(_10)
+  [2] _8 = const ()
+  [3] StorageDead(_9)
+  [4] StorageDead(_8)
+  [5] StorageLive(_13)
+  [6] StorageLive(_14)
+  [7] _14 = copy (_1.0: u64)
+  [8] StorageLive(_15)
+  [9] _15 = copy (_1.1: u64)
+  [10] _13 = BitXor(move _14, move _15)
+  [11] StorageDead(_15)
+  [12] StorageDead(_14)
+  [13] StorageLive(_16)
+  [14] StorageLive(_17)
+  [15] StorageLive(_18)
+  [16] _18 = copy _13
+  [17] _17 = Eq(move _18, const 0_u64)
+  TERM: switchInt(move _17) -> [0: bb4, otherwise: bb3]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_18)
+  [1] StorageLive(_20)
+  [2] StorageLive(_21)
+  [3] StorageLive(_22)
+  [4] _22 = copy (_1.0: u64)
+  [5] StorageLive(_23)
+  [6] _23 = copy _4
+  [7] _21 = BitXor(move _22, move _23)
+  [8] StorageDead(_23)
+  [9] StorageDead(_22)
+  [10] StorageLive(_24)
+  [11] StorageLive(_25)
+  [12] _25 = copy _3
+  [13] _24 = Not(move _25)
+  [14] StorageDead(_25)
+  [15] _20 = BitAnd(move _21, move _24)
+  [16] StorageDead(_24)
+  [17] StorageDead(_21)
+  [18] _0 = Eq(move _20, const 0_u64)
+  [19] StorageDead(_20)
+  [20] StorageDead(_17)
+  [21] StorageDead(_16)
+  TERM: goto -> bb22
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_18)
+  [1] _16 = const ()
+  [2] StorageDead(_17)
+  [3] StorageDead(_16)
+  [4] StorageLive(_26)
+  [5] StorageLive(_27)
+  [6] _27 = Sub(const 64_u32, const 1_u32)
+  [7] StorageLive(_28)
+  [8] StorageLive(_29)
+  [9] _29 = copy _13
+  TERM: _28 = core::num::<impl u64>::leading_zeros(move _29) -> [return: bb5, unwind continue]
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_29)
+  [1] _26 = Sub(move _27, move _28)
+  [2] StorageDead(_28)
+  [3] StorageDead(_27)
+  [4] StorageLive(_30)
+  [5] StorageLive(_31)
+  [6] StorageLive(_32)
+  [7] _32 = copy _26
+  [8] StorageLive(_33)
+  [9] _33 = Sub(const 64_u32, const 1_u32)
+  [10] _31 = Eq(move _32, move _33)
+  TERM: switchInt(move _31) -> [0: bb7, otherwise: bb6]
+}
+bb6 (cleanup=false): {
+  [0] StorageDead(_33)
+  [1] StorageDead(_32)
+  [2] _30 = const 0_u64
+  TERM: goto -> bb9
+}
+bb7 (cleanup=false): {
+  [0] StorageDead(_33)
+  [1] StorageDead(_32)
+  [2] StorageLive(_34)
+  [3] StorageLive(_35)
+  [4] _35 = const 0_u64
+  [5] _34 = Not(move _35)
+  [6] StorageDead(_35)
+  [7] StorageLive(_36)
+  [8] StorageLive(_37)
+  [9] _37 = copy _26
+  [10] _36 = Add(move _37, const 1_u32)
+  [11] StorageDead(_37)
+  TERM: _30 = core::num::<impl u64>::wrapping_shl(move _34, move _36) -> [return: bb8, unwind continue]
+}
+bb8 (cleanup=false): {
+  [0] StorageDead(_36)
+  [1] StorageDead(_34)
+  TERM: goto -> bb9
+}
+bb9 (cleanup=false): {
+  [0] StorageDead(_31)
+  [1] StorageLive(_38)
+  [2] StorageLive(_39)
+  [3] StorageLive(_40)
+  [4] StorageLive(_41)
+  [5] StorageLive(_42)
+  [6] StorageLive(_43)
+  [7] _43 = copy (_1.0: u64)
+  [8] StorageLive(_44)
+  [9] _44 = copy _4
+  [10] _42 = BitXor(move _43, move _44)
+  [11] StorageDead(_44)
+  [12] StorageDead(_43)
+  [13] StorageLive(_45)
+  [14] _45 = copy _30
+  [15] _41 = BitAnd(move _42, move _45)
+  [16] StorageDead(_45)
+  [17] StorageDead(_42)
+  [18] StorageLive(_46)
+  [19] StorageLive(_47)
+  [20] _47 = copy _3
+  [21] _46 = Not(move _47)
+  [22] StorageDead(_47)
+  [23] _40 = BitAnd(move _41, move _46)
+  [24] StorageDead(_46)
+  [25] StorageDead(_41)
+  [26] _39 = Ne(move _40, const 0_u64)
+  TERM: switchInt(move _39) -> [0: bb11, otherwise: bb10]
+}
+bb10 (cleanup=false): {
+  [0] StorageDead(_40)
+  [1] _0 = const false
+  [2] StorageDead(_39)
+  [3] StorageDead(_38)
+  [4] StorageDead(_30)
+  [5] StorageDead(_26)
+  TERM: goto -> bb22
+}
+bb11 (cleanup=false): {
+  [0] StorageDead(_40)
+  [1] _38 = const ()
+  [2] StorageDead(_39)
+  [3] StorageDead(_38)
+  [4] StorageLive(_49)
+  [5] StorageLive(_50)
+  [6] StorageLive(_51)
+  [7] _51 = copy _4
+  [8] StorageLive(_52)
+  [9] StorageLive(_53)
+  [10] _53 = copy _30
+  [11] _52 = Not(move _53)
+  [12] StorageDead(_53)
+  [13] _50 = BitAnd(move _51, move _52)
+  [14] StorageDead(_52)
+  [15] StorageDead(_51)
+  [16] StorageLive(_54)
+  [17] StorageLive(_55)
+  [18] _55 = copy (_1.0: u64)
+  [19] StorageLive(_56)
+  [20] _56 = copy _30
+  [21] _54 = BitAnd(move _55, move _56)
+  [22] StorageDead(_56)
+  [23] StorageDead(_55)
+  [24] _49 = BitOr(move _50, move _54)
+  [25] StorageDead(_54)
+  [26] StorageDead(_50)
+  [27] StorageLive(_57)
+  [28] StorageLive(_58)
+  [29] _58 = copy _3
+  [30] StorageLive(_59)
+  [31] StorageLive(_60)
+  [32] _60 = copy _30
+  [33] _59 = Not(move _60)
+  [34] StorageDead(_60)
+  [35] _57 = BitAnd(move _58, move _59)
+  [36] StorageDead(_59)
+  [37] StorageDead(_58)
+  [38] StorageLive(_61)
+  [39] StorageLive(_62)
+  [40] _62 = const 1_u64
+  [41] StorageLive(_63)
+  [42] _63 = copy _26
+  TERM: _61 = core::num::<impl u64>::wrapping_shl(move _62, move _63) -> [return: bb12, unwind continue]
+}
+bb12 (cleanup=false): {
+  [0] StorageDead(_63)
+  [1] StorageDead(_62)
+  [2] StorageLive(_64)
+  [3] StorageLive(_65)
+  [4] StorageLive(_66)
+  [5] _66 = copy _57
+  [6] StorageLive(_67)
+  [7] _67 = copy _61
+  [8] _65 = BitAnd(move _66, move _67)
+  [9] StorageDead(_67)
+  [10] StorageDead(_66)
+  [11] _64 = Ne(move _65, const 0_u64)
+  TERM: switchInt(move _64) -> [0: bb17, otherwise: bb13]
+}
+bb13 (cleanup=false): {
+  [0] StorageDead(_65)
+  [1] StorageLive(_68)
+  [2] StorageLive(_69)
+  [3] StorageLive(_70)
+  [4] _70 = copy _49
+  [5] StorageLive(_71)
+  [6] StorageLive(_72)
+  [7] _72 = copy _57
+  [8] StorageLive(_73)
+  [9] StorageLive(_74)
+  [10] _74 = copy _61
+  [11] _73 = Not(move _74)
+  [12] StorageDead(_74)
+  [13] _71 = BitAnd(move _72, move _73)
+  [14] StorageDead(_73)
+  [15] StorageDead(_72)
+  [16] _69 = BitOr(move _70, move _71)
+  [17] StorageDead(_71)
+  [18] StorageDead(_70)
+  [19] StorageLive(_75)
+  [20] _75 = copy (_1.0: u64)
+  [21] _68 = Ge(move _69, move _75)
+  TERM: switchInt(move _68) -> [0: bb15, otherwise: bb14]
+}
+bb14 (cleanup=false): {
+  [0] StorageDead(_75)
+  [1] StorageDead(_69)
+  [2] _0 = const true
+  TERM: goto -> bb16
+}
+bb15 (cleanup=false): {
+  [0] StorageDead(_75)
+  [1] StorageDead(_69)
+  [2] StorageLive(_76)
+  [3] StorageLive(_77)
+  [4] _77 = copy _49
+  [5] StorageLive(_78)
+  [6] _78 = copy _61
+  [7] _76 = BitOr(move _77, move _78)
+  [8] StorageDead(_78)
+  [9] StorageDead(_77)
+  [10] StorageLive(_79)
+  [11] _79 = copy (_1.1: u64)
+  [12] _0 = Le(move _76, move _79)
+  [13] StorageDead(_79)
+  [14] StorageDead(_76)
+  TERM: goto -> bb16
+}
+bb16 (cleanup=false): {
+  [0] StorageDead(_68)
+  TERM: goto -> bb21
+}
+bb17 (cleanup=false): {
+  [0] StorageDead(_65)
+  [1] StorageLive(_80)
+  [2] StorageLive(_81)
+  [3] _81 = copy _49
+  [4] StorageLive(_82)
+  [5] _82 = copy (_1.1: u64)
+  [6] _80 = Le(move _81, move _82)
+  TERM: switchInt(move _80) -> [0: bb19, otherwise: bb18]
+}
+bb18 (cleanup=false): {
+  [0] StorageDead(_82)
+  [1] StorageDead(_81)
+  [2] StorageLive(_83)
+  [3] _83 = copy (_1.0: u64)
+  [4] StorageLive(_84)
+  [5] StorageLive(_85)
+  [6] _85 = copy _49
+  [7] StorageLive(_86)
+  [8] _86 = copy _57
+  [9] _84 = BitOr(move _85, move _86)
+  [10] StorageDead(_86)
+  [11] StorageDead(_85)
+  [12] _0 = Le(move _83, move _84)
+  [13] StorageDead(_84)
+  [14] StorageDead(_83)
+  TERM: goto -> bb20
+}
+bb19 (cleanup=false): {
+  [0] StorageDead(_82)
+  [1] StorageDead(_81)
+  [2] _0 = const false
+  TERM: goto -> bb20
+}
+bb20 (cleanup=false): {
+  [0] StorageDead(_80)
+  TERM: goto -> bb21
+}
+bb21 (cleanup=false): {
+  [0] StorageDead(_64)
+  [1] StorageDead(_61)
+  [2] StorageDead(_57)
+  [3] StorageDead(_49)
+  [4] StorageDead(_30)
+  [5] StorageDead(_26)
+  [6] StorageDead(_13)
+  [7] StorageDead(_4)
+  TERM: goto -> bb24
+}
+bb22 (cleanup=false): {
+  [0] StorageDead(_13)
+  TERM: goto -> bb23
+}
+bb23 (cleanup=false): {
+  [0] StorageDead(_4)
+  TERM: goto -> bb24
+}
+bb24 (cleanup=false): {
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2060 | PATH: scalar_value::U64ScalarValueData::new | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (10): ['LocalTy(scalar_value::U64Range)', 'LocalTy(scalar_value::U64ScalarValueData)', 'Projection::Field(on scalar_value::U64Range)', 'Rvalue::Aggregate(Adt(scalar_value::U64ScalarValueData, variant=0, args=[]))', 'Rvalue::UnaryOp(Not)', 'Terminator::Call(core::num::<impl u64>::leading_zeros)', 'Terminator::Call(core::num::<impl u64>::wrapping_shl)', 'Terminator::Call(scalar_value::U64Range::new)', 'Terminator::Call(scalar_value::max_u64)', 'Terminator::Call(scalar_value::min_u64)']
+BLOCKS: 13 (cleanup=0) | STMTS: 149 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range', 'scalar_value::U64ScalarValueData']
+PROJECTIONS: ['_4: [Field(0, u64 on scalar_value::U64Range)]', '_4: [Field(1, u64 on scalar_value::U64Range)]']
+RVALUES: ['Aggregate', 'BinaryOp', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'BitXor', 'Eq', 'Sub'] | UNOPS: ['Not'] | CASTS: []
+AGGREGATES: ['Adt(scalar_value::U64ScalarValueData, variant=0, args=[])', 'UnitTuple'] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64', 'Val(Scalar(0x00000040), u32) : u32'] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['core::num::<impl u64>::leading_zeros -> dest=_9, target=Some(bb1), unwind=Continue', 'core::num::<impl u64>::wrapping_shl -> dest=_11, target=Some(bb4), unwind=Continue', 'scalar_value::U64Range::new -> dest=_35, target=Some(bb7), unwind=Continue', 'scalar_value::max_u64 -> dest=_40, target=Some(bb9), unwind=Continue', 'scalar_value::min_u64 -> dest=_43, target=Some(bb10), unwind=Continue', 'scalar_value::U64Range::new -> dest=_35, target=Some(bb11), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2060 path=scalar_value::U64ScalarValueData::new args=4 locals=55 blocks=13
+//   _0: scalar_value::U64ScalarValueData (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Not)
+//   _3: u64 (mut=Not)
+//   _4: scalar_value::U64Range (mut=Not)
+//   _5: u64 (mut=Not)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u32 (mut=Not)
+//   _9: u32 (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Not)
+//   _12: bool (mut=Mut)
+//   _13: u32 (mut=Mut)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+//   _16: u32 (mut=Mut)
+//   _17: u64 (mut=Not)
+//   _18: u64 (mut=Mut)
+//   _19: u64 (mut=Mut)
+//   _20: u64 (mut=Mut)
+//   _21: u64 (mut=Not)
+//   _22: u64 (mut=Mut)
+//   _23: u64 (mut=Mut)
+//   _24: u64 (mut=Not)
+//   _25: u64 (mut=Mut)
+//   _26: u64 (mut=Mut)
+//   _27: u64 (mut=Mut)
+//   _28: u64 (mut=Mut)
+//   _29: u64 (mut=Mut)
+//   _30: u64 (mut=Mut)
+//   _31: u64 (mut=Mut)
+//   _32: u64 (mut=Mut)
+//   _33: u64 (mut=Mut)
+//   _34: u64 (mut=Mut)
+//   _35: scalar_value::U64Range (mut=Not)
+//   _36: bool (mut=Mut)
+//   _37: u64 (mut=Mut)
+//   _38: u64 (mut=Mut)
+//   _39: u64 (mut=Mut)
+//   _40: u64 (mut=Not)
+//   _41: u64 (mut=Mut)
+//   _42: u64 (mut=Mut)
+//   _43: u64 (mut=Not)
+//   _44: u64 (mut=Mut)
+//   _45: u64 (mut=Mut)
+//   _46: u64 (mut=Mut)
+//   _47: u64 (mut=Mut)
+//   _48: u64 (mut=Mut)
+//   _49: u64 (mut=Mut)
+//   _50: u64 (mut=Mut)
+//   _51: u64 (mut=Mut)
+//   _52: u64 (mut=Mut)
+//   _53: scalar_value::U64Range (mut=Mut)
+//   _54: () (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_5)
+  [1] StorageLive(_6)
+  [2] _6 = copy (_4.0: u64)
+  [3] StorageLive(_7)
+  [4] _7 = copy (_4.1: u64)
+  [5] _5 = BitXor(move _6, move _7)
+  [6] StorageDead(_7)
+  [7] StorageDead(_6)
+  [8] StorageLive(_8)
+  [9] StorageLive(_9)
+  [10] StorageLive(_10)
+  [11] _10 = copy _5
+  TERM: _9 = core::num::<impl u64>::leading_zeros(move _10) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_10)
+  [1] _8 = Sub(const 64_u32, move _9)
+  [2] StorageDead(_9)
+  [3] StorageLive(_11)
+  [4] StorageLive(_12)
+  [5] StorageLive(_13)
+  [6] _13 = copy _8
+  [7] _12 = Eq(move _13, const 64_u32)
+  TERM: switchInt(move _12) -> [0: bb3, otherwise: bb2]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_13)
+  [1] _11 = const 0_u64
+  TERM: goto -> bb5
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_13)
+  [1] StorageLive(_14)
+  [2] StorageLive(_15)
+  [3] _15 = const 0_u64
+  [4] _14 = Not(move _15)
+  [5] StorageDead(_15)
+  [6] StorageLive(_16)
+  [7] _16 = copy _8
+  TERM: _11 = core::num::<impl u64>::wrapping_shl(move _14, move _16) -> [return: bb4, unwind continue]
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_16)
+  [1] StorageDead(_14)
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_12)
+  [1] StorageLive(_17)
+  [2] StorageLive(_18)
+  [3] _18 = copy _2
+  [4] StorageLive(_19)
+  [5] StorageLive(_20)
+  [6] _20 = copy _11
+  [7] _19 = Not(move _20)
+  [8] StorageDead(_20)
+  [9] _17 = BitAnd(move _18, move _19)
+  [10] StorageDead(_19)
+  [11] StorageDead(_18)
+  [12] StorageLive(_21)
+  [13] StorageLive(_22)
+  [14] _22 = copy _3
+  [15] StorageLive(_23)
+  [16] _23 = copy _17
+  [17] _21 = BitAnd(move _22, move _23)
+  [18] StorageDead(_23)
+  [19] StorageDead(_22)
+  [20] StorageLive(_24)
+  [21] StorageLive(_25)
+  [22] StorageLive(_26)
+  [23] StorageLive(_27)
+  [24] _27 = copy _1
+  [25] StorageLive(_28)
+  [26] StorageLive(_29)
+  [27] _29 = copy _17
+  [28] _28 = Not(move _29)
+  [29] StorageDead(_29)
+  [30] _26 = BitAnd(move _27, move _28)
+  [31] StorageDead(_28)
+  [32] StorageDead(_27)
+  [33] StorageLive(_30)
+  [34] StorageLive(_31)
+  [35] _31 = copy _11
+  [36] _30 = Not(move _31)
+  [37] StorageDead(_31)
+  [38] _25 = BitAnd(move _26, move _30)
+  [39] StorageDead(_30)
+  [40] StorageDead(_26)
+  [41] StorageLive(_32)
+  [42] StorageLive(_33)
+  [43] _33 = copy (_4.0: u64)
+  [44] StorageLive(_34)
+  [45] _34 = copy _11
+  [46] _32 = BitAnd(move _33, move _34)
+  [47] StorageDead(_34)
+  [48] StorageDead(_33)
+  [49] _24 = BitOr(move _25, move _32)
+  [50] StorageDead(_32)
+  [51] StorageDead(_25)
+  [52] StorageLive(_35)
+  [53] StorageLive(_36)
+  [54] StorageLive(_37)
+  [55] _37 = copy _17
+  [56] _36 = Eq(move _37, const 0_u64)
+  TERM: switchInt(move _36) -> [0: bb8, otherwise: bb6]
+}
+bb6 (cleanup=false): {
+  [0] StorageDead(_37)
+  [1] StorageLive(_38)
+  [2] _38 = copy _24
+  [3] StorageLive(_39)
+  [4] _39 = copy _24
+  TERM: _35 = scalar_value::U64Range::new(move _38, move _39) -> [return: bb7, unwind continue]
+}
+bb7 (cleanup=false): {
+  [0] StorageDead(_39)
+  [1] StorageDead(_38)
+  TERM: goto -> bb12
+}
+bb8 (cleanup=false): {
+  [0] StorageDead(_37)
+  [1] StorageLive(_40)
+  [2] StorageLive(_41)
+  [3] _41 = copy _24
+  [4] StorageLive(_42)
+  [5] _42 = copy (_4.0: u64)
+  TERM: _40 = scalar_value::max_u64(move _41, move _42) -> [return: bb9, unwind continue]
+}
+bb9 (cleanup=false): {
+  [0] StorageDead(_42)
+  [1] StorageDead(_41)
+  [2] StorageLive(_43)
+  [3] StorageLive(_44)
+  [4] StorageLive(_45)
+  [5] _45 = copy _24
+  [6] StorageLive(_46)
+  [7] _46 = copy _17
+  [8] _44 = BitOr(move _45, move _46)
+  [9] StorageDead(_46)
+  [10] StorageDead(_45)
+  [11] StorageLive(_47)
+  [12] _47 = copy (_4.1: u64)
+  TERM: _43 = scalar_value::min_u64(move _44, move _47) -> [return: bb10, unwind continue]
+}
+bb10 (cleanup=false): {
+  [0] StorageDead(_47)
+  [1] StorageDead(_44)
+  [2] StorageLive(_48)
+  [3] _48 = copy _40
+  [4] StorageLive(_49)
+  [5] _49 = copy _43
+  TERM: _35 = scalar_value::U64Range::new(move _48, move _49) -> [return: bb11, unwind continue]
+}
+bb11 (cleanup=false): {
+  [0] StorageDead(_49)
+  [1] StorageDead(_48)
+  [2] StorageDead(_43)
+  [3] StorageDead(_40)
+  TERM: goto -> bb12
+}
+bb12 (cleanup=false): {
+  [0] StorageDead(_36)
+  [1] StorageLive(_50)
+  [2] _50 = copy _24
+  [3] StorageLive(_51)
+  [4] _51 = copy _17
+  [5] StorageLive(_52)
+  [6] _52 = copy _21
+  [7] StorageLive(_53)
+  [8] _53 = copy _35
+  [9] StorageLive(_54)
+  [10] _54 = ()
+  [11] _0 = scalar_value::U64ScalarValueData { value: move _50, unknown_mask: move _51, unwritten_mask: move _52, urange: move _53, _guard: move _54 }
+  [12] StorageDead(_54)
+  [13] StorageDead(_53)
+  [14] StorageDead(_52)
+  [15] StorageDead(_51)
+  [16] StorageDead(_50)
+  [17] StorageDead(_35)
+  [18] StorageDead(_24)
+  [19] StorageDead(_21)
+  [20] StorageDead(_17)
+  [21] StorageDead(_11)
+  [22] StorageDead(_8)
+  [23] StorageDead(_5)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2061 | PATH: scalar_value::U64ScalarValueData::from_known | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (4): ['LocalTy(scalar_value::U64Range)', 'LocalTy(scalar_value::U64ScalarValueData)', 'Terminator::Call(scalar_value::U64Range::from_scalar)', 'Terminator::Call(scalar_value::U64ScalarValueData::new)']
+BLOCKS: 3 (cleanup=0) | STMTS: 8 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range', 'scalar_value::U64ScalarValueData']
+PROJECTIONS: []
+RVALUES: ['Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64'] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Return']
+CALLS: ['scalar_value::U64Range::from_scalar -> dest=_3, target=Some(bb1), unwind=Continue', 'scalar_value::U64ScalarValueData::new -> dest=_0, target=Some(bb2), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2061 path=scalar_value::U64ScalarValueData::from_known args=1 locals=5 blocks=3
+//   _0: scalar_value::U64ScalarValueData (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Mut)
+//   _3: scalar_value::U64Range (mut=Mut)
+//   _4: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy _1
+  [2] StorageLive(_3)
+  [3] StorageLive(_4)
+  [4] _4 = copy _1
+  TERM: _3 = scalar_value::U64Range::from_scalar(move _4) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_4)
+  TERM: _0 = scalar_value::U64ScalarValueData::new(move _2, const 0_u64, const 0_u64, move _3) -> [return: bb2, unwind continue]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_3)
+  [1] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2062 | PATH: scalar_value::U64ScalarValueData::try_new | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: core::option::Option<scalar_value::U64ScalarValueData>
+COMPLETE MVP GAPS (7): ['LocalTy(core::option::Option<scalar_value::U64ScalarValueData>)', 'LocalTy(scalar_value::U64Range)', 'LocalTy(scalar_value::U64ScalarValueData)', 'Rvalue::Aggregate(Adt(core::option::Option, variant=0, args=[scalar_value::U64ScalarValueData]))', 'Rvalue::Aggregate(Adt(core::option::Option, variant=1, args=[scalar_value::U64ScalarValueData]))', 'Terminator::Call(scalar_value::U64Range::contains_masked_value)', 'Terminator::Call(scalar_value::U64ScalarValueData::new)']
+BLOCKS: 6 (cleanup=0) | STMTS: 30 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['core::option::Option<scalar_value::U64ScalarValueData>', 'scalar_value::U64Range', 'scalar_value::U64ScalarValueData']
+PROJECTIONS: []
+RVALUES: ['Aggregate', 'Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: ['Adt(core::option::Option, variant=0, args=[scalar_value::U64ScalarValueData])', 'Adt(core::option::Option, variant=1, args=[scalar_value::U64ScalarValueData])'] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Goto', 'Return', 'SwitchInt']
+CALLS: ['scalar_value::U64Range::contains_masked_value -> dest=_5, target=Some(bb1), unwind=Continue', 'scalar_value::U64ScalarValueData::new -> dest=_9, target=Some(bb3), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2062 path=scalar_value::U64ScalarValueData::try_new args=4 locals=14 blocks=6
+//   _0: core::option::Option<scalar_value::U64ScalarValueData> (mut=Mut)
+//   _1: u64 (mut=Not)
+//   _2: u64 (mut=Not)
+//   _3: u64 (mut=Not)
+//   _4: scalar_value::U64Range (mut=Not)
+//   _5: bool (mut=Mut)
+//   _6: scalar_value::U64Range (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: u64 (mut=Mut)
+//   _9: scalar_value::U64ScalarValueData (mut=Mut)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: scalar_value::U64Range (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_5)
+  [1] StorageLive(_6)
+  [2] _6 = copy _4
+  [3] StorageLive(_7)
+  [4] _7 = copy _1
+  [5] StorageLive(_8)
+  [6] _8 = copy _2
+  TERM: _5 = scalar_value::U64Range::contains_masked_value(move _6, move _7, move _8) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  TERM: switchInt(move _5) -> [0: bb4, otherwise: bb2]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_8)
+  [1] StorageDead(_7)
+  [2] StorageDead(_6)
+  [3] StorageLive(_9)
+  [4] StorageLive(_10)
+  [5] _10 = copy _1
+  [6] StorageLive(_11)
+  [7] _11 = copy _2
+  [8] StorageLive(_12)
+  [9] _12 = copy _3
+  [10] StorageLive(_13)
+  [11] _13 = copy _4
+  TERM: _9 = scalar_value::U64ScalarValueData::new(move _10, move _11, move _12, move _13) -> [return: bb3, unwind continue]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_13)
+  [1] StorageDead(_12)
+  [2] StorageDead(_11)
+  [3] StorageDead(_10)
+  [4] _0 = core::option::Option::<scalar_value::U64ScalarValueData>::Some(move _9)
+  [5] StorageDead(_9)
+  TERM: goto -> bb5
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_8)
+  [1] StorageDead(_7)
+  [2] StorageDead(_6)
+  [3] _0 = core::option::Option::<scalar_value::U64ScalarValueData>::None
+  TERM: goto -> bb5
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_5)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2063 | PATH: scalar_value::U64ScalarValueData::is_known | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (3): ["LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'Projection::Deref', 'Projection::Field(on scalar_value::U64ScalarValueData)']
+BLOCKS: 1 (cleanup=0) | STMTS: 4 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} scalar_value::U64ScalarValueData), Field(1, u64 on scalar_value::U64ScalarValueData)]"]
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Eq'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2063 path=scalar_value::U64ScalarValueData::is_known args=1 locals=3 blocks=1
+//   _0: bool (mut=Mut)
+//   _1: &'{erased} scalar_value::U64ScalarValueData (mut=Not)
+//   _2: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy ((*_1).1: u64)
+  [2] _0 = Eq(move _2, const 0_u64)
+  [3] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2064 | PATH: scalar_value::U64ScalarValueData::is_fully_initialized | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (3): ["LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'Projection::Deref', 'Projection::Field(on scalar_value::U64ScalarValueData)']
+BLOCKS: 1 (cleanup=0) | STMTS: 4 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} scalar_value::U64ScalarValueData), Field(2, u64 on scalar_value::U64ScalarValueData)]"]
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Eq'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64'] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2064 path=scalar_value::U64ScalarValueData::is_fully_initialized args=1 locals=3 blocks=1
+//   _0: bool (mut=Mut)
+//   _1: &'{erased} scalar_value::U64ScalarValueData (mut=Not)
+//   _2: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy ((*_1).2: u64)
+  [2] _0 = Eq(move _2, const 0_u64)
+  [3] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2065 | PATH: scalar_value::U64ScalarValueData::is_uninitialized | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): required constants are unavailable in the scalar model
+COMPLETE MVP GAPS (5): ['Const::Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)', "LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'Projection::Deref', 'Projection::Field(on scalar_value::U64ScalarValueData)', 'RequiredConsts(1)']
+BLOCKS: 1 (cleanup=0) | STMTS: 4 | REQ_CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)']
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} scalar_value::U64ScalarValueData), Field(2, u64 on scalar_value::U64ScalarValueData)]"]
+RVALUES: ['BinaryOp', 'Use']
+BINOPS: ['Eq'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64) : u64'] | UNSUP_CONSTS: ['non-Val const: Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)']
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2065 path=scalar_value::U64ScalarValueData::is_uninitialized args=1 locals=3 blocks=1
+//   _0: bool (mut=Mut)
+//   _1: &'{erased} scalar_value::U64ScalarValueData (mut=Not)
+//   _2: u64 (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_2)
+  [1] _2 = copy ((*_1).2: u64)
+  [2] _0 = Eq(move _2, const core::num::<impl u64>::MAX)
+  [3] StorageDead(_2)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2067 | PATH: scalar_value::U64ScalarValueData::min | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (4): ["LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'Projection::Deref', 'Projection::Field(on scalar_value::U64Range)', 'Projection::Field(on scalar_value::U64ScalarValueData)']
+BLOCKS: 1 (cleanup=0) | STMTS: 1 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} scalar_value::U64ScalarValueData), Field(3, scalar_value::U64Range on scalar_value::U64ScalarValueData), Field(0, u64 on scalar_value::U64Range)]"]
+RVALUES: ['Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2067 path=scalar_value::U64ScalarValueData::min args=1 locals=2 blocks=1
+//   _0: u64 (mut=Mut)
+//   _1: &'{erased} scalar_value::U64ScalarValueData (mut=Not)
+bb0 (cleanup=false): {
+  [0] _0 = copy (((*_1).3: scalar_value::U64Range).0: u64)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2068 | PATH: scalar_value::U64ScalarValueData::max | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: &'{erased} scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (4): ["LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'Projection::Deref', 'Projection::Field(on scalar_value::U64Range)', 'Projection::Field(on scalar_value::U64ScalarValueData)']
+BLOCKS: 1 (cleanup=0) | STMTS: 1 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData"]
+PROJECTIONS: ["_1: [Deref(from &'{erased} scalar_value::U64ScalarValueData), Field(3, scalar_value::U64Range on scalar_value::U64ScalarValueData), Field(1, u64 on scalar_value::U64Range)]"]
+RVALUES: ['Use']
+BINOPS: [] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Return']
+CALLS: []
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2068 path=scalar_value::U64ScalarValueData::max args=1 locals=2 blocks=1
+//   _0: u64 (mut=Mut)
+//   _1: &'{erased} scalar_value::U64ScalarValueData (mut=Not)
+bb0 (cleanup=false): {
+  [0] _0 = copy (((*_1).3: scalar_value::U64Range).1: u64)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2078 | PATH: scalar_value::U64ScalarValueData::bitand_scalar | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (9): ["LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'LocalTy(scalar_value::U64Range)', 'LocalTy(scalar_value::U64ScalarValueData)', 'Projection::Field(on scalar_value::U64ScalarValueData)', 'Rvalue::Ref(Shared, scalar_value::U64ScalarValueData)', 'Terminator::Call(scalar_value::U64Range::new)', 'Terminator::Call(scalar_value::U64ScalarValueData::max)', 'Terminator::Call(scalar_value::U64ScalarValueData::new)', 'Terminator::Call(scalar_value::min_u64)']
+BLOCKS: 6 (cleanup=0) | STMTS: 86 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData", 'scalar_value::U64Range', 'scalar_value::U64ScalarValueData']
+PROJECTIONS: ['_1: [Field(0, u64 on scalar_value::U64ScalarValueData)]', '_1: [Field(1, u64 on scalar_value::U64ScalarValueData)]', '_1: [Field(2, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(0, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(1, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(2, u64 on scalar_value::U64ScalarValueData)]']
+RVALUES: ['BinaryOp', 'Ref', 'Use']
+BINOPS: ['BitAnd', 'BitOr'] | UNOPS: [] | CASTS: []
+AGGREGATES: [] | REFS: ['Ref(Shared, scalar_value::U64ScalarValueData)']
+CONSTS: ['Val(Scalar(0x0000000000000000), u64) : u64'] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Return']
+CALLS: ['scalar_value::U64ScalarValueData::max -> dest=_5, target=Some(bb1), unwind=Continue', 'scalar_value::U64ScalarValueData::max -> dest=_7, target=Some(bb2), unwind=Continue', 'scalar_value::min_u64 -> dest=_4, target=Some(bb3), unwind=Continue', 'scalar_value::U64Range::new -> dest=_3, target=Some(bb4), unwind=Continue', 'scalar_value::U64ScalarValueData::new -> dest=_0, target=Some(bb5), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2078 path=scalar_value::U64ScalarValueData::bitand_scalar args=2 locals=33 blocks=6
+//   _0: scalar_value::U64ScalarValueData (mut=Mut)
+//   _1: scalar_value::U64ScalarValueData (mut=Not)
+//   _2: scalar_value::U64ScalarValueData (mut=Not)
+//   _3: scalar_value::U64Range (mut=Not)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: &'{erased} scalar_value::U64ScalarValueData (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: &'{erased} scalar_value::U64ScalarValueData (mut=Mut)
+//   _9: u64 (mut=Not)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Mut)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+//   _16: u64 (mut=Not)
+//   _17: u64 (mut=Mut)
+//   _18: u64 (mut=Mut)
+//   _19: u64 (mut=Mut)
+//   _20: u64 (mut=Mut)
+//   _21: u64 (mut=Not)
+//   _22: u64 (mut=Mut)
+//   _23: u64 (mut=Mut)
+//   _24: u64 (mut=Mut)
+//   _25: u64 (mut=Mut)
+//   _26: u64 (mut=Not)
+//   _27: u64 (mut=Mut)
+//   _28: u64 (mut=Mut)
+//   _29: u64 (mut=Mut)
+//   _30: u64 (mut=Mut)
+//   _31: u64 (mut=Mut)
+//   _32: scalar_value::U64Range (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] StorageLive(_6)
+  [4] _6 = &_1
+  TERM: _5 = scalar_value::U64ScalarValueData::max(move _6) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageLive(_7)
+  [2] StorageLive(_8)
+  [3] _8 = &_2
+  TERM: _7 = scalar_value::U64ScalarValueData::max(move _8) -> [return: bb2, unwind continue]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_8)
+  TERM: _4 = scalar_value::min_u64(move _5, move _7) -> [return: bb3, unwind continue]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_7)
+  [1] StorageDead(_5)
+  TERM: _3 = scalar_value::U64Range::new(const 0_u64, move _4) -> [return: bb4, unwind continue]
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_4)
+  [1] StorageLive(_9)
+  [2] StorageLive(_10)
+  [3] StorageLive(_11)
+  [4] _11 = copy (_1.0: u64)
+  [5] StorageLive(_12)
+  [6] _12 = copy (_1.1: u64)
+  [7] _10 = BitOr(move _11, move _12)
+  [8] StorageDead(_12)
+  [9] StorageDead(_11)
+  [10] StorageLive(_13)
+  [11] StorageLive(_14)
+  [12] _14 = copy (_2.0: u64)
+  [13] StorageLive(_15)
+  [14] _15 = copy (_2.1: u64)
+  [15] _13 = BitOr(move _14, move _15)
+  [16] StorageDead(_15)
+  [17] StorageDead(_14)
+  [18] _9 = BitAnd(move _10, move _13)
+  [19] StorageDead(_13)
+  [20] StorageDead(_10)
+  [21] StorageLive(_16)
+  [22] StorageLive(_17)
+  [23] StorageLive(_18)
+  [24] _18 = copy (_1.1: u64)
+  [25] StorageLive(_19)
+  [26] _19 = copy (_2.1: u64)
+  [27] _17 = BitOr(move _18, move _19)
+  [28] StorageDead(_19)
+  [29] StorageDead(_18)
+  [30] StorageLive(_20)
+  [31] _20 = copy _9
+  [32] _16 = BitAnd(move _17, move _20)
+  [33] StorageDead(_20)
+  [34] StorageDead(_17)
+  [35] StorageLive(_21)
+  [36] StorageLive(_22)
+  [37] StorageLive(_23)
+  [38] _23 = copy (_1.2: u64)
+  [39] StorageLive(_24)
+  [40] _24 = copy (_2.2: u64)
+  [41] _22 = BitOr(move _23, move _24)
+  [42] StorageDead(_24)
+  [43] StorageDead(_23)
+  [44] StorageLive(_25)
+  [45] _25 = copy _9
+  [46] _21 = BitAnd(move _22, move _25)
+  [47] StorageDead(_25)
+  [48] StorageDead(_22)
+  [49] StorageLive(_26)
+  [50] StorageLive(_27)
+  [51] _27 = copy (_1.0: u64)
+  [52] StorageLive(_28)
+  [53] _28 = copy (_2.0: u64)
+  [54] _26 = BitAnd(move _27, move _28)
+  [55] StorageDead(_28)
+  [56] StorageDead(_27)
+  [57] StorageLive(_29)
+  [58] _29 = copy _26
+  [59] StorageLive(_30)
+  [60] _30 = copy _16
+  [61] StorageLive(_31)
+  [62] _31 = copy _21
+  [63] StorageLive(_32)
+  [64] _32 = copy _3
+  TERM: _0 = scalar_value::U64ScalarValueData::new(move _29, move _30, move _31, move _32) -> [return: bb5, unwind continue]
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_32)
+  [1] StorageDead(_31)
+  [2] StorageDead(_30)
+  [3] StorageDead(_29)
+  [4] StorageDead(_26)
+  [5] StorageDead(_21)
+  [6] StorageDead(_16)
+  [7] StorageDead(_9)
+  [8] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2079 | PATH: scalar_value::U64ScalarValueData::bitor_scalar | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): required constants are unavailable in the scalar model
+COMPLETE MVP GAPS (12): ['Const::Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)', "LocalTy(&'{erased} scalar_value::U64ScalarValueData)", 'LocalTy(scalar_value::U64Range)', 'LocalTy(scalar_value::U64ScalarValueData)', 'Projection::Field(on scalar_value::U64ScalarValueData)', 'RequiredConsts(1)', 'Rvalue::Ref(Shared, scalar_value::U64ScalarValueData)', 'Rvalue::UnaryOp(Not)', 'Terminator::Call(scalar_value::U64Range::new)', 'Terminator::Call(scalar_value::U64ScalarValueData::min)', 'Terminator::Call(scalar_value::U64ScalarValueData::new)', 'Terminator::Call(scalar_value::max_u64)']
+BLOCKS: 6 (cleanup=0) | STMTS: 71 | REQ_CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)']
+UNSUPPORTED_TYS: ["&'{erased} scalar_value::U64ScalarValueData", 'scalar_value::U64Range', 'scalar_value::U64ScalarValueData']
+PROJECTIONS: ['_1: [Field(0, u64 on scalar_value::U64ScalarValueData)]', '_1: [Field(1, u64 on scalar_value::U64ScalarValueData)]', '_1: [Field(2, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(0, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(1, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(2, u64 on scalar_value::U64ScalarValueData)]']
+RVALUES: ['BinaryOp', 'Ref', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr'] | UNOPS: ['Not'] | CASTS: []
+AGGREGATES: [] | REFS: ['Ref(Shared, scalar_value::U64ScalarValueData)']
+CONSTS: ['Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64) : u64'] | UNSUP_CONSTS: ['non-Val const: Unevaluated(UnevaluatedConst { def: DefId(1:37077 ~ core[3475]::num::{impl#9}::MAX), args: [], promoted: None }, u64)']
+TERMINATORS: ['Call', 'Return']
+CALLS: ['scalar_value::U64ScalarValueData::min -> dest=_5, target=Some(bb1), unwind=Continue', 'scalar_value::U64ScalarValueData::min -> dest=_7, target=Some(bb2), unwind=Continue', 'scalar_value::max_u64 -> dest=_4, target=Some(bb3), unwind=Continue', 'scalar_value::U64Range::new -> dest=_3, target=Some(bb4), unwind=Continue', 'scalar_value::U64ScalarValueData::new -> dest=_0, target=Some(bb5), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2079 path=scalar_value::U64ScalarValueData::bitor_scalar args=2 locals=28 blocks=6
+//   _0: scalar_value::U64ScalarValueData (mut=Mut)
+//   _1: scalar_value::U64ScalarValueData (mut=Not)
+//   _2: scalar_value::U64ScalarValueData (mut=Not)
+//   _3: scalar_value::U64Range (mut=Not)
+//   _4: u64 (mut=Mut)
+//   _5: u64 (mut=Mut)
+//   _6: &'{erased} scalar_value::U64ScalarValueData (mut=Mut)
+//   _7: u64 (mut=Mut)
+//   _8: &'{erased} scalar_value::U64ScalarValueData (mut=Mut)
+//   _9: u64 (mut=Not)
+//   _10: u64 (mut=Mut)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Not)
+//   _13: u64 (mut=Mut)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+//   _16: u64 (mut=Mut)
+//   _17: u64 (mut=Mut)
+//   _18: u64 (mut=Not)
+//   _19: u64 (mut=Mut)
+//   _20: u64 (mut=Mut)
+//   _21: u64 (mut=Mut)
+//   _22: u64 (mut=Mut)
+//   _23: u64 (mut=Mut)
+//   _24: u64 (mut=Mut)
+//   _25: u64 (mut=Mut)
+//   _26: u64 (mut=Mut)
+//   _27: scalar_value::U64Range (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  [1] StorageLive(_4)
+  [2] StorageLive(_5)
+  [3] StorageLive(_6)
+  [4] _6 = &_1
+  TERM: _5 = scalar_value::U64ScalarValueData::min(move _6) -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageDead(_6)
+  [1] StorageLive(_7)
+  [2] StorageLive(_8)
+  [3] _8 = &_2
+  TERM: _7 = scalar_value::U64ScalarValueData::min(move _8) -> [return: bb2, unwind continue]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_8)
+  TERM: _4 = scalar_value::max_u64(move _5, move _7) -> [return: bb3, unwind continue]
+}
+bb3 (cleanup=false): {
+  [0] StorageDead(_7)
+  [1] StorageDead(_5)
+  TERM: _3 = scalar_value::U64Range::new(move _4, const core::num::<impl u64>::MAX) -> [return: bb4, unwind continue]
+}
+bb4 (cleanup=false): {
+  [0] StorageDead(_4)
+  [1] StorageLive(_9)
+  [2] StorageLive(_10)
+  [3] _10 = copy (_1.0: u64)
+  [4] StorageLive(_11)
+  [5] _11 = copy (_2.0: u64)
+  [6] _9 = BitOr(move _10, move _11)
+  [7] StorageDead(_11)
+  [8] StorageDead(_10)
+  [9] StorageLive(_12)
+  [10] StorageLive(_13)
+  [11] StorageLive(_14)
+  [12] _14 = copy (_1.1: u64)
+  [13] StorageLive(_15)
+  [14] _15 = copy (_2.1: u64)
+  [15] _13 = BitOr(move _14, move _15)
+  [16] StorageDead(_15)
+  [17] StorageDead(_14)
+  [18] StorageLive(_16)
+  [19] StorageLive(_17)
+  [20] _17 = copy _9
+  [21] _16 = Not(move _17)
+  [22] StorageDead(_17)
+  [23] _12 = BitAnd(move _13, move _16)
+  [24] StorageDead(_16)
+  [25] StorageDead(_13)
+  [26] StorageLive(_18)
+  [27] StorageLive(_19)
+  [28] StorageLive(_20)
+  [29] _20 = copy (_1.2: u64)
+  [30] StorageLive(_21)
+  [31] _21 = copy (_2.2: u64)
+  [32] _19 = BitOr(move _20, move _21)
+  [33] StorageDead(_21)
+  [34] StorageDead(_20)
+  [35] StorageLive(_22)
+  [36] StorageLive(_23)
+  [37] _23 = copy _9
+  [38] _22 = Not(move _23)
+  [39] StorageDead(_23)
+  [40] _18 = BitAnd(move _19, move _22)
+  [41] StorageDead(_22)
+  [42] StorageDead(_19)
+  [43] StorageLive(_24)
+  [44] _24 = copy _9
+  [45] StorageLive(_25)
+  [46] _25 = copy _12
+  [47] StorageLive(_26)
+  [48] _26 = copy _18
+  [49] StorageLive(_27)
+  [50] _27 = copy _3
+  TERM: _0 = scalar_value::U64ScalarValueData::new(move _24, move _25, move _26, move _27) -> [return: bb5, unwind continue]
+}
+bb5 (cleanup=false): {
+  [0] StorageDead(_27)
+  [1] StorageDead(_26)
+  [2] StorageDead(_25)
+  [3] StorageDead(_24)
+  [4] StorageDead(_18)
+  [5] StorageDead(_12)
+  [6] StorageDead(_9)
+  [7] StorageDead(_3)
+  TERM: return
+}
+
+================================================================================
+DEF_ID: 2080 | PATH: scalar_value::U64ScalarValueData::bitxor_scalar | KIND: AssocFn
+FIRST REFUSAL (anneal-rustc-capture): unsupported type: scalar_value::U64ScalarValueData
+COMPLETE MVP GAPS (6): ['LocalTy(scalar_value::U64Range)', 'LocalTy(scalar_value::U64ScalarValueData)', 'Projection::Field(on scalar_value::U64ScalarValueData)', 'Rvalue::UnaryOp(Not)', 'Terminator::Call(scalar_value::U64Range::max)', 'Terminator::Call(scalar_value::U64ScalarValueData::new)']
+BLOCKS: 3 (cleanup=0) | STMTS: 50 | REQ_CONSTS: []
+UNSUPPORTED_TYS: ['scalar_value::U64Range', 'scalar_value::U64ScalarValueData']
+PROJECTIONS: ['_1: [Field(0, u64 on scalar_value::U64ScalarValueData)]', '_1: [Field(1, u64 on scalar_value::U64ScalarValueData)]', '_1: [Field(2, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(0, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(1, u64 on scalar_value::U64ScalarValueData)]', '_2: [Field(2, u64 on scalar_value::U64ScalarValueData)]']
+RVALUES: ['BinaryOp', 'UnaryOp', 'Use']
+BINOPS: ['BitAnd', 'BitOr', 'BitXor'] | UNOPS: ['Not'] | CASTS: []
+AGGREGATES: [] | REFS: []
+CONSTS: [] | UNSUP_CONSTS: []
+TERMINATORS: ['Call', 'Return']
+CALLS: ['scalar_value::U64Range::max -> dest=_3, target=Some(bb1), unwind=Continue', 'scalar_value::U64ScalarValueData::new -> dest=_0, target=Some(bb2), unwind=Continue']
+ASSERTS: [] | DROPS: []
+--- PRETTY MIR ---
+// def_id=2080 path=scalar_value::U64ScalarValueData::bitxor_scalar args=2 locals=20 blocks=3
+//   _0: scalar_value::U64ScalarValueData (mut=Mut)
+//   _1: scalar_value::U64ScalarValueData (mut=Not)
+//   _2: scalar_value::U64ScalarValueData (mut=Not)
+//   _3: scalar_value::U64Range (mut=Not)
+//   _4: u64 (mut=Not)
+//   _5: u64 (mut=Mut)
+//   _6: u64 (mut=Mut)
+//   _7: u64 (mut=Not)
+//   _8: u64 (mut=Mut)
+//   _9: u64 (mut=Mut)
+//   _10: u64 (mut=Not)
+//   _11: u64 (mut=Mut)
+//   _12: u64 (mut=Mut)
+//   _13: u64 (mut=Mut)
+//   _14: u64 (mut=Mut)
+//   _15: u64 (mut=Mut)
+//   _16: u64 (mut=Mut)
+//   _17: u64 (mut=Mut)
+//   _18: u64 (mut=Mut)
+//   _19: scalar_value::U64Range (mut=Mut)
+bb0 (cleanup=false): {
+  [0] StorageLive(_3)
+  TERM: _3 = scalar_value::U64Range::max() -> [return: bb1, unwind continue]
+}
+bb1 (cleanup=false): {
+  [0] StorageLive(_4)
+  [1] StorageLive(_5)
+  [2] _5 = copy (_1.1: u64)
+  [3] StorageLive(_6)
+  [4] _6 = copy (_2.1: u64)
+  [5] _4 = BitOr(move _5, move _6)
+  [6] StorageDead(_6)
+  [7] StorageDead(_5)
+  [8] StorageLive(_7)
+  [9] StorageLive(_8)
+  [10] _8 = copy (_1.2: u64)
+  [11] StorageLive(_9)
+  [12] _9 = copy (_2.2: u64)
+  [13] _7 = BitOr(move _8, move _9)
+  [14] StorageDead(_9)
+  [15] StorageDead(_8)
+  [16] StorageLive(_10)
+  [17] StorageLive(_11)
+  [18] StorageLive(_12)
+  [19] _12 = copy (_1.0: u64)
+  [20] StorageLive(_13)
+  [21] _13 = copy (_2.0: u64)
+  [22] _11 = BitXor(move _12, move _13)
+  [23] StorageDead(_13)
+  [24] StorageDead(_12)
+  [25] StorageLive(_14)
+  [26] StorageLive(_15)
+  [27] _15 = copy _4
+  [28] _14 = Not(move _15)
+  [29] StorageDead(_15)
+  [30] _10 = BitAnd(move _11, move _14)
+  [31] StorageDead(_14)
+  [32] StorageDead(_11)
+  [33] StorageLive(_16)
+  [34] _16 = copy _10
+  [35] StorageLive(_17)
+  [36] _17 = copy _4
+  [37] StorageLive(_18)
+  [38] _18 = copy _7
+  [39] StorageLive(_19)
+  [40] _19 = copy _3
+  TERM: _0 = scalar_value::U64ScalarValueData::new(move _16, move _17, move _18, move _19) -> [return: bb2, unwind continue]
+}
+bb2 (cleanup=false): {
+  [0] StorageDead(_19)
+  [1] StorageDead(_18)
+  [2] StorageDead(_17)
+  [3] StorageDead(_16)
+  [4] StorageDead(_10)
+  [5] StorageDead(_7)
+  [6] StorageDead(_4)
+  [7] StorageDead(_3)
+  TERM: return
+}

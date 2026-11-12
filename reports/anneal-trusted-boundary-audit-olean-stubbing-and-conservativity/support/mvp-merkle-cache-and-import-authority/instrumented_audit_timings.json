@@ -1,0 +1,518 @@
+{
+  "validateGraphNanos": 1378718,
+  "totalTargetAuditBodyNanos": 6347895398,
+  "sourceInventorySize": 1164,
+  "sourceInventoryNanos": 3238917,
+  "setupRolesNanos": 838665,
+  "rssSnapshots": {
+    "entry": {
+      "vmRss": "757492 kB",
+      "vmHwm": "757492 kB"
+    },
+    "afterKernelReplayAll": {
+      "vmRss": "1044640 kB",
+      "vmHwm": "1044640 kB"
+    },
+    "afterImportEnvTargetMetadataExts": {
+      "vmRss": "1366552 kB",
+      "vmHwm": "1366552 kB"
+    },
+    "afterImportEnvRootsNoExts": {
+      "vmRss": "918804 kB",
+      "vmHwm": "918804 kB"
+    },
+    "afterImportEnvFoundation": {
+      "vmRss": "976488 kB",
+      "vmHwm": "976488 kB"
+    },
+    "afterImportEnvFixedMetadataExts": {
+      "vmRss": "1199632 kB",
+      "vmHwm": "1199632 kB"
+    },
+    "afterDescribe": {
+      "vmRss": "1298932 kB",
+      "vmHwm": "1364964 kB"
+    },
+    "afterAuthorityAndReplayMap": {
+      "vmRss": "933780 kB",
+      "vmHwm": "933780 kB"
+    }
+  },
+  "rootChecksNanos": 470785,
+  "replayMapSize": 1683,
+  "reachedSize": 2996,
+  "productionStepsBreakdown": [
+    {
+      "totalReplayed": 500,
+      "suffixThms": 246,
+      "stateDefs": 246,
+      "otherDecls": 8
+    }
+  ],
+  "perModuleReplay": [
+    {
+      "totalModuleDecls": 12,
+      "role": "library",
+      "replayedTheorems": 2,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 2,
+      "replayNanos": 628878,
+      "module": "Init.ByCases"
+    },
+    {
+      "totalModuleDecls": 446,
+      "role": "library",
+      "replayedTheorems": 18,
+      "replayedOther": 0,
+      "replayedDefinitions": 2,
+      "replayedDecls": 20,
+      "replayNanos": 2448370,
+      "module": "Init.PropLemmas"
+    },
+    {
+      "totalModuleDecls": 67,
+      "role": "library",
+      "replayedTheorems": 4,
+      "replayedOther": 0,
+      "replayedDefinitions": 7,
+      "replayedDecls": 11,
+      "replayNanos": 1519398,
+      "module": "Init.Classical"
+    },
+    {
+      "totalModuleDecls": 52,
+      "role": "library",
+      "replayedTheorems": 0,
+      "replayedOther": 4,
+      "replayedDefinitions": 1,
+      "replayedDecls": 5,
+      "replayNanos": 274977,
+      "module": "Init.Data.RArray"
+    },
+    {
+      "totalModuleDecls": 294,
+      "role": "library",
+      "replayedTheorems": 10,
+      "replayedOther": 0,
+      "replayedDefinitions": 3,
+      "replayedDecls": 13,
+      "replayNanos": 2426510,
+      "module": "Init.Data.Bool"
+    },
+    {
+      "totalModuleDecls": 272,
+      "role": "library",
+      "replayedTheorems": 25,
+      "replayedOther": 13,
+      "replayedDefinitions": 61,
+      "replayedDecls": 99,
+      "replayNanos": 56027479,
+      "module": "Init.Data.Nat.Internal.Linear"
+    },
+    {
+      "totalModuleDecls": 30,
+      "role": "library",
+      "replayedTheorems": 2,
+      "replayedOther": 4,
+      "replayedDefinitions": 0,
+      "replayedDecls": 6,
+      "replayNanos": 799601,
+      "module": "Init.Data.BEq"
+    },
+    {
+      "totalModuleDecls": 1156,
+      "role": "library",
+      "replayedTheorems": 8,
+      "replayedOther": 0,
+      "replayedDefinitions": 3,
+      "replayedDecls": 11,
+      "replayNanos": 4931061,
+      "module": "Init.Data.List.Lemmas"
+    },
+    {
+      "totalModuleDecls": 61,
+      "role": "library",
+      "replayedTheorems": 12,
+      "replayedOther": 0,
+      "replayedDefinitions": 8,
+      "replayedDecls": 20,
+      "replayNanos": 4904407,
+      "module": "Init.Data.Nat.Dvd"
+    },
+    {
+      "totalModuleDecls": 41,
+      "role": "library",
+      "replayedTheorems": 1,
+      "replayedOther": 0,
+      "replayedDefinitions": 6,
+      "replayedDecls": 7,
+      "replayNanos": 597796,
+      "module": "Init.Data.Int.DivMod.Basic"
+    },
+    {
+      "totalModuleDecls": 199,
+      "role": "library",
+      "replayedTheorems": 88,
+      "replayedOther": 0,
+      "replayedDefinitions": 14,
+      "replayedDecls": 102,
+      "replayNanos": 34035413,
+      "module": "Init.Data.Int.Lemmas"
+    },
+    {
+      "totalModuleDecls": 109,
+      "role": "library",
+      "replayedTheorems": 7,
+      "replayedOther": 8,
+      "replayedDefinitions": 0,
+      "replayedDecls": 15,
+      "replayNanos": 1225584,
+      "module": "Init.Data.Order.Classes"
+    },
+    {
+      "totalModuleDecls": 52,
+      "role": "library",
+      "replayedTheorems": 4,
+      "replayedOther": 0,
+      "replayedDefinitions": 7,
+      "replayedDecls": 11,
+      "replayNanos": 1066045,
+      "module": "Init.Data.Order.Factories"
+    },
+    {
+      "totalModuleDecls": 126,
+      "role": "library",
+      "replayedTheorems": 4,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 4,
+      "replayNanos": 324582,
+      "module": "Init.Data.Order.Lemmas"
+    },
+    {
+      "totalModuleDecls": 533,
+      "role": "library",
+      "replayedTheorems": 99,
+      "replayedOther": 0,
+      "replayedDefinitions": 28,
+      "replayedDecls": 127,
+      "replayNanos": 23313014,
+      "module": "Init.Data.Int.Order"
+    },
+    {
+      "totalModuleDecls": 68,
+      "role": "library",
+      "replayedTheorems": 15,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 15,
+      "replayNanos": 3124371,
+      "module": "Init.Omega.Int"
+    },
+    {
+      "totalModuleDecls": 119,
+      "role": "library",
+      "replayedTheorems": 45,
+      "replayedOther": 0,
+      "replayedDefinitions": 25,
+      "replayedDecls": 70,
+      "replayNanos": 26465461,
+      "module": "Init.Data.Int.DivMod.Bootstrap"
+    },
+    {
+      "totalModuleDecls": 135,
+      "role": "library",
+      "replayedTheorems": 14,
+      "replayedOther": 0,
+      "replayedDefinitions": 4,
+      "replayedDecls": 18,
+      "replayNanos": 5315547,
+      "module": "Init.Data.Nat.Gcd"
+    },
+    {
+      "totalModuleDecls": 126,
+      "role": "library",
+      "replayedTheorems": 41,
+      "replayedOther": 0,
+      "replayedDefinitions": 21,
+      "replayedDecls": 62,
+      "replayNanos": 32960727,
+      "module": "Init.Omega.IntList"
+    },
+    {
+      "totalModuleDecls": 34,
+      "role": "library",
+      "replayedTheorems": 6,
+      "replayedOther": 0,
+      "replayedDefinitions": 11,
+      "replayedDecls": 17,
+      "replayNanos": 936370,
+      "module": "Init.Omega.Coeffs"
+    },
+    {
+      "totalModuleDecls": 81,
+      "role": "library",
+      "replayedTheorems": 15,
+      "replayedOther": 3,
+      "replayedDefinitions": 14,
+      "replayedDecls": 32,
+      "replayNanos": 6972937,
+      "module": "Init.Omega.LinearCombo"
+    },
+    {
+      "totalModuleDecls": 134,
+      "role": "library",
+      "replayedTheorems": 24,
+      "replayedOther": 3,
+      "replayedDefinitions": 37,
+      "replayedDecls": 64,
+      "replayNanos": 38238036,
+      "module": "Init.Omega.Constraint"
+    },
+    {
+      "totalModuleDecls": 7,
+      "role": "library",
+      "replayedTheorems": 2,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 2,
+      "replayNanos": 346659,
+      "module": "Init.Omega.Logic"
+    },
+    {
+      "totalModuleDecls": 5,
+      "role": "library",
+      "replayedTheorems": 1,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 1,
+      "replayNanos": 169411,
+      "module": "Init.Data.Nat.Order"
+    },
+    {
+      "totalModuleDecls": 767,
+      "role": "library",
+      "replayedTheorems": 38,
+      "replayedOther": 0,
+      "replayedDefinitions": 19,
+      "replayedDecls": 57,
+      "replayNanos": 17350989,
+      "module": "Init.Data.Nat.Lemmas"
+    },
+    {
+      "totalModuleDecls": 470,
+      "role": "library",
+      "replayedTheorems": 2,
+      "replayedOther": 0,
+      "replayedDefinitions": 6,
+      "replayedDecls": 8,
+      "replayNanos": 2069624,
+      "module": "Init.Data.Fin.Lemmas"
+    },
+    {
+      "totalModuleDecls": 8,
+      "role": "library",
+      "replayedTheorems": 0,
+      "replayedOther": 0,
+      "replayedDefinitions": 2,
+      "replayedDecls": 2,
+      "replayNanos": 120911,
+      "module": "Init.Data.Int.Bitwise.Basic"
+    },
+    {
+      "totalModuleDecls": 35,
+      "role": "library",
+      "replayedTheorems": 3,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 3,
+      "replayNanos": 1506292,
+      "module": "Init.Data.Int.Pow"
+    },
+    {
+      "totalModuleDecls": 221,
+      "role": "library",
+      "replayedTheorems": 62,
+      "replayedOther": 0,
+      "replayedDefinitions": 14,
+      "replayedDecls": 76,
+      "replayNanos": 134003694,
+      "module": "Init.Data.Nat.Bitwise.Lemmas"
+    },
+    {
+      "totalModuleDecls": 191,
+      "role": "library",
+      "replayedTheorems": 9,
+      "replayedOther": 0,
+      "replayedDefinitions": 19,
+      "replayedDecls": 28,
+      "replayNanos": 2753215,
+      "module": "Init.Data.BitVec.Basic"
+    },
+    {
+      "totalModuleDecls": 54,
+      "role": "library",
+      "replayedTheorems": 11,
+      "replayedOther": 0,
+      "replayedDefinitions": 3,
+      "replayedDecls": 14,
+      "replayNanos": 11127539,
+      "module": "Init.Data.BitVec.Bootstrap"
+    },
+    {
+      "totalModuleDecls": 2084,
+      "role": "library",
+      "replayedTheorems": 13,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 13,
+      "replayNanos": 17222050,
+      "module": "Init.Data.BitVec.Lemmas"
+    },
+    {
+      "totalModuleDecls": 285,
+      "role": "model",
+      "replayedTheorems": 0,
+      "replayedOther": 55,
+      "replayedDefinitions": 25,
+      "replayedDecls": 80,
+      "replayNanos": 3227199,
+      "module": "Trusted.Mvp.Syntax"
+    },
+    {
+      "totalModuleDecls": 209,
+      "role": "model",
+      "replayedTheorems": 0,
+      "replayedOther": 27,
+      "replayedDefinitions": 91,
+      "replayedDecls": 118,
+      "replayNanos": 11770337,
+      "module": "Trusted.Mvp.Semantics"
+    },
+    {
+      "totalModuleDecls": 49,
+      "role": "proof",
+      "replayedTheorems": 7,
+      "replayedOther": 4,
+      "replayedDefinitions": 0,
+      "replayedDecls": 11,
+      "replayNanos": 2586706,
+      "module": "Anneal.Mvp.Execution"
+    },
+    {
+      "totalModuleDecls": 1,
+      "role": "capture",
+      "replayedTheorems": 0,
+      "replayedOther": 0,
+      "replayedDefinitions": 1,
+      "replayedDecls": 1,
+      "replayNanos": 653747,
+      "module": "Captured"
+    },
+    {
+      "totalModuleDecls": 37,
+      "role": "specification",
+      "replayedTheorems": 13,
+      "replayedOther": 0,
+      "replayedDefinitions": 9,
+      "replayedDecls": 22,
+      "replayNanos": 506487467,
+      "module": "Endianness"
+    },
+    {
+      "totalModuleDecls": 2,
+      "role": "proof",
+      "replayedTheorems": 1,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 1,
+      "replayNanos": 703302,
+      "module": "Inputs"
+    },
+    {
+      "totalModuleDecls": 18,
+      "role": "proof",
+      "replayedTheorems": 1,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 1,
+      "replayNanos": 5777414,
+      "module": "SourceInputs"
+    },
+    {
+      "totalModuleDecls": 2,
+      "role": "proof",
+      "replayedTheorems": 1,
+      "replayedOther": 0,
+      "replayedDefinitions": 1,
+      "replayedDecls": 2,
+      "replayNanos": 389905,
+      "module": "InitialCache"
+    },
+    {
+      "totalModuleDecls": 500,
+      "role": "proof",
+      "replayedTheorems": 254,
+      "replayedOther": 0,
+      "replayedDefinitions": 246,
+      "replayedDecls": 500,
+      "replayNanos": 3819923833,
+      "module": "ProductionSteps"
+    },
+    {
+      "totalModuleDecls": 6,
+      "role": "proof",
+      "replayedTheorems": 6,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 6,
+      "replayNanos": 113985613,
+      "module": "ProductionClaims"
+    },
+    {
+      "totalModuleDecls": 4,
+      "role": "specification",
+      "replayedTheorems": 0,
+      "replayedOther": 0,
+      "replayedDefinitions": 4,
+      "replayedDecls": 4,
+      "replayNanos": 459669,
+      "module": "Spec"
+    },
+    {
+      "totalModuleDecls": 1,
+      "role": "expected",
+      "replayedTheorems": 0,
+      "replayedOther": 0,
+      "replayedDefinitions": 1,
+      "replayedDecls": 1,
+      "replayNanos": 10789,
+      "module": "Expected"
+    },
+    {
+      "totalModuleDecls": 1,
+      "role": "proof",
+      "replayedTheorems": 1,
+      "replayedOther": 0,
+      "replayedDefinitions": 0,
+      "replayedDecls": 1,
+      "replayNanos": 1423124,
+      "module": "Proof"
+    }
+  ],
+  "kernelReplayAllNanos": 4847260582,
+  "kernelFinalDefEqNanos": 1335672,
+  "importEnvTargetMetadataExtsNanos": 188152557,
+  "importEnvRootsNoExtsNanos": 159767581,
+  "importEnvFoundationNanos": 47090478,
+  "importEnvFixedMetadataExtsNanos": 175304306,
+  "expectedReachedSize": 1561,
+  "describeJsonNanos": 8616126,
+  "compilerOverrideCheckNanos": 31537102,
+  "closureReachedNanos": 316030841,
+  "closureModelAndSpecNanos": 179139813,
+  "closureExpectedNanos": 88458807,
+  "authorityAndReplayMapNanos": 299274448,
+  "outerProcessWallMs": 15355.751803028397
+}

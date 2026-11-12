@@ -1,0 +1,4178 @@
+{
+  "cargo_anneal": {
+    "path": "cargo-anneal",
+    "size_bytes": 67254632,
+    "interpreter": "/lib64/ld-linux-x86-64.so.2",
+    "soname": null,
+    "dt_needed": [
+      "libgcc_s.so.1",
+      "libc.so.6",
+      "ld-linux-x86-64.so.2"
+    ],
+    "dt_rpath": [],
+    "dt_runpath": [
+      "<host-home>/.rustup/toolchains/nightly-2026-05-31-x86_64-unknown-linux-gnu/lib"
+    ],
+    "version_needs": {
+      "ld-linux-x86-64.so.2": [
+        "GLIBC_2.3"
+      ],
+      "libc.so.6": [
+        "GLIBC_2.2.5",
+        "GLIBC_2.3",
+        "GLIBC_2.3.4",
+        "GLIBC_2.4",
+        "GLIBC_2.5",
+        "GLIBC_2.6",
+        "GLIBC_2.9",
+        "GLIBC_2.14",
+        "GLIBC_2.15",
+        "GLIBC_2.16",
+        "GLIBC_2.17",
+        "GLIBC_2.18",
+        "GLIBC_2.25",
+        "GLIBC_2.27",
+        "GLIBC_2.28",
+        "GLIBC_2.29",
+        "GLIBC_2.30",
+        "GLIBC_2.32",
+        "GLIBC_2.33",
+        "GLIBC_2.34",
+        "GLIBC_2.39"
+      ],
+      "libgcc_s.so.1": [
+        "GCC_3.0",
+        "GCC_3.3",
+        "GCC_4.2.0"
+      ]
+    },
+    "string_hits": {
+      "google_home": {
+        ".dynstr (ALLOC)": {
+          "count": 1,
+          "samples": [
+            "<host-home>/.rustup/toolchains/nightly-2026-05-31-x86_64-unknown-linux-gnu/lib"
+          ]
+        },
+        ".rodata (ALLOC)": {
+          "count": 339,
+          "samples": [
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/http-1.5.0/src/uri/mod.rs",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/untrusted-0.9.0/src/lib.rs",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-0.23.46/src/quic.rs",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-0.23.46/src/common_state.rs",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ring-0.17.14/src/rsa/padding.rs"
+          ]
+        },
+        ".debug_str (NON-ALLOC)": {
+          "count": 277,
+          "samples": [
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/rustls-webpki-0.103.16/src/lib.rs/@/webpki.32cb91e98ba7c93-cgu.2",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ring-0.17.14/crypto/fipsmodule/aes/aes_nohw.c",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ring-0.17.14/crypto/fipsmodule/ec/ecp_nistz.c",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ring-0.17.14/crypto/fipsmodule/ec/p256-nistz.c",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/getrandom-0.2.17"
+          ]
+        },
+        ".debug_line (NON-ALLOC)": {
+          "count": 420,
+          "samples": [
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_builder-4.6.7",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.154",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/clap_lex-1.1.1",
+            "<host-home>/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/walkdir-2.5.0"
+          ]
+        }
+      },
+      "rustup": {
+        ".dynstr (ALLOC)": {
+          "count": 1,
+          "samples": [
+            "<host-home>/.rustup/toolchains/nightly-2026-05-31-x86_64-unknown-linux-gnu/lib"
+          ]
+        }
+      },
+      "elan": {
+        ".rodata (ALLOC)": {
+          "count": 1,
+          "samples": [
+            "Trusted/oleanolean.serverolean.privateir.sigir.ilean.lean.lean-toolchainfoundation-lock.json.elan/toolchains/leanprover--lean4---v4.34.1/bin/leantoolchain79fb1d26fa5a39385d59fdc48a711a14b0710ca6480271"
+          ]
+        }
+      }
+    }
+  },
+  "omnibus_elfs": [
+    {
+      "path": "bin/anneal-rustc-capture",
+      "size_bytes": 1064992,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libz.so.1",
+        "librustc_driver-5d5a3c5207375ffc.so",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../rust/lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14",
+          "GLIBC_2.34"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0"
+        ]
+      },
+      "string_hits": {
+        "nix_store": {
+          ".rodata (ALLOC)": {
+            "count": 33,
+            "samples": [
+              "/nix/store/gzfvki8b0q2a4x6xrm7q129jnfzsdrnn-rust-toolchain-x86_64-linux-2026-05-31/lib/rustlib/src/rust/library/alloc/src/collections/btree/node.rs",
+              "/nix/store/gzfvki8b0q2a4x6xrm7q129jnfzsdrnn-rust-toolchain-x86_64-linux-2026-05-31/lib/rustlib/src/rust/library/alloc/src/collections/btree/map/entry.rs",
+              "/nix/store/gzfvki8b0q2a4x6xrm7q129jnfzsdrnn-rust-toolchain-x86_64-linux-2026-05-31/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs",
+              "/nix/store/gzfvki8b0q2a4x6xrm7q129jnfzsdrnn-rust-toolchain-x86_64-linux-2026-05-31/lib/rustlib/rustc-src/rust/compiler/rustc_middle/src/ty/context.rs",
+              "/nix/store/gzfvki8b0q2a4x6xrm7q129jnfzsdrnn-rust-toolchain-x86_64-linux-2026-05-31/lib/rustlib/rustc-src/rust/compiler/rustc_span/src/def_id.rs"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/bin/cadical",
+      "size_bytes": 1111624,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libc.so.6",
+        "libc++.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libm.so.6",
+        "libdl.so.2",
+        "libpthread.so.0"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.14"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/clang",
+      "size_bytes": 119320,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libclang-cpp.so.22.1",
+        "libLLVM.so.22.1",
+        "libc++.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libclang-cpp.so.22.1": [
+          "LLVM_22.1"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/lake",
+      "size_bytes": 13840,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLake_shared.so",
+        "libInit_shared.so",
+        "libleanshared_2.so",
+        "libleanshared_1.so",
+        "libleanshared.so",
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib:$ORIGIN/../lib/lean"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/ld.lld",
+      "size_bytes": 6001368,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libz.so.1",
+        "libLLVM.so.22.1",
+        "libc++.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ],
+        "libz.so.1": [
+          "ZLIB_1.2.2"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/lean",
+      "size_bytes": 9024,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libInit_shared.so",
+        "libleanshared_2.so",
+        "libleanshared_1.so",
+        "libleanshared.so",
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib:$ORIGIN/../lib/lean"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/leanc",
+      "size_bytes": 36896,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libInit_shared.so",
+        "libleanshared_2.so",
+        "libleanshared_1.so",
+        "libleanshared.so",
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib:$ORIGIN/../lib/lean"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/leanchecker",
+      "size_bytes": 51080,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLake_shared.so",
+        "libInit_shared.so",
+        "libleanshared_2.so",
+        "libleanshared_1.so",
+        "libleanshared.so",
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib:$ORIGIN/../lib/lean"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/leanir",
+      "size_bytes": 220464,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libInit_shared.so",
+        "libleanshared_2.so",
+        "libleanshared_1.so",
+        "libleanshared.so",
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib:$ORIGIN/../lib/lean"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/leantar",
+      "size_bytes": 2692960,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {},
+      "string_hits": {}
+    },
+    {
+      "path": "lean/bin/llvm-ar",
+      "size_bytes": 76888,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1",
+        "libpthread.so.0",
+        "libc++.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/libLLVM.so.22.1",
+      "size_bytes": 77258216,
+      "interpreter": null,
+      "soname": "libLLVM.so.22.1",
+      "dt_needed": [
+        "librt.so.1",
+        "libdl.so.2",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libz.so.1",
+        "libc++.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.6",
+          "GLIBC_2.7",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16",
+          "GLIBC_2.17"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.27",
+          "GLIBC_2.29"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ],
+        "libz.so.1": [
+          "ZLIB_1.2.0"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/libatomic.so.1.2.0",
+      "size_bytes": 26416,
+      "interpreter": null,
+      "soname": "libatomic.so.1",
+      "dt_needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {
+        "nix_store": {
+          ".dynstr (ALLOC)": {
+            "count": 1,
+            "samples": [
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/libc++.so.1.0",
+      "size_bytes": 1337744,
+      "interpreter": null,
+      "soname": "libc++.so.1",
+      "dt_needed": [
+        "libatomic.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libdl.so.2",
+        "libpthread.so.0",
+        "libc.so.6",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.4",
+          "GLIBC_2.6",
+          "GLIBC_2.7",
+          "GLIBC_2.14",
+          "GLIBC_2.17",
+          "GLIBC_2.27"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/libc++abi.so.1.0",
+      "size_bytes": 408152,
+      "interpreter": null,
+      "soname": "libc++abi.so.1",
+      "dt_needed": [
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libunwind.so.1",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14",
+          "GLIBC_2.16",
+          "GLIBC_2.18"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/libclang-cpp.so.22.1",
+      "size_bytes": 65075176,
+      "interpreter": null,
+      "soname": "libclang-cpp.so.22.1",
+      "dt_needed": [
+        "libpthread.so.0",
+        "libLLVM.so.22.1",
+        "libc++.so.1",
+        "libc++abi.so.1",
+        "libunwind.so.1",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.2",
+          "GLIBC_2.4",
+          "GLIBC_2.9",
+          "GLIBC_2.14"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.29"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/libgcc_s.so.1",
+      "size_bytes": 102664,
+      "interpreter": null,
+      "soname": "libgcc_s.so.1",
+      "dt_needed": [
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {
+        "nix_store": {
+          ".dynstr (ALLOC)": {
+            "count": 1,
+            "samples": [
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/libunwind.so.1.0",
+      "size_bytes": 69928,
+      "interpreter": null,
+      "soname": "libunwind.so.1",
+      "dt_needed": [
+        "libdl.so.2",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/libz.so.1.2.11",
+      "size_bytes": 100640,
+      "interpreter": null,
+      "soname": "libz.so.1",
+      "dt_needed": [
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {
+        "nix_store": {
+          ".dynstr (ALLOC)": {
+            "count": 1,
+            "samples": [
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/glibc/ld-linux-x86.so",
+      "size_bytes": 174680,
+      "interpreter": null,
+      "soname": "ld-linux-x86-64.so.2",
+      "dt_needed": [],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {},
+      "string_hits": {
+        "nix_store": {
+          ".rodata (ALLOC)": {
+            "count": 3,
+            "samples": [
+              "  --inhibit-cache       Do not use /nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/etc/ld.so.cache",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/etc/ld.so.cache",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/glibc/ld.so",
+      "size_bytes": 174680,
+      "interpreter": null,
+      "soname": "ld-linux-x86-64.so.2",
+      "dt_needed": [],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {},
+      "string_hits": {
+        "nix_store": {
+          ".rodata (ALLOC)": {
+            "count": 3,
+            "samples": [
+              "  --inhibit-cache       Do not use /nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/etc/ld.so.cache",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/etc/ld.so.cache",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/glibc/libc.so",
+      "size_bytes": 1998936,
+      "interpreter": "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/ld-linux-x86-64.so.2",
+      "soname": "libc.so.6",
+      "dt_needed": [
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.3"
+        ]
+      },
+      "string_hits": {
+        "nix_store": {
+          ".rodata (ALLOC)": {
+            "count": 8,
+            "samples": [
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/gconv/gconv-modules.cache",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/share/locale",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/share/locale/%L/%N:/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/share/locale/%L/LC_MESSAGES/%N:/nix/store/hwwqshlmazzjzj7yhrkyj",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/libexec/getconf",
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/locale"
+            ]
+          },
+          ".interp (ALLOC)": {
+            "count": 1,
+            "samples": [
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/ld-linux-x86-64.so.2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/glibc/libdl.so",
+      "size_bytes": 18528,
+      "interpreter": null,
+      "soname": "libdl.so.2",
+      "dt_needed": [
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_PRIVATE"
+        ],
+        "libc.so.6": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/glibc/libm.so",
+      "size_bytes": 1440248,
+      "interpreter": null,
+      "soname": "libm.so.6",
+      "dt_needed": [
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_PRIVATE"
+        ],
+        "libc.so.6": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/glibc/libpthread.so",
+      "size_bytes": 137184,
+      "interpreter": "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/ld-linux-x86-64.so.2",
+      "soname": "libpthread.so.0",
+      "dt_needed": [
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.2.5"
+        ],
+        "libc.so.6": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {
+        "nix_store": {
+          ".interp (ALLOC)": {
+            "count": 1,
+            "samples": [
+              "/nix/store/hwwqshlmazzjzj7yhrkyjydxamvvkfd3-glibc-2.26-131/lib/ld-linux-x86-64.so.2"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "lean/lib/glibc/librt.so",
+      "size_bytes": 41696,
+      "interpreter": null,
+      "soname": "librt.so.1",
+      "dt_needed": [
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_PRIVATE",
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/lean/libInit_shared.so",
+      "size_bytes": 6264,
+      "interpreter": null,
+      "soname": "libInit_shared.so",
+      "dt_needed": [
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/..:$ORIGIN"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/lean/libLake_shared.so",
+      "size_bytes": 12545496,
+      "interpreter": null,
+      "soname": "libLake_shared.so",
+      "dt_needed": [
+        "libleanshared.so",
+        "libleanshared_2.so",
+        "libleanshared_1.so",
+        "libInit_shared.so",
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/..:$ORIGIN"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/lean/libleanshared.so",
+      "size_bytes": 233708536,
+      "interpreter": null,
+      "soname": "libleanshared.so",
+      "dt_needed": [
+        "libc.so.6",
+        "ld-linux-x86-64.so.2",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "librt.so.1",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/..:$ORIGIN"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.6",
+          "GLIBC_2.7",
+          "GLIBC_2.9",
+          "GLIBC_2.10",
+          "GLIBC_2.12",
+          "GLIBC_2.14",
+          "GLIBC_2.16",
+          "GLIBC_2.17"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.3",
+          "GLIBC_2.3.4"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/lean/libleanshared_1.so",
+      "size_bytes": 6264,
+      "interpreter": null,
+      "soname": "libleanshared_1.so",
+      "dt_needed": [
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/..:$ORIGIN"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "lean/lib/lean/libleanshared_2.so",
+      "size_bytes": 6264,
+      "interpreter": null,
+      "soname": "libleanshared_2.so",
+      "dt_needed": [
+        "libc.so.6",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libm.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/..:$ORIGIN"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/bin/cargo",
+      "size_bytes": 42876048,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.5",
+          "GLIBC_2.6",
+          "GLIBC_2.7",
+          "GLIBC_2.9",
+          "GLIBC_2.10",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16",
+          "GLIBC_2.17"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {
+        "rustup": {
+          ".rodata (ALLOC)": {
+            "count": 1,
+            "samples": [
+              "a Display implementation returned an error unexpectedlyError.cargo.rustupCARGO_HOMEcould not find cargo home dirRUSTUP_HOMEcould not find rustup home dir"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "path": "rust/bin/cargo-miri",
+      "size_bytes": 4412128,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.5",
+          "GLIBC_2.9",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/bin/miri",
+      "size_bytes": 13914616,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "librustc_driver-5d5a3c5207375ffc.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.6",
+          "GLIBC_2.9",
+          "GLIBC_2.10",
+          "GLIBC_2.14",
+          "GLIBC_2.17"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/bin/rustc",
+      "size_bytes": 646040,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "librustc_driver-5d5a3c5207375ffc.so",
+        "libdl.so.2",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.6",
+          "GLIBC_2.14",
+          "GLIBC_2.17"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/bin/rustdoc",
+      "size_bytes": 13717504,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "librustc_driver-5d5a3c5207375ffc.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.6",
+          "GLIBC_2.14",
+          "GLIBC_2.17"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/libLLVM.so.22.1-rust-1.98.0-nightly",
+      "size_bytes": 199489904,
+      "interpreter": null,
+      "soname": "libLLVM.so.22.1-rust-1.98.0-nightly",
+      "dt_needed": [
+        "librt.so.1",
+        "libdl.so.2",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libz.so.1",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.6",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_3.4",
+          "GCC_4.2.0"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ],
+        "libz.so.1": [
+          "ZLIB_1.2.0"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/librustc_driver-5d5a3c5207375ffc.so",
+      "size_bytes": 158109664,
+      "interpreter": null,
+      "soname": "librustc_driver-5d5a3c5207375ffc.so",
+      "dt_needed": [
+        "libdl.so.2",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.5",
+          "GLIBC_2.6",
+          "GLIBC_2.7",
+          "GLIBC_2.9",
+          "GLIBC_2.10",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llc",
+      "size_bytes": 308480,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-ar",
+      "size_bytes": 136920,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-as",
+      "size_bytes": 47000,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-cov",
+      "size_bytes": 639688,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-dis",
+      "size_bytes": 66216,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-link",
+      "size_bytes": 99768,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-nm",
+      "size_bytes": 224152,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objcopy",
+      "size_bytes": 281176,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-objdump",
+      "size_bytes": 1473944,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-profdata",
+      "size_bytes": 666984,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-readobj",
+      "size_bytes": 3178768,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-size",
+      "size_bytes": 107744,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-strip",
+      "size_bytes": 281176,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/opt",
+      "size_bytes": 442704,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/rust-lld",
+      "size_bytes": 11604312,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libpthread.so.0",
+        "libz.so.1",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../../../:$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ],
+        "libz.so.1": [
+          "ZLIB_1.2.2"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/rust-objcopy",
+      "size_bytes": 281176,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/wasm-component-ld",
+      "size_bytes": 5144568,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.9",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld/ld.lld",
+      "size_bytes": 375888,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.9",
+          "GLIBC_2.14",
+          "GLIBC_2.16"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld/ld64.lld",
+      "size_bytes": 375888,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.9",
+          "GLIBC_2.14",
+          "GLIBC_2.16"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld/lld-link",
+      "size_bytes": 375888,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.9",
+          "GLIBC_2.14",
+          "GLIBC_2.16"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/bin/gcc-ld/wasm-ld",
+      "size_bytes": 375888,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.9",
+          "GLIBC_2.14",
+          "GLIBC_2.16"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly",
+      "size_bytes": 199489904,
+      "interpreter": null,
+      "soname": "libLLVM.so.22.1-rust-1.98.0-nightly",
+      "dt_needed": [
+        "librt.so.1",
+        "libdl.so.2",
+        "libpthread.so.0",
+        "libm.so.6",
+        "libz.so.1",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.6",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_3.4",
+          "GCC_4.2.0"
+        ],
+        "libm.so.6": [
+          "GLIBC_2.2.5"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3.2",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ],
+        "libz.so.1": [
+          "ZLIB_1.2.0"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libdarling_macro-4b42a5218d7517e0.so",
+      "size_bytes": 9593120,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libderive_setters-dcfd0ae532d8073c.so",
+      "size_bytes": 8441616,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libderive_where-f3242ce5e350b5e2.so",
+      "size_bytes": 8953384,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libdisplaydoc-cccedc848e42cb1b.so",
+      "size_bytes": 8242816,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libproc_macro_hack-348bb01a40729906.so",
+      "size_bytes": 5586240,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libref_cast_impl-f4068c33589e80f0.so",
+      "size_bytes": 7764336,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_driver-5d5a3c5207375ffc.so",
+      "size_bytes": 158109664,
+      "interpreter": null,
+      "soname": "librustc_driver-5d5a3c5207375ffc.so",
+      "dt_needed": [
+        "libdl.so.2",
+        "libLLVM.so.22.1-rust-1.98.0-nightly",
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libLLVM.so.22.1-rust-1.98.0-nightly": [
+          "LLVM_22.1"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.5",
+          "GLIBC_2.6",
+          "GLIBC_2.7",
+          "GLIBC_2.9",
+          "GLIBC_2.10",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_index_macros-e84fc2e0d0e69937.so",
+      "size_bytes": 7724240,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_macros-619b223e4580c19f.so",
+      "size_bytes": 10443488,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/librustc_type_ir_macros-f1500a14235e8971.so",
+      "size_bytes": 8864376,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libschemars_derive-6a79be6b12a4ff6b.so",
+      "size_bytes": 9675888,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libserde_derive-98fcf014cf96dbd3.so",
+      "size_bytes": 9817768,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libstd-1ee7395f7ada8841.so",
+      "size_bytes": 5430720,
+      "interpreter": null,
+      "soname": "libstd-1ee7395f7ada8841.so",
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "librt.so.1",
+        "libpthread.so.0",
+        "libdl.so.2",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.4",
+          "GLIBC_2.5",
+          "GLIBC_2.6",
+          "GLIBC_2.9",
+          "GLIBC_2.10",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.12"
+        ],
+        "librt.so.1": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libthiserror_impl-a0fc2bc24d688e31.so",
+      "size_bytes": 8722848,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libtracing_attributes-0279a116ca84ca56.so",
+      "size_bytes": 9106928,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libunic_langid_macros_impl-da02dbb65afd8318.so",
+      "size_bytes": 6155360,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libyoke_derive-ae20cf64b5e76948.so",
+      "size_bytes": 8995824,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libzerofrom_derive-e17cd6db1950e361.so",
+      "size_bytes": 9362280,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/lib/rustlib/x86_64-unknown-linux-gnu/lib/libzerovec_derive-3b628d5715177934.so",
+      "size_bytes": 8627872,
+      "interpreter": null,
+      "soname": null,
+      "dt_needed": [
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6",
+        "ld-linux-x86-64.so.2"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [],
+      "version_needs": {
+        "ld-linux-x86-64.so.2": [
+          "GLIBC_2.3"
+        ],
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.14"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    },
+    {
+      "path": "rust/libexec/rust-analyzer-proc-macro-srv",
+      "size_bytes": 1597248,
+      "interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "soname": null,
+      "dt_needed": [
+        "librustc_driver-5d5a3c5207375ffc.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "dt_rpath": [],
+      "dt_runpath": [
+        "$ORIGIN/../lib"
+      ],
+      "version_needs": {
+        "libc.so.6": [
+          "GLIBC_2.2.5",
+          "GLIBC_2.14"
+        ],
+        "libdl.so.2": [
+          "GLIBC_2.2.5"
+        ],
+        "libgcc_s.so.1": [
+          "GCC_3.0"
+        ],
+        "libpthread.so.0": [
+          "GLIBC_2.2.5"
+        ]
+      },
+      "string_hits": {}
+    }
+  ],
+  "omnibus_shebangs": [
+    {
+      "path": "lean/bin/leanmake",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/bin/rust-gdb",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/bin/rust-gdbgui",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/bin/rust-lldb",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_ast/src/util/comments/tests.rs",
+      "shebang": "#![allow(rustc::symbol_intern_string_literal)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/clean_all.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/test.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/y.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/.github/scripts/free-disk-space.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/build_system/main.rs",
+      "shebang": "#![warn(rust_2018_idioms)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/example/example.rs",
+      "shebang": "#![feature(no_core, unboxed_closures)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/example/mini_core.rs",
+      "shebang": "#![feature("
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/example/mini_core_hello_world.rs",
+      "shebang": "#![feature("
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/example/std_example.rs",
+      "shebang": "#![feature(core_intrinsics, coroutines, coroutine_trait, repr_simd, tuple_trait, unboxed_closures)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/scripts/filter_profile.rs",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/scripts/rustup.sh",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/scripts/setup_rust_fork.sh",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/scripts/test_bootstrap.sh",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_cranelift/scripts/test_rustc_tests.sh",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/y.sh",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/example/alloc_example.rs",
+      "shebang": "#![feature(core_intrinsics, alloc_error_handler, lang_items)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/example/alloc_system.rs",
+      "shebang": "#![no_std]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/example/example.rs",
+      "shebang": "#![feature(no_core, unboxed_closures)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/example/mini_core.rs",
+      "shebang": "#![feature("
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/example/std_example.rs",
+      "shebang": "#![allow(internal_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_gcc/tests/lang_tests.rs",
+      "shebang": "#![allow(clippy::uninlined_format_args)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_llvm/src/debuginfo/mod.rs",
+      "shebang": "#![doc = include_str!(\"doc.md\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_llvm/src/llvm/enzyme_ffi.rs",
+      "shebang": "#![expect(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_llvm/src/llvm/mod.rs",
+      "shebang": "#![allow(non_snake_case)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_ssa/src/common.rs",
+      "shebang": "#![allow(non_camel_case_types)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_hir/src/tests.rs",
+      "shebang": "#![allow(rustc::symbol_intern_string_literal)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_interface/src/tests.rs",
+      "shebang": "#![allow(rustc::bad_opt_access)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_lint/src/tests.rs",
+      "shebang": "#![allow(rustc::symbol_intern_string_literal)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_macros/src/diagnostics/diagnostic.rs",
+      "shebang": "#![deny(unused_must_use)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_macros/src/diagnostics/diagnostic_builder.rs",
+      "shebang": "#![deny(unused_must_use)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_macros/src/diagnostics/subdiagnostic.rs",
+      "shebang": "#![deny(unused_must_use)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_parse/src/parser/tests.rs",
+      "shebang": "#![allow(rustc::symbol_intern_string_literal)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_parse/src/parser/tokenstream/tests.rs",
+      "shebang": "#![allow(rustc::symbol_intern_string_literal)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_pattern_analysis/tests/common/mod.rs",
+      "shebang": "#![allow(dead_code, unreachable_pub)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_span/src/edit_distance/tests.rs",
+      "shebang": "#![allow(rustc::symbol_intern_string_literal)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/src/tests.rs",
+      "shebang": "#![cfg(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/src/broadcast/tests.rs",
+      "shebang": "#![cfg(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/src/thread_pool/tests.rs",
+      "shebang": "#![cfg(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/tests/double_init_fail.rs",
+      "shebang": "#![allow(unused_crate_dependencies)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/tests/init_zero_threads.rs",
+      "shebang": "#![allow(unused_crate_dependencies)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/tests/scope_join.rs",
+      "shebang": "#![allow(unused_crate_dependencies)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/tests/scoped_threadpool.rs",
+      "shebang": "#![allow(unused_crate_dependencies)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/tests/simple_panic.rs",
+      "shebang": "#![allow(unused_crate_dependencies)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_thread_pool/tests/stack_overflow_crash.rs",
+      "shebang": "#![allow(unused_crate_dependencies)]"
+    },
+    {
+      "path": "rust/lib/rustlib/rustc-src/rust/compiler/rustc_type_ir/src/lib.rs",
+      "shebang": "#![cfg_attr(feature = \"nightly\", rustc_diagnostic_item = \"type_ir\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloc/src/sync.rs",
+      "shebang": "#![stable(feature = \"rust1\", since = \"1.0.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloc/src/task.rs",
+      "shebang": "#![stable(feature = \"wake_trait\", since = \"1.51.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloc/src/raw_vec/mod.rs",
+      "shebang": "#![unstable(feature = \"raw_vec_internals\", reason = \"unstable const warnings\", issue = \"none\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloctests/lib.rs",
+      "shebang": "#![cfg(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloctests/tests/fmt.rs",
+      "shebang": "#![deny(warnings)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloctests/tests/lib.rs",
+      "shebang": "#![feature(allocator_api)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloctests/tests/str.rs",
+      "shebang": "#![allow(invalid_from_utf8)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/alloctests/tests/vec_deque_alloc_error.rs",
+      "shebang": "#![feature(alloc_error_hook, allocator_api)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/benches/benchmarks.rs",
+      "shebang": "#![feature(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/ci/android-sdk.sh",
+      "shebang": "#!/usr/bin/env sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/ci/debuglink.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/ci/run.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/src/capture.rs",
+      "shebang": "#![allow(clippy::from_over_into)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/src/symbolize/gimli/elf.rs",
+      "shebang": "#![allow(clippy::useless_conversion)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/src/symbolize/gimli/libs_macos.rs",
+      "shebang": "#![allow(deprecated)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/src/symbolize/gimli/stash.rs",
+      "shebang": "#![allow(clippy::all)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/tests/sgx-image-base.rs",
+      "shebang": "#![cfg(all(target_env = \"sgx\", target_vendor = \"fortanix\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/backtrace/tests/accuracy/main.rs",
+      "shebang": "#![cfg(dbginfo = \"collapsible\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_add.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_cmp.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_conv.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_div.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_extend.rs",
+      "shebang": "#![allow(unused_variables)] // \"unused\" f16 registers"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_mul.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_pow.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_sub.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/float_trunc.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/benches/mem.rs",
+      "shebang": "#![feature(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/addsub.rs",
+      "shebang": "#![allow(unused_macros, unused_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/cmp.rs",
+      "shebang": "#![allow(unused_macros)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/conv.rs",
+      "shebang": "#![cfg_attr(f128_enabled, feature(f128))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/div_rem.rs",
+      "shebang": "#![feature(f128)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/float_pow.rs",
+      "shebang": "#![allow(unused_macros, unused_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/lse.rs",
+      "shebang": "#![allow(unused_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test/tests/mul.rs",
+      "shebang": "#![cfg_attr(f16_enabled, feature(f16))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test-intrinsics/tests/aeabi_memclr.rs",
+      "shebang": "#![cfg(all("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test-intrinsics/tests/aeabi_memcpy.rs",
+      "shebang": "#![cfg(all("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/builtins-test-intrinsics/tests/aeabi_memset.rs",
+      "shebang": "#![cfg(all("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/bench-icount.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/bench-walltime.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/ci-util.py",
+      "shebang": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/download-compiler-rt.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/install-bench-deps.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/miri.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/run-docker.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/run-extensive.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/run.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/ci/update-musl.sh",
+      "shebang": "#!/bin/sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins/src/lib.rs",
+      "shebang": "#![cfg_attr(feature = \"compiler-builtins\", compiler_builtins)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins/src/float/cmp.rs",
+      "shebang": "#![allow(unreachable_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/crates/libm-macros/tests/basic.rs",
+      "shebang": "#![allow(unused_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/crates/symbol-check/tests/input/good_lib.rs",
+      "shebang": "#![no_std]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/etc/update-api-list.py",
+      "shebang": "#!/usr/bin/env python3"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/libm/src/math/mod.rs",
+      "shebang": "#![allow(clippy::approx_constant)] // many false positives"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/libm/src/math/rem_pio2_large.rs",
+      "shebang": "#![allow(unused_unsafe)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/compiler-builtins/libm-test/src/lib.rs",
+      "shebang": "#![cfg_attr(f16_enabled, feature(f16))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/arch.rs",
+      "shebang": "#![doc = include_str!(\"../../stdarch/crates/core_arch/src/core_arch_docs.md\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/error.rs",
+      "shebang": "#![doc = include_str!(\"error.md\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/hint.rs",
+      "shebang": "#![stable(feature = \"core_hint\", since = \"1.27.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/index.rs",
+      "shebang": "#![unstable(feature = \"sliceindex_wrappers\", issue = \"146179\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/time.rs",
+      "shebang": "#![stable(feature = \"duration_core\", since = \"1.25.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/fmt/builders.rs",
+      "shebang": "#![allow(unused_imports)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/fmt/rt.rs",
+      "shebang": "#![allow(missing_debug_implementations)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/future/async_drop.rs",
+      "shebang": "#![unstable(feature = \"async_drop\", issue = \"126482\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/future/future.rs",
+      "shebang": "#![stable(feature = \"futures_api\", since = \"1.36.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/future/join.rs",
+      "shebang": "#![allow(unused_imports, unused_macros)] // items are used by the macro"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/future/mod.rs",
+      "shebang": "#![stable(feature = \"futures_api\", since = \"1.36.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/intrinsics/fallback.rs",
+      "shebang": "#![unstable("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/io/borrowed_buf.rs",
+      "shebang": "#![unstable(feature = \"core_io_borrowed_buf\", issue = \"117693\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/io/error.rs",
+      "shebang": "#![unstable(feature = \"core_io\", issue = \"154046\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/marker/variance.rs",
+      "shebang": "#![unstable(feature = \"phantom_variance_markers\", issue = \"135806\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/mem/alignment.rs",
+      "shebang": "#![allow(clippy::enum_clike_unportable_variant)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/mem/maybe_dangling.rs",
+      "shebang": "#![unstable(feature = \"maybe_dangling\", issue = \"118166\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/num/niche_types.rs",
+      "shebang": "#![unstable("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/num/shells/legacy_int_modules.rs",
+      "shebang": "#![doc(hidden)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/ptr/metadata.rs",
+      "shebang": "#![unstable(feature = \"ptr_metadata\", issue = \"81513\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/slice/sort/shared/mod.rs",
+      "shebang": "#![cfg_attr(any(feature = \"optimize_for_size\", target_pointer_width = \"16\"), allow(dead_code))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/task/mod.rs",
+      "shebang": "#![stable(feature = \"futures_api\", since = \"1.36.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/task/poll.rs",
+      "shebang": "#![stable(feature = \"futures_api\", since = \"1.36.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/task/wake.rs",
+      "shebang": "#![stable(feature = \"futures_api\", since = \"1.36.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/core/src/unicode/printable.py",
+      "shebang": "#!/usr/bin/env python"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/benches/hash/sip.rs",
+      "shebang": "#![allow(deprecated)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/tests/macros.rs",
+      "shebang": "#![allow(unused_must_use)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/tests/manually_drop.rs",
+      "shebang": "#![allow(undropped_manually_drops)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/tests/hash/sip.rs",
+      "shebang": "#![allow(deprecated)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/tests/mem/type_info.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/tests/num/dec2flt/mod.rs",
+      "shebang": "#![allow(overflowing_literals)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/coretests/tests/num/flt2dec/random.rs",
+      "shebang": "#![cfg(not(target_arch = \"wasm32\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/subtree-sync.sh",
+      "shebang": "#!/bin/bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/examples/nbody.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/examples/spectral_norm.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/src/lib.rs",
+      "shebang": "#![no_std]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/src/vendor/arm.rs",
+      "shebang": "#![allow(unused)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/cast.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/f16_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/f32_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/f64_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/i16_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/i32_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/i64_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/i8_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/isize_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/layout.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/mask_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/masked_load_store.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/masks.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/pointers.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/round.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/swizzle.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/swizzle_dyn.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/to_bytes.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/try_from_slice.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/u16_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/u32_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/u64_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/u8_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/core_simd/tests/usize_ops.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/std_float/src/lib.rs",
+      "shebang": "#![cfg_attr("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/std_float/tests/float.rs",
+      "shebang": "#![feature(portable_simd)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/portable-simd/crates/test_helpers/src/lib.rs",
+      "shebang": "#![feature(f16)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/rustc-std-workspace-alloc/lib.rs",
+      "shebang": "#![feature(no_core)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/rustc-std-workspace-core/lib.rs",
+      "shebang": "#![feature(no_core)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/rustc-std-workspace-std/lib.rs",
+      "shebang": "#![feature(restricted_std)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/benches/hash/map.rs",
+      "shebang": "#![cfg(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/error.rs",
+      "shebang": "#![doc = include_str!(\"../../core/src/error.md\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/io/stdio.rs",
+      "shebang": "#![cfg_attr(test, allow(unused))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/io/util.rs",
+      "shebang": "#![allow(missing_copy_implementations)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/net/tcp.rs",
+      "shebang": "#![deny(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/net/test.rs",
+      "shebang": "#![allow(warnings)] // not used on emscripten"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/android/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/cygwin/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/dragonfly/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/emscripten/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/espidf/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/freebsd/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/fuchsia/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/haiku/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/hermit/mod.rs",
+      "shebang": "#![stable(feature = \"rust1\", since = \"1.0.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/hermit/io/mod.rs",
+      "shebang": "#![stable(feature = \"rust1\", since = \"1.0.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/horizon/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/illumos/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/motor/mod.rs",
+      "shebang": "#![unstable(feature = \"motor_ext\", issue = \"147456\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/motor/process.rs",
+      "shebang": "#![unstable(feature = \"motor_ext\", issue = \"147456\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/netbsd/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/nto/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/nto/mod.rs",
+      "shebang": "#![stable(feature = \"raw_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/nto/raw.rs",
+      "shebang": "#![stable(feature = \"raw_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/nuttx/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/nuttx/mod.rs",
+      "shebang": "#![stable(feature = \"raw_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/openbsd/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/raw/tests.rs",
+      "shebang": "#![cfg(not(all(windows, target_env = \"msvc\")))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/redox/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/rtems/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/rtems/mod.rs",
+      "shebang": "#![stable(feature = \"raw_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/solaris/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/solid/mod.rs",
+      "shebang": "#![stable(feature = \"rust1\", since = \"1.0.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/trusty/mod.rs",
+      "shebang": "#![stable(feature = \"rust1\", since = \"1.0.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/trusty/io/mod.rs",
+      "shebang": "#![stable(feature = \"os_fd\", since = \"1.66.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/vita/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/vxworks/fs.rs",
+      "shebang": "#![stable(feature = \"metadata_ext\", since = \"1.1.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/windows/net/addr.rs",
+      "shebang": "#![unstable(feature = \"windows_unix_domain_sockets\", issue = \"150487\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/windows/net/listener.rs",
+      "shebang": "#![unstable(feature = \"windows_unix_domain_sockets\", issue = \"150487\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/windows/net/stream.rs",
+      "shebang": "#![unstable(feature = \"windows_unix_domain_sockets\", issue = \"150487\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/xous/ffi.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/os/xous/mod.rs",
+      "shebang": "#![stable(feature = \"rust1\", since = \"1.0.0\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/cmath.rs",
+      "shebang": "#![cfg(not(test))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/mod.rs",
+      "shebang": "#![allow(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/alloc/mod.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/args/sgx.rs",
+      "shebang": "#![allow(fuzzy_provenance_casts)] // FIXME: this module systematically confuses pointers and integers"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/args/wasip1.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/env/sgx.rs",
+      "shebang": "#![allow(fuzzy_provenance_casts)] // FIXME: this module systematically confuses pointers and integers"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fd/hermit.rs",
+      "shebang": "#![unstable(reason = \"not public\", issue = \"none\", feature = \"fd\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fd/motor.rs",
+      "shebang": "#![unstable(reason = \"not public\", issue = \"none\", feature = \"fd\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fd/unix.rs",
+      "shebang": "#![unstable(reason = \"not public\", issue = \"none\", feature = \"fd\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fs/common.rs",
+      "shebang": "#![allow(dead_code)] // not used on all platforms"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fs/mod.rs",
+      "shebang": "#![deny(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fs/solid.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fs/unix.rs",
+      "shebang": "#![allow(nonstandard_style)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/fs/windows.rs",
+      "shebang": "#![allow(nonstandard_style)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/io/mod.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/net/connection/wasip1.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/net/connection/socket/hermit.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/net/connection/socket/windows.rs",
+      "shebang": "#![unstable(issue = \"none\", feature = \"windows_net\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/os_str/mod.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/motor/mod.rs",
+      "shebang": "#![allow(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/sgx/abi/mod.rs",
+      "shebang": "#![cfg_attr(test, allow(unused))] // RT initialization logic is not compiled for test"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/sgx/abi/usercalls/alloc.rs",
+      "shebang": "#![allow(unused)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/sgx/abi/usercalls/raw.rs",
+      "shebang": "#![allow(unused)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/sgx/waitqueue/spin_mutex/tests.rs",
+      "shebang": "#![allow(deprecated)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/solid/mod.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/unix/fuchsia.rs",
+      "shebang": "#![expect(non_camel_case_types)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/unix/futex.rs",
+      "shebang": "#![cfg(any("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/unix/mod.rs",
+      "shebang": "#![allow(missing_docs, nonstandard_style)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/unix/stack_overflow.rs",
+      "shebang": "#![cfg_attr(test, allow(dead_code))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/unix/sync/mod.rs",
+      "shebang": "#![cfg(not(any("
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/unsupported/mod.rs",
+      "shebang": "#![deny(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/windows/handle.rs",
+      "shebang": "#![unstable(issue = \"none\", feature = \"windows_handle\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/windows/mod.rs",
+      "shebang": "#![allow(missing_docs, nonstandard_style)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/windows/stack_overflow.rs",
+      "shebang": "#![cfg_attr(test, allow(dead_code))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/windows/stack_overflow_uwp.rs",
+      "shebang": "#![cfg_attr(test, allow(dead_code))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pal/xous/mod.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/path/uefi.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/path/unsupported_backslash.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/paths/wasi.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/pipe/mod.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/process/windows.rs",
+      "shebang": "#![unstable(feature = \"process_internals\", issue = \"none\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/process/unix/vxworks.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/stdio/mod.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/stdio/teeos.rs",
+      "shebang": "#![deny(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/stdio/windows.rs",
+      "shebang": "#![unstable(issue = \"none\", feature = \"windows_stdio\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/sync/condvar/pthread.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/sync/mutex/pthread.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/sync/thread_parking/futex.rs",
+      "shebang": "#![forbid(unsafe_op_in_unsafe_fn)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/src/sys/thread/sgx.rs",
+      "shebang": "#![cfg_attr(test, allow(dead_code))] // why is this necessary?"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/create_dir_all_bare.rs",
+      "shebang": "#![cfg(all(test, not(any(target_os = \"emscripten\", target_os = \"wasi\", target_env = \"sgx\"))))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/error.rs",
+      "shebang": "#![feature(error_generic_member_access, error_reporter)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/log-knows-the-names-of-variants-in-std.rs",
+      "shebang": "#![allow(non_camel_case_types)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/panic.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/process_spawning.rs",
+      "shebang": "#![cfg(not(target_env = \"sgx\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/switch-stdout.rs",
+      "shebang": "#![cfg(any(target_family = \"unix\", target_family = \"windows\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/thread.rs",
+      "shebang": "#![feature(thread_sleep_until)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/time.rs",
+      "shebang": "#![feature(duration_constants)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/type-name-unsized.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/win_delete_self.rs",
+      "shebang": "#![cfg(windows)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/windows.rs",
+      "shebang": "#![cfg(windows)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/windows_unix_socket.rs",
+      "shebang": "#![cfg(windows)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/common/mod.rs",
+      "shebang": "#![allow(unused)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/sync/lib.rs",
+      "shebang": "#![feature(const_default)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std/tests/thread_local/lib.rs",
+      "shebang": "#![feature(cfg_target_thread_local)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std_detect/src/detect/arch/mod.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std_detect/tests/cpu-detection.rs",
+      "shebang": "#![allow(internal_features, unused_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std_detect/tests/macro_trailing_commas.rs",
+      "shebang": "#![allow(internal_features, unused_features)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/std_detect/tests/x86-specific.rs",
+      "shebang": "#![cfg(any(target_arch = \"x86\", target_arch = \"x86_64\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/ci/dox.sh",
+      "shebang": "#!/usr/bin/env bash"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/ci/intrinsic-test-docker.sh",
+      "shebang": "#!/usr/bin/env sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/ci/intrinsic-test.sh",
+      "shebang": "#!/usr/bin/env sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/ci/run-docker.sh",
+      "shebang": "#!/usr/bin/env sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/ci/run.sh",
+      "shebang": "#!/usr/bin/env sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/ci/style.sh",
+      "shebang": "#!/usr/bin/env sh"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/crates/core_arch/src/lib.rs",
+      "shebang": "#![doc = include_str!(\"core_arch_docs.md\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/crates/core_arch/src/s390x/macros.rs",
+      "shebang": "#![allow(unused_macros)] // FIXME remove when more tests are added"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/stdarch/crates/stdarch-gen-arm/src/main.rs",
+      "shebang": "#![feature(pattern)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/test/src/stats.rs",
+      "shebang": "#![allow(missing_docs)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/test/src/term/terminfo/parser/compiled.rs",
+      "shebang": "#![allow(non_upper_case_globals, missing_docs)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/unwind/src/lib.rs",
+      "shebang": "#![no_std]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/unwind/src/libunwind.rs",
+      "shebang": "#![allow(nonstandard_style)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/unwind/src/unwinding.rs",
+      "shebang": "#![allow(nonstandard_style)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/cc-1.2.0/src/tempfile.rs",
+      "shebang": "#![cfg_attr(target_family = \"wasm\", allow(unused))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/cc-1.2.0/src/parallel/stderr.rs",
+      "shebang": "#![cfg_attr(target_family = \"wasm\", allow(unused))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/cfg-if-1.0.4/tests/xcrate.rs",
+      "shebang": "#![allow(unexpected_cfgs)] // `foo` doesn't exist"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/gimli-0.32.3/src/test_util.rs",
+      "shebang": "#![allow(missing_docs)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/benches/bench.rs",
+      "shebang": "#![expect(missing_docs)] // criterion_group! generates a public bench entrypoint"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/tests/equivalent_trait.rs",
+      "shebang": "#![expect(missing_docs)] // https://github.com/rust-lang/rust/issues/137561"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/tests/rayon.rs",
+      "shebang": "#![expect(missing_docs)] // https://github.com/rust-lang/rust/issues/137561"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/tests/serde.rs",
+      "shebang": "#![expect(missing_docs)] // https://github.com/rust-lang/rust/issues/137561"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/hashbrown-0.17.1/tests/set.rs",
+      "shebang": "#![expect(missing_docs)] // https://github.com/rust-lang/rust/issues/137561"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/libc-0.2.185/src/unix/hurd/mod.rs",
+      "shebang": "#![allow(dead_code)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/moto-rt-0.16.0/src/libc.rs",
+      "shebang": "#![allow(clippy::needless_late_init)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/src/read/read_ref.rs",
+      "shebang": "#![allow(clippy::len_without_is_empty)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/parse_self.rs",
+      "shebang": "#![cfg(feature = \"read\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/build/mod.rs",
+      "shebang": "#![cfg(feature = \"build\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/read/mod.rs",
+      "shebang": "#![cfg(feature = \"read\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/round_trip/bss.rs",
+      "shebang": "#![cfg(all(feature = \"read\", feature = \"write\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/round_trip/comdat.rs",
+      "shebang": "#![cfg(all(feature = \"read\", feature = \"write\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/round_trip/common.rs",
+      "shebang": "#![cfg(all(feature = \"read\", feature = \"write\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/round_trip/mod.rs",
+      "shebang": "#![cfg(all(feature = \"read\", feature = \"write\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/round_trip/section_flags.rs",
+      "shebang": "#![cfg(all(feature = \"read\", feature = \"write\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/object-0.37.3/tests/round_trip/tls.rs",
+      "shebang": "#![cfg(all(feature = \"read\", feature = \"write\"))]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/rustc-literal-escaper-0.0.7/benches/benches.rs",
+      "shebang": "#![feature(test)]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/unwinding-0.2.8/src/lib.rs",
+      "shebang": "#![doc = include_str!(\"../README.md\")]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/vex-sdk-0.27.1/src/lib.rs",
+      "shebang": "#![no_std]"
+    },
+    {
+      "path": "rust/lib/rustlib/src/rust/library/vendor/wit-bindgen-0.57.1/src/rt/async_support.rs",
+      "shebang": "#![deny(missing_docs)]"
+    }
+  ]
+}

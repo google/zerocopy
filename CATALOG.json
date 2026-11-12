@@ -4831,7 +4831,7 @@
       ]
     },
     "anneal-nix-toolchain-packaging-and-binary-relocation": {
-      "observed_at": "2026-09-27",
+      "observed_at": "2026-11-12",
       "subjects": [
         {
           "identity": {
@@ -4839,6 +4839,29 @@
             "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
           },
           "name": "Zerocopy Anneal Nix toolchain packaging and relocation"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+          },
+          "name": "Anneal omnibus toolchain packaging, loader relocation, and CLI runner"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly toolchain bundled by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 toolchain bundled by Anneal"
         },
         {
           "identity": {
@@ -4862,7 +4885,7 @@
             "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
             "version": "v4.30.0-rc2"
           },
-          "name": "Lean 4 selected by Anneal"
+          "name": "Lean 4 v4.30.0-rc2 selected by Zerocopy Anneal"
         },
         {
           "identity": {
@@ -5179,6 +5202,58 @@
         "anneal/interactive-lsp",
         "charon/spans-provenance",
         "lean/diagnostics"
+      ]
+    },
+    "anneal-scalar-mir-differential-execution-and-capture-alignment": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+          },
+          "name": "Anneal prefix-safety scalar MIR semantics and capture adapter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly compiler and Miri interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 kernel"
+        },
+        {
+          "identity": {
+            "path": "src/starnix/lib/ebpf/core/src",
+            "repository": "fuchsia/fuchsia",
+            "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
+          },
+          "name": "Fuchsia Starnix ebpf_core saturating_inc_u32 target"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/mir-pipeline",
+        "rustc/mir",
+        "rustc/const-eval",
+        "rust/operational-semantics",
+        "minirust/differential-testing",
+        "lean/kernel"
       ]
     },
     "anneal-scratch-proof-cas-architecture-contracts": {
@@ -6147,7 +6222,7 @@
       ]
     },
     "anneal-trusted-boundary-audit-olean-stubbing-and-conservativity": {
-      "observed_at": "2026-10-31",
+      "observed_at": "2026-11-12",
       "subjects": [
         {
           "identity": {
@@ -13586,7 +13661,7 @@
       ]
     },
     "lean-kernel-memory-ceilings-whnf-scaling-and-validator-architectures": {
-      "observed_at": "2026-11-05",
+      "observed_at": "2026-11-12",
       "subjects": [
         {
           "identity": {
@@ -13609,6 +13684,13 @@
             "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
           },
           "name": "Anneal verification framework and trusted boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+          },
+          "name": "Anneal prefix-safety scalar MIR verification pipeline and Starnix proof"
         },
         {
           "identity": {
@@ -19889,6 +19971,58 @@
         "lean/mathlib/bitvec",
         "lean/kernel",
         "lean/tactics"
+      ]
+    },
+    "starnix-ebpf-core-postcleanup-mir-and-abstract-domain-verification": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "path": "src/starnix/lib/ebpf/core/src",
+            "repository": "fuchsia/fuchsia",
+            "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
+          },
+          "name": "Fuchsia Starnix ebpf_core production crate"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+          },
+          "name": "Anneal prefix-safety scalar MIR verification pipeline and capture adapter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly compiler"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 kernel"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/mir-pipeline",
+        "rustc/mir",
+        "rust/operational-semantics",
+        "domains/ebpf",
+        "verification/abstract-interpretation",
+        "lean/kernel"
       ]
     },
     "tock-asterinas-redleaf-theseus-and-rust-os-isolation-boundaries": {

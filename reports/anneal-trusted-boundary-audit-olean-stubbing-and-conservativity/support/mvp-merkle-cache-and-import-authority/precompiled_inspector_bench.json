@@ -1,0 +1,11 @@
+{
+  "tb_bin_bytes": 234270816,
+  "headers_precompiled_bin_ms": 317.43087607901543,
+  "headers_precompiled_rss_kb": 100840,
+  "full_audit_precompiled_bin_ms": 5883.587618009187,
+  "full_audit_precompiled_rss_kb": 667168,
+  "staged_leaf_audit_precompiled_bin_ms": 1321.9423029804602,
+  "staged_leaf_audit_precompiled_rss_kb": 784468,
+  "staged_claims_audit_precompiled_bin_ms": 1170.1063379878178,
+  "staged_claims_audit_precompiled_rss_kb": 790204
+}

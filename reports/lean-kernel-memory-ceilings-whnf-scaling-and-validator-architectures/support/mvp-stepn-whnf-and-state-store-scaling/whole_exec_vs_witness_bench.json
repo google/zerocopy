@@ -1,0 +1,208 @@
+{
+  "path_counts": {
+    "le8": {
+      "states": 12,
+      "max_state_idx": 11,
+      "suffixes": 12
+    },
+    "le16": {
+      "states": 12,
+      "max_state_idx": 11,
+      "suffixes": 12
+    },
+    "le32": {
+      "states": 12,
+      "max_state_idx": 11,
+      "suffixes": 12
+    },
+    "le64": {
+      "states": 9,
+      "max_state_idx": 8,
+      "suffixes": 9
+    },
+    "be8": {
+      "states": 12,
+      "max_state_idx": 11,
+      "suffixes": 12
+    },
+    "be16": {
+      "states": 33,
+      "max_state_idx": 32,
+      "suffixes": 33
+    },
+    "be32": {
+      "states": 57,
+      "max_state_idx": 56,
+      "suffixes": 57
+    },
+    "be64": {
+      "states": 99,
+      "max_state_idx": 98,
+      "suffixes": 99
+    }
+  },
+  "per_path_whole_exec_from_initial": [
+    {
+      "path": "le64",
+      "fuel": 9,
+      "returncode": 0,
+      "wall_ms": 466.09225298743695,
+      "user_s": 0.34,
+      "max_rss_kb": 284872,
+      "olean_bytes": 8272,
+      "stdout": ""
+    },
+    {
+      "path": "le8",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2821.9880970427766,
+      "user_s": 2.72,
+      "max_rss_kb": 292876,
+      "olean_bytes": 9024,
+      "stdout": ""
+    },
+    {
+      "path": "le16",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2873.0199590791017,
+      "user_s": 2.75,
+      "max_rss_kb": 293784,
+      "olean_bytes": 9192,
+      "stdout": ""
+    },
+    {
+      "path": "le32",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2821.9262990169227,
+      "user_s": 2.69,
+      "max_rss_kb": 293292,
+      "olean_bytes": 9192,
+      "stdout": ""
+    },
+    {
+      "path": "be8",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2373.050500988029,
+      "user_s": 2.24,
+      "max_rss_kb": 287764,
+      "olean_bytes": 9192,
+      "stdout": ""
+    },
+    {
+      "path": "be16",
+      "fuel": 33,
+      "returncode": 1,
+      "wall_ms": 13297.550086048432,
+      "user_s": 13.16,
+      "max_rss_kb": 268488,
+      "olean_bytes": 0,
+      "stdout": "<scratch>/mvp-investigations/task3/profile_stage/BenchWhole_be16.lean:12:54: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_optio"
+    },
+    {
+      "path": "be32",
+      "fuel": 57,
+      "returncode": 1,
+      "wall_ms": 13500.332463998348,
+      "user_s": 13.36,
+      "max_rss_kb": 268484,
+      "olean_bytes": 0,
+      "stdout": "<scratch>/mvp-investigations/task3/profile_stage/BenchWhole_be32.lean:12:54: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_optio"
+    },
+    {
+      "path": "be64",
+      "fuel": 99,
+      "returncode": 1,
+      "wall_ms": 13350.490445969626,
+      "user_s": 13.2,
+      "max_rss_kb": 268636,
+      "olean_bytes": 0,
+      "stdout": "<scratch>/mvp-investigations/task3/profile_stage/BenchWhole_be64.lean:12:54: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_optio"
+    }
+  ],
+  "per_path_whole_exec_from_state0": [
+    {
+      "path": "le64",
+      "fuel": 9,
+      "returncode": 0,
+      "wall_ms": 1122.0226970035583,
+      "user_s": 0.97,
+      "max_rss_kb": 349544,
+      "olean_bytes": 106712,
+      "stdout": ""
+    },
+    {
+      "path": "le8",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2222.127216984518,
+      "user_s": 2.07,
+      "max_rss_kb": 353636,
+      "olean_bytes": 105160,
+      "stdout": ""
+    },
+    {
+      "path": "le16",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2221.3003430515528,
+      "user_s": 2.1,
+      "max_rss_kb": 353804,
+      "olean_bytes": 107824,
+      "stdout": ""
+    },
+    {
+      "path": "le32",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2172.0263849711046,
+      "user_s": 2.06,
+      "max_rss_kb": 354852,
+      "olean_bytes": 107824,
+      "stdout": ""
+    },
+    {
+      "path": "be8",
+      "fuel": 12,
+      "returncode": 0,
+      "wall_ms": 2221.7014390043914,
+      "user_s": 2.06,
+      "max_rss_kb": 354928,
+      "olean_bytes": 107808,
+      "stdout": ""
+    },
+    {
+      "path": "be16",
+      "fuel": 33,
+      "returncode": 1,
+      "wall_ms": 13952.340065035969,
+      "user_s": 13.83,
+      "max_rss_kb": 362284,
+      "olean_bytes": 0,
+      "stdout": "<scratch>/mvp-investigations/task3/profile_stage/BenchState0_be16.lean:31:61: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_opti"
+    },
+    {
+      "path": "be32",
+      "fuel": 57,
+      "returncode": 1,
+      "wall_ms": 14149.002672056668,
+      "user_s": 13.97,
+      "max_rss_kb": 361748,
+      "olean_bytes": 0,
+      "stdout": "<scratch>/mvp-investigations/task3/profile_stage/BenchState0_be32.lean:31:61: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_opti"
+    },
+    {
+      "path": "be64",
+      "fuel": 99,
+      "returncode": 1,
+      "wall_ms": 13902.20551402308,
+      "user_s": 13.77,
+      "max_rss_kb": 361584,
+      "olean_bytes": 0,
+      "stdout": "<scratch>/mvp-investigations/task3/profile_stage/BenchState0_be64.lean:31:61: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached\n\nNote: Use `set_option maxHeartbeats <num>` to set the limit.\n\nHint: Additional diagnostic information may be available using the `set_opti"
+    }
+  ]
+}

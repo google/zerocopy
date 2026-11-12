@@ -1,0 +1,79 @@
+{
+  "benchmark": "Q-C2_Part1_Module_Import_Role_Authority_PoC",
+  "lean_version": "4.34.1",
+  "poc_description": "Spec.lean (role: specification) imports TrojanProof.lean (role: proof) and uses notation `trojanSafetyPre` defined in TrojanProof. Because Lean expands notation during elaboration, Spec.specs's kernel ConstantInfo contains zero constant references (`declarationEdges`) to TrojanProof.",
+  "unmodified_trusted_boundary_on_poc": {
+    "exit_code": 0,
+    "ok": true,
+    "recorded_spec_imports_in_result_graph": [
+      {
+        "module": "Trusted.Mvp",
+        "isMeta": false,
+        "isExported": true,
+        "importAll": false
+      },
+      {
+        "module": "Endianness",
+        "isMeta": false,
+        "isExported": true,
+        "importAll": false
+      },
+      {
+        "module": "TrojanProof",
+        "isMeta": false,
+        "isExported": true,
+        "importAll": false
+      }
+    ],
+    "specification_closure_modules": [
+      "Endianness",
+      "Init.Core",
+      "Init.Data.BEq",
+      "Init.Data.BitVec.Basic",
+      "Init.Data.BitVec.BasicAux",
+      "Init.Data.Bool",
+      "Init.Data.Cast",
+      "Init.Data.Int.Basic",
+      "Init.Data.Int.Bitwise.Basic",
+      "Init.Data.Int.DivMod.Basic",
+      "Init.Data.Int.DivMod.Bootstrap",
+      "Init.Data.Int.Lemmas",
+      "Init.Data.Int.Order",
+      "Init.Data.List.Basic",
+      "Init.Data.Nat.Basic",
+      "Init.Data.Nat.Bitwise.Basic",
+      "Init.Data.Nat.Bitwise.Lemmas",
+      "Init.Data.Nat.Div.Basic",
+      "Init.Data.Nat.Internal.Linear",
+      "Init.Data.Nat.Lemmas",
+      "Init.Data.RArray",
+      "Init.Data.Repr",
+      "Init.Data.String.Bootstrap",
+      "Init.Data.ToString.Basic",
+      "Init.GetElem",
+      "Init.Prelude",
+      "Init.PropLemmas",
+      "Init.SimpLemmas",
+      "Init.Util",
+      "Init.WF",
+      "Spec",
+      "Trusted.Mvp.Semantics",
+      "Trusted.Mvp.Syntax"
+    ],
+    "trojan_proof_in_specification_closure": false,
+    "replayed_declarations": 1683
+  },
+  "hardened_trusted_boundary_on_poc": {
+    "exit_code": 1,
+    "response": {
+      "ok": false,
+      "message": "policy:target import authority violation Spec (specification) imports TrojanProof (proof)",
+      "category": "policy"
+    }
+  },
+  "hardened_trusted_boundary_on_legit_starnix": {
+    "exit_code": 0,
+    "ok": true,
+    "replayed_declarations": 1683
+  }
+}

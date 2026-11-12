@@ -1,0 +1,2431 @@
+{
+  "toolchain_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+  "elapsed_seconds": 54.43,
+  "admitted_execution_suite": {
+    "functions_count": 38,
+    "vectors_count": 159,
+    "cases": [
+      {
+        "name": "i8_add_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `i8 + i8` across `MAX + 1`, `MIN + (-1)`, and sign transitions",
+        "return_type": "i8",
+        "vector_count": 7,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "127_i8, 1_i8",
+            "word_args": [
+              127,
+              1
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, -1_i8",
+            "word_args": [
+              128,
+              255
+            ],
+            "native_word": 127,
+            "miri_word": 127,
+            "lean_model_word": 127,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, 127_i8",
+            "word_args": [
+              128,
+              127
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8, 1_i8",
+            "word_args": [
+              255,
+              1
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8, 0_i8",
+            "word_args": [
+              0,
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-64_i8, -64_i8",
+            "word_args": [
+              192,
+              192
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-65_i8, -64_i8",
+            "word_args": [
+              191,
+              192
+            ],
+            "native_word": 127,
+            "miri_word": 127,
+            "lean_model_word": 127,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "i8_sub_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `i8 - i8` across `MIN - 1`, `MAX - (-1)`, and `0 - MIN`",
+        "return_type": "i8",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8, 1_i8",
+            "word_args": [
+              128,
+              1
+            ],
+            "native_word": 127,
+            "miri_word": 127,
+            "lean_model_word": 127,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8, -1_i8",
+            "word_args": [
+              127,
+              255
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8, -128_i8",
+            "word_args": [
+              0,
+              128
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8, 1_i8",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8, -1_i8",
+            "word_args": [
+              255,
+              255
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "i8_mul_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `i8 * i8` across `MIN * -1`, `MIN * 2`, and signed products",
+        "return_type": "i8",
+        "vector_count": 6,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8, -1_i8",
+            "word_args": [
+              128,
+              255
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, 2_i8",
+            "word_args": [
+              128,
+              2
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8, -1_i8",
+            "word_args": [
+              127,
+              255
+            ],
+            "native_word": 129,
+            "miri_word": 129,
+            "lean_model_word": 129,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-16_i8, 8_i8",
+            "word_args": [
+              240,
+              8
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-17_i8, -8_i8",
+            "word_args": [
+              239,
+              248
+            ],
+            "native_word": 136,
+            "miri_word": 136,
+            "lean_model_word": 136,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "13_i8, -11_i8",
+            "word_args": [
+              13,
+              245
+            ],
+            "native_word": 113,
+            "miri_word": 113,
+            "lean_model_word": 113,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "u8_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `u8` addition, subtraction, multiplication, and XOR at 8-bit boundary",
+        "return_type": "u8",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "255_u8, 1_u8",
+            "word_args": [
+              255,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_u8, 1_u8",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 254,
+            "miri_word": 254,
+            "lean_model_word": 254,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "128_u8, 2_u8",
+            "word_args": [
+              128,
+              2
+            ],
+            "native_word": 252,
+            "miri_word": 252,
+            "lean_model_word": 252,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "200_u8, 200_u8",
+            "word_args": [
+              200,
+              200
+            ],
+            "native_word": 208,
+            "miri_word": 208,
+            "lean_model_word": 208,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "i16_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `i16` addition, subtraction, and multiplication at 16-bit boundaries",
+        "return_type": "i16",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "32767_i16, 1_i16",
+            "word_args": [
+              32767,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-32768_i16, -1_i16",
+            "word_args": [
+              32768,
+              65535
+            ],
+            "native_word": 65535,
+            "miri_word": 65535,
+            "lean_model_word": 65535,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-32768_i16, 1_i16",
+            "word_args": [
+              32768,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i16, -1_i16",
+            "word_args": [
+              65535,
+              65535
+            ],
+            "native_word": 65533,
+            "miri_word": 65533,
+            "lean_model_word": 65533,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "256_i16, 128_i16",
+            "word_args": [
+              256,
+              128
+            ],
+            "native_word": 33152,
+            "miri_word": 33152,
+            "lean_model_word": 33152,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "u16_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `u16` arithmetic across `u16::MAX` and `0`",
+        "return_type": "u16",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "65535_u16, 1_u16",
+            "word_args": [
+              65535,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_u16, 1_u16",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "32768_u16, 2_u16",
+            "word_args": [
+              32768,
+              2
+            ],
+            "native_word": 32770,
+            "miri_word": 32770,
+            "lean_model_word": 32770,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "i32_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `i32` arithmetic across `i32::MAX`, `i32::MIN`, and `65536 * 65536`",
+        "return_type": "i32",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "2147483647_i32, 1_i32",
+            "word_args": [
+              2147483647,
+              1
+            ],
+            "native_word": 2147483649,
+            "miri_word": 2147483649,
+            "lean_model_word": 2147483649,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-2147483648_i32, -1_i32",
+            "word_args": [
+              2147483648,
+              4294967295
+            ],
+            "native_word": 2147483646,
+            "miri_word": 2147483646,
+            "lean_model_word": 2147483646,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "65536_i32, 65536_i32",
+            "word_args": [
+              65536,
+              65536
+            ],
+            "native_word": 131072,
+            "miri_word": 131072,
+            "lean_model_word": 131072,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i32, 1_i32",
+            "word_args": [
+              4294967295,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "u32_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `u32` arithmetic across `u32::MAX` and `0`",
+        "return_type": "u32",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "4294967295_u32, 1_u32",
+            "word_args": [
+              4294967295,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_u32, 1_u32",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 4294967294,
+            "miri_word": 4294967294,
+            "lean_model_word": 4294967294,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "65536_u32, 65536_u32",
+            "word_args": [
+              65536,
+              65536
+            ],
+            "native_word": 131072,
+            "miri_word": 131072,
+            "lean_model_word": 131072,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "i64_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping `i64` arithmetic across `i64::MAX` and `i64::MIN`",
+        "return_type": "i64",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "9223372036854775807_i64, 1_i64",
+            "word_args": [
+              9223372036854775807,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-9223372036854775808_i64, -1_i64",
+            "word_args": [
+              9223372036854775808,
+              18446744073709551615
+            ],
+            "native_word": 18446744073709551615,
+            "miri_word": 18446744073709551615,
+            "lean_model_word": 18446744073709551615,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i64, 1_i64",
+            "word_args": [
+              18446744073709551615,
+              1
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "isize_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping pointer-sized signed `isize` arithmetic on 64-bit target",
+        "return_type": "isize",
+        "vector_count": 2,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "9223372036854775807_isize, 1_isize",
+            "word_args": [
+              9223372036854775807,
+              1
+            ],
+            "native_word": 18446744073709551614,
+            "miri_word": 18446744073709551614,
+            "lean_model_word": 18446744073709551614,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-9223372036854775808_isize, -1_isize",
+            "word_args": [
+              9223372036854775808,
+              18446744073709551615
+            ],
+            "native_word": 18446744073709551614,
+            "miri_word": 18446744073709551614,
+            "lean_model_word": 18446744073709551614,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "usize_arith_wrapping",
+        "category": "Signed & narrow arithmetic",
+        "description": "Wrapping pointer-sized unsigned `usize` arithmetic on 64-bit target",
+        "return_type": "usize",
+        "vector_count": 2,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "18446744073709551615_usize, 1_usize",
+            "word_args": [
+              18446744073709551615,
+              1
+            ],
+            "native_word": 18446744073709551614,
+            "miri_word": 18446744073709551614,
+            "lean_model_word": 18446744073709551614,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_usize, 1_usize",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 18446744073709551614,
+            "miri_word": 18446744073709551614,
+            "lean_model_word": 18446744073709551614,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "neg_via_zero_sub_i8",
+        "category": "Signed & narrow arithmetic",
+        "description": "Binary encoding `0i8 - a` of wrapping negation (including `0 - (-128) == -128`)",
+        "return_type": "i8",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8",
+            "word_args": [
+              128
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8",
+            "word_args": [
+              255
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8",
+            "word_args": [
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i8",
+            "word_args": [
+              1
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8",
+            "word_args": [
+              127
+            ],
+            "native_word": 129,
+            "miri_word": 129,
+            "lean_model_word": 129,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "not_via_xor_i8",
+        "category": "Signed & narrow arithmetic",
+        "description": "Binary encoding `a ^ -1i8` of bitwise NOT on signed `i8`",
+        "return_type": "i8",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8",
+            "word_args": [
+              128
+            ],
+            "native_word": 127,
+            "miri_word": 127,
+            "lean_model_word": 127,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8",
+            "word_args": [
+              255
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8",
+            "word_args": [
+              0
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8",
+            "word_args": [
+              127
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "not_via_xor_bool",
+        "category": "Signed & narrow arithmetic",
+        "description": "Binary encoding `a ^ true` of logical NOT on `bool`",
+        "return_type": "bool",
+        "vector_count": 2,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "false",
+            "word_args": [
+              0
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "true",
+            "word_args": [
+              1
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "compound_assign_i16",
+        "category": "Signed & narrow arithmetic",
+        "description": "Chained compound assignments (`+=, -=, *=, <<=, >>=, &=, |=, ^=`) on `i16`",
+        "return_type": "i16",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-32768_i16, 1_i16",
+            "word_args": [
+              32768,
+              1
+            ],
+            "native_word": 65535,
+            "miri_word": 65535,
+            "lean_model_word": 65535,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "32767_i16, -1_i16",
+            "word_args": [
+              32767,
+              65535
+            ],
+            "native_word": 65511,
+            "miri_word": 65511,
+            "lean_model_word": 65511,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i16, 0_i16",
+            "word_args": [
+              65535,
+              0
+            ],
+            "native_word": 65519,
+            "miri_word": 65519,
+            "lean_model_word": 65519,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1234_i16, -5678_i16",
+            "word_args": [
+              1234,
+              59858
+            ],
+            "native_word": 62743,
+            "miri_word": 62743,
+            "lean_model_word": 62743,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "min_max_neg_literals",
+        "category": "Negative constants & literals",
+        "description": "Negative boundary literals (`-128i8`, `-32768i16`, `-2147483648i32`, `-9223372036854775808i64`, `-1i8`)",
+        "return_type": "i64",
+        "vector_count": 1,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "",
+            "word_args": [],
+            "native_word": 9223372036854775815,
+            "miri_word": 9223372036854775815,
+            "lean_model_word": 9223372036854775815,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "match_signed_i8",
+        "category": "Negative constants & literals",
+        "description": "`SwitchInt` pattern matching on negative and positive `i8` literals (`-128, -64, -1, 0, 1, 127`)",
+        "return_type": "i64",
+        "vector_count": 8,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8",
+            "word_args": [
+              128
+            ],
+            "native_word": 18446744073709550616,
+            "miri_word": 18446744073709550616,
+            "lean_model_word": 18446744073709550616,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-64_i8",
+            "word_args": [
+              192
+            ],
+            "native_word": 18446744073709551116,
+            "miri_word": 18446744073709551116,
+            "lean_model_word": 18446744073709551116,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-2_i8",
+            "word_args": [
+              254
+            ],
+            "native_word": 42,
+            "miri_word": 42,
+            "lean_model_word": 42,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8",
+            "word_args": [
+              255
+            ],
+            "native_word": 18446744073709551606,
+            "miri_word": 18446744073709551606,
+            "lean_model_word": 18446744073709551606,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8",
+            "word_args": [
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i8",
+            "word_args": [
+              1
+            ],
+            "native_word": 10,
+            "miri_word": 10,
+            "lean_model_word": 10,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "126_i8",
+            "word_args": [
+              126
+            ],
+            "native_word": 42,
+            "miri_word": 42,
+            "lean_model_word": 42,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8",
+            "word_args": [
+              127
+            ],
+            "native_word": 1000,
+            "miri_word": 1000,
+            "lean_model_word": 1000,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "match_signed_i16",
+        "category": "Negative constants & literals",
+        "description": "`SwitchInt` pattern matching on negative and positive `i16` literals (`-32768, -1, 0, 32767`)",
+        "return_type": "i64",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-32768_i16",
+            "word_args": [
+              32768
+            ],
+            "native_word": 18446744073709549616,
+            "miri_word": 18446744073709549616,
+            "lean_model_word": 18446744073709549616,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-2_i16",
+            "word_args": [
+              65534
+            ],
+            "native_word": 77,
+            "miri_word": 77,
+            "lean_model_word": 77,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i16",
+            "word_args": [
+              65535
+            ],
+            "native_word": 18446744073709551596,
+            "miri_word": 18446744073709551596,
+            "lean_model_word": 18446744073709551596,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i16",
+            "word_args": [
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "32767_i16",
+            "word_args": [
+              32767
+            ],
+            "native_word": 2000,
+            "miri_word": 2000,
+            "lean_model_word": 2000,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "match_signed_i32",
+        "category": "Negative constants & literals",
+        "description": "`SwitchInt` pattern matching on negative and positive `i32` literals (`-2147483648, -1, 0, 2147483647`)",
+        "return_type": "i64",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-2147483648_i32",
+            "word_args": [
+              2147483648
+            ],
+            "native_word": 18446744073709548616,
+            "miri_word": 18446744073709548616,
+            "lean_model_word": 18446744073709548616,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i32",
+            "word_args": [
+              4294967295
+            ],
+            "native_word": 18446744073709551586,
+            "miri_word": 18446744073709551586,
+            "lean_model_word": 18446744073709551586,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i32",
+            "word_args": [
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "2147483647_i32",
+            "word_args": [
+              2147483647
+            ],
+            "native_word": 3000,
+            "miri_word": 3000,
+            "lean_model_word": 3000,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "5_i32",
+            "word_args": [
+              5
+            ],
+            "native_word": 88,
+            "miri_word": 88,
+            "lean_model_word": 88,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "match_signed_i64",
+        "category": "Negative constants & literals",
+        "description": "`SwitchInt` pattern matching on negative and positive `i64` literals (`i64::MIN, -1, 0, i64::MAX`)",
+        "return_type": "i64",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-9223372036854775808_i64",
+            "word_args": [
+              9223372036854775808
+            ],
+            "native_word": 18446744073709547616,
+            "miri_word": 18446744073709547616,
+            "lean_model_word": 18446744073709547616,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i64",
+            "word_args": [
+              18446744073709551615
+            ],
+            "native_word": 18446744073709551576,
+            "miri_word": 18446744073709551576,
+            "lean_model_word": 18446744073709551576,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i64",
+            "word_args": [
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "9223372036854775807_i64",
+            "word_args": [
+              9223372036854775807
+            ],
+            "native_word": 4000,
+            "miri_word": 4000,
+            "lean_model_word": 4000,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "42_i64",
+            "word_args": [
+              42
+            ],
+            "native_word": 99,
+            "miri_word": 99,
+            "lean_model_word": 99,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "shl_i8_by_u32",
+        "category": "Mixed-width shifts & signed right shifts",
+        "description": "Mixed-width left shift `i8 << u32` across width boundary (`0, 7, 8, 9, u32::MAX`)",
+        "return_type": "i8",
+        "vector_count": 6,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "1_i8, 0_u32",
+            "word_args": [
+              1,
+              0
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i8, 7_u32",
+            "word_args": [
+              1,
+              7
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i8, 8_u32",
+            "word_args": [
+              1,
+              8
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i8, 9_u32",
+            "word_args": [
+              1,
+              9
+            ],
+            "native_word": 2,
+            "miri_word": 2,
+            "lean_model_word": 2,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8, 4_u32",
+            "word_args": [
+              255,
+              4
+            ],
+            "native_word": 240,
+            "miri_word": 240,
+            "lean_model_word": 240,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i8, 4294967295_u32",
+            "word_args": [
+              1,
+              4294967295
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "shl_u64_by_i8",
+        "category": "Mixed-width shifts & signed right shifts",
+        "description": "Mixed-width left shift `u64 << i8` with negative signed RHS (`-1, -63, -64, -128, 64`)",
+        "return_type": "u64",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "1_u64, -1_i8",
+            "word_args": [
+              1,
+              255
+            ],
+            "native_word": 9223372036854775808,
+            "miri_word": 9223372036854775808,
+            "lean_model_word": 9223372036854775808,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_u64, -63_i8",
+            "word_args": [
+              1,
+              193
+            ],
+            "native_word": 2,
+            "miri_word": 2,
+            "lean_model_word": 2,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_u64, -64_i8",
+            "word_args": [
+              1,
+              192
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_u64, -128_i8",
+            "word_args": [
+              1,
+              128
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_u64, 64_i8",
+            "word_args": [
+              1,
+              64
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "shr_arith_i8_by_i16",
+        "category": "Mixed-width shifts & signed right shifts",
+        "description": "Arithmetic right shift `i8 >> i16` with negative LHS and negative/over-width RHS",
+        "return_type": "i8",
+        "vector_count": 8,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8, 1_i16",
+            "word_args": [
+              128,
+              1
+            ],
+            "native_word": 192,
+            "miri_word": 192,
+            "lean_model_word": 192,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, 7_i16",
+            "word_args": [
+              128,
+              7
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, 8_i16",
+            "word_args": [
+              128,
+              8
+            ],
+            "native_word": 128,
+            "miri_word": 128,
+            "lean_model_word": 128,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8, 5_i16",
+            "word_args": [
+              255,
+              5
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-3_i8, 1_i16",
+            "word_args": [
+              253,
+              1
+            ],
+            "native_word": 254,
+            "miri_word": 254,
+            "lean_model_word": 254,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, -1_i16",
+            "word_args": [
+              128,
+              65535
+            ],
+            "native_word": 255,
+            "miri_word": 255,
+            "lean_model_word": 255,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8, 1_i16",
+            "word_args": [
+              127,
+              1
+            ],
+            "native_word": 63,
+            "miri_word": 63,
+            "lean_model_word": 63,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8, -1_i16",
+            "word_args": [
+              127,
+              65535
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "shr_logic_u16_by_i8",
+        "category": "Mixed-width shifts & signed right shifts",
+        "description": "Logical right shift `u16 >> i8` with high bit set and negative signed RHS",
+        "return_type": "u16",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "32768_u16, 1_i8",
+            "word_args": [
+              32768,
+              1
+            ],
+            "native_word": 16384,
+            "miri_word": 16384,
+            "lean_model_word": 16384,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "65535_u16, 15_i8",
+            "word_args": [
+              65535,
+              15
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "32768_u16, -1_i8",
+            "word_args": [
+              32768,
+              255
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "32768_u16, 16_i8",
+            "word_args": [
+              32768,
+              16
+            ],
+            "native_word": 32768,
+            "miri_word": 32768,
+            "lean_model_word": 32768,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "32768_u16, -16_i8",
+            "word_args": [
+              32768,
+              240
+            ],
+            "native_word": 32768,
+            "miri_word": 32768,
+            "lean_model_word": 32768,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "shr_arith_i32_by_u8",
+        "category": "Mixed-width shifts & signed right shifts",
+        "description": "Arithmetic right shift `i32 >> u8` across 32-bit sign bit and shift mask",
+        "return_type": "i32",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-2147483648_i32, 31_u8",
+            "word_args": [
+              2147483648,
+              31
+            ],
+            "native_word": 4294967295,
+            "miri_word": 4294967295,
+            "lean_model_word": 4294967295,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-2147483648_i32, 32_u8",
+            "word_args": [
+              2147483648,
+              32
+            ],
+            "native_word": 2147483648,
+            "miri_word": 2147483648,
+            "lean_model_word": 2147483648,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-15_i32, 2_u8",
+            "word_args": [
+              4294967281,
+              2
+            ],
+            "native_word": 4294967292,
+            "miri_word": 4294967292,
+            "lean_model_word": 4294967292,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "2147483647_i32, 30_u8",
+            "word_args": [
+              2147483647,
+              30
+            ],
+            "native_word": 1,
+            "miri_word": 1,
+            "lean_model_word": 1,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "shr_arith_i64_by_i8",
+        "category": "Mixed-width shifts & signed right shifts",
+        "description": "Arithmetic right shift `i64 >> i8` at 64-bit `MIN` with negative and modulo-64 RHS",
+        "return_type": "i64",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-9223372036854775808_i64, 63_i8",
+            "word_args": [
+              9223372036854775808,
+              63
+            ],
+            "native_word": 18446744073709551615,
+            "miri_word": 18446744073709551615,
+            "lean_model_word": 18446744073709551615,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-9223372036854775808_i64, -1_i8",
+            "word_args": [
+              9223372036854775808,
+              255
+            ],
+            "native_word": 18446744073709551615,
+            "miri_word": 18446744073709551615,
+            "lean_model_word": 18446744073709551615,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-9223372036854775808_i64, 64_i8",
+            "word_args": [
+              9223372036854775808,
+              64
+            ],
+            "native_word": 9223372036854775808,
+            "miri_word": 9223372036854775808,
+            "lean_model_word": 9223372036854775808,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "cmp_signed_i8",
+        "category": "Signed & boolean comparisons",
+        "description": "All 6 relational operators (`<, <=, >, >=, ==, !=`) on signed `i8` boundaries",
+        "return_type": "u64",
+        "vector_count": 7,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-128_i8, 127_i8",
+            "word_args": [
+              128,
+              127
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8, -128_i8",
+            "word_args": [
+              127,
+              128
+            ],
+            "native_word": 44,
+            "miri_word": 44,
+            "lean_model_word": 44,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, -128_i8",
+            "word_args": [
+              128,
+              128
+            ],
+            "native_word": 26,
+            "miri_word": 26,
+            "lean_model_word": 26,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_i8, 127_i8",
+            "word_args": [
+              127,
+              127
+            ],
+            "native_word": 26,
+            "miri_word": 26,
+            "lean_model_word": 26,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i8, 0_i8",
+            "word_args": [
+              255,
+              0
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i8, -1_i8",
+            "word_args": [
+              0,
+              255
+            ],
+            "native_word": 44,
+            "miri_word": 44,
+            "lean_model_word": 44,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-128_i8, -1_i8",
+            "word_args": [
+              128,
+              255
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "cmp_unsigned_u8",
+        "category": "Signed & boolean comparisons",
+        "description": "All 6 relational operators on unsigned `u8` (contrasting bit-patterns `128` and `255` with `i8`)",
+        "return_type": "u64",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "128_u8, 127_u8",
+            "word_args": [
+              128,
+              127
+            ],
+            "native_word": 44,
+            "miri_word": 44,
+            "lean_model_word": 44,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "127_u8, 128_u8",
+            "word_args": [
+              127,
+              128
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "255_u8, 0_u8",
+            "word_args": [
+              255,
+              0
+            ],
+            "native_word": 44,
+            "miri_word": 44,
+            "lean_model_word": 44,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_u8, 255_u8",
+            "word_args": [
+              0,
+              255
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "128_u8, 255_u8",
+            "word_args": [
+              128,
+              255
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "cmp_signed_i64",
+        "category": "Signed & boolean comparisons",
+        "description": "All 6 relational operators on 64-bit signed `i64` (`MIN`, `-1`, `0`, `MAX`)",
+        "return_type": "u64",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-9223372036854775808_i64, 9223372036854775807_i64",
+            "word_args": [
+              9223372036854775808,
+              9223372036854775807
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-9223372036854775808_i64, -1_i64",
+            "word_args": [
+              9223372036854775808,
+              18446744073709551615
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i64, 0_i64",
+            "word_args": [
+              18446744073709551615,
+              0
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i64, 1_i64",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 35,
+            "miri_word": 35,
+            "lean_model_word": 35,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "cmp_bool_all",
+        "category": "Signed & boolean comparisons",
+        "description": "All 9 boolean binary operators (`<, <=, >, >=, ==, !=, &, |, ^`) plus conditional `if !a`",
+        "return_type": "u64",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "false, false",
+            "word_args": [
+              0,
+              0
+            ],
+            "native_word": 538,
+            "miri_word": 538,
+            "lean_model_word": 538,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "false, true",
+            "word_args": [
+              0,
+              1
+            ],
+            "native_word": 931,
+            "miri_word": 931,
+            "lean_model_word": 931,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "true, false",
+            "word_args": [
+              1,
+              0
+            ],
+            "native_word": 428,
+            "miri_word": 428,
+            "lean_model_word": 428,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "true, true",
+            "word_args": [
+              1,
+              1
+            ],
+            "native_word": 218,
+            "miri_word": 218,
+            "lean_model_word": 218,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "enum_implicit_discr",
+        "category": "Fieldless enums & discriminants",
+        "description": "Implicit-discriminant fieldless enum (`[0, 1, 2]`) matched via `Rvalue::Discriminant`",
+        "return_type": "i64",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "ImplicitEnum::First",
+            "word_args": [
+              0
+            ],
+            "native_word": 10,
+            "miri_word": 10,
+            "lean_model_word": 10,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "ImplicitEnum::Second",
+            "word_args": [
+              1
+            ],
+            "native_word": 20,
+            "miri_word": 20,
+            "lean_model_word": 20,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "ImplicitEnum::Third",
+            "word_args": [
+              2
+            ],
+            "native_word": 30,
+            "miri_word": 30,
+            "lean_model_word": 30,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "enum_negative_and_extremes",
+        "category": "Fieldless enums & discriminants",
+        "description": "`#[repr(isize)]` enum with `isize::MIN`, implicit `MIN + 1`, `-1`, implicit `0`, and `isize::MAX`",
+        "return_type": "i64",
+        "vector_count": 5,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "ReprIsizeNeg::Min",
+            "word_args": [
+              0
+            ],
+            "native_word": 18446744073709551516,
+            "miri_word": 18446744073709551516,
+            "lean_model_word": 18446744073709551516,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "ReprIsizeNeg::AfterMin",
+            "word_args": [
+              1
+            ],
+            "native_word": 18446744073709551517,
+            "miri_word": 18446744073709551517,
+            "lean_model_word": 18446744073709551517,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "ReprIsizeNeg::NegOne",
+            "word_args": [
+              2
+            ],
+            "native_word": 18446744073709551615,
+            "miri_word": 18446744073709551615,
+            "lean_model_word": 18446744073709551615,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "ReprIsizeNeg::Zero",
+            "word_args": [
+              3
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "ReprIsizeNeg::Max",
+            "word_args": [
+              4
+            ],
+            "native_word": 100,
+            "miri_word": 100,
+            "lean_model_word": 100,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "enum_non_contiguous",
+        "category": "Fieldless enums & discriminants",
+        "description": "Default-repr enum with negative and non-contiguous discriminants (`[-100, 42, 1000000, 1000001]`)",
+        "return_type": "isize",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "NonContigEnum::NegHundred",
+            "word_args": [
+              0
+            ],
+            "native_word": 18446744073709551516,
+            "miri_word": 18446744073709551516,
+            "lean_model_word": 18446744073709551516,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "NonContigEnum::FortyTwo",
+            "word_args": [
+              1
+            ],
+            "native_word": 42,
+            "miri_word": 42,
+            "lean_model_word": 42,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "NonContigEnum::Million",
+            "word_args": [
+              2
+            ],
+            "native_word": 1000000,
+            "miri_word": 1000000,
+            "lean_model_word": 1000000,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "NonContigEnum::Next",
+            "word_args": [
+              3
+            ],
+            "native_word": 1000001,
+            "miri_word": 1000001,
+            "lean_model_word": 1000001,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "enum_single_variant",
+        "category": "Fieldless enums & discriminants",
+        "description": "Single-variant enum with negative discriminant (`Only = -7`)",
+        "return_type": "i64",
+        "vector_count": 1,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "SingleExplicit::Only",
+            "word_args": [
+              0
+            ],
+            "native_word": 18446744073709551609,
+            "miri_word": 18446744073709551609,
+            "lean_model_word": 18446744073709551609,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "storage_loop_cycle",
+        "category": "Storage transitions & moves",
+        "description": "Loop with repeated inner-scope `StorageLive`/`StorageDead` cycles, `Ty.unit`, and `Ty.never` locals",
+        "return_type": "i32",
+        "vector_count": 4,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "-1_i32",
+            "word_args": [
+              4294967295
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i32",
+            "word_args": [
+              0
+            ],
+            "native_word": 0,
+            "miri_word": 0,
+            "lean_model_word": 0,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "1_i32",
+            "word_args": [
+              1
+            ],
+            "native_word": 4294967294,
+            "miri_word": 4294967294,
+            "lean_model_word": 4294967294,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "4_i32",
+            "word_args": [
+              4
+            ],
+            "native_word": 4294967270,
+            "miri_word": 4294967270,
+            "lean_model_word": 4294967270,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "storage_shadow_and_reinit",
+        "category": "Storage transitions & moves",
+        "description": "Sequential inner block scopes allocating and freeing distinct locals",
+        "return_type": "i32",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "0_i32",
+            "word_args": [
+              0
+            ],
+            "native_word": 4294967286,
+            "miri_word": 4294967286,
+            "lean_model_word": 4294967286,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "25_i32",
+            "word_args": [
+              25
+            ],
+            "native_word": 40,
+            "miri_word": 40,
+            "lean_model_word": 40,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-50_i32",
+            "word_args": [
+              4294967246
+            ],
+            "native_word": 4294967186,
+            "miri_word": 4294967186,
+            "lean_model_word": 4294967186,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "custom_mir_move_reinit_copy",
+        "category": "Storage transitions & moves",
+        "description": "`#[custom_mir]` moving a `Copy` local (`Operand::Move`), re-initializing it, and reading it (`Operand::Copy`)",
+        "return_type": "i32",
+        "vector_count": 3,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "25_i32",
+            "word_args": [
+              25
+            ],
+            "native_word": 15,
+            "miri_word": 15,
+            "lean_model_word": 15,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-10_i32",
+            "word_args": [
+              4294967286
+            ],
+            "native_word": 4294967276,
+            "miri_word": 4294967276,
+            "lean_model_word": 4294967276,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "0_i32",
+            "word_args": [
+              0
+            ],
+            "native_word": 4294967286,
+            "miri_word": 4294967286,
+            "lean_model_word": 4294967286,
+            "lean_kernel_rfl": true
+          }
+        ]
+      },
+      {
+        "name": "custom_mir_storage_live_resets_value",
+        "category": "Storage transitions & moves",
+        "description": "`#[custom_mir]` repeated `StorageLive` on an initialized local followed by reinitialization and `StorageDead`",
+        "return_type": "i32",
+        "vector_count": 2,
+        "classification": "agreement",
+        "vectors": [
+          {
+            "rust_args": "99_i32",
+            "word_args": [
+              99
+            ],
+            "native_word": 4294967254,
+            "miri_word": 4294967254,
+            "lean_model_word": 4294967254,
+            "lean_kernel_rfl": true
+          },
+          {
+            "rust_args": "-1_i32",
+            "word_args": [
+              4294967295
+            ],
+            "native_word": 4294967254,
+            "miri_word": 4294967254,
+            "lean_model_word": 4294967254,
+            "lean_kernel_rfl": true
+          }
+        ]
+      }
+    ]
+  },
+  "invalid_state_and_fault_suite": [
+    {
+      "name": "move_then_read_copy_i32",
+      "category": "Storage transitions & moves",
+      "description": "`#[custom_mir]` moving a `Copy` local (`Move(x)`) then reading `x` without reinitialization",
+      "miri": {
+        "returncode": 0,
+        "stdout": "42",
+        "stderr_first_error": ""
+      },
+      "lean_model": "fault (.uninitialized)",
+      "classification": "deliberate conservative refusal"
+    },
+    {
+      "name": "repeated_live_then_read_uninit",
+      "category": "Storage transitions & moves",
+      "description": "`#[custom_mir]` `StorageLive(tmp); tmp = x; StorageLive(tmp); RET = tmp` (second `StorageLive` resets initialized local to `.uninit`)",
+      "miri": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr_first_error": "error: Undefined Behavior: constructing invalid value of type i32: encountered uninitialized memory, but expected an integer"
+      },
+      "lean_model": "fault (.uninitialized)",
+      "classification": "agreement (invalid-state UB rejected by both Miri and Lean model)"
+    },
+    {
+      "name": "write_to_dead_local",
+      "category": "Storage transitions & moves",
+      "description": "`#[custom_mir]` `StorageLive(tmp); StorageDead(tmp); tmp = x` (assigning to a dead local without `StorageLive`)",
+      "miri": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr_first_error": "error: Undefined Behavior: accessing a dead local variable"
+      },
+      "lean_model": "fault (.deadLocal)",
+      "classification": "agreement (invalid-state UB rejected by both Miri and Lean model)"
+    },
+    {
+      "name": "read_uninitialized_local",
+      "category": "Storage transitions & moves",
+      "description": "`#[custom_mir]` reading an allocated uninitialized `i32` local",
+      "miri": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr_first_error": "error: Undefined Behavior: constructing invalid value of type i32: encountered uninitialized memory, but expected an integer"
+      },
+      "lean_model": "fault (.uninitialized)",
+      "classification": "agreement (invalid-state UB rejected by both Miri and Lean model)"
+    },
+    {
+      "name": "enter_unreachable_terminator",
+      "category": "Storage transitions & moves",
+      "description": "`#[custom_mir]` reaching `TerminatorKind::Unreachable`",
+      "miri": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr_first_error": "error: Undefined Behavior: entering unreachable code"
+      },
+      "lean_model": "fault (.unreachable)",
+      "classification": "agreement (invalid-state UB rejected by both Miri and Lean model)"
+    }
+  ],
+  "refusal_boundary_suite": [
+    {
+      "name": "empty_enum_match",
+      "category": "Fieldless enums & discriminants",
+      "description": "`pub enum EmptyEnum {}` matched via `match e {}`",
+      "capture_status": "captured",
+      "reason": "captured_but_bodyWF_false",
+      "classification": "unexpected refusal",
+      "notes": "Captured (`status: captured`) with `Ty.enum id []`, but `Trusted.Mvp.Semantics.Ty.admitted` requires `!ds.isEmpty`, making `bodyWF = false` (`proof_failed` instead of `unsupported` or uninhabited admission like `Ty.never`)."
+    },
+    {
+      "name": "custom_mir_discriminant_on_non_enum",
+      "category": "Fieldless enums & discriminants",
+      "description": "`#[custom_mir]` `Rvalue::Discriminant(x)` where `x: i32` (valid in `rustc` MIR, which defines discriminant of non-enums as 0)",
+      "capture_status": "captured",
+      "reason": "captured_but_bodyWF_false",
+      "classification": "unexpected refusal",
+      "notes": "Captured (`status: captured`) because `extract.rs` does not check the operand type of `Rvalue::Discriminant`, but `Semantics.lean` `rvalueTy` requires `Ty.enum`, making `bodyWF = false`."
+    },
+    {
+      "name": "construct_fieldless_enum",
+      "category": "Fieldless enums & discriminants",
+      "description": "Constructing a fieldless enum variant `ImplicitEnum::B`",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 0: unsupported rvalue: ImplicitEnum::B",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`unsupported rvalue: ImplicitEnum::B`). Neither `Rvalue::Aggregate(Adt)` for fieldless enums nor `Operand::Constant` for `Ty.enum` is translated, so no verified function can construct an enum value."
+    },
+    {
+      "name": "cast_enum_as_isize",
+      "category": "Fieldless enums & discriminants",
+      "description": "Casting an `isize`-discriminant enum `e as isize`",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 3: unsupported rvalue: move _3 as isize (IntToInt)",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`unsupported rvalue: move _3 as isize (IntToInt)`). `rustc` lowers `e as isize` to `_3 = discriminant(e)` (already `isize`) followed by an identity `IntToInt` cast."
+    },
+    {
+      "name": "unary_neg_i8",
+      "category": "Signed & narrow arithmetic",
+      "description": "Unary negation `-a` on `i8` under `-C overflow-checks=no`",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 2: unsupported rvalue: Neg(move _2)",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`unsupported rvalue: Neg(move _2)`). Under `overflow-checks=no`, `-a` is pure wrapping negation equivalent to admitted `0 - a` (`BinOp::Sub`), but `UnOp::Neg` is omitted from `Syntax.lean`."
+    },
+    {
+      "name": "unary_not_i8",
+      "category": "Signed & narrow arithmetic",
+      "description": "Unary bitwise NOT `!a` on `i8`",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 2: unsupported rvalue: Not(move _2)",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`unsupported rvalue: Not(move _2)`). Bitwise `!a` is total and equivalent to admitted `a ^ -1`, but `UnOp::Not` is omitted from `Syntax.lean`."
+    },
+    {
+      "name": "unary_not_bool",
+      "category": "Signed & narrow arithmetic",
+      "description": "Unary logical NOT `!a` on `bool` in value position (`return !a`)",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 2: unsupported rvalue: Not(move _2)",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`unsupported rvalue: Not(move _2)`). Conditional `if !a` is admitted (lowered by swapping `SwitchInt` targets), whereas value-position `!a` emits `UnOp::Not` and is refused."
+    },
+    {
+      "name": "assoc_const_i8_min",
+      "category": "Negative constants & literals",
+      "description": "Referencing standard associated constant `i8::MIN` (`a + i8::MIN`)",
+      "capture_status": "unsupported",
+      "reason": "required constants are unavailable in the scalar model",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`required constants are unavailable in the scalar model`). Even though `rustc` evaluates `i8::MIN` to `ScalarInt(128)` in `Operand::Constant`, `body.required_consts` is non-empty and rejected by `extract.rs`."
+    },
+    {
+      "name": "const_item_reference",
+      "category": "Negative constants & literals",
+      "description": "Referencing crate-local `const CONST_ITEM_NEG: i32 = -42;`",
+      "capture_status": "unsupported",
+      "reason": "required constants are unavailable in the scalar model",
+      "classification": "unexpected refusal",
+      "notes": "Refused at capture (`required constants are unavailable in the scalar model`) because `body.required_consts` records the evaluated `const` item."
+    },
+    {
+      "name": "inline_const_block",
+      "category": "Negative constants & literals",
+      "description": "Inline `const { -42 }` block",
+      "capture_status": "unsupported",
+      "reason": "required constants are unavailable in the scalar model",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`required constants are unavailable in the scalar model`), documented in `extract.rs` lines 257-269."
+    },
+    {
+      "name": "signed_div_i8",
+      "category": "Signed & narrow arithmetic",
+      "description": "Signed division `a / b` on `i8`",
+      "capture_status": "unsupported",
+      "reason": "bb0 terminator: unsupported terminator: assert(!move _5, \"attempt to divide `{}` by zero\", copy _3) -> [success: bb1, unwind continue]",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`unsupported terminator: assert(...)` for `b == 0` and `a == MIN && b == -1`, plus `BinOp::Div`)."
+    },
+    {
+      "name": "signed_rem_i8",
+      "category": "Signed & narrow arithmetic",
+      "description": "Signed remainder `a % b` on `i8`",
+      "capture_status": "unsupported",
+      "reason": "bb0 terminator: unsupported terminator: assert(!move _5, \"attempt to calculate the remainder of `{}` with a divisor of zero\", copy _3) -> [success: bb1, unwind continue]",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`unsupported terminator: assert(...)` for `b == 0` and `a == MIN && b == -1`, plus `BinOp::Rem`)."
+    },
+    {
+      "name": "wrapping_add_method_i8",
+      "category": "Signed & narrow arithmetic",
+      "description": "Method call `a.wrapping_add(b)` at `-C opt-level=0`",
+      "capture_status": "unsupported",
+      "reason": "bb0 terminator: unsupported terminator: _0 = core::num::<impl i8>::wrapping_add(move _3, move _4) -> [return: bb1, unwind continue]",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`unsupported terminator: ... Call`). Calls are outside the intra-procedural MVP fragment; `+` is wrapping under the Anneal profile."
+    },
+    {
+      "name": "cast_i8_to_i32",
+      "category": "Signed & boolean comparisons",
+      "description": "Sign-extending integer cast `a as i32` (`i8 -> i32`)",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 2: unsupported rvalue: move _2 as i32 (IntToInt)",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`unsupported rvalue: move _2 as i32 (IntToInt)`). `Rvalue::Cast` is outside the MVP syntax."
+    },
+    {
+      "name": "cast_i8_to_u32",
+      "category": "Signed & boolean comparisons",
+      "description": "Sign-extending then reinterpreting cast `a as u32` (`i8 -> u32`)",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 2: unsupported rvalue: move _2 as u32 (IntToInt)",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`unsupported rvalue: move _2 as u32 (IntToInt)`)."
+    },
+    {
+      "name": "cast_bool_to_u8",
+      "category": "Signed & boolean comparisons",
+      "description": "Boolean-to-integer cast `a as u8` (`bool -> u8`)",
+      "capture_status": "unsupported",
+      "reason": "bb0 statement 2: unsupported rvalue: move _2 as u8 (IntToInt)",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`unsupported rvalue: move _2 as u8 (IntToInt)`)."
+    },
+    {
+      "name": "repr_i8_enum_match",
+      "category": "Fieldless enums & discriminants",
+      "description": "`#[repr(i8)]` fieldless enum with negative discriminant",
+      "capture_status": "unsupported",
+      "reason": "only isize enum discriminants are modeled",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`only isize enum discriminants are modeled`), documented in `Syntax.lean` line 27."
+    },
+    {
+      "name": "repr_i64_enum_match",
+      "category": "Fieldless enums & discriminants",
+      "description": "`#[repr(i64)]` fieldless enum on 64-bit `x86_64`",
+      "capture_status": "unsupported",
+      "reason": "only isize enum discriminants are modeled",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`only isize enum discriminants are modeled`) because `adt.repr().discr_type()` is `Fixed(I64, true)` rather than `Pointer(true)`."
+    },
+    {
+      "name": "repr_usize_enum_match",
+      "category": "Fieldless enums & discriminants",
+      "description": "`#[repr(usize)]` fieldless enum",
+      "capture_status": "unsupported",
+      "reason": "only isize enum discriminants are modeled",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`only isize enum discriminants are modeled`)."
+    },
+    {
+      "name": "wide_i128_add",
+      "category": "Signed & narrow arithmetic",
+      "description": "128-bit signed addition `a + b` (`i128`)",
+      "capture_status": "unsupported",
+      "reason": "integer width 128 exceeds the modeled 64 bits",
+      "classification": "deliberate conservative refusal",
+      "notes": "Refused at capture (`integer width 128 exceeds the modeled 64 bits`)."
+    },
+    {
+      "name": "explicit_enum_discr_whole_crate",
+      "category": "Fieldless enums & discriminants",
+      "description": "Whole-crate capture (`--scope crate`) of `pub enum NegEnum { Neg = -1, Pos = 1 }`",
+      "capture_status": "unsupported",
+      "reason": "whole-crate obligation is unsupported: AnonConst",
+      "classification": "unexpected refusal",
+      "notes": "In `--scope crate`, any explicit enum discriminant (`= -1`, `= 42`) creates a `DefKind::AnonConst` item with `has_body = true`, which `whole_crate_item` rejects (`whole-crate obligation is unsupported: AnonConst`). Works only in `--select` (`UnitTheorem`)."
+    }
+  ],
+  "e2e_cargo_anneal_verify": {
+    "positive_crate": {
+      "status": "crate_verified",
+      "timing_ms": {
+        "capture": 37,
+        "proof_and_audit": 12281,
+        "total": 13754
+      }
+    },
+    "empty_enum_crate": {
+      "status": "proof_failed",
+      "phase": "audit",
+      "detail": "Lean exited Some(1): /tmp/anneal-trusted-sJtp2B/target-src/Proof.lean:25:12: error: Tactic `decide` proved that the proposition\n  bodyWF Captured.program.bodies[0] = true\nis false"
+    }
+  },
+  "seeded_error_checks": [
+    {
+      "name": "seed1_wrong_wrapping_add_result",
+      "description": "Seeded off-by-one expected output (`129` instead of `128`, i.e., `-127i8` instead of `-128i8`) for `i8_add_wrapping(127, 1)`",
+      "detected": true,
+      "exit_code": 1,
+      "diagnostic_excerpt": [
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed1_wrong_wrapping_add_result.lean:13:0: error: Not a definitional equality: the left-hand side",
+        "  run body_i8_add_wrapping 20 (initial body_i8_add_wrapping [127#64, 1#64])",
+        "is not definitionally equal to the right-hand side",
+        "  some 129#64",
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed1_wrong_wrapping_add_result.lean:15:36: error: Type mismatch",
+        "  rfl"
+      ]
+    },
+    {
+      "name": "seed2_logical_instead_of_arith_shr",
+      "description": "Seeded logical right shift output (`64` instead of `192 = -64i8`) for `shr_arith_i8_by_i16(-128i8, 1i16)`",
+      "detected": true,
+      "exit_code": 1,
+      "diagnostic_excerpt": [
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed2_logical_instead_of_arith_shr.lean:13:0: error: Not a definitional equality: the left-hand side",
+        "  run body_shr_arith_i8_by_i16 20 (initial body_shr_arith_i8_by_i16 [128#64, 1#64])",
+        "is not definitionally equal to the right-hand side",
+        "  some 64#64",
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed2_logical_instead_of_arith_shr.lean:15:35: error: Type mismatch",
+        "  rfl"
+      ]
+    },
+    {
+      "name": "seed3_truncated_mod_on_neg_shift_rhs",
+      "description": "Seeded truncated modulo (`Int.tmod (-1) 64 = 0`, giving `1 << 0 = 1` instead of `Int.emod (-1) 64 = 63`, giving `2^63`) for `shl_u64_by_i8(1, -1i8)`",
+      "detected": true,
+      "exit_code": 1,
+      "diagnostic_excerpt": [
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed3_truncated_mod_on_neg_shift_rhs.lean:13:0: error: Not a definitional equality: the left-hand side",
+        "  run body_shl_u64_by_i8 20 (initial body_shl_u64_by_i8 [1#64, 255#64])",
+        "is not definitionally equal to the right-hand side",
+        "  some 1#64",
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed3_truncated_mod_on_neg_shift_rhs.lean:15:34: error: Type mismatch",
+        "  rfl"
+      ]
+    },
+    {
+      "name": "seed4_unsigned_instead_of_signed_cmp",
+      "description": "Seeded unsigned comparison ordering (`-128i8 > 127i8` because `0x80 > 0x7f`) on `cmp_signed_i8(-128i8, 127i8)`",
+      "detected": true,
+      "exit_code": 1,
+      "diagnostic_excerpt": [
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed4_unsigned_instead_of_signed_cmp.lean:13:0: error: Not a definitional equality: the left-hand side",
+        "  run body_cmp_signed_i8 120 (initial body_cmp_signed_i8 [128#64, 127#64])",
+        "is not definitionally equal to the right-hand side",
+        "  some 44#64",
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed4_unsigned_instead_of_signed_cmp.lean:15:35: error: Type mismatch",
+        "  rfl"
+      ]
+    },
+    {
+      "name": "seed5_variant_index_instead_of_discriminant",
+      "description": "Seeded variant-index-for-discriminant confusion (`SwitchInt` matching variant index `2` instead of discriminant `-1 = 2^64 - 1`) on `enum_negative_and_extremes(ReprIsizeNeg::NegOne)`",
+      "detected": true,
+      "exit_code": 1,
+      "diagnostic_excerpt": [
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed5_variant_index_instead_of_discriminant.lean:13:0: error: Not a definitional equality: the left-hand side",
+        "  run body_enum_negative_and_extremes 30 (initial body_enum_negative_and_extremes [2#64])",
+        "is not definitionally equal to the right-hand side",
+        "  some 0#64",
+        "<scratch>/mvp-investigations/task2/cases/seeded_errors/seed5_variant_index_instead_of_discriminant.lean:15:34: error: Type mismatch",
+        "  rfl"
+      ]
+    },
+    {
+      "name": "seed6_e2e_wrong_spec_return_value",
+      "description": "Seeded wrong return specification (`255` instead of `254 = -2i8`) in `positive_crate/proof/Spec.lean` checked via `cargo-anneal verify`",
+      "detected": true,
+      "exit_code": 1,
+      "diagnostic_excerpt": [
+        "status=proof_failed, phase=audit",
+        "Lean exited Some(1): /tmp/anneal-trusted-njeiz1/target-src/Proof.lean:39:32: error: Application type mismatch: The argument",
+        "  runs",
+        "has type",
+        "  run body 25 (initial body []) = some 254#64",
+        "but is expected to have type"
+      ]
+    }
+  ]
+}

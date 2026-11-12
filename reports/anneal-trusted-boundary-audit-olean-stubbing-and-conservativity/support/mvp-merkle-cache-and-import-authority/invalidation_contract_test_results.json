@@ -1,0 +1,201 @@
+{
+  "0_cold_baseline": {
+    "ok": true,
+    "total_ms": 38318.88,
+    "headers_ms": 2631.6,
+    "compile_ms": 26702.09,
+    "audit_ms": 8938.48,
+    "cache_hits": [],
+    "cache_misses": [
+      "Endianness",
+      "Trusted.Mvp.Syntax",
+      "Inputs",
+      "Trusted.Mvp.Semantics",
+      "Anneal.Mvp.Execution",
+      "Trusted.Mvp",
+      "Captured",
+      "SourceInputs",
+      "Spec",
+      "Expected",
+      "InitialCache",
+      "ProductionSteps",
+      "ProductionClaims",
+      "Proof"
+    ],
+    "replayedDeclarations": 1683,
+    "modelClosureCount": 1552,
+    "specificationClosureCount": 1545
+  },
+  "1a_warm_full_hit": {
+    "ok": true,
+    "total_ms": 9417.869684053585,
+    "headers_ms": 1.5059509314596653,
+    "compile_ms": 0.0,
+    "audit_ms": 9390.727824997157,
+    "cache_hits": [
+      "Endianness",
+      "Trusted.Mvp.Syntax",
+      "Inputs",
+      "Trusted.Mvp.Semantics",
+      "Anneal.Mvp.Execution",
+      "Trusted.Mvp",
+      "Captured",
+      "SourceInputs",
+      "Spec",
+      "Expected",
+      "InitialCache",
+      "ProductionSteps",
+      "ProductionClaims",
+      "Proof"
+    ],
+    "cache_misses": [],
+    "replayedDeclarations": 1683,
+    "modelClosureCount": 1552,
+    "specificationClosureCount": 1545
+  },
+  "1b_warm_leaf_edit_proof": {
+    "ok": true,
+    "total_ms": 12215.139893931337,
+    "headers_ms": 2629.2947829933837,
+    "compile_ms": 217.66470395959914,
+    "audit_ms": 9341.627154964954,
+    "cache_hits": [
+      "Endianness",
+      "Trusted.Mvp.Syntax",
+      "Inputs",
+      "Trusted.Mvp.Semantics",
+      "Anneal.Mvp.Execution",
+      "Trusted.Mvp",
+      "Captured",
+      "SourceInputs",
+      "Spec",
+      "Expected",
+      "InitialCache",
+      "ProductionSteps",
+      "ProductionClaims"
+    ],
+    "cache_misses": [
+      "Proof"
+    ],
+    "replayedDeclarations": 1683
+  },
+  "1c_warm_edit_production_claims": {
+    "ok": true,
+    "total_ms": 12782.806850038469,
+    "headers_ms": 2727.3959619924426,
+    "compile_ms": 786.0622749431059,
+    "audit_ms": 9239.44101901725,
+    "cache_hits": [
+      "Endianness",
+      "Trusted.Mvp.Syntax",
+      "Inputs",
+      "Trusted.Mvp.Semantics",
+      "Anneal.Mvp.Execution",
+      "Trusted.Mvp",
+      "Captured",
+      "SourceInputs",
+      "Spec",
+      "Expected",
+      "InitialCache",
+      "ProductionSteps"
+    ],
+    "cache_misses": [
+      "ProductionClaims",
+      "Proof"
+    ],
+    "replayedDeclarations": 1683
+  },
+  "2a_changed_spec_honest": {
+    "rejected": true,
+    "error_type": "VerificationPolicyError",
+    "message": "Compilation failed for Proof: <scratch>/mvp-investigations/task3/scen2a_changed_spec_honest/target-src/Proof.lean:29:12: error: Invalid `\u27e8...\u27e9` notation: The expected type `False` has no constructors\n\n"
+  },
+  "2b_changed_spec_forced_stale": {
+    "layer1_cache_contract": {
+      "rejected": true,
+      "error_type": "CacheIntegrityError",
+      "message": "Forced stale cache entry for Expected: manifest merkle_key dfee88cf81317a4166e1955262d9fd19a69d78f21a3d684f90fddf4f2f42eda7 != current merkle_key 295fea01aa29b2e333381750739d7ade07c1c6304247ab3cca67f557810c64b6"
+    },
+    "layer2_trusted_boundary_audit": {
+      "returncode": 1,
+      "ok": false,
+      "category": "policy",
+      "message": "policy:kernel replay rejected target dependency: while replaying declaration 'Proof.verify':\n(kernel) application type mismatch\n  \u27e8fun id body found =>\n    @_root_.id\n      (Eq (List.instGetElem?NatLtLength.getElem? (Trusted.Mvp.Program.bodies Captured.program) id) (Option.some body) \u2192\n        Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs id))\n      (fun found =>\n        @Nat.casesAuxOn (fun a => Eq id a \u2192 Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs id)) id\n          (fun h =>\n            @Eq.ndrec Nat 0\n              (fun id =>\n                Eq (List.instGetElem?NatLtLength.getElem? (List.cons ProductionReduction.sourceBody List.nil) id)\n                    (Option.some body) \u2192\n                  Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs id))\n              (fun found =>\n                have same := Option.some.inj found;\n                @Eq.ndrec Trusted.Mvp.Body ProductionReduction.sourceBody\n                  (fun body =>\n                    Eq (List.instGetElem?NatLtLength.getElem? (List.cons ProductionReduction.sourceBody List.nil) 0)\n                        (Option.some body) \u2192\n                      Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs 0))\n                  (fun found => ProductionClaims.baseline (Trusted.Mvp.Specs.safety Spec.specs 0)) body same found)\n              id (Eq.symm h) found)\n          (fun id_1 h =>\n            @Eq.ndrec Nat (instHAdd.hAdd id_1 1)\n              (fun id =>\n                Eq (List.instGetElem?NatLtLength.getElem? (List.cons ProductionReduction.sourceBody List.nil) id)\n                    (Option.some body) \u2192\n                  Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs id))\n              (fun found =>\n                @False.elim (Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs (instHAdd.hAdd id_1 1)))\n                  (Eq.mp\n                    (Eq.trans\n                      (congrFun'\n                        (congrArg Eq\n                          (getElem?_neg (List.cons ProductionReduction.sourceBody List.nil) (instHAdd.hAdd id_1 1)\n                            (of_eq_true\n                              (Eq.trans\n                                (congrArg Not\n                                  (Eq.trans\n                                    (Eq.trans (congrArg (instLTNat.lt (instHAdd.hAdd id_1 1)) (Nat.zero_add 1))\n                                      Nat.lt_one_iff._simp_1)\n                                    (Eq.trans (Nat.add_eq_zero_iff._simp_1 id_1 1)\n                                      (Eq.trans (congrArg (And (Eq id_1 0)) (Nat.succ_ne_self._simp_1 0))\n                                        (and_false (Eq id_1 0))))))\n                                not_false_eq_true))))\n                        (Option.some body))\n                      (eq_false' fun h => False.elim (noConfusion_of_Nat Option.ctorIdx h)))\n                    found))\n              id (Eq.symm h) found)\n          (Eq.refl id))\n      found,\n    Exists.intro ProductionReduction.sourceBody\n      \u27e8rfl,\n        \u27e8ProductionClaims.bigEndian_exact,\n          \u27e8ProductionClaims.littleEndian_exact, ProductionClaims.bigEndian_involutive\u27e9\u27e9\u27e9\u27e9\nargument has type\n  Exists fun body =>\n    And (Eq (Trusted.Mvp.Program.bodies Captured.program) (List.cons body List.nil))\n      (And (Spec.exactReversal body) (And (Spec.exactLittleEndian body) (Spec.involution body)))\nbut function has type\n  \u2200 (right : Trusted.Mvp.Specs.property Spec.specs Captured.program),\n    And\n      ((id : Nat) \u2192\n        (body : Trusted.Mvp.Body) \u2192\n          Eq (List.instGetElem?NatLtLength.getElem? (Trusted.Mvp.Program.bodies Captured.program) id)\n              (Option.some body) \u2192\n            Trusted.Mvp.BodyVerified body (Trusted.Mvp.Specs.safety Spec.specs id))\n      (Trusted.Mvp.Specs.property Spec.specs Captured.program)"
+    }
+  },
+  "3a_reassigned_role_proof_to_spec": {
+    "layer1_forced_cache_entry": {
+      "rejected": true,
+      "error_type": "CacheIntegrityError",
+      "message": "Forced stale cache entry for InitialCache: manifest merkle_key d741c67767a6d387860639fec7e354b82a538246e5aa629e0b64a9f463bf10ea != current merkle_key 089c48e4414660d4634133ed6d71fa5a863a421bd970d051163ced2e2b662bfd"
+    },
+    "layer2_trusted_boundary_audit": {
+      "rejected": true,
+      "error_type": "VerificationPolicyError",
+      "message": "TrustedBoundary audit rejected target: policy:target authority violation ProductionReduction.sourceBody references Captured.program"
+    }
+  },
+  "3b_reassigned_role_endianness_to_proof": {
+    "layer1_forced_cache_entry": {
+      "rejected": true,
+      "error_type": "CacheIntegrityError",
+      "message": "Forced stale cache entry for Endianness: manifest merkle_key 701aea47bc3a7de8810d0990f965776bc7b1cce8e0285f5371d0053bbc08a9ac != current merkle_key 87c9217ce2a6e3f54f141f901b8178d9b68670d73bda14499a56e4c413a473c0"
+    },
+    "layer2_trusted_boundary_audit": {
+      "rejected": true,
+      "error_type": "VerificationPolicyError",
+      "message": "TrustedBoundary audit rejected target: policy:target authority violation Spec.exactReversal references Endianness.ByteReversal"
+    }
+  },
+  "3c_reassigned_role_spec_to_proof": {
+    "layer1_forced_cache_entry": {
+      "rejected": true,
+      "error_type": "CacheIntegrityError",
+      "message": "Forced stale cache entry for Spec: manifest merkle_key 6b963f8f7743c8ef694a4d518e0e29d465f9b91a8d14a42b8f2c1e8d4881b31e != current merkle_key 0e49bfe88b5a47b587218daa8b780537a23ac598a8b813ad67526a38eddc62b3"
+    },
+    "layer2_trusted_boundary_audit": {
+      "rejected": true,
+      "error_type": "VerificationPolicyError",
+      "message": "TrustedBoundary audit rejected target: policy:incorrect canonical input origin Spec.specs"
+    }
+  },
+  "4a_stale_capture_honest": {
+    "rejected": true,
+    "error_type": "VerificationPolicyError",
+    "message": "Compilation failed for ProductionSteps: <scratch>/mvp-investigations/task3/scen4a_stale_capture_honest/target-src/ProductionSteps.lean:1227:12: error: Tactic `rfl` failed: The left-hand side\n  step sourceBody (be8_state7 value)\nis not definitionally equal to the right-hand side\n  StepResult.next (be8_state8 value"
+  },
+  "4b_stale_capture_forced_reuse": {
+    "layer1_cache_contract": {
+      "rejected": true,
+      "error_type": "CacheIntegrityError",
+      "message": "Forced stale cache entry for Expected: manifest merkle_key dfee88cf81317a4166e1955262d9fd19a69d78f21a3d684f90fddf4f2f42eda7 != current merkle_key 4d18252713c5267deeb60097277f453afd8be6905074cf7466f0d022f413bd61"
+    },
+    "layer2_trusted_boundary_audit": {
+      "returncode": 1,
+      "ok": false,
+      "category": "policy",
+      "message": "policy:kernel replay rejected target dependency: while replaying declaration '_private.ProductionSteps.0.ProductionSteps.be8_suffix7':\n(kernel) application type mismatch\n  Anneal.Mvp.Executes.next ProductionReduction.sourceBody (_private.ProductionSteps.0.ProductionSteps.be8_state7 value)\n    (_private.ProductionSteps.0.ProductionSteps.be8_state8 value) (Endianness.swap8 value) \u22ef\nargument has type\n  Eq (Trusted.Mvp.step ProductionReduction.sourceBody (_private.ProductionSteps.0.ProductionSteps.be8_state7 value))\n    (Trusted.Mvp.step ProductionReduction.sourceBody (_private.ProductionSteps.0.ProductionSteps.be8_state7 value))\nbut function has type\n  Eq (Trusted.Mvp.step ProductionReduction.sourceBody (_private.ProductionSteps.0.ProductionSteps.be8_state7 value))\n      (Trusted.Mvp.StepResult.next (_private.ProductionSteps.0.ProductionSteps.be8_state8 value)) \u2192\n    Anneal.Mvp.Executes ProductionReduction.sourceBody (_private.ProductionSteps.0.ProductionSteps.be8_state8 value)\n        (Endianness.swap8 value) \u2192\n      Anneal.Mvp.Executes ProductionReduction.sourceBody (_private.ProductionSteps.0.ProductionSteps.be8_state7 value)\n        (Endianness.swap8 value)"
+    }
+  },
+  "5a_forged_weaker_proof_olean": {
+    "layer1_cache_artifact_digest_check": {
+      "rejected": true,
+      "error_type": "CacheIntegrityError",
+      "message": "Cached artifact tampering detected for Proof.olean: expected 2443d38624a1948d7b66bacd715e8d4b8828ab766f0e2b99a6a22a90d51e860a, got 1d523ec33c1e4ccbac2068aed857545e875688f74cf86d1df58018fae6d3a5bc"
+    },
+    "layer2_trusted_boundary_audit": {
+      "returncode": 1,
+      "ok": false,
+      "category": "policy",
+      "message": "policy:target theorem type differs from Expected"
+    }
+  },
+  "5b_forged_duplicate_declaration": {
+    "layer2_trusted_boundary_audit": {
+      "returncode": 2,
+      "ok": false,
+      "category": "operational",
+      "message": "import Spec failed, environment already contains 'Spec.specs' from Proof"
+    }
+  }
+}

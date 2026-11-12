@@ -1,0 +1,348 @@
+{
+  "capture": {
+    "rust_stage_and_capture_bin_hash_ms": 4.471968044526875,
+    "rust_source_files": 10,
+    "rust_source_bytes": 414586,
+    "capture_binary_bytes": 1064992,
+    "capture_exec_wall_ms": 570.9103679982945,
+    "capture_exec_user_s": 0.36,
+    "capture_exec_sys_s": 0.11,
+    "capture_exec_max_rss_kb": 152472,
+    "capture_json_bytes": 897972,
+    "captured_lean_bytes": 18741,
+    "capture_output_hash_ms": 1.6289919149130583
+  },
+  "admission_and_locks": {
+    "lean_bin_bytes": 9024,
+    "lean_bin_hash_ms": 0.09203201625496149,
+    "lean_version_wall_ms": 117.26726696360856,
+    "lean_print_prefix_wall_ms": 116.56782007776201,
+    "foundation_modules": 51,
+    "foundation_files_hashed": 306,
+    "foundation_bytes_hashed": 44895453,
+    "foundation_hash_ms": 55.37692399229854,
+    "library_modules": 122,
+    "library_files_hashed": 732,
+    "library_bytes_hashed": 117357958,
+    "library_hash_ms": 136.6887380136177
+  },
+  "headers_inspection": {
+    "wall_ms": 2624.29514399264,
+    "user_s": 2.41,
+    "sys_s": 0.14,
+    "max_rss_kb": 719948
+  },
+  "module_compilations": [
+    {
+      "module": "Endianness",
+      "role": "specification",
+      "imports": [
+        "Init.Data.BitVec.Lemmas"
+      ],
+      "source_bytes": 5605,
+      "source_lines": 153,
+      "wall_ms": 5078.1070770462975,
+      "user_s": 4.89,
+      "sys_s": 0.11,
+      "max_rss_kb": 335008,
+      "part_sizes": {
+        "olean": 5908960
+      },
+      "total_artifact_bytes": 5908960
+    },
+    {
+      "module": "Trusted",
+      "role": "model",
+      "imports": [
+        "Init.NotationExtra"
+      ],
+      "source_bytes": 715,
+      "source_lines": 19,
+      "wall_ms": 166.26703005749732,
+      "user_s": 0.06,
+      "sys_s": 0.01,
+      "max_rss_kb": 157964,
+      "part_sizes": {
+        "olean": 2120
+      },
+      "total_artifact_bytes": 2120
+    },
+    {
+      "module": "Trusted.Mvp.Syntax",
+      "role": "model",
+      "imports": [
+        "Init.Data.BitVec.Basic",
+        "Init.Data.List.Basic"
+      ],
+      "source_bytes": 2834,
+      "source_lines": 94,
+      "wall_ms": 367.43874999228865,
+      "user_s": 0.25,
+      "sys_s": 0.03,
+      "max_rss_kb": 197728,
+      "part_sizes": {
+        "olean": 536312
+      },
+      "total_artifact_bytes": 536312
+    },
+    {
+      "module": "Inputs",
+      "role": "proof",
+      "imports": [
+        "Endianness"
+      ],
+      "source_bytes": 907,
+      "source_lines": 24,
+      "wall_ms": 217.41869999095798,
+      "user_s": 0.07,
+      "sys_s": 0.04,
+      "max_rss_kb": 275768,
+      "part_sizes": {
+        "olean": 17112
+      },
+      "total_artifact_bytes": 17112
+    },
+    {
+      "module": "Trusted.Mvp.Semantics",
+      "role": "model",
+      "imports": [
+        "Trusted.Mvp.Syntax"
+      ],
+      "source_bytes": 19266,
+      "source_lines": 459,
+      "wall_ms": 618.2024419540539,
+      "user_s": 0.49,
+      "sys_s": 0.04,
+      "max_rss_kb": 208260,
+      "part_sizes": {
+        "olean": 854336
+      },
+      "total_artifact_bytes": 854336
+    },
+    {
+      "module": "Anneal.Mvp.Execution",
+      "role": "proof",
+      "imports": [
+        "Trusted.Mvp.Semantics",
+        "Init.Data.BitVec.Lemmas",
+        "Init.Data.Option.Lemmas"
+      ],
+      "source_bytes": 9305,
+      "source_lines": 234,
+      "wall_ms": 316.128941019997,
+      "user_s": 0.18,
+      "sys_s": 0.03,
+      "max_rss_kb": 288324,
+      "part_sizes": {
+        "olean": 214728
+      },
+      "total_artifact_bytes": 214728
+    },
+    {
+      "module": "Trusted.Mvp",
+      "role": "model",
+      "imports": [
+        "Trusted.Mvp.Syntax",
+        "Trusted.Mvp.Semantics"
+      ],
+      "source_bytes": 475,
+      "source_lines": 12,
+      "wall_ms": 167.04524599481374,
+      "user_s": 0.05,
+      "sys_s": 0.02,
+      "max_rss_kb": 177516,
+      "part_sizes": {
+        "olean": 1512
+      },
+      "total_artifact_bytes": 1512
+    },
+    {
+      "module": "Anneal.Mvp.Canaries",
+      "role": "proof",
+      "imports": [
+        "Anneal.Mvp.Execution"
+      ],
+      "source_bytes": 7897,
+      "source_lines": 231,
+      "wall_ms": 467.81335200648755,
+      "user_s": 0.33,
+      "sys_s": 0.03,
+      "max_rss_kb": 285768,
+      "part_sizes": {
+        "olean": 192640
+      },
+      "total_artifact_bytes": 192640
+    },
+    {
+      "module": "Captured",
+      "role": "capture",
+      "imports": [
+        "Trusted.Mvp"
+      ],
+      "source_bytes": 18741,
+      "source_lines": 17,
+      "wall_ms": 320.4856120282784,
+      "user_s": 0.22,
+      "sys_s": 0.03,
+      "max_rss_kb": 203316,
+      "part_sizes": {
+        "olean": 863192
+      },
+      "total_artifact_bytes": 863192
+    },
+    {
+      "module": "SourceInputs",
+      "role": "proof",
+      "imports": [
+        "Anneal.Mvp.Execution",
+        "Inputs"
+      ],
+      "source_bytes": 3006,
+      "source_lines": 72,
+      "wall_ms": 316.02927297353745,
+      "user_s": 0.22,
+      "sys_s": 0.03,
+      "max_rss_kb": 285632,
+      "part_sizes": {
+        "olean": 142872
+      },
+      "total_artifact_bytes": 142872
+    },
+    {
+      "module": "Spec",
+      "role": "specification",
+      "imports": [
+        "Trusted.Mvp",
+        "Endianness"
+      ],
+      "source_bytes": 1753,
+      "source_lines": 43,
+      "wall_ms": 215.81824589520693,
+      "user_s": 0.1,
+      "sys_s": 0.03,
+      "max_rss_kb": 278840,
+      "part_sizes": {
+        "olean": 19216
+      },
+      "total_artifact_bytes": 19216
+    },
+    {
+      "module": "Anneal",
+      "role": "proof",
+      "imports": [
+        "Anneal.Mvp.Execution",
+        "Anneal.Mvp.Canaries"
+      ],
+      "source_bytes": 439,
+      "source_lines": 11,
+      "wall_ms": 166.8613909278065,
+      "user_s": 0.06,
+      "sys_s": 0.04,
+      "max_rss_kb": 266908,
+      "part_sizes": {
+        "olean": 1520
+      },
+      "total_artifact_bytes": 1520
+    },
+    {
+      "module": "Expected",
+      "role": "expected",
+      "imports": [
+        "Trusted.Mvp",
+        "Captured",
+        "Spec"
+      ],
+      "source_bytes": 557,
+      "source_lines": 16,
+      "wall_ms": 166.49548499844968,
+      "user_s": 0.07,
+      "sys_s": 0.03,
+      "max_rss_kb": 274496,
+      "part_sizes": {
+        "olean": 3608
+      },
+      "total_artifact_bytes": 3608
+    },
+    {
+      "module": "InitialCache",
+      "role": "proof",
+      "imports": [
+        "Captured",
+        "SourceInputs"
+      ],
+      "source_bytes": 584,
+      "source_lines": 19,
+      "wall_ms": 217.1190099325031,
+      "user_s": 0.07,
+      "sys_s": 0.04,
+      "max_rss_kb": 277956,
+      "part_sizes": {
+        "olean": 12928
+      },
+      "total_artifact_bytes": 12928
+    },
+    {
+      "module": "ProductionSteps",
+      "role": "proof",
+      "imports": [
+        "InitialCache"
+      ],
+      "source_bytes": 213512,
+      "source_lines": 5270,
+      "wall_ms": 18510.978227015585,
+      "user_s": 18.13,
+      "sys_s": 0.32,
+      "max_rss_kb": 584068,
+      "part_sizes": {
+        "olean": 3331576
+      },
+      "total_artifact_bytes": 3331576
+    },
+    {
+      "module": "ProductionClaims",
+      "role": "proof",
+      "imports": [
+        "ProductionSteps"
+      ],
+      "source_bytes": 4298,
+      "source_lines": 108,
+      "wall_ms": 567.230383050628,
+      "user_s": 0.44,
+      "sys_s": 0.04,
+      "max_rss_kb": 307332,
+      "part_sizes": {
+        "olean": 68640
+      },
+      "total_artifact_bytes": 68640
+    },
+    {
+      "module": "Proof",
+      "role": "proof",
+      "imports": [
+        "Expected",
+        "ProductionClaims"
+      ],
+      "source_bytes": 968,
+      "source_lines": 32,
+      "wall_ms": 216.44668304361403,
+      "user_s": 0.08,
+      "sys_s": 0.04,
+      "max_rss_kb": 281460,
+      "part_sizes": {
+        "olean": 26256
+      },
+      "total_artifact_bytes": 26256
+    }
+  ],
+  "target_audit_process": {
+    "wall_ms": 9086.456510936841,
+    "user_s": 8.36,
+    "sys_s": 0.65,
+    "max_rss_kb": 1300800
+  },
+  "post_audit_provenance_hashing": {
+    "files_hashed": 195,
+    "bytes_hashed": 48900541,
+    "wall_ms": 54.67544391285628
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/mir-pipeline",
+    "rustc/mir",
+    "rustc/const-eval",
+    "rust/operational-semantics",
+    "minirust/differential-testing",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal prefix-safety scalar MIR semantics and capture adapter",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Rust nightly compiler and Miri interpreter",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Fuchsia Starnix ebpf_core saturating_inc_u32 target",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1",
+        "path": "src/starnix/lib/ebpf/core/src"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}

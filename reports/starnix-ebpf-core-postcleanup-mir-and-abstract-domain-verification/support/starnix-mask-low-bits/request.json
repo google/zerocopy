@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "source",
+    "crate_root": "lib.rs",
+    "crate_name": "ebpf_core",
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "cfg": [],
+    "source_files": [
+      "api.rs",
+      "converter.rs",
+      "error.rs",
+      "executor.rs",
+      "lib.rs",
+      "maps.rs",
+      "program.rs",
+      "scalar_value.rs",
+      "verifier.rs",
+      "visitor.rs"
+    ]
+  },
+  "scope": {
+    "kind": "selected_unit",
+    "roots": [
+      "scalar_value::U64Range::mask_low_bits"
+    ]
+  },
+  "proof": {
+    "source_root": "proof",
+    "specification": "Spec.specs",
+    "theorem": "Proof.verify",
+    "sources": [
+      {
+        "module": "Spec",
+        "path": "Spec.lean",
+        "role": "specification"
+      },
+      {
+        "module": "Proof",
+        "path": "Proof.lean",
+        "role": "proof"
+      }
+    ]
+  }
+}

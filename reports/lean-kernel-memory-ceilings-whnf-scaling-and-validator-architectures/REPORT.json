@@ -28,6 +28,13 @@
       }
     },
     {
+      "name": "Anneal prefix-safety scalar MIR verification pipeline and Starnix proof",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
       "name": "Lean 4.30.0-rc2 persistent collections",
       "identity": {
         "repository": "leanprover/lean4",
@@ -36,5 +43,5 @@
       }
     }
   ],
-  "observed_at": "2026-11-05"
+  "observed_at": "2026-11-12"
 }

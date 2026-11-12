@@ -1,0 +1,167 @@
+{
+  "compiler_version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+  "compiler_commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+  "lean_version": "4.34.1",
+  "experiment_1_phase1_zero_lean_changes": {
+    "phase1_zero_lean_valid_crate": {
+      "capture_status": "captured",
+      "scope": "crate",
+      "baseline_lean_rfl_passed": true,
+      "lean_diagnostics": "",
+      "verified_items": [
+        "SimpleEnum (explicit negative discriminant AnonConst in --scope crate)",
+        "MODULE_CONST (const item in --scope crate + Unevaluated operand)",
+        "i8::MIN (Unevaluated associated const in required_consts + operand)",
+        "u32::MAX (Unevaluated associated const in required_consts + operand)",
+        "const { -40 + -2 } (InlineConst in --scope crate + Unevaluated operand)",
+        "SimpleEnum::Pos (zero-field AggregateKind::Adt enum construction)",
+        "e as isize (identity CastKind::IntToInt on isize discriminant)",
+        "match SimpleEnum::Neg (constructed enum + SwitchInt on negative discriminant)"
+      ]
+    },
+    "starnix_saturating_inc_u32_zero_lean_changes": {
+      "capture_status": "captured",
+      "selected_count": 1,
+      "census_count": 4130,
+      "baseline_lean_wf_and_eval_passed": true,
+      "lean_diagnostics": "",
+      "boundary_vectors_verified": [
+        {
+          "input": 0,
+          "output": 1
+        },
+        {
+          "input": 1,
+          "output": 2
+        },
+        {
+          "input": 41,
+          "output": 42
+        },
+        {
+          "input": 4294967294,
+          "output": 4294967295
+        },
+        {
+          "input": 4294967295,
+          "output": 4294967295
+        }
+      ]
+    },
+    "required_consts_dead_branch_rejection": {
+      "dead_panic": {
+        "status": "unsupported",
+        "unsupported": [
+          {
+            "path": "dead_panic",
+            "reason": "required constant evaluation failed in the scalar model"
+          }
+        ]
+      },
+      "dead_div0": {
+        "status": "unsupported",
+        "unsupported": [
+          {
+            "path": "dead_div0",
+            "reason": "required constant evaluation failed in the scalar model"
+          }
+        ]
+      }
+    },
+    "non_enum_discriminant_rejection": {
+      "status": "unsupported",
+      "unsupported": [
+        {
+          "path": "custom_mir_discriminant_on_non_enum",
+          "reason": "bb0 statement 0: discriminant on non-enum type is unsupported: i32"
+        }
+      ]
+    },
+    "empty_enum_option_b_reject_in_extract": {
+      "status": "unsupported",
+      "unsupported": [
+        {
+          "path": "EmptyEnum",
+          "reason": "empty enums are unsupported in the scalar model"
+        },
+        {
+          "path": "match_empty",
+          "reason": "empty enums are unsupported in the scalar model"
+        }
+      ]
+    }
+  },
+  "experiment_2_phase2_extended_model": {
+    "empty_enum_option_a_e2e_crate_verified": {
+      "exit_code": 0,
+      "status": "crate_verified",
+      "phase": null,
+      "detail": "",
+      "theorem": null,
+      "scope": {
+        "kind": "crate"
+      }
+    },
+    "phase2_differential_native_miri_lean": {
+      "capture_status": "captured",
+      "scope": "crate",
+      "native_equals_miri": true,
+      "lean_rfl_matches_native_and_miri": true,
+      "lean_rfl_assertion_count": 35,
+      "lean_diagnostics": "",
+      "vectors": {
+        "c07": [
+          246,
+          0,
+          10
+        ],
+        "c08": [
+          18446744073709551615,
+          0,
+          1
+        ],
+        "c11": 128,
+        "c12": 4294967295,
+        "c13": [
+          4294967254,
+          0,
+          8
+        ],
+        "c14_i8": [
+          128,
+          1,
+          0,
+          255,
+          129
+        ],
+        "c14_i64": [
+          9223372036854775808,
+          1,
+          0,
+          18446744073709551615
+        ],
+        "c15_i8": [
+          127,
+          0,
+          255,
+          128
+        ],
+        "c15_u8": [
+          255,
+          254,
+          127,
+          0
+        ],
+        "c15_bool": [
+          1,
+          0
+        ],
+        "c16": [
+          18446744073709551615,
+          0,
+          1
+        ]
+      }
+    }
+  }
+}

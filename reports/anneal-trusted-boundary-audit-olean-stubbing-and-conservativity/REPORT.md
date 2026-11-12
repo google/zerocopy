@@ -128,6 +128,48 @@ six central results across our 9 standalone Lean 4.34.1 probes in this package:
    `Trusted.candidate` guard laundering across stubbed `.olean`s, and (6)
    `dep == depOwner` false-positive guard-dispatch coupling in
    `checkTrustedNonContamination`.
+7. **Closed-Axiom Prefix-Safety Boundary Audit, Two-Tier Merkle-DAG `.olean` &
+   Authenticated Prefix-Replay Invalidation Contract, Module-Level `import`
+   Authority Bypass PoC, and Single-Metadata 2-Environment Memory Optimization
+   (`support/mvp-merkle-cache-and-import-authority/`):**
+   - *Why `.olean` axiom-stubbing is incompatible with the closed 3-axiom +
+     mandatory-stored-body policy*: Under the strict 4-role (`model`, `theory`,
+     `specification`, `proof`) `TrustedBoundary.lean` in the prefix-safety MVP,
+     `ci.isAxiom` is rejected in every non-foundation/non-library module,
+     `(ci.hasValue true && (ci.value? true).isNone)` is rejected, and only
+     `{propext, Quot.sound, Classical.choice}` are permitted in the axiom
+     closure. Instead, a **Two-Tier Merkle-DAG `.olean` + Authenticated
+     Prefix-Replay Cache** (precompiling `TrustedBoundary.lean` to a native binary
+     and loading SHA-256-authenticated unchanged prefix `.olean`s into `base`)
+     speeds up Starnix `apply_endianness` verification from **`44.91 s` (`1,250.3
+     MiB` RSS)** to **`9.45 s` (`4.8x`)** on a leaf `Proof.lean` edit, **`6.05 s`
+     (`7.4x`)** with staged prefix replay, and **`1.50 s` (`30.0x`)** on a full
+     warm hit, passing all **11/11 adversarial invalidation scenarios** (changed
+     specs, reassigned roles, stale captures, tampered `.olean`s, and forged
+     duplicate declarations).
+   - *Module-level `import` vs. declaration-level `declarationEdges` role
+     authority bypass PoC (`TrojanProof.lean`)*: When `Spec.lean`
+     (`role: specification`) imports `TrojanProof.lean` (`role: proof`) and uses
+     a `notation`/macro defined in `TrojanProof`, Lean expands the notation
+     during elaboration so `Spec.specs`'s kernel `ConstantInfo` contains zero
+     `declarationEdges` to `TrojanProof`. Unmodified `TrustedBoundary.lean`
+     checks `r.allows d` only on `declarationEdges` and therefore **passes (`exit
+     0`, `"ok": true`)** even though `result.graph` records `Spec ->
+     TrojanProof`! Enforcing `r.allows d` directly on `data.imports` inside
+     `targetAudit` deterministically rejects the violation (`exit 1`,
+     `"policy:target import authority violation Spec (specification) imports
+     TrojanProof (proof)"`).
+   - *Why scoping 4 `importEnv` calls does not lower `VmHWM` and how
+     `single_metadata_2env` cuts native audit peak RSS by `43.2%`*: Scoping the 4
+     `importEnv` calls into sequential `@[noinline]` functions leaves `VmHWM`
+     unchanged (`694.4 MB` vs. `656.2 MB`) because Lean's runtime retains
+     compacted `.olean` regions globally across `importModules` calls. Inspecting
+     per-module `importedEntries[modIdx]` directly on `targetMetadata` across
+     `implementedByAttr`, `externAttr`, and `CSimp.ext` eliminates both `env` and
+     `fixedMetadata` (**2 `Environment`s total**: `targetMetadata` and `base`),
+     cutting native binary peak RSS by **`43.2%` (`656.2 MB -> 372.6 MB`)**,
+     `lean --run` peak RSS by **`22.5%` (`1.31 GB -> 1.02 GB`)**, and pre-replay
+     `plan + metaOverride` time by **`51.3%` (`682.1 ms -> 331.9 ms`)**.
 
 ---
 
@@ -587,6 +629,77 @@ zero `sorry`) mechanizes Anneal's 5-origin partition (`Origin.foundation`,
 
 ---
 
+### Finding 7: Closed-Axiom Prefix-Safety Boundary Audit, Two-Tier Merkle-DAG `.olean` & Authenticated Prefix-Replay Invalidation Contract, Module-Level `import` Authority Bypass PoC, and Single-Metadata 2-Environment Memory Optimization (`support/mvp-merkle-cache-and-import-authority/`)
+
+Basis: `source` + `execution`
+
+#### 7.1 Why `.olean` Axiom-Stubbing Is Rejected Under the Closed 3-Axiom + Mandatory-Stored-Body Policy, and the Two-Tier Merkle-DAG Invalidation Contract
+In the strict 4-role (`model`, `theory`, `specification`, `proof`) `TrustedBoundary.lean` of Anneal's prefix-safety MVP (`support/mvp-merkle-cache-and-import-authority/TrustedBoundaryHardened.lean`):
+1. `ci.isAxiom` is rejected in every non-foundation/non-library module (`if ci.isAxiom then fail s!"policy:axiom declaration {ci.name} in {moduleName}"`);
+2. Every value-bearing constant requires a stored kernel body (`if ci.hasValue true && (ci.value? true).isNone then fail ...`); and
+3. Only `allowedAxioms = [propext, Quot.sound, Classical.choice]` are permitted in the transitive axiom closure of `Proof.verified`.
+
+Consequently, rewriting `.thmInfo` declarations to `.axiomInfo` stubs is rejected by the closed-axiom invariant unless `TrustedBoundary.lean` maintains a separate Stage-1 stub registry. Instead, preserving unmodified `.olean` files in a **Two-Tier Merkle-DAG Cache** ([`support/mvp-merkle-cache-and-import-authority/incremental_verify_prototype.py`](support/mvp-merkle-cache-and-import-authority/incremental_verify_prototype.py)) combined with a precompiled `TrustedBoundary` binary (`lean -c` + `leanc`, eliminating `4.23 s` of `lean --run` self-compilation and `609 MiB` of RSS; [`precompiled_inspector_bench.json`](support/mvp-merkle-cache-and-import-authority/precompiled_inspector_bench.json)):
+- **Tier 1 (Per-Module Merkle-DAG `.olean` Compilation Cache)**: Keyed by
+  $$\text{ModuleCompileKey}(M) = \text{SHA256}(\texttt{"anneal-olean-v1"} \;\|\; H(\text{lean\_bin}) \;\|\; \text{flags} \;\|\; M \;\|\; H(\text{src}(M)) \;\|\; [(D_i, H(\text{olean}(D_i)))_{D_i \in \text{imports}(M)}])$$
+  while running `sourceAudit` unconditionally on every module (77 ms total across all 17 modules).
+- **Tier 2 (Authenticated Prefix-Replay / Audit Cache)**: Keyed by the `foundation-lock.json` digest, `TrustedBoundary` binary SHA-256, `request.json` binding `(subject, specification, theorem, expected, modelClosure, specificationClosure)`, and the complete sorted list of `(module, role, source_sha256, olean_sha256, imports)` across all loaded modules.
+
+Across 11 positive and adversarial invalidation scenarios ([`invalidation_contract_test_results.json`](support/mvp-merkle-cache-and-import-authority/invalidation_contract_test_results.json)):
+- **Cold build (`Scen 0`)**: `44.91 s` (`1,250.3 MiB` RSS) $\to$ `39.96 s` (`641.2 MiB` RSS, **`-48.7%` peak RSS**) with precompiled `TrustedBoundary`.
+- **Leaf edit to `Proof.lean` (`Scen 1b`)**: `16/17` `.olean` hits (`ProductionSteps.olean` reused); **`9.45 s` (`4.75x` speedup)** with full `1,683`-declaration replay, or **`6.05 s` (`7.42x` speedup)** with authenticated prefix replay (`44` declarations replayed in `0.78 s`).
+- **Edit to `Endianness.lean` (`Scen 1c`)**: `15/17` `.olean` hits; **`14.23 s` (`3.16x` speedup)**.
+- **Full warm hit (`Scen 1a`)**: `17/17` `.olean` hits + Tier-2 hit; **`1.50 s` (`30.0x` speedup)**.
+- **Adversarial invalidation controls (`Scen 2a–5b`)**: Honest and forced-stale changed specs (`Scen 2a/2b`), reassigned roles (`proof -> specification` in `Scen 3a`, `specification -> proof` in `Scen 3b/3c`), stale captures (`Scen 4a/4b`), tampered `.olean` bytes (`Scen 5a`), and forged duplicate declarations across modules (`Scen 5b`, `policy:duplicate declaration ... across ... and ...`) are **100% caught and rejected (`11/11`)**.
+
+#### 7.2 Module-Level `import` Role Authority Bypass PoC (`TrojanProof.lean`) and Hardened Fix
+In unmodified `TrustedBoundary.lean`, `targetAudit` records each module's direct `.olean` imports `data.imports` into `graph` (`graph := graph.insert moduleName (roles.getD moduleName "", imports)`), but only enforces `r.allows d` (`model -> {model}`, `theory -> {model, theory}`, `specification -> {model, theory, specification}`, `proof -> {model, theory, specification, proof}`) when iterating over **declaration-level constant references (`declarationEdges`)**.
+
+We constructed a minimal PoC in [`support/mvp-merkle-cache-and-import-authority/run_import_authority_poc.py`](support/mvp-merkle-cache-and-import-authority/run_import_authority_poc.py) ([`import_authority_poc.json`](support/mvp-merkle-cache-and-import-authority/import_authority_poc.json)) where `TrojanProof.lean` (`role: proof`) defines:
+```lean
+notation "trojanSafetyPre" => Trusted.Mvp.Program.noFault Mir.crate
+```
+and `Spec.lean` (`role: specification`) writes `import TrojanProof` and uses `trojanSafetyPre` inside `def specs`. Because Lean 4 expands `notation` and macros during elaboration, `Spec.specs`'s kernel `ConstantInfo` contains **zero** constant references (`declarationEdges`) to `TrojanProof`:
+- **Unmodified `TrustedBoundary.lean`**: **Passes (`exit 0`, `"ok": true`)**, even though `result.graph` explicitly shows `Spec` (`specification`) importing `TrojanProof` (`proof`)!
+- **Hardened `TrustedBoundaryHardened.lean`**: Enforcing role authority directly on every module import `imp ∈ data.imports` inside `targetAudit`'s `env.header.modules` loop:
+  ```lean
+  for imp in data.imports do
+    let impOrigin ← originClass env lock imp.module
+    match origin with
+    | .foundation => panic! "unreachable"
+    | .library =>
+      match impOrigin with
+      | .foundation | .library => pure ()
+      | .source impMod =>
+        fail s!"policy:library module {moduleName} imports target module {impMod}"
+    | .source _ =>
+      match impOrigin with
+      | .foundation | .library => pure ()
+      | .source impMod =>
+        let some d := roles.get? impMod
+          | fail s!"policy:target module {moduleName} imports unclassified module {impMod}"
+        if !r.allows d then
+          fail s!"policy:target import authority violation {moduleName} ({r.render}) imports {impMod} ({d.render})"
+  ```
+  deterministically rejects the PoC (`exit 1`, `"policy:target import authority violation Spec (specification) imports TrojanProof (proof)"`) while passing legitimate Starnix `apply_endianness` (`exit 0`, `1,683` replayed declarations).
+
+#### 7.3 Why Scoping 4 `importEnv` Calls Does Not Reduce `VmHWM` and How `single_metadata_2env` Cuts Native Peak RSS by `43.2%`
+In unmodified `TrustedBoundary.lean`, `targetAudit` calls `importEnv` four times (`env`, `base`, `fixedMetadata`, and `targetMetadata`). Using [`support/mvp-merkle-cache-and-import-authority/run_env_memory_opt_bench.py`](support/mvp-merkle-cache-and-import-authority/run_env_memory_opt_bench.py) ([`env_memory_opt_bench.json`](support/mvp-merkle-cache-and-import-authority/env_memory_opt_bench.json)), we benchmarked four `Environment`-loading architectures on the 17-module Starnix `apply_endianness` target:
+
+| Variant | `# Env` Loads | `lean --run` Wall (s) | `lean --run` Peak RSS (KB) | Native Binary Wall (s) | Native Binary Peak RSS (KB) | Native `plan + metaOverride` (ms) | Native `replay` (ms) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| **`baseline_4env` (unmodified)** | `4` | `10.2338` | `1,311,348` (`1.31 GB`) | `6.0371` | `656,192` (`656.2 MB`) | `~682.1` | `~4,993.7` |
+| **`scoped_sequential_4env`** | `4` | `10.0294` | `1,340,556` (`1.34 GB`) | `6.1401` | `694,412` (`694.4 MB`) | `682.05` | `4,993.67` |
+| **`reused_target_metadata_3env`** | **`3`** | **`9.8330`** | **`1,172,700` (`-10.6%` / `-138.6 MB`)** | `5.9411` | **`530,548` (`-19.1%` / `-125.6 MB`)** | **`536.00` (`-21.4%`)** | `4,938.25` |
+| **`single_metadata_2env`** | **`2`** | **`9.8410`** | **`1,016,712` (`-22.5%` / `-294.6 MB`)** | **`5.8234`** | **`372,564` (`-43.2%` / `-283.6 MB`)** | **`331.87` (`-51.3%`)** | `5,088.43` |
+
+1. **Why `scoped_sequential_4env` does not reduce `VmHWM`**: Lean's runtime retains process-global compacted `.olean` memory regions and allocator pages across `importModules` calls even after an `Environment` value goes out of scope.
+2. **How `single_metadata_2env` eliminates 2 of the 4 `importEnv` calls**:
+   - First, `targetMetadata ← importEnv j roots true` (`loadExts := true`) contains the identical `header.modules`, `header.regions`, and `constants` as `env ← importEnv j roots false`, eliminating `env` (`3` loads).
+   - Second, instead of loading `fixedMetadata ← importEnv j fixedRoots true` to compare global environment extension arrays (`implementedByAttr`, `externAttr`, `CSimp.ext`), inspecting `ext.toEnvExtension.getState targetMetadata |>.importedEntries[modIdx]!` directly for every `.source _` module in `targetMetadata` eliminates `fixedMetadata` as well, leaving only **2 `Environment` loads total** (`targetMetadata` and `base`) and cutting native binary peak RSS by **`43.2%` (`656.2 MB -> 372.6 MB`)**.
+
+---
+
 ## Boundaries
 
 1. **Built-in `leanchecker --fresh` Is Not a Substitute for `TrustedBoundary.lean`:**
@@ -607,24 +720,24 @@ zero `sorry`) mechanizes Anneal's 5-origin partition (`Origin.foundation`,
    theorem statement could conceal a vacuous specification (`opaque Spec : Prop :=
    True`), so Phase 1 syntax preflight must continue to forbid `opaque`,
    `partial`, `unsafe`, `@[extern]`, and `@[implemented_by]`.
-4. **Stage-1 `.defnInfo` Bodies Cannot Be Stripped if Unfolded by Stage 2:**
+4. **Stage-1 `.defnInfo` Bodies Cannot Be Stripped if Unfolded by Stage 2, and `.thmInfo -> .axiomInfo` Stubbing Requires Explicit Stage-1 Stub Admission:**
    While Stage-1 `.thmInfo` proof bodies can be replaced with `.axiomInfo` stubs
-   via proof irrelevance and cut elimination (`Deriv.linkAxioms`), Stage-1
-   `.defnInfo` value bodies (`2.44 MB` in `FunctionalTranslation.olean`) are
-   required whenever `Proof.lean` or Stage-2 `is_def_eq` unfolds those
-   definitions.
-5. **`theory-lock.json` Must Be Bound to Both `foundation-lock.json` and Every Stage-1 `.olean` SHA-256 Digest:**
-   Axiom-stubbing Stage-1 `.olean` files is sound **only** when paired with
-   `theory-lock.json` generated from the unstubbed Stage-1 environment *before*
-   `.thmInfo -> .axiomInfo` stubbing, and verified via SHA-256 over the stubbed
-   `.olean` files *before* Stage-2 `importModules`.
+   via proof irrelevance and cut elimination (`Deriv.linkAxioms`) in a two-stage
+   auditor (`SingleImportTwoStageBoundary.lean`), an unmodified closed-axiom
+   single-stage auditor (`TrustedBoundaryHardened.lean`) rejects `ci.isAxiom` in
+   all non-foundation modules and requires unmodified `.olean`s cached via the
+   Two-Tier Merkle-DAG contract (§7.1).
+5. **Declaration-Level `declarationEdges` Alone Do Not Enforce Module Role Hierarchy Against Macro/Notation Imports:**
+   Because Lean 4 expands `notation` and macros during elaboration without
+   leaving constant references in `ConstantInfo`, `targetAudit` must check
+   `r.allows d` on `data.imports` in addition to `declarationEdges` (§7.2).
 
 ---
 
 ## Evidence
 
 All claims, theorems, vulnerability reproducers, and benchmarks in this report
-are backed by the 10 preserved support artifacts in this package:
+are backed by the preserved support artifacts in this package:
 
 | File Path | Lines | SHA-256 Digest | Purpose |
 | :--- | ---: | :--- | :--- |
@@ -638,13 +751,14 @@ are backed by the 10 preserved support artifacts in this package:
 | [`support/ProbeTwoStagePreAudit.lean`](support/ProbeTwoStagePreAudit.lean) | 651 | `6710c085670f7ea7d46e9b2527ddc74d766dd88c64e27c048f91c0c6c1800848` | Prototype two-stage boundary auditor (`preaudit` + `runtime-audit`) measuring double-import Stage-2 latency against single-stage full replay. |
 | [`support/ProbeAxiomStubRuntime.lean`](support/ProbeAxiomStubRuntime.lean) | 430 | `21a5196ef1fbfd192a444a6b77e804b2e3a2bb4e81dbe99d77dbec043edda613` | Empirical benchmark and byte-level `.olean` analyzer across Configs 0, 1, 2a, 2b, 3a, 3b, 3c, and 3d on the 11 Stage-1 modules of Anneal. |
 | [`support/SingleImportTwoStageBoundary.lean`](support/SingleImportTwoStageBoundary.lean) | 1,405 | `94b02641581a2b470df710a42fcaeae90c143404ae7b42f106280f3172eae422` | Production-grade single-`importEnv` + `readModuleData` two-stage boundary auditor implementing `preaudit`, `runtime-audit`, `stub-oleans` (Config 3b), `benchmark`, and 10 automated security `self-test` cases. |
+| [`support/mvp-merkle-cache-and-import-authority/`](support/mvp-merkle-cache-and-import-authority/TrustedBoundaryHardened.lean) | — | — | [`TrustedBoundaryHardened.lean`](support/mvp-merkle-cache-and-import-authority/TrustedBoundaryHardened.lean), [`incremental_verify_prototype.py`](support/mvp-merkle-cache-and-import-authority/incremental_verify_prototype.py), [`invalidation_contract_test_results.json`](support/mvp-merkle-cache-and-import-authority/invalidation_contract_test_results.json), [`instrumented_audit_timings.json`](support/mvp-merkle-cache-and-import-authority/instrumented_audit_timings.json), [`run_instrumented_audit.py`](support/mvp-merkle-cache-and-import-authority/run_instrumented_audit.py), [`precompiled_inspector_bench.json`](support/mvp-merkle-cache-and-import-authority/precompiled_inspector_bench.json), [`run_import_authority_poc.py`](support/mvp-merkle-cache-and-import-authority/run_import_authority_poc.py), [`import_authority_poc.json`](support/mvp-merkle-cache-and-import-authority/import_authority_poc.json), [`run_env_memory_opt_bench.py`](support/mvp-merkle-cache-and-import-authority/run_env_memory_opt_bench.py), and [`env_memory_opt_bench.json`](support/mvp-merkle-cache-and-import-authority/env_memory_opt_bench.json). |
 
 ---
 
 ## Revalidation
 
-To revalidate all 9 preserved Lean `v4.34.1` probes from the root of this report
-package, run:
+To revalidate all preserved Lean `v4.34.1` and Python probes from the root of
+this report package, run:
 
 ```bash
 lean support/DiagnoseRealizeConst.lean
@@ -658,6 +772,9 @@ lean -DwarningAsError=true support/ProbeTwoStagePreAudit.lean
 lean -DwarningAsError=true support/ProbeAxiomStubRuntime.lean
 lean -DwarningAsError=true support/SingleImportTwoStageBoundary.lean
 lean --run support/SingleImportTwoStageBoundary.lean self-test
+python3 support/mvp-merkle-cache-and-import-authority/incremental_verify_prototype.py
+python3 support/mvp-merkle-cache-and-import-authority/run_import_authority_poc.py
+python3 support/mvp-merkle-cache-and-import-authority/run_env_memory_opt_bench.py
 ```
 
 Confirm that:
@@ -669,5 +786,8 @@ Confirm that:
    `thm`, `0` with differing `type`/`levelParams`/`kind`/`all`), `107` with
    identical `value? true`, and `12` with differing `value? true`.
 3. `support/ConservativityModel.lean` compiles with zero warnings and zero
-   `sorryAx`, and `support/SingleImportTwoStageBoundary.lean self-test` passes
-   all 10 positive and negative security regression checks.
+   `sorryAx`, `support/SingleImportTwoStageBoundary.lean self-test` passes all
+   10 security regression checks, `incremental_verify_prototype.py` passes all
+   11 Merkle-DAG invalidation scenarios, and `run_import_authority_poc.py`
+   confirms that `TrustedBoundaryHardened.lean` rejects the `Spec -> TrojanProof`
+   import violation (`exit 1`).

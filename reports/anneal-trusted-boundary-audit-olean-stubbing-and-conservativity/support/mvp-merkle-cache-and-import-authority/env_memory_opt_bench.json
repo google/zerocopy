@@ -1,0 +1,101 @@
+{
+  "benchmark": "Q-C2_Part2_TrustedBoundary_Environment_Memory_Optimization",
+  "lean_version": "4.34.1",
+  "target": "Starnix apply_endianness (1,683 replayed declarations)",
+  "results": [
+    {
+      "variant": "baseline_4env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 10.2338,
+      "lean_run_peak_rss_kb": 1311348,
+      "lean_run_internal_stats": null,
+      "native_bin_wall_s": 6.0371,
+      "native_bin_peak_rss_kb": 656192,
+      "native_bin_internal_stats": null
+    },
+    {
+      "variant": "scoped_sequential_4env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 10.0294,
+      "lean_run_peak_rss_kb": 1340556,
+      "lean_run_internal_stats": {
+        "totalBodyMs": 6433.595237,
+        "rssAfterReplayKb": 1342116,
+        "rssAfterPlanKb": 911512,
+        "rssAfterMetaKb": 1260364,
+        "replayMs": 4957.1428,
+        "planMs": 1060.393656,
+        "metaOverrideMs": 416.058781,
+        "hwmAfterReplayKb": 1342116,
+        "hwmAfterPlanKb": 911620,
+        "hwmAfterMetaKb": 1260364
+      },
+      "native_bin_wall_s": 6.1401,
+      "native_bin_peak_rss_kb": 694412,
+      "native_bin_internal_stats": {
+        "totalBodyMs": 5675.719733,
+        "rssAfterReplayKb": 696644,
+        "rssAfterPlanKb": 254716,
+        "rssAfterMetaKb": 610696,
+        "replayMs": 4993.669276,
+        "planMs": 295.464337,
+        "metaOverrideMs": 386.58612,
+        "hwmAfterReplayKb": 696644,
+        "hwmAfterPlanKb": 254716,
+        "hwmAfterMetaKb": 610696
+      }
+    },
+    {
+      "variant": "reused_target_metadata_3env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 9.833,
+      "lean_run_peak_rss_kb": 1172700,
+      "lean_run_internal_stats": {
+        "totalBodyMs": 6284.270174,
+        "rssAfterReplayKb": 1175188,
+        "rssAfterPlanKb": 1091480,
+        "replayMs": 5011.304141,
+        "planAndMetaMs": 1272.966033,
+        "hwmAfterReplayKb": 1175188,
+        "hwmAfterPlanKb": 1091480
+      },
+      "native_bin_wall_s": 5.9411,
+      "native_bin_peak_rss_kb": 530548,
+      "native_bin_internal_stats": {
+        "totalBodyMs": 5474.247436,
+        "rssAfterReplayKb": 501016,
+        "rssAfterPlanKb": 446276,
+        "replayMs": 4938.246252,
+        "planAndMetaMs": 536.001184,
+        "hwmAfterReplayKb": 530548,
+        "hwmAfterPlanKb": 446276
+      }
+    },
+    {
+      "variant": "single_metadata_2env",
+      "replayed_declarations": 1683,
+      "lean_run_wall_s": 9.841,
+      "lean_run_peak_rss_kb": 1016712,
+      "lean_run_internal_stats": {
+        "totalBodyMs": 6125.42261,
+        "rssAfterReplayKb": 1019672,
+        "rssAfterPlanKb": 927784,
+        "replayMs": 5014.81242,
+        "planAndMetaMs": 1110.61019,
+        "hwmAfterReplayKb": 1019672,
+        "hwmAfterPlanKb": 927784
+      },
+      "native_bin_wall_s": 5.8234,
+      "native_bin_peak_rss_kb": 372564,
+      "native_bin_internal_stats": {
+        "totalBodyMs": 5420.304756,
+        "rssAfterReplayKb": 356204,
+        "rssAfterPlanKb": 281788,
+        "replayMs": 5088.434481,
+        "planAndMetaMs": 331.870275,
+        "hwmAfterReplayKb": 372564,
+        "hwmAfterPlanKb": 281788
+      }
+    }
+  ]
+}

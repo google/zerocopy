@@ -1,0 +1,72 @@
+{
+  "be64_step_curve": [
+    {
+      "steps_k": 1,
+      "returncode": 0,
+      "wall_ms": 265.9020860446617,
+      "error": ""
+    },
+    {
+      "steps_k": 4,
+      "returncode": 0,
+      "wall_ms": 316.78734300658107,
+      "error": ""
+    },
+    {
+      "steps_k": 8,
+      "returncode": 0,
+      "wall_ms": 566.4697880856693,
+      "error": ""
+    },
+    {
+      "steps_k": 12,
+      "returncode": 0,
+      "wall_ms": 3723.6753230681643,
+      "error": ""
+    },
+    {
+      "steps_k": 16,
+      "returncode": 1,
+      "wall_ms": 13401.638759998605,
+      "error": "<scratch>/mvp-investigations/task3/profile_stage/BenchCurve_16.lean:51:75: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached"
+    },
+    {
+      "steps_k": 20,
+      "returncode": 1,
+      "wall_ms": 13350.089242099784,
+      "error": "<scratch>/mvp-investigations/task3/profile_stage/BenchCurve_20.lean:51:75: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached"
+    },
+    {
+      "steps_k": 24,
+      "returncode": 1,
+      "wall_ms": 13348.97626505699,
+      "error": "<scratch>/mvp-investigations/task3/profile_stage/BenchCurve_24.lean:51:75: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached"
+    },
+    {
+      "steps_k": 28,
+      "returncode": 1,
+      "wall_ms": 13348.878887016326,
+      "error": "<scratch>/mvp-investigations/task3/profile_stage/BenchCurve_28.lean:51:75: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached"
+    },
+    {
+      "steps_k": 32,
+      "returncode": 1,
+      "wall_ms": 13350.457796012051,
+      "error": "<scratch>/mvp-investigations/task3/profile_stage/BenchCurve_32.lean:51:75: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached"
+    }
+  ],
+  "staged_audit_leaf_proof": {
+    "outer_wall_ms": 5028.863089042716,
+    "stagedReplayMs": 173.334056,
+    "totalStagedAuditBodyMs": 1590.736351,
+    "replayedDeclarations": 1,
+    "skippedCachedDeclarations": 1682
+  },
+  "staged_audit_claims_and_proof": {
+    "outer_wall_ms": 5129.281539935619,
+    "stagedReplayMs": 281.657599,
+    "totalStagedAuditBodyMs": 1707.113053,
+    "replayedDeclarations": 7,
+    "skippedCachedDeclarations": 1676
+  }
+}

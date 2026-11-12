@@ -1,0 +1,998 @@
+{
+  "benchmark": "Q-C1_Remedy2_Remedy3_StateStoreScaling",
+  "lean_version": "4.34.1",
+  "path": "Starnix apply_endianness be64 (99 steps, 65 locals)",
+  "k_values": [
+    1,
+    4,
+    8,
+    12,
+    16,
+    24,
+    33,
+    57,
+    99
+  ],
+  "results": [
+    {
+      "representation": "lazy_list",
+      "k": 1,
+      "status": "ok",
+      "compile_wall_s": 0.2691,
+      "compile_peak_rss_kb": 278416,
+      "kernel_replay_ms": 15.02,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 140,
+        "List.casesOn": 139,
+        "Add.add": 130,
+        "HAdd.hAdd": 130,
+        "Nat.rec": 21,
+        "Nat.casesOn": 21
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 280,
+        "List.casesOn": 138,
+        "instDecidableEqList.match_1": 132,
+        "List.length._f": 132,
+        "Add.add": 131,
+        "HAdd.hAdd": 131
+      }
+    },
+    {
+      "representation": "lazy_list",
+      "k": 4,
+      "status": "ok",
+      "compile_wall_s": 0.2647,
+      "compile_peak_rss_kb": 281232,
+      "kernel_replay_ms": 22.34,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 417,
+        "List.casesOn": 365,
+        "Nat.casesOn": 282,
+        "Nat.rec": 281,
+        "List.set": 199,
+        "Add.add": 143,
+        "HAdd.hAdd": 143,
+        "State.locals": 118
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 454,
+        "List.casesOn": 185,
+        "instDecidableEqList.match_1": 140,
+        "List.length._f": 140,
+        "Add.add": 139,
+        "HAdd.hAdd": 139,
+        "Nat.rec": 88,
+        "Nat.casesOn": 81
+      }
+    },
+    {
+      "representation": "lazy_list",
+      "k": 8,
+      "status": "ok",
+      "compile_wall_s": 0.3742,
+      "compile_peak_rss_kb": 282392,
+      "kernel_replay_ms": 29.607,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 3447,
+        "List.casesOn": 3373,
+        "Nat.casesOn": 3284,
+        "Nat.rec": 3283,
+        "List.set": 3133,
+        "State.locals": 1550,
+        "be64_state0": 793,
+        "Add.add": 215
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 838,
+        "List.casesOn": 361,
+        "Nat.rec": 225,
+        "Nat.casesOn": 221,
+        "Add.add": 214,
+        "HAdd.hAdd": 214,
+        "instDecidableEqList.match_1": 210,
+        "List.length._f": 210
+      }
+    },
+    {
+      "representation": "lazy_list",
+      "k": 12,
+      "status": "ok",
+      "compile_wall_s": 1.9756,
+      "compile_peak_rss_kb": 286488,
+      "kernel_replay_ms": 41.2,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 49785,
+        "List.casesOn": 49685,
+        "Nat.casesOn": 49550,
+        "Nat.rec": 49549,
+        "List.set": 49307,
+        "State.locals": 24582,
+        "be64_state0": 12313,
+        "Add.add": 367
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 1428,
+        "List.casesOn": 641,
+        "Nat.casesOn": 417,
+        "Nat.rec": 413,
+        "Add.add": 360,
+        "HAdd.hAdd": 360,
+        "instDecidableEqList.match_1": 348,
+        "List.length._f": 348
+      }
+    },
+    {
+      "representation": "lazy_list",
+      "k": 16,
+      "status": "maxHeartbeats_timeout",
+      "compile_wall_s": 13.1112,
+      "compile_peak_rss_kb": 267264,
+      "kernel_replay_ms": null,
+      "reduction_unfoldings_top": {
+        "List.rec": 392567,
+        "List.casesOn": 392391,
+        "Nat.rec": 392305,
+        "Nat.casesOn": 392305,
+        "List.set": 391926,
+        "State.locals": 196608,
+        "be64_state0": 98329,
+        "Add.add": 464
+      },
+      "kernel_unfoldings_top": {}
+    },
+    {
+      "representation": "lazy_list",
+      "k": 24,
+      "status": "maxHeartbeats_timeout",
+      "compile_wall_s": 13.2992,
+      "compile_peak_rss_kb": 268012,
+      "kernel_replay_ms": null,
+      "reduction_unfoldings_top": {
+        "List.rec": 392567,
+        "List.casesOn": 392391,
+        "Nat.rec": 392305,
+        "Nat.casesOn": 392305,
+        "List.set": 391926,
+        "State.locals": 196608,
+        "be64_state0": 98329,
+        "Add.add": 464
+      },
+      "kernel_unfoldings_top": {}
+    },
+    {
+      "representation": "lazy_list",
+      "k": 33,
+      "status": "maxHeartbeats_timeout",
+      "compile_wall_s": 13.3938,
+      "compile_peak_rss_kb": 268760,
+      "kernel_replay_ms": null,
+      "reduction_unfoldings_top": {
+        "List.rec": 392565,
+        "List.casesOn": 392389,
+        "Nat.rec": 392303,
+        "Nat.casesOn": 392303,
+        "List.set": 391924,
+        "State.locals": 196608,
+        "be64_state0": 98329,
+        "Add.add": 464
+      },
+      "kernel_unfoldings_top": {}
+    },
+    {
+      "representation": "lazy_list",
+      "k": 57,
+      "status": "maxHeartbeats_timeout",
+      "compile_wall_s": 13.405,
+      "compile_peak_rss_kb": 267996,
+      "kernel_replay_ms": null,
+      "reduction_unfoldings_top": {
+        "List.rec": 392567,
+        "List.casesOn": 392391,
+        "Nat.rec": 392305,
+        "Nat.casesOn": 392305,
+        "List.set": 391926,
+        "State.locals": 196608,
+        "be64_state0": 98329,
+        "Add.add": 464
+      },
+      "kernel_unfoldings_top": {}
+    },
+    {
+      "representation": "lazy_list",
+      "k": 99,
+      "status": "maxHeartbeats_timeout",
+      "compile_wall_s": 13.0935,
+      "compile_peak_rss_kb": 267996,
+      "kernel_replay_ms": null,
+      "reduction_unfoldings_top": {
+        "List.rec": 392566,
+        "List.casesOn": 392390,
+        "Nat.rec": 392304,
+        "Nat.casesOn": 392304,
+        "List.set": 391925,
+        "State.locals": 196608,
+        "be64_state0": 98329,
+        "Add.add": 464
+      },
+      "kernel_unfoldings_top": {}
+    },
+    {
+      "representation": "forced_list",
+      "k": 1,
+      "status": "ok",
+      "compile_wall_s": 0.2589,
+      "compile_peak_rss_kb": 279012,
+      "kernel_replay_ms": 16.717,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 210,
+        "List.casesOn": 209,
+        "Add.add": 132,
+        "HAdd.hAdd": 132,
+        "forceList": 66,
+        "Nat.rec": 30,
+        "Nat.casesOn": 30
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 412,
+        "List.casesOn": 204,
+        "Add.add": 132,
+        "HAdd.hAdd": 132,
+        "instDecidableEqList.match_1": 132,
+        "List.length._f": 132,
+        "forceList._f": 66,
+        "forceList.match_1": 66
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 4,
+      "status": "ok",
+      "compile_wall_s": 0.3052,
+      "compile_peak_rss_kb": 282396,
+      "kernel_replay_ms": 27.215,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 518,
+        "List.casesOn": 466,
+        "forceList": 264,
+        "HAdd.hAdd": 152,
+        "Add.add": 144,
+        "Nat.rec": 128,
+        "Nat.casesOn": 128,
+        "Bool.rec": 73
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 974,
+        "List.casesOn": 449,
+        "forceList._f": 264,
+        "forceList.match_1": 264,
+        "Add.add": 145,
+        "HAdd.hAdd": 145,
+        "instDecidableEqList.match_1": 140,
+        "List.length._f": 140
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 8,
+      "status": "ok",
+      "compile_wall_s": 0.3631,
+      "compile_peak_rss_kb": 287500,
+      "kernel_replay_ms": 43.329,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 1046,
+        "List.casesOn": 973,
+        "forceList": 528,
+        "Nat.rec": 342,
+        "Nat.casesOn": 342,
+        "HAdd.hAdd": 296,
+        "Add.add": 269,
+        "List.set": 155
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 1983,
+        "List.casesOn": 940,
+        "forceList._f": 528,
+        "forceList.match_1": 528,
+        "Nat.rec": 303,
+        "Add.add": 282,
+        "HAdd.hAdd": 282,
+        "instDecidableEqList.match_1": 261
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 12,
+      "status": "ok",
+      "compile_wall_s": 0.3589,
+      "compile_peak_rss_kb": 290716,
+      "kernel_replay_ms": 59.481,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 1632,
+        "List.casesOn": 1533,
+        "forceList": 792,
+        "Nat.rec": 628,
+        "Nat.casesOn": 628,
+        "HAdd.hAdd": 464,
+        "Add.add": 413,
+        "List.set": 313
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 3101,
+        "List.casesOn": 1484,
+        "forceList._f": 792,
+        "forceList.match_1": 792,
+        "Nat.rec": 571,
+        "Nat.casesOn": 493,
+        "Add.add": 439,
+        "HAdd.hAdd": 439
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 16,
+      "status": "ok",
+      "compile_wall_s": 0.4537,
+      "compile_peak_rss_kb": 300304,
+      "kernel_replay_ms": 88.844,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 2683,
+        "List.casesOn": 2341,
+        "Nat.rec": 1436,
+        "Nat.casesOn": 1436,
+        "forceList": 1056,
+        "List.set": 782,
+        "HAdd.hAdd": 573,
+        "Add.add": 498
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 4561,
+        "List.casesOn": 2016,
+        "Nat.rec": 1139,
+        "forceList._f": 1056,
+        "forceList.match_1": 1056,
+        "Nat.casesOn": 1011,
+        "Add.add": 534,
+        "HAdd.hAdd": 534
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 24,
+      "status": "ok",
+      "compile_wall_s": 0.6282,
+      "compile_peak_rss_kb": 301740,
+      "kernel_replay_ms": 144.317,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 4959,
+        "List.casesOn": 4161,
+        "Nat.casesOn": 3743,
+        "Nat.rec": 3741,
+        "List.set": 1880,
+        "forceList": 1584,
+        "HAdd.hAdd": 834,
+        "List.get?Internal._sparseCasesOn_1": 823
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 7468,
+        "List.casesOn": 3138,
+        "Nat.rec": 2355,
+        "Nat.casesOn": 2079,
+        "forceList._f": 1584,
+        "forceList.match_1": 1584,
+        "List.get?Internal._f": 873,
+        "List.get?Internal._sparseCasesOn_1": 873
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 33,
+      "status": "ok",
+      "compile_wall_s": 0.8171,
+      "compile_peak_rss_kb": 321000,
+      "kernel_replay_ms": 212.674,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 8007,
+        "Nat.casesOn": 6996,
+        "Nat.rec": 6992,
+        "List.casesOn": 6714,
+        "List.set": 3561,
+        "forceList": 2178,
+        "List.get?Internal._sparseCasesOn_1": 1327,
+        "HAdd.hAdd": 1186
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 10870,
+        "List.casesOn": 4496,
+        "Nat.rec": 3894,
+        "Nat.casesOn": 3375,
+        "forceList._f": 2178,
+        "forceList.match_1": 2178,
+        "List.get?Internal._f": 1404,
+        "List.get?Internal._sparseCasesOn_1": 1404
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 57,
+      "status": "ok",
+      "compile_wall_s": 1.5061,
+      "compile_peak_rss_kb": 376144,
+      "kernel_replay_ms": 539.664,
+      "olean_bytes": 6624,
+      "reduction_unfoldings_top": {
+        "List.rec": 17331,
+        "Nat.casesOn": 16910,
+        "Nat.rec": 16902,
+        "List.casesOn": 13749,
+        "List.set": 8429,
+        "forceList": 3762,
+        "List.get?Internal._sparseCasesOn_1": 3640,
+        "HAdd.hAdd": 1971
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 21262,
+        "Nat.rec": 9936,
+        "Nat.casesOn": 8373,
+        "List.casesOn": 8136,
+        "List.get?Internal._f": 3789,
+        "List.get?Internal._sparseCasesOn_1": 3789,
+        "List.get?Internal.match_1": 3789,
+        "forceList._f": 3762
+      }
+    },
+    {
+      "representation": "forced_list",
+      "k": 99,
+      "status": "ok",
+      "compile_wall_s": 2.8651,
+      "compile_peak_rss_kb": 490136,
+      "kernel_replay_ms": 1010.798,
+      "olean_bytes": 6648,
+      "reduction_unfoldings_top": {
+        "Nat.casesOn": 36053,
+        "Nat.rec": 36045,
+        "List.rec": 34429,
+        "List.casesOn": 25843,
+        "List.set": 16624,
+        "List.get?Internal._sparseCasesOn_1": 8688,
+        "forceList": 6468,
+        "forceNat": 4781
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 40643,
+        "Nat.rec": 23837,
+        "Nat.casesOn": 19334,
+        "List.casesOn": 14703,
+        "List.get?Internal._f": 8964,
+        "List.get?Internal._sparseCasesOn_1": 8964,
+        "List.get?Internal.match_1": 8964,
+        "forceList._f": 6468
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 1,
+      "status": "ok",
+      "compile_wall_s": 0.2584,
+      "compile_peak_rss_kb": 276344,
+      "kernel_replay_ms": 14.492,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "List.rec": 69,
+        "List.casesOn": 68,
+        "Add.add": 65,
+        "HAdd.hAdd": 65,
+        "Bool.rec": 21
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 138,
+        "List.casesOn": 67,
+        "Add.add": 66,
+        "HAdd.hAdd": 66,
+        "instDecidableEqList.match_1": 66,
+        "List.length._f": 66
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 4,
+      "status": "ok",
+      "compile_wall_s": 0.3139,
+      "compile_peak_rss_kb": 282452,
+      "kernel_replay_ms": 21.683,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 192,
+        "Decidable.rec": 191,
+        "Bool.rec": 165,
+        "Bool.casesOn": 147,
+        "List.rec": 131,
+        "BinTrie.rec": 124,
+        "get1._sparseCasesOn_1": 123,
+        "List.casesOn": 100
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 243,
+        "Decidable.casesOn": 137,
+        "Decidable.rec": 135,
+        "Bool.casesOn": 119,
+        "List.casesOn": 98,
+        "Bool.rec": 88,
+        "ite": 79,
+        "Add.add": 74
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 8,
+      "status": "ok",
+      "compile_wall_s": 0.3131,
+      "compile_peak_rss_kb": 281348,
+      "kernel_replay_ms": 24.384,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 274,
+        "Decidable.rec": 273,
+        "Bool.rec": 243,
+        "Bool.casesOn": 222,
+        "get1._sparseCasesOn_1": 184,
+        "BinTrie.rec": 182,
+        "List.rec": 152,
+        "List.casesOn": 105
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 274,
+        "Decidable.casesOn": 197,
+        "Bool.casesOn": 196,
+        "Decidable.rec": 195,
+        "Bool.rec": 134,
+        "ite": 121,
+        "BinTrie.rec": 104,
+        "List.casesOn": 103
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 12,
+      "status": "ok",
+      "compile_wall_s": 0.3019,
+      "compile_peak_rss_kb": 280500,
+      "kernel_replay_ms": 26.237,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Bool.rec": 327,
+        "Decidable.casesOn": 322,
+        "Decidable.rec": 321,
+        "Bool.casesOn": 302,
+        "get1._sparseCasesOn_1": 216,
+        "BinTrie.rec": 210,
+        "List.rec": 178,
+        "Nat.casesOn": 156
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 304,
+        "Bool.casesOn": 276,
+        "Decidable.casesOn": 245,
+        "Decidable.rec": 243,
+        "Bool.rec": 178,
+        "ite": 153,
+        "BinTrie.rec": 132,
+        "instDecidableEqBool": 127
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 16,
+      "status": "ok",
+      "compile_wall_s": 0.3594,
+      "compile_peak_rss_kb": 284556,
+      "kernel_replay_ms": 35.523,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 597,
+        "Decidable.rec": 596,
+        "Bool.rec": 504,
+        "Bool.casesOn": 464,
+        "get1._sparseCasesOn_1": 459,
+        "BinTrie.rec": 450,
+        "Nat.casesOn": 329,
+        "Nat.rec": 328
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 464,
+        "Bool.casesOn": 358,
+        "Decidable.casesOn": 348,
+        "Decidable.rec": 339,
+        "Nat.casesOn": 276,
+        "Nat.rec": 264,
+        "ite": 238,
+        "List.get?Internal._f": 238
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 24,
+      "status": "ok",
+      "compile_wall_s": 0.4139,
+      "compile_peak_rss_kb": 293644,
+      "kernel_replay_ms": 50.95,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 1195,
+        "Decidable.rec": 1192,
+        "get1._sparseCasesOn_1": 990,
+        "BinTrie.rec": 974,
+        "Nat.casesOn": 731,
+        "Nat.rec": 728,
+        "Bool.rec": 683,
+        "Bool.casesOn": 618
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 727,
+        "Nat.casesOn": 584,
+        "Nat.rec": 556,
+        "Decidable.casesOn": 527,
+        "List.get?Internal._f": 522,
+        "List.get?Internal._sparseCasesOn_1": 522,
+        "List.get?Internal.match_1": 522,
+        "Decidable.rec": 510
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 33,
+      "status": "ok",
+      "compile_wall_s": 0.4569,
+      "compile_peak_rss_kb": 294828,
+      "kernel_replay_ms": 68.185,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 1948,
+        "Decidable.rec": 1943,
+        "get1._sparseCasesOn_1": 1689,
+        "BinTrie.rec": 1664,
+        "Nat.casesOn": 1276,
+        "Nat.rec": 1271,
+        "List.rec": 854,
+        "Bool.rec": 826
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 1037,
+        "Nat.casesOn": 948,
+        "Nat.rec": 902,
+        "List.get?Internal._f": 859,
+        "List.get?Internal._sparseCasesOn_1": 859,
+        "List.get?Internal.match_1": 859,
+        "Decidable.casesOn": 706,
+        "Decidable.rec": 686
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 57,
+      "status": "ok",
+      "compile_wall_s": 0.8087,
+      "compile_peak_rss_kb": 309500,
+      "kernel_replay_ms": 145.41,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 6764,
+        "Decidable.rec": 6755,
+        "get1._sparseCasesOn_1": 6336,
+        "BinTrie.rec": 6290,
+        "Nat.casesOn": 3767,
+        "Nat.rec": 3758,
+        "TrieState.localCount": 2430,
+        "List.rec": 2293
+      },
+      "kernel_unfoldings_top": {
+        "Nat.casesOn": 2555,
+        "List.rec": 2509,
+        "Nat.rec": 2461,
+        "List.get?Internal._f": 2394,
+        "List.get?Internal._sparseCasesOn_1": 2394,
+        "List.get?Internal.match_1": 2394,
+        "TrieState.localCount": 1710,
+        "TrieState.block": 1439
+      }
+    },
+    {
+      "representation": "bin_trie_lazy",
+      "k": 99,
+      "status": "ok",
+      "compile_wall_s": 1.7181,
+      "compile_peak_rss_kb": 355424,
+      "kernel_replay_ms": 312.581,
+      "olean_bytes": 6656,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 16992,
+        "Decidable.rec": 16980,
+        "BinTrie.rec": 16244,
+        "get1._sparseCasesOn_1": 16198,
+        "Nat.casesOn": 10778,
+        "Nat.rec": 10768,
+        "TrieState.localCount": 7461,
+        "List.rec": 5996
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 6355,
+        "Nat.casesOn": 6269,
+        "List.get?Internal._f": 6173,
+        "List.get?Internal._sparseCasesOn_1": 6173,
+        "List.get?Internal.match_1": 6173,
+        "Nat.rec": 5991,
+        "TrieState.localCount": 4853,
+        "TrieState.block": 4290
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 1,
+      "status": "ok",
+      "compile_wall_s": 0.2606,
+      "compile_peak_rss_kb": 276244,
+      "kernel_replay_ms": 13.977,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "List.rec": 69,
+        "List.casesOn": 69,
+        "Add.add": 67,
+        "HAdd.hAdd": 67,
+        "Bool.casesOn": 23,
+        "Bool.rec": 21
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 138,
+        "Add.add": 67,
+        "HAdd.hAdd": 67,
+        "List.casesOn": 67,
+        "instDecidableEqList.match_1": 66,
+        "List.length._f": 66
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 4,
+      "status": "ok",
+      "compile_wall_s": 0.2635,
+      "compile_peak_rss_kb": 280592,
+      "kernel_replay_ms": 24.312,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Decidable.casesOn": 155,
+        "Bool.rec": 154,
+        "Bool.casesOn": 148,
+        "Decidable.rec": 135,
+        "List.rec": 130,
+        "List.casesOn": 100,
+        "Nat.casesOn": 95,
+        "HAdd.hAdd": 88
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 243,
+        "Decidable.casesOn": 137,
+        "Decidable.rec": 135,
+        "Bool.casesOn": 119,
+        "List.casesOn": 98,
+        "Bool.rec": 88,
+        "ite": 79,
+        "Add.add": 79
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 8,
+      "status": "ok",
+      "compile_wall_s": 0.312,
+      "compile_peak_rss_kb": 282504,
+      "kernel_replay_ms": 26.616,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Bool.rec": 258,
+        "Bool.casesOn": 256,
+        "Decidable.casesOn": 230,
+        "Decidable.rec": 200,
+        "Nat.casesOn": 169,
+        "Nat.rec": 152,
+        "List.rec": 150,
+        "TrieState.localCount": 130
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 274,
+        "Decidable.casesOn": 197,
+        "Bool.casesOn": 196,
+        "Decidable.rec": 195,
+        "Nat.rec": 149,
+        "Bool.rec": 134,
+        "ite": 121,
+        "Nat.casesOn": 107
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 12,
+      "status": "ok",
+      "compile_wall_s": 0.3047,
+      "compile_peak_rss_kb": 280436,
+      "kernel_replay_ms": 29.054,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "Bool.casesOn": 348,
+        "Bool.rec": 342,
+        "Decidable.casesOn": 286,
+        "Nat.casesOn": 269,
+        "Decidable.rec": 248,
+        "Nat.rec": 248,
+        "List.rec": 176,
+        "TrieState.localCount": 176
+      },
+      "kernel_unfoldings_top": {
+        "List.rec": 304,
+        "Bool.casesOn": 276,
+        "Nat.rec": 275,
+        "Decidable.casesOn": 245,
+        "Decidable.rec": 243,
+        "Nat.casesOn": 199,
+        "Bool.rec": 178,
+        "ite": 153
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 16,
+      "status": "ok",
+      "compile_wall_s": 0.3645,
+      "compile_peak_rss_kb": 284676,
+      "kernel_replay_ms": 39.776,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "TrieState.localCount": 517,
+        "Nat.casesOn": 498,
+        "Nat.rec": 467,
+        "Bool.casesOn": 460,
+        "Bool.rec": 455,
+        "Decidable.casesOn": 402,
+        "Decidable.rec": 348,
+        "List.rec": 299
+      },
+      "kernel_unfoldings_top": {
+        "Nat.rec": 530,
+        "List.rec": 464,
+        "Nat.casesOn": 404,
+        "Bool.casesOn": 358,
+        "Decidable.casesOn": 345,
+        "Decidable.rec": 339,
+        "List.get?Internal._f": 238,
+        "List.get?Internal._sparseCasesOn_1": 238
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 24,
+      "status": "ok",
+      "compile_wall_s": 0.4075,
+      "compile_peak_rss_kb": 288852,
+      "kernel_replay_ms": 56.202,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "TrieState.localCount": 1274,
+        "Nat.casesOn": 1005,
+        "Nat.rec": 956,
+        "Bool.casesOn": 647,
+        "Bool.rec": 645,
+        "Decidable.casesOn": 624,
+        "List.rec": 551,
+        "Decidable.rec": 542
+      },
+      "kernel_unfoldings_top": {
+        "Nat.rec": 1142,
+        "Nat.casesOn": 868,
+        "List.rec": 727,
+        "Decidable.casesOn": 524,
+        "List.get?Internal._f": 522,
+        "List.get?Internal._sparseCasesOn_1": 522,
+        "List.get?Internal.match_1": 522,
+        "Decidable.rec": 510
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 33,
+      "status": "ok",
+      "compile_wall_s": 0.451,
+      "compile_peak_rss_kb": 289892,
+      "kernel_replay_ms": 76.143,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "TrieState.localCount": 2170,
+        "Nat.casesOn": 1660,
+        "Nat.rec": 1595,
+        "List.rec": 852,
+        "Decidable.casesOn": 838,
+        "Bool.casesOn": 829,
+        "Bool.rec": 818,
+        "List.get?Internal._sparseCasesOn_1": 782
+      },
+      "kernel_unfoldings_top": {
+        "Nat.rec": 2001,
+        "Nat.casesOn": 1484,
+        "List.rec": 1037,
+        "List.get?Internal._f": 859,
+        "List.get?Internal._sparseCasesOn_1": 859,
+        "List.get?Internal.match_1": 859,
+        "Decidable.casesOn": 703,
+        "Decidable.rec": 686
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 57,
+      "status": "ok",
+      "compile_wall_s": 0.7177,
+      "compile_peak_rss_kb": 308396,
+      "kernel_replay_ms": 161.669,
+      "olean_bytes": 6640,
+      "reduction_unfoldings_top": {
+        "TrieState.localCount": 7754,
+        "Nat.casesOn": 4473,
+        "Nat.rec": 4352,
+        "List.rec": 2291,
+        "List.get?Internal._sparseCasesOn_1": 2245,
+        "forceNat": 1708,
+        "Decidable.casesOn": 1517,
+        "Bool.casesOn": 1325
+      },
+      "kernel_unfoldings_top": {
+        "Nat.rec": 5720,
+        "Nat.casesOn": 4159,
+        "List.rec": 2509,
+        "List.get?Internal._f": 2394,
+        "List.get?Internal._sparseCasesOn_1": 2394,
+        "List.get?Internal.match_1": 2394,
+        "TrieState.localCount": 1710,
+        "forceNat._f": 1708
+      }
+    },
+    {
+      "representation": "bin_trie_forced",
+      "k": 99,
+      "status": "ok",
+      "compile_wall_s": 1.3061,
+      "compile_peak_rss_kb": 356800,
+      "kernel_replay_ms": 389.02,
+      "olean_bytes": 6656,
+      "reduction_unfoldings_top": {
+        "TrieState.localCount": 22590,
+        "Nat.casesOn": 11541,
+        "Nat.rec": 11345,
+        "List.rec": 5988,
+        "List.get?Internal._sparseCasesOn_1": 5892,
+        "forceNat": 4778,
+        "Decidable.casesOn": 2544,
+        "Decidable.rec": 2226
+      },
+      "kernel_unfoldings_top": {
+        "Nat.rec": 15547,
+        "Nat.casesOn": 11047,
+        "List.rec": 6355,
+        "List.get?Internal._f": 6173,
+        "List.get?Internal._sparseCasesOn_1": 6173,
+        "List.get?Internal.match_1": 6173,
+        "TrieState.localCount": 4853,
+        "forceNat._f": 4778
+      }
+    }
+  ]
+}
