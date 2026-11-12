@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "lean/kernel",
+    "lean/mechanization",
+    "anneal/symbolic-execution",
+    "verification/mir-semantics",
+    "verification/state-representation"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 v4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Anneal joshlf branch (MirSemantics, MirLemmas, FunctionalTranslation)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "branch": "joshlf",
+        "revision": "a7ac073219f4f6bc27262d9f851247b0dfca2a3c"
+      }
+    },
+    {
+      "name": "Anneal joshlf-mvp branch (Execution, generate_steps.py, ProductionSteps)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "branch": "joshlf-mvp",
+        "revision": "2fb744d6ecb5f931e6e1fa72caef7c521cf74682"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}

@@ -1,0 +1,113 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "probes": [
+    {
+      "file": "CanonicalStateAndJoinProbe.lean",
+      "total_lines": 354,
+      "non_empty_lines": 311,
+      "bytes": 14981,
+      "exit_code": 0,
+      "wall_ms": 1359.6,
+      "user_s": 1.533,
+      "sys_s": 0.1,
+      "max_rss_kb": 532464,
+      "olean_bytes": 630688,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "file": "StarnixZeroGeneratorSymbolicEngine.lean",
+      "total_lines": 1153,
+      "non_empty_lines": 987,
+      "bytes": 61446,
+      "exit_code": 0,
+      "wall_ms": 8238.1,
+      "user_s": 18.372,
+      "sys_s": 0.42,
+      "max_rss_kb": 858572,
+      "olean_bytes": 8566496,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "file": "CompositionalBorrowAndLoopWP.lean",
+      "total_lines": 1042,
+      "non_empty_lines": 936,
+      "bytes": 40815,
+      "exit_code": 0,
+      "wall_ms": 2751.67,
+      "user_s": 4.785,
+      "sys_s": 0.227,
+      "max_rss_kb": 858572,
+      "olean_bytes": 3599912,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "baselines": {
+    "joshlf:trusted/lean/Trusted/MirSemantics.lean": {
+      "total_lines": 2057,
+      "non_empty_lines": 1884,
+      "bytes": 89791
+    },
+    "joshlf:theory/Anneal/Lowering.lean": {
+      "total_lines": 2257,
+      "non_empty_lines": 2142,
+      "bytes": 89293
+    },
+    "joshlf:theory/Anneal/MirLemmas.lean": {
+      "total_lines": 6625,
+      "non_empty_lines": 6206,
+      "bytes": 267177
+    },
+    "joshlf:theory/Anneal/FunctionalTranslation.lean": {
+      "total_lines": 11619,
+      "non_empty_lines": 10943,
+      "bytes": 507104
+    },
+    "joshlf-mvp:trusted/lean/Trusted/Mvp.lean": {
+      "total_lines": 12,
+      "non_empty_lines": 11,
+      "bytes": 475
+    },
+    "joshlf-mvp:theory/Anneal/Mvp/Execution.lean": {
+      "total_lines": 257,
+      "non_empty_lines": 229,
+      "bytes": 10334
+    },
+    "joshlf-mvp:trusted/cargo-anneal/tests/fixtures/starnix/proof/generate_steps.py": {
+      "total_lines": 181,
+      "non_empty_lines": 163,
+      "bytes": 7007
+    },
+    "joshlf-mvp:trusted/cargo-anneal/tests/fixtures/starnix/proof/ProductionSteps.lean": {
+      "total_lines": 5230,
+      "non_empty_lines": 4742,
+      "bytes": 212392
+    },
+    "joshlf-mvp:trusted/cargo-anneal/tests/fixtures/starnix/proof/ProductionClaims.lean": {
+      "total_lines": 108,
+      "non_empty_lines": 98,
+      "bytes": 4298
+    }
+  },
+  "comparisons": {
+    "starnix_witness_reduction": {
+      "baseline_production_steps_lines_at_2fb744d6e": 5230,
+      "baseline_production_steps_lines_pre_2fb744d6e": 5270,
+      "baseline_generate_steps_py_lines": 181,
+      "baseline_captured_lean_lines": 961,
+      "replacement_engine_lines_in_execution_lean": 42,
+      "replacement_production_steps_lines": 38,
+      "replacement_generate_steps_py_lines": 0,
+      "production_steps_loc_reduction_ratio": 137.6
+    },
+    "functional_translation_reduction": {
+      "baseline_functional_translation_lines": 11619,
+      "baseline_mir_lemmas_and_lowering_lines": 8882,
+      "baseline_total_theory_lines": 23686,
+      "compositional_probe_total_lines": 1042,
+      "loc_reduction_ratio_vs_functional_translation": 11.2
+    }
+  }
+}

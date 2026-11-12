@@ -13594,6 +13594,42 @@
         "smt/bv"
       ]
     },
+    "lean-canonical-mir-state-and-compositional-symbolic-execution": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "a7ac073219f4f6bc27262d9f851247b0dfca2a3c"
+          },
+          "name": "Anneal joshlf branch (MirSemantics, MirLemmas, FunctionalTranslation)"
+        },
+        {
+          "identity": {
+            "branch": "joshlf-mvp",
+            "repository": "joshlf/anneal",
+            "revision": "2fb744d6ecb5f931e6e1fa72caef7c521cf74682"
+          },
+          "name": "Anneal joshlf-mvp branch (Execution, generate_steps.py, ProductionSteps)"
+        }
+      ],
+      "topics": [
+        "lean/kernel",
+        "lean/mechanization",
+        "anneal/symbolic-execution",
+        "verification/mir-semantics",
+        "verification/state-representation"
+      ]
+    },
     "lean-cli-json-diagnostics-and-warnings-as-errors": {
       "observed_at": "2026-11-05",
       "subjects": [
