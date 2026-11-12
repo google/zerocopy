@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793631433738,
+  "lastUpdate": 1794522651329,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23871,6 +23871,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1812,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "312cb70a655ab25936fefb4d1b8c1787c782876e",
+          "message": "[ci] Roll pinned stable toolchain to 1.100.0 (#3922)\n\nRoll `pinned-stable` from `1.99.0` to `1.100.0` and update UI test\nexpected outputs accordingly.\n\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-12T21:32:13Z",
+          "tree_id": "df0632b7df1274d520d1afcd026a1f14eb6fca12",
+          "url": "https://github.com/google/zerocopy/commit/312cb70a655ab25936fefb4d1b8c1787c782876e"
+        },
+        "date": 1794522648805,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1466,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1652,
             "unit": "seconds"
           }
         ]
