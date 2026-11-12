@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "rustc/mir",
+    "rustc/mir-phases",
+    "rustc/mir-opt",
+    "rustc/const-eval",
+    "rustc/overflow-checks",
+    "rustc/ub-checks",
+    "anneal/mir-semantics",
+    "verification/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (nightly-2026-05-31)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "version": "1.98.0-nightly",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "commit_date": "2026-05-30",
+        "target": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}

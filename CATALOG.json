@@ -18741,6 +18741,34 @@
         "lean/mechanization"
       ]
     },
+    "rustc-mir-steal-lifetimes-and-dual-profile-capture": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-05-30",
+            "kind": "toolchain",
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "target": "x86_64-unknown-linux-gnu",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (nightly-2026-05-31)"
+        }
+      ],
+      "topics": [
+        "rustc/mir",
+        "rustc/mir-phases",
+        "rustc/mir-opt",
+        "rustc/const-eval",
+        "rustc/overflow-checks",
+        "rustc/ub-checks",
+        "anneal/mir-semantics",
+        "verification/architecture"
+      ]
+    },
     "rustc-name-resolution-local-item-identity-and-type-lowering": {
       "observed_at": "2026-10-01",
       "subjects": [
