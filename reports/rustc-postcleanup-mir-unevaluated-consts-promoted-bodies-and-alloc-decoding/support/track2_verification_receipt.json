@@ -1,0 +1,327 @@
+{
+  "track": "Track 2: Mechanized Lean 4 v4.34.1 Algebraic ConstValue / ConstAllocation Decoder, Niche/Padding/Provenance Soundness, and Promoted-Body Equivalence",
+  "lean_version": "4.34.1 (commit 5045d0056413266e57c625dcd7c365b10e377c52)",
+  "file": "support/MirConstAllocationDecoder.lean",
+  "lines": 1896,
+  "sha256": "588adfdf3962709ef26d0431849a79c90536e0c9be1f616a87b67e82ade89938",
+  "verification_command": "anneal-lean-run --mode file --concurrency 5 -- lean -DwarningAsError=true MirConstAllocationDecoder.lean",
+  "exit_code": 0,
+  "sorry_count": 0,
+  "warning_count": 0,
+  "nonstandard_axioms": [],
+  "allowed_axioms_used": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "theorems": [
+    {
+      "name": "decodeFromAlloc_struct_padding_invariant",
+      "line": 563,
+      "category": "Theorem 1: Padding-Byte & Uninit-Gap Invariance",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_struct_padding_invariant",
+      "line": 580,
+      "category": "Theorem 1: Padding-Byte & Uninit-Gap Invariance",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeFromAlloc_remap_invariant",
+      "line": 747,
+      "category": "Theorem 2: AllocId Renaming / Address-Independence Invariance",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_remap_invariant",
+      "line": 842,
+      "category": "Theorem 2: AllocId Renaming / Address-Independence Invariance",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeConstValue_remap_invariant",
+      "line": 859,
+      "category": "Theorem 2: AllocId Renaming / Address-Independence Invariance",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_int_rejects_provenance",
+      "line": 914,
+      "category": "Theorem 3: Provenance-Forgery Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_bool_rejects_provenance",
+      "line": 930,
+      "category": "Theorem 3: Provenance-Forgery Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_enum_tag_rejects_provenance",
+      "line": 946,
+      "category": "Theorem 3: Provenance-Forgery Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_int_rejects_uninit",
+      "line": 967,
+      "category": "Theorem 4: Uninitialized-Scalar Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_bool_rejects_uninit",
+      "line": 981,
+      "category": "Theorem 4: Uninitialized-Scalar Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_niche_tag_rejects_uninit",
+      "line": 995,
+      "category": "Theorem 4: Uninitialized-Scalar Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "decodeAllocAt_ref_rejects_uninit",
+      "line": 1011,
+      "category": "Theorem 4: Uninitialized-Scalar Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "readLeBytes_writeLeBytes",
+      "line": 1057,
+      "category": "Theorem 5: Round-Trip / Encoder Soundness",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "decodeConstValue_scalar_int_roundtrip",
+      "line": 1091,
+      "category": "Theorem 5: Round-Trip / Encoder Soundness",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "decodeConstValue_scalar_bool_roundtrip",
+      "line": 1104,
+      "category": "Theorem 5: Round-Trip / Encoder Soundness",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "u64RangeMax_encode_decode_roundtrip",
+      "line": 1331,
+      "category": "Theorem 5.1: Starnix U64Range (16B)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "u64Range_symbolic_roundtrip",
+      "line": 1338,
+      "category": "Theorem 5.1: Symbolic Starnix U64Range (16B)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "u64ScalarValueDataUninit_encode_decode_roundtrip",
+      "line": 1379,
+      "category": "Theorem 5.2: Starnix U64ScalarValueData::UNINITIALIZED (40B)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "paddedU8U32_initMask_has_uninit_gaps",
+      "line": 1395,
+      "category": "Theorem 5.3: Padded (u8, u32) (8B with 3B uninit padding)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "paddedU8U32_encode_decode_roundtrip",
+      "line": 1401,
+      "category": "Theorem 5.3: Padded (u8, u32) (8B with 3B uninit padding)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "paddedU8U32_symbolic_roundtrip",
+      "line": 1415,
+      "category": "Theorem 5.3: Symbolic Padded (u8, u32)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "paddedU8U32_uninit_vs_0xAA_eq",
+      "line": 1445,
+      "category": "Theorem 5.3: Uninit vs 0xAA Padding Invariance",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "optionBool_all_roundtrip",
+      "line": 1484,
+      "category": "Theorem 5.4: Niche Option<bool> (1B)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "optionBool_invalid_byte_3_rejected",
+      "line": 1491,
+      "category": "Theorem 5.4: Niche Option<bool> Invalid Discriminant Rejection",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "encodeDecodeRoundtrip_unit",
+      "line": 1497,
+      "category": "Theorem 5.0: Unit Round-Trip",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "encodeDecodeRoundtrip_bool",
+      "line": 1508,
+      "category": "Theorem 5.0: Symbolic Bool Round-Trip",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "resultBoolUnit_all_roundtrip",
+      "line": 1544,
+      "category": "Theorem 5.4: Niche Result<bool, ()> (1B)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "optionNonZeroU64_none_roundtrip",
+      "line": 1563,
+      "category": "Theorem 5.4: Niche Option<NonZeroU64> (8B)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "optionNonZeroU64_some_42_roundtrip",
+      "line": 1568,
+      "category": "Theorem 5.4: Niche Option<NonZeroU64> (8B)",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "optionNonZeroU64_some_symbolic_roundtrip",
+      "line": 1601,
+      "category": "Theorem 5.4: Symbolic Niche Option<NonZeroU64>::Some(v)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "promotedU64RangeRef_decode_eq",
+      "line": 1630,
+      "category": "Theorem 5.5: Promoted &U64Range { min: 0, max: 1 }",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "assertEqSlice_decode_eq",
+      "line": 1668,
+      "category": "Theorem 5.5: Promoted &str Slice",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "assertEqPromotedPair_decode_eq",
+      "line": 1673,
+      "category": "Theorem 5.5: Promoted (&0u32, &\"assertion failed\") Pair",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "promoted_body_exec_eq_ctfe_decode",
+      "line": 1765,
+      "category": "Theorem 6: Symbolic Promoted MIR Body Execution vs. Eager CTFE Equivalence",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "promotedU64Range_fieldByField_exec_eq_ctfe",
+      "line": 1800,
+      "category": "Theorem 6: Concrete Field-by-Field Promoted &U64Range Equivalence",
+      "axioms": [
+        "propext"
+      ]
+    },
+    {
+      "name": "promotedU64Range_fieldByField_symbolic_eq_ctfe",
+      "line": 1818,
+      "category": "Theorem 6: Symbolic Field-by-Field Promoted &U64Range Equivalence",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ]
+}

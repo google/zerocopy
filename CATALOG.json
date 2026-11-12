@@ -18800,6 +18800,68 @@
         "lean/mechanization"
       ]
     },
+    "rustc-postcleanup-mir-unevaluated-consts-promoted-bodies-and-alloc-decoding": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly compiler (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "19833af7224424e8b53e288097d56b6af43d5bcf",
+            "version": "1.101.0-nightly (2026-10-20)"
+          },
+          "name": "Rust nightly compiler (1.101.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 kernel"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+          },
+          "name": "Anneal MIR capture and verification pipeline"
+        },
+        {
+          "identity": {
+            "path": "src/starnix/lib/ebpf/core/src",
+            "repository": "fuchsia/fuchsia",
+            "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
+          },
+          "name": "Fuchsia Starnix ebpf_core verification target"
+        }
+      ],
+      "topics": [
+        "rustc/mir",
+        "rustc/const-eval",
+        "rustc/monomorphization",
+        "rustc/layout",
+        "rust/operational-semantics",
+        "anneal/mir-pipeline",
+        "anneal/architecture",
+        "lean/kernel",
+        "verification/soundness"
+      ]
+    },
     "sail-isa-models-lean-backend-and-rv64d-decoding-framing": {
       "observed_at": "2026-10-29",
       "subjects": [

@@ -1,0 +1,1990 @@
+{
+    "errors_before_mir_queries": false,
+    "part1_functions": [
+        {
+            "fn": "part1_unreachable_if_false_panic",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 0,
+            "err_count_after_mir": 0,
+            "err_count_after_eval": 1,
+            "bb_const_count": 4,
+            "bb_consts": [
+                "bb0[1]: Const::Val(Scalar(0x00), bool)",
+                "bb1[1]: Const::Unevaluated(def=part1_unreachable_if_false_panic::{constant#0}, def_kind=InlineConst, args=[!], promoted=None, ty=!)",
+                "bb1[3]: Const::Val(ZeroSized, ())",
+                "bb2[0]: Const::Val(ZeroSized, ())"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=part1_unreachable_if_false_panic::{constant#0}, def_kind=InlineConst, args=[!], promoted=None, ty=!)",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_unreachable_if_false_div_zero",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 1,
+            "err_count_after_mir": 1,
+            "err_count_after_eval": 2,
+            "bb_const_count": 3,
+            "bb_consts": [
+                "bb0[1]: Const::Val(Scalar(0x00), bool)",
+                "bb1[0]: Const::Unevaluated(def=part1_unreachable_if_false_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)",
+                "bb2[0]: Const::Val(Scalar(0x000000000000002a), usize)"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=part1_unreachable_if_false_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_match_false_deleted_bb_div_zero",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 2,
+            "err_count_after_mir": 2,
+            "err_count_after_eval": 3,
+            "bb_const_count": 3,
+            "bb_consts": [
+                "bb0[1]: Const::Val(Scalar(0x00), bool)",
+                "bb1[0]: Const::Val(Scalar(0x000000000000002a), usize)",
+                "bb2[0]: Const::Unevaluated(def=part1_match_false_deleted_bb_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=part1_match_false_deleted_bb_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_promoted_if_false_div_zero",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 3,
+            "err_count_after_mir": 3,
+            "err_count_after_eval": 4,
+            "bb_const_count": 4,
+            "bb_consts": [
+                "bb0[1]: Const::Val(Scalar(0x00), bool)",
+                "bb1[2]: Const::Unevaluated(def=part1_promoted_if_false_div_zero, def_kind=Fn, args=[], promoted=Some(promoted[0]), ty=&usize)",
+                "bb1[6]: Const::Val(ZeroSized, ())",
+                "bb2[0]: Const::Val(ZeroSized, ())"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=part1_promoted_if_false_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_post_return_div_zero",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 4,
+            "err_count_after_mir": 4,
+            "err_count_after_eval": 4,
+            "bb_const_count": 1,
+            "bb_consts": [
+                "bb0[0]: Const::Val(ZeroSized, ())"
+            ],
+            "required_consts_count": 0,
+            "required_consts": []
+        },
+        {
+            "fn": "part1_concrete_size_check_u32_ok",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 4,
+            "err_count_after_mir": 4,
+            "err_count_after_eval": 4,
+            "bb_const_count": 2,
+            "bb_consts": [
+                "bb0[1]: Const::Unevaluated(def=Fail::<T>::SIZE_CHECK, def_kind=AssocConst { is_type_const: false }, args=[u32], promoted=None, ty=())",
+                "bb0[3]: Const::Val(ZeroSized, ())"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=Fail::<T>::SIZE_CHECK, def_kind=AssocConst { is_type_const: false }, args=[u32], promoted=None, ty=())",
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "ZeroSized",
+                        "decoded": {
+                            "kind": "Unit"
+                        }
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_concrete_size_check_u64_err",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 4,
+            "err_count_after_mir": 5,
+            "err_count_after_eval": 5,
+            "bb_const_count": 2,
+            "bb_consts": [
+                "bb0[1]: Const::Unevaluated(def=Fail::<T>::SIZE_CHECK, def_kind=AssocConst { is_type_const: false }, args=[u64], promoted=None, ty=())",
+                "bb0[3]: Const::Val(ZeroSized, ())"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=Fail::<T>::SIZE_CHECK, def_kind=AssocConst { is_type_const: false }, args=[u64], promoted=None, ty=())",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_reachable_inline_div_zero",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 5,
+            "err_count_after_mir": 6,
+            "err_count_after_eval": 6,
+            "bb_const_count": 1,
+            "bb_consts": [
+                "bb0[0]: Const::Unevaluated(def=part1_reachable_inline_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=part1_reachable_inline_div_zero::{constant#0}, def_kind=InlineConst, args=[usize], promoted=None, ty=usize)",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        },
+        {
+            "fn": "part1_generic_mention_uncond_fail",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 6,
+            "err_count_after_mir": 6,
+            "err_count_after_eval": 9,
+            "bb_const_count": 1,
+            "bb_consts": [
+                "bb0[0]: Const::Unevaluated(def=Fail::<T>::UNCOND_FAIL, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=usize)"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=Fail::<T>::UNCOND_FAIL, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=usize)",
+                    "eval_post_analysis": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u64": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    }
+                }
+            ]
+        },
+        {
+            "fn": "part1_generic_mention_size_check",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 9,
+            "err_count_after_mir": 9,
+            "err_count_after_eval": 9,
+            "bb_const_count": 2,
+            "bb_consts": [
+                "bb0[1]: Const::Unevaluated(def=Fail::<T>::SIZE_CHECK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=())",
+                "bb0[3]: Const::Val(ZeroSized, ())"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=Fail::<T>::SIZE_CHECK, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=())",
+                    "eval_post_analysis": {
+                        "status": "Err(TooGeneric)",
+                        "span_is_dummy": false
+                    },
+                    "eval_mono_u32": {
+                        "status": "Ok",
+                        "cv_variant": "ZeroSized",
+                        "decoded": {
+                            "kind": "Unit"
+                        }
+                    },
+                    "eval_mono_u64": {
+                        "status": "Err(Reported)",
+                        "allowed_in_infallible": false,
+                        "span_is_dummy": false
+                    }
+                }
+            ]
+        },
+        {
+            "fn": "part1_generic_mention_trait_const",
+            "phase": "Runtime(PostCleanup)",
+            "err_count_before_mir": 9,
+            "err_count_after_mir": 9,
+            "err_count_after_eval": 9,
+            "bb_const_count": 1,
+            "bb_consts": [
+                "bb0[0]: Const::Unevaluated(def=AssocConstTrait::TRAIT_C, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=usize)"
+            ],
+            "required_consts_count": 1,
+            "required_consts": [
+                {
+                    "const": "Const::Unevaluated(def=AssocConstTrait::TRAIT_C, def_kind=AssocConst { is_type_const: false }, args=[T/#0], promoted=None, ty=usize)",
+                    "eval_post_analysis": {
+                        "status": "Err(TooGeneric)",
+                        "span_is_dummy": true
+                    },
+                    "eval_mono_u32": null,
+                    "eval_mono_u64": null
+                }
+            ]
+        }
+    ],
+    "part2_constants": [
+        {
+            "name": "C_01_PRIM_U64",
+            "ty": "u64",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": true,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0x123456789abcdef0)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Uint",
+                    "ty": "u64",
+                    "val": "1311768467463790320"
+                }
+            }
+        },
+        {
+            "name": "C_02_PRIM_I32_NEG",
+            "ty": "i32",
+            "size_bytes": 4,
+            "align_bytes": 4,
+            "is_trivial_const": true,
+            "backend_repr": "Scalar(Initialized { value: Int(I32, true), valid_range: 0..=4294967295 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0xffffffd6)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Int",
+                    "ty": "i32",
+                    "val": "-42"
+                }
+            }
+        },
+        {
+            "name": "C_03_NEWTYPE_EBPF_INSN",
+            "ty": "EbpfInstruction",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x0700000000000095)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Struct",
+                    "name": "EbpfInstruction",
+                    "repr": "Scalar",
+                    "fields": [
+                        {
+                            "name": "0",
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u64",
+                                "val": "504403158265495701"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_04_STRUCT_U64_RANGE",
+            "ty": "U64Range",
+            "size_bytes": 16,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(8 bytes)], in_memory_order: [0, 1] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x0000000000000000), Leaf(0xffffffffffffffff)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Struct",
+                    "name": "U64Range",
+                    "size_bytes": 16,
+                    "fully_init": true,
+                    "provenance_ptrs_in_alloc": 0,
+                    "fields": [
+                        {
+                            "name": "min",
+                            "offset_bytes": 0,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u64",
+                                "val": "0"
+                            }
+                        },
+                        {
+                            "name": "max",
+                            "offset_bytes": 8,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u64",
+                                "val": "18446744073709551615"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_05_TUPLE_PADDED",
+            "ty": "(u8, u32)",
+            "size_bytes": 8,
+            "align_bytes": 4,
+            "is_trivial_const": false,
+            "backend_repr": "ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I32, false), valid_range: 0..=4294967295 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(4 bytes)], in_memory_order: [0, 1] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0xaa), Leaf(0x11223344)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Tuple",
+                    "size_bytes": 8,
+                    "fully_init": false,
+                    "fields": [
+                        {
+                            "kind": "Uint",
+                            "ty": "u8",
+                            "val": "170"
+                        },
+                        {
+                            "kind": "Uint",
+                            "ty": "u32",
+                            "val": "287454020"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_06_NESTED_SCALAR_DATA",
+            "ty": "U64ScalarValueData",
+            "size_bytes": 48,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(16 bytes), Size(32 bytes), Size(40 bytes)], in_memory_order: [0, 1, 2, 3] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Branch([Leaf(0x0000000000000000), Leaf(0xffffffffffffffff)]), Branch([Leaf(0x8000000000000000), Leaf(0x7fffffffffffffff)]), Leaf(0x0000000000000000), Leaf(0x0000000000000000)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Struct",
+                    "name": "U64ScalarValueData",
+                    "size_bytes": 48,
+                    "fully_init": true,
+                    "provenance_ptrs_in_alloc": 0,
+                    "fields": [
+                        {
+                            "name": "unsigned_range",
+                            "offset_bytes": 0,
+                            "val": {
+                                "kind": "Struct",
+                                "name": "U64Range",
+                                "size_bytes": 16,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "min",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "0"
+                                        }
+                                    },
+                                    {
+                                        "name": "max",
+                                        "offset_bytes": 8,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "18446744073709551615"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "signed_range",
+                            "offset_bytes": 16,
+                            "val": {
+                                "kind": "Struct",
+                                "name": "U64Range",
+                                "size_bytes": 16,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "min",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "9223372036854775808"
+                                        }
+                                    },
+                                    {
+                                        "name": "max",
+                                        "offset_bytes": 8,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "9223372036854775807"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "known_mask",
+                            "offset_bytes": 32,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u64",
+                                "val": "0"
+                            }
+                        },
+                        {
+                            "name": "known_bits",
+                            "offset_bytes": 40,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u64",
+                                "val": "0"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_07_ARRAY_U32",
+            "ty": "[u32; 4]",
+            "size_bytes": 16,
+            "align_bytes": 4,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Array { stride: Size(4 bytes), count: 4 }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x0000000a), Leaf(0x00000014), Leaf(0x0000001e), Leaf(0x00000028)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Array",
+                    "elem_ty": "u32",
+                    "len": 4,
+                    "elems": [
+                        {
+                            "kind": "Uint",
+                            "ty": "u32",
+                            "val": "10"
+                        },
+                        {
+                            "kind": "Uint",
+                            "ty": "u32",
+                            "val": "20"
+                        },
+                        {
+                            "kind": "Uint",
+                            "ty": "u32",
+                            "val": "30"
+                        },
+                        {
+                            "kind": "Uint",
+                            "ty": "u32",
+                            "val": "40"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_07_ARRAY_U32::{constant#0}",
+            "ty": "usize",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": true,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0x0000000000000004)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Uint",
+                    "ty": "usize",
+                    "val": "4"
+                }
+            }
+        },
+        {
+            "name": "C_08_ZST_UNIT",
+            "ty": "()",
+            "size_bytes": 0,
+            "align_bytes": 1,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Arbitrary { offsets: [], in_memory_order: [] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "ZeroSized",
+                "decoded": {
+                    "kind": "Unit"
+                }
+            }
+        },
+        {
+            "name": "C_09_ZST_EMPTY_ARRAY",
+            "ty": "[u8; 0]",
+            "size_bytes": 0,
+            "align_bytes": 1,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Array { stride: Size(1 bytes), count: 0 }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "ZeroSized",
+                "decoded": {
+                    "kind": "Array",
+                    "elem_ty": "u8",
+                    "elems": []
+                }
+            }
+        },
+        {
+            "name": "C_09_ZST_EMPTY_ARRAY::{constant#0}",
+            "ty": "usize",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": true,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0x0000000000000000)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Uint",
+                    "ty": "usize",
+                    "val": "0"
+                }
+            }
+        },
+        {
+            "name": "C_10_ZST_STRUCT",
+            "ty": "Marker",
+            "size_bytes": 0,
+            "align_bytes": 1,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Arbitrary { offsets: [], in_memory_order: [] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "ZeroSized",
+                "decoded": {
+                    "kind": "ZeroSizedAdt",
+                    "name": "Marker"
+                }
+            }
+        },
+        {
+            "name": "C_11_ENUM_FIELDLESS_NEG",
+            "ty": "SimpleEnum",
+            "size_bytes": 1,
+            "align_bytes": 1,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Int(I8, true), valid_range: (..=1) | (255..) })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I8, true), valid_range: (..=1) | (255..) }, tag_encoding: Direct, tag_field: 0, variants: [VariantLayout { size: Size(1 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(1 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(1 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000000)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "SimpleEnum",
+                    "variant": "Neg",
+                    "repr": "Scalar",
+                    "fields": []
+                }
+            }
+        },
+        {
+            "name": "C_12_NICHE_OPT_BOOL_NONE",
+            "ty": "std::option::Option<bool>",
+            "size_bytes": 1,
+            "align_bytes": 1,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=2 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I8, false), valid_range: 0..=2 }, tag_encoding: Niche { untagged_variant: 1, niche_variants: 0..=0, niche_start: 2 }, tag_field: 0, variants: [VariantLayout { size: Size(0 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(1 bytes), backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=1 }), field_offsets: [Size(0 bytes)], fields_in_memory_order: [0], largest_niche: Some(Niche { offset: Size(0 bytes), value: Int(I8, false), valid_range: 0..=1 }), uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000000)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Option",
+                    "variant": "None",
+                    "repr": "Scalar",
+                    "fields": []
+                }
+            }
+        },
+        {
+            "name": "C_13_NICHE_OPT_BOOL_SOME",
+            "ty": "std::option::Option<bool>",
+            "size_bytes": 1,
+            "align_bytes": 1,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Int(I8, false), valid_range: 0..=2 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I8, false), valid_range: 0..=2 }, tag_encoding: Niche { untagged_variant: 1, niche_variants: 0..=0, niche_start: 2 }, tag_field: 0, variants: [VariantLayout { size: Size(0 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(1 bytes), backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=1 }), field_offsets: [Size(0 bytes)], fields_in_memory_order: [0], largest_niche: Some(Niche { offset: Size(0 bytes), value: Int(I8, false), valid_range: 0..=1 }), uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000001), Leaf(0x01)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Option",
+                    "variant": "Some",
+                    "repr": "Scalar",
+                    "fields": [
+                        {
+                            "name": "0",
+                            "val": {
+                                "kind": "Bool",
+                                "val": true
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_14_NICHE_OPT_NZ_NONE",
+            "ty": "std::option::Option<std::num::NonZero<u64>>",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, tag_encoding: Niche { untagged_variant: 1, niche_variants: 0..=0, niche_start: 0 }, tag_field: 0, variants: [VariantLayout { size: Size(0 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(8 bytes), backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 1..=18446744073709551615 }), field_offsets: [Size(0 bytes)], fields_in_memory_order: [0], largest_niche: Some(Niche { offset: Size(0 bytes), value: Int(I64, false), valid_range: 1..=18446744073709551615 }), uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000000)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Option",
+                    "variant": "None",
+                    "repr": "Scalar",
+                    "fields": []
+                }
+            }
+        },
+        {
+            "name": "C_15_NICHE_OPT_NZ_SOME",
+            "ty": "std::option::Option<std::num::NonZero<u64>>",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, tag_encoding: Niche { untagged_variant: 1, niche_variants: 0..=0, niche_start: 0 }, tag_field: 0, variants: [VariantLayout { size: Size(0 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(8 bytes), backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 1..=18446744073709551615 }), field_offsets: [Size(0 bytes)], fields_in_memory_order: [0], largest_niche: Some(Niche { offset: Size(0 bytes), value: Int(I64, false), valid_range: 1..=18446744073709551615 }), uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000001), Branch([Branch([Leaf(0x0000000000000063)])])])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Option",
+                    "variant": "Some",
+                    "repr": "Scalar",
+                    "fields": [
+                        {
+                            "name": "0",
+                            "val": {
+                                "kind": "Struct",
+                                "name": "NonZero",
+                                "repr": "Scalar",
+                                "fields": [
+                                    {
+                                        "name": "0",
+                                        "val": {
+                                            "kind": "Struct",
+                                            "name": "NonZeroU64Inner",
+                                            "repr": "Scalar",
+                                            "fields": [
+                                                {
+                                                    "name": "0",
+                                                    "val": {
+                                                        "kind": "Pat",
+                                                        "ty": "(u64) is 1..",
+                                                        "base": {
+                                                            "kind": "Uint",
+                                                            "ty": "u64",
+                                                            "val": "99"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_16_DIRECT_OPT_U64_NONE",
+            "ty": "std::option::Option<u64>",
+            "size_bytes": 16,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=1 }, Union { value: Int(I64, false) })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I64, false), valid_range: 0..=1 }, tag_encoding: Direct, tag_field: 0, variants: [VariantLayout { size: Size(8 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(16 bytes), backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=1 }, Union { value: Int(I64, false) }), field_offsets: [Size(8 bytes)], fields_in_memory_order: [0], largest_niche: None, uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000000)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Option",
+                    "variant": "None",
+                    "size_bytes": 16,
+                    "fully_init": false,
+                    "fields": []
+                }
+            }
+        },
+        {
+            "name": "C_17_DIRECT_OPT_U64_SOME",
+            "ty": "std::option::Option<u64>",
+            "size_bytes": 16,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=1 }, Union { value: Int(I64, false) })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I64, false), valid_range: 0..=1 }, tag_encoding: Direct, tag_field: 0, variants: [VariantLayout { size: Size(8 bytes), backend_repr: Memory { sized: true }, field_offsets: [], fields_in_memory_order: [], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(16 bytes), backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=1 }, Union { value: Int(I64, false) }), field_offsets: [Size(8 bytes)], fields_in_memory_order: [0], largest_niche: None, uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000001), Leaf(0x00000000deadbeef)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Option",
+                    "variant": "Some",
+                    "size_bytes": 16,
+                    "fully_init": true,
+                    "fields": [
+                        {
+                            "name": "0",
+                            "offset_bytes": 8,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u64",
+                                "val": "3735928559"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_18_DIRECT_RESULT_OK",
+            "ty": "std::result::Result<u32, u8>",
+            "size_bytes": 8,
+            "align_bytes": 4,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I8, false), valid_range: 0..=1 }, tag_encoding: Direct, tag_field: 0, variants: [VariantLayout { size: Size(8 bytes), backend_repr: Memory { sized: true }, field_offsets: [Size(4 bytes)], fields_in_memory_order: [0], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(2 bytes), backend_repr: Memory { sized: true }, field_offsets: [Size(1 bytes)], fields_in_memory_order: [0], largest_niche: None, uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000000), Leaf(0x12345678)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Result",
+                    "variant": "Ok",
+                    "size_bytes": 8,
+                    "fully_init": false,
+                    "fields": [
+                        {
+                            "name": "0",
+                            "offset_bytes": 4,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "305419896"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_19_DIRECT_RESULT_ERR",
+            "ty": "std::result::Result<u32, u8>",
+            "size_bytes": 8,
+            "align_bytes": 4,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes)], in_memory_order: [0] }",
+            "variants_shape": "Multiple { tag: Initialized { value: Int(I8, false), valid_range: 0..=1 }, tag_encoding: Direct, tag_field: 0, variants: [VariantLayout { size: Size(8 bytes), backend_repr: Memory { sized: true }, field_offsets: [Size(4 bytes)], fields_in_memory_order: [0], largest_niche: None, uninhabited: false }, VariantLayout { size: Size(2 bytes), backend_repr: Memory { sized: true }, field_offsets: [Size(1 bytes)], fields_in_memory_order: [0], largest_niche: None, uninhabited: false }] }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000001), Leaf(0xff)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Enum",
+                    "name": "Result",
+                    "variant": "Err",
+                    "size_bytes": 8,
+                    "fully_init": false,
+                    "fields": [
+                        {
+                            "name": "0",
+                            "offset_bytes": 1,
+                            "val": {
+                                "kind": "Uint",
+                                "ty": "u8",
+                                "val": "255"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_20_SLICE_STR_TRIVIAL",
+            "ty": "&'static str",
+            "size_bytes": 16,
+            "align_bytes": 8,
+            "is_trivial_const": true,
+            "backend_repr": "ScalarPair(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(8 bytes)], in_memory_order: [0, 1] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x65), Leaf(0x62), Leaf(0x70), Leaf(0x66), Leaf(0x5f), Leaf(0x76), Leaf(0x65), Leaf(0x72), Leaf(0x69), Leaf(0x66), Leaf(0x69), Leaf(0x65), Leaf(0x72)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Slice",
+                "decoded": {
+                    "kind": "Str",
+                    "len": 13,
+                    "val": "ebpf_verifier"
+                }
+            }
+        },
+        {
+            "name": "C_21_SLICE_STR_COMPUTED",
+            "ty": "&'static str",
+            "size_bytes": 16,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "ScalarPair(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(8 bytes)], in_memory_order: [0, 1] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x63), Leaf(0x6f), Leaf(0x6d), Leaf(0x70), Leaf(0x75), Leaf(0x74), Leaf(0x65), Leaf(0x64), Leaf(0x5f), Leaf(0x73), Leaf(0x74), Leaf(0x72)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "WideRefInMemory",
+                    "mutability": "Not",
+                    "pointee_ty": "str",
+                    "target": {
+                        "kind": "Str",
+                        "len": 12,
+                        "val": "computed_str"
+                    }
+                }
+            }
+        },
+        {
+            "name": "C_22_SLICE_U8_COERCED",
+            "ty": "&'static [u8]",
+            "size_bytes": 16,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "ScalarPair(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(8 bytes)], in_memory_order: [0, 1] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x0a), Leaf(0x14), Leaf(0x1e)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "WideRefInMemory",
+                    "mutability": "Not",
+                    "pointee_ty": "[u8]",
+                    "target": {
+                        "kind": "Slice",
+                        "elem_ty": "u8",
+                        "len": 3,
+                        "elems": [
+                            {
+                                "kind": "Uint",
+                                "ty": "u8",
+                                "val": "10"
+                            },
+                            {
+                                "kind": "Uint",
+                                "ty": "u8",
+                                "val": "20"
+                            },
+                            {
+                                "kind": "Uint",
+                                "ty": "u8",
+                                "val": "30"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "C_23_REF_SCALAR_U32",
+            "ty": "&'static u32",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0x00000000)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Ptr)",
+                "decoded": {
+                    "kind": "Ref",
+                    "mutability": "Not",
+                    "pointee": {
+                        "kind": "Uint",
+                        "ty": "u32",
+                        "val": "0"
+                    }
+                }
+            }
+        },
+        {
+            "name": "C_24_REF_ARRAY_U32",
+            "ty": "&'static [u32; 3]",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x00000001), Leaf(0x00000002), Leaf(0x00000003)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Ptr)",
+                "decoded": {
+                    "kind": "Ref",
+                    "mutability": "Not",
+                    "pointee": {
+                        "kind": "Array",
+                        "elem_ty": "u32",
+                        "len": 3,
+                        "elems": [
+                            {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "1"
+                            },
+                            {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "2"
+                            },
+                            {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "3"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "C_24_REF_ARRAY_U32::{constant#0}",
+            "ty": "usize",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": true,
+            "backend_repr": "Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0x0000000000000003)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "Uint",
+                    "ty": "usize",
+                    "val": "3"
+                }
+            }
+        },
+        {
+            "name": "C_25_REF_U64_RANGE",
+            "ty": "&'static U64Range",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Leaf(0x0000000000000001), Leaf(0x0000000000000002)])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Ptr)",
+                "decoded": {
+                    "kind": "Ref",
+                    "mutability": "Not",
+                    "pointee": {
+                        "kind": "Struct",
+                        "name": "U64Range",
+                        "size_bytes": 16,
+                        "fully_init": true,
+                        "provenance_ptrs_in_alloc": 0,
+                        "fields": [
+                            {
+                                "name": "min",
+                                "offset_bytes": 0,
+                                "val": {
+                                    "kind": "Uint",
+                                    "ty": "u64",
+                                    "val": "1"
+                                }
+                            },
+                            {
+                                "name": "max",
+                                "offset_bytes": 8,
+                                "val": {
+                                    "kind": "Uint",
+                                    "ty": "u64",
+                                    "val": "2"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "C_26_NESTED_REFS",
+            "ty": "NestedRefs<'static>",
+            "size_bytes": 32,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Memory { sized: true }",
+            "fields_shape": "Arbitrary { offsets: [Size(0 bytes), Size(16 bytes), Size(24 bytes)], in_memory_order: [0, 1, 2] }",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Branch([Branch([Leaf(0x72), Leaf(0x30)]), Branch([Leaf(0x00000064), Leaf(0x000000c8)]), Branch([Leaf(0x0000000000000000), Leaf(0x00000000000000ff)])])))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Indirect",
+                "decoded": {
+                    "kind": "Struct",
+                    "name": "NestedRefs",
+                    "size_bytes": 32,
+                    "fully_init": true,
+                    "provenance_ptrs_in_alloc": 3,
+                    "fields": [
+                        {
+                            "name": "label",
+                            "offset_bytes": 0,
+                            "val": {
+                                "kind": "WideRefInMemory",
+                                "mutability": "Not",
+                                "pointee_ty": "str",
+                                "target": {
+                                    "kind": "Str",
+                                    "len": 2,
+                                    "val": "r0"
+                                }
+                            }
+                        },
+                        {
+                            "name": "nums",
+                            "offset_bytes": 16,
+                            "val": {
+                                "kind": "Ref",
+                                "mutability": "Not",
+                                "pointee": {
+                                    "kind": "Array",
+                                    "elem_ty": "u32",
+                                    "len": 2,
+                                    "elems": [
+                                        {
+                                            "kind": "Uint",
+                                            "ty": "u32",
+                                            "val": "100"
+                                        },
+                                        {
+                                            "kind": "Uint",
+                                            "ty": "u32",
+                                            "val": "200"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "range",
+                            "offset_bytes": 24,
+                            "val": {
+                                "kind": "Ref",
+                                "mutability": "Not",
+                                "pointee": {
+                                    "kind": "Struct",
+                                    "name": "U64Range",
+                                    "size_bytes": 16,
+                                    "fully_init": true,
+                                    "provenance_ptrs_in_alloc": 0,
+                                    "fields": [
+                                        {
+                                            "name": "min",
+                                            "offset_bytes": 0,
+                                            "val": {
+                                                "kind": "Uint",
+                                                "ty": "u64",
+                                                "val": "0"
+                                            }
+                                        },
+                                        {
+                                            "name": "max",
+                                            "offset_bytes": 8,
+                                            "val": {
+                                                "kind": "Uint",
+                                                "ty": "u64",
+                                                "val": "255"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "C_27_RAW_PTR_INT_CAST",
+            "ty": "*const u8",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(ValTree(Leaf(0x0000000000001000)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Int)",
+                "decoded": {
+                    "kind": "RawPtr",
+                    "mutability": "Not",
+                    "address_mode": "ConcreteAddr",
+                    "addr": "0x1000"
+                }
+            }
+        },
+        {
+            "name": "C_28_RAW_PTR_STATIC_PROV",
+            "ty": "*const u32",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(Err(NonSupportedType(*const u32)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Ptr)",
+                "decoded": {
+                    "kind": "RawPtr",
+                    "mutability": "Not",
+                    "address_mode": "Provenance",
+                    "offset_bytes": 0,
+                    "target": {
+                        "global_kind": "Static",
+                        "def_path": "STATIC_U32",
+                        "offset_bytes": 0
+                    }
+                }
+            }
+        },
+        {
+            "name": "C_29_FN_PTR",
+            "ty": "fn(u32) -> u32",
+            "size_bytes": 8,
+            "align_bytes": 8,
+            "is_trivial_const": false,
+            "backend_repr": "Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 1..=18446744073709551615 })",
+            "fields_shape": "Primitive",
+            "variants_shape": "Single { index: 0 }",
+            "valtree_result": "Ok(Err(NonSupportedType(fn(u32) -> u32)))",
+            "const_eval_resolve": {
+                "status": "Ok",
+                "cv_variant": "Scalar(Ptr)",
+                "decoded": {
+                    "kind": "FnPtr",
+                    "instance": "sample_helper_fn",
+                    "offset": 0
+                }
+            }
+        }
+    ],
+    "part3_promotions": [
+        {
+            "item": "promo_accepted_candidates",
+            "promoted_count": 7,
+            "unpromoted_borrows": [
+                "bb0: _2 = &(Shared) (*_31)",
+                "bb0: _1 = &(Shared) (*_2)",
+                "bb0: _5 = &(Shared) (*_30)",
+                "bb0: _4 = &(Shared) (*_5)",
+                "bb0: _8 = &(Shared) (*_29)",
+                "bb0: _7 = &(Shared) (*_8)",
+                "bb0: _11 = &(Shared) (*_28)",
+                "bb0: _10 = &(Shared) (*_11)",
+                "bb0: _14 = &(Shared) (*_27)",
+                "bb0: _13 = &(Shared) (*_14)",
+                "bb0: _17 = &(Mut { kind: Default }) (*_26)",
+                "bb0: _16 = &(Mut { kind: Default }) (*_17)",
+                "bb2: _20 = &(Shared) (*_25)",
+                "bb2: _19 = &(Shared) (*_20)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&u32",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _3 = Div(const 10_u32, const 2_u32)",
+                        "bb0: _2 = AddWithOverflow(copy _3, const 3_u32)",
+                        "bb0: _1 = move (_2.0: u32)",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "8"
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                },
+                {
+                    "index": "promoted[1]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&mut [u32; 0]",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = []",
+                        "bb0: _0 = &mut _1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Mut",
+                            "pointee": {
+                                "kind": "Array",
+                                "elem_ty": "u32",
+                                "elems": []
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                },
+                {
+                    "index": "promoted[2]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&[u32; 3]",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = [const 1_u32, const 2_u32, const 3_u32]",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Array",
+                                "elem_ty": "u32",
+                                "len": 3,
+                                "elems": [
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u32",
+                                        "val": "1"
+                                    },
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u32",
+                                        "val": "2"
+                                    },
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u32",
+                                        "val": "3"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                },
+                {
+                    "index": "promoted[3]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&U64ScalarValueData",
+                    "required_consts_count": 1,
+                    "stmts": [
+                        "bb0: _1 = const U64ScalarValueData::UNINITIALIZED",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Struct",
+                                "name": "U64ScalarValueData",
+                                "size_bytes": 48,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "unsigned_range",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Struct",
+                                            "name": "U64Range",
+                                            "size_bytes": 16,
+                                            "fully_init": true,
+                                            "provenance_ptrs_in_alloc": 0,
+                                            "fields": [
+                                                {
+                                                    "name": "min",
+                                                    "offset_bytes": 0,
+                                                    "val": {
+                                                        "kind": "Uint",
+                                                        "ty": "u64",
+                                                        "val": "0"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "max",
+                                                    "offset_bytes": 8,
+                                                    "val": {
+                                                        "kind": "Uint",
+                                                        "ty": "u64",
+                                                        "val": "18446744073709551615"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "signed_range",
+                                        "offset_bytes": 16,
+                                        "val": {
+                                            "kind": "Struct",
+                                            "name": "U64Range",
+                                            "size_bytes": 16,
+                                            "fully_init": true,
+                                            "provenance_ptrs_in_alloc": 0,
+                                            "fields": [
+                                                {
+                                                    "name": "min",
+                                                    "offset_bytes": 0,
+                                                    "val": {
+                                                        "kind": "Uint",
+                                                        "ty": "u64",
+                                                        "val": "9223372036854775808"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "max",
+                                                    "offset_bytes": 8,
+                                                    "val": {
+                                                        "kind": "Uint",
+                                                        "ty": "u64",
+                                                        "val": "9223372036854775807"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "known_mask",
+                                        "offset_bytes": 32,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "0"
+                                        }
+                                    },
+                                    {
+                                        "name": "known_bits",
+                                        "offset_bytes": 40,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "0"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                },
+                {
+                    "index": "promoted[4]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&U64Range",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = U64Range { min: const 0_u64, max: const 1_u64 }",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Struct",
+                                "name": "U64Range",
+                                "size_bytes": 16,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "min",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "0"
+                                        }
+                                    },
+                                    {
+                                        "name": "max",
+                                        "offset_bytes": 8,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "1"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                },
+                {
+                    "index": "promoted[5]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&EbpfInstruction",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = EbpfInstruction(const 7_u64)",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Struct",
+                                "name": "EbpfInstruction",
+                                "size_bytes": 8,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "0",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "7"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                },
+                {
+                    "index": "promoted[6]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&u32",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = const 0_u32",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "0"
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                }
+            ]
+        },
+        {
+            "item": "promo_assert_eq",
+            "promoted_count": 1,
+            "unpromoted_borrows": [
+                "bb0: _4 = &(Shared) _1",
+                "bb0: _5 = &(Shared) (*_21)",
+                "bb2: _17 = &(Shared) (*_7)",
+                "bb2: _16 = &(Shared) (*_17)",
+                "bb2: _19 = &(Shared) (*_8)",
+                "bb2: _18 = &(Shared) (*_19)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&u32",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = const 0_u32",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "0"
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                }
+            ]
+        },
+        {
+            "item": "promo_rejected_candidates",
+            "promoted_count": 0,
+            "unpromoted_borrows": [
+                "bb1: _2 = &(Shared) _3",
+                "bb2: _6 = &(Shared) _7",
+                "bb2: _8 = &(Mut { kind: Default }) _9",
+                "bb3: _10 = &(Shared) _11",
+                "bb3: _12 = &(Shared) _13",
+                "bb5: _23 = &(Shared) (*_10)"
+            ],
+            "promoteds": []
+        },
+        {
+            "item": "PROMO_IN_CONST_CALL",
+            "promoted_count": 1,
+            "unpromoted_borrows": [
+                "bb0: _1 = &(Shared) (*_3)",
+                "bb0: _0 = &(Shared) (*_1)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&u32",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0 term: _1 = normal_const_fn() -> [return: bb1, unwind continue]",
+                        "bb1: _0 = &_1",
+                        "bb1 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "77"
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                }
+            ]
+        },
+        {
+            "item": "PROMO_IN_STATIC_CALL",
+            "promoted_count": 1,
+            "unpromoted_borrows": [
+                "bb0: _1 = &(Shared) (*_3)",
+                "bb0: _0 = &(Shared) (*_1)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&u32",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0 term: _1 = normal_const_fn() -> [return: bb1, unwind continue]",
+                        "bb1: _0 = &_1",
+                        "bb1 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Uint",
+                                "ty": "u32",
+                                "val": "77"
+                            }
+                        }
+                    },
+                    "eval_monomorphized": null
+                }
+            ]
+        },
+        {
+            "item": "PROMO_IN_CONST_DEAD_BRANCH",
+            "promoted_count": 0,
+            "unpromoted_borrows": [
+                "bb2: _3 = &(Shared) _4"
+            ],
+            "promoteds": []
+        },
+        {
+            "item": "promo_generic_independent",
+            "promoted_count": 1,
+            "unpromoted_borrows": [
+                "bb0: _2 = &(Shared) (*_4)",
+                "bb0: _0 = &(Shared) (*_2)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&U64Range",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = U64Range { min: const 10_u64, max: const 20_u64 }",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Struct",
+                                "name": "U64Range",
+                                "size_bytes": 16,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "min",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "10"
+                                        }
+                                    },
+                                    {
+                                        "name": "max",
+                                        "offset_bytes": 8,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "20"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "eval_monomorphized": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Struct",
+                                "name": "U64Range",
+                                "size_bytes": 16,
+                                "fully_init": true,
+                                "provenance_ptrs_in_alloc": 0,
+                                "fields": [
+                                    {
+                                        "name": "min",
+                                        "offset_bytes": 0,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "10"
+                                        }
+                                    },
+                                    {
+                                        "name": "max",
+                                        "offset_bytes": 8,
+                                        "val": {
+                                            "kind": "Uint",
+                                            "ty": "u64",
+                                            "val": "20"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "item": "promo_generic_array_dependent",
+            "promoted_count": 1,
+            "unpromoted_borrows": [
+                "bb0: _1 = &(Shared) (*_3)",
+                "bb0: _0 = &(Shared) (*_1)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&[u8; N]",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0: _1 = [const 0_u8; N]",
+                        "bb0: _0 = &_1",
+                        "bb0 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Err(TooGeneric)",
+                        "span_is_dummy": true
+                    },
+                    "eval_monomorphized": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Array",
+                                "elem_ty": "u8",
+                                "len": 4,
+                                "elems": [
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u8",
+                                        "val": "0"
+                                    },
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u8",
+                                        "val": "0"
+                                    },
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u8",
+                                        "val": "0"
+                                    },
+                                    {
+                                        "kind": "Uint",
+                                        "ty": "u8",
+                                        "val": "0"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "item": "promo_generic_size_of_dependent",
+            "promoted_count": 1,
+            "unpromoted_borrows": [
+                "bb0: _1 = &(Shared) (*_3)",
+                "bb0: _0 = &(Shared) (*_1)"
+            ],
+            "promoteds": [
+                {
+                    "index": "promoted[0]",
+                    "phase": "Runtime(PostCleanup)",
+                    "return_ty": "&usize",
+                    "required_consts_count": 0,
+                    "stmts": [
+                        "bb0 term: _1 = std::mem::size_of::<T>() -> [return: bb1, unwind continue]",
+                        "bb1: _0 = &_1",
+                        "bb1 term: return"
+                    ],
+                    "eval_post_analysis": {
+                        "status": "Err(TooGeneric)",
+                        "span_is_dummy": true
+                    },
+                    "eval_monomorphized": {
+                        "status": "Ok",
+                        "cv_variant": "Scalar(Ptr)",
+                        "decoded": {
+                            "kind": "Ref",
+                            "mutability": "Not",
+                            "pointee": {
+                                "kind": "Uint",
+                                "ty": "usize",
+                                "val": "8"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
