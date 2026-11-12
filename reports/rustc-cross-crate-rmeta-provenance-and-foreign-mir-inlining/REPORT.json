@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "rustc/metadata",
+    "rustc/mir-inlining",
+    "rustc/intrinsics",
+    "rustc/mir-phases",
+    "rustc/source-map",
+    "rustc/crate-loading",
+    "verification/cross-crate-provenance",
+    "verification/foreign-calls",
+    "security/toctou"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library source tree",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Rust nightly toolchain (rustc and rustc_driver execution)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "19833af7224424e8b53e288097d56b6af43d5bcf",
+        "version": "1.101.0-nightly (2026-10-20)"
+      }
+    },
+    {
+      "name": "Fuchsia Starnix ebpf_core crate",
+      "identity": {
+        "repository": "fuchsia/fuchsia",
+        "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1",
+        "path": "src/starnix/lib/ebpf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}
