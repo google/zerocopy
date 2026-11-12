@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "toolchain": {
+    "lean_version": "v4.34.1",
+    "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "rustc_version": "1.98.0-nightly",
+    "rustc_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  },
+  "wireframe_demo_suite": {
+    "functions": [
+      {
+        "name": "advance_cursor",
+        "strategy_tier": "tier2_sep_logic_lenses",
+        "primary_entry_theorem": "verifyStatefulMir_of_sepLenses",
+        "uses_mir_lift_rules": false,
+        "uses_for_range_up": false,
+        "uses_sep_logic_lenses": true,
+        "loc_manual_blockctx_baseline": 227,
+        "loc_normalized_lifted": 231,
+        "loc_delta": 4,
+        "loc_delta_pct": 1.8,
+        "blockctx_occurrences_baseline": 0,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 5771,
+        "heartbeats_k_normalized_lifted": 5504,
+        "heartbeats_delta_pct": -4.6,
+        "max_heartbeats_cap": 400000,
+        "wall_clock_seconds_seq": 3.0
+      },
+      {
+        "name": "checksum_frame_fast",
+        "strategy_tier": "loop_equivalence_run_cfg_to_block",
+        "primary_entry_theorem": "verifyStatefulEquivMir_of_wpConverges",
+        "uses_mir_lift_rules": false,
+        "uses_for_range_up": true,
+        "uses_sep_logic_lenses": false,
+        "loc_manual_blockctx_baseline": 1592,
+        "loc_normalized_lifted": 174,
+        "loc_delta": -1418,
+        "loc_delta_pct": -89.1,
+        "blockctx_occurrences_baseline": 28,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 655752,
+        "heartbeats_k_normalized_lifted": 72097,
+        "heartbeats_delta_pct": -89.0,
+        "max_heartbeats_cap": 800000,
+        "wall_clock_seconds_seq": 21.4
+      },
+      {
+        "name": "checksum_frame_safe",
+        "strategy_tier": "bounded_loop_for_range_up",
+        "primary_entry_theorem": "verifyStatefulMirNoPanic_of_wpConverges",
+        "uses_mir_lift_rules": false,
+        "uses_for_range_up": true,
+        "uses_sep_logic_lenses": false,
+        "loc_manual_blockctx_baseline": 1242,
+        "loc_normalized_lifted": 275,
+        "loc_delta": -967,
+        "loc_delta_pct": -77.9,
+        "blockctx_occurrences_baseline": 26,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 180914,
+        "heartbeats_k_normalized_lifted": 64596,
+        "heartbeats_delta_pct": -64.3,
+        "max_heartbeats_cap": 400000,
+        "wall_clock_seconds_seq": 11.8
+      },
+      {
+        "name": "clamp_payload_window",
+        "strategy_tier": "tier1_pure_mir_lift_with_impure_companions",
+        "primary_entry_theorem": "verifyMirNoPanic_of_pureExec",
+        "uses_mir_lift_rules": true,
+        "uses_for_range_up": false,
+        "uses_sep_logic_lenses": false,
+        "loc_manual_blockctx_baseline": 1595,
+        "loc_normalized_lifted": 187,
+        "loc_delta": -1408,
+        "loc_delta_pct": -88.3,
+        "blockctx_occurrences_baseline": 26,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 187030,
+        "heartbeats_k_normalized_lifted": 186993,
+        "heartbeats_delta_pct": 0.0,
+        "max_heartbeats_cap": 800000,
+        "wall_clock_seconds_seq": 22.2,
+        "wall_clock_seconds_without_impure_companions": 1.4
+      },
+      {
+        "name": "decode_wire_header",
+        "strategy_tier": "tier1_pure_mir_lift",
+        "primary_entry_theorem": "verifyMirNoPanic_of_pureExec",
+        "uses_mir_lift_rules": true,
+        "uses_for_range_up": false,
+        "uses_sep_logic_lenses": false,
+        "loc_manual_blockctx_baseline": 979,
+        "loc_normalized_lifted": 272,
+        "loc_delta": -707,
+        "loc_delta_pct": -72.2,
+        "blockctx_occurrences_baseline": 0,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 44866,
+        "heartbeats_k_normalized_lifted": 22947,
+        "heartbeats_delta_pct": -48.9,
+        "max_heartbeats_cap": 400000,
+        "wall_clock_seconds_seq": 3.7
+      },
+      {
+        "name": "frame_total_len",
+        "strategy_tier": "tier1_pure_mir_lift_with_impure_companions",
+        "primary_entry_theorem": "verifyMirNoPanic_of_pureExec",
+        "uses_mir_lift_rules": true,
+        "uses_for_range_up": false,
+        "uses_sep_logic_lenses": false,
+        "loc_manual_blockctx_baseline": 1268,
+        "loc_normalized_lifted": 169,
+        "loc_delta": -1099,
+        "loc_delta_pct": -86.7,
+        "blockctx_occurrences_baseline": 23,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 249768,
+        "heartbeats_k_normalized_lifted": 250106,
+        "heartbeats_delta_pct": 0.1,
+        "max_heartbeats_cap": 800000,
+        "wall_clock_seconds_seq": 32.4,
+        "wall_clock_seconds_without_impure_companions": 1.5
+      },
+      {
+        "name": "parse_compression_flag",
+        "strategy_tier": "tier1_pure_mir_lift_with_impure_companions",
+        "primary_entry_theorem": "verifyMirNoPanic_of_pureExec",
+        "uses_mir_lift_rules": true,
+        "uses_for_range_up": false,
+        "uses_sep_logic_lenses": false,
+        "loc_manual_blockctx_baseline": 1106,
+        "loc_normalized_lifted": 113,
+        "loc_delta": -993,
+        "loc_delta_pct": -89.8,
+        "blockctx_occurrences_baseline": 8,
+        "blockctx_occurrences_lifted": 0,
+        "manual_fuel_numerals_lifted": 0,
+        "heartbeats_k_initial_lifted": 64833,
+        "heartbeats_k_normalized_lifted": 62985,
+        "heartbeats_delta_pct": -2.9,
+        "max_heartbeats_cap": 800000,
+        "wall_clock_seconds_seq": 11.1,
+        "wall_clock_seconds_without_impure_companions": 3.2
+      }
+    ],
+    "totals": {
+      "loc_manual_blockctx_baseline": 8009,
+      "loc_normalized_lifted": 1421,
+      "loc_delta": -6588,
+      "loc_delta_pct": -82.3,
+      "blockctx_occurrences_baseline": 111,
+      "blockctx_occurrences_lifted": 0,
+      "manual_fuel_numerals_lifted": 0,
+      "heartbeats_k_initial_lifted": 1388934,
+      "heartbeats_k_normalized_lifted": 665228,
+      "heartbeats_delta": -723706,
+      "heartbeats_delta_pct": -52.1
+    }
+  },
+  "shared_theory_amortization": {
+    "modules": [
+      {"module": "theory/Anneal/MirLiftCore.lean", "loc_before": 1594, "loc_after": 4480, "delta": 2886},
+      {"module": "theory/Anneal/MirLoops.lean", "loc_before": 651, "loc_after": 692, "delta": 41},
+      {"module": "theory/Anneal/SepLogicLenses.lean", "loc_before": 13655, "loc_after": 13677, "delta": 22},
+      {"module": "theory/Anneal/Rustc/V2026_06_01/SymReflect.lean", "loc_before": 7125, "loc_after": 7301, "delta": 176},
+      {"module": "theory/Anneal/MirSpecLift.lean", "loc_before": 139, "loc_after": 0, "delta": -139},
+      {"module": "theory/Anneal/PureMirExec.lean", "loc_before": 18475, "loc_after": 18461, "delta": -14}
+    ],
+    "net_shared_theory_delta_loc": 2972,
+    "amortization_ratio_vs_wireframe_saved_loc": 0.4511
+  },
+  "elaboration_scaling": {
+    "pure_mir_exec_compile_seconds": {
+      "unoptimized_intrinsic_and_nested_match": 85.0,
+      "intrinsic_combinators_and_step_ite": 51.0,
+      "kabstract_case_hoisting_and_dead_helper_removal": 35.1
+    },
+    "pure_mir_exec_olean_megabytes": {
+      "before": 38,
+      "after": 32
+    },
+    "functional_translation_tests_compile_seconds": {
+      "dsimp_80_symbol_rebuild_per_step": 53.0,
+      "whnf_rfl_raw_state_transitions": 5.0
+    },
+    "trusted_boundary_audit": {
+      "trusted_modules": 40,
+      "trusted_kernel_declarations": 9589,
+      "replayed_declarations": 24183,
+      "trusted_lean_diff_bytes_during_migration": 0
+    },
+    "post_integration_module_loc": {
+      "theory/Anneal/PureMirExec.lean": 20564,
+      "theory/Anneal/MirLiftCore.lean": 4517,
+      "theory/Anneal/MirLift.lean": 730,
+      "theory/Anneal/MirLoops.lean": 692,
+      "theory/Anneal/SepLogicLenses.lean": 13718,
+      "theory/Anneal/Rustc/V2026_06_01/SymReflect.lean": 7314
+    }
+  }
+}

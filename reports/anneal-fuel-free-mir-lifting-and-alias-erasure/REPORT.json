@@ -1,0 +1,104 @@
+{
+  "topics": [
+    "anneal/mir-lifting",
+    "anneal/alias-erasure",
+    "anneal/separation-logic",
+    "anneal/mir-semantics",
+    "lean/kernel-reduction",
+    "lean/tactics",
+    "rust/tree-borrows",
+    "verification/functional-big-step",
+    "verification/separation-logic",
+    "verification/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 Theorem Prover (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust Nightly Compiler and Runtime MIR Specification",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.98.0-nightly",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Anneal Formal Verification System (architecture, design, and trust specifications)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal Formal Verification System (role-aware TCB syntax allowlist and prelude boundary)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Anneal Formal Verification System (baseline repository snapshot)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Foster, Greenwald, Moore, Pierce, and Schmitt (TOPLAS 2007) — Combinators for Bi-Directional Tree Transformations",
+      "identity": {
+        "doi": "10.1145/1232420.1232424",
+        "venue": "ACM Transactions on Programming Languages and Systems 29(3), Article 17"
+      }
+    },
+    {
+      "name": "Myreen, Gordon, and Slind (FMCAD 2012) — Decompilation into Logic — Improved",
+      "identity": {
+        "doi": "10.1109/FMCAD.2012.6462558",
+        "isbn": "978-1-4673-4832-4",
+        "url": "https://ieeexplore.ieee.org/document/6462558"
+      }
+    },
+    {
+      "name": "Owens, Myreen, Kumar, and Tan (ESOP 2016) — Functional Big-Step Semantics",
+      "identity": {
+        "doi": "10.1007/978-3-662-49498-1_23",
+        "url": "https://cakeml.org/esop16.pdf"
+      }
+    },
+    {
+      "name": "Villani, Hostert, Dreyer, and Jung (PLDI 2025) — Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "url": "https://dl.acm.org/doi/10.1145/3735592"
+      }
+    },
+    {
+      "name": "Ho and Protzenko (ICFP 2022) — Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2"
+      }
+    },
+    {
+      "name": "Charguéraud, Chlipala, Erbsen, and Gruetter (TOPLAS 2023) — Omnisemantics: Smooth Handling of Nondeterminism",
+      "identity": {
+        "doi": "10.1145/3579834",
+        "url": "https://dl.acm.org/doi/10.1145/3579834"
+      }
+    },
+    {
+      "name": "Xia, Zakowski, He, Hur, Malecha, Pierce, and Zdancewic (POPL 2020) — Interaction Trees",
+      "identity": {
+        "doi": "10.1145/3371119",
+        "url": "https://dl.acm.org/doi/10.1145/3371119"
+      }
+    }
+  ],
+  "observed_at": "2026-11-07"
+}
