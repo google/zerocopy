@@ -1,0 +1,137 @@
+{
+  "level1_2": {
+    "baseline_captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+    "stageA_clean": {
+      "raw_capture_json_sha256": "b867888bbbaf6709333b5c6f43da07365087e4ef9f4acce440f4ff356661df6e",
+      "norm_capture_json_sha256": "1e8bd1eec8dde9c491ec0d934cad9a3b0c564acb0621c7f7bf2f8481cf2ba8f0",
+      "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+      "matches_baseline_captured_lean": true
+    },
+    "stageB_clean": {
+      "raw_capture_json_sha256": "cb49d803cc7528ec0dd97539bd1e0bc73ee9a598b918219005ff2f94953e401b",
+      "norm_capture_json_sha256": "1e8bd1eec8dde9c491ec0d934cad9a3b0c564acb0621c7f7bf2f8481cf2ba8f0",
+      "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+      "norm_capture_json_matches_stageA": true,
+      "raw_capture_json_matches_stageA": false,
+      "captured_lean_matches_stageA": true
+    },
+    "comment_edit": {
+      "raw_capture_json_sha256": "ae804d73d5c49e3a2179e8854bd8b42b9017e9d4e23785faf993fbccf47052dc",
+      "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+      "captured_lean_matches_clean": true
+    },
+    "unrelated_fn_body_edit": {
+      "raw_capture_json_sha256": "c91856ea7c2ff8a97efd9a7f01855babee282dbbfd8a63f9af87b5007d923327",
+      "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+      "captured_lean_matches_clean": true
+    },
+    "new_fn_in_verifier": {
+      "raw_capture_json_sha256": "7c7738e850e628a784cd2c34fa3707a3de5aa6ed446d3a34a35d81cf78ef84e5",
+      "captured_lean_sha256": "8890229d86997daa2f31bb9809733cb5ad68b33ccddfd0e0a0e175cc3ed682d2",
+      "captured_lean_matches_clean": false,
+      "diff_preview": "-- Copyright 2026 The Fuchsia Authors\n--\n-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n-- This file may n"
+    },
+    "new_fn_in_api_after": {
+      "raw_capture_json_sha256": "738439bcd2b3f9e0dd958600253f0188bd646a6f0ab69754fc6a87c29527b9f2",
+      "captured_lean_sha256": "8890229d86997daa2f31bb9809733cb5ad68b33ccddfd0e0a0e175cc3ed682d2",
+      "captured_lean_matches_clean": false,
+      "diff_preview": "-- Copyright 2026 The Fuchsia Authors\n--\n-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n-- This file may n"
+    },
+    "new_fn_in_api_before": {
+      "raw_capture_json_sha256": "3a57cbf8debbb3ac045c5821d29bdb8afa148027409799299f1a03b3d243e9ae",
+      "captured_lean_sha256": "8890229d86997daa2f31bb9809733cb5ad68b33ccddfd0e0a0e175cc3ed682d2",
+      "captured_lean_matches_clean": false,
+      "diff_preview": "-- Copyright 2026 The Fuchsia Authors\n--\n-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n-- This file may n"
+    }
+  },
+  "level3": {
+    "Trusted.Mvp.Syntax": {
+      "stage_alpha_sha256": "4bd4d8b45b2596121a0eeabd73fcc71e74806c42eda9d0f5ce18ecd99e5c6323",
+      "stage_beta_sha256": "4bd4d8b45b2596121a0eeabd73fcc71e74806c42eda9d0f5ce18ecd99e5c6323",
+      "baseline_sha256": "4bd4d8b45b2596121a0eeabd73fcc71e74806c42eda9d0f5ce18ecd99e5c6323",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": true,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 536312
+    },
+    "Trusted.Mvp.Semantics": {
+      "stage_alpha_sha256": "0a94e9d34dc31d074db701a269dcdf0d9050aff08857662f6be1be89af5046a5",
+      "stage_beta_sha256": "0a94e9d34dc31d074db701a269dcdf0d9050aff08857662f6be1be89af5046a5",
+      "baseline_sha256": "0a94e9d34dc31d074db701a269dcdf0d9050aff08857662f6be1be89af5046a5",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": true,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 854336
+    },
+    "Trusted.Mvp": {
+      "stage_alpha_sha256": "7ccae4547c413285d35d15a27d070a3e257c7e1231765749d78412851f5b0562",
+      "stage_beta_sha256": "7ccae4547c413285d35d15a27d070a3e257c7e1231765749d78412851f5b0562",
+      "baseline_sha256": "60f4b75a65b1b8f58875f07b5b4209663d92d941f8bd1e92a46adf491f765ac8",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": false,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 1408
+    },
+    "Trusted": {
+      "stage_alpha_sha256": "b4a03cc450dc2279e0e045e367e304d4d3cf42b40d9983bfbd2625f494ac5aca",
+      "stage_beta_sha256": "b4a03cc450dc2279e0e045e367e304d4d3cf42b40d9983bfbd2625f494ac5aca",
+      "baseline_sha256": "20e4d8da1588a061ce8f094b1cfcb4a15affb336c744c296fb40dc50eb218359",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": false,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 2112
+    },
+    "Captured": {
+      "stage_alpha_sha256": "68042faa4137dacc9a23bebc9a006c7f632d725de5218518ef01d9ac93e22003",
+      "stage_beta_sha256": "68042faa4137dacc9a23bebc9a006c7f632d725de5218518ef01d9ac93e22003",
+      "baseline_sha256": "68042faa4137dacc9a23bebc9a006c7f632d725de5218518ef01d9ac93e22003",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": true,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 863192
+    },
+    "Endianness": {
+      "stage_alpha_sha256": "06a26e5229a74a27ce4dab7ae81acc4a7a1c13ac1b987a49cbb3f93ee503aa1b",
+      "stage_beta_sha256": "06a26e5229a74a27ce4dab7ae81acc4a7a1c13ac1b987a49cbb3f93ee503aa1b",
+      "baseline_sha256": "06a26e5229a74a27ce4dab7ae81acc4a7a1c13ac1b987a49cbb3f93ee503aa1b",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": true,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 5908960
+    },
+    "Spec": {
+      "stage_alpha_sha256": "e8c0ca3ac879fe43dc280ebb9da3c379f571927a94998fa394f3d47027cf42ba",
+      "stage_beta_sha256": "e8c0ca3ac879fe43dc280ebb9da3c379f571927a94998fa394f3d47027cf42ba",
+      "baseline_sha256": "e8c0ca3ac879fe43dc280ebb9da3c379f571927a94998fa394f3d47027cf42ba",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": true,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 17584
+    },
+    "Expected": {
+      "stage_alpha_sha256": "daac06df06923d7ac7701bfa3019020a08ff9db0e71cda2a52ae5495387afcd9",
+      "stage_beta_sha256": "daac06df06923d7ac7701bfa3019020a08ff9db0e71cda2a52ae5495387afcd9",
+      "baseline_sha256": "daac06df06923d7ac7701bfa3019020a08ff9db0e71cda2a52ae5495387afcd9",
+      "alpha_eq_beta": true,
+      "alpha_eq_baseline": true,
+      "emitted_parts": [
+        "olean"
+      ],
+      "size_bytes": 3608
+    }
+  }
+}

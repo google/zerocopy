@@ -1,0 +1,119 @@
+{
+  "exp3a_iv_rust_header_parser": {
+    "scalar": {
+      "exact_match_with_lean_parser": true,
+      "file_count": 11,
+      "timing": {
+        "mean_ms": 0.074,
+        "median_ms": 0.072,
+        "min_ms": 0.072,
+        "runs": 100
+      }
+    },
+    "spin": {
+      "exact_match_with_lean_parser": true,
+      "file_count": 11,
+      "timing": {
+        "mean_ms": 0.074,
+        "median_ms": 0.073,
+        "min_ms": 0.073,
+        "runs": 100
+      }
+    },
+    "starnix": {
+      "exact_match_with_lean_parser": true,
+      "file_count": 17,
+      "timing": {
+        "mean_ms": 0.133,
+        "median_ms": 0.132,
+        "min_ms": 0.131,
+        "runs": 100
+      }
+    }
+  },
+  "exp3b_sha256_admission": {
+    "counts": {
+      "combined_files": 1038,
+      "foundation_files": 306,
+      "library_files": 732,
+      "olean_and_lean_only_bytes": 45603019,
+      "olean_and_lean_only_files": 346,
+      "starnix_provenance_rehashed_bytes": 29384189,
+      "starnix_provenance_rehashed_files": 174
+    },
+    "i_sequential_pure_software_combined": {
+      "mean_ms": 738.648,
+      "median_ms": 735.779,
+      "min_ms": 734.77,
+      "runs": 3
+    },
+    "i_sequential_sha_ni_combined": {
+      "mean_ms": 165.169,
+      "median_ms": 164.824,
+      "min_ms": 164.293,
+      "runs": 5
+    },
+    "i_sequential_sha_ni_foundation": {
+      "mean_ms": 46.428,
+      "median_ms": 45.564,
+      "min_ms": 45.518,
+      "runs": 5
+    },
+    "i_sequential_sha_ni_library": {
+      "mean_ms": 120.55,
+      "median_ms": 120.403,
+      "min_ms": 118.021,
+      "runs": 5
+    },
+    "i_sequential_sha_ni_starnix_provenance_rehash": {
+      "mean_ms": 30.151,
+      "median_ms": 30.061,
+      "min_ms": 29.978,
+      "runs": 5
+    },
+    "ii_sequential_olean_and_lean_only": {
+      "mean_ms": 47.246,
+      "median_ms": 47.31,
+      "min_ms": 47.047,
+      "runs": 5
+    },
+    "iii_a_sequential_reusable_buffer": {
+      "mean_ms": 165.08,
+      "median_ms": 164.853,
+      "min_ms": 163.752,
+      "runs": 5
+    },
+    "iii_b_parallel_sha_ni": {
+      "threads_16": {
+        "mean_ms": 22.131,
+        "median_ms": 22.056,
+        "min_ms": 21.278,
+        "runs": 5
+      },
+      "threads_2": {
+        "mean_ms": 89.081,
+        "median_ms": 88.86,
+        "min_ms": 88.583,
+        "runs": 5
+      },
+      "threads_4": {
+        "mean_ms": 58.05,
+        "median_ms": 58.374,
+        "min_ms": 57.004,
+        "runs": 5
+      },
+      "threads_8": {
+        "mean_ms": 40.016,
+        "median_ms": 39.972,
+        "min_ms": 39.14,
+        "runs": 5
+      }
+    },
+    "iv_stat_keyed_cache_warm": {
+      "mean_ms": 1.567,
+      "median_ms": 1.54,
+      "min_ms": 1.522,
+      "runs": 20
+    }
+  }
+}

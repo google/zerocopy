@@ -1,0 +1,2423 @@
+{
+  "dag_analyses": {
+    "scalar": {
+      "module_count": 8,
+      "wave_count": 6,
+      "waves": [
+        [
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "wall_s": 0.2842073159990832
+          }
+        ],
+        [
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "wall_s": 0.5498320999322459
+          }
+        ],
+        [
+          {
+            "module": "Anneal.Mvp.Execution",
+            "wall_s": 0.2463032939704135
+          },
+          {
+            "module": "Trusted.Mvp",
+            "wall_s": 0.08686873596161604
+          }
+        ],
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.09345213905908167
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.09697900409810245
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.08817786502186209
+          }
+        ],
+        [
+          {
+            "module": "Proof",
+            "wall_s": 0.15296397893689573
+          }
+        ]
+      ],
+      "total_work_s": 1.5987844329793006,
+      "critical_path_span_s": 1.2590289999498054,
+      "wave_sync_span_s": 1.418463557958603,
+      "theoretical_max_speedup_work_over_span": 1.2698551288675959,
+      "critical_path_nodes": [
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "wall_s": 0.2842073159990832
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "wall_s": 0.5498320999322459
+        },
+        {
+          "module": "Trusted.Mvp",
+          "wall_s": 0.08686873596161604
+        },
+        {
+          "module": "Spec",
+          "wall_s": 0.09697900409810245
+        },
+        {
+          "module": "Expected",
+          "wall_s": 0.08817786502186209
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.15296397893689573
+        }
+      ],
+      "imports_map": {
+        "Trusted.Mvp": [
+          "Trusted.Mvp.Syntax",
+          "Trusted.Mvp.Semantics"
+        ],
+        "Trusted.Mvp.Semantics": [
+          "Trusted.Mvp.Syntax"
+        ],
+        "Trusted.Mvp.Syntax": [
+          "Init.Data.BitVec.Basic",
+          "Init.Data.List.Basic"
+        ],
+        "Anneal.Mvp.Execution": [
+          "Trusted.Mvp.Semantics",
+          "Init.Data.BitVec.Lemmas",
+          "Init.Data.Option.Lemmas"
+        ],
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Spec": [
+          "Trusted.Mvp"
+        ],
+        "Proof": [
+          "Expected",
+          "Anneal.Mvp.Execution"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    },
+    "spin": {
+      "module_count": 8,
+      "wave_count": 5,
+      "waves": [
+        [
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "wall_s": 0.27959581394679844
+          }
+        ],
+        [
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "wall_s": 0.5565751539543271
+          }
+        ],
+        [
+          {
+            "module": "Anneal.Mvp.Execution",
+            "wall_s": 0.24135709600523114
+          },
+          {
+            "module": "Trusted.Mvp",
+            "wall_s": 0.08698219794314355
+          }
+        ],
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.09758528904058039
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.09241427190136164
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.08971099893096834
+          },
+          {
+            "module": "Proof",
+            "wall_s": 0.25997735001146793
+          }
+        ]
+      ],
+      "total_work_s": 1.7041981717338786,
+      "critical_path_span_s": 1.3375054139178246,
+      "wave_sync_span_s": 1.435090702958405,
+      "theoretical_max_speedup_work_over_span": 1.274161699833376,
+      "critical_path_nodes": [
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "wall_s": 0.27959581394679844
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "wall_s": 0.5565751539543271
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "wall_s": 0.24135709600523114
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.25997735001146793
+        }
+      ],
+      "imports_map": {
+        "Trusted.Mvp": [
+          "Trusted.Mvp.Syntax",
+          "Trusted.Mvp.Semantics"
+        ],
+        "Trusted.Mvp.Semantics": [
+          "Trusted.Mvp.Syntax"
+        ],
+        "Trusted.Mvp.Syntax": [
+          "Init.Data.BitVec.Basic",
+          "Init.Data.List.Basic"
+        ],
+        "Anneal.Mvp.Execution": [
+          "Trusted.Mvp.Semantics",
+          "Init.Data.BitVec.Lemmas",
+          "Init.Data.Option.Lemmas"
+        ],
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Spec": [
+          "Trusted.Mvp"
+        ],
+        "Proof": [
+          "Captured",
+          "Spec",
+          "Anneal.Mvp.Execution"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    },
+    "starnix_K1_prebuilt_model": {
+      "module_count": 10,
+      "wave_count": 7,
+      "waves": [
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.3018775340169668
+          },
+          {
+            "module": "Endianness",
+            "wall_s": 5.114429173991084
+          }
+        ],
+        [
+          {
+            "module": "Inputs",
+            "wall_s": 0.12130418105516583
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.14051601407118142
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.1171613719779998
+          },
+          {
+            "module": "SourceInputs",
+            "wall_s": 0.2589041570900008
+          }
+        ],
+        [
+          {
+            "module": "InitialCache",
+            "wall_s": 0.1198867850471288
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps",
+            "wall_s": 17.75391445902642
+          }
+        ],
+        [
+          {
+            "module": "ProductionClaims",
+            "wall_s": 0.45134281495120376
+          }
+        ],
+        [
+          {
+            "module": "Proof",
+            "wall_s": 0.1368813100270927
+          }
+        ]
+      ],
+      "total_work_s": 24.516217801254243,
+      "critical_path_span_s": 23.956662881188095,
+      "wave_sync_span_s": 23.97587471420411,
+      "theoretical_max_speedup_work_over_span": 1.0233569643168263,
+      "critical_path_nodes": [
+        {
+          "module": "Endianness",
+          "wall_s": 5.114429173991084
+        },
+        {
+          "module": "Inputs",
+          "wall_s": 0.12130418105516583
+        },
+        {
+          "module": "SourceInputs",
+          "wall_s": 0.2589041570900008
+        },
+        {
+          "module": "InitialCache",
+          "wall_s": 0.1198867850471288
+        },
+        {
+          "module": "ProductionSteps",
+          "wall_s": 17.75391445902642
+        },
+        {
+          "module": "ProductionClaims",
+          "wall_s": 0.45134281495120376
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.1368813100270927
+        }
+      ],
+      "imports_map": {
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Endianness": [
+          "Init.Data.BitVec.Lemmas"
+        ],
+        "InitialCache": [
+          "Captured",
+          "SourceInputs"
+        ],
+        "Inputs": [
+          "Endianness"
+        ],
+        "ProductionClaims": [
+          "ProductionSteps"
+        ],
+        "ProductionSteps": [
+          "InitialCache"
+        ],
+        "Proof": [
+          "Expected",
+          "ProductionClaims"
+        ],
+        "SourceInputs": [
+          "Anneal.Mvp.Execution",
+          "Inputs"
+        ],
+        "Spec": [
+          "Trusted.Mvp",
+          "Endianness"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    },
+    "starnix_K2_prebuilt_model": {
+      "module_count": 12,
+      "wave_count": 8,
+      "waves": [
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.26591497007757425
+          },
+          {
+            "module": "Endianness",
+            "wall_s": 4.962669415981509
+          }
+        ],
+        [
+          {
+            "module": "Inputs",
+            "wall_s": 0.12226545996963978
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.13553748792037368
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.1118661129148677
+          },
+          {
+            "module": "SourceInputs",
+            "wall_s": 0.27259622095152736
+          }
+        ],
+        [
+          {
+            "module": "InitialCache",
+            "wall_s": 0.12131325504742563
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps_0",
+            "wall_s": 7.094505502958782
+          },
+          {
+            "module": "ProductionSteps_1",
+            "wall_s": 10.728647605981678
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps",
+            "wall_s": 0.11168947501573712
+          }
+        ],
+        [
+          {
+            "module": "ProductionClaims",
+            "wall_s": 0.4354204940609634
+          }
+        ],
+        [
+          {
+            "module": "Proof",
+            "wall_s": 0.13113428291399032
+          }
+        ]
+      ],
+      "total_work_s": 24.493560283794068,
+      "critical_path_span_s": 16.88573620992247,
+      "wave_sync_span_s": 16.899008237873204,
+      "theoretical_max_speedup_work_over_span": 1.450547372012187,
+      "critical_path_nodes": [
+        {
+          "module": "Endianness",
+          "wall_s": 4.962669415981509
+        },
+        {
+          "module": "Inputs",
+          "wall_s": 0.12226545996963978
+        },
+        {
+          "module": "SourceInputs",
+          "wall_s": 0.27259622095152736
+        },
+        {
+          "module": "InitialCache",
+          "wall_s": 0.12131325504742563
+        },
+        {
+          "module": "ProductionSteps_1",
+          "wall_s": 10.728647605981678
+        },
+        {
+          "module": "ProductionSteps",
+          "wall_s": 0.11168947501573712
+        },
+        {
+          "module": "ProductionClaims",
+          "wall_s": 0.4354204940609634
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.13113428291399032
+        }
+      ],
+      "imports_map": {
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Endianness": [
+          "Init.Data.BitVec.Lemmas"
+        ],
+        "InitialCache": [
+          "Captured",
+          "SourceInputs"
+        ],
+        "Inputs": [
+          "Endianness"
+        ],
+        "ProductionClaims": [
+          "ProductionSteps"
+        ],
+        "ProductionSteps_0": [
+          "InitialCache"
+        ],
+        "ProductionSteps_1": [
+          "InitialCache"
+        ],
+        "ProductionSteps": [
+          "ProductionSteps_0",
+          "ProductionSteps_1"
+        ],
+        "Proof": [
+          "Expected",
+          "ProductionClaims"
+        ],
+        "SourceInputs": [
+          "Anneal.Mvp.Execution",
+          "Inputs"
+        ],
+        "Spec": [
+          "Trusted.Mvp",
+          "Endianness"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    },
+    "starnix_K4_prebuilt_model": {
+      "module_count": 14,
+      "wave_count": 8,
+      "waves": [
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.27345815603621304
+          },
+          {
+            "module": "Endianness",
+            "wall_s": 5.031735942931846
+          }
+        ],
+        [
+          {
+            "module": "Inputs",
+            "wall_s": 0.12562320905271918
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.13588885799981654
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.11584871297236532
+          },
+          {
+            "module": "SourceInputs",
+            "wall_s": 0.2687925189966336
+          }
+        ],
+        [
+          {
+            "module": "InitialCache",
+            "wall_s": 0.12014489795546979
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps_0",
+            "wall_s": 2.541360420989804
+          },
+          {
+            "module": "ProductionSteps_1",
+            "wall_s": 3.507260994054377
+          },
+          {
+            "module": "ProductionSteps_2",
+            "wall_s": 4.706375184934586
+          },
+          {
+            "module": "ProductionSteps_3",
+            "wall_s": 7.457006543991156
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps",
+            "wall_s": 0.11224822502117604
+          }
+        ],
+        [
+          {
+            "module": "ProductionClaims",
+            "wall_s": 0.4438529529143125
+          }
+        ],
+        [
+          {
+            "module": "Proof",
+            "wall_s": 0.1355985200498253
+          }
+        ]
+      ],
+      "total_work_s": 24.9751951379003,
+      "critical_path_span_s": 13.695002810913138,
+      "wave_sync_span_s": 13.705268459860235,
+      "theoretical_max_speedup_work_over_span": 1.8236721439734438,
+      "critical_path_nodes": [
+        {
+          "module": "Endianness",
+          "wall_s": 5.031735942931846
+        },
+        {
+          "module": "Inputs",
+          "wall_s": 0.12562320905271918
+        },
+        {
+          "module": "SourceInputs",
+          "wall_s": 0.2687925189966336
+        },
+        {
+          "module": "InitialCache",
+          "wall_s": 0.12014489795546979
+        },
+        {
+          "module": "ProductionSteps_3",
+          "wall_s": 7.457006543991156
+        },
+        {
+          "module": "ProductionSteps",
+          "wall_s": 0.11224822502117604
+        },
+        {
+          "module": "ProductionClaims",
+          "wall_s": 0.4438529529143125
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.1355985200498253
+        }
+      ],
+      "imports_map": {
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Endianness": [
+          "Init.Data.BitVec.Lemmas"
+        ],
+        "InitialCache": [
+          "Captured",
+          "SourceInputs"
+        ],
+        "Inputs": [
+          "Endianness"
+        ],
+        "ProductionClaims": [
+          "ProductionSteps"
+        ],
+        "ProductionSteps_0": [
+          "InitialCache"
+        ],
+        "ProductionSteps_1": [
+          "InitialCache"
+        ],
+        "ProductionSteps_2": [
+          "InitialCache"
+        ],
+        "ProductionSteps_3": [
+          "InitialCache"
+        ],
+        "ProductionSteps": [
+          "ProductionSteps_0",
+          "ProductionSteps_1",
+          "ProductionSteps_2",
+          "ProductionSteps_3"
+        ],
+        "Proof": [
+          "Expected",
+          "ProductionClaims"
+        ],
+        "SourceInputs": [
+          "Anneal.Mvp.Execution",
+          "Inputs"
+        ],
+        "Spec": [
+          "Trusted.Mvp",
+          "Endianness"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    },
+    "starnix_K8_prebuilt_model": {
+      "module_count": 18,
+      "wave_count": 8,
+      "waves": [
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.26987871096935123
+          },
+          {
+            "module": "Endianness",
+            "wall_s": 5.049459283007309
+          }
+        ],
+        [
+          {
+            "module": "Inputs",
+            "wall_s": 0.13012633903417736
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.1384160629240796
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.11199045495595783
+          },
+          {
+            "module": "SourceInputs",
+            "wall_s": 0.27638310799375176
+          }
+        ],
+        [
+          {
+            "module": "InitialCache",
+            "wall_s": 0.12581489502917975
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps_0",
+            "wall_s": 1.2990424359450117
+          },
+          {
+            "module": "ProductionSteps_1",
+            "wall_s": 1.3238305120030418
+          },
+          {
+            "module": "ProductionSteps_2",
+            "wall_s": 1.3400321970693767
+          },
+          {
+            "module": "ProductionSteps_3",
+            "wall_s": 1.1431185220135376
+          },
+          {
+            "module": "ProductionSteps_4",
+            "wall_s": 1.2468172089429572
+          },
+          {
+            "module": "ProductionSteps_5",
+            "wall_s": 2.1206736830063164
+          },
+          {
+            "module": "ProductionSteps_6",
+            "wall_s": 3.5230123930377886
+          },
+          {
+            "module": "ProductionSteps_7",
+            "wall_s": 6.385559448041022
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps",
+            "wall_s": 0.11321783403400332
+          }
+        ],
+        [
+          {
+            "module": "ProductionClaims",
+            "wall_s": 0.435649955063127
+          }
+        ],
+        [
+          {
+            "module": "Proof",
+            "wall_s": 0.12935518403537571
+          }
+        ]
+      ],
+      "total_work_s": 25.162378227105364,
+      "critical_path_span_s": 12.645566046237946,
+      "wave_sync_span_s": 12.653855770127848,
+      "theoretical_max_speedup_work_over_span": 1.9898182600209635,
+      "critical_path_nodes": [
+        {
+          "module": "Endianness",
+          "wall_s": 5.049459283007309
+        },
+        {
+          "module": "Inputs",
+          "wall_s": 0.13012633903417736
+        },
+        {
+          "module": "SourceInputs",
+          "wall_s": 0.27638310799375176
+        },
+        {
+          "module": "InitialCache",
+          "wall_s": 0.12581489502917975
+        },
+        {
+          "module": "ProductionSteps_7",
+          "wall_s": 6.385559448041022
+        },
+        {
+          "module": "ProductionSteps",
+          "wall_s": 0.11321783403400332
+        },
+        {
+          "module": "ProductionClaims",
+          "wall_s": 0.435649955063127
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.12935518403537571
+        }
+      ],
+      "imports_map": {
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Endianness": [
+          "Init.Data.BitVec.Lemmas"
+        ],
+        "InitialCache": [
+          "Captured",
+          "SourceInputs"
+        ],
+        "Inputs": [
+          "Endianness"
+        ],
+        "ProductionClaims": [
+          "ProductionSteps"
+        ],
+        "ProductionSteps_0": [
+          "InitialCache"
+        ],
+        "ProductionSteps_1": [
+          "InitialCache"
+        ],
+        "ProductionSteps_2": [
+          "InitialCache"
+        ],
+        "ProductionSteps_3": [
+          "InitialCache"
+        ],
+        "ProductionSteps_4": [
+          "InitialCache"
+        ],
+        "ProductionSteps_5": [
+          "InitialCache"
+        ],
+        "ProductionSteps_6": [
+          "InitialCache"
+        ],
+        "ProductionSteps_7": [
+          "InitialCache"
+        ],
+        "ProductionSteps": [
+          "ProductionSteps_0",
+          "ProductionSteps_1",
+          "ProductionSteps_2",
+          "ProductionSteps_3",
+          "ProductionSteps_4",
+          "ProductionSteps_5",
+          "ProductionSteps_6",
+          "ProductionSteps_7"
+        ],
+        "Proof": [
+          "Expected",
+          "ProductionClaims"
+        ],
+        "SourceInputs": [
+          "Anneal.Mvp.Execution",
+          "Inputs"
+        ],
+        "Spec": [
+          "Trusted.Mvp",
+          "Endianness"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    },
+    "starnix_K16_prebuilt_model": {
+      "module_count": 26,
+      "wave_count": 8,
+      "waves": [
+        [
+          {
+            "module": "Captured",
+            "wall_s": 0.26679724093992263
+          },
+          {
+            "module": "Endianness",
+            "wall_s": 5.049500487977639
+          }
+        ],
+        [
+          {
+            "module": "Inputs",
+            "wall_s": 0.12439240491949022
+          },
+          {
+            "module": "Spec",
+            "wall_s": 0.14425961393862963
+          }
+        ],
+        [
+          {
+            "module": "Expected",
+            "wall_s": 0.12153415393549949
+          },
+          {
+            "module": "SourceInputs",
+            "wall_s": 0.27189383492805064
+          }
+        ],
+        [
+          {
+            "module": "InitialCache",
+            "wall_s": 0.12108386005274951
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps_0",
+            "wall_s": 1.5773774090921506
+          },
+          {
+            "module": "ProductionSteps_1",
+            "wall_s": 0.3499419370200485
+          },
+          {
+            "module": "ProductionSteps_10",
+            "wall_s": 2.065446487045847
+          },
+          {
+            "module": "ProductionSteps_11",
+            "wall_s": 0.8392875320278108
+          },
+          {
+            "module": "ProductionSteps_12",
+            "wall_s": 2.8394678480690345
+          },
+          {
+            "module": "ProductionSteps_13",
+            "wall_s": 1.616232099942863
+          },
+          {
+            "module": "ProductionSteps_14",
+            "wall_s": 4.6936756279319525
+          },
+          {
+            "module": "ProductionSteps_15",
+            "wall_s": 3.337134076980874
+          },
+          {
+            "module": "ProductionSteps_2",
+            "wall_s": 1.5904158540070057
+          },
+          {
+            "module": "ProductionSteps_3",
+            "wall_s": 0.3631555000320077
+          },
+          {
+            "module": "ProductionSteps_4",
+            "wall_s": 1.6391199369682
+          },
+          {
+            "module": "ProductionSteps_5",
+            "wall_s": 0.3573958129854873
+          },
+          {
+            "module": "ProductionSteps_6",
+            "wall_s": 1.5093331868993118
+          },
+          {
+            "module": "ProductionSteps_7",
+            "wall_s": 0.3101091239368543
+          },
+          {
+            "module": "ProductionSteps_8",
+            "wall_s": 1.5468240070622414
+          },
+          {
+            "module": "ProductionSteps_9",
+            "wall_s": 0.35135725897271186
+          }
+        ],
+        [
+          {
+            "module": "ProductionSteps",
+            "wall_s": 0.20408702397253364
+          }
+        ],
+        [
+          {
+            "module": "ProductionClaims",
+            "wall_s": 0.45121165399905294
+          }
+        ],
+        [
+          {
+            "module": "Proof",
+            "wall_s": 0.13867363601457328
+          }
+        ]
+      ],
+      "total_work_s": 31.87970760965254,
+      "critical_path_span_s": 11.054518529796042,
+      "wave_sync_span_s": 11.074385738815181,
+      "theoretical_max_speedup_work_over_span": 2.8838621531751802,
+      "critical_path_nodes": [
+        {
+          "module": "Endianness",
+          "wall_s": 5.049500487977639
+        },
+        {
+          "module": "Inputs",
+          "wall_s": 0.12439240491949022
+        },
+        {
+          "module": "SourceInputs",
+          "wall_s": 0.27189383492805064
+        },
+        {
+          "module": "InitialCache",
+          "wall_s": 0.12108386005274951
+        },
+        {
+          "module": "ProductionSteps_14",
+          "wall_s": 4.6936756279319525
+        },
+        {
+          "module": "ProductionSteps",
+          "wall_s": 0.20408702397253364
+        },
+        {
+          "module": "ProductionClaims",
+          "wall_s": 0.45121165399905294
+        },
+        {
+          "module": "Proof",
+          "wall_s": 0.13867363601457328
+        }
+      ],
+      "imports_map": {
+        "Captured": [
+          "Trusted.Mvp"
+        ],
+        "Endianness": [
+          "Init.Data.BitVec.Lemmas"
+        ],
+        "InitialCache": [
+          "Captured",
+          "SourceInputs"
+        ],
+        "Inputs": [
+          "Endianness"
+        ],
+        "ProductionClaims": [
+          "ProductionSteps"
+        ],
+        "ProductionSteps_0": [
+          "InitialCache"
+        ],
+        "ProductionSteps_1": [
+          "InitialCache"
+        ],
+        "ProductionSteps_2": [
+          "InitialCache"
+        ],
+        "ProductionSteps_3": [
+          "InitialCache"
+        ],
+        "ProductionSteps_4": [
+          "InitialCache"
+        ],
+        "ProductionSteps_5": [
+          "InitialCache"
+        ],
+        "ProductionSteps_6": [
+          "InitialCache"
+        ],
+        "ProductionSteps_7": [
+          "InitialCache"
+        ],
+        "ProductionSteps_8": [
+          "InitialCache"
+        ],
+        "ProductionSteps_9": [
+          "InitialCache"
+        ],
+        "ProductionSteps_10": [
+          "InitialCache"
+        ],
+        "ProductionSteps_11": [
+          "InitialCache"
+        ],
+        "ProductionSteps_12": [
+          "InitialCache"
+        ],
+        "ProductionSteps_13": [
+          "InitialCache"
+        ],
+        "ProductionSteps_14": [
+          "InitialCache"
+        ],
+        "ProductionSteps_15": [
+          "InitialCache"
+        ],
+        "ProductionSteps": [
+          "ProductionSteps_0",
+          "ProductionSteps_1",
+          "ProductionSteps_2",
+          "ProductionSteps_3",
+          "ProductionSteps_4",
+          "ProductionSteps_5",
+          "ProductionSteps_6",
+          "ProductionSteps_7",
+          "ProductionSteps_8",
+          "ProductionSteps_9",
+          "ProductionSteps_10",
+          "ProductionSteps_11",
+          "ProductionSteps_12",
+          "ProductionSteps_13",
+          "ProductionSteps_14",
+          "ProductionSteps_15"
+        ],
+        "Proof": [
+          "Expected",
+          "ProductionClaims"
+        ],
+        "SourceInputs": [
+          "Anneal.Mvp.Execution",
+          "Inputs"
+        ],
+        "Spec": [
+          "Trusted.Mvp",
+          "Endianness"
+        ],
+        "Expected": [
+          "Trusted.Mvp",
+          "Captured",
+          "Spec"
+        ]
+      }
+    }
+  },
+  "sharded_grid_results": [
+    {
+      "k_shards": 1,
+      "workers": 1,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 10,
+      "headers_wall_s": 2.652510565938428,
+      "compile_wall_s": 24.53275803697761,
+      "compile_cpu_s": 24.551858000000003,
+      "compile_user_s": 23.965062000000003,
+      "compile_sys_s": 0.5867959999999999,
+      "sum_module_wall_s": 24.516217801254243,
+      "effective_cpu_util": 1.0007785493581114,
+      "compile_speedup_vs_k1_w1": 1.0,
+      "audit_wall_s": 9.263657668954693,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.3018775340169668,
+        "Endianness": 5.114429173991084,
+        "Inputs": 0.12130418105516583,
+        "SourceInputs": 0.2589041570900008,
+        "InitialCache": 0.1198867850471288,
+        "ProductionSteps": 17.75391445902642,
+        "ProductionClaims": 0.45134281495120376,
+        "Spec": 0.14051601407118142,
+        "Expected": 0.1171613719779998,
+        "Proof": 0.1368813100270927
+      }
+    },
+    {
+      "k_shards": 1,
+      "workers": 2,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 10,
+      "headers_wall_s": 2.652510565938428,
+      "compile_wall_s": 23.84856493107509,
+      "compile_cpu_s": 24.388312000000003,
+      "compile_user_s": 23.801354000000003,
+      "compile_sys_s": 0.5869580000000001,
+      "sum_module_wall_s": 24.358421202050522,
+      "effective_cpu_util": 1.0226322661545817,
+      "compile_speedup_vs_k1_w1": 1.0286890682051484,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.27536647499073297,
+        "Endianness": 5.012181658996269,
+        "Inputs": 0.12540400796569884,
+        "Spec": 0.13768386305309832,
+        "Expected": 0.11214236705563962,
+        "SourceInputs": 0.27716228703502566,
+        "InitialCache": 0.11814592906739563,
+        "ProductionSteps": 17.710240201908164,
+        "ProductionClaims": 0.4536020039813593,
+        "Proof": 0.1364924079971388
+      }
+    },
+    {
+      "k_shards": 1,
+      "workers": 4,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 10,
+      "headers_wall_s": 2.652510565938428,
+      "compile_wall_s": 24.245746903005056,
+      "compile_cpu_s": 24.782594999999997,
+      "compile_user_s": 24.130792999999997,
+      "compile_sys_s": 0.651802,
+      "sum_module_wall_s": 24.749999197083525,
+      "effective_cpu_util": 1.0221419492310382,
+      "compile_speedup_vs_k1_w1": 1.01183758681969,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.26560444792266935,
+        "Endianness": 5.035436692065559,
+        "Inputs": 0.12970859103370458,
+        "Spec": 0.14029558596666902,
+        "Expected": 0.11286428908351809,
+        "SourceInputs": 0.27393759693950415,
+        "InitialCache": 0.12066538399085402,
+        "ProductionSteps": 18.095156518975273,
+        "ProductionClaims": 0.4417970230570063,
+        "Proof": 0.13453306804876775
+      }
+    },
+    {
+      "k_shards": 1,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 10,
+      "headers_wall_s": 2.652510565938428,
+      "compile_wall_s": 23.891699131927453,
+      "compile_cpu_s": 24.418851,
+      "compile_user_s": 23.773966,
+      "compile_sys_s": 0.6448849999999999,
+      "sum_module_wall_s": 24.38687954796478,
+      "effective_cpu_util": 1.0220642267911406,
+      "compile_speedup_vs_k1_w1": 1.0268318674829404,
+      "audit_wall_s": 8.974876184016466,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.26994403603021055,
+        "Endianness": 5.0236669819569215,
+        "Inputs": 0.12306064297445118,
+        "Spec": 0.13411606894806027,
+        "Expected": 0.10631948395166546,
+        "SourceInputs": 0.26056841702666134,
+        "InitialCache": 0.11654574901331216,
+        "ProductionSteps": 17.776311383000575,
+        "ProductionClaims": 0.4457494830712676,
+        "Proof": 0.13059730199165642
+      }
+    },
+    {
+      "k_shards": 2,
+      "workers": 1,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 12,
+      "headers_wall_s": 2.585374897927977,
+      "compile_wall_s": 24.514234957983717,
+      "compile_cpu_s": 24.528859,
+      "compile_user_s": 23.836916000000002,
+      "compile_sys_s": 0.6919429999999993,
+      "sum_module_wall_s": 24.493560283794068,
+      "effective_cpu_util": 1.0005965530656513,
+      "compile_speedup_vs_k1_w1": 1.0007556050199258,
+      "audit_wall_s": 8.843062162981369,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.26591497007757425,
+        "Endianness": 4.962669415981509,
+        "Inputs": 0.12226545996963978,
+        "SourceInputs": 0.27259622095152736,
+        "InitialCache": 0.12131325504742563,
+        "ProductionSteps_0": 7.094505502958782,
+        "ProductionSteps_1": 10.728647605981678,
+        "ProductionSteps": 0.11168947501573712,
+        "ProductionClaims": 0.4354204940609634,
+        "Spec": 0.13553748792037368,
+        "Expected": 0.1118661129148677,
+        "Proof": 0.13113428291399032
+      }
+    },
+    {
+      "k_shards": 2,
+      "workers": 2,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 12,
+      "headers_wall_s": 2.585374897927977,
+      "compile_wall_s": 16.94783318694681,
+      "compile_cpu_s": 24.490968000000006,
+      "compile_user_s": 23.814637000000005,
+      "compile_sys_s": 0.6763310000000002,
+      "sum_module_wall_s": 24.46254074317403,
+      "effective_cpu_util": 1.4450795998430588,
+      "compile_speedup_vs_k1_w1": 1.4475454039677884,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.2693714590277523,
+        "Endianness": 4.98302418901585,
+        "Inputs": 0.12913175497669727,
+        "Spec": 0.14004485809709877,
+        "Expected": 0.10802124696783721,
+        "SourceInputs": 0.2672122570220381,
+        "InitialCache": 0.11844491702504456,
+        "ProductionSteps_0": 7.014934177976102,
+        "ProductionSteps_1": 10.69798202405218,
+        "ProductionSteps": 0.1181782849598676,
+        "ProductionClaims": 0.4745131660019979,
+        "Proof": 0.1416824080515653
+      }
+    },
+    {
+      "k_shards": 2,
+      "workers": 4,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 12,
+      "headers_wall_s": 2.585374897927977,
+      "compile_wall_s": 16.972369270049967,
+      "compile_cpu_s": 24.586061000000015,
+      "compile_user_s": 23.872449000000017,
+      "compile_sys_s": 0.7136119999999995,
+      "sum_module_wall_s": 24.558549791690893,
+      "effective_cpu_util": 1.448593334778865,
+      "compile_speedup_vs_k1_w1": 1.4454527618762674,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.2698120150016621,
+        "Endianness": 5.03914230200462,
+        "Inputs": 0.12329854199197143,
+        "Spec": 0.13490786589682102,
+        "Expected": 0.10853799292817712,
+        "SourceInputs": 0.2664280360331759,
+        "InitialCache": 0.12014926399569958,
+        "ProductionSteps_0": 7.090563687030226,
+        "ProductionSteps_1": 10.696471690898761,
+        "ProductionSteps": 0.1184415640309453,
+        "ProductionClaims": 0.45590202091261744,
+        "Proof": 0.13489481096621603
+      }
+    },
+    {
+      "k_shards": 2,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 12,
+      "headers_wall_s": 2.585374897927977,
+      "compile_wall_s": 17.080060977954417,
+      "compile_cpu_s": 24.62417699999998,
+      "compile_user_s": 23.974204999999984,
+      "compile_sys_s": 0.649972,
+      "sum_module_wall_s": 24.59555393795017,
+      "effective_cpu_util": 1.4416913986304212,
+      "compile_speedup_vs_k1_w1": 1.436339019435735,
+      "audit_wall_s": 9.28980208595749,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.273115761927329,
+        "Endianness": 4.981731879990548,
+        "Inputs": 0.12266134598758072,
+        "Spec": 0.1341641420731321,
+        "Expected": 0.1055979150114581,
+        "SourceInputs": 0.2577513880096376,
+        "InitialCache": 0.12024614494293928,
+        "ProductionSteps_0": 7.020170590956695,
+        "ProductionSteps_1": 10.882515204953961,
+        "ProductionSteps": 0.11988211504649371,
+        "ProductionClaims": 0.4470766930608079,
+        "Proof": 0.1306407559895888
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 1,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 14,
+      "headers_wall_s": 2.562070762971416,
+      "compile_wall_s": 24.99912019004114,
+      "compile_cpu_s": 25.01146199999998,
+      "compile_user_s": 24.235248999999982,
+      "compile_sys_s": 0.7762129999999985,
+      "sum_module_wall_s": 24.9751951379003,
+      "effective_cpu_util": 1.0004936897724808,
+      "compile_speedup_vs_k1_w1": 0.9813448573582476,
+      "audit_wall_s": 9.542540210997686,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.27345815603621304,
+        "Endianness": 5.031735942931846,
+        "Inputs": 0.12562320905271918,
+        "SourceInputs": 0.2687925189966336,
+        "InitialCache": 0.12014489795546979,
+        "ProductionSteps_0": 2.541360420989804,
+        "ProductionSteps_1": 3.507260994054377,
+        "ProductionSteps_2": 4.706375184934586,
+        "ProductionSteps_3": 7.457006543991156,
+        "ProductionSteps": 0.11224822502117604,
+        "ProductionClaims": 0.4438529529143125,
+        "Spec": 0.13588885799981654,
+        "Expected": 0.11584871297236532,
+        "Proof": 0.1355985200498253
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 2,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 14,
+      "headers_wall_s": 2.562070762971416,
+      "compile_wall_s": 17.153347752057016,
+      "compile_cpu_s": 24.868338999999995,
+      "compile_user_s": 24.079995999999994,
+      "compile_sys_s": 0.7883430000000011,
+      "sum_module_wall_s": 24.83832305704709,
+      "effective_cpu_util": 1.4497659208837415,
+      "compile_speedup_vs_k1_w1": 1.4302023366858905,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.26862131792586297,
+        "Endianness": 5.011802708962932,
+        "Inputs": 0.1285000069765374,
+        "Spec": 0.14150418899953365,
+        "Expected": 0.11825519008561969,
+        "SourceInputs": 0.2705961250467226,
+        "InitialCache": 0.11906424700282514,
+        "ProductionSteps_0": 2.477853806107305,
+        "ProductionSteps_1": 3.309153820038773,
+        "ProductionSteps_2": 4.698380882968195,
+        "ProductionSteps_3": 7.597869534045458,
+        "ProductionSteps": 0.11985086393542588,
+        "ProductionClaims": 0.44525062397588044,
+        "Proof": 0.1316197409760207
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 4,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 14,
+      "headers_wall_s": 2.562070762971416,
+      "compile_wall_s": 13.907448198995553,
+      "compile_cpu_s": 25.270015000000022,
+      "compile_user_s": 24.35166700000002,
+      "compile_sys_s": 0.9183479999999999,
+      "sum_module_wall_s": 25.24285286909435,
+      "effective_cpu_util": 1.817013059363767,
+      "compile_speedup_vs_k1_w1": 1.764001395939009,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.26526766107417643,
+        "Endianness": 5.087031268980354,
+        "Inputs": 0.1321375439874828,
+        "Spec": 0.14435506099835038,
+        "Expected": 0.1135721110040322,
+        "SourceInputs": 0.2712133660679683,
+        "InitialCache": 0.12145464192144573,
+        "ProductionSteps_0": 2.60768401902169,
+        "ProductionSteps_1": 3.4329835399985313,
+        "ProductionSteps_2": 4.793363861972466,
+        "ProductionSteps_3": 7.5925460130674765,
+        "ProductionSteps": 0.10897930199280381,
+        "ProductionClaims": 0.4413040110375732,
+        "Proof": 0.13096046796999872
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 14,
+      "headers_wall_s": 2.562070762971416,
+      "compile_wall_s": 13.895660007023253,
+      "compile_cpu_s": 25.097063999999996,
+      "compile_user_s": 24.244688999999994,
+      "compile_sys_s": 0.8523750000000003,
+      "sum_module_wall_s": 25.07877022831235,
+      "effective_cpu_util": 1.806108093269067,
+      "compile_speedup_vs_k1_w1": 1.7654978622518163,
+      "audit_wall_s": 9.350302043021657,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.26414075307548046,
+        "Endianness": 5.107599813025445,
+        "Inputs": 0.13009492808487266,
+        "Spec": 0.1424812019104138,
+        "Expected": 0.11425722192507237,
+        "SourceInputs": 0.27025573106948286,
+        "InitialCache": 0.12149419798515737,
+        "ProductionSteps_0": 2.5660545940045267,
+        "ProductionSteps_1": 3.3865051100729033,
+        "ProductionSteps_2": 4.730942134046927,
+        "ProductionSteps_3": 7.562561867991462,
+        "ProductionSteps": 0.11508362402673811,
+        "ProductionClaims": 0.43398567102849483,
+        "Proof": 0.13331338006537408
+      }
+    },
+    {
+      "k_shards": 8,
+      "workers": 1,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 18,
+      "headers_wall_s": 2.6413230220787227,
+      "compile_wall_s": 25.193692105007358,
+      "compile_cpu_s": 25.19771700000001,
+      "compile_user_s": 24.21309500000001,
+      "compile_sys_s": 0.9846219999999999,
+      "sum_module_wall_s": 25.162378227105364,
+      "effective_cpu_util": 1.0001597580448263,
+      "compile_speedup_vs_k1_w1": 0.9737658908716129,
+      "audit_wall_s": 9.137185374973342,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.26987871096935123,
+        "Endianness": 5.049459283007309,
+        "Inputs": 0.13012633903417736,
+        "SourceInputs": 0.27638310799375176,
+        "InitialCache": 0.12581489502917975,
+        "ProductionSteps_0": 1.2990424359450117,
+        "ProductionSteps_1": 1.3238305120030418,
+        "ProductionSteps_2": 1.3400321970693767,
+        "ProductionSteps_3": 1.1431185220135376,
+        "ProductionSteps_4": 1.2468172089429572,
+        "ProductionSteps_5": 2.1206736830063164,
+        "ProductionSteps_6": 3.5230123930377886,
+        "ProductionSteps_7": 6.385559448041022,
+        "ProductionSteps": 0.11321783403400332,
+        "ProductionClaims": 0.435649955063127,
+        "Spec": 0.1384160629240796,
+        "Expected": 0.11199045495595783,
+        "Proof": 0.12935518403537571
+      }
+    },
+    {
+      "k_shards": 8,
+      "workers": 2,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 18,
+      "headers_wall_s": 2.6413230220787227,
+      "compile_wall_s": 17.61272591294255,
+      "compile_cpu_s": 25.331247000000005,
+      "compile_user_s": 24.436913000000004,
+      "compile_sys_s": 0.8943339999999989,
+      "sum_module_wall_s": 25.305436634575017,
+      "effective_cpu_util": 1.4382354625405014,
+      "compile_speedup_vs_k1_w1": 1.3928995521897003,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.2662198890466243,
+        "Endianness": 5.09190751099959,
+        "Inputs": 0.13266365602612495,
+        "Spec": 0.14405340095981956,
+        "Expected": 0.11589207092765719,
+        "SourceInputs": 0.27663553098682314,
+        "InitialCache": 0.12313134700525552,
+        "ProductionSteps_0": 1.3329679259331897,
+        "ProductionSteps_1": 1.3489995589479804,
+        "ProductionSteps_3": 1.1212800639914349,
+        "ProductionSteps_2": 1.3339278179919347,
+        "ProductionSteps_4": 1.2795073399320245,
+        "ProductionSteps_5": 2.1200818489305675,
+        "ProductionSteps_6": 3.439926531049423,
+        "ProductionSteps_7": 6.498797992011532,
+        "ProductionSteps": 0.11035103292670101,
+        "ProductionClaims": 0.43332751793786883,
+        "Proof": 0.13576559897046536
+      }
+    },
+    {
+      "k_shards": 8,
+      "workers": 4,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 18,
+      "headers_wall_s": 2.6413230220787227,
+      "compile_wall_s": 14.388025411055423,
+      "compile_cpu_s": 25.82848700000001,
+      "compile_user_s": 24.74790200000001,
+      "compile_sys_s": 1.0805849999999992,
+      "sum_module_wall_s": 25.803400031873025,
+      "effective_cpu_util": 1.795137710846271,
+      "compile_speedup_vs_k1_w1": 1.7050816450551451,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.28280135395471007,
+        "Endianness": 5.044211433967575,
+        "Inputs": 0.1299764389405027,
+        "Spec": 0.14239460905082524,
+        "Expected": 0.11723333701957017,
+        "SourceInputs": 0.27177816606126726,
+        "InitialCache": 0.11956444405950606,
+        "ProductionSteps_3": 1.2077231879811734,
+        "ProductionSteps_1": 1.3558356569847092,
+        "ProductionSteps_0": 1.3577630179934204,
+        "ProductionSteps_2": 1.3700458309613168,
+        "ProductionSteps_4": 1.3477047249907628,
+        "ProductionSteps_5": 2.176167892990634,
+        "ProductionSteps_6": 3.4507494040299207,
+        "ProductionSteps_7": 6.744370675995015,
+        "ProductionSteps": 0.11223367194179446,
+        "ProductionClaims": 0.44146326498594135,
+        "Proof": 0.13138291996438056
+      }
+    },
+    {
+      "k_shards": 8,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 18,
+      "headers_wall_s": 2.6413230220787227,
+      "compile_wall_s": 12.831429593963549,
+      "compile_cpu_s": 25.65273299999997,
+      "compile_user_s": 24.496027999999967,
+      "compile_sys_s": 1.1567050000000023,
+      "sum_module_wall_s": 25.64223998063244,
+      "effective_cpu_util": 1.9992108293270852,
+      "compile_speedup_vs_k1_w1": 1.9119271050295803,
+      "audit_wall_s": 9.003456222009845,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2694895250024274,
+        "Endianness": 5.056880834978074,
+        "Inputs": 0.12263988994527608,
+        "Spec": 0.13464546902105212,
+        "Expected": 0.10441057698335499,
+        "SourceInputs": 0.2562311339424923,
+        "InitialCache": 0.11758366296999156,
+        "ProductionSteps_3": 1.1981013260083273,
+        "ProductionSteps_4": 1.3383040289627388,
+        "ProductionSteps_1": 1.4101662539178506,
+        "ProductionSteps_0": 1.409434426925145,
+        "ProductionSteps_2": 1.4226998430676758,
+        "ProductionSteps_5": 2.1004565390758216,
+        "ProductionSteps_6": 3.4529549989383668,
+        "ProductionSteps_7": 6.534137846902013,
+        "ProductionSteps": 0.11576028994750232,
+        "ProductionClaims": 0.45845840603578836,
+        "Proof": 0.13988492800854146
+      }
+    },
+    {
+      "k_shards": 16,
+      "workers": 1,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 26,
+      "headers_wall_s": 2.5695757209323347,
+      "compile_wall_s": 31.92682093102485,
+      "compile_cpu_s": 31.91593100000003,
+      "compile_user_s": 30.651241000000027,
+      "compile_sys_s": 1.2646900000000016,
+      "sum_module_wall_s": 31.87970760965254,
+      "effective_cpu_util": 0.9996589096343683,
+      "compile_speedup_vs_k1_w1": 0.7684059145750378,
+      "audit_wall_s": 9.176940385019407,
+      "replayedDeclarations": 1695,
+      "module_wall_s": {
+        "Captured": 0.26679724093992263,
+        "Endianness": 5.049500487977639,
+        "Inputs": 0.12439240491949022,
+        "SourceInputs": 0.27189383492805064,
+        "InitialCache": 0.12108386005274951,
+        "ProductionSteps_0": 1.5773774090921506,
+        "ProductionSteps_1": 0.3499419370200485,
+        "ProductionSteps_10": 2.065446487045847,
+        "ProductionSteps_11": 0.8392875320278108,
+        "ProductionSteps_12": 2.8394678480690345,
+        "ProductionSteps_13": 1.616232099942863,
+        "ProductionSteps_14": 4.6936756279319525,
+        "ProductionSteps_15": 3.337134076980874,
+        "ProductionSteps_2": 1.5904158540070057,
+        "ProductionSteps_3": 0.3631555000320077,
+        "ProductionSteps_4": 1.6391199369682,
+        "ProductionSteps_5": 0.3573958129854873,
+        "ProductionSteps_6": 1.5093331868993118,
+        "ProductionSteps_7": 0.3101091239368543,
+        "ProductionSteps_8": 1.5468240070622414,
+        "ProductionSteps_9": 0.35135725897271186,
+        "ProductionSteps": 0.20408702397253364,
+        "ProductionClaims": 0.45121165399905294,
+        "Spec": 0.14425961393862963,
+        "Expected": 0.12153415393549949,
+        "Proof": 0.13867363601457328
+      }
+    },
+    {
+      "k_shards": 16,
+      "workers": 2,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 26,
+      "headers_wall_s": 2.5695757209323347,
+      "compile_wall_s": 18.87809485103935,
+      "compile_cpu_s": 31.74118000000001,
+      "compile_user_s": 30.49878000000001,
+      "compile_sys_s": 1.2424,
+      "sum_module_wall_s": 31.70566507440526,
+      "effective_cpu_util": 1.6813762326367627,
+      "compile_speedup_vs_k1_w1": 1.2995356909983393,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.29046803002711385,
+        "Endianness": 4.986576448078267,
+        "Inputs": 0.12351305899210274,
+        "Spec": 0.13508547598030418,
+        "Expected": 0.11585641803685576,
+        "SourceInputs": 0.271233728970401,
+        "InitialCache": 0.11901406396646053,
+        "ProductionSteps_1": 0.34865457005798817,
+        "ProductionSteps_0": 1.6250340060796589,
+        "ProductionSteps_10": 2.0476291740778834,
+        "ProductionSteps_11": 0.8542442589532584,
+        "ProductionSteps_13": 1.6213845579186454,
+        "ProductionSteps_12": 2.779122662032023,
+        "ProductionSteps_15": 3.3137678239727393,
+        "ProductionSteps_14": 4.640777986962348,
+        "ProductionSteps_3": 0.3558977539651096,
+        "ProductionSteps_2": 1.6057247759308666,
+        "ProductionSteps_5": 0.34599012206308544,
+        "ProductionSteps_4": 1.5799070399953052,
+        "ProductionSteps_7": 0.2846770160831511,
+        "ProductionSteps_6": 1.5219532020855695,
+        "ProductionSteps_9": 0.35320371005218476,
+        "ProductionSteps_8": 1.6311081770109013,
+        "ProductionSteps": 0.19827803107909858,
+        "ProductionClaims": 0.42688767600338906,
+        "Proof": 0.1296753060305491
+      }
+    },
+    {
+      "k_shards": 16,
+      "workers": 4,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 26,
+      "headers_wall_s": 2.5695757209323347,
+      "compile_wall_s": 13.226977623999119,
+      "compile_cpu_s": 32.25173399999994,
+      "compile_user_s": 30.841609999999946,
+      "compile_sys_s": 1.4101239999999997,
+      "sum_module_wall_s": 32.22328689286951,
+      "effective_cpu_util": 2.4383298223384133,
+      "compile_speedup_vs_k1_w1": 1.854751609503384,
+      "audit_wall_s": null,
+      "replayedDeclarations": null,
+      "module_wall_s": {
+        "Captured": 0.26770761294756085,
+        "Endianness": 5.000715303933248,
+        "Inputs": 0.12674287694972008,
+        "Spec": 0.14308025198988616,
+        "Expected": 0.11409568996168673,
+        "SourceInputs": 0.2607010779902339,
+        "InitialCache": 0.12123969802632928,
+        "ProductionSteps_1": 0.37026420899201185,
+        "ProductionSteps_11": 0.8577602680306882,
+        "ProductionSteps_0": 1.641784735955298,
+        "ProductionSteps_10": 2.0174605089705437,
+        "ProductionSteps_13": 1.6670046569779515,
+        "ProductionSteps_12": 2.8272590790875256,
+        "ProductionSteps_3": 0.3670657479669899,
+        "ProductionSteps_2": 1.6766182779101655,
+        "ProductionSteps_5": 0.358824382070452,
+        "ProductionSteps_4": 1.6289042220450938,
+        "ProductionSteps_15": 3.3510568500496447,
+        "ProductionSteps_7": 0.2783409939147532,
+        "ProductionSteps_9": 0.34396631200797856,
+        "ProductionSteps_6": 1.4874934740364552,
+        "ProductionSteps_14": 4.991376816062257,
+        "ProductionSteps_8": 1.543631152017042,
+        "ProductionSteps": 0.21053065196610987,
+        "ProductionClaims": 0.43605204997584224,
+        "Proof": 0.13360999303404242
+      }
+    },
+    {
+      "k_shards": 16,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "prebuilt_model": true,
+      "compiled_modules": 26,
+      "headers_wall_s": 2.5695757209323347,
+      "compile_wall_s": 11.462931777001359,
+      "compile_cpu_s": 35.53557600000003,
+      "compile_user_s": 31.88750600000003,
+      "compile_sys_s": 3.648069999999997,
+      "sum_module_wall_s": 35.56319293798879,
+      "effective_cpu_util": 3.1000425276277745,
+      "compile_speedup_vs_k1_w1": 2.1401818063855953,
+      "audit_wall_s": 9.10621469502803,
+      "replayedDeclarations": 1695,
+      "module_wall_s": {
+        "Captured": 0.26887079409789294,
+        "Endianness": 5.046725046006031,
+        "Inputs": 0.1299304080894217,
+        "Spec": 0.14190221799071878,
+        "Expected": 0.11765390494838357,
+        "SourceInputs": 0.2747565560275689,
+        "InitialCache": 0.12059786997269839,
+        "ProductionSteps_1": 0.373356138006784,
+        "ProductionSteps_11": 0.9085373239358887,
+        "ProductionSteps_3": 0.567123270011507,
+        "ProductionSteps_13": 1.8287246969994158,
+        "ProductionSteps_0": 1.9996697719907388,
+        "ProductionSteps_5": 0.3554466039640829,
+        "ProductionSteps_2": 2.0916839650599286,
+        "ProductionSteps_7": 0.30463011702522635,
+        "ProductionSteps_10": 2.582485080929473,
+        "ProductionSteps_9": 0.378536383039318,
+        "ProductionSteps_4": 1.8158882720163092,
+        "ProductionSteps_12": 3.442058122018352,
+        "ProductionSteps_6": 1.626341252005659,
+        "ProductionSteps_15": 3.652254872955382,
+        "ProductionSteps_8": 1.6731107389787212,
+        "ProductionSteps_14": 5.072529794997536,
+        "ProductionSteps": 0.2042363240616396,
+        "ProductionClaims": 0.4549200809560716,
+        "Proof": 0.1312233319040388
+      }
+    }
+  ],
+  "combined_2a_2b_2c_results": [
+    {
+      "k_shards": 1,
+      "workers": 1,
+      "allow_async": true,
+      "threads_per_worker": 4,
+      "headers_wall_s": 2.6001042830757797,
+      "compile_wall_s": 11.180255893967114,
+      "compile_cpu_s": 25.62956300000004,
+      "effective_cpu_util": 2.292395025934048,
+      "compile_speedup_vs_k1_w1_sync": 2.1942930707172392,
+      "audit_wall_s": 8.91123017994687,
+      "total_lean_wall_s": 22.691590356989764,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2675751589704305,
+        "Endianness": 1.9492951650172472,
+        "Inputs": 0.11892230610828847,
+        "SourceInputs": 0.27006002492271364,
+        "InitialCache": 0.11799135396722704,
+        "ProductionSteps": 7.691537074977532,
+        "ProductionClaims": 0.38340741605497897,
+        "Spec": 0.1300137829966843,
+        "Expected": 0.10997302597388625,
+        "Proof": 0.12377871701028198
+      }
+    },
+    {
+      "k_shards": 1,
+      "workers": 1,
+      "allow_async": true,
+      "threads_per_worker": 8,
+      "headers_wall_s": 2.594905786914751,
+      "compile_wall_s": 10.71474751306232,
+      "compile_cpu_s": 27.381214000000107,
+      "effective_cpu_util": 2.5554698294681923,
+      "compile_speedup_vs_k1_w1_sync": 2.2896253978052017,
+      "audit_wall_s": 8.889217637944967,
+      "total_lean_wall_s": 22.198870937922038,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2621156940003857,
+        "Endianness": 1.918204277055338,
+        "Inputs": 0.11401617201045156,
+        "SourceInputs": 0.24284119601361454,
+        "InitialCache": 0.11123345198575407,
+        "ProductionSteps": 7.341824773000553,
+        "ProductionClaims": 0.3578675090102479,
+        "Spec": 0.12574482604395598,
+        "Expected": 0.10313237097579986,
+        "Proof": 0.12063844199292362
+      }
+    },
+    {
+      "k_shards": 1,
+      "workers": 2,
+      "allow_async": true,
+      "threads_per_worker": 4,
+      "headers_wall_s": 2.562271688017063,
+      "compile_wall_s": 11.145220164908096,
+      "compile_cpu_s": 26.74356400000002,
+      "effective_cpu_util": 2.399554571762069,
+      "compile_speedup_vs_k1_w1_sync": 2.2011909746046645,
+      "audit_wall_s": 9.04822159698233,
+      "total_lean_wall_s": 22.75571344990749,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2647655870532617,
+        "Endianness": 2.0348026170395315,
+        "Inputs": 0.11755097506102175,
+        "Spec": 0.13088981295004487,
+        "Expected": 0.10704013099893928,
+        "SourceInputs": 0.25851665798109025,
+        "InitialCache": 0.11371602304279804,
+        "ProductionSteps": 8.11881530599203,
+        "ProductionClaims": 0.3619642169214785,
+        "Proof": 0.12484435096848756
+      }
+    },
+    {
+      "k_shards": 1,
+      "workers": 4,
+      "allow_async": true,
+      "threads_per_worker": 2,
+      "headers_wall_s": 2.545210305019282,
+      "compile_wall_s": 15.866121095023118,
+      "compile_cpu_s": 25.36718199999997,
+      "effective_cpu_util": 1.5988269500827865,
+      "compile_speedup_vs_k1_w1_sync": 1.546235396165799,
+      "audit_wall_s": 8.791204434004612,
+      "total_lean_wall_s": 27.202535834047012,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2688421029597521,
+        "Endianness": 2.8254644729895517,
+        "Inputs": 0.11707532708533108,
+        "Spec": 0.13069925596937537,
+        "Expected": 0.1132244699401781,
+        "SourceInputs": 0.26203408103901893,
+        "InitialCache": 0.11205391399562359,
+        "ProductionSteps": 12.041965440032072,
+        "ProductionClaims": 0.3667542489711195,
+        "Proof": 0.1246747049735859
+      }
+    },
+    {
+      "k_shards": 2,
+      "workers": 2,
+      "allow_async": true,
+      "threads_per_worker": 4,
+      "headers_wall_s": 2.5380626360420138,
+      "compile_wall_s": 8.261984819895588,
+      "compile_cpu_s": 26.00301900000006,
+      "effective_cpu_util": 3.147308978029407,
+      "compile_speedup_vs_k1_w1_sync": 2.9693540440670585,
+      "audit_wall_s": 8.777353044017218,
+      "total_lean_wall_s": 19.57740049995482,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2668166379444301,
+        "Endianness": 1.9767137069720775,
+        "Inputs": 0.11945836606901139,
+        "Spec": 0.13352289807517081,
+        "Expected": 0.10644134203903377,
+        "SourceInputs": 0.2549092879053205,
+        "InitialCache": 0.11116249090991914,
+        "ProductionSteps_0": 3.25388945301529,
+        "ProductionSteps_1": 5.18338499602396,
+        "ProductionSteps": 0.10950821894221008,
+        "ProductionClaims": 0.3640065500512719,
+        "Proof": 0.12482006498612463
+      }
+    },
+    {
+      "k_shards": 2,
+      "workers": 4,
+      "allow_async": true,
+      "threads_per_worker": 2,
+      "headers_wall_s": 2.5841549349715933,
+      "compile_wall_s": 11.334510255022906,
+      "compile_cpu_s": 26.625235000000018,
+      "effective_cpu_util": 2.3490415025387623,
+      "compile_speedup_vs_k1_w1_sync": 2.1644303534072753,
+      "audit_wall_s": 8.867412189021707,
+      "total_lean_wall_s": 22.786077379016206,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.27300850802566856,
+        "Endianness": 2.8464563749730587,
+        "Inputs": 0.11814432602841407,
+        "Spec": 0.13180601689964533,
+        "Expected": 0.1054475650889799,
+        "SourceInputs": 0.25450651103165,
+        "InitialCache": 0.11426441103685647,
+        "ProductionSteps_0": 4.904347912990488,
+        "ProductionSteps_1": 7.386011608061381,
+        "ProductionSteps": 0.10515994904562831,
+        "ProductionClaims": 0.3658109969692305,
+        "Proof": 0.12578767992090434
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 4,
+      "allow_async": true,
+      "threads_per_worker": 2,
+      "headers_wall_s": 2.5126048079691827,
+      "compile_wall_s": 8.478382355067879,
+      "compile_cpu_s": 25.495362999999976,
+      "effective_cpu_util": 3.0071022905401694,
+      "compile_speedup_vs_k1_w1_sync": 2.8935658961303354,
+      "audit_wall_s": 8.796547633013688,
+      "total_lean_wall_s": 19.78753479605075,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2592200500657782,
+        "Endianness": 2.8106321349041536,
+        "Inputs": 0.11651227599941194,
+        "Spec": 0.12948713300283998,
+        "Expected": 0.1023958969162777,
+        "SourceInputs": 0.25347090198192745,
+        "InitialCache": 0.11090088402852416,
+        "ProductionSteps_0": 1.6855570479528978,
+        "ProductionSteps_1": 2.2800868280464783,
+        "ProductionSteps_2": 2.800715134013444,
+        "ProductionSteps_3": 4.573564016027376,
+        "ProductionSteps": 0.10418388003017753,
+        "ProductionClaims": 0.36288404592778534,
+        "Proof": 0.12525652500335127
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 8,
+      "allow_async": true,
+      "threads_per_worker": 2,
+      "headers_wall_s": 2.5648775580339134,
+      "compile_wall_s": 8.501177508034743,
+      "compile_cpu_s": 26.01144099999999,
+      "effective_cpu_util": 3.059745661752824,
+      "compile_speedup_vs_k1_w1_sync": 2.885807055997936,
+      "audit_wall_s": 8.895980712026358,
+      "total_lean_wall_s": 19.962035778095014,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2680492530344054,
+        "Endianness": 2.822999828029424,
+        "Inputs": 0.1142132900422439,
+        "Spec": 0.12776836496777833,
+        "Expected": 0.10084196599200368,
+        "SourceInputs": 0.2507245020242408,
+        "InitialCache": 0.1096977370325476,
+        "ProductionSteps_0": 1.779133212985471,
+        "ProductionSteps_1": 2.307604733039625,
+        "ProductionSteps_2": 2.9313499639974907,
+        "ProductionSteps_3": 4.594588087988086,
+        "ProductionSteps": 0.10473829600960016,
+        "ProductionClaims": 0.35970519902184606,
+        "Proof": 0.12398828996811062
+      }
+    },
+    {
+      "k_shards": 8,
+      "workers": 8,
+      "allow_async": true,
+      "threads_per_worker": 2,
+      "headers_wall_s": 2.5603926440235227,
+      "compile_wall_s": 8.559232983971015,
+      "compile_cpu_s": 28.19037500000001,
+      "effective_cpu_util": 3.293563226143334,
+      "compile_speedup_vs_k1_w1_sync": 2.8662332340900667,
+      "audit_wall_s": 9.004984466009773,
+      "total_lean_wall_s": 20.12461009400431,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2667659360449761,
+        "Endianness": 2.873398303054273,
+        "Inputs": 0.14838987600523978,
+        "Spec": 0.16171357699204236,
+        "Expected": 0.1021563740214333,
+        "SourceInputs": 0.2504530670121312,
+        "InitialCache": 0.11256343498826027,
+        "ProductionSteps_3": 1.3221745659830049,
+        "ProductionSteps_0": 1.361055455985479,
+        "ProductionSteps_4": 1.3837609100155532,
+        "ProductionSteps_1": 1.4120309910504147,
+        "ProductionSteps_2": 1.4147818910423666,
+        "ProductionSteps_5": 1.8932527640135959,
+        "ProductionSteps_6": 2.566680144984275,
+        "ProductionSteps_7": 4.559071368072182,
+        "ProductionSteps": 0.10510057699866593,
+        "ProductionClaims": 0.3547177240252495,
+        "Proof": 0.1273063690168783
+      }
+    },
+    {
+      "k_shards": 4,
+      "workers": 4,
+      "allow_async": true,
+      "threads_per_worker": 4,
+      "headers_wall_s": 2.562967174919322,
+      "compile_wall_s": 7.483878636034206,
+      "compile_cpu_s": 27.22184,
+      "effective_cpu_util": 3.637397307450882,
+      "compile_speedup_vs_k1_w1_sync": 3.2780806891836245,
+      "audit_wall_s": 8.896942429011688,
+      "total_lean_wall_s": 18.943788239965215,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.26670582592487335,
+        "Endianness": 1.968885596957989,
+        "Inputs": 0.11459543101955205,
+        "Spec": 0.12814376200549304,
+        "Expected": 0.10398182005155832,
+        "SourceInputs": 0.2539268680848181,
+        "InitialCache": 0.11109736992511898,
+        "ProductionSteps_0": 1.6994815099751577,
+        "ProductionSteps_1": 1.9413465899415314,
+        "ProductionSteps_2": 2.5689609439577907,
+        "ProductionSteps_3": 4.413270067074336,
+        "ProductionSteps": 0.11041417403612286,
+        "ProductionClaims": 0.3642201699549332,
+        "Proof": 0.124220477999188
+      }
+    },
+    {
+      "k_shards": 8,
+      "workers": 8,
+      "allow_async": true,
+      "threads_per_worker": 4,
+      "headers_wall_s": 2.555396939977072,
+      "compile_wall_s": 7.015706365928054,
+      "compile_cpu_s": 26.831400999999996,
+      "effective_cpu_util": 3.824476054229883,
+      "compile_speedup_vs_k1_w1_sync": 3.496833641174257,
+      "audit_wall_s": 8.907503615017049,
+      "total_lean_wall_s": 18.478606920922175,
+      "replayedDeclarations": 1679,
+      "module_wall_s": {
+        "Captured": 0.2672457710141316,
+        "Endianness": 1.9272538209334016,
+        "Inputs": 0.11657045094761997,
+        "Spec": 0.13176864699926227,
+        "Expected": 0.1008634390309453,
+        "SourceInputs": 0.24809245497453958,
+        "InitialCache": 0.10925720096565783,
+        "ProductionSteps_3": 1.079969318001531,
+        "ProductionSteps_4": 1.1177811400266364,
+        "ProductionSteps_0": 1.130534938070923,
+        "ProductionSteps_2": 1.1298726319801062,
+        "ProductionSteps_1": 1.1497098760446534,
+        "ProductionSteps_5": 1.5811895419610664,
+        "ProductionSteps_6": 2.3035078139510006,
+        "ProductionSteps_7": 3.9966494330437854,
+        "ProductionSteps": 0.10514005296863616,
+        "ProductionClaims": 0.3615903389872983,
+        "Proof": 0.12377503095194697
+      }
+    }
+  ],
+  "round_robin_step_sharding_results": [
+    {
+      "sharding_strategy": "round_robin_94_obligations",
+      "k_shards": 4,
+      "workers": 4,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "headers_wall_s": 2.6574623929336667,
+      "compile_wall_s": 14.877018494997174,
+      "compile_cpu_s": 36.290324,
+      "effective_cpu_util": 2.4393546336050913,
+      "critical_path_span_s": 14.85475554689765,
+      "compile_speedup_vs_k1_w1_sync": 1.6490372748563469,
+      "audit_wall_s": 9.38787037297152,
+      "total_lean_wall_s": 26.92235126090236,
+      "replayedDeclarations": 1441,
+      "shard_wall_ms": [
+        7517.8,
+        7148.3,
+        8276.7,
+        6208.0
+      ],
+      "module_wall_s": {
+        "Captured": 0.29778525000438094,
+        "Endianness": 5.215759371989407,
+        "Inputs": 0.11842036491725594,
+        "Spec": 0.13138650497421622,
+        "Expected": 0.10959868703503162,
+        "SourceInputs": 0.2710187940392643,
+        "InitialCache": 0.11346811708062887,
+        "ProductionSteps_3": 6.208039439050481,
+        "ProductionSteps_1": 7.148337253020145,
+        "ProductionSteps_0": 7.517836284008808,
+        "ProductionSteps_2": 8.276726866955869,
+        "ProductionSteps": 0.25567831902299076,
+        "ProductionClaims": 0.44865257595665753,
+        "Proof": 0.1550311369355768
+      }
+    },
+    {
+      "sharding_strategy": "round_robin_94_obligations",
+      "k_shards": 8,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "headers_wall_s": 2.533912066021003,
+      "compile_wall_s": 11.49088410101831,
+      "compile_cpu_s": 36.43379,
+      "effective_cpu_util": 3.170668999852786,
+      "critical_path_span_s": 11.469002143014222,
+      "compile_speedup_vs_k1_w1_sync": 2.1349756747440822,
+      "audit_wall_s": 9.302793043898419,
+      "total_lean_wall_s": 23.32758921093773,
+      "replayedDeclarations": 1441,
+      "shard_wall_ms": [
+        4687.3,
+        3608.0,
+        4806.0,
+        2479.5,
+        2573.3,
+        3847.6,
+        3746.7,
+        3502.6
+      ],
+      "module_wall_s": {
+        "Captured": 0.26310134201776236,
+        "Endianness": 5.2979744570329785,
+        "Inputs": 0.1263223011046648,
+        "Spec": 0.1375049150083214,
+        "Expected": 0.11010570602957159,
+        "SourceInputs": 0.28199464292265475,
+        "InitialCache": 0.12012463703285903,
+        "ProductionSteps_3": 2.479488340090029,
+        "ProductionSteps_4": 2.5733300918946043,
+        "ProductionSteps_7": 3.5025557699846104,
+        "ProductionSteps_1": 3.6080332569545135,
+        "ProductionSteps_6": 3.7466534270206466,
+        "ProductionSteps_5": 3.847592800972052,
+        "ProductionSteps_0": 4.687254645978101,
+        "ProductionSteps_2": 4.806035060901195,
+        "ProductionSteps": 0.26687690697144717,
+        "ProductionClaims": 0.4365984620526433,
+        "Proof": 0.13307567499578
+      }
+    },
+    {
+      "sharding_strategy": "round_robin_94_obligations",
+      "k_shards": 16,
+      "workers": 8,
+      "allow_async": false,
+      "threads_per_worker": 1,
+      "headers_wall_s": 2.6690416380297393,
+      "compile_wall_s": 11.34454196097795,
+      "compile_cpu_s": 36.941331,
+      "effective_cpu_util": 3.2563087277624643,
+      "critical_path_span_s": 10.169261542963795,
+      "compile_speedup_vs_k1_w1_sync": 2.162516399636357,
+      "audit_wall_s": 9.380838555982336,
+      "total_lean_wall_s": 23.394422154990025,
+      "replayedDeclarations": 1441,
+      "shard_wall_ms": [
+        3430.6,
+        2449.9,
+        1367.0,
+        1321.0,
+        1310.5,
+        1306.6,
+        1378.0,
+        2404.4,
+        1352.6,
+        1270.2,
+        3709.5,
+        1311.6,
+        1291.8,
+        2383.6,
+        2449.7,
+        1201.1
+      ],
+      "module_wall_s": {
+        "Captured": 0.2775630350224674,
+        "Endianness": 5.085639547090977,
+        "Inputs": 0.1273859590291977,
+        "Spec": 0.13796907698269933,
+        "Expected": 0.11281671898905188,
+        "SourceInputs": 0.25780792301520705,
+        "InitialCache": 0.11768241797108203,
+        "ProductionSteps_15": 1.2010647790739313,
+        "ProductionSteps_12": 1.2918455499457195,
+        "ProductionSteps_11": 1.3115852329647169,
+        "ProductionSteps_13": 2.383587700081989,
+        "ProductionSteps_1": 2.449933795025572,
+        "ProductionSteps_14": 2.449663578066975,
+        "ProductionSteps_2": 1.3669714040588588,
+        "ProductionSteps_3": 1.3210229380056262,
+        "ProductionSteps_4": 1.3104889820097014,
+        "ProductionSteps_0": 3.4306011659791693,
+        "ProductionSteps_5": 1.3065818960312754,
+        "ProductionSteps_10": 3.709456734941341,
+        "ProductionSteps_6": 1.3780120789306238,
+        "ProductionSteps_9": 1.2702191160060465,
+        "ProductionSteps_8": 1.3525610549841076,
+        "ProductionSteps_7": 2.404389151954092,
+        "ProductionSteps": 0.28819742891937494,
+        "ProductionClaims": 0.4463506330503151,
+        "Proof": 0.13674089894630015
+      }
+    },
+    {
+      "sharding_strategy": "round_robin_94_obligations",
+      "k_shards": 8,
+      "workers": 8,
+      "allow_async": true,
+      "threads_per_worker": 2,
+      "headers_wall_s": 2.740762636065483,
+      "compile_wall_s": 7.035976395010948,
+      "compile_cpu_s": 40.42703799999999,
+      "effective_cpu_util": 5.745760890935604,
+      "critical_path_span_s": 7.01135293697007,
+      "compile_speedup_vs_k1_w1_sync": 3.4867595710487653,
+      "audit_wall_s": 9.164792701951228,
+      "total_lean_wall_s": 18.94153173302766,
+      "replayedDeclarations": 1441,
+      "shard_wall_ms": [
+        2907.7,
+        2513.0,
+        2755.4,
+        1821.8,
+        1792.0,
+        2302.8,
+        2456.2,
+        2301.0
+      ],
+      "module_wall_s": {
+        "Captured": 0.26051061402540654,
+        "Endianness": 2.9465310329105705,
+        "Inputs": 0.11246778105851263,
+        "Spec": 0.12586330401245505,
+        "Expected": 0.10979594208765775,
+        "SourceInputs": 0.24208212504163384,
+        "InitialCache": 0.10835942800622433,
+        "ProductionSteps_4": 1.792041282984428,
+        "ProductionSteps_3": 1.8217818150296807,
+        "ProductionSteps_5": 2.302826368017122,
+        "ProductionSteps_7": 2.300983446999453,
+        "ProductionSteps_6": 2.456207682029344,
+        "ProductionSteps_1": 2.5129714680369943,
+        "ProductionSteps_2": 2.7553691799985245,
+        "ProductionSteps_0": 2.9076577450614423,
+        "ProductionSteps": 0.20942268194630742,
+        "ProductionClaims": 0.3635945769492537,
+        "Proof": 0.12123756599612534
+      }
+    },
+    {
+      "sharding_strategy": "round_robin_94_obligations",
+      "k_shards": 8,
+      "workers": 8,
+      "allow_async": true,
+      "threads_per_worker": 4,
+      "headers_wall_s": 2.6407852469710633,
+      "compile_wall_s": 6.203995806979947,
+      "compile_cpu_s": 41.525223000000004,
+      "effective_cpu_util": 6.693302879618504,
+      "critical_path_span_s": 6.183378721936606,
+      "compile_speedup_vs_k1_w1_sync": 3.9543479396579335,
+      "audit_wall_s": 9.351548752980307,
+      "total_lean_wall_s": 18.196329806931317,
+      "replayedDeclarations": 1441,
+      "shard_wall_ms": [
+        3022.8,
+        2440.8,
+        2806.4,
+        1821.6,
+        1945.0,
+        2521.8,
+        2506.4,
+        2407.5
+      ],
+      "module_wall_s": {
+        "Captured": 0.2699849179480225,
+        "Endianness": 1.9781690610107034,
+        "Inputs": 0.11812282702885568,
+        "Spec": 0.14210562699008733,
+        "Expected": 0.10596469498705119,
+        "SourceInputs": 0.25434342795051634,
+        "InitialCache": 0.12467922293581069,
+        "ProductionSteps_3": 1.8215845620725304,
+        "ProductionSteps_4": 1.9449503190116957,
+        "ProductionSteps_7": 2.4075317850802094,
+        "ProductionSteps_1": 2.4407567960442975,
+        "ProductionSteps_6": 2.5064072270179167,
+        "ProductionSteps_5": 2.5217657489702106,
+        "ProductionSteps_2": 2.8064031359972432,
+        "ProductionSteps_0": 3.022785949986428,
+        "ProductionSteps": 0.20272047899197787,
+        "ProductionClaims": 0.3578528600046411,
+        "Proof": 0.12470489402767271
+      }
+    }
+  ]
+}

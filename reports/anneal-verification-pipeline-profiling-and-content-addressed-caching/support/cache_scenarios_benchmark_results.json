@@ -1,0 +1,446 @@
+{
+  "scenario1_cold_baseline": {
+    "description": "Cold cache (full baseline run, 0% cache hit)",
+    "cargo_anneal_baseline_result_json_ms": {
+      "capture": 536,
+      "proof_and_audit": 43208,
+      "total": 45258
+    },
+    "instrumented_stage_breakdown_ms": {
+      "capture_ms": 536,
+      "admission_ms": 267.24,
+      "headers_ms": 2812.84,
+      "lean_compile_ms": 28896.21,
+      "target_audit_ms": 9883.94,
+      "total_ms": 42396.23
+    },
+    "compiled_modules_count": 17
+  },
+  "scenario2_warm_noop": {
+    "description": "Warm cache \u2014 No-op re-verify (100% cache hit)",
+    "mode_4B_receipt_cache": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 23.6,
+        "admission_ms": 3.35,
+        "headers_ms": 0.75,
+        "lean_compile_ms": 9.0,
+        "target_audit_ms": 4.54,
+        "total_ms": 42.95
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": true,
+        "audit_mode": "4B"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "a6271d358935933404750ea13a37d1088ab1651498acbdc5e8040ad4cd2955c1",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "mode_4B_full_sha256_admission": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 22.97,
+        "admission_ms": 271.01,
+        "headers_ms": 0.74,
+        "lean_compile_ms": 9.1,
+        "target_audit_ms": 4.28,
+        "total_ms": 309.81
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": true,
+        "audit_mode": "4B"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "c78535cdece0cf492ec6054b2cd542cd537f010ac5a617f319d862b4c79ea81a",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "mode_4A_native_audit_replay": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 509.8,
+        "admission_ms": 3.64,
+        "headers_ms": 0.79,
+        "lean_compile_ms": 9.14,
+        "target_audit_ms": 5746.23,
+        "total_ms": 6271.7
+      },
+      "cache_stats": {
+        "level1_capture_hit": false,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "6b558c1a504c0e1d000b5bb474a1c5084cd7aba81ff5556113d2570aa79742ce",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "mode_4A_interp_audit_replay": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 23.02,
+        "admission_ms": 3.42,
+        "headers_ms": 0.73,
+        "lean_compile_ms": 9.18,
+        "target_audit_ms": 9147.51,
+        "total_ms": 9185.62
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-interp"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "e8c8c304376d438e3ea9c3a6de396d55fdfc8476b0abe81275ff79b3112a55ee",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    }
+  },
+  "scenario3_unrelated_rust_edit": {
+    "description": "Warm cache \u2014 Comment & unrelated function body edit in verifier.rs (early cutoff via Captured.lean SHA-256)",
+    "mode_4B_receipt_cache": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 488.85,
+        "admission_ms": 3.78,
+        "headers_ms": 0.73,
+        "lean_compile_ms": 9.0,
+        "target_audit_ms": 4.26,
+        "total_ms": 508.28
+      },
+      "cache_stats": {
+        "level1_capture_hit": false,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": true,
+        "audit_mode": "4B"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "c271faddcb2954a152c005e6db7d001744b87a0bd9ccd82ab423ad726961ff85",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "mode_4A_native_audit_replay": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 520.95,
+        "admission_ms": 3.81,
+        "headers_ms": 0.73,
+        "lean_compile_ms": 9.19,
+        "target_audit_ms": 5587.01,
+        "total_ms": 6124.63
+      },
+      "cache_stats": {
+        "level1_capture_hit": false,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "0c9e9524d2e4e4ee6ff52d7e8959fdb7e03c722c3224ba9d79fc4b8bc8f463be",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    }
+  },
+  "scenario4_proof_lean_only_edit": {
+    "description": "Warm cache \u2014 Proof.lean-only edit (16/17 modules hit .olean cache; only Proof.lean recompiles + TargetAudit runs)",
+    "first_run_after_edit_mode_4A_native": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 22.92,
+        "admission_ms": 3.63,
+        "headers_ms": 44.86,
+        "lean_compile_ms": 294.62,
+        "target_audit_ms": 5556.6,
+        "total_ms": 5924.49
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 1,
+        "compiled_modules_count": 1,
+        "compiled_modules": [
+          "Proof"
+        ],
+        "cached_modules_count": 16,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "a26c85cfba2d6c87fe81a0ba923519a8c457262b258acc2263ff563a6f588dbe",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "second_run_cached_mode_4B": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 23.18,
+        "admission_ms": 3.26,
+        "headers_ms": 0.74,
+        "lean_compile_ms": 9.39,
+        "target_audit_ms": 4.27,
+        "total_ms": 42.47
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 0,
+        "compiled_modules_count": 0,
+        "compiled_modules": [],
+        "cached_modules_count": 17,
+        "level4_audit_hit": true,
+        "audit_mode": "4B"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "30644e84fe2babd23a0c0804adf631ea1fbb8af57446a43cd2d22f9eeab0d45c",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    }
+  },
+  "scenario5_single_shard_proof_edit": {
+    "description": "Warm cache \u2014 Single basic-block path proof edit with ProductionSteps sharded into K=8 modules (7/8 shards + Endianness + Model + Capture hit .olean cache; only 1 shard + ProductionClaims + Proof recompile)",
+    "sharded_initial_population": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 23.0,
+        "admission_ms": 3.49,
+        "headers_ms": 50.82,
+        "lean_compile_ms": 20601.98,
+        "target_audit_ms": 5664.53,
+        "total_ms": 26345.44
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 9,
+        "compiled_modules_count": 10,
+        "compiled_modules": [
+          "ProductionSteps.Be16",
+          "ProductionSteps.Be32",
+          "ProductionSteps.Be64",
+          "ProductionSteps.Be8",
+          "ProductionSteps.Le16",
+          "ProductionSteps.Le32",
+          "ProductionSteps.Le64",
+          "ProductionSteps.Le8",
+          "ProductionClaims",
+          "Proof"
+        ],
+        "cached_modules_count": 14,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "f597c756eb9e2d822e77cf7ed803e437974caafd7d5aaf37559ea467b07c7176",
+        "captureSha256": "612fb6a041c48c4dd87dd002c406844635fd9e9afbcbaca932d83a25e0298216",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "edit_small_shard_Le8_mode_4A_native": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 23.8,
+        "admission_ms": 4.71,
+        "headers_ms": 45.51,
+        "lean_compile_ms": 2255.84,
+        "target_audit_ms": 5726.75,
+        "total_ms": 8058.66
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 1,
+        "compiled_modules_count": 3,
+        "compiled_modules": [
+          "ProductionSteps.Le8",
+          "ProductionClaims",
+          "Proof"
+        ],
+        "cached_modules_count": 21,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "f597c756eb9e2d822e77cf7ed803e437974caafd7d5aaf37559ea467b07c7176",
+        "captureSha256": "389d8f399662662f90462dfdfceffd7a6c13d0d3a6e7a2834e66e37ca7e63d01",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "edit_largest_shard_Be64_mode_4A_native": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 24.26,
+        "admission_ms": 3.65,
+        "headers_ms": 47.2,
+        "lean_compile_ms": 7482.11,
+        "target_audit_ms": 5578.01,
+        "total_ms": 13136.94
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 1,
+        "compiled_modules_count": 3,
+        "compiled_modules": [
+          "ProductionSteps.Be64",
+          "ProductionClaims",
+          "Proof"
+        ],
+        "cached_modules_count": 21,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "f597c756eb9e2d822e77cf7ed803e437974caafd7d5aaf37559ea467b07c7176",
+        "captureSha256": "febe1f91f02272d352dde53241be53abb04fc2151fdd28c574f4260808ce0293",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "b667f81bf1abf693870fd0da4400c04d1068c2fe1316384e232c5d2b4d9c4d81"
+      }
+    },
+    "shard_breakdown": {
+      "ProductionSteps.Be16": {
+        "source_lines": 720,
+        "source_bytes": 27359
+      },
+      "ProductionSteps.Be32": {
+        "source_lines": 1224,
+        "source_bytes": 50566
+      },
+      "ProductionSteps.Be64": {
+        "source_lines": 2106,
+        "source_bytes": 91812
+      },
+      "ProductionSteps.Be8": {
+        "source_lines": 279,
+        "source_bytes": 9877
+      },
+      "ProductionSteps.Le16": {
+        "source_lines": 279,
+        "source_bytes": 9998
+      },
+      "ProductionSteps.Le32": {
+        "source_lines": 279,
+        "source_bytes": 10088
+      },
+      "ProductionSteps.Le64": {
+        "source_lines": 216,
+        "source_bytes": 7567
+      },
+      "ProductionSteps.Le8": {
+        "source_lines": 279,
+        "source_bytes": 9905
+      }
+    }
+  },
+  "scenario6_spec_lean_edit": {
+    "description": "Warm cache \u2014 Spec.lean edit (Model, Captured, Endianness, Inputs, SourceInputs, InitialCache, ProductionSteps, ProductionClaims all hit .olean cache; only Spec, Expected, Proof recompile + TargetAudit runs)",
+    "comment_edit_olean_early_cutoff_mode_4A_native": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 23.09,
+        "admission_ms": 3.54,
+        "headers_ms": 44.72,
+        "lean_compile_ms": 274.3,
+        "target_audit_ms": 5703.66,
+        "total_ms": 6050.83
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 1,
+        "compiled_modules_count": 1,
+        "compiled_modules": [
+          "Spec"
+        ],
+        "cached_modules_count": 16,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "ff51d48ff408ea1581b758eb1933103801493f80b96f772b7b3c1865fafe61fc",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "0f60ce2209a899854f5f7e46c33b5a2a085228d89e41e38dd7ffb4a203818441"
+      }
+    },
+    "semantic_edit_spec_expected_proof_recompile_mode_4A_native": {
+      "status": "selected_unit_verified",
+      "timing_ms": {
+        "capture_ms": 25.03,
+        "admission_ms": 3.91,
+        "headers_ms": 47.59,
+        "lean_compile_ms": 809.84,
+        "target_audit_ms": 5611.42,
+        "total_ms": 6500.15
+      },
+      "cache_stats": {
+        "level1_capture_hit": true,
+        "captured_lean_sha256": "9826f5bdde16ff5c6fe5d338d8d31df0469e78dd74c01f93d26c6c1e17b85180",
+        "uncached_headers_count": 1,
+        "compiled_modules_count": 3,
+        "compiled_modules": [
+          "Spec",
+          "Expected",
+          "Proof"
+        ],
+        "cached_modules_count": 14,
+        "level4_audit_hit": false,
+        "audit_mode": "4A-native"
+      },
+      "bindings": {
+        "requestSha256": "4fd910db5d2a0b04f1626be82380f599481e6b7287e49b07e6388576451a76cb",
+        "captureSha256": "14e4ea02f9479aa3ca3b60cd6d86e0138f6200e02fbb8367c3a78e362a7c0ae5",
+        "modelManifestSha256": "b4801ee205af00dcb283dd91f3e6cee45e234b3d0cfa54677bfd836837898649",
+        "specificationManifestSha256": "ace98c894b829364f720a3646c9efb4a622d903194c04269880200a1e36b7cda"
+      }
+    }
+  }
+}

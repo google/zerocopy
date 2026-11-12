@@ -1,0 +1,1244 @@
+{
+  "bundled_modules": [
+    {
+      "module": "Trusted.Mvp.Syntax",
+      "path": "anneal/trusted/lean/Trusted/Mvp/Syntax.lean",
+      "role": "model",
+      "reachable_from_targets": true,
+      "src_bytes": 2834,
+      "src_lines": 94,
+      "src_sha256": "9de7db986a07b348050b982e0498fbcd321028637cc54d7639c9f2d49420873c",
+      "imports": [
+        {
+          "module": "Init.Data.BitVec.Basic",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        },
+        {
+          "module": "Init.Data.List.Basic",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.30787795409560204,
+        0.31402843503747135,
+        0.3047998249530792
+      ],
+      "wall_s_mean": 0.3089020713620509,
+      "wall_s_min": 0.3047998249530792,
+      "cpu_s_mean": 0.3113519999999999,
+      "parts": {
+        "olean": {
+          "bytes": 536312,
+          "sha256": "4bd4d8b45b2596121a0eeabd73fcc71e74806c42eda9d0f5ce18ecd99e5c6323"
+        }
+      }
+    },
+    {
+      "module": "Trusted.Mvp.Semantics",
+      "path": "anneal/trusted/lean/Trusted/Mvp/Semantics.lean",
+      "role": "model",
+      "reachable_from_targets": true,
+      "src_bytes": 19441,
+      "src_lines": 461,
+      "src_sha256": "6f434c31a9fbb06ffdae9314f65837f9496bbf5274573fca8befffac9411148c",
+      "imports": [
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.6032050929497927,
+        0.5781273790635169,
+        0.5958097539842129
+      ],
+      "wall_s_mean": 0.5923807419991741,
+      "wall_s_min": 0.5781273790635169,
+      "cpu_s_mean": 0.5964853333333334,
+      "parts": {
+        "olean": {
+          "bytes": 843928,
+          "sha256": "edee3b618c148a6049b0fbc54f8006b7b930e55b5002a1ca9783c169e3f8d421"
+        }
+      }
+    },
+    {
+      "module": "Trusted.Mvp",
+      "path": "anneal/trusted/lean/Trusted/Mvp.lean",
+      "role": "model",
+      "reachable_from_targets": true,
+      "src_bytes": 475,
+      "src_lines": 12,
+      "src_sha256": "e355d8019f049dc133d956330b2006d8b25f19873ecdd1473aa64675397bb686",
+      "imports": [
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.08871898707002401,
+        0.08801706705708057,
+        0.10668610304128379
+      ],
+      "wall_s_mean": 0.09447405238946278,
+      "wall_s_min": 0.08801706705708057,
+      "cpu_s_mean": 0.09455066666666657,
+      "parts": {
+        "olean": {
+          "bytes": 1512,
+          "sha256": "60f4b75a65b1b8f58875f07b5b4209663d92d941f8bd1e92a46adf491f765ac8"
+        }
+      }
+    },
+    {
+      "module": "Trusted",
+      "path": "anneal/trusted/lean/Trusted.lean",
+      "role": "model",
+      "reachable_from_targets": false,
+      "src_bytes": 715,
+      "src_lines": 19,
+      "src_sha256": "8316581d84c50b8e6234e493780e30b05e5a3b02328c12ef6c6c82cbae7755dd",
+      "imports": [
+        {
+          "module": "Init.NotationExtra",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.09534811705816537,
+        0.09835931193083525,
+        0.09990244207438082
+      ],
+      "wall_s_mean": 0.09786995702112715,
+      "wall_s_min": 0.09534811705816537,
+      "cpu_s_mean": 0.09791966666666667,
+      "parts": {
+        "olean": {
+          "bytes": 2120,
+          "sha256": "20e4d8da1588a061ce8f094b1cfcb4a15affb336c744c296fb40dc50eb218359"
+        }
+      }
+    },
+    {
+      "module": "Anneal.Mvp.Execution",
+      "path": "anneal/theory/Anneal/Mvp/Execution.lean",
+      "role": "proof",
+      "reachable_from_targets": true,
+      "src_bytes": 10334,
+      "src_lines": 257,
+      "src_sha256": "e390ff65170596c45ded4dcde080927d660dcec5e395ca6af4c66a68e0a93b60",
+      "imports": [
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        },
+        {
+          "module": "Init.Data.BitVec.Lemmas",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        },
+        {
+          "module": "Init.Data.Option.Lemmas",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.27891971601638943,
+        0.2644326590234414,
+        0.26353978307452053
+      ],
+      "wall_s_mean": 0.2689640527047838,
+      "wall_s_min": 0.26353978307452053,
+      "cpu_s_mean": 0.2707893333333334,
+      "parts": {
+        "olean": {
+          "bytes": 220480,
+          "sha256": "083d161bf0b8a39acfdce9be1dcdd519e4dc95a5ce9cf7e5a31ad22e26307c40"
+        }
+      }
+    },
+    {
+      "module": "Anneal.Mvp.Canaries",
+      "path": "anneal/theory/Anneal/Mvp/Canaries.lean",
+      "role": "proof",
+      "reachable_from_targets": false,
+      "src_bytes": 8140,
+      "src_lines": 235,
+      "src_sha256": "9057d49f01ecdd2a4589345a6c509dc2057b3f8a1afab541bae4592e4f147fa7",
+      "imports": [
+        {
+          "module": "Anneal.Mvp.Execution",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.43394830997567624,
+        0.4286812769714743,
+        0.405255243065767
+      ],
+      "wall_s_mean": 0.4226282766709725,
+      "wall_s_min": 0.405255243065767,
+      "cpu_s_mean": 0.426197,
+      "parts": {
+        "olean": {
+          "bytes": 194776,
+          "sha256": "87cddd94e94b22975fc01313e3e2f08cb23f4ed0b59ba1ccee9a4a9599207f9f"
+        }
+      }
+    },
+    {
+      "module": "Anneal",
+      "path": "anneal/theory/Anneal.lean",
+      "role": "proof",
+      "reachable_from_targets": false,
+      "src_bytes": 439,
+      "src_lines": 11,
+      "src_sha256": "87412953c572c1456e9a9d323eb3297afbb0944d72cb3c594030f842a5db67fc",
+      "imports": [
+        {
+          "module": "Anneal.Mvp.Execution",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        },
+        {
+          "module": "Anneal.Mvp.Canaries",
+          "isMeta": false,
+          "isExported": true,
+          "importAll": false
+        }
+      ],
+      "wall_s_runs": [
+        0.11245781602337956,
+        0.11417941900435835,
+        0.1097479589516297
+      ],
+      "wall_s_mean": 0.11212839799312253,
+      "wall_s_min": 0.1097479589516297,
+      "cpu_s_mean": 0.1121833333333333,
+      "parts": {
+        "olean": {
+          "bytes": 1520,
+          "sha256": "2c078b04c7f37f3ecdfa83124f2705ecbc9fe10d9f4513d48e7361535cc00de0"
+        }
+      }
+    }
+  ],
+  "pipeline_runs": [
+    {
+      "fixture": "scalar",
+      "variant": "2A-0_baseline",
+      "headers_wall_s": 2.594987012038473,
+      "headers_cpu_s": 2.6280259999999998,
+      "compile_wall_s": 2.1866680184029974,
+      "compile_cpu_s": 2.120267,
+      "audit_wall_s": 3.9482392535428517,
+      "audit_cpu_s": 3.890763,
+      "total_lean_wall_s": 8.729894283984322,
+      "total_lean_cpu_s": 8.7724115,
+      "compiled_module_count": 11,
+      "waves": [
+        [
+          "Trusted",
+          "Trusted.Mvp.Syntax"
+        ],
+        [
+          "Trusted.Mvp.Semantics"
+        ],
+        [
+          "Anneal.Mvp.Execution",
+          "Trusted.Mvp"
+        ],
+        [
+          "Anneal.Mvp.Canaries",
+          "Captured",
+          "Spec"
+        ],
+        [
+          "Anneal",
+          "Expected"
+        ],
+        [
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Trusted",
+          "role": "model",
+          "wall_s": 0.07341384649043903,
+          "cpu_s": 0.07351850000000093
+        },
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "role": "model",
+          "wall_s": 0.294295510975644,
+          "cpu_s": 0.29708999999999985
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "role": "model",
+          "wall_s": 0.5369529119343497,
+          "cpu_s": 0.5403449999999987
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "role": "proof",
+          "wall_s": 0.23146382748382166,
+          "cpu_s": 0.2333820000000013
+        },
+        {
+          "module": "Trusted.Mvp",
+          "role": "model",
+          "wall_s": 0.08475090499268845,
+          "cpu_s": 0.08484550000000046
+        },
+        {
+          "module": "Anneal.Mvp.Canaries",
+          "role": "proof",
+          "wall_s": 0.3982352174934931,
+          "cpu_s": 0.4013149999999981
+        },
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.10411041899351403,
+          "cpu_s": 0.10431300000000066
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.09035880997544155,
+          "cpu_s": 0.0905915000000006
+        },
+        {
+          "module": "Anneal",
+          "role": "proof",
+          "wall_s": 0.11682778300018981,
+          "cpu_s": 0.11690800000000068
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.09401012503076345,
+          "cpu_s": 0.09412999999999849
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.16224866203265265,
+          "cpu_s": 0.1628085000000008
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 547,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1535,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 1.0,
+      "total_speedup_vs_baseline": 1.0
+    },
+    {
+      "fixture": "scalar",
+      "variant": "2A-1_pruned",
+      "headers_wall_s": 2.604596365999896,
+      "headers_cpu_s": 2.689893999999999,
+      "compile_wall_s": 1.580346857488621,
+      "compile_cpu_s": 1.6049429999999996,
+      "audit_wall_s": 3.871307946043089,
+      "audit_cpu_s": 3.8579429999999997,
+      "total_lean_wall_s": 8.056251169531606,
+      "total_lean_cpu_s": 8.092863999999999,
+      "compiled_module_count": 8,
+      "waves": [
+        [
+          "Trusted.Mvp.Syntax"
+        ],
+        [
+          "Trusted.Mvp.Semantics"
+        ],
+        [
+          "Anneal.Mvp.Execution",
+          "Trusted.Mvp"
+        ],
+        [
+          "Captured",
+          "Spec"
+        ],
+        [
+          "Expected"
+        ],
+        [
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "role": "model",
+          "wall_s": 0.2844865944935009,
+          "cpu_s": 0.2872749999999997
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "role": "model",
+          "wall_s": 0.5467012629960664,
+          "cpu_s": 0.5500299999999982
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "role": "proof",
+          "wall_s": 0.2370476705254987,
+          "cpu_s": 0.23883100000000446
+        },
+        {
+          "module": "Trusted.Mvp",
+          "role": "model",
+          "wall_s": 0.08490614750189707,
+          "cpu_s": 0.08498799999999607
+        },
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.09439397306414321,
+          "cpu_s": 0.09455300000000277
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.09340183495078236,
+          "cpu_s": 0.09363649999999835
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.08581980050075799,
+          "cpu_s": 0.08594250000000159
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.15358957345597446,
+          "cpu_s": 0.15407549999999803
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 547,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1535,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 1.383663344563421,
+      "total_speedup_vs_baseline": 1.0836174419437672
+    },
+    {
+      "fixture": "scalar",
+      "variant": "2A-2_prebuilt_olean",
+      "headers_wall_s": 2.6275786560145207,
+      "headers_cpu_s": 2.6747520000000016,
+      "compile_wall_s": 0.4476995475124568,
+      "compile_cpu_s": 0.4948539999999966,
+      "audit_wall_s": 3.908080184017308,
+      "audit_cpu_s": 4.033344000000005,
+      "total_lean_wall_s": 6.9833583875442855,
+      "total_lean_cpu_s": 7.013301000000002,
+      "compiled_module_count": 4,
+      "waves": [
+        [
+          "Captured",
+          "Spec"
+        ],
+        [
+          "Expected"
+        ],
+        [
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.09726483101258054,
+          "cpu_s": 0.09739750000000091
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.09880134399281815,
+          "cpu_s": 0.0990085000000005
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.09355567104648799,
+          "cpu_s": 0.09367650000000216
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.1580777014605701,
+          "cpu_s": 0.15856249999999683
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 547,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1535,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 4.884231021792926,
+      "total_speedup_vs_baseline": 1.2500997084089522
+    },
+    {
+      "fixture": "spin",
+      "variant": "2A-0_baseline",
+      "headers_wall_s": 2.6135602334397845,
+      "headers_cpu_s": 2.6147589999999967,
+      "compile_wall_s": 2.4268899693270214,
+      "compile_cpu_s": 2.450825,
+      "audit_wall_s": 3.9590600935043767,
+      "audit_cpu_s": 3.963532,
+      "total_lean_wall_s": 8.999510296271183,
+      "total_lean_cpu_s": 9.043878000000001,
+      "compiled_module_count": 11,
+      "waves": [
+        [
+          "Trusted",
+          "Trusted.Mvp.Syntax"
+        ],
+        [
+          "Trusted.Mvp.Semantics"
+        ],
+        [
+          "Anneal.Mvp.Execution",
+          "Trusted.Mvp"
+        ],
+        [
+          "Anneal.Mvp.Canaries",
+          "Captured",
+          "Spec"
+        ],
+        [
+          "Anneal",
+          "Expected",
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Trusted",
+          "role": "model",
+          "wall_s": 0.08272737095830962,
+          "cpu_s": 0.08292849999999996
+        },
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "role": "model",
+          "wall_s": 0.2826744915219024,
+          "cpu_s": 0.28508500000000137
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "role": "model",
+          "wall_s": 0.566885050968267,
+          "cpu_s": 0.5703694999999995
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "role": "proof",
+          "wall_s": 0.25633084849687293,
+          "cpu_s": 0.25812450000000053
+        },
+        {
+          "module": "Trusted.Mvp",
+          "role": "model",
+          "wall_s": 0.09839115949580446,
+          "cpu_s": 0.09845400000000026
+        },
+        {
+          "module": "Anneal.Mvp.Canaries",
+          "role": "proof",
+          "wall_s": 0.4105037859408185,
+          "cpu_s": 0.4137354999999978
+        },
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.09995676303515211,
+          "cpu_s": 0.10014650000000014
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.11909221048699692,
+          "cpu_s": 0.11923799999999973
+        },
+        {
+          "module": "Anneal",
+          "role": "proof",
+          "wall_s": 0.13594810402719304,
+          "cpu_s": 0.1359474999999981
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.10503086890093982,
+          "cpu_s": 0.10521550000000168
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.2693493154947646,
+          "cpu_s": 0.2717674999999997
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 548,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1534,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 1.0,
+      "total_speedup_vs_baseline": 1.0
+    },
+    {
+      "fixture": "spin",
+      "variant": "2A-1_pruned",
+      "headers_wall_s": 2.6143911985564046,
+      "headers_cpu_s": 2.5846959999999886,
+      "compile_wall_s": 1.694426551577635,
+      "compile_cpu_s": 1.670929000000008,
+      "audit_wall_s": 3.864205267978832,
+      "audit_cpu_s": 3.9133549999999993,
+      "total_lean_wall_s": 8.173023018112872,
+      "total_lean_cpu_s": 8.212314500000002,
+      "compiled_module_count": 8,
+      "waves": [
+        [
+          "Trusted.Mvp.Syntax"
+        ],
+        [
+          "Trusted.Mvp.Semantics"
+        ],
+        [
+          "Anneal.Mvp.Execution",
+          "Trusted.Mvp"
+        ],
+        [
+          "Captured",
+          "Spec"
+        ],
+        [
+          "Expected",
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "role": "model",
+          "wall_s": 0.2973914545145817,
+          "cpu_s": 0.30007100000000264
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "role": "model",
+          "wall_s": 0.5548872470390052,
+          "cpu_s": 0.5584995000000026
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "role": "proof",
+          "wall_s": 0.24556757853133604,
+          "cpu_s": 0.24746950000000023
+        },
+        {
+          "module": "Trusted.Mvp",
+          "role": "model",
+          "wall_s": 0.08653954247711226,
+          "cpu_s": 0.0866214999999988
+        },
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.0942769575631246,
+          "cpu_s": 0.09445599999999832
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.09026982297655195,
+          "cpu_s": 0.09043550000000344
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.08480998303275555,
+          "cpu_s": 0.08497549999999787
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.24068396544316784,
+          "cpu_s": 0.2423284999999984
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 548,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1534,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 1.4322780571795273,
+      "total_speedup_vs_baseline": 1.1011238162827472
+    },
+    {
+      "fixture": "spin",
+      "variant": "2A-2_prebuilt_olean",
+      "headers_wall_s": 2.581021790509112,
+      "headers_cpu_s": 2.625864999999992,
+      "compile_wall_s": 0.5133376459125429,
+      "compile_cpu_s": 0.4985029999999977,
+      "audit_wall_s": 3.9103054974693805,
+      "audit_cpu_s": 3.91247900000001,
+      "total_lean_wall_s": 7.004664933891036,
+      "total_lean_cpu_s": 7.036173499999994,
+      "compiled_module_count": 4,
+      "waves": [
+        [
+          "Captured",
+          "Spec"
+        ],
+        [
+          "Expected",
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.09249657596228644,
+          "cpu_s": 0.09269949999999216
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.0870698859798722,
+          "cpu_s": 0.08723150000000768
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.0876622284995392,
+          "cpu_s": 0.08776549999999705
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.2461089554708451,
+          "cpu_s": 0.24878699999999654
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 548,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1534,
+        "axioms": [
+          "propext",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 4.727668014709542,
+      "total_speedup_vs_baseline": 1.2847881206606162
+    },
+    {
+      "fixture": "starnix",
+      "variant": "2A-0_baseline",
+      "headers_wall_s": 2.651974229956977,
+      "headers_cpu_s": 2.668665000000008,
+      "compile_wall_s": 26.84138923313003,
+      "compile_cpu_s": 26.88963,
+      "audit_wall_s": 10.103042482049204,
+      "audit_cpu_s": 10.11543499999999,
+      "total_lean_wall_s": 39.59640594513621,
+      "total_lean_cpu_s": 39.67373,
+      "compiled_module_count": 17,
+      "waves": [
+        [
+          "Endianness",
+          "Trusted",
+          "Trusted.Mvp.Syntax"
+        ],
+        [
+          "Inputs",
+          "Trusted.Mvp.Semantics"
+        ],
+        [
+          "Anneal.Mvp.Execution",
+          "Trusted.Mvp"
+        ],
+        [
+          "Anneal.Mvp.Canaries",
+          "Captured",
+          "SourceInputs",
+          "Spec"
+        ],
+        [
+          "Anneal",
+          "Expected",
+          "InitialCache"
+        ],
+        [
+          "ProductionSteps"
+        ],
+        [
+          "ProductionClaims"
+        ],
+        [
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Endianness",
+          "role": "specification",
+          "wall_s": 5.219435804057866,
+          "cpu_s": 5.22101299999999
+        },
+        {
+          "module": "Trusted",
+          "role": "model",
+          "wall_s": 0.08765928994398564,
+          "cpu_s": 0.08774100000000651
+        },
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "role": "model",
+          "wall_s": 0.3303309880429879,
+          "cpu_s": 0.3333050000000011
+        },
+        {
+          "module": "Inputs",
+          "role": "proof",
+          "wall_s": 0.1483788740588352,
+          "cpu_s": 0.148551000000003
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "role": "model",
+          "wall_s": 0.5698886949103326,
+          "cpu_s": 0.573482000000002
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "role": "proof",
+          "wall_s": 0.2793060060357675,
+          "cpu_s": 0.2808919999999997
+        },
+        {
+          "module": "Trusted.Mvp",
+          "role": "model",
+          "wall_s": 0.101119264960289,
+          "cpu_s": 0.1012459999999944
+        },
+        {
+          "module": "Anneal.Mvp.Canaries",
+          "role": "proof",
+          "wall_s": 0.41296225297264755,
+          "cpu_s": 0.4157880000000027
+        },
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.2724884180352092,
+          "cpu_s": 0.2726639999999918
+        },
+        {
+          "module": "SourceInputs",
+          "role": "proof",
+          "wall_s": 0.2753584600286558,
+          "cpu_s": 0.27637200000000384
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.13965757098048925,
+          "cpu_s": 0.1400819999999996
+        },
+        {
+          "module": "Anneal",
+          "role": "proof",
+          "wall_s": 0.11103272205218673,
+          "cpu_s": 0.11129900000000781
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.11453362798783928,
+          "cpu_s": 0.11454599999999182
+        },
+        {
+          "module": "InitialCache",
+          "role": "proof",
+          "wall_s": 0.12183579197153449,
+          "cpu_s": 0.12199100000000129
+        },
+        {
+          "module": "ProductionSteps",
+          "role": "proof",
+          "wall_s": 18.061080600018613,
+          "cpu_s": 18.093707000000002
+        },
+        {
+          "module": "ProductionClaims",
+          "role": "proof",
+          "wall_s": 0.4532993279863149,
+          "cpu_s": 0.45383799999999574
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.14302153908647597,
+          "cpu_s": 0.14311300000000315
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 1681,
+        "modelClosure_count": 1552,
+        "specificationClosure_count": 1544,
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 1.0,
+      "total_speedup_vs_baseline": 1.0
+    },
+    {
+      "fixture": "starnix",
+      "variant": "2A-1_pruned",
+      "headers_wall_s": 2.662473493022844,
+      "headers_cpu_s": 2.677700000000007,
+      "compile_wall_s": 26.741169437998906,
+      "compile_cpu_s": 26.794188999999992,
+      "audit_wall_s": 9.051540568936616,
+      "audit_cpu_s": 9.064672000000009,
+      "total_lean_wall_s": 38.455183499958366,
+      "total_lean_cpu_s": 38.536561000000006,
+      "compiled_module_count": 14,
+      "waves": [
+        [
+          "Endianness",
+          "Trusted.Mvp.Syntax"
+        ],
+        [
+          "Inputs",
+          "Trusted.Mvp.Semantics"
+        ],
+        [
+          "Anneal.Mvp.Execution",
+          "Trusted.Mvp"
+        ],
+        [
+          "Captured",
+          "SourceInputs",
+          "Spec"
+        ],
+        [
+          "Expected",
+          "InitialCache"
+        ],
+        [
+          "ProductionSteps"
+        ],
+        [
+          "ProductionClaims"
+        ],
+        [
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Endianness",
+          "role": "specification",
+          "wall_s": 5.350343234022148,
+          "cpu_s": 5.352834999999994
+        },
+        {
+          "module": "Trusted.Mvp.Syntax",
+          "role": "model",
+          "wall_s": 0.27859425300266594,
+          "cpu_s": 0.280969000000022
+        },
+        {
+          "module": "Inputs",
+          "role": "proof",
+          "wall_s": 0.12096455006394535,
+          "cpu_s": 0.1212089999999737
+        },
+        {
+          "module": "Trusted.Mvp.Semantics",
+          "role": "model",
+          "wall_s": 0.6515119100222364,
+          "cpu_s": 0.6551930000000254
+        },
+        {
+          "module": "Anneal.Mvp.Execution",
+          "role": "proof",
+          "wall_s": 0.2764050930272788,
+          "cpu_s": 0.2781579999999906
+        },
+        {
+          "module": "Trusted.Mvp",
+          "role": "model",
+          "wall_s": 0.09680010192096233,
+          "cpu_s": 0.09681200000000878
+        },
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.3069716489408165,
+          "cpu_s": 0.307124999999985
+        },
+        {
+          "module": "SourceInputs",
+          "role": "proof",
+          "wall_s": 0.3112138690194115,
+          "cpu_s": 0.3121620000000025
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.15902738110162318,
+          "cpu_s": 0.15940799999999378
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.1372953220270574,
+          "cpu_s": 0.1374410000000026
+        },
+        {
+          "module": "InitialCache",
+          "role": "proof",
+          "wall_s": 0.14422625594306737,
+          "cpu_s": 0.14426900000000487
+        },
+        {
+          "module": "ProductionSteps",
+          "role": "proof",
+          "wall_s": 18.28691559098661,
+          "cpu_s": 18.326887000000006
+        },
+        {
+          "module": "ProductionClaims",
+          "role": "proof",
+          "wall_s": 0.4935388279845938,
+          "cpu_s": 0.4941049999999976
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.12736139993648976,
+          "cpu_s": 0.12761599999998552
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 1681,
+        "modelClosure_count": 1552,
+        "specificationClosure_count": 1544,
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": true,
+      "compile_speedup_vs_baseline": 1.0037477715910477,
+      "total_speedup_vs_baseline": 1.0296766870239764
+    },
+    {
+      "fixture": "starnix",
+      "variant": "2A-2_prebuilt_olean",
+      "headers_wall_s": 2.6852805479429662,
+      "headers_cpu_s": 2.7026159999999955,
+      "compile_wall_s": 25.414843785809353,
+      "compile_cpu_s": 25.450953000000002,
+      "audit_wall_s": 9.267677612020634,
+      "audit_cpu_s": 9.280467999999992,
+      "total_lean_wall_s": 37.36780194577295,
+      "total_lean_cpu_s": 37.43403699999999,
+      "compiled_module_count": 10,
+      "waves": [
+        [
+          "Captured",
+          "Endianness"
+        ],
+        [
+          "Inputs",
+          "Spec"
+        ],
+        [
+          "Expected",
+          "SourceInputs"
+        ],
+        [
+          "InitialCache"
+        ],
+        [
+          "ProductionSteps"
+        ],
+        [
+          "ProductionClaims"
+        ],
+        [
+          "Proof"
+        ]
+      ],
+      "module_timings": [
+        {
+          "module": "Captured",
+          "role": "capture",
+          "wall_s": 0.26505547401029617,
+          "cpu_s": 0.265281999999992
+        },
+        {
+          "module": "Endianness",
+          "role": "specification",
+          "wall_s": 5.044483914971352,
+          "cpu_s": 5.046590000000023
+        },
+        {
+          "module": "Inputs",
+          "role": "proof",
+          "wall_s": 0.12011307291686535,
+          "cpu_s": 0.12042999999999893
+        },
+        {
+          "module": "Spec",
+          "role": "specification",
+          "wall_s": 0.1336017579305917,
+          "cpu_s": 0.13400300000000342
+        },
+        {
+          "module": "Expected",
+          "role": "expected",
+          "wall_s": 0.11179173097480088,
+          "cpu_s": 0.11194199999999555
+        },
+        {
+          "module": "SourceInputs",
+          "role": "proof",
+          "wall_s": 0.30675354111008346,
+          "cpu_s": 0.30783700000000636
+        },
+        {
+          "module": "InitialCache",
+          "role": "proof",
+          "wall_s": 0.1119926389073953,
+          "cpu_s": 0.112188999999983
+        },
+        {
+          "module": "ProductionSteps",
+          "role": "proof",
+          "wall_s": 18.756912306998856,
+          "cpu_s": 18.787724000000004
+        },
+        {
+          "module": "ProductionClaims",
+          "role": "proof",
+          "wall_s": 0.4370030619902536,
+          "cpu_s": 0.43757300000000754
+        },
+        {
+          "module": "Proof",
+          "role": "proof",
+          "wall_s": 0.1271362859988585,
+          "cpu_s": 0.1273829999999876
+        }
+      ],
+      "audit_summary": {
+        "replayedDeclarations": 1679,
+        "modelClosure_count": 1550,
+        "specificationClosure_count": 1542,
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "replay": true,
+        "exactType": true
+      },
+      "exact_audit_closure_match_vs_baseline": false,
+      "compile_speedup_vs_baseline": 1.056130403922341,
+      "total_speedup_vs_baseline": 1.0596396866638649
+    }
+  ]
+}

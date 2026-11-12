@@ -1,0 +1,5509 @@
+{
+  "scalar": {
+    "interpreted_foundation": {
+      "totalMainMs": 1187.591822,
+      "runTargetAuditMs": 1168.823642,
+      "readFileMs": 0.594641,
+      "jsonSerializeAndWriteMs": 16.345152,
+      "jsonParseMs": 1.828387,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7947279,
+            "elapsedMs": 7.947279
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7645642,
+            "elapsedMs": 7.645642
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7561671,
+            "elapsedMs": 7.561671
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7293978,
+            "elapsedMs": 7.293978
+          },
+          {
+            "name": "Nat.Internal.Linear.Expr.denote_toPoly_go",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 3838098,
+            "elapsedMs": 3.838098
+          },
+          {
+            "name": "Nat.testBit_bitwise",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 3582617,
+            "elapsedMs": 3.582617
+          },
+          {
+            "name": "Nat.mul_add_div._f",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 3096819,
+            "elapsedMs": 3.096819
+          },
+          {
+            "name": "Nat.bitwise_lt_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 2884209,
+            "elapsedMs": 2.884209
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2785079,
+            "elapsedMs": 2.785079
+          },
+          {
+            "name": "Proof.runs",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2482805,
+            "elapsedMs": 2.482805
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_insert._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 1789565,
+            "elapsedMs": 1.789565
+          },
+          {
+            "name": "Nat.Internal.Linear.ExprCnstr.denote_toNormPoly",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1619989,
+            "elapsedMs": 1.619989
+          },
+          {
+            "name": "Int.add_assoc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1446133,
+            "elapsedMs": 1.446133
+          },
+          {
+            "name": "Nat.one_and_eq_mod_two",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1112032,
+            "elapsedMs": 1.112032
+          },
+          {
+            "name": "Nat.testBit_eq_decide_div_mod_eq",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1077838,
+            "elapsedMs": 1.077838
+          },
+          {
+            "name": "Int.subNatNat_add_negSucc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1072689,
+            "elapsedMs": 1.072689
+          },
+          {
+            "name": "Nat.Internal.Linear.PolyCnstr.eq_true_of_isValid",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1061921,
+            "elapsedMs": 1.061921
+          },
+          {
+            "name": "_private.Init.Data.Nat.Lemmas.0.Nat.mod_two_eq_zero_or_one.match_1_1",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 980889,
+            "elapsedMs": 0.980889
+          },
+          {
+            "name": "Nat.exists_ge_and_testBit_of_ge_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 962052,
+            "elapsedMs": 0.962052
+          },
+          {
+            "name": "Nat.exists_testBit_of_ne_zero",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 949636,
+            "elapsedMs": 0.949636
+          },
+          {
+            "name": "Anneal.Mvp.run_executes",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 945881,
+            "elapsedMs": 0.945881
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_append._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 922258,
+            "elapsedMs": 0.922258
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_reverse",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 911673,
+            "elapsedMs": 0.911673
+          },
+          {
+            "name": "Anneal.Mvp.executes_unique",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 824751,
+            "elapsedMs": 0.824751
+          },
+          {
+            "name": "Int.subNatNat_add",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 798485,
+            "elapsedMs": 0.798485
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy.match_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 770037,
+            "elapsedMs": 0.770037
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_norm_go._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 768417,
+            "elapsedMs": 0.768417
+          },
+          {
+            "name": "Int.emod_lt_of_pos",
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "kind": "theorem",
+            "elapsedNs": 739235,
+            "elapsedMs": 0.739235
+          },
+          {
+            "name": "_private.Init.Data.Int.DivMod.Bootstrap.0.Int.emod_lt_of_pos.match_1_1",
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "kind": "definition",
+            "elapsedNs": 731653,
+            "elapsedMs": 0.731653
+          },
+          {
+            "name": "Int.subNatNat_elim",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 719694,
+            "elapsedMs": 0.719694
+          }
+        ],
+        "replayedAddDeclCount": 463,
+        "replayMapSize": 547,
+        "replayByModule": [
+          {
+            "module": "Init.Data.Nat.Internal.Linear",
+            "declarations": 89,
+            "addDeclNs": 51355010,
+            "addDeclMs": 51.35501
+          },
+          {
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "declarations": 40,
+            "addDeclNs": 17349280,
+            "addDeclMs": 17.34928
+          },
+          {
+            "module": "Init.Data.Int.Lemmas",
+            "declarations": 46,
+            "addDeclNs": 12433092,
+            "addDeclMs": 12.433092
+          },
+          {
+            "module": "Init.Data.Int.Order",
+            "declarations": 70,
+            "addDeclNs": 11427926,
+            "addDeclMs": 11.427926
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 96,
+            "addDeclNs": 9603067,
+            "addDeclMs": 9.603067
+          },
+          {
+            "module": "Init.Data.Nat.Lemmas",
+            "declarations": 26,
+            "addDeclNs": 8668459,
+            "addDeclMs": 8.668459
+          },
+          {
+            "module": "Proof",
+            "declarations": 4,
+            "addDeclNs": 5577081,
+            "addDeclMs": 5.577081
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 15,
+            "addDeclNs": 4219165,
+            "addDeclMs": 4.219165
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2506107,
+            "addDeclMs": 2.506107
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "declarations": 4,
+            "addDeclNs": 1973241,
+            "addDeclMs": 1.973241
+          },
+          {
+            "module": "Init.Data.BitVec.Basic",
+            "declarations": 17,
+            "addDeclNs": 1730003,
+            "addDeclMs": 1.730003
+          },
+          {
+            "module": "Init.Data.Bool",
+            "declarations": 4,
+            "addDeclNs": 865039,
+            "addDeclMs": 0.865039
+          },
+          {
+            "module": "Init.Data.BEq",
+            "declarations": 4,
+            "addDeclNs": 722015,
+            "addDeclMs": 0.722015
+          },
+          {
+            "module": "Init.Data.RArray",
+            "declarations": 2,
+            "addDeclNs": 226005,
+            "addDeclMs": 0.226005
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Basic",
+            "declarations": 3,
+            "addDeclNs": 110531,
+            "addDeclMs": 0.110531
+          },
+          {
+            "module": "Init.Data.Int.Bitwise.Basic",
+            "declarations": 2,
+            "addDeclNs": 97956,
+            "addDeclMs": 0.097956
+          },
+          {
+            "module": "Spec",
+            "declarations": 2,
+            "addDeclNs": 88489,
+            "addDeclMs": 0.088489
+          },
+          {
+            "module": "Init.PropLemmas",
+            "declarations": 2,
+            "addDeclNs": 84720,
+            "addDeclMs": 0.08472
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 30960,
+            "addDeclMs": 0.03096
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 3005,
+            "addDeclMs": 0.003005
+          }
+        ],
+        "reachedCount": 1655,
+        "phasesMs": {
+          "verifySourceInventory": 1.792209,
+          "validateGraph": 1.063335,
+          "totalTargetAudit": 1157.502535,
+          "roleAndEdgePolicyCheck": 54.267929,
+          "reachabilityClosures": 177.445959,
+          "postReplayDefEqChecks": 1.996406,
+          "parseRequestFieldsAndArtifacts": 2.480384,
+          "modelAndSpecClosures": 183.596282,
+          "kernelReplayTotal": 152.37792,
+          "kernelReplayOverhead": 23.306769,
+          "kernelReplayAddDeclCoreSum": 129.071151,
+          "importTargetMetadataWithExts": 177.446564,
+          "importTargetEnvNoExts": 158.606723,
+          "importFixedMetadataWithExts": 175.792334,
+          "importBaseEnvNoExts": 44.986468,
+          "compilerOverrideChecks": 25.603361
+        },
+        "baseMode": "foundation"
+      },
+      "processWallMs": 3588.6505800299346,
+      "processUserMs": 3126.5089999999996,
+      "processSysMs": 472.923
+    },
+    "native_foundation": {
+      "totalMainMs": 748.152881,
+      "runTargetAuditMs": 728.698828,
+      "readFileMs": 1.094986,
+      "jsonSerializeAndWriteMs": 16.323416,
+      "jsonParseMs": 2.035651,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7483055,
+            "elapsedMs": 7.483055
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7421877,
+            "elapsedMs": 7.421877
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7355503,
+            "elapsedMs": 7.355503
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7259241,
+            "elapsedMs": 7.259241
+          },
+          {
+            "name": "Nat.Internal.Linear.Expr.denote_toPoly_go",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 3778635,
+            "elapsedMs": 3.778635
+          },
+          {
+            "name": "Nat.testBit_bitwise",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 3608708,
+            "elapsedMs": 3.608708
+          },
+          {
+            "name": "Nat.mul_add_div._f",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 3034179,
+            "elapsedMs": 3.034179
+          },
+          {
+            "name": "Nat.bitwise_lt_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 2899629,
+            "elapsedMs": 2.899629
+          },
+          {
+            "name": "Proof.runs",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2322653,
+            "elapsedMs": 2.322653
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2250851,
+            "elapsedMs": 2.250851
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_insert._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 1957222,
+            "elapsedMs": 1.957222
+          },
+          {
+            "name": "Nat.Internal.Linear.ExprCnstr.denote_toNormPoly",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1625912,
+            "elapsedMs": 1.625912
+          },
+          {
+            "name": "Int.add_assoc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1443722,
+            "elapsedMs": 1.443722
+          },
+          {
+            "name": "Nat.testBit_eq_decide_div_mod_eq",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1196835,
+            "elapsedMs": 1.196835
+          },
+          {
+            "name": "Nat.one_and_eq_mod_two",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1092348,
+            "elapsedMs": 1.092348
+          },
+          {
+            "name": "Int.subNatNat_add_negSucc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1080538,
+            "elapsedMs": 1.080538
+          },
+          {
+            "name": "Nat.Internal.Linear.PolyCnstr.eq_true_of_isValid",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1041640,
+            "elapsedMs": 1.04164
+          },
+          {
+            "name": "_private.Init.Data.Nat.Lemmas.0.Nat.mod_two_eq_zero_or_one.match_1_1",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 987640,
+            "elapsedMs": 0.98764
+          },
+          {
+            "name": "Nat.exists_ge_and_testBit_of_ge_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 954127,
+            "elapsedMs": 0.954127
+          },
+          {
+            "name": "Nat.exists_testBit_of_ne_zero",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 938216,
+            "elapsedMs": 0.938216
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_reverse",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 930002,
+            "elapsedMs": 0.930002
+          },
+          {
+            "name": "Anneal.Mvp.run_executes",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 928785,
+            "elapsedMs": 0.928785
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_append._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 892986,
+            "elapsedMs": 0.892986
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy.match_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 864449,
+            "elapsedMs": 0.864449
+          },
+          {
+            "name": "Anneal.Mvp.executes_unique",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 828359,
+            "elapsedMs": 0.828359
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_norm_go._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 827359,
+            "elapsedMs": 0.827359
+          },
+          {
+            "name": "Int.subNatNat_add",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 782145,
+            "elapsedMs": 0.782145
+          },
+          {
+            "name": "_private.Init.Data.Int.DivMod.Bootstrap.0.Int.emod_lt_of_pos.match_1_1",
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "kind": "definition",
+            "elapsedNs": 730832,
+            "elapsedMs": 0.730832
+          },
+          {
+            "name": "Int.emod_lt_of_pos",
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "kind": "theorem",
+            "elapsedNs": 726146,
+            "elapsedMs": 0.726146
+          },
+          {
+            "name": "Int.subNatNat_elim",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 720922,
+            "elapsedMs": 0.720922
+          }
+        ],
+        "replayedAddDeclCount": 463,
+        "replayMapSize": 547,
+        "replayByModule": [
+          {
+            "module": "Init.Data.Nat.Internal.Linear",
+            "declarations": 89,
+            "addDeclNs": 50739891,
+            "addDeclMs": 50.739891
+          },
+          {
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "declarations": 40,
+            "addDeclNs": 17396451,
+            "addDeclMs": 17.396451
+          },
+          {
+            "module": "Init.Data.Int.Lemmas",
+            "declarations": 46,
+            "addDeclNs": 12254489,
+            "addDeclMs": 12.254489
+          },
+          {
+            "module": "Init.Data.Int.Order",
+            "declarations": 70,
+            "addDeclNs": 11175037,
+            "addDeclMs": 11.175037
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 96,
+            "addDeclNs": 9308903,
+            "addDeclMs": 9.308903
+          },
+          {
+            "module": "Init.Data.Nat.Lemmas",
+            "declarations": 26,
+            "addDeclNs": 8560870,
+            "addDeclMs": 8.56087
+          },
+          {
+            "module": "Proof",
+            "declarations": 4,
+            "addDeclNs": 4901337,
+            "addDeclMs": 4.901337
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 15,
+            "addDeclNs": 4202390,
+            "addDeclMs": 4.20239
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2380777,
+            "addDeclMs": 2.380777
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "declarations": 4,
+            "addDeclNs": 1931476,
+            "addDeclMs": 1.931476
+          },
+          {
+            "module": "Init.Data.BitVec.Basic",
+            "declarations": 17,
+            "addDeclNs": 1635086,
+            "addDeclMs": 1.635086
+          },
+          {
+            "module": "Init.Data.Bool",
+            "declarations": 4,
+            "addDeclNs": 863219,
+            "addDeclMs": 0.863219
+          },
+          {
+            "module": "Init.Data.BEq",
+            "declarations": 4,
+            "addDeclNs": 695828,
+            "addDeclMs": 0.695828
+          },
+          {
+            "module": "Init.Data.RArray",
+            "declarations": 2,
+            "addDeclNs": 217408,
+            "addDeclMs": 0.217408
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Basic",
+            "declarations": 3,
+            "addDeclNs": 108323,
+            "addDeclMs": 0.108323
+          },
+          {
+            "module": "Init.Data.Int.Bitwise.Basic",
+            "declarations": 2,
+            "addDeclNs": 95094,
+            "addDeclMs": 0.095094
+          },
+          {
+            "module": "Spec",
+            "declarations": 2,
+            "addDeclNs": 87252,
+            "addDeclMs": 0.087252
+          },
+          {
+            "module": "Init.PropLemmas",
+            "declarations": 2,
+            "addDeclNs": 82103,
+            "addDeclMs": 0.082103
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 27973,
+            "addDeclMs": 0.027973
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 2635,
+            "addDeclMs": 0.002635
+          }
+        ],
+        "reachedCount": 1655,
+        "phasesMs": {
+          "verifySourceInventory": 0.488779,
+          "validateGraph": 0.898693,
+          "totalTargetAudit": 722.474884,
+          "roleAndEdgePolicyCheck": 16.021811,
+          "reachabilityClosures": 54.84377,
+          "postReplayDefEqChecks": 1.703099,
+          "parseRequestFieldsAndArtifacts": 0.386167,
+          "modelAndSpecClosures": 57.606383,
+          "kernelReplayTotal": 140.097023,
+          "kernelReplayOverhead": 13.430481,
+          "kernelReplayAddDeclCoreSum": 126.666542,
+          "importTargetMetadataWithExts": 178.010294,
+          "importTargetEnvNoExts": 26.926436,
+          "importFixedMetadataWithExts": 176.259507,
+          "importBaseEnvNoExts": 46.236452,
+          "compilerOverrideChecks": 22.995212
+        },
+        "baseMode": "foundation"
+      },
+      "processWallMs": 812.5278539955616,
+      "processUserMs": 556.2889999999995,
+      "processSysMs": 256.13400000000007
+    },
+    "native_foundation_plus_trusted_mvp": {
+      "totalMainMs": 639.625388,
+      "runTargetAuditMs": 620.069184,
+      "readFileMs": 1.090279,
+      "jsonSerializeAndWriteMs": 16.330719,
+      "jsonParseMs": 2.135206,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.runs",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2310258,
+            "elapsedMs": 2.310258
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2282245,
+            "elapsedMs": 2.282245
+          },
+          {
+            "name": "Anneal.Mvp.run_executes",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 984856,
+            "elapsedMs": 0.984856
+          },
+          {
+            "name": "Anneal.Mvp.executes_unique",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 815747,
+            "elapsedMs": 0.815747
+          },
+          {
+            "name": "Anneal.Mvp.reach_cases",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 465768,
+            "elapsedMs": 0.465768
+          },
+          {
+            "name": "Anneal.Mvp.Executes",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "inductive",
+            "elapsedNs": 304013,
+            "elapsedMs": 0.304013
+          },
+          {
+            "name": "Anneal.Mvp.safeFrom_next",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 303650,
+            "elapsedMs": 0.30365
+          },
+          {
+            "name": "Anneal.Mvp.executes_returns",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 283512,
+            "elapsedMs": 0.283512
+          },
+          {
+            "name": "Anneal.Mvp.reachable_after_return",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 269761,
+            "elapsedMs": 0.269761
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 266298,
+            "elapsedMs": 0.266298
+          },
+          {
+            "name": "Anneal.Mvp.safeFrom_return",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 230864,
+            "elapsedMs": 0.230864
+          },
+          {
+            "name": "Anneal.Mvp.reach_prepend",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 122903,
+            "elapsedMs": 0.122903
+          },
+          {
+            "name": "Anneal.Mvp.executes_safe",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 118388,
+            "elapsedMs": 0.118388
+          },
+          {
+            "name": "Anneal.Mvp.run.match_1",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "definition",
+            "elapsedNs": 91896,
+            "elapsedMs": 0.091896
+          },
+          {
+            "name": "Spec.returnsZero",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 80493,
+            "elapsedMs": 0.080493
+          },
+          {
+            "name": "Anneal.Mvp.run_success",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 80276,
+            "elapsedMs": 0.080276
+          },
+          {
+            "name": "Anneal.Mvp.run_initial_success",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 77514,
+            "elapsedMs": 0.077514
+          },
+          {
+            "name": "Anneal.Mvp.run_result_unique",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 67081,
+            "elapsedMs": 0.067081
+          },
+          {
+            "name": "Anneal.Mvp.run",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "definition",
+            "elapsedNs": 60172,
+            "elapsedMs": 0.060172
+          },
+          {
+            "name": "Proof.body",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 51290,
+            "elapsedMs": 0.05129
+          },
+          {
+            "name": "Captured.program",
+            "module": "Captured",
+            "kind": "definition",
+            "elapsedNs": 37107,
+            "elapsedMs": 0.037107
+          },
+          {
+            "name": "Spec.specs",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 6403,
+            "elapsedMs": 0.006403
+          },
+          {
+            "name": "Expected.claim",
+            "module": "Expected",
+            "kind": "definition",
+            "elapsedNs": 2682,
+            "elapsedMs": 0.002682
+          }
+        ],
+        "replayedAddDeclCount": 23,
+        "replayMapSize": 26,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 4,
+            "addDeclNs": 4910091,
+            "addDeclMs": 4.910091
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 15,
+            "addDeclNs": 4276401,
+            "addDeclMs": 4.276401
+          },
+          {
+            "module": "Spec",
+            "declarations": 2,
+            "addDeclNs": 86896,
+            "addDeclMs": 0.086896
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 37107,
+            "addDeclMs": 0.037107
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 2682,
+            "addDeclMs": 0.002682
+          }
+        ],
+        "reachedCount": 1655,
+        "phasesMs": {
+          "verifySourceInventory": 0.428387,
+          "validateGraph": 1.094565,
+          "totalTargetAudit": 614.024741,
+          "roleAndEdgePolicyCheck": 15.546431,
+          "reachabilityClosures": 57.992754,
+          "postReplayDefEqChecks": 2.132797,
+          "parseRequestFieldsAndArtifacts": 0.368105,
+          "modelAndSpecClosures": 58.467698,
+          "kernelReplayTotal": 10.175302,
+          "kernelReplayOverhead": 0.862125,
+          "kernelReplayAddDeclCoreSum": 9.313177,
+          "importTargetMetadataWithExts": 175.057051,
+          "importTargetEnvNoExts": 26.56636,
+          "importFixedMetadataWithExts": 175.216361,
+          "importBaseEnvNoExts": 68.043506,
+          "compilerOverrideChecks": 22.934452
+        },
+        "baseMode": "foundation+trusted_mvp"
+      },
+      "processWallMs": 704.7408639919013,
+      "processUserMs": 444.2820000000012,
+      "processSysMs": 260.1979999999999
+    },
+    "native_foundation_plus_libraries": {
+      "totalMainMs": 760.441096,
+      "runTargetAuditMs": 741.044492,
+      "readFileMs": 1.139264,
+      "jsonSerializeAndWriteMs": 16.179069,
+      "jsonParseMs": 2.078271,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.runs",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2331355,
+            "elapsedMs": 2.331355
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2309762,
+            "elapsedMs": 2.309762
+          },
+          {
+            "name": "Anneal.Mvp.run_executes",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 939923,
+            "elapsedMs": 0.939923
+          },
+          {
+            "name": "Anneal.Mvp.executes_unique",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 820872,
+            "elapsedMs": 0.820872
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy.match_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 781276,
+            "elapsedMs": 0.781276
+          },
+          {
+            "name": "Anneal.Mvp.reach_cases",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 461887,
+            "elapsedMs": 0.461887
+          },
+          {
+            "name": "Trusted.Mvp.StepResult.noConfusion",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 348708,
+            "elapsedMs": 0.348708
+          },
+          {
+            "name": "Anneal.Mvp.safeFrom_next",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 312419,
+            "elapsedMs": 0.312419
+          },
+          {
+            "name": "Anneal.Mvp.executes_returns",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 279693,
+            "elapsedMs": 0.279693
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 265799,
+            "elapsedMs": 0.265799
+          },
+          {
+            "name": "Anneal.Mvp.safeFrom_return",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 257663,
+            "elapsedMs": 0.257663
+          },
+          {
+            "name": "Anneal.Mvp.reachable_after_return",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 256427,
+            "elapsedMs": 0.256427
+          },
+          {
+            "name": "Anneal.Mvp.Executes",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "inductive",
+            "elapsedNs": 254508,
+            "elapsedMs": 0.254508
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 229747,
+            "elapsedMs": 0.229747
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_5",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 224028,
+            "elapsedMs": 0.224028
+          },
+          {
+            "name": "Trusted.Mvp.Reach",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "inductive",
+            "elapsedNs": 222741,
+            "elapsedMs": 0.222741
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_5",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 219942,
+            "elapsedMs": 0.219942
+          },
+          {
+            "name": "Trusted.Mvp.evalBinary",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 217319,
+            "elapsedMs": 0.217319
+          },
+          {
+            "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 214094,
+            "elapsedMs": 0.214094
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_4",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 210604,
+            "elapsedMs": 0.210604
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_3",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 204755,
+            "elapsedMs": 0.204755
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_4",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 203406,
+            "elapsedMs": 0.203406
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_3",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 202039,
+            "elapsedMs": 0.202039
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq.match_1",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 195106,
+            "elapsedMs": 0.195106
+          },
+          {
+            "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 190420,
+            "elapsedMs": 0.19042
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 189807,
+            "elapsedMs": 0.189807
+          },
+          {
+            "name": "Trusted.Mvp.evalRvalue",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 188026,
+            "elapsedMs": 0.188026
+          },
+          {
+            "name": "Trusted.Mvp.hasStorageMarker._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 183550,
+            "elapsedMs": 0.18355
+          },
+          {
+            "name": "Trusted.Mvp.BinOp",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "inductive",
+            "elapsedNs": 176333,
+            "elapsedMs": 0.176333
+          },
+          {
+            "name": "Trusted.Mvp.StepResult.ctorElim",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 173395,
+            "elapsedMs": 0.173395
+          }
+        ],
+        "replayedAddDeclCount": 154,
+        "replayMapSize": 223,
+        "replayByModule": [
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 96,
+            "addDeclNs": 9190300,
+            "addDeclMs": 9.1903
+          },
+          {
+            "module": "Proof",
+            "declarations": 4,
+            "addDeclNs": 4955277,
+            "addDeclMs": 4.955277
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 15,
+            "addDeclNs": 4138041,
+            "addDeclMs": 4.138041
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2459439,
+            "addDeclMs": 2.459439
+          },
+          {
+            "module": "Spec",
+            "declarations": 2,
+            "addDeclNs": 82622,
+            "addDeclMs": 0.082622
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 28503,
+            "addDeclMs": 0.028503
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 2281,
+            "addDeclMs": 0.002281
+          }
+        ],
+        "reachedCount": 1655,
+        "phasesMs": {
+          "verifySourceInventory": 0.401123,
+          "validateGraph": 0.904524,
+          "totalTargetAudit": 735.229668,
+          "roleAndEdgePolicyCheck": 16.087346,
+          "reachabilityClosures": 56.3026,
+          "postReplayDefEqChecks": 4.310426,
+          "parseRequestFieldsAndArtifacts": 0.397437,
+          "modelAndSpecClosures": 57.321245,
+          "kernelReplayTotal": 24.261854,
+          "kernelReplayOverhead": 3.405391,
+          "kernelReplayAddDeclCoreSum": 20.856463,
+          "importTargetMetadataWithExts": 178.815749,
+          "importTargetEnvNoExts": 27.456326,
+          "importFixedMetadataWithExts": 184.480987,
+          "importBaseEnvNoExts": 160.526061,
+          "compilerOverrideChecks": 23.962602
+        },
+        "baseMode": "foundation+libraries"
+      },
+      "processWallMs": 829.9449239857495,
+      "processUserMs": 521.1009999999998,
+      "processSysMs": 308.65199999999993
+    },
+    "native_foundation_plus_mvp": {
+      "totalMainMs": 726.862781,
+      "runTargetAuditMs": 706.395768,
+      "readFileMs": 1.114898,
+      "jsonSerializeAndWriteMs": 17.324965,
+      "jsonParseMs": 2.02715,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.runs",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2450833,
+            "elapsedMs": 2.450833
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2241811,
+            "elapsedMs": 2.241811
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 345608,
+            "elapsedMs": 0.345608
+          },
+          {
+            "name": "Spec.returnsZero",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 81860,
+            "elapsedMs": 0.08186
+          },
+          {
+            "name": "Captured.program",
+            "module": "Captured",
+            "kind": "definition",
+            "elapsedNs": 69223,
+            "elapsedMs": 0.069223
+          },
+          {
+            "name": "Proof.body",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 60450,
+            "elapsedMs": 0.06045
+          },
+          {
+            "name": "Spec.specs",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 7202,
+            "elapsedMs": 0.007202
+          },
+          {
+            "name": "Expected.claim",
+            "module": "Expected",
+            "kind": "definition",
+            "elapsedNs": 2661,
+            "elapsedMs": 0.002661
+          }
+        ],
+        "replayedAddDeclCount": 8,
+        "replayMapSize": 8,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 4,
+            "addDeclNs": 5098702,
+            "addDeclMs": 5.098702
+          },
+          {
+            "module": "Spec",
+            "declarations": 2,
+            "addDeclNs": 89062,
+            "addDeclMs": 0.089062
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 69223,
+            "addDeclMs": 0.069223
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 2661,
+            "addDeclMs": 0.002661
+          }
+        ],
+        "reachedCount": 1655,
+        "phasesMs": {
+          "verifySourceInventory": 0.404137,
+          "validateGraph": 0.896991,
+          "totalTargetAudit": 700.577776,
+          "roleAndEdgePolicyCheck": 16.269376,
+          "reachabilityClosures": 55.970487,
+          "postReplayDefEqChecks": 4.11271,
+          "parseRequestFieldsAndArtifacts": 0.376004,
+          "modelAndSpecClosures": 60.205168,
+          "kernelReplayTotal": 5.709837,
+          "kernelReplayOverhead": 0.450189,
+          "kernelReplayAddDeclCoreSum": 5.259648,
+          "importTargetMetadataWithExts": 177.98025,
+          "importTargetEnvNoExts": 26.374583,
+          "importFixedMetadataWithExts": 175.014012,
+          "importBaseEnvNoExts": 154.689478,
+          "compilerOverrideChecks": 22.573636
+        },
+        "baseMode": "foundation+mvp"
+      },
+      "processWallMs": 797.4671790143475,
+      "processUserMs": 470.16900000000027,
+      "processSysMs": 326.71099999999996
+    },
+    "native_foundation_plus_mvp_no_meta_reload": {
+      "totalMainMs": 363.318499,
+      "runTargetAuditMs": 341.871577,
+      "readFileMs": 1.279683,
+      "jsonSerializeAndWriteMs": 17.291481,
+      "jsonParseMs": 2.875758,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.runs",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2448863,
+            "elapsedMs": 2.448863
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2317358,
+            "elapsedMs": 2.317358
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 317481,
+            "elapsedMs": 0.317481
+          },
+          {
+            "name": "Spec.returnsZero",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 80979,
+            "elapsedMs": 0.080979
+          },
+          {
+            "name": "Captured.program",
+            "module": "Captured",
+            "kind": "definition",
+            "elapsedNs": 69748,
+            "elapsedMs": 0.069748
+          },
+          {
+            "name": "Proof.body",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 60371,
+            "elapsedMs": 0.060371
+          },
+          {
+            "name": "Spec.specs",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 7744,
+            "elapsedMs": 0.007744
+          },
+          {
+            "name": "Expected.claim",
+            "module": "Expected",
+            "kind": "definition",
+            "elapsedNs": 2720,
+            "elapsedMs": 0.00272
+          }
+        ],
+        "replayedAddDeclCount": 8,
+        "replayMapSize": 8,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 4,
+            "addDeclNs": 5144073,
+            "addDeclMs": 5.144073
+          },
+          {
+            "module": "Spec",
+            "declarations": 2,
+            "addDeclNs": 88723,
+            "addDeclMs": 0.088723
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 69748,
+            "addDeclMs": 0.069748
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 2720,
+            "addDeclMs": 0.00272
+          }
+        ],
+        "reachedCount": 1655,
+        "phasesMs": {
+          "verifySourceInventory": 0.437397,
+          "validateGraph": 0.95397,
+          "totalTargetAudit": 335.793153,
+          "roleAndEdgePolicyCheck": 16.659703,
+          "reachabilityClosures": 58.243655,
+          "postReplayDefEqChecks": 4.199353,
+          "parseRequestFieldsAndArtifacts": 0.422596,
+          "modelAndSpecClosures": 58.628526,
+          "kernelReplayTotal": 5.762821,
+          "kernelReplayOverhead": 0.457557,
+          "kernelReplayAddDeclCoreSum": 5.305264,
+          "importTargetMetadataWithExts": 0,
+          "importTargetEnvNoExts": 27.881603,
+          "importFixedMetadataWithExts": 0,
+          "importBaseEnvNoExts": 162.60245,
+          "compilerOverrideChecks": 0
+        },
+        "baseMode": "foundation+mvp"
+      },
+      "processWallMs": 414.849219028838,
+      "processUserMs": 279.11199999999957,
+      "processSysMs": 135.54300000000018
+    }
+  },
+  "spin": {
+    "interpreted_foundation": {
+      "totalMainMs": 1215.428557,
+      "runTargetAuditMs": 1196.659379,
+      "readFileMs": 0.614982,
+      "jsonSerializeAndWriteMs": 16.291756,
+      "jsonParseMs": 1.86244,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7902523,
+            "elapsedMs": 7.902523
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7639886,
+            "elapsedMs": 7.639886
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7570965,
+            "elapsedMs": 7.570965
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7414136,
+            "elapsedMs": 7.414136
+          },
+          {
+            "name": "Proof.noReturnStep",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 4022432,
+            "elapsedMs": 4.022432
+          },
+          {
+            "name": "Nat.testBit_bitwise",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 3984018,
+            "elapsedMs": 3.984018
+          },
+          {
+            "name": "Proof.noFault",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3907002,
+            "elapsedMs": 3.907002
+          },
+          {
+            "name": "Nat.Internal.Linear.Expr.denote_toPoly_go",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 3807096,
+            "elapsedMs": 3.807096
+          },
+          {
+            "name": "Nat.mul_add_div._f",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 3059037,
+            "elapsedMs": 3.059037
+          },
+          {
+            "name": "Nat.bitwise_lt_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 2868486,
+            "elapsedMs": 2.868486
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2814200,
+            "elapsedMs": 2.8142
+          },
+          {
+            "name": "Proof.noReturn",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1756106,
+            "elapsedMs": 1.756106
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_insert._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 1748520,
+            "elapsedMs": 1.74852
+          },
+          {
+            "name": "Proof.step4",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1684488,
+            "elapsedMs": 1.684488
+          },
+          {
+            "name": "Nat.Internal.Linear.ExprCnstr.denote_toNormPoly",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1619655,
+            "elapsedMs": 1.619655
+          },
+          {
+            "name": "Proof.step2",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1617216,
+            "elapsedMs": 1.617216
+          },
+          {
+            "name": "Proof.safe",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1525497,
+            "elapsedMs": 1.525497
+          },
+          {
+            "name": "Int.add_assoc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1451463,
+            "elapsedMs": 1.451463
+          },
+          {
+            "name": "Nat.one_and_eq_mod_two",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1103430,
+            "elapsedMs": 1.10343
+          },
+          {
+            "name": "Nat.testBit_eq_decide_div_mod_eq",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1088815,
+            "elapsedMs": 1.088815
+          },
+          {
+            "name": "Int.subNatNat_add_negSucc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1088305,
+            "elapsedMs": 1.088305
+          },
+          {
+            "name": "Proof.step0",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1036899,
+            "elapsedMs": 1.036899
+          },
+          {
+            "name": "Nat.Internal.Linear.PolyCnstr.eq_true_of_isValid",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1030349,
+            "elapsedMs": 1.030349
+          },
+          {
+            "name": "Nat.exists_testBit_of_ne_zero",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 992968,
+            "elapsedMs": 0.992968
+          },
+          {
+            "name": "_private.Init.Data.Nat.Lemmas.0.Nat.mod_two_eq_zero_or_one.match_1_1",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 983817,
+            "elapsedMs": 0.983817
+          },
+          {
+            "name": "Nat.exists_ge_and_testBit_of_ge_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 969912,
+            "elapsedMs": 0.969912
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_reverse",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 892750,
+            "elapsedMs": 0.89275
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_append._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 892462,
+            "elapsedMs": 0.892462
+          },
+          {
+            "name": "Proof.step3",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 781048,
+            "elapsedMs": 0.781048
+          },
+          {
+            "name": "Int.subNatNat_add",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 773842,
+            "elapsedMs": 0.773842
+          }
+        ],
+        "replayedAddDeclCount": 466,
+        "replayMapSize": 547,
+        "replayByModule": [
+          {
+            "module": "Init.Data.Nat.Internal.Linear",
+            "declarations": 89,
+            "addDeclNs": 51286362,
+            "addDeclMs": 51.286362
+          },
+          {
+            "module": "Proof",
+            "declarations": 19,
+            "addDeclNs": 20979023,
+            "addDeclMs": 20.979023
+          },
+          {
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "declarations": 40,
+            "addDeclNs": 17928535,
+            "addDeclMs": 17.928535
+          },
+          {
+            "module": "Init.Data.Int.Lemmas",
+            "declarations": 46,
+            "addDeclNs": 12632202,
+            "addDeclMs": 12.632202
+          },
+          {
+            "module": "Init.Data.Int.Order",
+            "declarations": 70,
+            "addDeclNs": 11618295,
+            "addDeclMs": 11.618295
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 98,
+            "addDeclNs": 10186402,
+            "addDeclMs": 10.186402
+          },
+          {
+            "module": "Init.Data.Nat.Lemmas",
+            "declarations": 26,
+            "addDeclNs": 8727296,
+            "addDeclMs": 8.727296
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2567449,
+            "addDeclMs": 2.567449
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "declarations": 4,
+            "addDeclNs": 1963333,
+            "addDeclMs": 1.963333
+          },
+          {
+            "module": "Init.Data.BitVec.Basic",
+            "declarations": 17,
+            "addDeclNs": 1722056,
+            "addDeclMs": 1.722056
+          },
+          {
+            "module": "Init.Data.Bool",
+            "declarations": 4,
+            "addDeclNs": 869962,
+            "addDeclMs": 0.869962
+          },
+          {
+            "module": "Init.Data.BEq",
+            "declarations": 4,
+            "addDeclNs": 709561,
+            "addDeclMs": 0.709561
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 2,
+            "addDeclNs": 259166,
+            "addDeclMs": 0.259166
+          },
+          {
+            "module": "Init.Data.RArray",
+            "declarations": 2,
+            "addDeclNs": 229835,
+            "addDeclMs": 0.229835
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Basic",
+            "declarations": 3,
+            "addDeclNs": 111656,
+            "addDeclMs": 0.111656
+          },
+          {
+            "module": "Init.Data.Int.Bitwise.Basic",
+            "declarations": 2,
+            "addDeclNs": 94865,
+            "addDeclMs": 0.094865
+          },
+          {
+            "module": "Init.PropLemmas",
+            "declarations": 2,
+            "addDeclNs": 90979,
+            "addDeclMs": 0.090979
+          },
+          {
+            "module": "Spec",
+            "declarations": 1,
+            "addDeclNs": 76107,
+            "addDeclMs": 0.076107
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 34252,
+            "addDeclMs": 0.034252
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 6170,
+            "addDeclMs": 0.00617
+          }
+        ],
+        "reachedCount": 1654,
+        "phasesMs": {
+          "verifySourceInventory": 1.742224,
+          "validateGraph": 1.089239,
+          "totalTargetAudit": 1186.258368,
+          "roleAndEdgePolicyCheck": 55.445817,
+          "reachabilityClosures": 177.442876,
+          "postReplayDefEqChecks": 1.681088,
+          "parseRequestFieldsAndArtifacts": 2.523446,
+          "modelAndSpecClosures": 189.288572,
+          "kernelReplayTotal": 165.4047,
+          "kernelReplayOverhead": 23.311194,
+          "kernelReplayAddDeclCoreSum": 142.093506,
+          "importTargetMetadataWithExts": 176.287955,
+          "importTargetEnvNoExts": 158.128348,
+          "importFixedMetadataWithExts": 185.789815,
+          "importBaseEnvNoExts": 45.990465,
+          "compilerOverrideChecks": 25.385354
+        },
+        "baseMode": "foundation"
+      },
+      "processWallMs": 3644.8375179897994,
+      "processUserMs": 3193.263,
+      "processSysMs": 463.70200000000006
+    },
+    "native_foundation": {
+      "totalMainMs": 753.581456,
+      "runTargetAuditMs": 734.400819,
+      "readFileMs": 1.067135,
+      "jsonSerializeAndWriteMs": 16.010769,
+      "jsonParseMs": 2.102733,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7553064,
+            "elapsedMs": 7.553064
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.of_denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7510646,
+            "elapsedMs": 7.510646
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_eq_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7389446,
+            "elapsedMs": 7.389446
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_le_cancelAux",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 7211129,
+            "elapsedMs": 7.211129
+          },
+          {
+            "name": "Proof.noReturnStep",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3912789,
+            "elapsedMs": 3.912789
+          },
+          {
+            "name": "Proof.noFault",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3878105,
+            "elapsedMs": 3.878105
+          },
+          {
+            "name": "Nat.Internal.Linear.Expr.denote_toPoly_go",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 3816737,
+            "elapsedMs": 3.816737
+          },
+          {
+            "name": "Nat.testBit_bitwise",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 3545737,
+            "elapsedMs": 3.545737
+          },
+          {
+            "name": "Nat.mul_add_div._f",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 3020026,
+            "elapsedMs": 3.020026
+          },
+          {
+            "name": "Nat.bitwise_lt_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 2918880,
+            "elapsedMs": 2.91888
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2720677,
+            "elapsedMs": 2.720677
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_insert._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 1741258,
+            "elapsedMs": 1.741258
+          },
+          {
+            "name": "Proof.noReturn",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1683665,
+            "elapsedMs": 1.683665
+          },
+          {
+            "name": "Proof.step2",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1593233,
+            "elapsedMs": 1.593233
+          },
+          {
+            "name": "Nat.Internal.Linear.ExprCnstr.denote_toNormPoly",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1586464,
+            "elapsedMs": 1.586464
+          },
+          {
+            "name": "Proof.step4",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1569579,
+            "elapsedMs": 1.569579
+          },
+          {
+            "name": "Proof.safe",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1545739,
+            "elapsedMs": 1.545739
+          },
+          {
+            "name": "Int.add_assoc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1471367,
+            "elapsedMs": 1.471367
+          },
+          {
+            "name": "Nat.one_and_eq_mod_two",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1099924,
+            "elapsedMs": 1.099924
+          },
+          {
+            "name": "Nat.testBit_eq_decide_div_mod_eq",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1072015,
+            "elapsedMs": 1.072015
+          },
+          {
+            "name": "Int.subNatNat_add_negSucc",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 1066566,
+            "elapsedMs": 1.066566
+          },
+          {
+            "name": "Proof.step0",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1015503,
+            "elapsedMs": 1.015503
+          },
+          {
+            "name": "_private.Init.Data.Nat.Lemmas.0.Nat.mod_two_eq_zero_or_one.match_1_1",
+            "module": "Init.Data.Nat.Lemmas",
+            "kind": "definition",
+            "elapsedNs": 1013228,
+            "elapsedMs": 1.013228
+          },
+          {
+            "name": "Nat.Internal.Linear.PolyCnstr.eq_true_of_isValid",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 1012890,
+            "elapsedMs": 1.01289
+          },
+          {
+            "name": "Nat.exists_ge_and_testBit_of_ge_two_pow",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 957848,
+            "elapsedMs": 0.957848
+          },
+          {
+            "name": "Nat.exists_testBit_of_ne_zero",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 957692,
+            "elapsedMs": 0.957692
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_reverse",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "theorem",
+            "elapsedNs": 914853,
+            "elapsedMs": 0.914853
+          },
+          {
+            "name": "Nat.Internal.Linear.Poly.denote_append._f",
+            "module": "Init.Data.Nat.Internal.Linear",
+            "kind": "definition",
+            "elapsedNs": 890165,
+            "elapsedMs": 0.890165
+          },
+          {
+            "name": "Int.subNatNat_add",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 845854,
+            "elapsedMs": 0.845854
+          },
+          {
+            "name": "_private.Init.Data.Int.Lemmas.0.Int.add_assoc.aux2",
+            "module": "Init.Data.Int.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 817806,
+            "elapsedMs": 0.817806
+          }
+        ],
+        "replayedAddDeclCount": 466,
+        "replayMapSize": 547,
+        "replayByModule": [
+          {
+            "module": "Init.Data.Nat.Internal.Linear",
+            "declarations": 89,
+            "addDeclNs": 50300228,
+            "addDeclMs": 50.300228
+          },
+          {
+            "module": "Proof",
+            "declarations": 19,
+            "addDeclNs": 20353108,
+            "addDeclMs": 20.353108
+          },
+          {
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "declarations": 40,
+            "addDeclNs": 17231742,
+            "addDeclMs": 17.231742
+          },
+          {
+            "module": "Init.Data.Int.Lemmas",
+            "declarations": 46,
+            "addDeclNs": 12563602,
+            "addDeclMs": 12.563602
+          },
+          {
+            "module": "Init.Data.Int.Order",
+            "declarations": 70,
+            "addDeclNs": 11217410,
+            "addDeclMs": 11.21741
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 98,
+            "addDeclNs": 9617952,
+            "addDeclMs": 9.617952
+          },
+          {
+            "module": "Init.Data.Nat.Lemmas",
+            "declarations": 26,
+            "addDeclNs": 8612589,
+            "addDeclMs": 8.612589
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2391706,
+            "addDeclMs": 2.391706
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "declarations": 4,
+            "addDeclNs": 1934104,
+            "addDeclMs": 1.934104
+          },
+          {
+            "module": "Init.Data.BitVec.Basic",
+            "declarations": 17,
+            "addDeclNs": 1673940,
+            "addDeclMs": 1.67394
+          },
+          {
+            "module": "Init.Data.Bool",
+            "declarations": 4,
+            "addDeclNs": 868779,
+            "addDeclMs": 0.868779
+          },
+          {
+            "module": "Init.Data.BEq",
+            "declarations": 4,
+            "addDeclNs": 689149,
+            "addDeclMs": 0.689149
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 2,
+            "addDeclNs": 252743,
+            "addDeclMs": 0.252743
+          },
+          {
+            "module": "Init.Data.RArray",
+            "declarations": 2,
+            "addDeclNs": 225547,
+            "addDeclMs": 0.225547
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Basic",
+            "declarations": 3,
+            "addDeclNs": 108947,
+            "addDeclMs": 0.108947
+          },
+          {
+            "module": "Init.Data.Int.Bitwise.Basic",
+            "declarations": 2,
+            "addDeclNs": 96497,
+            "addDeclMs": 0.096497
+          },
+          {
+            "module": "Init.PropLemmas",
+            "declarations": 2,
+            "addDeclNs": 85454,
+            "addDeclMs": 0.085454
+          },
+          {
+            "module": "Spec",
+            "declarations": 1,
+            "addDeclNs": 72548,
+            "addDeclMs": 0.072548
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 32005,
+            "addDeclMs": 0.032005
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4346,
+            "addDeclMs": 0.004346
+          }
+        ],
+        "reachedCount": 1654,
+        "phasesMs": {
+          "verifySourceInventory": 0.395743,
+          "validateGraph": 0.88438,
+          "totalTargetAudit": 728.410108,
+          "roleAndEdgePolicyCheck": 16.14703,
+          "reachabilityClosures": 55.522837,
+          "postReplayDefEqChecks": 1.674868,
+          "parseRequestFieldsAndArtifacts": 0.361044,
+          "modelAndSpecClosures": 57.244611,
+          "kernelReplayTotal": 151.990582,
+          "kernelReplayOverhead": 13.658186,
+          "kernelReplayAddDeclCoreSum": 138.332396,
+          "importTargetMetadataWithExts": 174.26313,
+          "importTargetEnvNoExts": 26.764737,
+          "importFixedMetadataWithExts": 175.372461,
+          "importBaseEnvNoExts": 46.233185,
+          "compilerOverrideChecks": 21.554735
+        },
+        "baseMode": "foundation"
+      },
+      "processWallMs": 816.8548840330914,
+      "processUserMs": 564.4200000000002,
+      "processSysMs": 252.19900000000007
+    },
+    "native_foundation_plus_trusted_mvp": {
+      "totalMainMs": 645.902096,
+      "runTargetAuditMs": 626.533228,
+      "readFileMs": 1.089208,
+      "jsonSerializeAndWriteMs": 16.25472,
+      "jsonParseMs": 2.02494,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.noFault",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 4162998,
+            "elapsedMs": 4.162998
+          },
+          {
+            "name": "Proof.noReturnStep",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3994583,
+            "elapsedMs": 3.994583
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2751354,
+            "elapsedMs": 2.751354
+          },
+          {
+            "name": "Proof.noReturn",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1638650,
+            "elapsedMs": 1.63865
+          },
+          {
+            "name": "Proof.safe",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1567720,
+            "elapsedMs": 1.56772
+          },
+          {
+            "name": "Proof.step4",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1567546,
+            "elapsedMs": 1.567546
+          },
+          {
+            "name": "Proof.step2",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1565799,
+            "elapsedMs": 1.565799
+          },
+          {
+            "name": "Proof.step0",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1060176,
+            "elapsedMs": 1.060176
+          },
+          {
+            "name": "Proof.step1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 701238,
+            "elapsedMs": 0.701238
+          },
+          {
+            "name": "Proof.step3",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 680898,
+            "elapsedMs": 0.680898
+          },
+          {
+            "name": "Proof.closed",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 610227,
+            "elapsedMs": 0.610227
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 313700,
+            "elapsedMs": 0.3137
+          },
+          {
+            "name": "Anneal.Mvp.invariant_reachable",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 142299,
+            "elapsedMs": 0.142299
+          },
+          {
+            "name": "Anneal.Mvp.safeFrom_invariant",
+            "module": "Anneal.Mvp.Execution",
+            "kind": "theorem",
+            "elapsedNs": 128497,
+            "elapsedMs": 0.128497
+          },
+          {
+            "name": "Spec.specs",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 76218,
+            "elapsedMs": 0.076218
+          },
+          {
+            "name": "Proof.body",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 67549,
+            "elapsedMs": 0.067549
+          },
+          {
+            "name": "Proof.s4",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 66453,
+            "elapsedMs": 0.066453
+          },
+          {
+            "name": "Captured.program",
+            "module": "Captured",
+            "kind": "definition",
+            "elapsedNs": 39966,
+            "elapsedMs": 0.039966
+          },
+          {
+            "name": "Proof.s3",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 21587,
+            "elapsedMs": 0.021587
+          },
+          {
+            "name": "Proof.invariant",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 20365,
+            "elapsedMs": 0.020365
+          },
+          {
+            "name": "Proof.s1",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 14913,
+            "elapsedMs": 0.014913
+          },
+          {
+            "name": "Proof.s2",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 11617,
+            "elapsedMs": 0.011617
+          },
+          {
+            "name": "Proof.s0",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 11162,
+            "elapsedMs": 0.011162
+          },
+          {
+            "name": "Expected.claim",
+            "module": "Expected",
+            "kind": "definition",
+            "elapsedNs": 4789,
+            "elapsedMs": 0.004789
+          }
+        ],
+        "replayedAddDeclCount": 24,
+        "replayMapSize": 24,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 19,
+            "addDeclNs": 20828535,
+            "addDeclMs": 20.828535
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 2,
+            "addDeclNs": 270796,
+            "addDeclMs": 0.270796
+          },
+          {
+            "module": "Spec",
+            "declarations": 1,
+            "addDeclNs": 76218,
+            "addDeclMs": 0.076218
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 39966,
+            "addDeclMs": 0.039966
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4789,
+            "addDeclMs": 0.004789
+          }
+        ],
+        "reachedCount": 1654,
+        "phasesMs": {
+          "verifySourceInventory": 0.40943,
+          "validateGraph": 0.88474,
+          "totalTargetAudit": 620.712446,
+          "roleAndEdgePolicyCheck": 15.476619,
+          "reachabilityClosures": 55.207778,
+          "postReplayDefEqChecks": 2.904116,
+          "parseRequestFieldsAndArtifacts": 0.368091,
+          "modelAndSpecClosures": 57.382511,
+          "kernelReplayTotal": 21.956977,
+          "kernelReplayOverhead": 0.736673,
+          "kernelReplayAddDeclCoreSum": 21.220304,
+          "importTargetMetadataWithExts": 174.656334,
+          "importTargetEnvNoExts": 26.547532,
+          "importFixedMetadataWithExts": 175.009041,
+          "importBaseEnvNoExts": 67.580459,
+          "compilerOverrideChecks": 22.327835
+        },
+        "baseMode": "foundation+trusted_mvp"
+      },
+      "processWallMs": 709.4735320424661,
+      "processUserMs": 440.7569999999996,
+      "processSysMs": 268.4719999999996
+    },
+    "native_foundation_plus_libraries": {
+      "totalMainMs": 758.11612,
+      "runTargetAuditMs": 738.419378,
+      "readFileMs": 1.147418,
+      "jsonSerializeAndWriteMs": 16.469538,
+      "jsonParseMs": 2.079786,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.noReturnStep",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3974529,
+            "elapsedMs": 3.974529
+          },
+          {
+            "name": "Proof.noFault",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3870531,
+            "elapsedMs": 3.870531
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2731509,
+            "elapsedMs": 2.731509
+          },
+          {
+            "name": "Proof.noReturn",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1655105,
+            "elapsedMs": 1.655105
+          },
+          {
+            "name": "Proof.step2",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1607768,
+            "elapsedMs": 1.607768
+          },
+          {
+            "name": "Proof.step4",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1530225,
+            "elapsedMs": 1.530225
+          },
+          {
+            "name": "Proof.safe",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1495635,
+            "elapsedMs": 1.495635
+          },
+          {
+            "name": "Proof.step0",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1019816,
+            "elapsedMs": 1.019816
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy.match_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 770377,
+            "elapsedMs": 0.770377
+          },
+          {
+            "name": "Proof.step3",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 704777,
+            "elapsedMs": 0.704777
+          },
+          {
+            "name": "Proof.step1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 699238,
+            "elapsedMs": 0.699238
+          },
+          {
+            "name": "Proof.closed",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 613620,
+            "elapsedMs": 0.61362
+          },
+          {
+            "name": "Trusted.Mvp.StepResult.noConfusion",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 353242,
+            "elapsedMs": 0.353242
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 313735,
+            "elapsedMs": 0.313735
+          },
+          {
+            "name": "Trusted.Mvp.evalBinary._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 293007,
+            "elapsedMs": 0.293007
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 277030,
+            "elapsedMs": 0.27703
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 235605,
+            "elapsedMs": 0.235605
+          },
+          {
+            "name": "Trusted.Mvp.readLocal",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 230116,
+            "elapsedMs": 0.230116
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_5",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 220503,
+            "elapsedMs": 0.220503
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq.match_1",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 217927,
+            "elapsedMs": 0.217927
+          },
+          {
+            "name": "Trusted.Mvp.Reach",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "inductive",
+            "elapsedNs": 214730,
+            "elapsedMs": 0.21473
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_3",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 214575,
+            "elapsedMs": 0.214575
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_4",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 212991,
+            "elapsedMs": 0.212991
+          },
+          {
+            "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_2",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 211045,
+            "elapsedMs": 0.211045
+          },
+          {
+            "name": "Trusted.Mvp.evalBinary",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 207194,
+            "elapsedMs": 0.207194
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_3",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 204995,
+            "elapsedMs": 0.204995
+          },
+          {
+            "name": "Trusted.Mvp.binaryTy._sparseCasesOn_5",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 201004,
+            "elapsedMs": 0.201004
+          },
+          {
+            "name": "Trusted.Mvp.evalRvalue",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 197120,
+            "elapsedMs": 0.19712
+          },
+          {
+            "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Semantics",
+            "kind": "definition",
+            "elapsedNs": 196182,
+            "elapsedMs": 0.196182
+          },
+          {
+            "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_1",
+            "module": "Trusted.Mvp.Syntax",
+            "kind": "definition",
+            "elapsedNs": 188948,
+            "elapsedMs": 0.188948
+          }
+        ],
+        "replayedAddDeclCount": 157,
+        "replayMapSize": 223,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 19,
+            "addDeclNs": 20334109,
+            "addDeclMs": 20.334109
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 98,
+            "addDeclNs": 9714924,
+            "addDeclMs": 9.714924
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2430705,
+            "addDeclMs": 2.430705
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 2,
+            "addDeclNs": 261164,
+            "addDeclMs": 0.261164
+          },
+          {
+            "module": "Spec",
+            "declarations": 1,
+            "addDeclNs": 71367,
+            "addDeclMs": 0.071367
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 31691,
+            "addDeclMs": 0.031691
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4140,
+            "addDeclMs": 0.00414
+          }
+        ],
+        "reachedCount": 1654,
+        "phasesMs": {
+          "verifySourceInventory": 0.436682,
+          "validateGraph": 0.951795,
+          "totalTargetAudit": 732.428755,
+          "roleAndEdgePolicyCheck": 16.003645,
+          "reachabilityClosures": 57.022235,
+          "postReplayDefEqChecks": 4.249417,
+          "parseRequestFieldsAndArtifacts": 0.369589,
+          "modelAndSpecClosures": 58.390763,
+          "kernelReplayTotal": 36.112455,
+          "kernelReplayOverhead": 3.264355,
+          "kernelReplayAddDeclCoreSum": 32.8481,
+          "importTargetMetadataWithExts": 176.587471,
+          "importTargetEnvNoExts": 28.337416,
+          "importFixedMetadataWithExts": 175.527386,
+          "importBaseEnvNoExts": 155.504551,
+          "compilerOverrideChecks": 22.933579
+        },
+        "baseMode": "foundation+libraries"
+      },
+      "processWallMs": 831.7372070159763,
+      "processUserMs": 553.0970000000011,
+      "processSysMs": 278.524
+    },
+    "native_foundation_plus_mvp": {
+      "totalMainMs": 745.236308,
+      "runTargetAuditMs": 725.706263,
+      "readFileMs": 1.119222,
+      "jsonSerializeAndWriteMs": 16.309773,
+      "jsonParseMs": 2.10105,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.noReturnStep",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 4003570,
+            "elapsedMs": 4.00357
+          },
+          {
+            "name": "Proof.noFault",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3833986,
+            "elapsedMs": 3.833986
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2719900,
+            "elapsedMs": 2.7199
+          },
+          {
+            "name": "Proof.noReturn",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1681698,
+            "elapsedMs": 1.681698
+          },
+          {
+            "name": "Proof.step2",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1547455,
+            "elapsedMs": 1.547455
+          },
+          {
+            "name": "Proof.step4",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1526663,
+            "elapsedMs": 1.526663
+          },
+          {
+            "name": "Proof.safe",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1497627,
+            "elapsedMs": 1.497627
+          },
+          {
+            "name": "Proof.step0",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1000189,
+            "elapsedMs": 1.000189
+          },
+          {
+            "name": "Proof.step1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 715420,
+            "elapsedMs": 0.71542
+          },
+          {
+            "name": "Proof.step3",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 713420,
+            "elapsedMs": 0.71342
+          },
+          {
+            "name": "Proof.closed",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 621113,
+            "elapsedMs": 0.621113
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 300587,
+            "elapsedMs": 0.300587
+          },
+          {
+            "name": "Spec.specs",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 72718,
+            "elapsedMs": 0.072718
+          },
+          {
+            "name": "Proof.s4",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 66378,
+            "elapsedMs": 0.066378
+          },
+          {
+            "name": "Proof.body",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 63622,
+            "elapsedMs": 0.063622
+          },
+          {
+            "name": "Captured.program",
+            "module": "Captured",
+            "kind": "definition",
+            "elapsedNs": 42388,
+            "elapsedMs": 0.042388
+          },
+          {
+            "name": "Proof.s3",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 23284,
+            "elapsedMs": 0.023284
+          },
+          {
+            "name": "Proof.invariant",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 19622,
+            "elapsedMs": 0.019622
+          },
+          {
+            "name": "Proof.s1",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 16055,
+            "elapsedMs": 0.016055
+          },
+          {
+            "name": "Proof.s2",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 12246,
+            "elapsedMs": 0.012246
+          },
+          {
+            "name": "Proof.s0",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 11900,
+            "elapsedMs": 0.0119
+          },
+          {
+            "name": "Expected.claim",
+            "module": "Expected",
+            "kind": "definition",
+            "elapsedNs": 4497,
+            "elapsedMs": 0.004497
+          }
+        ],
+        "replayedAddDeclCount": 22,
+        "replayMapSize": 22,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 19,
+            "addDeclNs": 20374735,
+            "addDeclMs": 20.374735
+          },
+          {
+            "module": "Spec",
+            "declarations": 1,
+            "addDeclNs": 72718,
+            "addDeclMs": 0.072718
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 42388,
+            "addDeclMs": 0.042388
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4497,
+            "addDeclMs": 0.004497
+          }
+        ],
+        "reachedCount": 1654,
+        "phasesMs": {
+          "verifySourceInventory": 0.419038,
+          "validateGraph": 0.964266,
+          "totalTargetAudit": 719.890464,
+          "roleAndEdgePolicyCheck": 15.960153,
+          "reachabilityClosures": 55.548947,
+          "postReplayDefEqChecks": 4.236037,
+          "parseRequestFieldsAndArtifacts": 0.366205,
+          "modelAndSpecClosures": 58.030409,
+          "kernelReplayTotal": 21.28425,
+          "kernelReplayOverhead": 0.789912,
+          "kernelReplayAddDeclCoreSum": 20.494338,
+          "importTargetMetadataWithExts": 178.599239,
+          "importTargetEnvNoExts": 27.293363,
+          "importFixedMetadataWithExts": 175.489908,
+          "importBaseEnvNoExts": 158.285606,
+          "compilerOverrideChecks": 23.4121
+        },
+        "baseMode": "foundation+mvp"
+      },
+      "processWallMs": 815.3076169546694,
+      "processUserMs": 511.4199999999976,
+      "processSysMs": 303.65500000000003
+    },
+    "native_foundation_plus_mvp_no_meta_reload": {
+      "totalMainMs": 367.300722,
+      "runTargetAuditMs": 347.780448,
+      "readFileMs": 1.100631,
+      "jsonSerializeAndWriteMs": 16.318965,
+      "jsonParseMs": 2.100678,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "Proof.noReturnStep",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 4011292,
+            "elapsedMs": 4.011292
+          },
+          {
+            "name": "Proof.noFault",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 3845365,
+            "elapsedMs": 3.845365
+          },
+          {
+            "name": "Proof.verify",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 2728321,
+            "elapsedMs": 2.728321
+          },
+          {
+            "name": "Proof.noReturn",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1660626,
+            "elapsedMs": 1.660626
+          },
+          {
+            "name": "Proof.step2",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1592396,
+            "elapsedMs": 1.592396
+          },
+          {
+            "name": "Proof.step4",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1525691,
+            "elapsedMs": 1.525691
+          },
+          {
+            "name": "Proof.safe",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 1488230,
+            "elapsedMs": 1.48823
+          },
+          {
+            "name": "Proof.step0",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 999876,
+            "elapsedMs": 0.999876
+          },
+          {
+            "name": "Proof.step1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 701309,
+            "elapsedMs": 0.701309
+          },
+          {
+            "name": "Proof.step3",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 699689,
+            "elapsedMs": 0.699689
+          },
+          {
+            "name": "Proof.closed",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 618813,
+            "elapsedMs": 0.618813
+          },
+          {
+            "name": "Proof.body._proof_1",
+            "module": "Proof",
+            "kind": "theorem",
+            "elapsedNs": 310428,
+            "elapsedMs": 0.310428
+          },
+          {
+            "name": "Spec.specs",
+            "module": "Spec",
+            "kind": "definition",
+            "elapsedNs": 74225,
+            "elapsedMs": 0.074225
+          },
+          {
+            "name": "Proof.s4",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 67877,
+            "elapsedMs": 0.067877
+          },
+          {
+            "name": "Proof.body",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 54148,
+            "elapsedMs": 0.054148
+          },
+          {
+            "name": "Captured.program",
+            "module": "Captured",
+            "kind": "definition",
+            "elapsedNs": 42016,
+            "elapsedMs": 0.042016
+          },
+          {
+            "name": "Proof.s3",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 22212,
+            "elapsedMs": 0.022212
+          },
+          {
+            "name": "Proof.invariant",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 19683,
+            "elapsedMs": 0.019683
+          },
+          {
+            "name": "Proof.s1",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 15762,
+            "elapsedMs": 0.015762
+          },
+          {
+            "name": "Proof.s2",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 11765,
+            "elapsedMs": 0.011765
+          },
+          {
+            "name": "Proof.s0",
+            "module": "Proof",
+            "kind": "definition",
+            "elapsedNs": 11580,
+            "elapsedMs": 0.01158
+          },
+          {
+            "name": "Expected.claim",
+            "module": "Expected",
+            "kind": "definition",
+            "elapsedNs": 4739,
+            "elapsedMs": 0.004739
+          }
+        ],
+        "replayedAddDeclCount": 22,
+        "replayMapSize": 22,
+        "replayByModule": [
+          {
+            "module": "Proof",
+            "declarations": 19,
+            "addDeclNs": 20385063,
+            "addDeclMs": 20.385063
+          },
+          {
+            "module": "Spec",
+            "declarations": 1,
+            "addDeclNs": 74225,
+            "addDeclMs": 0.074225
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 42016,
+            "addDeclMs": 0.042016
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4739,
+            "addDeclMs": 0.004739
+          }
+        ],
+        "reachedCount": 1654,
+        "phasesMs": {
+          "verifySourceInventory": 0.408513,
+          "validateGraph": 0.91025,
+          "totalTargetAudit": 342.12784,
+          "roleAndEdgePolicyCheck": 16.21379,
+          "reachabilityClosures": 56.244505,
+          "postReplayDefEqChecks": 4.22868,
+          "parseRequestFieldsAndArtifacts": 0.357336,
+          "modelAndSpecClosures": 57.315924,
+          "kernelReplayTotal": 21.328253,
+          "kernelReplayOverhead": 0.82221,
+          "kernelReplayAddDeclCoreSum": 20.506043,
+          "importTargetMetadataWithExts": 0,
+          "importTargetEnvNoExts": 27.234103,
+          "importFixedMetadataWithExts": 0,
+          "importBaseEnvNoExts": 157.884888,
+          "compilerOverrideChecks": 0
+        },
+        "baseMode": "foundation+mvp"
+      },
+      "processWallMs": 418.1362319504842,
+      "processUserMs": 313.5510000000004,
+      "processSysMs": 104.52200000000022
+    }
+  },
+  "starnix": {
+    "interpreted_foundation": {
+      "totalMainMs": 6465.903714,
+      "runTargetAuditMs": 6446.611923,
+      "readFileMs": 0.627991,
+      "jsonSerializeAndWriteMs": 16.759118,
+      "jsonParseMs": 1.904682,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "ProductionSteps.be64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 285979980,
+            "elapsedMs": 285.97998
+          },
+          {
+            "name": "ProductionSteps.le32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 284176987,
+            "elapsedMs": 284.176987
+          },
+          {
+            "name": "ProductionSteps.le8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 281836841,
+            "elapsedMs": 281.836841
+          },
+          {
+            "name": "ProductionSteps.be16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 275900902,
+            "elapsedMs": 275.900902
+          },
+          {
+            "name": "ProductionSteps.le64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 274627581,
+            "elapsedMs": 274.627581
+          },
+          {
+            "name": "ProductionSteps.le16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 269622552,
+            "elapsedMs": 269.622552
+          },
+          {
+            "name": "ProductionSteps.be8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 262704806,
+            "elapsedMs": 262.704806
+          },
+          {
+            "name": "ProductionSteps.be32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 261747706,
+            "elapsedMs": 261.747706
+          },
+          {
+            "name": "Endianness.swap64_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 145024404,
+            "elapsedMs": 145.024404
+          },
+          {
+            "name": "ProductionClaims.wellFormed",
+            "module": "ProductionClaims",
+            "kind": "theorem",
+            "elapsedNs": 103854780,
+            "elapsedMs": 103.85478
+          },
+          {
+            "name": "Endianness.swap32_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 95211215,
+            "elapsedMs": 95.211215
+          },
+          {
+            "name": "Endianness.swap16_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 59926647,
+            "elapsedMs": 59.926647
+          },
+          {
+            "name": "_private.Init.Data.Nat.Bitwise.Lemmas.0.Nat.two_pow_succ_sub_succ_div_two._proof_1_1",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 58462747,
+            "elapsedMs": 58.462747
+          },
+          {
+            "name": "Endianness.swap32_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 37037357,
+            "elapsedMs": 37.037357
+          },
+          {
+            "name": "Endianness.swap64_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 35982675,
+            "elapsedMs": 35.982675
+          },
+          {
+            "name": "Endianness.swap16_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 32374183,
+            "elapsedMs": 32.374183
+          },
+          {
+            "name": "Endianness.swap8_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 29969287,
+            "elapsedMs": 29.969287
+          },
+          {
+            "name": "_private.Init.Data.Nat.Bitwise.Lemmas.0.Nat.testBit_two_pow_sub_succ._proof_1_3",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 26238453,
+            "elapsedMs": 26.238453
+          },
+          {
+            "name": "Endianness.swap8_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 25020166,
+            "elapsedMs": 25.020166
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix91",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17507840,
+            "elapsedMs": 17.50784
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix89",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17017928,
+            "elapsedMs": 17.017928
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix71",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16691194,
+            "elapsedMs": 16.691194
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix82",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16342614,
+            "elapsedMs": 16.342614
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix80",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16019533,
+            "elapsedMs": 16.019533
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix78",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15599016,
+            "elapsedMs": 15.599016
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix60",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15275963,
+            "elapsedMs": 15.275963
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix69",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15234651,
+            "elapsedMs": 15.234651
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix49",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15033865,
+            "elapsedMs": 15.033865
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix67",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14573993,
+            "elapsedMs": 14.573993
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix38",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14566059,
+            "elapsedMs": 14.566059
+          }
+        ],
+        "replayedAddDeclCount": 1589,
+        "replayMapSize": 1681,
+        "replayByModule": [
+          {
+            "module": "ProductionSteps",
+            "declarations": 500,
+            "addDeclNs": 3804074648,
+            "addDeclMs": 3804.074648
+          },
+          {
+            "module": "Endianness",
+            "declarations": 22,
+            "addDeclNs": 463480160,
+            "addDeclMs": 463.48016
+          },
+          {
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "declarations": 76,
+            "addDeclNs": 141537205,
+            "addDeclMs": 141.537205
+          },
+          {
+            "module": "ProductionClaims",
+            "declarations": 5,
+            "addDeclNs": 108133539,
+            "addDeclMs": 108.133539
+          },
+          {
+            "module": "Init.Data.Nat.Internal.Linear",
+            "declarations": 89,
+            "addDeclNs": 51541741,
+            "addDeclMs": 51.541741
+          },
+          {
+            "module": "Init.Omega.Constraint",
+            "declarations": 62,
+            "addDeclNs": 35412367,
+            "addDeclMs": 35.412367
+          },
+          {
+            "module": "Init.Data.Int.Lemmas",
+            "declarations": 102,
+            "addDeclNs": 32707769,
+            "addDeclMs": 32.707769
+          },
+          {
+            "module": "Init.Omega.IntList",
+            "declarations": 62,
+            "addDeclNs": 31230547,
+            "addDeclMs": 31.230547
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "declarations": 70,
+            "addDeclNs": 24349250,
+            "addDeclMs": 24.34925
+          },
+          {
+            "module": "Init.Data.Int.Order",
+            "declarations": 127,
+            "addDeclNs": 21691560,
+            "addDeclMs": 21.69156
+          },
+          {
+            "module": "Init.Data.BitVec.Lemmas",
+            "declarations": 13,
+            "addDeclNs": 16784826,
+            "addDeclMs": 16.784826
+          },
+          {
+            "module": "Init.Data.Nat.Lemmas",
+            "declarations": 57,
+            "addDeclNs": 16100494,
+            "addDeclMs": 16.100494
+          },
+          {
+            "module": "Init.Data.BitVec.Bootstrap",
+            "declarations": 14,
+            "addDeclNs": 10678237,
+            "addDeclMs": 10.678237
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 97,
+            "addDeclNs": 10390761,
+            "addDeclMs": 10.390761
+          },
+          {
+            "module": "Init.Omega.LinearCombo",
+            "declarations": 30,
+            "addDeclNs": 6577021,
+            "addDeclMs": 6.577021
+          },
+          {
+            "module": "SourceInputs",
+            "declarations": 1,
+            "addDeclNs": 5328512,
+            "addDeclMs": 5.328512
+          },
+          {
+            "module": "Init.Data.Nat.Gcd",
+            "declarations": 18,
+            "addDeclNs": 4994022,
+            "addDeclMs": 4.994022
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 4606598,
+            "addDeclMs": 4.606598
+          },
+          {
+            "module": "Init.Data.List.Lemmas",
+            "declarations": 11,
+            "addDeclNs": 4516627,
+            "addDeclMs": 4.516627
+          },
+          {
+            "module": "Init.Data.Nat.Dvd",
+            "declarations": 20,
+            "addDeclNs": 4491461,
+            "addDeclMs": 4.491461
+          },
+          {
+            "module": "Init.Omega.Int",
+            "declarations": 15,
+            "addDeclNs": 2787051,
+            "addDeclMs": 2.787051
+          },
+          {
+            "module": "Init.Data.BitVec.Basic",
+            "declarations": 28,
+            "addDeclNs": 2715838,
+            "addDeclMs": 2.715838
+          },
+          {
+            "module": "Init.Data.Bool",
+            "declarations": 13,
+            "addDeclNs": 2220555,
+            "addDeclMs": 2.220555
+          },
+          {
+            "module": "Init.PropLemmas",
+            "declarations": 20,
+            "addDeclNs": 2210148,
+            "addDeclMs": 2.210148
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 8,
+            "addDeclNs": 2108059,
+            "addDeclMs": 2.108059
+          },
+          {
+            "module": "Init.Data.Fin.Lemmas",
+            "declarations": 8,
+            "addDeclNs": 2078628,
+            "addDeclMs": 2.078628
+          },
+          {
+            "module": "Init.Data.Int.Pow",
+            "declarations": 3,
+            "addDeclNs": 1403084,
+            "addDeclMs": 1.403084
+          },
+          {
+            "module": "Init.Classical",
+            "declarations": 11,
+            "addDeclNs": 1348868,
+            "addDeclMs": 1.348868
+          },
+          {
+            "module": "Proof",
+            "declarations": 1,
+            "addDeclNs": 1304173,
+            "addDeclMs": 1.304173
+          },
+          {
+            "module": "Init.Data.Order.Classes",
+            "declarations": 11,
+            "addDeclNs": 1224061,
+            "addDeclMs": 1.224061
+          },
+          {
+            "module": "Init.Omega.Coeffs",
+            "declarations": 17,
+            "addDeclNs": 932591,
+            "addDeclMs": 0.932591
+          },
+          {
+            "module": "Init.Data.Order.Factories",
+            "declarations": 11,
+            "addDeclNs": 910636,
+            "addDeclMs": 0.910636
+          },
+          {
+            "module": "Init.Data.BEq",
+            "declarations": 4,
+            "addDeclNs": 757919,
+            "addDeclMs": 0.757919
+          },
+          {
+            "module": "Inputs",
+            "declarations": 1,
+            "addDeclNs": 682712,
+            "addDeclMs": 0.682712
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Basic",
+            "declarations": 7,
+            "addDeclNs": 496817,
+            "addDeclMs": 0.496817
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 466641,
+            "addDeclMs": 0.466641
+          },
+          {
+            "module": "Init.ByCases",
+            "declarations": 2,
+            "addDeclNs": 461460,
+            "addDeclMs": 0.46146
+          },
+          {
+            "module": "Init.Data.Order.Lemmas",
+            "declarations": 4,
+            "addDeclNs": 353794,
+            "addDeclMs": 0.353794
+          },
+          {
+            "module": "InitialCache",
+            "declarations": 2,
+            "addDeclNs": 347248,
+            "addDeclMs": 0.347248
+          },
+          {
+            "module": "Init.Omega.Logic",
+            "declarations": 2,
+            "addDeclNs": 280485,
+            "addDeclMs": 0.280485
+          },
+          {
+            "module": "Spec",
+            "declarations": 3,
+            "addDeclNs": 276445,
+            "addDeclMs": 0.276445
+          },
+          {
+            "module": "Init.Data.RArray",
+            "declarations": 2,
+            "addDeclNs": 236381,
+            "addDeclMs": 0.236381
+          },
+          {
+            "module": "Init.Data.Nat.Order",
+            "declarations": 1,
+            "addDeclNs": 148117,
+            "addDeclMs": 0.148117
+          },
+          {
+            "module": "Init.Data.Int.Bitwise.Basic",
+            "declarations": 2,
+            "addDeclNs": 102846,
+            "addDeclMs": 0.102846
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 5218,
+            "addDeclMs": 0.005218
+          }
+        ],
+        "reachedCount": 2994,
+        "phasesMs": {
+          "verifySourceInventory": 2.954598,
+          "validateGraph": 1.047696,
+          "totalTargetAudit": 6420.712787,
+          "roleAndEdgePolicyCheck": 285.966815,
+          "reachabilityClosures": 401.739378,
+          "postReplayDefEqChecks": 2.074664,
+          "parseRequestFieldsAndArtifacts": 2.701771,
+          "modelAndSpecClosures": 184.207971,
+          "kernelReplayTotal": 4941.051004,
+          "kernelReplayOverhead": 116.563884,
+          "kernelReplayAddDeclCoreSum": 4824.48712,
+          "importTargetMetadataWithExts": 183.780667,
+          "importTargetEnvNoExts": 160.825309,
+          "importFixedMetadataWithExts": 175.940042,
+          "importBaseEnvNoExts": 46.618852,
+          "compilerOverrideChecks": 31.757754
+        },
+        "baseMode": "foundation"
+      },
+      "processWallMs": 8855.891835992225,
+      "processUserMs": 8253.220000000003,
+      "processSysMs": 612.1089999999998
+    },
+    "native_foundation": {
+      "totalMainMs": 5590.075649,
+      "runTargetAuditMs": 5570.181675,
+      "readFileMs": 1.106736,
+      "jsonSerializeAndWriteMs": 16.602137,
+      "jsonParseMs": 2.185101,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "ProductionSteps.le64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 285182243,
+            "elapsedMs": 285.182243
+          },
+          {
+            "name": "ProductionSteps.be64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 283567723,
+            "elapsedMs": 283.567723
+          },
+          {
+            "name": "ProductionSteps.le8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 275080991,
+            "elapsedMs": 275.080991
+          },
+          {
+            "name": "ProductionSteps.be16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 274721298,
+            "elapsedMs": 274.721298
+          },
+          {
+            "name": "ProductionSteps.le32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 270996287,
+            "elapsedMs": 270.996287
+          },
+          {
+            "name": "ProductionSteps.be8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 261593627,
+            "elapsedMs": 261.593627
+          },
+          {
+            "name": "ProductionSteps.le16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 260983599,
+            "elapsedMs": 260.983599
+          },
+          {
+            "name": "ProductionSteps.be32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 258987386,
+            "elapsedMs": 258.987386
+          },
+          {
+            "name": "Endianness.swap64_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 149847475,
+            "elapsedMs": 149.847475
+          },
+          {
+            "name": "ProductionClaims.wellFormed",
+            "module": "ProductionClaims",
+            "kind": "theorem",
+            "elapsedNs": 103718101,
+            "elapsedMs": 103.718101
+          },
+          {
+            "name": "Endianness.swap32_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 95839262,
+            "elapsedMs": 95.839262
+          },
+          {
+            "name": "Endianness.swap16_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 60370995,
+            "elapsedMs": 60.370995
+          },
+          {
+            "name": "_private.Init.Data.Nat.Bitwise.Lemmas.0.Nat.two_pow_succ_sub_succ_div_two._proof_1_1",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 46000720,
+            "elapsedMs": 46.00072
+          },
+          {
+            "name": "Endianness.swap32_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 38202811,
+            "elapsedMs": 38.202811
+          },
+          {
+            "name": "Endianness.swap64_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 35380509,
+            "elapsedMs": 35.380509
+          },
+          {
+            "name": "Endianness.swap16_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 32108385,
+            "elapsedMs": 32.108385
+          },
+          {
+            "name": "Endianness.swap8_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 30231777,
+            "elapsedMs": 30.231777
+          },
+          {
+            "name": "_private.Init.Data.Nat.Bitwise.Lemmas.0.Nat.testBit_two_pow_sub_succ._proof_1_3",
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "kind": "theorem",
+            "elapsedNs": 25187245,
+            "elapsedMs": 25.187245
+          },
+          {
+            "name": "Endianness.swap8_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 24600333,
+            "elapsedMs": 24.600333
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix80",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17667344,
+            "elapsedMs": 17.667344
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix82",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17345939,
+            "elapsedMs": 17.345939
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix91",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17153119,
+            "elapsedMs": 17.153119
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix60",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16928877,
+            "elapsedMs": 16.928877
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix89",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16837299,
+            "elapsedMs": 16.837299
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix71",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16815528,
+            "elapsedMs": 16.815528
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix69",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16183072,
+            "elapsedMs": 16.183072
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix78",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16127759,
+            "elapsedMs": 16.127759
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix49",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15051352,
+            "elapsedMs": 15.051352
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix67",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15002491,
+            "elapsedMs": 15.002491
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix56",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14592345,
+            "elapsedMs": 14.592345
+          }
+        ],
+        "replayedAddDeclCount": 1589,
+        "replayMapSize": 1681,
+        "replayByModule": [
+          {
+            "module": "ProductionSteps",
+            "declarations": 500,
+            "addDeclNs": 3761190745,
+            "addDeclMs": 3761.190745
+          },
+          {
+            "module": "Endianness",
+            "declarations": 22,
+            "addDeclNs": 469590067,
+            "addDeclMs": 469.590067
+          },
+          {
+            "module": "Init.Data.Nat.Bitwise.Lemmas",
+            "declarations": 76,
+            "addDeclNs": 125494733,
+            "addDeclMs": 125.494733
+          },
+          {
+            "module": "ProductionClaims",
+            "declarations": 5,
+            "addDeclNs": 107874308,
+            "addDeclMs": 107.874308
+          },
+          {
+            "module": "Init.Data.Nat.Internal.Linear",
+            "declarations": 89,
+            "addDeclNs": 50552698,
+            "addDeclMs": 50.552698
+          },
+          {
+            "module": "Init.Omega.Constraint",
+            "declarations": 62,
+            "addDeclNs": 34384504,
+            "addDeclMs": 34.384504
+          },
+          {
+            "module": "Init.Data.Int.Lemmas",
+            "declarations": 102,
+            "addDeclNs": 31208908,
+            "addDeclMs": 31.208908
+          },
+          {
+            "module": "Init.Omega.IntList",
+            "declarations": 62,
+            "addDeclNs": 30344269,
+            "addDeclMs": 30.344269
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Bootstrap",
+            "declarations": 70,
+            "addDeclNs": 23368639,
+            "addDeclMs": 23.368639
+          },
+          {
+            "module": "Init.Data.Int.Order",
+            "declarations": 127,
+            "addDeclNs": 20482289,
+            "addDeclMs": 20.482289
+          },
+          {
+            "module": "Init.Data.BitVec.Lemmas",
+            "declarations": 13,
+            "addDeclNs": 16523606,
+            "addDeclMs": 16.523606
+          },
+          {
+            "module": "Init.Data.Nat.Lemmas",
+            "declarations": 57,
+            "addDeclNs": 15528211,
+            "addDeclMs": 15.528211
+          },
+          {
+            "module": "Init.Data.BitVec.Bootstrap",
+            "declarations": 14,
+            "addDeclNs": 10460189,
+            "addDeclMs": 10.460189
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 97,
+            "addDeclNs": 9958617,
+            "addDeclMs": 9.958617
+          },
+          {
+            "module": "Init.Omega.LinearCombo",
+            "declarations": 30,
+            "addDeclNs": 6198023,
+            "addDeclMs": 6.198023
+          },
+          {
+            "module": "SourceInputs",
+            "declarations": 1,
+            "addDeclNs": 5272080,
+            "addDeclMs": 5.27208
+          },
+          {
+            "module": "Init.Data.Nat.Gcd",
+            "declarations": 18,
+            "addDeclNs": 4745318,
+            "addDeclMs": 4.745318
+          },
+          {
+            "module": "Init.Data.List.Lemmas",
+            "declarations": 11,
+            "addDeclNs": 4454983,
+            "addDeclMs": 4.454983
+          },
+          {
+            "module": "Init.Data.Nat.Dvd",
+            "declarations": 20,
+            "addDeclNs": 4358791,
+            "addDeclMs": 4.358791
+          },
+          {
+            "module": "Init.Omega.Int",
+            "declarations": 15,
+            "addDeclNs": 2732866,
+            "addDeclMs": 2.732866
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2457037,
+            "addDeclMs": 2.457037
+          },
+          {
+            "module": "Init.Data.BitVec.Basic",
+            "declarations": 28,
+            "addDeclNs": 2425955,
+            "addDeclMs": 2.425955
+          },
+          {
+            "module": "Init.PropLemmas",
+            "declarations": 20,
+            "addDeclNs": 2164439,
+            "addDeclMs": 2.164439
+          },
+          {
+            "module": "Init.Data.Bool",
+            "declarations": 13,
+            "addDeclNs": 2159527,
+            "addDeclMs": 2.159527
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 8,
+            "addDeclNs": 2027800,
+            "addDeclMs": 2.0278
+          },
+          {
+            "module": "Init.Data.Fin.Lemmas",
+            "declarations": 8,
+            "addDeclNs": 1983291,
+            "addDeclMs": 1.983291
+          },
+          {
+            "module": "Init.Data.Int.Pow",
+            "declarations": 3,
+            "addDeclNs": 1325332,
+            "addDeclMs": 1.325332
+          },
+          {
+            "module": "Init.Classical",
+            "declarations": 11,
+            "addDeclNs": 1304895,
+            "addDeclMs": 1.304895
+          },
+          {
+            "module": "Proof",
+            "declarations": 1,
+            "addDeclNs": 1245329,
+            "addDeclMs": 1.245329
+          },
+          {
+            "module": "Init.Data.Order.Classes",
+            "declarations": 11,
+            "addDeclNs": 1158247,
+            "addDeclMs": 1.158247
+          },
+          {
+            "module": "Init.Omega.Coeffs",
+            "declarations": 17,
+            "addDeclNs": 860297,
+            "addDeclMs": 0.860297
+          },
+          {
+            "module": "Init.Data.Order.Factories",
+            "declarations": 11,
+            "addDeclNs": 856341,
+            "addDeclMs": 0.856341
+          },
+          {
+            "module": "Init.Data.BEq",
+            "declarations": 4,
+            "addDeclNs": 707798,
+            "addDeclMs": 0.707798
+          },
+          {
+            "module": "Inputs",
+            "declarations": 1,
+            "addDeclNs": 696399,
+            "addDeclMs": 0.696399
+          },
+          {
+            "module": "Init.Data.Int.DivMod.Basic",
+            "declarations": 7,
+            "addDeclNs": 484163,
+            "addDeclMs": 0.484163
+          },
+          {
+            "module": "Init.ByCases",
+            "declarations": 2,
+            "addDeclNs": 452481,
+            "addDeclMs": 0.452481
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 441767,
+            "addDeclMs": 0.441767
+          },
+          {
+            "module": "InitialCache",
+            "declarations": 2,
+            "addDeclNs": 340764,
+            "addDeclMs": 0.340764
+          },
+          {
+            "module": "Init.Data.Order.Lemmas",
+            "declarations": 4,
+            "addDeclNs": 289400,
+            "addDeclMs": 0.2894
+          },
+          {
+            "module": "Init.Omega.Logic",
+            "declarations": 2,
+            "addDeclNs": 274280,
+            "addDeclMs": 0.27428
+          },
+          {
+            "module": "Spec",
+            "declarations": 3,
+            "addDeclNs": 262667,
+            "addDeclMs": 0.262667
+          },
+          {
+            "module": "Init.Data.RArray",
+            "declarations": 2,
+            "addDeclNs": 222141,
+            "addDeclMs": 0.222141
+          },
+          {
+            "module": "Init.Data.Nat.Order",
+            "declarations": 1,
+            "addDeclNs": 134413,
+            "addDeclMs": 0.134413
+          },
+          {
+            "module": "Init.Data.Int.Bitwise.Basic",
+            "declarations": 2,
+            "addDeclNs": 96620,
+            "addDeclMs": 0.09662
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4278,
+            "addDeclMs": 0.004278
+          }
+        ],
+        "reachedCount": 2994,
+        "phasesMs": {
+          "verifySourceInventory": 0.747317,
+          "validateGraph": 0.880935,
+          "totalTargetAudit": 5562.703764,
+          "roleAndEdgePolicyCheck": 82.214229,
+          "reachabilityClosures": 122.30679,
+          "postReplayDefEqChecks": 4.578729,
+          "parseRequestFieldsAndArtifacts": 0.377118,
+          "modelAndSpecClosures": 57.904907,
+          "kernelReplayTotal": 4835.034028,
+          "kernelReplayOverhead": 75.934523,
+          "kernelReplayAddDeclCoreSum": 4759.099505,
+          "importTargetMetadataWithExts": 183.689611,
+          "importTargetEnvNoExts": 27.703158,
+          "importFixedMetadataWithExts": 176.468684,
+          "importBaseEnvNoExts": 45.316273,
+          "compilerOverrideChecks": 25.480916
+        },
+        "baseMode": "foundation"
+      },
+      "processWallMs": 5654.612710000947,
+      "processUserMs": 5313.212999999998,
+      "processSysMs": 339.57499999999993
+    },
+    "native_foundation_plus_trusted_mvp": {
+      "totalMainMs": 5190.035527,
+      "runTargetAuditMs": 5170.312344,
+      "readFileMs": 1.123998,
+      "jsonSerializeAndWriteMs": 16.514416,
+      "jsonParseMs": 2.084769,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "ProductionSteps.le32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 282857452,
+            "elapsedMs": 282.857452
+          },
+          {
+            "name": "ProductionSteps.le16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 281478165,
+            "elapsedMs": 281.478165
+          },
+          {
+            "name": "ProductionSteps.be64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 275329491,
+            "elapsedMs": 275.329491
+          },
+          {
+            "name": "ProductionSteps.le8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 275135715,
+            "elapsedMs": 275.135715
+          },
+          {
+            "name": "ProductionSteps.le64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 273181900,
+            "elapsedMs": 273.1819
+          },
+          {
+            "name": "ProductionSteps.be8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 270794852,
+            "elapsedMs": 270.794852
+          },
+          {
+            "name": "ProductionSteps.be32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 264335406,
+            "elapsedMs": 264.335406
+          },
+          {
+            "name": "ProductionSteps.be16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 259314285,
+            "elapsedMs": 259.314285
+          },
+          {
+            "name": "Endianness.swap64_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 137714501,
+            "elapsedMs": 137.714501
+          },
+          {
+            "name": "ProductionClaims.wellFormed",
+            "module": "ProductionClaims",
+            "kind": "theorem",
+            "elapsedNs": 100527512,
+            "elapsedMs": 100.527512
+          },
+          {
+            "name": "Endianness.swap32_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 93111094,
+            "elapsedMs": 93.111094
+          },
+          {
+            "name": "Endianness.swap16_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 58223328,
+            "elapsedMs": 58.223328
+          },
+          {
+            "name": "Endianness.swap32_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 34868146,
+            "elapsedMs": 34.868146
+          },
+          {
+            "name": "Endianness.swap64_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 34420343,
+            "elapsedMs": 34.420343
+          },
+          {
+            "name": "Endianness.swap16_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 30968552,
+            "elapsedMs": 30.968552
+          },
+          {
+            "name": "Endianness.swap8_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 28504501,
+            "elapsedMs": 28.504501
+          },
+          {
+            "name": "Endianness.swap8_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 24539818,
+            "elapsedMs": 24.539818
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix91",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16543827,
+            "elapsedMs": 16.543827
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix82",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16442640,
+            "elapsedMs": 16.44264
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix89",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16049419,
+            "elapsedMs": 16.049419
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix80",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15888643,
+            "elapsedMs": 15.888643
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix71",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15587831,
+            "elapsedMs": 15.587831
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix78",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15361331,
+            "elapsedMs": 15.361331
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix60",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15361195,
+            "elapsedMs": 15.361195
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix49",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15276907,
+            "elapsedMs": 15.276907
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix67",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15263988,
+            "elapsedMs": 15.263988
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix69",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14980381,
+            "elapsedMs": 14.980381
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix38",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14789881,
+            "elapsedMs": 14.789881
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix58",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14093673,
+            "elapsedMs": 14.093673
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix27",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14091250,
+            "elapsedMs": 14.09125
+          }
+        ],
+        "replayedAddDeclCount": 591,
+        "replayMapSize": 594,
+        "replayByModule": [
+          {
+            "module": "ProductionSteps",
+            "declarations": 500,
+            "addDeclNs": 3761201421,
+            "addDeclMs": 3761.201421
+          },
+          {
+            "module": "Endianness",
+            "declarations": 22,
+            "addDeclNs": 445202381,
+            "addDeclMs": 445.202381
+          },
+          {
+            "module": "ProductionClaims",
+            "declarations": 5,
+            "addDeclNs": 104628527,
+            "addDeclMs": 104.628527
+          },
+          {
+            "module": "Init.Data.BitVec.Lemmas",
+            "declarations": 13,
+            "addDeclNs": 16342297,
+            "addDeclMs": 16.342297
+          },
+          {
+            "module": "Init.Data.BitVec.Bootstrap",
+            "declarations": 14,
+            "addDeclNs": 10482846,
+            "addDeclMs": 10.482846
+          },
+          {
+            "module": "SourceInputs",
+            "declarations": 1,
+            "addDeclNs": 5152028,
+            "addDeclMs": 5.152028
+          },
+          {
+            "module": "Init.Data.List.Lemmas",
+            "declarations": 11,
+            "addDeclNs": 4500944,
+            "addDeclMs": 4.500944
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 8,
+            "addDeclNs": 2110199,
+            "addDeclMs": 2.110199
+          },
+          {
+            "module": "Init.Data.Fin.Lemmas",
+            "declarations": 8,
+            "addDeclNs": 2010153,
+            "addDeclMs": 2.010153
+          },
+          {
+            "module": "Proof",
+            "declarations": 1,
+            "addDeclNs": 1242031,
+            "addDeclMs": 1.242031
+          },
+          {
+            "module": "Inputs",
+            "declarations": 1,
+            "addDeclNs": 684354,
+            "addDeclMs": 0.684354
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 458190,
+            "addDeclMs": 0.45819
+          },
+          {
+            "module": "InitialCache",
+            "declarations": 2,
+            "addDeclNs": 377937,
+            "addDeclMs": 0.377937
+          },
+          {
+            "module": "Spec",
+            "declarations": 3,
+            "addDeclNs": 273208,
+            "addDeclMs": 0.273208
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4641,
+            "addDeclMs": 0.004641
+          }
+        ],
+        "reachedCount": 2994,
+        "phasesMs": {
+          "verifySourceInventory": 0.798865,
+          "validateGraph": 0.914258,
+          "totalTargetAudit": 5163.220024,
+          "roleAndEdgePolicyCheck": 88.823814,
+          "reachabilityClosures": 126.376386,
+          "postReplayDefEqChecks": 7.048843,
+          "parseRequestFieldsAndArtifacts": 0.361291,
+          "modelAndSpecClosures": 57.982737,
+          "kernelReplayTotal": 4398.40161,
+          "kernelReplayOverhead": 43.730453,
+          "kernelReplayAddDeclCoreSum": 4354.671157,
+          "importTargetMetadataWithExts": 183.115133,
+          "importTargetEnvNoExts": 27.545385,
+          "importFixedMetadataWithExts": 177.514954,
+          "importBaseEnvNoExts": 69.830051,
+          "compilerOverrideChecks": 24.505447
+        },
+        "baseMode": "foundation+trusted_mvp"
+      },
+      "processWallMs": 5256.890696007758,
+      "processUserMs": 4903.676,
+      "processSysMs": 351.84700000000026
+    },
+    "native_foundation_plus_libraries": {
+      "totalMainMs": 5286.05907,
+      "runTargetAuditMs": 5266.359563,
+      "readFileMs": 1.072292,
+      "jsonSerializeAndWriteMs": 16.511361,
+      "jsonParseMs": 2.115854,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "ProductionSteps.be64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 284235360,
+            "elapsedMs": 284.23536
+          },
+          {
+            "name": "ProductionSteps.be8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 280439941,
+            "elapsedMs": 280.439941
+          },
+          {
+            "name": "ProductionSteps.le8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 278130292,
+            "elapsedMs": 278.130292
+          },
+          {
+            "name": "ProductionSteps.le32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 273506383,
+            "elapsedMs": 273.506383
+          },
+          {
+            "name": "ProductionSteps.be32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 267817368,
+            "elapsedMs": 267.817368
+          },
+          {
+            "name": "ProductionSteps.be16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 262446600,
+            "elapsedMs": 262.4466
+          },
+          {
+            "name": "ProductionSteps.le64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 259307448,
+            "elapsedMs": 259.307448
+          },
+          {
+            "name": "ProductionSteps.le16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 258087149,
+            "elapsedMs": 258.087149
+          },
+          {
+            "name": "Endianness.swap64_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 146993614,
+            "elapsedMs": 146.993614
+          },
+          {
+            "name": "ProductionClaims.wellFormed",
+            "module": "ProductionClaims",
+            "kind": "theorem",
+            "elapsedNs": 104689193,
+            "elapsedMs": 104.689193
+          },
+          {
+            "name": "Endianness.swap32_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 95001565,
+            "elapsedMs": 95.001565
+          },
+          {
+            "name": "Endianness.swap16_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 59922905,
+            "elapsedMs": 59.922905
+          },
+          {
+            "name": "Endianness.swap32_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 35304980,
+            "elapsedMs": 35.30498
+          },
+          {
+            "name": "Endianness.swap64_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 34692229,
+            "elapsedMs": 34.692229
+          },
+          {
+            "name": "Endianness.swap16_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 32683622,
+            "elapsedMs": 32.683622
+          },
+          {
+            "name": "Endianness.swap8_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 29213272,
+            "elapsedMs": 29.213272
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix80",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 24059227,
+            "elapsedMs": 24.059227
+          },
+          {
+            "name": "Endianness.swap8_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 23437020,
+            "elapsedMs": 23.43702
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix71",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17596597,
+            "elapsedMs": 17.596597
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix91",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16710426,
+            "elapsedMs": 16.710426
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix82",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16663996,
+            "elapsedMs": 16.663996
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix89",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16179393,
+            "elapsedMs": 16.179393
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix78",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15958020,
+            "elapsedMs": 15.95802
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix69",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15684779,
+            "elapsedMs": 15.684779
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix60",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15465319,
+            "elapsedMs": 15.465319
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix49",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15071209,
+            "elapsedMs": 15.071209
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix27",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14720420,
+            "elapsedMs": 14.72042
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix67",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14572703,
+            "elapsedMs": 14.572703
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix38",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14051836,
+            "elapsedMs": 14.051836
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix93",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 13845429,
+            "elapsedMs": 13.845429
+          }
+        ],
+        "replayedAddDeclCount": 677,
+        "replayMapSize": 746,
+        "replayByModule": [
+          {
+            "module": "ProductionSteps",
+            "declarations": 500,
+            "addDeclNs": 3767847425,
+            "addDeclMs": 3767.847425
+          },
+          {
+            "module": "Endianness",
+            "declarations": 22,
+            "addDeclNs": 460268631,
+            "addDeclMs": 460.268631
+          },
+          {
+            "module": "ProductionClaims",
+            "declarations": 5,
+            "addDeclNs": 108938711,
+            "addDeclMs": 108.938711
+          },
+          {
+            "module": "Trusted.Mvp.Semantics",
+            "declarations": 97,
+            "addDeclNs": 10225868,
+            "addDeclMs": 10.225868
+          },
+          {
+            "module": "SourceInputs",
+            "declarations": 1,
+            "addDeclNs": 5418064,
+            "addDeclMs": 5.418064
+          },
+          {
+            "module": "Trusted.Mvp.Syntax",
+            "declarations": 35,
+            "addDeclNs": 2514649,
+            "addDeclMs": 2.514649
+          },
+          {
+            "module": "Anneal.Mvp.Execution",
+            "declarations": 8,
+            "addDeclNs": 2073482,
+            "addDeclMs": 2.073482
+          },
+          {
+            "module": "Proof",
+            "declarations": 1,
+            "addDeclNs": 1318449,
+            "addDeclMs": 1.318449
+          },
+          {
+            "module": "Inputs",
+            "declarations": 1,
+            "addDeclNs": 727118,
+            "addDeclMs": 0.727118
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 441659,
+            "addDeclMs": 0.441659
+          },
+          {
+            "module": "InitialCache",
+            "declarations": 2,
+            "addDeclNs": 340310,
+            "addDeclMs": 0.34031
+          },
+          {
+            "module": "Spec",
+            "declarations": 3,
+            "addDeclNs": 264588,
+            "addDeclMs": 0.264588
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 4555,
+            "addDeclMs": 0.004555
+          }
+        ],
+        "reachedCount": 2994,
+        "phasesMs": {
+          "verifySourceInventory": 0.77275,
+          "validateGraph": 0.918842,
+          "totalTargetAudit": 5259.122509,
+          "roleAndEdgePolicyCheck": 83.152482,
+          "reachabilityClosures": 125.270796,
+          "postReplayDefEqChecks": 14.652795,
+          "parseRequestFieldsAndArtifacts": 0.363504,
+          "modelAndSpecClosures": 58.64995,
+          "kernelReplayTotal": 4404.295849,
+          "kernelReplayOverhead": 43.91234,
+          "kernelReplayAddDeclCoreSum": 4360.383509,
+          "importTargetMetadataWithExts": 183.210533,
+          "importTargetEnvNoExts": 29.434916,
+          "importFixedMetadataWithExts": 175.806422,
+          "importBaseEnvNoExts": 158.830461,
+          "compilerOverrideChecks": 23.761704
+        },
+        "baseMode": "foundation+libraries"
+      },
+      "processWallMs": 5357.283264980651,
+      "processUserMs": 4948.09,
+      "processSysMs": 408.03600000000006
+    },
+    "native_foundation_plus_mvp": {
+      "totalMainMs": 5215.643679,
+      "runTargetAuditMs": 5195.676023,
+      "readFileMs": 1.102794,
+      "jsonSerializeAndWriteMs": 16.774765,
+      "jsonParseMs": 2.090097,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "ProductionSteps.le64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 292082904,
+            "elapsedMs": 292.082904
+          },
+          {
+            "name": "ProductionSteps.be32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 270805344,
+            "elapsedMs": 270.805344
+          },
+          {
+            "name": "ProductionSteps.le16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 269384718,
+            "elapsedMs": 269.384718
+          },
+          {
+            "name": "ProductionSteps.le32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 268735077,
+            "elapsedMs": 268.735077
+          },
+          {
+            "name": "ProductionSteps.be8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 267407968,
+            "elapsedMs": 267.407968
+          },
+          {
+            "name": "ProductionSteps.le8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 265016202,
+            "elapsedMs": 265.016202
+          },
+          {
+            "name": "ProductionSteps.be64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 259875608,
+            "elapsedMs": 259.875608
+          },
+          {
+            "name": "ProductionSteps.be16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 254578622,
+            "elapsedMs": 254.578622
+          },
+          {
+            "name": "Endianness.swap64_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 141006116,
+            "elapsedMs": 141.006116
+          },
+          {
+            "name": "ProductionClaims.wellFormed",
+            "module": "ProductionClaims",
+            "kind": "theorem",
+            "elapsedNs": 102492198,
+            "elapsedMs": 102.492198
+          },
+          {
+            "name": "Endianness.swap32_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 93159179,
+            "elapsedMs": 93.159179
+          },
+          {
+            "name": "Endianness.swap16_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 57576411,
+            "elapsedMs": 57.576411
+          },
+          {
+            "name": "Endianness.swap32_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 35708088,
+            "elapsedMs": 35.708088
+          },
+          {
+            "name": "Endianness.swap64_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 35122671,
+            "elapsedMs": 35.122671
+          },
+          {
+            "name": "Endianness.swap16_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 31102694,
+            "elapsedMs": 31.102694
+          },
+          {
+            "name": "Endianness.swap8_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 29583660,
+            "elapsedMs": 29.58366
+          },
+          {
+            "name": "Endianness.swap8_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 23695104,
+            "elapsedMs": 23.695104
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix71",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 17350073,
+            "elapsedMs": 17.350073
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix91",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16295077,
+            "elapsedMs": 16.295077
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix89",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16010735,
+            "elapsedMs": 16.010735
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix82",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15960105,
+            "elapsedMs": 15.960105
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix60",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15543962,
+            "elapsedMs": 15.543962
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix80",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15529172,
+            "elapsedMs": 15.529172
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix69",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15322912,
+            "elapsedMs": 15.322912
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix78",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15094565,
+            "elapsedMs": 15.094565
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix49",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14879274,
+            "elapsedMs": 14.879274
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix38",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14552907,
+            "elapsedMs": 14.552907
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix67",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14495624,
+            "elapsedMs": 14.495624
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix27",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14443749,
+            "elapsedMs": 14.443749
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix58",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 13925715,
+            "elapsedMs": 13.925715
+          }
+        ],
+        "replayedAddDeclCount": 537,
+        "replayMapSize": 537,
+        "replayByModule": [
+          {
+            "module": "ProductionSteps",
+            "declarations": 500,
+            "addDeclNs": 3723182699,
+            "addDeclMs": 3723.182699
+          },
+          {
+            "module": "Endianness",
+            "declarations": 22,
+            "addDeclNs": 449881697,
+            "addDeclMs": 449.881697
+          },
+          {
+            "module": "ProductionClaims",
+            "declarations": 5,
+            "addDeclNs": 106691696,
+            "addDeclMs": 106.691696
+          },
+          {
+            "module": "SourceInputs",
+            "declarations": 1,
+            "addDeclNs": 5407338,
+            "addDeclMs": 5.407338
+          },
+          {
+            "module": "Proof",
+            "declarations": 1,
+            "addDeclNs": 1289360,
+            "addDeclMs": 1.28936
+          },
+          {
+            "module": "Inputs",
+            "declarations": 1,
+            "addDeclNs": 710258,
+            "addDeclMs": 0.710258
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 454992,
+            "addDeclMs": 0.454992
+          },
+          {
+            "module": "InitialCache",
+            "declarations": 2,
+            "addDeclNs": 352416,
+            "addDeclMs": 0.352416
+          },
+          {
+            "module": "Spec",
+            "declarations": 3,
+            "addDeclNs": 275582,
+            "addDeclMs": 0.275582
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 6674,
+            "addDeclMs": 0.006674
+          }
+        ],
+        "reachedCount": 2994,
+        "phasesMs": {
+          "verifySourceInventory": 0.842467,
+          "validateGraph": 0.912516,
+          "totalTargetAudit": 5188.528023,
+          "roleAndEdgePolicyCheck": 83.655018,
+          "reachabilityClosures": 128.887811,
+          "postReplayDefEqChecks": 15.401527,
+          "parseRequestFieldsAndArtifacts": 0.357636,
+          "modelAndSpecClosures": 58.629079,
+          "kernelReplayTotal": 4328.771153,
+          "kernelReplayOverhead": 40.518441,
+          "kernelReplayAddDeclCoreSum": 4288.252712,
+          "importTargetMetadataWithExts": 182.286077,
+          "importTargetEnvNoExts": 35.03647,
+          "importFixedMetadataWithExts": 172.986056,
+          "importBaseEnvNoExts": 156.979257,
+          "compilerOverrideChecks": 23.781938
+        },
+        "baseMode": "foundation+mvp"
+      },
+      "processWallMs": 5287.364969961345,
+      "processUserMs": 4878.107999999997,
+      "processSysMs": 408.08100000000013
+    },
+    "native_foundation_plus_mvp_no_meta_reload": {
+      "totalMainMs": 4804.22354,
+      "runTargetAuditMs": 4784.716524,
+      "readFileMs": 1.102192,
+      "jsonSerializeAndWriteMs": 16.303244,
+      "jsonParseMs": 2.10158,
+      "auditBreakdown": {
+        "top30SlowestDeclarations": [
+          {
+            "name": "ProductionSteps.le8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 279657335,
+            "elapsedMs": 279.657335
+          },
+          {
+            "name": "ProductionSteps.le16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 275332133,
+            "elapsedMs": 275.332133
+          },
+          {
+            "name": "ProductionSteps.be64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 269705666,
+            "elapsedMs": 269.705666
+          },
+          {
+            "name": "ProductionSteps.le32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 269244523,
+            "elapsedMs": 269.244523
+          },
+          {
+            "name": "ProductionSteps.be8",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 268383667,
+            "elapsedMs": 268.383667
+          },
+          {
+            "name": "ProductionSteps.be32",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 265010249,
+            "elapsedMs": 265.010249
+          },
+          {
+            "name": "ProductionSteps.le64",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 259761487,
+            "elapsedMs": 259.761487
+          },
+          {
+            "name": "ProductionSteps.be16",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 255612922,
+            "elapsedMs": 255.612922
+          },
+          {
+            "name": "Endianness.swap64_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 144118443,
+            "elapsedMs": 144.118443
+          },
+          {
+            "name": "ProductionClaims.wellFormed",
+            "module": "ProductionClaims",
+            "kind": "theorem",
+            "elapsedNs": 102055731,
+            "elapsedMs": 102.055731
+          },
+          {
+            "name": "Endianness.swap32_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 92583946,
+            "elapsedMs": 92.583946
+          },
+          {
+            "name": "Endianness.swap16_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 56459481,
+            "elapsedMs": 56.459481
+          },
+          {
+            "name": "Endianness.swap64_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 36910362,
+            "elapsedMs": 36.910362
+          },
+          {
+            "name": "Endianness.swap32_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 34473191,
+            "elapsedMs": 34.473191
+          },
+          {
+            "name": "Endianness.swap16_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 30275746,
+            "elapsedMs": 30.275746
+          },
+          {
+            "name": "Endianness.swap8_involutive",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 29106622,
+            "elapsedMs": 29.106622
+          },
+          {
+            "name": "Endianness.swap8_exact",
+            "module": "Endianness",
+            "kind": "theorem",
+            "elapsedNs": 23542609,
+            "elapsedMs": 23.542609
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix71",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16537712,
+            "elapsedMs": 16.537712
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix91",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 16276263,
+            "elapsedMs": 16.276263
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix89",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15938772,
+            "elapsedMs": 15.938772
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix82",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15937401,
+            "elapsedMs": 15.937401
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix69",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15576540,
+            "elapsedMs": 15.57654
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix60",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15551622,
+            "elapsedMs": 15.551622
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix80",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 15235317,
+            "elapsedMs": 15.235317
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix49",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14942913,
+            "elapsedMs": 14.942913
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix78",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14893626,
+            "elapsedMs": 14.893626
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix56",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14360993,
+            "elapsedMs": 14.360993
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix38",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14066491,
+            "elapsedMs": 14.066491
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix93",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 14052015,
+            "elapsedMs": 14.052015
+          },
+          {
+            "name": "_private.ProductionSteps.0.ProductionSteps.be64_suffix67",
+            "module": "ProductionSteps",
+            "kind": "theorem",
+            "elapsedNs": 13950437,
+            "elapsedMs": 13.950437
+          }
+        ],
+        "replayedAddDeclCount": 537,
+        "replayMapSize": 537,
+        "replayByModule": [
+          {
+            "module": "ProductionSteps",
+            "declarations": 500,
+            "addDeclNs": 3699833264,
+            "addDeclMs": 3699.833264
+          },
+          {
+            "module": "Endianness",
+            "declarations": 22,
+            "addDeclNs": 450354028,
+            "addDeclMs": 450.354028
+          },
+          {
+            "module": "ProductionClaims",
+            "declarations": 5,
+            "addDeclNs": 106285464,
+            "addDeclMs": 106.285464
+          },
+          {
+            "module": "SourceInputs",
+            "declarations": 1,
+            "addDeclNs": 5321022,
+            "addDeclMs": 5.321022
+          },
+          {
+            "module": "Proof",
+            "declarations": 1,
+            "addDeclNs": 1285576,
+            "addDeclMs": 1.285576
+          },
+          {
+            "module": "Inputs",
+            "declarations": 1,
+            "addDeclNs": 719323,
+            "addDeclMs": 0.719323
+          },
+          {
+            "module": "Captured",
+            "declarations": 1,
+            "addDeclNs": 466039,
+            "addDeclMs": 0.466039
+          },
+          {
+            "module": "InitialCache",
+            "declarations": 2,
+            "addDeclNs": 363000,
+            "addDeclMs": 0.363
+          },
+          {
+            "module": "Spec",
+            "declarations": 3,
+            "addDeclNs": 277219,
+            "addDeclMs": 0.277219
+          },
+          {
+            "module": "Expected",
+            "declarations": 1,
+            "addDeclNs": 5417,
+            "addDeclMs": 0.005417
+          }
+        ],
+        "reachedCount": 2994,
+        "phasesMs": {
+          "verifySourceInventory": 0.745408,
+          "validateGraph": 0.887393,
+          "totalTargetAudit": 4777.660041,
+          "roleAndEdgePolicyCheck": 84.226671,
+          "reachabilityClosures": 126.246992,
+          "postReplayDefEqChecks": 14.836051,
+          "parseRequestFieldsAndArtifacts": 0.364566,
+          "modelAndSpecClosures": 59.417084,
+          "kernelReplayTotal": 4305.540918,
+          "kernelReplayOverhead": 40.630566,
+          "kernelReplayAddDeclCoreSum": 4264.910352,
+          "importTargetMetadataWithExts": 0,
+          "importTargetEnvNoExts": 27.274087,
+          "importFixedMetadataWithExts": 0,
+          "importBaseEnvNoExts": 158.11963,
+          "compilerOverrideChecks": 0
+        },
+        "baseMode": "foundation+mvp"
+      },
+      "processWallMs": 4856.457163929008,
+      "processUserMs": 4683.5740000000005,
+      "processSysMs": 171.9849999999994
+    }
+  }
+}

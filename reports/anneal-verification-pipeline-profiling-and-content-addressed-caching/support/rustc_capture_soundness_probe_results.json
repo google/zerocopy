@@ -1,0 +1,134 @@
+{
+  "S1_unselected_borrowck_error": {
+    "B0_baseline": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B3_stop_after_analysis": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B4_select_only_borrowck": {
+      "exit_code": 0,
+      "status": "captured"
+    },
+    "B5_select_coherence_plus_root": {
+      "exit_code": 0,
+      "status": "captured"
+    },
+    "B6_select_pure_root": {
+      "exit_code": 0,
+      "status": "captured"
+    }
+  },
+  "S2_unselected_typeck_error": {
+    "B0_baseline": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B3_stop_after_analysis": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B4_select_only_borrowck": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B5_select_coherence_plus_root": {
+      "exit_code": 0,
+      "status": "captured"
+    },
+    "B6_select_pure_root": {
+      "exit_code": 0,
+      "status": "captured"
+    }
+  },
+  "S3_unselected_coherence_overlap": {
+    "B0_baseline": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B3_stop_after_analysis": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B4_select_only_borrowck": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B5_select_coherence_plus_root": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B6_select_pure_root": {
+      "exit_code": 0,
+      "status": "captured"
+    }
+  },
+  "S4_unselected_const_eval_panic": {
+    "B0_baseline": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B3_stop_after_analysis": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B4_select_only_borrowck": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B5_select_coherence_plus_root": {
+      "exit_code": 0,
+      "status": "captured"
+    },
+    "B6_select_pure_root": {
+      "exit_code": 0,
+      "status": "captured"
+    }
+  },
+  "S5_deny_unused_features_gate": {
+    "B0_baseline": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B3_stop_after_analysis": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B4_select_only_borrowck": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B5_select_coherence_plus_root": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B6_select_pure_root": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    }
+  },
+  "S6_deny_dead_code_lint": {
+    "B0_baseline": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B3_stop_after_analysis": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B4_select_only_borrowck": {
+      "exit_code": 1,
+      "status": "compiler_failed"
+    },
+    "B5_select_coherence_plus_root": {
+      "exit_code": 0,
+      "status": "captured"
+    },
+    "B6_select_pure_root": {
+      "exit_code": 0,
+      "status": "captured"
+    }
+  }
+}

@@ -1,0 +1,410 @@
+{
+  "scalar": {
+    "headers": {
+      "i_lean_run_source": {
+        "runs": 3,
+        "wall_ms_median": 2690.4992709169164,
+        "wall_ms_mean": 2674.941500648856,
+        "wall_ms_min": 2633.9679380180314,
+        "user_ms_median": 2482.181,
+        "sys_ms_median": 196.71399999999994,
+        "samples_wall_ms": [
+          2633.97,
+          2700.36,
+          2690.5
+        ]
+      },
+      "ii_a_lean_run_source_with_adjacent_olean": {
+        "runs": 3,
+        "wall_ms_median": 2598.217722028494,
+        "wall_ms_mean": 2625.704899740716,
+        "wall_ms_min": 2557.0165790850297,
+        "user_ms_median": 2453.8759999999975,
+        "sys_ms_median": 160.17600000000033,
+        "samples_wall_ms": [
+          2557.02,
+          2721.88,
+          2598.22
+        ]
+      },
+      "ii_b_precompiled_olean_vm": {
+        "runs": 3,
+        "wall_ms_median": 343.145685037598,
+        "wall_ms_mean": 341.26145594442886,
+        "wall_ms_min": 329.2713878909126,
+        "user_ms_median": 204.9870000000027,
+        "sys_ms_median": 140.70800000000006,
+        "samples_wall_ms": [
+          343.15,
+          351.37,
+          329.27
+        ]
+      },
+      "ii_c_precompiled_olean_dynlib": {
+        "runs": 3,
+        "wall_ms_median": 337.746748002246,
+        "wall_ms_mean": 329.31714167352766,
+        "wall_ms_min": 309.52404299750924,
+        "user_ms_median": 231.76699999999784,
+        "sys_ms_median": 104.40299999999958,
+        "samples_wall_ms": [
+          337.75,
+          340.68,
+          309.52
+        ]
+      },
+      "iii_native_executable": {
+        "runs": 3,
+        "wall_ms_median": 43.28846302814782,
+        "wall_ms_mean": 43.61637099646032,
+        "wall_ms_min": 42.84246196039021,
+        "user_ms_median": 34.99300000000005,
+        "sys_ms_median": 7.776000000001559,
+        "samples_wall_ms": [
+          44.72,
+          43.29,
+          42.84
+        ]
+      }
+    },
+    "target_audit": {
+      "i_lean_run_source": {
+        "runs": 3,
+        "wall_ms_median": 3794.562626047991,
+        "wall_ms_mean": 3815.037302013176,
+        "wall_ms_min": 3787.395086954348,
+        "user_ms_median": 3284.382000000001,
+        "sys_ms_median": 523.6929999999998,
+        "samples_wall_ms": [
+          3863.15,
+          3787.4,
+          3794.56
+        ]
+      },
+      "ii_a_lean_run_source_with_adjacent_olean": {
+        "runs": 3,
+        "wall_ms_median": 3932.3913960251957,
+        "wall_ms_mean": 3922.4526622953513,
+        "wall_ms_min": 3885.382375912741,
+        "user_ms_median": 3383.042000000003,
+        "sys_ms_median": 533.0969999999998,
+        "samples_wall_ms": [
+          3885.38,
+          3932.39,
+          3949.58
+        ]
+      },
+      "ii_b_precompiled_olean_vm": {
+        "runs": 3,
+        "wall_ms_median": 1604.0792380226776,
+        "wall_ms_mean": 1591.22972698727,
+        "wall_ms_min": 1562.1016509830952,
+        "user_ms_median": 1079.3800000000006,
+        "sys_ms_median": 516.4400000000003,
+        "samples_wall_ms": [
+          1604.08,
+          1607.51,
+          1562.1
+        ]
+      },
+      "ii_c_precompiled_olean_dynlib": {
+        "runs": 3,
+        "wall_ms_median": 1545.9936809493229,
+        "wall_ms_mean": 1582.879808653767,
+        "wall_ms_min": 1533.9956399984658,
+        "user_ms_median": 1048.2750000000037,
+        "sys_ms_median": 504.5110000000008,
+        "samples_wall_ms": [
+          1545.99,
+          1668.65,
+          1534.0
+        ]
+      },
+      "iii_native_executable": {
+        "runs": 3,
+        "wall_ms_median": 838.2458010455593,
+        "wall_ms_mean": 837.0277173429107,
+        "wall_ms_min": 831.0274459654465,
+        "user_ms_median": 582.0550000000039,
+        "sys_ms_median": 250.38799999999918,
+        "samples_wall_ms": [
+          838.25,
+          841.81,
+          831.03
+        ]
+      }
+    }
+  },
+  "spin": {
+    "headers": {
+      "i_lean_run_source": {
+        "runs": 3,
+        "wall_ms_median": 2627.560172928497,
+        "wall_ms_mean": 2613.3481096088267,
+        "wall_ms_min": 2562.183297937736,
+        "user_ms_median": 2502.0169999999953,
+        "sys_ms_median": 140.18700000000095,
+        "samples_wall_ms": [
+          2627.56,
+          2562.18,
+          2650.3
+        ]
+      },
+      "ii_a_lean_run_source_with_adjacent_olean": {
+        "runs": 3,
+        "wall_ms_median": 2591.540139983408,
+        "wall_ms_mean": 2592.0917139931894,
+        "wall_ms_min": 2588.7683569453657,
+        "user_ms_median": 2448.9399999999932,
+        "sys_ms_median": 160.3330000000014,
+        "samples_wall_ms": [
+          2595.97,
+          2588.77,
+          2591.54
+        ]
+      },
+      "ii_b_precompiled_olean_vm": {
+        "runs": 3,
+        "wall_ms_median": 340.05734708625823,
+        "wall_ms_mean": 340.20683099515736,
+        "wall_ms_min": 336.8404929060489,
+        "user_ms_median": 211.31300000000408,
+        "sys_ms_median": 131.2129999999989,
+        "samples_wall_ms": [
+          343.72,
+          340.06,
+          336.84
+        ]
+      },
+      "ii_c_precompiled_olean_dynlib": {
+        "runs": 3,
+        "wall_ms_median": 324.1091159870848,
+        "wall_ms_mean": 322.20417831558734,
+        "wall_ms_min": 316.41668698284775,
+        "user_ms_median": 203.94699999999943,
+        "sys_ms_median": 119.05800000000077,
+        "samples_wall_ms": [
+          326.09,
+          324.11,
+          316.42
+        ]
+      },
+      "iii_native_executable": {
+        "runs": 3,
+        "wall_ms_median": 42.524119024164975,
+        "wall_ms_mean": 42.34290635213256,
+        "wall_ms_min": 41.63881600834429,
+        "user_ms_median": 37.40399999999511,
+        "sys_ms_median": 4.156000000001825,
+        "samples_wall_ms": [
+          42.87,
+          42.52,
+          41.64
+        ]
+      }
+    },
+    "target_audit": {
+      "i_lean_run_source": {
+        "runs": 3,
+        "wall_ms_median": 3880.50585007295,
+        "wall_ms_mean": 3978.0276090217135,
+        "wall_ms_min": 3854.509916040115,
+        "user_ms_median": 3391.629999999999,
+        "sys_ms_median": 545.2189999999995,
+        "samples_wall_ms": [
+          4199.07,
+          3880.51,
+          3854.51
+        ]
+      },
+      "ii_a_lean_run_source_with_adjacent_olean": {
+        "runs": 3,
+        "wall_ms_median": 3839.306617039256,
+        "wall_ms_mean": 3841.9115300057456,
+        "wall_ms_min": 3834.999645012431,
+        "user_ms_median": 3315.7679999999914,
+        "sys_ms_median": 532.762,
+        "samples_wall_ms": [
+          3851.43,
+          3839.31,
+          3835.0
+        ]
+      },
+      "ii_b_precompiled_olean_vm": {
+        "runs": 3,
+        "wall_ms_median": 1532.23104798235,
+        "wall_ms_mean": 1541.0938373145957,
+        "wall_ms_min": 1525.358879007399,
+        "user_ms_median": 1079.5719999999988,
+        "sys_ms_median": 448.15399999999886,
+        "samples_wall_ms": [
+          1532.23,
+          1565.69,
+          1525.36
+        ]
+      },
+      "ii_c_precompiled_olean_dynlib": {
+        "runs": 3,
+        "wall_ms_median": 1576.1392880231142,
+        "wall_ms_mean": 1569.4881960128744,
+        "wall_ms_min": 1522.4818940041587,
+        "user_ms_median": 1106.313,
+        "sys_ms_median": 468.5959999999998,
+        "samples_wall_ms": [
+          1522.48,
+          1609.84,
+          1576.14
+        ]
+      },
+      "iii_native_executable": {
+        "runs": 3,
+        "wall_ms_median": 876.5618050238118,
+        "wall_ms_mean": 875.1977283585196,
+        "wall_ms_min": 872.2161210607737,
+        "user_ms_median": 600.088999999997,
+        "sys_ms_median": 272.0279999999988,
+        "samples_wall_ms": [
+          872.22,
+          876.56,
+          876.82
+        ]
+      }
+    }
+  },
+  "starnix": {
+    "headers": {
+      "i_lean_run_source": {
+        "runs": 3,
+        "wall_ms_median": 2644.2196359857917,
+        "wall_ms_mean": 2634.1583359753713,
+        "wall_ms_min": 2566.4507009787485,
+        "user_ms_median": 2506.2300000000023,
+        "sys_ms_median": 152.86800000000156,
+        "samples_wall_ms": [
+          2566.45,
+          2644.22,
+          2691.8
+        ]
+      },
+      "ii_a_lean_run_source_with_adjacent_olean": {
+        "runs": 3,
+        "wall_ms_median": 2586.2900499487296,
+        "wall_ms_mean": 2595.92715134689,
+        "wall_ms_min": 2565.4617140535265,
+        "user_ms_median": 2471.163000000004,
+        "sys_ms_median": 160.4750000000017,
+        "samples_wall_ms": [
+          2586.29,
+          2565.46,
+          2636.03
+        ]
+      },
+      "ii_b_precompiled_olean_vm": {
+        "runs": 3,
+        "wall_ms_median": 330.69901703856885,
+        "wall_ms_mean": 329.5023769993956,
+        "wall_ms_min": 326.98085193987936,
+        "user_ms_median": 215.00199999999836,
+        "sys_ms_median": 115.45699999999925,
+        "samples_wall_ms": [
+          330.83,
+          330.7,
+          326.98
+        ]
+      },
+      "ii_c_precompiled_olean_dynlib": {
+        "runs": 3,
+        "wall_ms_median": 311.92216102499515,
+        "wall_ms_mean": 313.63612234902877,
+        "wall_ms_min": 310.6089379871264,
+        "user_ms_median": 218.8199999999938,
+        "sys_ms_median": 99.40999999999889,
+        "samples_wall_ms": [
+          318.38,
+          310.61,
+          311.92
+        ]
+      },
+      "iii_native_executable": {
+        "runs": 3,
+        "wall_ms_median": 46.97686596773565,
+        "wall_ms_mean": 55.27589602085451,
+        "wall_ms_min": 46.7490820446983,
+        "user_ms_median": 34.986000000003514,
+        "sys_ms_median": 11.662000000001171,
+        "samples_wall_ms": [
+          72.1,
+          46.75,
+          46.98
+        ]
+      }
+    },
+    "target_audit": {
+      "i_lean_run_source": {
+        "runs": 3,
+        "wall_ms_median": 9030.274125980213,
+        "wall_ms_mean": 9066.044452638986,
+        "wall_ms_min": 9015.18413797021,
+        "user_ms_median": 8400.59699999999,
+        "sys_ms_median": 628.3519999999996,
+        "samples_wall_ms": [
+          9030.27,
+          9152.68,
+          9015.18
+        ]
+      },
+      "ii_a_lean_run_source_with_adjacent_olean": {
+        "runs": 3,
+        "wall_ms_median": 9203.516818000935,
+        "wall_ms_mean": 9224.031403311528,
+        "wall_ms_min": 9056.779152946547,
+        "user_ms_median": 8630.728000000005,
+        "sys_ms_median": 584.2010000000002,
+        "samples_wall_ms": [
+          9056.78,
+          9203.52,
+          9411.8
+        ]
+      },
+      "ii_b_precompiled_olean_vm": {
+        "runs": 3,
+        "wall_ms_median": 6944.754772935994,
+        "wall_ms_mean": 7018.161503326458,
+        "wall_ms_min": 6827.562985010445,
+        "user_ms_median": 6362.949000000015,
+        "sys_ms_median": 579.9489999999992,
+        "samples_wall_ms": [
+          7282.17,
+          6944.75,
+          6827.56
+        ]
+      },
+      "ii_c_precompiled_olean_dynlib": {
+        "runs": 3,
+        "wall_ms_median": 6833.600301062688,
+        "wall_ms_mean": 6844.14458333049,
+        "wall_ms_min": 6827.714261016808,
+        "user_ms_median": 6261.266000000006,
+        "sys_ms_median": 563.7139999999974,
+        "samples_wall_ms": [
+          6833.6,
+          6871.12,
+          6827.71
+        ]
+      },
+      "iii_native_executable": {
+        "runs": 3,
+        "wall_ms_median": 5671.903686015867,
+        "wall_ms_mean": 5697.241628697763,
+        "wall_ms_min": 5655.80770210363,
+        "user_ms_median": 5347.229999999996,
+        "sys_ms_median": 335.91499999999996,
+        "samples_wall_ms": [
+          5671.9,
+          5764.01,
+          5655.81
+        ]
+      }
+    }
+  }
+}

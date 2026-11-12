@@ -6618,6 +6618,62 @@
         "lean/verification"
       ]
     },
+    "anneal-verification-pipeline-profiling-and-content-addressed-caching": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "linux_x86_64_archive_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 compiler, elaborator, module system, and kernel"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly compiler (rustc_driver, rustc_interface, and Runtime(PostCleanup) MIR)"
+        },
+        {
+          "identity": {
+            "path": "src/starnix/lib/ebpf/core/src",
+            "repository": "fuchsia/fuchsia",
+            "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
+          },
+          "name": "Fuchsia Starnix ebpf_core production crate (apply_endianness)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+          },
+          "name": "Anneal scalar MIR verification pipeline, capture driver, and compiled-environment boundary auditor"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "anneal/audit",
+        "anneal/mir-pipeline",
+        "anneal/rustc-capture",
+        "anneal/trusted-boundary",
+        "build/caching",
+        "build/hermeticity",
+        "lean/elaboration",
+        "lean/kernel",
+        "lean/kernel-replay",
+        "lean/module-system",
+        "lean/olean",
+        "rustc/driver",
+        "rustc/mir",
+        "verification/program-verification"
+      ]
+    },
     "anssa-block-argument-ssa-mem2reg-and-mir-semantic-hazards-2026": {
       "observed_at": "2026-10-30",
       "subjects": [

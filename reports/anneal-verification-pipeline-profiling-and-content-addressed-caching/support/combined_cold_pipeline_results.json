@@ -1,0 +1,198 @@
+{
+  "starnix_combined_cold": {
+    "dag_waves": [
+      {
+        "wave": 1,
+        "modules": [
+          "Captured",
+          "Endianness",
+          "Inputs"
+        ],
+        "wall_ms": 1124.98
+      },
+      {
+        "wave": 2,
+        "modules": [
+          "Spec",
+          "SourceInputs",
+          "InitialCache",
+          "ProductionSteps"
+        ],
+        "wall_ms": 2498.37
+      },
+      {
+        "wave": 3,
+        "modules": [
+          "Expected",
+          "ProductionClaims"
+        ],
+        "wall_ms": 382.81
+      },
+      {
+        "wave": 4,
+        "modules": [
+          "Proof"
+        ],
+        "wall_ms": 133.07
+      }
+    ],
+    "module_compile_ms": {
+      "Captured": 281.88,
+      "Endianness": 1123.14,
+      "Inputs": 126.98,
+      "Spec": 147.58,
+      "SourceInputs": 283.87,
+      "InitialCache": 120.94,
+      "ProductionSteps": 2496.27,
+      "Expected": 118.73,
+      "ProductionClaims": 381.89,
+      "Proof": 132.56
+    },
+    "total_dag_compile_wall_ms": 4139.27,
+    "sum_module_compile_ms": 5213.84,
+    "target_audit": {
+      "native_foundation": {
+        "wall_ms": 3128.87,
+        "ok": true,
+        "exactType": true,
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "replayMapSize": 1228,
+        "kernelReplayTotalMs": 2325.2,
+        "addDeclCoreSumMs": 2268.85,
+        "phasesMs": {
+          "verifySourceInventory": 0.513566,
+          "validateGraph": 0.90521,
+          "totalTargetAudit": 3033.980691,
+          "roleAndEdgePolicyCheck": 63.507326,
+          "reachabilityClosures": 104.881463,
+          "postReplayDefEqChecks": 4.603851,
+          "parseRequestFieldsAndArtifacts": 0.378751,
+          "modelAndSpecClosures": 58.688053,
+          "kernelReplayTotal": 2325.203744,
+          "kernelReplayOverhead": 56.354389,
+          "kernelReplayAddDeclCoreSum": 2268.849355,
+          "importTargetMetadataWithExts": 189.798649,
+          "importTargetEnvNoExts": 30.691549,
+          "importFixedMetadataWithExts": 182.889739,
+          "importBaseEnvNoExts": 48.031588,
+          "compilerOverrideChecks": 23.885851
+        }
+      },
+      "native_foundation_plus_mvp_no_meta_reload": {
+        "wall_ms": 2407.88,
+        "ok": true,
+        "exactType": true,
+        "axioms": [
+          "propext",
+          "Classical.choice",
+          "Quot.sound"
+        ],
+        "replayMapSize": 109,
+        "kernelReplayTotalMs": 1884.87,
+        "addDeclCoreSumMs": 1863.47,
+        "phasesMs": {
+          "verifySourceInventory": 0.522851,
+          "validateGraph": 0.898353,
+          "totalTargetAudit": 2326.142245,
+          "roleAndEdgePolicyCheck": 62.40895,
+          "reachabilityClosures": 105.374889,
+          "postReplayDefEqChecks": 15.603666,
+          "parseRequestFieldsAndArtifacts": 0.37454,
+          "modelAndSpecClosures": 60.587442,
+          "kernelReplayTotal": 1884.868097,
+          "kernelReplayOverhead": 21.401627,
+          "kernelReplayAddDeclCoreSum": 1863.46647,
+          "importTargetMetadataWithExts": 0,
+          "importTargetEnvNoExts": 29.215527,
+          "importFixedMetadataWithExts": 0,
+          "importBaseEnvNoExts": 166.286541,
+          "compilerOverrideChecks": 0
+        }
+      }
+    }
+  },
+  "scalar_combined_cold": {
+    "dag_waves": [
+      {
+        "wave": 1,
+        "modules": [
+          "Captured",
+          "Spec"
+        ],
+        "wall_ms": 93.96
+      },
+      {
+        "wave": 2,
+        "modules": [
+          "Expected"
+        ],
+        "wall_ms": 86.26
+      },
+      {
+        "wave": 3,
+        "modules": [
+          "Proof"
+        ],
+        "wall_ms": 147.01
+      }
+    ],
+    "module_compile_ms": {
+      "Captured": 93.38,
+      "Spec": 92.52,
+      "Expected": 85.75,
+      "Proof": 146.44
+    },
+    "total_dag_compile_wall_ms": 327.25,
+    "target_audit": {
+      "wall_ms": 416.04,
+      "ok": true,
+      "exactType": true,
+      "replayMapSize": 8,
+      "kernelReplayTotalMs": 5.75
+    }
+  },
+  "spin_combined_cold": {
+    "dag_waves": [
+      {
+        "wave": 1,
+        "modules": [
+          "Captured",
+          "Spec"
+        ],
+        "wall_ms": 99.93
+      },
+      {
+        "wave": 2,
+        "modules": [
+          "Expected"
+        ],
+        "wall_ms": 87.52
+      },
+      {
+        "wave": 3,
+        "modules": [
+          "Proof"
+        ],
+        "wall_ms": 182.26
+      }
+    ],
+    "module_compile_ms": {
+      "Captured": 99.35,
+      "Spec": 95.38,
+      "Expected": 87.01,
+      "Proof": 181.73
+    },
+    "total_dag_compile_wall_ms": 369.73,
+    "target_audit": {
+      "wall_ms": 439.51,
+      "ok": true,
+      "exactType": true,
+      "replayMapSize": 22,
+      "kernelReplayTotalMs": 21.59
+    }
+  }
+}
