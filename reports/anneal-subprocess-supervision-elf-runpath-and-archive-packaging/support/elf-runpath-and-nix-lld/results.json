@@ -1,0 +1,211 @@
+{
+  "synthetic_five_cell_dl_load_matrix": [
+    {
+      "cell": "1_main_runpath_leaf_runpath_uncolocated",
+      "main_tags": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libmid.so",
+          "libc.so.6"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib_main:$ORIGIN/../lib_dep"
+      },
+      "leaf_tags": {
+        "interp": null,
+        "needed": [
+          "libdep.so"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN"
+      },
+      "exit_code": 127,
+      "stdout": "",
+      "stderr_contains_libdep_missing": true
+    },
+    {
+      "cell": "2_main_rpath_blocked_by_leaf_runpath",
+      "main_tags": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libmid.so",
+          "libc.so.6"
+        ],
+        "dt_rpath": "$ORIGIN/../lib_main:$ORIGIN/../lib_dep",
+        "dt_runpath": null
+      },
+      "leaf_tags": {
+        "interp": null,
+        "needed": [
+          "libdep.so"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN"
+      },
+      "exit_code": 127,
+      "stdout": "",
+      "stderr_contains_libdep_missing": true
+    },
+    {
+      "cell": "3_main_rpath_succeeds_when_leaf_has_no_runpath",
+      "main_tags": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libmid.so",
+          "libc.so.6"
+        ],
+        "dt_rpath": "$ORIGIN/../lib_main:$ORIGIN/../lib_dep",
+        "dt_runpath": null
+      },
+      "leaf_tags": {
+        "interp": null,
+        "needed": [
+          "libdep.so"
+        ],
+        "dt_rpath": "$ORIGIN",
+        "dt_runpath": null
+      },
+      "exit_code": 0,
+      "stdout": "44",
+      "stderr_contains_libdep_missing": false
+    },
+    {
+      "cell": "4_consumer_add_needed_on_main",
+      "main_tags": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libdep.so",
+          "libmid.so",
+          "libc.so.6"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib_main:$ORIGIN/../lib_dep"
+      },
+      "leaf_tags": {
+        "interp": null,
+        "needed": [
+          "libdep.so"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN"
+      },
+      "exit_code": 0,
+      "stdout": "44",
+      "stderr_contains_libdep_missing": false
+    },
+    {
+      "cell": "5_producer_colocation_in_leaf_runpath_without_add_needed",
+      "main_tags": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libmid.so",
+          "libc.so.6"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib_main"
+      },
+      "leaf_tags": {
+        "interp": null,
+        "needed": [
+          "libdep.so"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN"
+      },
+      "exit_code": 0,
+      "stdout": "44",
+      "stderr_contains_libdep_missing": false
+    }
+  ],
+  "rust_toolchain_and_nix_lld": {
+    "duplicate_shared_objects": {
+      "libllvm_size_bytes": 199489904,
+      "libllvm_top_sha256": "10b13617cc45091d9707991b67fda2993cbaece5c55165a9d055d0403233d481",
+      "libllvm_rustlib_sha256": "10b13617cc45091d9707991b67fda2993cbaece5c55165a9d055d0403233d481",
+      "librustc_driver_size_bytes": 158109664,
+      "librustc_driver_top_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+      "librustc_driver_rustlib_sha256": "1f3ac5968782c12fbf9df6701ed5915242abb8455044e5dac8ab2a68fd155547",
+      "total_duplicate_bytes": 357599568
+    },
+    "upstream_rust_elf_tags": {
+      "rustc": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "librustc_driver-5d5a3c5207375ffc.so",
+          "libdl.so.2",
+          "librt.so.1",
+          "libpthread.so.0",
+          "libc.so.6"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib"
+      },
+      "librustc_driver": {
+        "interp": null,
+        "needed": [
+          "libdl.so.2",
+          "libLLVM.so.22.1-rust-1.98.0-nightly",
+          "libgcc_s.so.1",
+          "librt.so.1",
+          "libpthread.so.0",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib"
+      },
+      "libLLVM": {
+        "interp": null,
+        "needed": [
+          "librt.so.1",
+          "libdl.so.2",
+          "libpthread.so.0",
+          "libm.so.6",
+          "libz.so.1",
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib"
+      },
+      "gcc_ld_lld_wrapper": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libgcc_s.so.1",
+          "libpthread.so.0",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib"
+      },
+      "rust_lld": {
+        "interp": "/lib64/ld-linux-x86-64.so.2",
+        "needed": [
+          "libpthread.so.0",
+          "libz.so.1",
+          "libLLVM.so.22.1-rust-1.98.0-nightly",
+          "libm.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../../../:$ORIGIN/../lib"
+      }
+    },
+    "nix_sandbox_rustc_1_98_lld_probe": {
+      "default_lld_enabled": {
+        "exit_code": 1,
+        "contains_gcc_ld_B_flag": true,
+        "contains_fuse_ld_lld": true,
+        "contains_collect2_posix_spawnp_enoent": true
+      },
+      "with_linker_features_minus_lld": {
+        "exit_code": 0,
+        "compiled_binary_stdout": "sandbox_ok"
+      }
+    }
+  }
+}

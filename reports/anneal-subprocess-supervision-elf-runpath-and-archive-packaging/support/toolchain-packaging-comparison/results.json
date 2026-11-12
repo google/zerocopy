@@ -1,0 +1,48 @@
+{
+  "packaging_variants_comparison": [
+    {
+      "variant": "1_split_archive_manual_env_and_test_reexec",
+      "required_manual_env_vars_workspace": 5,
+      "required_manual_env_vars_smoke_test": 4,
+      "bundles_anneal_audit_in_archive": false,
+      "bundles_trusted_boundary_in_archive": false,
+      "bundles_precompiled_prefix_oleans": false,
+      "reexecs_cargo_test_binary_for_setup": true
+    },
+    {
+      "variant": "2_include_str_embedded_per_run_recompilation",
+      "required_manual_env_vars_workspace": 0,
+      "required_manual_env_vars_smoke_test": 0,
+      "embedded_files_count": 11,
+      "lean_prefix_compilations_per_verify": 7,
+      "lean_target_compilations_per_verify": 4,
+      "prefix_compile_ms": 7154.61,
+      "target_compile_ms": 1445.6,
+      "total_compile_ms": 8600.21
+    },
+    {
+      "variant": "3_sha256_manifest_tmp_hardlink_lazy_prefix",
+      "required_manual_env_vars_workspace": 0,
+      "requires_external_anneal_root_checkout": true,
+      "hardlinks_toolchain_into_tmp": true,
+      "compiles_rustc_capture_at_runtime": true,
+      "lean_prefix_compilations_on_cold_cli_run": 7
+    },
+    {
+      "variant": "4_unified_zero_env_precompiled_archive",
+      "required_manual_env_vars_workspace": 0,
+      "required_manual_env_vars_smoke_test": 0,
+      "bundles_anneal_audit_in_archive": true,
+      "bundles_trusted_boundary_in_archive": true,
+      "bundles_precompiled_prefix_oleans": true,
+      "reexecs_cargo_test_binary_for_setup": false,
+      "rustlib_symlink_dedup_saved_bytes": 357599568,
+      "lean_prefix_compilations_per_verify": 0,
+      "lean_target_compilations_per_verify": 4,
+      "prefix_sha256_auth_ms": 0.441,
+      "target_compile_ms": 1463.33,
+      "total_compile_ms": 1463.78,
+      "speedup_ratio": 5.88
+    }
+  ]
+}

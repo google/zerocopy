@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/rustc-capture",
+    "anneal/tcb-audit",
+    "build/hermeticity",
+    "build/nix",
+    "exocrate/archive",
+    "exocrate/packaging",
+    "isa/elf-relocations",
+    "isa/x86-64",
+    "lean/olean",
+    "rustc/driver",
+    "systems/process-control"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal pinned rustc_driver capture, Nix toolchain build, and CI setup",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "aa325aa43af936a97932e0e1c14755edf1a9136d"
+      }
+    },
+    {
+      "name": "Anneal standalone omnibus toolchain and CLI verifier",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "f2bc17e9be87b777d63c785b31f3370ff058d69b"
+      }
+    },
+    {
+      "name": "Rust nightly toolchain bundled by Anneal",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 toolchain bundled by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Nixpkgs toolchain and PatchELF 0.15.2",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+        "version": "patchelf-0.15.2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}

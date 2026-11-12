@@ -1,0 +1,69 @@
+{
+  "rust_supervisor_strategies": [
+    {
+      "strategy": "A_direct_child_kill",
+      "p1_alive_after_reap": false,
+      "p2_alive_after_reap": true,
+      "lock_held_by_orphan_after_reap": true,
+      "reap_latency_us": 163
+    },
+    {
+      "strategy": "B_process_group_killpg",
+      "p1_alive_after_reap": false,
+      "p2_alive_after_reap": false,
+      "lock_held_by_orphan_after_reap": false,
+      "reap_latency_us": 425
+    },
+    {
+      "strategy": "C1_subreaper_pdeathsig_on_p1_only",
+      "p1_alive_after_reap": false,
+      "p2_alive_after_reap": true,
+      "p2_reparented_to_subreaper": true,
+      "lock_held_by_orphan_after_reap": true,
+      "reap_latency_us": 141
+    },
+    {
+      "strategy": "C2_pdeathsig_on_p2_early_p1_exit",
+      "p1_exited_zero": true,
+      "p2_prematurely_killed_by_sigkill": true,
+      "p2_alive": false
+    },
+    {
+      "strategy": "D_combined_pgroup_and_subreaper_waitpid",
+      "p1_alive_after_reap": false,
+      "p2_alive_after_reap": false,
+      "descendant_reap_count": 1,
+      "lock_held_by_orphan_after_reap": false,
+      "reap_latency_us": 157
+    }
+  ],
+  "reproduce_py_cases": [
+    {
+      "case": "E1_unfixed_reproduce_timeout",
+      "exit_code": 124,
+      "p2_alive_after_exit": true,
+      "lock_held_by_orphan_after_exit": true
+    },
+    {
+      "case": "E2_pgroup_reproduce_sigint_without_forwarding",
+      "exit_code": -2,
+      "p1_alive_after_sigint": true,
+      "p2_alive_after_sigint": true,
+      "lock_held_by_orphan_after_sigint": true
+    },
+    {
+      "case": "E3a_fixed_pgroup_reproduce_timeout",
+      "exit_code": 124,
+      "p1_alive_after_exit": false,
+      "p2_alive_after_exit": false,
+      "lock_held_by_orphan_after_exit": false
+    },
+    {
+      "case": "E3b_fixed_pgroup_reproduce_sigint",
+      "exit_code": -2,
+      "p1_alive_after_sigint": false,
+      "p2_alive_after_sigint": false,
+      "lock_held_by_orphan_after_sigint": false
+    }
+  ]
+}
