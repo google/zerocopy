@@ -13548,6 +13548,44 @@
         "lean/lsp"
       ]
     },
+    "lean-elaboration-metaprogramming-import-isolation-and-kernel-audit": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "linux_x86_64_archive_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Elaborator, Parser, Macro Expander, Typeclass Synthesizer, Delaborator, and Module Environment"
+        },
+        {
+          "identity": {
+            "branch": "joshlf-mvp",
+            "repository": "joshlf/anneal",
+            "revision": "2fb744d6ecb5f858677221bfd6781af2ed72c8fc"
+          },
+          "name": "Anneal Trusted Boundary Auditor and Starnix Endianness Verification Fixture"
+        }
+      ],
+      "topics": [
+        "anneal/audit",
+        "anneal/spec-isolation",
+        "anneal/trust-boundary",
+        "anneal/trusted-boundary",
+        "lean/delaborator",
+        "lean/elaboration",
+        "lean/environment-extensions",
+        "lean/import-isolation",
+        "lean/instances",
+        "lean/macros",
+        "lean/module-system",
+        "lean/name-resolution",
+        "lean/pretty-printer",
+        "lean/structure-defaults"
+      ]
+    },
     "lean-environment-identity-imports-and-trust-admissions": {
       "observed_at": "2026-11-05",
       "subjects": [

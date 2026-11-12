@@ -1,0 +1,1366 @@
+[
+  {
+    "hijackConsts": [
+      "\u00ab_aux_Hijack___macroRules_termTrusted.Safe__1\u00bb",
+      "\u00abtermTrusted.Safe_\u00bb"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 2,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 49,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 48,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 49,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Parser.parserExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.macroAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => (fun x => True) p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => (fun (x : Trusted.Program) => True) p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => (fun (x : Trusted.Program) => True) p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => (fun (x._@.Spec.3892481135._hygCtx._hyg.11 : Trusted.Program) => True) p",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A1_notation_high_prio",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "`notation (priority := high)` shadowing identifier/operator",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "\u00ab_aux_Hijack___macroRules_term_=__1_1\u00bb",
+      "\u00abterm_=__1\u00bb"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 2,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 37,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 36,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 37,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Parser.parserExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.macroAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => (fun x x_1 => True) p.code 42",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) =>\n  (fun (x x_1 : Nat) => True) (Trusted.Program.code p) (@OfNat.ofNat.{0} Nat (nat_lit 42) (instOfNatNat (nat_lit 42)))",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) =>\n  (fun (x x_1 : Nat) => True) (Trusted.Program.code p) (@OfNat.ofNat.{0} Nat (nat_lit 42) (instOfNatNat (nat_lit 42)))",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => (fun (x._@.Spec.3892481135._hygCtx._hyg.9 : Nat) (x._@.Spec.3892481135._hygCtx._hyg.11 : Nat) => True) (Trusted.Program.code p) (OfNat.ofNat.{0} Nat 42 (instOfNatNat 42))",
+    "usedConstants": [
+      "Trusted.Program",
+      "instOfNatNat",
+      "Trusted.Program.code",
+      "Nat",
+      "True",
+      "OfNat.ofNat"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A2_infix_eq_override",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "`infix:50 (priority := high) \" = \"` overriding equality",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "\u00abtermTrusted.Valid_\u00bb",
+      "\u00ab_aux_Hijack___macroRules_termTrusted.Valid__1\u00bb"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 2,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 21,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 20,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 21,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Parser.parserExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.macroAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => True",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => True",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A3_macro_high_prio",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "`macro (priority := high)` overriding prefix/application syntax",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "\u00ab_aux_Hijack___macroRules_term_\u2227__1\u00bb"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 11,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 10,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 11,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.macroAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => True",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => True",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A4_macro_rules_retroactive_and",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "Retroactive `macro_rules` on existing `Init.Notation` syntax kind (`\u00abterm_\u2227_\u00bb`)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "\u00abtermTrusted.Safe_\u00bb",
+      "\u00ab_aux_Hijack___elabRules_termTrusted.Safe__1\u00bb"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 2,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 19,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 3,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 17,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 19,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Parser.parserExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.Term.termElabAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => True",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => True",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A5_syntax_and_elab",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "`elab (priority := high)` (paired `syntax` + `elab_rules : term`)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "_aux_Hijack___elabRules_Lean_Parser_Term_app_1"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 15,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 3,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 13,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 15,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.Term.termElabAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => True",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => True",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A6_elab_rules_term_retroactive_app",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "Retroactive `elab_rules : term` on built-in `Lean.Parser.Term.app` syntax kind",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "hijackDeclElab"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Namespace.0.Lean.namespacesExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 23,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 7,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 22,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 23,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.Command.commandElabAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => True",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => True",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => True",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "A7_elab_rules_command_declaration",
+    "category": "A. Syntax / Notations / Macros / Elaborators",
+    "construct": "Retroactive `@[command_elab Lean.Parser.Command.declaration]` intercepting `def` in `namespace Spec`",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "hijackInst"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "reducibilityCore"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Meta.instanceExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": true,
+    "ppExtsDefault": "fun p => Trusted.Checkable.check p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => @Trusted.Checkable.check Trusted.Program hijackInst p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => @Trusted.Checkable.check Trusted.Program hijackInst p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Trusted.Checkable.check Trusted.Program hijackInst p",
+    "usedConstants": [
+      "Trusted.Program",
+      "hijackInst",
+      "Trusted.Checkable.check"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Hijack"
+    ],
+    "id": "B1_new_instance_high_prio",
+    "category": "B. Typeclasses / Coercions / Literals",
+    "construct": "New `instance (priority := high)` defined in `Hijack` (control: leaves edge unless erased)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Meta.instanceExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.indirectModUseExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => Trusted.Checkable.check p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => @Trusted.Checkable.check Trusted.Program Trusted.trivialCheckable p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => @Trusted.Checkable.check Trusted.Program Trusted.trivialCheckable p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Trusted.Checkable.check Trusted.Program Trusted.trivialCheckable p",
+    "usedConstants": [
+      "Trusted.trivialCheckable",
+      "Trusted.Program",
+      "Trusted.Checkable.check"
+    ],
+    "usedModules": [
+      "Trusted"
+    ],
+    "id": "B2_retroactive_attr_instance_on_trusted",
+    "category": "B. Typeclasses / Coercions / Literals",
+    "construct": "Retroactive `attribute [instance 10000]` on existing `Trusted` constant (`Lean/Meta/Instances.lean:283`)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Meta.instanceExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Meta.defaultInstanceExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.indirectModUseExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => p.code = 42",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) =>\n  @Eq.{1} Nat (Trusted.Program.code p) (@OfNat.ofNat.{0} Nat (nat_lit 42) (Trusted.zeroOfNat (nat_lit 42)))",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) =>\n  @Eq.{1} Nat (Trusted.Program.code p) (@OfNat.ofNat.{0} Nat (nat_lit 42) (Trusted.zeroOfNat (nat_lit 42)))",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Eq.{1} Nat (Trusted.Program.code p) (OfNat.ofNat.{0} Nat 42 (Trusted.zeroOfNat 42))",
+    "usedConstants": [
+      "Trusted.Program",
+      "Trusted.zeroOfNat",
+      "Trusted.Program.code",
+      "Nat",
+      "OfNat.ofNat",
+      "Eq"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "B3_retroactive_default_instance_ofnat",
+    "category": "B. Typeclasses / Coercions / Literals",
+    "construct": "Retroactive `attribute [instance 10000, default_instance 10000]` on `Trusted.zeroOfNat` overriding numeric literals",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Meta.instanceExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.indirectModUseExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun r => Trusted.Safe (Coe.coe r)",
+    "ppExtsStrict_ppAll_noNotation": "fun (r : Trusted.RawInput) => Trusted.Safe (@Coe.coe.{1, 1} Trusted.RawInput Trusted.Program Trusted.forgiveInput r)",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (r : Trusted.RawInput) => Trusted.Safe (@Coe.coe.{1, 1} Trusted.RawInput Trusted.Program Trusted.forgiveInput r)",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (r : Trusted.RawInput) => Trusted.Safe (Coe.coe.{1, 1} Trusted.RawInput Trusted.Program Trusted.forgiveInput r)",
+    "usedConstants": [
+      "Trusted.forgiveInput",
+      "Trusted.Program",
+      "Trusted.RawInput",
+      "Trusted.Safe",
+      "Coe.coe"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Coe"
+    ],
+    "id": "B4_retroactive_coe_instance",
+    "category": "B. Typeclasses / Coercions / Literals",
+    "construct": "Retroactive `attribute [instance 10000]` on `Trusted.forgiveInput` (`Coe` / `CoeOut`)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "Helper._aux_Hijack___macroRules_Helper_termSafe__1",
+      "Helper.benignHelper",
+      "Helper.termSafe_"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 3,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Namespace.0.Lean.namespacesExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Compiler.MetaAttr.0.Lean.metaExt"
+      },
+      {
+        "count": 3,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 53,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 51,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 53,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Parser.parserExtension"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Elab.macroAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => (fun x => True) p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => (fun (x : Trusted.Program) => True) p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => (fun (x : Trusted.Program) => True) p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => (fun (x._@.Spec.3892481135._hygCtx._hyg.11 : Trusted.Program) => True) p",
+    "usedConstants": [
+      "Trusted.Program",
+      "True"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "C1_scoped_notation_with_open",
+    "category": "C. Scoped Constructs / Name Resolution / Binders",
+    "construct": "`scoped notation` in `namespace Helper` activated when `Spec` uses `open Helper`",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "_private.Lean.Namespace.0.Lean.namespacesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.aliasExtension"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => Trusted.TrivialStubs.Safe p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.TrivialStubs.Safe p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.TrivialStubs.Safe p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Trusted.TrivialStubs.Safe p",
+    "usedConstants": [
+      "Trusted.TrivialStubs.Safe",
+      "Trusted.Program"
+    ],
+    "usedModules": [
+      "Trusted"
+    ],
+    "id": "C2_export_alias_zero_constants",
+    "category": "C. Scoped Constructs / Name Resolution / Binders",
+    "construct": "`export` into `aliasExtension` (`Lean/ResolveName.lean:60-96`) with zero constants in `Hijack`",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "Spec.Safe"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Namespace.0.Lean.namespacesExt"
+      },
+      {
+        "count": 1,
+        "extension": "reducibilityCore"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.inlineAttrs"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": true,
+    "ppExtsDefault": "fun p => Spec.Safe p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Spec.Safe p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Spec.Safe p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Spec.Safe p",
+    "usedConstants": [
+      "Spec.Safe",
+      "Trusted.Program"
+    ],
+    "usedModules": [
+      "Hijack",
+      "Trusted"
+    ],
+    "id": "C3_enclosing_namespace_shadowing",
+    "category": "C. Scoped Constructs / Name Resolution / Binders",
+    "construct": "Declaring `Spec.Safe` (or `Trusted.Safe` alias) in `Hijack` shadowing `open Trusted` in `namespace Spec`",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => Trusted.Safe p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "usedConstants": [
+      "Trusted.Program",
+      "Trusted.Safe"
+    ],
+    "usedModules": [
+      "Trusted"
+    ],
+    "id": "C4_variable_and_autoImplicit_file_scoped",
+    "category": "C. Scoped Constructs / Name Resolution / Binders",
+    "construct": "`variable` and `set_option autoImplicit` (control: confined to per-file `Command.Scope`, does not cross `import`)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "Trusted.Specs.safety._default"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 3,
+        "extension": "_private.Lean.Namespace.0.Lean.namespacesExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "{ property := Trusted.Valid }",
+    "ppExtsStrict_ppAll_noNotation": "Trusted.Specs.mk (fun (x : Trusted.Program) => True) Trusted.Valid",
+    "ppNoExtsStrict_ppAll_noNotation": "Trusted.Specs.mk (fun (x : Trusted.Program) => True) Trusted.Valid",
+    "targetConst": "Spec.specs",
+    "targetRawExpr": "Trusted.Specs.mk (fun (x._@.Hijack.3889343924._hygCtx._hyg.10 : Trusted.Program) => True) Trusted.Valid",
+    "usedConstants": [
+      "Trusted.Specs",
+      "Trusted.Program",
+      "Trusted.Specs.mk",
+      "True",
+      "Trusted.Valid"
+    ],
+    "usedModules": [
+      "Trusted",
+      "Init.Prelude"
+    ],
+    "id": "D1_structure_default_field_retroactive",
+    "category": "D. Structure Default Field Values",
+    "construct": "Retroactive `def Trusted.Specs.safety._default` (`Lean/Structure.lean:288`, inlined by `instantiateStructDefaultValueFn?` with zero edges AND zero extension entries)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "runtimeFlag_eq_true",
+      "runtimeFlagTrue"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 2,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.CSimp.ext"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => Trusted.Safe p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "usedConstants": [
+      "Trusted.Program",
+      "Trusted.Safe"
+    ],
+    "usedModules": [
+      "Trusted"
+    ],
+    "id": "E1_compiler_attrs_csimp_implemented_by",
+    "category": "E. Compiler / Elaborator / Pretty-Printer Attributes",
+    "construct": "Retroactive `@[csimp]` and `@[implemented_by]` overriding compiled runtime execution without changing kernel `Expr`",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "unexpandFalse",
+      "delabFalse"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 2,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 29,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 4,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 2,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 25,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 29,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 4,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.PrettyPrinter.Delaborator.delabAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.PrettyPrinter.Delaborator.appUnexpanderAttribute"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun _p => Trusted.Safe\u271d p\u271d",
+    "ppExtsStrict_ppAll_noNotation": "fun (_p : Trusted.Program) => Trusted.Safe\u271d p\u271d",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (_p : Trusted.Program) => False",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (_p : Trusted.Program) => False",
+    "usedConstants": [
+      "False",
+      "Trusted.Program"
+    ],
+    "usedModules": [
+      "Init.Prelude",
+      "Trusted"
+    ],
+    "id": "E2_delab_vs_app_unexpander_pp_spoof",
+    "category": "E. Compiler / Elaborator / Pretty-Printer Attributes",
+    "construct": "`@[delab]` vs. `@[app_unexpander]` spoofing human-reviewed pretty-printer output even under `pp.all = true` + `pp.notation = false` (`Lean/PrettyPrinter/Delaborator/Basic.lean:457`)",
+    "spec_compile_triggered_io": false
+  },
+  {
+    "hijackConsts": [
+      "_private.Hijack.0.initFn._@.Hijack.1402703826._hygCtx._hyg.2"
+    ],
+    "hijackExtEntries": [
+      {
+        "count": 1,
+        "extension": "Lean.declRangeExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Util.CollectAxioms.0.Lean.exportedAxiomsExt"
+      },
+      {
+        "count": 1,
+        "extension": "_private.Lean.Compiler.ModPkgExt.0.Lean.modPkgExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.regularInitAttr"
+      },
+      {
+        "count": 4,
+        "extension": "Lean.IR.declMapExt"
+      },
+      {
+        "count": 2,
+        "extension": "_private.Lean.ExtraModUses.0.Lean.extraModUses"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.baseExt"
+      },
+      {
+        "count": 3,
+        "extension": "Lean.Compiler.LCNF.monoExt"
+      },
+      {
+        "count": 4,
+        "extension": "Lean.Compiler.LCNF.impureSigExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.Compiler.LCNF.UnreachableBranches.functionSummariesExt"
+      },
+      {
+        "count": 1,
+        "extension": "Lean.deprecatedModuleExt"
+      },
+      {
+        "count": 1,
+        "extension": "symbolFrequency"
+      },
+      {
+        "count": 1,
+        "extension": "sineQueNon"
+      }
+    ],
+    "mentionsHijackInEdges": false,
+    "ppExtsDefault": "fun p => Trusted.Safe p",
+    "ppExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "ppNoExtsStrict_ppAll_noNotation": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "targetConst": "Spec.claim",
+    "targetRawExpr": "fun (p : Trusted.Program) => Trusted.Safe p",
+    "usedConstants": [
+      "Trusted.Program",
+      "Trusted.Safe"
+    ],
+    "usedModules": [
+      "Trusted"
+    ],
+    "id": "F1_initialize_import_time_exec",
+    "category": "F. Import-Time Code Execution",
+    "construct": "`initialize` / `@[init]` executing arbitrary `IO` during `lean` compilation of downstream `Spec.lean` (`Lean/Environment.lean:1990-1994`)",
+    "spec_compile_triggered_io": true
+  }
+]

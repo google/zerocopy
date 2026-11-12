@@ -1,0 +1,1478 @@
+{
+  "starnix_spec_lean_sha256_original": "6783b760927541d9990146a523b8329aaf9fcb0a3efd6b50a5ea77dcc3e3d764",
+  "starnix_spec_lean_sha256_during_hijack": "6783b760927541d9990146a523b8329aaf9fcb0a3efd6b50a5ea77dcc3e3d764",
+  "spec_lean_zero_bytes_modified": true,
+  "subject_program": "Captured.zeroBody (constant_zero: ignores endianness flag, width, and input word; always returns 0)",
+  "unmodified_trusted_boundary_2a_bit_theory_proof_role": {
+    "exit_code": 0,
+    "ok": true,
+    "specificationClosure_summary": {
+      "total_declarations": 1545,
+      "non_foundation_modules": [
+        "Endianness",
+        "Spec",
+        "Trusted.Mvp.Semantics",
+        "Trusted.Mvp.Syntax"
+      ],
+      "non_foundation_declarations": [
+        {
+          "name": "Endianness.ByteReversal",
+          "module": "Endianness"
+        },
+        {
+          "name": "Endianness.reverseByteIndex",
+          "module": "Endianness"
+        },
+        {
+          "name": "Spec.exactLittleEndian",
+          "module": "Spec"
+        },
+        {
+          "name": "Spec.exactReversal",
+          "module": "Spec"
+        },
+        {
+          "name": "Spec.involution",
+          "module": "Spec"
+        },
+        {
+          "name": "Spec.specs",
+          "module": "Spec"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Fault",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Operand",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Program",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Reach",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Returns",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.ReturnsFrom",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Safe",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.SafeFrom",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Specs",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Statement",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.VerificationScope",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Word",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.boolWord",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.comparison",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalOperand",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.execStatement",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.execTerminator",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.hasStorageMarker",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.initial",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.initialSlot",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.instBEqTy",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.rawValid",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.readLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.shiftAmount",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.signedValue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTarget",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTy",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.truncate",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.validValue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.add",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.bitAnd",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.bitOr",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.bitXor",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.ctorIdx",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.eq",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.ge",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.gt",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.le",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.lt",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.mul",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.ne",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.shl",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.shr",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.sub",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block.mk",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block.statements",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block.terminator",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.argCount",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.blocks",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.localTys",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.mk",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.badBlock",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.badLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.badPosition",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.deadLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.invalidValue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.typeMismatch",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.uninitialized",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.unreachable",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.constant",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.copy",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.move",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Program.bodies",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Program.mk",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Reach.next",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Reach.refl",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.binary",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.discriminant",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.unit",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.use",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.casesOn",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.ctorIdx",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.dead",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.rec",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.uninit",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.value",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Specs.mk",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.block",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.locals",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.mk",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.statement",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.assign",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.ctorIdx",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.nop",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.storageDead",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.storageLive",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult.fault",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult.next",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult.ret",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.goto",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.ret",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.switchInt",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.unreachable",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.admitted",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.bool",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.ctorIdx",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.enum",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.int",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.never",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.unit",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.VerificationScope.crate",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.VerificationScope.unit",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_5",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_6",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_7",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy.match_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary.match_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalOperand.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue.match_3",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue.match_5",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.hasStorageMarker._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.hasStorageMarker.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.initialSlot.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.operandTy.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.readLocal.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.rvalueTy.match_7",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.shiftAmount._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.shiftAmount.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.statementWF.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step.match_3",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step.match_5",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTarget.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTy.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.terminatorWF.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.terminatorWF.match_3",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal.match_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.admitted.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_2",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_3",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_4",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_5",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq.match_1",
+          "module": "Trusted.Mvp.Syntax"
+        }
+      ],
+      "bit_theory_in_specification_closure": false
+    },
+    "replayedDeclarations": 578
+  },
+  "unmodified_trusted_boundary_2b_bit_theory_specification_role": {
+    "exit_code": 0,
+    "ok": true,
+    "specificationClosure_summary": {
+      "total_declarations": 1545,
+      "non_foundation_modules": [
+        "Endianness",
+        "Spec",
+        "Trusted.Mvp.Semantics",
+        "Trusted.Mvp.Syntax"
+      ],
+      "non_foundation_declarations": [
+        {
+          "name": "Endianness.ByteReversal",
+          "module": "Endianness"
+        },
+        {
+          "name": "Endianness.reverseByteIndex",
+          "module": "Endianness"
+        },
+        {
+          "name": "Spec.exactLittleEndian",
+          "module": "Spec"
+        },
+        {
+          "name": "Spec.exactReversal",
+          "module": "Spec"
+        },
+        {
+          "name": "Spec.involution",
+          "module": "Spec"
+        },
+        {
+          "name": "Spec.specs",
+          "module": "Spec"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Fault",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Operand",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Program",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Reach",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Returns",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.ReturnsFrom",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Safe",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.SafeFrom",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Specs",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Statement",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.VerificationScope",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Word",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.boolWord",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.comparison",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalOperand",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.execStatement",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.execTerminator",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.hasStorageMarker",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.initial",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.initialSlot",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.instBEqTy",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.rawValid",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.readLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.shiftAmount",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.signedValue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTarget",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTy",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.truncate",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.validValue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.add",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.bitAnd",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.bitOr",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.bitXor",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.ctorIdx",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.eq",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.ge",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.gt",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.le",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.lt",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.mul",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.ne",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.shl",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.shr",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.BinOp.sub",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block.mk",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block.statements",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Block.terminator",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.argCount",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.blocks",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.localTys",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Body.mk",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.badBlock",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.badLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.badPosition",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.deadLocal",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.invalidValue",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.typeMismatch",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.uninitialized",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Fault.unreachable",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.constant",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.copy",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.move",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Operand.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Program.bodies",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Program.mk",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Reach.next",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Reach.refl",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.binary",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.discriminant",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.unit",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Rvalue.use",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.casesOn",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.ctorIdx",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.dead",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.rec",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.uninit",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Slot.value",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Specs.mk",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.block",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.locals",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.mk",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.State.statement",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.assign",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.ctorIdx",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.nop",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.storageDead",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Statement.storageLive",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult.fault",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult.next",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.StepResult.ret",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.goto",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.ret",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.switchInt",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Terminator.unreachable",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.admitted",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.bool",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.casesOn",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.ctorIdx",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.enum",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.int",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.never",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.rec",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.unit",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.VerificationScope.crate",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.VerificationScope.unit",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_5",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_6",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy._sparseCasesOn_7",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.binaryTy.match_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalBinary.match_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalOperand.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue.match_3",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.evalRvalue.match_5",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.hasStorageMarker._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.hasStorageMarker.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.initialSlot.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.operandTy.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.readLocal.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.rvalueTy._sparseCasesOn_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.rvalueTy.match_7",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.shiftAmount._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.shiftAmount.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.statementWF.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step.match_3",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.step.match_5",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTarget.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.switchTy.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.terminatorWF.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.terminatorWF.match_3",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.writeLocal.match_4",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.admitted.match_1",
+          "module": "Trusted.Mvp.Semantics"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_1",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_2",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_3",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_4",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq._sparseCasesOn_5",
+          "module": "Trusted.Mvp.Syntax"
+        },
+        {
+          "name": "Trusted.Mvp.Ty.beq.match_1",
+          "module": "Trusted.Mvp.Syntax"
+        }
+      ],
+      "bit_theory_in_specification_closure": false
+    },
+    "replayedDeclarations": 578
+  },
+  "hardened_defense_1a_import_role_check_on_2a": {
+    "exit_code": 1,
+    "response": {
+      "ok": false,
+      "message": "policy:target import authority violation Endianness (specification) imports BitTheory (proof)",
+      "category": "policy"
+    }
+  },
+  "hardened_defense_2_ext_diffing_on_2b_when_import_allowed": {
+    "exit_code": 1,
+    "response": {
+      "ok": false,
+      "message": "policy:forbidden environment extension Lean.Elab.macroAttribute (1 entries) in specification module BitTheory",
+      "category": "policy"
+    }
+  },
+  "defense_3_canonical_printing_exposes_hijack": {
+    "exit_code": 0,
+    "canonicalSpecPrettyPrint": "Trusted.Mvp.Specs.mk (fun (x : Nat) (x_1 : List.{0} Trusted.Mvp.Word) => True) fun (program : Trusted.Mvp.Program) =>\n  @Exists.{1} Trusted.Mvp.Body fun (body : Trusted.Mvp.Body) =>\n    And\n      (@Eq.{1} (List.{0} Trusted.Mvp.Body) (Trusted.Mvp.Program.bodies program)\n        (@List.cons.{0} Trusted.Mvp.Body body (@List.nil.{0} Trusted.Mvp.Body)))\n      (@Eq.{1} Prop (And (Spec.exactReversal body) (And (Spec.exactLittleEndian body) (Spec.involution body)))\n        (And (Spec.exactReversal body) (And (Spec.exactLittleEndian body) (Spec.involution body))))",
+    "canonicalSpecRawExpr": "Trusted.Mvp.Specs.mk (fun (x._@.Spec.2254020247._hygCtx._hyg.8 : Nat) (x._@.Spec.2254020247._hygCtx._hyg.10 : List.{0} Trusted.Mvp.Word) => True) (fun (program : Trusted.Mvp.Program) => Exists.{1} Trusted.Mvp.Body (fun (body : Trusted.Mvp.Body) => And (Eq.{1} (List.{0} Trusted.Mvp.Body) (Trusted.Mvp.Program.bodies program) (List.cons.{0} Trusted.Mvp.Body body (List.nil.{0} Trusted.Mvp.Body))) (Eq.{1} Prop (And (Spec.exactReversal body) (And (Spec.exactLittleEndian body) (Spec.involution body))) (And (Spec.exactReversal body) (And (Spec.exactLittleEndian body) (Spec.involution body))))))",
+    "canonicalTheoremTypePrettyPrint": "Expected.claim"
+  }
+}
