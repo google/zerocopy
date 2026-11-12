@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "anneal/forward-compatibility",
+    "anneal/mir-semantics",
+    "anneal/rustc-capture",
+    "lean/mechanization",
+    "rust/layout",
+    "rust/transmute",
+    "rust/unsafe",
+    "rustc/drop-elaboration",
+    "rustc/intrinsics",
+    "rustc/mir"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler source (ElaborateDrops, AbortUnwindingCalls, RemoveNoopLandingPads, dropck_eyepatch)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Rust nightly compiler binary used for Runtime(PostCleanup) MIR probes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "19833af7224424e8b53e288097d56b6af43d5bcf",
+        "version": "1.101.0-nightly (2026-10-20)"
+      }
+    },
+    {
+      "name": "Rust compiler baseline pinned by Anneal",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    }
+  ],
+  "observed_at": "2026-11-12"
+}
