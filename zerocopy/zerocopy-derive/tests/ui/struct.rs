@@ -82,7 +82,6 @@ struct Immutable2 {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed)]
 struct TryFromBytesPacked {
-    //~[stable]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: AU16,
 }
 
@@ -90,7 +89,6 @@ struct TryFromBytesPacked {
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(packed(1))]
 struct TryFromBytesPackedN {
-    //~[stable]^ ERROR: packed type cannot transitively contain a `#[repr(align)]` type
     foo: AU16,
 }
 
