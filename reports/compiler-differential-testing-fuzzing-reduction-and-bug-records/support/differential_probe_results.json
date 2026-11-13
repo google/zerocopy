@@ -1,0 +1,30 @@
+{
+  "diff_results": {
+    "llvm_O0": {
+      "compile_sec": 0.0571,
+      "run_sec": 0.0059,
+      "output": "HASH=a7c3711295530c84"
+    },
+    "llvm_O3": {
+      "compile_sec": 0.0663,
+      "run_sec": 0.0059,
+      "output": "HASH=a7c3711295530c84"
+    },
+    "cranelift_O0": {
+      "compile_sec": 0.0583,
+      "run_sec": 0.0058,
+      "output": "HASH=a7c3711295530c84"
+    },
+    "cranelift_O2": {
+      "compile_sec": 0.0575,
+      "run_sec": 0.006,
+      "output": "HASH=a7c3711295530c84"
+    },
+    "miri_oracle": {
+      "total_sec": 0.1436,
+      "output": "HASH=a7c3711295530c84"
+    }
+  },
+  "miri_16seed_sec": 0.42,
+  "miri_16seed_rc": 0
+}

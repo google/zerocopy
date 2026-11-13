@@ -1,0 +1,1363 @@
+{
+  "total_tests": 24477,
+  "suite_stats": {
+    "assembly-llvm": {
+      "total": 163,
+      "tier:llvm-or-asm-specific": 48,
+      "has_revisions": 92,
+      "has_only": 64,
+      "has_ignore": 31,
+      "clif_excl:suite-not-run-by-clif": 163,
+      "gcc_excl:suite-not-run-by-gcc": 163,
+      "tier:llvm-specific": 115,
+      "has_needs": 104,
+      "pass:run-pass": 1
+    },
+    "build-std": {
+      "total": 1,
+      "tier:backend-codegen": 1,
+      "clif_excl:suite-not-run-by-clif": 1,
+      "gcc_excl:suite-not-run-by-gcc": 1
+    },
+    "codegen-llvm": {
+      "total": 801,
+      "tier:llvm-specific": 801,
+      "has_needs": 231,
+      "clif_excl:suite-not-run-by-clif": 801,
+      "gcc_excl:suite-not-run-by-gcc": 801,
+      "has_revisions": 180,
+      "has_only": 143,
+      "has_ignore": 87
+    },
+    "codegen-units": {
+      "total": 46,
+      "tier:backend-codegen": 46,
+      "has_needs": 1,
+      "clif_kept": 46,
+      "gcc_excl:suite-not-run-by-gcc": 46,
+      "has_only": 1
+    },
+    "coverage": {
+      "total": 98,
+      "tier:llvm-specific": 98,
+      "clif_excl:suite-not-run-by-clif": 98,
+      "gcc_excl:suite-not-run-by-gcc": 98,
+      "has_revisions": 3,
+      "has_ignore": 5
+    },
+    "coverage-run-rustdoc": {
+      "total": 1,
+      "tier:llvm-specific": 1,
+      "clif_excl:suite-not-run-by-clif": 1,
+      "gcc_excl:suite-not-run-by-gcc": 1
+    },
+    "crashes": {
+      "total": 179,
+      "tier:backend-or-frontend-ice": 179,
+      "clif_excl:suite-not-run-by-clif": 179,
+      "gcc_excl:suite-not-run-by-gcc": 179,
+      "has_needs": 11,
+      "has_ignore": 6,
+      "has_only": 2
+    },
+    "debuginfo": {
+      "total": 169,
+      "tier:backend-codegen": 169,
+      "has_ignore": 141,
+      "clif_excl:suite-not-run-by-clif": 169,
+      "gcc_excl:suite-not-run-by-gcc": 169,
+      "has_revisions": 4,
+      "has_only": 11,
+      "has_needs": 1
+    },
+    "incremental": {
+      "total": 180,
+      "tier:backend-codegen": 178,
+      "has_revisions": 180,
+      "clif_kept": 173,
+      "gcc_excl:suite-not-run-by-gcc": 180,
+      "has_ignore": 130,
+      "has_needs": 5,
+      "has_only": 4,
+      "clif_excl:regex:lto": 2,
+      "clif_excl:regex:should-fail": 2,
+      "clif_excl:explicit:bugs in the test suite": 1,
+      "clif_excl:explicit:exotic linkages": 2,
+      "tier:llvm-specific": 2
+    },
+    "mir-opt": {
+      "total": 400,
+      "tier:mir-only": 400,
+      "clif_excl:suite-not-run-by-clif": 400,
+      "gcc_excl:suite-not-run-by-gcc": 400,
+      "has_only": 6,
+      "has_needs": 31,
+      "has_ignore": 17,
+      "has_revisions": 5
+    },
+    "pretty": {
+      "total": 113,
+      "tier:frontend-only": 113,
+      "has_only": 7,
+      "clif_excl:suite-not-run-by-clif": 113,
+      "gcc_excl:suite-not-run-by-gcc": 113,
+      "has_needs": 2,
+      "has_revisions": 1
+    },
+    "run-make": {
+      "total": 519,
+      "tier:backend-codegen": 347,
+      "has_ignore": 287,
+      "clif_kept": 448,
+      "gcc_kept": 518,
+      "has_only": 109,
+      "has_needs": 248,
+      "tier:llvm-specific": 172,
+      "clif_excl:explicit:should work when using ./x.py test the way it is intended": 13,
+      "clif_excl:explicit:backend specific tests": 9,
+      "clif_excl:explicit:requires asm, llvm-ir and/or llvm-bc emit support": 15,
+      "clif_excl:explicit:requires LTO": 18,
+      "clif_excl:explicit:misc unimplemented things": 6,
+      "clif_excl:explicit:genuine bugs": 3,
+      "clif_excl:explicit:exotic linkages": 1,
+      "clif_excl:explicit:bugs in the test suite": 2,
+      "clif_excl:explicit:giving different but possibly correct results": 3,
+      "clif_excl:explicit:variadic arguments": 1,
+      "gcc_excl:failing-run-make-tests.txt": 1
+    },
+    "run-make-cargo": {
+      "total": 14,
+      "tier:llvm-specific": 5,
+      "has_only": 6,
+      "clif_kept": 11,
+      "gcc_kept": 14,
+      "tier:backend-codegen": 9,
+      "has_needs": 3,
+      "has_ignore": 3,
+      "clif_excl:explicit:should work when using ./x.py test the way it is intended": 3
+    },
+    "rustdoc-gui": {
+      "total": 146,
+      "tier:rustdoc": 146,
+      "clif_excl:suite-not-run-by-clif": 146,
+      "gcc_excl:suite-not-run-by-gcc": 146
+    },
+    "rustdoc-html": {
+      "total": 837,
+      "tier:rustdoc": 837,
+      "clif_excl:suite-not-run-by-clif": 837,
+      "gcc_excl:suite-not-run-by-gcc": 837,
+      "has_only": 6,
+      "has_ignore": 66,
+      "has_needs": 1,
+      "pass:force-host": 2
+    },
+    "rustdoc-js": {
+      "total": 78,
+      "tier:rustdoc": 78,
+      "clif_excl:suite-not-run-by-clif": 78,
+      "gcc_excl:suite-not-run-by-gcc": 78,
+      "has_revisions": 1
+    },
+    "rustdoc-js-std": {},
+    "rustdoc-json": {
+      "total": 194,
+      "tier:rustdoc": 194,
+      "clif_excl:suite-not-run-by-clif": 194,
+      "gcc_excl:suite-not-run-by-gcc": 194,
+      "has_only": 11
+    },
+    "rustdoc-ui": {
+      "total": 390,
+      "tier:rustdoc": 390,
+      "pass:check-pass": 176,
+      "clif_excl:suite-not-run-by-clif": 390,
+      "gcc_excl:suite-not-run-by-gcc": 390,
+      "has_revisions": 18,
+      "has_ignore": 5,
+      "pass:build-pass": 4,
+      "has_needs": 1,
+      "has_only": 8,
+      "fail:check-fail": 6,
+      "pass:force-host": 1
+    },
+    "ui": {
+      "total": 20072,
+      "tier:backend-codegen": 4826,
+      "pass:run-pass": 3785,
+      "has_ignore": 1139,
+      "clif_kept": 7357,
+      "gcc_excl:dir-excluded:abi": 99,
+      "has_needs": 778,
+      "tier:frontend-only": 15036,
+      "has_revisions": 1289,
+      "clif_excl:regex:ui-error-or-fail-or-llvm-args": 12438,
+      "tier:llvm-specific": 210,
+      "pass:build-pass": 580,
+      "fail:check-fail": 214,
+      "pass:check-pass": 3802,
+      "has_only": 316,
+      "clif_excl:explicit:giving different but possibly correct results": 4,
+      "fail:build-fail": 226,
+      "clif_excl:explicit:backend specific tests": 4,
+      "clif_excl:regex:lto": 36,
+      "clif_excl:explicit:variadic arguments": 12,
+      "gcc_kept": 19360,
+      "fail:run-fail": 180,
+      "gcc_excl:filter:lto": 39,
+      "clif_excl:explicit:inline assembly features": 6,
+      "gcc_excl:failing-ui-tests.txt": 107,
+      "gcc_excl:failing-ui-tests12.txt": 41,
+      "pass:force-host": 29,
+      "clif_excl:explicit:misc unimplemented things": 122,
+      "clif_excl:explicit:optimization tests": 5,
+      "clif_excl:explicit:bugs in the test suite": 17,
+      "clif_excl:explicit:should work when using ./x.py test the way it is intended": 4,
+      "clif_excl:regex:should-fail": 5,
+      "clif_excl:explicit:coverage instrumentation": 6,
+      "gcc_excl:failing-ice-tests.txt": 29,
+      "fail:run-crash": 70,
+      "gcc_excl:failing-lto-tests.txt": 6,
+      "clif_excl:explicit:requires asm, llvm-ir and/or llvm-bc emit support": 3,
+      "gcc_excl:failing-ui-tests.txt,failing-ice-tests.txt": 4,
+      "gcc_excl:dir-excluded:extern": 71,
+      "clif_excl:explicit:exotic linkages": 1,
+      "clif_excl:explicit:requires LTO": 25,
+      "gcc_excl:dir-excluded:proc-macro": 245,
+      "clif_excl:explicit:vendor intrinsics": 27,
+      "gcc_excl:failing-ui-tests.txt,failing-ice-tests.txt,failing-ice-tests.txt": 1,
+      "gcc_excl:failing-ui-tests12.txt,failing-ice-tests.txt": 1,
+      "gcc_excl:failing-ui-tests-without-128bit-integers.txt": 1,
+      "gcc_excl:dir-excluded:threads-sendsync": 68
+    },
+    "ui-fulldeps": {
+      "total": 76,
+      "tier:backend-codegen": 49,
+      "pass:run-pass": 49,
+      "has_ignore": 53,
+      "clif_excl:suite-not-run-by-clif": 76,
+      "gcc_excl:suite-not-run-by-gcc": 76,
+      "tier:frontend-only": 26,
+      "pass:check-pass": 2,
+      "fail:check-fail": 4,
+      "has_revisions": 2,
+      "tier:llvm-specific": 1,
+      "pass:build-pass": 1,
+      "has_needs": 1
+    }
+  },
+  "top_directives": [
+    [
+      "compile-flags",
+      7087
+    ],
+    [
+      "check-pass",
+      4084
+    ],
+    [
+      "has",
+      4047
+    ],
+    [
+      "run-pass",
+      3859
+    ],
+    [
+      "edition",
+      2636
+    ],
+    [
+      "revisions",
+      2321
+    ],
+    [
+      "gdb-command",
+      1787
+    ],
+    [
+      "needs-llvm-components",
+      1437
+    ],
+    [
+      "aux-build",
+      1407
+    ],
+    [
+      "lldb-command",
+      1326
+    ],
+    [
+      "gdb-check",
+      1297
+    ],
+    [
+      "is",
+      1006
+    ],
+    [
+      "lldb-check",
+      897
+    ],
+    [
+      "cdb-check",
+      797
+    ],
+    [
+      "ignore-backends",
+      754
+    ],
+    [
+      "run-rustfix",
+      705
+    ],
+    [
+      "build-pass",
+      594
+    ],
+    [
+      "cdb-command",
+      459
+    ],
+    [
+      "count",
+      416
+    ],
+    [
+      "add-minicore",
+      402
+    ],
+    [
+      "ignore-cross-compile",
+      393
+    ],
+    [
+      "normalize-stderr",
+      371
+    ],
+    [
+      "ignore-compare-mode-next-solver",
+      365
+    ],
+    [
+      "known-bug",
+      309
+    ],
+    [
+      "reference",
+      289
+    ],
+    [
+      "proc-macro",
+      280
+    ],
+    [
+      "error-pattern",
+      248
+    ],
+    [
+      "matches",
+      235
+    ],
+    [
+      "check-fail",
+      232
+    ],
+    [
+      "build-fail",
+      227
+    ],
+    [
+      "normalize-stdout",
+      221
+    ],
+    [
+      "needs-unwind",
+      209
+    ],
+    [
+      "only-x86_64",
+      208
+    ],
+    [
+      "test-mir-pass",
+      200
+    ],
+    [
+      "set",
+      198
+    ],
+    [
+      "hasraw",
+      189
+    ],
+    [
+      "dont-require-annotations",
+      188
+    ],
+    [
+      "run-fail",
+      187
+    ],
+    [
+      "needs-subprocess",
+      179
+    ],
+    [
+      "assembly-output",
+      167
+    ],
+    [
+      "no-prefer-dynamic",
+      167
+    ],
+    [
+      "aux-crate",
+      157
+    ],
+    [
+      "skip-filecheck",
+      139
+    ],
+    [
+      "needs-target-std",
+      120
+    ],
+    [
+      "pp-exact",
+      109
+    ],
+    [
+      "check-run-results",
+      108
+    ],
+    [
+      "disable-gdb-pretty-printers",
+      105
+    ],
+    [
+      "needs-threads",
+      105
+    ],
+    [
+      "needs-asm-support",
+      95
+    ],
+    [
+      "run-crash",
+      84
+    ],
+    [
+      "only-linux",
+      82
+    ],
+    [
+      "rustc-env",
+      77
+    ],
+    [
+      "build-aux-docs",
+      73
+    ],
+    [
+      "needs-sanitizer-cfi",
+      65
+    ],
+    [
+      "failure-status",
+      65
+    ],
+    [
+      "only-64bit",
+      64
+    ],
+    [
+      "only-aarch64",
+      61
+    ],
+    [
+      "snapshot",
+      61
+    ],
+    [
+      "ignore-windows",
+      59
+    ],
+    [
+      "filecheck-flags",
+      59
+    ],
+    [
+      "ignore-windows-gnu",
+      57
+    ],
+    [
+      "needs-enzyme",
+      57
+    ],
+    [
+      "ignore-emscripten",
+      52
+    ],
+    [
+      "only-windows",
+      50
+    ],
+    [
+      "exec-env",
+      50
+    ],
+    [
+      "ismany",
+      50
+    ],
+    [
+      "ignore-stage1",
+      49
+    ],
+    [
+      "min-llvm-version",
+      47
+    ],
+    [
+      "incremental",
+      44
+    ],
+    [
+      "dont-check-compiler-stderr",
+      44
+    ],
+    [
+      "only-x86_64-unknown-linux-gnu",
+      43
+    ],
+    [
+      "ignore-compare-mode-polonius",
+      43
+    ],
+    [
+      "ignore-msvc",
+      42
+    ],
+    [
+      "ignore-remote",
+      42
+    ],
+    [
+      "pretty-mode",
+      40
+    ],
+    [
+      "no-auto-check-cfg",
+      40
+    ],
+    [
+      "ignore-sgx",
+      39
+    ],
+    [
+      "ignore-android",
+      38
+    ],
+    [
+      "ignore-lldb",
+      38
+    ],
+    [
+      "pretty-compare-only",
+      38
+    ],
+    [
+      "ignore-auxiliary",
+      35
+    ],
+    [
+      "ignore-fuchsia",
+      35
+    ],
+    [
+      "only-msvc",
+      34
+    ],
+    [
+      "needs-crate-type",
+      33
+    ],
+    [
+      "force-host",
+      33
+    ],
+    [
+      "ignore-apple",
+      29
+    ],
+    [
+      "only-x86",
+      27
+    ],
+    [
+      "ignore-wasm",
+      27
+    ],
+    [
+      "only-apple",
+      27
+    ],
+    [
+      "matchesraw",
+      27
+    ],
+    [
+      "max-llvm-major-version",
+      26
+    ],
+    [
+      "needs-rustc-debug-assertions",
+      26
+    ],
+    [
+      "ignore-wasm32",
+      25
+    ],
+    [
+      "regex-error-pattern",
+      25
+    ],
+    [
+      "ignore-nvptx64",
+      24
+    ],
+    [
+      "should-fail",
+      24
+    ],
+    [
+      "jq_is",
+      24
+    ],
+    [
+      "only-unix",
+      23
+    ],
+    [
+      "needs-dynamic-linking",
+      23
+    ],
+    [
+      "ignore-parallel-frontend",
+      23
+    ]
+  ],
+  "top_only": [
+    [
+      "only-x86_64",
+      208
+    ],
+    [
+      "only-linux",
+      82
+    ],
+    [
+      "only-64bit",
+      64
+    ],
+    [
+      "only-aarch64",
+      61
+    ],
+    [
+      "only-windows",
+      50
+    ],
+    [
+      "only-x86_64-unknown-linux-gnu",
+      43
+    ],
+    [
+      "only-msvc",
+      34
+    ],
+    [
+      "only-x86",
+      27
+    ],
+    [
+      "only-apple",
+      27
+    ],
+    [
+      "only-unix",
+      23
+    ],
+    [
+      "only-wasm32",
+      20
+    ],
+    [
+      "only-elf",
+      15
+    ],
+    [
+      "only-wasm32-wasip1",
+      15
+    ],
+    [
+      "only-nightly",
+      14
+    ],
+    [
+      "only-nvptx64",
+      13
+    ],
+    [
+      "only-gnu",
+      13
+    ],
+    [
+      "only-pauthtest",
+      12
+    ],
+    [
+      "only-32bit",
+      12
+    ],
+    [
+      "only-x86_64-pc-windows-msvc",
+      8
+    ],
+    [
+      "only-cdb",
+      7
+    ],
+    [
+      "only-aarch64-unknown-linux-gnu",
+      6
+    ],
+    [
+      "only-x86_64-apple-darwin",
+      5
+    ],
+    [
+      "only-aarch64-apple-darwin",
+      4
+    ],
+    [
+      "only-arm",
+      4
+    ],
+    [
+      "only-rustc_abi-x86-sse2",
+      4
+    ],
+    [
+      "only-loongarch64",
+      3
+    ],
+    [
+      "only-windows-gnu",
+      3
+    ],
+    [
+      "only-dist",
+      3
+    ],
+    [
+      "only-s390x",
+      2
+    ],
+    [
+      "only-macos",
+      2
+    ],
+    [
+      "only-wasm32-unknown-emscripten",
+      2
+    ],
+    [
+      "only-windows-msvc",
+      2
+    ],
+    [
+      "only-x86_64-pc-windows-gnu",
+      2
+    ],
+    [
+      "only-thumb",
+      2
+    ],
+    [
+      "only-i686-pc-windows-msvc",
+      2
+    ],
+    [
+      "only-armv7-unknown-linux-gnueabihf",
+      1
+    ],
+    [
+      "only-riscv64gc-unknown-linux-gnu",
+      1
+    ],
+    [
+      "only-avr",
+      1
+    ],
+    [
+      "only-msp430",
+      1
+    ],
+    [
+      "only-bpf",
+      1
+    ],
+    [
+      "only-emscripten",
+      1
+    ],
+    [
+      "only-16bit",
+      1
+    ],
+    [
+      "only-endian-big",
+      1
+    ],
+    [
+      "only-wasm32-unknown-unknown",
+      1
+    ],
+    [
+      "only-uefi",
+      1
+    ],
+    [
+      "only-x86_64-fortanix-unknown-sgx",
+      1
+    ],
+    [
+      "only-i686-unknown-linux-gnu",
+      1
+    ],
+    [
+      "only-arm64ec",
+      1
+    ],
+    [
+      "only-riscv32",
+      1
+    ],
+    [
+      "only-riscv64",
+      1
+    ],
+    [
+      "only-eabihf",
+      1
+    ],
+    [
+      "only-musl",
+      1
+    ],
+    [
+      "only-stable",
+      1
+    ],
+    [
+      "only-ios",
+      1
+    ],
+    [
+      "only-tvos",
+      1
+    ],
+    [
+      "only-watchos",
+      1
+    ],
+    [
+      "only-visionos",
+      1
+    ],
+    [
+      "only-x86_64-pc-windows-gnullvm",
+      1
+    ],
+    [
+      "only-aarch64-unknown-uefi",
+      1
+    ]
+  ],
+  "top_ignore": [
+    [
+      "ignore-backends",
+      754
+    ],
+    [
+      "ignore-cross-compile",
+      393
+    ],
+    [
+      "ignore-compare-mode-next-solver",
+      365
+    ],
+    [
+      "ignore-windows",
+      59
+    ],
+    [
+      "ignore-windows-gnu",
+      57
+    ],
+    [
+      "ignore-emscripten",
+      52
+    ],
+    [
+      "ignore-stage1",
+      49
+    ],
+    [
+      "ignore-compare-mode-polonius",
+      43
+    ],
+    [
+      "ignore-msvc",
+      42
+    ],
+    [
+      "ignore-remote",
+      42
+    ],
+    [
+      "ignore-sgx",
+      39
+    ],
+    [
+      "ignore-android",
+      38
+    ],
+    [
+      "ignore-lldb",
+      38
+    ],
+    [
+      "ignore-auxiliary",
+      35
+    ],
+    [
+      "ignore-fuchsia",
+      35
+    ],
+    [
+      "ignore-apple",
+      29
+    ],
+    [
+      "ignore-wasm",
+      27
+    ],
+    [
+      "ignore-wasm32",
+      25
+    ],
+    [
+      "ignore-nvptx64",
+      24
+    ],
+    [
+      "ignore-parallel-frontend",
+      23
+    ],
+    [
+      "ignore-tvos",
+      20
+    ],
+    [
+      "ignore-watchos",
+      20
+    ],
+    [
+      "ignore-std-debug-assertions",
+      18
+    ],
+    [
+      "ignore-ios",
+      15
+    ],
+    [
+      "ignore-visionos",
+      15
+    ],
+    [
+      "ignore-test",
+      14
+    ],
+    [
+      "ignore-32bit",
+      13
+    ],
+    [
+      "ignore-riscv64",
+      13
+    ],
+    [
+      "ignore-endian-big",
+      13
+    ],
+    [
+      "ignore-musl",
+      11
+    ],
+    [
+      "ignore-wasi",
+      10
+    ],
+    [
+      "ignore-i686-pc-windows-msvc",
+      10
+    ],
+    [
+      "ignore-i686-pc-windows-gnu",
+      9
+    ],
+    [
+      "ignore-nto",
+      9
+    ],
+    [
+      "ignore-arm",
+      9
+    ],
+    [
+      "ignore-spirv",
+      9
+    ],
+    [
+      "ignore-loongarch64",
+      8
+    ],
+    [
+      "ignore-s390x",
+      8
+    ],
+    [
+      "ignore-x86",
+      8
+    ],
+    [
+      "ignore-qnx",
+      8
+    ],
+    [
+      "ignore-wasm32-unknown-unknown",
+      7
+    ],
+    [
+      "ignore-openbsd",
+      7
+    ],
+    [
+      "ignore-aix",
+      7
+    ],
+    [
+      "ignore-vxworks",
+      7
+    ],
+    [
+      "ignore-pauthtest",
+      5
+    ],
+    [
+      "ignore-64bit",
+      5
+    ],
+    [
+      "ignore-aarch64",
+      5
+    ],
+    [
+      "ignore-gdb",
+      5
+    ],
+    [
+      "ignore-wasm64",
+      5
+    ],
+    [
+      "ignore-thumb",
+      4
+    ],
+    [
+      "ignore-powerpc64",
+      4
+    ],
+    [
+      "ignore-ohos",
+      4
+    ],
+    [
+      "ignore-rustc_abi-x86-sse2",
+      3
+    ],
+    [
+      "ignore-aarch64-unknown-linux-gnu",
+      3
+    ],
+    [
+      "ignore-gdb-version",
+      3
+    ],
+    [
+      "ignore-aarch64-pc-windows-msvc",
+      3
+    ],
+    [
+      "ignore-beta",
+      3
+    ],
+    [
+      "ignore-stable",
+      3
+    ],
+    [
+      "ignore-gnu",
+      2
+    ],
+    [
+      "ignore-coverage-map",
+      2
+    ]
+  ],
+  "top_needs": [
+    [
+      "needs-llvm-components",
+      1437
+    ],
+    [
+      "needs-unwind",
+      209
+    ],
+    [
+      "needs-subprocess",
+      179
+    ],
+    [
+      "needs-target-std",
+      120
+    ],
+    [
+      "needs-threads",
+      105
+    ],
+    [
+      "needs-asm-support",
+      95
+    ],
+    [
+      "needs-sanitizer-cfi",
+      65
+    ],
+    [
+      "needs-enzyme",
+      57
+    ],
+    [
+      "needs-crate-type",
+      33
+    ],
+    [
+      "needs-rustc-debug-assertions",
+      26
+    ],
+    [
+      "needs-dynamic-linking",
+      23
+    ],
+    [
+      "needs-sanitizer-support",
+      21
+    ],
+    [
+      "needs-rust-lld",
+      18
+    ],
+    [
+      "needs-sanitizer-address",
+      17
+    ],
+    [
+      "needs-sanitizer-kcfi",
+      17
+    ],
+    [
+      "needs-deterministic-layouts",
+      15
+    ],
+    [
+      "needs-profiler-runtime",
+      12
+    ],
+    [
+      "needs-offload",
+      10
+    ],
+    [
+      "needs-xray",
+      9
+    ],
+    [
+      "needs-symlink",
+      7
+    ],
+    [
+      "needs-force-clang-based-tests",
+      7
+    ],
+    [
+      "needs-sanitizer-memory",
+      6
+    ],
+    [
+      "needs-dlltool",
+      5
+    ],
+    [
+      "needs-asm-ret",
+      4
+    ],
+    [
+      "needs-sanitizer-leak",
+      4
+    ],
+    [
+      "needs-sanitizer-safestack",
+      3
+    ],
+    [
+      "needs-sanitizer-realtime",
+      3
+    ],
+    [
+      "needs-sanitizer-dataflow",
+      2
+    ],
+    [
+      "needs-sanitizer-hwaddress",
+      2
+    ],
+    [
+      "needs-run-enabled",
+      2
+    ],
+    [
+      "needs-sanitizer-thread",
+      2
+    ],
+    [
+      "needs-sanitizer-memtag",
+      1
+    ],
+    [
+      "needs-sanitizer-shadow-call-stack",
+      1
+    ],
+    [
+      "needs-git-hash",
+      1
+    ],
+    [
+      "needs-llvm-zstd",
+      1
+    ],
+    [
+      "needs-std-remap-debuginfo",
+      1
+    ],
+    [
+      "needs-relocation-model-pic",
+      1
+    ],
+    [
+      "needs-backends",
+      1
+    ]
+  ],
+  "llvm_components": [
+    [
+      "x86",
+      451
+    ],
+    [
+      "aarch64",
+      281
+    ],
+    [
+      "arm",
+      180
+    ],
+    [
+      "riscv",
+      126
+    ],
+    [
+      "powerpc",
+      71
+    ],
+    [
+      "mips",
+      65
+    ],
+    [
+      "systemz",
+      45
+    ],
+    [
+      "sparc",
+      43
+    ],
+    [
+      "webassembly",
+      41
+    ],
+    [
+      "loongarch",
+      34
+    ],
+    [
+      "nvptx",
+      29
+    ],
+    [
+      "avr",
+      23
+    ],
+    [
+      "amdgpu",
+      21
+    ],
+    [
+      "bpf",
+      16
+    ],
+    [
+      "hexagon",
+      14
+    ],
+    [
+      "msp430",
+      14
+    ],
+    [
+      "m68k",
+      13
+    ],
+    [
+      "csky",
+      4
+    ],
+    [
+      "xtensa",
+      3
+    ]
+  ]
+}

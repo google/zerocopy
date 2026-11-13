@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc/compiletest",
+    "rustc/cross-compilation",
+    "isa/x86-64",
+    "isa/i386",
+    "isa/aarch64",
+    "systems/emulation",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "QEMU user-mode emulators (qemu-aarch64, qemu-i386)",
+      "identity": {
+        "package": "qemu-user",
+        "version": "1:11.1.2+ds-2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

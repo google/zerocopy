@@ -1,0 +1,31 @@
+{
+  "cranelift_stdlib_patches": [
+    "0001-portable-simd-Disable-f16-usage-in-portable-simd.patch",
+    "0027-stdlib-128bit-atomic-operations.patch",
+    "0027-sysroot_tests-128bit-atomic-operations.patch",
+    "0028-sysroot_tests-Disable-long-running-tests.patch"
+  ],
+  "cranelift_cargo_lock_pins": [
+    "patches/rand-lock.toml",
+    "patches/regex-lock.toml"
+  ],
+  "cranelift_bootstrap_stages": {
+    "stage0": "External rustc-clif wrapper + cargo building stage1 std and compiler",
+    "stage1": "In-tree rustc linked with librustc_codegen_cranelift building library/std",
+    "known_divergences": [
+      "No unwinding catch support by default (feature = 'unwinding' disabled in Cargo.toml for compile-time performance)",
+      "No ThinLTO/FatLTO or cross-language LTO",
+      "128-bit atomic operations lowered via lock/fallback patch on platforms without native 16B atomics",
+      "f16 portable-simd operations patched out",
+      "Callee-side C-variadic functions and non-C variadic ABIs unsupported"
+    ]
+  },
+  "gcc_backend_test_tiers": {
+    "mini_tests": "tests/run/*.rs (#![no_std] #![no_core] lang_item harnesses)",
+    "std_tests": "example/std_example.rs + alloc_example.rs + dst-field-align.rs",
+    "libcore_tests": "library/coretests via cargo test",
+    "ui_tests_passing": "tests/ui minus 113 failing-ui-tests.txt (47 additional in failing-ui-tests12.txt for libgccjit 12)",
+    "ui_tests_error_patterns": "tests/ui error-pattern tests minus 40 failing-ice-tests.txt",
+    "run_make_tests": "tests/run-make and run-make-cargo minus 14 failing-run-make-tests.txt"
+  }
+}

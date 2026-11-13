@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/corpora",
+    "rustc/compiletest",
+    "rustc/testing",
+    "rustc/codegen",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
