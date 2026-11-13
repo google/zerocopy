@@ -1,0 +1,204 @@
+{
+  "compcert": {
+    "repository": "AbsInt/CompCert",
+    "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+    "total_coq_v_files": 253,
+    "total_coq_v_lines": 205719,
+    "total_ocaml_ml_mli_lines": 39100,
+    "backend_v_files": 54,
+    "backend_v_lines": 47262,
+    "backend_ml_lines": 5799,
+    "cfrontend_v_lines": 28551,
+    "x86_v_lines": 10560,
+    "aarch64_v_lines": 11889,
+    "riscv_v_lines": 10027,
+    "arm_v_lines": 9007,
+    "powerpc_v_lines": 10873,
+    "passes": {
+      "SimplLocals": {
+        "spec_impl_v": 299,
+        "proof_v": 2305,
+        "technique": "verified transformation (simulation)"
+      },
+      "Cshmgen_Cminorgen": {
+        "spec_impl_v": 1068,
+        "proof_v": 4237,
+        "technique": "verified transformation (simulation)"
+      },
+      "Selection": {
+        "spec_impl_v": 553,
+        "proof_v": 4667,
+        "technique": "verified transformation (smart constructors + Lemmas)"
+      },
+      "RTLgen": {
+        "spec_impl_v": 2052,
+        "proof_v": 1600,
+        "technique": "translation validation / relational spec (RTLgenspec)"
+      },
+      "Tailcall": {
+        "spec_impl_v": 105,
+        "proof_v": 609,
+        "technique": "verified transformation (simulation)"
+      },
+      "Inlining": {
+        "spec_impl_v": 1190,
+        "proof_v": 1263,
+        "technique": "verified transformation (context-indexed simulation)"
+      },
+      "Renumber": {
+        "spec_impl_v": 80,
+        "proof_v": 269,
+        "technique": "verified transformation (simulation)"
+      },
+      "Constprop": {
+        "spec_impl_v": 257,
+        "proof_v": 1571,
+        "shared_analysis_v": 9020,
+        "technique": "verified Kildall abstract interpretation + transformation"
+      },
+      "CSE": {
+        "spec_impl_v": 958,
+        "proof_v": 1593,
+        "shared_analysis_v": 9020,
+        "technique": "verified Kildall symbolic numbering + transformation"
+      },
+      "Deadcode": {
+        "spec_impl_v": 255,
+        "proof_v": 1286,
+        "shared_analysis_v": 11300,
+        "technique": "verified backward NeedDomain + Kildall + transformation"
+      },
+      "Unusedglob": {
+        "spec_impl_v": 142,
+        "proof_v": 1442,
+        "technique": "verified reachability + module filter"
+      },
+      "Allocation": {
+        "spec_impl_v": 1374,
+        "proof_v": 2545,
+        "ocaml_irc_ml": 1650,
+        "technique": "translation validation of OCaml IRC graph coloring + coalescing"
+      },
+      "Tunneling": {
+        "spec_impl_v": 192,
+        "proof_v": 714,
+        "technique": "verified union-find branch chain compression"
+      },
+      "Linearize": {
+        "spec_impl_v": 217,
+        "proof_v": 738,
+        "ocaml_enum_ml": 250,
+        "technique": "translation validation of trace enumeration"
+      },
+      "CleanupLabels": {
+        "spec_impl_v": 71,
+        "proof_v": 358,
+        "technique": "verified label filtering"
+      },
+      "Debugvar": {
+        "spec_impl_v": 369,
+        "proof_v": 560,
+        "technique": "verified live-range debug annotation"
+      },
+      "Stacking": {
+        "spec_impl_v": 695,
+        "proof_v": 2218,
+        "technique": "verified frame layout + public/private separation"
+      },
+      "Asmgen": {
+        "spec_impl_v": 1961,
+        "proof_v": 4416,
+        "technique": "verified Mach-to-Asm instruction emission"
+      }
+    }
+  },
+  "vellvm": {
+    "repository": "vellvm/vellvm",
+    "revision": "1d651e7a391c6d0112f0b2ecb7c363c58c3a7d3c",
+    "total_v_files": 87,
+    "total_v_lines": 47791,
+    "subdirs": {
+      "Numeric": 9942,
+      "Semantics": 8526,
+      "Syntax": 10019,
+      "Theory": 12061,
+      "Utils": 5753
+    }
+  },
+  "crellvm": {
+    "repository": "snu-sf/crellvm",
+    "revision": "668249b88756233f96b3ef21f12993501a348afc",
+    "coq_def_lines": 7952,
+    "coq_proof_lines": 21117,
+    "coq_extract_lines": 127,
+    "total_coq_lines": 29196,
+    "ocaml_lines": 4499,
+    "atd_schema_lines": 2383,
+    "validated_llvm_passes": [
+      "PromoteMemoryToRegister (mem2reg)",
+      "GVN-PRE",
+      "LICM",
+      "InstCombine"
+    ]
+  },
+  "alive2": {
+    "repository": "AliveToolkit/alive2",
+    "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+    "cpp_h_lines": 37931,
+    "subdirs": {
+      "ir": 20652,
+      "tools": 5820,
+      "smt": 4543,
+      "llvm_util": 4210,
+      "util": 1751,
+      "tv": 799,
+      "cache": 138
+    },
+    "test_files_ll": 1279,
+    "test_files_opt": 399
+  },
+  "lean_mlir": {
+    "repository": "opencompl/lean-mlir",
+    "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+    "total_lean_files": 9449,
+    "total_lean_lines": 616630,
+    "components": {
+      "LeanMLIR_core": 14312,
+      "Blase_pbv": 49171,
+      "Medusa_generalization": 5079,
+      "SSA_Projects_InstCombine": 506068,
+      "SSA_Projects_LLVMRiscV": 20587,
+      "SSA_Projects_CIRCT": 8333,
+      "SSA_Projects_SLLVM": 4924,
+      "SSA_Projects_RISCV64": 1834
+    }
+  },
+  "regalloc2": {
+    "repository": "bytecodealliance/regalloc2",
+    "revision": "4a233442f781dd7b84d5ea40504d3be07263b3e3",
+    "total_src_rs_lines": 13999,
+    "checker_rs_lines": 1011,
+    "ion_allocator_lines": 5508,
+    "fastalloc_lines": 2488
+  },
+  "cakeml": {
+    "repository": "CakeML/cakeml",
+    "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8",
+    "total_tracked_files": 2083,
+    "compiler_files": 783,
+    "backend_proof_files": 75,
+    "pancake_files": 113,
+    "key_pass_script_lines": {
+      "clos_to_bvlScript.sml": 926,
+      "bvl_to_bviScript.sml": 562,
+      "bvl_inlineScript.sml": 442,
+      "bvi_tailrecScript.sml": 845,
+      "bvi_tmcScript.sml": 886,
+      "bvi_to_dataScript.sml": 341,
+      "data_to_wordScript.sml": 3570,
+      "word_to_wordScript.sml": 139,
+      "word_cseScript.sml": 654,
+      "word_allocScript.sml": 1886
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "verification/compiler-verification",
+    "isa/x86-64",
+    "isa/aarch64",
+    "rustc/codegen",
+    "lean"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert verified C compiler (x86, AArch64, Cminor, Clight)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "version": "3.16-dev"
+      }
+    },
+    {
+      "name": "CakeML verified compiler and Pancake C-like systems backend",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "publication": "JFP 29 (2019), e2",
+        "repository": "CakeML/cakeml",
+        "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+      }
+    },
+    {
+      "name": "Metamath Zero (MM0) and MMC verified x86-64 compiler",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "Anneal verified Rust verification and MIR-to-x86-64 framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "6893164fc505a4e047ebe99a923f0a6ca7f13804"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 compiler and Tier 1 target specifications",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -1,0 +1,91 @@
+{
+  "lean_checkers_and_exporters": {
+    "lean4lean": {
+      "repository": "digama0/lean4lean",
+      "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+      "toolchain": "leanprover/lean4:v4.33.0-rc2",
+      "license": "Apache-2.0",
+      "total_lean_files": 112,
+      "total_lean_lines": 49412,
+      "breakdown_lines": {
+        "executable_kernel_top": 2887,
+        "Inductive": 885,
+        "Environment": 138,
+        "Std": 677,
+        "Theory": 6911,
+        "Verify": 23745,
+        "Experimental": 13309,
+        "Tests": 664
+      },
+      "arxiv": "2403.14064"
+    },
+    "nanoda_lib": {
+      "repository": "ammkrn/nanoda_lib",
+      "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+      "version": "0.4.32",
+      "language": "Rust (edition 2021)",
+      "license": "Apache-2.0",
+      "total_rs_files": 22,
+      "total_rs_lines": 10258,
+      "core_non_test_rs_lines": 8754,
+      "test_rs_lines": 1504,
+      "runtime_dependencies": [
+        "indexmap 2.13.0"
+      ]
+    },
+    "lean4checker": {
+      "repository": "leanprover/lean4checker",
+      "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709",
+      "license": "Apache-2.0",
+      "total_lean_files": 16,
+      "total_lean_lines": 738,
+      "core_replay_lines": 371,
+      "status": "Merged into leanprover/lean4 core as built-in `leanchecker` starting in v4.28.0"
+    },
+    "lean4export": {
+      "repository": "leanprover/lean4export",
+      "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+      "license": "Apache-2.0",
+      "format_version": "3.1.0 (NDJSON)",
+      "total_lean_files": 4,
+      "total_lean_lines": 1714,
+      "core_export_lines": 456
+    },
+    "comparator": {
+      "repository": "leanprover/comparator",
+      "revision": "865edc14486c3388e9225daa971da8e157488c3e",
+      "license": "Apache-2.0",
+      "total_lean_files": 46,
+      "total_lean_lines": 1065,
+      "core_lines": 591,
+      "status": "Merged into leanprover/lean4 core as `lake comparator` / `lake check` in v4.35.0"
+    }
+  },
+  "verified_kernels_other_ecosystems": {
+    "candle": {
+      "repository": "CakeML/candle",
+      "revision": "6a9acd58867610c78fee0f3dd9ed4c4c14087b18",
+      "cakeml_kernel_repository": "CakeML/cakeml",
+      "cakeml_kernel_revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8",
+      "cakeml_candle_files": 153,
+      "publication": "ITP 2022 (LIPIcs.ITP.2022.3)",
+      "doi": "10.4230/LIPIcs.ITP.2022.3"
+    },
+    "mm0": {
+      "repository": "digama0/mm0",
+      "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+      "mm0_rs_lines": 62431,
+      "mm0_lean_lines": 575738,
+      "license": "CC0-1.0"
+    }
+  },
+  "anneal_trusted_tcb": {
+    "repository": "joshlf/anneal",
+    "revision": "6893164fc505a4e047ebe99a923f0a6ca7f13804",
+    "trusted_audit_rs_lines": 3291,
+    "trusted_audit_lean_lines": 891,
+    "trusted_cargo_anneal_rs_lines": 184,
+    "trusted_rustc_capture_rs_lines": 30,
+    "trusted_lean_lines": 19
+  }
+}

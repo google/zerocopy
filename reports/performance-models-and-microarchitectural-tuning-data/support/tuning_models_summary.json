@@ -1,0 +1,1700 @@
+{
+  "llvm_revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "bhive_revision": "5f1d50077ac0779fd227b261dcf517862c7104bd",
+  "uica_revision": "6ebeeab0f8705cae4b17a9362f9c65ef91f5cc44",
+  "x86_sched_files_count": 22,
+  "x86_sched_total_lines": 41772,
+  "x86_sched_total_inst_rw": 3632,
+  "x86_sched_files": [
+    {
+      "file": "X86SchedAlderlakeP.td",
+      "lines": 2474,
+      "models": [
+        "AlderlakePModel"
+      ],
+      "proc_res_defs": 13,
+      "sched_write_res": 288,
+      "inst_rw": 351,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "512",
+        "72"
+      ],
+      "loop_buffer_size": [
+        "72"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedBroadwell.td",
+      "lines": 1691,
+      "models": [
+        "BroadwellModel"
+      ],
+      "proc_res_defs": 10,
+      "sched_write_res": 121,
+      "inst_rw": 135,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "192",
+        "50"
+      ],
+      "loop_buffer_size": [
+        "50"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedHaswell.td",
+      "lines": 1955,
+      "models": [
+        "HaswellModel"
+      ],
+      "proc_res_defs": 10,
+      "sched_write_res": 150,
+      "inst_rw": 167,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "192",
+        "50"
+      ],
+      "loop_buffer_size": [
+        "50"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedIceLake.td",
+      "lines": 2591,
+      "models": [
+        "IceLakeModel"
+      ],
+      "proc_res_defs": 12,
+      "sched_write_res": 181,
+      "inst_rw": 204,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "352",
+        "50"
+      ],
+      "loop_buffer_size": [
+        "50"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedLunarlakeP.td",
+      "lines": 2410,
+      "models": [
+        "LunarlakePModel"
+      ],
+      "proc_res_defs": 19,
+      "sched_write_res": 246,
+      "inst_rw": 305,
+      "issue_width": [
+        "8"
+      ],
+      "micro_op_buffer_size": [
+        "792",
+        "200"
+      ],
+      "loop_buffer_size": [
+        "200"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedPredicates.td",
+      "lines": 144,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "X86SchedSandyBridge.td",
+      "lines": 1292,
+      "models": [
+        "SandyBridgeModel"
+      ],
+      "proc_res_defs": 7,
+      "sched_write_res": 74,
+      "inst_rw": 84,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "168",
+        "28"
+      ],
+      "loop_buffer_size": [
+        "28"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedSapphireRapids.td",
+      "lines": 5208,
+      "models": [
+        "SapphireRapidsModel"
+      ],
+      "proc_res_defs": 13,
+      "sched_write_res": 577,
+      "inst_rw": 766,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "512",
+        "72"
+      ],
+      "loop_buffer_size": [
+        "72"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedSkylakeClient.td",
+      "lines": 1762,
+      "models": [
+        "SkylakeClientModel"
+      ],
+      "proc_res_defs": 10,
+      "sched_write_res": 124,
+      "inst_rw": 143,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "224",
+        "50"
+      ],
+      "loop_buffer_size": [
+        "50"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86SchedSkylakeServer.td",
+      "lines": 2567,
+      "models": [
+        "SkylakeServerModel"
+      ],
+      "proc_res_defs": 10,
+      "sched_write_res": 180,
+      "inst_rw": 205,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "224",
+        "50"
+      ],
+      "loop_buffer_size": [
+        "50"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86Schedule.td",
+      "lines": 752,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "32"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleAtom.td",
+      "lines": 936,
+      "models": [
+        "AtomModel"
+      ],
+      "proc_res_defs": 2,
+      "sched_write_res": 60,
+      "inst_rw": 70,
+      "issue_width": [
+        "2"
+      ],
+      "micro_op_buffer_size": [
+        "0",
+        "10"
+      ],
+      "loop_buffer_size": [
+        "10"
+      ],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleBdVer2.td",
+      "lines": 1457,
+      "models": [
+        "BdVer2Model"
+      ],
+      "proc_res_defs": 19,
+      "sched_write_res": 75,
+      "inst_rw": 80,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "128"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "20"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleBtVer2.td",
+      "lines": 1056,
+      "models": [
+        "BtVer2Model"
+      ],
+      "proc_res_defs": 14,
+      "sched_write_res": 25,
+      "inst_rw": 24,
+      "issue_width": [
+        "2"
+      ],
+      "micro_op_buffer_size": [
+        "64"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleC864GM4.td",
+      "lines": 1015,
+      "models": [
+        "C864GM4Model"
+      ],
+      "proc_res_defs": 14,
+      "sched_write_res": 34,
+      "inst_rw": 42,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "224",
+        "96"
+      ],
+      "loop_buffer_size": [
+        "96"
+      ],
+      "load_latency": [
+        "4",
+        "7"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "X86ScheduleC864GM7.td",
+      "lines": 3722,
+      "models": [
+        "C864GM7Model"
+      ],
+      "proc_res_defs": 15,
+      "sched_write_res": 313,
+      "inst_rw": 324,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "256",
+        "96"
+      ],
+      "loop_buffer_size": [
+        "96"
+      ],
+      "load_latency": [
+        "4",
+        "7"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "X86ScheduleC864GM8.td",
+      "lines": 3734,
+      "models": [
+        "C864GM8Model"
+      ],
+      "proc_res_defs": 17,
+      "sched_write_res": 313,
+      "inst_rw": 324,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "256",
+        "96"
+      ],
+      "loop_buffer_size": [
+        "96"
+      ],
+      "load_latency": [
+        "4",
+        "7"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "X86ScheduleSLM.td",
+      "lines": 517,
+      "models": [
+        "SLMModel"
+      ],
+      "proc_res_defs": 8,
+      "sched_write_res": 4,
+      "inst_rw": 5,
+      "issue_width": [
+        "2"
+      ],
+      "micro_op_buffer_size": [
+        "32",
+        "10"
+      ],
+      "loop_buffer_size": [
+        "10"
+      ],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleZnver1.td",
+      "lines": 1399,
+      "models": [
+        "Znver1Model"
+      ],
+      "proc_res_defs": 12,
+      "sched_write_res": 84,
+      "inst_rw": 106,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "192"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "17"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleZnver2.td",
+      "lines": 1403,
+      "models": [
+        "Znver2Model"
+      ],
+      "proc_res_defs": 13,
+      "sched_write_res": 86,
+      "inst_rw": 109,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "224"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "17"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "X86ScheduleZnver3.td",
+      "lines": 1628,
+      "models": [
+        "Znver3Model"
+      ],
+      "proc_res_defs": 17,
+      "sched_write_res": 68,
+      "inst_rw": 77,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "256",
+        "96"
+      ],
+      "loop_buffer_size": [
+        "96"
+      ],
+      "load_latency": [
+        "4",
+        "7"
+      ],
+      "mispredict_penalty": [
+        "13"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "X86ScheduleZnver4.td",
+      "lines": 2059,
+      "models": [
+        "Znver4Model"
+      ],
+      "proc_res_defs": 17,
+      "sched_write_res": 102,
+      "inst_rw": 111,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "108"
+      ],
+      "loop_buffer_size": [
+        "108"
+      ],
+      "load_latency": [
+        "4",
+        "7"
+      ],
+      "mispredict_penalty": [
+        "13"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    }
+  ],
+  "aarch64_sched_files_count": 37,
+  "aarch64_sched_total_lines": 52561,
+  "aarch64_sched_total_inst_rw": 10850,
+  "aarch64_sched_files": [
+    {
+      "file": "AArch64SchedA320.td",
+      "lines": 1416,
+      "models": [
+        "CortexA320Model"
+      ],
+      "proc_res_defs": 9,
+      "sched_write_res": 46,
+      "inst_rw": 402,
+      "issue_width": [
+        "1"
+      ],
+      "micro_op_buffer_size": [
+        "0"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "AArch64SchedA510.td",
+      "lines": 1396,
+      "models": [
+        "CortexA510Model"
+      ],
+      "proc_res_defs": 12,
+      "sched_write_res": 33,
+      "inst_rw": 406,
+      "issue_width": [
+        "3"
+      ],
+      "micro_op_buffer_size": [
+        "0"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "AArch64SchedA53.td",
+      "lines": 300,
+      "models": [
+        "CortexA53Model"
+      ],
+      "proc_res_defs": 7,
+      "sched_write_res": 13,
+      "inst_rw": 73,
+      "issue_width": [
+        "2"
+      ],
+      "micro_op_buffer_size": [
+        "0"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [
+        "9"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedA55.td",
+      "lines": 483,
+      "models": [
+        "CortexA55Model"
+      ],
+      "proc_res_defs": 9,
+      "sched_write_res": 29,
+      "inst_rw": 141,
+      "issue_width": [
+        "2"
+      ],
+      "micro_op_buffer_size": [
+        "0"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "8"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "AArch64SchedA57.td",
+      "lines": 695,
+      "models": [
+        "CortexA57Model"
+      ],
+      "proc_res_defs": 7,
+      "sched_write_res": 3,
+      "inst_rw": 334,
+      "issue_width": [
+        "3"
+      ],
+      "micro_op_buffer_size": [
+        "128",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedA57WriteRes.td",
+      "lines": 563,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 109,
+      "inst_rw": 0,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "AArch64SchedA64FX.td",
+      "lines": 2613,
+      "models": [
+        "A64FXModel"
+      ],
+      "proc_res_defs": 8,
+      "sched_write_res": 182,
+      "inst_rw": 606,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "180",
+        "128"
+      ],
+      "loop_buffer_size": [
+        "128"
+      ],
+      "load_latency": [
+        "5"
+      ],
+      "mispredict_penalty": [
+        "12"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedAmpere1.td",
+      "lines": 1143,
+      "models": [
+        "Ampere1Model"
+      ],
+      "proc_res_defs": 8,
+      "sched_write_res": 91,
+      "inst_rw": 210,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "192",
+        "32"
+      ],
+      "loop_buffer_size": [
+        "32"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "0"
+      ]
+    },
+    {
+      "file": "AArch64SchedAmpere1B.td",
+      "lines": 1151,
+      "models": [
+        "Ampere1BModel"
+      ],
+      "proc_res_defs": 8,
+      "sched_write_res": 82,
+      "inst_rw": 236,
+      "issue_width": [
+        "12"
+      ],
+      "micro_op_buffer_size": [
+        "208",
+        "32"
+      ],
+      "loop_buffer_size": [
+        "32"
+      ],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedC1Nano.td",
+      "lines": 2214,
+      "models": [
+        "C1NanoModel"
+      ],
+      "proc_res_defs": 13,
+      "sched_write_res": 118,
+      "inst_rw": 509,
+      "issue_width": [
+        "3"
+      ],
+      "micro_op_buffer_size": [
+        "0"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedC1Premium.td",
+      "lines": 2351,
+      "models": [
+        "C1PremiumModel"
+      ],
+      "proc_res_defs": 17,
+      "sched_write_res": 172,
+      "inst_rw": 436,
+      "issue_width": [
+        "10"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedC1Ultra.td",
+      "lines": 3136,
+      "models": [
+        "C1UltraModel"
+      ],
+      "proc_res_defs": 35,
+      "sched_write_res": 162,
+      "inst_rw": 519,
+      "issue_width": [
+        "10"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedCyclone.td",
+      "lines": 881,
+      "models": [
+        "CycloneModel"
+      ],
+      "proc_res_defs": 13,
+      "sched_write_res": 23,
+      "inst_rw": 148,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "192"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedExynosM3.td",
+      "lines": 879,
+      "models": [
+        "ExynosM3Model"
+      ],
+      "proc_res_defs": 35,
+      "sched_write_res": 79,
+      "inst_rw": 241,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "228",
+        "40"
+      ],
+      "loop_buffer_size": [
+        "40"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedExynosM4.td",
+      "lines": 1017,
+      "models": [
+        "ExynosM4Model"
+      ],
+      "proc_res_defs": 41,
+      "sched_write_res": 113,
+      "inst_rw": 280,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "228",
+        "48"
+      ],
+      "loop_buffer_size": [
+        "48"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "16"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedExynosM5.td",
+      "lines": 1016,
+      "models": [
+        "ExynosM5Model"
+      ],
+      "proc_res_defs": 45,
+      "sched_write_res": 111,
+      "inst_rw": 258,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "228",
+        "60"
+      ],
+      "loop_buffer_size": [
+        "60"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "15"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedFalkor.td",
+      "lines": 123,
+      "models": [
+        "FalkorModel"
+      ],
+      "proc_res_defs": 12,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [
+        "8"
+      ],
+      "micro_op_buffer_size": [
+        "128",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [
+        "11"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedFalkorDetails.td",
+      "lines": 1293,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 107,
+      "inst_rw": 404,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "AArch64SchedKryo.td",
+      "lines": 142,
+      "models": [
+        "KryoModel"
+      ],
+      "proc_res_defs": 6,
+      "sched_write_res": 0,
+      "inst_rw": 1,
+      "issue_width": [
+        "5"
+      ],
+      "micro_op_buffer_size": [
+        "128",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedKryoDetails.td",
+      "lines": 2378,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 385,
+      "inst_rw": 387,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "AArch64SchedNeoverseN1.td",
+      "lines": 1116,
+      "models": [
+        "NeoverseN1Model"
+      ],
+      "proc_res_defs": 7,
+      "sched_write_res": 89,
+      "inst_rw": 171,
+      "issue_width": [
+        "3"
+      ],
+      "micro_op_buffer_size": [
+        "128",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "11"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedNeoverseN2.td",
+      "lines": 2535,
+      "models": [
+        "NeoverseN2Model"
+      ],
+      "proc_res_defs": 10,
+      "sched_write_res": 165,
+      "inst_rw": 449,
+      "issue_width": [
+        "5"
+      ],
+      "micro_op_buffer_size": [
+        "160",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedNeoverseN3.td",
+      "lines": 2488,
+      "models": [
+        "NeoverseN3Model"
+      ],
+      "proc_res_defs": 9,
+      "sched_write_res": 140,
+      "inst_rw": 445,
+      "issue_width": [
+        "5"
+      ],
+      "micro_op_buffer_size": [
+        "160",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedNeoverseV1.td",
+      "lines": 2013,
+      "models": [
+        "NeoverseV1Model"
+      ],
+      "proc_res_defs": 12,
+      "sched_write_res": 168,
+      "inst_rw": 298,
+      "issue_width": [
+        "8"
+      ],
+      "micro_op_buffer_size": [
+        "256",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "11"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedNeoverseV2.td",
+      "lines": 2847,
+      "models": [
+        "NeoverseV2Model"
+      ],
+      "proc_res_defs": 15,
+      "sched_write_res": 217,
+      "inst_rw": 448,
+      "issue_width": [
+        "6"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedNeoverseV3.td",
+      "lines": 2780,
+      "models": [
+        "NeoverseV3Model"
+      ],
+      "proc_res_defs": 18,
+      "sched_write_res": 197,
+      "inst_rw": 450,
+      "issue_width": [
+        "10"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedNeoverseV3AE.td",
+      "lines": 2708,
+      "models": [
+        "NeoverseV3AEModel"
+      ],
+      "proc_res_defs": 16,
+      "sched_write_res": 181,
+      "inst_rw": 450,
+      "issue_width": [
+        "10"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedOlympus.td",
+      "lines": 3382,
+      "models": [
+        "OlympusModel"
+      ],
+      "proc_res_defs": 13,
+      "sched_write_res": 205,
+      "inst_rw": 1031,
+      "issue_width": [
+        "10"
+      ],
+      "micro_op_buffer_size": [
+        "320",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "10"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedOryon.td",
+      "lines": 1660,
+      "models": [
+        "OryonModel"
+      ],
+      "proc_res_defs": 22,
+      "sched_write_res": 81,
+      "inst_rw": 331,
+      "issue_width": [
+        "14"
+      ],
+      "micro_op_buffer_size": [
+        "376",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "13"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedPredExynos.td",
+      "lines": 145,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "AArch64SchedPredNeoverse.td",
+      "lines": 111,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "AArch64SchedPredicates.td",
+      "lines": 475,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    },
+    {
+      "file": "AArch64SchedTSV110.td",
+      "lines": 775,
+      "models": [
+        "TSV110Model"
+      ],
+      "proc_res_defs": 7,
+      "sched_write_res": 54,
+      "inst_rw": 224,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "128",
+        "16"
+      ],
+      "loop_buffer_size": [
+        "16"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "14"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedThunderX.td",
+      "lines": 361,
+      "models": [
+        "ThunderXT8XModel"
+      ],
+      "proc_res_defs": 7,
+      "sched_write_res": 16,
+      "inst_rw": 83,
+      "issue_width": [
+        "2"
+      ],
+      "micro_op_buffer_size": [
+        "0"
+      ],
+      "loop_buffer_size": [],
+      "load_latency": [
+        "3"
+      ],
+      "mispredict_penalty": [
+        "8"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedThunderX2T99.td",
+      "lines": 1868,
+      "models": [
+        "ThunderX2T99Model"
+      ],
+      "proc_res_defs": 6,
+      "sched_write_res": 49,
+      "inst_rw": 480,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "180",
+        "128"
+      ],
+      "loop_buffer_size": [
+        "128"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "12"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64SchedThunderX3T110.td",
+      "lines": 2006,
+      "models": [
+        "ThunderX3T110Model"
+      ],
+      "proc_res_defs": 11,
+      "sched_write_res": 82,
+      "inst_rw": 399,
+      "issue_width": [
+        "4"
+      ],
+      "micro_op_buffer_size": [
+        "70",
+        "128"
+      ],
+      "loop_buffer_size": [
+        "128"
+      ],
+      "load_latency": [
+        "4"
+      ],
+      "mispredict_penalty": [
+        "12"
+      ],
+      "complete_model": [
+        "1"
+      ]
+    },
+    {
+      "file": "AArch64Schedule.td",
+      "lines": 101,
+      "models": [],
+      "proc_res_defs": 0,
+      "sched_write_res": 0,
+      "inst_rw": 0,
+      "issue_width": [],
+      "micro_op_buffer_size": [],
+      "loop_buffer_size": [],
+      "load_latency": [],
+      "mispredict_penalty": [],
+      "complete_model": []
+    }
+  ],
+  "bhive_600_sample_llvm_mca_evaluation": {
+    "skylake": {
+      "n_total": 600,
+      "mape_pct": 36.91,
+      "median_ape_pct": 10.66,
+      "non_may_alias_n": 561,
+      "non_may_alias_mape_pct": 24.24,
+      "non_may_alias_median_ape_pct": 10.2,
+      "may_alias_n": 39,
+      "may_alias_mape_pct": 219.23,
+      "may_alias_median_ape_pct": 83.89,
+      "pearson_r": 0.6797,
+      "kendall_tau": 0.8188,
+      "by_category": {
+        "Ld": {
+          "n": 100,
+          "mape_pct": 67.61,
+          "median_ape_pct": 10.2
+        },
+        "Ld/St": {
+          "n": 100,
+          "mape_pct": 57.63,
+          "median_ape_pct": 14.77
+        },
+        "Scalar": {
+          "n": 100,
+          "mape_pct": 17.97,
+          "median_ape_pct": 13.6
+        },
+        "Scalar/Vec": {
+          "n": 100,
+          "mape_pct": 28.16,
+          "median_ape_pct": 12.77
+        },
+        "St": {
+          "n": 100,
+          "mape_pct": 34.75,
+          "median_ape_pct": 5.1
+        },
+        "Vec": {
+          "n": 100,
+          "mape_pct": 15.35,
+          "median_ape_pct": 9.09
+        }
+      }
+    },
+    "haswell": {
+      "n_total": 600,
+      "mape_pct": 37.1,
+      "median_ape_pct": 10.42,
+      "non_may_alias_n": 561,
+      "non_may_alias_mape_pct": 24.98,
+      "non_may_alias_median_ape_pct": 10.17,
+      "may_alias_n": 39,
+      "may_alias_mape_pct": 211.41,
+      "may_alias_median_ape_pct": 77.9,
+      "pearson_r": 0.6394,
+      "kendall_tau": 0.8161,
+      "by_category": {
+        "Ld": {
+          "n": 100,
+          "mape_pct": 63.12,
+          "median_ape_pct": 10.74
+        },
+        "Ld/St": {
+          "n": 100,
+          "mape_pct": 54.41,
+          "median_ape_pct": 11.34
+        },
+        "Scalar": {
+          "n": 100,
+          "mape_pct": 15.87,
+          "median_ape_pct": 11.67
+        },
+        "Scalar/Vec": {
+          "n": 100,
+          "mape_pct": 30.44,
+          "median_ape_pct": 11.67
+        },
+        "St": {
+          "n": 100,
+          "mape_pct": 33.49,
+          "median_ape_pct": 5.58
+        },
+        "Vec": {
+          "n": 100,
+          "mape_pct": 25.28,
+          "median_ape_pct": 10.62
+        }
+      }
+    },
+    "ivybridge": {
+      "n_total": 600,
+      "mape_pct": 47.56,
+      "median_ape_pct": 10.42,
+      "non_may_alias_n": 561,
+      "non_may_alias_mape_pct": 31.21,
+      "non_may_alias_median_ape_pct": 9.52,
+      "may_alias_n": 39,
+      "may_alias_mape_pct": 282.81,
+      "may_alias_median_ape_pct": 252.33,
+      "pearson_r": 0.7051,
+      "kendall_tau": 0.812,
+      "by_category": {
+        "Ld": {
+          "n": 100,
+          "mape_pct": 61.27,
+          "median_ape_pct": 9.52
+        },
+        "Ld/St": {
+          "n": 100,
+          "mape_pct": 57.45,
+          "median_ape_pct": 10.38
+        },
+        "Scalar": {
+          "n": 100,
+          "mape_pct": 16.6,
+          "median_ape_pct": 11.96
+        },
+        "Scalar/Vec": {
+          "n": 100,
+          "mape_pct": 16.82,
+          "median_ape_pct": 10.42
+        },
+        "St": {
+          "n": 100,
+          "mape_pct": 109.25,
+          "median_ape_pct": 6.19
+        },
+        "Vec": {
+          "n": 100,
+          "mape_pct": 23.98,
+          "median_ape_pct": 10.75
+        }
+      }
+    }
+  }
+}

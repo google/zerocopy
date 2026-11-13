@@ -1,0 +1,124 @@
+{
+  "candidates": {
+    "compcert": {
+      "repository": "AbsInt/CompCert",
+      "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+      "prover": "Rocq (Coq)",
+      "license": "INRIA Non-Commercial License Agreement / AbsInt Commercial License (proprietary/non-free)",
+      "tier1_isas": {
+        "x86_64": {
+          "dir": "x86/",
+          "v_lines": 10560,
+          "ml_lines": 1966,
+          "os_targets": [
+            "x86_64-linux (ELF)",
+            "x86_64-macos (Mach-O)",
+            "x86_64-bsd (ELF)",
+            "x86_64-cygwin (PE/Cygwin, not native MSVC x64 ABI)"
+          ]
+        },
+        "i686_x86_32": {
+          "dir": "x86/",
+          "v_lines": 10560,
+          "ml_lines": 1966,
+          "os_targets": [
+            "x86_32-linux (ELF, 32sse2)",
+            "x86_32-bsd (ELF)"
+          ]
+        },
+        "aarch64": {
+          "dir": "aarch64/",
+          "v_lines": 11889,
+          "ml_lines": 1640,
+          "os_targets": [
+            "aarch64-linux (ELF)",
+            "aarch64-macos (Apple Silicon Mach-O)"
+          ]
+        }
+      },
+      "other_isas": {
+        "riscv32_64": {
+          "dir": "riscV/",
+          "v_lines": 10027,
+          "ml_lines": 1740
+        },
+        "arm32": {
+          "dir": "arm/",
+          "v_lines": 9007,
+          "ml_lines": 2073
+        },
+        "powerpc": {
+          "dir": "powerpc/",
+          "v_lines": 10873,
+          "ml_lines": 2719
+        }
+      },
+      "core_shared_v_lines": {
+        "common": 22322,
+        "lib": 19223,
+        "flocq": 31416,
+        "cfrontend": 28551,
+        "backend": 47262,
+        "driver": 831
+      },
+      "input_irs": {
+        "Clight": {
+          "file": "cfrontend/Clight.v",
+          "lines": 757,
+          "stack_blocks": "one Memory.mem block per local variable"
+        },
+        "Csharpminor": {
+          "file": "cfrontend/Csharpminor.v",
+          "lines": 495,
+          "stack_blocks": "one Memory.mem block per address-taken local"
+        },
+        "Cminor": {
+          "file": "backend/Cminor.v",
+          "lines": 1250,
+          "stack_blocks": "single fn_stackspace : Z byte block per activation frame"
+        }
+      }
+    },
+    "cakeml_pancake": {
+      "repository": "CakeML/cakeml",
+      "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8",
+      "prover": "HOL4",
+      "license": "BSD-3-Clause",
+      "targets": [
+        "x64 (x86_64)",
+        "arm8 (AArch64)",
+        "riscv (RV64IM)",
+        "mips (64-bit)",
+        "arm7 (ARMv7)",
+        "ag32 (Silver)"
+      ],
+      "input_irs": [
+        "source (CakeML AST)",
+        "crepLang / loopLang (Pancake C-like systems IR)",
+        "dataLang",
+        "wordLang",
+        "stackLang",
+        "labLang"
+      ],
+      "emissions": [
+        "direct verified machine-code byte arrays (word8 list) + FFI C harness / S-expression / assembly text"
+      ]
+    },
+    "mm0_mmc": {
+      "repository": "digama0/mm0",
+      "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+      "prover": "MM0 / MM1 + Rust (mm0-rs 62,431 LOC) + Lean (575,738 LOC)",
+      "license": "CC0-1.0",
+      "targets": [
+        "x86_64-linux (standalone ELF binary generation)"
+      ]
+    },
+    "anneal_native_lean": {
+      "repository": "joshlf/anneal",
+      "revision_main": "6893164fc505a4e047ebe99a923f0a6ca7f13804",
+      "revision_mvp": "0d2b7f8cc58a305af71b5799c7bcaddc42c472fa",
+      "prover": "Lean 4 (v4.34.1)",
+      "license": "BSD-2-Clause OR Apache-2.0 OR MIT"
+    }
+  }
+}

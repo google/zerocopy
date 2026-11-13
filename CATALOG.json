@@ -12149,6 +12149,80 @@
         "anneal/architecture"
       ]
     },
+    "independent-proof-checkers-and-smaller-trusted-computing-bases": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2403.14064",
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "lean4lean Lean 4 kernel and metatheory in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.32"
+          },
+          "name": "nanoda_lib independent Rust external type checker for Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker environment replay checker for Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "lean4export NDJSON v3.1.0 kernel declaration exporter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Comparator adversarial challenge-solution statement and kernel verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.3",
+            "publication": "ITP 2022",
+            "repository": "CakeML/cakeml",
+            "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+          },
+          "name": "CakeML and Candle verified HOL theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (MM0) minimal verifier and x86-64 compiler"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "6893164fc505a4e047ebe99a923f0a6ca7f13804"
+          },
+          "name": "Anneal trusted boundary auditor and verification framework"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "verification",
+        "verification/compiler-verification",
+        "security",
+        "anneal",
+        "compilers"
+      ]
+    },
     "interactive-prover-document-processing-lsp-mcp-and-snapshot-consistency": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -17790,6 +17864,79 @@
         "verification/survey"
       ]
     },
+    "performance-models-and-microarchitectural-tuning-data": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and codegen backend"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 X86/AArch64 TableGen scheduling models, MCAssembler, and llvm-mca"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3524059",
+            "publication": "ACM Transactions on Computer Systems (TOCS) 40(1), Article 3 (2022)",
+            "repository": "andreas-abel/uiCA",
+            "revision": "6ebeeab0f8705cae4b17a9362f9c65ef91f5cc44"
+          },
+          "name": "uiCA (uops.info Code Analyzer) microarchitectural simulator and uops.info XML converter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3297858.3304062",
+            "publication": "ASPLOS 2019, pp. 673-686"
+          },
+          "name": "uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IISWC47752.2019.9041950",
+            "publication": "IISWC 2019",
+            "repository": "ithemal/bhive",
+            "revision": "5f1d50077ac0779fd227b261dcf517862c7104bd"
+          },
+          "name": "BHive basic-block throughput benchmark suite and timing harness"
+        },
+        {
+          "identity": {
+            "doi_difftune": "10.1109/MICRO50266.2020.00059",
+            "doi_ithemal": "10.48550/arXiv.1808.07412",
+            "publication_difftune": "MICRO 2020",
+            "publication_ithemal": "ICML 2019 (PMLR 97:4515-4524)"
+          },
+          "name": "Ithemal and DiffTune learned basic-block throughput predictors"
+        },
+        {
+          "identity": {
+            "document": "Instruction tables: Lists of instruction latencies, throughputs and micro-operation breakdowns for Intel, AMD, and VIA CPUs",
+            "url": "https://www.agner.org/optimize/instruction_tables.pdf"
+          },
+          "name": "Agner Fog instruction tables and microarchitecture optimization manuals"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "llvm/scheduling-models",
+        "llvm/mca",
+        "isa",
+        "isa/x86-64",
+        "isa/aarch64",
+        "rustc/codegen",
+        "verification/compiler-verification"
+      ]
+    },
     "proof-producing-compilation-and-certificate-formats-quantitative-survey": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -18680,6 +18827,60 @@
         "smt",
         "lean",
         "anneal"
+      ]
+    },
+    "proven-baseline-compiler-candidates-and-reusable-verified-backends": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+            "version": "3.16-dev"
+          },
+          "name": "CompCert verified C compiler (x86, AArch64, Cminor, Clight)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "publication": "JFP 29 (2019), e2",
+            "repository": "CakeML/cakeml",
+            "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+          },
+          "name": "CakeML verified compiler and Pancake C-like systems backend"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (MM0) and MMC verified x86-64 compiler"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "6893164fc505a4e047ebe99a923f0a6ca7f13804"
+          },
+          "name": "Anneal verified Rust verification and MIR-to-x86-64 framework"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 target specifications"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "verification",
+        "verification/compiler-verification",
+        "isa/x86-64",
+        "isa/aarch64",
+        "rustc/codegen",
+        "lean"
       ]
     },
     "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {
@@ -24785,6 +24986,79 @@
         "rustc/mir",
         "aeneas/translation",
         "lean/mechanization"
+      ]
+    },
+    "verified-and-validated-compiler-optimization-precedents": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+            "version": "3.16-dev"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "1d651e7a391c6d0112f0b2ecb7c363c58c3a7d3c"
+          },
+          "name": "Vellvm verified LLVM IR semantics and refinement framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "publication": "PLDI 2018",
+            "repository": "snu-sf/crellvm",
+            "revision": "668249b88756233f96b3ef21f12993501a348afc"
+          },
+          "name": "Crellvm credible compilation and ERHL proof checker for LLVM"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030",
+            "publication": "PLDI 2021",
+            "repository": "AliveToolkit/alive2",
+            "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2"
+          },
+          "name": "Alive2 SMT-based translation validation tool for LLVM"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.03685",
+            "repository": "opencompl/lean-mlir",
+            "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
+          },
+          "name": "Lean-MLIR verified SSA peephole rewriting and InstCombine/RISC-V framework"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "4a233442f781dd7b84d5ea40504d3be07263b3e3",
+            "version": "0.15.2"
+          },
+          "name": "regalloc2 backtracking/linear-scan register allocator and symbolic checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "publication": "JFP 29 (2019), e2",
+            "repository": "CakeML/cakeml",
+            "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+          },
+          "name": "CakeML verified compiler and Pancake systems backend"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "verification",
+        "verification/compiler-verification",
+        "verification/translation-validation",
+        "llvm",
+        "lean",
+        "smt"
       ]
     },
     "verified-assemblers-encoders-linkers-and-object-format-models": {

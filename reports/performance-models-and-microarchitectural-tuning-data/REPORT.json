@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "llvm",
+    "llvm/scheduling-models",
+    "llvm/mca",
+    "isa",
+    "isa/x86-64",
+    "isa/aarch64",
+    "rustc/codegen",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and codegen backend",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 X86/AArch64 TableGen scheduling models, MCAssembler, and llvm-mca",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "uiCA (uops.info Code Analyzer) microarchitectural simulator and uops.info XML converter",
+      "identity": {
+        "doi": "10.1145/3524059",
+        "publication": "ACM Transactions on Computer Systems (TOCS) 40(1), Article 3 (2022)",
+        "repository": "andreas-abel/uiCA",
+        "revision": "6ebeeab0f8705cae4b17a9362f9c65ef91f5cc44"
+      }
+    },
+    {
+      "name": "uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures",
+      "identity": {
+        "doi": "10.1145/3297858.3304062",
+        "publication": "ASPLOS 2019, pp. 673-686"
+      }
+    },
+    {
+      "name": "BHive basic-block throughput benchmark suite and timing harness",
+      "identity": {
+        "doi": "10.1109/IISWC47752.2019.9041950",
+        "publication": "IISWC 2019",
+        "repository": "ithemal/bhive",
+        "revision": "5f1d50077ac0779fd227b261dcf517862c7104bd"
+      }
+    },
+    {
+      "name": "Ithemal and DiffTune learned basic-block throughput predictors",
+      "identity": {
+        "doi_difftune": "10.1109/MICRO50266.2020.00059",
+        "doi_ithemal": "10.48550/arXiv.1808.07412",
+        "publication_difftune": "MICRO 2020",
+        "publication_ithemal": "ICML 2019 (PMLR 97:4515-4524)"
+      }
+    },
+    {
+      "name": "Agner Fog instruction tables and microarchitecture optimization manuals",
+      "identity": {
+        "document": "Instruction tables: Lists of instruction latencies, throughputs and micro-operation breakdowns for Intel, AMD, and VIA CPUs",
+        "url": "https://www.agner.org/optimize/instruction_tables.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

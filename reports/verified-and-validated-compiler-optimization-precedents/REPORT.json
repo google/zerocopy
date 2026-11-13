@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "verification/compiler-verification",
+    "verification/translation-validation",
+    "llvm",
+    "lean",
+    "smt"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "version": "3.16-dev"
+      }
+    },
+    {
+      "name": "Vellvm verified LLVM IR semantics and refinement framework",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "1d651e7a391c6d0112f0b2ecb7c363c58c3a7d3c"
+      }
+    },
+    {
+      "name": "Crellvm credible compilation and ERHL proof checker for LLVM",
+      "identity": {
+        "doi": "10.1145/3192366.3192377",
+        "publication": "PLDI 2018",
+        "repository": "snu-sf/crellvm",
+        "revision": "668249b88756233f96b3ef21f12993501a348afc"
+      }
+    },
+    {
+      "name": "Alive2 SMT-based translation validation tool for LLVM",
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "publication": "PLDI 2021",
+        "repository": "AliveToolkit/alive2",
+        "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2"
+      }
+    },
+    {
+      "name": "Lean-MLIR verified SSA peephole rewriting and InstCombine/RISC-V framework",
+      "identity": {
+        "arxiv": "2407.03685",
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
+      }
+    },
+    {
+      "name": "regalloc2 backtracking/linear-scan register allocator and symbolic checker",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "4a233442f781dd7b84d5ea40504d3be07263b3e3",
+        "version": "0.15.2"
+      }
+    },
+    {
+      "name": "CakeML verified compiler and Pancake systems backend",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "publication": "JFP 29 (2019), e2",
+        "repository": "CakeML/cakeml",
+        "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
