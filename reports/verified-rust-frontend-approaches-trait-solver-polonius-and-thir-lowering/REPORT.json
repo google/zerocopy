@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "rustc",
+    "rustc/mir",
+    "rustc/architecture",
+    "verification",
+    "verification/certificates",
+    "lean/mechanization",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "tag": "1.99.1"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification system",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS) for Rust 1.99",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Charon Rust-to-LLBC frontend extractor",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "cf02e3f228f97ee7be3a415be56989053063326d"
+      }
+    },
+    {
+      "name": "Aeneas LLBC-to-Lean pure functional translator",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ca282ec2312a96f6a985a4d23a6636908564d23"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

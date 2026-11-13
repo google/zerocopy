@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "rustc",
+    "rustc/codegen",
+    "llvm",
+    "llvm/noalias",
+    "verification",
+    "verification/refinement",
+    "lean/mechanization",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "tag": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 compiler infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Vellvm verified LLVM IR semantics",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "506f1eb0be59291e3e6f6e624fb156a622e73a13"
+      }
+    },
+    {
+      "name": "Alive2 LLVM translation validation engine",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "adacbd516b7aa35cbac6c4498a779f0b3056da88"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -1,0 +1,661 @@
+{
+  "rustc_1_99_1_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_23_1_1_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "llvm_instruction_def": {
+    "total_opcodes": 63,
+    "counts_by_category": {
+      "TERM_INST": 11,
+      "UNARY_INST": 1,
+      "BINARY_INST": 18,
+      "MEMORY_INST": 7,
+      "CAST_INST": 13,
+      "FUNCLET_PAD_INST": 0,
+      "OTHER_INST": 13
+    },
+    "categories": {
+      "TERM_INST": [
+        {
+          "opcode": 1,
+          "name": "Ret",
+          "class": "ReturnInst"
+        },
+        {
+          "opcode": 2,
+          "name": "Br",
+          "class": "BranchInst"
+        },
+        {
+          "opcode": 3,
+          "name": "Switch",
+          "class": "SwitchInst"
+        },
+        {
+          "opcode": 4,
+          "name": "IndirectBr",
+          "class": "IndirectBrInst"
+        },
+        {
+          "opcode": 5,
+          "name": "Invoke",
+          "class": "InvokeInst"
+        },
+        {
+          "opcode": 6,
+          "name": "Resume",
+          "class": "ResumeInst"
+        },
+        {
+          "opcode": 7,
+          "name": "Unreachable",
+          "class": "UnreachableInst"
+        },
+        {
+          "opcode": 8,
+          "name": "CleanupRet",
+          "class": "CleanupReturnInst"
+        },
+        {
+          "opcode": 9,
+          "name": "CatchRet",
+          "class": "CatchReturnInst"
+        },
+        {
+          "opcode": 10,
+          "name": "CatchSwitch",
+          "class": "CatchSwitchInst"
+        },
+        {
+          "opcode": 11,
+          "name": "CallBr",
+          "class": "CallBrInst"
+        }
+      ],
+      "UNARY_INST": [
+        {
+          "opcode": 12,
+          "name": "FNeg",
+          "class": "UnaryOperator"
+        }
+      ],
+      "BINARY_INST": [
+        {
+          "opcode": 13,
+          "name": "Add",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 14,
+          "name": "FAdd",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 15,
+          "name": "Sub",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 16,
+          "name": "FSub",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 17,
+          "name": "Mul",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 18,
+          "name": "FMul",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 19,
+          "name": "UDiv",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 20,
+          "name": "SDiv",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 21,
+          "name": "FDiv",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 22,
+          "name": "URem",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 23,
+          "name": "SRem",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 24,
+          "name": "FRem",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 25,
+          "name": "Shl",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 26,
+          "name": "LShr",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 27,
+          "name": "AShr",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 28,
+          "name": "And",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 29,
+          "name": "Or",
+          "class": "BinaryOperator"
+        },
+        {
+          "opcode": 30,
+          "name": "Xor",
+          "class": "BinaryOperator"
+        }
+      ],
+      "MEMORY_INST": [
+        {
+          "opcode": 31,
+          "name": "Alloca",
+          "class": "AllocaInst"
+        },
+        {
+          "opcode": 32,
+          "name": "Load",
+          "class": "LoadInst"
+        },
+        {
+          "opcode": 33,
+          "name": "Store",
+          "class": "StoreInst"
+        },
+        {
+          "opcode": 34,
+          "name": "GetElementPtr",
+          "class": "GetElementPtrInst"
+        },
+        {
+          "opcode": 35,
+          "name": "Fence",
+          "class": "FenceInst"
+        },
+        {
+          "opcode": 36,
+          "name": "AtomicCmpXchg",
+          "class": "AtomicCmpXchgInst"
+        },
+        {
+          "opcode": 37,
+          "name": "AtomicRMW",
+          "class": "AtomicRMWInst"
+        }
+      ],
+      "CAST_INST": [
+        {
+          "opcode": 38,
+          "name": "Trunc",
+          "class": "TruncInst"
+        },
+        {
+          "opcode": 39,
+          "name": "ZExt",
+          "class": "ZExtInst"
+        },
+        {
+          "opcode": 40,
+          "name": "SExt",
+          "class": "SExtInst"
+        },
+        {
+          "opcode": 41,
+          "name": "FPToUI",
+          "class": "FPToUIInst"
+        },
+        {
+          "opcode": 42,
+          "name": "FPToSI",
+          "class": "FPToSIInst"
+        },
+        {
+          "opcode": 43,
+          "name": "UIToFP",
+          "class": "UIToFPInst"
+        },
+        {
+          "opcode": 44,
+          "name": "SIToFP",
+          "class": "SIToFPInst"
+        },
+        {
+          "opcode": 45,
+          "name": "FPTrunc",
+          "class": "FPTruncInst"
+        },
+        {
+          "opcode": 46,
+          "name": "FPExt",
+          "class": "FPExtInst"
+        },
+        {
+          "opcode": 47,
+          "name": "PtrToInt",
+          "class": "PtrToIntInst"
+        },
+        {
+          "opcode": 48,
+          "name": "IntToPtr",
+          "class": "IntToPtrInst"
+        },
+        {
+          "opcode": 49,
+          "name": "BitCast",
+          "class": "BitCastInst"
+        },
+        {
+          "opcode": 50,
+          "name": "AddrSpaceCast",
+          "class": "AddrSpaceCastInst"
+        }
+      ],
+      "FUNCLET_PAD_INST": [],
+      "OTHER_INST": [
+        {
+          "opcode": 53,
+          "name": "ICmp",
+          "class": "ICmpInst"
+        },
+        {
+          "opcode": 54,
+          "name": "FCmp",
+          "class": "FCmpInst"
+        },
+        {
+          "opcode": 55,
+          "name": "PHI",
+          "class": "PHINode"
+        },
+        {
+          "opcode": 56,
+          "name": "Call",
+          "class": "CallInst"
+        },
+        {
+          "opcode": 57,
+          "name": "Select",
+          "class": "SelectInst"
+        },
+        {
+          "opcode": 60,
+          "name": "VAArg",
+          "class": "VAArgInst"
+        },
+        {
+          "opcode": 61,
+          "name": "ExtractElement",
+          "class": "ExtractElementInst"
+        },
+        {
+          "opcode": 62,
+          "name": "InsertElement",
+          "class": "InsertElementInst"
+        },
+        {
+          "opcode": 63,
+          "name": "ShuffleVector",
+          "class": "ShuffleVectorInst"
+        },
+        {
+          "opcode": 64,
+          "name": "ExtractValue",
+          "class": "ExtractValueInst"
+        },
+        {
+          "opcode": 65,
+          "name": "InsertValue",
+          "class": "InsertValueInst"
+        },
+        {
+          "opcode": 66,
+          "name": "LandingPad",
+          "class": "LandingPadInst"
+        },
+        {
+          "opcode": 67,
+          "name": "Freeze",
+          "class": "FreezeInst"
+        }
+      ]
+    }
+  },
+  "fixed_metadata_kinds_count": 41,
+  "fixed_metadata_kinds": [
+    {
+      "enum": "MD_dbg",
+      "name": "dbg",
+      "id": 0
+    },
+    {
+      "enum": "MD_tbaa",
+      "name": "tbaa",
+      "id": 1
+    },
+    {
+      "enum": "MD_prof",
+      "name": "prof",
+      "id": 2
+    },
+    {
+      "enum": "MD_fpmath",
+      "name": "fpmath",
+      "id": 3
+    },
+    {
+      "enum": "MD_range",
+      "name": "range",
+      "id": 4
+    },
+    {
+      "enum": "MD_tbaa_struct",
+      "name": "tbaa.struct",
+      "id": 5
+    },
+    {
+      "enum": "MD_invariant_load",
+      "name": "invariant.load",
+      "id": 6
+    },
+    {
+      "enum": "MD_alias_scope",
+      "name": "alias.scope",
+      "id": 7
+    },
+    {
+      "enum": "MD_noalias",
+      "name": "noalias",
+      "id": 8
+    },
+    {
+      "enum": "MD_nontemporal",
+      "name": "nontemporal",
+      "id": 9
+    },
+    {
+      "enum": "MD_nonnull",
+      "name": "nonnull",
+      "id": 11
+    },
+    {
+      "enum": "MD_dereferenceable",
+      "name": "dereferenceable",
+      "id": 12
+    },
+    {
+      "enum": "MD_dereferenceable_or_null",
+      "name": "dereferenceable_or_null",
+      "id": 13
+    },
+    {
+      "enum": "MD_make_implicit",
+      "name": "make.implicit",
+      "id": 14
+    },
+    {
+      "enum": "MD_unpredictable",
+      "name": "unpredictable",
+      "id": 15
+    },
+    {
+      "enum": "MD_invariant_group",
+      "name": "invariant.group",
+      "id": 16
+    },
+    {
+      "enum": "MD_align",
+      "name": "align",
+      "id": 17
+    },
+    {
+      "enum": "MD_loop",
+      "name": "llvm.loop",
+      "id": 18
+    },
+    {
+      "enum": "MD_type",
+      "name": "type",
+      "id": 19
+    },
+    {
+      "enum": "MD_section_prefix",
+      "name": "section_prefix",
+      "id": 20
+    },
+    {
+      "enum": "MD_absolute_symbol",
+      "name": "absolute_symbol",
+      "id": 21
+    },
+    {
+      "enum": "MD_associated",
+      "name": "associated",
+      "id": 22
+    },
+    {
+      "enum": "MD_callees",
+      "name": "callees",
+      "id": 23
+    },
+    {
+      "enum": "MD_irr_loop",
+      "name": "irr_loop",
+      "id": 24
+    },
+    {
+      "enum": "MD_access_group",
+      "name": "llvm.access.group",
+      "id": 25
+    },
+    {
+      "enum": "MD_callback",
+      "name": "callback",
+      "id": 26
+    },
+    {
+      "enum": "MD_preserve_access_index",
+      "name": "llvm.preserve.access.index",
+      "id": 27
+    },
+    {
+      "enum": "MD_vcall_visibility",
+      "name": "vcall_visibility",
+      "id": 28
+    },
+    {
+      "enum": "MD_noundef",
+      "name": "noundef",
+      "id": 29
+    },
+    {
+      "enum": "MD_annotation",
+      "name": "annotation",
+      "id": 30
+    },
+    {
+      "enum": "MD_nosanitize",
+      "name": "nosanitize",
+      "id": 31
+    },
+    {
+      "enum": "MD_func_sanitize",
+      "name": "func_sanitize",
+      "id": 32
+    },
+    {
+      "enum": "MD_exclude",
+      "name": "exclude",
+      "id": 33
+    },
+    {
+      "enum": "MD_memprof",
+      "name": "memprof",
+      "id": 34
+    },
+    {
+      "enum": "MD_callsite",
+      "name": "callsite",
+      "id": 35
+    },
+    {
+      "enum": "MD_kcfi_type",
+      "name": "kcfi_type",
+      "id": 36
+    },
+    {
+      "enum": "MD_pcsections",
+      "name": "pcsections",
+      "id": 37
+    },
+    {
+      "enum": "MD_DIAssignID",
+      "name": "DIAssignID",
+      "id": 38
+    },
+    {
+      "enum": "MD_coro_outside_frame",
+      "name": "coro.outside.frame",
+      "id": 39
+    },
+    {
+      "enum": "MD_mmra",
+      "name": "mmra",
+      "id": 40
+    },
+    {
+      "enum": "MD_noalias_addrspace",
+      "name": "noalias.addrspace",
+      "id": 41
+    }
+  ],
+  "rustc_bitcode_blocks": [
+    "CONSTANTS_BLOCK",
+    "FUNCTION_BLOCK",
+    "GLOBALVAL_SUMMARY_BLOCK",
+    "IDENTIFICATION_BLOCK_ID",
+    "METADATA_ATTACHMENT_BLOCK",
+    "METADATA_BLOCK",
+    "METADATA_KIND_BLOCK",
+    "MODULE_BLOCK",
+    "OPERAND_BUNDLE_TAGS_BLOCK",
+    "PARAMATTR_BLOCK",
+    "PARAMATTR_GROUP_BLOCK_ID",
+    "STRTAB_BLOCK",
+    "SYMTAB_BLOCK",
+    "TYPE_BLOCK_ID",
+    "VALUE_SYMTAB"
+  ],
+  "clang19_bitcode_blocks": [
+    "CONSTANTS_BLOCK",
+    "FUNCTION_BLOCK",
+    "GLOBALVAL_SUMMARY_BLOCK",
+    "IDENTIFICATION_BLOCK_ID",
+    "METADATA_BLOCK",
+    "METADATA_KIND_BLOCK",
+    "MODULE_BLOCK",
+    "OPERAND_BUNDLE_TAGS_BLOCK",
+    "PARAMATTR_BLOCK",
+    "PARAMATTR_GROUP_BLOCK_ID",
+    "STRTAB_BLOCK",
+    "SYMTAB_BLOCK",
+    "TYPE_BLOCK_ID",
+    "VALUE_SYMTAB"
+  ],
+  "empirical_probe": {
+    "rustc_sysroot": "/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu",
+    "normal_rlib_members": {
+      "lib.rmeta": {
+        "size_bytes": 2568,
+        "magic_hex": "7f454c4602010100",
+        "is_elf": true,
+        "is_raw_bitcode": false
+      },
+      "lib.rmeta-link": {
+        "size_bytes": 648,
+        "magic_hex": "7f454c4602010100",
+        "is_elf": true,
+        "is_raw_bitcode": false
+      },
+      "libffi_math_normal.ffi_math.88e110ccb5eefcdd-cgu.0.rcgu.o": {
+        "size_bytes": 4712,
+        "magic_hex": "7f454c4602010100",
+        "is_elf": true,
+        "is_raw_bitcode": false
+      }
+    },
+    "linker_plugin_lto_rlib_members": {
+      "lib.rmeta": {
+        "size_bytes": 2568,
+        "magic_hex": "7f454c4602010100",
+        "is_elf": true,
+        "is_raw_bitcode": false
+      },
+      "lib.rmeta-link": {
+        "size_bytes": 640,
+        "magic_hex": "7f454c4602010100",
+        "is_elf": true,
+        "is_raw_bitcode": false
+      },
+      "libffi_math_xlto.ffi_math.88e110ccb5eefcdd-cgu.0.rcgu.o": {
+        "size_bytes": 3252,
+        "magic_hex": "4243c0de35140000",
+        "is_elf": false,
+        "is_raw_bitcode": true
+      }
+    },
+    "bitcode_top_blocks": [],
+    "bcanalyzer_head": "",
+    "rust_ir_snippet": "; ModuleID = 'ffi_math.88e110ccb5eefcdd-cgu.0'\nsource_filename = \"ffi_math.88e110ccb5eefcdd-cgu.0\"\ntarget datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-unknown-linux-gnu\"\n\n; Function Attrs: nounwind nonlazybind uwtable\ndefine noundef i32 @rust_compute(i32 noundef %x, ptr noalias nofree noundef readonly align 4 captures(address, read_provenance) dereferenceable(4) %bias) unnamed_addr #0 !guid !4 {\nstart:\n  %_3 = tail call noundef i32 @c_scale_add(i32 noundef %x, i32 noundef 4, ptr noundef nonnull %bias) #2\n  %_0 = add i32 %_3, 1\n  ret i32 %_0\n}\n\n; Function Attrs: mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine noundef i32 @rust_leaf_add(i32 noundef %a, i32 noundef %b) unnamed_addr #1 !guid !5 {\nstart:\n  %_0 = add i32 %b, %a\n  ret i32 %_0\n}\n\n; Function Attrs: nounwind nonlazybind uwtable\ndeclare noundef i32 @c_scale_add(i32 noundef, i32 noundef, ptr noundef) unnamed_addr #0\n\nattributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }\nattributes #1 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }\nattributes #2 = { nounwind }\n\n!llvm.module.flags = !{!0, !1, !2}\n!llvm.ident = !{!3}\n\n!0 = !{i32 8, !\"PIC Level\", i32 2}\n!1 = !{i32 2, !\"RtLibUseGOT\", i32 1}\n!2 = !{i32 7, !\"uwtable\", i32 2}\n!3 = !{!\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"}\n!4 = !{i64 -4758694265293515746}\n!5 = !{i64 2658585636019670346}\n",
+    "clang_comparison": {
+      "available": true,
+      "clang_version": "Debian clang version 19.1.7 (10.1+build1)",
+      "has_tbaa_metadata": true,
+      "has_nsw_flag": true,
+      "has_mustprogress": false,
+      "c_ir_snippet": "; ModuleID = '/tmp/xlto_probe_6nq7_evi/c_scale.c'\nsource_filename = \"/tmp/xlto_probe_6nq7_evi/c_scale.c\"\ntarget datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"\ntarget triple = \"x86_64-pc-linux-gnu\"\n\n; Function Attrs: nounwind uwtable\ndefine dso_local i32 @c_scale_add(i32 noundef %0, i32 noundef %1, ptr nocapture noundef readonly %2) local_unnamed_addr #0 {\n  %4 = mul nsw i32 %1, %0\n  %5 = load i32, ptr %2, align 4, !tbaa !6\n  %6 = tail call i32 @rust_leaf_add(i32 noundef %4, i32 noundef %5) #2\n  ret i32 %6\n}\n\ndeclare i32 @rust_leaf_add(i32 noundef, i32 noundef) local_unnamed_addr #1\n\nattributes #0 = { nounwind uwtable \"min-legal-vector-width\"=\"0\" \"no-trapping-math\"=\"true\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87\" \"tune-cpu\"=\"generic\" }\nattributes #1 = { \"no-trapping-math\"=\"true\" \"stack-protector-buffer-size\"=\"8\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87\" \"tune-cpu\"=\"generic\" }\nattributes #2 = { nounwind }\n\n!llvm.module.flags = !{!0, !1, !2, !3, !4}\n!llvm.ident = !{!5}\n\n!0 = !{i32 1, !\"wchar_size\", i32 4}\n!1 = !{i32 8, !\"PIC Level\", i32 2}\n!2 = !{i32 7, !\"PIE Level\", i32 2}\n!3 = !{i32 7, !\"uwtable\", i32 2}\n!4 = !{i32 1, !\"EnableSplitLTOUnit\", i32 0}\n!5 = !{!\"Debian clang version 19.1.7 (10.1+build1)\"}\n!6 = !{!7, !7, i64 0}\n!7 = !{!\"int\", !8, i64 0}\n!8 = !{!\"omnipotent char\", !9, i64 0}\n!9 = !{!\"Simple C/C++ TBAA\"}\n\n^0 = module: (path: \"[Regular LTO]\", hash: (0, 0, 0, 0, 0))\n^1 = gv: (name: \"c_scale_add\", summaries: (function: (module: ^0, flags: (linkage: external, visibility: default, notEligibleToImport: 0, live: 0, dsoLocal: 1, canAutoHide: 0, importType: definition), insts: 4, funcFlags: (readNone: 0, readOnly: 0, noRecurse: 0, returnDoesNotAlias: 0, noInline: 0, alwaysInline: 0, noUnwind: 1, mayThrow: 0, hasUnknownCall: 0, mustBeUnreachable: 0), calls: ((callee: ^2, relbf: 256, tail: 1))))) ; guid = 2049696993975717412\n^2 = gv: (name: \"rust_leaf_add\") ; guid = 2658585636019670346\n^3 = blockcount: 0\n"
+    }
+  },
+  "cross_language_link_disassembly": {
+    "c_scale_add": [
+      "movl %edi, %eax",
+      "imull %esi, %eax",
+      "addl (%rdx), %eax",
+      "retq"
+    ],
+    "rust_compute": [
+      "movl (%rsi), %eax",
+      "leal (%rax,%rdi,4), %eax",
+      "incl %eax",
+      "retq"
+    ],
+    "rust_leaf_add": [
+      "leal (%rdi,%rsi), %eax",
+      "retq"
+    ],
+    "llvm21_reader_on_llvm23_bitcode_error": "Invalid summary version 14. Version should be in the range [1-12].",
+    "llvm19_reader_on_llvm23_bitcode_error": "Unknown attribute kind (102) (Producer: 'LLVM23.1.1-rust-1.99.1-stable' Reader: 'LLVM 19.1.7')"
+  }
+}

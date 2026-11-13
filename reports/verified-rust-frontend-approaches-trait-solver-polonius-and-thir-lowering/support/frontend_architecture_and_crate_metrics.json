@@ -1,0 +1,1361 @@
+{
+  "rustc_1_99_1_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "compiler_workspace_summary": {
+    "total_compiler_crates": 78,
+    "total_rs_lines": 865761,
+    "total_rs_code_lines": 657923,
+    "diagnostic_derive_mentions": 2020,
+    "subdiagnostic_derive_mentions": 517,
+    "error_code_mentions_in_registry": 0,
+    "thir_expr_kind_count": 51,
+    "thir_expr_kind_variants": [
+      "Scope",
+      "If",
+      "Call",
+      "ByUse",
+      "Deref",
+      "Binary",
+      "LogicalOp",
+      "Unary",
+      "Cast",
+      "Use",
+      "NeverToAny",
+      "PointerCoercion",
+      "Loop",
+      "LoopMatch",
+      "Let",
+      "Match",
+      "Block",
+      "Assign",
+      "AssignOp",
+      "Field",
+      "Index",
+      "VarRef",
+      "UpvarRef",
+      "Borrow",
+      "RawBorrow",
+      "Break",
+      "Continue",
+      "ConstContinue",
+      "Return",
+      "Become",
+      "ConstBlock",
+      "Repeat",
+      "Array",
+      "Tuple",
+      "Adt",
+      "PlaceTypeAscription",
+      "ValueTypeAscription",
+      "PlaceUnwrapUnsafeBinder",
+      "ValueUnwrapUnsafeBinder",
+      "WrapUnsafeBinder",
+      "Closure",
+      "Literal",
+      "NonHirLiteral",
+      "ZstLiteral",
+      "NamedConst",
+      "ConstParam",
+      "StaticRef",
+      "InlineAsm",
+      "ThreadLocalRef",
+      "Yield",
+      "Reborrow"
+    ]
+  },
+  "stage_summary": {
+    "1_lex_parse_ast": {
+      "crates": [
+        "rustc_lexer",
+        "rustc_parse",
+        "rustc_ast",
+        "rustc_ast_pretty",
+        "rustc_ast_passes",
+        "rustc_ast_ir"
+      ],
+      "rs_files": 67,
+      "rs_lines": 56530,
+      "rs_code_lines": 44703,
+      "ftl_messages": 0
+    },
+    "2_expand_resolve_hir": {
+      "crates": [
+        "rustc_expand",
+        "rustc_builtin_macros",
+        "rustc_proc_macro",
+        "rustc_resolve",
+        "rustc_hir",
+        "rustc_hir_pretty",
+        "rustc_passes"
+      ],
+      "rs_files": 119,
+      "rs_lines": 77940,
+      "rs_code_lines": 62110,
+      "ftl_messages": 0
+    },
+    "3_type_ir_and_trait_solver": {
+      "crates": [
+        "rustc_type_ir",
+        "rustc_type_ir_macros",
+        "rustc_next_trait_solver",
+        "rustc_pattern_analysis"
+      ],
+      "rs_files": 89,
+      "rs_lines": 37088,
+      "rs_code_lines": 26037,
+      "ftl_messages": 0
+    },
+    "4_typeck_infer_trait_selection": {
+      "crates": [
+        "rustc_infer",
+        "rustc_trait_selection",
+        "rustc_hir_analysis",
+        "rustc_hir_typeck",
+        "rustc_traits"
+      ],
+      "rs_files": 212,
+      "rs_lines": 153395,
+      "rs_code_lines": 119289,
+      "ftl_messages": 0
+    },
+    "5_thir_mir_build_borrowck_polonius": {
+      "crates": [
+        "rustc_mir_build",
+        "rustc_borrowck",
+        "rustc_mir_dataflow",
+        "rustc_const_eval",
+        "rustc_mir_transform"
+      ],
+      "rs_files": 263,
+      "rs_lines": 123768,
+      "rs_code_lines": 92679,
+      "ftl_messages": 0
+    },
+    "6_middle_abi_metadata_diagnostics": {
+      "crates": [
+        "rustc_middle",
+        "rustc_abi",
+        "rustc_target",
+        "rustc_session",
+        "rustc_metadata",
+        "rustc_privacy",
+        "rustc_lint",
+        "rustc_lint_defs",
+        "rustc_errors",
+        "rustc_error_codes",
+        "rustc_error_messages",
+        "rustc_feature",
+        "rustc_span",
+        "rustc_data_structures",
+        "rustc_index",
+        "rustc_index_macros",
+        "rustc_serialize",
+        "rustc_arena",
+        "rustc_graphviz",
+        "rustc_attr_parsing",
+        "rustc_hir_id",
+        "rustc_query_impl",
+        "rustc_incremental",
+        "rustc_transmute",
+        "rustc_ty_utils",
+        "rustc_symbol_mangling",
+        "rustc_monomorphize",
+        "rustc_sanitizers"
+      ],
+      "rs_files": 964,
+      "rs_lines": 244606,
+      "rs_code_lines": 177227,
+      "ftl_messages": 0
+    },
+    "7_codegen_backends": {
+      "crates": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "rs_files": 288,
+      "rs_lines": 119336,
+      "rs_code_lines": 95859,
+      "ftl_messages": 0
+    },
+    "8_driver_interface_other": {
+      "crates": [
+        "rustc",
+        "rustc_ast_lowering",
+        "rustc_attr_ir",
+        "rustc_baked_icu_data",
+        "rustc_crate_store",
+        "rustc_driver",
+        "rustc_driver_impl",
+        "rustc_fs_util",
+        "rustc_hashes",
+        "rustc_interface",
+        "rustc_log",
+        "rustc_macros",
+        "rustc_parse_format",
+        "rustc_public",
+        "rustc_public_bridge",
+        "rustc_thread_pool",
+        "rustc_ty_walk",
+        "rustc_windows_rc"
+      ],
+      "rs_files": 153,
+      "rs_lines": 53098,
+      "rs_code_lines": 40019,
+      "ftl_messages": 0
+    }
+  },
+  "portable_solver_crates": {
+    "rustc_type_ir": {
+      "rs_files": 49,
+      "rs_lines": 18623,
+      "rs_code_lines": 12910,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "arrayvec",
+        "bitflags",
+        "derive-where",
+        "ena",
+        "indexmap",
+        "rustc-hash",
+        "rustc_abi",
+        "rustc_ast_ir",
+        "rustc_data_structures",
+        "rustc_error_messages",
+        "rustc_index",
+        "rustc_macros",
+        "rustc_serialize",
+        "rustc_span",
+        "rustc_type_ir_macros",
+        "smallvec",
+        "thin-vec",
+        "tracing"
+      ]
+    },
+    "rustc_next_trait_solver": {
+      "rs_files": 25,
+      "rs_lines": 12069,
+      "rs_code_lines": 9074,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "derive-where",
+        "rustc_data_structures",
+        "rustc_index",
+        "rustc_macros",
+        "rustc_type_ir",
+        "rustc_type_ir_macros",
+        "thin-vec",
+        "tracing"
+      ]
+    },
+    "rustc_pattern_analysis": {
+      "rs_files": 14,
+      "rs_lines": 6001,
+      "rs_code_lines": 3727,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "rustc-hash",
+        "rustc_abi",
+        "rustc_apfloat",
+        "rustc_arena",
+        "rustc_errors",
+        "rustc_hir",
+        "rustc_index",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_session",
+        "rustc_span",
+        "smallvec",
+        "tracing"
+      ]
+    },
+    "rustc_borrowck": {
+      "rs_files": 60,
+      "rs_lines": 35808,
+      "rs_code_lines": 27053,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "either",
+        "itertools",
+        "polonius-engine",
+        "rustc_abi",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_graphviz",
+        "rustc_hir",
+        "rustc_index",
+        "rustc_infer",
+        "rustc_lexer",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_mir_dataflow",
+        "rustc_session",
+        "rustc_span",
+        "rustc_trait_selection",
+        "smallvec",
+        "tracing"
+      ]
+    },
+    "rustc_mir_build": {
+      "rs_files": 39,
+      "rs_lines": 22837,
+      "rs_code_lines": 17251,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "itertools",
+        "rustc_abi",
+        "rustc_apfloat",
+        "rustc_arena",
+        "rustc_ast",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_hir",
+        "rustc_index",
+        "rustc_infer",
+        "rustc_lint_defs",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_pattern_analysis",
+        "rustc_session",
+        "rustc_span",
+        "rustc_trait_selection",
+        "tracing"
+      ]
+    },
+    "rustc_hir_typeck": {
+      "rs_files": 39,
+      "rs_lines": 49535,
+      "rs_code_lines": 38716,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "itertools",
+        "rustc_abi",
+        "rustc_ast",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_hir",
+        "rustc_hir_analysis",
+        "rustc_hir_pretty",
+        "rustc_index",
+        "rustc_infer",
+        "rustc_lint",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_session",
+        "rustc_span",
+        "rustc_target",
+        "rustc_trait_selection",
+        "smallvec",
+        "tracing"
+      ]
+    },
+    "rustc_hir_analysis": {
+      "rs_files": 53,
+      "rs_lines": 39634,
+      "rs_code_lines": 30993,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "itertools",
+        "rustc_abi",
+        "rustc_arena",
+        "rustc_ast",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_feature",
+        "rustc_hir",
+        "rustc_index",
+        "rustc_infer",
+        "rustc_lint_defs",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_session",
+        "rustc_span",
+        "rustc_target",
+        "rustc_trait_selection",
+        "smallvec",
+        "tracing"
+      ]
+    },
+    "rustc_trait_selection": {
+      "rs_files": 72,
+      "rs_lines": 50298,
+      "rs_code_lines": 39834,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "itertools",
+        "rustc_abi",
+        "rustc_ast",
+        "rustc_crate_store",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_hir",
+        "rustc_infer",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_next_trait_solver",
+        "rustc_session",
+        "rustc_span",
+        "rustc_transmute",
+        "smallvec",
+        "thin-vec",
+        "tracing"
+      ]
+    },
+    "rustc_infer": {
+      "rs_files": 39,
+      "rs_lines": 13233,
+      "rs_code_lines": 9185,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_hir",
+        "rustc_index",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_span",
+        "rustc_type_ir",
+        "smallvec",
+        "thin-vec",
+        "tracing"
+      ]
+    },
+    "rustc_resolve": {
+      "rs_files": 14,
+      "rs_lines": 28912,
+      "rs_code_lines": 23540,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "indexmap",
+        "itertools",
+        "pulldown-cmark",
+        "rustc_arena",
+        "rustc_ast",
+        "rustc_ast_pretty",
+        "rustc_attr_parsing",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_expand",
+        "rustc_feature",
+        "rustc_hir",
+        "rustc_index",
+        "rustc_macros",
+        "rustc_metadata",
+        "rustc_middle",
+        "rustc_session",
+        "rustc_span",
+        "smallvec",
+        "thin-vec",
+        "tracing"
+      ]
+    },
+    "rustc_expand": {
+      "rs_files": 19,
+      "rs_lines": 13699,
+      "rs_code_lines": 10716,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "rustc_ast",
+        "rustc_ast_passes",
+        "rustc_ast_pretty",
+        "rustc_attr_ir",
+        "rustc_attr_parsing",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_feature",
+        "rustc_hir",
+        "rustc_lexer",
+        "rustc_lint_defs",
+        "rustc_macros",
+        "rustc_middle",
+        "rustc_parse",
+        "rustc_proc_macro",
+        "rustc_serialize",
+        "rustc_session",
+        "rustc_span",
+        "scoped-tls",
+        "smallvec",
+        "thin-vec",
+        "tracing"
+      ]
+    },
+    "rustc_parse": {
+      "rs_files": 25,
+      "rs_lines": 32529,
+      "rs_code_lines": 26492,
+      "ftl_files": 0,
+      "ftl_lines": 0,
+      "ftl_messages": 0,
+      "dependencies": [
+        "bitflags",
+        "rustc-literal-escaper",
+        "rustc_ast",
+        "rustc_ast_pretty",
+        "rustc_data_structures",
+        "rustc_errors",
+        "rustc_feature",
+        "rustc_index",
+        "rustc_lexer",
+        "rustc_macros",
+        "rustc_session",
+        "rustc_span",
+        "thin-vec",
+        "tracing",
+        "unicode-normalization",
+        "unicode-width"
+      ]
+    }
+  },
+  "next_trait_solver_files": {
+    "effect_goals.rs": {
+      "lines": 499,
+      "pub_items": []
+    },
+    "mod.rs": {
+      "lines": 435,
+      "pub_items": [
+        "HasChanged",
+        "GoalEvaluation"
+      ]
+    },
+    "normalizes_to.rs": {
+      "lines": 1129,
+      "pub_items": [
+        "push_const_arg_has_type_goal"
+      ]
+    },
+    "search_graph.rs": {
+      "lines": 159,
+      "pub_items": []
+    },
+    "trait_goals.rs": {
+      "lines": 1676,
+      "pub_items": []
+    },
+    "eval_ctxt/fast_path.rs": {
+      "lines": 175,
+      "pub_items": [
+        "compute_goal_fast_path"
+      ]
+    },
+    "eval_ctxt/mod.rs": {
+      "lines": 1888,
+      "pub_items": [
+        "EvalCtxt",
+        "GenerateProofTree",
+        "SolverDelegateEvalExt",
+        "evaluate_root_goal_for_proof_tree_raw_provider"
+      ]
+    },
+    "eval_ctxt/probe.rs": {
+      "lines": 176,
+      "pub_items": []
+    },
+    "eval_ctxt/solver_region_constraints.rs": {
+      "lines": 227,
+      "pub_items": []
+    },
+    "inspect/build.rs": {
+      "lines": 289,
+      "pub_items": []
+    },
+    "inspect/mod.rs": {
+      "lines": 4,
+      "pub_items": []
+    },
+    "assembly/mod.rs": {
+      "lines": 1496,
+      "pub_items": []
+    },
+    "assembly/structural_traits.rs": {
+      "lines": 1080,
+      "pub_items": []
+    },
+    "project_goals/anon_const.rs": {
+      "lines": 26,
+      "pub_items": []
+    },
+    "project_goals/free_alias.rs": {
+      "lines": 61,
+      "pub_items": []
+    },
+    "project_goals/inherent.rs": {
+      "lines": 87,
+      "pub_items": []
+    },
+    "project_goals/mod.rs": {
+      "lines": 99,
+      "pub_items": []
+    },
+    "project_goals/opaque_types.rs": {
+      "lines": 190,
+      "pub_items": []
+    }
+  },
+  "polonius_files": {
+    "compiler/rustc_borrowck/src/polonius/constraints.rs": {
+      "lines": 324,
+      "items": [
+        "LocalizedNode",
+        "LocalizedConstraintGraph",
+        "LocalizedConstraintGraphVisitor",
+        "on_node_traversed",
+        "on_successor_discovered",
+        "new",
+        "traverse",
+        "compute_forward_successor",
+        "compute_backward_successor"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/dump.rs": {
+      "lines": 497,
+      "items": [
+        "dump_polonius_mir",
+        "LocalizedOutlivesConstraint",
+        "LocalizedOutlivesConstraintCollector",
+        "on_successor_discovered",
+        "emit_polonius_dump",
+        "emit_html_mir",
+        "emit_polonius_mir",
+        "emit_mermaid_cfg",
+        "render_region",
+        "emit_mermaid_nll_regions",
+        "emit_mermaid_nll_sccs",
+        "emit_mermaid_constraint_graph"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/liveness_constraints.rs": {
+      "lines": 159,
+      "items": [
+        "record_live_region_variance",
+        "VarianceExtractor",
+        "record_variance",
+        "cx",
+        "relate_ty_args",
+        "relate_with_variance",
+        "tys",
+        "regions",
+        "consts",
+        "binders"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/mod.rs": {
+      "lines": 189,
+      "items": [
+        "holds",
+        "PoloniusContext",
+        "ConstraintDirection",
+        "compute_loan_liveness",
+        "LoanLivenessVisitor",
+        "on_node_traversed"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/legacy/accesses.rs": {
+      "lines": 83,
+      "items": [
+        "emit_access_facts",
+        "AccessFactsExtractor",
+        "location_to_index",
+        "visit_local",
+        "visit_place"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/legacy/facts.rs": {
+      "lines": 237,
+      "items": [
+        "RustcFacts",
+        "PoloniusRegionVid",
+        "index",
+        "from",
+        "from",
+        "PoloniusFactsExt",
+        "enabled",
+        "write_to_dir",
+        "index",
+        "index",
+        "FactWriter",
+        "write_facts_to_path",
+        "FactRow",
+        "write",
+        "write",
+        "write",
+        "write",
+        "write_row",
+        "FactCell",
+        "to_string",
+        "to_string",
+        "to_string",
+        "to_string",
+        "to_string",
+        "to_string"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs": {
+      "lines": 447,
+      "items": [
+        "emit_loan_invalidations",
+        "LoanInvalidationsGenerator",
+        "visit_statement",
+        "visit_terminator",
+        "mutate_place",
+        "consume_operand",
+        "consume_rvalue",
+        "access_place",
+        "check_access_for_conflict",
+        "emit_loan_invalidated_at",
+        "check_activations"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/legacy/loan_kills.rs": {
+      "lines": 148,
+      "items": [
+        "emit_loan_kills",
+        "LoanKillsGenerator",
+        "visit_statement",
+        "visit_assign",
+        "visit_terminator",
+        "record_killed_borrows_for_place",
+        "record_killed_borrows_for_local"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/legacy/location.rs": {
+      "lines": 114,
+      "items": [
+        "PoloniusLocationTable",
+        "LocationIndex",
+        "RichLocation",
+        "new",
+        "all_points",
+        "start_index",
+        "mid_index",
+        "to_rich_location",
+        "to_location",
+        "is_start"
+      ]
+    },
+    "compiler/rustc_borrowck/src/polonius/legacy/mod.rs": {
+      "lines": 225,
+      "items": [
+        "emit_facts",
+        "emit_move_facts",
+        "emit_universal_region_facts",
+        "emit_drop_facts",
+        "emit_outlives_facts"
+      ]
+    }
+  },
+  "mir_build_files": {
+    "compiler/rustc_mir_build/src/check_tail_calls.rs": {
+      "lines": 485,
+      "items": [
+        "check_tail_calls",
+        "TailCallCkVisitor",
+        "check_tail_call",
+        "a",
+        "b",
+        "function",
+        "caller_needs_location",
+        "report_in_closure",
+        "report_builtin_op",
+        "report_op",
+        "report_non_call",
+        "report_calling_closure",
+        "report_calling_intrinsic",
+        "report_nonfn_callee",
+        "report_abi_mismatch",
+        "report_unsupported_abi",
+        "report_signature_mismatch",
+        "report_track_caller_caller",
+        "report_c_variadic_caller",
+        "report_c_variadic_callee"
+      ]
+    },
+    "compiler/rustc_mir_build/src/check_unsafety.rs": {
+      "lines": 1118,
+      "items": [
+        "UnsafetyVisitor",
+        "in_safety_context",
+        "emit_deprecated_safe_fn_call",
+        "requires_unsafe",
+        "is",
+        "warn_unused_unsafe",
+        "unsafe_op_in_unsafe_fn_allowed",
+        "visit_inner_body",
+        "thir",
+        "visit_block",
+        "visit_pat",
+        "visit_expr",
+        "SafetyContext",
+        "NestedUsedBlock",
+        "UnusedUnsafeWarning",
+        "UnsafeOpKind",
+        "emit_unsafe_op_in_unsafe_fn_lint",
+        "emit_requires_unsafe_err",
+        "check_unsafety"
+      ]
+    },
+    "compiler/rustc_mir_build/src/diagnostics.rs": {
+      "lines": 1440,
+      "items": [
+        "CallToDeprecatedSafeFnRequiresUnsafe",
+        "CallToDeprecatedSafeFnRequiresUnsafeSub",
+        "UnsafeOpInUnsafeFnCallToUnsafeFunctionRequiresUnsafe",
+        "UnsafeOpInUnsafeFnCallToUnsafeFunctionRequiresUnsafeNameless",
+        "UnsafeOpInUnsafeFnUseOfInlineAssemblyRequiresUnsafe",
+        "UnsafeOpInUnsafeFnInitializingTypeWithUnsafeFieldRequiresUnsafe",
+        "with",
+        "UnsafeOpInUnsafeFnUseOfMutableStaticRequiresUnsafe",
+        "UnsafeOpInUnsafeFnUseOfExternStaticRequiresUnsafe",
+        "UnsafeOpInUnsafeFnUseOfUnsafeFieldRequiresUnsafe",
+        "UnsafeOpInUnsafeFnDerefOfRawPointerRequiresUnsafe",
+        "UnsafeOpInUnsafeFnAccessToUnionFieldRequiresUnsafe",
+        "UnsafeOpInUnsafeFnMutationOfLayoutConstrainedFieldRequiresUnsafe",
+        "UnsafeOpInUnsafeFnBorrowOfLayoutConstrainedFieldRequiresUnsafe",
+        "UnsafeOpInUnsafeFnUnsafeBinderCastRequiresUnsafe",
+        "UnsafeOpInUnsafeFnCallToFunctionWithRequiresUnsafe",
+        "CallToUnsafeFunctionRequiresUnsafe",
+        "CallToUnsafeFunctionRequiresUnsafeNameless",
+        "CallToUnsafeFunctionRequiresUnsafeUnsafeOpInUnsafeFnAllowed",
+        "CallToUnsafeFunctionRequiresUnsafeNamelessUnsafeOpInUnsafeFnAllowed"
+      ]
+    },
+    "compiler/rustc_mir_build/src/lib.rs": {
+      "lines": 28,
+      "items": [
+        "provide"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/constant.rs": {
+      "lines": 116,
+      "items": [
+        "lit_to_const"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/mod.rs": {
+      "lines": 11,
+      "items": [
+        "for"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/print.rs": {
+      "lines": 1008,
+      "items": [
+        "thir_tree",
+        "thir_flat",
+        "ThirPrinter",
+        "write_str",
+        "new",
+        "indent",
+        "print",
+        "into_buffer",
+        "print_list",
+        "print_param",
+        "print_block",
+        "print_stmt",
+        "print_expr",
+        "print_expr_kind",
+        "print_adt_expr",
+        "print_adt_def",
+        "print_fru_info",
+        "print_arm",
+        "print_pat",
+        "print_pat_extra"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/util.rs": {
+      "lines": 47,
+      "items": [
+        "user_args_applied_to_ty_of_hir_id",
+        "calls"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/cx/block.rs": {
+      "lines": 107,
+      "items": [
+        "mirror_block",
+        "mirror_stmts"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/cx/expr.rs": {
+      "lines": 1758,
+      "items": [
+        "SplattedFunc",
+        "has_receiver",
+        "receiver",
+        "fn_expression",
+        "parsed_attrs",
+        "mirror_expr",
+        "mirror_exprs",
+        "mirror_expr_inner",
+        "apply_adjustment",
+        "return_short_lived",
+        "mirror_expr_cast",
+        "variant",
+        "Foo",
+        "with",
+        "wasn",
+        "make_mirror_unadjusted",
+        "literal",
+        "local",
+        "user_args_applied_to_res",
+        "or"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/cx/mod.rs": {
+      "lines": 218,
+      "items": [
+        "thir_body",
+        "ThirBuildCx",
+        "new",
+        "signature",
+        "foo",
+        "pattern_from_hir",
+        "pattern_from_hir_with_annotation",
+        "closure_env_param",
+        "explicit_params",
+        "user_args_applied_to_ty_of_hir_id"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/pattern/check_match.rs": {
+      "lines": 1572,
+      "items": [
+        "check_match",
+        "RefutableFlag",
+        "LetSource",
+        "MatchVisitor",
+        "thir",
+        "visit_arm",
+        "visit_expr",
+        "visit_stmt",
+        "with_let_source",
+        "with_hir_source",
+        "visit_land",
+        "visit_land_rhs",
+        "lower_pattern",
+        "is_known_valid_scrutinee",
+        "new_cx",
+        "analyze_patterns",
+        "check_let",
+        "check_irrefutable_option_some",
+        "check_match",
+        "lint_single_let"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/pattern/const_to_pat.rs": {
+      "lines": 688,
+      "items": [
+        "const_to_pat",
+        "ConstToPat",
+        "new",
+        "type_marked_structural",
+        "mk_err",
+        "alias_to_pat",
+        "lower_field_values_to_fieldpats",
+        "valtree_to_pat",
+        "extend_type_not_partial_eq",
+        "UsedParamsNeedInstantiationVisitor",
+        "visit_ty",
+        "must",
+        "PartialEqImplStatus",
+        "type_has_partial_eq_impl"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/pattern/migration.rs": {
+      "lines": 233,
+      "items": [
+        "PatMigration",
+        "new",
+        "emit",
+        "primary_message",
+        "format_subdiagnostics",
+        "visit_implicit_derefs",
+        "visit_explicit_deref",
+        "leave_ref",
+        "visit_binding"
+      ]
+    },
+    "compiler/rustc_mir_build/src/thir/pattern/mod.rs": {
+      "lines": 730,
+      "items": [
+        "PatCtxt",
+        "pat_from_hir",
+        "lower_pattern",
+        "lower_pattern_range_endpoint",
+        "error_on_literal_overflow",
+        "lower_pattern_range",
+        "lower_pattern_unadjusted",
+        "pattern",
+        "lower_tuple_subpats",
+        "lower_patterns",
+        "lower_opt_pattern",
+        "slice_or_array_pattern",
+        "lower_variant_or_leaf",
+        "user_args_applied_to_ty_of_hir_id",
+        "variants",
+        "lower_path",
+        "or",
+        "lower_pat_expr"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/block.rs": {
+      "lines": 355,
+      "items": [
+        "ast_block",
+        "ast_block_stmts"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/cfg.rs": {
+      "lines": 148,
+      "items": [
+        "block_data",
+        "block_data_mut",
+        "start_new_block",
+        "start_new_cleanup_block",
+        "push",
+        "push_assign",
+        "push_assign_constant",
+        "push_assign_unit",
+        "push_fake_read",
+        "push_place_mention",
+        "push_coverage_span_marker",
+        "terminate",
+        "goto"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/coverageinfo.rs": {
+      "lines": 276,
+      "items": [
+        "CoverageInfoBuilder",
+        "BranchInfo",
+        "NotInfo",
+        "BlockMarkerGen",
+        "next_block_marker_id",
+        "inject_block_marker",
+        "new_if_enabled",
+        "visit_unary_not",
+        "visit_with_not_info",
+        "register_two_way_branch",
+        "into_done",
+        "as_done",
+        "visit_coverage_standalone_condition",
+        "visit_coverage_branch_condition",
+        "visit_coverage_conditional_let"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/misc.rs": {
+      "lines": 70,
+      "items": [
+        "temp",
+        "literal_operand",
+        "zero_literal",
+        "push_usize",
+        "consume_by_copy_or_move"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/mod.rs": {
+      "lines": 1171,
+      "items": [
+        "closure_saved_names_of_captured_variables",
+        "build_mir_inner_impl",
+        "items",
+        "BlockFrame",
+        "is_tail_expr",
+        "is_statement",
+        "BlockContext",
+        "Builder",
+        "one",
+        "system",
+        "Capture",
+        "typing_env",
+        "is_bound_var_in_guard",
+        "var_local_id",
+        "new",
+        "push",
+        "pop",
+        "currently_in_block_tail",
+        "currently_ignores_tail_results",
+        "LocalsForNode"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/scope.rs": {
+      "lines": 2190,
+      "items": [
+        "Scopes",
+        "Scope",
+        "DropData",
+        "DropKind",
+        "BreakableScope",
+        "ConstContinuableScope",
+        "IfThenScope",
+        "BreakableTarget",
+        "DropIdx",
+        "DropTree",
+        "DropNode",
+        "DropNodeKey",
+        "needs_cleanup",
+        "invalidate_cache",
+        "that",
+        "DropTreeBuilder",
+        "make_block",
+        "link_entry_point",
+        "new",
+        "add_drop"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/custom/mod.rs": {
+      "lines": 176,
+      "items": [
+        "build_custom_mir",
+        "parse_attribute",
+        "ParseCtxt",
+        "ParseError",
+        "expr_error",
+        "stmt_error"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/custom/parse.rs": {
+      "lines": 327,
+      "items": [
+        "preparse",
+        "statement_as_expr",
+        "parse_args",
+        "parse_body",
+        "parse_block_decls",
+        "parse_basic_block_decl",
+        "parse_local_decls",
+        "parse_debuginfo",
+        "parse_let_statement",
+        "parse_var",
+        "parse_block_def"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/custom/parse/instruction.rs": {
+      "lines": 392,
+      "items": [
+        "parse_statement",
+        "parse_terminator",
+        "parse_unwind_terminate_reason",
+        "parse_unwind_action",
+        "parse_return_to",
+        "parse_match",
+        "parse_call",
+        "parse_tail_call",
+        "parse_rvalue",
+        "parse_operand",
+        "parse_place",
+        "parse_place_inner",
+        "parse_local",
+        "parse_block",
+        "parse_static",
+        "parse_integer_literal"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/as_constant.rs": {
+      "lines": 183,
+      "items": [
+        "as_constant",
+        "as_constant_inner",
+        "lit_to_mir_constant"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/as_operand.rs": {
+      "lines": 204,
+      "items": [
+        "a",
+        "local_temp_lifetime",
+        "as_local_operand",
+        "foo",
+        "bar",
+        "as_local_call_operand",
+        "as_operand",
+        "as_call_operand"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/as_place.rs": {
+      "lines": 833,
+      "items": [
+        "PlaceBase",
+        "the",
+        "PlaceBuilder",
+        "convert_to_hir_projections_and_truncate_for_capture",
+        "is_ancestor_or_same_capture",
+        "and",
+        "find_capture_matching_projections",
+        "to_upvars_resolved_place_builder",
+        "strip_prefix",
+        "to_place",
+        "try_to_place",
+        "resolve_upvar",
+        "base",
+        "projection",
+        "field",
+        "deref",
+        "downcast",
+        "index",
+        "project",
+        "clone_project"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/as_rvalue.rs": {
+      "lines": 755,
+      "items": [
+        "as_local_rvalue",
+        "as_rvalue",
+        "to",
+        "build_binary_op",
+        "check_constness",
+        "build_zero_repeat",
+        "limit_capture_mutability",
+        "neg_1_literal",
+        "minval_literal"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/as_temp.rs": {
+      "lines": 139,
+      "items": [
+        "as_temp",
+        "as_temp_inner"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/category.rs": {
+      "lines": 102,
+      "items": [
+        "Category",
+        "RvalueFunc",
+        "of"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/into.rs": {
+      "lines": 941,
+      "items": [
+        "expr_into_dest",
+        "is_supported_loop_match_type",
+        "write_box_via_move",
+        "is_let"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/mod.rs": {
+      "lines": 70,
+      "items": [
+        "expression"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/expr/stmt.rs": {
+      "lines": 204,
+      "items": [
+        "stmt_expr"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/matches/buckets.rs": {
+      "lines": 374,
+      "items": [
+        "PartitionedCandidates",
+        "partition_candidates_into_buckets",
+        "choose_bucket_for_candidate"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/matches/match_pair.rs": {
+      "lines": 486,
+      "items": [
+        "prefix_slice_suffix",
+        "new",
+        "from_inter_pat",
+        "squash_inter_pat",
+        "variants",
+        "InterPat",
+        "lower_thir_pat"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/matches/mod.rs": {
+      "lines": 3015,
+      "items": [
+        "ThenElseArgs",
+        "DeclareLetBindings",
+        "ScheduleDrops",
+        "then_else_break",
+        "then_else_break_inner",
+        "match_expr",
+        "lower_scrutinee",
+        "lower_match_arms",
+        "bind_pattern",
+        "expr_into_pattern",
+        "place_into_pattern",
+        "and",
+        "declare_bindings",
+        "declare_guard_bindings",
+        "storage_live_binding",
+        "schedule_drop_for_binding",
+        "visit_primary_bindings",
+        "visit_primary_bindings_special",
+        "PatternExtraData",
+        "is_empty"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/matches/test.rs": {
+      "lines": 483,
+      "items": [
+        "pick_test_for_match_pair",
+        "perform_test",
+        "call_deref",
+        "compare",
+        "string_compare",
+        "trait_method",
+        "method"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/matches/user_ty.rs": {
+      "lines": 148,
+      "items": [
+        "ProjectedUserTypesOp",
+        "ProjectedUserTypesNode",
+        "push_user_types",
+        "maybe_push",
+        "index",
+        "subslice",
+        "deref",
+        "leaf",
+        "variant",
+        "iter_ops_reversed",
+        "build_user_type_projections"
+      ]
+    },
+    "compiler/rustc_mir_build/src/builder/matches/util.rs": {
+      "lines": 236,
+      "items": [
+        "false_edges",
+        "collect_fake_borrows",
+        "FakeBorrowCollector",
+        "fake_borrow",
+        "fake_borrow_deref_prefixes",
+        "visit_candidate",
+        "visit_flat_pat",
+        "visit_match_pair",
+        "visit_binding",
+        "ref_pat_borrow_kind"
+      ]
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "rust",
+    "rust/unsafe",
+    "rustc",
+    "minirust",
+    "verification",
+    "verification/separation-logic",
+    "verification/iris",
+    "lean/mechanization",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "tag": "1.99.1"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification system",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 Coq artifact",
+      "identity": {
+        "artifact": "lambda-rust-popl18.tar.gz",
+        "doi": "10.1145/3158154",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996"
+      }
+    },
+    {
+      "name": "RefinedRust and Radium Rocq artifact",
+      "identity": {
+        "artifact": "artifact.tar.gz",
+        "zenodo": "21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Verus Rust verification framework",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0141ebc6f14410dfc87fef1da57408578002eb7c"
+      }
+    },
+    {
+      "name": "Creusot deductive Rust verifier",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "c4e9770ac1371ac4274bfe02145266d315c2fb86"
+      }
+    },
+    {
+      "name": "Foundational VeriFast verifier",
+      "identity": {
+        "repository": "verifast/verifast",
+        "revision": "0a83dba42db7ce0b445034ece5298afe980e57dc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
