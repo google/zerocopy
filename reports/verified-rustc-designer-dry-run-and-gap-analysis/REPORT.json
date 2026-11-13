@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/dry-run",
+    "rustc",
+    "llvm",
+    "lean",
+    "verification",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library workspace",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 backend submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification system",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS) for Rust 1.99",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    },
+    {
+      "name": "The Rustonomicon",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+      }
+    },
+    {
+      "name": "Rust Unsafe Code Guidelines",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Rust Operational Semantics Team repository",
+      "identity": {
+        "repository": "rust-lang/opsem-team",
+        "revision": "d462085814030cc5b21dfa0ce831dfc1619d69b1"
+      }
+    },
+    {
+      "name": "Rust RFCs repository",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -2,9 +2,12 @@
   "topics": [
     "compilers/verified-rustc",
     "compilers/verified-rustc/roadmap",
+    "rustc",
     "rustc/architecture",
     "anneal/architecture",
-    "verification/compiler-verification"
+    "verification",
+    "verification/compiler-verification",
+    "compilers"
   ],
   "subjects": [
     {
