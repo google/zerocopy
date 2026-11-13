@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "anneal",
+    "anneal/refinement",
+    "anneal/mir-semantics",
+    "verification",
+    "verification/refinement",
+    "security",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification architecture and trust boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+      }
+    },
+    {
+      "name": "Anneal Trusted.Attributes and boundary audit guard",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal design, architecture, and trust-model specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "CompCert 3.18 verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Stack-Aware CompCert abstract stack ADT and bounded stack compilation",
+      "identity": {
+        "doi": "10.1145/3290382",
+        "repository": "ssrg-vt/compcert_stack_aware",
+        "revision": "0518d9ffb69ec11e79a214df1afc0b0159930478",
+        "venue": "POPL 2019"
+      }
+    },
+    {
+      "name": "CakeML verified ML compiler",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "CompCert-CT constant-time preserving C compiler",
+      "identity": {
+        "doi": "10.1145/3371075",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Jasmin high-assurance cryptographic compiler",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "A General Theory of Composition for Trace Sets Closed Under Selective Interleaving Functions (McLean)",
+      "identity": {
+        "doi": "10.1109/RISP.1994.296590",
+        "venue": "IEEE S&P 1994"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

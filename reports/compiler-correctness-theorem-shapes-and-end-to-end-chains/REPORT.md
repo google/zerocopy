@@ -1,0 +1,133 @@
+# Compiler-Correctness Theorem Shapes, Assumption Ledgers, and End-to-End Verification Chains
+
+## Summary
+
+Designing the top-level theorem statement for a verified drop-in Rust compiler (`rustc`) requires choosing what counts as an observable execution behavior, which direction simulation flows, how undefined behavior (`UB`) and resource exhaustion (stack overflow and out-of-memory) are represented, how external calls and inline assembly enter the semantics, and where the machine-checked proof stops along the physical compilation pipeline. Across fifteen examined mechanizations—CompCert 3.18 (`AbsInt/CompCert@74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6`), CompCertO (POPL 2021), CompCertM (POPL 2020), CompCertTSO (JACM 2013), CASCompCert (POPL 2019), Stack-Aware CompCert (`ssrg-vt/compcert_stack_aware@0518d9ffb69ec11e79a214df1afc0b0159930478`), Quantitative CompCert (PLDI 2014 / POPL 2015), CakeML (`CakeML/cakeml@f73189499bb295f0859dec7ee38c169c48da682c`), CertiCoq/CertiRocq (`CertiRocq/certirocq@906241771e0ac0088403dec12a0027213f114dd1`), Œuf (`uwplse/oeuf@f3e4d236465ba872d1f1b8229548fa0edf8f7a3f`), Pilsner (ICFP 2015), Bedrock2 (`mit-plv/bedrock2@757f17c6083bf8d43b5293a0db545c8d0aa32a13`), Vale (`project-everest/vale@bbae0eb89143734363b14a77642dbf8dec36e288`), Jasmin (`jasmin-lang/jasmin@34f15840f10625bbc2cbf59b3d877e94c75bfbd9`), and seL4 (`seL4/l4v@6b4076aeb35f7803b7c232963e5f996545e3acb5` and `seL4/graph-refine@94c93d18830d680fc6732d21fb16ca58ebca9dc5`)—four structural laws govern theorem selection:
+
+1. **Four Canonical Top-Level Theorem Shapes (`TheoremShapesAndSimulationChainProbe.lean`):**
+   - **Shape I — Safe-Source Backward Simulation (`CompCert 3.18` `transf_c_program_correct` / `transf_c_program_preservation`):** Proves `backward_simulation (Csem.semantics p) (Asm.semantics tp)` conditional on `transf_c_program p = OK tp`, implying that for every target behavior `beh`, there exists a source behavior `beh'` such that `behavior_improves beh' beh` (`beh' = beh \/ exists t, beh' = Goes_wrong t /\ behavior_prefix t beh`). When the source program is free of `Goes_wrong` (`SourceSafe`), target behaviors are a strict subset of source behaviors (`compcert_preservation_under_safe_source`).
+   - **Shape II — Resource-Bounded Trace Inclusion (`CakeML` `compile_correct`):** Proves `machine_sem mc st.ffi ms SUBSET extend_with_resource_limit (semantics_prog st env prog)` under `~semantics_prog st env prog Fail` and `installed`. This extends the source behavior set with early `Terminate Resource_limit_hit io_list` along any valid prefix `io_list` of a source trace. As mechanized in `cakeml_resource_refinement_allows_early_oom`, Shape II preserves safety (the target never exhibits undefined behavior or unmodeled I/O), but does **not** preserve total termination unless paired with a quantitative resource bound.
+   - **Shape III — Quantitative Stack-Bounded Refinement (`Stack-Aware CompCert`, `Quantitative CompCert`, `Bedrock2` `compiler_correct`, `Jasmin` `it_compile_prog_to_asmP`):** Parameterizes compilation or target execution by a concrete stack bound (`0 <= StackSize <= Ptrofs.max_unsigned` in Stack-Aware CompCert; `required_stack_space <= (stack_pastend - stack_start) / bytes_per_word` in Bedrock2) and proves that target stack usage never exceeds `required_stack_space`. As proved in `stack_aware_bound_recovers_exact_inclusion`, discharging `stackUsage <= headroom` eliminates `Resource_limit_hit` and recovers exact behavioral inclusion on finite hardware memory.
+   - **Shape IV — Demonic Partial-Behavior Refinement (`Anneal` `Language.Verified` and `ProductiveCompiles`):** Models each query's behavior as `Partial (Out -> Prop)` where `defined := False` represents undefined behavior ($\top$ in the refinement preorder). Theorem `anneal_refinement_iff_safe_source_inclusion` proves that demonic refinement `RefinesBehavior (toAnnealBehavior tgtSem) (toAnnealBehavior srcSem)` is equivalent to safe-source behavioral inclusion, while `ProductiveOn` (Dijkstra's Law of the Excluded Miracle) rules out empty target transition relations.
+2. **Forward-to-Backward Simulation Inversion Requires Explicit Determinacy and Receptiveness Side Conditions:**
+   Compiler passes are easiest to prove as forward simulations (`compose_forward_simulations` using lexicographic well-founded stuttering orders `lex_ord (clos_trans _ order') order`), whereas consumers require backward simulation so target executions cannot invent behaviors absent from the source. In `common/Smallstep.v:1863-1866`, `forward_to_backward_simulation` converts `forward_simulation L1 L2` into `backward_simulation L1 L2` only when `receptive L1` (source can match any environment return value compatible with its external call) and `determinate L2` (target transitions are deterministic up to environment event matching) hold (`forward_to_backward_step`).
+3. **Seven-Stage Endpoint Separation Along the Post-Compiler Artifact Chain:**
+   Precedents terminate at markedly different physical stages: CompCert 3.18, CompCertO, CompCertM, CompCertTSO, CASCompCert, Stack-Aware CompCert, Œuf, and Jasmin terminate at an **in-memory assembly AST** (`Asm.program` / `asm_prog`), leaving assembly pretty-printing, assembling, and linking in the TCB; seL4's `graph-refine` validates a **concrete linked ELF binary** against C `SIMPL` via SMT equivalence while trusting hand-written assembly stubs, boot code, and MMU/cache operations; and CakeML and Bedrock2 carry proofs down to **concrete machine-code instruction bytes** in memory (`installed` / `ptsto_instr`).
+
+## Applicability
+
+This report applies to the design of top-level correctness theorems, intermediate simulation interfaces, and Trusted Computing Base (TCB) assumption ledgers for verified Rust compilation (`rustc` MIR to AArch64, x86-64, and RV64GC machine code) and to the fifteen precedent systems pinned in `REPORT.json`. All verbatim theorem statements and definitions are preserved in [`support/verbatim_theorems_and_definitions.md`](support/verbatim_theorems_and_definitions.md), the structured 15-system comparison matrix is preserved in [`support/compiler_theorem_matrix.json`](support/compiler_theorem_matrix.json), and the formal comparison and separation proofs are kernel-checked under Lean `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) in [`support/TheoremShapesAndSimulationChainProbe.lean`](support/TheoremShapesAndSimulationChainProbe.lean).
+
+## Findings
+
+### 1. CompCert 3.18 and Its Extensions (`CompCertO`, `CompCertM`, `CompCertTSO`, `CASCompCert`, `Stack-Aware CompCert`, `Quantitative CompCert`)
+
+Basis: source + normative specification (`AbsInt/CompCert@74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6`, `SJTU-PLV/CompCert@e3d03ed822a7aaf452b7022c347187ed1efc1c12`, `ssrg-vt/compcert_stack_aware@0518d9ffb69ec11e79a214df1afc0b0159930478`; [`support/verbatim_theorems_and_definitions.md`](support/verbatim_theorems_and_definitions.md) §§1–2).
+
+#### 1.1 CompCert 3.18 Observable Behaviors, Simulation Direction, and Assumptions
+
+In `AbsInt/CompCert@74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6`:
+- **Events and Traces (`common/Events.v:42-112`, blob `ac8d1bb42e4e9d2e04bc6d7c1c27ea87fbc95564`):** Observable events (`Inductive event`) comprise four constructors:
+  1. `Event_syscall (name : string) (args : list eventval) (res : eventval)` for OS/external function calls;
+  2. `Event_vload (chunk : memory_chunk) (id : ident) (ofs : ptrofs) (res : eventval)` for volatile memory loads from a global symbol;
+  3. `Event_vstore (chunk : memory_chunk) (id : ident) (ofs : ptrofs) (arg : eventval)` for volatile memory stores; and
+  4. `Event_annot (text : string) (args : list eventval)` for `__builtin_annot` / inline assembly observations.
+  Ordinary (non-volatile) memory reads and writes, stack allocations (`Mem.alloc`), and internal control-flow branches are silent (`E0 = nil`).
+- **Four Whole-Program Behaviors (`common/Behaviors.v:35-145`, blob `822b08832f491e82fefc5b60251c13a63ef71301`):** `program_behavior` partitions executions into:
+  - `Terminates (t : trace) (i : int)` — finite trace `t` followed by `final_state` returning exit status `i`;
+  - `Diverges (t : trace)` — finite trace `t` followed by `Forever_silent` (infinitely many silent `E0` steps);
+  - `Reacts (T : traceinf)` — `Forever_reactive` (infinitely many non-empty finite traces concatenated into `T`); and
+  - `Goes_wrong (t : trace)` — finite trace `t` reaching a stuck state (`nostep L s' /\ forall r, ~final_state L s' r`), or `Goes_wrong E0` if no initial state exists.
+- **Backward Simulation and `safe` Premise (`common/Smallstep.v:1274-1324`, blob `cefab134fdce4f3ea2f970db49a99d987c05d3a1`):** `bsim_properties` requires a well-founded stuttering order `order : index -> index -> Prop` and guards `bsim_match_final_states`, `bsim_progress`, and `bsim_simulation` with `safe L1 s1` (every silent-reachable state from `s1` either is a `final_state` or can `Step`). Consequently, if the source program can reach a stuck state (`Goes_wrong t`), `bsim_simulation` imposes no constraint after prefix `t`, yielding `behavior_improves beh_src beh_tgt` in `driver/Complements.v` (`transf_c_program_preservation`).
+- **External Functions, Inline Assembly, and Memory Injections (`common/Events.v:232-310`, `common/Memory.v`):** External calls and inline assembly (`EF_external`, `EF_builtin`, `EF_runtime`, `EF_inline_asm`) are axiomatized via `extcall_sem : Senv.t -> list val -> mem -> trace -> val -> mem -> Prop` satisfying `extcall_properties` (valid-block preservation, permission non-increase, unchanged non-writable bytes, commutation with `Mem.extends` and `Mem.inject`, trace length $\le 1$, receptiveness `ec_receptive`, and trace-conditional determinism `ec_determ`). Inline assembly that modifies caller registers or private stack slots outside `extcall_properties` violates the compiler's assumptions.
+- **Unbounded Memory and Stated Trusted Components:** In standard CompCert 3.18, `Mem.alloc` is a total function `(mem * block)` that never fails; stack overflow and heap exhaustion are therefore unmodeled in `transf_c_program_correct`. CompCert's stated trusted components are: (1) the Coq kernel, (2) the formal `Csyntax` and `Asm` operational semantics (including `extcall_properties`), (3) the unverified C parser/elaborator (`cparser` when compiling from `.c` files rather than `Csyntax` ASTs), (4) Coq-to-OCaml extraction and the OCaml compiler/runtime running `compcert`, and (5) the target assembler (`as`), linker (`ld`), and hardware CPU.
+
+#### 1.2 CompCert Family Extensions
+
+| CompCert Variant | Pinned Source / Publication | Key Modification to Theorem Shape & Semantic Model |
+| :--- | :--- | :--- |
+| **CompCertO** | POPL 2021 (`10.1145/3453483.3454097`), `SJTU-PLV/CompCert@e3d03ed822a7aaf452b7022c347187ed1efc1c12` (`Smallstep.v:1572-1603`) | Replaces closed `initial_state`/`final_state` with open `language_interface` queries/replies (`li_C`, `li_Asm`) and Kripke simulation conventions $\mathbb{R} = \mathsf{ro} \cdot \mathsf{c\_injp} \cdot \mathsf{wt\_c} \cdot \mathsf{ca\_injp}$, enabling horizontal and vertical composition of open modules. |
+| **CompCertM** | POPL 2020 (`10.1145/3371113`) | Introduces Refinement Under Self-related Contexts (`RUSC`) over a fixed ladder of Kripke memory relations (`freerg`, `injp`), allowing C modules and hand-written assembly modules to be linked and refined in one mixed operational semantics. |
+| **CompCertTSO** | JACM 2013 (`10.1145/2487241.2487248`) | Replaces sequential memory with an x86-TSO store-buffered machine; lifts thread-local forward/backward simulations across fence and store-buffer flush transitions, and models finite-memory allocation failure (`Mem.alloc` returning `None`). |
+| **CASCompCert** | POPL 2019 (`10.1145/3290369`) | Replaces coarse `Mem.inject` step relations with concurrency-aware read/write permission footprints so lock-free CAS/atomic primitives and concurrent C/Asm threads compose without data-race paths. |
+| **Stack-Aware CompCert** | POPL 2019 (`10.1145/3290382`), `ssrg-vt/compcert_stack_aware@0518d9ffb69ec11e79a214df1afc0b0159930478` | Parameterizes `Csem.semantics p StackSize` and `Asm.semantics tp StackSize` by $0 \le \mathsf{StackSize} \le \mathsf{Ptrofs.max\_unsigned}$ (`driver/Compiler.v`). Tracks an abstract stack ADT (`frame_info`, public vs. private frame sizes) across passes so target stack overflow is impossible whenever the source program is safe under `StackSize`. |
+| **Quantitative CompCert** | PLDI 2014 (`10.1145/2594291.2594301`) & POPL 2015 (`10.1145/2676726.2676975`) | Propagates linear resource/stack cost bounds across CompCert passes via event-weighted simulations, deriving machine-checked stack-usage bounds at the `Asm` level back to source `Clight` loop/call bounds. |
+
+---
+
+### 2. Functional, Systems, and Cryptographic Compilers (`CakeML`, `CertiCoq`, `Œuf`, `Pilsner`, `Bedrock2`, `Vale`, `Jasmin`, `seL4`)
+
+Basis: source + execution (`CakeML/cakeml@f73189499bb295f0859dec7ee38c169c48da682c`, `CertiRocq/certirocq@906241771e0ac0088403dec12a0027213f114dd1`, `uwplse/oeuf@f3e4d236465ba872d1f1b8229548fa0edf8f7a3f`, `mit-plv/bedrock2@757f17c6083bf8d43b5293a0db545c8d0aa32a13`, `project-everest/vale@bbae0eb89143734363b14a77642dbf8dec36e288`, `jasmin-lang/jasmin@34f15840f10625bbc2cbf59b3d877e94c75bfbd9`, `seL4/l4v@6b4076aeb35f7803b7c232963e5f996545e3acb5`, `seL4/graph-refine@94c93d18830d680fc6732d21fb16ca58ebca9dc5`; [`support/verbatim_theorems_and_definitions.md`](support/verbatim_theorems_and_definitions.md) §§3–4).
+
+1. **CakeML (`CakeML/cakeml@f73189499bb295f0859dec7ee38c169c48da682c`):**
+   - **Clocked Functional Big-Step Semantics and FFI Oracle (`semantics/ffi/ffiScript.sml`):** Rather than small-step relational predicates, CakeML defines a total functional big-step evaluator indexed by a recursion/step clock `k : num`. Running out of clock returns `Rtimeout_error`; taking the limit as $k \to \infty$ yields `semantics_prog st env prog` over `final_event = Terminate outcome (io_event list) | Diverge (io_event llist) | Fail`. External calls invoke a deterministic state-transforming `ffi_oracle : string -> 'ffi -> word8 list -> word8 list -> 'ffi oracle_result`.
+   - **Out-of-Memory Clause (`extend_with_resource_limit` in `compilerProofScript.sml:269-295`):** Because CakeML's source ML semantics has an unbounded heap while the target machine has finite memory (`data_sp`), `compile_correct` proves:
+     $$\mathsf{machine\_sem}\;\mathit{mc}\;\mathit{st.ffi}\;\mathit{ms} \subseteq \mathsf{extend\_with\_resource\_limit}(\mathsf{semantics\_prog}\;\mathit{st}\;\mathit{env}\;\mathit{prog})$$
+     where `extend_with_resource_limit` adds `Terminate Resource_limit_hit io_list` for every finite prefix `io_list` of any source trace. Furthermore, `installed` binds the concrete machine-code bytes (`bytes`) and GC bitmaps (`bitmaps1`) directly in target RAM—eliminating the external assembler and linker from the TCB.
+2. **CertiCoq / CertiRocq (`CertiRocq/certirocq@906241771e0ac0088403dec12a0027213f114dd1`) and Œuf (`uwplse/oeuf@f3e4d236465ba872d1f1b8229548fa0edf8f7a3f`):**
+   - **CertiRocq (`theories/Compiler/correctness.v:122-150`, `anf_toplevel.v:143-149`):** Proves `metarocq_to_anf_correct` connecting MetaRocq's erased $\lambda_{\square}$ evaluation (`eval_src`) to ANF evaluation (`eval_tgt`) with step-cost bound $c_{\text{tgt}} \le t_{\text{src}} + M$ and value refinement `value_ref`, then lowers ANF to CompCert `Clight` paired with a VST-verified generational garbage collector (`CertiGraph`).
+   - **Œuf (`src/Oeuf.v:374-378`):** Restricts source Gallina functions to explicit structural eliminators (`Elim`), reflects them into `SourceL`, compiles to `Cminor` (`transf_whole_program`), and proves a call-return backward simulation when linked with an unverified C driver shim (`link_cu_shim cu shim = Some prog`).
+3. **Pilsner (ICFP 2015, DOI `10.1145/2784731.2784764`):**
+   - Compiles higher-order imperative ML with private state and recursive closures to assembly via **Parametric Inter-Language Simulations (`PILS`)**. By separating the local simulation relation of each pass from the global Kripke world structure, PILS achieves vertical pass transitivity and horizontal separate compilation for higher-order callbacks without requiring source determinacy.
+4. **Bedrock2 (`mit-plv/bedrock2@757f17c6083bf8d43b5293a0db545c8d0aa32a13`):**
+   - In `compiler/src/compiler/Pipeline.v:112-195`, `compiler_correct` proves end-to-end total/omni-semantics preservation from Bedrock2 source `exec` to decoded RISC-V machine execution `runsTo (mcomp_sat (run1 iset)) initial` with an **exact static stack bound**:
+     $$\mathsf{required\_stack\_space} \le \lfloor (\mathsf{stack\_pastend} - \mathsf{stack\_start}) / \mathsf{bytes\_per\_word} \rfloor$$
+     computed by `FitsStack.v` over the call DAG. Memory is a flat byte map (`map.map word byte`) with explicit execute permissions (`xAddrs`), and external MMIO interactions are governed by `ext_spec`.
+5. **Vale (`project-everest/vale@bbae0eb89143734363b14a77642dbf8dec36e288`) and Jasmin (`jasmin-lang/jasmin@34f15840f10625bbc2cbf59b3d877e94c75bfbd9`):**
+   - **Vale (`dafny/specs/arch/x64/def.dfy:56-288`):** Generates weakest-precondition VCs over structured assembly ASTs (`va_code`), proving `ensures s.ok` (no memory/stack faults) and relational constant-time noninterference (`leakageFree` over `memTaint`).
+   - **Jasmin (`proofs/compiler/it_compiler_proof.v:1688`, `proofs/lang/relational_logic.v:222`):** States `it_compile_prog_to_asmP` using Interaction-Tree weak equivalence `wkequiv_io` (`xrutt` with `errcutoff (is_error wE_l)` on source safety failure and `nocutoff` on target `asm_prog`), and additionally proves preservation of both architectural constant-time (`PC` + memory addresses) and Speculative Constant-Time (`SCT` with `#msf` misspeculation masks, CCS 2023).
+6. **seL4 (`seL4/l4v@6b4076aeb35f7803b7c232963e5f996545e3acb5` and `seL4/graph-refine@94c93d18830d680fc6732d21fb16ca58ebca9dc5`):**
+   - Chains four refinement layers: `Abstract_A` (nondeterministic operational spec) $\to$ `ExecSpec` (Haskell design spec) $\to$ `SIMPL` (imported C via `CParser`, proved in `corres_Underlying_CRT` in `Refine_C.thy`) $\to$ decompiled ELF binary (`graph-refine`, Sewell et al. PLDI 2013).
+   - **Assumptions of `graph-refine`:** `graph-refine` disassembles the linked ARM/RISC-V/x86-64 ELF binary into a flat control-flow graph (`GraphLang`) and uses SMT solvers (Z3/CVC4) to prove trace equivalence against the `SIMPL` C semantics. Its explicit assumptions are: (1) correctness of the Cambridge HOL4/L3 ISA semantics exported to `GraphLang` and SMT solvers, (2) absence of recursion and bounded static stack usage (checked by an external stack-depth script over the binary call graph), (3) correctness of unverified hand-written assembly entry/exit stubs, boot/initialization code, and inline assembly for MMU/TLB/cache maintenance, and (4) non-overlapping linker-script sections and absence of asynchronous DMA corruption.
+
+---
+
+### 3. Comparative Synthesis and Mechanized Theorem-Shape Separation (`TheoremShapesAndSimulationChainProbe.lean`)
+
+Basis: source + execution + derived ([`support/compiler_theorem_matrix.json`](support/compiler_theorem_matrix.json), [`support/TheoremShapesAndSimulationChainProbe.lean`](support/TheoremShapesAndSimulationChainProbe.lean)).
+
+| Dimension | CompCert 3.18 | Stack-Aware CompCert / Bedrock2 | CakeML | Jasmin | Anneal (`Trusted/Refinement.lean` + `StepResult.lean`) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Top-Level Relation** | `backward_simulation` / `behavior_improves` | `backward_simulation` parameterized by `StackSize` / `runsTo` under `required_stack_space` | `machine_sem ⊆ extend_with_resource_limit (semantics_prog)` | `wkequiv_io` (`xrutt` with `errcutoff` on source) | `ProductiveCompiles` (`L_tgt.sem t ≤ c.toMorphism (L_src.sem s)` + `wf` + `ProductiveOn`) |
+| **Observable Behavior** | `Terminates`, `Diverges`, `Reacts`, `Goes_wrong` over `event` traces | Same + explicit stack bound enforcement | `Terminate`, `Diverge`, `Fail`, `Resource_limit_hit` over `io_event` streams | ITree syscall I/O + final registers/mem + CT/SCT leakage traces | `EventualOut` (`terminated`, `diverges`, `reacts`) over `TerminationKind` (`normal`, `unwind`, `abort`, `compileTimeError`) |
+| **UB Representation** | `Goes_wrong t` (or `~safe L1 s1`) | `Goes_wrong t` (including stack exhaustion $> \mathsf{StackSize}$) | `Fail` (`~semantics_prog ... Fail`) | `is_error wE_l` (`errcutoff`) | `(b q).defined = False` ($\top$ in `Partial` preorder; `.failed` or `.stuck` at any prefix $n$) |
+| **Resource Exhaustion** | Unmodeled (`Mem.alloc` is infinite) | **Statically ruled out** when `stack_usage <= StackSize` | Permitted via early `Resource_limit_hit` | **Statically ruled out** via `stack_limit` precondition | Explicit static frame check (`checkIsaFits` / `StackSize` bound) required for total transfer |
+| **Target Endpoint** | `Asm.program` AST (pre-assembler/linker) | `Asm.program` AST (Stack-Aware) / RISC-V instruction words (Bedrock2) | Concrete machine-code bytes in RAM (`installed`) | `asm_prog` AST (pre-printer/assembler) | `Mir.crate` $\to$ target `IsaProg` / ELF bytes via `ProductiveCompiles` |
+
+In [`support/TheoremShapesAndSimulationChainProbe.lean`](support/TheoremShapesAndSimulationChainProbe.lean) (272 lines, zero `sorryAx`, zero `Lean.ofReduceBool`), we machine-check five theorems connecting these designs:
+1. **`compcert_preservation_under_safe_source` (lines 79–88):** Proves that when `SourceSafe srcSem` holds (no `goesWrong` behavior is reachable), CompCert's `CompCertPreservation` (`BehaviorImproves`) reduces to exact behavioral inclusion (`∀ b_tgt, tgtSem b_tgt → srcSem b_tgt`).
+2. **`cakeml_resource_refinement_allows_early_oom` (lines 109–126):** Proves that `CakeMLResourceRefinement` (`ExtendWithResourceLimit`) preserves safety (`BehaviorSafe`), yet admits a target implementation that halts immediately with `.resourceLimitHit []` even when the source program terminates deterministically with `.terminates [42] 0`.
+3. **`stack_aware_bound_recovers_exact_inclusion` (lines 147–161):** Proves that pairing `ExtendWithResourceLimit` with a Stack-Aware CompCert / Bedrock2 quantitative stack bound (`stackUsage ≤ maxStack ≤ headroom`) eliminates `.resourceLimitHit` and recovers exact behavioral inclusion.
+4. **`anneal_refinement_iff_safe_source_inclusion` (lines 193–205):** Proves that Anneal's demonic partial-behavior refinement (`RefinesBehavior (toAnnealBehavior tgtSem) (toAnnealBehavior srcSem)`) holds if and only if at every query `q` where the source semantics is safe, the target semantics is also safe and every target behavior belongs to the source behavior set.
+5. **`forward_to_backward_step` (lines 235–254):** Proves the single-step core of CompCert's `forward_to_backward_simulation` (`Smallstep.v:1863`): given a forward simulation `fsim`, source progress `SrcStepSafe`, and target determinacy `DetTargetSemantics`, every target step `tgt.step t₁ = some t₁'` is matched by a valid source step `srcStep s₁ s₁'` preserving `fsim.matchStates`.
+
+## Boundaries
+
+1. **In-Memory Assembly AST vs. Linked Binary Bytes (`known not to apply` without an assembler/linker bridge):**
+   - Theorems that terminate at an assembly AST (`CompCert 3.18`, `CompCertO`, `CompCertM`, `Stack-Aware CompCert`, `Œuf`, `Jasmin`) do not verify instruction encoding, branch-displacement relaxation, relocation patching, or linker section layout. A verified drop-in `rustc` replacement must either verify machine-code byte emission (`CakeML` `lab_to_target`, `Bedrock2` `FlatToRiscv`) or validate the linked ELF image (`seL4` `graph-refine`).
+2. **CakeML's `extend_with_resource_limit` for Total Liveness Claims (`known not to apply` without a static space bound):**
+   - By `cakeml_resource_refinement_allows_early_oom`, `extend_with_resource_limit` alone cannot transfer a source liveness or guaranteed-response claim to the binary unless supplemented by a static stack/heap bound (`Stack-Aware CompCert`, `Bedrock2` `FitsStack`).
+3. **Hardware Concurrency and Weak Memory (`not examined` in sequential theorem shapes):**
+   - Except for `CompCertTSO` and `CASCompCert`, the top-level theorem shapes above assume sequential execution or data-race-free interleaving. Weak-memory store buffering and relaxed atomic orderings (`Acquire`/`Release`/`Relaxed`) require memory-model-aware event traces (`EnsuresAtomicLoad` in `Trusted/MirSemantics.lean:1829`).
+
+## Evidence
+
+1. **Preserved Primary-Source Excerpts and Comparison Matrix:**
+   - [`support/verbatim_theorems_and_definitions.md`](support/verbatim_theorems_and_definitions.md) (277 lines, `sha256: 7c1f595ebd9b556aef3e2f75ab3e7ddd4bbcadd112017b82d0e862bb4b0c9080`): Verbatim top-level theorem statements and supporting definitions from CompCert 3.18 (`Events.v`, `Behaviors.v`, `Smallstep.v`, `Compiler.v`, `Complements.v`), CompCertO, Stack-Aware CompCert, CakeML (`ffiScript.sml`, `compilerProofScript.sml`), CertiRocq, Œuf, Bedrock2, Jasmin, and seL4.
+   - [`support/compiler_theorem_matrix.json`](support/compiler_theorem_matrix.json) (229 lines, `sha256: 7cd3925a75df6a6521b514aa2c27853e4db4f94da21768e81b1cbe9f50446d65`): Machine-readable 15-system comparison matrix across all 10 required dimensions.
+2. **Mechanized Lean 4 (`v4.34.1`) Proof Artifact:**
+   - [`support/TheoremShapesAndSimulationChainProbe.lean`](support/TheoremShapesAndSimulationChainProbe.lean) (272 lines, `sha256: a5ef45c504f1f671fa1f553a4245c5a0d72cc84c640e8c913d739865077635b6`): Checked under `leanprover/lean4:v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) with `-DElab.async=false -Ddebug.skipKernelTC=false`, proving 5 theorems with zero `sorryAx` and zero `Lean.ofReduceBool`.
+
+## Revalidation
+
+Run the following command to revalidate the mechanized Lean 4.34.1 theorem-shape proofs and verify the JSON comparison matrix:
+
+```bash
+anneal-lean-run --mode file --concurrency 4 -- \
+  lean -DElab.async=false -Ddebug.skipKernelTC=false \
+  reports/compiler-correctness-theorem-shapes-and-end-to-end-chains/support/TheoremShapesAndSimulationChainProbe.lean
+
+python3 -c 'import json; d = json.load(open("reports/compiler-correctness-theorem-shapes-and-end-to-end-chains/support/compiler_theorem_matrix.json")); assert len(d["systems"]) == 15; print("OK:", len(d["systems"]), "systems")'
+```
+
+Expected output: all five `#print axioms` checks depend only on `[propext]` or `does not depend on any axioms`, and the matrix check prints `OK: 15 systems` with exit code `0`.

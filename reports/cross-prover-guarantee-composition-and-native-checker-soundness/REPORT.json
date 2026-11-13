@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "lean",
+    "lean/kernel",
+    "lean/mechanization",
+    "verification",
+    "verification/certificates",
+    "anneal",
+    "anneal/trusted-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover (Init/Core.lean, Lean/Meta/Native.lean, Lean/Elab/Tactic/Decide.lean)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal boundary auditor (trusted/audit/TrustedBoundary.lean and src/lib.rs)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+      }
+    },
+    {
+      "name": "lean4export NDJSON kernel exporter",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "leanprover/comparator independent kernel statement verifier",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "lean4less extensional-to-intensional Lean 4 translator",
+      "identity": {
+        "repository": "rish987/lean4less",
+        "revision": "5b66bbc4af5c2c11313fcfb5098630dadaf19281"
+      }
+    },
+    {
+      "name": "lean2dk Lean 4 to Dedukti translator",
+      "identity": {
+        "repository": "rish987/lean2dk",
+        "revision": "29f985670008c29e852d61c562b8c10c84f7c5fb"
+      }
+    },
+    {
+      "name": "rocq-lean-import Lean 4 to Rocq importer",
+      "identity": {
+        "repository": "rocq-community/rocq-lean-import",
+        "revision": "2d28bbe80e7361bf3ac54f5ef099207fc61ce837"
+      }
+    },
+    {
+      "name": "Sail ISA specification compiler and Lean 4 backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+        "version": "0.20.3"
+      }
+    },
+    {
+      "name": "L3 architecture specification language",
+      "identity": {
+        "repository": "coruus/L3",
+        "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+      }
+    },
+    {
+      "name": "seL4 L4.verified and graph-refine",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+        "graph_refine_repository": "seL4/graph-refine",
+        "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+      }
+    },
+    {
+      "name": "CakeML compiler and Candle HOL prover",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "AWS s2n-bignum verified cryptographic assembly library",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+      }
+    },
+    {
+      "name": "leanprover/LNSym ARMv8-A symbolic simulator",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

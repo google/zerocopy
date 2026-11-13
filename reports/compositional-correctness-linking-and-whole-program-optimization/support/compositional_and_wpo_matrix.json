@@ -1,0 +1,98 @@
+{
+  "compositional_frameworks": [
+    {
+      "framework": "CompCert 3.18 Syntactic Linking (`common/Linking.v`)",
+      "mechanism": "Typeclass `Linker` + relational pass commutation `TransfLink` (`separate_transf_c_program_correct`)",
+      "environment_assumptions": "All linked modules are compiled by the exact same CompCert pass pipeline (`nlist_forall2`); public symbol declarations (`prog_public`) match across units",
+      "unverified_code_support": "Only via external axioms (`extcall_sem`); cannot link hand-written assembly into the C call graph without CompCertO/CompCertM",
+      "callbacks_and_reentrancy": "Full mutual recursion among CompCert-compiled C units after syntactic linking"
+    },
+    {
+      "framework": "SepCompCert (POPL 2016, DOI 10.1145/2837614.2837642)",
+      "mechanism": "Per-unit pass relation `match_prog` allowing optimization passes to be disabled on individual units (`TransfIfLink`)",
+      "environment_assumptions": "All modules share CompCert's closed-world `Genv` and memory model at the target/intermediate language boundary",
+      "unverified_code_support": "Supports linking with CompCert-compatible target modules that satisfy the pass-boundary simulation",
+      "callbacks_and_reentrancy": "Full mutual recursion across linked units"
+    },
+    {
+      "framework": "Compositional CompCert (POPL 2015, DOI 10.1145/2676726.2676985)",
+      "mechanism": "Interaction semantics (`AtExternal`/`AfterExternal` cores) + structured memory injections with rely-guarantee permission protocols",
+      "environment_assumptions": "Environment transitions obey structured memory-injection growth and do not overwrite caller-private blocks",
+      "unverified_code_support": "Links arbitrary CompCert-memory-compatible languages (including VST-verified C and hand-verified assembly)",
+      "callbacks_and_reentrancy": "Full reentrant callbacks via structured memory-injection composition"
+    },
+    {
+      "framework": "CompCertM (POPL 2020, DOI 10.1145/3371113)",
+      "mechanism": "Refinement Under Self-related Contexts (RUSC) + mixed C/Assembly operational semantics",
+      "environment_assumptions": "Context modules are self-related under the finite set of RUSC Kripke memory relations",
+      "unverified_code_support": "Links C modules with hand-verified assembly modules that preserve callee-saved registers and private stack slots",
+      "callbacks_and_reentrancy": "Supports arbitrary mutual recursion and callbacks between C and Assembly"
+    },
+    {
+      "framework": "CompCertO (POPL 2021, DOI 10.1145/3453483.3454097)",
+      "mechanism": "Open simulations parameterized by Kripke simulation conventions (`callconv liA liB`: `ro @ c_injp @ wt_c @ ca_injp`)",
+      "environment_assumptions": "Environment calls and replies satisfy the Kripke world invariants (`injp`, read-only globals `ro`, ABI typing `wt_c`) at query/reply boundaries",
+      "unverified_code_support": "Composes with any foreign/assembly module proved or assumed to refine its open `callconv` specification",
+      "callbacks_and_reentrancy": "Full horizontal and vertical composition with reentrant callbacks"
+    },
+    {
+      "framework": "Conditional Contextual Refinement (CCR, POPL 2023, DOI 10.1145/3571205)",
+      "mechanism": "Unifies conditional CompCert-style contextual refinement with Iris separation-logic Hoare triples and ghost PCM resources",
+      "environment_assumptions": "Unverified/external functions satisfy their separation-logic Hoare specifications (`cond_refines`) at every invocation",
+      "unverified_code_support": "First-class conditional theorems: if imported functions satisfy their Iris/relational specs, exported functions refine their abstract models",
+      "callbacks_and_reentrancy": "Supports reentrancy when ghost invariants are restored before issuing external calls"
+    },
+    {
+      "framework": "DimSum (POPL 2023, DOI 10.1145/3571219)",
+      "mechanism": "Angelic/demonic event-stream module transitions (`ModTrans`) without a shared global memory model",
+      "environment_assumptions": "Connected modules agree on the syntactic/semantic event wrapper (`Vis` events) and satisfy angelic/demonic precondition filters",
+      "unverified_code_support": "Links truly heterogeneous languages (high-level expression languages, C-like heaps, flat assembly) via event adapters",
+      "callbacks_and_reentrancy": "Arbitrary reentrant cross-language calls and callbacks"
+    },
+    {
+      "framework": "Robust / Secure Compilation (TOPLAS 2019 DOI 10.1145/3280984; CSF 2019 DOI 10.1109/CSF.2019.00025)",
+      "mechanism": "Robust Trace Property Preservation (`RTP` / `RSC`) via dynamic boundary checks, SFI/Wasm sandboxing, or CHERI capabilities",
+      "environment_assumptions": "Adversarial unverified context has NO functional contract, but is confined by a hardware/software isolation boundary",
+      "unverified_code_support": "Protects verified module invariants even against actively malicious unverified contexts via dynamic capability/bounds checks",
+      "callbacks_and_reentrancy": "Requires dynamic reentrancy guards or defensive invariant checks upon callback entry/return"
+    }
+  ],
+  "whole_program_optimizations": [
+    {
+      "optimization": "Symbol Internalization (`internalize_symbols` in `partitioning.rs:529-615`, `thinLTOInternalizeModule` in `PassWrapper.cpp:1430`)",
+      "closed_world_premise": "Symbol `s` is not in `GUIDPreservedSymbols` (exported roots, `#[no_mangle]`, `#[used]`, weak lang items, `RUSTC_STD_INTERNAL_SYMBOL`) and is not referenced from outside its CGU (`ExportLists`)",
+      "compcert_or_llvm_precedent": "CompCert `Unusedglob.v` (`prog_public` root set) + LLVM `InternalizePass` (`llvm/lib/Transforms/IPO/Internalize.cpp`)",
+      "separate_compilation_hazard": "Internalizing a symbol referenced by a late-linked allocator shim (`__rg_alloc`) or naked asm block causes unresolved symbol errors (`rustc #60184`, `ImportEnabled = false` at `PassWrapper.cpp:1314`)"
+    },
+    {
+      "optimization": "Global Dead-Code & Unused-Global Elimination (`Unusedglob.v`, LLVM `GlobalDCE.cpp`)",
+      "closed_world_premise": "Every live entry point is reachable in the reference graph starting from `prog_public` / `GUIDPreservedSymbols`",
+      "compcert_or_llvm_precedent": "CompCert `backend/Unusedglob.v` (`used_globals` worklist closure; `TransfUnusedglobLink` requires `prog_public p1 = prog_public p2`)",
+      "separate_compilation_hazard": "Deleting a private helper or static that is reached via an unrecorded cross-unit relocation or linker-injected symbol"
+    },
+    {
+      "optimization": "Interprocedural Constant Propagation (`IPSCCP` in `llvm/lib/Transforms/IPO/SCCP.cpp`)",
+      "closed_world_premise": "Target function `f` has `Linkage::Internal` (so all call sites are visible inside the module) or is cloned into a specialized internal copy while keeping the external entry point intact",
+      "compcert_or_llvm_precedent": "LLVM `runIPSCCP` (`SCCP.cpp`) + `computeDeadSymbolsWithConstProp` (`PassWrapper.cpp:1312`)",
+      "separate_compilation_hazard": "Specializing an externally visible function body in-place causes UB/wrong results when an external caller passes a non-constant argument (`canary_open_world_ipsccp_unsound`)"
+    },
+    {
+      "optimization": "Dead-Argument Elimination (`DAE` in `llvm/lib/Transforms/IPO/DeadArgumentElimination.cpp`)",
+      "closed_world_premise": "Function has local (`Internal` / `Private`) linkage and its address is never taken (`hasLocalLinkage() && !F.hasAddressTaken()`)",
+      "compcert_or_llvm_precedent": "LLVM `DeadArgumentEliminationPass` (`DeadArgumentElimination.cpp`)",
+      "separate_compilation_hazard": "Altering the ABI signature of an address-taken or externally callable function mismatches caller/callee register assignments"
+    },
+    {
+      "optimization": "Whole-Program Devirtualization (`WholeProgramDevirtPass` in `llvm/lib/Transforms/IPO/WholeProgramDevirt.cpp`)",
+      "closed_world_premise": "Every vtable implementing the trait/type metadata (`!type`) has internal/hidden LTO visibility so the complete set of virtual targets is known at link time",
+      "compcert_or_llvm_precedent": "LLVM `WholeProgramDevirt.cpp` (`tryFindVirtualCallTargets`)",
+      "separate_compilation_hazard": "Dynamic loading (`dlopen`) or FFI constructing a vtable outside the LTO unit violates the closed vtable set"
+    },
+    {
+      "optimization": "ThinLTO Summary-Based Importing & `-Zshare-generics` (`lto.rs:735-770`, `PassWrapper.cpp:1271-1488`, `symbol_mangling/src/lib.rs:289`)",
+      "closed_world_premise": "One-Definition / Symbol Coherence Premise (`WeakOdrCoherent`): every `LinkOnceODR`/`WeakODR` copy and `available_externally` summary body for the same mangled symbol `GUID` refines the same contract",
+      "compcert_or_llvm_precedent": "LLVM `FunctionImporter::importFunctions` + `getFirstDefinitionForLinker` (`PassWrapper.cpp:1248`)",
+      "separate_compilation_hazard": "If two CGUs/crates emit semantically distinct bodies under the same mangled symbol (`canary_incoherent_weak_odr_unsound`), inlining the `available_externally` copy disagrees with the linker's prevailing copy"
+    }
+  ]
+}

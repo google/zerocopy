@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "verification/refinement",
+    "verification/compcert",
+    "rustc",
+    "rustc/monomorphization",
+    "llvm",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rustc_monomorphize, rustc_symbol_mangling, rustc_codegen_llvm, rustc_llvm PassWrapper.cpp)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 IPO and ThinLTO passes (FunctionImport, Internalize, DeadArgumentElimination, SCCP, GlobalDCE, WholeProgramDevirt)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "CompCert 3.18 Linking.v and Unusedglob.v",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CompCertO open simulation and calling-convention algebra",
+      "identity": {
+        "doi": "10.1145/3453483.3454097",
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12",
+        "venue": "POPL 2021"
+      }
+    },
+    {
+      "name": "SepCompCert separate compilation for CompCert",
+      "identity": {
+        "doi": "10.1145/2837614.2837642",
+        "venue": "POPL 2016"
+      }
+    },
+    {
+      "name": "Compositional CompCert structured memory injections",
+      "identity": {
+        "doi": "10.1145/2676726.2676985",
+        "venue": "POPL 2015"
+      }
+    },
+    {
+      "name": "CompCertM mixed-language C and Assembly refinement",
+      "identity": {
+        "doi": "10.1145/3371113",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Conditional Contextual Refinement (CCR)",
+      "identity": {
+        "doi": "10.1145/3571205",
+        "venue": "POPL 2023"
+      }
+    },
+    {
+      "name": "DimSum decentralized multi-language linking",
+      "identity": {
+        "doi": "10.1145/3571219",
+        "venue": "POPL 2023"
+      }
+    },
+    {
+      "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025",
+        "companion_doi": "10.1145/3280984",
+        "venue": "CSF 2019 / TOPLAS 2019"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -1,0 +1,146 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "verification/refinement",
+    "verification/compcert",
+    "verification/cakeml",
+    "lean/mechanization",
+    "anneal/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CompCertO open simulation framework",
+      "identity": {
+        "doi": "10.1145/3453483.3454097",
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12",
+        "venue": "POPL 2021"
+      }
+    },
+    {
+      "name": "CompCertM mixed-language C and Assembly refinement",
+      "identity": {
+        "doi": "10.1145/3371113",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "CompCertTSO relaxed-memory x86-TSO verified compiler",
+      "identity": {
+        "doi": "10.1145/2487241.2487248",
+        "venue": "JACM 60(3), Article 22 (2013)"
+      }
+    },
+    {
+      "name": "CASCompCert concurrency-aware footprint simulation",
+      "identity": {
+        "doi": "10.1145/3290369",
+        "venue": "POPL 2019"
+      }
+    },
+    {
+      "name": "Stack-Aware CompCert abstract stack ADT and bounded stack compilation",
+      "identity": {
+        "doi": "10.1145/3290382",
+        "repository": "ssrg-vt/compcert_stack_aware",
+        "revision": "0518d9ffb69ec11e79a214df1afc0b0159930478",
+        "venue": "POPL 2019"
+      }
+    },
+    {
+      "name": "Quantitative CompCert resource-bound preservation",
+      "identity": {
+        "doi": "10.1145/2594291.2594301",
+        "companion_doi": "10.1145/2676726.2676975",
+        "venue": "PLDI 2014 / POPL 2015"
+      }
+    },
+    {
+      "name": "CakeML verified ML compiler and FFI oracle",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "CertiCoq / CertiRocq verified Gallina compiler",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "906241771e0ac0088403dec12a0027213f114dd1"
+      }
+    },
+    {
+      "name": "Oeuf verified Coq-to-Cminor eliminator compiler",
+      "identity": {
+        "doi": "10.1145/3167089",
+        "repository": "uwplse/oeuf",
+        "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f",
+        "venue": "CPP 2018"
+      }
+    },
+    {
+      "name": "Pilsner compositional higher-order imperative compiler",
+      "identity": {
+        "doi": "10.1145/2784731.2784764",
+        "venue": "ICFP 2015"
+      }
+    },
+    {
+      "name": "Bedrock2 and riscv-coq low-level systems stack",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+      }
+    },
+    {
+      "name": "Vale verified assembly framework",
+      "identity": {
+        "repository": "project-everest/vale",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "Jasmin high-assurance cryptographic compiler",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "seL4 L4.verified and graph-refine binary translation validator",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+        "graph_refine_repository": "seL4/graph-refine",
+        "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+      }
+    },
+    {
+      "name": "Anneal verification architecture and trusted boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

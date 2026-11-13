@@ -8510,6 +8510,152 @@
         "security/toctou"
       ]
     },
+    "compiler-correctness-theorem-shapes-and-end-to-end-chains": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 verified C compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454097",
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12",
+            "venue": "POPL 2021"
+          },
+          "name": "CompCertO open simulation framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371113",
+            "venue": "POPL 2020"
+          },
+          "name": "CompCertM mixed-language C and Assembly refinement"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2487241.2487248",
+            "venue": "JACM 60(3), Article 22 (2013)"
+          },
+          "name": "CompCertTSO relaxed-memory x86-TSO verified compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290369",
+            "venue": "POPL 2019"
+          },
+          "name": "CASCompCert concurrency-aware footprint simulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290382",
+            "repository": "ssrg-vt/compcert_stack_aware",
+            "revision": "0518d9ffb69ec11e79a214df1afc0b0159930478",
+            "venue": "POPL 2019"
+          },
+          "name": "Stack-Aware CompCert abstract stack ADT and bounded stack compilation"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1145/2676726.2676975",
+            "doi": "10.1145/2594291.2594301",
+            "venue": "PLDI 2014 / POPL 2015"
+          },
+          "name": "Quantitative CompCert resource-bound preservation"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          },
+          "name": "CakeML verified ML compiler and FFI oracle"
+        },
+        {
+          "identity": {
+            "repository": "CertiRocq/certirocq",
+            "revision": "906241771e0ac0088403dec12a0027213f114dd1"
+          },
+          "name": "CertiCoq / CertiRocq verified Gallina compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3167089",
+            "repository": "uwplse/oeuf",
+            "revision": "f3e4d236465ba872d1f1b8229548fa0edf8f7a3f",
+            "venue": "CPP 2018"
+          },
+          "name": "Oeuf verified Coq-to-Cminor eliminator compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2784731.2784764",
+            "venue": "ICFP 2015"
+          },
+          "name": "Pilsner compositional higher-order imperative compiler"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
+          },
+          "name": "Bedrock2 and riscv-coq low-level systems stack"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Vale verified assembly framework"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+          },
+          "name": "Jasmin high-assurance cryptographic compiler"
+        },
+        {
+          "identity": {
+            "graph_refine_repository": "seL4/graph-refine",
+            "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5",
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified and graph-refine binary translation validator"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal verification architecture and trusted boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "verification",
+        "verification/refinement",
+        "verification/compcert",
+        "verification/cakeml",
+        "lean/mechanization",
+        "anneal/refinement"
+      ]
+    },
     "compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -8611,6 +8757,106 @@
         "verification/compcert",
         "isa/jasmin",
         "systems/os-kernels"
+      ]
+    },
+    "compositional-correctness-linking-and-whole-program-optimization": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc_monomorphize, rustc_symbol_mangling, rustc_codegen_llvm, rustc_llvm PassWrapper.cpp)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 IPO and ThinLTO passes (FunctionImport, Internalize, DeadArgumentElimination, SCCP, GlobalDCE, WholeProgramDevirt)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 Linking.v and Unusedglob.v"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454097",
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12",
+            "venue": "POPL 2021"
+          },
+          "name": "CompCertO open simulation and calling-convention algebra"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2837614.2837642",
+            "venue": "POPL 2016"
+          },
+          "name": "SepCompCert separate compilation for CompCert"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676726.2676985",
+            "venue": "POPL 2015"
+          },
+          "name": "Compositional CompCert structured memory injections"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371113",
+            "venue": "POPL 2020"
+          },
+          "name": "CompCertM mixed-language C and Assembly refinement"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571205",
+            "venue": "POPL 2023"
+          },
+          "name": "Conditional Contextual Refinement (CCR)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571219",
+            "venue": "POPL 2023"
+          },
+          "name": "DimSum decentralized multi-language linking"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1145/3280984",
+            "doi": "10.1109/CSF.2019.00025",
+            "venue": "CSF 2019 / TOPLAS 2019"
+          },
+          "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "verification",
+        "verification/refinement",
+        "verification/compcert",
+        "rustc",
+        "rustc/monomorphization",
+        "llvm",
+        "lean/mechanization"
       ]
     },
     "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026": {
@@ -9062,6 +9308,117 @@
         "rust/calling-conventions",
         "minirust/semantics",
         "anneal/rustc-capture"
+      ]
+    },
+    "cross-prover-guarantee-composition-and-native-checker-soundness": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (Init/Core.lean, Lean/Meta/Native.lean, Lean/Elab/Tactic/Decide.lean)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal boundary auditor (trusted/audit/TrustedBoundary.lean and src/lib.rs)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "lean4export NDJSON kernel exporter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "leanprover/comparator independent kernel statement verifier"
+        },
+        {
+          "identity": {
+            "repository": "rish987/lean4less",
+            "revision": "5b66bbc4af5c2c11313fcfb5098630dadaf19281"
+          },
+          "name": "lean4less extensional-to-intensional Lean 4 translator"
+        },
+        {
+          "identity": {
+            "repository": "rish987/lean2dk",
+            "revision": "29f985670008c29e852d61c562b8c10c84f7c5fb"
+          },
+          "name": "lean2dk Lean 4 to Dedukti translator"
+        },
+        {
+          "identity": {
+            "repository": "rocq-community/rocq-lean-import",
+            "revision": "2d28bbe80e7361bf3ac54f5ef099207fc61ce837"
+          },
+          "name": "rocq-lean-import Lean 4 to Rocq importer"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "7e0e53d183cad75b8f36bfbbecc0ef75614a8418",
+            "version": "0.20.3"
+          },
+          "name": "Sail ISA specification compiler and Lean 4 backend"
+        },
+        {
+          "identity": {
+            "repository": "coruus/L3",
+            "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+          },
+          "name": "L3 architecture specification language"
+        },
+        {
+          "identity": {
+            "graph_refine_repository": "seL4/graph-refine",
+            "graph_refine_revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5",
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified and graph-refine"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          },
+          "name": "CakeML compiler and Candle HOL prover"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "AWS s2n-bignum verified cryptographic assembly library"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/LNSym",
+            "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+          },
+          "name": "leanprover/LNSym ARMv8-A symbolic simulator"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "verification",
+        "verification/certificates",
+        "anneal",
+        "anneal/trusted-boundary"
       ]
     },
     "cross-prover-interoperability-verified-checkers-and-tcb-accounting": {
@@ -16139,6 +16496,112 @@
         "build/hermeticity",
         "build/caching",
         "lake/artifact-cache"
+      ]
+    },
+    "observable-behavior-property-transfer-and-anneal-statement-forms": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal verification architecture and trust boundary"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal Trusted.Attributes and boundary audit guard"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+          },
+          "name": "Anneal design, architecture, and trust-model specification"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 verified C compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290382",
+            "repository": "ssrg-vt/compcert_stack_aware",
+            "revision": "0518d9ffb69ec11e79a214df1afc0b0159930478",
+            "venue": "POPL 2019"
+          },
+          "name": "Stack-Aware CompCert abstract stack ADT and bounded stack compilation"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          },
+          "name": "CakeML verified ML compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371075",
+            "venue": "POPL 2020"
+          },
+          "name": "CompCert-CT constant-time preserving C compiler"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+          },
+          "name": "Jasmin high-assurance cryptographic compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RISP.1994.296590",
+            "venue": "IEEE S&P 1994"
+          },
+          "name": "A General Theory of Composition for Trace Sets Closed Under Selective Interleaving Functions (McLean)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "anneal",
+        "anneal/refinement",
+        "anneal/mir-semantics",
+        "verification",
+        "verification/refinement",
+        "security",
+        "lean/mechanization"
       ]
     },
     "open-rust-library-certificate-closure-and-consumer-acceptance-protocols": {

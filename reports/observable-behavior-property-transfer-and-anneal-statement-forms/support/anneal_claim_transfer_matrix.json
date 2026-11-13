@@ -1,0 +1,124 @@
+{
+  "anneal_statement_forms": [
+    {
+      "id": "SF-01",
+      "name": "Static & Post-Monomorphization Well-Formedness (`StaticBodyWf`, `ConstsTotal`, `MonoConstsWf`, `FnContractWellFormed`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/MirSemantics.lean:1744-1951`",
+      "formal_shape": "L.wf prog (localCount > 0, blocks != [], LocalLayoutsAdmitted <= isizeMaxBytes, ConstSucceeds \\/ ConstUnwinds)",
+      "transfers_under_forward_sim": "No (requires explicit wf preservation)",
+      "transfers_under_compiles_demonic": "No (Compiles alone does not constrain L_tgt.wf)",
+      "transfers_under_productive_compiles": "Yes (via explicit conjunct L_src.wf s <-> L_tgt.wf t in ProductiveCompiles)",
+      "transfers_under_resource_bsim": "Yes, when paired with target frame-size check (checkIsaFits / required_stack_space <= maxStack)",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Target layout bounds (evalTyByteSize <= isizeMaxBytes) and target instruction/register fit check"
+    },
+    {
+      "id": "SF-02",
+      "name": "Library ADT Invariant Admissibility (`AdmissibleAdtInv`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/MirSemantics.lean:1809-1815`",
+      "formal_shape": "NoDupIds (adts.map id) /\\ forall decl in adts, allFieldsPubSafe -> validAdtDecl defaultAdtInv inner -> adtInv decl.id inner",
+      "transfers_under_forward_sim": "Yes (pure meta-level type-system invariant)",
+      "transfers_under_compiles_demonic": "Yes (preserved along decodeQuery / decodeOut representation codec)",
+      "transfers_under_productive_compiles": "Yes",
+      "transfers_under_resource_bsim": "Yes",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "BehaviorCodec must decode target byte layouts back to source MirVal via validAdtDecl"
+    },
+    {
+      "id": "SF-03",
+      "name": "Miracle-Freedom / Law of the Excluded Miracle (`Language.ProductiveOn`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/Refinement.lean:122-125`",
+      "formal_shape": "forall q, pre q -> exists h : (L.sem prog q).defined, exists o, (L.sem prog q).val h o",
+      "transfers_under_forward_sim": "Yes (forward simulation maps source runs to target runs)",
+      "transfers_under_compiles_demonic": "No (fails on miraculous target queries or empty target transition relations; see productiveCompiles_rejects_query_slack_miracle)",
+      "transfers_under_productive_compiles": "Yes (via explicit productivity preservation conjunct in ProductiveCompiles)",
+      "transfers_under_resource_bsim": "Yes (even if outcome is Resource_limit_hit, an outcome still exists)",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Target machine step relation must be total/inhabited on all safe states"
+    },
+    {
+      "id": "SF-04",
+      "name": "All-Prefix Baseline UB-Freedom (`wellFormedOn` / `(MirSem body s).defined` on `SafetyPre`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/StepResult.lean:313-317`, `Trusted/MirSemantics.lean:1961-2021`",
+      "formal_shape": "initMirState s /\\ argsMatchInv s /\\ (isUnsafe -> safetyPre s) -> forall n tr out, ReachesPrefix step body n s tr out -> out.isSafe",
+      "transfers_under_forward_sim": "No (unless target is deterministic and source is receptive)",
+      "transfers_under_compiles_demonic": "Yes (by definition of Partial preorder: h_src : defined -> exists h_tgt : defined)",
+      "transfers_under_productive_compiles": "Yes (`productiveCompiles_transfers_verified`)",
+      "transfers_under_resource_bsim": "Yes, provided target stack overflow either triggers a safe trap or is ruled out by a static stack bound",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Target semantics must classify hardware faults, unmapped memory accesses, and ABI clobbers as .failed/.stuck"
+    },
+    {
+      "id": "SF-05",
+      "name": "Return-Value Validity & Compile-Time Guard Freedom (`SafetyPost`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/MirSemantics.lean:1980-1990`",
+      "formal_shape": "(forall tr r, out = .terminated tr (.normal r) -> r.value.valid adts adtInv r.state localCount retTy) /\\ (out != .terminated tr .compileTimeError)",
+      "transfers_under_forward_sim": "No (unless flipped to backward simulation)",
+      "transfers_under_compiles_demonic": "Yes (every target return decodes via decodeOut to a valid source return)",
+      "transfers_under_productive_compiles": "Yes",
+      "transfers_under_resource_bsim": "Yes (partial correctness on normal return holds vacuously on early OOM/StackOverflow)",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "PartialBehaviorCodec decodeOut must return none on invalid target bit patterns (e.g. bool bytenotin {0, 1})"
+    },
+    {
+      "id": "SF-06",
+      "name": "Conditional Functional & Relational Postconditions (`ContractPost`, `EffectivePost`, `EnsuresEqArg`, `EnsuresAtomicLoad`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/MirSemantics.lean:1818-1864, 1994-2011`",
+      "formal_shape": "SafetyPost s out /\\ (fn.safetyPre s -> AllHold (fn.specs.map (denotePostSpec s out)))",
+      "transfers_under_forward_sim": "No (unless flipped to backward simulation)",
+      "transfers_under_compiles_demonic": "Yes (via Anneal.verified_meet_iff + BehaviorCodec.toMorphism_monotone)",
+      "transfers_under_productive_compiles": "Yes (`productiveCompiles_transfers_verified`)",
+      "transfers_under_resource_bsim": "Partial (holds on normal return; if postcondition requires normal return, needs stack/heap bound)",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Calling-convention lens (`FramedCodec`) must preserve caller-saved/callee-saved register and memory framing"
+    },
+    {
+      "id": "SF-07",
+      "name": "Total Termination & Reactive Liveness (`EventualOut.terminated` / `\u00ac .diverges` / `.reacts`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/StepResult.lean:260-335`",
+      "formal_shape": "forall out, (MirSem body s).val h out -> exists tr v, out = .terminated tr (.normal v)",
+      "transfers_under_forward_sim": "No",
+      "transfers_under_compiles_demonic": "Yes over EventualBehaviorOf (fails over step-indexed BehaviorOf under pi_stepZero truncation)",
+      "transfers_under_productive_compiles": "Yes (`productiveCompiles_transfers_termination` over EventualBehaviorOf)",
+      "transfers_under_resource_bsim": "No unless paired with quantitative stack/heap bound (`resource_refinement_transfers_partial_safety_but_not_termination`)",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Well-founded stuttering measure per pass (no infinite silent target stuttering) + static stack bound <= headroom"
+    },
+    {
+      "id": "SF-08",
+      "name": "Spatial Memory Footprint & Callee-Saved Frame Preservation (`FootprintAt`, `FramedCodec`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/Memory.lean`, `Trusted/MirSemantics.lean:1984-1985`",
+      "formal_shape": "Writes restricted to owned allocations/stack frame; caller locals and private spills unchanged",
+      "transfers_under_forward_sim": "No",
+      "transfers_under_compiles_demonic": "Only if target memory injection / PartitionedFrameLayout separates public and private stack slots",
+      "transfers_under_productive_compiles": "Yes when paired with PartitionedFrameLayout (`Stacking`) and trace-level access checks",
+      "transfers_under_resource_bsim": "Yes with PartitionedFrameLayout",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Trace-level memory access bounds (`memaccessInbounds` / `FootprintPolicy`), not merely final-state `MAYCHANGE` (`mayChange_alone_cannot_exclude_unauthorized_load`)"
+    },
+    {
+      "id": "SF-09",
+      "name": "2-Safety Constant-Time & Secret Erasure (`ConstantTimeOn`, `TargetCTAndScrubbed`)",
+      "source_location": "Anneal CT / hyperproperty extensions (`CompilerPreservationTimeProtectionAndAnnealCtGate.lean`)",
+      "formal_shape": "forall q1 q2, pubEq q1 q2 -> leakEq out1 out2 /\\ postExitSecretResidual == 0",
+      "transfers_under_forward_sim": "No",
+      "transfers_under_compiles_demonic": "No (falsified by McLean's Refinement Paradox: `productiveCompiles_fails_constant_time_transfer`)",
+      "transfers_under_productive_compiles": "No (standard compiler passes introduce secret branches, delete dead scrubs, and spill secret registers)",
+      "transfers_under_resource_bsim": "No",
+      "transfers_under_ct_sim": "Yes (`ctCompiles_transfers_verified_and_constant_time` or target-byte `admitCtKernelExtension` gate)",
+      "required_side_conditions": "Either CompCert-CT + Besson IFP lockstep leakage/scrub simulation OR consumer-bound target-byte CT certificate check + hardware DIT/DOITM"
+    },
+    {
+      "id": "SF-10",
+      "name": "Crate-Level Obligation Envelope & Waiver Ledger (`VerificationResult`, `CrateTheorem`)",
+      "source_location": "joshlf/anneal `trusted/lean/Trusted/Refinement.lean:157-164`, `Trusted/MirSemantics.lean:2048-2056`",
+      "formal_shape": "c.functions != [] /\\ NoDupIds /\\ AdmissibleAdtInv /\\ AllHold FnContractWellFormed /\\ VerificationResult c.tcbWaivedIds obligations",
+      "transfers_under_forward_sim": "No",
+      "transfers_under_compiles_demonic": "Transfers per-function obligations when combined with OpenModule.link and ProductiveCompiles",
+      "transfers_under_productive_compiles": "Yes (`CrateTheorem_transfers_to_IsaLang` when `c.tcb` records any remaining backend waivers)",
+      "transfers_under_resource_bsim": "Yes (with stack bound obligation added to CrateTheorem)",
+      "transfers_under_ct_sim": "Yes",
+      "required_side_conditions": "Target compilation must cover both release (`bodyId`) and debug (`debugBodyId`) profiles or bind the emitted object to the verified profile"
+    }
+  ]
+}

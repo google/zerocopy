@@ -1,0 +1,65 @@
+{
+  "lean_native_evaluation_handles": [
+    {
+      "handle": "Kernel WHNF / `Eq.refl` (`by rfl`, `by decide`, `by decide +kernel`)",
+      "lean_source_location": "`src/kernel/type_checker.cpp:101-372` (`reduce_nat`), `src/lean/Lean/Elab/Tactic/Decide.lean:88-133`",
+      "axiom_footprint": "[] (or standard `{propext, Quot.sound}`)",
+      "tcb_components_trusted": "Lean 4 C++ kernel (`type_checker.cpp`) + GMP big-integer arithmetic (`reduce_nat`) only",
+      "admitted_by_anneal_audit": true,
+      "notes": "`decide +kernel` wraps the proof in `mkAuxLemma` so the kernel checks the reduction once per module and caches the resulting theorem constant"
+    },
+    {
+      "handle": "`Lean.ofReduceBool` / `Lean.ofReduceNat` + `Lean.trustCompiler`",
+      "lean_source_location": "`src/lean/Init/Core.lean:2338-2409` (`@[deprecated ... since := \"2026-02-01\"]`)",
+      "axiom_footprint": "`[Lean.ofReduceBool, Lean.trustCompiler]` or `[Lean.ofReduceNat, Lean.trustCompiler]`",
+      "tcb_components_trusted": "Lean 4 kernel + LCNF compiler + C codegen + C compiler + VM interpreter + all `@[implemented_by]`, `@[extern]`, and `@[csimp]` overrides (~30k+ LOC)",
+      "admitted_by_anneal_audit": false,
+      "notes": "Deprecated upstream in Lean 4.34.1; rejected by Anneal `TrustedBoundary.lean` Phase 2 axiom allowlist"
+    },
+    {
+      "handle": "`by native_decide` / `by bv_decide` in Lean `v4.34.1` (`Lean.Meta.nativeEqTrue`)",
+      "lean_source_location": "`src/lean/Lean/Meta/Native.lean:37-87`, `src/lean/Lean/Elab/Tactic/Decide.lean:57-68`",
+      "axiom_footprint": "`[<decl>._native.native_decide.ax_1_1]` (fresh per-invocation `Declaration.axiomDecl`)",
+      "tcb_components_trusted": "Lean 4 elaborator + `addAndCompile` compiler pipeline + `unsafe evalConst Bool` runtime + all `@[implemented_by]`/`@[extern]` hooks",
+      "admitted_by_anneal_audit": false,
+      "notes": "Does NOT emit `Lean.ofReduceBool` or `Lean.trustCompiler` in Lean 4.34.1! Bypasses naive name-blocklist auditors (`naive_blocklist_misses_v4341_native_decide_axiom`), but is caught by Anneal's syntax allowlist (Phase 1) and closed foundation axiom allowlist + non-foundation `.axiomInfo` rejection (Phase 2)"
+    }
+  ],
+  "cross_prover_agreement_mechanisms": [
+    {
+      "mechanism": "Single-Source Specification Generation (`Sail`, `Lem`, `Ott`, `L3`)",
+      "exemplars": "`rems-project/sail@7e0e53d183cad75b8f36bfbbecc0ef75614a8418` (`sail-riscv`, `sail-arm`), `rems-project/lem` (`CakeML`, `linksem`), `coruus/L3@d6558e679a25ffaaf16a47a3189f8f8111e45e0c`",
+      "what_is_established": "Syntactic and structural alignment at the specification DSL level across emitted Coq/Rocq, HOL4, Isabelle/HOL, and Lean 4 backends",
+      "residual_trust_gap": "Each backend code generator (`sail -coq` vs. `sail -lean`), monad library (`PreSailM`), and primitive bitvector mapping remains unverified unless paired with a target-level bijection/simulation proof"
+    },
+    {
+      "mechanism": "Kernel Proof & Environment Translation (`lean4export`, `lean4less`, `lean2dk`, `rocq-lean-import`, `OpenTheory`)",
+      "exemplars": "`leanprover/lean4export@df81913eee5519d5a88ae5b0fd701b5298cc29ab`, `rish987/lean4less@5b66bbc4af5c2c11313fcfb5098630dadaf19281`, `rish987/lean2dk@29f985670008c29e852d61c562b8c10c84f7c5fb`, `rocq-community/rocq-lean-import@2d28bbe80e7361bf3ac54f5ef099207fc61ce837`, HOL `OpenTheory` (`CakeML Candle`)",
+      "what_is_established": "Target kernel re-verifies the translated proof steps in a single unified logic (e.g. Dedukti, Rocq, or HOL4/Candle)",
+      "residual_trust_gap": "Requires extensionality axioms (`pIrrel`, `Singleton.elim`, `quot_sound`), stubs 43 reflection lemmas in `lean2dk`, or disables positivity/guard checks in `rocq-lean-import`; still requires `leanprover/comparator` statement verification on the boundary definitions"
+    },
+    {
+      "mechanism": "Differential Testing & Hardware/Emulator Co-Simulation",
+      "exemplars": "`leanprover/LNSym@5c05220ff970e3bdd7813ad0c9ef3741522c8b92`, `kframework/X86-64-semantics@592380aea04820ea11cfa5475b343f0257f2474e`, `rems-project/isla@e9b5d945394277656593a0d429466d7fa0a2b4b3`, `s2n-bignum` ELF byte checks",
+      "what_is_established": "Empirical falsification of shallow decoding/semantic bugs across finite test corpora",
+      "residual_trust_gap": "Cannot establish universal semantic equivalence across unbounded inputs or unexercised instruction/flag corners (`canary_unverified_prover_translation_mismatch`)"
+    }
+  ],
+  "project_documentation_chains": [
+    {
+      "project": "seL4 (`seL4/l4v@6b4076aeb` + `seL4/graph-refine@94c93d188` + `seL4/verification-manifest@f1f7a4289`)",
+      "heterogeneous_links": "Isabelle/HOL (`Abstract_A` -> `ExecSpec` -> `C SIMPL` via `CParser`) + Python/SMT `graph-refine` validator + Cambridge HOL4/L3 ARM/RISC-V ISA semantics exported to SMT-LIB",
+      "how_documented": "Explicitly documented in `l4v/README.md`, `verification-manifest/default.xml`, and Sewell et al. (PLDI 2013): pins exact tool/solver/Isabelle hashes and itemizes unverified boundaries (boot code, hand-written asm, MMU/cache/DMA)"
+    },
+    {
+      "project": "CakeML (`CakeML/cakeml@f73189499` + `cake_lpr` + `Candle`)",
+      "heterogeneous_links": "HOL4 compiler correctness (`compile_correct`) + L3 ISA models imported into HOL4 (`arm8`, `x64`, `riscv`) + OpenTheory article reader (`Candle`) + self-hosted x64 bootstrap (`cake_compiled_thm`) + Silver RTL processor (`PLDI 2019`)",
+      "how_documented": "Single end-to-end HOL4 theorem (`cake_compiled_thm` / `lpr_ok_thm`) where all intermediate links are internalized into HOL4 via L3-to-HOL4 generation and verified bootstrapping"
+    },
+    {
+      "project": "AWS `s2n-bignum` (`awslabs/s2n-bignum@4d1356a74`) & `leanprover/LNSym` (`5c05220ff`)",
+      "heterogeneous_links": "`s2n-bignum`: HOL Light x86/Arm proofs + `define_assert_from_elf` `.o` byte loader + Cryptol/SAW Equivalence in CI; `LNSym`: Lean 4 AArch64 symbolic simulator + Cryptol translated specs (`Specs/SHA512.lean`) + `ELFSage` ELF loader",
+      "how_documented": "`s2n-bignum/SOUNDNESS.md` explicitly itemizes the 6 trusted components (HOL Light kernel, ISA model, ELF loader, C ABI header match, non-self-modifying code, and `UArchEvent` constant-time model)"
+    }
+  ]
+}
