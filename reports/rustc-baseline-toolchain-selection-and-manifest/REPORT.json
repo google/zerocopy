@@ -1,0 +1,163 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/baseline",
+    "rustc/toolchains",
+    "rustc/mir",
+    "rustc/codegen",
+    "llvm/versioning",
+    "lean/toolchains",
+    "anneal/toolchain-baseline"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library (selected baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "release_date": "2026-10-15"
+      }
+    },
+    {
+      "name": "Rust 1.100.0 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0",
+        "release_date": "2026-11-12"
+      }
+    },
+    {
+      "name": "Rust 1.98.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+        "version": "1.98.1",
+        "release_date": "2026-09-03"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-05-31 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-11-12 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 submodule (selected baseline)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Rust 1.100.0 and nightly-2026-11-12 LLVM 23.1.5 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "Rust 1.98.1 LLVM 22.1.7 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "52ed14fcd56afc30f9cccd8ca8ce237c2eef7e04",
+        "version": "22.1.7"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-05-31 LLVM 22.1.6 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "22.1.6"
+      }
+    },
+    {
+      "name": "Official Rust 1.99.1 distribution channel manifest",
+      "identity": {
+        "artifact": "channel-rust-1.99.1.toml",
+        "url": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+        "sha256": "fb152be80975c194aa5fc684b2aec3a6e14e2b855efe2faa4e5f8ae6e590f463"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem prover and bundled LLVM 22.1.4 toolchain (selected baseline)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS) for Rust 1.99",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification system",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    },
+    {
+      "name": "Alive2 SMT translation validator for LLVM IR",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2"
+      }
+    },
+    {
+      "name": "Vellvm verified LLVM IR semantics in Rocq",
+      "identity": {
+        "repository": "vellvm/vellvm",
+        "revision": "1d651e7a391c6d0112f0b2ecb7c363c58c3a7d3c"
+      }
+    },
+    {
+      "name": "Lean-MLIR SSA and LLVM dialect verification framework",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
+      }
+    },
+    {
+      "name": "rustc-perf compiler and runtime benchmark suite",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "b9d680e5dda9b6d9ff98716e9eed705dad3c105d"
+      }
+    },
+    {
+      "name": "abi-cafe cross-compiler ABI differential tester",
+      "identity": {
+        "repository": "Gankra/abi-cafe",
+        "revision": "94d38030419eb00a1ba80e5e2b4d763dcee58db4"
+      }
+    },
+    {
+      "name": "rustlantis custom-MIR differential fuzzer",
+      "identity": {
+        "repository": "cbeuw/rustlantis",
+        "revision": "2be7c5a6763831dc0f908f0e05723ebbbc2a62cc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
