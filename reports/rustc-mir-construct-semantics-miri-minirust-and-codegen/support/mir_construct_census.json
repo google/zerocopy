@@ -1,0 +1,252 @@
+{
+  "crates": [
+    "arrayvec",
+    "bitflags",
+    "cfg_if",
+    "equivalent",
+    "hashbrown",
+    "itoa",
+    "log",
+    "memchr",
+    "once_cell",
+    "ryu",
+    "smallvec",
+    "unicode_ident"
+  ],
+  "postcleanup": {
+    "bodies": 1914,
+    "basic_blocks": 11715,
+    "statements": {
+      "StorageDead": 20383,
+      "StorageLive": 18532,
+      "Assign": 18237
+    },
+    "terminators": {
+      "Call": 5153,
+      "Goto": 2079,
+      "Return": 1908,
+      "SwitchInt": 1443,
+      "Drop": 429,
+      "UnwindResume": 321,
+      "Assert": 194,
+      "Unreachable": 188
+    },
+    "unwind_actions": {
+      "Continue": 4275,
+      "Cleanup": 1253,
+      "Terminate(InCleanup)": 248
+    },
+    "rvalues": {
+      "Use(WithRetag::Yes)": 8539,
+      "Ref(Shared)": 3752,
+      "BinaryOp": 1763,
+      "Aggregate": 1431,
+      "Ref(Mut)": 1253,
+      "Cast": 692,
+      "Use(WithRetag::No)": 389,
+      "Discriminant": 330,
+      "UnaryOp": 65,
+      "RawPtr(Const)": 12,
+      "RawPtr(Mut)": 8,
+      "Repeat": 3
+    },
+    "operands": {
+      "Move": 14482,
+      "Constant": 9643,
+      "Copy": 5756
+    },
+    "projections": {
+      "Deref": 5301,
+      "Field": 2495,
+      "Downcast": 394,
+      "Index": 49
+    },
+    "casts": {
+      "IntToInt": 290,
+      "PointerCoercion(Unsize)": 264,
+      "PtrToPtr": 86,
+      "PointerCoercion(ReifyFnPointer(Unsafe))": 30,
+      "Transmute": 9,
+      "FnPtrToPtr": 7,
+      "PointerExposeProvenance": 4,
+      "PointerCoercion(ClosureFnPointer(Unsafe))": 1,
+      "PointerCoercion(ReifyFnPointer(Safe))": 1
+    },
+    "binops": {
+      "Eq": 305,
+      "Add": 267,
+      "Sub": 253,
+      "Lt": 185,
+      "Ge": 159,
+      "Le": 101,
+      "Div": 79,
+      "BitAnd": 72,
+      "Gt": 64,
+      "Rem": 64,
+      "Ne": 56,
+      "Shl": 55,
+      "Mul": 54,
+      "Shr": 29,
+      "BitOr": 13,
+      "BitXor": 7
+    },
+    "unops": {
+      "PtrMetadata": 39,
+      "Not": 16,
+      "Neg": 10
+    },
+    "aggregates": {
+      "Adt(Enum)": 561,
+      "Adt(Struct)": 388,
+      "Tuple": 248,
+      "Closure": 190,
+      "Array": 35,
+      "Adt(Union)": 9
+    },
+    "nondiverging_intrinsics": {},
+    "call_intrinsics": {},
+    "const_kinds": {
+      "Const::Val(ZeroSized)": 6473,
+      "Const::Val(Scalar)": 2293,
+      "Const::Unevaluated": 446,
+      "Const::Val(Slice)": 398,
+      "Const::Ty": 33
+    }
+  },
+  "optimized": {
+    "bodies": 1914,
+    "basic_blocks": 9691,
+    "statements": {
+      "Assign": 16510,
+      "StorageDead": 15349,
+      "StorageLive": 13697,
+      "Intrinsic": 183
+    },
+    "terminators": {
+      "Goto": 2675,
+      "Call": 2525,
+      "Return": 1908,
+      "SwitchInt": 1714,
+      "Drop": 387,
+      "Unreachable": 243,
+      "UnwindResume": 172,
+      "Assert": 67
+    },
+    "unwind_actions": {
+      "Continue": 2076,
+      "Cleanup": 488,
+      "Unreachable": 214,
+      "Terminate(InCleanup)": 201
+    },
+    "rvalues": {
+      "Use(WithRetag::Yes)": 4757,
+      "BinaryOp": 3438,
+      "Cast": 2992,
+      "Aggregate": 2202,
+      "Ref(Shared)": 1047,
+      "Discriminant": 491,
+      "Ref(Mut)": 486,
+      "RawPtr(Const)": 398,
+      "Use(WithRetag::No)": 355,
+      "UnaryOp": 264,
+      "RawPtr(Mut)": 79,
+      "Repeat": 1
+    },
+    "operands": {
+      "Copy": 11673,
+      "Move": 9377,
+      "Constant": 7139
+    },
+    "projections": {
+      "Field": 5714,
+      "Deref": 3855,
+      "Downcast": 663,
+      "Index": 69,
+      "ConstantIndex": 8
+    },
+    "casts": {
+      "Transmute": 1225,
+      "IntToInt": 764,
+      "PtrToPtr": 575,
+      "PointerCoercion(Unsize)": 313,
+      "PointerExposeProvenance": 55,
+      "PointerCoercion(ReifyFnPointer(Safe))": 33,
+      "PointerCoercion(ReifyFnPointer(Unsafe))": 19,
+      "FnPtrToPtr": 7,
+      "PointerCoercion(ClosureFnPointer(Unsafe))": 1
+    },
+    "binops": {
+      "Offset": 645,
+      "Add": 461,
+      "Eq": 363,
+      "Sub": 356,
+      "Lt": 283,
+      "BitAnd": 188,
+      "Ge": 153,
+      "Mul": 134,
+      "Gt": 110,
+      "Shr": 107,
+      "Div": 101,
+      "Le": 98,
+      "SubUnchecked": 94,
+      "Shl": 74,
+      "Ne": 67,
+      "Rem": 55,
+      "BitOr": 31,
+      "BitXor": 30,
+      "Cmp": 27,
+      "AddUnchecked": 22,
+      "AddWithOverflow": 17,
+      "ShlUnchecked": 14,
+      "MulWithOverflow": 6,
+      "ShrUnchecked": 2
+    },
+    "unops": {
+      "PtrMetadata": 214,
+      "Not": 44,
+      "Neg": 6
+    },
+    "aggregates": {
+      "Adt(Struct)": 933,
+      "Adt(Enum)": 723,
+      "Closure": 183,
+      "Tuple": 157,
+      "RawPtr": 148,
+      "Adt(Union)": 33,
+      "Array": 25
+    },
+    "nondiverging_intrinsics": {
+      "Assume": 117,
+      "CopyNonOverlapping": 66
+    },
+    "call_intrinsics": {
+      "saturating_sub": 27,
+      "cold_path": 25,
+      "arith_offset": 24,
+      "compare_bytes": 24,
+      "copy": 17,
+      "is_val_statically_known": 16,
+      "write_bytes": 12,
+      "cttz_nonzero": 11,
+      "ptr_offset_from": 11,
+      "assert_inhabited": 10,
+      "saturating_add": 7,
+      "ctlz": 6,
+      "typed_swap_nonoverlapping": 4,
+      "ctlz_nonzero": 3,
+      "cttz": 3,
+      "ptr_offset_from_unsigned": 2,
+      "ctpop": 2,
+      "size_of_val": 1,
+      "caller_location": 1
+    },
+    "const_kinds": {
+      "Const::Val(Scalar)": 3070,
+      "Const::Val(ZeroSized)": 2861,
+      "Const::Unevaluated": 662,
+      "Const::Val(Slice)": 337,
+      "Const::Val(Indirect)": 169,
+      "Const::Ty": 40
+    }
+  }
+}

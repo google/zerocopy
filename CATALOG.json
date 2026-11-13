@@ -20076,6 +20076,58 @@
         "zerocopy/soundness-policy"
       ]
     },
+    "rust-allocation-provenance-and-stack-lifetime-semantics": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and allocator shim (selected baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust formal operational semantics specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+            "version": "1.101.0-nightly (2026-09-29)"
+          },
+          "name": "Miri 0.1.0 standalone interpreter toolchain"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/unsafe",
+        "rust/provenance",
+        "rustc/mir",
+        "rustc/codegen",
+        "llvm/memory-model",
+        "minirust/memory"
+      ]
+    },
     "rust-atomics-weak-memory-and-aliasing-operational-models": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -20559,6 +20611,61 @@
         "isa/aarch64",
         "isa/x86-64",
         "verification/refinement"
+      ]
+    },
+    "rust-floating-point-semantics-llvm-lowering-and-isa-behavior": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and rustc_apfloat (selected baseline)"
+        },
+        {
+          "identity": {
+            "path": "text/3514-float-semantics.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+          },
+          "name": "Rust RFC 3514 (float_semantics)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly-2026-11-12 with Cranelift codegen backend"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+            "version": "1.101.0-nightly (2026-09-29)"
+          },
+          "name": "Miri 0.1.0 standalone interpreter toolchain"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/floating-point",
+        "rustc/const-eval",
+        "rustc/codegen",
+        "llvm/floating-point",
+        "isa/x86-64",
+        "isa/i386",
+        "isa/aarch64"
       ]
     },
     "rust-inline-assembly-contracts-relocations-and-simd-correspondence": {
@@ -22649,6 +22756,56 @@
         "llvm"
       ]
     },
+    "rustc-layout-computation-target-datalayouts-and-parametricity": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, rustc_abi, and rustc_ty_utils (selected baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines Reference"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "a7ac073219f4ec3c813431be8239a0405014d5c1"
+          },
+          "name": "Anneal polymorphic ADT, reference, and functional-translation MIR model"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "a4e9b0b39e44ee2c7dcd9b2ae9e3e9cd59613ac7"
+          },
+          "name": "Anneal byte-addressed memory, Tree Borrows, and interaction-tree MIR model"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/layout",
+        "rust/target-data-layout",
+        "rustc/layout",
+        "rustc/abi",
+        "anneal/mir-semantics",
+        "minirust/semantics"
+      ]
+    },
     "rustc-mir-artifact-export-settings-and-proof-binding": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -22677,6 +22834,73 @@
         "anneal",
         "charon",
         "verification"
+      ]
+    },
+    "rustc-mir-construct-semantics-miri-minirust-and-codegen": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, MIR syntax, validator, CTFE/Miri interpreter, and SSA codegen (selected baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust formal operational semantics specification"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "0d2b7f8cc58a305af71b5799c7bcaddc42c472fa"
+          },
+          "name": "Anneal prefix-safety scalar MIR verification model"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "a7ac073219f4ec3c813431be8239a0405014d5c1"
+          },
+          "name": "Anneal polymorphic ADT, reference, and functional-translation MIR model"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "a4e9b0b39e44ee2c7dcd9b2ae9e3e9cd59613ac7"
+          },
+          "name": "Anneal byte-addressed memory, Tree Borrows, and interaction-tree MIR model"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d",
+            "version": "1.101.0-nightly (2026-09-29)"
+          },
+          "name": "Miri 0.1.0 standalone interpreter toolchain"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/mir",
+        "rustc/mir-phases",
+        "rustc/codegen",
+        "rust/miri",
+        "minirust/semantics",
+        "anneal/mir-semantics",
+        "llvm/lowering"
       ]
     },
     "rustc-mir-optimization-passes-semantics-soundness-and-value": {

@@ -1,0 +1,109 @@
+{
+  "ctfe_rustc_1_99_1": {
+    "zero_div_zero_f32": "0x7fc00000",
+    "qnan1_plus_qnan2_f32": "0x7fc00000",
+    "snan_plus_one_f32": "0x7fc00000",
+    "neg_snan_f32": "0xff800001"
+  },
+  "runtime_targets": {
+    "x86_64_O0": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00001",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "x86_64_O3": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "aarch64_O0": {
+      "0div0": "0x7fc00000",
+      "q1_plus_q2": "0x7fc00001",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "aarch64_O3": {
+      "0div0": "0x7fc00000",
+      "q1_plus_q2": "0x7fc00001",
+      "q2_plus_q1": "0x7fc00001",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "i686_sse2_O0": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7fc00001"
+    },
+    "i686_sse2_O3": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "i686_x87_nosse2_O0": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7fc00001"
+    },
+    "i686_x87_nosse2_O3": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7fc00001"
+    },
+    "cranelift_x86_64_O0": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00001",
+      "q2_plus_q1": "0x7fc00002",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "miri_seed_0": {
+      "0div0": "0x7fc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0xffc00000",
+      "snan_plus_1": "0x7fc00001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    },
+    "miri_seed_1": {
+      "0div0": "0xffc00000",
+      "q1_plus_q2": "0x7fc00002",
+      "q2_plus_q1": "0xffc00000",
+      "snan_plus_1": "0x7f800001",
+      "neg_snan": "0xff800001",
+      "rust_abi_snan": "0x7f800001",
+      "c_abi_snan": "0x7f800001"
+    }
+  }
+}

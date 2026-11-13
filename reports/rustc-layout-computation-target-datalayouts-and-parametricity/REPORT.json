@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rust/layout",
+    "rust/target-data-layout",
+    "rustc/layout",
+    "rustc/abi",
+    "anneal/mir-semantics",
+    "minirust/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler, rustc_abi, and rustc_ty_utils (selected baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    },
+    {
+      "name": "Unsafe Code Guidelines Reference",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "Anneal polymorphic ADT, reference, and functional-translation MIR model",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "a7ac073219f4ec3c813431be8239a0405014d5c1"
+      }
+    },
+    {
+      "name": "Anneal byte-addressed memory, Tree Borrows, and interaction-tree MIR model",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "a4e9b0b39e44ee2c7dcd9b2ae9e3e9cd59613ac7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

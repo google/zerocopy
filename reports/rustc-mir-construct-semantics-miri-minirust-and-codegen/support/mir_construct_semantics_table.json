@@ -1,0 +1,142 @@
+{
+  "baseline_rustc": "58cf8f9c35b355199727627d07ae34a4e2846d67 (1.99.1)",
+  "baseline_llvm": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145 (23.1.1)",
+  "minirust": "063d784186d3252bee242217f218223205c0b568",
+  "anneal_lineages": {
+    "scalar_mvp": "0d2b7f8cc58a305af71b5799c7bcaddc42c472fa",
+    "polymorphic_adt_ref": "a7ac073219f4ec3c813431be8239a0405014d5c1",
+    "byte_memory_tree_borrows": "a4e9b0b39e44ee2c7dcd9b2ae9e3e9cd59613ac7"
+  },
+  "statements": [
+    {
+      "construct": "StatementKind::Assign(Place, Rvalue)",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "eval_rvalue_into_place (step.rs:152); overlaps between src and dst checked on Copy/Move",
+      "minirust": "Statement::Assign (statements.md:13); evaluates ValueExpr then writes to PlaceExpr",
+      "codegen": "cg_rvalue + store_to_place; Scalar/ScalarPair written to SSA or memory",
+      "anneal_mvp": "Statement.assign (local only)",
+      "anneal_adt_ref": "Stmt.assign (Place with Field/Deref/Index/Downcast)",
+      "anneal_byte_tb": "Stmt.assign (byte-addressed memory + Tree Borrows)"
+    },
+    {
+      "construct": "StatementKind::FakeRead(FakeReadCause, Place)",
+      "runtime_allowed": "Disallowed in Runtime(*) (validate.rs:1503)",
+      "miri": "nop if reached",
+      "minirust": "Not in syntax",
+      "codegen": "nop (statement.rs:116)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "Stmt.fakeRead (nop)",
+      "anneal_byte_tb": "Stmt.fakeRead (nop)"
+    },
+    {
+      "construct": "StatementKind::SetDiscriminant { place, variant_index }",
+      "runtime_allowed": "Initial, PostCleanup, Optimized (disallowed before Runtime(Initial), validate.rs:1554)",
+      "miri": "write_discriminant (discriminant.rs:28); writes direct tag or niche value",
+      "minirust": "Statement::SetDiscriminant (statements.md:57)",
+      "codegen": "codegen_set_discr (place.rs:258); stores tag or aborts if uninhabited",
+      "anneal_mvp": "Rejected (uses Rvalue.use of enum constant)",
+      "anneal_adt_ref": "Stmt.setDiscriminant",
+      "anneal_byte_tb": "Stmt.setDiscriminant"
+    },
+    {
+      "construct": "StatementKind::StorageLive(Local)",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "storage_live (stack.rs); allocates uninit slot, errors if already live in some dialects or deallocates old",
+      "minirust": "Statement::StorageLive (statements.md:160); allocates stack place, UB if already live",
+      "codegen": "llvm.lifetime.start.p0(ptr) for memory-backed locals (place.rs:316)",
+      "anneal_mvp": "Statement.storageLive",
+      "anneal_adt_ref": "Stmt.storageLive (bumps generation)",
+      "anneal_byte_tb": "Stmt.storageLive"
+    },
+    {
+      "construct": "StatementKind::StorageDead(Local)",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "storage_dead (stack.rs); deallocates local and invalidates pointers/tags into it",
+      "minirust": "Statement::StorageDead (statements.md:160); deallocates local, nop if already dead",
+      "codegen": "llvm.lifetime.end.p0(ptr) for memory-backed locals (place.rs:320)",
+      "anneal_mvp": "Statement.storageDead",
+      "anneal_adt_ref": "Stmt.storageDead (invalidates generation)",
+      "anneal_byte_tb": "Stmt.storageDead"
+    },
+    {
+      "construct": "StatementKind::PlaceMention(Place)",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "eval_place without reading bytes; checks alignment/inbounds of deref prefix if check_place_mention enabled",
+      "minirust": "Statement::PlaceMention (statements.md:42); evaluates PlaceExpr without loading",
+      "codegen": "nop (statement.rs:119)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "Stmt.placeMention",
+      "anneal_byte_tb": "Stmt.placeMention"
+    },
+    {
+      "construct": "StatementKind::AscribeUserType(..)",
+      "runtime_allowed": "Disallowed in Runtime(*) (validate.rs:1495)",
+      "miri": "nop",
+      "minirust": "Not in syntax",
+      "codegen": "nop (statement.rs:117)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "Stmt.ascribeUserType (nop)",
+      "anneal_byte_tb": "Stmt.ascribeUserType (nop)"
+    },
+    {
+      "construct": "StatementKind::Coverage(CoverageKind)",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "nop",
+      "minirust": "Not in syntax",
+      "codegen": "codegen_coverage (statement.rs:87)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "Stmt.coverage (nop)",
+      "anneal_byte_tb": "Stmt.coverage (nop)"
+    },
+    {
+      "construct": "StatementKind::Intrinsic(Assume(Operand))",
+      "runtime_allowed": "Initial, PostCleanup, Optimized (cond must be bool, validate.rs:1510)",
+      "miri": "reads bool operand; throws UB if false (step.rs:119)",
+      "minirust": "IntrinsicOp::Assume (intrinsics.md:119)",
+      "codegen": "bx.assume(imm) -> call void @llvm.assume(i1) (statement.rs:91)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "NonDivergingIntrinsic.assume",
+      "anneal_byte_tb": "NonDivergingIntrinsic.assume"
+    },
+    {
+      "construct": "StatementKind::Intrinsic(CopyNonOverlapping { src, dst, count })",
+      "runtime_allowed": "Initial, PostCleanup, Optimized (validate.rs:1519)",
+      "miri": "copy_nonoverlapping (step.rs:125); checks align, non-overlap, count*size <= isize::MAX, dereferenceable",
+      "minirust": "Lowered to load/store or memcpy",
+      "codegen": "unchecked_sumul(count, elem_size) + llvm.memcpy with pointee ABI alignment (statement.rs:108-114)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "NonDivergingIntrinsic.copyNonOverlapping",
+      "anneal_byte_tb": "NonDivergingIntrinsic.copyNonOverlapping"
+    },
+    {
+      "construct": "StatementKind::ConstEvalCounter",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "increments terminators_evaluated limit in CTFE",
+      "minirust": "Not in syntax",
+      "codegen": "nop (statement.rs:118)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "Stmt.constEvalCounter (nop)",
+      "anneal_byte_tb": "Stmt.constEvalCounter (nop)"
+    },
+    {
+      "construct": "StatementKind::Nop",
+      "runtime_allowed": "Initial, PostCleanup, Optimized",
+      "miri": "nop",
+      "minirust": "Empty statement list",
+      "codegen": "nop (statement.rs:121)",
+      "anneal_mvp": "Statement.nop",
+      "anneal_adt_ref": "Stmt.nop",
+      "anneal_byte_tb": "Stmt.nop"
+    },
+    {
+      "construct": "StatementKind::BackwardIncompatibleDropHint { .. }",
+      "runtime_allowed": "Disallowed in Runtime(*) (validate.rs:1577/lint)",
+      "miri": "nop",
+      "minirust": "Not in syntax",
+      "codegen": "nop (statement.rs:120)",
+      "anneal_mvp": "Rejected",
+      "anneal_adt_ref": "Stmt.backwardIncompatibleDropHint (nop)",
+      "anneal_byte_tb": "Stmt.backwardIncompatibleDropHint (nop)"
+    }
+  ]
+}
