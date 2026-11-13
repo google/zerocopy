@@ -17223,6 +17223,84 @@
         "rustc/abi"
       ]
     },
+    "rust-aliasing-models-stacked-tree-minirust-and-llvm-attributes": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler, standard library, and bundled Miri borrow trackers (1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust nightly compiler and Miri 0.1.0 (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification (Tree Borrows and IntPtrCast)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Lean 4 Miri operational semantics (lean-miri)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines repository"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/opsem-team",
+            "revision": "d462085814030cc5b21dfa0ce831dfc1619d69b1"
+          },
+          "name": "Rust Operational Semantics Team (t-opsem) FCP archive"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109",
+            "url": "https://plv.mpi-sws.org/rustbelt/stacked-borrows/paper.pdf"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "url": "https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf"
+          },
+          "name": "Tree Borrows (PLDI 2025)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/unsafe",
+        "rust/tree-borrows",
+        "minirust/memory",
+        "llvm/noalias",
+        "verification/separation-logic"
+      ]
+    },
     "rust-allocation-box-storage-transfer-and-drop-elaboration": {
       "observed_at": "2026-10-24",
       "subjects": [

@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rust/unsafe",
+    "rust/tree-borrows",
+    "minirust/memory",
+    "llvm/noalias",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler, standard library, and bundled Miri borrow trackers (1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust nightly compiler and Miri 0.1.0 (1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "MiniRust specification (Tree Borrows and IntPtrCast)",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Lean 4 Miri operational semantics (lean-miri)",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+      }
+    },
+    {
+      "name": "Unsafe Code Guidelines repository",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    },
+    {
+      "name": "Rust Operational Semantics Team (t-opsem) FCP archive",
+      "identity": {
+        "repository": "rust-lang/opsem-team",
+        "revision": "d462085814030cc5b21dfa0ce831dfc1619d69b1"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "url": "https://plv.mpi-sws.org/rustbelt/stacked-borrows/paper.pdf"
+      }
+    },
+    {
+      "name": "Tree Borrows (PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "url": "https://research.ralfj.de/papers/2025-pldi-tree-borrows.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

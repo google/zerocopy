@@ -1,0 +1,53 @@
+{
+  "models": [
+    "Stacked Borrows (POPL 2020 / Miri default)",
+    "Tree Borrows (PLDI 2025 / Miri -Zmiri-tree-borrows)",
+    "MiniRust TreeBorrowsMemory<T> (minirust@063d784186d3)",
+    "Tree Borrows + implicit_writes (-Zmiri-tree-borrows-implicit-writes)",
+    "No Aliasing Model Baseline (-Zmiri-disable-stacked-borrows)"
+  ],
+  "miri_discriminator_results": {
+    "case1_sb_fails_tb_passes": {
+      "stacked_borrows": "UB: trying to retag from <tag> for SharedReadWrite permission, but that tag does not exist in the borrow stack",
+      "tree_borrows": "OK",
+      "tree_borrows_implicit_writes": "OK",
+      "no_aliasing_model": "OK"
+    },
+    "case2_sb_passes_tb_fails": {
+      "stacked_borrows": "OK",
+      "tree_borrows": "UB: write access through <tag> is forbidden (Frozen by parent read)",
+      "tree_borrows_implicit_writes": "UB: write access through <tag> is forbidden",
+      "no_aliasing_model": "OK"
+    },
+    "case3_protected_reserved_foreign_read_then_write": {
+      "stacked_borrows": "UB at foreign read (cannot pop strongly protected Unique item)",
+      "tree_borrows": "UB at subsequent local write (ReservedFrz { conflicted: true } forbids local write while protected)",
+      "tree_borrows_implicit_writes": "UB at foreign read (FnEntry started in Unique)",
+      "no_aliasing_model": "OK"
+    },
+    "case4_protected_reserved_foreign_read_no_write": {
+      "stacked_borrows": "UB at foreign read (cannot pop strongly protected Unique item)",
+      "tree_borrows": "OK (ReservedFrz { conflicted: true } survives until function exit when no local write occurs)",
+      "tree_borrows_implicit_writes": "UB at foreign read (FnEntry started in Unique)",
+      "no_aliasing_model": "OK"
+    },
+    "case5_exposed_provenance": {
+      "stacked_borrows": "OK (BorTag::Wildcard / untagged SharedReadWrite)",
+      "tree_borrows": "OK (Wildcard tracking in wildcard.rs)",
+      "minirust_tree_borrows": "Unsupported (expose/int2ptr unimplemented!() in TreeBorrowsMemory)",
+      "no_aliasing_model": "OK"
+    },
+    "case6_write_non_cell_field_via_shared_ref": {
+      "stacked_borrows": "UB (SharedReadOnly on byte 0)",
+      "tree_borrows": "UB (Frozen on byte 0)",
+      "tree_borrows_implicit_writes": "UB (Frozen on byte 0)",
+      "no_aliasing_model": "OK"
+    },
+    "case7_write_cell_field_via_shared_ref": {
+      "stacked_borrows": "OK (SharedReadWrite on UnsafeCell byte 1)",
+      "tree_borrows": "OK (Cell on UnsafeCell byte 1)",
+      "tree_borrows_implicit_writes": "OK (Cell on UnsafeCell byte 1)",
+      "no_aliasing_model": "OK"
+    }
+  }
+}
