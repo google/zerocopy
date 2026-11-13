@@ -1,0 +1,4 @@
+[package]
+name = "miri_reborrow_probe"
+version = "0.1.0"
+edition = "2021"

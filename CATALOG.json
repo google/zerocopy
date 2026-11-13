@@ -13706,6 +13706,51 @@
         "anneal/batch-live-equivalence"
       ]
     },
+    "lean-absbyte-typedat-lenses-and-nondeterministic-alloc-scaling": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "v4.28.0-rc1"
+          },
+          "name": "Lean 4 v4.28.0-rc1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri"
+        }
+      ],
+      "topics": [
+        "lean/kernel",
+        "lean/elaboration",
+        "lean/mechanization",
+        "lean/symbolic-evaluation",
+        "rust/miri",
+        "rust/tree-borrows",
+        "verification/separation-logic",
+        "verification/program-verification"
+      ]
+    },
     "lean-bitvec-proof-term-scaling-bv-omega-bv-decide-and-meta-fvar-caching": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -14369,6 +14414,67 @@
         "agents/mcp",
         "agents/lsp-integration",
         "lean/tactic-state"
+      ]
+    },
+    "lean-miri-interpreter-hooks-move-deinit-and-provenance-fragments": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "miri_tree": "ef473f04eed9bbfed474a7b5f6f91a2f6350c41b",
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rustc (const_eval, middle, abi pinned by lean-miri)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "rustc and Miri nightly execution toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "v4.28.0-rc1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "rust/miri",
+        "rust/operational-semantics",
+        "rust/tree-borrows",
+        "rustc/const-eval",
+        "rustc/mir",
+        "verification/refinement",
+        "verification/simulation"
       ]
     },
     "lean-olean-ilean-format-and-compilation-determinism": {
@@ -19021,6 +19127,67 @@
         "verification/architecture"
       ]
     },
+    "rustc-miri-freeze-visitor-pointee-retag-and-scalarpair-transmute": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "rustc and Miri nightly toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "v4.28.0-rc1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "rustc/layout",
+        "rustc/abi",
+        "rustc/const-eval",
+        "rust/miri",
+        "rust/tree-borrows",
+        "rust/pin-unpin",
+        "rust/transmute",
+        "rust/validity",
+        "lean/mechanization"
+      ]
+    },
     "rustc-name-resolution-local-item-identity-and-type-lowering": {
       "observed_at": "2026-10-01",
       "subjects": [
@@ -21324,6 +21491,64 @@
         "llvm/translation-validation",
         "aeneas/translation",
         "verification/survey"
+      ]
+    },
+    "tree-borrows-two-stage-protector-release-and-reborrow-contracts": {
+      "observed_at": "2026-11-12",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain and Miri driver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "v4.28.0-rc1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "rust/tree-borrows",
+        "rust/miri",
+        "rust/unsafe",
+        "lean/mechanization",
+        "verification/program-verification",
+        "verification/separation-logic"
       ]
     },
     "untrusted-proof-dependencies-effect-isolation-and-guarantee-verification": {

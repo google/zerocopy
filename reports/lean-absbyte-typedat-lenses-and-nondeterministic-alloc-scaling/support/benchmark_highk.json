@@ -1,0 +1,40 @@
+{
+  "v4.28.0-rc1": {
+    "rc": 0,
+    "wall_s": 103.16,
+    "user_s": 101.25,
+    "sys_s": 2.11,
+    "rss_mb": 3574.0,
+    "durations_ms": {
+      "approachA2_15": 8992.99,
+      "approachA2_20": 13773.79,
+      "approachA2_25": 20102.28,
+      "approachA2_30": 26596.42,
+      "approachA1_5": 2382.02,
+      "approachA1_6": 2994.58,
+      "approachA1_8": 4198.33,
+      "approachA1_10": 5643.83,
+      "approachA1_15": 9606.31
+    },
+    "errors": []
+  },
+  "v4.34.1": {
+    "rc": 0,
+    "wall_s": 62.32,
+    "user_s": 61.0,
+    "sys_s": 1.41,
+    "rss_mb": 2319.6,
+    "durations_ms": {
+      "approachA2_15": 5651.47,
+      "approachA2_20": 8025.8,
+      "approachA2_25": 11210.63,
+      "approachA2_30": 14672.92,
+      "approachA1_5": 1679.43,
+      "approachA1_6": 1991.0,
+      "approachA1_8": 2748.79,
+      "approachA1_10": 3561.48,
+      "approachA1_15": 5929.26
+    },
+    "errors": []
+  }
+}
