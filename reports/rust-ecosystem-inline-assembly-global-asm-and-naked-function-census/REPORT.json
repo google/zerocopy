@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rust/inline-asm",
+    "rustc/inline-assembly",
+    "cargo/corpora",
+    "isa/x86-64",
+    "isa/aarch64",
+    "verification/empirical-evaluation"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 standard library, stdarch, and compiler-builtins",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "crates.io corpus (top 100 crates by download volume and 3,680 unique cached crates)",
+      "identity": {
+        "corpus": "crates.io-index-1949cf8c6b5b557f",
+        "snapshot_date": "2025-11-24"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

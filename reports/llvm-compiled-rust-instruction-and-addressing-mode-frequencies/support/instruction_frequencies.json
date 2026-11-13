@@ -1,0 +1,4397 @@
+{
+  "tier1_sysroot_instruction_census": {
+    "x86_64-unknown-linux-gnu": {
+      "arch": "x86_64",
+      "aggregate_sysroot": {
+        "total_instructions": 160773,
+        "unique_mnemonics": 285,
+        "mnemonics_for_coverage": {
+          "p90": 42,
+          "p95": 65,
+          "p99": 130,
+          "p99_9": 215
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 60.08,
+          "top_25_pct": 81.43,
+          "top_50_pct": 92.42,
+          "top_100_pct": 97.97
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 55766,
+          "base_disp_mem": 35319,
+          "reg_imm": 24903,
+          "branch_or_call_target": 22460,
+          "rip_relative_mem": 10727,
+          "sib_indexed_mem": 5947,
+          "no_operands": 3339,
+          "simd_reg_to_reg": 2312
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 34.69,
+          "base_disp_mem": 21.97,
+          "reg_imm": 15.49,
+          "branch_or_call_target": 13.97,
+          "rip_relative_mem": 6.67,
+          "sib_indexed_mem": 3.7,
+          "no_operands": 2.08,
+          "simd_reg_to_reg": 1.44
+        },
+        "top_mnemonics": {
+          "movq": 34713,
+          "movl": 11585,
+          "leaq": 9802,
+          "callq": 7824,
+          "popq": 6148,
+          "pushq": 5726,
+          "jmp": 5673,
+          "je": 5457,
+          "cmpq": 4896,
+          "addq": 4763,
+          "jne": 4337,
+          "xorl": 4110,
+          "testq": 3032,
+          "cmpl": 2855,
+          "retq": 2690,
+          "movb": 2607,
+          "subq": 2081,
+          "movzbl": 2000,
+          "movups": 1985,
+          "movaps": 1661,
+          "testb": 1585,
+          "shlq": 1450,
+          "cmpb": 1394,
+          "andl": 1319,
+          "shrq": 1221,
+          "orq": 1130,
+          "jae": 1083,
+          "movzwl": 1069,
+          "jb": 1014,
+          "incq": 902,
+          "shrl": 884,
+          "ja": 844,
+          "movabsq": 837,
+          "leal": 809,
+          "testl": 803,
+          "shll": 695,
+          "addl": 675,
+          "nopw": 672,
+          "decq": 652,
+          "movw": 641
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 34044,
+          "unique_mnemonics": 199,
+          "mnemonics_for_coverage": {
+            "p90": 44,
+            "p95": 65,
+            "p99": 115,
+            "p99_9": 172
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 54.94,
+            "top_25_pct": 80.02,
+            "top_50_pct": 91.96,
+            "top_100_pct": 98.36
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 12092,
+            "base_disp_mem": 6284,
+            "reg_imm": 6157,
+            "branch_or_call_target": 4549,
+            "rip_relative_mem": 1999,
+            "sib_indexed_mem": 1939,
+            "no_operands": 540,
+            "simd_reg_to_reg": 484
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 35.52,
+            "base_disp_mem": 18.46,
+            "reg_imm": 18.09,
+            "branch_or_call_target": 13.36,
+            "rip_relative_mem": 5.87,
+            "sib_indexed_mem": 5.7,
+            "no_operands": 1.59,
+            "simd_reg_to_reg": 1.42
+          },
+          "top_mnemonics": {
+            "movq": 5781,
+            "movl": 2946,
+            "leaq": 2618,
+            "je": 1079,
+            "jne": 1075,
+            "jmp": 1064,
+            "pushq": 1048,
+            "callq": 1045,
+            "popq": 1035,
+            "addq": 1013,
+            "xorl": 1003,
+            "cmpq": 976,
+            "movzbl": 854,
+            "movb": 854,
+            "testb": 702,
+            "cmpl": 554,
+            "andl": 484,
+            "retq": 477,
+            "subq": 459,
+            "testq": 423,
+            "movzwl": 408,
+            "cmpb": 399,
+            "shrq": 345,
+            "shrl": 312,
+            "jae": 288
+          }
+        },
+        "alloc": {
+          "total_instructions": 8299,
+          "unique_mnemonics": 86,
+          "mnemonics_for_coverage": {
+            "p90": 27,
+            "p95": 36,
+            "p99": 59,
+            "p99_9": 79
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 64.59,
+            "top_25_pct": 88.93,
+            "top_50_pct": 98.26,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 2731,
+            "reg_imm": 1686,
+            "base_disp_mem": 1581,
+            "branch_or_call_target": 1241,
+            "sib_indexed_mem": 507,
+            "rip_relative_mem": 411,
+            "no_operands": 117,
+            "simd_reg_to_reg": 25
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 32.91,
+            "reg_imm": 20.32,
+            "base_disp_mem": 19.05,
+            "branch_or_call_target": 14.95,
+            "sib_indexed_mem": 6.11,
+            "rip_relative_mem": 4.95,
+            "no_operands": 1.41,
+            "simd_reg_to_reg": 0.3
+          },
+          "top_mnemonics": {
+            "movq": 2040,
+            "movl": 596,
+            "movb": 447,
+            "callq": 421,
+            "jmp": 378,
+            "pushq": 341,
+            "popq": 331,
+            "addq": 282,
+            "cmpl": 268,
+            "orb": 256,
+            "leaq": 252,
+            "je": 240,
+            "cmpq": 221,
+            "testq": 158,
+            "subq": 139,
+            "xorl": 124,
+            "andb": 121,
+            "jb": 120,
+            "ja": 112,
+            "jne": 108,
+            "shrl": 102,
+            "jae": 93,
+            "retq": 90,
+            "andl": 76,
+            "movups": 64
+          }
+        },
+        "std": {
+          "total_instructions": 96855,
+          "unique_mnemonics": 166,
+          "mnemonics_for_coverage": {
+            "p90": 28,
+            "p95": 42,
+            "p99": 77,
+            "p99_9": 127
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 68.27,
+            "top_25_pct": 88.79,
+            "top_50_pct": 96.63,
+            "top_100_pct": 99.63
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 30061,
+            "base_disp_mem": 26455,
+            "branch_or_call_target": 14301,
+            "reg_imm": 12868,
+            "rip_relative_mem": 7825,
+            "sib_indexed_mem": 3196,
+            "no_operands": 1772,
+            "simd_reg_to_reg": 377
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 31.04,
+            "base_disp_mem": 27.31,
+            "branch_or_call_target": 14.77,
+            "reg_imm": 13.29,
+            "rip_relative_mem": 8.08,
+            "sib_indexed_mem": 3.3,
+            "no_operands": 1.83,
+            "simd_reg_to_reg": 0.39
+          },
+          "top_mnemonics": {
+            "movq": 24470,
+            "leaq": 6715,
+            "movl": 6608,
+            "callq": 6158,
+            "popq": 4422,
+            "pushq": 4054,
+            "jmp": 3784,
+            "je": 3718,
+            "cmpq": 3285,
+            "addq": 2906,
+            "jne": 2799,
+            "xorl": 2207,
+            "testq": 2102,
+            "movups": 1787,
+            "cmpl": 1478,
+            "retq": 1283,
+            "movb": 1222,
+            "subq": 1193,
+            "movaps": 1132,
+            "shlq": 1013,
+            "movzbl": 970,
+            "cmpb": 920,
+            "orq": 626,
+            "testb": 589,
+            "jb": 561
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 21575,
+          "unique_mnemonics": 219,
+          "mnemonics_for_coverage": {
+            "p90": 70,
+            "p95": 93,
+            "p99": 149,
+            "p99_9": 198
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 39.4,
+            "top_25_pct": 63.29,
+            "top_50_pct": 82.85,
+            "top_100_pct": 96.04
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 10882,
+            "reg_imm": 4192,
+            "branch_or_call_target": 2369,
+            "simd_reg_to_reg": 1426,
+            "base_disp_mem": 999,
+            "no_operands": 910,
+            "rip_relative_mem": 492,
+            "sib_indexed_mem": 305
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 50.44,
+            "reg_imm": 19.43,
+            "branch_or_call_target": 10.98,
+            "simd_reg_to_reg": 6.61,
+            "base_disp_mem": 4.63,
+            "no_operands": 4.22,
+            "rip_relative_mem": 2.28,
+            "sib_indexed_mem": 1.41
+          },
+          "top_mnemonics": {
+            "movq": 2422,
+            "movl": 1435,
+            "retq": 840,
+            "xorl": 776,
+            "shrq": 564,
+            "addq": 562,
+            "cmpl": 555,
+            "movaps": 467,
+            "jmp": 447,
+            "movabsq": 433,
+            "andl": 432,
+            "je": 420,
+            "cmpq": 414,
+            "orq": 398,
+            "popq": 360,
+            "shlq": 355,
+            "jne": 355,
+            "testq": 349,
+            "addl": 337,
+            "testl": 316,
+            "andq": 297,
+            "shrl": 291,
+            "subq": 290,
+            "pushq": 283,
+            "sbbq": 257
+          }
+        }
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "arch": "aarch64",
+      "aggregate_sysroot": {
+        "total_instructions": 147594,
+        "unique_mnemonics": 259,
+        "mnemonics_for_coverage": {
+          "p90": 31,
+          "p95": 46,
+          "p99": 91,
+          "p99_9": 163
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 63.69,
+          "top_25_pct": 86.23,
+          "top_50_pct": 95.75,
+          "top_100_pct": 99.28
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 99209,
+          "pc_rel_branch_or_adrp": 33061,
+          "base_imm_offset_mem": 6671,
+          "no_operands": 4047,
+          "reg_offset_scaled_mem": 3202,
+          "neon_or_sve_vector_arrangement": 1404
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 67.22,
+          "pc_rel_branch_or_adrp": 22.4,
+          "base_imm_offset_mem": 4.52,
+          "no_operands": 2.74,
+          "reg_offset_scaled_mem": 2.17,
+          "neon_or_sve_vector_arrangement": 0.95
+        },
+        "top_mnemonics": {
+          "mov": 24911,
+          "add": 14454,
+          "ldr": 9946,
+          "cmp": 8488,
+          "bl": 7725,
+          "ldp": 7219,
+          "stp": 6257,
+          "b": 5189,
+          "str": 5063,
+          "sub": 4750,
+          "adrp": 4610,
+          "ret": 3837,
+          "cbz": 3156,
+          "b.ne": 2592,
+          "and": 2287,
+          "b.eq": 2163,
+          "orr": 2127,
+          "csel": 1956,
+          "lsr": 1928,
+          "ldrb": 1904,
+          "strb": 1664,
+          "ldur": 1409,
+          "lsl": 1334,
+          "b.hs": 1149,
+          "cmn": 1147,
+          "cbnz": 1102,
+          "stur": 1035,
+          "tbnz": 975,
+          "fmov": 872,
+          "b.lo": 833,
+          "cset": 803,
+          "subs": 738,
+          "b.hi": 683,
+          "ldrh": 645,
+          "b.ls": 614,
+          "tbz": 604,
+          "movk": 558,
+          "tst": 526,
+          "blr": 496,
+          "eor": 451
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 32203,
+          "unique_mnemonics": 129,
+          "mnemonics_for_coverage": {
+            "p90": 36,
+            "p95": 49,
+            "p99": 76,
+            "p99_9": 111
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 61.39,
+            "top_25_pct": 83.68,
+            "top_50_pct": 95.37,
+            "top_100_pct": 99.78
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 22162,
+            "pc_rel_branch_or_adrp": 6755,
+            "base_imm_offset_mem": 969,
+            "reg_offset_scaled_mem": 901,
+            "neon_or_sve_vector_arrangement": 815,
+            "no_operands": 601
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 68.82,
+            "pc_rel_branch_or_adrp": 20.98,
+            "base_imm_offset_mem": 3.01,
+            "reg_offset_scaled_mem": 2.8,
+            "neon_or_sve_vector_arrangement": 2.53,
+            "no_operands": 1.87
+          },
+          "top_mnemonics": {
+            "mov": 5707,
+            "add": 3889,
+            "cmp": 1864,
+            "ldr": 1398,
+            "sub": 1336,
+            "adrp": 1304,
+            "ldp": 1273,
+            "stp": 1180,
+            "b": 993,
+            "and": 825,
+            "ldrb": 757,
+            "bl": 720,
+            "str": 620,
+            "ret": 600,
+            "cbz": 515,
+            "strb": 486,
+            "lsr": 481,
+            "tbnz": 460,
+            "b.ne": 453,
+            "b.eq": 408,
+            "csel": 382,
+            "orr": 375,
+            "blr": 331,
+            "movk": 314,
+            "b.hs": 275
+          }
+        },
+        "alloc": {
+          "total_instructions": 7350,
+          "unique_mnemonics": 68,
+          "mnemonics_for_coverage": {
+            "p90": 22,
+            "p95": 29,
+            "p99": 46,
+            "p99_9": 62
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 70.53,
+            "top_25_pct": 92.63,
+            "top_50_pct": 99.37,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 4980,
+            "pc_rel_branch_or_adrp": 1785,
+            "base_imm_offset_mem": 295,
+            "no_operands": 133,
+            "reg_offset_scaled_mem": 126,
+            "neon_or_sve_vector_arrangement": 31
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 67.76,
+            "pc_rel_branch_or_adrp": 24.29,
+            "base_imm_offset_mem": 4.01,
+            "no_operands": 1.81,
+            "reg_offset_scaled_mem": 1.71,
+            "neon_or_sve_vector_arrangement": 0.42
+          },
+          "top_mnemonics": {
+            "mov": 1548,
+            "add": 608,
+            "cmp": 499,
+            "bl": 416,
+            "ldr": 406,
+            "b": 397,
+            "ldp": 369,
+            "strb": 341,
+            "stp": 330,
+            "str": 270,
+            "sub": 190,
+            "lsr": 173,
+            "cbz": 169,
+            "b.hs": 158,
+            "orr": 142,
+            "ret": 118,
+            "and": 103,
+            "bfxil": 99,
+            "b.lo": 82,
+            "b.hi": 80,
+            "adrp": 78,
+            "ldur": 65,
+            "cbnz": 64,
+            "b.eq": 52,
+            "ldrb": 51
+          }
+        },
+        "std": {
+          "total_instructions": 90106,
+          "unique_mnemonics": 108,
+          "mnemonics_for_coverage": {
+            "p90": 23,
+            "p95": 32,
+            "p99": 56,
+            "p99_9": 89
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 71.49,
+            "top_25_pct": 91.72,
+            "top_50_pct": 98.69,
+            "top_100_pct": 99.98
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 59004,
+            "pc_rel_branch_or_adrp": 21999,
+            "base_imm_offset_mem": 4887,
+            "no_operands": 2019,
+            "reg_offset_scaled_mem": 1891,
+            "neon_or_sve_vector_arrangement": 306
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 65.48,
+            "pc_rel_branch_or_adrp": 24.41,
+            "base_imm_offset_mem": 5.42,
+            "no_operands": 2.24,
+            "reg_offset_scaled_mem": 2.1,
+            "neon_or_sve_vector_arrangement": 0.34
+          },
+          "top_mnemonics": {
+            "mov": 15937,
+            "add": 9149,
+            "ldr": 7764,
+            "bl": 6418,
+            "ldp": 5331,
+            "cmp": 4849,
+            "stp": 4477,
+            "str": 4010,
+            "b": 3514,
+            "adrp": 2966,
+            "sub": 2581,
+            "cbz": 2151,
+            "b.ne": 1968,
+            "ret": 1881,
+            "b.eq": 1620,
+            "ldur": 1197,
+            "ldrb": 956,
+            "cmn": 936,
+            "orr": 839,
+            "strb": 810,
+            "csel": 804,
+            "stur": 796,
+            "and": 595,
+            "lsl": 549,
+            "cbnz": 545
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 17935,
+          "unique_mnemonics": 214,
+          "mnemonics_for_coverage": {
+            "p90": 50,
+            "p95": 69,
+            "p99": 109,
+            "p99_9": 197
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 53.5,
+            "top_25_pct": 75.88,
+            "top_50_pct": 90.3,
+            "top_100_pct": 98.49
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 13063,
+            "pc_rel_branch_or_adrp": 2522,
+            "no_operands": 1294,
+            "base_imm_offset_mem": 520,
+            "reg_offset_scaled_mem": 284,
+            "neon_or_sve_vector_arrangement": 252
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 72.84,
+            "pc_rel_branch_or_adrp": 14.06,
+            "no_operands": 7.21,
+            "base_imm_offset_mem": 2.9,
+            "reg_offset_scaled_mem": 1.58,
+            "neon_or_sve_vector_arrangement": 1.41
+          },
+          "top_mnemonics": {
+            "mov": 1719,
+            "cmp": 1276,
+            "ret": 1238,
+            "lsr": 853,
+            "add": 808,
+            "fmov": 796,
+            "orr": 771,
+            "and": 764,
+            "csel": 728,
+            "sub": 643,
+            "lsl": 608,
+            "ldr": 378,
+            "cbz": 321,
+            "b": 285,
+            "stp": 270,
+            "adrp": 262,
+            "ldp": 246,
+            "eor": 245,
+            "tst": 238,
+            "b.hs": 225,
+            "cbnz": 222,
+            "clz": 202,
+            "fcmp": 177,
+            "bl": 171,
+            "str": 163
+          }
+        }
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "arch": "i686",
+      "aggregate_sysroot": {
+        "total_instructions": 221424,
+        "unique_mnemonics": 251,
+        "mnemonics_for_coverage": {
+          "p90": 30,
+          "p95": 45,
+          "p99": 95,
+          "p99_9": 179
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 70.74,
+          "top_25_pct": 88.07,
+          "top_50_pct": 95.95,
+          "top_100_pct": 99.14
+        },
+        "operand_form_distribution": {
+          "base_disp_mem": 76321,
+          "gpr_reg_to_reg": 65035,
+          "reg_imm": 38209,
+          "branch_or_call_target": 30276,
+          "sib_indexed_mem": 6421,
+          "no_operands": 2697,
+          "simd_reg_to_reg": 2465
+        },
+        "operand_form_pct": {
+          "base_disp_mem": 34.47,
+          "gpr_reg_to_reg": 29.37,
+          "reg_imm": 17.26,
+          "branch_or_call_target": 13.67,
+          "sib_indexed_mem": 2.9,
+          "no_operands": 1.22,
+          "simd_reg_to_reg": 1.11
+        },
+        "top_mnemonics": {
+          "movl": 66087,
+          "pushl": 22423,
+          "addl": 12250,
+          "calll": 10239,
+          "leal": 9831,
+          "popl": 9341,
+          "subl": 7838,
+          "cmpl": 7043,
+          "jmp": 6350,
+          "je": 5230,
+          "jne": 4581,
+          "movb": 4112,
+          "xorl": 4060,
+          "testl": 3298,
+          "movsd": 3259,
+          "retl": 2614,
+          "movzbl": 2562,
+          "orl": 2422,
+          "cmpb": 1932,
+          "andl": 1782,
+          "sbbl": 1658,
+          "shrl": 1637,
+          "testb": 1611,
+          "adcl": 1566,
+          "shll": 1281,
+          "movzwl": 1210,
+          "jae": 1073,
+          "jb": 989,
+          "cmovnel": 973,
+          "movw": 963,
+          "mull": 954,
+          "movd": 888,
+          "shldl": 866,
+          "incl": 862,
+          "ja": 786,
+          "decl": 693,
+          "movaps": 660,
+          "nopw": 639,
+          "nopl": 635,
+          "imull": 584
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 47521,
+          "unique_mnemonics": 165,
+          "mnemonics_for_coverage": {
+            "p90": 30,
+            "p95": 43,
+            "p99": 85,
+            "p99_9": 135
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 67.75,
+            "top_25_pct": 87.4,
+            "top_50_pct": 96.51,
+            "top_100_pct": 99.46
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 15525,
+            "base_disp_mem": 14347,
+            "reg_imm": 9295,
+            "branch_or_call_target": 5705,
+            "sib_indexed_mem": 1750,
+            "no_operands": 601,
+            "simd_reg_to_reg": 298
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 32.67,
+            "base_disp_mem": 30.19,
+            "reg_imm": 19.56,
+            "branch_or_call_target": 12.01,
+            "sib_indexed_mem": 3.68,
+            "no_operands": 1.26,
+            "simd_reg_to_reg": 0.63
+          },
+          "top_mnemonics": {
+            "movl": 12789,
+            "pushl": 5344,
+            "addl": 2607,
+            "leal": 2416,
+            "popl": 1990,
+            "calll": 1687,
+            "subl": 1675,
+            "cmpl": 1396,
+            "jmp": 1161,
+            "jne": 1131,
+            "movb": 1034,
+            "je": 984,
+            "xorl": 970,
+            "movzbl": 841,
+            "testb": 700,
+            "testl": 589,
+            "andl": 581,
+            "orl": 536,
+            "retl": 521,
+            "shrl": 517,
+            "adcl": 481,
+            "cmpb": 449,
+            "movzwl": 432,
+            "sbbl": 366,
+            "mull": 335
+          }
+        },
+        "alloc": {
+          "total_instructions": 10327,
+          "unique_mnemonics": 74,
+          "mnemonics_for_coverage": {
+            "p90": 21,
+            "p95": 28,
+            "p99": 45,
+            "p99_9": 67
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 75.81,
+            "top_25_pct": 93.66,
+            "top_50_pct": 99.32,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "base_disp_mem": 2991,
+            "gpr_reg_to_reg": 2753,
+            "reg_imm": 2287,
+            "branch_or_call_target": 1674,
+            "sib_indexed_mem": 495,
+            "no_operands": 102,
+            "simd_reg_to_reg": 25
+          },
+          "operand_form_pct": {
+            "base_disp_mem": 28.96,
+            "gpr_reg_to_reg": 26.66,
+            "reg_imm": 22.15,
+            "branch_or_call_target": 16.21,
+            "sib_indexed_mem": 4.79,
+            "no_operands": 0.99,
+            "simd_reg_to_reg": 0.24
+          },
+          "top_mnemonics": {
+            "movl": 3143,
+            "pushl": 1069,
+            "addl": 606,
+            "calll": 553,
+            "cmpl": 493,
+            "movb": 449,
+            "popl": 439,
+            "subl": 428,
+            "jmp": 386,
+            "leal": 263,
+            "orb": 255,
+            "je": 241,
+            "testl": 170,
+            "shrl": 122,
+            "andb": 121,
+            "jb": 117,
+            "ja": 114,
+            "retl": 110,
+            "xorl": 100,
+            "jae": 100,
+            "jne": 98,
+            "andl": 92,
+            "cmpb": 70,
+            "movsd": 68,
+            "movzbl": 65
+          }
+        },
+        "std": {
+          "total_instructions": 124141,
+          "unique_mnemonics": 149,
+          "mnemonics_for_coverage": {
+            "p90": 18,
+            "p95": 31,
+            "p99": 64,
+            "p99_9": 111
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 77.27,
+            "top_25_pct": 93.22,
+            "top_50_pct": 98.08,
+            "top_100_pct": 99.82
+          },
+          "operand_form_distribution": {
+            "base_disp_mem": 47275,
+            "gpr_reg_to_reg": 31399,
+            "branch_or_call_target": 20243,
+            "reg_imm": 19843,
+            "sib_indexed_mem": 3448,
+            "no_operands": 1367,
+            "simd_reg_to_reg": 566
+          },
+          "operand_form_pct": {
+            "base_disp_mem": 38.08,
+            "gpr_reg_to_reg": 25.29,
+            "branch_or_call_target": 16.31,
+            "reg_imm": 15.98,
+            "sib_indexed_mem": 2.78,
+            "no_operands": 1.1,
+            "simd_reg_to_reg": 0.46
+          },
+          "top_mnemonics": {
+            "movl": 37300,
+            "pushl": 14489,
+            "calll": 7595,
+            "addl": 7174,
+            "leal": 6774,
+            "popl": 5493,
+            "subl": 4963,
+            "cmpl": 4299,
+            "jmp": 4191,
+            "je": 3648,
+            "jne": 3036,
+            "movsd": 2634,
+            "movb": 2493,
+            "testl": 2034,
+            "xorl": 1556,
+            "cmpb": 1386,
+            "movzbl": 1381,
+            "retl": 1332,
+            "movw": 616,
+            "testb": 610,
+            "movzwl": 568,
+            "orl": 563,
+            "incl": 544,
+            "shll": 536,
+            "jb": 510
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 39435,
+          "unique_mnemonics": 197,
+          "mnemonics_for_coverage": {
+            "p90": 44,
+            "p95": 65,
+            "p99": 112,
+            "p99_9": 167
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 60.74,
+            "top_25_pct": 80.43,
+            "top_50_pct": 92.05,
+            "top_100_pct": 98.56
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 15358,
+            "base_disp_mem": 11708,
+            "reg_imm": 6784,
+            "branch_or_call_target": 2654,
+            "simd_reg_to_reg": 1576,
+            "sib_indexed_mem": 728,
+            "no_operands": 627
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 38.95,
+            "base_disp_mem": 29.69,
+            "reg_imm": 17.2,
+            "branch_or_call_target": 6.73,
+            "simd_reg_to_reg": 4.0,
+            "sib_indexed_mem": 1.85,
+            "no_operands": 1.59
+          },
+          "top_mnemonics": {
+            "movl": 12855,
+            "addl": 1863,
+            "pushl": 1521,
+            "xorl": 1434,
+            "popl": 1419,
+            "orl": 1289,
+            "sbbl": 971,
+            "adcl": 966,
+            "cmpl": 855,
+            "andl": 781,
+            "subl": 772,
+            "shrl": 679,
+            "retl": 651,
+            "jmp": 612,
+            "shldl": 572,
+            "mull": 572,
+            "movd": 565,
+            "testl": 505,
+            "shll": 498,
+            "cmovnel": 498,
+            "calll": 404,
+            "leal": 378,
+            "je": 357,
+            "shrdl": 354,
+            "bsrl": 345
+          }
+        }
+      }
+    },
+    "aarch64-apple-darwin": {
+      "arch": "aarch64",
+      "aggregate_sysroot": {
+        "total_instructions": 137981,
+        "unique_mnemonics": 330,
+        "mnemonics_for_coverage": {
+          "p90": 34,
+          "p95": 51,
+          "p99": 108,
+          "p99_9": 226
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 63.22,
+          "top_25_pct": 85.32,
+          "top_50_pct": 94.98,
+          "top_100_pct": 98.81
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 94391,
+          "pc_rel_branch_or_adrp": 31083,
+          "base_imm_offset_mem": 6337,
+          "no_operands": 3377,
+          "reg_offset_scaled_mem": 2793
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 68.41,
+          "pc_rel_branch_or_adrp": 22.53,
+          "base_imm_offset_mem": 4.59,
+          "no_operands": 2.45,
+          "reg_offset_scaled_mem": 2.02
+        },
+        "top_mnemonics": {
+          "mov": 22763,
+          "add": 14076,
+          "ldr": 8750,
+          "cmp": 8077,
+          "bl": 7224,
+          "stp": 6293,
+          "ldp": 5872,
+          "b": 5390,
+          "str": 4431,
+          "sub": 4361,
+          "adrp": 4336,
+          "cbz": 2860,
+          "ret": 2670,
+          "csel": 2502,
+          "b.ne": 2371,
+          "and": 2002,
+          "lsr": 1940,
+          "orr": 1910,
+          "ldrb": 1881,
+          "b.eq": 1869,
+          "strb": 1667,
+          "lsl": 1363,
+          "cbnz": 1086,
+          "b.hs": 1022,
+          "ldur": 1007,
+          "tbnz": 970,
+          "cmn": 929,
+          "stur": 768,
+          "cset": 762,
+          "subs": 745,
+          "b.lo": 723,
+          "ldrh": 669,
+          "fmov": 615,
+          "movk": 601,
+          "b.hi": 588,
+          "tbz": 555,
+          "b.ls": 535,
+          "tst": 515,
+          "blr": 495,
+          "nop": 490
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 32111,
+          "unique_mnemonics": 161,
+          "mnemonics_for_coverage": {
+            "p90": 38,
+            "p95": 53,
+            "p99": 87,
+            "p99_9": 137
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 60.55,
+            "top_25_pct": 82.59,
+            "top_50_pct": 94.29,
+            "top_100_pct": 99.43
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 22981,
+            "pc_rel_branch_or_adrp": 6741,
+            "base_imm_offset_mem": 878,
+            "reg_offset_scaled_mem": 857,
+            "no_operands": 654
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 71.57,
+            "pc_rel_branch_or_adrp": 20.99,
+            "base_imm_offset_mem": 2.73,
+            "reg_offset_scaled_mem": 2.67,
+            "no_operands": 2.04
+          },
+          "top_mnemonics": {
+            "mov": 5569,
+            "add": 3933,
+            "cmp": 1884,
+            "ldr": 1304,
+            "adrp": 1299,
+            "sub": 1224,
+            "stp": 1204,
+            "ldp": 1170,
+            "b": 1069,
+            "ldrb": 786,
+            "and": 709,
+            "bl": 703,
+            "str": 681,
+            "strb": 515,
+            "ret": 496,
+            "csel": 491,
+            "cbz": 486,
+            "lsr": 480,
+            "tbnz": 471,
+            "b.ne": 434,
+            "b.eq": 413,
+            "blr": 334,
+            "movk": 321,
+            "orr": 278,
+            "b.hs": 267
+          }
+        },
+        "alloc": {
+          "total_instructions": 7319,
+          "unique_mnemonics": 70,
+          "mnemonics_for_coverage": {
+            "p90": 22,
+            "p95": 29,
+            "p99": 47,
+            "p99_9": 64
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 71.1,
+            "top_25_pct": 92.88,
+            "top_50_pct": 99.29,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 5002,
+            "pc_rel_branch_or_adrp": 1804,
+            "base_imm_offset_mem": 299,
+            "no_operands": 108,
+            "reg_offset_scaled_mem": 106
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 68.34,
+            "pc_rel_branch_or_adrp": 24.65,
+            "base_imm_offset_mem": 4.09,
+            "no_operands": 1.48,
+            "reg_offset_scaled_mem": 1.45
+          },
+          "top_mnemonics": {
+            "mov": 1512,
+            "add": 638,
+            "cmp": 511,
+            "bl": 420,
+            "ldr": 417,
+            "b": 408,
+            "strb": 367,
+            "stp": 355,
+            "ldp": 332,
+            "str": 244,
+            "lsr": 185,
+            "sub": 178,
+            "cbz": 167,
+            "b.hs": 147,
+            "orr": 147,
+            "bfxil": 108,
+            "and": 100,
+            "ret": 93,
+            "b.lo": 80,
+            "b.hi": 78,
+            "adrp": 74,
+            "cbnz": 71,
+            "csel": 61,
+            "ldrb": 53,
+            "b.eq": 52
+          }
+        },
+        "std": {
+          "total_instructions": 83089,
+          "unique_mnemonics": 145,
+          "mnemonics_for_coverage": {
+            "p90": 25,
+            "p95": 35,
+            "p99": 67,
+            "p99_9": 111
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 70.98,
+            "top_25_pct": 90.26,
+            "top_50_pct": 98.01,
+            "top_100_pct": 99.81
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 54644,
+            "pc_rel_branch_or_adrp": 20601,
+            "base_imm_offset_mem": 4684,
+            "no_operands": 1604,
+            "reg_offset_scaled_mem": 1556
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 65.77,
+            "pc_rel_branch_or_adrp": 24.79,
+            "base_imm_offset_mem": 5.64,
+            "no_operands": 1.93,
+            "reg_offset_scaled_mem": 1.87
+          },
+          "top_mnemonics": {
+            "mov": 14244,
+            "add": 8885,
+            "ldr": 6855,
+            "bl": 5966,
+            "stp": 4519,
+            "cmp": 4452,
+            "ldp": 4187,
+            "b": 3696,
+            "str": 3426,
+            "adrp": 2748,
+            "sub": 2363,
+            "cbz": 1967,
+            "b.ne": 1787,
+            "b.eq": 1343,
+            "ret": 1204,
+            "csel": 984,
+            "ldrb": 900,
+            "ldur": 891,
+            "orr": 768,
+            "strb": 753,
+            "cmn": 725,
+            "stur": 619,
+            "lsl": 616,
+            "and": 557,
+            "cbnz": 545
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 15462,
+          "unique_mnemonics": 260,
+          "mnemonics_for_coverage": {
+            "p90": 51,
+            "p95": 73,
+            "p99": 147,
+            "p99_9": 245
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 54.57,
+            "top_25_pct": 75.75,
+            "top_50_pct": 89.97,
+            "top_100_pct": 97.63
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 11764,
+            "pc_rel_branch_or_adrp": 1937,
+            "no_operands": 1011,
+            "base_imm_offset_mem": 476,
+            "reg_offset_scaled_mem": 274
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 76.08,
+            "pc_rel_branch_or_adrp": 12.53,
+            "no_operands": 6.54,
+            "base_imm_offset_mem": 3.08,
+            "reg_offset_scaled_mem": 1.77
+          },
+          "top_mnemonics": {
+            "mov": 1438,
+            "cmp": 1230,
+            "csel": 966,
+            "ret": 877,
+            "lsr": 785,
+            "orr": 717,
+            "and": 636,
+            "add": 620,
+            "sub": 596,
+            "lsl": 572,
+            "fmov": 524,
+            "tst": 243,
+            "cbz": 240,
+            "eor": 228,
+            "b": 217,
+            "stp": 215,
+            "adrp": 215,
+            "cbnz": 213,
+            "clz": 197,
+            "ldp": 183,
+            "cset": 182,
+            "ldr": 174,
+            "b.hs": 156,
+            "adds": 147,
+            "ldrb": 142
+          }
+        }
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "arch": "x86_64",
+      "aggregate_sysroot": {
+        "total_instructions": 141309,
+        "unique_mnemonics": 276,
+        "mnemonics_for_coverage": {
+          "p90": 44,
+          "p95": 67,
+          "p99": 131,
+          "p99_9": 212
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 58.78,
+          "top_25_pct": 80.87,
+          "top_50_pct": 92.03,
+          "top_100_pct": 97.85
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 50323,
+          "base_disp_mem": 29583,
+          "reg_imm": 23095,
+          "branch_or_call_target": 19858,
+          "no_operands": 5730,
+          "rip_relative_mem": 5389,
+          "sib_indexed_mem": 4564,
+          "simd_reg_to_reg": 2767
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 35.61,
+          "base_disp_mem": 20.93,
+          "reg_imm": 16.34,
+          "branch_or_call_target": 14.05,
+          "no_operands": 4.05,
+          "rip_relative_mem": 3.81,
+          "sib_indexed_mem": 3.23,
+          "simd_reg_to_reg": 1.96
+        },
+        "top_mnemonics": {
+          "movq": 25478,
+          "leaq": 9588,
+          "movl": 9009,
+          "popq": 8274,
+          "pushq": 7731,
+          "callq": 5846,
+          "addq": 4860,
+          "jmp": 4394,
+          "je": 4335,
+          "jne": 3543,
+          "cmpq": 3485,
+          "xorl": 3386,
+          "subq": 2797,
+          "retq": 2784,
+          "movb": 2484,
+          "testq": 2426,
+          "cmpl": 2358,
+          "nop": 1922,
+          "movaps": 1706,
+          "movzbl": 1568,
+          "movups": 1447,
+          "testb": 1379,
+          "andl": 1289,
+          "cmpb": 1102,
+          "shrq": 1090,
+          "jae": 887,
+          "jb": 855,
+          "movzwl": 852,
+          "shlq": 843,
+          "testl": 834,
+          "nopw": 797,
+          "ud2": 796,
+          "shrl": 736,
+          "orq": 723,
+          "ja": 654,
+          "incq": 652,
+          "leal": 651,
+          "movabsq": 644,
+          "movw": 643,
+          "addl": 590
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 35315,
+          "unique_mnemonics": 203,
+          "mnemonics_for_coverage": {
+            "p90": 44,
+            "p95": 65,
+            "p99": 116,
+            "p99_9": 176
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 54.59,
+            "top_25_pct": 79.49,
+            "top_50_pct": 91.83,
+            "top_100_pct": 98.34
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 12273,
+            "base_disp_mem": 6728,
+            "reg_imm": 6397,
+            "branch_or_call_target": 5199,
+            "sib_indexed_mem": 1930,
+            "rip_relative_mem": 1337,
+            "no_operands": 943,
+            "simd_reg_to_reg": 508
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 34.75,
+            "base_disp_mem": 19.05,
+            "reg_imm": 18.11,
+            "branch_or_call_target": 14.72,
+            "sib_indexed_mem": 5.47,
+            "rip_relative_mem": 3.79,
+            "no_operands": 2.67,
+            "simd_reg_to_reg": 1.44
+          },
+          "top_mnemonics": {
+            "movq": 5441,
+            "leaq": 3022,
+            "movl": 2769,
+            "popq": 1339,
+            "pushq": 1206,
+            "addq": 1151,
+            "jmp": 1137,
+            "je": 1079,
+            "jne": 1079,
+            "callq": 1055,
+            "xorl": 981,
+            "cmpq": 964,
+            "movb": 958,
+            "movzbl": 875,
+            "testb": 698,
+            "subq": 600,
+            "cmpl": 562,
+            "andl": 489,
+            "retq": 470,
+            "testq": 433,
+            "movzwl": 429,
+            "cmpb": 399,
+            "shrq": 340,
+            "shrl": 309,
+            "jae": 286
+          }
+        },
+        "alloc": {
+          "total_instructions": 9201,
+          "unique_mnemonics": 86,
+          "mnemonics_for_coverage": {
+            "p90": 27,
+            "p95": 35,
+            "p99": 56,
+            "p99_9": 78
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 64.53,
+            "top_25_pct": 89.0,
+            "top_50_pct": 98.54,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 3161,
+            "reg_imm": 1903,
+            "base_disp_mem": 1730,
+            "branch_or_call_target": 1402,
+            "sib_indexed_mem": 515,
+            "no_operands": 379,
+            "rip_relative_mem": 86,
+            "simd_reg_to_reg": 25
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 34.35,
+            "reg_imm": 20.68,
+            "base_disp_mem": 18.8,
+            "branch_or_call_target": 15.24,
+            "sib_indexed_mem": 5.6,
+            "no_operands": 4.12,
+            "rip_relative_mem": 0.93,
+            "simd_reg_to_reg": 0.27
+          },
+          "top_mnemonics": {
+            "movq": 1846,
+            "popq": 657,
+            "pushq": 646,
+            "movl": 577,
+            "movb": 446,
+            "leaq": 392,
+            "callq": 391,
+            "jmp": 365,
+            "addq": 351,
+            "cmpl": 266,
+            "orb": 250,
+            "je": 238,
+            "subq": 226,
+            "cmpq": 210,
+            "nop": 172,
+            "testq": 158,
+            "retq": 137,
+            "xorl": 135,
+            "jb": 120,
+            "andb": 119,
+            "jne": 112,
+            "ja": 109,
+            "shrl": 101,
+            "jae": 93,
+            "andl": 72
+          }
+        },
+        "std": {
+          "total_instructions": 74740,
+          "unique_mnemonics": 160,
+          "mnemonics_for_coverage": {
+            "p90": 26,
+            "p95": 38,
+            "p99": 69,
+            "p99_9": 118
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 68.18,
+            "top_25_pct": 90.0,
+            "top_50_pct": 97.52,
+            "top_100_pct": 99.79
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 24645,
+            "base_disp_mem": 19420,
+            "branch_or_call_target": 10873,
+            "reg_imm": 10769,
+            "no_operands": 3661,
+            "rip_relative_mem": 3352,
+            "sib_indexed_mem": 1834,
+            "simd_reg_to_reg": 186
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 32.97,
+            "base_disp_mem": 25.98,
+            "branch_or_call_target": 14.55,
+            "reg_imm": 14.41,
+            "no_operands": 4.9,
+            "rip_relative_mem": 4.48,
+            "sib_indexed_mem": 2.45,
+            "simd_reg_to_reg": 0.25
+          },
+          "top_mnemonics": {
+            "movq": 15631,
+            "popq": 5786,
+            "leaq": 5717,
+            "pushq": 5447,
+            "movl": 4330,
+            "callq": 4212,
+            "addq": 2800,
+            "je": 2643,
+            "jmp": 2385,
+            "jne": 2003,
+            "cmpq": 1922,
+            "subq": 1651,
+            "xorl": 1566,
+            "nop": 1530,
+            "testq": 1515,
+            "retq": 1511,
+            "movups": 1237,
+            "cmpl": 1010,
+            "movb": 1005,
+            "movaps": 887,
+            "cmpb": 624,
+            "movzbl": 526,
+            "nopw": 477,
+            "shlq": 433,
+            "ud2": 415
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 22053,
+          "unique_mnemonics": 209,
+          "mnemonics_for_coverage": {
+            "p90": 70,
+            "p95": 93,
+            "p99": 142,
+            "p99_9": 188
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 38.96,
+            "top_25_pct": 62.72,
+            "top_50_pct": 82.01,
+            "top_100_pct": 96.15
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 10244,
+            "reg_imm": 4026,
+            "branch_or_call_target": 2384,
+            "simd_reg_to_reg": 2048,
+            "base_disp_mem": 1705,
+            "no_operands": 747,
+            "rip_relative_mem": 614,
+            "sib_indexed_mem": 285
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 46.45,
+            "reg_imm": 18.26,
+            "branch_or_call_target": 10.81,
+            "simd_reg_to_reg": 9.29,
+            "base_disp_mem": 7.73,
+            "no_operands": 3.39,
+            "rip_relative_mem": 2.78,
+            "sib_indexed_mem": 1.29
+          },
+          "top_mnemonics": {
+            "movq": 2560,
+            "movl": 1333,
+            "movaps": 724,
+            "xorl": 704,
+            "retq": 666,
+            "addq": 558,
+            "shrq": 528,
+            "cmpl": 520,
+            "jmp": 507,
+            "popq": 492,
+            "leaq": 457,
+            "pushq": 432,
+            "cmpq": 389,
+            "orq": 389,
+            "movabsq": 380,
+            "andl": 379,
+            "je": 375,
+            "jne": 349,
+            "shlq": 329,
+            "testq": 320,
+            "subq": 320,
+            "addl": 308,
+            "testl": 280,
+            "shrl": 278,
+            "sbbq": 255
+          }
+        }
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "arch": "x86_64",
+      "aggregate_sysroot": {
+        "total_instructions": 155401,
+        "unique_mnemonics": 273,
+        "mnemonics_for_coverage": {
+          "p90": 43,
+          "p95": 65,
+          "p99": 124,
+          "p99_9": 203
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 58.18,
+          "top_25_pct": 80.03,
+          "top_50_pct": 92.33,
+          "top_100_pct": 98.13
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 52355,
+          "base_disp_mem": 33823,
+          "branch_or_call_target": 26247,
+          "reg_imm": 24191,
+          "sib_indexed_mem": 6746,
+          "no_operands": 4857,
+          "rip_relative_mem": 4490,
+          "simd_reg_to_reg": 2692
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 33.69,
+          "base_disp_mem": 21.76,
+          "branch_or_call_target": 16.89,
+          "reg_imm": 15.57,
+          "sib_indexed_mem": 4.34,
+          "no_operands": 3.13,
+          "rip_relative_mem": 2.89,
+          "simd_reg_to_reg": 1.73
+        },
+        "top_mnemonics": {
+          "movq": 30400,
+          "movl": 10255,
+          "leaq": 10224,
+          "callq": 7069,
+          "popq": 6146,
+          "jmp": 5787,
+          "pushq": 5386,
+          "addq": 5365,
+          "je": 5202,
+          "cmpq": 4586,
+          "jne": 3970,
+          "xorl": 3879,
+          "testq": 3012,
+          "movb": 2613,
+          "subq": 2494,
+          "cmpl": 2470,
+          "movups": 2383,
+          "retq": 2270,
+          "movzbl": 2007,
+          "movaps": 1727,
+          "nopw": 1638,
+          "testb": 1509,
+          "ud2": 1343,
+          "shlq": 1318,
+          "cmpb": 1316,
+          "shrq": 1214,
+          "andl": 1197,
+          "nopl": 1089,
+          "jae": 1081,
+          "nop": 1033,
+          "jb": 1030,
+          "movzwl": 964,
+          "orq": 921,
+          "testl": 893,
+          "shrl": 814,
+          "incq": 792,
+          "ja": 761,
+          "shll": 743,
+          "movabsq": 696,
+          "movw": 647
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 34362,
+          "unique_mnemonics": 202,
+          "mnemonics_for_coverage": {
+            "p90": 43,
+            "p95": 63,
+            "p99": 113,
+            "p99_9": 176
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 54.03,
+            "top_25_pct": 79.35,
+            "top_50_pct": 92.29,
+            "top_100_pct": 98.44
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 11753,
+            "base_disp_mem": 6548,
+            "reg_imm": 6094,
+            "branch_or_call_target": 4997,
+            "sib_indexed_mem": 2234,
+            "rip_relative_mem": 1271,
+            "no_operands": 975,
+            "simd_reg_to_reg": 490
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 34.2,
+            "base_disp_mem": 19.06,
+            "reg_imm": 17.73,
+            "branch_or_call_target": 14.54,
+            "sib_indexed_mem": 6.5,
+            "rip_relative_mem": 3.7,
+            "no_operands": 2.84,
+            "simd_reg_to_reg": 1.43
+          },
+          "top_mnemonics": {
+            "movq": 5272,
+            "leaq": 2904,
+            "movl": 2648,
+            "popq": 1274,
+            "pushq": 1160,
+            "addq": 1117,
+            "jmp": 1071,
+            "jne": 1059,
+            "je": 1047,
+            "callq": 1013,
+            "xorl": 947,
+            "cmpq": 942,
+            "movb": 938,
+            "movzbl": 839,
+            "testb": 679,
+            "subq": 592,
+            "cmpl": 528,
+            "retq": 459,
+            "nopw": 459,
+            "andl": 454,
+            "testq": 418,
+            "movzwl": 396,
+            "cmpb": 381,
+            "shrq": 337,
+            "nopl": 333
+          }
+        },
+        "alloc": {
+          "total_instructions": 8459,
+          "unique_mnemonics": 86,
+          "mnemonics_for_coverage": {
+            "p90": 28,
+            "p95": 37,
+            "p99": 58,
+            "p99_9": 79
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 62.73,
+            "top_25_pct": 87.88,
+            "top_50_pct": 98.38,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 2775,
+            "reg_imm": 1750,
+            "branch_or_call_target": 1560,
+            "base_disp_mem": 1483,
+            "sib_indexed_mem": 546,
+            "no_operands": 234,
+            "rip_relative_mem": 86,
+            "simd_reg_to_reg": 25
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 32.81,
+            "reg_imm": 20.69,
+            "branch_or_call_target": 18.44,
+            "base_disp_mem": 17.53,
+            "sib_indexed_mem": 6.45,
+            "no_operands": 2.77,
+            "rip_relative_mem": 1.02,
+            "simd_reg_to_reg": 0.3
+          },
+          "top_mnemonics": {
+            "movq": 1789,
+            "movl": 581,
+            "movb": 438,
+            "callq": 423,
+            "jmp": 396,
+            "popq": 384,
+            "pushq": 370,
+            "leaq": 343,
+            "addq": 314,
+            "cmpl": 268,
+            "orb": 254,
+            "je": 234,
+            "cmpq": 216,
+            "subq": 182,
+            "testq": 160,
+            "xorl": 134,
+            "jb": 121,
+            "andb": 121,
+            "jne": 111,
+            "ja": 111,
+            "ud2": 109,
+            "shrl": 102,
+            "jae": 93,
+            "retq": 90,
+            "nopw": 90
+          }
+        },
+        "std": {
+          "total_instructions": 92123,
+          "unique_mnemonics": 170,
+          "mnemonics_for_coverage": {
+            "p90": 30,
+            "p95": 44,
+            "p99": 75,
+            "p99_9": 126
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 65.28,
+            "top_25_pct": 87.24,
+            "top_50_pct": 96.47,
+            "top_100_pct": 99.71
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 28461,
+            "base_disp_mem": 24131,
+            "branch_or_call_target": 17535,
+            "reg_imm": 13019,
+            "sib_indexed_mem": 3552,
+            "no_operands": 2702,
+            "rip_relative_mem": 2513,
+            "simd_reg_to_reg": 210
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 30.89,
+            "base_disp_mem": 26.19,
+            "branch_or_call_target": 19.03,
+            "reg_imm": 14.13,
+            "sib_indexed_mem": 3.86,
+            "no_operands": 2.93,
+            "rip_relative_mem": 2.73,
+            "simd_reg_to_reg": 0.23
+          },
+          "top_mnemonics": {
+            "movq": 20818,
+            "leaq": 6544,
+            "movl": 5840,
+            "callq": 5504,
+            "popq": 4051,
+            "jmp": 3857,
+            "je": 3572,
+            "pushq": 3488,
+            "addq": 3416,
+            "cmpq": 3050,
+            "jne": 2513,
+            "movups": 2175,
+            "xorl": 2153,
+            "testq": 2110,
+            "subq": 1424,
+            "cmpl": 1258,
+            "movb": 1166,
+            "retq": 1141,
+            "movzbl": 1019,
+            "movaps": 1004,
+            "nopw": 940,
+            "shlq": 937,
+            "ud2": 932,
+            "cmpb": 864,
+            "nopl": 589
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 20457,
+          "unique_mnemonics": 192,
+          "mnemonics_for_coverage": {
+            "p90": 67,
+            "p95": 86,
+            "p99": 128,
+            "p99_9": 174
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 38.7,
+            "top_25_pct": 62.15,
+            "top_50_pct": 82.38,
+            "top_100_pct": 97.21
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 9366,
+            "reg_imm": 3328,
+            "branch_or_call_target": 2155,
+            "simd_reg_to_reg": 1967,
+            "base_disp_mem": 1661,
+            "no_operands": 946,
+            "rip_relative_mem": 620,
+            "sib_indexed_mem": 414
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 45.78,
+            "reg_imm": 16.27,
+            "branch_or_call_target": 10.53,
+            "simd_reg_to_reg": 9.62,
+            "base_disp_mem": 8.12,
+            "no_operands": 4.62,
+            "rip_relative_mem": 3.03,
+            "sib_indexed_mem": 2.02
+          },
+          "top_mnemonics": {
+            "movq": 2521,
+            "movl": 1186,
+            "movaps": 646,
+            "xorl": 645,
+            "retq": 580,
+            "addq": 518,
+            "shrq": 487,
+            "jmp": 463,
+            "popq": 437,
+            "leaq": 433,
+            "cmpl": 416,
+            "cmpq": 378,
+            "pushq": 368,
+            "orq": 363,
+            "je": 349,
+            "movabsq": 333,
+            "nop": 328,
+            "testq": 324,
+            "shlq": 303,
+            "subq": 296,
+            "testl": 292,
+            "jne": 287,
+            "andl": 256,
+            "mulsd": 256,
+            "sbbq": 249
+          }
+        }
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "arch": "aarch64",
+      "aggregate_sysroot": {
+        "total_instructions": 124034,
+        "unique_mnemonics": 167,
+        "mnemonics_for_coverage": {
+          "p90": 34,
+          "p95": 50,
+          "p99": 92,
+          "p99_9": 132
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 61.5,
+          "top_25_pct": 84.15,
+          "top_50_pct": 95.15,
+          "top_100_pct": 99.32
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 83930,
+          "pc_rel_branch_or_adrp": 27257,
+          "base_imm_offset_mem": 5369,
+          "no_operands": 3843,
+          "reg_offset_scaled_mem": 2335,
+          "neon_or_sve_vector_arrangement": 1300
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 67.67,
+          "pc_rel_branch_or_adrp": 21.98,
+          "base_imm_offset_mem": 4.33,
+          "no_operands": 3.1,
+          "reg_offset_scaled_mem": 1.88,
+          "neon_or_sve_vector_arrangement": 1.05
+        },
+        "top_mnemonics": {
+          "mov": 19168,
+          "add": 11737,
+          "ldr": 7850,
+          "cmp": 6526,
+          "stp": 6431,
+          "ldp": 6168,
+          "adrp": 4760,
+          "sub": 4697,
+          "bl": 4549,
+          "b": 4401,
+          "str": 3598,
+          "ret": 2907,
+          "cbz": 2515,
+          "b.ne": 2001,
+          "ldur": 1951,
+          "and": 1934,
+          "stur": 1717,
+          "lsr": 1704,
+          "orr": 1580,
+          "csel": 1546,
+          "b.eq": 1458,
+          "ldrb": 1364,
+          "blr": 1317,
+          "cbnz": 1266,
+          "strb": 1231,
+          "lsl": 1164,
+          "fmov": 1000,
+          "b.hs": 982,
+          "tbnz": 893,
+          "brk": 829,
+          "b.lo": 700,
+          "movk": 656,
+          "cmn": 623,
+          "subs": 575,
+          "ldrh": 512,
+          "b.hi": 512,
+          "tst": 504,
+          "tbz": 502,
+          "cset": 449,
+          "strh": 424
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 32147,
+          "unique_mnemonics": 128,
+          "mnemonics_for_coverage": {
+            "p90": 36,
+            "p95": 49,
+            "p99": 77,
+            "p99_9": 112
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 60.97,
+            "top_25_pct": 83.41,
+            "top_50_pct": 95.3,
+            "top_100_pct": 99.77
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 21936,
+            "pc_rel_branch_or_adrp": 6836,
+            "reg_offset_scaled_mem": 906,
+            "base_imm_offset_mem": 882,
+            "neon_or_sve_vector_arrangement": 815,
+            "no_operands": 772
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 68.24,
+            "pc_rel_branch_or_adrp": 21.26,
+            "reg_offset_scaled_mem": 2.82,
+            "base_imm_offset_mem": 2.74,
+            "neon_or_sve_vector_arrangement": 2.54,
+            "no_operands": 2.4
+          },
+          "top_mnemonics": {
+            "mov": 5642,
+            "add": 4058,
+            "cmp": 1864,
+            "ldr": 1342,
+            "adrp": 1291,
+            "sub": 1210,
+            "stp": 1141,
+            "ldp": 1141,
+            "b": 1105,
+            "and": 805,
+            "ldrb": 780,
+            "str": 741,
+            "bl": 700,
+            "cbz": 519,
+            "strb": 494,
+            "ret": 487,
+            "lsr": 476,
+            "tbnz": 472,
+            "b.ne": 453,
+            "b.eq": 408,
+            "csel": 382,
+            "orr": 373,
+            "blr": 334,
+            "movk": 311,
+            "brk": 285
+          }
+        },
+        "alloc": {
+          "total_instructions": 7724,
+          "unique_mnemonics": 71,
+          "mnemonics_for_coverage": {
+            "p90": 23,
+            "p95": 30,
+            "p99": 46,
+            "p99_9": 64
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 66.62,
+            "top_25_pct": 92.06,
+            "top_50_pct": 99.37,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 5317,
+            "pc_rel_branch_or_adrp": 1754,
+            "base_imm_offset_mem": 269,
+            "no_operands": 206,
+            "reg_offset_scaled_mem": 147,
+            "neon_or_sve_vector_arrangement": 31
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 68.84,
+            "pc_rel_branch_or_adrp": 22.71,
+            "base_imm_offset_mem": 3.48,
+            "no_operands": 2.67,
+            "reg_offset_scaled_mem": 1.9,
+            "neon_or_sve_vector_arrangement": 0.4
+          },
+          "top_mnemonics": {
+            "mov": 1406,
+            "add": 574,
+            "stp": 520,
+            "cmp": 497,
+            "ldp": 490,
+            "b": 392,
+            "bl": 385,
+            "strb": 343,
+            "ldur": 276,
+            "sub": 263,
+            "ldr": 253,
+            "str": 184,
+            "stur": 181,
+            "lsr": 169,
+            "cbz": 168,
+            "b.hs": 163,
+            "orr": 138,
+            "ret": 136,
+            "and": 99,
+            "bfxil": 99,
+            "b.hi": 81,
+            "b.lo": 78,
+            "adrp": 77,
+            "brk": 70,
+            "cbnz": 69
+          }
+        },
+        "std": {
+          "total_instructions": 67286,
+          "unique_mnemonics": 108,
+          "mnemonics_for_coverage": {
+            "p90": 24,
+            "p95": 34,
+            "p99": 63,
+            "p99_9": 88
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 68.2,
+            "top_25_pct": 90.7,
+            "top_50_pct": 98.07,
+            "top_100_pct": 99.98
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 43639,
+            "pc_rel_branch_or_adrp": 16304,
+            "base_imm_offset_mem": 3792,
+            "no_operands": 1934,
+            "reg_offset_scaled_mem": 1214,
+            "neon_or_sve_vector_arrangement": 403
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 64.86,
+            "pc_rel_branch_or_adrp": 24.23,
+            "base_imm_offset_mem": 5.64,
+            "no_operands": 2.87,
+            "reg_offset_scaled_mem": 1.8,
+            "neon_or_sve_vector_arrangement": 0.6
+          },
+          "top_mnemonics": {
+            "mov": 10467,
+            "add": 6322,
+            "ldr": 5843,
+            "stp": 4522,
+            "ldp": 4331,
+            "bl": 3227,
+            "adrp": 3134,
+            "cmp": 2964,
+            "b": 2560,
+            "str": 2516,
+            "sub": 2491,
+            "cbz": 1580,
+            "ldur": 1574,
+            "ret": 1409,
+            "b.ne": 1375,
+            "stur": 1367,
+            "blr": 982,
+            "b.eq": 931,
+            "cbnz": 791,
+            "ldrb": 518,
+            "csel": 433,
+            "brk": 427,
+            "and": 423,
+            "lsl": 422,
+            "cmn": 422
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 16877,
+          "unique_mnemonics": 115,
+          "mnemonics_for_coverage": {
+            "p90": 44,
+            "p95": 58,
+            "p99": 81,
+            "p99_9": 103
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 52.93,
+            "top_25_pct": 78.07,
+            "top_50_pct": 92.6,
+            "top_100_pct": 99.88
+          },
+          "operand_form_distribution": {
+            "scalar_reg_to_reg": 13038,
+            "pc_rel_branch_or_adrp": 2363,
+            "no_operands": 931,
+            "base_imm_offset_mem": 426,
+            "reg_offset_scaled_mem": 68,
+            "neon_or_sve_vector_arrangement": 51
+          },
+          "operand_form_pct": {
+            "scalar_reg_to_reg": 77.25,
+            "pc_rel_branch_or_adrp": 14.0,
+            "no_operands": 5.52,
+            "base_imm_offset_mem": 2.52,
+            "reg_offset_scaled_mem": 0.4,
+            "neon_or_sve_vector_arrangement": 0.3
+          },
+          "top_mnemonics": {
+            "mov": 1653,
+            "cmp": 1201,
+            "fmov": 920,
+            "ret": 875,
+            "lsr": 812,
+            "add": 783,
+            "sub": 733,
+            "csel": 689,
+            "orr": 660,
+            "and": 607,
+            "lsl": 570,
+            "ldr": 412,
+            "fmul": 405,
+            "b": 344,
+            "fadd": 289,
+            "adrp": 258,
+            "tst": 249,
+            "cbz": 248,
+            "stp": 248,
+            "bl": 237,
+            "b.hs": 214,
+            "eor": 206,
+            "ldp": 206,
+            "clz": 200,
+            "str": 157
+          }
+        }
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "arch": "i686",
+      "aggregate_sysroot": {
+        "total_instructions": 174121,
+        "unique_mnemonics": 290,
+        "mnemonics_for_coverage": {
+          "p90": 34,
+          "p95": 52,
+          "p99": 107,
+          "p99_9": 197
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 67.53,
+          "top_25_pct": 85.56,
+          "top_50_pct": 94.77,
+          "top_100_pct": 98.81
+        },
+        "operand_form_distribution": {
+          "base_disp_mem": 55638,
+          "gpr_reg_to_reg": 53359,
+          "reg_imm": 32466,
+          "branch_or_call_target": 20877,
+          "sib_indexed_mem": 4787,
+          "no_operands": 4535,
+          "simd_reg_to_reg": 2459
+        },
+        "operand_form_pct": {
+          "base_disp_mem": 31.95,
+          "gpr_reg_to_reg": 30.64,
+          "reg_imm": 18.65,
+          "branch_or_call_target": 11.99,
+          "sib_indexed_mem": 2.75,
+          "no_operands": 2.6,
+          "simd_reg_to_reg": 1.41
+        },
+        "top_mnemonics": {
+          "movl": 50407,
+          "pushl": 20441,
+          "addl": 10435,
+          "popl": 6423,
+          "calll": 6390,
+          "leal": 5688,
+          "cmpl": 5095,
+          "jmp": 4890,
+          "je": 4063,
+          "jne": 3752,
+          "xorl": 3371,
+          "movb": 3063,
+          "subl": 2941,
+          "retl": 2822,
+          "testl": 2799,
+          "movsd": 2165,
+          "orl": 2070,
+          "movzbl": 1948,
+          "andl": 1902,
+          "cmpb": 1538,
+          "adcl": 1420,
+          "shrl": 1394,
+          "testb": 1364,
+          "sbbl": 1350,
+          "addb": 1255,
+          "shll": 1002,
+          "mull": 955,
+          "movzwl": 915,
+          "jae": 845,
+          "nopw": 836,
+          "nopl": 831,
+          "ud2": 814,
+          "movw": 797,
+          "incl": 767,
+          "cmovnel": 738,
+          "shldl": 711,
+          "jb": 706,
+          "movd": 659,
+          "ja": 634,
+          "orb": 580
+        }
+      },
+      "per_crate": {
+        "core": {
+          "total_instructions": 43295,
+          "unique_mnemonics": 169,
+          "mnemonics_for_coverage": {
+            "p90": 34,
+            "p95": 46,
+            "p99": 90,
+            "p99_9": 139
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 64.13,
+            "top_25_pct": 84.88,
+            "top_50_pct": 95.96,
+            "top_100_pct": 99.33
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 13865,
+            "base_disp_mem": 12537,
+            "reg_imm": 8801,
+            "branch_or_call_target": 5210,
+            "sib_indexed_mem": 1609,
+            "no_operands": 936,
+            "simd_reg_to_reg": 337
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 32.02,
+            "base_disp_mem": 28.96,
+            "reg_imm": 20.33,
+            "branch_or_call_target": 12.03,
+            "sib_indexed_mem": 3.72,
+            "no_operands": 2.16,
+            "simd_reg_to_reg": 0.78
+          },
+          "top_mnemonics": {
+            "movl": 11634,
+            "pushl": 5050,
+            "addl": 2357,
+            "leal": 1488,
+            "cmpl": 1395,
+            "popl": 1340,
+            "calll": 1211,
+            "jmp": 1140,
+            "jne": 1134,
+            "xorl": 1014,
+            "movb": 1000,
+            "je": 983,
+            "movzbl": 849,
+            "testb": 709,
+            "subl": 654,
+            "andl": 592,
+            "testl": 585,
+            "orl": 538,
+            "retl": 530,
+            "shrl": 517,
+            "adcl": 446,
+            "cmpb": 441,
+            "movzwl": 425,
+            "sbbl": 360,
+            "addb": 358
+          }
+        },
+        "alloc": {
+          "total_instructions": 10222,
+          "unique_mnemonics": 74,
+          "mnemonics_for_coverage": {
+            "p90": 22,
+            "p95": 29,
+            "p99": 45,
+            "p99_9": 66
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 74.91,
+            "top_25_pct": 92.79,
+            "top_50_pct": 99.34,
+            "top_100_pct": 100.0
+          },
+          "operand_form_distribution": {
+            "base_disp_mem": 2979,
+            "gpr_reg_to_reg": 2640,
+            "reg_imm": 2381,
+            "branch_or_call_target": 1420,
+            "sib_indexed_mem": 521,
+            "no_operands": 247,
+            "simd_reg_to_reg": 34
+          },
+          "operand_form_pct": {
+            "base_disp_mem": 29.14,
+            "gpr_reg_to_reg": 25.83,
+            "reg_imm": 23.29,
+            "branch_or_call_target": 13.89,
+            "sib_indexed_mem": 5.1,
+            "no_operands": 2.42,
+            "simd_reg_to_reg": 0.33
+          },
+          "top_mnemonics": {
+            "movl": 3161,
+            "pushl": 1192,
+            "addl": 718,
+            "cmpl": 490,
+            "movb": 454,
+            "calll": 408,
+            "jmp": 399,
+            "popl": 341,
+            "orb": 248,
+            "je": 246,
+            "leal": 230,
+            "subl": 194,
+            "testl": 170,
+            "retl": 154,
+            "shrl": 119,
+            "andb": 119,
+            "jb": 114,
+            "ja": 114,
+            "xorl": 105,
+            "jne": 105,
+            "jae": 99,
+            "andl": 87,
+            "cmpb": 75,
+            "movzbl": 74,
+            "ud2": 69
+          }
+        },
+        "std": {
+          "total_instructions": 83094,
+          "unique_mnemonics": 180,
+          "mnemonics_for_coverage": {
+            "p90": 20,
+            "p95": 32,
+            "p99": 61,
+            "p99_9": 118
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 76.12,
+            "top_25_pct": 92.82,
+            "top_50_pct": 98.22,
+            "top_100_pct": 99.82
+          },
+          "operand_form_distribution": {
+            "base_disp_mem": 28547,
+            "gpr_reg_to_reg": 22341,
+            "reg_imm": 15419,
+            "branch_or_call_target": 11789,
+            "no_operands": 2511,
+            "sib_indexed_mem": 1976,
+            "simd_reg_to_reg": 511
+          },
+          "operand_form_pct": {
+            "base_disp_mem": 34.36,
+            "gpr_reg_to_reg": 26.89,
+            "reg_imm": 18.56,
+            "branch_or_call_target": 14.19,
+            "no_operands": 3.02,
+            "sib_indexed_mem": 2.38,
+            "simd_reg_to_reg": 0.61
+          },
+          "top_mnemonics": {
+            "movl": 23237,
+            "pushl": 12685,
+            "addl": 6073,
+            "calll": 4573,
+            "popl": 3503,
+            "leal": 3431,
+            "jmp": 2687,
+            "je": 2497,
+            "cmpl": 2404,
+            "jne": 2158,
+            "movsd": 1656,
+            "retl": 1594,
+            "testl": 1574,
+            "movb": 1484,
+            "subl": 1440,
+            "cmpb": 1005,
+            "xorl": 871,
+            "addb": 799,
+            "movzbl": 777,
+            "nopw": 514,
+            "nopl": 476,
+            "incl": 463,
+            "movw": 449,
+            "ud2": 421,
+            "testb": 358
+          }
+        },
+        "compiler_builtins": {
+          "total_instructions": 37510,
+          "unique_mnemonics": 183,
+          "mnemonics_for_coverage": {
+            "p90": 49,
+            "p95": 70,
+            "p99": 111,
+            "p99_9": 159
+          },
+          "cumulative_coverage_pct": {
+            "top_10_pct": 59.85,
+            "top_25_pct": 78.75,
+            "top_50_pct": 90.34,
+            "top_100_pct": 98.48
+          },
+          "operand_form_distribution": {
+            "gpr_reg_to_reg": 14513,
+            "base_disp_mem": 11575,
+            "reg_imm": 5865,
+            "branch_or_call_target": 2458,
+            "simd_reg_to_reg": 1577,
+            "no_operands": 841,
+            "sib_indexed_mem": 681
+          },
+          "operand_form_pct": {
+            "gpr_reg_to_reg": 38.69,
+            "base_disp_mem": 30.86,
+            "reg_imm": 15.64,
+            "branch_or_call_target": 6.55,
+            "simd_reg_to_reg": 4.2,
+            "no_operands": 2.24,
+            "sib_indexed_mem": 1.82
+          },
+          "top_mnemonics": {
+            "movl": 12375,
+            "pushl": 1514,
+            "xorl": 1381,
+            "addl": 1287,
+            "popl": 1239,
+            "orl": 1174,
+            "andl": 912,
+            "sbbl": 886,
+            "adcl": 874,
+            "cmpl": 806,
+            "jmp": 664,
+            "subl": 653,
+            "shrl": 626,
+            "retl": 544,
+            "leal": 539,
+            "mull": 531,
+            "shldl": 493,
+            "testl": 470,
+            "shll": 468,
+            "cmovnel": 403,
+            "movd": 367,
+            "jne": 355,
+            "je": 337,
+            "shrdl": 330,
+            "bsrl": 313
+          }
+        }
+      }
+    }
+  },
+  "opt_level_matrix": {
+    "x86_64-unknown-linux-gnu": {
+      "opt_0": {
+        "total_instructions": 1440,
+        "unique_mnemonics": 71,
+        "mnemonics_for_coverage": {
+          "p90": 21,
+          "p95": 32,
+          "p99": 57,
+          "p99_9": 70
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 75.97,
+          "top_25_pct": 92.64,
+          "top_50_pct": 98.26,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "base_disp_mem": 632,
+          "branch_or_call_target": 227,
+          "gpr_reg_to_reg": 222,
+          "reg_imm": 142,
+          "rip_relative_mem": 121,
+          "no_operands": 53,
+          "simd_reg_to_reg": 27,
+          "sib_indexed_mem": 16
+        },
+        "operand_form_pct": {
+          "base_disp_mem": 43.89,
+          "branch_or_call_target": 15.76,
+          "gpr_reg_to_reg": 15.42,
+          "reg_imm": 9.86,
+          "rip_relative_mem": 8.4,
+          "no_operands": 3.68,
+          "simd_reg_to_reg": 1.88,
+          "sib_indexed_mem": 1.11
+        },
+        "top_mnemonics": {
+          "movq": 529,
+          "jmp": 120,
+          "movl": 90,
+          "callq": 76,
+          "leaq": 62,
+          "movb": 52,
+          "cmpq": 47,
+          "addq": 44,
+          "jb": 39,
+          "retq": 35,
+          "movsd": 33,
+          "je": 29,
+          "subq": 28,
+          "andb": 22,
+          "sete": 16,
+          "xorl": 16,
+          "lock": 15,
+          "cmpxchgq": 15,
+          "movzbl": 12,
+          "testb": 10,
+          "jne": 10,
+          "movaps": 10,
+          "pushq": 9,
+          "popq": 8,
+          "cmpl": 7
+        }
+      },
+      "opt_1": {
+        "total_instructions": 389,
+        "unique_mnemonics": 64,
+        "mnemonics_for_coverage": {
+          "p90": 34,
+          "p95": 45,
+          "p99": 61,
+          "p99_9": 64
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 56.04,
+          "top_25_pct": 82.78,
+          "top_50_pct": 96.4,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 194,
+          "reg_imm": 68,
+          "branch_or_call_target": 47,
+          "sib_indexed_mem": 23,
+          "base_disp_mem": 20,
+          "simd_reg_to_reg": 15,
+          "rip_relative_mem": 14,
+          "no_operands": 8
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 49.87,
+          "reg_imm": 17.48,
+          "branch_or_call_target": 12.08,
+          "sib_indexed_mem": 5.91,
+          "base_disp_mem": 5.14,
+          "simd_reg_to_reg": 3.86,
+          "rip_relative_mem": 3.6,
+          "no_operands": 2.06
+        },
+        "top_mnemonics": {
+          "movq": 43,
+          "cmpq": 28,
+          "movl": 28,
+          "xorl": 23,
+          "pushq": 22,
+          "popq": 21,
+          "leaq": 17,
+          "je": 13,
+          "jmp": 12,
+          "jae": 11,
+          "andl": 10,
+          "addsd": 10,
+          "addq": 9,
+          "mulsd": 9,
+          "shll": 8,
+          "sarl": 8,
+          "retq": 7,
+          "incq": 7,
+          "testq": 6,
+          "shrl": 6,
+          "callq": 6,
+          "setb": 5,
+          "jb": 5,
+          "nopw": 4,
+          "movabsq": 4
+        }
+      },
+      "opt_2": {
+        "total_instructions": 363,
+        "unique_mnemonics": 67,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 49,
+          "p99": 64,
+          "p99_9": 67
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 52.62,
+          "top_25_pct": 80.72,
+          "top_50_pct": 95.32,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 175,
+          "reg_imm": 66,
+          "branch_or_call_target": 47,
+          "base_disp_mem": 23,
+          "sib_indexed_mem": 20,
+          "simd_reg_to_reg": 15,
+          "no_operands": 11,
+          "rip_relative_mem": 6
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 48.21,
+          "reg_imm": 18.18,
+          "branch_or_call_target": 12.95,
+          "base_disp_mem": 6.34,
+          "sib_indexed_mem": 5.51,
+          "simd_reg_to_reg": 4.13,
+          "no_operands": 3.03,
+          "rip_relative_mem": 1.65
+        },
+        "top_mnemonics": {
+          "movq": 30,
+          "movl": 27,
+          "xorl": 24,
+          "cmpq": 23,
+          "je": 17,
+          "pushq": 17,
+          "popq": 17,
+          "jmp": 14,
+          "leaq": 12,
+          "andl": 10,
+          "addsd": 10,
+          "retq": 9,
+          "addq": 9,
+          "mulsd": 9,
+          "shll": 8,
+          "incq": 8,
+          "sarl": 8,
+          "jae": 6,
+          "setb": 6,
+          "testq": 6,
+          "shrl": 6,
+          "nopl": 5,
+          "movabsq": 4,
+          "shrq": 4,
+          "imulq": 4
+        }
+      },
+      "opt_3": {
+        "total_instructions": 368,
+        "unique_mnemonics": 66,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 48,
+          "p99": 63,
+          "p99_9": 66
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 52.45,
+          "top_25_pct": 80.16,
+          "top_50_pct": 95.65,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 177,
+          "reg_imm": 69,
+          "branch_or_call_target": 44,
+          "base_disp_mem": 25,
+          "sib_indexed_mem": 20,
+          "simd_reg_to_reg": 16,
+          "no_operands": 10,
+          "rip_relative_mem": 7
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 48.1,
+          "reg_imm": 18.75,
+          "branch_or_call_target": 11.96,
+          "base_disp_mem": 6.79,
+          "sib_indexed_mem": 5.43,
+          "simd_reg_to_reg": 4.35,
+          "no_operands": 2.72,
+          "rip_relative_mem": 1.9
+        },
+        "top_mnemonics": {
+          "movq": 34,
+          "movl": 28,
+          "xorl": 25,
+          "cmpq": 22,
+          "je": 17,
+          "pushq": 17,
+          "popq": 16,
+          "jmp": 12,
+          "leaq": 11,
+          "addq": 11,
+          "andl": 10,
+          "addsd": 10,
+          "retq": 9,
+          "mulsd": 9,
+          "shll": 8,
+          "incq": 8,
+          "sarl": 8,
+          "setb": 6,
+          "testq": 6,
+          "shrl": 6,
+          "jae": 5,
+          "nopl": 5,
+          "movabsq": 4,
+          "shrq": 4,
+          "imulq": 4
+        }
+      },
+      "opt_s": {
+        "total_instructions": 253,
+        "unique_mnemonics": 59,
+        "mnemonics_for_coverage": {
+          "p90": 34,
+          "p95": 47,
+          "p99": 57,
+          "p99_9": 59
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 60.47,
+          "top_25_pct": 84.19,
+          "top_50_pct": 96.44,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 135,
+          "branch_or_call_target": 40,
+          "reg_imm": 31,
+          "sib_indexed_mem": 14,
+          "base_disp_mem": 11,
+          "no_operands": 9,
+          "simd_reg_to_reg": 7,
+          "rip_relative_mem": 6
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 53.36,
+          "branch_or_call_target": 15.81,
+          "reg_imm": 12.25,
+          "sib_indexed_mem": 5.53,
+          "base_disp_mem": 4.35,
+          "no_operands": 3.56,
+          "simd_reg_to_reg": 2.77,
+          "rip_relative_mem": 2.37
+        },
+        "top_mnemonics": {
+          "movq": 28,
+          "movl": 20,
+          "cmpq": 18,
+          "xorl": 17,
+          "pushq": 15,
+          "popq": 14,
+          "je": 12,
+          "jmp": 11,
+          "leaq": 10,
+          "retq": 8,
+          "incq": 8,
+          "jne": 6,
+          "setb": 6,
+          "jae": 5,
+          "addq": 5,
+          "testq": 5,
+          "cmovbq": 4,
+          "movsd": 4,
+          "testb": 4,
+          "cmpl": 3,
+          "callq": 2,
+          "movb": 2,
+          "jb": 2,
+          "xorpd": 2,
+          "addsd": 2
+        }
+      },
+      "opt_z": {
+        "total_instructions": 259,
+        "unique_mnemonics": 57,
+        "mnemonics_for_coverage": {
+          "p90": 32,
+          "p95": 45,
+          "p99": 55,
+          "p99_9": 57
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 62.55,
+          "top_25_pct": 84.94,
+          "top_50_pct": 97.3,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 144,
+          "branch_or_call_target": 39,
+          "reg_imm": 35,
+          "sib_indexed_mem": 12,
+          "base_disp_mem": 10,
+          "no_operands": 7,
+          "rip_relative_mem": 6,
+          "simd_reg_to_reg": 6
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 55.6,
+          "branch_or_call_target": 15.06,
+          "reg_imm": 13.51,
+          "sib_indexed_mem": 4.63,
+          "base_disp_mem": 3.86,
+          "no_operands": 2.7,
+          "rip_relative_mem": 2.32,
+          "simd_reg_to_reg": 2.32
+        },
+        "top_mnemonics": {
+          "movq": 34,
+          "pushq": 24,
+          "popq": 22,
+          "cmpq": 18,
+          "jmp": 14,
+          "xorl": 13,
+          "movl": 11,
+          "je": 10,
+          "incq": 9,
+          "jae": 7,
+          "leaq": 7,
+          "addq": 7,
+          "retq": 6,
+          "movabsq": 6,
+          "setb": 5,
+          "cmovbq": 4,
+          "movsd": 4,
+          "jne": 3,
+          "cmpl": 3,
+          "testb": 3,
+          "orq": 2,
+          "callq": 2,
+          "subl": 2,
+          "movb": 2,
+          "xorpd": 2
+        }
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "opt_0": {
+        "total_instructions": 1551,
+        "unique_mnemonics": 52,
+        "mnemonics_for_coverage": {
+          "p90": 18,
+          "p95": 23,
+          "p99": 39,
+          "p99_9": 51
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 77.11,
+          "top_25_pct": 96.26,
+          "top_50_pct": 99.87,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 1043,
+          "pc_rel_branch_or_adrp": 426,
+          "no_operands": 36,
+          "base_imm_offset_mem": 34,
+          "reg_offset_scaled_mem": 12
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 67.25,
+          "pc_rel_branch_or_adrp": 27.47,
+          "no_operands": 2.32,
+          "base_imm_offset_mem": 2.19,
+          "reg_offset_scaled_mem": 0.77
+        },
+        "top_mnemonics": {
+          "ldr": 229,
+          "b": 184,
+          "str": 119,
+          "add": 116,
+          "ldur": 111,
+          "stur": 102,
+          "mov": 96,
+          "subs": 95,
+          "bl": 93,
+          "adrp": 51,
+          "b.lo": 40,
+          "ret": 35,
+          "sub": 28,
+          "stp": 24,
+          "ldp": 23,
+          "b.eq": 22,
+          "cset": 22,
+          "sturb": 22,
+          "and": 19,
+          "fmov": 15,
+          "tbnz": 13,
+          "cbz": 11,
+          "ldurb": 9,
+          "movk": 8,
+          "strb": 6
+        }
+      },
+      "opt_1": {
+        "total_instructions": 284,
+        "unique_mnemonics": 53,
+        "mnemonics_for_coverage": {
+          "p90": 32,
+          "p95": 39,
+          "p99": 51,
+          "p99_9": 53
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 60.92,
+          "top_25_pct": 85.56,
+          "top_50_pct": 98.94,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 215,
+          "pc_rel_branch_or_adrp": 51,
+          "no_operands": 9,
+          "reg_offset_scaled_mem": 8,
+          "base_imm_offset_mem": 1
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 75.7,
+          "pc_rel_branch_or_adrp": 17.96,
+          "no_operands": 3.17,
+          "reg_offset_scaled_mem": 2.82,
+          "base_imm_offset_mem": 0.35
+        },
+        "top_mnemonics": {
+          "mov": 60,
+          "cmp": 26,
+          "add": 22,
+          "movk": 11,
+          "eor": 11,
+          "b.hs": 10,
+          "ret": 9,
+          "lsl": 8,
+          "b": 8,
+          "and": 8,
+          "bl": 7,
+          "csel": 7,
+          "stp": 6,
+          "ldr": 6,
+          "cbz": 6,
+          "adrp": 6,
+          "ldp": 5,
+          "b.lo": 5,
+          "str": 4,
+          "b.ne": 4,
+          "lsr": 3,
+          "subs": 3,
+          "ccmp": 3,
+          "movi": 3,
+          "orr": 2
+        }
+      },
+      "opt_2": {
+        "total_instructions": 343,
+        "unique_mnemonics": 60,
+        "mnemonics_for_coverage": {
+          "p90": 35,
+          "p95": 44,
+          "p99": 57,
+          "p99_9": 60
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 53.94,
+          "top_25_pct": 80.76,
+          "top_50_pct": 97.08,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 231,
+          "pc_rel_branch_or_adrp": 48,
+          "neon_or_sve_vector_arrangement": 38,
+          "base_imm_offset_mem": 10,
+          "no_operands": 9,
+          "reg_offset_scaled_mem": 7
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 67.35,
+          "pc_rel_branch_or_adrp": 13.99,
+          "neon_or_sve_vector_arrangement": 11.08,
+          "base_imm_offset_mem": 2.92,
+          "no_operands": 2.62,
+          "reg_offset_scaled_mem": 2.04
+        },
+        "top_mnemonics": {
+          "mov": 56,
+          "add": 29,
+          "cmp": 24,
+          "movk": 15,
+          "and": 12,
+          "b": 11,
+          "eor": 11,
+          "lsl": 10,
+          "ret": 9,
+          "ldr": 8,
+          "b.hs": 8,
+          "b.ne": 8,
+          "ldp": 8,
+          "cbz": 7,
+          "csel": 7,
+          "movi": 7,
+          "stp": 6,
+          "sub": 6,
+          "str": 5,
+          "subs": 5,
+          "fmov": 5,
+          "sqadd": 5,
+          "smlal": 5,
+          "smax": 5,
+          "smlal2": 5
+        }
+      },
+      "opt_3": {
+        "total_instructions": 348,
+        "unique_mnemonics": 60,
+        "mnemonics_for_coverage": {
+          "p90": 35,
+          "p95": 44,
+          "p99": 57,
+          "p99_9": 60
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 53.74,
+          "top_25_pct": 81.03,
+          "top_50_pct": 97.13,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 234,
+          "pc_rel_branch_or_adrp": 46,
+          "neon_or_sve_vector_arrangement": 38,
+          "base_imm_offset_mem": 11,
+          "no_operands": 11,
+          "reg_offset_scaled_mem": 8
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 67.24,
+          "pc_rel_branch_or_adrp": 13.22,
+          "neon_or_sve_vector_arrangement": 10.92,
+          "base_imm_offset_mem": 3.16,
+          "no_operands": 3.16,
+          "reg_offset_scaled_mem": 2.3
+        },
+        "top_mnemonics": {
+          "mov": 56,
+          "add": 29,
+          "cmp": 24,
+          "movk": 15,
+          "and": 12,
+          "ret": 11,
+          "lsl": 11,
+          "eor": 11,
+          "b.ne": 9,
+          "ldp": 9,
+          "stp": 8,
+          "ldr": 8,
+          "b.hs": 8,
+          "b": 8,
+          "cbz": 7,
+          "movi": 7,
+          "csel": 7,
+          "str": 6,
+          "sub": 6,
+          "subs": 5,
+          "fmov": 5,
+          "sqadd": 5,
+          "smlal": 5,
+          "smax": 5,
+          "smlal2": 5
+        }
+      },
+      "opt_s": {
+        "total_instructions": 224,
+        "unique_mnemonics": 47,
+        "mnemonics_for_coverage": {
+          "p90": 27,
+          "p95": 36,
+          "p99": 45,
+          "p99_9": 47
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 63.39,
+          "top_25_pct": 88.84,
+          "top_50_pct": 100.0,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 160,
+          "pc_rel_branch_or_adrp": 43,
+          "no_operands": 8,
+          "reg_offset_scaled_mem": 7,
+          "base_imm_offset_mem": 6
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 71.43,
+          "pc_rel_branch_or_adrp": 19.2,
+          "no_operands": 3.57,
+          "reg_offset_scaled_mem": 3.12,
+          "base_imm_offset_mem": 2.68
+        },
+        "top_mnemonics": {
+          "mov": 51,
+          "cmp": 20,
+          "add": 16,
+          "ldr": 9,
+          "b": 9,
+          "b.ne": 8,
+          "ret": 8,
+          "stp": 7,
+          "csel": 7,
+          "movk": 7,
+          "b.hs": 6,
+          "ldp": 6,
+          "cbz": 6,
+          "str": 5,
+          "bl": 4,
+          "subs": 4,
+          "ccmp": 4,
+          "adrp": 4,
+          "eor": 4,
+          "movi": 3,
+          "sub": 3,
+          "orr": 2,
+          "msub": 2,
+          "strb": 2,
+          "b.lo": 2
+        }
+      },
+      "opt_z": {
+        "total_instructions": 214,
+        "unique_mnemonics": 47,
+        "mnemonics_for_coverage": {
+          "p90": 28,
+          "p95": 37,
+          "p99": 45,
+          "p99_9": 47
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 62.62,
+          "top_25_pct": 87.85,
+          "top_50_pct": 100.0,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 151,
+          "pc_rel_branch_or_adrp": 43,
+          "base_imm_offset_mem": 7,
+          "no_operands": 7,
+          "reg_offset_scaled_mem": 6
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 70.56,
+          "pc_rel_branch_or_adrp": 20.09,
+          "base_imm_offset_mem": 3.27,
+          "no_operands": 3.27,
+          "reg_offset_scaled_mem": 2.8
+        },
+        "top_mnemonics": {
+          "mov": 44,
+          "cmp": 20,
+          "add": 19,
+          "ldr": 8,
+          "b": 8,
+          "stp": 7,
+          "b.hs": 7,
+          "ret": 7,
+          "cbz": 7,
+          "csel": 7,
+          "movk": 7,
+          "ldp": 6,
+          "str": 4,
+          "bl": 4,
+          "cbnz": 4,
+          "adrp": 4,
+          "sub": 4,
+          "eor": 4,
+          "b.ne": 3,
+          "orr": 3,
+          "b.eq": 3,
+          "msub": 2,
+          "strb": 2,
+          "neg": 2,
+          "movi": 2
+        }
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "opt_0": {
+        "total_instructions": 2768,
+        "unique_mnemonics": 70,
+        "mnemonics_for_coverage": {
+          "p90": 19,
+          "p95": 27,
+          "p99": 52,
+          "p99_9": 68
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 79.37,
+          "top_25_pct": 94.26,
+          "top_50_pct": 98.92,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "base_disp_mem": 1585,
+          "gpr_reg_to_reg": 486,
+          "branch_or_call_target": 332,
+          "reg_imm": 260,
+          "no_operands": 52,
+          "sib_indexed_mem": 30,
+          "simd_reg_to_reg": 23
+        },
+        "operand_form_pct": {
+          "base_disp_mem": 57.26,
+          "gpr_reg_to_reg": 17.56,
+          "branch_or_call_target": 11.99,
+          "reg_imm": 9.39,
+          "no_operands": 1.88,
+          "sib_indexed_mem": 1.08,
+          "simd_reg_to_reg": 0.83
+        },
+        "top_mnemonics": {
+          "movl": 1511,
+          "jmp": 132,
+          "calll": 100,
+          "addl": 96,
+          "movb": 75,
+          "popl": 65,
+          "leal": 59,
+          "orl": 55,
+          "subl": 52,
+          "cmpl": 52,
+          "movsd": 51,
+          "pushl": 43,
+          "jb": 39,
+          "xorl": 37,
+          "retl": 35,
+          "je": 35,
+          "andb": 26,
+          "shldl": 26,
+          "sbbl": 24,
+          "adcl": 19,
+          "sete": 18,
+          "lock": 15,
+          "cmpxchgl": 15,
+          "andl": 15,
+          "movzbl": 14
+        }
+      },
+      "opt_1": {
+        "total_instructions": 684,
+        "unique_mnemonics": 65,
+        "mnemonics_for_coverage": {
+          "p90": 28,
+          "p95": 37,
+          "p99": 59,
+          "p99_9": 65
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 67.69,
+          "top_25_pct": 87.87,
+          "top_50_pct": 97.81,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 242,
+          "base_disp_mem": 206,
+          "reg_imm": 126,
+          "branch_or_call_target": 61,
+          "sib_indexed_mem": 34,
+          "simd_reg_to_reg": 8,
+          "no_operands": 7
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 35.38,
+          "base_disp_mem": 30.12,
+          "reg_imm": 18.42,
+          "branch_or_call_target": 8.92,
+          "sib_indexed_mem": 4.97,
+          "simd_reg_to_reg": 1.17,
+          "no_operands": 1.02
+        },
+        "top_mnemonics": {
+          "movl": 251,
+          "pushl": 40,
+          "xorl": 31,
+          "cmpl": 28,
+          "popl": 25,
+          "orl": 21,
+          "addl": 19,
+          "leal": 18,
+          "sbbl": 15,
+          "jmp": 15,
+          "subl": 14,
+          "je": 13,
+          "shldl": 13,
+          "andl": 12,
+          "adcl": 11,
+          "jae": 10,
+          "sarl": 9,
+          "calll": 9,
+          "testl": 8,
+          "shll": 8,
+          "cmovnel": 7,
+          "nopl": 6,
+          "setb": 6,
+          "retl": 6,
+          "shrl": 6
+        }
+      },
+      "opt_2": {
+        "total_instructions": 715,
+        "unique_mnemonics": 80,
+        "mnemonics_for_coverage": {
+          "p90": 38,
+          "p95": 51,
+          "p99": 73,
+          "p99_9": 80
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 62.66,
+          "top_25_pct": 82.1,
+          "top_50_pct": 94.97,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 238,
+          "base_disp_mem": 200,
+          "reg_imm": 128,
+          "branch_or_call_target": 58,
+          "simd_reg_to_reg": 47,
+          "sib_indexed_mem": 36,
+          "no_operands": 8
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 33.29,
+          "base_disp_mem": 27.97,
+          "reg_imm": 17.9,
+          "branch_or_call_target": 8.11,
+          "simd_reg_to_reg": 6.57,
+          "sib_indexed_mem": 5.03,
+          "no_operands": 1.12
+        },
+        "top_mnemonics": {
+          "movl": 249,
+          "xorl": 30,
+          "pushl": 28,
+          "cmpl": 25,
+          "popl": 25,
+          "orl": 21,
+          "addl": 20,
+          "je": 18,
+          "jmp": 17,
+          "sbbl": 15,
+          "movdqa": 14,
+          "leal": 13,
+          "shldl": 13,
+          "andl": 13,
+          "subl": 10,
+          "adcl": 10,
+          "sarl": 9,
+          "testl": 8,
+          "shll": 8,
+          "incl": 8,
+          "nopl": 7,
+          "setb": 7,
+          "cmovnel": 7,
+          "jne": 6,
+          "retl": 6
+        }
+      },
+      "opt_3": {
+        "total_instructions": 723,
+        "unique_mnemonics": 80,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 50,
+          "p99": 73,
+          "p99_9": 80
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 62.38,
+          "top_25_pct": 82.16,
+          "top_50_pct": 95.02,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 240,
+          "base_disp_mem": 200,
+          "reg_imm": 135,
+          "branch_or_call_target": 58,
+          "simd_reg_to_reg": 48,
+          "sib_indexed_mem": 34,
+          "no_operands": 8
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 33.2,
+          "base_disp_mem": 27.66,
+          "reg_imm": 18.67,
+          "branch_or_call_target": 8.02,
+          "simd_reg_to_reg": 6.64,
+          "sib_indexed_mem": 4.7,
+          "no_operands": 1.11
+        },
+        "top_mnemonics": {
+          "movl": 249,
+          "pushl": 31,
+          "xorl": 30,
+          "cmpl": 25,
+          "popl": 25,
+          "addl": 22,
+          "orl": 21,
+          "je": 17,
+          "jmp": 16,
+          "sbbl": 15,
+          "movdqa": 14,
+          "shldl": 13,
+          "andl": 13,
+          "leal": 12,
+          "subl": 12,
+          "shll": 10,
+          "adcl": 10,
+          "sarl": 9,
+          "testl": 8,
+          "incl": 8,
+          "nopl": 7,
+          "jne": 7,
+          "setb": 7,
+          "cmovnel": 7,
+          "retl": 6
+        }
+      },
+      "opt_s": {
+        "total_instructions": 576,
+        "unique_mnemonics": 63,
+        "mnemonics_for_coverage": {
+          "p90": 27,
+          "p95": 39,
+          "p99": 58,
+          "p99_9": 63
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 69.79,
+          "top_25_pct": 89.06,
+          "top_50_pct": 97.74,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 220,
+          "base_disp_mem": 174,
+          "reg_imm": 94,
+          "branch_or_call_target": 49,
+          "sib_indexed_mem": 25,
+          "simd_reg_to_reg": 8,
+          "no_operands": 6
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 38.19,
+          "base_disp_mem": 30.21,
+          "reg_imm": 16.32,
+          "branch_or_call_target": 8.51,
+          "sib_indexed_mem": 4.34,
+          "simd_reg_to_reg": 1.39,
+          "no_operands": 1.04
+        },
+        "top_mnemonics": {
+          "movl": 222,
+          "pushl": 28,
+          "xorl": 25,
+          "popl": 24,
+          "cmpl": 22,
+          "orl": 21,
+          "addl": 18,
+          "sbbl": 15,
+          "je": 14,
+          "leal": 13,
+          "shldl": 13,
+          "jmp": 13,
+          "adcl": 10,
+          "subl": 9,
+          "incl": 9,
+          "testl": 8,
+          "jne": 7,
+          "setb": 7,
+          "cmovnel": 7,
+          "retl": 6,
+          "jae": 5,
+          "andl": 5,
+          "bsrl": 4,
+          "cmovbl": 4,
+          "movsd": 4
+        }
+      },
+      "opt_z": {
+        "total_instructions": 630,
+        "unique_mnemonics": 60,
+        "mnemonics_for_coverage": {
+          "p90": 27,
+          "p95": 36,
+          "p99": 54,
+          "p99_9": 60
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 68.73,
+          "top_25_pct": 88.57,
+          "top_50_pct": 98.41,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 240,
+          "base_disp_mem": 196,
+          "reg_imm": 110,
+          "branch_or_call_target": 57,
+          "sib_indexed_mem": 15,
+          "no_operands": 6,
+          "simd_reg_to_reg": 6
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 38.1,
+          "base_disp_mem": 31.11,
+          "reg_imm": 17.46,
+          "branch_or_call_target": 9.05,
+          "sib_indexed_mem": 2.38,
+          "no_operands": 0.95,
+          "simd_reg_to_reg": 0.95
+        },
+        "top_mnemonics": {
+          "movl": 191,
+          "pushl": 62,
+          "popl": 33,
+          "addl": 27,
+          "xorl": 27,
+          "orl": 26,
+          "cmpl": 22,
+          "subl": 17,
+          "jmp": 16,
+          "calll": 12,
+          "je": 12,
+          "sbbl": 12,
+          "incl": 11,
+          "leal": 10,
+          "adcl": 10,
+          "shldl": 10,
+          "movb": 8,
+          "cmpb": 8,
+          "cmovnel": 7,
+          "movzbl": 7,
+          "jae": 6,
+          "setb": 6,
+          "retl": 6,
+          "cmovbl": 6,
+          "cmovael": 6
+        }
+      }
+    }
+  },
+  "cpu_level_matrix_opt3": {
+    "x86-64": {
+      "target": "x86_64-unknown-linux-gnu",
+      "arch": "x86_64",
+      "summary": {
+        "total_instructions": 368,
+        "unique_mnemonics": 66,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 48,
+          "p99": 63,
+          "p99_9": 66
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 52.45,
+          "top_25_pct": 80.16,
+          "top_50_pct": 95.65,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 177,
+          "reg_imm": 69,
+          "branch_or_call_target": 44,
+          "base_disp_mem": 25,
+          "sib_indexed_mem": 20,
+          "simd_reg_to_reg": 16,
+          "no_operands": 10,
+          "rip_relative_mem": 7
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 48.1,
+          "reg_imm": 18.75,
+          "branch_or_call_target": 11.96,
+          "base_disp_mem": 6.79,
+          "sib_indexed_mem": 5.43,
+          "simd_reg_to_reg": 4.35,
+          "no_operands": 2.72,
+          "rip_relative_mem": 1.9
+        },
+        "top_mnemonics": {
+          "movq": 34,
+          "movl": 28,
+          "xorl": 25,
+          "cmpq": 22,
+          "je": 17,
+          "pushq": 17,
+          "popq": 16,
+          "jmp": 12,
+          "leaq": 11,
+          "addq": 11,
+          "andl": 10,
+          "addsd": 10,
+          "retq": 9,
+          "mulsd": 9,
+          "shll": 8,
+          "incq": 8,
+          "sarl": 8,
+          "setb": 6,
+          "testq": 6,
+          "shrl": 6,
+          "jae": 5,
+          "nopl": 5,
+          "movabsq": 4,
+          "shrq": 4,
+          "imulq": 4
+        }
+      }
+    },
+    "x86-64-v2": {
+      "target": "x86_64-unknown-linux-gnu",
+      "arch": "x86_64",
+      "summary": {
+        "total_instructions": 425,
+        "unique_mnemonics": 82,
+        "mnemonics_for_coverage": {
+          "p90": 47,
+          "p95": 61,
+          "p99": 78,
+          "p99_9": 82
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 48.24,
+          "top_25_pct": 74.35,
+          "top_50_pct": 91.76,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 181,
+          "reg_imm": 76,
+          "branch_or_call_target": 48,
+          "simd_reg_to_reg": 47,
+          "sib_indexed_mem": 26,
+          "base_disp_mem": 25,
+          "no_operands": 12,
+          "rip_relative_mem": 10
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 42.59,
+          "reg_imm": 17.88,
+          "branch_or_call_target": 11.29,
+          "simd_reg_to_reg": 11.06,
+          "sib_indexed_mem": 6.12,
+          "base_disp_mem": 5.88,
+          "no_operands": 2.82,
+          "rip_relative_mem": 2.35
+        },
+        "top_mnemonics": {
+          "movq": 39,
+          "movl": 28,
+          "xorl": 26,
+          "cmpq": 25,
+          "je": 17,
+          "pushq": 17,
+          "popq": 16,
+          "jmp": 13,
+          "leaq": 12,
+          "addq": 12,
+          "retq": 10,
+          "andl": 10,
+          "addsd": 10,
+          "mulsd": 9,
+          "shll": 8,
+          "incq": 8,
+          "movdqa": 8,
+          "sarl": 8,
+          "jae": 6,
+          "setb": 6,
+          "testq": 6,
+          "shrl": 6,
+          "pxor": 6,
+          "jne": 5,
+          "movabsq": 5
+        }
+      }
+    },
+    "x86-64-v3": {
+      "target": "x86_64-unknown-linux-gnu",
+      "arch": "x86_64",
+      "summary": {
+        "total_instructions": 424,
+        "unique_mnemonics": 83,
+        "mnemonics_for_coverage": {
+          "p90": 49,
+          "p95": 62,
+          "p99": 79,
+          "p99_9": 83
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 46.7,
+          "top_25_pct": 72.41,
+          "top_50_pct": 90.57,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 179,
+          "reg_imm": 77,
+          "branch_or_call_target": 48,
+          "simd_reg_to_reg": 44,
+          "sib_indexed_mem": 28,
+          "base_disp_mem": 25,
+          "no_operands": 13,
+          "rip_relative_mem": 10
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 42.22,
+          "reg_imm": 18.16,
+          "branch_or_call_target": 11.32,
+          "simd_reg_to_reg": 10.38,
+          "sib_indexed_mem": 6.6,
+          "base_disp_mem": 5.9,
+          "no_operands": 3.07,
+          "rip_relative_mem": 2.36
+        },
+        "top_mnemonics": {
+          "movq": 32,
+          "movl": 28,
+          "xorl": 26,
+          "cmpq": 25,
+          "je": 17,
+          "pushq": 17,
+          "popq": 16,
+          "jmp": 13,
+          "leaq": 12,
+          "addq": 12,
+          "retq": 10,
+          "andl": 10,
+          "vaddsd": 10,
+          "vmulsd": 9,
+          "shll": 8,
+          "incq": 8,
+          "sarl": 8,
+          "jae": 6,
+          "setb": 6,
+          "testq": 6,
+          "shrl": 6,
+          "vpxor": 6,
+          "vmovdqu": 6,
+          "nopw": 5,
+          "jne": 5
+        }
+      }
+    },
+    "x86-64-v4": {
+      "target": "x86_64-unknown-linux-gnu",
+      "arch": "x86_64",
+      "summary": {
+        "total_instructions": 500,
+        "unique_mnemonics": 87,
+        "mnemonics_for_coverage": {
+          "p90": 51,
+          "p95": 63,
+          "p99": 82,
+          "p99_9": 87
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 42.0,
+          "top_25_pct": 67.8,
+          "top_50_pct": 89.8,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "gpr_reg_to_reg": 195,
+          "reg_imm": 86,
+          "simd_reg_to_reg": 80,
+          "branch_or_call_target": 50,
+          "sib_indexed_mem": 37,
+          "base_disp_mem": 25,
+          "no_operands": 14,
+          "rip_relative_mem": 13
+        },
+        "operand_form_pct": {
+          "gpr_reg_to_reg": 39.0,
+          "reg_imm": 17.2,
+          "simd_reg_to_reg": 16.0,
+          "branch_or_call_target": 10.0,
+          "sib_indexed_mem": 7.4,
+          "base_disp_mem": 5.0,
+          "no_operands": 2.8,
+          "rip_relative_mem": 2.6
+        },
+        "top_mnemonics": {
+          "movq": 35,
+          "cmpq": 28,
+          "movl": 28,
+          "xorl": 28,
+          "je": 18,
+          "pushq": 18,
+          "popq": 17,
+          "addq": 14,
+          "leaq": 12,
+          "jmp": 12,
+          "vmovdqu": 12,
+          "vpaddq": 12,
+          "retq": 10,
+          "andl": 10,
+          "vaddsd": 10,
+          "vpmovzxdq": 10,
+          "vmulsd": 9,
+          "shll": 8,
+          "incq": 8,
+          "sarl": 8,
+          "jae": 7,
+          "jne": 7,
+          "setb": 6,
+          "testq": 6,
+          "shrl": 6
+        }
+      }
+    },
+    "generic": {
+      "target": "aarch64-unknown-linux-gnu",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 348,
+        "unique_mnemonics": 60,
+        "mnemonics_for_coverage": {
+          "p90": 35,
+          "p95": 44,
+          "p99": 57,
+          "p99_9": 60
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 53.74,
+          "top_25_pct": 81.03,
+          "top_50_pct": 97.13,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 234,
+          "pc_rel_branch_or_adrp": 46,
+          "neon_or_sve_vector_arrangement": 38,
+          "base_imm_offset_mem": 11,
+          "no_operands": 11,
+          "reg_offset_scaled_mem": 8
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 67.24,
+          "pc_rel_branch_or_adrp": 13.22,
+          "neon_or_sve_vector_arrangement": 10.92,
+          "base_imm_offset_mem": 3.16,
+          "no_operands": 3.16,
+          "reg_offset_scaled_mem": 2.3
+        },
+        "top_mnemonics": {
+          "mov": 56,
+          "add": 29,
+          "cmp": 24,
+          "movk": 15,
+          "and": 12,
+          "ret": 11,
+          "lsl": 11,
+          "eor": 11,
+          "b.ne": 9,
+          "ldp": 9,
+          "stp": 8,
+          "ldr": 8,
+          "b.hs": 8,
+          "b": 8,
+          "cbz": 7,
+          "movi": 7,
+          "csel": 7,
+          "str": 6,
+          "sub": 6,
+          "subs": 5,
+          "fmov": 5,
+          "sqadd": 5,
+          "smlal": 5,
+          "smax": 5,
+          "smlal2": 5
+        }
+      }
+    },
+    "apple-m1": {
+      "target": "aarch64-apple-darwin",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 352,
+        "unique_mnemonics": 63,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 46,
+          "p99": 60,
+          "p99_9": 63
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 52.56,
+          "top_25_pct": 78.98,
+          "top_50_pct": 96.31,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 263,
+          "pc_rel_branch_or_adrp": 46,
+          "no_operands": 25,
+          "base_imm_offset_mem": 10,
+          "reg_offset_scaled_mem": 8
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 74.72,
+          "pc_rel_branch_or_adrp": 13.07,
+          "no_operands": 7.1,
+          "base_imm_offset_mem": 2.84,
+          "reg_offset_scaled_mem": 2.27
+        },
+        "top_mnemonics": {
+          "mov": 52,
+          "add": 26,
+          "cmp": 24,
+          "movk": 15,
+          "nop": 15,
+          "and": 12,
+          "lsl": 11,
+          "eor": 11,
+          "ret": 10,
+          "b.ne": 9,
+          "b": 9,
+          "b.hs": 8,
+          "ldr": 7,
+          "cbz": 7,
+          "csel": 7,
+          "movi.2d": 7,
+          "sub": 6,
+          "stp": 6,
+          "ldp": 6,
+          "subs": 5,
+          "fmov": 5,
+          "str": 5,
+          "smlal.2d": 5,
+          "smlal2.2d": 5,
+          "sqadd.4s": 5
+        }
+      }
+    },
+    "apple-m3": {
+      "target": "aarch64-apple-darwin",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 352,
+        "unique_mnemonics": 63,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 46,
+          "p99": 60,
+          "p99_9": 63
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 52.56,
+          "top_25_pct": 78.98,
+          "top_50_pct": 96.31,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 263,
+          "pc_rel_branch_or_adrp": 46,
+          "no_operands": 25,
+          "base_imm_offset_mem": 10,
+          "reg_offset_scaled_mem": 8
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 74.72,
+          "pc_rel_branch_or_adrp": 13.07,
+          "no_operands": 7.1,
+          "base_imm_offset_mem": 2.84,
+          "reg_offset_scaled_mem": 2.27
+        },
+        "top_mnemonics": {
+          "mov": 52,
+          "add": 26,
+          "cmp": 24,
+          "movk": 15,
+          "nop": 15,
+          "and": 12,
+          "lsl": 11,
+          "eor": 11,
+          "ret": 10,
+          "b.ne": 9,
+          "b": 9,
+          "b.hs": 8,
+          "ldr": 7,
+          "cbz": 7,
+          "csel": 7,
+          "movi.2d": 7,
+          "sub": 6,
+          "stp": 6,
+          "ldp": 6,
+          "subs": 5,
+          "fmov": 5,
+          "str": 5,
+          "smlal.2d": 5,
+          "smlal2.2d": 5,
+          "sqadd.4s": 5
+        }
+      }
+    },
+    "apple-m4": {
+      "target": "aarch64-apple-darwin",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 352,
+        "unique_mnemonics": 63,
+        "mnemonics_for_coverage": {
+          "p90": 37,
+          "p95": 46,
+          "p99": 60,
+          "p99_9": 63
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 52.56,
+          "top_25_pct": 78.98,
+          "top_50_pct": 96.31,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 263,
+          "pc_rel_branch_or_adrp": 46,
+          "no_operands": 25,
+          "base_imm_offset_mem": 10,
+          "reg_offset_scaled_mem": 8
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 74.72,
+          "pc_rel_branch_or_adrp": 13.07,
+          "no_operands": 7.1,
+          "base_imm_offset_mem": 2.84,
+          "reg_offset_scaled_mem": 2.27
+        },
+        "top_mnemonics": {
+          "mov": 52,
+          "add": 26,
+          "cmp": 24,
+          "movk": 15,
+          "nop": 15,
+          "and": 12,
+          "lsl": 11,
+          "eor": 11,
+          "ret": 10,
+          "b.ne": 9,
+          "b": 9,
+          "b.hs": 8,
+          "ldr": 7,
+          "cbz": 7,
+          "csel": 7,
+          "movi.2d": 7,
+          "sub": 6,
+          "stp": 6,
+          "ldp": 6,
+          "subs": 5,
+          "fmov": 5,
+          "str": 5,
+          "smlal.2d": 5,
+          "smlal2.2d": 5,
+          "sqadd.4s": 5
+        }
+      }
+    },
+    "neoverse-n1": {
+      "target": "aarch64-unknown-linux-gnu",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 380,
+        "unique_mnemonics": 62,
+        "mnemonics_for_coverage": {
+          "p90": 36,
+          "p95": 45,
+          "p99": 59,
+          "p99_9": 62
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 49.74,
+          "top_25_pct": 78.68,
+          "top_50_pct": 96.84,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 253,
+          "pc_rel_branch_or_adrp": 50,
+          "neon_or_sve_vector_arrangement": 38,
+          "no_operands": 21,
+          "base_imm_offset_mem": 11,
+          "reg_offset_scaled_mem": 7
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 66.58,
+          "pc_rel_branch_or_adrp": 13.16,
+          "neon_or_sve_vector_arrangement": 10.0,
+          "no_operands": 5.53,
+          "base_imm_offset_mem": 2.89,
+          "reg_offset_scaled_mem": 1.84
+        },
+        "top_mnemonics": {
+          "mov": 52,
+          "add": 31,
+          "cmp": 26,
+          "movk": 15,
+          "and": 13,
+          "nop": 11,
+          "eor": 11,
+          "ret": 10,
+          "lsl": 10,
+          "b": 10,
+          "fadd": 10,
+          "ldp": 10,
+          "ldr": 9,
+          "b.ne": 9,
+          "fmul": 9,
+          "b.hs": 8,
+          "cbz": 8,
+          "movi": 8,
+          "csel": 7,
+          "sub": 6,
+          "stp": 6,
+          "subs": 5,
+          "fmov": 5,
+          "str": 5,
+          "smlal": 5
+        }
+      }
+    },
+    "neoverse-v1": {
+      "target": "aarch64-unknown-linux-gnu",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 403,
+        "unique_mnemonics": 68,
+        "mnemonics_for_coverage": {
+          "p90": 39,
+          "p95": 49,
+          "p99": 64,
+          "p99_9": 68
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 49.88,
+          "top_25_pct": 76.92,
+          "top_50_pct": 95.53,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 258,
+          "neon_or_sve_vector_arrangement": 54,
+          "pc_rel_branch_or_adrp": 50,
+          "no_operands": 23,
+          "base_imm_offset_mem": 11,
+          "reg_offset_scaled_mem": 7
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 64.02,
+          "neon_or_sve_vector_arrangement": 13.4,
+          "pc_rel_branch_or_adrp": 12.41,
+          "no_operands": 5.71,
+          "base_imm_offset_mem": 2.73,
+          "reg_offset_scaled_mem": 1.74
+        },
+        "top_mnemonics": {
+          "mov": 55,
+          "add": 32,
+          "cmp": 26,
+          "lsl": 19,
+          "movk": 15,
+          "nop": 13,
+          "eor": 11,
+          "b.ne": 10,
+          "ret": 10,
+          "and": 10,
+          "b": 10,
+          "fadd": 10,
+          "ldr": 9,
+          "fmul": 9,
+          "cbz": 8,
+          "movi": 8,
+          "ld1sw": 8,
+          "b.hs": 7,
+          "sub": 7,
+          "csel": 7,
+          "ldp": 6,
+          "lsr": 5,
+          "subs": 5,
+          "fmov": 5,
+          "str": 5
+        }
+      }
+    },
+    "neoverse-v2": {
+      "target": "aarch64-unknown-linux-gnu",
+      "arch": "aarch64",
+      "summary": {
+        "total_instructions": 380,
+        "unique_mnemonics": 62,
+        "mnemonics_for_coverage": {
+          "p90": 36,
+          "p95": 45,
+          "p99": 59,
+          "p99_9": 62
+        },
+        "cumulative_coverage_pct": {
+          "top_10_pct": 49.74,
+          "top_25_pct": 78.68,
+          "top_50_pct": 96.84,
+          "top_100_pct": 100.0
+        },
+        "operand_form_distribution": {
+          "scalar_reg_to_reg": 253,
+          "pc_rel_branch_or_adrp": 50,
+          "neon_or_sve_vector_arrangement": 38,
+          "no_operands": 21,
+          "base_imm_offset_mem": 11,
+          "reg_offset_scaled_mem": 7
+        },
+        "operand_form_pct": {
+          "scalar_reg_to_reg": 66.58,
+          "pc_rel_branch_or_adrp": 13.16,
+          "neon_or_sve_vector_arrangement": 10.0,
+          "no_operands": 5.53,
+          "base_imm_offset_mem": 2.89,
+          "reg_offset_scaled_mem": 1.84
+        },
+        "top_mnemonics": {
+          "mov": 52,
+          "add": 31,
+          "cmp": 26,
+          "movk": 15,
+          "and": 13,
+          "nop": 11,
+          "eor": 11,
+          "ret": 10,
+          "lsl": 10,
+          "b": 10,
+          "fadd": 10,
+          "ldp": 10,
+          "ldr": 9,
+          "b.ne": 9,
+          "fmul": 9,
+          "b.hs": 8,
+          "cbz": 8,
+          "movi": 8,
+          "csel": 7,
+          "sub": 6,
+          "stp": 6,
+          "subs": 5,
+          "fmov": 5,
+          "str": 5,
+          "smlalb": 5
+        }
+      }
+    }
+  }
+}

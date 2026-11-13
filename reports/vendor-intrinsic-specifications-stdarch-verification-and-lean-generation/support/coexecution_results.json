@@ -1,0 +1,524 @@
+{
+  "total_intrinsics_tested": 32,
+  "sse2_intrinsics_tested": 16,
+  "neon_intrinsics_tested": 16,
+  "vectors_per_intrinsic": 64,
+  "total_coexecution_checks": 2048,
+  "total_matches": 2048,
+  "total_mismatches": 0,
+  "mismatches": [],
+  "per_intrinsic_passes": {
+    "_mm_add_epi8": 64,
+    "_mm_add_epi16": 64,
+    "_mm_add_epi32": 64,
+    "_mm_add_epi64": 64,
+    "_mm_sub_epi8": 64,
+    "_mm_sub_epi16": 64,
+    "_mm_sub_epi32": 64,
+    "_mm_sub_epi64": 64,
+    "_mm_adds_epi8": 64,
+    "_mm_adds_epu8": 64,
+    "_mm_subs_epi16": 64,
+    "_mm_subs_epu16": 64,
+    "_mm_madd_epi16": 64,
+    "_mm_sad_epu8": 64,
+    "_mm_cmpeq_epi32": 64,
+    "_mm_unpacklo_epi32": 64,
+    "vaddq_u8": 64,
+    "vaddq_u32": 64,
+    "vsubq_u16": 64,
+    "vmulq_u32": 64,
+    "vqaddq_u8": 64,
+    "vqaddq_s16": 64,
+    "vqsubq_u8": 64,
+    "vqsubq_s16": 64,
+    "vpaddq_u32": 64,
+    "vabdq_u8": 64,
+    "vmaxq_u8": 64,
+    "vminq_s16": 64,
+    "vzip1q_u32": 64,
+    "vuzp1q_u32": 64,
+    "vrev64q_u16": 64,
+    "vqtbl1q_u8": 64
+  },
+  "intel_vendor_records": {
+    "_mm_add_epi8": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PADDB",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 15\n\ti := j*8\n\tdst[i+7:i] := a[i+7:i] + b[i+7:i]\nENDFOR"
+    },
+    "_mm_add_epi16": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PADDW",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 7\n\ti := j*16\n\tdst[i+15:i] := a[i+15:i] + b[i+15:i]\nENDFOR"
+    },
+    "_mm_add_epi32": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PADDD",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 3\n\ti := j*32\n\tdst[i+31:i] := a[i+31:i] + b[i+31:i]\nENDFOR"
+    },
+    "_mm_add_epi64": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PADDQ",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 1\n\ti := j*64\n\tdst[i+63:i] := a[i+63:i] + b[i+63:i]\nENDFOR"
+    },
+    "_mm_adds_epi8": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PADDSB",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 15\n\ti := j*8\n\tdst[i+7:i] := Saturate8( a[i+7:i] + b[i+7:i] )\nENDFOR"
+    },
+    "_mm_adds_epu8": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PADDUSB",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 15\n\ti := j*8\n\tdst[i+7:i] := SaturateU8( a[i+7:i] + b[i+7:i] )\nENDFOR"
+    },
+    "_mm_madd_epi16": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PMADDWD",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 3\n\ti := j*32\n\tdst[i+31:i] := SignExtend32(a[i+31:i+16]*b[i+31:i+16]) + SignExtend32(a[i+15:i]*b[i+15:i])\nENDFOR"
+    },
+    "_mm_sad_epu8": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSADBW",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 15\n\ti := j*8\n\ttmp[i+7:i] := ABS(a[i+7:i] - b[i+7:i])\nENDFOR\nFOR j := 0 to 1\n\ti := j*64\n\tdst[i+15:i] := tmp[i+7:i] + tmp[i+15:i+8] + tmp[i+23:i+16] + tmp[i+31:i+24] + \\\n\t               tmp[i+39:i+32] + tmp[i+47:i+40] + tmp[i+55:i+48] + tmp[i+63:i+56]\n\tdst[i+63:i+16] := 0\nENDFOR"
+    },
+    "_mm_sub_epi8": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSUBB",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 15\n\ti := j*8\n\tdst[i+7:i] := a[i+7:i] - b[i+7:i]\nENDFOR"
+    },
+    "_mm_sub_epi16": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSUBW",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 7\n\ti := j*16\n\tdst[i+15:i] := a[i+15:i] - b[i+15:i]\nENDFOR"
+    },
+    "_mm_sub_epi32": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSUBD",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 3\n\ti := j*32\n\tdst[i+31:i] := a[i+31:i] - b[i+31:i]\nENDFOR"
+    },
+    "_mm_sub_epi64": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSUBQ",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 1\n\ti := j*64\n\tdst[i+63:i] := a[i+63:i] - b[i+63:i]\nENDFOR"
+    },
+    "_mm_subs_epi16": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSUBSW",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 7\n\ti := j*16\n\tdst[i+15:i] := Saturate16(a[i+15:i] - b[i+15:i])\nENDFOR"
+    },
+    "_mm_subs_epu16": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PSUBUSW",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 7\n\ti := j*16\n\tdst[i+15:i] := SaturateU16(a[i+15:i] - b[i+15:i])\t\nENDFOR"
+    },
+    "_mm_cmpeq_epi32": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PCMPEQD",
+      "form": "xmm, xmm",
+      "operation": "FOR j := 0 to 3\n\ti := j*32\n\tdst[i+31:i] := ( a[i+31:i] == b[i+31:i] ) ? 0xFFFFFFFF : 0\nENDFOR"
+    },
+    "_mm_unpacklo_epi32": {
+      "cpuid": [
+        "SSE2"
+      ],
+      "instruction": "PUNPCKLDQ",
+      "form": "xmm, xmm",
+      "operation": "DEFINE INTERLEAVE_DWORDS(src1[127:0], src2[127:0]) {\n\tdst[31:0] := src1[31:0] \n\tdst[63:32] := src2[31:0] \n\tdst[95:64] := src1[63:32] \n\tdst[127:96] := src2[63:32] \n\tRETURN dst[127:0]\t\n}\ndst[127:0] := INTERLEAVE_DWORDS(a[127:0], b[127:0])"
+    }
+  },
+  "arm_vendor_records": {
+    "vabdq_u8": {
+      "return_type": {
+        "value": "uint8x16_t"
+      },
+      "arguments": [
+        "uint8x16_t a",
+        "uint8x16_t b"
+      ],
+      "instructions": [
+        [
+          "UABD"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.16B"
+        },
+        "b": {
+          "register": "Vm.16B"
+        }
+      }
+    },
+    "vaddq_u32": {
+      "return_type": {
+        "value": "uint32x4_t"
+      },
+      "arguments": [
+        "uint32x4_t a",
+        "uint32x4_t b"
+      ],
+      "instructions": [
+        [
+          "ADD"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.4S"
+        },
+        "b": {
+          "register": "Vm.4S"
+        }
+      }
+    },
+    "vaddq_u8": {
+      "return_type": {
+        "value": "uint8x16_t"
+      },
+      "arguments": [
+        "uint8x16_t a",
+        "uint8x16_t b"
+      ],
+      "instructions": [
+        [
+          "ADD"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.16B"
+        },
+        "b": {
+          "register": "Vm.16B"
+        }
+      }
+    },
+    "vmaxq_u8": {
+      "return_type": {
+        "value": "uint8x16_t"
+      },
+      "arguments": [
+        "uint8x16_t a",
+        "uint8x16_t b"
+      ],
+      "instructions": [
+        [
+          "UMAX"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.16B"
+        },
+        "b": {
+          "register": "Vm.16B"
+        }
+      }
+    },
+    "vminq_s16": {
+      "return_type": {
+        "value": "int16x8_t"
+      },
+      "arguments": [
+        "int16x8_t a",
+        "int16x8_t b"
+      ],
+      "instructions": [
+        [
+          "SMIN"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.8H"
+        },
+        "b": {
+          "register": "Vm.8H"
+        }
+      }
+    },
+    "vmulq_u32": {
+      "return_type": {
+        "value": "uint32x4_t"
+      },
+      "arguments": [
+        "uint32x4_t a",
+        "uint32x4_t b"
+      ],
+      "instructions": [
+        [
+          "MUL"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.4S"
+        },
+        "b": {
+          "register": "Vm.4S"
+        }
+      }
+    },
+    "vpaddq_u32": {
+      "return_type": {
+        "value": "uint32x4_t"
+      },
+      "arguments": [
+        "uint32x4_t a",
+        "uint32x4_t b"
+      ],
+      "instructions": [
+        [
+          "ADDP"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.4S"
+        },
+        "b": {
+          "register": "Vm.4S"
+        }
+      }
+    },
+    "vqaddq_s16": {
+      "return_type": {
+        "value": "int16x8_t"
+      },
+      "arguments": [
+        "int16x8_t a",
+        "int16x8_t b"
+      ],
+      "instructions": [
+        [
+          "SQADD"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.8H"
+        },
+        "b": {
+          "register": "Vm.8H"
+        }
+      }
+    },
+    "vqaddq_u8": {
+      "return_type": {
+        "value": "uint8x16_t"
+      },
+      "arguments": [
+        "uint8x16_t a",
+        "uint8x16_t b"
+      ],
+      "instructions": [
+        [
+          "UQADD"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.16B"
+        },
+        "b": {
+          "register": "Vm.16B"
+        }
+      }
+    },
+    "vqsubq_s16": {
+      "return_type": {
+        "value": "int16x8_t"
+      },
+      "arguments": [
+        "int16x8_t a",
+        "int16x8_t b"
+      ],
+      "instructions": [
+        [
+          "SQSUB"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.8H"
+        },
+        "b": {
+          "register": "Vm.8H"
+        }
+      }
+    },
+    "vqsubq_u8": {
+      "return_type": {
+        "value": "uint8x16_t"
+      },
+      "arguments": [
+        "uint8x16_t a",
+        "uint8x16_t b"
+      ],
+      "instructions": [
+        [
+          "UQSUB"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.16B"
+        },
+        "b": {
+          "register": "Vm.16B"
+        }
+      }
+    },
+    "vqtbl1q_u8": {
+      "return_type": {
+        "value": "uint8x16_t"
+      },
+      "arguments": [
+        "uint8x16_t t",
+        "uint8x16_t idx"
+      ],
+      "instructions": [
+        [
+          "TBL"
+        ]
+      ],
+      "arguments_preparation": {
+        "idx": {
+          "register": "Vm.16B"
+        },
+        "t": {
+          "register": "Vn.16B"
+        }
+      }
+    },
+    "vrev64q_u16": {
+      "return_type": {
+        "value": "uint16x8_t"
+      },
+      "arguments": [
+        "uint16x8_t vec"
+      ],
+      "instructions": [
+        [
+          "REV64"
+        ]
+      ],
+      "arguments_preparation": {
+        "vec": {
+          "register": "Vn.8H"
+        }
+      }
+    },
+    "vsubq_u16": {
+      "return_type": {
+        "value": "uint16x8_t"
+      },
+      "arguments": [
+        "uint16x8_t a",
+        "uint16x8_t b"
+      ],
+      "instructions": [
+        [
+          "SUB"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.8H"
+        },
+        "b": {
+          "register": "Vm.8H"
+        }
+      }
+    },
+    "vuzp1q_u32": {
+      "return_type": {
+        "value": "uint32x4_t"
+      },
+      "arguments": [
+        "uint32x4_t a",
+        "uint32x4_t b"
+      ],
+      "instructions": [
+        [
+          "UZP1"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.4S"
+        },
+        "b": {
+          "register": "Vm.4S"
+        }
+      }
+    },
+    "vzip1q_u32": {
+      "return_type": {
+        "value": "uint32x4_t"
+      },
+      "arguments": [
+        "uint32x4_t a",
+        "uint32x4_t b"
+      ],
+      "instructions": [
+        [
+          "ZIP1"
+        ]
+      ],
+      "arguments_preparation": {
+        "a": {
+          "register": "Vn.4S"
+        },
+        "b": {
+          "register": "Vm.4S"
+        }
+      }
+    }
+  }
+}

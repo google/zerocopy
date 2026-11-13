@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rust/inline-asm",
+    "rustc/inline-assembly",
+    "rustc/codegen",
+    "llvm/mc-layer",
+    "isa/x86-64",
+    "isa/aarch64"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 inline assembly implementation (rustc_target::asm, rustc_builtin_macros::asm, rustc_codegen_llvm::asm, naked_asm)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 MCAsmParser, X86AsmParser, and AArch64AsmParser",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1-rust-1.99.1-stable"
+      }
+    },
+    {
+      "name": "The Rust Reference (inline-assembly chapter)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "b96ad7f37eb5fcab7bd2ffd8f9fb4c20fa07c86b"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS 1.99)",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

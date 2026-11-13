@@ -1,0 +1,137 @@
+{
+  "intel_x86_xml": {
+    "xml_version": "3.6.9",
+    "xml_date": "07/12/2024",
+    "file_size_bytes": 6673004,
+    "total_intrinsics": 7146,
+    "with_operation_pseudocode": 7007,
+    "without_operation_pseudocode": 139,
+    "with_instruction_tag": 6194,
+    "total_operation_pseudocode_lines": 65734,
+    "unique_instruction_mnemonics": 1180,
+    "top_25_cpuid_features": {
+      "AVX512F": 2851,
+      "AVX512VL": 2521,
+      "AVX512_FP16": 1105,
+      "AVX512BW": 828,
+      "AVX512DQ": 399,
+      "AVX": 308,
+      "SSE": 263,
+      "SSE2": 238,
+      "AVX2": 193,
+      "AVX512_VBMI2": 150,
+      "MMX": 124,
+      "SSE4.1": 61,
+      "<NONE>": 45,
+      "AVX512CD": 42,
+      "AVX512_BF16": 38,
+      "AVX512_VNNI": 36,
+      "FMA": 32,
+      "SSSE3": 32,
+      "AVX512_VBMI": 30,
+      "GFNI": 27,
+      "AVX512_BITALG": 24,
+      "SSE4.2": 19,
+      "AVX512IFMA52": 18,
+      "AVX512VPOPCNTDQ": 18,
+      "BMI1": 17
+    },
+    "total_unique_cpuid_features": 88,
+    "by_tech": {
+      "AVX-512": 5160,
+      "SVML": 575,
+      "SSE_ALL": 515,
+      "AVX_ALL": 492,
+      "Other": 253,
+      "MMX": 124,
+      "AMX": 27
+    },
+    "pseudocode_construct_frequencies": {
+      "MEM_access": 591,
+      "FOR_loop": 5569,
+      "DEFINE_helper": 721,
+      "WHILE_loop": 87,
+      "IF_branch": 4110,
+      "MAX_zero_extend": 5702,
+      "CASE_switch": 356,
+      "Saturate_call": 328,
+      "FP_rounding_or_mxcsr": 104
+    }
+  },
+  "arm_acle_json_and_specs": {
+    "file_size_bytes": 5124039,
+    "total_intrinsics": 10277,
+    "by_architecture": {
+      "A32": 2614,
+      "A64": 10277,
+      "v7": 2183
+    },
+    "by_simd_isa": {
+      "Neon": 4293,
+      "SVE2": 1956,
+      "SVE": 4028
+    },
+    "with_operation_field": 0,
+    "with_instructions_mapping": 0,
+    "unique_base_instructions": 0,
+    "sample_entry_keys": [
+      "Architectures",
+      "Arguments_Preparation",
+      "SIMD_ISA",
+      "arguments",
+      "instructions",
+      "name",
+      "return_type"
+    ],
+    "stdarch_gen_arm_yaml_specs": {
+      "neon": {
+        "count": 4,
+        "files": [
+          "aarch64.spec.yml",
+          "aarch64.spec.yml",
+          "arm_shared.spec.yml",
+          "arm_shared.spec.yml"
+        ],
+        "total_lines": 59156
+      },
+      "sve": {
+        "count": 2,
+        "files": [
+          "aarch64.spec.yml",
+          "aarch64.spec.yml"
+        ],
+        "total_lines": 10514
+      },
+      "sve2": {
+        "count": 2,
+        "files": [
+          "aarch64.spec.yml",
+          "aarch64.spec.yml"
+        ],
+        "total_lines": 6412
+      }
+    }
+  },
+  "stdarch_verify_and_intrinsic_test": {
+    "stdarch_verify": {
+      "x86_intel_rs_lines": 895,
+      "x86_intel_referenced_intrinsics_in_exceptions": 109,
+      "arm_rs_lines": 5272,
+      "arm_referenced_intrinsics_in_exceptions": 4523
+    },
+    "intrinsic_test_missing_lists": {
+      "missing_aarch64_be_clang.txt": 28,
+      "missing_aarch64_be_common.txt": 78,
+      "missing_aarch64_be_gcc.txt": 13,
+      "missing_aarch64_clang.txt": 0,
+      "missing_aarch64_common.txt": 78,
+      "missing_aarch64_gcc.txt": 12,
+      "missing_arm_clang.txt": 0,
+      "missing_arm_common.txt": 308,
+      "missing_x86_clang.txt": 19,
+      "missing_x86_common.txt": 41,
+      "missing_x86_gcc.txt": 28,
+      "missing_x86_icx.txt": 15
+    }
+  }
+}

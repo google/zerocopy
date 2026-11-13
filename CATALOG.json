@@ -16029,6 +16029,68 @@
         "anneal/proof-automation"
       ]
     },
+    "llvm-compiled-rust-instruction-and-addressing-mode-frequencies": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 prebuilt standard library archives"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 backend and llvm-objdump disassembler"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm/lowering",
+        "rustc/codegen",
+        "isa/x86-64",
+        "isa/i386",
+        "isa/aarch64",
+        "verification/isa-coverage",
+        "verification/empirical-evaluation"
+      ]
+    },
+    "llvm-instruction-selection-fallbacks-and-libcall-contracts": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and compiler_builtins across eight Tier 1 targets"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 instruction selection and RuntimeLibcalls"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm/lowering",
+        "rustc/codegen",
+        "rustc/intrinsics",
+        "isa/x86-64",
+        "isa/i386",
+        "isa/aarch64",
+        "verification/compiler-verification"
+      ]
+    },
     "machine-code-verification-frameworks-and-assembly-contracts": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -20454,6 +20516,35 @@
         "lean/mechanization"
       ]
     },
+    "rust-ecosystem-inline-assembly-global-asm-and-naked-function-census": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 standard library, stdarch, and compiler-builtins"
+        },
+        {
+          "identity": {
+            "corpus": "crates.io-index-1949cf8c6b5b557f",
+            "snapshot_date": "2025-11-24"
+          },
+          "name": "crates.io corpus (top 100 crates by download volume and 3,680 unique cached crates)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/inline-asm",
+        "rustc/inline-assembly",
+        "cargo/corpora",
+        "isa/x86-64",
+        "isa/aarch64",
+        "verification/empirical-evaluation"
+      ]
+    },
     "rust-ffi-abi-witnesses-c-unwind-and-machine-resource-linking": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -22781,6 +22872,90 @@
         "rustc/metadata",
         "rustc/diagnostics",
         "llvm"
+      ]
+    },
+    "rustc-inline-assembly-specification-llvm-lowering-and-assembler-syntax": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 inline assembly implementation (rustc_target::asm, rustc_builtin_macros::asm, rustc_codegen_llvm::asm, naked_asm)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 MCAsmParser, X86AsmParser, and AArch64AsmParser"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "b96ad7f37eb5fcab7bd2ffd8f9fb4c20fa07c86b"
+          },
+          "name": "The Rust Reference (inline-assembly chapter)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "tag": "1.99"
+          },
+          "name": "Ferrocene Language Specification (FLS 1.99)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/inline-asm",
+        "rustc/inline-assembly",
+        "rustc/codegen",
+        "llvm/mc-layer",
+        "isa/x86-64",
+        "isa/aarch64"
+      ]
+    },
+    "rustc-intrinsics-simd-and-arch-semantic-sources": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, core::intrinsics, portable_simd, stdarch, Miri, and Cranelift/GCC backends"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/intrinsics",
+        "rustc/codegen",
+        "rust/miri",
+        "llvm/lowering",
+        "isa/x86-64",
+        "isa/aarch64",
+        "verification/compiler-verification"
       ]
     },
     "rustc-layout-computation-target-datalayouts-and-parametricity": {
@@ -26128,6 +26303,36 @@
         "verification/safe-haskell",
         "verification/safeverify",
         "verification/untrusted-dependencies"
+      ]
+    },
+    "vendor-intrinsic-specifications-stdarch-verification-and-lean-generation": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 stdarch vendor intrinsic specifications (x86-intel.xml v3.6.9 and arm_intrinsics.json)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and runtime"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/intrinsics",
+        "isa/x86-64",
+        "isa/aarch64",
+        "lean/isa-semantics",
+        "lean/mechanization",
+        "verification/isa-coverage"
       ]
     },
     "verified-amir-binary-wire-format-llbc-decoding-and-parser-admission": {

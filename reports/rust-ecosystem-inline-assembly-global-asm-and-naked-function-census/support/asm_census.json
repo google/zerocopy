@@ -1,0 +1,2775 @@
+{
+  "rust_1991_std": {
+    "files_with_asm_count": 11,
+    "files_with_asm": [
+      {
+        "file": "os/fortanix_sgx/arch.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "os/xous/ffi.rs",
+        "asm": 14,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/pal/sgx/abi/mem.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/pal/sgx/abi/mod.rs",
+        "asm": 0,
+        "naked_asm": 0,
+        "global_asm": 1,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/pal/sgx/abi/usercalls/alloc.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/pal/vexos/mod.rs",
+        "asm": 0,
+        "naked_asm": 0,
+        "global_asm": 1,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/pal/windows/mod.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/personality/gcc.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/stdio/teeos.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/thread/xous.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sys/thread_local/key/xous.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      }
+    ],
+    "macro_counts": {
+      "asm": 28,
+      "global_asm": 2
+    },
+    "naked_fn_attributes": 0,
+    "external_asm_files_count": 1,
+    "external_asm_files": [
+      "sys/pal/sgx/abi/entry.S"
+    ],
+    "option_counts": {
+      "nostack": 11,
+      "att_syntax": 7,
+      "preserves_flags": 4,
+      "noreturn": 4,
+      "pure": 2,
+      "nomem": 2,
+      "readonly": 1
+    },
+    "operand_counts": {
+      "inlateout": 105,
+      "in": 27,
+      "inout": 8,
+      "out": 3,
+      "lateout": 1
+    },
+    "reg_class_counts": {
+      "reg": 12,
+      "reg_byte": 1
+    },
+    "explicit_reg_counts": {
+      "a0": 15,
+      "a1": 15,
+      "a2": 15,
+      "a3": 14,
+      "a4": 14,
+      "a5": 14,
+      "a6": 14,
+      "a7": 14,
+      "rcx": 3,
+      "eax": 2,
+      "x0": 2,
+      "rdx": 1,
+      "rdi": 1,
+      "rsi": 1,
+      "ecx": 1,
+      "r0": 1,
+      "x1": 1,
+      "x2": 1,
+      "x3": 1,
+      "ra": 1
+    },
+    "top_40_mnemonics": {
+      "ecall": 15,
+      "mov": 3,
+      "xchg": 2,
+      "enclu": 2,
+      "mv": 2,
+      "lea": 1,
+      "entry.s": 1,
+      "rep": 1,
+      "verw": 1,
+      "movb": 1,
+      "mfence": 1,
+      "lfence": 1,
+      "movl": 1,
+      "andl": 1,
+      "andq": 1,
+      "movq": 1,
+      "ldr": 1,
+      "blx": 1,
+      "int": 1,
+      "brk": 1,
+      "pacib": 1,
+      "svc": 1,
+      "ret": 1
+    },
+    "directives": {
+      ".section": 1,
+      ".global": 1,
+      ".arm": 1,
+      ".inst": 1
+    },
+    "privileged_mnemonics": {
+      "ecall": 15,
+      "int": 1,
+      "svc": 1
+    }
+  },
+  "rust_1991_core": {
+    "files_with_asm_count": 2,
+    "files_with_asm": [
+      {
+        "file": "arch.rs",
+        "asm": 0,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 1
+      },
+      {
+        "file": "num/imp/dec2flt/fpu.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      }
+    ],
+    "macro_counts": {
+      "asm": 2
+    },
+    "naked_fn_attributes": 1,
+    "external_asm_files_count": 0,
+    "external_asm_files": [],
+    "option_counts": {
+      "nostack": 2
+    },
+    "operand_counts": {
+      "in": 2
+    },
+    "reg_class_counts": {
+      "reg": 2
+    },
+    "explicit_reg_counts": {},
+    "top_40_mnemonics": {
+      "fldcw": 1,
+      "fnstcw": 1
+    },
+    "directives": {},
+    "privileged_mnemonics": {}
+  },
+  "rust_1991_stdarch_core_arch": {
+    "files_with_asm_count": 21,
+    "files_with_asm": [
+      {
+        "file": "arm_shared/barrier/cp15.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "arm_shared/hints.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "loongarch64/mod.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "loongarch_shared/mod.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "riscv64/mod.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "riscv64/zk.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "riscv_shared/mod.rs",
+        "asm": 48,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "riscv_shared/p.rs",
+        "asm": 105,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/avx.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/avx2.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/avx512f.rs",
+        "asm": 10,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/avx512fp16.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/bt.rs",
+        "asm": 4,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/cpuid.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/eflags.rs",
+        "asm": 4,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/sse.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/sse2.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/sse41.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86/sse4a.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86_64/bt.rs",
+        "asm": 4,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86_64/sse2.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      }
+    ],
+    "macro_counts": {
+      "asm": 204
+    },
+    "naked_fn_attributes": 0,
+    "external_asm_files_count": 0,
+    "external_asm_files": [],
+    "option_counts": {
+      "nostack": 200,
+      "pure": 118,
+      "nomem": 116,
+      "preserves_flags": 84,
+      "readonly": 23,
+      "att_syntax": 12
+    },
+    "operand_counts": {
+      "in": 316,
+      "lateout": 112,
+      "out": 27,
+      "inout": 7,
+      "inlateout": 4,
+      "const": 1
+    },
+    "reg_class_counts": {
+      "reg": 420,
+      "xmm_reg": 15,
+      "kreg": 9,
+      "reg_byte": 8,
+      "ymm_reg": 4,
+      "zmm_reg": 4
+    },
+    "explicit_reg_counts": {
+      "eax": 2,
+      "ecx": 2,
+      "edx": 2
+    },
+    "top_40_mnemonics": {
+      "setc": 8,
+      "sfence.vma": 4,
+      "mcr": 3,
+      "vmovss": 3,
+      "vmovsd": 3,
+      "nop": 2,
+      "vmovntdq": 2,
+      "vmovntpd": 2,
+      "vmovntps": 2,
+      "vmovntdqa": 2,
+      "vmovsh": 2,
+      "mov": 2,
+      "cpuid": 2,
+      "xchg": 2,
+      "pop": 2,
+      "push": 2,
+      "movnti": 2,
+      "rdtime.d": 1,
+      "rdtimel.w": 1,
+      "rdtimeh.w": 1,
+      "aes64ks1i": 1,
+      "aes64ks2": 1,
+      "pause": 1,
+      "wfi": 1,
+      "fence.i": 1,
+      "sinval.vma": 1,
+      "sfence.w.inval": 1,
+      "sfence.inval.ir": 1,
+      "hfence.vvma": 1,
+      "hfence.gvma": 1,
+      "hinval.vvma": 1,
+      "hinval.gvma": 1,
+      "frrm": 1,
+      "vmovdqu16": 1,
+      "btl": 1,
+      "btsl": 1,
+      "btrl": 1,
+      "btcl": 1,
+      "pushfd": 1,
+      "pushfq": 1
+    },
+    "directives": {
+      ".insn": 140,
+      ".option": 9
+    },
+    "privileged_mnemonics": {
+      "sfence.vma": 4,
+      "cpuid": 2,
+      "wfi": 1
+    }
+  },
+  "rust_1991_panic_unwind": {
+    "files_with_asm_count": 0,
+    "files_with_asm": [],
+    "macro_counts": {},
+    "naked_fn_attributes": 0,
+    "external_asm_files_count": 0,
+    "external_asm_files": [],
+    "option_counts": {},
+    "operand_counts": {},
+    "reg_class_counts": {},
+    "explicit_reg_counts": {},
+    "top_40_mnemonics": {},
+    "directives": {},
+    "privileged_mnemonics": {}
+  },
+  "compiler_builtins": {
+    "files_with_asm_count": 13,
+    "files_with_asm": [
+      {
+        "file": "aarch64.rs",
+        "asm": 0,
+        "naked_asm": 1,
+        "global_asm": 0,
+        "naked_attrs": 1
+      },
+      {
+        "file": "aarch64_outline_atomics.rs",
+        "asm": 0,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 4
+      },
+      {
+        "file": "arm.rs",
+        "asm": 0,
+        "naked_asm": 4,
+        "global_asm": 0,
+        "naked_attrs": 4
+      },
+      {
+        "file": "hexagon.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 1,
+        "naked_attrs": 0
+      },
+      {
+        "file": "int/specialized_div_rem/mod.rs",
+        "asm": 2,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "int/udiv.rs",
+        "asm": 0,
+        "naked_asm": 2,
+        "global_asm": 0,
+        "naked_attrs": 2
+      },
+      {
+        "file": "macros.rs",
+        "asm": 0,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 3
+      },
+      {
+        "file": "mem/x86_64.rs",
+        "asm": 12,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "probestack.rs",
+        "asm": 0,
+        "naked_asm": 3,
+        "global_asm": 0,
+        "naked_attrs": 4
+      },
+      {
+        "file": "sync/arm_linux.rs",
+        "asm": 1,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "sync/thumbv6k.rs",
+        "asm": 3,
+        "naked_asm": 0,
+        "global_asm": 0,
+        "naked_attrs": 0
+      },
+      {
+        "file": "x86.rs",
+        "asm": 0,
+        "naked_asm": 2,
+        "global_asm": 0,
+        "naked_attrs": 2
+      },
+      {
+        "file": "x86_64.rs",
+        "asm": 0,
+        "naked_asm": 1,
+        "global_asm": 0,
+        "naked_attrs": 1
+      }
+    ],
+    "macro_counts": {
+      "naked_asm": 13,
+      "asm": 21,
+      "global_asm": 1
+    },
+    "naked_fn_attributes": 21,
+    "external_asm_files_count": 26,
+    "external_asm_files": [
+      "hexagon/common_entry_exit_abi1.s",
+      "hexagon/common_entry_exit_abi2.s",
+      "hexagon/common_entry_exit_legacy.s",
+      "hexagon/dfaddsub.s",
+      "hexagon/dfdiv.s",
+      "hexagon/dffma.s",
+      "hexagon/dfminmax.s",
+      "hexagon/dfmul.s",
+      "hexagon/dfsqrt.s",
+      "hexagon/divdi3.s",
+      "hexagon/divsi3.s",
+      "hexagon/fastmath2_dlib_asm.s",
+      "hexagon/fastmath2_ldlib_asm.s",
+      "hexagon/func_macro.s",
+      "hexagon/memcpy_forward_vp4cp4n2.s",
+      "hexagon/memcpy_likely_aligned.s",
+      "hexagon/moddi3.s",
+      "hexagon/modsi3.s",
+      "hexagon/sfdiv_opt.s",
+      "hexagon/sfsqrt_opt.s",
+      "hexagon/udivdi3.s",
+      "hexagon/udivmoddi4.s",
+      "hexagon/udivmodsi4.s",
+      "hexagon/udivsi3.s",
+      "hexagon/umoddi3.s",
+      "hexagon/umodsi3.s"
+    ],
+    "option_counts": {
+      "nostack": 21,
+      "preserves_flags": 17,
+      "pure": 2,
+      "nomem": 2,
+      "raw": 1,
+      "readonly": 1
+    },
+    "operand_counts": {
+      "inout": 26,
+      "in": 17,
+      "sym": 5,
+      "out": 5,
+      "inlateout": 4,
+      "lateout": 2
+    },
+    "reg_class_counts": {
+      "reg": 21,
+      "xmm_reg": 2
+    },
+    "explicit_reg_counts": {
+      "rdi": 9,
+      "rax": 5,
+      "rsi": 5,
+      "ecx": 5,
+      "rcx": 4,
+      "rdx": 2,
+      "al": 1
+    },
+    "top_40_mnemonics": {
+      "sub": 25,
+      "mov": 19,
+      "push": 14,
+      "cmp": 13,
+      "pop": 11,
+      "rep": 11,
+      "add": 10,
+      "test": 10,
+      "ldr": 8,
+      "ret": 8,
+      "ja": 5,
+      "bl": 4,
+      "rol": 4,
+      "lsl": 3,
+      "clr": 3,
+      "jna": 3,
+      "leave": 3,
+      "lea": 3,
+      "subs": 2,
+      "str": 2,
+      "div": 2,
+      "ldi": 2,
+      "cp": 2,
+      "brlo": 2,
+      "sbr": 2,
+      "dec": 2,
+      "brne": 2,
+      "movdqa": 2,
+      "sgx": 2,
+      "fortanix": 2,
+      "jmp": 2,
+      "ldrex": 2,
+      "beq": 2,
+      "jb": 2,
+      "b.gt": 1,
+      "muls": 1,
+      "isync": 1,
+      "cpc": 1,
+      "sbc": 1,
+      "std": 1
+    },
+    "directives": {
+      ".cfi_adjust_cfa_offset": 6,
+      ".cfi_def_cfa_register": 6,
+      ".cfi_startproc": 3,
+      ".cfi_offset": 3,
+      ".cfi_endproc": 3,
+      ".p2align": 1
+    },
+    "privileged_mnemonics": {
+      "str": 2
+    }
+  },
+  "crates_io_corpus": {
+    "total_unique_crates_scanned_in_cache": 3680,
+    "top_100_crates_matched": 100,
+    "top_100_with_rust_asm": [
+      "getrandom",
+      "parking_lot",
+      "rustix"
+    ],
+    "top_100_with_external_asm": [],
+    "crates_with_rust_asm_count": 87,
+    "crates_with_external_cc_asm_count": 28,
+    "aggregate_macro_counts": {
+      "asm": 1198,
+      "global_asm": 8,
+      "naked_asm": 88
+    },
+    "download_weighted_macro_counts": {
+      "asm": 19649070695,
+      "global_asm": 92739933,
+      "naked_asm": 88
+    },
+    "aggregate_option_counts": {
+      "nostack": 704,
+      "preserves_flags": 505,
+      "nomem": 232,
+      "readonly": 121,
+      "pure": 112,
+      "att_syntax": 87,
+      "noreturn": 34,
+      "may_unwind": 1
+    },
+    "aggregate_operand_counts": {
+      "lateout": 1681,
+      "in": 1611,
+      "out": 452,
+      "inlateout": 445,
+      "inout": 189,
+      "const": 132,
+      "sym": 71,
+      "clobber_abi": 3
+    },
+    "aggregate_reg_class_counts": {
+      "reg": 746,
+      "vreg": 172,
+      "xmm_reg": 29,
+      "vreg_low16": 8,
+      "reg_byte": 6,
+      "zmm_reg": 3,
+      "ymm_reg": 3,
+      "kreg": 2
+    },
+    "aggregate_top_40_mnemonics": {
+      "mov": 326,
+      "add": 118,
+      "syscall": 118,
+      "ld": 117,
+      "sd": 99,
+      "svc": 95,
+      "ldp": 94,
+      "ret": 89,
+      "msr": 88,
+      "stp": 88,
+      "mrs": 79,
+      "addi": 73,
+      "ldr": 70,
+      "push": 63,
+      "fld": 63,
+      "fsd": 60,
+      "pop": 55,
+      "sw": 51,
+      "sub": 50,
+      "mv": 48,
+      "neg": 43,
+      "sc": 42,
+      "prfm": 41,
+      "str": 40,
+      "bns": 40,
+      "ecall": 38,
+      "int": 36,
+      "cmp": 36,
+      "li": 35,
+      "lw": 33,
+      "movdqu": 32,
+      "call": 29,
+      "isb": 27,
+      "ld.d": 27,
+      "nop": 25,
+      "st.d": 25,
+      "adrp": 25,
+      "la": 25,
+      "xchg": 25,
+      "lock": 23
+    },
+    "aggregate_directives": {
+      ".4byte": 134,
+      ".set": 26,
+      ".cfi_def_cfa_offset": 24,
+      ".option": 18,
+      ".cfi_startproc": 14,
+      ".cfi_endproc": 14,
+      ".macro": 11,
+      ".endm": 11,
+      ".cfi_offset": 10,
+      ".cfi_restore": 10,
+      ".pushsection": 9,
+      ".popsection": 9,
+      ".inst": 9,
+      ".global": 8,
+      ".balign": 6,
+      ".align": 6,
+      ".type": 5,
+      ".size": 5,
+      ".p2align": 5,
+      ".dword": 4,
+      ".to_string()": 3,
+      ".section": 2,
+      ".word": 2,
+      ".arch": 2,
+      ".hidden": 2,
+      ".cfi_adjust_cfa_offset": 2,
+      ".attribute": 2,
+      ".cfi_sections": 1,
+      ".thumb_func": 1,
+      ".ltorg": 1
+    },
+    "aggregate_privileged_mnemonics": {
+      "syscall": 118,
+      "svc": 95,
+      "msr": 88,
+      "mrs": 79,
+      "str": 42,
+      "ecall": 40,
+      "int": 37,
+      "isb": 27,
+      "csrw": 21,
+      "dsb": 17,
+      "dc": 13,
+      "tlbi": 11,
+      "sfence.vma": 10,
+      "csrr": 9,
+      "csrs": 8,
+      "wfi": 6,
+      "ic": 6,
+      "dmb": 5,
+      "csrc": 5,
+      "cpuid": 4,
+      "wfe": 3,
+      "eret": 3,
+      "cli": 3,
+      "sti": 3,
+      "hlt": 3,
+      "sret": 2,
+      "rdtscp": 2,
+      "swapgs": 2,
+      "lgdt": 2,
+      "sgdt": 2
+    },
+    "top_40_crates_with_rust_asm": [
+      {
+        "crate": "getrandom",
+        "dir": "getrandom-0.4.3",
+        "in_top_100": true,
+        "recent_downloads": 142349399,
+        "macro_counts": {
+          "asm": 9
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            3
+          ],
+          [
+            "svc",
+            3
+          ],
+          [
+            "mrs",
+            3
+          ],
+          [
+            "syscall",
+            2
+          ],
+          [
+            "ecall",
+            1
+          ],
+          [
+            "int",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "rustix",
+        "dir": "rustix-1.1.6",
+        "in_top_100": true,
+        "recent_downloads": 92739926,
+        "macro_counts": {
+          "asm": 193,
+          "global_asm": 1
+        },
+        "naked_fn_attributes": 1,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "syscall",
+            72
+          ],
+          [
+            "svc",
+            56
+          ],
+          [
+            "mov",
+            51
+          ],
+          [
+            "sc",
+            28
+          ],
+          [
+            "bns",
+            26
+          ],
+          [
+            "neg",
+            26
+          ],
+          [
+            "sw",
+            18
+          ],
+          [
+            "int",
+            15
+          ],
+          [
+            "ecall",
+            14
+          ],
+          [
+            "subu",
+            10
+          ]
+        ]
+      },
+      {
+        "crate": "parking_lot",
+        "dir": "parking_lot-0.7.1",
+        "in_top_100": true,
+        "recent_downloads": 78186566,
+        "macro_counts": {
+          "asm": 6
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "lock",
+            6
+          ],
+          [
+            "r",
+            6
+          ],
+          [
+            "memory",
+            6
+          ],
+          [
+            "volatile",
+            6
+          ],
+          [
+            "cmpxchgl",
+            4
+          ],
+          [
+            "xacquire",
+            3
+          ],
+          [
+            "xrelease",
+            3
+          ],
+          [
+            "cmpxchgq",
+            2
+          ]
+        ]
+      },
+      {
+        "crate": "private-gemm-x86",
+        "dir": "private-gemm-x86-0.1.22",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 129
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            5
+          ],
+          [
+            "pop",
+            4
+          ],
+          [
+            "ret",
+            3
+          ],
+          [
+            "push",
+            3
+          ],
+          [
+            "add",
+            3
+          ],
+          [
+            "cmp",
+            2
+          ],
+          [
+            "test",
+            2
+          ],
+          [
+            "bt",
+            2
+          ],
+          [
+            "jmp",
+            2
+          ],
+          [
+            "reg",
+            2
+          ]
+        ]
+      },
+      {
+        "crate": "portable-atomic",
+        "dir": "portable-atomic-1.15.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 114
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            22
+          ],
+          [
+            "xp",
+            12
+          ],
+          [
+            "lock",
+            10
+          ],
+          [
+            "ld",
+            9
+          ],
+          [
+            "lg",
+            8
+          ],
+          [
+            "st",
+            7
+          ],
+          [
+            "cbnz",
+            6
+          ],
+          [
+            "bne",
+            6
+          ],
+          [
+            "cdsg",
+            6
+          ],
+          [
+            "xchg",
+            6
+          ]
+        ]
+      },
+      {
+        "crate": "x86",
+        "dir": "x86-0.52.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 97
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            28
+          ],
+          [
+            "movq",
+            10
+          ],
+          [
+            "syscall",
+            7
+          ],
+          [
+            "popq",
+            6
+          ],
+          [
+            "pushq",
+            6
+          ],
+          [
+            "movw",
+            5
+          ],
+          [
+            "encls",
+            3
+          ],
+          [
+            "enclu",
+            2
+          ],
+          [
+            "pushfl",
+            1
+          ],
+          [
+            "popl",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "syscalls",
+        "dir": "syscalls-0.8.1",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 95
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "syscall",
+            29
+          ],
+          [
+            "svc",
+            28
+          ],
+          [
+            "movs",
+            21
+          ],
+          [
+            "sc",
+            14
+          ],
+          [
+            "bns",
+            14
+          ],
+          [
+            "neg",
+            14
+          ],
+          [
+            "ecall",
+            14
+          ],
+          [
+            "int",
+            7
+          ],
+          [
+            "sw",
+            6
+          ],
+          [
+            "xchg",
+            4
+          ]
+        ]
+      },
+      {
+        "crate": "moana",
+        "dir": "moana-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 61,
+          "naked_asm": 20,
+          "global_asm": 2
+        },
+        "naked_fn_attributes": 20,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "msr",
+            57
+          ],
+          [
+            "ld",
+            48
+          ],
+          [
+            "stp",
+            44
+          ],
+          [
+            "sd",
+            44
+          ],
+          [
+            "mrs",
+            39
+          ],
+          [
+            "ldp",
+            35
+          ],
+          [
+            "fsd",
+            32
+          ],
+          [
+            "fld",
+            32
+          ],
+          [
+            "ldr",
+            29
+          ],
+          [
+            "mov",
+            28
+          ]
+        ]
+      },
+      {
+        "crate": "x86_64",
+        "dir": "x86_64-0.15.2",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 51
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            14
+          ],
+          [
+            "push",
+            8
+          ],
+          [
+            "sti",
+            2
+          ],
+          [
+            "hlt",
+            2
+          ],
+          [
+            "lea",
+            2
+          ],
+          [
+            "base",
+            2
+          ],
+          [
+            "cli",
+            1
+          ],
+          [
+            "int3",
+            1
+          ],
+          [
+            "int",
+            1
+          ],
+          [
+            "nop",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "cortex-m",
+        "dir": "cortex-m-0.7.6",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 48
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mrs",
+            15
+          ],
+          [
+            "msr",
+            14
+          ],
+          [
+            "isb",
+            5
+          ],
+          [
+            "cpsid",
+            5
+          ],
+          [
+            "mov",
+            4
+          ],
+          [
+            "ldr",
+            4
+          ],
+          [
+            "cpsie",
+            3
+          ],
+          [
+            "dsb",
+            3
+          ],
+          [
+            "bkpt",
+            2
+          ],
+          [
+            "orr.w",
+            2
+          ]
+        ]
+      },
+      {
+        "crate": "polyhal",
+        "dir": "polyhal-0.4.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 24,
+          "naked_asm": 13
+        },
+        "naked_fn_attributes": 13,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "ret",
+            11
+          ],
+          [
+            "dbar",
+            5
+          ],
+          [
+            "msr",
+            4
+          ],
+          [
+            "move",
+            4
+          ],
+          [
+            "mv",
+            4
+          ],
+          [
+            "mov",
+            4
+          ],
+          [
+            "tlbi",
+            3
+          ],
+          [
+            "dsb",
+            3
+          ],
+          [
+            "isb",
+            3
+          ],
+          [
+            "mrs",
+            3
+          ]
+        ]
+      },
+      {
+        "crate": "linux-unsafe",
+        "dir": "linux-unsafe-0.12.1",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 28
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "svc",
+            7
+          ],
+          [
+            "ecall",
+            7
+          ],
+          [
+            "int",
+            7
+          ],
+          [
+            "syscall",
+            7
+          ]
+        ]
+      },
+      {
+        "crate": "unwinding",
+        "dir": "unwinding-0.2.10",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "naked_asm": 11,
+          "asm": 11
+        },
+        "naked_fn_attributes": 6,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            51
+          ],
+          [
+            "ret",
+            22
+          ],
+          [
+            "mv",
+            18
+          ],
+          [
+            "ldp",
+            17
+          ],
+          [
+            "add",
+            16
+          ],
+          [
+            "lw",
+            8
+          ],
+          [
+            "stp",
+            7
+          ],
+          [
+            "move",
+            6
+          ],
+          [
+            "jalr",
+            6
+          ],
+          [
+            "addi.d",
+            4
+          ]
+        ]
+      },
+      {
+        "crate": "redox_syscall",
+        "dir": "redox_syscall-0.5.7",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 21
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            8
+          ],
+          [
+            "xchg",
+            4
+          ],
+          [
+            "int",
+            3
+          ],
+          [
+            "svc",
+            1
+          ],
+          [
+            "ecall",
+            1
+          ],
+          [
+            "syscall",
+            1
+          ],
+          [
+            "lock",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "scirs2-core",
+        "dir": "scirs2-core-0.6.5",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 21
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "prfm",
+            7
+          ],
+          [
+            "prefetcht0",
+            3
+          ],
+          [
+            "mfence",
+            2
+          ],
+          [
+            "prefetcht1",
+            1
+          ],
+          [
+            "prefetcht2",
+            1
+          ],
+          [
+            "prefetchnta",
+            1
+          ],
+          [
+            "dmb",
+            1
+          ],
+          [
+            "dc",
+            1
+          ],
+          [
+            "sfence",
+            1
+          ],
+          [
+            "rdvl",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "gemm-common",
+        "dir": "gemm-common-0.19.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 20
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "fmla",
+            9
+          ],
+          [
+            "nop",
+            3
+          ],
+          [
+            "fcvt",
+            2
+          ],
+          [
+            "fadd",
+            2
+          ],
+          [
+            "fmul",
+            2
+          ],
+          [
+            "fcvtl",
+            1
+          ],
+          [
+            "fcvtn",
+            1
+          ],
+          [
+            "fmadd",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "constant_time_eq",
+        "dir": "constant_time_eq-0.4.2",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 19
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "msr",
+            2
+          ],
+          [
+            "mrs",
+            1
+          ],
+          [
+            "sb",
+            1
+          ],
+          [
+            "dsb",
+            1
+          ],
+          [
+            "isb",
+            1
+          ],
+          [
+            "cmeq",
+            1
+          ],
+          [
+            "and",
+            1
+          ],
+          [
+            "shrn",
+            1
+          ],
+          [
+            "vpcmpeqb",
+            1
+          ],
+          [
+            "pcmpeqb",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "moa_cache",
+        "dir": "moa_cache-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 19
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "dc",
+            7
+          ],
+          [
+            "ic",
+            4
+          ],
+          [
+            "fence",
+            4
+          ],
+          [
+            "fence.i",
+            3
+          ],
+          [
+            "mrs",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "elf_loader",
+        "dir": "elf_loader-0.14.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 7,
+          "naked_asm": 11
+        },
+        "naked_fn_attributes": 11,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "movdqu",
+            32
+          ],
+          [
+            "ldp",
+            22
+          ],
+          [
+            "push",
+            22
+          ],
+          [
+            "stp",
+            21
+          ],
+          [
+            "pop",
+            20
+          ],
+          [
+            "fsd",
+            16
+          ],
+          [
+            "fsw",
+            16
+          ],
+          [
+            "fld",
+            16
+          ],
+          [
+            "flw",
+            16
+          ],
+          [
+            "mov",
+            15
+          ]
+        ]
+      },
+      {
+        "crate": "libm",
+        "dir": "libm-0.2.16",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 17
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "fstp",
+            5
+          ],
+          [
+            "fldcw",
+            4
+          ],
+          [
+            "frintn",
+            3
+          ],
+          [
+            "fsqrt",
+            3
+          ],
+          [
+            "fld",
+            3
+          ],
+          [
+            "frndint",
+            3
+          ],
+          [
+            "fmadd",
+            2
+          ],
+          [
+            "fstcw",
+            2
+          ],
+          [
+            "mov",
+            2
+          ],
+          [
+            "ptr",
+            2
+          ]
+        ]
+      },
+      {
+        "crate": "wasmtime-internal-fiber",
+        "dir": "wasmtime-internal-fiber-48.0.6",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "naked_asm": 16
+        },
+        "naked_fn_attributes": 16,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "ld",
+            22
+          ],
+          [
+            "sw",
+            14
+          ],
+          [
+            "lw",
+            14
+          ],
+          [
+            "sd",
+            14
+          ],
+          [
+            "st.d",
+            12
+          ],
+          [
+            "ld.d",
+            12
+          ],
+          [
+            "fsd",
+            12
+          ],
+          [
+            "fld",
+            12
+          ],
+          [
+            "push",
+            11
+          ],
+          [
+            "pop",
+            11
+          ]
+        ]
+      },
+      {
+        "crate": "moa_irqflags",
+        "dir": "moa_irqflags-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 15
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "msr",
+            6
+          ],
+          [
+            "csrs",
+            4
+          ],
+          [
+            "mrs",
+            2
+          ],
+          [
+            "csrc",
+            2
+          ],
+          [
+            "csrrc",
+            1
+          ],
+          [
+            "csrr",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "objc2",
+        "dir": "objc2-0.6.5",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 13
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "nop",
+            7
+          ],
+          [
+            "mov",
+            4
+          ],
+          [
+            "bl",
+            3
+          ]
+        ]
+      },
+      {
+        "crate": "half",
+        "dir": "half-2.7.1",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 12
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "fcvt",
+            4
+          ],
+          [
+            "fcvtl",
+            3
+          ],
+          [
+            "fcvtn",
+            3
+          ],
+          [
+            "fcvtl2",
+            1
+          ],
+          [
+            "fcvtn2",
+            1
+          ],
+          [
+            "fadd",
+            1
+          ],
+          [
+            "fsub",
+            1
+          ],
+          [
+            "fmul",
+            1
+          ],
+          [
+            "fdiv",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "moa_memops",
+        "dir": "moa_memops-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "naked_asm": 10
+        },
+        "naked_fn_attributes": 10,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "addi",
+            29
+          ],
+          [
+            "ret",
+            14
+          ],
+          [
+            "sub",
+            13
+          ],
+          [
+            "sd",
+            12
+          ],
+          [
+            "cmp",
+            9
+          ],
+          [
+            "add",
+            8
+          ],
+          [
+            "b.lo",
+            7
+          ],
+          [
+            "li",
+            7
+          ],
+          [
+            "mov",
+            6
+          ],
+          [
+            "bltu",
+            6
+          ]
+        ]
+      },
+      {
+        "crate": "wasmtime-internal-unwinder",
+        "dir": "wasmtime-internal-unwinder-48.0.6",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 9
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mov",
+            8
+          ],
+          [
+            "mv",
+            3
+          ],
+          [
+            "br",
+            2
+          ],
+          [
+            "lgr",
+            2
+          ],
+          [
+            "xpaclri",
+            1
+          ],
+          [
+            "jr",
+            1
+          ],
+          [
+            "jmp",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "cera",
+        "dir": "cera-0.5.6",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 8
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "prfm",
+            23
+          ],
+          [
+            "fcvt",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "ruspiro-arch-aarch64",
+        "dir": "ruspiro-arch-aarch64-0.1.7",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 8
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "nop",
+            1
+          ],
+          [
+            "wfe",
+            1
+          ],
+          [
+            "sev",
+            1
+          ],
+          [
+            "isb",
+            1
+          ],
+          [
+            "dsb",
+            1
+          ],
+          [
+            "dmb",
+            1
+          ],
+          [
+            "mrs",
+            1
+          ],
+          [
+            "msr",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "zlib-rs",
+        "dir": "zlib-rs-0.6.8",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 8
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "crc32b",
+            1
+          ],
+          [
+            "crc32h",
+            1
+          ],
+          [
+            "crc32w",
+            1
+          ],
+          [
+            "crc32x",
+            1
+          ],
+          [
+            "crc.w.b.w",
+            1
+          ],
+          [
+            "crc.w.h.w",
+            1
+          ],
+          [
+            "crc.w.w.w",
+            1
+          ],
+          [
+            "crc.w.d.w",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "directcpp-macro",
+        "dir": "directcpp-macro-0.2.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 7
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "let",
+            16
+          ],
+          [
+            "mov",
+            9
+          ],
+          [
+            "if",
+            2
+          ]
+        ]
+      },
+      {
+        "crate": "moa_barrier",
+        "dir": "moa_barrier-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 7
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "fence",
+            5
+          ],
+          [
+            "pause",
+            1
+          ],
+          [
+            "fence.i",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "pulp",
+        "dir": "pulp-0.22.3",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 7
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "fcmla",
+            6
+          ]
+        ]
+      },
+      {
+        "crate": "wasmtime-internal-jit-icache-coherence",
+        "dir": "wasmtime-internal-jit-icache-coherence-50.0.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 7
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "dsb",
+            2
+          ],
+          [
+            "mrs",
+            1
+          ],
+          [
+            "dc",
+            1
+          ],
+          [
+            "ic",
+            1
+          ],
+          [
+            "isb",
+            1
+          ],
+          [
+            "fence.i",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "zmij",
+        "dir": "zmij-1.0.23",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 7
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": []
+      },
+      {
+        "crate": "moa_uaccess",
+        "dir": "moa_uaccess-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "naked_asm": 6
+        },
+        "naked_fn_attributes": 6,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "add",
+            57
+          ],
+          [
+            "addi",
+            27
+          ],
+          [
+            "ld",
+            20
+          ],
+          [
+            "ldr",
+            18
+          ],
+          [
+            "str",
+            18
+          ],
+          [
+            "ret",
+            18
+          ],
+          [
+            "sd",
+            18
+          ],
+          [
+            "sub",
+            16
+          ],
+          [
+            "mov",
+            16
+          ],
+          [
+            "tbz",
+            14
+          ]
+        ]
+      },
+      {
+        "crate": "nano-gemm-codegen",
+        "dir": "nano-gemm-codegen-0.2.1",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 6
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "fcmla",
+            6
+          ]
+        ]
+      },
+      {
+        "crate": "oxiblas-core",
+        "dir": "oxiblas-core-0.2.2",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 6
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "prfm",
+            6
+          ]
+        ]
+      },
+      {
+        "crate": "p3-monty-31",
+        "dir": "p3-monty-31-0.4.3",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 5
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "vmovshdup",
+            2
+          ]
+        ]
+      },
+      {
+        "crate": "heapless",
+        "dir": "heapless-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 4
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "clrex",
+            2
+          ],
+          [
+            "ldrex",
+            1
+          ],
+          [
+            "strex",
+            1
+          ]
+        ]
+      },
+      {
+        "crate": "moa_percpu",
+        "dir": "moa_percpu-0.8.0",
+        "in_top_100": false,
+        "recent_downloads": 0,
+        "macro_counts": {
+          "asm": 4
+        },
+        "naked_fn_attributes": 0,
+        "external_asm_files_count": 0,
+        "top_mnemonics": [
+          [
+            "mv",
+            2
+          ],
+          [
+            "mrs",
+            1
+          ],
+          [
+            "msr",
+            1
+          ]
+        ]
+      }
+    ],
+    "top_30_crates_with_external_cc_asm": [
+      {
+        "crate": "aws-lc-sys",
+        "dir": "aws-lc-sys-0.46.0",
+        "in_top_100": false,
+        "external_asm_files_count": 951,
+        "sample_files": [
+          "aws-lc/crypto/fipsmodule/ml_dsa/mldsa/native/aarch64/src/mldsa_intt_aarch64_asm.S",
+          "aws-lc/crypto/fipsmodule/ml_dsa/mldsa/native/aarch64/src/mldsa_ntt_aarch64_asm.S",
+          "aws-lc/crypto/fipsmodule/ml_dsa/mldsa/native/aarch64/src/mldsa_pointwise_montgomery_aarch64_asm.S",
+          "aws-lc/crypto/fipsmodule/ml_dsa/mldsa/native/aarch64/src/mldsa_poly_caddq_aarch64_asm.S",
+          "aws-lc/crypto/fipsmodule/ml_dsa/mldsa/native/aarch64/src/mldsa_poly_chknorm_aarch64_asm.S"
+        ]
+      },
+      {
+        "crate": "gmp-mpfr-sys",
+        "dir": "gmp-mpfr-sys-1.7.1",
+        "in_top_100": false,
+        "external_asm_files_count": 927,
+        "sample_files": [
+          "gmp-6.3.0-c/mpn/alpha/add_n.asm",
+          "gmp-6.3.0-c/mpn/alpha/addmul_1.asm",
+          "gmp-6.3.0-c/mpn/alpha/aorslsh1_n.asm",
+          "gmp-6.3.0-c/mpn/alpha/aorslsh2_n.asm",
+          "gmp-6.3.0-c/mpn/alpha/bdiv_dbm1c.asm"
+        ]
+      },
+      {
+        "crate": "rav1e",
+        "dir": "rav1e-0.8.1",
+        "in_top_100": false,
+        "external_asm_files_count": 94,
+        "sample_files": [
+          "src/arm/32/cdef.S",
+          "src/arm/32/cdef16.S",
+          "src/arm/32/cdef_tmpl.S",
+          "src/arm/32/ipred.S",
+          "src/arm/32/ipred16.S"
+        ]
+      },
+      {
+        "crate": "ring",
+        "dir": "ring-0.17.14",
+        "in_top_100": false,
+        "external_asm_files_count": 90,
+        "sample_files": [
+          "crypto/curve25519/asm/x25519-asm-arm.S",
+          "crypto/poly1305/poly1305_arm_asm.S",
+          "pregenerated/aes-gcm-avx2-x86_64-elf.S",
+          "pregenerated/aes-gcm-avx2-x86_64-macosx.S",
+          "pregenerated/aes-gcm-avx2-x86_64-nasm.asm"
+        ]
+      },
+      {
+        "crate": "clone_dyn",
+        "dir": "clone_dyn-0.1.0",
+        "in_top_100": false,
+        "external_asm_files_count": 82,
+        "sample_files": [
+          "sample/js/Experiment.s",
+          "sample/js/ExtendReplacing.s",
+          "sample/js/RoutineOptionsLowLevel.s",
+          "sample/js/SampleLines.s",
+          "sample/js/SampleRegExp.s"
+        ]
+      },
+      {
+        "crate": "clone_dyn_meta",
+        "dir": "clone_dyn_meta-0.1.1",
+        "in_top_100": false,
+        "external_asm_files_count": 82,
+        "sample_files": [
+          "sample/js/Experiment.s",
+          "sample/js/ExtendReplacing.s",
+          "sample/js/RoutineOptionsLowLevel.s",
+          "sample/js/SampleLines.s",
+          "sample/js/SampleRegExp.s"
+        ]
+      },
+      {
+        "crate": "winterval",
+        "dir": "winterval-0.1.5",
+        "in_top_100": false,
+        "external_asm_files_count": 82,
+        "sample_files": [
+          "sample/js/Experiment.s",
+          "sample/js/ExtendReplacing.s",
+          "sample/js/RoutineOptionsLowLevel.s",
+          "sample/js/SampleLines.s",
+          "sample/js/SampleRegExp.s"
+        ]
+      },
+      {
+        "crate": "libffi-sys",
+        "dir": "libffi-sys-4.1.0",
+        "in_top_100": false,
+        "external_asm_files_count": 48,
+        "sample_files": [
+          "libffi/src/aarch64/sysv.S",
+          "libffi/src/aarch64/win64_armasm.S",
+          "libffi/src/alpha/osf.S",
+          "libffi/src/arc/arcompact.S",
+          "libffi/src/arm/sysv.S"
+        ]
+      },
+      {
+        "crate": "av-scenechange",
+        "dir": "av-scenechange-0.14.1",
+        "in_top_100": false,
+        "external_asm_files_count": 27,
+        "sample_files": [
+          "src/asm/arm/64/ipred.S",
+          "src/asm/arm/64/ipred16.S",
+          "src/asm/arm/64/mc.S",
+          "src/asm/arm/64/mc16.S",
+          "src/asm/arm/64/satd.S"
+        ]
+      },
+      {
+        "crate": "psm",
+        "dir": "psm-0.1.32",
+        "in_top_100": false,
+        "external_asm_files_count": 25,
+        "sample_files": [
+          "src/arch/aarch64_armasm.asm",
+          "src/arch/aarch_aapcs64.s",
+          "src/arch/arm64ec_armasm.asm",
+          "src/arch/arm_aapcs.s",
+          "src/arch/arm_armasm.asm"
+        ]
+      },
+      {
+        "crate": "blake3",
+        "dir": "blake3-1.8.7",
+        "in_top_100": false,
+        "external_asm_files_count": 12,
+        "sample_files": [
+          "c/blake3_avx2_x86-64_unix.S",
+          "c/blake3_avx2_x86-64_windows_gnu.S",
+          "c/blake3_avx2_x86-64_windows_msvc.asm",
+          "c/blake3_avx512_x86-64_unix.S",
+          "c/blake3_avx512_x86-64_windows_gnu.S"
+        ]
+      },
+      {
+        "crate": "openssl-src",
+        "dir": "openssl-src-300.6.1+3.6.3",
+        "in_top_100": false,
+        "external_asm_files_count": 9,
+        "sample_files": [
+          "openssl/crypto/aes/asm/aes-ia64.S",
+          "openssl/crypto/bn/asm/bn-c64xplus.asm",
+          "openssl/crypto/bn/asm/ia64.S",
+          "openssl/crypto/bn/asm/s390x.S",
+          "openssl/crypto/bn/asm/sparcv8.S"
+        ]
+      },
+      {
+        "crate": "v8",
+        "dir": "v8-149.4.0",
+        "in_top_100": false,
+        "external_asm_files_count": 6,
+        "sample_files": [
+          "third_party/libunwind/src/src/UnwindRegistersRestore.S",
+          "third_party/libunwind/src/src/UnwindRegistersSave.S",
+          "third_party/libunwind/src/test/aix_signal_unwind.pass.sh.S",
+          "third_party/libunwind/src/test/remember_state_leak.pass.sh.s",
+          "third_party/partition_alloc/src/partition_alloc/arm_bti_test_functions.S"
+        ]
+      },
+      {
+        "crate": "oximedia-simd",
+        "dir": "oximedia-simd-0.2.1",
+        "in_top_100": false,
+        "external_asm_files_count": 5,
+        "sample_files": [
+          "asm/aarch64/neon_dct.s",
+          "asm/aarch64/neon_interpolate.s",
+          "asm/x86_64/avx2_dct.s",
+          "asm/x86_64/avx2_interpolate.s",
+          "asm/x86_64/avx512_sad.s"
+        ]
+      },
+      {
+        "crate": "ittapi-sys",
+        "dir": "ittapi-sys-0.4.0",
+        "in_top_100": false,
+        "external_asm_files_count": 4,
+        "sample_files": [
+          "c-library/src/ittnotify/ittptmark32.S",
+          "c-library/src/ittnotify/ittptmark32.asm",
+          "c-library/src/ittnotify/ittptmark64.S",
+          "c-library/src/ittnotify/ittptmark64.asm"
+        ]
+      },
+      {
+        "crate": "rea-rs-low",
+        "dir": "rea-rs-low-0.2.0",
+        "in_top_100": false,
+        "external_asm_files_count": 3,
+        "sample_files": [
+          "lib/WDL/eel2/asm-nseel-aarch64-msvc.asm",
+          "lib/WDL/eel2/asm-nseel-arm64ec.asm",
+          "lib/WDL/eel2/asm-nseel-x64-sse.asm"
+        ]
+      },
+      {
+        "crate": "lzma-sys",
+        "dir": "lzma-sys-0.1.20",
+        "in_top_100": false,
+        "external_asm_files_count": 2,
+        "sample_files": [
+          "xz-5.2/src/liblzma/check/crc32_x86.S",
+          "xz-5.2/src/liblzma/check/crc64_x86.S"
+        ]
+      },
+      {
+        "crate": "opusic-sys",
+        "dir": "opusic-sys-0.7.5",
+        "in_top_100": false,
+        "external_asm_files_count": 2,
+        "sample_files": [
+          "opus/celt/arm/celt_pitch_xcorr_arm-gnu.S",
+          "opus/celt/arm/celt_pitch_xcorr_arm.s"
+        ]
+      },
+      {
+        "crate": "rust-crypto",
+        "dir": "rust-crypto-0.2.36",
+        "in_top_100": false,
+        "external_asm_files_count": 2,
+        "sample_files": [
+          "src/aesni_helpers.asm",
+          "src/util_helpers.asm"
+        ]
+      },
+      {
+        "crate": "sdl2-sys",
+        "dir": "sdl2-sys-0.38.0",
+        "in_top_100": false,
+        "external_asm_files_count": 2,
+        "sample_files": [
+          "SDL/src/video/arm/pixman-arm-neon-asm.S",
+          "SDL/src/video/arm/pixman-arm-simd-asm.S"
+        ]
+      },
+      {
+        "crate": "sha3-asm",
+        "dir": "sha3-asm-0.1.9",
+        "in_top_100": false,
+        "external_asm_files_count": 2,
+        "sample_files": [
+          "cryptogams/ia64/poly1305-ia64.S",
+          "cryptogams/ia64/x25519-ia64.S"
+        ]
+      },
+      {
+        "crate": "arzmq-sys",
+        "dir": "arzmq-sys-0.6.3",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "openpgm/openpgm/pgm/fetch_and_add_h.s"
+        ]
+      },
+      {
+        "crate": "dinvoke",
+        "dir": "dinvoke-0.2.2",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "src/gateway.asm"
+        ]
+      },
+      {
+        "crate": "math_adapter",
+        "dir": "math_adapter-0.3.8",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "sample/trivial/Sample.s"
+        ]
+      },
+      {
+        "crate": "mugle_secp256k1zkp",
+        "dir": "mugle_secp256k1zkp-0.7.12",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "depend/secp256k1-zkp/src/asm/field_10x26_arm.s"
+        ]
+      },
+      {
+        "crate": "secp256k1-sys",
+        "dir": "secp256k1-sys-0.8.2",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "depend/secp256k1/src/asm/field_10x26_arm.s"
+        ]
+      },
+      {
+        "crate": "wasmtime-runtime",
+        "dir": "wasmtime-runtime-6.0.2",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "src/trampolines/s390x.S"
+        ]
+      },
+      {
+        "crate": "zstd-sys",
+        "dir": "zstd-sys-2.1.2+zstd.1.5.7",
+        "in_top_100": false,
+        "external_asm_files_count": 1,
+        "sample_files": [
+          "zstd/lib/decompress/huf_decompress_amd64.S"
+        ]
+      }
+    ]
+  }
+}
