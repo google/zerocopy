@@ -1,0 +1,74 @@
+{
+  "host": "x86_64-unknown-linux-gnu",
+  "toolchain": "rustc 1.99.1 (58cf8f9c3 2026-03-23)",
+  "targets": {
+    "x86_64-unknown-linux-gnu": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS",
+      "stage_b_std_bin_link": "PASS (host cc + bundled rust-lld)",
+      "stage_b_std_bin_run": "PASS (native: OK arch=x86_64 os=linux res=30 caught=60)",
+      "external_sysroot_license": "LGPL-2.1-or-later / GPL-3.0-with-GCC-exception (host glibc + libgcc_s)"
+    },
+    "i686-unknown-linux-gnu": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS",
+      "stage_b_std_bin_link": "PASS (host cc -m32 + bundled rust-lld)",
+      "stage_b_std_bin_run": "PASS (native IA32 & qemu-i386: OK arch=x86 os=linux res=30 caught=60)",
+      "external_sysroot_license": "LGPL-2.1-or-later / GPL-3.0-with-GCC-exception (32-bit multilib glibc + libgcc_s)"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS",
+      "stage_b_std_bin_link": "PASS (clang --target=aarch64-unknown-linux-gnu + bundled rust-lld + aarch64 glibc sysroot + LLVM libunwind.a)",
+      "stage_b_std_bin_run": "PASS (qemu-aarch64: OK arch=aarch64 os=linux res=30 caught=60)",
+      "external_sysroot_license": "LGPL-2.1-or-later (glibc sysroot) + Apache-2.0 WITH LLVM-exception (clang_rt + libunwind.a)"
+    },
+    "aarch64-apple-darwin": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS (rust-lld -flavor darwin + synthetic tapi-tbd v4 stub; emits LC_CODE_SIGNATURE)",
+      "stage_b_std_bin_link": "BLOCKED_BY_PROPRIETARY_EULA (requires MacOSX.sdk libSystem.B.tbd under Apple Xcode SLA)",
+      "stage_b_std_bin_run": "N/A on Linux (requires macOS / XNU dyld + Mach traps)",
+      "external_sysroot_license": "Proprietary Apple Xcode and Apple SDKs Agreement"
+    },
+    "x86_64-pc-windows-msvc": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS (rust-lld -flavor link /NOENTRY /NODEFAULTLIB)",
+      "stage_b_std_bin_link": "BLOCKED_BY_PROPRIETARY_EULA (windows.0.52.0.lib is MIT OR Apache-2.0, but 14 CRT symbols require msvcrt.lib/vcruntime.lib/ucrt.lib under MS Visual Studio EULA)",
+      "msvc_crt_missing_symbols_without_sdk": [
+        "mainCRTStartup",
+        "__CxxFrameHandler3",
+        "_CxxThrowException",
+        "??_7type_info@@6B@",
+        "__chkstk",
+        "_tls_index",
+        "_fltused",
+        "atexit",
+        "memcpy",
+        "memmove",
+        "memset",
+        "memcmp",
+        "strlen",
+        "wcslen"
+      ],
+      "external_sysroot_license": "MIT OR Apache-2.0 (windows.0.52.0.lib) + Proprietary Microsoft Visual Studio / Windows SDK EULA (msvcrt.lib, vcruntime.lib, ucrt.lib)"
+    },
+    "x86_64-pc-windows-gnu": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS",
+      "stage_b_std_bin_link": "OPEN_SOURCE_LINKABLE (rustup bundles crt2.o/dllcrt2.o/rsbegin.o/rsend.o; links with MIT/Apache-2.0 libwindows.0.52.0.a + ZPL-2.1 mingw-w64 libmingwex.a/libmingw32.a/libmsvcrt.a)",
+      "external_sysroot_license": "MIT OR Apache-2.0 (libwindows.0.52.0.a) + ZPL-2.1 / Public Domain (mingw-w64 CRT)"
+    },
+    "i686-pc-windows-msvc": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS (rust-lld -flavor link /NOENTRY /NODEFAULTLIB)",
+      "stage_b_std_bin_link": "BLOCKED_BY_PROPRIETARY_EULA (requires 32-bit msvcrt.lib/vcruntime.lib/ucrt.lib under MS Visual Studio EULA)",
+      "external_sysroot_license": "MIT OR Apache-2.0 (windows.0.52.0.lib) + Proprietary Microsoft Visual Studio / Windows SDK EULA"
+    },
+    "aarch64-pc-windows-msvc": {
+      "stage_a_obj_rlib_staticlib": "PASS",
+      "stage_a_nostd_cdylib_via_rust_lld": "PASS (rust-lld -flavor link /NOENTRY /NODEFAULTLIB)",
+      "stage_b_std_bin_link": "BLOCKED_BY_PROPRIETARY_EULA (requires ARM64 msvcrt.lib/vcruntime.lib/ucrt.lib under MS Visual Studio EULA)",
+      "external_sysroot_license": "MIT OR Apache-2.0 (windows.0.52.0.lib) + Proprietary Microsoft Visual Studio / Windows SDK EULA"
+    }
+  }
+}

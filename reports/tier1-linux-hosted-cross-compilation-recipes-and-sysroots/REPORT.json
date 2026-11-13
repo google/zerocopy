@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc/cross-compilation",
+    "build/sysroots-and-sdks",
+    "domains/licensing-and-governance"
+  ],
+  "observed_at": "2026-11-13",
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "https://github.com/rust-lang/rust.git",
+        "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rust-lang/llvm-project",
+      "identity": {
+        "repository": "https://github.com/rust-lang/llvm-project.git",
+        "commit": "519b92f53a7a2de5fe0db9df5cd4bc9fb1ea8ff6",
+        "version": "22.1.1-rust-1.99.1-stable"
+      }
+    }
+  ]
+}

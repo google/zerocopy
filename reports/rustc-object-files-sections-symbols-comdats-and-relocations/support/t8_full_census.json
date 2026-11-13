@@ -1,0 +1,1043 @@
+{
+  "x86_64-unknown-linux-gnu": {
+    "sysroot_rlibs": {
+      "num_objects": 420,
+      "total_relocations": 343565,
+      "distinct_relocation_kinds": 10,
+      "relocations": {
+        "R_X86_64_64": 177162,
+        "R_X86_64_32": 108436,
+        "R_X86_64_PC32": 31093,
+        "R_X86_64_GOTPCREL": 17616,
+        "R_X86_64_PLT32": 8754,
+        "R_X86_64_GOTTPOFF": 195,
+        "R_X86_64_TLSGD": 181,
+        "R_X86_64_REX_GOTPCRELX": 84,
+        "R_X86_64_DTPOFF32": 28,
+        "R_X86_64_TLSLD": 16
+      },
+      "sections": {
+        ".rodata.<sym>": 4882,
+        ".rela.text.<sym>": 4407,
+        ".text.<sym>": 3557,
+        ".data.rel.ro.<sym>": 1648,
+        ".rela.data.rel.ro.<sym>": 1648,
+        ".text.unlikely.<sym>": 1522,
+        ".gcc_except_table.<sym>": 1142,
+        ".rela.rodata.<sym>": 389,
+        ".strtab": 358,
+        ".text": 358,
+        ".comment": 358,
+        ".note.GNU-stack": 358,
+        ".symtab": 358,
+        ".debug_abbrev": 330,
+        ".debug_info": 330,
+        ".rela.debug_info": 330,
+        ".debug_str": 330,
+        ".debug_line": 330,
+        ".rela.debug_line": 328,
+        ".llvmbc": 303,
+        ".llvmcmd": 303,
+        ".eh_frame": 302,
+        ".rela.eh_frame": 302,
+        ".debug_aranges": 281,
+        ".rela.debug_aranges": 281,
+        ".debug_ranges": 211,
+        ".bss.<sym>": 66,
+        ".data.<sym>": 64,
+        ".rela.debug_ranges": 64,
+        ".llvm_addrsig": 55,
+        ".rodata.str1.<sym>": 44,
+        ".rela.data.<sym>": 44,
+        ".debug_loc": 43,
+        ".debug_frame": 35,
+        ".rela.debug_frame": 35,
+        ".group": 29,
+        ".tbss.<sym>": 9,
+        ".rela.debug_loc": 9,
+        ".rodata": 6,
+        ".tdata.<sym>": 4
+      },
+      "section_types": {
+        "SHT_PROGBITS (0x1)": 16440,
+        "SHT_RELA (0x4)": 7840,
+        "SHT_STRTAB (0x3)": 358,
+        "SHT_SYMTAB (0x2)": 358,
+        "SHT_X86_64_UNWIND (0x70000001)": 302,
+        "SHT_NOBITS (0x8)": 75,
+        "SHT_LLVM_ADDRSIG (0x6FFF4C03)": 55,
+        "SHT_GROUP (0x11)": 29,
+        "SHT_INIT_ARRAY (0xE)": 2,
+        "SHT_FINI_ARRAY (0xF)": 1
+      },
+      "symbol_bindings": {
+        "Local (0x0)": 19834,
+        "Global (0x1)": 4624,
+        "Weak (0x2)": 281
+      },
+      "symbol_types": {
+        "Section (0x3)": 14252,
+        "Function (0x2)": 4228,
+        "None (0x0)": 3460,
+        "Object (0x1)": 1219,
+        "File (0x4)": 358,
+        "TLS (0x6)": 18
+      },
+      "symbol_visibilities": {
+        "0": 23535
+      },
+      "comdat_kinds": {
+        "GRP_COMDAT (0x1)": 29
+      },
+      "loh_kinds": {},
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 7332,
+      "distinct_relocation_kinds": 4,
+      "relocations": {
+        "R_X86_64_PC32": 3155,
+        "R_X86_64_GOTPCREL": 2568,
+        "R_X86_64_PLT32": 1220,
+        "R_X86_64_64": 389
+      },
+      "sections": {
+        ".text.<sym>": 517,
+        ".rela.text.<sym>": 486,
+        ".rodata.<sym>": 403,
+        ".data.rel.ro.<sym>": 319,
+        ".rela.data.rel.ro.<sym>": 319,
+        ".gcc_except_table.<sym>": 154,
+        ".rela.rodata.<sym>": 54,
+        ".text.unlikely.<sym>": 28,
+        ".strtab": 10,
+        ".text": 10,
+        ".comment": 10,
+        ".note.GNU-stack": 10,
+        ".symtab": 10,
+        ".data.<sym>": 10,
+        ".rela.data.<sym>": 10,
+        ".eh_frame": 8,
+        ".rela.eh_frame": 8,
+        ".rodata.str1.<sym>": 6,
+        ".group": 3
+      },
+      "section_types": {
+        "SHT_PROGBITS (0x1)": 1467,
+        "SHT_RELA (0x4)": 877,
+        "SHT_STRTAB (0x3)": 10,
+        "SHT_SYMTAB (0x2)": 10,
+        "SHT_X86_64_UNWIND (0x70000001)": 8,
+        "SHT_GROUP (0x11)": 3
+      },
+      "symbol_bindings": {
+        "Local (0x0)": 1970,
+        "Global (0x1)": 454,
+        "Weak (0x2)": 3
+      },
+      "symbol_types": {
+        "Section (0x3)": 1409,
+        "Function (0x2)": 556,
+        "None (0x0)": 336,
+        "Object (0x1)": 113,
+        "File (0x4)": 10
+      },
+      "symbol_visibilities": {
+        "0": 2424
+      },
+      "comdat_kinds": {
+        "GRP_COMDAT (0x1)": 3
+      },
+      "loh_kinds": {},
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    }
+  },
+  "i686-unknown-linux-gnu": {
+    "sysroot_rlibs": {
+      "num_objects": 354,
+      "total_relocations": 332013,
+      "distinct_relocation_kinds": 10,
+      "relocations": {
+        "R_386_32": 291073,
+        "R_386_GOTOFF": 14815,
+        "R_386_PLT32": 13641,
+        "R_386_PC32": 8108,
+        "R_386_GOTPC": 3091,
+        "R_386_GOT32": 985,
+        "R_386_TLS_GD": 181,
+        "R_386_GOT32X": 82,
+        "R_386_TLS_LDO_32": 23,
+        "R_386_TLS_LDM": 14
+      },
+      "sections": {
+        ".rodata.<sym>": 3584,
+        ".text.<sym>": 3523,
+        ".rel.text.<sym>": 3103,
+        ".data.rel.ro.<sym>": 1024,
+        ".rel.data.rel.ro.<sym>": 1024,
+        ".gcc_except_table.<sym>": 809,
+        ".strtab": 354,
+        ".text": 354,
+        ".note.GNU-stack": 354,
+        ".symtab": 354,
+        ".comment": 346,
+        ".debug_abbrev": 318,
+        ".debug_info": 318,
+        ".rel.debug_info": 318,
+        ".debug_line": 318,
+        ".rel.debug_line": 316,
+        ".debug_str": 310,
+        ".llvmbc": 291,
+        ".llvmcmd": 291,
+        ".eh_frame": 291,
+        ".rel.eh_frame": 291,
+        ".debug_aranges": 280,
+        ".rel.debug_aranges": 280,
+        ".debug_ranges": 215,
+        ".text.unlikely.<sym>": 206,
+        ".rel.rodata.<sym>": 169,
+        ".bss.<sym>": 66,
+        ".rel.debug_ranges": 65,
+        ".data.<sym>": 61,
+        ".llvm_addrsig": 55,
+        ".rel.data.<sym>": 41,
+        ".rodata.str1.<sym>": 37,
+        ".group": 33,
+        ".debug_loc": 32,
+        ".debug_frame": 24,
+        ".rel.debug_frame": 24,
+        ".rel.debug_loc": 9,
+        ".tbss.<sym>": 8,
+        ".rodata": 5,
+        ".tdata.<sym>": 4
+      },
+      "section_types": {
+        "SHT_PROGBITS (0x1)": 12996,
+        "SHT_REL (0x9)": 5643,
+        "SHT_STRTAB (0x3)": 354,
+        "SHT_SYMTAB (0x2)": 354,
+        "SHT_NOBITS (0x8)": 74,
+        "SHT_LLVM_ADDRSIG (0x6FFF4C03)": 55,
+        "SHT_GROUP (0x11)": 33,
+        "SHT_INIT_ARRAY (0xE)": 2,
+        "SHT_FINI_ARRAY (0xF)": 1
+      },
+      "symbol_bindings": {
+        "Local (0x0)": 14383,
+        "Global (0x1)": 3971,
+        "Weak (0x2)": 281
+      },
+      "symbol_types": {
+        "Section (0x3)": 10597,
+        "Function (0x2)": 3235,
+        "None (0x0)": 2857,
+        "Object (0x1)": 741,
+        "File (0x4)": 346,
+        "TLS (0x6)": 16
+      },
+      "symbol_visibilities": {
+        "0": 17792
+      },
+      "comdat_kinds": {
+        "GRP_COMDAT (0x1)": 33
+      },
+      "loh_kinds": {},
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 7783,
+      "distinct_relocation_kinds": 6,
+      "relocations": {
+        "R_386_PLT32": 2640,
+        "R_386_GOTOFF": 2542,
+        "R_386_PC32": 1644,
+        "R_386_GOTPC": 473,
+        "R_386_32": 414,
+        "R_386_GOT32": 70
+      },
+      "sections": {
+        ".text.<sym>": 489,
+        ".rel.text.<sym>": 473,
+        ".rodata.<sym>": 404,
+        ".data.rel.ro.<sym>": 322,
+        ".rel.data.rel.ro.<sym>": 322,
+        ".gcc_except_table.<sym>": 154,
+        ".rel.rodata.<sym>": 52,
+        ".text.unlikely.<sym>": 26,
+        ".strtab": 10,
+        ".text": 10,
+        ".comment": 10,
+        ".note.GNU-stack": 10,
+        ".symtab": 10,
+        ".eh_frame": 8,
+        ".rel.eh_frame": 8,
+        ".rodata.str1.<sym>": 6,
+        ".group": 3,
+        ".data.<sym>": 3,
+        ".rel.data.<sym>": 3
+      },
+      "section_types": {
+        "SHT_PROGBITS (0x1)": 1442,
+        "SHT_REL (0x9)": 858,
+        "SHT_STRTAB (0x3)": 10,
+        "SHT_SYMTAB (0x2)": 10,
+        "SHT_GROUP (0x11)": 3
+      },
+      "symbol_bindings": {
+        "Local (0x0)": 1929,
+        "Global (0x1)": 440,
+        "Weak (0x2)": 3
+      },
+      "symbol_types": {
+        "Section (0x3)": 1384,
+        "Function (0x2)": 528,
+        "None (0x0)": 346,
+        "Object (0x1)": 101,
+        "File (0x4)": 10
+      },
+      "symbol_visibilities": {
+        "0": 2369
+      },
+      "comdat_kinds": {
+        "GRP_COMDAT (0x1)": 3
+      },
+      "loh_kinds": {},
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    }
+  },
+  "aarch64-unknown-linux-gnu": {
+    "sysroot_rlibs": {
+      "num_objects": 451,
+      "total_relocations": 363377,
+      "distinct_relocation_kinds": 19,
+      "relocations": {
+        "R_AARCH64_ABS64": 202296,
+        "R_AARCH64_ABS32": 116221,
+        "R_AARCH64_CALL26": 17234,
+        "R_AARCH64_ADR_PREL_PG_HI21": 9202,
+        "R_AARCH64_ADD_ABS_LO12_NC": 8669,
+        "R_AARCH64_PREL32": 4271,
+        "R_AARCH64_JUMP26": 1136,
+        "R_AARCH64_ADR_GOT_PAGE": 1042,
+        "R_AARCH64_LD64_GOT_LO12_NC": 1035,
+        "R_AARCH64_PREL64": 846,
+        "R_AARCH64_LDST64_ABS_LO12_NC": 224,
+        "R_AARCH64_TLSDESC_ADR_PAGE21": 195,
+        "R_AARCH64_TLSDESC_LD64_LO12": 195,
+        "R_AARCH64_TLSDESC_ADD_LO12": 195,
+        "R_AARCH64_TLSDESC_CALL": 195,
+        "R_AARCH64_LDST8_ABS_LO12_NC": 186,
+        "R_AARCH64_LDST128_ABS_LO12_NC": 172,
+        "R_AARCH64_LDST32_ABS_LO12_NC": 53,
+        "R_AARCH64_LDST16_ABS_LO12_NC": 10
+      },
+      "sections": {
+        ".text.<sym>": 3708,
+        ".rodata.<sym>": 3473,
+        ".rela.text.<sym>": 3171,
+        ".data.rel.ro.<sym>": 976,
+        ".rela.data.rel.ro.<sym>": 976,
+        ".gcc_except_table.<sym>": 815,
+        ".strtab": 451,
+        ".text": 451,
+        ".note.GNU-stack": 451,
+        ".symtab": 451,
+        ".debug_abbrev": 427,
+        ".debug_info": 427,
+        ".rela.debug_info": 427,
+        ".debug_line": 427,
+        ".rela.debug_line": 425,
+        ".eh_frame": 393,
+        ".rela.eh_frame": 393,
+        ".debug_aranges": 375,
+        ".rela.debug_aranges": 375,
+        ".comment": 351,
+        ".debug_str": 327,
+        ".llvmbc": 293,
+        ".llvmcmd": 293,
+        ".debug_ranges": 214,
+        ".text.unlikely.<sym>": 207,
+        ".rela.text": 100,
+        ".rela.debug_ranges": 61,
+        ".llvm_addrsig": 58,
+        ".data.<sym>": 51,
+        ".debug_loc": 46,
+        ".rodata.str1.<sym>": 41,
+        ".debug_frame": 38,
+        ".rela.debug_frame": 38,
+        ".rela.data.<sym>": 36,
+        ".group": 31,
+        ".bss.<sym>": 30,
+        ".rela.rodata.<sym>": 25,
+        ".rela.debug_loc": 10,
+        ".rodata": 8,
+        ".tbss.<sym>": 8
+      },
+      "section_types": {
+        "SHT_PROGBITS (0x1)": 13797,
+        "SHT_RELA (0x4)": 6041,
+        "SHT_STRTAB (0x3)": 451,
+        "SHT_SYMTAB (0x2)": 451,
+        "SHT_LLVM_ADDRSIG (0x6FFF4C03)": 58,
+        "SHT_NOBITS (0x8)": 38,
+        "SHT_GROUP (0x11)": 31,
+        "SHT_INIT_ARRAY (0xE)": 3,
+        "SHT_FINI_ARRAY (0xF)": 1
+      },
+      "symbol_bindings": {
+        "Local (0x0)": 27189,
+        "Global (0x1)": 4200,
+        "Weak (0x2)": 284
+      },
+      "symbol_types": {
+        "None (0x0)": 15552,
+        "Section (0x3)": 11178,
+        "Function (0x2)": 3328,
+        "File (0x4)": 351,
+        "Object (0x1)": 118,
+        "TLS (0x6)": 28
+      },
+      "symbol_visibilities": {
+        "0": 30555
+      },
+      "comdat_kinds": {
+        "GRP_COMDAT (0x1)": 31
+      },
+      "loh_kinds": {},
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 7342,
+      "distinct_relocation_kinds": 11,
+      "relocations": {
+        "R_AARCH64_CALL26": 3585,
+        "R_AARCH64_ADR_PREL_PG_HI21": 1138,
+        "R_AARCH64_ADD_ABS_LO12_NC": 1108,
+        "R_AARCH64_PREL32": 554,
+        "R_AARCH64_ABS64": 380,
+        "R_AARCH64_JUMP26": 247,
+        "R_AARCH64_PREL64": 157,
+        "R_AARCH64_ADR_GOT_PAGE": 70,
+        "R_AARCH64_LD64_GOT_LO12_NC": 70,
+        "R_AARCH64_LDST128_ABS_LO12_NC": 32,
+        "R_AARCH64_LDST64_ABS_LO12_NC": 1
+      },
+      "sections": {
+        ".text.<sym>": 492,
+        ".rela.text.<sym>": 463,
+        ".rodata.<sym>": 363,
+        ".data.rel.ro.<sym>": 317,
+        ".rela.data.rel.ro.<sym>": 317,
+        ".gcc_except_table.<sym>": 154,
+        ".text.unlikely.<sym>": 28,
+        ".strtab": 10,
+        ".text": 10,
+        ".comment": 10,
+        ".note.GNU-stack": 10,
+        ".symtab": 10,
+        ".eh_frame": 8,
+        ".rela.eh_frame": 8,
+        ".rodata.str1.<sym>": 6,
+        ".rela.rodata.<sym>": 5,
+        ".group": 3,
+        ".data.<sym>": 3,
+        ".rela.data.<sym>": 3
+      },
+      "section_types": {
+        "SHT_PROGBITS (0x1)": 1401,
+        "SHT_RELA (0x4)": 796,
+        "SHT_STRTAB (0x3)": 10,
+        "SHT_SYMTAB (0x2)": 10,
+        "SHT_GROUP (0x11)": 3
+      },
+      "symbol_bindings": {
+        "Local (0x0)": 3170,
+        "Global (0x1)": 443,
+        "Weak (0x2)": 3
+      },
+      "symbol_types": {
+        "None (0x0)": 1709,
+        "Section (0x3)": 1352,
+        "Function (0x2)": 531,
+        "Object (0x1)": 11,
+        "File (0x4)": 10
+      },
+      "symbol_visibilities": {
+        "0": 3613
+      },
+      "comdat_kinds": {
+        "GRP_COMDAT (0x1)": 3
+      },
+      "loh_kinds": {},
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    }
+  },
+  "aarch64-apple-darwin": {
+    "sysroot_rlibs": {
+      "num_objects": 419,
+      "total_relocations": 129595,
+      "distinct_relocation_kinds": 11,
+      "relocations": {
+        "ARM64_RELOC_UNSIGNED": 87857,
+        "ARM64_RELOC_BRANCH26": 17460,
+        "ARM64_RELOC_PAGEOFF12": 9465,
+        "ARM64_RELOC_PAGE21": 9342,
+        "ARM64_RELOC_SUBTRACTOR": 3099,
+        "ARM64_RELOC_GOT_LOAD_PAGEOFF12": 670,
+        "ARM64_RELOC_GOT_LOAD_PAGE21": 670,
+        "ARM64_RELOC_ADDEND": 630,
+        "ARM64_RELOC_TLVP_LOAD_PAGEOFF12": 188,
+        "ARM64_RELOC_TLVP_LOAD_PAGE21": 188,
+        "ARM64_RELOC_POINTER_TO_GOT": 26
+      },
+      "sections": {
+        "__TEXT,__text": 419,
+        "__DWARF,__debug_abbrev": 394,
+        "__DWARF,__debug_info": 394,
+        "__DWARF,__debug_line": 394,
+        "__LD,__compact_unwind": 354,
+        "__DWARF,__debug_aranges": 337,
+        "__DWARF,__apple_names": 313,
+        "__DWARF,__apple_objc": 313,
+        "__DWARF,__apple_namespac": 313,
+        "__DWARF,__apple_types": 313,
+        "__DWARF,__debug_str": 294,
+        "__LLVM,__bitcode": 255,
+        "__LLVM,__cmdline": 255,
+        "__DWARF,__debug_ranges": 149,
+        "__TEXT,__eh_frame": 92,
+        "__DWARF,__debug_loc": 48,
+        "__DWARF,__debug_frame": 44,
+        "__TEXT,__cstring": 41,
+        "__TEXT,__literal16": 29,
+        "__TEXT,__gcc_except_tab": 26,
+        "__DATA,__const": 21,
+        "__TEXT,__const": 20,
+        "__DATA,__data": 11,
+        "__TEXT,__literal8": 11,
+        "__TEXT,__literal4": 10,
+        "__DATA,__bss": 7,
+        "__DATA,__common": 5,
+        "__DATA,__thread_bss": 2,
+        "__DATA,__thread_vars": 2,
+        "__TEXT,__StaticInit": 2,
+        "__DATA,__mod_init_func": 2,
+        "__DATA,__llvm_prf_vnds": 1,
+        "__DATA,__thread_data": 1
+      },
+      "section_types": {
+        "Regular (0x0)": 4670,
+        "Coalesced (0xB)": 92,
+        "CStringLiterals (0x2)": 41,
+        "ZeroFill (0x1)": 12,
+        "8ByteLiterals (0x4)": 11,
+        "4ByteLiterals (0x3)": 10,
+        "ThreadLocalZerofill (0x12)": 2,
+        "ThreadLocalVariables (0x13)": 2,
+        "ModInitFuncPointers (0x9)": 2,
+        "ThreadLocalRegular (0x11)": 1
+      },
+      "symbol_bindings": {
+        "None (Local)": 13177,
+        "ColdFunc (0x400)": 222,
+        "WeakDef (0x80)": 2
+      },
+      "symbol_types": {
+        "Section (0xE)": 12223,
+        "Undef (0x0)": 1178
+      },
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "MH_SUBSECTIONS_VIA_SYMBOLS + N_WEAK_DEF": 419
+      },
+      "loh_kinds": {
+        "7: AdrpAdd": 8855,
+        "2: AdrpLdr": 399,
+        "4: AdrpLdrGotLdr": 375,
+        "8: AdrpLdrGot": 292,
+        "1: AdrpAdrp": 22,
+        "3: AdrpAddLdr": 20,
+        "6: AdrpLdrGotStr": 1
+      },
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 8133,
+      "distinct_relocation_kinds": 9,
+      "relocations": {
+        "ARM64_RELOC_BRANCH26": 3695,
+        "ARM64_RELOC_UNSIGNED": 1466,
+        "ARM64_RELOC_PAGEOFF12": 1151,
+        "ARM64_RELOC_PAGE21": 1147,
+        "ARM64_RELOC_SUBTRACTOR": 535,
+        "ARM64_RELOC_GOT_LOAD_PAGEOFF12": 58,
+        "ARM64_RELOC_GOT_LOAD_PAGE21": 58,
+        "ARM64_RELOC_ADDEND": 20,
+        "ARM64_RELOC_POINTER_TO_GOT": 3
+      },
+      "sections": {
+        "__TEXT,__text": 10,
+        "__TEXT,__const": 8,
+        "__LD,__compact_unwind": 8,
+        "__TEXT,__eh_frame": 7,
+        "__TEXT,__cstring": 6,
+        "__DATA,__const": 6,
+        "__TEXT,__literal8": 5,
+        "__TEXT,__literal4": 4,
+        "__TEXT,__literal16": 3,
+        "__TEXT,__gcc_except_tab": 3
+      },
+      "section_types": {
+        "Regular (0x0)": 35,
+        "Coalesced (0xB)": 7,
+        "CStringLiterals (0x2)": 6,
+        "8ByteLiterals (0x4)": 5,
+        "4ByteLiterals (0x3)": 4
+      },
+      "symbol_bindings": {
+        "None (Local)": 1671,
+        "ColdFunc (0x400)": 36
+      },
+      "symbol_types": {
+        "Section (0xE)": 1552,
+        "Undef (0x0)": 155
+      },
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "MH_SUBSECTIONS_VIA_SYMBOLS + N_WEAK_DEF": 10
+      },
+      "loh_kinds": {
+        "7: AdrpAdd": 1118,
+        "8: AdrpLdrGot": 58,
+        "2: AdrpLdr": 24,
+        "1: AdrpAdrp": 2,
+        "3: AdrpAddLdr": 1
+      },
+      "feat00_values": {},
+      "drectve_prefixes": {}
+    }
+  },
+  "x86_64-pc-windows-msvc": {
+    "sysroot_rlibs": {
+      "num_objects": 317,
+      "total_relocations": 71710,
+      "distinct_relocation_kinds": 5,
+      "relocations": {
+        "IMAGE_REL_AMD64_REL32": 27984,
+        "IMAGE_REL_AMD64_ADDR32NB": 21967,
+        "IMAGE_REL_AMD64_SECREL": 11274,
+        "IMAGE_REL_AMD64_SECTION": 8338,
+        "IMAGE_REL_AMD64_ADDR64": 2147
+      },
+      "sections": {
+        ".rdata": 3903,
+        ".debug$S": 3439,
+        ".text": 3334,
+        ".xdata": 2261,
+        ".pdata": 2261,
+        ".data": 382,
+        ".bss": 351,
+        ".debug$T": 316,
+        ".llvmbc": 262,
+        ".llvmcmd": 262,
+        ".text$<sym>": 168,
+        ".llvm_addrsig": 55,
+        ".drectve": 14,
+        ".tls$": 13,
+        ".lprfd$A": 1,
+        ".lprfd$Z": 1,
+        ".lprfn$A": 1,
+        ".lprfn$Z": 1,
+        ".lprfc$A": 1,
+        ".lprfc$Z": 1,
+        ".lprfb$A": 1,
+        ".lprfb$Z": 1,
+        ".lprfnd$A": 1,
+        ".lprfnd$Z": 1,
+        ".CRT$XCU": 1
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 25696,
+        "External (0x2)": 4208,
+        "File (0x67)": 317,
+        "WeakExternal (0x69)": 194
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "Associative (0x5)": 7784,
+        "NoDuplicates (0x1)": 6514,
+        "Any (0x2)": 539
+      },
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x0": 317
+      },
+      "drectve_prefixes": {
+        "/DEFAULTLIB": 28,
+        "/MERGE": 3,
+        "/alternatename": 2,
+        "/FAILIFMISMATCH": 1
+      }
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 12156,
+      "distinct_relocation_kinds": 3,
+      "relocations": {
+        "IMAGE_REL_AMD64_REL32": 6254,
+        "IMAGE_REL_AMD64_ADDR32NB": 5501,
+        "IMAGE_REL_AMD64_ADDR64": 401
+      },
+      "sections": {
+        ".rdata": 852,
+        ".text": 525,
+        ".xdata": 447,
+        ".pdata": 447,
+        ".data": 31,
+        ".text$<sym>": 28,
+        ".bss": 10
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 4474,
+        "External (0x2)": 475,
+        "File (0x67)": 10
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "NoDuplicates (0x1)": 1355,
+        "Associative (0x5)": 943,
+        "Any (0x2)": 12
+      },
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x0": 10
+      },
+      "drectve_prefixes": {}
+    }
+  },
+  "x86_64-pc-windows-gnu": {
+    "sysroot_rlibs": {
+      "num_objects": 277,
+      "total_relocations": 215174,
+      "distinct_relocation_kinds": 4,
+      "relocations": {
+        "IMAGE_REL_AMD64_SECREL": 97651,
+        "IMAGE_REL_AMD64_ADDR64": 76898,
+        "IMAGE_REL_AMD64_REL32": 32230,
+        "IMAGE_REL_AMD64_ADDR32NB": 8395
+      },
+      "sections": {
+        ".text": 277,
+        ".data": 277,
+        ".bss": 277,
+        ".debug_abbrev": 245,
+        ".debug_info": 245,
+        ".debug_aranges": 245,
+        ".debug_str": 245,
+        ".debug_line": 245,
+        ".llvmbc": 234,
+        ".llvmcmd": 234,
+        ".debug$S": 228,
+        ".drectve": 200,
+        ".debug_ranges": 176,
+        ".xdata": 99,
+        ".pdata": 99,
+        ".rdata": 77,
+        ".rdata$zzz": 35,
+        ".debug_frame": 35,
+        ".text$<sym>": 34,
+        ".xdata$<sym>": 34,
+        ".pdata$<sym>": 34,
+        ".debug_loc": 28,
+        ".rdata$<sym>": 15,
+        ".idata$5": 8,
+        ".idata$4": 8,
+        ".idata$7": 6,
+        ".idata$6": 4,
+        ".idata$2": 2,
+        ".text.unlikely.__compilerrt_abort_impl": 1,
+        ".xdata.unlikely.__compilerrt_abort_impl": 1,
+        ".pdata.unlikely.__compilerrt_abort_impl": 1
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 5882,
+        "External (0x2)": 3506,
+        "File (0x67)": 273
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {},
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x0": 234
+      },
+      "drectve_prefixes": {
+        "-exclude-symbols": 428
+      }
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 8125,
+      "distinct_relocation_kinds": 3,
+      "relocations": {
+        "IMAGE_REL_AMD64_REL32": 6224,
+        "IMAGE_REL_AMD64_ADDR32NB": 1500,
+        "IMAGE_REL_AMD64_ADDR64": 401
+      },
+      "sections": {
+        ".text": 10,
+        ".data": 10,
+        ".bss": 10,
+        ".rdata": 9,
+        ".xdata": 8,
+        ".pdata": 8
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 497,
+        "External (0x2)": 468,
+        "File (0x67)": 10
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {},
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x0": 10
+      },
+      "drectve_prefixes": {}
+    }
+  },
+  "i686-pc-windows-msvc": {
+    "sysroot_rlibs": {
+      "num_objects": 316,
+      "total_relocations": 55729,
+      "distinct_relocation_kinds": 5,
+      "relocations": {
+        "IMAGE_REL_I386_DIR32": 18600,
+        "IMAGE_REL_I386_REL32": 14463,
+        "IMAGE_REL_I386_SECREL": 11272,
+        "IMAGE_REL_I386_SECTION": 8283,
+        "IMAGE_REL_I386_DIR32NB": 3111
+      },
+      "sections": {
+        ".text": 4064,
+        ".rdata": 3746,
+        ".debug$S": 3429,
+        ".xdata": 741,
+        ".data": 381,
+        ".bss": 354,
+        ".debug$T": 315,
+        ".llvmbc": 261,
+        ".llvmcmd": 261,
+        ".text$<sym>": 168,
+        ".llvm_addrsig": 55,
+        ".sxdata": 29,
+        ".drectve": 14,
+        ".tls$": 13,
+        ".lprfd$A": 1,
+        ".lprfd$Z": 1,
+        ".lprfn$A": 1,
+        ".lprfn$Z": 1,
+        ".lprfc$A": 1,
+        ".lprfc$Z": 1,
+        ".lprfb$A": 1,
+        ".lprfb$Z": 1,
+        ".lprfnd$A": 1,
+        ".lprfnd$Z": 1,
+        ".CRT$XCU": 1
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 21870,
+        "External (0x2)": 4175,
+        "File (0x67)": 316,
+        "WeakExternal (0x69)": 194
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "NoDuplicates (0x1)": 7268,
+        "Associative (0x5)": 3857,
+        "Any (0x2)": 502
+      },
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x1": 316
+      },
+      "drectve_prefixes": {
+        "/DEFAULTLIB": 28,
+        "/MERGE": 3,
+        "/alternatename": 2,
+        "/FAILIFMISMATCH": 1
+      }
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 6681,
+      "distinct_relocation_kinds": 2,
+      "relocations": {
+        "IMAGE_REL_I386_REL32": 3749,
+        "IMAGE_REL_I386_DIR32": 2932
+      },
+      "sections": {
+        ".rdata": 798,
+        ".text": 650,
+        ".xdata": 153,
+        ".text$<sym>": 26,
+        ".data": 17,
+        ".bss": 10,
+        ".sxdata": 3
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 3620,
+        "External (0x2)": 443,
+        "File (0x67)": 10
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "NoDuplicates (0x1)": 1461,
+        "Associative (0x5)": 153,
+        "Any (0x2)": 10
+      },
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x1": 10
+      },
+      "drectve_prefixes": {}
+    }
+  },
+  "aarch64-pc-windows-msvc": {
+    "sysroot_rlibs": {
+      "num_objects": 311,
+      "total_relocations": 73291,
+      "distinct_relocation_kinds": 12,
+      "relocations": {
+        "IMAGE_REL_ARM64_ADDR32NB": 17813,
+        "IMAGE_REL_ARM64_BRANCH26": 13791,
+        "IMAGE_REL_ARM64_PAGEBASE_REL21": 10486,
+        "IMAGE_REL_ARM64_SECREL": 9518,
+        "IMAGE_REL_ARM64_PAGEOFFSET_12A": 8479,
+        "IMAGE_REL_ARM64_SECTION": 8347,
+        "IMAGE_REL_ARM64_PAGEOFFSET_12L": 2234,
+        "IMAGE_REL_ARM64_ADDR64": 2153,
+        "IMAGE_REL_ARM64_SECREL_HIGH12A": 204,
+        "IMAGE_REL_ARM64_SECREL_LOW12L": 109,
+        "IMAGE_REL_ARM64_SECREL_LOW12A": 97,
+        "IMAGE_REL_ARM64_REL32": 60
+      },
+      "sections": {
+        ".rdata": 3542,
+        ".debug$S": 3496,
+        ".text": 3070,
+        ".pdata": 2229,
+        ".xdata": 2176,
+        ".text$<sym>": 432,
+        ".data": 324,
+        ".debug$T": 310,
+        ".bss": 274,
+        ".llvmbc": 255,
+        ".llvmcmd": 255,
+        ".drectve": 56,
+        ".chks64": 56,
+        ".tls$": 13,
+        ".lprfd$A": 1,
+        ".lprfd$Z": 1,
+        ".lprfn$A": 1,
+        ".lprfn$Z": 1,
+        ".lprfc$A": 1,
+        ".lprfc$Z": 1,
+        ".lprfb$A": 1,
+        ".lprfb$Z": 1,
+        ".lprfnd$A": 1,
+        ".lprfnd$Z": 1,
+        ".CRT$XCU": 1
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 25721,
+        "External (0x2)": 3795,
+        "Label (0x6)": 833,
+        "File (0x67)": 255,
+        "WeakExternal (0x69)": 194
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "Associative (0x5)": 7603,
+        "NoDuplicates (0x1)": 6506,
+        "Any (0x2)": 348
+      },
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x0": 255,
+        "0x80010190": 56
+      },
+      "drectve_prefixes": {
+        "/DEFAULTLIB": 28,
+        "/MERGE": 3,
+        "/alternatename": 2,
+        "/FAILIFMISMATCH": 1
+      }
+    },
+    "crate_sample_o3": {
+      "num_objects": 10,
+      "total_relocations": 10875,
+      "distinct_relocation_kinds": 7,
+      "relocations": {
+        "IMAGE_REL_ARM64_ADDR32NB": 4332,
+        "IMAGE_REL_ARM64_BRANCH26": 3591,
+        "IMAGE_REL_ARM64_PAGEBASE_REL21": 1265,
+        "IMAGE_REL_ARM64_PAGEOFFSET_12A": 1225,
+        "IMAGE_REL_ARM64_ADDR64": 385,
+        "IMAGE_REL_ARM64_PAGEOFFSET_12L": 43,
+        "IMAGE_REL_ARM64_REL32": 34
+      },
+      "sections": {
+        ".rdata": 810,
+        ".text": 500,
+        ".xdata": 401,
+        ".pdata": 401,
+        ".text$<sym>": 28,
+        ".data": 17,
+        ".bss": 10
+      },
+      "section_types": {},
+      "symbol_bindings": {
+        "Static (0x3)": 4279,
+        "External (0x2)": 452,
+        "File (0x67)": 10
+      },
+      "symbol_types": {},
+      "symbol_visibilities": {},
+      "comdat_kinds": {
+        "NoDuplicates (0x1)": 1312,
+        "Associative (0x5)": 809,
+        "Any (0x2)": 16
+      },
+      "loh_kinds": {},
+      "feat00_values": {
+        "0x0": 10
+      },
+      "drectve_prefixes": {}
+    }
+  }
+}

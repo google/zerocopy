@@ -22620,6 +22620,33 @@
         "rustc/mir"
       ]
     },
+    "rustc-dynamic-linking-loader-contracts-and-code-signing": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "repository": "https://github.com/rust-lang/rust.git",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "519b92f53a7a2de5fe0db9df5cd4bc9fb1ea8ff6",
+            "repository": "https://github.com/rust-lang/llvm-project.git",
+            "version": "22.1.1-rust-1.99.1-stable"
+          },
+          "name": "rust-lang/llvm-project"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/dynamic-linking",
+        "systems/dynamic-loaders",
+        "security/binary-hardening"
+      ]
+    },
     "rustc-experimental-corpora-and-harness-conventions": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -23320,6 +23347,40 @@
         "anneal/architecture"
       ]
     },
+    "rustc-object-files-sections-symbols-comdats-and-relocations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "repository": "https://github.com/rust-lang/rust.git",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "519b92f53a7a2de5fe0db9df5cd4bc9fb1ea8ff6",
+            "repository": "https://github.com/rust-lang/llvm-project.git",
+            "version": "22.1.1-rust-1.99.1-stable"
+          },
+          "name": "rust-lang/llvm-project"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/gimli-rs/object.git",
+            "version": "0.37.3"
+          },
+          "name": "gimli-rs/object"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/codegen",
+        "llvm/mc-object-emission",
+        "systems/object-formats"
+      ]
+    },
     "rustc-postcleanup-mir-const-placement-layout-folding-and-ub-checks": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -23492,6 +23553,40 @@
         "anneal/architecture",
         "lean/kernel",
         "verification/soundness"
+      ]
+    },
+    "rustc-static-linking-archive-formats-and-linker-driver": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "repository": "https://github.com/rust-lang/rust.git",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/ar_archive_writer.git",
+            "version": "0.5.1"
+          },
+          "name": "rust-lang/ar_archive_writer"
+        },
+        {
+          "identity": {
+            "commit": "519b92f53a7a2de5fe0db9df5cd4bc9fb1ea8ff6",
+            "repository": "https://github.com/rust-lang/llvm-project.git",
+            "version": "22.1.1-rust-1.99.1-stable"
+          },
+          "name": "rust-lang/llvm-project"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/linker-driver",
+        "llvm/lld",
+        "systems/static-archives"
       ]
     },
     "safe-rust-ub-freedom-soundness-and-standard-library-verification": {
@@ -25035,6 +25130,33 @@
         "domains/ebpf",
         "verification/abstract-interpretation",
         "lean/kernel"
+      ]
+    },
+    "tier1-linux-hosted-cross-compilation-recipes-and-sysroots": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "repository": "https://github.com/rust-lang/rust.git",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "commit": "519b92f53a7a2de5fe0db9df5cd4bc9fb1ea8ff6",
+            "repository": "https://github.com/rust-lang/llvm-project.git",
+            "version": "22.1.1-rust-1.99.1-stable"
+          },
+          "name": "rust-lang/llvm-project"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/cross-compilation",
+        "build/sysroots-and-sdks",
+        "domains/licensing-and-governance"
       ]
     },
     "tock-asterinas-redleaf-theseus-and-rust-os-isolation-boundaries": {

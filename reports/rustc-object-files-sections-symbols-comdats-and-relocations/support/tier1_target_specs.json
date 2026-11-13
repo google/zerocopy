@@ -1,0 +1,584 @@
+{
+  "x86_64-unknown-linux-gnu": {
+    "arch": "x86_64",
+    "cpu": "x86-64",
+    "crt-static-respected": true,
+    "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+    "default-uwtable": true,
+    "dynamic-linking": true,
+    "env": "gnu",
+    "has-rpath": true,
+    "has-thread-local": true,
+    "link-self-contained": {
+      "components": [
+        "linker"
+      ]
+    },
+    "linker-flavor": "gnu-lld-cc",
+    "llvm-target": "x86_64-unknown-linux-gnu",
+    "max-atomic-width": 64,
+    "metadata": {
+      "description": "64-bit Linux (kernel 3.2+, glibc 2.17+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "os": "linux",
+    "plt-by-default": false,
+    "position-independent-executables": true,
+    "pre-link-args": {
+      "gnu-cc": [
+        "-m64"
+      ],
+      "gnu-lld-cc": [
+        "-m64"
+      ]
+    },
+    "relro-level": "full",
+    "stack-probes": {
+      "kind": "inline"
+    },
+    "static-position-independent-executables": true,
+    "supported-sanitizers": [
+      "address",
+      "leak",
+      "memory",
+      "thread",
+      "cfi",
+      "kcfi",
+      "safestack",
+      "dataflow",
+      "realtime"
+    ],
+    "supported-split-debuginfo": [
+      "packed",
+      "unpacked",
+      "off"
+    ],
+    "supports-fentry": true,
+    "supports-xray": true,
+    "target-family": [
+      "unix"
+    ],
+    "target-pointer-width": 64
+  },
+  "i686-unknown-linux-gnu": {
+    "arch": "x86",
+    "cpu": "pentium4",
+    "crt-static-respected": true,
+    "data-layout": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+    "default-uwtable": true,
+    "dynamic-linking": true,
+    "env": "gnu",
+    "has-rpath": true,
+    "has-thread-local": true,
+    "link-self-contained": {
+      "components": [
+        "linker"
+      ]
+    },
+    "linker-flavor": "gnu-lld-cc",
+    "llvm-target": "i686-unknown-linux-gnu",
+    "max-atomic-width": 64,
+    "metadata": {
+      "description": "32-bit Linux (kernel 3.2, glibc 2.17+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "os": "linux",
+    "position-independent-executables": true,
+    "pre-link-args": {
+      "gnu-cc": [
+        "-m32"
+      ],
+      "gnu-lld-cc": [
+        "-m32"
+      ]
+    },
+    "relro-level": "full",
+    "rustc-abi": "x86-sse2",
+    "stack-probes": {
+      "kind": "inline"
+    },
+    "static-position-independent-executables": true,
+    "supported-sanitizers": [
+      "address"
+    ],
+    "supported-split-debuginfo": [
+      "packed",
+      "unpacked",
+      "off"
+    ],
+    "supports-fentry": true,
+    "target-family": [
+      "unix"
+    ],
+    "target-pointer-width": 32
+  },
+  "aarch64-unknown-linux-gnu": {
+    "arch": "aarch64",
+    "crt-static-respected": true,
+    "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+    "default-uwtable": true,
+    "dynamic-linking": true,
+    "env": "gnu",
+    "features": "+v8a,+outline-atomics",
+    "frame-pointer": "non-leaf",
+    "has-rpath": true,
+    "has-thread-local": true,
+    "link-self-contained": {
+      "components": [
+        "linker"
+      ]
+    },
+    "linker-flavor": "gnu-lld-cc",
+    "llvm-target": "aarch64-unknown-linux-gnu",
+    "max-atomic-width": 128,
+    "metadata": {
+      "description": "ARM64 Linux (kernel 4.1, glibc 2.17+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "os": "linux",
+    "position-independent-executables": true,
+    "pre-link-args": {
+      "gnu-cc": [
+        "-Wl,--fix-cortex-a53-843419"
+      ],
+      "gnu-lld-cc": [
+        "-Wl,--fix-cortex-a53-843419"
+      ]
+    },
+    "relro-level": "full",
+    "stack-probes": {
+      "kind": "inline"
+    },
+    "static-position-independent-executables": true,
+    "supported-sanitizers": [
+      "address",
+      "leak",
+      "memory",
+      "thread",
+      "hwaddress",
+      "cfi",
+      "memtag",
+      "kcfi",
+      "realtime"
+    ],
+    "supported-split-debuginfo": [
+      "packed",
+      "unpacked",
+      "off"
+    ],
+    "supports-xray": true,
+    "target-family": [
+      "unix"
+    ],
+    "target-mcount": "\u0001_mcount",
+    "target-pointer-width": 64
+  },
+  "aarch64-apple-darwin": {
+    "abi-return-struct-as-int": true,
+    "arch": "aarch64",
+    "archive-format": "darwin",
+    "binary-format": "mach-o",
+    "cpu": "apple-m1",
+    "crt-objects-fallback": "false",
+    "data-layout": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+    "debuginfo-kind": "dwarf-dsym",
+    "dll-suffix": ".dylib",
+    "dynamic-linking": true,
+    "eh-frame-header": false,
+    "emit-debug-gdb-scripts": false,
+    "frame-pointer": "non-leaf",
+    "function-sections": false,
+    "has-rpath": true,
+    "has-thread-local": true,
+    "is-like-darwin": true,
+    "link-env": [
+      "ZERO_AR_DATE=1"
+    ],
+    "link-env-remove": [
+      "IPHONEOS_DEPLOYMENT_TARGET",
+      "TVOS_DEPLOYMENT_TARGET",
+      "XROS_DEPLOYMENT_TARGET"
+    ],
+    "linker-flavor": "darwin-cc",
+    "linker-is-gnu": false,
+    "lld-flavor": "darwin",
+    "llvm-target": "arm64-apple-macosx",
+    "max-atomic-width": 128,
+    "metadata": {
+      "description": "ARM64 Apple macOS (11.0+, Big Sur+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "os": "macos",
+    "split-debuginfo": "packed",
+    "stack-probes": {
+      "kind": "inline"
+    },
+    "supported-sanitizers": [
+      "address",
+      "thread",
+      "cfi",
+      "realtime"
+    ],
+    "supported-split-debuginfo": [
+      "packed",
+      "unpacked",
+      "off"
+    ],
+    "supports-xray": true,
+    "target-family": [
+      "unix"
+    ],
+    "target-mcount": "\u0001mcount",
+    "target-pointer-width": 64,
+    "vendor": "apple"
+  },
+  "x86_64-pc-windows-msvc": {
+    "abi-return-struct-as-int": true,
+    "arch": "x86_64",
+    "archive-format": "coff",
+    "binary-format": "coff",
+    "cpu": "x86-64",
+    "crt-objects-fallback": "false",
+    "crt-static-allows-dylibs": true,
+    "crt-static-respected": true,
+    "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+    "debuginfo-kind": "pdb",
+    "dll-prefix": "",
+    "dll-suffix": ".dll",
+    "dll-tls-export": false,
+    "dynamic-linking": true,
+    "emit-debug-gdb-scripts": false,
+    "env": "msvc",
+    "exe-suffix": ".exe",
+    "features": "+cmpxchg16b,+sse3,+lahfsahf",
+    "has-thread-local": true,
+    "is-like-msvc": true,
+    "is-like-windows": true,
+    "linker-flavor": "msvc",
+    "linker-is-gnu": false,
+    "lld-flavor": "link",
+    "llvm-target": "x86_64-pc-windows-msvc",
+    "max-atomic-width": 128,
+    "metadata": {
+      "description": "64-bit MSVC (Windows 10+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "no-default-libraries": false,
+    "os": "windows",
+    "plt-by-default": false,
+    "pre-link-args": {
+      "msvc": [
+        "/NOLOGO"
+      ],
+      "msvc-lld": [
+        "/NOLOGO"
+      ]
+    },
+    "requires-uwtable": true,
+    "split-debuginfo": "packed",
+    "staticlib-prefix": "",
+    "staticlib-suffix": ".lib",
+    "supported-sanitizers": [
+      "address"
+    ],
+    "supported-split-debuginfo": [
+      "packed"
+    ],
+    "target-family": [
+      "windows"
+    ],
+    "target-pointer-width": 64,
+    "vendor": "pc"
+  },
+  "x86_64-pc-windows-gnu": {
+    "abi-return-struct-as-int": true,
+    "arch": "x86_64",
+    "binary-format": "coff",
+    "cpu": "x86-64",
+    "crt-objects-fallback": "mingw",
+    "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+    "dll-prefix": "",
+    "dll-suffix": ".dll",
+    "dll-tls-export": false,
+    "dynamic-linking": true,
+    "eh-frame-header": false,
+    "emit-debug-gdb-scripts": false,
+    "env": "gnu",
+    "exe-suffix": ".exe",
+    "features": "+cmpxchg16b,+sse3,+lahfsahf",
+    "function-sections": false,
+    "is-like-windows": true,
+    "late-link-args": {
+      "gnu": [
+        "-lmsvcrt",
+        "-lmingwex",
+        "-lmingw32",
+        "-lgcc",
+        "-lmsvcrt",
+        "-lmingwex",
+        "-luser32",
+        "-lkernel32"
+      ],
+      "gnu-cc": [
+        "-lmsvcrt",
+        "-lmingwex",
+        "-lmingw32",
+        "-lgcc",
+        "-lmsvcrt",
+        "-lmingwex",
+        "-luser32",
+        "-lkernel32"
+      ],
+      "gnu-lld": [
+        "-lmsvcrt",
+        "-lmingwex",
+        "-lmingw32",
+        "-lgcc",
+        "-lmsvcrt",
+        "-lmingwex",
+        "-luser32",
+        "-lkernel32"
+      ],
+      "gnu-lld-cc": [
+        "-lmsvcrt",
+        "-lmingwex",
+        "-lmingw32",
+        "-lgcc",
+        "-lmsvcrt",
+        "-lmingwex",
+        "-luser32",
+        "-lkernel32"
+      ]
+    },
+    "late-link-args-dynamic": {
+      "gnu": [
+        "-lgcc_s"
+      ],
+      "gnu-cc": [
+        "-lgcc_s"
+      ],
+      "gnu-lld": [
+        "-lgcc_s"
+      ],
+      "gnu-lld-cc": [
+        "-lgcc_s"
+      ]
+    },
+    "late-link-args-static": {
+      "gnu": [
+        "-lgcc_eh",
+        "-l:libpthread.a"
+      ],
+      "gnu-cc": [
+        "-lgcc_eh",
+        "-l:libpthread.a"
+      ],
+      "gnu-lld": [
+        "-lgcc_eh",
+        "-l:libpthread.a"
+      ],
+      "gnu-lld-cc": [
+        "-lgcc_eh",
+        "-l:libpthread.a"
+      ]
+    },
+    "linker": "x86_64-w64-mingw32-gcc",
+    "linker-flavor": "gnu-cc",
+    "llvm-target": "x86_64-pc-windows-gnu",
+    "max-atomic-width": 128,
+    "metadata": {
+      "description": "64-bit MinGW (Windows 10+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "os": "windows",
+    "plt-by-default": false,
+    "pre-link-args": {
+      "gnu": [
+        "--dynamicbase",
+        "--disable-auto-image-base",
+        "-m",
+        "i386pep",
+        "--high-entropy-va"
+      ],
+      "gnu-cc": [
+        "-fno-use-linker-plugin",
+        "-Wl,--dynamicbase",
+        "-Wl,--disable-auto-image-base",
+        "-m64",
+        "-Wl,--high-entropy-va"
+      ],
+      "gnu-lld": [
+        "--dynamicbase",
+        "--disable-auto-image-base",
+        "-m",
+        "i386pep",
+        "--high-entropy-va"
+      ],
+      "gnu-lld-cc": [
+        "-fno-use-linker-plugin",
+        "-Wl,--dynamicbase",
+        "-Wl,--disable-auto-image-base",
+        "-m64",
+        "-Wl,--high-entropy-va"
+      ]
+    },
+    "pre-link-objects-fallback": {
+      "dynamic-dylib": [
+        "dllcrt2.o"
+      ],
+      "dynamic-nopic-exe": [
+        "crt2.o"
+      ],
+      "dynamic-pic-exe": [
+        "crt2.o"
+      ],
+      "static-dylib": [
+        "dllcrt2.o"
+      ],
+      "static-nopic-exe": [
+        "crt2.o"
+      ],
+      "static-pic-exe": [
+        "crt2.o"
+      ]
+    },
+    "requires-uwtable": true,
+    "target-family": [
+      "windows"
+    ],
+    "target-mcount": "_mcount",
+    "target-pointer-width": 64,
+    "vendor": "pc"
+  },
+  "i686-pc-windows-msvc": {
+    "abi-return-struct-as-int": true,
+    "arch": "x86",
+    "archive-format": "coff",
+    "binary-format": "coff",
+    "cpu": "pentium4",
+    "crt-objects-fallback": "false",
+    "crt-static-allows-dylibs": true,
+    "crt-static-respected": true,
+    "data-layout": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+    "debuginfo-kind": "pdb",
+    "dll-prefix": "",
+    "dll-suffix": ".dll",
+    "dll-tls-export": false,
+    "dynamic-linking": true,
+    "emit-debug-gdb-scripts": false,
+    "env": "msvc",
+    "exe-suffix": ".exe",
+    "has-thread-local": true,
+    "is-like-msvc": true,
+    "is-like-windows": true,
+    "linker-flavor": "msvc",
+    "linker-is-gnu": false,
+    "lld-flavor": "link",
+    "llvm-target": "i686-pc-windows-msvc",
+    "max-atomic-width": 64,
+    "metadata": {
+      "description": "32-bit MSVC (Windows 10+)",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "no-default-libraries": false,
+    "os": "windows",
+    "pre-link-args": {
+      "msvc": [
+        "/NOLOGO",
+        "/LARGEADDRESSAWARE",
+        "/SAFESEH"
+      ],
+      "msvc-lld": [
+        "/NOLOGO",
+        "/LARGEADDRESSAWARE",
+        "/SAFESEH"
+      ]
+    },
+    "requires-uwtable": true,
+    "rustc-abi": "x86-sse2",
+    "split-debuginfo": "packed",
+    "staticlib-prefix": "",
+    "staticlib-suffix": ".lib",
+    "supported-sanitizers": [
+      "address"
+    ],
+    "supported-split-debuginfo": [
+      "packed"
+    ],
+    "target-family": [
+      "windows"
+    ],
+    "target-pointer-width": 32,
+    "vendor": "pc"
+  },
+  "aarch64-pc-windows-msvc": {
+    "abi-return-struct-as-int": true,
+    "arch": "aarch64",
+    "archive-format": "coff",
+    "binary-format": "coff",
+    "crt-objects-fallback": "false",
+    "crt-static-allows-dylibs": true,
+    "crt-static-respected": true,
+    "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+    "debuginfo-kind": "pdb",
+    "dll-prefix": "",
+    "dll-suffix": ".dll",
+    "dll-tls-export": false,
+    "dynamic-linking": true,
+    "emit-debug-gdb-scripts": false,
+    "env": "msvc",
+    "exe-suffix": ".exe",
+    "features": "+v8a,+neon",
+    "frame-pointer": "non-leaf",
+    "has-thread-local": true,
+    "is-like-msvc": true,
+    "is-like-windows": true,
+    "linker-flavor": "msvc",
+    "linker-is-gnu": false,
+    "lld-flavor": "link",
+    "llvm-target": "aarch64-pc-windows-msvc",
+    "max-atomic-width": 128,
+    "metadata": {
+      "description": "ARM64 Windows MSVC",
+      "host_tools": true,
+      "std": true,
+      "tier": 1
+    },
+    "no-default-libraries": false,
+    "os": "windows",
+    "pre-link-args": {
+      "msvc": [
+        "/NOLOGO"
+      ],
+      "msvc-lld": [
+        "/NOLOGO"
+      ]
+    },
+    "requires-uwtable": true,
+    "split-debuginfo": "packed",
+    "staticlib-prefix": "",
+    "staticlib-suffix": ".lib",
+    "supported-split-debuginfo": [
+      "packed"
+    ],
+    "target-family": [
+      "windows"
+    ],
+    "target-pointer-width": 64,
+    "vendor": "pc"
+  }
+}
