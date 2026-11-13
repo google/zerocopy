@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "verification/compcert",
+    "verification/cakeml",
+    "rustc",
+    "rust",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Ferrocene Language Specification (FLS 1.99) and safety-manual traceability model",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 compiler, future-incompatibility lint registry, layout randomization, and in-tree backends (rustc_codegen_cranelift, rustc_codegen_gcc)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "CompCert 3.18 verified C compiler and qualification documentation",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "v3.18"
+      }
+    },
+    {
+      "name": "seL4 L4.verified formal assumption ledger and CakeML end-to-end compiler theorem hypotheses",
+      "identity": {
+        "cakeml_repository": "CakeML/cakeml",
+        "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "sel4_repository": "seL4/l4v",
+        "sel4_revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+      }
+    },
+    {
+      "name": "Anneal verification framework trust boundary and threat model",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -1,0 +1,104 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "rustc",
+    "llvm",
+    "isa",
+    "lean",
+    "verification",
+    "systems"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler, standard library, Cargo, and in-tree backends (rustc_codegen_cranelift, rustc_codegen_gcc)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 (llvm, compiler-rt, lld, TableGen) pinned by Rust 1.99.1",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "GCC and libgccjit runtime exception and plugin/JIT terms",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "spdx": "GPL-3.0-or-later WITH GCC-exception-3.1",
+        "version": "14.2.0"
+      }
+    },
+    {
+      "name": "Cranelift code generator and regalloc2 register allocator",
+      "identity": {
+        "regalloc2_repository": "bytecodealliance/regalloc2",
+        "regalloc2_revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "83166ba31317afbe1574186798f4db17cd641ab4",
+        "spdx": "Apache-2.0 WITH LLVM-exception"
+      }
+    },
+    {
+      "name": "CompCert 3.18 dual-licensed Coq/OCaml verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "v3.18"
+      }
+    },
+    {
+      "name": "CakeML, Vellvm, and Alive2 formal compiler/IR projects",
+      "identity": {
+        "alive2_repository": "AliveToolkit/alive2",
+        "alive2_revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+        "cakeml_repository": "CakeML/cakeml",
+        "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "vellvm_repository": "vellvm/vellvm",
+        "vellvm_revision": "506f1eb0be542611521985719b971fbce8498dc9"
+      }
+    },
+    {
+      "name": "Sail, Sail Arm models, Arm Machine-Readable Architecture (MRA), and ACLE",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+      }
+    },
+    {
+      "name": "Intel XED, ACL2 x86isa, K-framework x86-64 semantics, herdtools7, and Islaris",
+      "identity": {
+        "acl2_repository": "acl2/acl2",
+        "acl2_revision": "9df88e94f63087e4bc7eb003497a38732a4cb120",
+        "herdtools7_repository": "herd/herdtools7",
+        "islaris_repository": "rems-project/islaris",
+        "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "xed_repository": "intelxed/xed"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 and mathlib4",
+      "identity": {
+        "mathlib4_repository": "leanprover-community/mathlib4",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS 1.99) and Rust RFC repository",
+      "identity": {
+        "fls_repository": "rust-lang/fls",
+        "fls_revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "rfcs_repository": "rust-lang/rfcs",
+        "rfcs_revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

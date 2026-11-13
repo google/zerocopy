@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-11-13",
+  "fls_1_99_metrics": {
+    "repository": "rust-lang/fls",
+    "revision": "946eacae5a4a33a89af7832178504692439e7478",
+    "rst_chapter_files": 29,
+    "normative_paragraph_ids_dp_fls": 4014
+  },
+  "rustc_1_99_1_policy_metrics": {
+    "repository": "rust-lang/rust",
+    "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "future_incompatible_lints_in_builtin_rs": 49,
+    "randomize_layout_seed_flag": "-Zrandomize-layout / -Zlayout-seed=<u64>",
+    "layout_implementation_file": "compiler/rustc_ty_utils/src/layout.rs",
+    "cranelift_readme_file": "compiler/rustc_codegen_cranelift/Readme.md",
+    "gcc_readme_file": "compiler/rustc_codegen_gcc/Readme.md"
+  },
+  "qualification_and_assurance_precedents": [
+    {
+      "system": "Ferrocene (ISO 26262 TCL3 / ASIL D, IEC 61508 T3 / SIL 4, IEC 62304 Class C)",
+      "supported_subset_and_deviations": "Full stable Rust 2021/2024 as specified by FLS (4,014 `:dp:` paragraph IDs across 29 chapters in `rust-lang/fls` @ `946eacae`); procedural macros, inline assembly, and unvalidated `-C`/`-Z` flags require end-user safety justification under the Safety Manual.",
+      "known_problems_mechanism": "Publicly versioned Known Problems Register mapping upstream `rust-lang/rust` `I-unsound` / `I-miscompile` issues to affected CLI flags, language constructs, and mandatory user workarounds.",
+      "traceability_and_assurance_artifact": "Bidirectional traceability matrix linking each of the 4,014 FLS paragraph IDs (`fls_<alphanumeric>`) to upstream `tests/ui/` test files via structured annotations."
+    },
+    {
+      "system": "CompCert 3.18 & Qualification Kit (DO-178C / DO-330 TQL-1, ISO 26262 ASIL D, IEC 61508 SIL 3)",
+      "supported_subset_and_deviations": "CompCert C subset of ISO C99/C11: omits `setjmp`/`longjmp`, variable-length arrays (VLAs), non-structured `switch` (Duff's device), and `complex` numbers. Explicitly documents semantic deviations from ISO C (e.g., signed integer overflow is defined modular 2^N in RTL but UB in C; bitfield layout and evaluation-order constraints).",
+      "known_problems_mechanism": "Trust-Boundary Split Table separating Coq-verified passes (`Clight` -> `Asm`) from unverified OCaml passes (`cparser`, `C2C` elaboration, register allocation heuristics prior to `Allocation.v` IRC check, `Asmexpand`, assembler/linker).",
+      "traceability_and_assurance_artifact": "Valex qualification kit + Tool Accomplishment Summary (TAS) + Tool Operational Requirements (TOR) + Coq `Print Assumptions` check confirming reliance only on standard Coq axioms."
+    },
+    {
+      "system": "seL4 (`seL4/l4v` @ `6b4076ae`)",
+      "supported_subset_and_deviations": "C99 subset (`Crest` / `AutoCorres` C-to-Isabelle parser) + explicit assembly stubs.",
+      "known_problems_mechanism": "Explicit top-level Assumption Ledger categorizing unverified hardware/boot/DMA/MMU/TLB hypotheses required for the end-to-end refinement theorem to hold.",
+      "traceability_and_assurance_artifact": "Isabelle/HOL refinement stack (`Abstract` -> `Executable` -> `C` -> `Binary` via `graph-refine`) + GSN (Goal Structuring Notation) assurance case for military/aviation deployments."
+    },
+    {
+      "system": "CakeML (`CakeML/cakeml` @ `f7318949`)",
+      "supported_subset_and_deviations": "Pure/stateful ML subset with explicit FFI byte-array oracle calls (`call_FFI`).",
+      "known_problems_mechanism": "End-to-end HOL4 theorem `compile_correct` packs all external assumptions as explicit syntactic antecedent predicates (`machine_ok`, `ffi_convention`, `enough_space`, `code_in_memory`).",
+      "traceability_and_assurance_artifact": "Single top-level HOL4 theorem relating source operational semantics to target machine-code semantics up to explicit out-of-memory (`Resource_limit_hit`) or FFI divergence."
+    },
+    {
+      "system": "Alternative Rust Compilers & Backends (`rustc_codegen_cranelift`, `rustc_codegen_gcc`, `gccrs`, `mrustc`)",
+      "supported_subset_and_deviations": "`cg_clif` (`compiler/rustc_codegen_cranelift/Readme.md`) and `cg_gcc` (`compiler/rustc_codegen_gcc/Readme.md`) maintain explicit feature-gap checklists (e.g., unwinding on Windows, exotic SIMD intrinsics, `#[naked]` functions, linker plugin LTO). `gccrs` tracks milestone tables against FLS and upstream `tests/ui/`. `mrustc` documents omitted borrow checking and panic=abort bootstrap constraints.",
+      "known_problems_mechanism": "Per-target CI exclusion lists (`config.toml` / `tests/ui` ignore headers) + explicit hard errors (never silent miscompilation) when encountering an unsupported intrinsic or ABI.",
+      "traceability_and_assurance_artifact": "Pass/skip diffs against upstream `rustc` `tests/ui`, `tests/run-make`, and `cargo test`."
+    }
+  ]
+}

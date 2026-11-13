@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-11-13",
+  "linux_syscall_abi_table": [
+    {
+      "isa": "x86_64-unknown-linux-gnu / -musl",
+      "instruction": "syscall",
+      "syscall_nr_reg": "rax",
+      "arg_regs": ["rdi", "rsi", "rdx", "r10", "r8", "r9"],
+      "return_regs": ["rax", "rdx"],
+      "error_range": "[-4095, -1] (-errno in rax)",
+      "clobbered_by_kernel": ["rcx", "r11", "rflags"],
+      "red_zone_bytes": 128,
+      "red_zone_note": "System V AMD64 ABI allows 128-byte red zone [rsp-128, rsp) in user space; POSIX signal delivery pushes ucontext/siginfo below rsp-128 unless SA_ONSTACK (sigaltstack) is active."
+    },
+    {
+      "isa": "aarch64-unknown-linux-gnu / -musl",
+      "instruction": "svc #0",
+      "syscall_nr_reg": "x8",
+      "arg_regs": ["x0", "x1", "x2", "x3", "x4", "x5"],
+      "return_regs": ["x0"],
+      "error_range": "[-4095, -1] (-errno in x0)",
+      "clobbered_by_kernel": ["x0 (return value); x1..x18 preserved by Linux kernel entry stub, though PCS treats x0..x18 as caller-saved across C calls"],
+      "red_zone_bytes": 0,
+      "red_zone_note": "AAPCS64 has 0-byte red zone in ELF user space; sp must be 16-byte aligned at every instruction that can fault or take an interrupt/signal."
+    },
+    {
+      "isa": "riscv64gc-unknown-linux-gnu / -musl",
+      "instruction": "ecall",
+      "syscall_nr_reg": "a7 (x17)",
+      "arg_regs": ["a0 (x10)", "a1 (x11)", "a2 (x12)", "a3 (x13)", "a4 (x14)", "a5 (x15)"],
+      "return_regs": ["a0 (x10)", "a1 (x11)"],
+      "error_range": "[-4095, -1] (-errno in a0)",
+      "clobbered_by_kernel": ["a0 (return value)"],
+      "red_zone_bytes": 0,
+      "red_zone_note": "RISC-V LP64D ABI has 0-byte red zone; sp (x2) must remain 16-byte aligned at all times."
+    }
+  ],
+  "platform_os_reachability": [
+    {
+      "os": "Linux",
+      "stable_boundary": "Both Linux kernel syscall ABI (stable user-space contract) AND libc.so.6 / musl C ABI",
+      "rust_std_files": [
+        "library/std/src/sys/pal/unix/mod.rs",
+        "library/std/src/sys/pal/unix/stack_overflow.rs",
+        "library/std/src/sys/pal/unix/weak/syscall.rs",
+        "library/std/src/sys/alloc/unix.rs"
+      ],
+      "direct_syscall_usage": "std uses libc + weak::syscall! for newer syscalls (getrandom, statx, clone3, futex); ecosystem crates (rustix linux_raw backend, linux-raw-sys) invoke raw syscall/svc/ecall via core::arch::asm!."
+    },
+    {
+      "os": "macOS (Darwin)",
+      "stable_boundary": "libSystem.B.dylib ONLY (raw Mach/BSD svc #0x80 numbers are explicitly unstable across macOS point releases)",
+      "rust_std_files": [
+        "library/std/src/sys/pal/unix/mod.rs",
+        "library/std/src/sys/pal/unix/stack_overflow.rs",
+        "library/std/src/sys/alloc/unix.rs"
+      ],
+      "direct_syscall_usage": "Forbidden by Apple ABI; all Rust std and rustix calls on macOS link against libSystem.B.dylib symbols."
+    },
+    {
+      "os": "Windows",
+      "stable_boundary": "Win32 DLL exports (kernel32.dll, advapi32.dll, ws2_32.dll, bcryptprimitives.dll, api-ms-win-core-*) and documented ntdll.dll exports (RtlNtStatusToDosError, NtWaitForKeyedEvent / WaitOnAddress); raw syscall numbers in ntdll change across Windows builds.",
+      "rust_std_files": [
+        "library/std/src/sys/pal/windows/mod.rs",
+        "library/std/src/sys/pal/windows/api.rs",
+        "library/std/src/sys/pal/windows/c/windows_sys.rs",
+        "library/std/src/sys/pal/windows/stack_overflow.rs",
+        "library/std/src/sys/alloc/windows.rs"
+      ],
+      "direct_syscall_usage": "Forbidden by Windows ABI; all OS calls go through PE32+ import tables (.idata) into Win32/ntdll DLLs."
+    }
+  ],
+  "environment_assumption_ledger_entries": [
+    {"id": "ENV-LOAD-1", "category": "Program Loader & Relocation", "summary": "OS loader (ld-linux / dyld / ntdll LdrInitializeThunk) maps PT_LOAD / __TEXT,__DATA / PE sections with declared permissions, zeroes .bss, applies dynamic relocations, and initializes TLS (fs:0 / tpidr_el0 / tp / gs:[0x58]) before jumping to _start / mainCRTStartup."},
+    {"id": "ENV-SYS-2", "category": "External Call / Syscall Frame Preservation", "summary": "Every OS syscall or dynamic library call preserves callee-saved registers, caller stack frames outside passed mutable buffers, and read-only segments, modifying only the return register(s) and explicitly passed out-pointer memory ranges."},
+    {"id": "ENV-MEM-3", "category": "Allocator Disjointness Contract", "summary": "Heap allocations returned by malloc/posix_memalign/realloc (unix.rs) or HeapAlloc/HeapReAlloc (windows.rs) return fresh, properly aligned, non-overlapping address ranges disjoint from all live stack frames, globals, and previously allocated live heap blocks."},
+    {"id": "ENV-STACK-4", "category": "Stack Guard Page & Stack Probe Contract", "summary": "The OS maintains at least one unmapped guard page below each thread stack; compiler-emitted stack probes (__rust_probestack / inline page-touch loop) touch each 4 KiB page sequentially so frames > 4 KiB cannot skip the guard page."},
+    {"id": "ENV-ASYNC-5", "category": "Asynchronous Signal & Exception Frame Discipline", "summary": "Compiled code never writes below sp (except within the 128-byte x86-64 red zone on SysV leaf functions when red-zone is enabled), keeps sp 16-byte aligned at all potentially faulting or interruptible instructions on AArch64/RISC-V/Windows, and assumes signal handlers execute on sigaltstack (SA_ONSTACK, configured by std::sys::pal::unix::stack_overflow) or respect the active stack pointer and red zone."}
+  ]
+}

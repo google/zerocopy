@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-11-13",
+  "license_file_hashes": {
+    "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67:LICENSE-APACHE": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a",
+    "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67:LICENSE-MIT": "b71bd43a069ca0641a9ecfe585ca7b3c53b5cc1608f8b68321168698e28b5ea1",
+    "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67:COPYRIGHT": "172020dbfd5b53a226dfde77616190a48dcff519b0bc0e6deb91a8450782c4af",
+    "rust-lang/fls@946eacae5a4a33a89af7832178504692439e7478:LICENSES/Apache-2.0.txt": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+    "rust-lang/fls@946eacae5a4a33a89af7832178504692439e7478:LICENSES/MIT.txt": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+    "rust-lang/fls@946eacae5a4a33a89af7832178504692439e7478:LICENSES/CC-BY-4.0.txt": "d1a05b85d9371739ab03732814066b4668a01429fb56c4eaa9f5a343ef52a226",
+    "rust-lang/reference@bcd62f35e8bf480ec5b0fa569b6d12ea5924030c:LICENSE-MIT": "0621878e61f0d0fda054bcbe02df75192c28bde1ecc8289cbd86aeba2dd72720",
+    "minirust/minirust@063d784186d3252bee242217f218223205c0b568:LICENSE-MIT": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+  },
+  "components": [
+    {
+      "component": "rustc, std, cargo, rustc_codegen_cranelift, rustc_codegen_gcc (Rust crate)",
+      "repository_or_vendor": "rust-lang/rust",
+      "pinned_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67 (1.99.1)",
+      "spdx": "Apache-2.0 OR MIT",
+      "linking_and_translation_obligations": "Permissive dual license; linking, modifying, translating to Lean 4, and binary redistribution require only preserving copyright and license notices (plus Apache-2.0 NOTICE if applicable).",
+      "counsel_flags": "Verify third-party vendored crate exceptions listed in COPYRIGHT (e.g., Unicode-3.0 data tables, BSD-3-Clause/Zlib/ISC dependencies)."
+    },
+    {
+      "component": "LLVM 23.1.1 (llvm, clang, lld, TableGen .td files, compiler-rt)",
+      "repository_or_vendor": "llvm/llvm-project",
+      "pinned_revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+      "spdx": "Apache-2.0 WITH LLVM-exception (compiler-rt also dual-licensed MIT / UIUC NCSA)",
+      "linking_and_translation_obligations": "Permissive; LLVM-exception waives Apache-2.0 Section 4 redistribution notice requirements for binary runtime outputs (compiler-rt) linked into user programs and permits combining with GPLv2. Translating TableGen (.td) files into Lean 4 definitions is permitted with attribution.",
+      "counsel_flags": "None for permissive Apache-2.0 WITH LLVM-exception."
+    },
+    {
+      "component": "GCC & libgccjit",
+      "repository_or_vendor": "gcc-mirror/gcc",
+      "pinned_revision": "gcc-14.2.0 / gcc-15",
+      "spdx": "GPL-3.0-or-later (compiler & libgccjit.so); GPL-3.0-or-later WITH GCC-exception-3.1 (libgcc_s / libstdc++ target runtimes)",
+      "linking_and_translation_obligations": "Linking against libgccjit.so or GCC internal headers creates a combined work governed by GPLv3+. Under the GCC Runtime Library Exception v3.1, target binaries only enjoy the runtime exception if produced by an 'Eligible Compilation Process' (which forbids proprietary/GPL-incompatible compiler plugins or intermediate passes). Literal porting of GCC C++ passes requires clean-room separation to avoid GPLv3 derived-work claims.",
+      "counsel_flags": "FLAG FOR COUNSEL: Any dynamic/static linking to libgccjit or non-clean-room porting of GCC algorithms triggers GPLv3 copyleft obligations."
+    },
+    {
+      "component": "Cranelift (cranelift-codegen, ISLE) & regalloc2",
+      "repository_or_vendor": "bytecodealliance/wasmtime & bytecodealliance/regalloc2",
+      "pinned_revision": "83166ba31317afbe1574186798f4db17cd641ab4 & 969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+      "spdx": "Apache-2.0 WITH LLVM-exception",
+      "linking_and_translation_obligations": "Permissive; direct linking, fork modification, and mechanical translation of ISLE (.isle) rules or regalloc2 checker algorithms into Lean 4 are permitted under Apache-2.0 WITH LLVM-exception.",
+      "counsel_flags": "None."
+    },
+    {
+      "component": "CompCert 3.18 (and CompCert-KVX / CompCertO / CompCertSSA)",
+      "repository_or_vendor": "AbsInt/CompCert",
+      "pinned_revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6 (v3.18)",
+      "spdx": "INRIA Non-Commercial License (evaluation/research/education only) AND AbsInt Commercial License; select directories (lib/, common/, cfrontend/, flocq/, menhirLib/, runtime/) dual-licensed GPL-2.0-or-later OR CeCILL-C",
+      "linking_and_translation_obligations": "CRITICAL RESTRICTION: Top-level CompCert LICENSE explicitly restricts non-dual-licensed backend/optimizations (backend/, scheduling/, x86/, aarch64/, riscv/, driver/) to non-commercial evaluation, research, or educational use unless licensed from AbsInt. Even the dual-licensed lib//common//cfrontend/ directories are copyleft (GPLv2+ or CeCILL-C), incompatible with pure Apache-2.0/MIT redistribution without copyleft propagation.",
+      "counsel_flags": "FLAG FOR COUNSEL: Do NOT copy or mechanically translate CompCert .v/.ml files into an Apache-2.0/MIT repository; study only published academic papers (clean-room mathematical ideas)."
+    },
+    {
+      "component": "CakeML, Vellvm, Alive2",
+      "repository_or_vendor": "CakeML/cakeml, vellvm/vellvm, AliveToolkit/alive2",
+      "pinned_revision": "f73189499bb295f0859dec7ee38c169c48da682c, 506f1eb0be542611521985719b971fbce8498dc9, adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+      "spdx": "BSD-3-Clause (CakeML), BSD-3-Clause (Vellvm, excluding optional CompCert-derived files if any), MIT (Alive2)",
+      "linking_and_translation_obligations": "Permissive (BSD-3-Clause / MIT). Note that any CompCert-derived files inside Vellvm (such as Flocq or CompCert memory/integers if copied from GPL/CeCILL-C subsets) carry their upstream CompCert/Flocq licenses.",
+      "counsel_flags": "Audit individual file headers if adapting Vellvm Coq libraries to ensure zero CompCert INRIA-non-commercial or GPLv2 contamination."
+    },
+    {
+      "component": "Sail, sail-arm, sail-x86, Arm MRA (ASL/XML), Arm ACLE",
+      "repository_or_vendor": "rems-project/sail, rems-project/sail-arm, Arm Limited",
+      "pinned_revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+      "spdx": "BSD-2-Clause (Sail tool & sail-arm wrapper scripts); BSD-3-Clause (Arm MRA XML/ASL since 2020 & Arm ACLE)",
+      "linking_and_translation_obligations": "Permissive BSD-2-Clause and BSD-3-Clause. Translating Arm MRA ASL or Sail Arm specifications into Lean 4 is permitted provided Cambridge REMS and Arm Limited BSD copyright notices and disclaimers are preserved.",
+      "counsel_flags": "Verify exact BSD-3-Clause header on the downloaded Arm A-Profile Exploration Tools XML tarball."
+    },
+    {
+      "component": "Intel XED, Intel Intrinsics Guide XML, Intel SDM",
+      "repository_or_vendor": "intelxed/xed & Intel Corporation",
+      "pinned_revision": "Apache-2.0 (XED)",
+      "spdx": "Apache-2.0 (Intel XED datafiles and decoder/encoder); Intel Simplified Software License / BSD-style (Intel Intrinsics Guide XML in clang/llvm headers); Proprietary Copyright (Intel SDM PDF text)",
+      "linking_and_translation_obligations": "Intel XED tables (`datafiles/`) are Apache-2.0 and can be mechanically translated into Lean 4 x86-64 instruction encoding/decoding tables with Apache-2.0 attribution. Avoid bulk verbatim scraping of proprietary Intel SDM prose/pseudocode when XED or LLVM TableGen provides Apache-2.0 structural data.",
+      "counsel_flags": "FLAG FOR COUNSEL: Confirm boundaries on translating Intel SDM pseudocode vs. using Apache-2.0 Intel XED + ACL2 x86isa."
+    },
+    {
+      "component": "ACL2 x86isa, K-framework x86-64 semantics, herdtools7, Islaris",
+      "repository_or_vendor": "acl2/acl2, runtimeverification/x86-64-semantics, herd/herdtools7, rems-project/islaris",
+      "pinned_revision": "9df88e94f63087e4bc7eb003497a38732a4cb120, c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+      "spdx": "BSD-3-Clause (ACL2 books/projects/x86isa); UIUC/NCSA or MIT (K x86-64 semantics); CeCILL-B (herdtools7); BSD-2-Clause (Islaris)",
+      "linking_and_translation_obligations": "All four are permissive (CeCILL-B is BSD-like with an attribution obligation in documentation/materials). Translating x86isa specifications or running herdtools7 `.cat` models as an external oracle is compatible with Apache-2.0/MIT.",
+      "counsel_flags": "Preserve CeCILL-B attribution notice if distributing herdtools7 `.cat` files or translated memory-model definitions."
+    },
+    {
+      "component": "Lean 4 v4.34.1 & mathlib4",
+      "repository_or_vendor": "leanprover/lean4 & leanprover-community/mathlib4",
+      "pinned_revision": "5045d0056413266e57c625dcd7c365b10e377c52 (v4.34.1)",
+      "spdx": "Apache-2.0",
+      "linking_and_translation_obligations": "Fully permissive Apache-2.0; compatible with Anneal's BSD-3-Clause / Apache-2.0 / MIT tri-license.",
+      "counsel_flags": "None."
+    }
+  ]
+}

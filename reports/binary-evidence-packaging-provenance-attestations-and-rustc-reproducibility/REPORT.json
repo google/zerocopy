@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "build",
+    "cargo",
+    "rustc",
+    "security",
+    "systems",
+    "verification",
+    "anneal",
+    "exocrate"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler path-remapping, deterministic symbol hashing, and strip flags",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "ELF64, Mach-O 64, and PE32+ non-allocated section, build-ID/UUID, and code-signing layouts",
+      "identity": {
+        "formats": "ELF64 (.note.gnu.build-id, non-SHF_ALLOC sections), Mach-O 64 (LC_UUID, __LINKEDIT / non-loaded segments), PE32+ (IMAGE_DIRECTORY_ENTRY_DEBUG CodeView RSDS GUID)"
+      }
+    },
+    {
+      "name": "in-toto attestation framework v1.0, SLSA v1.0 provenance specification, Sigstore DSSE bundles, and cargo-auditable (.dep-v0)",
+      "identity": {
+        "cargo_auditable_section": ".dep-v0 / __DATA,__dep_v0",
+        "in_toto_statement_version": "https://in-toto.io/Statement/v1",
+        "slsa_provenance_version": "https://slsa.dev/provenance/v1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 deterministic .olean serialization and Anneal omnibus archive infrastructure",
+      "identity": {
+        "anneal_repository": "joshlf/anneal",
+        "anneal_revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc",
+        "lean_repository": "leanprover/lean4",
+        "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lean_version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

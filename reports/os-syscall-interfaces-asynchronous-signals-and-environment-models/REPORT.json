@@ -1,0 +1,57 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "systems",
+    "isa",
+    "verification",
+    "verification/cakeml",
+    "verification/compcert",
+    "rustc",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 standard library OS platform abstraction layer (library/std/src/sys)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Linux kernel syscall ABI across x86_64, AArch64, and RISC-V (riscv64gc)",
+      "identity": {
+        "architectures": "x86_64, aarch64, riscv64gc",
+        "interface": "Linux user-space syscall ABI (syscall / svc #0 / ecall)"
+      }
+    },
+    {
+      "name": "macOS libSystem.B.dylib dynamic boundary and Windows ntdll.dll / kernel32.dll Win32 subsystem boundary",
+      "identity": {
+        "macos_abi": "libSystem.B.dylib (Mach traps + BSD syscalls)",
+        "windows_abi": "kernel32.dll / ntdll.dll / api-ms-win-core-* (PE32+ import table)"
+      }
+    },
+    {
+      "name": "CakeML FFI oracle model, CompCert external event trace semantics, seL4 syscall refinement, and SibylFS POSIX specification",
+      "identity": {
+        "cakeml_repository": "CakeML/cakeml",
+        "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+        "compcert_repository": "AbsInt/CompCert",
+        "compcert_revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "sel4_repository": "seL4/l4v",
+        "sel4_revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+        "sibylfs_doi": "10.1145/2815400.2815416"
+      }
+    },
+    {
+      "name": "Anneal verification framework external-call and environment boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

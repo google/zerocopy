@@ -7437,6 +7437,55 @@
         "verification/iris"
       ]
     },
+    "binary-evidence-packaging-provenance-attestations-and-rustc-reproducibility": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler path-remapping, deterministic symbol hashing, and strip flags"
+        },
+        {
+          "identity": {
+            "formats": "ELF64 (.note.gnu.build-id, non-SHF_ALLOC sections), Mach-O 64 (LC_UUID, __LINKEDIT / non-loaded segments), PE32+ (IMAGE_DIRECTORY_ENTRY_DEBUG CodeView RSDS GUID)"
+          },
+          "name": "ELF64, Mach-O 64, and PE32+ non-allocated section, build-ID/UUID, and code-signing layouts"
+        },
+        {
+          "identity": {
+            "cargo_auditable_section": ".dep-v0 / __DATA,__dep_v0",
+            "in_toto_statement_version": "https://in-toto.io/Statement/v1",
+            "slsa_provenance_version": "https://slsa.dev/provenance/v1"
+          },
+          "name": "in-toto attestation framework v1.0, SLSA v1.0 provenance specification, Sigstore DSSE bundles, and cargo-auditable (.dep-v0)"
+        },
+        {
+          "identity": {
+            "anneal_repository": "joshlf/anneal",
+            "anneal_revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc",
+            "lean_repository": "leanprover/lean4",
+            "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "lean_version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 deterministic .olean serialization and Anneal omnibus archive infrastructure"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "build",
+        "cargo",
+        "rustc",
+        "security",
+        "systems",
+        "verification",
+        "anneal",
+        "exocrate"
+      ]
+    },
     "cargo-rustc-wrapper-caching-and-extraction-coverage": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -8656,6 +8705,110 @@
         "anneal/refinement"
       ]
     },
+    "compiler-isa-sdk-licensing-trademarks-and-upstream-governance": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, Cargo, and in-tree backends (rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 (llvm, compiler-rt, lld, TableGen) pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "spdx": "GPL-3.0-or-later WITH GCC-exception-3.1",
+            "version": "14.2.0"
+          },
+          "name": "GCC and libgccjit runtime exception and plugin/JIT terms"
+        },
+        {
+          "identity": {
+            "regalloc2_repository": "bytecodealliance/regalloc2",
+            "regalloc2_revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "83166ba31317afbe1574186798f4db17cd641ab4",
+            "spdx": "Apache-2.0 WITH LLVM-exception"
+          },
+          "name": "Cranelift code generator and regalloc2 register allocator"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "v3.18"
+          },
+          "name": "CompCert 3.18 dual-licensed Coq/OCaml verified C compiler"
+        },
+        {
+          "identity": {
+            "alive2_repository": "AliveToolkit/alive2",
+            "alive2_revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+            "cakeml_repository": "CakeML/cakeml",
+            "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "vellvm_repository": "vellvm/vellvm",
+            "vellvm_revision": "506f1eb0be542611521985719b971fbce8498dc9"
+          },
+          "name": "CakeML, Vellvm, and Alive2 formal compiler/IR projects"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+          },
+          "name": "Sail, Sail Arm models, Arm Machine-Readable Architecture (MRA), and ACLE"
+        },
+        {
+          "identity": {
+            "acl2_repository": "acl2/acl2",
+            "acl2_revision": "9df88e94f63087e4bc7eb003497a38732a4cb120",
+            "herdtools7_repository": "herd/herdtools7",
+            "islaris_repository": "rems-project/islaris",
+            "islaris_revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+            "xed_repository": "intelxed/xed"
+          },
+          "name": "Intel XED, ACL2 x86isa, K-framework x86-64 semantics, herdtools7, and Islaris"
+        },
+        {
+          "identity": {
+            "mathlib4_repository": "leanprover-community/mathlib4",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 and mathlib4"
+        },
+        {
+          "identity": {
+            "fls_repository": "rust-lang/fls",
+            "fls_revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "rfcs_repository": "rust-lang/rfcs",
+            "rfcs_revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+          },
+          "name": "Ferrocene Language Specification (FLS 1.99) and Rust RFC repository"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "rustc",
+        "llvm",
+        "isa",
+        "lean",
+        "verification",
+        "systems"
+      ]
+    },
     "compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -8757,6 +8910,61 @@
         "verification/compcert",
         "isa/jasmin",
         "systems/os-kernels"
+      ]
+    },
+    "compiler-qualification-assurance-cases-and-deviation-policies": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "tag": "1.99"
+          },
+          "name": "Ferrocene Language Specification (FLS 1.99) and safety-manual traceability model"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, future-incompatibility lint registry, layout randomization, and in-tree backends (rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "v3.18"
+          },
+          "name": "CompCert 3.18 verified C compiler and qualification documentation"
+        },
+        {
+          "identity": {
+            "cakeml_repository": "CakeML/cakeml",
+            "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "sel4_repository": "seL4/l4v",
+            "sel4_revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified formal assumption ledger and CakeML end-to-end compiler theorem hypotheses"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal verification framework trust boundary and threat model"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "verification",
+        "verification/compcert",
+        "verification/cakeml",
+        "rustc",
+        "rust",
+        "anneal"
       ]
     },
     "compositional-correctness-linking-and-whole-program-optimization": {
@@ -17724,6 +17932,63 @@
         "verification/refinement"
       ]
     },
+    "os-syscall-interfaces-asynchronous-signals-and-environment-models": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 standard library OS platform abstraction layer (library/std/src/sys)"
+        },
+        {
+          "identity": {
+            "architectures": "x86_64, aarch64, riscv64gc",
+            "interface": "Linux user-space syscall ABI (syscall / svc #0 / ecall)"
+          },
+          "name": "Linux kernel syscall ABI across x86_64, AArch64, and RISC-V (riscv64gc)"
+        },
+        {
+          "identity": {
+            "macos_abi": "libSystem.B.dylib (Mach traps + BSD syscalls)",
+            "windows_abi": "kernel32.dll / ntdll.dll / api-ms-win-core-* (PE32+ import table)"
+          },
+          "name": "macOS libSystem.B.dylib dynamic boundary and Windows ntdll.dll / kernel32.dll Win32 subsystem boundary"
+        },
+        {
+          "identity": {
+            "cakeml_repository": "CakeML/cakeml",
+            "cakeml_revision": "f73189499bb295f0859dec7ee38c169c48da682c",
+            "compcert_repository": "AbsInt/CompCert",
+            "compcert_revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "sel4_repository": "seL4/l4v",
+            "sel4_revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5",
+            "sibylfs_doi": "10.1145/2815400.2815416"
+          },
+          "name": "CakeML FFI oracle model, CompCert external event trace semantics, seL4 syscall refinement, and SibylFS POSIX specification"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal verification framework external-call and environment boundary"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "systems",
+        "isa",
+        "verification",
+        "verification/cakeml",
+        "verification/compcert",
+        "rustc",
+        "anneal"
+      ]
+    },
     "pcc-tal-verve-foundational-certificate-kernels-1996-2016": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -25112,6 +25377,202 @@
         "systems/object-formats",
         "llvm/mc-layer",
         "isa/encoding"
+      ]
+    },
+    "verified-compiler-effort-precedents-and-agent-proof-productivity": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and in-tree backends (rustc_codegen_llvm, rustc_codegen_ssa, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+            "version": "1.98.1"
+          },
+          "name": "Rust 1.98.1 compiler"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "v3.18"
+          },
+          "name": "CompCert 3.18 verified C compiler (including BTL block translation validator)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434320",
+            "publication": "PACMPL 5 (POPL 2021), Article 39",
+            "repository": "JeremieKoenig/compcerto",
+            "revision": "c28836773d2cf1146f3895d3282db3b9c87f0000"
+          },
+          "name": "CompCertO compositional verified compiler"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+          },
+          "name": "CakeML verified ML compiler and bootstrapped backend"
+        },
+        {
+          "identity": {
+            "graph_refine_doi": "10.1145/2491956.2462183",
+            "repository": "seL4/l4v",
+            "revision": "6b4076aeb35f7803b7c232963e5f996545e3acb5"
+          },
+          "name": "seL4 L4.verified proof corpus and binary translation validator (graph-refine)"
+        },
+        {
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+          },
+          "name": "Vellvm Coq/Rocq formalization of LLVM IR"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "repository": "snu-sf/crellvm",
+            "revision": "668249b88756233f96b3ef21f12993501a348afc"
+          },
+          "name": "Crellvm credible LLVM optimizer and relational hint validator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030",
+            "repository": "AliveToolkit/alive2",
+            "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+            "version": "v21.0"
+          },
+          "name": "Alive2 SMT translation validator for LLVM IR"
+        },
+        {
+          "identity": {
+            "crocus_doi": "10.1145/3620665.3640369",
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "83166ba31317afbe1574186798f4db17cd641ab4",
+            "version": "0.132.0"
+          },
+          "name": "Cranelift code generator and ISLE instruction selector (Crocus)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+            "version": "0.15.2"
+          },
+          "name": "regalloc2 register allocator and symbolic checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371126",
+            "repository": "jasmin-lang/jasmin",
+            "revision": "6c4994d572112a6c3037c47a272f4cf4a09cb0f1"
+          },
+          "name": "Jasmin high-assurance cryptographic compiler"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Vale verified assembly language for Everest"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2019.00020",
+            "repository": "mit-plv/fiat-crypto",
+            "revision": "b4ad623c6a5bde0c71169493963a308c612fce3f"
+          },
+          "name": "Fiat Cryptography verified arithmetic synthesizer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454039",
+            "repository": "mit-plv/bedrock2",
+            "revision": "7cbf3ef1be3c4fa6be792371ab0ec79cf773bd7f"
+          },
+          "name": "Bedrock2 verified low-level systems programming and compiler framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523434",
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris machine-code verification framework (Isla + Iris)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-65627-9_10",
+            "repository": "aws/s2n-bignum",
+            "revision": "6fb0e53d155eb9ceab82411220210fc2ff1b0120"
+          },
+          "name": "AWS s2n-bignum HOL Light cryptographic assembly verification suite"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-016-9386-0",
+            "repository": "acl2/acl2",
+            "revision": "9df88e94f63087e4bc7eb003497a38732a4cb120"
+          },
+          "name": "ACL2 x86isa machine-code model and verification books"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+          },
+          "name": "Sail Armv8.5-A / Armv9.4-A formal ISA models"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "tag": "1.99"
+          },
+          "name": "Ferrocene Language Specification (FLS 1.99)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Historical Anneal V1 verification harness in zerocopy"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "verification",
+        "verification/compcert",
+        "verification/cakeml",
+        "rustc",
+        "anneal",
+        "agents"
       ]
     },
     "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap": {

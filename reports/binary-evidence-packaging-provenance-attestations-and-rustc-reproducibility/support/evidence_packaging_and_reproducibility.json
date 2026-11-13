@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-11-13",
+  "elf_strip_probe_results": {
+    "toolchain": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+    "target": "x86_64-unknown-linux-gnu",
+    "embedded_sections_tested": [
+      {
+        "name": ".anneal.evidence",
+        "type": "SHT_PROGBITS (@progbits)",
+        "flags": "\"\" (0x0, non-SHF_ALLOC)",
+        "vma": "0x0000000000000000",
+        "in_pt_load": false,
+        "survives_c_strip_none": true,
+        "survives_c_strip_debuginfo": true,
+        "survives_c_strip_symbols": true,
+        "survives_gnu_strip_all": true
+      },
+      {
+        "name": ".note.anneal.evidence",
+        "type": "SHT_NOTE (@note)",
+        "flags": "\"\" (0x0, non-SHF_ALLOC)",
+        "vma": "0x0000000000000000",
+        "in_pt_load": false,
+        "survives_c_strip_none": true,
+        "survives_c_strip_debuginfo": true,
+        "survives_c_strip_symbols": true,
+        "survives_gnu_strip_all": true
+      }
+    ]
+  },
+  "binary_format_evidence_matrix": [
+    {
+      "format": "ELF64 (Linux)",
+      "in_binary_non_loaded_carrier": "Non-allocated section `.anneal.evidence` (`SHT_PROGBITS`, `sh_flags = 0`, `sh_addr = 0`) or `.note.anneal.evidence` (`SHT_NOTE`, `sh_flags = 0`). Excluded from all `PT_LOAD` program headers; zero runtime virtual memory impact.",
+      "detached_key_identifier": "`NT_GNU_BUILD_ID` in `.note.gnu.build-id` (20-byte SHA-1 or 32-byte SHA-256 digest emitted via `-Clink-arg=-Wl,--build-id=sha1` or `sha256`), plus full file SHA-256.",
+      "strip_and_signing_behavior": "Both GNU `strip` (`--strip-debug`, `--strip-unneeded`, `--strip-all`) and `llvm-strip` preserve non-allocated non-`.debug_*` sections unless `-R .anneal.evidence` is explicitly passed. `objcopy --only-keep-debug` + `strip` workflows retain `.note.gnu.build-id` in both stripped binary and `.debug` sidecar."
+    },
+    {
+      "format": "Mach-O 64 (macOS)",
+      "in_binary_non_loaded_carrier": "Mach-O requires every section in a segment (`__TEXT`, `__DATA`, `__DATA_CONST`) to belong to a `LC_SEGMENT_64` load command mapped into virtual memory (`vmsize > 0`), EXCEPT raw data appended to `__LINKEDIT` before `codesign`. Appending custom unreferenced sections to `__LINKEDIT` or mutating a binary after `codesign` invalidates `LC_CODE_SIGNATURE` (causing `SIGKILL` `EXC_BAD_ACCESS (Code Signature Invalid)` on Apple Silicon).",
+      "detached_key_identifier": "`LC_UUID` (16-byte deterministic UUID computed by `ld64`/`ld-prime`/`lld` over output content) + `CDHash` (CodeDirectory SHA-256 hash inside `LC_CODE_SIGNATURE`) + file SHA-256.",
+      "strip_and_signing_behavior": "`dsymutil` extracts DWARF into `<bin>.dSYM/Contents/Resources/DWARF/<bin>` keyed by `LC_UUID`. Detached `.anneal.bundle` keyed by `LC_UUID` + SHA-256 (or stored inside `<App>.app/Contents/Resources/` and covered by `CodeResources`) survives `strip -x`, `dsymutil`, and `codesign`/`notarytool` without inflating runtime VM."
+    },
+    {
+      "format": "PE32+ (Windows)",
+      "in_binary_non_loaded_carrier": "PE section headers (`IMAGE_SECTION_HEADER`) allow `IMAGE_SCN_MEM_DISCARDABLE` (`0x02000000`) or `IMAGE_SCN_LNK_INFO`, or data appended after the last section via `IMAGE_DIRECTORY_ENTRY_DEBUG` (`IMAGE_DEBUG_TYPE_UNKNOWN` / custom vendor entry). However, Authenticode (`IMAGE_DIRECTORY_ENTRY_SECURITY`) hashes all sections and trailing bytes preceding the certificate table.",
+      "detached_key_identifier": "`IMAGE_DEBUG_DIRECTORY` CodeView `RSDS` signature (16-byte GUID + 32-bit Age + PDB path) + PE Header Checksum/Timestamp + file SHA-256.",
+      "strip_and_signing_behavior": "Modifying a PE32+ file after `signtool sign` breaks the Authenticode PKCS#7 signature. Emitting a detached `<bin>.anneal.json` / `.anneal.tar.zst` bundle keyed by the PE SHA-256 and CodeView `RSDS` GUID (and optionally embedding a tiny 64-byte `.anneal` digest descriptor section *before* `signtool` runs) preserves both zero runtime footprint and Authenticode validity."
+    }
+  ],
+  "rustc_reproducibility_controls": [
+    {
+      "control": "--remap-path-prefix=<from>=<to>",
+      "scope": "Remaps workspace, rustup sysroot, and cargo home paths in `Location::caller()`, panic strings, DWARF `DW_AT_comp_dir`, and crate metadata (`compiler/rustc_session/src/config.rs`)."
+    },
+    {
+      "control": "-C codegen-units=1",
+      "scope": "Eliminates multi-CGU partitioning and parallel LLVM/backend scheduling variance."
+    },
+    {
+      "control": "-C symbol-mangling-version=v0",
+      "scope": "Uses deterministic content-derived `StableCrateId` + `DefPathHash` (`compiler/rustc_symbol_mangling/src/v0.rs`) without legacy hash perturbations."
+    },
+    {
+      "control": "CARGO_INCREMENTAL=0",
+      "scope": "Disables incremental compilation work-product reuse (`compiler/rustc_incremental/`), which embeds session directory state."
+    },
+    {
+      "control": "SOURCE_DATE_EPOCH=1",
+      "scope": "Pins archive member timestamps in `.rlib` / `.a` archives and PE COFF header timestamps."
+    }
+  ]
+}
